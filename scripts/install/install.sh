@@ -215,7 +215,10 @@ done
 mkdir -p "$stage_parent" || die "cannot create $stage_parent"
 chmod 700 "$data/install-sources" "$stage_parent"
 stage=$(mktemp -d "$stage_parent/run.XXXXXX") || die "cannot create private staging"
-trap 'rm -rf "$stage"' EXIT
+# The unpacked bundle's Nix closure has read-only directories: make the
+# staging copy writable first, or `rm -rf` fails for every user but root
+# (and the failure would become the installer's exit status).
+trap 'chmod -R u+w "$stage" 2>/dev/null; rm -rf "$stage"' EXIT
 trap 'exit 130' HUP INT TERM
 
 # The launcher must be ours (or absent) before anything is downloaded.

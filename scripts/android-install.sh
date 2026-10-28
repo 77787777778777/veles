@@ -9,13 +9,18 @@
 # The flake (apps.android-install) runs this with adb, keytool and the
 # SDK's apksigner pinned, and names the APK it built in VELES_APK_DIR.
 #
-# THE KEY is this machine's sideload key, made on first use:
-#   ${XDG_CONFIG_HOME:-~/.config}/veles-android/sideload.p12   (0600)
-# Android only installs an update signed with the same key as what is
-# installed, so keep it: a new key means uninstalling first, and that
-# deletes the app's home (config, state.db). The file mode is what
-# protects it; the keystore password is fixed, as Android's own debug
-# key's is. A store release gets its own key, never this one.
+# THE KEY. Android only installs an update signed with the same key as
+# what is installed, and a new key means uninstalling first, which
+# deletes the app's home (config, state.db). So:
+#   ${XDG_CONFIG_HOME:-~/.config}/veles-android/release.p12   (0600)
+#     when it exists: the key the published releases are signed with
+#     (alias `release`, password in release.pass beside it). A build
+#     from here then upgrades a release install in place, and back.
+#   ${XDG_CONFIG_HOME:-~/.config}/veles-android/sideload.p12  (0600)
+#     otherwise: this machine's own key, made on first use. Keep it.
+#     The file mode is what protects it; its password is fixed, as
+#     Android's own debug key's is. Its certificate names no host: the
+#     subject is public in every APK it signs.
 #
 # Getting a config onto the phone (debug APK only — run-as needs it):
 #   adb shell run-as chat.janitor.veles mkdir -p files/home
@@ -46,22 +51,30 @@ while [ $# -gt 0 ]; do
 done
 
 keydir=${XDG_CONFIG_HOME:-$HOME/.config}/veles-android
-key=$keydir/sideload.p12
-pass=veles-sideload
-if [ ! -f "$key" ]; then
-    mkdir -p "$keydir"
-    chmod 700 "$keydir"
-    (umask 077 && keytool -genkeypair -keystore "$key" -storetype PKCS12 \
-        -storepass "$pass" -keypass "$pass" -alias sideload -keyalg RSA -keysize 3072 \
-        -validity 10000 -dname "CN=veles sideload $(uname -n)" >/dev/null)
-    echo "android-install: made the sideload key $key — keep it (scripts/android-install.sh says why)"
+if [ -f "$keydir/release.p12" ] && [ -f "$keydir/release.pass" ]; then
+    key=$keydir/release.p12
+    alias=release
+    ks_pass=file:$keydir/release.pass
+else
+    key=$keydir/sideload.p12
+    alias=sideload
+    ks_pass=pass:veles-sideload
+    if [ ! -f "$key" ]; then
+        mkdir -p "$keydir"
+        chmod 700 "$keydir"
+        (umask 077 && keytool -genkeypair -keystore "$key" -storetype PKCS12 \
+            -storepass veles-sideload -keypass veles-sideload -alias sideload -keyalg RSA \
+            -keysize 3072 -validity 10000 -dname "CN=veles sideload" >/dev/null)
+        echo "android-install: made the sideload key $key — keep it (scripts/android-install.sh says why)"
+    fi
 fi
+echo "android-install: signing with $key"
 
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 apk=$work/$stem-$variant.apk
-"$VELES_BUILD_TOOLS/apksigner" sign --ks "$key" --ks-pass "pass:$pass" \
-    --ks-key-alias sideload --out "$apk" "$VELES_APK_DIR/$stem-$variant-unsigned.apk"
+"$VELES_BUILD_TOOLS/apksigner" sign --ks "$key" --ks-pass "$ks_pass" \
+    --ks-key-alias "$alias" --out "$apk" "$VELES_APK_DIR/$stem-$variant-unsigned.apk"
 "$VELES_BUILD_TOOLS/apksigner" verify "$apk"
 
 devices=$(adb "${serial[@]}" devices | awk 'NR > 1 && $2 == "device"' | wc -l)

@@ -43,7 +43,7 @@ case "$1" in
     id=$(sed -n 's/.*"version":"\([^"]*\)".*"revision":"\([^"]*\)".*/\1-\2/p' "$3/BUNDLE-INFO.json")
     root=$VELES_HOME/install
     mkdir -p "$root/releases"
-    [ -e "$root/releases/$id" ] || cp -a "$3" "$root/releases/$id"
+    [ -e "$root/releases/$id" ] || { cp -a "$3" "$root/releases/$id" && chmod -R u+w "$root/releases/$id"; }
     ln -sfn "$root/releases/$id" "$root/current.tmp" && mv -Tf "$root/current.tmp" "$root/current"
     echo '{"ok":true}' ;;
   --version) here=$(dirname "$0"); sed -n 's/.*"version":"\([^"]*\)".*/veles \1/p' "$here/../BUNDLE-INFO.json" ;;
@@ -53,8 +53,17 @@ esac
 SH
     chmod 755 "$tree/bin/veles"
     printf '{"name":"veles","version":"%s","revision":"%s","architecture":"%s"}\n' "$v" "$r" "$cpu" >"$tree/BUNDLE-INFO.json"
+    # The real bundle carries a Nix closure whose directories are
+    # read-only (0555): a plain `rm -rf` of the unpacked staging copy
+    # fails for every user but root, which the root-run distro smoke
+    # never saw. The installed copy is made writable (as `veles install
+    # bundle` does), so only the staging cleanup meets this.
+    mkdir -p "$tree/nix/store/aaaa-fixture-lib/lib"
+    printf 'so\n' >"$tree/nix/store/aaaa-fixture-lib/lib/libfixture.so"
+    chmod -R a-w "$tree/nix"
     local name=veles-$v-$r-linux-$cpu.tar.zst
     tar --zstd -cf "$dir/$name" -C "$tree" .
+    chmod -R u+w "$tree/nix"
     printf 'x' >"$dir/veles-plugin-echo-$v-linux-$cpu.tar.zst"
     (cd "$dir" && sha256sum "$name" "veles-plugin-echo-$v-linux-$cpu.tar.zst" >SHA256SUMS)
     printf '{"fixture":"bundle"}\n' >"$dir/SHA256SUMS.sigstore.json"

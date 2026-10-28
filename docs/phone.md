@@ -217,8 +217,10 @@ userland answers, the agent's shell commands run in Alpine instead of
 in Android's shell.
 
 - **Two APKs, one key.** Both come from this flake and are signed with
-  the same sideload key (`nix run .#android-install`,
-  `nix run .#android-install-userland`). The userland serves only a
+  the same key (`nix run .#android-install`,
+  `nix run .#android-install-userland`): the release key when
+  `~/.config/veles-android/release.p12` exists, this machine's sideload
+  key otherwise (`scripts/android-install.sh` says which). The userland serves only a
   veles signed like itself, and veles uses only a userland signed like
   itself.
 - **Order.** Install the userland FIRST, then veles (or, if veles is

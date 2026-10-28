@@ -46,7 +46,7 @@ gh run download "$run" -R "$repo" -n android-unsigned -D "$work/artifact"
 bash scripts/release/payload-inventory.sh verify "$work/artifact"
 sdk=$(nix build '.#android-sdk' --no-link --print-out-paths)
 jdk=$(nix build 'nixpkgs#jdk17_headless' --no-link --print-out-paths)
-VELES_BUILD_TOOLS=$(find "$sdk/libexec/android-sdk/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)
+VELES_BUILD_TOOLS=$(find -L "$sdk/libexec/android-sdk/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)
 export VELES_BUILD_TOOLS PATH="$jdk/bin:$PATH"
 bash scripts/release/sign-android.sh "$work/artifact"
 mkdir -p "$work/attach"
