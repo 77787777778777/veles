@@ -1,3 +1,10 @@
+veles-agent (0.1.1) unstable; urgency=medium
+
+  * The Android desktop starts again; install.sh cleans up as a normal
+    user; the plain REPL prints each reply once.
+
+ -- veles-agent maintainers <noreply@example.invalid>  Wed, 28 Oct 2026 00:00:00 +0000
+
 veles-agent (0.1.0) unstable; urgency=medium
 
   * Initial packaging.

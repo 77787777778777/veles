@@ -875,5 +875,31 @@ rename ::_real_wm ::wm
 tk scaling $laptop_scaling
 file delete -force $scratch
 
+puts "── the APK carries every package the desktop requires"
+# The APK's assets are AndroWish's Tcl and Tk libraries plus tcllib's
+# json (flake.nix, the android payload). Anything else a boot-time file
+# `package require`s ends the desktop with "can't find package" before a
+# window maps: install.tcl's `package require uuid` did that to v0.1.0
+# on every phone, and no suite saw it, because they run with the
+# laptop's whole tcllib. An optional package is required inside a catch,
+# which this does not match.
+set _shipped {Tcl Tk http msgcat json}
+set _missing {}
+foreach f [concat [list [file join $_dir .. main.tcl]] [glob [file join $_dir *.tcl]]] {
+    if {[string match *test.tcl $f]} { continue }
+    set fh [open $f r]
+    set n 0
+    foreach line [split [read $fh] \n] {
+        incr n
+        if {[regexp {^\s*\[?package require (?:-exact )?([A-Za-z0-9_:]+)} $line -> pkg]
+            && $pkg ni $_shipped} {
+            lappend _missing "[file tail $f]:$n $pkg"
+        }
+    }
+    close $fh
+}
+ok "every package a boot-time file requires is one the APK ships" {[llength $_missing] == 0}
+if {[llength $_missing]} { puts "      not in the APK: $_missing" }
+
 puts "\nandroidtest: $passed passed, $failed failed"
 exit [expr {$failed > 0 ? 1 : 0}]

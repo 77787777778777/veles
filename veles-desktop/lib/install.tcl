@@ -1,13 +1,19 @@
 # R11 component installer UI. Tk owns choices and display; the gateway
 # owns discovery, manifest reads, config writes and artifact recovery.
 # All installer requests are asynchronous. No nested event-loop wait.
-namespace eval ::vinstall {}
-package require uuid
+namespace eval ::vinstall {
+    variable request_seq 0
+}
 
 proc ::vinstall::signed_request_id {} {
     # A request-scoped cancellation handle, not an authority or a path.
     # Each retry gets a fresh id even when all release fields are unchanged.
-    return [::uuid::uuid generate]
+    # Unique per desktop process is all it needs (the gateway takes any
+    # 1-128 visible ASCII characters). It used tcllib's uuid, which the
+    # Android build does not carry: the desktop died at boot on every
+    # phone in v0.1.0 (androidtest.tcl checks the requires now).
+    variable request_seq
+    return [format tk-%d-%d-%d [pid] [clock microseconds] [incr request_seq]]
 }
 
 proc ::vinstall::reset {} {
@@ -853,9 +859,9 @@ proc ::vinstall::choose_signed {} {
         incr row
     }
     if {![info exists ::vinstall::signed_release]} {
-        set ::vinstall::signed_release https://github.com/77787777778777/veles/releases/download/v0.1.0/
+        set ::vinstall::signed_release https://github.com/77787777778777/veles/releases/download/v0.1.1/
         set ::vinstall::signed_repository 77787777778777/veles
-        set ::vinstall::signed_tag v0.1.0
+        set ::vinstall::signed_tag v0.1.1
         set ::vinstall::signed_commit {}
         set ::vinstall::signed_workflow_sha {}
     }

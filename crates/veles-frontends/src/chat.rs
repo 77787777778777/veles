@@ -109,6 +109,13 @@ fn stamp() -> String {
     chrono::Local::now().format("%H:%M:%S").to_string()
 }
 
+/// Whether this turn's reply text already reached the terminal as it
+/// streamed. The end of the turn printed the whole reply again (rendered
+/// as markdown), so every answer appeared twice; now the rendered copy is
+/// printed only when nothing streamed (a provider that answers in one
+/// piece). One turn runs at a time, so one flag serves.
+static STREAMED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
 fn print_event(ev: &StreamEvent, show_reasoning: bool) {
     match ev {
         StreamEvent::Route {
@@ -116,6 +123,9 @@ fn print_event(ev: &StreamEvent, show_reasoning: bool) {
         } => eprintln!("[{} route: {provider}/{model}]", stamp()),
         StreamEvent::Delta(t) => {
             use std::io::Write;
+            if !t.is_empty() {
+                STREAMED.store(true, std::sync::atomic::Ordering::SeqCst);
+            }
             print!("{t}");
             let _ = std::io::stdout().flush();
         }
@@ -677,6 +687,7 @@ fn run_prompt(
 ) {
     turn_active.store(true, Ordering::SeqCst);
     cancel.reset();
+    STREAMED.store(false, Ordering::SeqCst);
     // No last_prompt bookkeeping here: run_turn remembers
     // what was sent, for every surface alike.
     let handle = run_turn_on_thread(agent.clone(), history.clone(), text, cancel.clone());
@@ -685,9 +696,11 @@ fn run_prompt(
     match pump_turn(handle) {
         Ok(TurnOutcome::Done(tr)) => {
             if !tr.reply.is_empty() {
-                println!();
-                let skin = termimad::MadSkin::default_dark();
-                skin.print_text(&tr.reply);
+                if !STREAMED.load(Ordering::SeqCst) {
+                    println!();
+                    let skin = termimad::MadSkin::default_dark();
+                    skin.print_text(&tr.reply);
+                }
             } else if let Some(n) = tr.empty_reply_notice() {
                 eprintln!("\n[veles] {n}");
             }
@@ -970,13 +983,16 @@ fn run_prompt_once(
     text: String,
 ) -> Result<()> {
     let cancel = CancelToken::new();
+    STREAMED.store(false, std::sync::atomic::Ordering::SeqCst);
     let handle = run_turn_on_thread(agent.clone(), history.clone(), text, cancel);
     match pump_turn(handle) {
         Ok(TurnOutcome::Done(tr)) => {
             if !tr.reply.is_empty() {
-                println!();
-                let skin = termimad::MadSkin::default_dark();
-                skin.print_text(&tr.reply);
+                if !STREAMED.load(std::sync::atomic::Ordering::SeqCst) {
+                    println!();
+                    let skin = termimad::MadSkin::default_dark();
+                    skin.print_text(&tr.reply);
+                }
             } else if let Some(n) = tr.empty_reply_notice() {
                 eprintln!("\n[veles] {n}");
             }

@@ -9,7 +9,7 @@
 # Output, in result-images/ (gitignored — images never enter git):
 #   veles-agent-<tag>.tar.gz  (+ .sha256, + .key)   packages.ociImage
 #   veles-signer-<tag>.tar.gz (+ .sha256)           packages.ociSignerImage
-# <tag> is 0.1.0-<commit>, so the VPS can say which commit it runs.
+# <tag> is <version>-<commit>, so the VPS can say which commit it runs.
 # `.key` is the module build key of the gateway in the image: what every
 # module on the VPS must carry before push-image.sh tags it :current.
 #

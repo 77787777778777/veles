@@ -727,6 +727,16 @@ mod tests {
             // refused by the key.
             "modules",
             "process-plugins",
+            // The installer's releases (<data>/install, `current` and
+            // releases/<id>), its staging parent, and its record of both
+            // (install.toml in the config root): installed code, which
+            // install.sh / install.ps1 put back, not brain.
+            "install",
+            "install-sources",
+            "install.toml",
+            // The REPL's line-editor history (chat.rs, history/repl.txt):
+            // per machine, like a shell's history, not brain.
+            "history",
             "user-envs", // per-user env scratch
             // One unix socket per running veles process (runsock.rs,
             // session mail): meaningless once the process is gone.
@@ -788,6 +798,10 @@ mod tests {
                 // Timestamped litter and pid/log tails are excluded by
                 // policy, not by enumeration.
                 if name.starts_with("config.toml.bak")
+                    // The installer's rollback copy of install.toml
+                    // (`veles install bundle` keeps the previous record
+                    // beside the new one): litter of the same kind.
+                    || name.starts_with("install.toml.bak")
                     || name.starts_with("config.toml.before")
                     || name.starts_with(".env.bak")
                     || name.starts_with("memory.d.pre-")
