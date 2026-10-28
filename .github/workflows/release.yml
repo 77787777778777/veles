@@ -218,7 +218,12 @@ jobs:
           & .\scripts\install\windows.ps1 -SkipDeps -Prefix C:\velesbuild -Revision $sha.Substring(0, 7) `
             -PortableZip "$env:RUNNER_TEMP\portable.zip"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $root = (& tar.exe -t -f "$env:RUNNER_TEMP\portable.zip" | Select-Object -First 1).Split('/')[0]
+          # The whole listing, not `| Select-Object -First 1`: that returns
+          # at the first line while tar.exe still holds the zip open, and
+          # Move-Item then fails with "being used by another process".
+          $entries = @(& tar.exe -t -f "$env:RUNNER_TEMP\portable.zip")
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $root = $entries[0].Split('/')[0]
           Move-Item "$env:RUNNER_TEMP\portable.zip" "$env:RUNNER_TEMP\publish\$root.zip"
           Get-ChildItem "$env:RUNNER_TEMP\publish"
       - name: Show the build log's probe and error lines
