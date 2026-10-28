@@ -1,0 +1,11 @@
+[package]
+name = "veles-plugin-abi-sdk"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Write a veles native (.so) plugin in safe Rust: the ABI 4 contract (veles-plugin-abi) wrapped so that registering, platforms, timers, sockets and async tools are closures, and a panic never crosses the boundary."
+
+# The SDK links the ABI crate and nothing else, so a plugin built on it
+# stays out-of-tree: no engine code, no shared dependency graph.
+[dependencies]
+veles-plugin-abi = { path = "../veles-plugin-abi" }

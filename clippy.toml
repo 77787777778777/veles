@@ -1,0 +1,24 @@
+# Clippy configuration for the veles workspace.
+#
+# disallowed-methods: fail `cargo clippy -- -D warnings` on a bare
+# `tokio::spawn` / `tokio::task::spawn_blocking` in a core crate
+# (veles-core, veles-frontends). Those MUST go through
+# `veles_core::rt::{spawn, spawn_blocking}` (PLAN-plugins-installer.md M3
+# / R2) so work started by a module's code hops onto CORE's runtime and
+# outlives the module's instance runtime at reload. A bare spawn on a
+# module thread would attach to the module's runtime and die with it —
+# the exact failure the rt wrappers exist to prevent.
+#
+# Scope: the lint fires wherever the path resolves, so it also fires in
+# the adapter crates (veles-irc, veles-telegram) and tests. Those have
+# legitimate direct spawns (an adapter's own connection task on ITS
+# runtime; a test driving a scratch runtime), so they carry targeted
+# `#[allow(clippy::disallowed_methods)]` with a reason — the allow is the
+# documented exception, the rule is the default. rt.rs itself (the
+# wrapper) and bg.rs (the detached-work runtime, deliberately its own
+# landing) allow it module-wide.
+disallowed-methods = [
+    { path = "tokio::spawn", reason = "use veles_core::rt::spawn so module-thread work hops onto core's runtime (M3/R2); a bare spawn dies with the module at reload" },
+    { path = "tokio::task::spawn", reason = "use veles_core::rt::spawn (M3/R2)" },
+    { path = "tokio::task::spawn_blocking", reason = "use veles_core::rt::spawn_blocking so module-thread blocking work lands on core's pool (M3/R2)" },
+]

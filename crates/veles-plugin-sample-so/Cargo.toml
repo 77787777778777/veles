@@ -1,0 +1,14 @@
+[package]
+name = "veles-plugin-sample-so"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The ABI 4 example plugin: every native-plugin surface on the safe SDK (veles-plugin-abi-sdk). Built by the gate, driven by the integration test and the conformance suite."
+
+[lib]
+crate-type = ["cdylib"]
+
+# NOTE: veles-core is deliberately NOT here. An out-of-tree plugin links
+# the ABI crate only — that is the whole point of the C boundary.
+[dependencies]
+veles-plugin-abi-sdk = { path = "../veles-plugin-abi-sdk" }

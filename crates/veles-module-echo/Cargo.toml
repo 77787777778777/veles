@@ -1,0 +1,26 @@
+[package]
+name = "veles-module-echo"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "R1 spike module (PLAN-plugins-installer.md R1): a dylib on libveles_runtime.so declared with veles_core::export!, with one probe per spike check, so the work each check tests runs in module code."
+
+[lib]
+# A module is a Rust dylib, NOT a cdylib: it links the Rust
+# `libveles_runtime.so` and speaks Rust types through it. The one export
+# (`veles_module`, via `veles_core::module::export!`) is a plain Rust
+# static the host reads after dlopen.
+crate-type = ["dylib"]
+
+[dependencies]
+# The runtime and nothing else. Every crate a module needs that the
+# runtime already carries (tokio, tracing, serde…) comes through its
+# re-exports: a module's own dependency on one of them can change the
+# features cargo unifies onto the runtime, and then this module and the
+# gateway no longer agree on the runtime they link (module::check
+# refuses it).
+veles-runtime = { path = "../veles-runtime" }
+# The conformance tool (R8): a `Tool` impl needs the trait's async
+# sugar and its JSON values; plain rlibs under the runtime dylib.
+async-trait = "0.1"
+serde_json = "1"

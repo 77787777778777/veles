@@ -1,0 +1,30 @@
+[package]
+name = "veles-install"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Typed component plans and versioned, recoverable veles installation"
+
+[features]
+# The integration-test loopback transport is absent from release builds.
+test-support = ["veles-core/test-support"]
+
+[dependencies]
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+toml = "0.8"
+toml_edit = "0.22"
+url = "2"
+tokio = { version = "1", features = ["rt", "time", "process"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "stream"] }
+tar = "0.4"
+zstd = "0.13"
+libc = "0.2"
+veles-core = { path = "../veles-core" }
+veles-types = { path = "../veles-types" }
+
+[dev-dependencies]
+veles-core = { path = "../veles-core", features = ["test-support"] }
+tempfile = "3"

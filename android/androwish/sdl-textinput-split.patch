@@ -1,0 +1,70 @@
+A paste longer than 31 bytes arrives whole.
+
+Text from Android's soft keyboard — typing, the keyboard's own paste,
+text sent in from another app such as Termius — reaches Tk through
+SDLInputConnection.commitText → nativeCommitText →
+SDL_SendKeyboardText, which copied the string into ONE
+SDL_TEXTINPUT event of SDL_TEXTINPUTEVENT_TEXT_SIZE (32) bytes and
+dropped the rest: "only the first few words" of a paste (the phone,
+2026-10-19; klipper on the laptop caught thirteen fragments of one
+paste). Tk's own <<Paste>> path (tkSDLSelect.c, clipboard get) was never
+capped, which is why the long-press menu's Paste worked and the
+keyboard's did not.
+
+This is SDL 2.0.6; upstream grew the loop in 2.0.22. Two things beyond
+upstream's shape, both for sdl2tk's ProcessTextInput, which reads a
+ONE-byte event as a key press (keycode via FixKeyCode: Enter, Tab) and
+a longer one as text (keycode -1, the characters inserted as typed):
+
+  * no chunk may leave a lone trailing byte behind — a pasted text
+    ending in "\n" would otherwise end in an Enter key press, and in
+    the composer Enter sends;
+  * the "unprintable first character" refusal applies to a one-byte
+    commit only (that is a key), not to a paste that begins with a tab
+    or a newline, which is text.
+
+--- a/jni/SDL2/src/events/SDL_keyboard.c
++++ b/jni/SDL2/src/events/SDL_keyboard.c
+@@ -801,9 +801,10 @@
+ {
+     SDL_Keyboard *keyboard = &SDL_keyboard;
+     int posted;
++    size_t pos = 0, advance, length = SDL_strlen(text);
+ 
+-    /* Don't post text events for unprintable characters */
+-    if ((unsigned char)*text < ' ' || *text == 127) {
++    /* A lone unprintable character is a key, not text */
++    if (length <= 1 && ((unsigned char)*text < ' ' || *text == 127)) {
+         return 0;
+     }
+ 
+@@ -813,8 +814,27 @@
+         SDL_Event event;
+         event.text.type = SDL_TEXTINPUT;
+         event.text.windowID = keyboard->focus ? keyboard->focus->id : 0;
+-        SDL_utf8strlcpy(event.text.text, text, SDL_arraysize(event.text.text));
+-        posted = (SDL_PushEvent(&event) > 0);
++        while (pos < length) {
++            advance = SDL_utf8strlcpy(event.text.text, text + pos, SDL_arraysize(event.text.text));
++            if (!advance) {
++                break;
++            }
++            /* Never leave a single byte for the last event: sdl2tk reads
++               a one-byte event as a key press (a trailing "\n" would
++               become Enter). Back the chunk off by one character. */
++            if (length - pos - advance == 1 && advance > 1) {
++                size_t a = advance;
++                do {
++                    --a;
++                } while (a > 0 && ((unsigned char)text[pos + a] & 0xC0) == 0x80);
++                if (a > 0) {
++                    advance = a;
++                    event.text.text[advance] = '\0';
++                }
++            }
++            pos += advance;
++            posted |= (SDL_PushEvent(&event) > 0);
++        }
+     }
+     return (posted);
+ }

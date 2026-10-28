@@ -1,0 +1,416 @@
+name: Release
+
+# A tag push v*.*.* builds every lane on GitHub-hosted runners and publishes
+# a DRAFT release; the owner reviews it, attaches the signed Android APKs
+# (scripts/release/attach-android.sh) and flips it public. Nothing here
+# holds a private key: files are signed keyless (Sigstore, this workflow's
+# GitHub OIDC identity), Android is signed locally by the owner.
+#
+# workflow_dispatch builds the same lanes from any branch without
+# publishing, to exercise the workflow before a tag exists:
+#   gh workflow run release.yml --ref <branch> [-f lanes='linux windows']
+#
+# Published assets (all covered by SHA256SUMS, which is cosign-signed):
+#   veles-<ver>-<rev>-linux-x86_64.tar.zst / .AppImage     (required)
+#   veles-<ver>-<rev>-windows-x86_64.zip                   (required)
+#   veles-<ver>-<rev>-linux-aarch64.tar.zst / .AppImage    (best effort)
+#   veles-plugin-{echo,atproto}-<ver>-linux-<cpu>.tar.zst
+#   release-manifest.json (+ per-file .sigstore.json) for `veles install download`
+# Third-party actions are commit-pinned; tag comments are convenience.
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-*'
+  workflow_dispatch:
+    inputs:
+      lanes:
+        description: Lanes to build (space-separated subset of linux arm64 windows android)
+        required: false
+        default: linux arm64 windows android
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    outputs:
+      sha: ${{ steps.source.outputs.sha }}
+      tag: ${{ steps.source.outputs.tag }}
+      publish: ${{ steps.source.outputs.publish }}
+      lanes: ${{ steps.source.outputs.lanes }}
+    steps:
+      - name: Resolve the source commit (and tag, on a tag push)
+        id: source
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LANES: ${{ inputs.lanes }}
+        run: |
+          set -euo pipefail
+          sha=$GITHUB_SHA tag='' publish=false
+          if [[ $GITHUB_EVENT_NAME == push ]]; then
+            tag=$GITHUB_REF_NAME
+            [[ $tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][A-Za-z0-9.-]+)?$ ]]
+            # An annotated tag's push SHA is the tag object; peel to the commit.
+            ref=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag")
+            sha=$(jq -r '.object.sha' <<<"$ref"); kind=$(jq -r '.object.type' <<<"$ref")
+            while [[ $kind == tag ]]; do
+              object=$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$sha")
+              sha=$(jq -r '.object.sha' <<<"$object"); kind=$(jq -r '.object.type' <<<"$object")
+            done
+            [[ $kind == commit && $sha =~ ^[0-9a-f]{40}$ ]]
+            publish=true
+            LANES='linux arm64 windows android'
+          fi
+          lanes=" ${LANES:-linux arm64 windows android} "
+          { echo "sha=$sha"; echo "tag=$tag"; echo "publish=$publish"; echo "lanes=$lanes"; } >> "$GITHUB_OUTPUT"
+          echo "source=$sha tag=${tag:-none} publish=$publish lanes=$lanes"
+
+  # The required Linux lane: archive, AppImage and static plugins, a
+  # byte-for-byte rebuild of the archive, and the real artifacts executed
+  # on minimal Debian/Fedora/Arch guests (scripts/release/distro-smoke.sh).
+  linux-x86_64:
+    needs: source
+    if: contains(needs.source.outputs.lanes, ' linux ')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ needs.source.outputs.sha }}
+          persist-credentials: false
+      - uses: ./.github/actions/free-disk
+      - uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = false
+      - name: Check the tag against the package version
+        if: needs.source.outputs.tag != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(nix eval --raw .#packages.x86_64-linux.default.version)
+          tag='${{ needs.source.outputs.tag }}'
+          [[ $tag == "v$version" || $tag == "v$version"-* ]] || { echo "tag $tag does not match package version $version" >&2; exit 1; }
+      - name: Build the portable runtime, static plugins and the smoke sandbox image
+        shell: bash
+        env:
+          VELES_RELEASE_LANES: linux plugins images
+          VELES_RELEASE_EXPECTED_SHA: ${{ needs.source.outputs.sha }}
+          VELES_RELEASE_REPOSITORY: ${{ github.repository }}
+        run: bash scripts/release/build-artifacts.sh "$RUNNER_TEMP/artifacts" .
+      - name: Rebuild the archive and compare bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          first=$(find "$RUNNER_TEMP/artifacts/payload" -name 'veles-*-linux-*.tar.zst' ! -name 'veles-plugin-*' -type f)
+          out=$(nix build '.#bundleArchive' --no-link --rebuild --print-out-paths)
+          cmp "$first" "$(find "$out" -name '*.tar.zst' -type f)"
+      - name: Run the actual artifacts on minimal distributions
+        shell: bash
+        env:
+          VELES_SMOKE_RESULTS: ${{ github.workspace }}/distro-evidence
+          TMPDIR: /dev/shm
+          VELES_SMOKE_SOURCE_SHA: ${{ needs.source.outputs.sha }}
+        run: |
+          set -euo pipefail
+          payload=$RUNNER_TEMP/artifacts/payload
+          sandbox=$(find "$payload" -name 'veles-sandbox-*-linux-amd64.oci.tar' -type f)
+          export VELES_SMOKE_SANDBOX_ARCHIVE=$sandbox
+          archive=$(find "$payload" -name 'veles-*-linux-*.tar.zst' ! -name 'veles-plugin-*' -type f)
+          revision=$(tar --zstd -xOf "$archive" ./BUNDLE-INFO.json | jq -r .revision)
+          test "$revision" = "$(cut -c1-7 <<<'${{ needs.source.outputs.sha }}')"
+          VELES_SMOKE_EXPECTED_REVISION="$revision" \
+          VELES_SMOKE_APPIMAGE=$(find "$payload" -name '*.AppImage' -type f) \
+            bash scripts/release/distro-smoke.sh "$archive"
+      - name: Retain distro evidence
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: distro-evidence-x86_64
+          path: distro-evidence
+          if-no-files-found: warn
+      - name: Collect the publishable files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/publish"
+          cd "$RUNNER_TEMP/artifacts/payload"
+          cp veles-*.tar.zst veles-*.AppImage "$RUNNER_TEMP/publish/"
+          ls -l "$RUNNER_TEMP/publish"
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: release-linux-x86_64
+          path: ${{ runner.temp }}/publish
+          if-no-files-found: error
+          retention-days: 7
+
+  # Best effort: never blocks or fails the release. The publish job waits a
+  # bounded time for it and attaches its files only if it succeeded.
+  linux-aarch64:
+    needs: source
+    if: contains(needs.source.outputs.lanes, ' arm64 ')
+    continue-on-error: true
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ needs.source.outputs.sha }}
+          persist-credentials: false
+      - uses: ./.github/actions/free-disk
+      - uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = false
+      - name: Build the portable runtime and static plugins
+        shell: bash
+        env:
+          VELES_RELEASE_LANES: linux plugins
+          VELES_RELEASE_EXPECTED_SHA: ${{ needs.source.outputs.sha }}
+        run: |
+          set -euo pipefail
+          bash scripts/release/build-artifacts.sh "$RUNNER_TEMP/artifacts" .
+          mkdir "$RUNNER_TEMP/publish"
+          cd "$RUNNER_TEMP/artifacts/payload"
+          cp veles-*.tar.zst veles-*.AppImage "$RUNNER_TEMP/publish/"
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: release-linux-aarch64
+          path: ${{ runner.temp }}/publish
+          if-no-files-found: error
+          retention-days: 7
+
+  # The portable Windows zip (scripts/install/windows.ps1 -PortableZip):
+  # MSVC build, Tcl/Tk + tcllib + sqlite + the C++ runtime beside
+  # veles.exe, proven by running the unpacked zip with no toolchain on PATH.
+  windows:
+    needs: source
+    if: contains(needs.source.outputs.lanes, ' windows ')
+    runs-on: windows-2022
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ needs.source.outputs.sha }}
+          persist-credentials: false
+      - name: Cache the Tcl/Tk and sqlite builds
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: |
+            C:\velesbuild\tcl
+            C:\velesbuild\sqlite
+          key: windows-tcl-8.6.16-tcllib-2.0-sqlite-v1
+      - name: Build and prove the portable zip
+        shell: pwsh
+        run: |
+          $sha = '${{ needs.source.outputs.sha }}'
+          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\publish" | Out-Null
+          & .\scripts\install\windows.ps1 -SkipDeps -Prefix C:\velesbuild -Revision $sha.Substring(0, 7) `
+            -PortableZip "$env:RUNNER_TEMP\portable.zip"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $root = (& tar.exe -t -f "$env:RUNNER_TEMP\portable.zip" | Select-Object -First 1).Split('/')[0]
+          Move-Item "$env:RUNNER_TEMP\portable.zip" "$env:RUNNER_TEMP\publish\$root.zip"
+          Get-ChildItem "$env:RUNNER_TEMP\publish"
+      - name: Show the build log's probe and error lines
+        if: failure()
+        shell: pwsh
+        run: |
+          $log = Join-Path $env:TEMP 'veles-build.log'
+          if (Test-Path $log) { Select-String -Path $log -Pattern 'clib|^error|^warning: ' | Select-Object -First 80 | ForEach-Object { $_.Line } }
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: release-windows-x86_64
+          path: ${{ runner.temp }}/publish
+          if-no-files-found: error
+          retention-days: 7
+
+  # Unsigned gateway + userland APKs and the gateway AAB. They are NOT
+  # release assets: the owner signs them locally with the existing key
+  # and attaches them (scripts/release/attach-android.sh <tag>).
+  android:
+    needs: source
+    if: contains(needs.source.outputs.lanes, ' android ')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ needs.source.outputs.sha }}
+          persist-credentials: false
+      - uses: ./.github/actions/free-disk
+      - uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = false
+      - name: Build the matched gateway and userland APK intermediates
+        shell: bash
+        env:
+          VELES_RELEASE_LANES: android
+          VELES_RELEASE_EXPECTED_SHA: ${{ needs.source.outputs.sha }}
+        run: bash scripts/release/build-artifacts.sh "$RUNNER_TEMP/artifacts" .
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: android-unsigned
+          path: ${{ runner.temp }}/artifacts
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    needs: [source, linux-x86_64, windows, android]
+    if: needs.source.outputs.publish == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ needs.source.outputs.sha }}
+          persist-credentials: false
+      - uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
+        with:
+          extra_nix_config: experimental-features = nix-command flakes
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6
+        with:
+          pattern: release-*
+          path: ${{ runner.temp }}/dist
+          merge-multiple: true
+      - name: Wait (bounded) for the best-effort arm64 lane
+        id: arm64
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # A queued arm64 runner must never hold the release: wait at most
+          # 90 minutes after the required lanes finished, then go without it.
+          for _ in $(seq 1 90); do
+            state=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs" \
+              --jq '[.jobs[] | select(.name == "linux-aarch64")][0] | "\(.status) \(.conclusion)"')
+            case $state in
+              "completed success") echo "ok=true" >> "$GITHUB_OUTPUT"; exit 0 ;;
+              completed*|null*|"") echo "arm64 lane: $state; publishing without it"; exit 0 ;;
+            esac
+            sleep 60
+          done
+          echo "arm64 lane still '$state' after 90 minutes; publishing without it"
+      - if: steps.arm64.outputs.ok == 'true'
+        continue-on-error: true
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6
+        with:
+          name: release-linux-aarch64
+          path: ${{ runner.temp }}/dist
+      - name: Manifest, SHA256SUMS and keyless signatures
+        shell: bash
+        env:
+          TAG: ${{ needs.source.outputs.tag }}
+          SHA: ${{ needs.source.outputs.sha }}
+        run: |
+          set -euo pipefail
+          cosign=$(nix build 'nixpkgs#cosign' --no-link --print-out-paths)/bin/cosign
+          dist=$RUNNER_TEMP/dist
+          cd "$dist"
+          version=${TAG#v}; version=${version%%-*}
+          # Licence texts are release assets too (and inside every archive).
+          for f in LICENSE THIRD_PARTY_LICENSES.md; do
+            if [[ -f $GITHUB_WORKSPACE/$f ]]; then cp "$GITHUB_WORKSPACE/$f" .; else echo "::warning::$f is missing from the source tree"; fi
+          done
+          ls -l
+          # Exactly one required archive per platform, for this version.
+          for pat in "veles-$version-*-linux-x86_64.tar.zst" "veles-$version-*-windows-x86_64.zip"; do
+            n=$(find . -maxdepth 1 -name "$pat" | wc -l)
+            [[ $n == 1 ]] || { echo "expected one $pat, found $n" >&2; exit 1; }
+          done
+          systems=$(find . -maxdepth 1 -name "veles-$version-*-linux-*.tar.zst" -printf '%f\n' | sed -E 's/.*-linux-([a-z0-9_]+)\.tar\.zst/\1-linux/' | jq -Rn '[inputs]')
+          # release-manifest.json keeps `veles install download` (explicit
+          # identities) working; the installers only need SHA256SUMS.
+          jq -n --arg repo "$GITHUB_REPOSITORY" --arg tag "$TAG" --arg commit "$SHA" \
+            --arg version "$version" --argjson systems "$systems" \
+            --argjson artifacts "$(for f in veles-"$version"-*-linux-*.tar.zst; do
+                jq -n --arg name "$f" --arg sha "$(sha256sum "$f" | cut -d' ' -f1)" --argjson size "$(stat -c %s "$f")" \
+                  '{name:$name, sha256:$sha, size:$size, kind:"archive"}'; done | jq -s .)" \
+            '{schemaVersion:1, repository:$repo, tag:$tag, commit:$commit, version:$version,
+              systems:$systems, source:("git+https://github.com/"+$repo+"?rev="+$commit),
+              signing:{files:"sigstore-keyless-cosign", oci:"cosign-by-digest", android:"explicit-upload-key"},
+              artifacts:$artifacts}' > release-manifest.json
+          identity="https://github.com/$GITHUB_REPOSITORY/.github/workflows/release.yml@refs/tags/$TAG"
+          issuer=https://token.actions.githubusercontent.com
+          sign() {
+            "$cosign" sign-blob --yes --bundle "$1.sigstore.json" "$1"
+            "$cosign" verify-blob --bundle "$1.sigstore.json" --certificate-identity "$identity" \
+              --certificate-oidc-issuer "$issuer" "$1"
+          }
+          sign release-manifest.json
+          for f in veles-"$version"-*-linux-*.tar.zst; do sign "$f"; done
+          mapfile -t files < <(find . -maxdepth 1 -type f ! -name 'SHA256SUMS*' -printf '%f\n' | LC_ALL=C sort)
+          sha256sum "${files[@]}" > "$RUNNER_TEMP/SHA256SUMS"
+          mv "$RUNNER_TEMP/SHA256SUMS" SHA256SUMS
+          sign SHA256SUMS
+          sha256sum -c SHA256SUMS
+          cat SHA256SUMS
+      - name: Create the DRAFT release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.source.outputs.tag }}
+          SHA: ${{ needs.source.outputs.sha }}
+        run: |
+          set -euo pipefail
+          repo=$GITHUB_REPOSITORY
+          # The hand-written notes for this version (docs/releases/vX.Y.Z.md,
+          # shared by its release candidates) lead; install and verify follow.
+          : > "$RUNNER_TEMP/notes.md"
+          gh api -H 'Accept: application/vnd.github.raw' \
+            "repos/$repo/contents/docs/releases/${TAG%%-*}.md?ref=$SHA" > "$RUNNER_TEMP/notes.md" 2>/dev/null \
+            || { echo "no docs/releases/${TAG%%-*}.md; install and verify notes only"; : > "$RUNNER_TEMP/notes.md"; }
+          [[ -s $RUNNER_TEMP/notes.md ]] && echo >> "$RUNNER_TEMP/notes.md"
+          cat > "$RUNNER_TEMP/install.md" <<EOF
+          ## Install
+
+          **Linux** (x86_64; aarch64 when attached), no root or compiler needed:
+
+              curl -fsSL https://raw.githubusercontent.com/$repo/$TAG/scripts/install/install.sh | sh -s -- --version $TAG
+
+          **Windows 10/11** (x64), in PowerShell:
+
+              \$env:VELES_VERSION='$TAG'; irm https://raw.githubusercontent.com/$repo/$TAG/scripts/install/install.ps1 | iex
+
+          Then \`veles setup\` (terminal) or \`veles gui\` (desktop). The AppImage and the
+          Windows zip also run without installing.
+
+          ## Verify
+
+          Every file is listed in \`SHA256SUMS\` (the installers always check it). Its
+          keyless signature:
+
+              cosign verify-blob --bundle SHA256SUMS.sigstore.json \\
+                --certificate-identity https://github.com/$repo/.github/workflows/release.yml@refs/tags/$TAG \\
+                --certificate-oidc-issuer https://token.actions.githubusercontent.com SHA256SUMS
+              sha256sum --ignore-missing -c SHA256SUMS
+
+          Android APKs (gateway + userland) are signed by the maintainer and listed in
+          \`SHA256SUMS-android\`.
+
+          Source: $SHA
+          EOF
+          sed 's/^          //' "$RUNNER_TEMP/install.md" >> "$RUNNER_TEMP/notes.md"
+          if gh release view "$TAG" -R "$repo" --json isDraft --jq .isDraft 2>/dev/null | grep -qx true; then
+            gh release upload "$TAG" -R "$repo" --clobber "$RUNNER_TEMP"/dist/*
+          else
+            gh release create "$TAG" -R "$repo" --draft --verify-tag --target "$SHA" \
+              --title "veles $TAG" --notes-file "$RUNNER_TEMP/notes.md" "$RUNNER_TEMP"/dist/*
+          fi
+          echo "DRAFT release $TAG created; attach Android with scripts/release/attach-android.sh $TAG, then publish it."

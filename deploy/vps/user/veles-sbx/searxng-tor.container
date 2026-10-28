@@ -1,0 +1,31 @@
+# deploy/vps/user/veles-sbx/searxng-tor.container
+# (~veles-sbx/.config/containers/systemd/) — the SearXNG other people's
+# searches go to (PLAN-challenge-relay.md D5; the gateway's
+# `[web] others_searxng_url`).
+#
+# It runs as veles-sbx so it leaves the way a sandbox does: veles.nft
+# hands every IPv4 TCP connection it opens to Tor's TransPort. The
+# engines are the ones that answered over Tor (searxng-tor/settings.yml).
+# The image is pinned by digest and pulled by setup.sh (over Tor too).
+[Unit]
+Description=SearXNG over Tor, for other people's searches (veles)
+
+[Container]
+ContainerName=searxng-tor
+Image=docker.io/searxng/searxng@sha256:00ad29bb7d72d896ac3b3ff8b252d9ad9939da3e014828934363c61dba9b7e09
+Pull=never
+Volume=/srv/pool/veles-sbx/searxng-tor:/etc/searxng:Z
+Environment=SEARXNG_BASE_URL=http://10.0.30.1:8889/
+# The gateway's container reaches it on the WireGuard address (it cannot
+# reach this host's loopback); veles.nft lets only the gateway user in.
+# Until wg0 is up the bind fails and Restart= retries it.
+PublishPort=10.0.30.1:8889:8080
+
+[Service]
+Restart=always
+RestartSec=10
+# Its measured working set is ~170 MB (the laptop's).
+MemoryHigh=384M
+
+[Install]
+WantedBy=default.target

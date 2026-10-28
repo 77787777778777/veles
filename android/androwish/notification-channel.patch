@@ -1,0 +1,54 @@
+AndroWish's notifications on a channel.
+
+`borg notification add` built its Notification with no channel, which
+Android 8 (API 26) and later drop without a word: the call returns and
+nothing shows. The app targets API 36. This names a channel, "borg",
+created on first use under the app's own string channel_device.
+
+--- a/src/tk/tcl/wish/AndroWish.java	2026-10-11 20:27:41.846687774 +0200
++++ b/src/tk/tcl/wish/AndroWish.java	2026-10-11 20:27:42.011725976 +0200
+@@ -2135,6 +2135,24 @@
+      * Notifications
+      */
+ 
++    /*
++     * The channel `borg notification` posts on. Android 8 (API 26) and
++     * later DROP a notification that names no channel -- silently: the
++     * call returns, nothing is shown. This app targets API 36, so every
++     * `borg notification add` did nothing until the channel was named.
++     */
++    private static String borgChannel() {
++	String id = "borg";
++	if (android.os.Build.VERSION.SDK_INT >= 26
++	    && mNotificationMgr.getNotificationChannel(id) == null) {
++	    NotificationChannel ch = new NotificationChannel(id,
++		mSingleton.getContext().getString(R.string.channel_device),
++		NotificationManager.IMPORTANCE_DEFAULT);
++	    mNotificationMgr.createNotificationChannel(ch);
++	}
++	return id;
++    }
++
+     public static void notify(int op, int id, String title, String text,
+ 			      String icon, String action, String uristr,
+ 			      String type,
+@@ -2170,7 +2188,8 @@
+  *		break;
+  *	    }
+  */
+-	    nb = new Notification.Builder(mSingleton.getContext());
++	    nb = new Notification.Builder(mSingleton.getContext(),
++					  borgChannel());
+ 	    nb.setSmallIcon(R.drawable.icon);
+ 	    nb.setContentTitle(title);
+ 	    nb.setContentText(text);
+@@ -2209,7 +2228,8 @@
+ 		mNotificationMgr.notify(id, n);
+ 		break;
+ 	    }
+-	    nb = new Notification.Builder(mSingleton.getContext());
++	    nb = new Notification.Builder(mSingleton.getContext(),
++					  borgChannel());
+ 	    nb.setDefaults(0);
+ 	    nb.setLights(Integer.parseInt(action), Integer.parseInt(uristr),
+ 			 Integer.parseInt(type));

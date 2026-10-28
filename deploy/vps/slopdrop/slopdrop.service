@@ -1,0 +1,73 @@
+# deploy/vps/slopdrop/slopdrop.service — /etc/systemd/system/slopdrop.service
+# (slopdrop/slopdrop.sh setup).
+#
+# slopdrop evaluates channel users' Tcl, so it runs as a user of its own
+# that holds nothing of the owner's: not their home, not their SSH key
+# (the state repo has a deploy key of its own), not their address.
+# veles.nft sends every TCP connection it opens through Tor: link
+# previews, `http get`, and a TclCurl handle a channel's code opens
+# itself. The stock commands alone leave from the VPS's address, through
+# slopdrop-stock-proxy.service (Yahoo refuses Tor; stock-proxy.service).
+# Before 2026-10-13 it was the owner's user unit, so anything that
+# escaped the interpreter was the owner, sudo included. USER: "lock
+# slopdrop down as its own user and service … and with resource limits".
+[Unit]
+Description=slopdrop — headless Tcl state interpreter (HTTP bridge for veles)
+Documentation=https://github.com/pillowtrucker/slopdrop
+# Never without its fence.
+Requires=veles-nft.service
+After=veles-nft.service network-online.target wg-quick@wg0.service tor@velessbx.service tor@velesweb.service slopdrop-stock-proxy.service
+Wants=network-online.target slopdrop-stock-proxy.service
+
+[Service]
+Type=simple
+User=slopdrop
+Group=slopdrop
+WorkingDirectory=/srv/pool/slopdrop
+Environment=HOME=/srv/pool/slopdrop
+# --web ONLY. Never --irc --web on one state directory: the web frontend
+# builds its own interpreter, so that is two interpreters committing to
+# one git repo. A second process would be the same, which systemd rules
+# out.
+ExecStart=/srv/pool/slopdrop/bin/slopdrop config.toml --web
+# The bridge binds 10.0.30.1 (wg0). A bind that fails (wg0 not up yet)
+# ends the web task and slopdrop exits 0, so restart on any exit;
+# RestartSec keeps it far under the start limit while wg0 comes up.
+Restart=always
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+# Resource limits, the cgroup's: they hold for every thread. slopdrop's
+# own `memory_limit_mb` is RLIMIT_AS on the process, which never held
+# for its threaded interpreter. It runs at ~70 MB.
+MemoryHigh=512M
+MemoryMax=768M
+MemorySwapMax=0
+CPUQuota=100%
+TasksMax=256
+LimitNOFILE=4096
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/pool/slopdrop
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+ProtectProc=invisible
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+RestrictRealtime=true
+LockPersonality=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallArchitectures=native
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target

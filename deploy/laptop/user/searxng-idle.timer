@@ -1,0 +1,12 @@
+# deploy/laptop/user/searxng-idle.timer — ~/.config/systemd/user/
+# Every 2 min: is the local SearXNG quiet enough to stop? (searxng-idle.service)
+[Unit]
+Description=veles: the local SearXNG idle watch, every 2 min
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=2min
+AccuracySec=30s
+
+[Install]
+WantedBy=timers.target

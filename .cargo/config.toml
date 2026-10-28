@@ -1,0 +1,31 @@
+[env]
+# RUST_MIN_STACK: the test harness needs more than the 2 MiB default.
+#
+# WHAT HAPPENS WITHOUT IT. `cargo test` runs each test body on a spawned
+# thread, and Rust gives a spawned thread 2 MiB unless RUST_MIN_STACK
+# says otherwise. `main()` gets the process limit (8 MiB here), which is
+# why every example binary is fine and the harness is not.
+#
+# Where the stack goes: rust-i18n's macro expansion, not our code. The
+# i18n catalogs are baked in at COMPILE time, and `lookup()` walks the
+# compiled locale set through nested fallback closures. Measured with a
+# probe that spawns a thread at a chosen size and calls the engine:
+#
+#     2 MiB   -> stack overflow (SIGABRT)
+#     4 MiB   -> survives
+#     8 MiB   -> survives
+#
+# and the breaking point MOVES with the number of catalogs: 31 locales
+# survived 2 MiB, the full 46 do not. That is why this appeared in the
+# middle of the l10n round rather than at the start - adding locales
+# added depth, and the failure lands on whichever test touches i18n
+# first, which is why it looked like several unrelated tests were broken
+# (`tasks::tests::kind_command_parses_subcommands`, `bridge::tests::
+# task_cancel_…`, `i18n::tests::available_locales_…` were all just the
+# first caller in their own run).
+#
+# The value is 8 MiB: the same the process gets, so a test sees the same
+# limits the shipped binary does. A test that passes only because its
+# stack is bigger than production is not a test.
+[env.RUST_MIN_STACK]
+value = "8388608"

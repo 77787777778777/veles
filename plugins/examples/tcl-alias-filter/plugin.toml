@@ -1,0 +1,5 @@
+name = "tcl-alias-filter"
+kind = "tcl"
+provides_hooks = ["pre_gateway_dispatch"]
+entry = "plugin.tcl"
+description = "Example: a pre_gateway_dispatch gateway filter. Rewrites `!ping` into a canned prompt so the model answers without the user typing it. Demonstrates the skip/rewrite/allow decision shape."

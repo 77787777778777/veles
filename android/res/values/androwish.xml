@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  AndroWish's Java names one resource of its own, R.drawable.icon (the
+  small icon of `borg notification`). The build generates its R class
+  from this app's resources (aapt2 extra-packages tk.tcl.wish).
+-->
+<resources>
+    <item name="icon" type="drawable">@drawable/ic_notification</item>
+</resources>

@@ -1,0 +1,29 @@
+[package]
+name = "veles-plugin-echo"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "A toy platform as a veles process plugin: what the plugin host's tests drive, and the smallest worked example of the SDK."
+
+[[bin]]
+name = "veles-plugin-echo"
+path = "src/main.rs"
+
+# The binary links the SDK only. veles-core is a DEV-dependency: the
+# integration tests run the real plugin host against the real binary
+# (CARGO_BIN_EXE_veles-plugin-echo), which only this package's tests
+# can name.
+[dependencies]
+veles-plugin-sdk = { path = "../veles-plugin-sdk" }
+serde_json = "1"
+tracing = "0.1"
+
+[dev-dependencies]
+veles-core = { path = "../veles-core", features = ["test-support"] }
+veles-types = { path = "../veles-types" }
+tokio = { version = "1", features = ["full"] }
+serde_json = "1"
+async-trait = "0.1"
+futures = "0.3"
+anyhow = "1"
+tempfile = "3"

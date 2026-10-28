@@ -1,0 +1,38 @@
+[package]
+name = "veles-slopdrop"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The slopdrop bridge as an in-process module (PLAN-plugins-installer.md R5): Tcl in somebody else's interpreter, the public /tcl safety layer and ledger, the trigger forwarder, the state mirror. The module FILE is crates/veles-module-slopdrop."
+
+[dependencies]
+veles-core = { path = "../veles-core" }
+veles-types = { path = "../veles-types" }
+# The shared runtime dylib (M1): the module names veles_core / tokio /
+# tracing / anyhow / reqwest through it. A plain rlib: the module itself
+# is crates/veles-module-slopdrop, which says why it is a crate of its own.
+veles-runtime = { path = "../veles-runtime" }
+
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
+async-trait = "0.1"
+tracing = "0.1"
+anyhow = "1"
+sha2 = "0.10"
+pulldown-cmark = { version = "0.13", default-features = false, features = ["html"] }
+chrono = { version = "0.4", features = ["serde"] }
+# Text art drawn as a PNG for a Bluesky reply (PLAN-slopdrop-art.md P3).
+veles-textart = { path = "../veles-textart" }
+base64 = "0.22"
+# Image macros (PLAN-slopdrop-art.md P6): the features veles-core builds
+# `image` with, so the module uses the runtime dylib's copy.
+image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
+
+[dev-dependencies]
+tempfile = "3"
+toml = "0.8"
+# testenv::scratch_home — per-test XDG homes.
+veles-core = { path = "../veles-core", features = ["test-support"] }

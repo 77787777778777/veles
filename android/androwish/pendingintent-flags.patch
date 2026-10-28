@@ -1,0 +1,69 @@
+AndroWish's PendingIntents name their mutability.
+
+Android 12 (API 31) refuses a PendingIntent that says neither
+FLAG_IMMUTABLE nor FLAG_MUTABLE: the call throws, and the borg command
+behind it does nothing — a notification never posts, an alarm never
+sets, an SMS's sent/delivered callbacks never come. The app targets
+API 36. Immutable wherever the intent is complete as built; mutable
+for NFC and USB, where the system fills in extras. Applied after
+notification-channel.patch.
+
+--- a/src/tk/tcl/wish/AndroWish.java	2026-10-11 20:27:42.011725976 +0200
++++ b/src/tk/tcl/wish/AndroWish.java	2026-10-11 20:43:46.519748468 +0200
+@@ -510,7 +510,8 @@
+ 	if ((mNfcBCRecvr != null) && on) {
+ 	    PendingIntent pi =
+ 		PendingIntent.getBroadcast(getContext(), 0,
+-					   new Intent("tk.tcl.wish.nfc"), 0);
++					   new Intent("tk.tcl.wish.nfc"),
++					   PendingIntent.FLAG_MUTABLE);
+ 	    /*
+ 	     * This should be sufficient but doesn't work, unfortunately:
+ 	     *
+@@ -1192,12 +1193,14 @@
+ 	}
+ 	if (actionSent != null) {
+ 	    piSent = PendingIntent.getBroadcast(mSingleton, 0,
+-						new Intent(actionSent), 0);
++						new Intent(actionSent),
++						PendingIntent.FLAG_IMMUTABLE);
+ 	}
+ 	if (actionDelivered != null) {
+ 	    piDelivered =
+ 		PendingIntent.getBroadcast(mSingleton, 0,
+-					   new Intent(actionDelivered), 0);
++					   new Intent(actionDelivered),
++					   PendingIntent.FLAG_IMMUTABLE);
+ 	}
+ 	sms.sendTextMessage(phone, smsc, msg, piSent, piDelivered);
+ 	return 1;
+@@ -2175,7 +2178,8 @@
+ 	    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+ 	    addArgsToIntent(i, types, argv);
+ 	    PendingIntent pi =
+-		PendingIntent.getActivity(mSingleton.getContext(), 0, i, 0);
++		PendingIntent.getActivity(mSingleton.getContext(), 0, i,
++					  PendingIntent.FLAG_IMMUTABLE);
+ /*
+  *	    if (android.os.Build.VERSION.SDK_INT <
+  *		android.os.Build.VERSION_CODES.HONEYCOMB) {
+@@ -2569,7 +2573,8 @@
+ 	}
+ 	PendingIntent pi =
+ 	    PendingIntent.getActivity(mSingleton.getContext(), 0, i,
+-				      PendingIntent.FLAG_CANCEL_CURRENT);
++				      PendingIntent.FLAG_CANCEL_CURRENT
++				      | PendingIntent.FLAG_IMMUTABLE);
+ 	switch (op) {
+ 	case 0:
+ 	    if (interval > 0) {
+@@ -4566,7 +4571,8 @@
+ 	};
+ 	Context ctx = mAW.getContext();
+ 	PendingIntent pi =
+-	    PendingIntent.getBroadcast(ctx, 0, new Intent(USB_PERMISSION), 0);
++	    PendingIntent.getBroadcast(ctx, 0, new Intent(USB_PERMISSION),
++				       PendingIntent.FLAG_MUTABLE);
+ 	IntentFilter filter = new IntentFilter(USB_PERMISSION);
+ 	ctx.registerReceiver(recvr, filter);
+ 	mAW.mUsbManager.requestPermission(dev, pi);

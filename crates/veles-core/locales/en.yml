@@ -1,0 +1,37 @@
+# veles UI strings — source language (en).
+# The ONE catalog compiled into the binary (i18n.rs `EN_YML`); the
+# other locales are read from disk at runtime. `_version: 1` format: one
+# file per locale, flat dot-keys, %{name} placeholders. Missing keys fall back LOUD (the key itself is
+# shown) so gaps are caught during development.
+_version: 1
+doctor_title: "memory doctor"
+doctor_block: "%{block}  %{chars} chars, %{entries} entries  ~%{tokens} tokens"
+doctor_total: "total: %{chars} chars across %{files} files (~%{tokens} tokens)"
+doctor_resident: "resident in every prompt: %{shown} of %{total} chars (~%{tokens} tokens) — the rest loads on demand with: memory action=read path=%{path}"
+doctor_dups_found: "near-duplicates (close in size — worth eyeballing):"
+doctor_no_dups: "no near-duplicate files"
+doctor_dup: "~dup  %{a} · %{b}"
+failover_needed: "failover needed: %{provider} (%{model}) failed"
+failover_error_line: "  error: %{error}"
+failover_what_next: "what should I do?"
+failover_next_route: "  next route would be: %{provider} (%{model})"
+failover_no_more_routes: "  no further routes configured"
+choice_retry: "retry same route"
+choice_next: "advance to next route"
+choice_wait: "wait %{secs}s (usage reset) then retry same route"
+choice_stop: "stop here"
+agents_none: "(no agent definitions — drop .md files in ./.veles/agents/ or ~/.veles/agents/)"
+agents_header: "defined subagents:"
+tasks_none: "(no running tasks)"
+tasks_header: "running tasks:"
+tasks_cancelled: "cancelled task %{id}"
+tasks_not_found: "no such task: %{id}"
+tasks_not_running: "task %{id} has already finished"
+tasks_kind_mismatch: "task %{id} is a %{kind}, not this family — %{cmd} owns it"
+subagents_none: "(no running subagents — /btw <prompt> starts one, or the model uses delegate_task)"
+subagents_header: "running subagents:"
+shells_none: "(no background shells — /background <cmd> starts one)"
+shells_header: "background shells:"
+monitors_none: "(no monitors — the model starts these with the monitor tool)"
+monitors_header: "monitors:"
+err_store_locked: "store locked"

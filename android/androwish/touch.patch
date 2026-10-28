@@ -1,0 +1,133 @@
+A finger held still is a long press, as on the rest of the phone.
+
+USER 2026-10-01, after using the desktop on the phone: "the long-tap
+vs scroll distinction is too sensitive to scroll's advantage". AndroWish
+turns a finger held for a second into the right button (Tk's
+<Button-3>, the desktop's context menus), but any motion at all after
+the first 100 ms cancelled it, and a finger held on a phone's screen is
+never still: it drifts as it presses, so a long press scrolled instead.
+
+Now the finger may wander up to twice the device's touch slop from
+where it went down (Android's own tolerance for a long press) before it
+is a drag, and the window does not move under it until then. It is held
+for the device's long press timeout (the user's "touch and hold delay"),
+not a fixed second. DesktopActivity puts both in the environment
+(SDLTK_TOUCH_SLOP, SDLTK_LONGPRESS_MS) before Tk starts; without them,
+AndroWish's own "nearby" distance and 500 ms.
+
+Once the long press has fired, the finger drags the right button:
+motion is <B3-Motion> until it lifts, where it used to release the
+right button and press the left. The desktop selects text that way
+(lib/android.tcl).
+
+--- a/jni/sdl2tk/sdl/SdlTkInt.c
++++ b/jni/sdl2tk/sdl/SdlTkInt.c
+@@ -628,6 +628,7 @@
+     int pinchDelta;
+     double pinchDist;
+     int pinchX, pinchY;
++    int downX, downY;
+     SDL_Event sdl_event;
+     SDL_Event mmb_event;
+     SDL_TouchFingerEvent finger[10];
+@@ -636,6 +637,49 @@
+     0, 0, NULL, 0, 0, 0,
+ };
+ 
++/*
++ * How long a finger is held for the right button, and how far it may
++ * wander meanwhile, in milliseconds and pixels: the device's own long
++ * press timeout and twice its touch slop (Android's tolerance for a
++ * long press), which the activity puts in the environment before Tk
++ * starts. Any motion at all used to cancel the long press, so a finger
++ * held still on a phone's screen, which never is, scrolled instead.
++ */
++
++static int
++TranslateEnv(const char *name, int dflt, int min)
++{
++    const char *value = getenv(name);
++    int n = (value != NULL) ? atoi(value) : 0;
++
++    return (n >= min) ? n : dflt;
++}
++
++static int
++TranslateHold(void)
++{
++    static int hold = -1;
++
++    if (hold < 0) {
++	hold = TranslateEnv("SDLTK_LONGPRESS_MS", 500, 200);
++    }
++    return hold;
++}
++
++static int
++TranslateSlop(void)
++{
++    static int slop = -1;
++
++    if (slop < 0) {
++	slop = 2 * TranslateEnv("SDLTK_TOUCH_SLOP", 0, 1);
++	if (slop < SdlTkX.nearby_pixels) {
++	    slop = SdlTkX.nearby_pixels;
++	}
++    }
++    return slop;
++}
++
+ static void
+ TranslateStop(void)
+ {
+@@ -658,6 +702,8 @@
+     e.button.button = SDL_BUTTON_RIGHT;
+     e.button.state = SDL_PRESSED;
+     SDL_PeepEvents(&e, 1, SDL_ADDEVENT, 0, 0);
++    /* Held: the finger now drags the right button (B3-Motion). */
++    info->state |= 16;
+ }
+ 
+ static void
+@@ -667,7 +713,7 @@
+ 
+     EVLOG("                TIMER#1 FIRED");
+     info->function = TranslateTimer;
+-    info->when = info->now + 900;
++    info->when = info->now + TranslateHold() - 100;
+     info->state = 5;
+     EVLOG("                TIMER ON ST=%d", info->state);
+     SDL_PeepEvents(&info->sdl_event, 1, SDL_ADDEVENT, 0, 0);
+@@ -1214,6 +1260,8 @@
+ 		(sdl_event->button.button == SDL_BUTTON_LEFT)) {
+ 		info->state = 1;
+ 		info->sdl_event = *sdl_event;
++		info->downX = sdl_event->button.x;
++		info->downY = sdl_event->button.y;
+ 		info->function = TranslateTimer1;
+ 		info->when = info->now + 100;
+ 		EVLOG("                TIMER ON ST=%d", info->state);
+@@ -1253,6 +1301,23 @@
+ 	    info->mmb_event = *sdl_event;
+ 	} else if (info->state == 1) {
+ 	    return 0;
++	} else if (info->state & 16) {
++	    tmp_event = *sdl_event;
++	    sdl_event = &tmp_event;
++	    sdl_event->motion.state = SDL_BUTTON(SDL_BUTTON_RIGHT);
++	} else if ((info->state == 5) && (info->function == TranslateTimer)) {
++	    int dx = sdl_event->motion.x - info->downX;
++	    int dy = sdl_event->motion.y - info->downY;
++	    int slop = TranslateSlop();
++
++	    /*
++	     * Still within reach of where it went down: the long press is
++	     * still coming, and the window does not wobble under it. Past
++	     * that, it is a drag (Button-1 motion, below), and no long press.
++	     */
++	    if (dx * dx + dy * dy <= slop * slop) {
++		return 0;
++	    }
+ 	}
+     } else if (sdl_event->type == SDL_MOUSEBUTTONUP) {
+ 	info->sdl_event.button.x = sdl_event->button.x;

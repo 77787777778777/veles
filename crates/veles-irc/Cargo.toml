@@ -1,0 +1,39 @@
+[package]
+name = "veles-irc"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "veles IRC platform adapter — irc-rs transport, SASL PLAIN/EXTERNAL (CertFP), formatting-safe"
+
+[dependencies]
+veles-core = { path = "../veles-core" }
+veles-frontends = { path = "../veles-frontends" }
+# The shared runtime dylib (M1): module.rs names veles_core / veles_types
+# / tokio / tracing / anyhow through it. A plain rlib: the module itself
+# is crates/veles-module-irc, which says why it is a crate of its own.
+veles-runtime = { path = "../veles-runtime" }
+
+# Transport/parsing/TLS/CAP/SASL primitives (slopdrop uses this crate too).
+# We drive the IRCv3 negotiation ourselves on top of its send helpers.
+irc = { version = "1.1", default-features = false, features = ["tls-rust", "channel-lists"] }
+# Pinned crypto provider: rustls 0.23 panics when both ring and
+# aws-lc-rs features unify; we install ring explicitly at connect time.
+rustls = { version = "0.23", default-features = false, features = ["ring"] }
+futures = "0.3"
+tokio = { version = "1", features = ["full"] }
+
+async-trait = "0.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+chrono = "0.4"
+tracing = "0.1"
+anyhow = "1"
+regex = "1"
+base64 = "0.22"
+
+[dev-dependencies]
+tempfile = "3"
+# scratch::kept_dir — process-lifetime scratch dirs that are removed
+# at exit instead of littering $TMPDIR.
+veles-core = { path = "../veles-core", features = ["test-support"] }

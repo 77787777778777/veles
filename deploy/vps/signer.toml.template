@@ -1,0 +1,14 @@
+# deploy/vps/signer.toml.template → /srv/pool/veles-signer/signer/signer.toml
+# (the signer container's /opt/signer). Its key, vps-signer.key, is made
+# there by `veles ticket keygen vps-signer` (the passphrase is the
+# owner's, typed twice); signer.env beside it holds
+#   SIGNER_GATEWAY_TOKENS=vps:<tok>,laptop:<tok>,phone:<tok>
+#   SIGNER_TELEGRAM_TOKEN=<the signer's OWN bot, from BotFather>
+# and the passphrase is the podman secret `veles-signer-passphrase`.
+key = "vps-signer"
+# Inside the container; published on 10.0.30.1:9911 only.
+listen = "0.0.0.0:9911"
+wait_secs = 600
+
+[telegram]
+owner_id = 123456789

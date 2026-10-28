@@ -1,0 +1,45 @@
+# One ident query (veles-identd.socket, Accept=yes): the connection is
+# stdin/stdout. Runs as a throwaway user with nothing to read but
+# /proc/net/tcp{,6} and /etc/passwd, nothing to write, no capabilities,
+# and at most 12 seconds.
+[Unit]
+Description=veles-identd: one ident query
+CollectMode=inactive-or-failed
+
+[Service]
+ExecStart=/usr/bin/python3 -I /usr/local/lib/veles-identd/veles-identd.py
+StandardInput=socket
+StandardOutput=socket
+StandardError=journal
+# unixuser=reply: the one user whose connections get a verified ident.
+Environment=VELES_IDENTD_USERS=wrath=hastur
+Slice=veles-identd.slice
+DynamicUser=yes
+RuntimeMaxSec=12
+MemoryMax=24M
+TasksMax=2
+LogLevelMax=warning
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectProc=invisible
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources
+UMask=0077

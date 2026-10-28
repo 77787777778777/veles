@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Veles">
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1">
+      <stop stop-color="#10142f"/>
+      <stop offset="1" stop-color="#361744"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="124" height="124" rx="22" fill="url(#sky)" stroke="#22d3ee" stroke-width="4"/>
+  <path d="M0 92h128M0 105h128M0 118h128M32 80l-20 48M64 80v48M96 80l20 48" fill="none" stroke="#a855f7" stroke-width="2" opacity=".6"/>
+  <path d="M25 30h20l19 53 19-53h20L72 105H56z" fill="#f472b6" stroke="#fef08a" stroke-width="2"/>
+</svg>

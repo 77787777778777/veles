@@ -1,0 +1,72 @@
+[package]
+name = "veles-frontends"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "veles surfaces — the REPL, the TUI, the gateway, the desktop API, A2A and the shared slash-command dispatcher"
+
+# Split out of veles-core on 2026-09-28 to cut what one rustc holds:
+# veles-core was a single 171,768-line crate whose unit-test binary and
+# library were the two largest compiles in the tree (docs/build-memory.md).
+# These ~46k lines, and their tests, now compile as a crate of their own,
+# after the core library, and an edit here no longer rebuilds core.
+
+[lib]
+name = "veles_frontends"
+path = "src/lib.rs"
+
+[dependencies]
+veles-core = { path = "../veles-core" }
+veles-install = { path = "../veles-install" }
+
+tokio = { version = "1", features = ["full"] }
+futures = "0.3"
+async-trait = "0.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+anyhow = "1"
+tracing = "0.1"
+chrono = { version = "0.4", features = ["serde"] }
+regex = "1"
+uuid = { version = "1", features = ["v4"] }
+base64 = "0.22"
+sha2 = "0.10"
+directories = "5"
+notify = "8"
+libc = "0.2"
+toml = "0.8"
+toml_edit = "0.22"
+blake3 = "1"
+reqwest = { version = "0.12", features = ["json", "stream", "rustls-tls"], default-features = false }
+
+# The REPL and the TUI.
+ratatui = "0.26"
+crossterm = "0.27"
+rustyline = "14"
+termimad = "0.31"
+signal-hook = "0.3"
+# caret positioning needs display widths, not just char counts
+unicode-width = "0.1"
+
+# The desktop API and the A2A server. Not optional: desktop_api.rs and
+# a2a_server.rs use them unconditionally, and only the gateway's server
+# spawns are gated on `frontend-gateway-http`.
+axum = { version = "0.7", features = ["ws"] }
+# SSE stream construction for the desktop API
+async-stream = "0.3"
+
+[features]
+default = ["frontend-gateway-http"]
+# Gates the gateway's HTTP servers (A2A, desktop API, the OpenAI proxy).
+frontend-gateway-http = ["veles-core/frontend-gateway-http"]
+
+[dev-dependencies]
+veles-core = { path = "../veles-core", features = ["test-support"] }
+veles-install = { path = "../veles-install", features = ["test-support"] }
+tempfile = "3"
+# Paused time (`#[tokio::test(start_paused = true)]`), as in veles-core.
+tokio = { version = "1", features = ["full", "test-util"] }
+# `util`: the desktop API's auth-gate test drives the router through
+# `tower::ServiceExt::oneshot`.
+tower = { version = "0.5", features = ["util"] }

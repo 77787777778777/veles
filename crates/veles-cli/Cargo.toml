@@ -1,0 +1,108 @@
+[package]
+name = "veles-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "veles — the CLI composition root (core + adapters wired together)"
+default-run = "veles"
+
+[[bin]]
+name = "veles"
+path = "src/main.rs"
+
+[dependencies]
+# The shared core (PLAN-plugins-installer.md M1): veles-core,
+# veles-frontends and veles-types reach this binary ONLY through the
+# `libveles_runtime.so` dylib, on every target (Android too: the APK
+# ships the runtime and libstd beside libtcl8.6.so). lib.rs, main.rs and
+# tclrepl.rs alias `veles_runtime::veles_core` back to `veles_core`, and
+# that use is what makes rustc link the dylib; the copy of core inside it
+# is then the only one in the process, a dlopened module's included.
+veles-runtime = { path = "../veles-runtime" }
+# The adapter crates depend on veles-core (an rlib) themselves. They do
+# not add a second copy: rustc takes core from the runtime dylib that
+# already contains it.
+veles-telegram = { path = "../veles-telegram" }
+veles-irc = { path = "../veles-irc" }
+# The slopdrop bridge library (R5): linked for its config surface only;
+# the module the host loads is crates/veles-module-slopdrop.
+veles-slopdrop = { path = "../veles-slopdrop" }
+veles-signer = { path = "../veles-signer" }
+veles-plugin-example = { path = "../veles-plugin-example" }
+
+clap = { version = "4", features = ["derive"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"
+async-trait = "0.1"
+libc = "0.2"
+chrono = "0.4"
+toml = "0.8"
+serde_json = "1"
+directories = "5"
+rustyline = "14"
+# The extension API spec (src/extapi.rs): the published file's hash, and
+# serde's Deserializer trait, which reads the plugin.toml and manifest key
+# lists from the derives themselves. Both are in the lock already (core).
+serde = "1"
+sha2 = "0.10"
+
+# A module is dlopened (the R1 spike; R3's module host).
+libloading = "0.8"
+# modulehosttest's scratch homes (a test-support binary path, not
+# production code).
+tempfile = "3"
+
+[dev-dependencies]
+tempfile = "3"
+# The module-host tests run as `veles module-host-test`, a hidden
+# subcommand: they need a process that links the runtime dylib (the test
+# harness's own binary links core statically and cannot load modules).
+# CLI installer tests use the real echo process-plugin binary. The test
+# gates build it explicitly in the same target/profile; a binary-only
+# Cargo dependency would be ignored and cannot provide CARGO_BIN_EXE_*.
+assert_cmd = "2"
+predicates = "3"
+# tests/module_load.rs loads it. As a dev-dependency it is built in the
+# same cargo invocation as the test binaries, which is what makes it a
+# module of THIS build (crates/veles-core/src/module.rs).
+veles-module-echo = { path = "../veles-module-echo" }
+# tests/module_host.rs's `irc-module` case loads the REAL IRC module:
+# as a dev-dependency it builds in the test's own invocation, so its
+# build key matches this build (same rule as the echo module above).
+veles-module-irc = { path = "../veles-module-irc" }
+# `slopdrop-module` loads the REAL slopdrop module, same rule.
+veles-module-slopdrop = { path = "../veles-module-slopdrop" }
+# `atproto-cmd-module` loads the REAL /atproto module, same rule.
+veles-module-atproto-cmd = { path = "../veles-module-atproto-cmd" }
+# `telegram-module` loads the REAL Telegram module, same rule.
+veles-module-telegram = { path = "../veles-module-telegram" }
+# `conformance-js` loads the REAL JS host module (R9), same rule.
+veles-module-lang-js = { path = "../veles-module-lang-js" }
+# The Racket CS and ECL hosts have no Windows runtime yet (PLAN-windows.md
+# §10): their modules are dev-dependencies on unix only, and the two
+# conformance cases that load them are `cfg(unix)` in tests/module_host.rs.
+# The integration tests and the bin's unit tests name `veles_core::…`
+# directly (they are separate crates, so the lib's alias is not in scope).
+# Still one copy: the test binary links the runtime dylib through the lib,
+# and rustc takes core from it.
+veles-core = { path = "../veles-core", features = ["test-support"] }
+veles-install = { path = "../veles-install", features = ["test-support"] }
+veles-frontends = { path = "../veles-frontends" }
+veles-runtime = { path = "../veles-runtime", features = ["test-support"] }
+tokio = { version = "1", features = ["full"] }
+serde_json = "1"
+anyhow = "1"
+toml = "0.8"
+# Signed-bootstrap integration fixtures construct an actual archive and
+# its release manifest; they do not call the host tar or network.
+tar = "0.4"
+zstd = "0.13"
+
+[target.'cfg(unix)'.dev-dependencies]
+# `conformance-racket` loads the REAL Racket host module (R9), same rule
+# as the modules above.
+veles-module-lang-racket = { path = "../veles-module-lang-racket" }
+# `conformance-lisp` loads the REAL Common Lisp host module (R9), same rule.
+veles-module-lang-lisp = { path = "../veles-module-lang-lisp" }

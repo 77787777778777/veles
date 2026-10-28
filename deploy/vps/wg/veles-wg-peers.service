@@ -1,0 +1,22 @@
+# deploy/vps/wg/veles-wg-peers.service → /etc/systemd/system/
+#
+# Add (or remove) the WireGuard peers the gateway queued. Root, because
+# wg0 is root's; the script trusts nothing it reads from the queue (see
+# its header): only a valid key, only a /32 in the subnet that no peer
+# already holds. The subnet below must match the arbiter's
+# [pool.wireguard] subnet.
+[Unit]
+Description=Apply the veles gateway's queued WireGuard peers
+After=wg-quick@wg0.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/veles-wg-peers wg0 10.0.30.0/24 /srv/pool/veles/data/pool/wg-pending
+NoNewPrivileges=yes
+ProtectHome=yes
+PrivateTmp=yes
+# strict: everything but ReadWritePaths is read-only to the helper, so a
+# path the gateway could point it at (a planted symlink in its queue) is
+# not writable. Without this line ReadWritePaths binds nothing.
+ProtectSystem=strict
+ReadWritePaths=/etc/wireguard /srv/pool/veles/data/pool/wg-pending

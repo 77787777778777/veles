@@ -1,0 +1,25 @@
+# greeter: a veles OVERLAY module, a Rust module in a repository of its
+# own. veles' flake (`lib.<system>.velesWithModules`) builds it INSIDE
+# veles' own cargo invocation, so it loads into the gateway that build
+# makes: a module loads only into the build it came from.
+#
+# Not part of veles' stable extension API: a module calls veles' Rust
+# internals, so a veles update can break this build. When an override
+# point, a script, a `.so` or a process plugin can do the job, prefer it
+# (veles' docs/extending.md).
+[package]
+name = "veles-overlay-greeter"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+# A module is a Rust dylib on libveles_runtime.so, never a cdylib.
+crate-type = ["dylib"]
+
+[dependencies]
+# veles' runtime, from the workspace the flake builds this crate in.
+veles-runtime = { workspace = true }
+# Only crates veles' Cargo.lock already has: the build is offline.
+async-trait = "0.1"
+serde_json = "1"

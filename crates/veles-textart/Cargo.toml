@@ -1,0 +1,13 @@
+[package]
+name = "veles-textart"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "IRC text art as a picture: mIRC and ANSI formatting parsed into a cell grid and drawn with GNU Unifont into a small PNG (PLAN-slopdrop-art.md). Pure: no IO, no config."
+
+[dependencies]
+png = "0.18"
+unicode-width = "0.2"
+flate2 = "1"
+
+[dev-dependencies]

@@ -1,0 +1,48 @@
+[package]
+name = "veles-runtime"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The shared core library (PLAN-plugins-installer.md M1): veles-core + veles-frontends + veles-types and their dependency graph as ONE dylib, linked by the gateway and by in-process modules. The rustc_driver / bevy_dylib pattern."
+
+[features]
+test-support = ["veles-core/test-support", "veles-install/test-support"]
+
+[lib]
+# dylib, not cdylib: the consumers are Rust crates (the gateway binary and
+# the modules), and a dylib carries the crate metadata downstream crates
+# link against. The gateway links this dynamically; a module links the
+# SAME file, so core's statics (the live config, the tool registry, the
+# tracing subscriber) exist once in the process.
+#
+# The shared crates themselves stay plain rlibs; this is the ONE dylib.
+# No build flags are involved. A crate that uses this one links it
+# dynamically (rustc has no other form of it), and rustc then takes
+# every crate inside it (core, tokio, serde…) from here rather than
+# from an rlib. That also makes std dynamic (libstd-*.so), which ships
+# beside this file.
+#
+# Rpath: dev builds find this file next to the binary (the dev shell's
+# RUSTFLAGS carry `$ORIGIN` and the toolchain's libstd dir); the nix
+# package installs it with libstd to `<out>/lib` behind an
+# `$ORIGIN/../lib` rpath (M1), so a cargo rebuild never rewrites the
+# file the RUNNING gateway has mapped.
+crate-type = ["dylib"]
+
+[dependencies]
+# The three shared crates. Re-exported in lib.rs; every symbol a module
+# or the gateway uses comes through this one dylib, never from a second
+# statically-linked copy of these crates (two copies = two of every
+# static, the exact failure M1 exists to prevent).
+veles-core = { path = "../veles-core" }
+veles-frontends = { path = "../veles-frontends" }
+veles-types = { path = "../veles-types" }
+# Typed installation plans. Linked into the ONE runtime so CLI and desktop
+# do not grow separate config writers or component lifecycle rules.
+veles-install = { path = "../veles-install" }
+
+# Re-exported for modules (see lib.rs): one tokio, one tracing.
+tokio = { version = "1", features = ["full"] }
+tracing = "0.1"
+reqwest = { version = "0.12", default-features = false }
+anyhow = "1"

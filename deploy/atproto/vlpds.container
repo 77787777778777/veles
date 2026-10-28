@@ -1,0 +1,93 @@
+# deploy/atproto/vlpds.container
+# (~veles/.config/containers/systemd/) — the atproto PDS, rootless,
+# a sibling of the veles gateway (NOT a sandbox, NOT nested).
+#
+# vlpds is the whole deployment: one static binary + its web UI, serving
+# XRPC, the OAuth authorization server, the merged firehose and the
+# account pages. The bucket (R2) is the ONLY durable state — the node
+# keeps nothing on its disk it cannot rebuild, so the cache volume here
+# is disposable. Back the KEK + PLC rotation key up OFFLINE: they wrap
+# every signing key and are not in the bucket.
+#
+# Image: pinned to release 1.2.2 (immutable semver tag; manifest digest
+# sha256:5b00af00…). vlpds ships semver tags since v1.0.0; also
+# `main` and per-commit sha-* tags. Pin releases. NOTE: upgrading from
+# a pre-2026-10-06 build is ONE-WAY (unlevelled row format change,
+# see docs/operations/upgrades.md). 2026-10-23: re-pinned 2aaf27c -> 1.2.2.
+#
+# Secrets: mounted from /srv/pool/veles/vlpds/secrets, owned by host uid
+# 306608 so they read as the container's uid 10001 (the vlpds user) —
+# 306608 = subuid-base 296608 + 10001 - 1 (host-uid-0→container-0 shifts
+# the mapping by one). Mode 0400.
+[Unit]
+Description=vlpds atproto PDS (veles.7778777.online)
+Wants=network-online.target
+After=network-online.target
+# The gateway's atproto adapter does createSession against http://vlpds:2583
+# at startup and crash-loops on the DNS race if it wins the start; order
+# vlpds first (the gateway declares After=vlpds.service too).
+Before=veles-gateway.service
+
+[Container]
+ContainerName=vlpds
+Image=ghcr.io/jazware/vlpds:1.2.2
+Pull=never
+# The shared bridge network with the gateway: the gateway reaches vlpds
+# by container name (http://vlpds:2583) — two rootless containers do NOT
+# share 127.0.0.1, and pasta (the default) can't join a bridge, so both
+# live on veles-net. nginx terminates TLS in front (veles.7778777.online
+# + the wildcard handles) and blocks /admin, /xrpc/vlpds.admin.*,
+# /metrics, /internal/*. Only the loopback app + metrics ports are
+# published to the host.
+Network=veles-net
+PublishPort=127.0.0.1:2583:2583
+PublishPort=127.0.0.1:9583:9583
+Volume=/srv/pool/veles/vlpds/secrets:/run/vlpds:ro
+# The disposable cache (rebuilt from the bucket).
+Volume=/srv/pool/veles/vlpds/cache:/var/lib/vlpds/cache
+Environment=VLPDS_PUBLIC_URL=https://veles.7778777.online
+Environment=VLPDS_HANDLE_DOMAIN=veles.7778777.online
+Environment=VLPDS_SERVICE_DID=did:web:veles.7778777.online
+Environment=VLPDS_S3_ENDPOINT=https://88fb6a02508370f9bc1351ef4b5641c9.eu.r2.cloudflarestorage.com
+Environment=VLPDS_S3_REGION=auto
+Environment=VLPDS_S3_BUCKET=veles-atproto
+Environment=VLPDS_PREFIX=veles-atproto
+Environment=VLPDS_S3_ACCESS_KEY_FILE=/run/vlpds/s3-access-key
+Environment=VLPDS_S3_SECRET_KEY_FILE=/run/vlpds/s3-secret-key
+Environment=VLPDS_JWT_SECRET_FILE=/run/vlpds/jwt-secret
+Environment=VLPDS_ADMIN_TOKEN_FILE=/run/vlpds/admin-token
+Environment=VLPDS_INTERNAL_TOKEN_FILE=/run/vlpds/internal-token
+Environment=VLPDS_KEK_FILE=/run/vlpds/kek
+Environment=VLPDS_PLC_ROTATION_KEY_FILE=/run/vlpds/plc-rotation.key
+Environment=VLPDS_PLC_RECOVERY_DID_KEY=did:key:zQ3shvconcBF2sB1KYzMDv53jg4MDoedbfN2vqSKVyc64e3gz
+Environment=VLPDS_NODE_ID=single
+Environment=VLPDS_SHARDS=1
+Environment=VLPDS_LEASE_TTL_MS=60000
+Environment=VLPDS_SLATEDB_MANIFEST_POLL=60s
+Environment=VLPDS_CACHE_DIR=/var/lib/vlpds/cache
+Environment=VLPDS_DISK_CACHE_MB=4096
+Environment=VLPDS_METRICS_LISTEN=127.0.0.1:9583
+Environment=VLPDS_LOG_FORMAT=json
+Environment=VLPDS_INVITE_REQUIRED=true
+# The AppView the PDS proxies `app.bsky.*` to (notifications, threads,
+# profiles). Unset, vlpds answered every listNotifications "400 No
+# service configured", so the adapter's notification backstop never ran
+# (1,362 times on 10-05); the adapter now also sends atproto-proxy.
+Environment=VLPDS_APPVIEW=https://api.bsky.app,did:web:api.bsky.app
+# nginx on loopback is the trusted proxy: its X-Forwarded-For sets the
+# rate-limit client IP. Without this every client looks like 127.0.0.1.
+Environment=VLPDS_TRUSTED_PROXIES=127.0.0.1
+# vlpds fail-stops on purpose (exit codes 2-9) and expects its supervisor
+# to restart it; it SIGTERMs gracefully. Never `podman kill` it, never
+# run two with the same VLPDS_NODE_ID.
+StopTimeout=90
+HealthCmd=curl -sf http://127.0.0.1:2583/xrpc/_health
+HealthInterval=2m
+HealthOnFailure=kill
+
+[Service]
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

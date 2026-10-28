@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>veles — challenge</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; padding: 12px; background: #15121c; color: #eee; }
+  #shot { max-width: 100%; cursor: crosshair; display: block; margin: 8px 0; border: 1px solid #555; }
+  button, input { font-size: 16px; padding: 8px 12px; margin: 4px 4px 4px 0; }
+  #msg { color: #aaa; min-height: 1.2em; }
+</style>
+</head>
+<body>
+<!-- A bot challenge on a page veles' browser opened (PLAN-pool-round.md
+     Part E), served by the gateway for as long as the relay runs. The
+     picture is the page; a click on it is sent in the page's own pixels,
+     whatever size this screen shows it at. Every button answers the same
+     question the desktop, IRC and Telegram were asked.
+     The words are NOT in this file: the gateway substitutes its own
+     language's catalog into L{} placeholders (challenge_page in
+     desktop_api.rs), and the page title arrives in the L{} dict. The
+     action payloads below (`click x y`, `type …`, `key Enter`,
+     `solved`) are the wire protocol the server parses — they never
+     translate. -->
+<h3 id="prompt"></h3>
+<p id="hint">{L:hint}</p>
+<!-- alt text is not user-visible; a key-name-style literal like the
+     Enter/Tab buttons' — i18n-exempt. -->
+<img id="shot" alt="the page">
+<div>
+  <input id="txt" placeholder="{L:type_placeholder}">
+  <button id="type">{L:type}</button>
+  <button data-key="Enter">Enter</button><!-- i18n-exempt: a key's name -->
+  <button data-key="Tab">Tab</button><!-- i18n-exempt: a key's name -->
+</div>
+<div>
+  <button id="solved">{L:solved}</button>
+  <button id="give">{L:give_up}</button>
+  <button id="win" hidden>{L:open_window}</button>
+</div>
+<p id="msg"></p>
+<script>
+const base = location.pathname.replace(/\/$/, '');
+const L = {L:strings};
+document.title = L.title;
+const $ = (id) => document.getElementById(id);
+let round = -1;
+async function refresh() {
+  const r = await fetch(base + '/state', { cache: 'no-store' });
+  if (!r.ok) { $('msg').textContent = L.over; return; }
+  const s = await r.json();
+  if (s.round !== round) {
+    round = s.round;
+    $('prompt').textContent = s.prompt;
+    $('shot').src = base + '/shot?r=' + round;
+    $('win').hidden = !s.window;
+    $('msg').textContent = '';
+  }
+}
+async function answer(body) {
+  $('msg').textContent = '…';
+  await fetch(base + '/answer', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+}
+$('shot').addEventListener('click', (e) => {
+  const img = e.target, r = img.getBoundingClientRect();
+  const x = Math.round((e.clientX - r.left) * img.naturalWidth / r.width);
+  const y = Math.round((e.clientY - r.top) * img.naturalHeight / r.height);
+  answer({ text: 'click ' + x + ' ' + y });
+});
+$('type').onclick = () => {
+  const t = $('txt').value.trim();
+  if (t) { $('txt').value = ''; answer({ text: 'type ' + t }); }
+};
+document.querySelectorAll('[data-key]').forEach((b) => {
+  b.onclick = () => answer({ text: 'key ' + b.dataset.key });
+});
+$('solved').onclick = () => answer({ choice: 'solved' });
+$('give').onclick = () => answer({ choice: 'give_up' });
+$('win').onclick = () => answer({ choice: 'window' });
+refresh();
+setInterval(refresh, 1000);
+</script>
+</body>
+</html>

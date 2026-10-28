@@ -1,0 +1,48 @@
+Source: veles-agent
+Section: utils
+Priority: optional
+Maintainer: veles-agent maintainers <noreply@example.invalid>
+Build-Depends: debhelper-compat (= 13),
+               cargo,
+               rustc (>= 1.80),
+               pkg-config,
+               libssl-dev,
+               zlib1g-dev,
+               libsqlite3-dev,
+               tcl8.6-dev,
+               tk8.6-dev,
+               libclang-dev,
+               clang
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+Homepage: https://github.com/veles-agent/veles-agent
+
+Package: veles-agent
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         tcl8.6,
+         tcllib
+Recommends: tk8.6,
+            tclx,
+            git,
+            openssh-client,
+            ripgrep,
+            e2fsprogs
+Suggests: podman,
+          systemd-container,
+          libtk-img,
+          tclcurl,
+          webp,
+          libheif-examples
+Description: Rust core + Tcl scripting AI agent framework
+ Veles is an agent runtime with a Rust engine and a Tcl scripting
+ surface. It speaks the OpenAI chat-completions and Responses wire
+ protocols, runs tools, and executes untrusted code behind one of five
+ sandbox backends (native safe-interp, podman, systemd-nspawn,
+ firecracker microVM, FreeBSD jail).
+ .
+ Recommends carry real capability: without tk8.6 there is no desktop
+ GUI, without git no checkpoints, without ripgrep a slower search tool.
+ Suggests are the sandbox backends and the Tk image decoders — veles
+ degrades and says so rather than failing.

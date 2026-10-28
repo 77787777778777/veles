@@ -1,0 +1,17 @@
+[package]
+name = "veles-module-atproto-cmd"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The /atproto owner command as an in-process module: the dylib the module host loads, over the veles-atproto-cmd library."
+
+[lib]
+# A module is a Rust dylib, NOT a cdylib: it links the Rust
+# `libveles_runtime.so` and speaks Rust types through it (crates/
+# veles-module-irc says why a module is a dylib-only crate of its own
+# over a plain rlib).
+crate-type = ["dylib"]
+
+[dependencies]
+veles-atproto-cmd = { path = "../veles-atproto-cmd" }
+veles-runtime = { path = "../veles-runtime" }

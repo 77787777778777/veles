@@ -1,0 +1,36 @@
+Unknown font families on the platform's terms.
+
+Tk reads a font list's first word as a family, so veles-desktop's
+{TkDefaultFont 11} and {monospace 10} name families no font has. On a
+desktop fontconfig resolves them: "monospace" to the preferred mono,
+anything unknown to the default sans, at the size asked for. Here an
+unknown family fell through to "fixed", which AndroWish has in one
+small size: every such text was about 10 px tall on a 420 dpi phone
+(emulator, 2026-09-30). The generic names get the DejaVu face they
+name, anything else DejaVu Sans, the family of TkDefaultFont here.
+
+--- a/jni/sdl2tk/sdl/tkSDLFont.c
++++ b/jni/sdl2tk/sdl/tkSDLFont.c
+@@ -1429,6 +1429,22 @@
+ 		}
+ 	    }
+ 	}
++	/*
++	 * An unknown family gets what fontconfig gives it on a desktop:
++	 * the generic face it names, else the default sans, at the size
++	 * asked for. "fixed" below comes in one small size.
++	 */
++	if (strcasecmp(want.fa.family, "monospace") == 0
++		|| strcasecmp(want.fa.family, "mono") == 0) {
++	    nameList = ListFontOrAlias(display, "dejavu lgc sans mono", &numNames);
++	} else if (strcasecmp(want.fa.family, "serif") == 0) {
++	    nameList = ListFontOrAlias(display, "dejavu lgc serif", &numNames);
++	} else {
++	    nameList = ListFontOrAlias(display, "dejavu lgc sans", &numNames);
++	}
++	if (numNames != 0) {
++	    goto found;
++	}
+ 	nameList = ListFonts(display, "fixed", &numNames);
+ 	if (numNames == 0) {
+ 	    nameList = ListFonts(display, "*", &numNames);

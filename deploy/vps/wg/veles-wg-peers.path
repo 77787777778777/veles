@@ -1,0 +1,16 @@
+# deploy/vps/wg/veles-wg-peers.path → /etc/systemd/system/
+#
+# `veles pool invite` on the arbiter (in the gateway's container) queues
+# the hub's side of a new peer's tunnel in its data dir; this starts
+# veles-wg-peers.service whenever that queue changes (PLAN-sessions-and-
+# phone.md P2d, USER decision D10). Installed by setup.sh --with-wg-peers.
+[Unit]
+Description=Watch the veles gateway's WireGuard peer queue
+
+[Path]
+PathChanged=/srv/pool/veles/data/pool/wg-pending
+MakeDirectory=no
+Unit=veles-wg-peers.service
+
+[Install]
+WantedBy=multi-user.target

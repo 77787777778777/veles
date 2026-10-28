@@ -1,0 +1,12 @@
+[package]
+name = "veles-launcher"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "veles-gw: starts `veles gateway run` without a console window (the Windows logon task's program)"
+
+[[bin]]
+name = "veles-gw"
+path = "src/main.rs"
+
+[dependencies]

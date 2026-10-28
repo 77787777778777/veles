@@ -1,0 +1,5 @@
+name = "tcl-session-digest"
+kind = "tcl"
+provides_hooks = ["on_session_start"]
+entry = "plugin.tcl"
+description = "Example: reads sessions + history through the bridge and parks a digest note on session start. Demonstrates veles::sessions / veles::history / veles::json_get with numeric array indices / veles::note. Pure reads — works with no provider configured."

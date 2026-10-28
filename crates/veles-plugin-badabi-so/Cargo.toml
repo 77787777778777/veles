@@ -1,0 +1,15 @@
+[package]
+name = "veles-plugin-badabi-so"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-only"
+publish = false
+
+# A cdylib on purpose: the point is to produce a real .so that a real
+# dlopen can load and a real loader must then REFUSE.
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# Nothing: it only has to LOOK like an ABI 3 plugin (the exports), and
+# the SDK can only build ABI 4 ones.

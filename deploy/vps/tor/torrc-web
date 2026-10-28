@@ -1,0 +1,16 @@
+# deploy/vps/tor/torrc-web — /etc/tor/instances/velesweb/torrc (setup.sh).
+#
+# Other people's fetches (PLAN-challenge-relay.md D5): the gateway's
+# web_extract for a session that is not the owner's goes through this
+# SOCKS port (`[web] others_proxy`), each session under a user name of
+# its own, so IsolateSOCKSAuth gives each one a circuit of its own.
+#
+# On the WireGuard address, like the signer's API: the gateway's
+# container cannot reach this host's loopback. veles.nft lets the
+# gateway user connect and refuses everyone on wg0, so the other nodes
+# cannot use it. An instance of its own, so a bind that fails (wg0 not up
+# yet; tor-web.conf restarts it) never takes the sandboxes' TransPort
+# down with it.
+SocksPort 10.0.30.1:9050 IsolateSOCKSAuth
+ClientOnly 1
+AvoidDiskWrites 1

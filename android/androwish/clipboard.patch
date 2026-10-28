@@ -1,0 +1,49 @@
+The device's clipboard is the device's.
+
+AndroWish's Tk keeps one system clipboard for both Tk selections, and
+it emptied it whenever the window owning a selection went away or gave
+the selection up. On a phone, where the clipboard is how an API key
+gets from a password manager into a field, that meant: copy the key,
+open the setup wizard, step past the language list (a listbox owns
+PRIMARY while an entry is selected in it), and the key was gone before
+it could be pasted (emulator, 2026-09-30: Android's "Copied" preview
+appeared on that step). PRIMARY no longer touches the system
+clipboard, and a destroyed owner leaves it as it was. `clipboard
+clear` and an explicit `selection clear -selection CLIPBOARD` still
+empty it.
+
+--- a/jni/sdl2tk/sdl/SdlTkX.c
++++ b/jni/sdl2tk/sdl/SdlTkX.c
+@@ -1482,19 +1482,15 @@
+ 	SdlTkX.focus_window_not_override = None;
+     }
+     SdlTkClearPointer(_w);
++    /*
++     * The system clipboard keeps what it has: it is the device's, and a
++     * copy made elsewhere must survive a Tk window going away.
++     */
+     if (SdlTkX.current_primary == w) {
+ 	SdlTkX.current_primary = None;
+-#ifndef _WIN32
+-	/* For _WIN32 this is done in tkEvent.c in exit handler. */
+-	SDL_SetClipboardText("");
+-#endif
+     }
+     if (SdlTkX.current_clipboard == w) {
+ 	SdlTkX.current_clipboard = None;
+-#ifndef _WIN32
+-	/* For _WIN32 this is done in tkEvent.c in exit handler. */
+-	SDL_SetClipboardText("");
+-#endif
+     }
+ 
+     if (_w->atts.map_state != IsUnmapped) {
+@@ -7898,7 +7894,7 @@
+     } else {
+ 	return;
+     }
+-    if ((owner == None) && (*current != None)) {
++    if ((owner == None) && (*current != None) && (selection != XA_PRIMARY)) {
+ 	SDL_SetClipboardText("");
+     }
+ sendClr:

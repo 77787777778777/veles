@@ -1,0 +1,15 @@
+[package]
+name = "veles-module-lang-js"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The JavaScript/TypeScript language host as an in-process module (PLAN-plugins-installer.md R9): the dylib the module host loads, over the veles-lang-js library."
+
+[lib]
+# The module, and only the module (crates/veles-module-irc says why a
+# module is a dylib-only crate of its own over a plain rlib).
+crate-type = ["dylib"]
+
+[dependencies]
+veles-lang-js = { path = "../veles-lang-js" }
+veles-runtime = { path = "../veles-runtime" }

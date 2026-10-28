@@ -1,0 +1,25 @@
+# deploy/vps/user/veles-sbx/veles-sbx-podman.service
+# (~veles-sbx/.config/systemd/user/) — the stock podman.service, on
+# the veles-sbx socket.
+[Unit]
+Description=veles sandboxes: podman API service
+Requires=veles-sbx-podman.socket
+After=veles-sbx-podman.socket
+StartLimitIntervalSec=0
+
+[Service]
+Delegate=true
+Type=exec
+KillMode=process
+# A manager that stops without a reboot (a crash, a restart) kills the
+# boxes' conmons behind podman's back: its database still says they
+# run, the service then fails to join their dead namespace ("invalid
+# internal status … podman system migrate"), and two failures trip the
+# socket's trigger limit for good. A reboot is spared — the runtime dir
+# is a fresh tmpfs, and podman resets its state — so repair only when
+# podman cannot answer at all (measured 2026-10-02).
+ExecStartPre=/bin/sh -c '/usr/bin/podman info >/dev/null 2>&1 || /usr/bin/podman system migrate'
+ExecStart=/usr/bin/podman --log-level=info system service --time=0
+
+[Install]
+WantedBy=default.target

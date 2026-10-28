@@ -1,0 +1,6 @@
+# deploy/vps/slopdrop/stock-proxy.filter — /etc/veles/slopdrop-stock-proxy.filter
+# The hosts slopdrop's stock proxy lets it reach (tinyproxy FilterType
+# ere, matched against the host name; anything else is refused 403).
+# Yahoo's chart API, which stock::quote/price/detail/history/chart call
+# (yahoo_finance_api's YCHART_URL), on either of its two hosts.
+^query[12]\.finance\.yahoo\.com$

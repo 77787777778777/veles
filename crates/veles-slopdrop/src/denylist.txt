@@ -1,0 +1,36 @@
+# slopdrop_denylist.txt — seed denylist for the /tcl output check.
+#
+# One term per line, already FOLDED (the same fold the gate applies to the
+# text: lowercase, leet 0->o 1->i 3->e 4->a 5->s 7->t @->a $->s, separators
+# removed). The gate folds the candidate text and checks each term as a
+# substring, on the whole text AND on the first letters of each line (an
+# acrostic). Write the folded form here: "n1gg3r" folds to "nigger", so the
+# term listed is "nigger" and it catches every leet/spaced spelling.
+# Lines starting with # are comments. The operator's own additions go in
+# data_dir()/slopdrop/denylist.txt, not here.
+nigger
+nigga
+faggot
+fag
+kike
+chink
+gook
+spic
+wetback
+tranny
+retard
+coon
+dyke
+whore
+slut
+cunt
+twat
+wanker
+hitler
+heil
+swastika
+holocaust
+nazi
+rape
+killself
+killyourself

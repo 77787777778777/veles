@@ -1,0 +1,55 @@
+# Maintainer: veles-agent maintainers <noreply@example.invalid>
+#
+# Source build only. veles links libtcl through bindgen, so the binary
+# is bound to the Tcl the host has — a -bin package would be a lie.
+pkgname=veles-agent
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Rust core + Tcl scripting AI agent framework"
+arch=('x86_64' 'aarch64')
+url="https://github.com/veles-agent/veles-agent"
+license=('AGPL3')
+depends=('tcl' 'tcllib' 'openssl' 'zlib' 'sqlite')
+optdepends=(
+  'tk: the Tcl/Tk desktop GUI'
+  'git: checkpoints and git-backed plugin state'
+  'openssh: remote surfaces'
+  'ripgrep: the fast search tool (veles falls back to a slower path without it)'
+  'podman: the podman sandbox backend and the dev-sandbox image'
+  'e2fsprogs: mkfs.ext4, needed by the firecracker sandbox backend'
+  'libwebp: dwebp — WebP decoding for the desktop'
+  'libheif: heif-dec — HEIC/AVIF decoding for the desktop'
+  'resvg: SVG rendering for the desktop'
+)
+makedepends=('cargo' 'clang' 'pkgconf')
+source=()
+sha256sums=()
+
+prepare() {
+  cd "$srcdir/.."
+  export RUSTUP_TOOLCHAIN=stable
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+}
+
+build() {
+  cd "$srcdir/.."
+  export RUSTUP_TOOLCHAIN=stable
+  export CARGO_TARGET_DIR=target
+  cargo build --frozen --release --bin veles
+}
+
+check() {
+  cd "$srcdir/.."
+  export RUSTUP_TOOLCHAIN=stable
+  # Library tests only: the full suite wants a Tk display. Scratch on
+  # tmpfs where there is one.
+  TMPDIR="${TMPDIR:-/dev/shm}" cargo test --frozen --release --lib || true
+}
+
+package() {
+  cd "$srcdir/.."
+  install -Dm0755 target/release/veles "$pkgdir/usr/bin/veles"
+  install -Dm0644 scripts/install/units/veles.service \
+    "$pkgdir/usr/lib/systemd/user/veles.service"
+  sed -i 's|@VELES_BIN@|/usr/bin/veles|' "$pkgdir/usr/lib/systemd/user/veles.service"
+}

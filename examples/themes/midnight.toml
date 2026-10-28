@@ -1,0 +1,17 @@
+# Example user theme for the veles TUI (ratatui).
+# Copy to ~/.config/veles/themes/<name>.toml and run `/themes` in the TUI, or
+# set `VELES_TUI_THEME=<name>` / `tui.theme = "<name>"` in config.toml.
+# Every key is a "#rrggbb" hex string.
+name = "midnight"
+bg        = "#0b0f1a"
+panel     = "#131a2e"
+panel_hi  = "#1f2a4a"
+hair      = "#2a3a5a"
+pink      = "#ff5c8a"
+cyan      = "#4dd0e1"
+purple    = "#9d8cff"
+gold      = "#ffd166"
+green     = "#4ade80"
+red       = "#ff5c5c"
+text      = "#e6ebff"
+dim       = "#7a86a8"

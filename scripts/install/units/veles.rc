@@ -1,0 +1,34 @@
+#!/bin/sh
+#
+# FreeBSD rc.d script for the veles gateway.
+#
+# PROVIDE: veles
+# REQUIRE: LOGIN NETWORKING
+# KEYWORD: shutdown
+#
+# Enable with:  sysrc veles_enable=YES && service veles start
+#
+# veles_user defaults to a dedicated account; a workstation install
+# usually wants `sysrc veles_user=$(whoami)` so the agent keeps using
+# that user's own ~/.config/veles and ~/.local/share/veles.
+#
+# NOTE: FreeBSD is the host for the `jail` sandbox backend. jail(8)
+# needs root, so a veles running as an unprivileged user cannot use it —
+# that is a real constraint, not an oversight: use `native` (the safe
+# Tcl interp) unless veles itself runs as root.
+
+. /etc/rc.subr
+
+name="veles"
+rcvar="veles_enable"
+
+load_rc_config $name
+: "${veles_enable:=NO}"
+: "${veles_user:=veles}"
+: "${veles_bin:=/usr/local/bin/veles}"
+
+pidfile="/var/run/${name}.pid"
+command="/usr/sbin/daemon"
+command_args="-P ${pidfile} -r -f -u ${veles_user} ${veles_bin} gateway run"
+
+run_rc_command "$1"

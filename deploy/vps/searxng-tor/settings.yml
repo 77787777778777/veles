@@ -1,0 +1,37 @@
+# deploy/vps/searxng-tor/settings.yml —
+# /srv/pool/veles-sbx/searxng-tor/settings.yml (setup.sh writes a fresh
+# secret_key in place of @SECRET@, once).
+#
+# The SearXNG other people's searches go to (PLAN-challenge-relay.md D5).
+# It runs as veles-sbx, so it reaches the engines over Tor. Measured from
+# this host's Tor on 2026-10-12, two queries each:
+#   - relevant results: google cse (the best by far), yep, naver
+#   - answers, poor ones: bing, yahoo (left off)
+#   - refused a Tor exit at the first query: duckduckgo, google, brave,
+#     qwant (off, so they are not asked and suspended over and over)
+use_default_settings: true
+server:
+  secret_key: "@SECRET@"
+  limiter: false
+  image_proxy: false
+  method: GET
+search:
+  formats:
+    - html
+    - json
+outgoing:
+  request_timeout: 10.0
+  max_request_timeout: 20.0
+engines:
+  - name: duckduckgo
+    disabled: true
+  - name: google
+    disabled: true
+  - name: brave
+    disabled: true
+  - name: qwant
+    disabled: true
+  - name: yep
+    disabled: false
+  - name: naver
+    disabled: false

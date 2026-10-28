@@ -1,0 +1,72 @@
+# CI — runs exactly what a developer runs locally.
+#
+# The whole gate is `nix flake check`, deliberately: local and CI cannot
+# drift, because there is only one definition of "passing" (flake.nix
+# `checks`). It covers cargo test, clippy -D warnings, rustfmt, and the
+# Tcl/Tk desktop suite under Xvfb.
+#
+# Before this workflow existed the project had no automated verification
+# at all — 251 Rust tests and a Tcl suite that nothing ever ran.
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  # Any branch can be checked on demand without pushing to master:
+  #   gh workflow run ci.yml --ref <branch>
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  flake-check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    steps:
+      # v5 is the Node 24 release. v4 still ran, but every run annotated
+      # "Node.js 20 is deprecated ... forced to run on Node.js 24".
+      - uses: actions/checkout@v5
+
+      # Must run before Nix is installed: the build needs the space on /.
+      - uses: ./.github/actions/free-disk
+
+      - uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      # Store cache. magic-nix-cache-action@v7 held this slot before and had
+      # stopped working: every run logged "Failed to restore: Cache service
+      # responded with 400", then "Failed to save: <h2>Our services aren't
+      # available right now</h2>" — two error annotations per push in exchange
+      # for nothing, because the closure was rebuilt from scratch regardless.
+      # That rebuild is the whole cost: the `nix flake check` closure measures
+      # ~1.7 GB (narSize summed over the five check outputs, 2026-09-16), so
+      # GitHub's own 10 GB cache holds it with room to spare, and a cache
+      # round-trip is minutes against the ~67 minutes a cold run pays.
+      #
+      # Keying: the primary key carries the push sha, so each run can save (a
+      # primary-key hit would skip the save and leave that push's source
+      # outputs uncached forever); on a miss the restore falls back to any
+      # earlier nix- cache, which makes the build incremental. purge-created: 0
+      # then leaves exactly one store cache behind.
+      - name: Restore and save Nix store
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-${{ runner.os }}-${{ github.sha }}
+          restore-prefixes-first-match: |
+            nix-${{ runner.os }}-
+          purge: true
+          purge-prefixes: |
+            nix-${{ runner.os }}-
+          purge-created: 0
+          purge-primary-key: never
+          gc-max-store-size-linux: 6G
+
+      - name: nix flake check
+        # --keep-going: one red check must not cancel the others, so a single
+        # run reports every failure (Actions minutes are limited).
+        run: nix flake check --print-build-logs --keep-going

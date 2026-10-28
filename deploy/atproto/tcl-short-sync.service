@@ -1,0 +1,30 @@
+# deploy/atproto/tcl-short-sync.service → /etc/systemd/system/
+#
+# Publish the adapter's /t/<id> redirect files to the docroot nginx serves
+# (`location ~ ^/t/([A-Za-z0-9]+)$ { alias /srv/hermes-published/tcl/s/$1; }`
+# in the 7778777.online vhost).
+#
+# Runs as veles, NOT root: the source is written by the gateway (veles),
+# and a root rsync over a tree another user controls is the classic way
+# to be walked into /etc. `-rt` without `-l` copies regular files only —
+# a symlink planted in the source is skipped, never followed or copied.
+# The destination dir is owned by veles; nginx reads it world-readable.
+[Unit]
+Description=Publish tcl-short redirect files to the docroot
+
+[Service]
+Type=oneshot
+User=veles
+Group=veles
+#
+# Twice, two seconds apart: a change made while the service runs does not
+# trigger the path unit again, and a takedown removes several files in
+# one burst. On 2026-10-12 four deletes left two /t/ links public until a
+# manual start (the first rsync ran between them).
+ExecStart=/usr/bin/rsync -rt --delete --chmod=D755,F644 /srv/pool/veles/data/plugin-state/atproto/tcl-short/ /srv/hermes-published/tcl/s/
+ExecStart=/usr/bin/sleep 2
+ExecStart=/usr/bin/rsync -rt --delete --chmod=D755,F644 /srv/pool/veles/data/plugin-state/atproto/tcl-short/ /srv/hermes-published/tcl/s/
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/srv/hermes-published/tcl/s
+PrivateTmp=yes

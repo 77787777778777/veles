@@ -1,0 +1,23 @@
+[package]
+name = "veles-types"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "What veles and its process plugins both speak: the bus messages, the sender context, the ask shapes and the JSON-RPC peer. No engine code."
+
+# A process plugin links THIS and the SDK, never veles-core: in a second
+# process every piece of core's per-process state (the live ACL, the ask
+# registry, the store) would exist and be empty, and the empty ACL is the
+# owner-by-default one. Keeping core out of a plugin's dependency graph
+# makes that mistake a compile error. It also keeps libtcl out, so a
+# plugin can build as a static binary (PLAN-plugins-installer.md D2).
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+async-trait = "0.1"
+tracing = "0.1"
+tokio = { version = "1", features = ["io-util", "sync", "rt", "time", "macros"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["io-util", "sync", "rt", "rt-multi-thread", "time", "macros"] }

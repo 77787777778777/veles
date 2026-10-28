@@ -1,0 +1,19 @@
+# deploy/atproto/tcl-short-sync.path → /etc/systemd/system/
+#
+# The atproto PLUGIN writes a `/t/<id>` redirect page for each published
+# /tcl result into its plugin-state dir (/opt/data/plugin-state/atproto/
+# tcl-short in the container; the linked adapter used /opt/data/tcl-short
+# until the 2026-10-07 cutover — every short link posted between then and
+# 2026-10-09 20:36 was a 404 because this unit still watched the old
+# dir). That dir is private to the veles user (its parents are 0700), so
+# nginx cannot read it; this unit copies new files into the public
+# docroot whenever the dir changes.
+[Unit]
+Description=Watch the veles container's tcl-short dir and republish
+
+[Path]
+PathChanged=/srv/pool/veles/data/plugin-state/atproto/tcl-short
+Unit=tcl-short-sync.service
+
+[Install]
+WantedBy=multi-user.target

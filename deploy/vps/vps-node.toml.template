@@ -1,0 +1,47 @@
+# deploy/vps/vps-node.toml.template — the VPS's OWN sections.
+#
+# The VPS's config.toml is the laptop's shared config (everything but
+# [node], [cluster], [tui] and [a2a_agents.*], which are node-local and
+# never replicate) followed by this, with the @…@ placeholders filled in
+# at staging (deploy/README.md, "Staging"). Tokens are written here and
+# in the .env by hand from the laptop, never printed.
+
+[node]
+name = "vps"
+uptime_class = "always-on"
+# What the laptop and the phone dial: the published A2A port, WireGuard.
+endpoint = "http://10.0.30.1:9900"
+
+# What this node presents to each peer: the token that peer's
+# A2A_PEER_TOKENS names as `vps:<token>`.
+[a2a_agents.laptop]
+url = "http://10.0.30.2:9900"
+auth = { type = "bearer", token = "@VPS_TOKEN_AT_LAPTOP@" }
+
+[a2a_agents.phone]
+url = "http://10.0.30.3:9900"
+auth = { type = "bearer", token = "@VPS_TOKEN_AT_PHONE@" }
+
+[cluster]
+# This node: it arbitrates the singletons (Telegram, IRC, cron) for all
+# three, and holds them itself (it asks first, locally, at boot).
+arbiter = "@VPS_NODE_ID@"
+gossip_peers = ["laptop", "phone"]
+memsync_peers = ["laptop", "phone"]
+task_peers = ["laptop", "phone"]
+storesync_peers = ["laptop", "phone"]
+storesync_auto = true
+# 0, as on the laptop: a peer (re)added never gets a burst of history —
+# the phone takes its replicas over mobile data.
+storesync_backfill_days = 0
+memsync_auto = true
+failover = true
+# The signer beside it, reached on its published port: its API is all of
+# it the gateway can touch (a separate user; deploy/vps/veles.nft).
+signers = ["http://10.0.30.1:9911"]
+
+[cluster.ticket_signers.vps-signer]
+key = "@VPS_SIGNER_PUBLIC_KEY@"
+
+[cluster.ticket_signers.laptop]
+key = "@LAPTOP_PUBLIC_KEY@"

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  veles userland: the phone's distro, as a package of its own
+  (PLAN-phone-userland.md T3; docs/phone.md "The userland package").
+
+  targetSdk 28, set by the build (flake.nix, userlandTargetSdk): from 29
+  on, Android's SELinux policy denies an app executing its own data
+  files, and a package manager is nothing but that. The gateway
+  (chat.janitor.veles) stays on the current SDK and reaches this app's
+  exec broker through UserlandService's Binder: the two apps' SELinux
+  domains may not connect to each other's sockets (T3 §2 R1b), so every
+  session is a socketpair the service makes and hands out.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="chat.janitor.veles.userland">
+
+    <!-- apk add, git clone, curl: the guest's own network. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- The DNS servers of the active network, for the guest's resolv.conf. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- The broker's children keep running with the screen off. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!--
+      Who may bind UserlandService and open sessions: an app signed with
+      this package's key, which is the gateway (it asks for this in its own
+      manifest). The service checks the calling uid as well.
+    -->
+    <permission
+        android:name="chat.janitor.veles.userland.permission.OPEN_SESSION"
+        android:label="@string/permission_open_session"
+        android:protectionLevel="signature" />
+
+    <!--
+      extractNativeLibs: proot, its loader and the broker are executables
+      in lib/arm64-v8a, and run only from the extracted library directory.
+      allowBackup false: the rootfs is the person's machine, not a backup's.
+    -->
+    <application
+        android:label="@string/app_name"
+        android:icon="@android:drawable/sym_def_app_icon"
+        android:extractNativeLibs="true"
+        android:allowBackup="false">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+          Exported for one caller: the gateway binds it (which starts it,
+          and the broker with it) and asks it for sessions, behind the
+          signature permission above.
+        -->
+        <service
+            android:name=".UserlandService"
+            android:exported="true"
+            android:permission="chat.janitor.veles.userland.permission.OPEN_SESSION" />
+    </application>
+</manifest>

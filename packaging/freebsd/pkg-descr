@@ -1,0 +1,8 @@
+Rust core + Tcl scripting AI agent framework.
+
+Veles is an agent runtime with a Rust engine and a Tcl scripting
+surface. On FreeBSD the jail(8) sandbox backend fences untrusted code;
+it needs root, so an unprivileged veles uses the native safe-interp
+fence instead.
+
+WWW: https://github.com/veles-agent/veles-agent

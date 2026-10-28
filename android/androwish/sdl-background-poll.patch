@@ -1,0 +1,126 @@
+The desktop stops waking hundreds of times a second in the background.
+
+USER 2026-10-04: "Battery usage on android is horrendous, we need to
+make this thing yield a lot more and only activate when needed".
+AndroWish builds SDL with SDL_ANDROID_BLOCK_ON_PAUSE=0, so a paused
+desktop keeps running Tcl (its background handler closes the streams
+and stops the polls, android.tcl) — and three polling loops with it.
+Measured on the phone 2026-10-04, backgrounded, per thread: ~5% of a
+core for as long as Android kept it the "previous app" (oom adj 700,
+never frozen), and they run in the foreground too:
+
+- SDL 2.0.6's SDL_WaitEventTimeout waits by polling, SDL_Delay(10).
+  Paused, it polls at 4 Hz; the resume is the one event that matters
+  then, and 250 ms is no wait to notice it.
+- SDL_config_android.h lacks HAVE_SEM_TIMEDWAIT, so SDL_SemWaitTimeout
+  polls with SDL_Delay(1): the timer thread, between sdl2tk's frame
+  ticks, woke ~1000 times a second. Bionic has always had
+  sem_timedwait.
+- sdl2tk caps Tcl's every wait at 20 ms to look at its X queue (the
+  Tcl thread and its notifier traded ~114 bytes a second through the
+  notifier's pipe). In the background the cap is 250 ms; Tcl's own
+  timers and sockets wake it as before.
+
+--- a/jni/SDL2/include/SDL_config_android.h	2026-10-04 21:16:58.534339660 +0200
++++ b/jni/SDL2/include/SDL_config_android.h	2026-10-04 21:16:58.552634280 +0200
+@@ -110,6 +110,10 @@
+ #define HAVE_NANOSLEEP  1
+ #define HAVE_SYSCONF    1
+ #define HAVE_CLOCK_GETTIME	1
++/* Bionic has always had sem_timedwait. Without this SDL_SemWaitTimeout
++   polls with SDL_Delay(1): the timer thread's every wait was ~1000
++   wake-ups a second, foreground and background. */
++#define HAVE_SEM_TIMEDWAIT 1
+ 
+ #define SIZEOF_VOIDP 4
+ 
+--- a/jni/SDL2/src/events/SDL_events.c	2026-10-04 21:16:58.520882784 +0200
++++ b/jni/SDL2/src/events/SDL_events.c	2026-10-04 21:16:58.539790677 +0200
+@@ -33,6 +33,11 @@
+ #include "../video/SDL_sysvideo.h"
+ #include "SDL_syswm.h"
+ 
++#ifdef __ANDROID__
++/* Set by Android_PumpEvents while the activity is paused. */
++extern int Android_Paused;
++#endif
++
+ /*#define SDL_DEBUG_EVENTS 1*/
+ 
+ /* An arbitrary limit so we don't have unbounded growth */
+@@ -676,7 +681,16 @@
+                 /* Timeout expired and no events */
+                 return 0;
+             }
++#ifdef __ANDROID__
++            /* AndroWish keeps this loop running while the activity is
++               paused (SDL_ANDROID_BLOCK_ON_PAUSE=0, so Tcl's timers and
++               sockets carry on). Nothing is drawn then and the only
++               event that matters is the resume: 4 polls a second, not
++               100, which kept a core 3-5% busy in the background. */
++            SDL_Delay(Android_Paused ? 250 : 10);
++#else
+             SDL_Delay(10);
++#endif
+             break;
+         default:
+             /* Has events */
+--- a/jni/SDL2/src/video/android/SDL_androidevents.c	2026-10-04 21:16:58.531087499 +0200
++++ b/jni/SDL2/src/video/android/SDL_androidevents.c	2026-10-04 21:16:58.539873242 +0200
+@@ -60,6 +60,9 @@
+     SDL_GL_MakeCurrent(Android_Window, NULL);
+ }
+ 
++/* The activity is paused: SDL_WaitEventTimeout polls slowly then. */
++int Android_Paused = 0;
++
+ void
+ Android_PumpEvents(_THIS)
+ {
+@@ -85,6 +88,7 @@
+         if(SDL_SemTryWait(Android_ResumeSem) == 0) {
+ #endif
+             isPaused = 0;
++            Android_Paused = 0;
+             ANDROIDAUDIO_ResumeDevices();
+             /* Restore the GL Context from here, as this operation is thread dependent */
+             if (!SDL_HasEvent(SDL_QUIT)) {
+@@ -110,6 +114,7 @@
+             android_egl_context_backup();
+             ANDROIDAUDIO_PauseDevices();
+             isPaused = 1;
++            Android_Paused = 1;
+         }
+ #endif
+     }
+--- a/jni/sdl2tk/sdl/tkSDLEvent.c	2026-10-04 21:16:58.536914825 +0200
++++ b/jni/sdl2tk/sdl/tkSDLEvent.c	2026-10-04 21:16:58.552718549 +0200
+@@ -12,6 +12,8 @@
+ 
+ #include "tclInt.h"	/* for TclpGetMonotonicTime() */
+ #include "tkSDLInt.h"
++#include "SdlTkX.h"
++#include "SdlTkInt.h"
+ #ifdef _WIN32
+ #include <windows.h>
+ #endif
+@@ -240,6 +242,9 @@
+     TkDisplay *dispPtr;
+     static Tcl_Time blockTime = { 0, 0 };
+     static Tcl_Time blockTime20 = { 0, 20000 };
++    /* In the background nothing is drawn: the queue is looked at 4 times
++       a second, not 50 (Tcl's own timers and sockets wake it anyway). */
++    static Tcl_Time blockTimeAway = { 0, 250000 };
+ 
+     if (!(flags & TCL_WINDOW_EVENTS)) {
+ 	return;
+@@ -257,7 +262,8 @@
+ 	if (XEventsQueued(dispPtr->display, QueuedAlready) > 0) {
+ 	    Tcl_SetMaxBlockTime(&blockTime);
+ 	} else {
+-	    Tcl_SetMaxBlockTime(&blockTime20);
++	    Tcl_SetMaxBlockTime(SdlTkX.in_background ?
++		&blockTimeAway : &blockTime20);
+ 	}
+     }
+ }

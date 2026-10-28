@@ -1,0 +1,4 @@
+name = "tcl-anthropic-driver"
+kind = "tcl"
+entry = "plugin.tcl"
+description = "Reference PROVIDER DRIVER: speaks the Anthropic Messages wire, in Tcl. Registers `anthropic-messages` via veles::register_provider; reach it with api_mode = \"plugin\", driver = \"anthropic-messages\". The same driver exists as an out-of-tree .so (crates/veles-plugin-anthropic-so) and a test asserts both produce an identical Completion from one fixture."

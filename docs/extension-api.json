@@ -1,0 +1,1383 @@
+{
+  "abi": {
+    "consts": [
+      {
+        "name": "VELES_PLUGIN_ABI_VERSION",
+        "type": "u32",
+        "value": "4"
+      },
+      {
+        "name": "SYMBOL_ABI_VERSION",
+        "type": "&[u8]",
+        "value": "b\"veles_plugin_abi_version\\0\""
+      },
+      {
+        "name": "SYMBOL_INIT",
+        "type": "&[u8]",
+        "value": "b\"veles_plugin_init\\0\""
+      },
+      {
+        "name": "SYMBOL_FREE",
+        "type": "&[u8]",
+        "value": "b\"veles_plugin_free_string\\0\""
+      },
+      {
+        "name": "VELES_OK",
+        "type": "i32",
+        "value": "0"
+      },
+      {
+        "name": "VELES_ERR_NO_SUCH_HANDLE",
+        "type": "i32",
+        "value": "1"
+      },
+      {
+        "name": "VELES_ERR_BAD_ARGUMENT",
+        "type": "i32",
+        "value": "2"
+      },
+      {
+        "name": "VELES_ERR_REFUSED",
+        "type": "i32",
+        "value": "3"
+      },
+      {
+        "name": "FILTER_NONE",
+        "type": "i32",
+        "value": "0"
+      },
+      {
+        "name": "FILTER_SKIP",
+        "type": "i32",
+        "value": "1"
+      },
+      {
+        "name": "FILTER_ALLOW",
+        "type": "i32",
+        "value": "2"
+      },
+      {
+        "name": "FILTER_REWRITE",
+        "type": "i32",
+        "value": "3"
+      },
+      {
+        "name": "SOCK_CONNECTED",
+        "type": "i32",
+        "value": "0"
+      },
+      {
+        "name": "SOCK_DATA",
+        "type": "i32",
+        "value": "1"
+      },
+      {
+        "name": "SOCK_CLOSED",
+        "type": "i32",
+        "value": "2"
+      },
+      {
+        "name": "SOCK_ERROR",
+        "type": "i32",
+        "value": "3"
+      },
+      {
+        "name": "JSON_KIND_SERVICE",
+        "type": "&str",
+        "value": "\"service\""
+      }
+    ],
+    "structs": [
+      {
+        "fields": [
+          {
+            "name": "clone",
+            "type": "unsafe extern \"C\" fn(*mut c_void) -> *mut c_void"
+          },
+          {
+            "name": "wake",
+            "type": "unsafe extern \"C\" fn(*mut c_void)"
+          },
+          {
+            "name": "drop",
+            "type": "unsafe extern \"C\" fn(*mut c_void)"
+          },
+          {
+            "name": "data",
+            "type": "*mut c_void"
+          }
+        ],
+        "name": "VelesWaker"
+      },
+      {
+        "fields": [
+          {
+            "name": "poll",
+            "type": "unsafe extern \"C\" fn(*mut c_void, *const VelesWaker) -> i32"
+          },
+          {
+            "name": "take",
+            "type": "unsafe extern \"C\" fn(*mut c_void) -> *mut c_char"
+          },
+          {
+            "name": "drop",
+            "type": "unsafe extern \"C\" fn(*mut c_void)"
+          },
+          {
+            "name": "ctx",
+            "type": "*mut c_void"
+          }
+        ],
+        "name": "VelesFuture"
+      },
+      {
+        "fields": [
+          {
+            "name": "name",
+            "type": "*const c_char"
+          },
+          {
+            "name": "description",
+            "type": "*const c_char"
+          },
+          {
+            "name": "schema_json",
+            "type": "*const c_char"
+          },
+          {
+            "name": "call",
+            "type": "Option<VelesToolCallFn>"
+          },
+          {
+            "name": "call_async",
+            "type": "Option<VelesToolCallAsyncFn>"
+          },
+          {
+            "name": "ctx",
+            "type": "*mut c_void"
+          }
+        ],
+        "name": "VelesToolSpec"
+      },
+      {
+        "fields": [
+          {
+            "name": "name",
+            "type": "*const c_char"
+          },
+          {
+            "name": "description",
+            "type": "*const c_char"
+          },
+          {
+            "name": "render",
+            "type": "VelesCommandRenderFn"
+          },
+          {
+            "name": "ctx",
+            "type": "*mut c_void"
+          }
+        ],
+        "name": "VelesCommandSpec"
+      },
+      {
+        "fields": [
+          {
+            "name": "name",
+            "type": "*const c_char"
+          },
+          {
+            "name": "chat",
+            "type": "VelesProviderChatFn"
+          },
+          {
+            "name": "ctx",
+            "type": "*mut c_void"
+          }
+        ],
+        "name": "VelesProviderSpec"
+      },
+      {
+        "fields": [
+          {
+            "name": "key",
+            "type": "*const c_char"
+          },
+          {
+            "name": "public_feed",
+            "type": "u8"
+          },
+          {
+            "name": "deliver",
+            "type": "VelesDeliverFn"
+          },
+          {
+            "name": "ctx",
+            "type": "*mut c_void"
+          }
+        ],
+        "name": "VelesPlatformSpec"
+      },
+      {
+        "fields": [
+          {
+            "name": "abi_version",
+            "type": "u32"
+          },
+          {
+            "name": "struct_size",
+            "type": "usize"
+          },
+          {
+            "name": "register_hook",
+            "type": "unsafe extern \"C\" fn(VelesPluginId, *const c_char, VelesHookFn, *mut c_void) -> VelesHandle"
+          },
+          {
+            "name": "register_tool",
+            "type": "unsafe extern \"C\" fn(VelesPluginId, *const VelesToolSpec) -> VelesHandle"
+          },
+          {
+            "name": "register_command",
+            "type": "unsafe extern \"C\" fn(VelesPluginId, *const VelesCommandSpec) -> VelesHandle"
+          },
+          {
+            "name": "register_provider",
+            "type": "unsafe extern \"C\" fn(VelesPluginId, *const VelesProviderSpec) -> VelesHandle"
+          },
+          {
+            "name": "register_gateway_filter",
+            "type": "unsafe extern \"C\" fn(VelesPluginId, VelesFilterFn, *mut c_void) -> VelesHandle"
+          },
+          {
+            "name": "register_platform",
+            "type": "unsafe extern \"C\" fn(VelesPluginId, *const VelesPlatformSpec) -> VelesHandle"
+          },
+          {
+            "name": "unregister",
+            "type": "unsafe extern \"C\" fn(VelesPluginId, VelesHandle) -> i32"
+          },
+          {
+            "name": "platform_inbound",
+            "type": "unsafe extern \"C\" fn(VelesPluginId, *const c_char) -> i32"
+          },
+          {
+            "name": "timer_after",
+            "type": "unsafe extern \"C\" fn(VelesPluginId, u64, VelesTimerFn, *mut c_void) -> VelesHandle"
+          },
+          {
+            "name": "timer_cancel",
+            "type": "unsafe extern \"C\" fn(VelesPluginId, VelesHandle) -> i32"
+          },
+          {
+            "name": "tcp_connect",
+            "type": "unsafe extern \"C\" fn(VelesPluginId, *const c_char, u16, u8, VelesSocketEventFn, *mut c_void) -> VelesHandle"
+          },
+          {
+            "name": "tcp_send",
+            "type": "unsafe extern \"C\" fn(VelesPluginId, VelesHandle, *const u8, usize) -> i32"
+          },
+          {
+            "name": "tcp_close",
+            "type": "unsafe extern \"C\" fn(VelesPluginId, VelesHandle) -> i32"
+          },
+          {
+            "name": "host_call",
+            "type": "unsafe extern \"C\" fn(*const c_char, *const c_char) -> *mut c_char"
+          },
+          {
+            "name": "host_free_string",
+            "type": "unsafe extern \"C\" fn(*mut c_char)"
+          },
+          {
+            "name": "register_json",
+            "type": "unsafe extern \"C\" fn(VelesPluginId, *const c_char, *const c_char, *const c_char, VelesJsonFn, *mut c_void) -> VelesHandle"
+          }
+        ],
+        "name": "VelesHostApi"
+      }
+    ],
+    "types": [
+      {
+        "name": "VelesPluginId",
+        "type": "u64"
+      },
+      {
+        "name": "VelesHandle",
+        "type": "u64"
+      },
+      {
+        "name": "VelesAbiVersionFn",
+        "type": "unsafe extern \"C\" fn() -> u32"
+      },
+      {
+        "name": "VelesInitFn",
+        "type": "unsafe extern \"C\" fn(*const VelesHostApi, VelesPluginId) -> i32"
+      },
+      {
+        "name": "VelesFreeFn",
+        "type": "unsafe extern \"C\" fn(*mut c_char)"
+      },
+      {
+        "name": "VelesHookFn",
+        "type": "unsafe extern \"C\" fn(*const c_char, *mut c_void) -> *mut c_char"
+      },
+      {
+        "name": "VelesToolCallFn",
+        "type": "unsafe extern \"C\" fn(*const c_char, *mut c_void) -> *mut c_char"
+      },
+      {
+        "name": "VelesToolCallAsyncFn",
+        "type": "unsafe extern \"C\" fn(*const c_char, *mut c_void) -> *mut VelesFuture"
+      },
+      {
+        "name": "VelesFilterFn",
+        "type": "unsafe extern \"C\" fn(*const c_char, *const c_char, *const c_char, *mut *mut c_char, *mut c_void) -> i32"
+      },
+      {
+        "name": "VelesCommandRenderFn",
+        "type": "unsafe extern \"C\" fn(*const c_char, *mut c_void) -> *mut c_char"
+      },
+      {
+        "name": "VelesProviderChatFn",
+        "type": "unsafe extern \"C\" fn(*const c_char, *mut c_void) -> *mut c_char"
+      },
+      {
+        "name": "VelesDeliverFn",
+        "type": "unsafe extern \"C\" fn(*const c_char, *mut c_void) -> i32"
+      },
+      {
+        "name": "VelesTimerFn",
+        "type": "unsafe extern \"C\" fn(*mut c_void)"
+      },
+      {
+        "name": "VelesSocketEventFn",
+        "type": "unsafe extern \"C\" fn(i32, *const u8, usize, *mut c_void)"
+      },
+      {
+        "name": "VelesJsonFn",
+        "type": "unsafe extern \"C\" fn(*const c_char, *mut c_void) -> *mut c_char"
+      }
+    ]
+  },
+  "api_version": "0.9",
+  "bindings": {
+    "js": [
+      "call",
+      "log",
+      "registerTool",
+      "registerCommand",
+      "hook",
+      "registerService",
+      "serviceNext",
+      "serviceCall",
+      "services",
+      "toolCall",
+      "callLLM",
+      "httpGet",
+      "httpPost",
+      "httpStreamOpen",
+      "httpStreamNext",
+      "httpStreamClose",
+      "configGet",
+      "configSet",
+      "note",
+      "sendOutbound",
+      "principal",
+      "sandboxWhere",
+      "sessions",
+      "history",
+      "usageTotals",
+      "limits",
+      "nodes",
+      "routes",
+      "tasks",
+      "taskCancel",
+      "providerEmit",
+      "jsonGet"
+    ],
+    "lisp": [
+      "call",
+      "log-line",
+      "register-tool",
+      "register-command",
+      "hook",
+      "register-service",
+      "service-call",
+      "service-next",
+      "services",
+      "tool-call",
+      "call-llm",
+      "http-get",
+      "http-post",
+      "http-stream-open",
+      "http-stream-next",
+      "http-stream-close",
+      "config-get",
+      "config-set",
+      "note",
+      "send-outbound",
+      "principal",
+      "sandbox-where",
+      "sessions",
+      "history",
+      "usage-totals",
+      "limits",
+      "nodes",
+      "routes",
+      "tasks",
+      "task-cancel",
+      "provider-emit",
+      "json-get",
+      "json-parse",
+      "json-string",
+      "obj",
+      "spawn"
+    ],
+    "racket": [
+      "veles-call",
+      "veles-log",
+      "register-tool",
+      "register-command",
+      "hook",
+      "register-service",
+      "service-call",
+      "service-next",
+      "services",
+      "tool-call",
+      "call-llm",
+      "http-get",
+      "http-post",
+      "http-stream-open",
+      "http-stream-next",
+      "http-stream-close",
+      "config-get",
+      "config-set",
+      "note",
+      "send-outbound",
+      "principal",
+      "sandbox-where",
+      "sessions",
+      "history",
+      "usage-totals",
+      "limits",
+      "nodes",
+      "routes",
+      "tasks",
+      "task-cancel",
+      "provider-emit",
+      "json-get"
+    ],
+    "tcl": [
+      "::veles::call_llm system user ?provider? ?model?",
+      "::veles::json_get json key ?arg …?",
+      "::veles::routes",
+      "::veles::sessions",
+      "::veles::history session_id ?limit?",
+      "::veles::usage_totals ?session_id?",
+      "::veles::nodes",
+      "::veles::config_get path",
+      "::veles::config_set path value",
+      "::veles::http_get url ?headers_json?",
+      "::veles::http_post url body ?content_type? ?headers_json?",
+      "::veles::http_stream_open url body ?content_type? ?headers_json?",
+      "::veles::http_stream_next id",
+      "::veles::http_stream_close id",
+      "::veles::send_outbound platform chat_id text",
+      "::veles::note summary ?detail?",
+      "::veles::tasks",
+      "::veles::task_cancel id",
+      "::veles::tool_call name args_json ?session_id?",
+      "::veles::register_tool name description schema_json procname",
+      "::veles::service_call name params_json ?session_id?",
+      "::veles::services",
+      "::veles::register_service name procname ?description? ?cap?",
+      "::veles::service_next token params_json",
+      "::veles::register_provider name procname",
+      "::veles::provider_emit chunk_json",
+      "::veles::register_command name description procname",
+      "::veles::hook hookname procname",
+      "::veles::plugin_unload name",
+      "::veles::hook_disable hookname procname",
+      "::veles::hook_enable hookname procname",
+      "::veles::hook_is_off hookname procname",
+      "::veles::hooks_list",
+      "::veles::hooks_json",
+      "::veles::hooks_off_clear",
+      "::veles::dispatch_hook hookname",
+      "::veles::principal ?session_id?",
+      "::veles::sandbox_where ?session_id?",
+      "::veles::limits"
+    ]
+  },
+  "generated_by": "veles plugins api --write (do not edit by hand)",
+  "hooks": {
+    "fired": [
+      "pre_tool_call",
+      "post_tool_call",
+      "pre_llm_call",
+      "post_llm_call",
+      "api_request_error",
+      "on_session_start",
+      "pre_gateway_dispatch",
+      "pre_approval_request",
+      "post_approval_response",
+      "compact_start",
+      "compact_end",
+      "failover",
+      "subagent_start",
+      "subagent_stop",
+      "background_child_complete",
+      "device_event"
+    ],
+    "reserved": [
+      "transform_terminal_output",
+      "transform_tool_result",
+      "transform_llm_output",
+      "pre_verify",
+      "pre_api_request",
+      "post_api_request",
+      "on_session_end",
+      "on_session_finalize",
+      "on_session_reset",
+      "kanban_task_claimed",
+      "kanban_task_completed",
+      "kanban_task_blocked"
+    ]
+  },
+  "manifest": {
+    "HookDecl": [
+      "name",
+      "description"
+    ],
+    "Instances": [
+      {
+        "keys": [
+          "kind"
+        ],
+        "kind": "single"
+      },
+      {
+        "keys": [
+          "array",
+          "kind",
+          "name"
+        ],
+        "kind": "per_entry"
+      }
+    ],
+    "Manifest": [
+      "name",
+      "version",
+      "protocol",
+      "description",
+      "instances",
+      "lease",
+      "platforms",
+      "config_sections",
+      "knobs",
+      "secrets",
+      "services",
+      "uses",
+      "hooks",
+      "enabled_env",
+      "required_env",
+      "points"
+    ],
+    "OnError": [
+      "fall_through",
+      "fail"
+    ],
+    "PlatformDecl": [
+      "key",
+      "public_feed"
+    ],
+    "PointDecl": [
+      "name",
+      "summary",
+      "input",
+      "output",
+      "on_error",
+      "deadline_ms"
+    ],
+    "SecretDecl": [
+      "name",
+      "description",
+      "required"
+    ],
+    "ServiceDecl": [
+      "name",
+      "description",
+      "cap"
+    ],
+    "UseDecl": [
+      "name",
+      "optional",
+      "description"
+    ],
+    "service_cap_any": "any"
+  },
+  "ops": [
+    {
+      "js": "callLLM",
+      "lisp": "call-llm",
+      "name": "call_llm",
+      "racket": "call-llm",
+      "tcl": "::veles::call_llm system user ?provider? ?model?"
+    },
+    {
+      "js": "configGet",
+      "lisp": "config-get",
+      "name": "config_get",
+      "racket": "config-get",
+      "tcl": "::veles::config_get path"
+    },
+    {
+      "js": "configSet",
+      "lisp": "config-set",
+      "name": "config_set",
+      "racket": "config-set",
+      "tcl": "::veles::config_set path value"
+    },
+    {
+      "js": "history",
+      "lisp": "history",
+      "name": "history",
+      "racket": "history",
+      "tcl": "::veles::history session_id ?limit?"
+    },
+    {
+      "js": "httpGet",
+      "lisp": "http-get",
+      "name": "http_get",
+      "racket": "http-get",
+      "tcl": "::veles::http_get url ?headers_json?"
+    },
+    {
+      "js": "httpPost",
+      "lisp": "http-post",
+      "name": "http_post",
+      "racket": "http-post",
+      "tcl": "::veles::http_post url body ?content_type? ?headers_json?"
+    },
+    {
+      "js": "httpStreamClose",
+      "lisp": "http-stream-close",
+      "name": "http_stream_close",
+      "racket": "http-stream-close",
+      "tcl": "::veles::http_stream_close id"
+    },
+    {
+      "js": "httpStreamNext",
+      "lisp": "http-stream-next",
+      "name": "http_stream_next",
+      "racket": "http-stream-next",
+      "tcl": "::veles::http_stream_next id"
+    },
+    {
+      "js": "httpStreamOpen",
+      "lisp": "http-stream-open",
+      "name": "http_stream_open",
+      "racket": "http-stream-open",
+      "tcl": "::veles::http_stream_open url body ?content_type? ?headers_json?"
+    },
+    {
+      "js": "jsonGet",
+      "lisp": "json-get",
+      "name": "json_get",
+      "racket": "json-get",
+      "tcl": "::veles::json_get json key ?arg …?"
+    },
+    {
+      "js": "limits",
+      "lisp": "limits",
+      "name": "limits",
+      "racket": "limits",
+      "tcl": "::veles::limits"
+    },
+    {
+      "js": "note",
+      "lisp": "note",
+      "name": "note",
+      "racket": "note",
+      "tcl": "::veles::note summary ?detail?"
+    },
+    {
+      "js": "nodes",
+      "lisp": "nodes",
+      "name": "nodes",
+      "racket": "nodes",
+      "tcl": "::veles::nodes"
+    },
+    {
+      "js": "principal",
+      "lisp": "principal",
+      "name": "principal",
+      "racket": "principal",
+      "tcl": "::veles::principal ?session_id?"
+    },
+    {
+      "js": "providerEmit",
+      "lisp": "provider-emit",
+      "name": "provider_emit",
+      "racket": "provider-emit",
+      "tcl": "::veles::provider_emit chunk_json"
+    },
+    {
+      "js": "routes",
+      "lisp": "routes",
+      "name": "routes",
+      "racket": "routes",
+      "tcl": "::veles::routes"
+    },
+    {
+      "js": "sandboxWhere",
+      "lisp": "sandbox-where",
+      "name": "sandbox_where",
+      "racket": "sandbox-where",
+      "tcl": "::veles::sandbox_where ?session_id?"
+    },
+    {
+      "js": "sendOutbound",
+      "lisp": "send-outbound",
+      "name": "send_outbound",
+      "racket": "send-outbound",
+      "tcl": "::veles::send_outbound platform chat_id text"
+    },
+    {
+      "js": "serviceCall",
+      "lisp": "service-call",
+      "name": "service_call",
+      "racket": "service-call",
+      "tcl": "::veles::service_call name params_json ?session_id?"
+    },
+    {
+      "js": "serviceNext",
+      "lisp": "service-next",
+      "name": "service_next",
+      "racket": "service-next",
+      "tcl": "::veles::service_next token params_json"
+    },
+    {
+      "js": "services",
+      "lisp": "services",
+      "name": "services",
+      "racket": "services",
+      "tcl": "::veles::services"
+    },
+    {
+      "js": "sessions",
+      "lisp": "sessions",
+      "name": "sessions",
+      "racket": "sessions",
+      "tcl": "::veles::sessions"
+    },
+    {
+      "js": "taskCancel",
+      "lisp": "task-cancel",
+      "name": "task_cancel",
+      "racket": "task-cancel",
+      "tcl": "::veles::task_cancel id"
+    },
+    {
+      "js": "tasks",
+      "lisp": "tasks",
+      "name": "tasks",
+      "racket": "tasks",
+      "tcl": "::veles::tasks"
+    },
+    {
+      "js": "toolCall",
+      "lisp": "tool-call",
+      "name": "tool_call",
+      "racket": "tool-call",
+      "tcl": "::veles::tool_call name args_json ?session_id?"
+    },
+    {
+      "js": "usageTotals",
+      "lisp": "usage-totals",
+      "name": "usage_totals",
+      "racket": "usage-totals",
+      "tcl": "::veles::usage_totals ?session_id?"
+    }
+  ],
+  "override_points": [
+    {
+      "deadline_ms": 30000,
+      "input": {
+        "properties": {
+          "attempt": {
+            "description": "retries of this route so far (0 on its first failure)",
+            "type": "integer"
+          },
+          "config": {
+            "description": "what the configured policy says for this route",
+            "properties": {
+              "max_hops": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "mode": {
+                "enum": [
+                  "ask",
+                  "auto",
+                  "stop",
+                  "script"
+                ]
+              },
+              "script": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "core_would_fall_back": {
+            "description": "the error is one core falls back on (429, 5xx, network)",
+            "type": "boolean"
+          },
+          "error": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "rate_limited",
+                  "server",
+                  "network",
+                  "client",
+                  "truncated"
+                ]
+              },
+              "message": {
+                "type": "string"
+              },
+              "status": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "message"
+            ],
+            "type": "object"
+          },
+          "hops": {
+            "description": "routes left behind so far in this chain",
+            "type": "integer"
+          },
+          "interactive": {
+            "description": "a person can answer an ask in this session",
+            "type": "boolean"
+          },
+          "remaining_routes": {
+            "description": "the routes after this one, in chain order",
+            "items": {
+              "properties": {
+                "model": {
+                  "type": "string"
+                },
+                "provider": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "provider",
+                "model"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "route": {
+            "properties": {
+              "model": {
+                "type": "string"
+              },
+              "provider": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "provider",
+              "model"
+            ],
+            "type": "object"
+          },
+          "session_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "interactive",
+          "attempt",
+          "hops",
+          "route",
+          "error",
+          "core_would_fall_back",
+          "remaining_routes",
+          "config"
+        ],
+        "type": "object"
+      },
+      "name": "failover.decide",
+      "on_error": "fall_through",
+      "output": {
+        "properties": {
+          "action": {
+            "enum": [
+              "advance",
+              "retry",
+              "wait",
+              "goto",
+              "stop",
+              "ask",
+              "policy"
+            ]
+          },
+          "model": {
+            "description": "for `goto`: its model (empty: the provider's first route)",
+            "type": "string"
+          },
+          "provider": {
+            "description": "for `goto`: a configured route",
+            "type": "string"
+          },
+          "reason": {
+            "description": "shown with the decision",
+            "type": "string"
+          },
+          "seconds": {
+            "description": "for `wait`: how long, at most 3600",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "summary": "what to do after a call to a model route failed: retry it, wait and retry, try the next route, go to a named route, stop, ask the user, or apply the configured policy"
+    },
+    {
+      "deadline_ms": 10000,
+      "input": {
+        "properties": {
+          "disabled_skills": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "principal": {
+            "description": "who the session acts for (null: an owner surface)"
+          },
+          "prompt": {
+            "description": "the prompt core built",
+            "type": "string"
+          },
+          "session_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "type": "object"
+      },
+      "name": "prompt.build",
+      "on_error": "fall_through",
+      "output": {
+        "properties": {
+          "prompt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "type": "object"
+      },
+      "summary": "the system prompt a session starts with: core's (after any module layer) is handed in; answer it changed, or another"
+    },
+    {
+      "deadline_ms": 600000,
+      "input": {
+        "properties": {
+          "args": {
+            "description": "the call's arguments, as the model sent them"
+          },
+          "call_id": {
+            "description": "this call's id; core's default needs it, pass the input on to `next` whole",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "session_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "name",
+          "args",
+          "call_id"
+        ],
+        "type": "object"
+      },
+      "name": "tool.dispatch",
+      "on_error": "fall_through",
+      "output": {
+        "properties": {
+          "result": {
+            "description": "what the model sees",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "type": "object"
+      },
+      "summary": "every tool call a session makes: answer its result, or pass it (or a changed name and args) to `next`, which runs core's gated dispatch"
+    },
+    {
+      "deadline_ms": 10000,
+      "input": {
+        "description": "the inbound message (veles_types::bus::InboundMessage)",
+        "required": [
+          "platform",
+          "chat_id",
+          "sender",
+          "text"
+        ],
+        "type": "object"
+      },
+      "name": "inbound.route",
+      "on_error": "fall_through",
+      "output": {
+        "properties": {
+          "action": {
+            "enum": [
+              "route",
+              "drop"
+            ]
+          },
+          "message": {
+            "description": "for `route`: the message; its platform, chat_id, sender, sender_id and route must be unchanged"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "summary": "every message a platform delivers, before the ACL, the commands and the turn: route it (its text changed or not) or drop it"
+    },
+    {
+      "deadline_ms": 5000,
+      "input": {
+        "properties": {
+          "body": {
+            "description": "what the bot reads when it answers: the line without the address",
+            "type": "string"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "core_address": {
+            "description": "core's verdict",
+            "type": "boolean"
+          },
+          "mentioned": {
+            "description": "the line names the bot",
+            "type": "boolean"
+          },
+          "network": {
+            "type": "string"
+          },
+          "nick": {
+            "description": "the bot's nick on this network",
+            "type": "string"
+          },
+          "require_mention": {
+            "description": "this channel answers only lines that name the bot",
+            "type": "boolean"
+          },
+          "sender": {
+            "description": "the sender's nick",
+            "type": "string"
+          },
+          "text": {
+            "description": "the line, IRC formatting stripped",
+            "type": "string"
+          }
+        },
+        "required": [
+          "network",
+          "channel",
+          "sender",
+          "nick",
+          "text",
+          "mentioned",
+          "require_mention",
+          "core_address",
+          "body"
+        ],
+        "type": "object"
+      },
+      "name": "irc.addressed",
+      "on_error": "fall_through",
+      "output": {
+        "properties": {
+          "address": {
+            "description": "the line goes on to the bot",
+            "type": "boolean"
+          },
+          "text": {
+            "description": "what the bot reads (default: body)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "type": "object"
+      },
+      "summary": "whether a channel line is for the bot, and the text the bot reads of it; core's verdict (the mention gate, the bare `tcl` convention) is handed in"
+    },
+    {
+      "deadline_ms": 5000,
+      "input": {
+        "properties": {
+          "bot_username": {
+            "type": "string"
+          },
+          "chat_id": {
+            "type": "integer"
+          },
+          "core_address": {
+            "description": "core's verdict",
+            "type": "boolean"
+          },
+          "mentioned": {
+            "description": "the text names @bot_username",
+            "type": "boolean"
+          },
+          "require_mention": {
+            "description": "groups answer only messages that name the bot",
+            "type": "boolean"
+          },
+          "sender": {
+            "description": "the sender's display name",
+            "type": "string"
+          },
+          "sender_id": {
+            "type": "integer"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "chat_id",
+          "sender",
+          "sender_id",
+          "bot_username",
+          "text",
+          "mentioned",
+          "require_mention",
+          "core_address"
+        ],
+        "type": "object"
+      },
+      "name": "telegram.addressed",
+      "on_error": "fall_through",
+      "output": {
+        "properties": {
+          "address": {
+            "description": "the message goes on to the bot",
+            "type": "boolean"
+          },
+          "text": {
+            "description": "what the bot reads (default: text)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "type": "object"
+      },
+      "summary": "whether a group message is for the bot, and the text the bot reads of it; core's verdict (the mention gate) is handed in"
+    }
+  ],
+  "plugin_toml": {
+    "keys": [
+      "api",
+      "description",
+      "entry",
+      "kind",
+      "name",
+      "optional_services",
+      "provides_hooks",
+      "provides_services",
+      "uses_services"
+    ],
+    "kinds": [
+      "tcl",
+      "rust",
+      "js",
+      "racket",
+      "lisp",
+      "module",
+      "process"
+    ]
+  },
+  "process_protocol": {
+    "methods": [
+      {
+        "const": "INITIALIZE",
+        "name": "initialize"
+      },
+      {
+        "const": "DELIVER",
+        "name": "outbound.deliver"
+      },
+      {
+        "const": "SHUTDOWN",
+        "name": "shutdown"
+      },
+      {
+        "const": "INBOUND",
+        "name": "bus.inbound"
+      },
+      {
+        "const": "NOTE",
+        "name": "note"
+      },
+      {
+        "const": "SECRET",
+        "name": "secret.get"
+      },
+      {
+        "const": "RESOLVE",
+        "name": "acl.resolve"
+      },
+      {
+        "const": "GRANT",
+        "name": "pairing.grant_scoped"
+      },
+      {
+        "const": "ROOM",
+        "name": "thread_room.register"
+      },
+      {
+        "const": "CONFIG_GET",
+        "name": "config.get"
+      },
+      {
+        "const": "RECORD_POSTS",
+        "name": "ledger.record_posts"
+      },
+      {
+        "const": "POST_CREATE",
+        "name": "post.create"
+      },
+      {
+        "const": "REPO_DELETE_RECORD",
+        "name": "repo.delete_record"
+      },
+      {
+        "const": "REPO_WHOAMI",
+        "name": "repo.whoami"
+      },
+      {
+        "const": "HOSTED_DELETE",
+        "name": "hosted.delete"
+      },
+      {
+        "const": "APPVIEW_QUERY",
+        "name": "appview.query"
+      },
+      {
+        "const": "REPO_GET_RECORD",
+        "name": "repo.get_record"
+      },
+      {
+        "const": "VISION_DESCRIBE",
+        "name": "vision.describe"
+      },
+      {
+        "const": "BSKY_EVENT",
+        "name": "bsky.event"
+      },
+      {
+        "const": "SERVICE_CALL",
+        "name": "service.call"
+      },
+      {
+        "const": "SERVICE_NEXT",
+        "name": "service.next"
+      },
+      {
+        "const": "TRIGGERS_FORWARD",
+        "name": "triggers.forward"
+      },
+      {
+        "const": "TRIGGERS_MASKS",
+        "name": "triggers.masks"
+      }
+    ],
+    "version": 1
+  },
+  "script_registrars": [
+    {
+      "js": "registerCommand",
+      "lisp": "register-command",
+      "name": "register_command",
+      "racket": "register-command",
+      "tcl": "::veles::register_command name description procname"
+    },
+    {
+      "js": null,
+      "lisp": null,
+      "name": "register_provider",
+      "racket": null,
+      "tcl": "::veles::register_provider name procname"
+    },
+    {
+      "js": "registerService",
+      "lisp": "register-service",
+      "name": "register_service",
+      "racket": "register-service",
+      "tcl": "::veles::register_service name procname ?description? ?cap?"
+    },
+    {
+      "js": "registerTool",
+      "lisp": "register-tool",
+      "name": "register_tool",
+      "racket": "register-tool",
+      "tcl": "::veles::register_tool name description schema_json procname"
+    },
+    {
+      "js": "hook",
+      "lisp": "hook",
+      "name": "hook",
+      "racket": "hook",
+      "tcl": "::veles::hook hookname procname"
+    }
+  ]
+}

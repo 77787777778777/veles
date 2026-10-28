@@ -1,0 +1,4 @@
+name = "tcl-wordcount"
+kind = "tcl"
+entry = "plugin.tcl"
+description = "Example: registers a `wordcount` tool via veles::register_tool. Demonstrates tool registration + the ::veles::tool_args contract + agent-visible schema. Sessions created after load can call it."

@@ -1,0 +1,79 @@
+# clib 0.2.4, vendored. Two changes from the published crate, both in
+# vendor/clib/WHY.md:
+#
+#   1. bindgen 0.64 → 0.72 below, so that records holding an anonymous
+#      union — Tcl_Obj is one — are not emitted opaque on libclang 22+.
+#   2. build.rs seeds the library spec from the [package.metadata.clib-
+#      fallback] section at the foot of this file, so that losing the
+#      inwelling race produces an error instead of empty bindings.
+#
+# src/ is still byte-for-byte upstream.
+[package]
+edition = "2021"
+name = "clib"
+version = "0.2.4"
+authors = ["oooutlk <oooutlk@outlook.com>"]
+description = "Generates bindings for C libraries"
+documentation = "https://docs.rs/clib"
+readme = "README.md"
+keywords = ["ffi", "bindgen", "pkg-config", "header", "binding"]
+categories = ["external-ffi-bindings", "development-tools::ffi"]
+license = "MIT/Apache-2.0"
+repository = "https://github.com/oooutlk/clib"
+
+[build-dependencies.anyhow]
+version = "1.0"
+
+[build-dependencies.bindgen]
+version = "0.72"
+
+[build-dependencies.inwelling]
+version = "0.5"
+
+[build-dependencies.pkg-config]
+version = "0.3"
+
+[build-dependencies.toml]
+version = "0.7.3"
+
+# ---------------------------------------------------------------------
+# VENDOR PATCH 2 — the spec clib must not have to race for.
+#
+# `clib` learns which C library to bind from its DOWNSTREAM crates, via
+# `inwelling`. The `tcl` crate registers by writing a file into its own
+# OUT_DIR from its build script, and clib's build script reads it back
+# out of `target/<profile>/build/*/out/`. Nothing orders those two
+# scripts, so inwelling guesses: it sleeps until the build directory has
+# not gained a file for five seconds, then declares the downstream set
+# complete (inwelling 0.5.5 `wait_for_other_builds`).
+#
+# On this machine the tree is busy enough that the guess holds. On a
+# slower CI runner it does not: the directory goes quiet in a gap
+# between compiles, clib concludes it has no downstreams at all, writes
+# a zero-byte bindings.rs, and the build fails 186 errors later in the
+# `tcl` crate with "not found in `clib`" — naming neither clib nor the
+# race. Every CI run since 2026-09-12 failed exactly this way.
+#
+# So the spec lives here too. build.rs reads this section FIRST and lets
+# anything inwelling finds override it, which keeps the downstream
+# crate authoritative when the race is won and leaves a correct floor
+# when it is lost. Copied verbatim from the `tcl` crate's
+# [package.metadata.inwelling.clib] — that crate is pinned by rev in
+# Cargo.lock, so the two can only drift by a deliberate bump.
+#
+# `for-docs-rs` is deliberately NOT copied: it resolves relative to the
+# manifest that declares it, and for_docs.rs ships with `tcl`, not here.
+# build.rs panics instead of emitting empty bindings, which is the
+# behaviour that section existed to soften.
+[package.metadata.clib-fallback]
+build = ["tcl86"]
+
+[package.metadata.clib-fallback.spec.tcl86]
+pc-alias = ["tcl","tcl8.6"]
+headers = ["tcl.h"]
+exe = ["tclsh86", "tclsh"]
+includedir = ["tcl8.6", "tcl"]
+
+[package.metadata.clib-fallback.spec.tcl86.libs]
+tcl = ["libtcl86.so", "libtcl8.6.so", "libtcl.so", "libtcl86.a", "libtcl.a", "libtcl86.dll.a", "libtcl.dll.a", "tcl86t.dll", "tcl86t.lib"]
+tclstub = ["libtclstub86.a", "libtclstub8.6.a", "libtclstub.a", "tclstub86.lib"]

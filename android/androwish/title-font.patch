@@ -1,0 +1,178 @@
+Dialog titles in the phone's script.
+
+sdl2tk draws a toplevel's title bar itself, in DejaVu Sans, one
+character at a time with no fallback, so a dialog titled in Japanese,
+Chinese, Hindi or Amharic drew a row of boxes (emulator, 2026-10-01)
+while the same words inside the dialog, which Tk draws, fell back to
+the phone's Noto faces. A character the title font lacks is now drawn
+in the first regular sans face that has it, at the title's size.
+
+--- a/jni/sdl2tk/sdl/SdlTkInt.h
++++ b/jni/sdl2tk/sdl/SdlTkInt.h
+@@ -422,6 +422,7 @@
+ extern int SdlTkFontIsFixedWidth(XFontStruct *fontStructPtr);
+ extern int SdlTkFontHasChar(XFontStruct *fontStructPtr, char *buf);
+ extern int SdlTkFontCanDisplayChar(char *xlfd, TkFontAttributes *faPtr, int ch);
++extern const char *SdlTkFontFamilyForChar(int ch);
+ extern unsigned SdlTkGetNthGlyphIndex(_Font *_f, const char *s, int n);
+ 
+ /* decframe.c */
+--- a/jni/sdl2tk/sdl/SdlTkUtils.c
++++ b/jni/sdl2tk/sdl/SdlTkUtils.c
+@@ -594,6 +594,82 @@
+ }
+ 
+ /*
++ * True when the lowercased family name contains word.
++ */
++
++static int
++FamilyHas(const char *family, const char *word)
++{
++    char lower[128];
++    int i;
++
++    for (i = 0; family[i] != '\0' && i < (int) sizeof (lower) - 1; i++) {
++	char c = family[i];
++
++	lower[i] = (c >= 'A' && c <= 'Z') ? c - 'A' + 'a' : c;
++    }
++    lower[i] = '\0';
++    return strstr(lower, word) != NULL;
++}
++
++/*
++ *-------------------------------------------------------------------------
++ *
++ * SdlTkFontFamilyForChar --
++ *
++ *	The family of a regular (not bold, not italic) face with a glyph
++ *	for ch, for text drawn outside Tk's own font fallback: the
++ *	decoration frame's title. Sans faces come first, then any.
++ *
++ * Results:
++ *	The family name, owned by the face table, or NULL.
++ *
++ *-------------------------------------------------------------------------
++ */
++
++const char *
++SdlTkFontFamilyForChar(int ch)
++{
++    Tcl_HashSearch search;
++    Tcl_HashEntry *hPtr;
++    const char *found = NULL;
++    int pass;
++
++    Tcl_MutexLock(&fontMutex);
++    for (pass = 0; (pass < 2) && (found == NULL); pass++) {
++	hPtr = Tcl_FirstHashEntry(&fileFaceHash, &search);
++	while (hPtr != NULL) {
++	    GlyphIndexHash *ghash = (GlyphIndexHash *) Tcl_GetHashValue(hPtr);
++	    const char *family = ghash->familyName;
++
++	    if ((ghash->styleFlags &
++		 (FT_STYLE_FLAG_BOLD | FT_STYLE_FLAG_ITALIC)) ||
++		(strchr(family, '-') != NULL)) {
++		goto next;
++	    }
++	    if ((pass == 0) && (FamilyHas(family, "mono") ||
++		(FamilyHas(family, "serif") && !FamilyHas(family, "sans")))) {
++		goto next;
++	    }
++	    if (!ghash->hashLoaded) {
++		FileFaceKey *ffKey;
++
++		ffKey = (FileFaceKey *) Tcl_GetHashKey(&fileFaceHash, hPtr);
++		SdlTkLoadGlyphHash(ghash, ffKey, 0);
++	    }
++	    if (Tcl_FindHashEntry(&ghash->hash, INT2PTR(ch)) != NULL) {
++		found = family;
++		break;
++	    }
++next:
++	    hPtr = Tcl_NextHashEntry(&search);
++	}
++    }
++    Tcl_MutexUnlock(&fontMutex);
++    return found;
++}
++
++/*
+  *-------------------------------------------------------------------------
+  *
+  * Ucs4ToUtfProc --
+--- a/jni/sdl2tk/sdl/SdlTkDecframe.c
++++ b/jni/sdl2tk/sdl/SdlTkDecframe.c
+@@ -87,6 +87,63 @@
+ #endif
+ };
+ 
++/*
++ * The title font is DejaVu Sans, which has no kana, han, hangul,
++ * Devanagari or Ethiopic: a dialog titled in Japanese drew a row of
++ * boxes. A character it lacks is drawn in the first regular sans face
++ * that has it, as Tk's own text falls back, at the title's size. The
++ * faces are kept, one per family.
++ */
++
++#define TITLE_FALLBACKS 8
++
++static struct {
++    const char *family;
++    XFontStruct *font;
++} titleFallback[TITLE_FALLBACKS];
++static int nTitleFallback = 0;
++
++static XFontStruct *
++TitleFontForChar(char *p)
++{
++    const char *family;
++    char fontname[256];
++    int i;
++
++    if (SdlTkFontHasChar(_DFInfo.titlebar_font, p)) {
++	return _DFInfo.titlebar_font;
++    }
++    for (i = 0; i < nTitleFallback; i++) {
++	if ((titleFallback[i].font != NULL) &&
++	    SdlTkFontHasChar(titleFallback[i].font, p)) {
++	    return titleFallback[i].font;
++	}
++    }
++    family = SdlTkFontFamilyForChar(((unsigned int *) p)[0]);
++    if (family == NULL) {
++	return _DFInfo.titlebar_font;
++    }
++    for (i = 0; i < nTitleFallback; i++) {
++	if (titleFallback[i].family == family) {
++	    return _DFInfo.titlebar_font;	/* it would not load */
++	}
++    }
++    if (nTitleFallback == TITLE_FALLBACKS) {
++	return _DFInfo.titlebar_font;
++    }
++    snprintf(fontname, sizeof (fontname),
++	     "-unknown-%s-normal-r-normal-*-%d-*-*-*-*-*-ucs-4",
++	     family, SdlTkX.dec_font_size);
++    titleFallback[nTitleFallback].family = family;
++    titleFallback[nTitleFallback].font =
++	XLoadQueryFont(SdlTkX.display, fontname);
++    if (titleFallback[nTitleFallback].font == NULL) {
++	nTitleFallback++;
++	return _DFInfo.titlebar_font;
++    }
++    return titleFallback[nTitleFallback++].font;
++}
++
+ static void
+ GetButtonBounds(_Window *_w, int button, int *x, int *y, int *w, int *h)
+ {
+@@ -687,6 +744,7 @@
+ 
+ 	    x = SdlTkX.dec_frame_width * 2;
+ 	    while (n-- > 0) {
++		fakeGC.font = TitleFontForChar(p)->fid;
+ 		SdlTkGfxDrawString(d, &fakeGC, x,
+ 		    1 + (SdlTkX.dec_title_height - lineHeight) / 2 +
+ 		    _DFInfo.titlebar_font->ascent, p, sizeof (unsigned int),

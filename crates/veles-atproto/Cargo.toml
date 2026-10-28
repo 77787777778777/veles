@@ -1,0 +1,62 @@
+[package]
+name = "veles-atproto"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "veles atproto/Bluesky process plugin + shared event filter (vlpds PDS, Jetstream v2)"
+
+# A process plugin (PLAN-plugins-installer.md D1/D2): it links the SDK and
+# veles-types ONLY — never veles-core or veles-frontends, whose per-process
+# state (acl::live_config, the store, the secrets source) would silently be
+# empty in a second process. What it needs from the gateway it asks for over
+# the protocol (config.get, secret.get, pairing.grant_scoped, …).
+[dependencies]
+veles-plugin-sdk = { path = "../veles-plugin-sdk" }
+veles-types = { path = "../veles-types" }
+
+async-trait = "0.1"
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+anyhow = "1"
+futures = "0.3"
+
+# HTTP for the PDS XRPC client (session, createRecord, uploadBlob,
+# listNotifications, resolveHandle, getRecord) and the AppView graph
+# lookups. Same client the rest of the tree already builds with rustls.
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+
+# Jetstream v2 (network-bsky hint lane) and the local firehose
+# (com.atproto.sync.subscribeRepos on the co-located vlpds) are both
+# websockets. Already in the lockfile via the realtime-TTS path.
+tokio-tungstenite = { version = "0.24", features = ["rustls-tls-webpki-roots"] }
+# Named only to install the process-level provider explicitly
+# (`install_crypto_provider`): a workspace build unifies a second
+# provider into rustls and the implicit pick panics at the first connect.
+rustls = { version = "0.23", default-features = false, features = ["ring", "std"] }
+
+# URL joining for the XRPC endpoints (relative onto the PDS public URL).
+url = "2"
+
+# Jetstream v2 stamps each event with an RFC 3339 `time` (microseconds):
+# the latency log's reference point.
+chrono = "0.4"
+
+# Oversized images are downscaled/re-encoded to fit Bluesky's 1MB blob cap
+# rather than dropped (a 1024px generate_image PNG is routinely >1MB, and
+# dropping the media is the worst outcome — the reply lands imageless).
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }
+# The slopdrop module's rendered text art rides the reply spec as base64
+# PNG bytes (PLAN-slopdrop-art.md P3).
+base64 = "0.22"
+
+# The process-plugin executable the gateway spawns (the manifest's entry).
+[[bin]]
+name = "veles-plugin-atproto"
+path = "src/bin_main.rs"
+
+[dev-dependencies]
+tempfile = "3"
+# The stub PDS the client tests talk to.
+axum = { version = "0.7", features = ["tokio", "json"] }

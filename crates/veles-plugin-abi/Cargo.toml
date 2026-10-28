@@ -1,0 +1,10 @@
+[package]
+name = "veles-plugin-abi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The stable C ABI between veles and out-of-tree Rust plugins (Phase B). No engine code — only #[repr(C)] types both sides agree on."
+
+# No dependencies on purpose: an out-of-tree plugin links THIS (a few KB of
+# type definitions), never veles-core. That is what keeps it out-of-tree.
+[dependencies]

@@ -1,0 +1,63 @@
+# deploy/vps/user/veles/veles-gateway.container
+# (~veles/.config/containers/systemd/) — the veles gateway, rootless.
+#
+# Its "host" zone (the owner's terminal) is this container. Sandboxes
+# are NOT nested in it: they run beside it as the veles-sbx user, which
+# the gateway drives through that user's podman socket (CONTAINER_HOST).
+[Unit]
+Description=veles gateway
+Wants=network-online.target
+After=network-online.target
+# Boot-order: the atproto adapter does createSession against vlpds
+# (http://vlpds:2583) at startup, and a DNS name only registers once the
+# vlpds container is up on veles-net — so the gateway must start AFTER
+# it, or it crash-loops on "Name or service not known" until the timing
+# happens to work. vlpds declares the Before= half too.
+After=vlpds.service
+
+[Container]
+ContainerName=veles-gateway
+Image=localhost/veles-agent:current
+Pull=never
+# The host user `veles` is uid 1000 inside, so /opt/data on the host
+# belongs to veles and to nobody else.
+UserNS=keep-id:uid=1000,gid=1000
+Volume=/srv/pool/veles/data:/opt/data
+# The directory, not the socket: a file bind keeps the socket's inode,
+# so a socket that veles-sbx's manager re-creates (its restart, a boot
+# where this container started first) would leave the gateway with a
+# dead one until it restarts.
+Volume=/run/veles-sbx:/run/veles-sbx
+# IRC's published media, which nginx serves (veles-media.7778777.online):
+# [platforms.irc] media_public_dir = "/opt/media-public".
+Volume=/var/www/veles-media:/opt/media-public
+Environment=CONTAINER_HOST=unix:///run/veles-sbx/podman.sock
+# Inside the container's own network namespace; what the outside sees
+# is the two PublishPort lines. The A2A host's home is now the node-local
+# config key platforms.a2a.extra.host (pitfall 75); it stays here as the
+# env override (env beats .env beats config) because 0.0.0.0 is a fact of
+# THIS container's netns, not of the VPS config in /opt/data.
+Environment=A2A_HOST=0.0.0.0
+Environment=VELES_DESKTOP_HOST=0.0.0.0
+# The shared bridge network with vlpds (the atproto PDS): the gateway
+# reaches it by container name (http://vlpds:2583) — two rootless
+# containers do NOT share 127.0.0.1, and pasta can't join a bridge, so
+# both live on veles-net. Created once by:
+#   podman network create veles-net   (as the veles user)
+Network=veles-net
+# A2A on WireGuard only; the desktop API on loopback (an SSH tunnel).
+# Until wg0 is up the first bind fails and Restart= retries it.
+PublishPort=10.0.30.1:9900:9900
+PublishPort=127.0.0.1:8642:8642
+HealthCmd=curl -sf http://127.0.0.1:8642/api/health
+HealthInterval=2m
+HealthOnFailure=kill
+StopTimeout=35
+
+[Service]
+Restart=always
+RestartSec=10
+TimeoutStopSec=45
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The accessibility driver (AccessibilityDriver.java): it reads every
+  window's content, performs gestures (taps, swipes) and takes
+  screenshots, only when veles' `computer_use` asks. It takes window
+  changes only (before Android 13 also the content events that keep
+  Android's copy of the screen current) and acts on none of them.
+
+  It is declared an accessibility tool (isAccessibilityTool; USER
+  2026-10-13). Not one, Android hid from it the controls it protects and
+  dropped its taps on them: Airplane mode in Settings, and the whole page
+  once that switch was used (the emulator, 2026-10-12). The person turns
+  it on, and only the owner's agent drives (computer_use).
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/driver_description"
+    android:accessibilityEventTypes="typeWindowStateChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagRetrieveInteractiveWindows|flagIncludeNotImportantViews|flagReportViewIds"
+    android:canRetrieveWindowContent="true"
+    android:canPerformGestures="true"
+    android:canTakeScreenshot="true"
+    android:isAccessibilityTool="true"
+    android:notificationTimeout="100" />

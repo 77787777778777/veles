@@ -1,0 +1,26 @@
+# deploy/vps/veles-nft.service — loads /etc/veles/veles.nft at boot.
+# Only the `inet veles` table: the file deletes and re-creates it in one
+# transaction, so a reload re-applies it with no gap, and nothing else
+# in the ruleset is touched.
+#
+# Early, like the stock nftables.service: no default dependencies, so it
+# runs before the network and orders nothing behind it. With them it
+# would sit after basic.target while holding network-pre.target back —
+# and on this box the network comes up BEFORE sysinit.target (cloud-init's
+# network stage is ordered ahead of it).
+[Unit]
+Description=veles: what the veles users may reach (nft table inet veles)
+DefaultDependencies=no
+Wants=network-pre.target
+Before=network-pre.target shutdown.target
+Conflicts=shutdown.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/nft -f /etc/veles/veles.nft
+ExecReload=/usr/sbin/nft -f /etc/veles/veles.nft
+ExecStop=/usr/sbin/nft delete table inet veles
+
+[Install]
+WantedBy=sysinit.target

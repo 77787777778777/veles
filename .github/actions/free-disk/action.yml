@@ -1,0 +1,45 @@
+name: Free runner disk
+description: >
+  GitHub's ubuntu runners ship ~14 GB free on /, and the Nix release build,
+  clippy and the test build each need several GB of target directory on top
+  of the store. Every CI run from 2026-10-23 died with "No space left on
+  device" in the veles-agent derivation. Drop the preinstalled toolchains
+  this project never uses (.NET, Android SDK, GHC, CodeQL/hostedtoolcache,
+  Swift, Chromium, JVMs, docker images) before Nix is installed.
+runs:
+  using: composite
+  steps:
+    - name: Remove unused preinstalled toolchains
+      shell: bash
+      run: |
+        set -uo pipefail
+        df -h / /mnt 2>/dev/null || df -h /
+        sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
+          /usr/local/.ghcup /opt/hostedtoolcache /usr/local/share/boost \
+          /usr/share/swift /usr/local/share/powershell /usr/local/share/chromium \
+          /usr/local/lib/node_modules /opt/microsoft /opt/google /usr/lib/jvm \
+          /opt/az /usr/share/miniconda || true
+        if command -v docker >/dev/null; then
+          sudo docker system prune --all --force >/dev/null 2>&1 || true
+        fi
+        df -h / /mnt 2>/dev/null || df -h /
+    # Private-repository runners have ~7 GB of RAM; the release build, clippy
+    # and the tests each peak at several GB of rustc. With the image's swap removed
+    # the first run died at 18 minutes, mid-rustc, with "the runner has
+    # received a shutdown signal" (memory exhaustion, by every sign). Keep the image's swap and add 12 GB on the freed disk.
+    - name: Add swap
+      shell: bash
+      run: |
+        sudo fallocate -l 12G /veles-swap && sudo chmod 600 /veles-swap
+        sudo mkswap /veles-swap >/dev/null && sudo swapon /veles-swap
+        free -h
+    # Ubuntu 24.04 restricts unprivileged user namespaces through AppArmor.
+    # The portable bundle's launcher is nix-user-chroot, whose own build
+    # test (and the distro smoke's nested containers) need them: "failed
+    # to bind mount rootdir to itself: EACCES" on the first release run.
+    - name: Allow unprivileged user namespaces
+      shell: bash
+      run: |
+        if [ -e /proc/sys/kernel/apparmor_restrict_unprivileged_userns ]; then
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+        fi

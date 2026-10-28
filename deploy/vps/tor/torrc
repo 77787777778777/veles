@@ -1,0 +1,15 @@
+# deploy/vps/tor/torrc — /etc/tor/instances/velessbx/torrc (setup.sh).
+#
+# The sandboxes' way out. This host has one address of each family, and
+# the owner's IRC client uses both, so a sandbox must not leave from
+# either: veles.nft hands every IPv4 TCP connection a veles-sbx socket
+# opens to this TransPort, and rejects the rest of their traffic. IRC
+# (and every other site) sees a Tor exit.
+#
+# A client only. The instance defaults also open a world-writable SOCKS
+# socket; nothing here needs it. DNS stays with the host resolver (pasta
+# forwards a container's queries to it), so no DNSPort.
+SocksPort 0
+TransPort 127.0.0.1:9040
+ClientOnly 1
+AvoidDiskWrites 1

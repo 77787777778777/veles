@@ -1,0 +1,36 @@
+# Build artifacts — must NOT reach the nix store via `src = ./.`
+/target
+target/
+
+# Nix build outputs
+/result
+/result-*
+
+# direnv cache
+/.direnv
+
+# Secrets (keys live in ~/.hermes/.env, never here)
+.env
+.env.*
+
+# Editor/OS noise
+*.swp
+*.swo
+.DS_Store
+
+# Local state
+*.db
+*.db-wal
+*.db-shm
+
+# qwen-code session state (settings/permission allowlist it writes into
+# the repo root); the agent, not the project, owns this
+.qwen/
+
+# OCI image archives (built by scripts/build-image.sh, shipped by scp)
+veles-agent-*.tar.gz
+veles-agent-*.tar.gz.sha256
+session-ses_fa2b.md
+
+# The Agent tool's isolated worktrees (nested checkouts with their own target/)
+.claude/worktrees/

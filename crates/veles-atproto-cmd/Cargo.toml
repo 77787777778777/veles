@@ -1,0 +1,24 @@
+[package]
+name = "veles-atproto-cmd"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The /atproto owner command as an in-process module (basic repo administration that must not depend on the slopdrop bridge): delete one of the bot's own records, verify-first. The module FILE is crates/veles-module-atproto-cmd."
+
+[dependencies]
+veles-core = { path = "../veles-core" }
+veles-types = { path = "../veles-types" }
+# The shared runtime dylib (M1): the module names veles_core / tokio /
+# tracing / anyhow / serde through it. A plain rlib: the module itself
+# is crates/veles-module-atproto-cmd, which says why it is a crate of
+# its own.
+veles-runtime = { path = "../veles-runtime" }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+anyhow = "1"
+
+[dev-dependencies]
+# The flow tests register stub services in the real registry.
+tokio = { version = "1", features = ["full"] }

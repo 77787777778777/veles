@@ -1,0 +1,10 @@
+# An example override of the failover decision (PLAN-extension-api.md E2;
+# docs/extending.md, "failover.decide"). Copy this directory to
+# ~/.config/veles/plugins/failover-backoff/ and it takes the decision over
+# on the next load; `veles plugins unload failover-backoff` gives it back.
+name = "failover-backoff"
+kind = "js"
+entry = "plugin.ts"
+description = "on a rate limit, wait and retry twice, then move on; the rest stays the configured policy"
+provides_services = ["failover.decide"]
+api = "0.3"

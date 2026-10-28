@@ -1,0 +1,19 @@
+# veles-identd: RFC 1413 ident on :113 (IPv4 and IPv6), one process per
+# query (veles-identd@.service). Why it exists: veles-identd.py.
+#
+# A flood costs at most MaxConnections short-lived processes, all inside
+# veles-identd.slice; past that systemd stops accepting until one ends,
+# and an IRC server that gets no answer just shows `~ident` — the
+# owner's ACL entries do not depend on it alone.
+[Unit]
+Description=veles-identd: ident for the owner's IRC client
+
+[Socket]
+ListenStream=113
+Accept=yes
+MaxConnections=8
+MaxConnectionsPerSource=4
+Backlog=16
+
+[Install]
+WantedBy=sockets.target

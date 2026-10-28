@@ -1,0 +1,29 @@
+# deploy/laptop/user/searxng.container
+# (~/.config/containers/systemd/) — the SearXNG the owner's own searches
+# go to on the laptop: veles web_search's first rung (`[web] backends`,
+# default ["searxng", "brave", "ddg"]; `searxng_url` default
+# http://127.0.0.1:8888; crates/veles-core/src/webtools.rs). Loopback
+# only. Not started at login: `[web] searxng_wake_cmd` (default
+# `systemctl --user start searxng.service`) starts it the first time a
+# search finds it down, and searxng-idle.timer stops it after 15 min of
+# quiet (lib/searxng-idle-stop.sh), so it is no resident hog (USER
+# 2026-09-15: "I don't necessarily want a huge hog running the whole
+# time"). The image is the VPS's (user/veles-sbx/searxng-tor.container),
+# by digest. Rebuilt 2026-10-21: the 2026-10-19 home deletion took the
+# original, which had never been in git; setup.sh installs this copy.
+[Unit]
+Description=SearXNG, the owner's local metasearch (veles web_search)
+
+[Container]
+ContainerName=searxng
+Image=docker.io/searxng/searxng@sha256:00ad29bb7d72d896ac3b3ff8b252d9ad9939da3e014828934363c61dba9b7e09
+Volume=%h/.config/searxng:/etc/searxng:Z
+Environment=SEARXNG_BASE_URL=http://127.0.0.1:8888/
+PublishPort=127.0.0.1:8888:8080
+
+[Service]
+# A crash restarts it; a stop by the idle watch or by hand does not.
+Restart=on-failure
+RestartSec=5
+# Its measured working set is ~170 MB (2026-09-15).
+MemoryHigh=384M

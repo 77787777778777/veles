@@ -1,0 +1,44 @@
+# deploy/vps/classifier/veles-classifier.container
+# (~veles/.config/containers/systemd/) — the /tcl output scorer, rootless,
+# a sibling of the veles gateway on veles-net (same shape as vlpds).
+#
+# It is reached ONLY by the gateway, by container name
+# (http://veles-classifier:8800): no published port, so the host and the
+# internet cannot score through it. When it is down, the gateway's
+# slopdrop_check fails CLOSED to link-only within ~0.3 s (its connect
+# timeout) — a stopped classifier means withheld, never a skipped check.
+#
+# The model is mounted read-only from /srv/pool/veles/classifier/model
+# (veles, 0750): re-exporting it needs no image rebuild, only a restart.
+[Unit]
+Description=veles /tcl output classifier (unbiased-toxic-roberta int8 CPU)
+Wants=network-online.target
+After=network-online.target
+# Start before the gateway so the name resolves at the gateway's boot,
+# mirroring the vlpds Before= (the gateway also declares After=).
+Before=veles-gateway.service
+
+[Container]
+ContainerName=veles-classifier
+Image=localhost/veles-classifier:current
+Pull=never
+# Run as the host `veles` user (uid 1000 inside), which owns the mounted
+# model (veles, 0640) — the same UserNS shape as the gateway.
+UserNS=keep-id:uid=1000,gid=1000
+# Read-only model mount: model.int8.onnx + tokenizer.json + labels.json
+# + PROVENANCE.txt, staged by deploy/vps/classifier/install-model.sh.
+Volume=/srv/pool/veles/classifier/model:/model:ro
+Network=veles-net
+# No PublishPort: gateway-only, by container name.
+# One vCPU and 1 GB, as planned: the scorer is single-threaded (~12 ms per
+# call) and must never starve the gateway on a 2-vCPU box. The root is
+# read-only; nothing writes but /tmp (podman's tmpfs under ReadOnly).
+ReadOnly=true
+PodmanArgs=--cpus=1 --memory=1g
+
+[Service]
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

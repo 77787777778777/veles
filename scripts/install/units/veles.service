@@ -1,0 +1,36 @@
+# veles gateway — systemd unit.
+#
+# Installed as a USER unit by default (scripts/install/common.sh
+# rewrites @VELES_BIN@ and drops it in ~/.config/systemd/user), which is
+# the workstation posture: veles runs as you, against your own XDG
+# directories, and reaches root only through sudo. `VELES_SCOPE=system`
+# installs the same file to /etc/systemd/system instead.
+#
+# `veles gateway run` is the long-lived surface: it owns the platform
+# adapters, the desktop API, and the cron scheduler — which is the ONLY
+# thing that fires cron jobs. A bare `veles chat` or TUI has no
+# scheduler, so a job created there does not run until a gateway does.
+[Unit]
+Description=Veles Agent gateway
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=@VELES_BIN@ gateway run
+Restart=on-failure
+RestartSec=5
+# veles' own lifecycle code IS the init story — pid file, crash-loop
+# guard, graceful SIGTERM with platform announcements, shutdown log — so
+# systemd only has to restart it and deliver the signal.
+KillSignal=SIGTERM
+TimeoutStopSec=30
+Environment=LANG=C.UTF-8
+Environment=LC_ALL=C.UTF-8
+# API keys: veles reads ~/.config/veles/.env itself, so no
+# EnvironmentFile is required. Add one here if you keep secrets
+# elsewhere (a system-scope install usually should).
+# EnvironmentFile=-/etc/veles/veles.env
+
+[Install]
+WantedBy=default.target

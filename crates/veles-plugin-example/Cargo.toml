@@ -1,0 +1,17 @@
+[package]
+name = "veles-plugin-example"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "veles reference Rust plugin — post_llm_call hook + rust_echo tool, the Phase A in-tree example"
+
+[dependencies]
+veles-core = { path = "../veles-core" }
+
+async-trait = "0.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt"] }

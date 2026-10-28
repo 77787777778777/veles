@@ -1,0 +1,22 @@
+# deploy/laptop/searxng/settings.yml —
+# ~/.config/searxng/settings.yml (setup.sh writes a fresh secret_key in
+# place of @SECRET@, once, and keeps it on later runs).
+#
+# The SearXNG the owner's own searches go to on the laptop
+# (user/searxng.container). The default engines; the JSON API on, which
+# is what web_search reads (`format=json`); the limiter off: one caller,
+# on loopback. The Tor one on the VPS (deploy/vps/searxng-tor) is the
+# same file with the engines that refuse a Tor exit switched off.
+use_default_settings: true
+server:
+  secret_key: "@SECRET@"
+  limiter: false
+  image_proxy: false
+  method: GET
+search:
+  formats:
+    - html
+    - json
+outgoing:
+  request_timeout: 10.0
+  max_request_timeout: 20.0

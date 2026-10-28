@@ -1,0 +1,1 @@
+Read flake.nix, list the Tcl suite names in the tclCheck loop, then run `cargo fmt --all --check` and report whether it passed.

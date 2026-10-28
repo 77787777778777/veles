@@ -1,0 +1,28 @@
+[package]
+name = "veles-signer"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "veles headless ticket signer — asks the owner on its own Telegram bot or IRC nick, signs on an explicit yes"
+
+[dependencies]
+veles-core = { path = "../veles-core" }
+
+axum = "0.7"
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+anyhow = "1"
+tracing = "0.1"
+chrono = "0.4"
+futures = "0.3"
+base64 = "0.22"
+# The IRC leg: its own connection and nick, never the gateway's. Same
+# crate and features as veles-irc (and the same vendored irc-proto patch).
+irc = { version = "1.1", default-features = false, features = ["tls-rust"] }
+rustls = { version = "0.23", default-features = false, features = ["ring"] }
+
+[dev-dependencies]
+tempfile = "3"

@@ -1,0 +1,16 @@
+[package]
+name = "veles-plugin-anthropic-so"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-only"
+publish = false
+
+# cdylib, and the dependency list is the point: veles-plugin-abi and
+# serde_json, nothing else. No veles-core — an out-of-tree plugin that
+# linked the engine would be an in-tree plugin with extra steps.
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+veles-plugin-abi-sdk = { path = "../veles-plugin-abi-sdk" }
+serde_json = "1"

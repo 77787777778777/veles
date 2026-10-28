@@ -1,0 +1,8 @@
+# deploy/laptop/user/searxng-idle.service — ~/.config/systemd/user/
+# One tick of the idle watch (lib/searxng-idle-stop.sh); the timer runs it.
+[Unit]
+Description=veles: stop the local SearXNG after 15 min of quiet
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/lib/veles/searxng-idle-stop.sh

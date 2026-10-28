@@ -1,0 +1,66 @@
+AndroWish on the platform API instead of the support library.
+
+AndroWish compiles against a prebuilt android-support-v4.jar for three
+things the platform has had since API 23 (the app needs 26): a
+notification builder, requestPermissions, and the permission-result
+callback that Activity already declares. Using the platform keeps
+binary jars out of the build.
+
+--- a/src/tk/tcl/wish/AndroWish.java
++++ b/src/tk/tcl/wish/AndroWish.java
+@@ -38,9 +38,6 @@
+ import android.util.*;
+ import android.bluetooth.*;
+ import android.widget.*;
+-import android.support.v4.app.NotificationCompat;
+-import android.support.v4.app.ActivityCompat;
+-import android.support.v4.content.ContextCompat;
+ import android.hardware.*;
+ import android.hardware.usb.*;
+ import android.telephony.*;
+@@ -48,8 +45,7 @@
+ import android.nfc.tech.*;
+ 
+ public class AndroWish extends SDLActivity
+-    implements LocationListener,
+-	       ActivityCompat.OnRequestPermissionsResultCallback {
++    implements LocationListener {
+ 
+     static final String TAG = "AndroWish";
+ 
+@@ -2144,7 +2140,7 @@
+ 			      String type,
+ 			      String[] cats, String[] comp, String types[],
+ 			      String[] argv) {
+-	NotificationCompat.Builder nb;
++	Notification.Builder nb;
+ 	switch (op) {
+ 	case 0:		/* add/modify */
+ 	    Intent i;
+@@ -2174,7 +2170,7 @@
+  *		break;
+  *	    }
+  */
+-	    nb = new NotificationCompat.Builder(mSingleton.getContext());
++	    nb = new Notification.Builder(mSingleton.getContext());
+ 	    nb.setSmallIcon(R.drawable.icon);
+ 	    nb.setContentTitle(title);
+ 	    nb.setContentText(text);
+@@ -2213,7 +2209,7 @@
+ 		mNotificationMgr.notify(id, n);
+ 		break;
+ 	    }
+-	    nb = new NotificationCompat.Builder(mSingleton.getContext());
++	    nb = new Notification.Builder(mSingleton.getContext());
+ 	    nb.setDefaults(0);
+ 	    nb.setLights(Integer.parseInt(action), Integer.parseInt(uristr),
+ 			 Integer.parseInt(type));
+@@ -3412,7 +3408,7 @@
+ 	mPermLock = new CountDownLatch(1);
+ 	Runnable r = new Runnable() {
+ 	    public void run() {
+-		ActivityCompat.requestPermissions(mSingleton, perms, 42);
++		mSingleton.requestPermissions(perms, 42);
+ 	    }
+ 	};
+ 	mSingleton.runOnUiThread(r);

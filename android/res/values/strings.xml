@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  English. Every other language is generated from android/strings.tsv at
+  build time (scripts/android-strings.tcl), and the build fails when a
+  string here has no translation there.
+-->
+<resources>
+    <string name="app_name" translatable="false">Veles</string>
+    <!-- The launcher's second entry: the gateway's controls. "Veles" alone is the desktop. -->
+    <string name="label_gateway">Veles gateway</string>
+    <string name="channel_gateway">Gateway</string>
+    <string name="state_starting">Gateway starting</string>
+    <string name="state_running">Gateway running</string>
+    <string name="state_stopped">Gateway stopped</string>
+    <string name="state_restarting">Gateway exited with code %1$d, restarting in %2$d s</string>
+    <string name="action_start">Start</string>
+    <string name="action_stop">Stop</string>
+    <string name="log_title">Gateway log</string>
+    <string name="log_empty">No output yet.</string>
+    <!-- Notification channels, as Android's settings list them. -->
+    <string name="channel_asks">Questions from agents</string>
+    <string name="channel_turns">Finished turns</string>
+    <string name="channel_device">Notifications from the agent</string>
+    <!-- Android refused to start the engine in the background for a trigger, a cron job or the phone starting (GatewayService.wake). -->
+    <string name="notify_wake_blocked">Veles could not start in the background, so a trigger or a scheduled job did not run. Tap to open veles, then allow it to run in the background on its Phone page.</string>
+    <!-- The accessibility driver (AccessibilityDriver.java), sideload build only: what Android's accessibility settings say about it. -->
+    <string name="driver_description">Lets veles\' agent use this phone when you ask it to: it reads what is on the screen, and taps, types and scrolls. Only veles on this phone can reach it. While the agent uses the phone, a notification says so, with Stop.</string>
+    <!-- Its notification channel, and the notification while the agent drives. -->
+    <string name="channel_driving">The agent using the phone</string>
+    <string name="notify_driving">The agent is using this phone.</string>
+    <!-- A finished turn's notification when the answer has no text. -->
+    <string name="notify_turn_done">The turn finished.</string>
+</resources>

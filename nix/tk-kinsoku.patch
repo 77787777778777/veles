@@ -1,0 +1,281 @@
+Chinese and Japanese line breaks (kinsoku), for the desktop's Tk and
+AndroWish's sdl2tk alike.
+
+Tk wraps words only at ASCII spaces. Chinese and Japanese put none
+between words, so a long line of either wrapped wherever it ran out of
+room, and a line could open with "。" or "」" (measured on Tk 8.6.16,
+2026-10-01). A line may now also break between two Chinese or
+Japanese characters, but not before closing punctuation, small kana or
+"ー", and not after an opening bracket: in the text widget
+(TkTextCharLayoutProc's break index) and in wrapped labels, canvas text
+and message boxes (Tk_ComputeTextLayout).
+
+--- a/generic/tkFont.c
++++ b/generic/tkFont.c
+@@ -1942,6 +1942,199 @@
+ /*
+  *---------------------------------------------------------------------------
+  *
++ * TkCjkLastBreak --
++ *
++ *	Chinese and Japanese put no spaces between words: a line may break
++ *	between any two of their characters, but not before closing
++ *	punctuation, small kana or a prolonged sound mark, and not after an
++ *	opening bracket (the Japanese kinsoku rules, which Chinese shares).
++ *	Without them Tk wrapped such text only where it ran out of room, and
++ *	a line could open with "。" (2026-10-01).
++ *
++ * Results:
++ *	The largest byte offset k in (0, numBytes] such that a line may break
++ *	between the character ending at k and the one starting there, or 0.
++ *	The character after the string is the first of next (NULL for none).
++ *
++ *---------------------------------------------------------------------------
++ */
++
++MODULE_SCOPE int	TkCjkLastBreak(const char *source, int numBytes,
++			    const char *next, int nextLen);
++
++static int
++CjkUtf8(
++    const char *s,
++    int len,
++    int *chPtr)
++{
++    const unsigned char *u = (const unsigned char *) s;
++    int n, i, ch;
++
++    if (u[0] >= 0xF0 && len >= 4) {
++	n = 4; ch = u[0] & 0x07;
++    } else if (u[0] >= 0xE0 && len >= 3) {
++	n = 3; ch = u[0] & 0x0F;
++    } else if (u[0] >= 0xC0 && len >= 2) {
++	n = 2; ch = u[0] & 0x1F;
++    } else {
++	*chPtr = u[0];
++	return 1;
++    }
++    for (i = 1; i < n; i++) {
++	if ((u[i] & 0xC0) != 0x80) {
++	    *chPtr = u[0];
++	    return 1;
++	}
++	ch = (ch << 6) | (u[i] & 0x3F);
++    }
++    *chPtr = ch;
++    return n;
++}
++
++static int
++CjkIsWide(
++    int c)
++{
++    return (c >= 0x2E80 && c <= 0x2FFF)		/* radicals */
++	    || (c >= 0x3000 && c <= 0x30FF)	/* punctuation, kana */
++	    || (c >= 0x3100 && c <= 0x312F)	/* bopomofo */
++	    || (c >= 0x3190 && c <= 0x33FF)	/* kanbun ... compatibility */
++	    || (c >= 0x3400 && c <= 0x4DBF)	/* extension A */
++	    || (c >= 0x4E00 && c <= 0x9FFF)	/* unified ideographs */
++	    || (c >= 0xF900 && c <= 0xFAFF)	/* compatibility ideographs */
++	    || (c >= 0xFE30 && c <= 0xFE4F)	/* compatibility forms */
++	    || (c >= 0xFF00 && c <= 0xFFEF)	/* full and half width */
++	    || (c >= 0x20000 && c <= 0x3FFFF);	/* extensions B and on */
++}
++
++static int
++CjkNoLineStart(
++    int c)
++{
++    static const char ascii[] = ")]},.:;?!";
++    static const unsigned short wide[] = {
++	0x00BB, 0x2019, 0x201D, 0x2025, 0x2026, 0x203C, 0x2047, 0x2048,
++	0x2049, 0x3001, 0x3002, 0x3005, 0x3009, 0x300B, 0x300D, 0x300F,
++	0x3011, 0x3015, 0x3017, 0x3019, 0x301B, 0x301C, 0x301E, 0x301F,
++	0x303B, 0x3041, 0x3043, 0x3045, 0x3047, 0x3049, 0x3063, 0x3083,
++	0x3085, 0x3087, 0x308E, 0x3095, 0x3096, 0x3099, 0x309A, 0x309B,
++	0x309C, 0x309D, 0x309E, 0x30A0, 0x30A1, 0x30A3, 0x30A5, 0x30A7,
++	0x30A9, 0x30C3, 0x30E3, 0x30E5, 0x30E7, 0x30EE, 0x30F5, 0x30F6,
++	0x30FB, 0x30FC, 0x30FD, 0x30FE, 0xFE50, 0xFE51, 0xFE52, 0xFE54,
++	0xFE55, 0xFE56, 0xFE57, 0xFE5A, 0xFE5C, 0xFE5E, 0xFF01, 0xFF09,
++	0xFF0C, 0xFF0E, 0xFF1A, 0xFF1B, 0xFF1F, 0xFF3D, 0xFF5D, 0xFF5E,
++	0xFF60, 0xFF61, 0xFF63, 0xFF64, 0xFF65, 0xFF70, 0xFF9E, 0xFF9F,
++	0
++    };
++    int i;
++
++    if (c < 0x80) {
++	return (c == ' ') || (c == '\t') || (c == '\n') || (c == '\r')
++		|| ((c != 0) && (strchr(ascii, c) != NULL));
++    }
++    if ((c >= 0x0300 && c <= 0x036F)		/* combining marks */
++	    || (c >= 0x200B && c <= 0x200D)	/* zero width */
++	    || (c >= 0x31F0 && c <= 0x31FF)	/* small katakana */
++	    || (c >= 0xFE00 && c <= 0xFE19)	/* selectors, vertical forms */
++	    || (c >= 0xFF67 && c <= 0xFF6F)) {	/* small half width kana */
++	return 1;
++    }
++    for (i = 0; wide[i] != 0; i++) {
++	if (wide[i] == c) {
++	    return 1;
++	}
++    }
++    return 0;
++}
++
++static int
++CjkNoLineEnd(
++    int c)
++{
++    static const unsigned short opening[] = {
++	'(', '[', '{', 0x00AB, 0x2018, 0x201C, 0x3008, 0x300A, 0x300C,
++	0x300E, 0x3010, 0x3014, 0x3016, 0x3018, 0x301A, 0x301D, 0xFE59,
++	0xFE5B, 0xFE5D, 0xFF08, 0xFF3B, 0xFF5B, 0xFF5F, 0xFF62, 0
++    };
++    int i;
++
++    for (i = 0; opening[i] != 0; i++) {
++	if (opening[i] == c) {
++	    return 1;
++	}
++    }
++    return 0;
++}
++
++static int
++CjkBreakBetween(
++    int a,
++    int b)
++{
++    return (CjkIsWide(a) || CjkIsWide(b))
++	    && !CjkNoLineStart(b) && !CjkNoLineEnd(a);
++}
++
++int
++TkCjkLastBreak(
++    const char *source,		/* UTF-8, need not be '\0' terminated. */
++    int numBytes,		/* Bytes in source. */
++    const char *next,		/* What follows source, or NULL. */
++    int nextLen)		/* Bytes in next. */
++{
++    int i = 0, last = 0, prev = -1, ch, len;
++
++    while (i < numBytes) {
++	len = CjkUtf8(source + i, numBytes - i, &ch);
++	if ((prev >= 0) && CjkBreakBetween(prev, ch)) {
++	    last = i;
++	}
++	prev = ch;
++	i += len;
++    }
++    if ((prev >= 0) && (next != NULL) && (nextLen > 0)) {
++	CjkUtf8(next, nextLen, &ch);
++	if (CjkBreakBetween(prev, ch)) {
++	    last = numBytes;
++	}
++    }
++    return last;
++}
++
++/*
++ * A label's line is full: Tk_MeasureChars stopped it at a space, or,
++ * with no space on it, wherever it ran out of room. A later break
++ * between two Chinese or Japanese characters is taken instead, and so
++ * is any break that keeps "。" off the start of the next line where the
++ * line was only cut where it was full.
++ */
++
++static int
++CjkWrap(
++    Tk_Font tkfont,
++    const char *source,
++    int numBytes,
++    int maxLength,
++    int wordBytes,		/* What the whole-word measure kept. */
++    int *lengthPtr)		/* Its width; updated when it changes. */
++{
++    int fit, fitX, cjk, cut;
++
++    fit = Tk_MeasureChars(tkfont, source, numBytes, maxLength, 0, &fitX);
++    cut = (wordBytes >= fit) && (fit < numBytes)
++	    && !isspace(UCHAR(source[fit]));		/* INTL: ISO space */
++    cjk = TkCjkLastBreak(source, fit, source + fit, numBytes - fit);
++    if ((cjk > wordBytes) || (cut && (cjk > 0))) {
++	Tk_MeasureChars(tkfont, source, cjk, -1, 0, lengthPtr);
++	return cjk;
++    }
++    return wordBytes;
++}
++
++/*
++ *---------------------------------------------------------------------------
++ *
+  * Tk_ComputeTextLayout --
+  *
+  *	Computes the amount of screen space needed to display a multi-line,
+@@ -2076,6 +2269,10 @@
+ 	if (start < special) {
+ 	    bytesThisChunk = Tk_MeasureChars(tkfont, start, special - start,
+ 		    wrapLength - curX, flags, &newX);
++	    if ((wrapLength > 0) && (bytesThisChunk < special - start)) {
++		bytesThisChunk = CjkWrap(tkfont, start, special - start,
++			wrapLength - curX, bytesThisChunk, &newX);
++	    }
+ 	    newX += curX;
+ 	    flags &= ~TK_AT_LEAST_ONE;
+ 	    if (bytesThisChunk > 0) {
+--- a/generic/tkTextDisp.c
++++ b/generic/tkTextDisp.c
+@@ -30,6 +30,13 @@
+ #endif
+ 
+ /*
++ * Where Chinese and Japanese text may break (tkFont.c).
++ */
++
++MODULE_SCOPE int	TkCjkLastBreak(const char *source, int numBytes,
++			    const char *next, int nextLen);
++
++/*
+  * "Calculations of line pixel heights and the size of the vertical
+  * scrollbar."
+  *
+@@ -7847,6 +7854,39 @@
+ 		}
+ 	    }
+ 	}
++
++	/*
++	 * Chinese and Japanese put no spaces between words: a line may also
++	 * break between two of their characters, though not before "。" or
++	 * after "「". The character after the chunk is the segment's next,
++	 * or the first of the next segment with any.
++	 */
++
++	{
++	    const char *next = NULL;
++	    int nextLen = 0, cjk;
++
++	    if ((bytesThatFit + byteOffset) < segPtr->size) {
++		next = segPtr->body.chars + byteOffset + bytesThatFit;
++		nextLen = segPtr->size - byteOffset - bytesThatFit;
++	    } else {
++		for (nextPtr = segPtr->nextPtr; nextPtr != NULL;
++			nextPtr = nextPtr->nextPtr) {
++		    if (nextPtr->size != 0) {
++			if (nextPtr->typePtr == &tkTextCharType) {
++			    next = nextPtr->body.chars;
++			    nextLen = nextPtr->size;
++			}
++			break;
++		    }
++		}
++	    }
++	    cjk = TkCjkLastBreak(segPtr->body.chars + byteOffset,
++		    bytesThatFit, next, nextLen);
++	    if (cjk > chunkPtr->breakIndex) {
++		chunkPtr->breakIndex = cjk;
++	    }
++	}
+     }
+     return 1;
+ }

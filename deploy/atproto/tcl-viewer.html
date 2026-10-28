@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>tcl output</title>
+<style>
+  :root { color-scheme: dark; }
+  body { background:#0b0e14; color:#d7e0ee;
+         font-family:"JetBrains Mono","DejaVu Sans Mono","Liberation Mono",Menlo,Consolas,"Courier New",monospace;
+         font-variant-ligatures:none;
+         max-width:56rem; margin:0 auto; padding:1.25rem 1rem 3rem; line-height:1.5; }
+  a { color:#7aa2f7; }
+  .bar { display:flex; gap:.75rem; align-items:center; flex-wrap:wrap;
+         border-bottom:1px solid #232a3a; padding-bottom:.75rem; margin-bottom:1rem; }
+  .bar h1 { font-size:1rem; color:#7aa2f7; margin:0; font-weight:600; }
+  .bar .spacer { flex:1; }
+  .pill { border:1px solid #232a3a; border-radius:999px; padding:.15rem .7rem;
+          font-size:.8rem; text-decoration:none; color:#9ece6a; }
+  .pill:hover { background:#12161f; }
+  #status { color:#bb9af7; font-size:.9rem; }
+  #err { color:#f7768e; white-space:pre-wrap; }
+  iframe { width:100%; min-height:70vh; border:1px solid #232a3a; border-radius:6px;
+           background:#0b0e14; }
+  pre { background:#12161f; border:1px solid #232a3a; border-radius:6px; padding:1rem;
+        overflow-x:auto; white-space:pre; }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+  <div class="bar">
+    <h1>tcl output</h1>
+    <span id="status">loading…</span>
+    <span class="spacer"></span>
+    <a id="view-md" class="pill hidden" href="#">raw markdown</a>
+    <a id="view-html" class="pill hidden" href="#">rendered</a>
+    <a id="dl-md" class="pill hidden" href="#" download>download .md</a>
+  </div>
+  <div id="err"></div>
+  <iframe id="frame" class="hidden" title="rendered tcl output" sandbox="allow-same-origin"></iframe>
+  <pre id="mdview" class="hidden"></pre>
+
+<script>
+// A /tcl result lives on the bot's PDS as two blobs (rendered .html and
+// raw .md), addressed by CID. The PDS serves every blob with
+// Content-Disposition: attachment (a browser DOWNLOADS it, never renders)
+// and a sandboxing CSP — so the post links HERE, and this page fetches the
+// blob as data (CORS is open on getBlob) and shows it: the rendered HTML
+// in a sandboxed iframe via srcdoc (which the attachment header cannot
+// force into a download), the markdown as escaped text.
+//
+// URL shape: ?html=<cid>&md=<cid>&did=<did>   (did has a sane default)
+const P = new URLSearchParams(location.search);
+const DID = P.get("did") || "did:plc:xrhhnoqaa7nth7coplnfy4b7";
+const PDS = "https://veles.7778777.online";
+const statusEl = document.getElementById("status");
+const errEl = document.getElementById("err");
+const frame = document.getElementById("frame");
+const mdview = document.getElementById("mdview");
+const aMd = document.getElementById("view-md");
+const aHtml = document.getElementById("view-html");
+const aDl = document.getElementById("dl-md");
+
+function blobUrl(cid) {
+  return PDS + "/xrpc/com.atproto.sync.getBlob?did=" + encodeURIComponent(DID)
+       + "&cid=" + encodeURIComponent(cid);
+}
+function fail(msg) {
+  statusEl.textContent = "failed";
+  errEl.textContent = msg;
+}
+
+async function load() {
+  const htmlCid = P.get("html");
+  const mdCid = P.get("md");
+  if (!htmlCid && !mdCid) { fail("no blob referenced in this link."); return; }
+
+  let htmlText = null, mdText = null;
+  if (htmlCid) {
+    try {
+      const r = await fetch(blobUrl(htmlCid));
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      htmlText = await r.text();
+    } catch (e) { /* fall through to md */ }
+  }
+  if (mdCid) {
+    try {
+      const r = await fetch(blobUrl(mdCid));
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      mdText = await r.text();
+    } catch (e) { /* reported below if nothing else worked */ }
+  }
+
+  if (mdText != null) {
+    aDl.href = URL.createObjectURL(new Blob([mdText], {type:"text/markdown"}));
+    aDl.download = "tcl-output.md";
+    aDl.classList.remove("hidden");
+  }
+
+  if (htmlText != null) {
+    showHtml(htmlText);
+    statusEl.textContent = "";
+    if (mdText != null) { aMd.classList.remove("hidden"); }
+  } else if (mdText != null) {
+    showMd();
+    statusEl.textContent = "rendered copy unavailable; showing source";
+  } else {
+    fail("Could not fetch the result blob" + (htmlCid||mdCid ? "" : "s") +
+         ".\nIt may have been deleted from the PDS, or the link is wrong.");
+  }
+
+  function showHtml(txt) {
+    frame.srcdoc = txt;
+    frame.classList.remove("hidden");
+    mdview.classList.add("hidden");
+    aHtml.classList.add("hidden");
+    if (mdText != null) aMd.classList.remove("hidden");
+  }
+  function showMd() {
+    mdview.textContent = mdText;
+    mdview.classList.remove("hidden");
+    frame.classList.add("hidden");
+    aMd.classList.add("hidden");
+    if (htmlText != null) aHtml.classList.remove("hidden");
+  }
+  aMd.onclick = (e) => { e.preventDefault(); showMd(); };
+  aHtml.onclick = (e) => { e.preventDefault(); showHtml(htmlText); };
+}
+load();
+</script>
+</body>
+</html>

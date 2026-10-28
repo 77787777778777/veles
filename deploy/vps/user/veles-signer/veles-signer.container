@@ -1,0 +1,29 @@
+# deploy/vps/user/veles-signer/veles-signer.container
+# (~veles-signer/.config/containers/systemd/) — the headless ticket
+# signer, rootless, as its own user: the gateway can reach its API on
+# 9911 and nothing else of it (its key, its tokens, its process).
+[Unit]
+Description=veles ticket signer
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+ContainerName=veles-signer
+Image=localhost/veles-signer:current
+Pull=never
+UserNS=keep-id:uid=1000,gid=1000
+# signer.toml, signer.env and the encrypted key (`veles ticket keygen`).
+Volume=/srv/pool/veles-signer/signer:/opt/signer
+# The key's passphrase, so a restart needs nobody at a terminal:
+#   podman secret create veles-signer-passphrase <file>   (as veles-signer)
+Secret=veles-signer-passphrase,type=mount,target=/run/secrets/passphrase,uid=1000,mode=0400
+Environment=SIGNER_PASSPHRASE_FILE=/run/secrets/passphrase
+PublishPort=10.0.30.1:9911:9911
+StopTimeout=15
+
+[Service]
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

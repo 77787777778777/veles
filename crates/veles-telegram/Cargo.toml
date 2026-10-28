@@ -1,0 +1,28 @@
+[package]
+name = "veles-telegram"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "veles Telegram platform adapter — the reference Rust plugin (teloxide)"
+
+[dependencies]
+veles-core = { path = "../veles-core" }
+veles-frontends = { path = "../veles-frontends" }
+# The shared runtime dylib (M1): module.rs names veles_core / veles_types
+# / tokio / tracing / anyhow through it. A plain rlib: the module itself
+# is crates/veles-module-telegram (a crate of its own, the R4 lesson).
+veles-runtime = { path = "../veles-runtime" }
+
+teloxide = { version = "0.14", default-features = false, features = ["rustls", "ctrlc_handler"] }
+async-trait = "0.1"
+tokio = { version = "1", features = ["full"] }
+serde_json = "1"
+tracing = "0.1"
+anyhow = "1"
+futures = "0.3"
+regex = "1"
+
+[dev-dependencies]
+# Building a `VelesConfig` in a test means building its `display` blob, which
+# is a serde_yaml::Value. Same version veles-irc and veles-core use.
+serde_yaml = "0.9"

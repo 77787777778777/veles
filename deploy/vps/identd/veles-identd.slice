@@ -1,0 +1,8 @@
+# Every ident query together: a flood shares these, not the box's.
+[Unit]
+Description=veles-identd: all ident queries
+
+[Slice]
+MemoryMax=96M
+CPUQuota=20%
+TasksMax=24

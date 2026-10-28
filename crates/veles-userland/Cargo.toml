@@ -1,0 +1,23 @@
+[package]
+name = "veles-userland"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The phone's userland exec broker (in chat.janitor.veles.userland) and its client shell ulsh (in the gateway APK); PLAN-phone-userland.md T3"
+
+# Two binaries, each shipped in an APK as lib<name>.so (Android runs
+# executables only from an app's native library directory):
+#   veles-userland-broker -> lib/arm64-v8a/libveles_userland.so  (userland APK)
+#   ulsh                  -> lib/arm64-v8a/libulsh.so            (gateway APK)
+[[bin]]
+name = "veles-userland-broker"
+path = "src/bin/broker.rs"
+
+[[bin]]
+name = "ulsh"
+path = "src/bin/ulsh.rs"
+
+[dependencies]
+libc = "0.2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

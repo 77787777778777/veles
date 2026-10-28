@@ -1,0 +1,14 @@
+# Paths left out of the public release snapshot (scripts/release/export-public.sh).
+# One bash glob per line, relative to the repository root; globstar is on.
+# The owner's working notes: plans, ledgers, pitfalls, verification records.
+PLAN-*.md
+PENDING.md
+HANDOFF.md
+COVERAGE.md
+FEATURE_MATRIX.md
+AGENTS.md
+docs/issues
+# Machine-local: the owner's direnv identity mapping.
+.envrc
+# The export's own private inputs (they name what must not be published).
+scripts/release/public-forbidden.txt

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The veles gateway as an Android app: a foreground service runs
+  `veles gateway run`, which the APK carries as lib/<abi>/libveles.so.
+  The desktop frontend, veles-desktop's Tcl/Tk tree, runs in the same
+  app on AndroWish's Tk. android/README.md says why each piece is the
+  way it is.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="chat.janitor.veles">
+
+    <!-- Providers, chat networks, fleet peers. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- The service's notification, Android 13 and later. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!--
+      The device bridge (veles-desktop/lib/device_android.tcl): what the
+      agent's `device` tool can ask of the phone. VIBRATE is granted at
+      install; location is asked for the first time the agent wants it,
+      and only then.
+    -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!--
+      `info`'s network field: AndroWish reads the connection only when it
+      holds this (AndroWish.java), else it says "none" — what the real
+      phone answered on LTE, 2026-10-11. Granted at install.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--
+      Joining the pool (veles-desktop/lib/phone.tcl): the camera reads the
+      invite's QR code. Asked for the first time Join a pool opens it.
+    -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!--
+      The Phone page's "Allow" for running in the background
+      (veles-desktop/lib/phone.tcl): Android's own one-tap dialog. Without
+      it the person has to find the app's battery settings, which every
+      maker names differently, and cheap phones kill background apps first.
+    -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <!--
+      Reacting to the phone (PLAN-sessions-and-phone.md P4): the phone
+      starting, for the person who chose "Start with the phone" (and to set
+      the cron alarm again, which a restart clears); the cron alarm itself,
+      on time when the person allows "Alarms & reminders", within Android's
+      window otherwise (Wake.java).
+    -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <!--
+      The userland package (Userland.java, PLAN-phone-userland.md T3):
+      its uid and signature, which the gateway checks before its shell
+      runs there, and its bound service, through which every shell's
+      session comes (UserlandRelay.java; the two apps may not connect to
+      each other's sockets, T3 §2 R1b). The permission is the userland's
+      own, at signature level: granted only to an app signed with its key,
+      and only when the userland is installed first (or veles again after
+      it).
+    -->
+    <uses-permission android:name="chat.janitor.veles.userland.permission.OPEN_SESSION" />
+    <queries>
+        <package android:name="chat.janitor.veles.userland" />
+    </queries>
+
+    <!-- sideload-only:begin (velesAab in flake.nix cuts this block out of
+         the Play bundle, and fails if the driver is still declared) -->
+    <!--
+      The accessibility driver's list_apps and focus_app
+      (AccessibilityDriver.java): the launchable apps, by the launcher's
+      own intent, not every package.
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+    <!-- sideload-only:end -->
+
+    <!-- SDL draws Tk with OpenGL ES 2. -->
+    <uses-feature android:glEsVersion="0x00020000" android:required="true" />
+
+    <!--
+      extractNativeLibs: the engine is an executable, and Android runs
+      executables only from the app's native library directory, which
+      exists only when the libraries are extracted there.
+      allowBackup false: the home directory holds the bot tokens and the
+      desktop API's bearer token.
+    -->
+    <application
+        android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
+        android:theme="@style/Veles"
+        android:extractNativeLibs="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:allowBackup="false">
+
+        <!--
+          The desktop, "Veles" in the launcher. Its own process: Tcl's
+          `exit` ends the process it runs in, which must not be the
+          gateway service's. configChanges names every change there is:
+          SDL resizes its surface on rotation and keyboards, and AndroWish
+          runs Tcl once per process, so a recreated activity would find
+          the process used (assetsPaths recreated the first open after an
+          install on the emulator, 2026-09-30; DesktopActivity and
+          Relauncher recover from any other).
+        -->
+        <activity
+            android:name=".DesktopActivity"
+            android:exported="true"
+            android:process=":desktop"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="adjustResize"
+            android:enableOnBackInvokedCallback="true"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|mnc|mcc|locale|fontScale|uiMode|touchscreen|navigation|screenLayout|smallestScreenSize|density|layoutDirection|colorMode|grammaticalGender|fontWeightAdjustment|assetsPaths">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- The desktop's 📎: Android's file picker (AttachActivity.java). -->
+        <activity
+            android:name=".AttachActivity"
+            android:exported="false"
+            android:process=":desktop"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!--
+          Pins one of the person's apps to the home screen (PinActivity.java,
+          veles-desktop/lib/apps.tcl): Android asks, and the shortcut opens
+          veles-app://<name> in the desktop.
+        -->
+        <activity
+            android:name=".PinActivity"
+            android:exported="false"
+            android:process=":desktop"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- Opens the desktop again in a fresh process (Relauncher.java). -->
+        <activity
+            android:name=".Relauncher"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- The gateway's controls and log, "Veles gateway" in the launcher. -->
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/label_gateway"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+          Other apps' notifications, for the person's triggers
+          (NotificationListener.java). Android binds it only after the
+          person turns veles on under Notification access; the permission
+          keeps anyone but Android from binding it.
+        -->
+        <service
+            android:name=".NotificationListener"
+            android:exported="true"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <!-- sideload-only:begin -->
+        <!--
+          The agent's hands on the phone (AccessibilityDriver.java;
+          PLAN-sessions-and-phone.md A3, USER decision D4): in the sideload
+          build only, off until the person turns it on in Android's
+          accessibility settings. It listens on loopback for veles'
+          `computer_use` with the gateway's token.
+        -->
+        <service
+            android:name=".AccessibilityDriver"
+            android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_driver" />
+        </service>
+        <!-- sideload-only:end -->
+
+        <!--
+          The cron alarm and the phone starting (WakeReceiver.java). Not
+          exported: the alarm is this app's own PendingIntent, and Android
+          delivers BOOT_COMPLETED itself.
+        -->
+        <receiver
+            android:name=".WakeReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".GatewayService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Runs the user's self-hosted AI agent gateway, which keeps the user's own chat connections open and answers the user's other devices." />
+        </service>
+    </application>
+</manifest>

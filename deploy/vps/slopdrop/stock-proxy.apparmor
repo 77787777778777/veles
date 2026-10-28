@@ -1,0 +1,8 @@
+# deploy/vps/slopdrop/stock-proxy.apparmor — /etc/apparmor.d/local/tinyproxy
+# (slopdrop.sh stock-proxy). Ubuntu's apparmor package confines
+# /usr/bin/tinyproxy to reading /etc/tinyproxy/tinyproxy.conf, so the
+# stock proxy (stock-proxy.service) could not open its own config: "Could
+# not open config file", apparmor="DENIED". These are its two files.
+# Nothing else on the host runs tinyproxy.
+file r /run/credentials/slopdrop-stock-proxy.service/conf,
+file r /etc/veles/slopdrop-stock-proxy.filter,

@@ -1,0 +1,113 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/veles-types",
+    "crates/veles-core",
+    "crates/veles-frontends",
+    "crates/veles-install",
+    "crates/veles-cli",
+    "crates/veles-runtime",
+    "crates/veles-module-echo",
+    "crates/veles-telegram",
+    "crates/veles-irc",
+    "crates/veles-module-irc",
+    "crates/veles-slopdrop",
+    "crates/veles-textart",
+    "crates/veles-atproto-cmd",
+    "crates/veles-module-atproto-cmd",
+    "crates/veles-module-slopdrop",
+    "crates/veles-module-telegram",
+    "crates/veles-atproto",
+    "crates/veles-signer",
+    "crates/veles-plugin-example",
+    "crates/veles-plugin-abi",
+    "crates/veles-plugin-abi-sdk",
+    "crates/veles-plugin-sdk",
+    "crates/veles-plugin-echo",
+    "crates/veles-plugin-sample-so",
+    "crates/veles-plugin-badabi-so",
+    "crates/veles-plugin-anthropic-so",
+    "crates/veles-lang-js",
+    "crates/veles-module-lang-js",
+    "crates/veles-lang-racket",
+    "crates/veles-module-lang-racket",
+    "crates/veles-lang-lisp",
+    "crates/veles-module-lang-lisp",
+    "crates/veles-launcher",
+    "crates/veles-userland",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-only"
+repository = "https://github.com/77787777778777/veles"
+
+# Overlay modules (PLAN-extension-api.md E5) name the runtime as
+# `veles-runtime = { workspace = true }`: the flake's `velesWithModules`
+# builds them inside this workspace (examples/overlay-module).
+[workspace.dependencies]
+veles-runtime = { path = "crates/veles-runtime" }
+
+[profile.release]
+lto = "thin"
+
+# ── target/ hygiene ──────────────────────────────────────────────────
+# Full debuginfo put ~230MB on every example binary and 400-700MB per
+# incremental session on veles_core, which let target/debug reach 51G
+# (cargo never GCs it). Line-tables keep backtraces symbolized; step
+# debugging needs `--config 'profile.dev.debug=true'` on the side.
+# incremental=false drops the 14G session cache; cold-dep rebuilds are
+# unaffected, edit-rebuild loops pay a small full-crate recompile.
+[profile.dev]
+debug = "line-tables-only"
+incremental = false
+
+# ── Windows dev builds: `--profile windev` ───────────────────────────
+# A PE import library holds at most 65,535 exports; link.exe stops with
+# LNK1189 above that. The debug runtime dylib exports every generic
+# instantiation its crates contain (share-generics: 199,345 dynamic
+# symbols in the Linux debug .so, measured), so a plain dev build of
+# veles_runtime.dll cannot link on Windows at all (PLAN-windows.md §2,
+# step 1). rustc shares generics only at opt-level 0 and 1, and the
+# switch itself (`-Z share-generics`) is nightly-only, so opt-level 2
+# is the one stable lever: the dylib then exports its own API, the way
+# the release build does (16,827). Everything else stays dev. Linux
+# never uses this profile; scripts/win/check.bat builds and tests with
+# it, and a dev gateway on Windows runs target\windev\veles.exe.
+[profile.windev]
+inherits = "dev"
+opt-level = 2
+
+# ── Windows release builds: `--profile winrelease` ───────────────────
+# `release` has thin LTO. Across a Rust dylib that does not link on
+# Windows: LTO inlines code from crates that live INSIDE veles_runtime.dll
+# (serde_json, std's panic counter) into veles.exe, and the inlined
+# code then names those crates' statics directly — which PE cannot
+# resolve against a DLL (a data import needs the __imp_ indirection
+# the compiler no longer emits once the reference is inlined). The
+# first release link on winbox failed with LNK2001 on
+# `GLOBAL_PANIC_COUNT` and serde_json's `NULL` (2026-10-13). ELF has no
+# such rule, so Linux keeps its LTO; this profile is release without
+# it. scripts/install/windows.ps1 builds with it.
+[profile.winrelease]
+inherits = "release"
+lto = false
+
+# ── vendored irc-proto: an unterminated line had no ceiling ──────────
+#
+# `LineCodec::decode` buffers until it sees a `\n`, with no maximum, so
+# a server that opens a line and never terminates it grows the read
+# buffer until the process dies. This is WeeChat's WSA-2026-3 in another
+# codebase, and it cannot be fixed from outside the crate:
+# `Client::from_config` owns the socket and `ClientStream` only yields
+# COMPLETE messages, so a consumer never sees the partial line.
+#
+# vendor/irc-proto is irc-proto 1.1.0 with one change — a 16 KiB cap in
+# `decode` — plus tests for it. vendor/irc-proto/UPSTREAM.md has the
+# report to send. Re-check on every irc-proto bump: if upstream takes
+# the fix, delete this and the vendor directory.
+[patch.crates-io]
+irc-proto = { path = "vendor/irc-proto" }
+# clib with a bindgen that understands libclang 22 — see vendor/clib/WHY.md.
+clib = { path = "vendor/clib" }

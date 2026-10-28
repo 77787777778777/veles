@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  English only for the spike (PLAN-phone-userland.md T3): the gateway's
+  translations (android/strings.tsv) come with the package's adoption.
+-->
+<resources>
+    <string name="app_name">Veles userland</string>
+    <string name="permission_open_session">run commands in Veles userland</string>
+    <string name="channel_userland">Userland</string>
+    <string name="action_start">Start</string>
+    <string name="action_stop">Stop</string>
+    <string name="state_stopped">Stopped</string>
+    <string name="state_preparing">Unpacking the distro…</string>
+    <string name="state_running">Serving the gateway</string>
+    <string name="state_failed">Not running: %1$s</string>
+    <string name="log_title">Log</string>
+</resources>

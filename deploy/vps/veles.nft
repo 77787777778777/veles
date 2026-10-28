@@ -1,0 +1,143 @@
+#!/usr/sbin/nft -f
+# deploy/vps/veles.nft — what each veles user on the VPS may reach.
+#
+# Installed as /etc/veles/veles.nft and loaded by veles-nft.service
+# (deploy/vps/setup.sh). It touches only its own table, so netavark's
+# and fail2ban's tables are left alone; /etc/nftables.conf (which
+# flushes the whole ruleset) stays unused.
+#
+# Every veles container is rootless, and rootless networking (pasta)
+# opens its host-side sockets as the container's owner. So `meta skuid`
+# sees all of a container's traffic as its host user:
+#
+#   veles         the gateway: the internet, the A2A peers, slopdrop,
+#                 the signer's API, and the Tor ways out for other
+#                 people's web traffic — nothing else of this host's
+#   veles-sbx     every sandbox: the internet, IPv4 TCP through Tor only
+#   veles-signer  the signer: the internet only (Telegram, IRC)
+#   slopdrop      the channels' Tcl interpreter: IPv4 TCP through Tor
+#                 only, like a sandbox, plus the few local services it
+#                 needs (deploy/vps/slopdrop/slopdrop.service), one of
+#                 them its stock proxy: Yahoo refuses Tor, so the stock
+#                 commands alone leave from this host's address, through
+#                 a proxy that reaches Yahoo's chart API and nothing else
+#                 (deploy/vps/slopdrop/stock-proxy.service)
+
+table inet veles
+delete table inet veles
+
+table inet veles {
+	set private4 {
+		type ipv4_addr
+		flags interval
+		elements = { 10.0.0.0/8, 100.64.0.0/10, 127.0.0.0/8, 169.254.0.0/16,
+			     172.16.0.0/12, 192.168.0.0/16, 224.0.0.0/4 }
+	}
+
+	set private6 {
+		type ipv6_addr
+		flags interval
+		elements = { ::1/128, fc00::/7, fe80::/10, ff00::/8 }
+	}
+
+	chain out {
+		type filter hook output priority filter; policy accept;
+		ct state established,related accept
+		meta skuid { "veles", "veles-sbx", "veles-signer", "slopdrop" } jump confined
+	}
+
+	chain confined {
+		# DNS goes through the host's resolver: pasta forwards a
+		# container's queries to it.
+		ip daddr { 127.0.0.53, 127.0.0.54 } meta l4proto { tcp, udp } th dport 53 accept
+		meta skuid "veles" jump gateway
+		meta skuid "veles-sbx" jump sandbox
+		meta skuid "slopdrop" jump slopdrop
+		# veles-signer.
+		fib daddr type local drop
+		ip daddr @private4 drop
+		ip6 daddr @private6 drop
+	}
+
+	chain gateway {
+		# slopdrop's bridge, and the signer's API (/v1/sign only —
+		# the signer runs as another user, so this port is all of it
+		# the gateway can touch).
+		ip daddr 10.0.30.1 tcp dport { 8080, 9911 } accept
+		# Other people's web traffic (PLAN-challenge-relay.md D5):
+		# their searches to searxng-tor, their fetches through the
+		# velesweb Tor's SOCKS port.
+		ip daddr 10.0.30.1 tcp dport { 8889, 9050 } accept
+		# The other nodes' A2A.
+		ip daddr { 10.0.30.2, 10.0.30.3, 10.0.30.4 } tcp dport 9900 accept
+		fib daddr type local drop
+		ip daddr @private4 drop
+		ip6 daddr @private6 drop
+	}
+
+	# This host's one IPv4 and one IPv6 are the owner's IRC client's
+	# too (OVH assigns the VPS a single /128; the /56 on ens3 is shared),
+	# and a sandbox seen from there could pass for the owner, or show
+	# IRC where the owner is. So a sandbox leaves through Tor or not at
+	# all: every IPv4 TCP connection it opens goes to the local Tor's
+	# TransPort (tor/torrc), which learns the real destination from
+	# conntrack. Local and private addresses are left to `sandbox`,
+	# which refuses them, as before.
+	chain sbx_tor {
+		type nat hook output priority dstnat; policy accept;
+		meta skuid { "veles-sbx", "slopdrop" } jump to_tor
+	}
+
+	# slopdrop is sent the same way (2026-10-13): it runs whatever Tcl a
+	# channel types, so a link preview, `http get` and a TclCurl handle
+	# of a channel's own all leave through Tor, never from this host's
+	# address, which the owner's IRC client uses. The one exception is
+	# the stock proxy on loopback (chain slopdrop): Yahoo's chart API.
+	chain to_tor {
+		meta nfproto != ipv4 return
+		fib daddr type local return
+		ip daddr @private4 return
+		meta l4proto tcp redirect to :9040
+	}
+
+	chain slopdrop {
+		# Its per-requester Tor circuits (`[tcl] http_proxy`).
+		ip daddr 10.0.30.1 tcp dport 9050 accept
+		# The gateway's API, for the Bluesky reads veles grants it
+		# (`[slopdrop] bsky_read_url`), published on loopback.
+		ip daddr 127.0.0.1 tcp dport 8642 accept
+		# Its state repo: gitea, behind this host's sshd.
+		fib daddr type local tcp dport 22 accept
+		# Its stock proxy (`[tcl] stock_proxy`): Yahoo refuses Tor
+		# exits, so the stock commands leave from this host's address
+		# through a proxy that allows Yahoo's chart API alone and wants
+		# a password (deploy/vps/slopdrop/stock-proxy.service).
+		ip daddr 127.0.0.1 tcp dport 8650 accept
+		ip daddr 127.0.0.1 tcp dport 9040 ct status dnat accept
+		meta l4proto tcp reject with tcp reset
+		reject with icmpx admin-prohibited
+	}
+
+	chain sandbox {
+		ip daddr 127.0.0.1 tcp dport 9040 ct status dnat accept
+		# Everything else: UDP, ICMP, IPv6 (no address of its own to
+		# leave from), local and private addresses. Refused rather
+		# than dropped, so a client falls back at once (IPv6 → IPv4,
+		# QUIC → TCP) instead of timing out.
+		meta l4proto tcp reject with tcp reset
+		reject with icmpx admin-prohibited
+	}
+
+	chain in {
+		type filter hook input priority filter; policy accept;
+		# The gateway reaches the signer through loopback (it is
+		# published on 10.0.30.1, a local address); the output chain
+		# has already decided which users may.
+		iifname "lo" accept
+		tcp dport { 9900, 9911 } iifname != "wg0" drop
+		tcp dport { 9900, 9911 } ip saddr != 10.0.30.0/24 drop
+		# searxng-tor and the SOCKS port are on wg0's address for the
+		# gateway, which arrives on lo (above). No other node uses them.
+		tcp dport { 8889, 9050 } drop
+	}
+}

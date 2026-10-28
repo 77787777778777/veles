@@ -1,0 +1,16 @@
+[package]
+name = "veles-lang-lisp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The Common Lisp language host (PLAN-plugins-installer.md R9): ECL embedded through libecl on one engine thread with a mailbox, a package and handler threads per script; the library behind the lang-lisp module."
+build = "build.rs"
+
+[dependencies]
+veles-runtime = { path = "../veles-runtime" }
+serde_json = "1"
+libc = "0.2"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full"] }
+tempfile = "3"

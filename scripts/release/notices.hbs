@@ -1,0 +1,15 @@
+# Third-party licenses
+
+veles links the Rust crates below. Each license text is reproduced once,
+followed by the crates it covers. veles itself is AGPL-3.0-only (LICENSE).
+
+{{#each licenses}}
+## {{name}}
+
+Used by: {{#each used_by}}{{crate.name}} {{crate.version}}{{#unless @last}}, {{/unless}}{{/each}}
+
+```text
+{{text}}
+```
+
+{{/each}}

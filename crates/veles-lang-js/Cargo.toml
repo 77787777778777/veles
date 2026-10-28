@@ -1,0 +1,25 @@
+[package]
+name = "veles-lang-js"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The JavaScript/TypeScript language host (PLAN-plugins-installer.md R9): QuickJS-ng through rquickjs, TypeScript stripped by oxc; the library behind the veles-module-lang-js dylib."
+
+[dependencies]
+veles-runtime = { path = "../veles-runtime" }
+rquickjs = { version = "0.14", features = ["futures", "parallel"] }
+oxc = { version = "0.153", default-features = false, features = ["transformer", "codegen", "semantic"] }
+serde_json = "1"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full"] }
+tempfile = "3"
+
+# Android: rquickjs-sys ships pre-generated bindings for a fixed set of
+# targets and has none for aarch64-linux-android (the APK build failed
+# in rquickjs-sys on 2026-10-10), so there the bindings are generated at
+# build time. Cargo unifies this with the table above, and the flake's
+# Android derivation already points bindgen at the NDK sysroot (it did
+# so for the tcl crate's clib probe).
+[target.'cfg(target_os = "android")'.dependencies]
+rquickjs = { version = "0.14", features = ["bindgen"] }

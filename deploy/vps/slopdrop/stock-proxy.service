@@ -1,0 +1,53 @@
+# deploy/vps/slopdrop/stock-proxy.service —
+# /etc/systemd/system/slopdrop-stock-proxy.service (slopdrop.sh stock-proxy).
+#
+# slopdrop's one way out that is not Tor. Yahoo refuses Tor exits (every
+# stock command failed with "connection to yahoo! finance server
+# failed"), so the stock commands go through this proxy, which leaves
+# from the VPS's own address (USER, 2026-10-15: "we need a real ip with a
+# real reputation for yahoo stocks"; the VPS's address, not the home IP).
+# That address is the owner's IRC client's too, so the proxy reaches
+# Yahoo's chart API and nothing else (stock-proxy.filter, port 443 only),
+# answers loopback only, and wants a password that only slopdrop's
+# config.toml holds (`[tcl] stock_proxy`). veles.nft lets slopdrop, and
+# no other confined user, reach 127.0.0.1:8650.
+[Unit]
+Description=slopdrop's stock proxy (tinyproxy, Yahoo Finance only, the VPS's own address)
+Before=slopdrop.service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+# The config holds the password: root's 0600, handed to the service only.
+LoadCredential=conf:/etc/veles/slopdrop-stock-proxy.conf
+ExecStart=/usr/bin/tinyproxy -d -c %d/conf
+Restart=always
+RestartSec=5
+
+MemoryMax=64M
+TasksMax=64
+NoNewPrivileges=true
+CapabilityBoundingSet=
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+ProtectProc=invisible
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+RestrictRealtime=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

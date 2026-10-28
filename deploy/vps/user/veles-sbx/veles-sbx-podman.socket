@@ -1,0 +1,15 @@
+# deploy/vps/user/veles-sbx/veles-sbx-podman.socket
+# (~veles-sbx/.config/systemd/user/)
+#
+# The podman API of the sandbox user, for the gateway's container to
+# drive sibling sandboxes with (CONTAINER_HOST). World-writable on its
+# own; the 0750 directory around it (tmpfiles-veles.conf) is the gate.
+[Unit]
+Description=veles sandboxes: podman API socket
+
+[Socket]
+ListenStream=/run/veles-sbx/podman.sock
+SocketMode=0666
+
+[Install]
+WantedBy=sockets.target

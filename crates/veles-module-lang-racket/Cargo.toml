@@ -1,0 +1,15 @@
+[package]
+name = "veles-module-lang-racket"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The Racket language host as an in-process module (PLAN-plugins-installer.md R9): the dylib the module host loads, over the veles-lang-racket library."
+
+[lib]
+# The module, and only the module (crates/veles-module-irc says why a
+# module is a dylib-only crate of its own over a plain rlib).
+crate-type = ["dylib"]
+
+[dependencies]
+veles-lang-racket = { path = "../veles-lang-racket" }
+veles-runtime = { path = "../veles-runtime" }

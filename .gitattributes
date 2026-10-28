@@ -1,0 +1,17 @@
+# The build key (crates/veles-core/build.rs) hashes source bytes, and a
+# module loads only into the core whose key it carries: a checkout that
+# rewrote every line ending would give one machine a key no other can
+# reproduce. LF everywhere, on every platform; the few files Windows
+# itself must read as CRLF are named.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=lf
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.p12 binary
+*.so binary
+*.dll binary
+*.tar.gz binary

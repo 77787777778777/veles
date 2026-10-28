@@ -1,0 +1,831 @@
+# Android app strings, every language but English (android/res/values/strings.xml).
+# <locale> TAB <name> TAB <text>; scripts/android-strings.tcl turns these into
+# res/values-*/strings.xml at build time and fails on a missing one.
+af	channel_gateway	Gateway
+af	state_starting	Gateway begin
+af	state_running	Gateway loop
+af	state_stopped	Gateway gestop
+af	state_restarting	Gateway het met kode %1$d afgesluit, begin weer oor %2$d s
+af	action_start	Begin
+af	action_stop	Stop
+af	log_title	Gateway-log
+af	log_empty	Nog geen uitvoer nie.
+af	label_gateway	Veles-gateway
+af	channel_asks	Vrae van agente
+af	channel_turns	Voltooide beurte
+af	channel_device	Kennisgewings van die agent
+af	notify_turn_done	Die beurt is klaar.
+af	notify_wake_blocked	Veles kon nie in die agtergrond begin nie, dus het 'n sneller of 'n geskeduleerde taak nie geloop nie. Tik om veles oop te maak en laat dit dan op sy Foon-bladsy toe om in die agtergrond te loop.
+af	driver_description	Laat veles se agent hierdie foon gebruik wanneer jy dit vra: dit lees wat op die skerm is, en tik, skryf en rol. Net veles op hierdie foon kan dit bereik. Terwyl die agent die foon gebruik, sê 'n kennisgewing so, met Stop.
+af	channel_driving	Die agent gebruik die foon
+af	notify_driving	Die agent gebruik hierdie foon.
+am	channel_gateway	ጌትዌይ
+am	state_starting	ጌትዌይ በመጀመር ላይ
+am	state_running	ጌትዌይ እየሰራ ነው
+am	state_stopped	ጌትዌይ ቆሟል
+am	state_restarting	ጌትዌይ በኮድ %1$d ወጥቷል፤ በ%2$d ሰከንድ ውስጥ እንደገና ይጀምራል
+am	action_start	ጀምር
+am	action_stop	አቁም
+am	log_title	የጌትዌይ ምዝግብ ማስታወሻ
+am	log_empty	እስካሁን ምንም ውጤት የለም።
+am	label_gateway	Veles ጌትዌይ
+am	channel_asks	ከወኪሎች የሚመጡ ጥያቄዎች
+am	channel_turns	የተጠናቀቁ ዙሮች
+am	channel_device	ከወኪሉ የሚመጡ ማሳወቂያዎች
+am	notify_turn_done	ዙሩ ተጠናቋል።
+am	notify_wake_blocked	Veles ከበስተጀርባ መጀመር አልቻለም፤ ስለዚህ አንድ ቀስቃሽ ወይም የታቀደ ሥራ አልሄደም። veles ለመክፈት መታ ያድርጉ፤ ከዚያ በስልክ ገጹ ላይ ከበስተጀርባ እንዲሠራ ይፍቀዱለት።
+am	driver_description	ሲጠይቁት የveles ወኪል ይህን ስልክ እንዲጠቀም ያስችለዋል፤ በማያ ገጹ ላይ ያለውን ያነባል፣ ይነካል፣ ይጽፋል እና ያሸብልላል። በዚህ ስልክ ላይ ያለው veles ብቻ ሊደርስበት ይችላል። ወኪሉ ስልኩን ሲጠቀም አንድ ማሳወቂያ ከአቁም ጋር ይነግርዎታል።
+am	channel_driving	ወኪሉ ስልኩን ሲጠቀም
+am	notify_driving	ወኪሉ ይህን ስልክ እየተጠቀመ ነው።
+as	channel_gateway	গেটৱে
+as	state_starting	গেটৱে আৰম্ভ হৈছে
+as	state_running	গেটৱে চলি আছে
+as	state_stopped	গেটৱে বন্ধ হৈছে
+as	state_restarting	গেটৱে ক'ড %1$d ৰে বন্ধ হ'ল, %2$d ছেকেণ্ডত পুনৰ আৰম্ভ হ'ব
+as	action_start	আৰম্ভ কৰক
+as	action_stop	বন্ধ কৰক
+as	log_title	গেটৱে লগ
+as	log_empty	এতিয়ালৈকে কোনো আউটপুট নাই।
+as	label_gateway	Veles গেটৱে
+as	channel_asks	এজেণ্টৰ প্ৰশ্ন
+as	channel_turns	সম্পূৰ্ণ হোৱা টাৰ্ন
+as	channel_device	এজেণ্টৰ জাননী
+as	notify_turn_done	টাৰ্নটো সম্পূৰ্ণ হ'ল।
+as	notify_wake_blocked	Veles নেপথ্যত আৰম্ভ হ'ব নোৱাৰিলে, সেয়েহে এটা ট্ৰিগাৰ বা নিৰ্ধাৰিত কাম নচলিল। veles খুলিবলৈ টিপক, তাৰ পিছত ইয়াৰ ফোন পৃষ্ঠাত ইয়াক নেপথ্যত চলি থাকিবলৈ অনুমতি দিয়ক।
+as	driver_description	আপুনি ক'লে veles-ৰ এজেণ্টক এই ফোনটো ব্যৱহাৰ কৰিবলৈ দিয়ে: ই স্ক্ৰীণত থকাখিনি পঢ়ে, আৰু টিপে, লিখে আৰু স্ক্ৰ'ল কৰে। এই ফোনৰ veles-এহে ইয়াক পাব পাৰে। এজেণ্টে ফোনটো ব্যৱহাৰ কৰি থকাৰ সময়ত এটা জাননীয়ে সেই কথা কয়, বন্ধ কৰাৰ বুটামৰ সৈতে।
+as	channel_driving	এজেণ্টে ফোন ব্যৱহাৰ কৰিছে
+as	notify_driving	এজেণ্টে এই ফোনটো ব্যৱহাৰ কৰি আছে।
+bg	channel_gateway	Gateway
+bg	state_starting	Gateway-ът се стартира
+bg	state_running	Gateway-ът работи
+bg	state_stopped	Gateway-ът е спрян
+bg	state_restarting	Gateway-ът излезе с код %1$d, рестартиране след %2$d с
+bg	action_start	Старт
+bg	action_stop	Спри
+bg	log_title	Лог на gateway-а
+bg	log_empty	Все още няма изход.
+bg	label_gateway	Gateway на Veles
+bg	channel_asks	Въпроси от агентите
+bg	channel_turns	Завършени ходове
+bg	channel_device	Известия от агента
+bg	notify_turn_done	Ходът приключи.
+bg	notify_wake_blocked	Veles не можа да се стартира във фонов режим, затова тригер или планирана задача не се изпълни. Докоснете, за да отворите veles, после разрешете работата във фонов режим на страницата му „Телефон“.
+bg	driver_description	Позволява на агента на veles да използва този телефон, когато го помолите: чете какво има на екрана, докосва, пише и превърта. Само veles на този телефон има достъп до него. Докато агентът използва телефона, известие казва това, с бутон „Спри“.
+bg	channel_driving	Агентът използва телефона
+bg	notify_driving	Агентът използва този телефон.
+bn	channel_gateway	গেটওয়ে
+bn	state_starting	গেটওয়ে চালু হচ্ছে
+bn	state_running	গেটওয়ে চলছে
+bn	state_stopped	গেটওয়ে বন্ধ
+bn	state_restarting	গেটওয়ে কোড %1$d দিয়ে বন্ধ হয়েছে, %2$d সেকেন্ডে আবার চালু হবে
+bn	action_start	শুরু করুন
+bn	action_stop	থামান
+bn	log_title	গেটওয়ে লগ
+bn	log_empty	এখনও কোনো আউটপুট নেই।
+bn	label_gateway	Veles গেটওয়ে
+bn	channel_asks	এজেন্টদের প্রশ্ন
+bn	channel_turns	সম্পন্ন টার্ন
+bn	channel_device	এজেন্টের বিজ্ঞপ্তি
+bn	notify_turn_done	টার্ন শেষ হয়েছে।
+bn	notify_wake_blocked	Veles ব্যাকগ্রাউন্ডে চালু হতে পারেনি, তাই একটি ট্রিগার বা নির্ধারিত কাজ চলেনি। veles খুলতে ট্যাপ করুন, তারপর এর ফোন পৃষ্ঠায় এটিকে ব্যাকগ্রাউন্ডে চলার অনুমতি দিন।
+bn	driver_description	আপনি বললে veles-এর এজেন্টকে এই ফোনটি ব্যবহার করতে দেয়: এটি স্ক্রিনে যা আছে তা পড়ে, এবং ট্যাপ করে, লেখে ও স্ক্রল করে। শুধু এই ফোনের veles এতে পৌঁছাতে পারে। এজেন্ট যখন ফোনটি ব্যবহার করে, একটি বিজ্ঞপ্তি তা জানায়, থামানোর বোতামসহ।
+bn	channel_driving	এজেন্ট ফোন ব্যবহার করছে
+bn	notify_driving	এজেন্ট এই ফোনটি ব্যবহার করছে।
+cs	channel_gateway	Gateway
+cs	state_starting	Gateway se spouští
+cs	state_running	Gateway běží
+cs	state_stopped	Gateway je zastavena
+cs	state_restarting	Gateway skončila s kódem %1$d, restart za %2$d s
+cs	action_start	Spustit
+cs	action_stop	Zastavit
+cs	log_title	Protokol gateway
+cs	log_empty	Zatím žádný výstup.
+cs	label_gateway	Gateway Veles
+cs	channel_asks	Dotazy od agentů
+cs	channel_turns	Dokončené odpovědi
+cs	channel_device	Oznámení od agenta
+cs	notify_turn_done	Odpověď je hotová.
+cs	notify_wake_blocked	Veles se nemohl spustit na pozadí, takže spouštěč nebo naplánovaná úloha neproběhly. Klepnutím otevřete veles a na jeho stránce Telefon povolte běh na pozadí.
+cs	driver_description	Umožní agentovi veles používat tento telefon, když ho o to požádáte: čte, co je na obrazovce, klepe, píše a posouvá. Dostane se k němu jen veles v tomto telefonu. Když agent telefon používá, oznámení to říká, s tlačítkem Zastavit.
+cs	channel_driving	Agent používá telefon
+cs	notify_driving	Agent používá tento telefon.
+de	channel_gateway	Gateway
+de	state_starting	Gateway startet
+de	state_running	Gateway läuft
+de	state_stopped	Gateway gestoppt
+de	state_restarting	Gateway mit Code %1$d beendet, Neustart in %2$d s
+de	action_start	Starten
+de	action_stop	Stoppen
+de	log_title	Gateway-Protokoll
+de	log_empty	Noch keine Ausgabe.
+de	label_gateway	Veles-Gateway
+de	channel_asks	Fragen von Agenten
+de	channel_turns	Beendete Turns
+de	channel_device	Benachrichtigungen vom Agenten
+de	notify_turn_done	Der Turn ist fertig.
+de	notify_wake_blocked	Veles konnte nicht im Hintergrund starten, deshalb lief ein Trigger oder eine geplante Aufgabe nicht. Tippen Sie, um veles zu öffnen, und erlauben Sie ihm auf seiner Seite „Telefon“, im Hintergrund zu laufen.
+de	driver_description	Lässt den Agenten von veles dieses Telefon benutzen, wenn Sie ihn darum bitten: Er liest, was auf dem Bildschirm ist, tippt, schreibt und scrollt. Nur veles auf diesem Telefon kann ihn erreichen. Solange der Agent das Telefon benutzt, sagt eine Benachrichtigung das, mit „Stoppen“.
+de	channel_driving	Der Agent benutzt das Telefon
+de	notify_driving	Der Agent benutzt dieses Telefon.
+fil	channel_gateway	Gateway
+fil	state_starting	Nagsisimula ang gateway
+fil	state_running	Tumatakbo ang gateway
+fil	state_stopped	Nakahinto ang gateway
+fil	state_restarting	Lumabas ang gateway na may code %1$d, magre-restart sa loob ng %2$d s
+fil	action_start	Simulan
+fil	action_stop	Ihinto
+fil	log_title	Log ng gateway
+fil	log_empty	Wala pang output.
+fil	label_gateway	Gateway ng Veles
+fil	channel_asks	Mga tanong mula sa mga agent
+fil	channel_turns	Mga natapos na turn
+fil	channel_device	Mga abiso mula sa agent
+fil	notify_turn_done	Natapos na ang turn.
+fil	notify_wake_blocked	Hindi makapagsimula ang Veles sa background, kaya hindi tumakbo ang isang trigger o naka-iskedyul na gawain. I-tap para buksan ang veles, saka payagan itong tumakbo sa background sa pahina nitong Telepono.
+fil	driver_description	Hinahayaan ang agent ng veles na gamitin ang teleponong ito kapag hiniling mo: binabasa nito ang nasa screen, at nagta-tap, nagta-type at nag-i-scroll. Ang veles lang sa teleponong ito ang makakaabot dito. Habang ginagamit ng agent ang telepono, may abisong nagsasabi nito, may Ihinto.
+fil	channel_driving	Ginagamit ng agent ang telepono
+fil	notify_driving	Ginagamit ng agent ang teleponong ito.
+gu	channel_gateway	ગેટવે
+gu	state_starting	ગેટવે શરૂ થઈ રહ્યું છે
+gu	state_running	ગેટવે ચાલી રહ્યું છે
+gu	state_stopped	ગેટવે બંધ છે
+gu	state_restarting	ગેટવે કોડ %1$d સાથે બંધ થયું, %2$d સેકન્ડમાં ફરી શરૂ થશે
+gu	action_start	શરૂ કરો
+gu	action_stop	રોકો
+gu	log_title	ગેટવે લૉગ
+gu	log_empty	હજી કોઈ આઉટપુટ નથી.
+gu	label_gateway	Veles ગેટવે
+gu	channel_asks	એજન્ટ તરફથી પ્રશ્નો
+gu	channel_turns	પૂર્ણ થયેલા ટર્ન
+gu	channel_device	એજન્ટ તરફથી સૂચનાઓ
+gu	notify_turn_done	ટર્ન પૂર્ણ થયો.
+gu	notify_wake_blocked	Veles બૅકગ્રાઉન્ડમાં શરૂ થઈ શક્યું નહીં, તેથી કોઈ ટ્રિગર અથવા નિર્ધારિત કાર્ય ચાલ્યું નહીં. veles ખોલવા ટૅપ કરો, પછી તેના ફોન પેજ પર તેને બૅકગ્રાઉન્ડમાં ચાલવાની મંજૂરી આપો.
+gu	driver_description	તમે કહો ત્યારે veles ના એજન્ટને આ ફોન વાપરવા દે છે: તે સ્ક્રીન પર જે છે તે વાંચે છે, અને ટૅપ કરે છે, લખે છે અને સ્ક્રોલ કરે છે. આ ફોન પરનું veles જ તેના સુધી પહોંચી શકે છે. એજન્ટ ફોન વાપરે ત્યારે એક સૂચના તે જણાવે છે, રોકો સાથે.
+gu	channel_driving	એજન્ટ ફોન વાપરે છે
+gu	notify_driving	એજન્ટ આ ફોન વાપરી રહ્યો છે.
+ha	channel_gateway	Gateway
+ha	state_starting	Gateway na farawa
+ha	state_running	Gateway na aiki
+ha	state_stopped	Gateway ya tsaya
+ha	state_restarting	Gateway ya fita da lamba %1$d, zai sake farawa cikin daƙiƙa %2$d
+ha	action_start	Fara
+ha	action_stop	Tsaya
+ha	log_title	Rajistan gateway
+ha	log_empty	Babu fitarwa tukuna.
+ha	label_gateway	Gateway na Veles
+ha	channel_asks	Tambayoyi daga wakilai
+ha	channel_turns	Ayyukan da suka kammala
+ha	channel_device	Sanarwa daga wakili
+ha	notify_turn_done	Aikin ya kammala.
+ha	notify_wake_blocked	Veles bai iya farawa a bango ba, don haka wani abin jawo aiki ko aikin da aka tsara bai gudana ba. Taɓa don buɗe veles, sannan ka ba shi izinin aiki a bango a shafinsa na Waya.
+ha	driver_description	Yana bar wakilin veles ya yi amfani da wannan waya idan ka nema: yana karanta abin da ke kan allo, yana taɓawa, yana rubutu kuma yana gungurawa. veles da ke kan wannan waya kaɗai zai iya kai masa. Yayin da wakilin ke amfani da wayar, wata sanarwa tana faɗin haka, da maɓallin Tsaya.
+ha	channel_driving	Wakilin yana amfani da wayar
+ha	notify_driving	Wakilin yana amfani da wannan waya.
+hi	channel_gateway	गेटवे
+hi	state_starting	गेटवे शुरू हो रहा है
+hi	state_running	गेटवे चल रहा है
+hi	state_stopped	गेटवे बंद है
+hi	state_restarting	गेटवे कोड %1$d के साथ बंद हुआ, %2$d सेकंड में फिर शुरू होगा
+hi	action_start	शुरू करें
+hi	action_stop	रोकें
+hi	log_title	गेटवे लॉग
+hi	log_empty	अभी तक कोई आउटपुट नहीं।
+hi	label_gateway	Veles गेटवे
+hi	channel_asks	एजेंटों के प्रश्न
+hi	channel_turns	पूरे हुए टर्न
+hi	channel_device	एजेंट की सूचनाएँ
+hi	notify_turn_done	टर्न पूरा हो गया।
+hi	notify_wake_blocked	Veles बैकग्राउंड में शुरू नहीं हो सका, इसलिए कोई ट्रिगर या तय काम नहीं चला। veles खोलने के लिए टैप करें, फिर उसके फ़ोन पेज पर उसे बैकग्राउंड में चलने की अनुमति दें।
+hi	driver_description	आपके कहने पर veles के एजेंट को यह फ़ोन इस्तेमाल करने देता है: यह स्क्रीन पर जो है उसे पढ़ता है, और टैप करता है, लिखता है और स्क्रॉल करता है। सिर्फ़ इस फ़ोन का veles इस तक पहुँच सकता है। जब एजेंट फ़ोन इस्तेमाल कर रहा हो, एक सूचना यह बताती है, रोकें के साथ।
+hi	channel_driving	एजेंट फ़ोन इस्तेमाल कर रहा है
+hi	notify_driving	एजेंट यह फ़ोन इस्तेमाल कर रहा है।
+hr	channel_gateway	Pristupnik
+hr	state_starting	Pristupnik se pokreće
+hr	state_running	Pristupnik radi
+hr	state_stopped	Pristupnik je zaustavljen
+hr	state_restarting	Pristupnik je završio s kodom %1$d, ponovno pokretanje za %2$d s
+hr	action_start	Pokreni
+hr	action_stop	Zaustavi
+hr	log_title	Zapisnik pristupnika
+hr	log_empty	Još nema izlaza.
+hr	label_gateway	Veles pristupnik
+hr	channel_asks	Pitanja agenata
+hr	channel_turns	Dovršeni odgovori
+hr	channel_device	Obavijesti agenta
+hr	notify_turn_done	Odgovor je gotov.
+hr	notify_wake_blocked	Veles se nije mogao pokrenuti u pozadini, pa se okidač ili zakazani zadatak nije izvršio. Dodirnite da biste otvorili veles, a zatim na njegovoj stranici Telefon dopustite rad u pozadini.
+hr	driver_description	Dopušta agentu veles da koristi ovaj telefon kad ga to zamolite: čita što je na zaslonu, dodiruje, piše i pomiče. Do njega može doći samo veles na ovom telefonu. Dok agent koristi telefon, obavijest to kaže, s gumbom Zaustavi.
+hr	channel_driving	Agent koristi telefon
+hr	notify_driving	Agent koristi ovaj telefon.
+id	channel_gateway	Gateway
+id	state_starting	Gateway sedang dimulai
+id	state_running	Gateway berjalan
+id	state_stopped	Gateway berhenti
+id	state_restarting	Gateway keluar dengan kode %1$d, dimulai ulang dalam %2$d dtk
+id	action_start	Mulai
+id	action_stop	Hentikan
+id	log_title	Log gateway
+id	log_empty	Belum ada keluaran.
+id	label_gateway	Gateway Veles
+id	channel_asks	Pertanyaan dari agen
+id	channel_turns	Giliran yang selesai
+id	channel_device	Notifikasi dari agen
+id	notify_turn_done	Giliran selesai.
+id	notify_wake_blocked	Veles tidak bisa dimulai di latar belakang, jadi sebuah pemicu atau tugas terjadwal tidak berjalan. Ketuk untuk membuka veles, lalu izinkan ia berjalan di latar belakang di halaman Ponsel-nya.
+id	driver_description	Mengizinkan agen veles memakai ponsel ini saat Anda memintanya: agen membaca apa yang ada di layar, lalu mengetuk, mengetik, dan menggulir. Hanya veles di ponsel ini yang bisa menjangkaunya. Selama agen memakai ponsel, sebuah notifikasi memberitahukannya, dengan tombol Hentikan.
+id	channel_driving	Agen sedang memakai ponsel
+id	notify_driving	Agen sedang memakai ponsel ini.
+ig	channel_gateway	Gateway
+ig	state_starting	Gateway na-amalite
+ig	state_running	Gateway na-arụ ọrụ
+ig	state_stopped	Gateway akwụsịla
+ig	state_restarting	Gateway pụrụ na koodu %1$d, ọ ga-amalitegharị n'ime sekọnd %2$d
+ig	action_start	Malite
+ig	action_stop	Kwụsị
+ig	log_title	Ndekọ gateway
+ig	log_empty	Enweghị mmepụta ọ bụla ka.
+ig	label_gateway	Gateway Veles
+ig	channel_asks	Ajụjụ sitere n'aka ndị ọrụ
+ig	channel_turns	Ntụgharị emechara
+ig	channel_device	Ọkwa sitere n'aka onye ọrụ
+ig	notify_turn_done	Ntụgharị ahụ agwụla.
+ig	notify_wake_blocked	Veles enweghị ike ịmalite n'azụ, ya mere ihe na-akpalite ọrụ ma ọ bụ ọrụ a haziri ahazi arụghị ọrụ. Pịa ka imeghe veles, wee kwe ka ọ rụọ ọrụ n'azụ na ibe Ekwentị ya.
+ig	driver_description	Ọ na-ekwe ka onye ọrụ veles jiri ekwentị a mgbe ị rịọrọ ya: ọ na-agụ ihe dị na ihuenyo, na-apị, na-ede ma na-akpụgharị. Ọ bụ naanị veles nọ na ekwentị a nwere ike iru ya. Mgbe onye ọrụ ahụ na-eji ekwentị ahụ, ọkwa na-ekwu ya, ya na Kwụsị.
+ig	channel_driving	Onye ọrụ na-eji ekwentị
+ig	notify_driving	Onye ọrụ na-eji ekwentị a.
+ja	channel_gateway	ゲートウェイ
+ja	state_starting	ゲートウェイを起動中
+ja	state_running	ゲートウェイ実行中
+ja	state_stopped	ゲートウェイ停止
+ja	state_restarting	ゲートウェイがコード %1$d で終了しました。%2$d 秒後に再起動します
+ja	action_start	開始
+ja	action_stop	停止
+ja	log_title	ゲートウェイのログ
+ja	log_empty	まだ出力はありません。
+ja	label_gateway	Veles ゲートウェイ
+ja	channel_asks	エージェントからの質問
+ja	channel_turns	完了したターン
+ja	channel_device	エージェントからの通知
+ja	notify_turn_done	ターンが完了しました。
+ja	notify_wake_blocked	Veles をバックグラウンドで起動できなかったため、トリガーまたは予定されたジョブが実行されませんでした。タップして veles を開き、「スマートフォン」ページでバックグラウンドでの実行を許可してください。
+ja	driver_description	頼んだときに veles のエージェントがこのスマートフォンを使えるようにします。画面の内容を読み取り、タップ、入力、スクロールを行います。この端末の veles からしか使えません。エージェントがスマートフォンを使っている間は、停止ボタン付きの通知でお知らせします。
+ja	channel_driving	エージェントがスマートフォンを使用中
+ja	notify_driving	エージェントがこのスマートフォンを使用しています。
+kn	channel_gateway	ಗೇಟ್‌ವೇ
+kn	state_starting	ಗೇಟ್‌ವೇ ಪ್ರಾರಂಭವಾಗುತ್ತಿದೆ
+kn	state_running	ಗೇಟ್‌ವೇ ಚಾಲನೆಯಲ್ಲಿದೆ
+kn	state_stopped	ಗೇಟ್‌ವೇ ನಿಂತಿದೆ
+kn	state_restarting	ಗೇಟ್‌ವೇ ಕೋಡ್ %1$d ನೊಂದಿಗೆ ನಿರ್ಗಮಿಸಿತು, %2$d ಸೆಕೆಂಡುಗಳಲ್ಲಿ ಮರುಪ್ರಾರಂಭವಾಗುತ್ತದೆ
+kn	action_start	ಪ್ರಾರಂಭಿಸಿ
+kn	action_stop	ನಿಲ್ಲಿಸಿ
+kn	log_title	ಗೇಟ್‌ವೇ ಲಾಗ್
+kn	log_empty	ಇನ್ನೂ ಯಾವುದೇ ಔಟ್‌ಪುಟ್ ಇಲ್ಲ.
+kn	label_gateway	Veles ಗೇಟ್‌ವೇ
+kn	channel_asks	ಏಜೆಂಟ್‌ಗಳಿಂದ ಪ್ರಶ್ನೆಗಳು
+kn	channel_turns	ಮುಗಿದ ಟರ್ನ್‌ಗಳು
+kn	channel_device	ಏಜೆಂಟ್‌ನಿಂದ ಅಧಿಸೂಚನೆಗಳು
+kn	notify_turn_done	ಟರ್ನ್ ಮುಗಿಯಿತು.
+kn	notify_wake_blocked	Veles ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಪ್ರಾರಂಭವಾಗಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ, ಆದ್ದರಿಂದ ಒಂದು ಟ್ರಿಗರ್ ಅಥವಾ ನಿಗದಿತ ಕೆಲಸ ನಡೆಯಲಿಲ್ಲ. veles ತೆರೆಯಲು ಟ್ಯಾಪ್ ಮಾಡಿ, ನಂತರ ಅದರ ಫೋನ್ ಪುಟದಲ್ಲಿ ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಚಾಲನೆಗೆ ಅನುಮತಿಸಿ.
+kn	driver_description	ನೀವು ಕೇಳಿದಾಗ veles ಏಜೆಂಟ್ ಈ ಫೋನ್ ಬಳಸಲು ಬಿಡುತ್ತದೆ: ಅದು ಪರದೆಯ ಮೇಲಿರುವುದನ್ನು ಓದುತ್ತದೆ, ಮತ್ತು ಟ್ಯಾಪ್ ಮಾಡುತ್ತದೆ, ಟೈಪ್ ಮಾಡುತ್ತದೆ ಮತ್ತು ಸ್ಕ್ರಾಲ್ ಮಾಡುತ್ತದೆ. ಈ ಫೋನ್‌ನ veles ಮಾತ್ರ ಇದನ್ನು ತಲುಪಬಹುದು. ಏಜೆಂಟ್ ಫೋನ್ ಬಳಸುತ್ತಿರುವಾಗ, ಒಂದು ಅಧಿಸೂಚನೆ ಅದನ್ನು ತಿಳಿಸುತ್ತದೆ, ನಿಲ್ಲಿಸಿ ಜೊತೆಗೆ.
+kn	channel_driving	ಏಜೆಂಟ್ ಫೋನ್ ಬಳಸುತ್ತಿದೆ
+kn	notify_driving	ಏಜೆಂಟ್ ಈ ಫೋನ್ ಬಳಸುತ್ತಿದೆ.
+mg	channel_gateway	Gateway
+mg	state_starting	Manomboka ny gateway
+mg	state_running	Mandeha ny gateway
+mg	state_stopped	Nijanona ny gateway
+mg	state_restarting	Nivoaka tamin'ny kaody %1$d ny gateway, hanomboka indray afaka %2$d s
+mg	action_start	Atombohy
+mg	action_stop	Ajanony
+mg	log_title	Firaketana gateway
+mg	log_empty	Mbola tsy misy vokatra.
+mg	label_gateway	Gateway Veles
+mg	channel_asks	Fanontaniana avy amin'ireo agents
+mg	channel_turns	Fihodinana vita
+mg	channel_device	Fampandrenesana avy amin'ny agent
+mg	notify_turn_done	Vita ny fihodinana.
+mg	notify_wake_blocked	Tsy afaka nanomboka tao ambadika i Veles, ka tsy nandeha ny fanentanana na asa voalahatra iray. Tsindrio mba hanokafana an'i veles, avy eo avelao handeha ao ambadika izy ao amin'ny pejiny Finday.
+mg	driver_description	Mamela ny agent an'i veles hampiasa ity finday ity rehefa angatahinao: mamaky izay eo amin'ny efijery izy, ary manindry, manoratra ary mampihodina. veles eto amin'ity finday ity ihany no afaka mahatratra azy. Raha mampiasa ny finday ny agent, misy fampandrenesana milaza izany, miaraka amin'ny Ajanony.
+mg	channel_driving	Mampiasa ny finday ny agent
+mg	notify_driving	Mampiasa ity finday ity ny agent.
+ml	channel_gateway	ഗേറ്റ്‌വേ
+ml	state_starting	ഗേറ്റ്‌വേ ആരംഭിക്കുന്നു
+ml	state_running	ഗേറ്റ്‌വേ പ്രവർത്തിക്കുന്നു
+ml	state_stopped	ഗേറ്റ്‌വേ നിർത്തി
+ml	state_restarting	ഗേറ്റ്‌വേ കോഡ് %1$d ഉപയോഗിച്ച് അവസാനിച്ചു, %2$d സെക്കൻഡിൽ വീണ്ടും ആരംഭിക്കും
+ml	action_start	ആരംഭിക്കുക
+ml	action_stop	നിർത്തുക
+ml	log_title	ഗേറ്റ്‌വേ ലോഗ്
+ml	log_empty	ഇതുവരെ ഔട്ട്‌പുട്ട് ഇല്ല.
+ml	label_gateway	Veles ഗേറ്റ്‌വേ
+ml	channel_asks	ഏജന്റുകളുടെ ചോദ്യങ്ങൾ
+ml	channel_turns	പൂർത്തിയായ ടേണുകൾ
+ml	channel_device	ഏജന്റിൽ നിന്നുള്ള അറിയിപ്പുകൾ
+ml	notify_turn_done	ടേൺ പൂർത്തിയായി.
+ml	notify_wake_blocked	Veles-ന് പശ്ചാത്തലത്തിൽ ആരംഭിക്കാനായില്ല, അതിനാൽ ഒരു ട്രിഗർ അല്ലെങ്കിൽ ഷെഡ്യൂൾ ചെയ്ത ജോലി പ്രവർത്തിച്ചില്ല. veles തുറക്കാൻ ടാപ്പ് ചെയ്യുക, തുടർന്ന് അതിന്റെ ഫോൺ പേജിൽ പശ്ചാത്തലത്തിൽ പ്രവർത്തിക്കാൻ അനുവദിക്കുക.
+ml	driver_description	നിങ്ങൾ ആവശ്യപ്പെടുമ്പോൾ veles-ന്റെ ഏജന്റിനെ ഈ ഫോൺ ഉപയോഗിക്കാൻ അനുവദിക്കുന്നു: അത് സ്ക്രീനിലുള്ളത് വായിക്കുകയും ടാപ്പ് ചെയ്യുകയും ടൈപ്പ് ചെയ്യുകയും സ്ക്രോൾ ചെയ്യുകയും ചെയ്യുന്നു. ഈ ഫോണിലെ veles-ന് മാത്രമേ ഇതിലേക്ക് എത്താനാകൂ. ഏജന്റ് ഫോൺ ഉപയോഗിക്കുമ്പോൾ, നിർത്തുക ബട്ടണോടെ ഒരു അറിയിപ്പ് അത് പറയുന്നു.
+ml	channel_driving	ഏജന്റ് ഫോൺ ഉപയോഗിക്കുന്നു
+ml	notify_driving	ഏജന്റ് ഈ ഫോൺ ഉപയോഗിക്കുന്നു.
+mr	channel_gateway	गेटवे
+mr	state_starting	गेटवे सुरू होत आहे
+mr	state_running	गेटवे चालू आहे
+mr	state_stopped	गेटवे थांबला आहे
+mr	state_restarting	गेटवे कोड %1$d सह बंद झाला, %2$d सेकंदांत पुन्हा सुरू होईल
+mr	action_start	सुरू करा
+mr	action_stop	थांबवा
+mr	log_title	गेटवे लॉग
+mr	log_empty	अद्याप कोणतेही आउटपुट नाही.
+mr	label_gateway	Veles गेटवे
+mr	channel_asks	एजंटांचे प्रश्न
+mr	channel_turns	पूर्ण झालेले टर्न
+mr	channel_device	एजंटच्या सूचना
+mr	notify_turn_done	टर्न पूर्ण झाला.
+mr	notify_wake_blocked	Veles पार्श्वभूमीत सुरू होऊ शकले नाही, त्यामुळे एखादा ट्रिगर किंवा नियोजित काम चालले नाही. veles उघडण्यासाठी टॅप करा, मग त्याच्या फोन पानावर त्याला पार्श्वभूमीत चालण्याची परवानगी द्या.
+mr	driver_description	तुम्ही सांगाल तेव्हा veles च्या एजंटला हा फोन वापरू देते: तो स्क्रीनवर जे आहे ते वाचतो, आणि टॅप करतो, लिहितो आणि स्क्रोल करतो. फक्त या फोनवरचे veles त्याच्यापर्यंत पोहोचू शकते. एजंट फोन वापरत असताना, एक सूचना तसे सांगते, थांबवा सह.
+mr	channel_driving	एजंट फोन वापरत आहे
+mr	notify_driving	एजंट हा फोन वापरत आहे.
+ms	channel_gateway	Get laluan
+ms	state_starting	Get laluan sedang bermula
+ms	state_running	Get laluan sedang berjalan
+ms	state_stopped	Get laluan dihentikan
+ms	state_restarting	Get laluan keluar dengan kod %1$d, dimulakan semula dalam %2$d s
+ms	action_start	Mula
+ms	action_stop	Henti
+ms	log_title	Log get laluan
+ms	log_empty	Belum ada output.
+ms	label_gateway	Get laluan Veles
+ms	channel_asks	Soalan daripada ejen
+ms	channel_turns	Giliran yang selesai
+ms	channel_device	Pemberitahuan daripada ejen
+ms	notify_turn_done	Giliran selesai.
+ms	notify_wake_blocked	Veles tidak dapat dimulakan di latar belakang, jadi satu pencetus atau tugas berjadual tidak berjalan. Ketik untuk membuka veles, kemudian benarkan ia berjalan di latar belakang pada halaman Telefonnya.
+ms	driver_description	Membenarkan ejen veles menggunakan telefon ini apabila anda memintanya: ia membaca apa yang ada pada skrin, dan mengetik, menaip serta menatal. Hanya veles pada telefon ini boleh mencapainya. Semasa ejen menggunakan telefon, satu pemberitahuan menyatakannya, dengan butang Henti.
+ms	channel_driving	Ejen sedang menggunakan telefon
+ms	notify_driving	Ejen sedang menggunakan telefon ini.
+ne	channel_gateway	गेटवे
+ne	state_starting	गेटवे सुरु हुँदैछ
+ne	state_running	गेटवे चलिरहेको छ
+ne	state_stopped	गेटवे रोकिएको छ
+ne	state_restarting	गेटवे कोड %1$d सहित बन्द भयो, %2$d सेकेन्डमा फेरि सुरु हुनेछ
+ne	action_start	सुरु गर्नुहोस्
+ne	action_stop	रोक्नुहोस्
+ne	log_title	गेटवे लग
+ne	log_empty	अहिलेसम्म कुनै आउटपुट छैन।
+ne	label_gateway	Veles गेटवे
+ne	channel_asks	एजेन्टहरूका प्रश्नहरू
+ne	channel_turns	सकिएका टर्नहरू
+ne	channel_device	एजेन्टका सूचनाहरू
+ne	notify_turn_done	टर्न सकियो।
+ne	notify_wake_blocked	Veles पृष्ठभूमिमा सुरु हुन सकेन, त्यसैले कुनै ट्रिगर वा तालिकामा राखिएको काम चलेन। veles खोल्न ट्याप गर्नुहोस्, त्यसपछि यसको फोन पृष्ठमा यसलाई पृष्ठभूमिमा चल्ने अनुमति दिनुहोस्।
+ne	driver_description	तपाईंले भन्दा veles को एजेन्टलाई यो फोन चलाउन दिन्छ: यसले स्क्रिनमा भएको कुरा पढ्छ, र ट्याप गर्छ, टाइप गर्छ र स्क्रोल गर्छ। यो फोनको veles ले मात्र यसमा पहुँच गर्न सक्छ। एजेन्टले फोन चलाउँदा, एउटा सूचनाले त्यो भन्छ, रोक्नुहोस् सहित।
+ne	channel_driving	एजेन्टले फोन चलाउँदैछ
+ne	notify_driving	एजेन्टले यो फोन चलाउँदैछ।
+or	channel_gateway	ଗେଟୱେ
+or	state_starting	ଗେଟୱେ ଆରମ୍ଭ ହେଉଛି
+or	state_running	ଗେଟୱେ ଚାଲୁଛି
+or	state_stopped	ଗେଟୱେ ବନ୍ଦ ଅଛି
+or	state_restarting	ଗେଟୱେ କୋଡ୍ %1$d ସହ ବନ୍ଦ ହେଲା, %2$d ସେକେଣ୍ଡରେ ପୁଣି ଆରମ୍ଭ ହେବ
+or	action_start	ଆରମ୍ଭ କରନ୍ତୁ
+or	action_stop	ବନ୍ଦ କରନ୍ତୁ
+or	log_title	ଗେଟୱେ ଲଗ
+or	log_empty	ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ଆଉଟପୁଟ ନାହିଁ।
+or	label_gateway	Veles ଗେଟୱେ
+or	channel_asks	ଏଜେଣ୍ଟଙ୍କ ପ୍ରଶ୍ନ
+or	channel_turns	ସମ୍ପୂର୍ଣ୍ଣ ଟର୍ନ୍
+or	channel_device	ଏଜେଣ୍ଟଙ୍କ ବିଜ୍ଞପ୍ତି
+or	notify_turn_done	ଟର୍ନ୍ ସମ୍ପୂର୍ଣ୍ଣ ହେଲା।
+or	notify_wake_blocked	Veles ପୃଷ୍ଠଭୂମିରେ ଆରମ୍ଭ ହୋଇପାରିଲା ନାହିଁ, ତେଣୁ ଏକ ଟ୍ରିଗର କିମ୍ବା ନିର୍ଧାରିତ କାମ ଚାଲିଲା ନାହିଁ। veles ଖୋଲିବାକୁ ଟ୍ୟାପ କରନ୍ତୁ, ତା'ପରେ ଏହାର ଫୋନ୍ ପୃଷ୍ଠାରେ ଏହାକୁ ପୃଷ୍ଠଭୂମିରେ ଚାଲିବାକୁ ଅନୁମତି ଦିଅନ୍ତୁ।
+or	driver_description	ଆପଣ କହିଲେ veles ର ଏଜେଣ୍ଟକୁ ଏହି ଫୋନ୍ ବ୍ୟବହାର କରିବାକୁ ଦିଏ: ଏହା ସ୍କ୍ରିନରେ ଥିବା ବିଷୟ ପଢ଼େ, ଏବଂ ଟ୍ୟାପ୍ କରେ, ଲେଖେ ଓ ସ୍କ୍ରୋଲ୍ କରେ। କେବଳ ଏହି ଫୋନର veles ଏହା ପାଖରେ ପହଞ୍ଚିପାରିବ। ଏଜେଣ୍ଟ ଫୋନ୍ ବ୍ୟବହାର କରୁଥିବା ବେଳେ, ଏକ ବିଜ୍ଞପ୍ତି ତାହା କହେ, ବନ୍ଦ କରନ୍ତୁ ସହିତ।
+or	channel_driving	ଏଜେଣ୍ଟ ଫୋନ୍ ବ୍ୟବହାର କରୁଛନ୍ତି
+or	notify_driving	ଏଜେଣ୍ଟ ଏହି ଫୋନ୍ ବ୍ୟବହାର କରୁଛନ୍ତି।
+pa	channel_gateway	ਗੇਟਵੇ
+pa	state_starting	ਗੇਟਵੇ ਸ਼ੁਰੂ ਹੋ ਰਿਹਾ ਹੈ
+pa	state_running	ਗੇਟਵੇ ਚੱਲ ਰਿਹਾ ਹੈ
+pa	state_stopped	ਗੇਟਵੇ ਰੁਕਿਆ ਹੋਇਆ ਹੈ
+pa	state_restarting	ਗੇਟਵੇ ਕੋਡ %1$d ਨਾਲ ਬੰਦ ਹੋਇਆ, %2$d ਸਕਿੰਟਾਂ ਵਿੱਚ ਮੁੜ ਸ਼ੁਰੂ ਹੋਵੇਗਾ
+pa	action_start	ਸ਼ੁਰੂ ਕਰੋ
+pa	action_stop	ਰੋਕੋ
+pa	log_title	ਗੇਟਵੇ ਲੌਗ
+pa	log_empty	ਹਾਲੇ ਕੋਈ ਆਉਟਪੁੱਟ ਨਹੀਂ।
+pa	label_gateway	Veles ਗੇਟਵੇ
+pa	channel_asks	ਏਜੰਟਾਂ ਦੇ ਸਵਾਲ
+pa	channel_turns	ਪੂਰੀਆਂ ਹੋਈਆਂ ਵਾਰੀਆਂ
+pa	channel_device	ਏਜੰਟ ਦੀਆਂ ਸੂਚਨਾਵਾਂ
+pa	notify_turn_done	ਵਾਰੀ ਪੂਰੀ ਹੋ ਗਈ।
+pa	notify_wake_blocked	Veles ਪਿਛੋਕੜ ਵਿੱਚ ਸ਼ੁਰੂ ਨਹੀਂ ਹੋ ਸਕਿਆ, ਇਸ ਲਈ ਕੋਈ ਟ੍ਰਿਗਰ ਜਾਂ ਨਿਰਧਾਰਤ ਕੰਮ ਨਹੀਂ ਚੱਲਿਆ। veles ਖੋਲ੍ਹਣ ਲਈ ਟੈਪ ਕਰੋ, ਫਿਰ ਇਸਦੇ ਫ਼ੋਨ ਪੰਨੇ 'ਤੇ ਇਸਨੂੰ ਪਿਛੋਕੜ ਵਿੱਚ ਚੱਲਣ ਦੀ ਇਜਾਜ਼ਤ ਦਿਓ।
+pa	driver_description	ਤੁਹਾਡੇ ਕਹਿਣ 'ਤੇ veles ਦੇ ਏਜੰਟ ਨੂੰ ਇਹ ਫ਼ੋਨ ਵਰਤਣ ਦਿੰਦਾ ਹੈ: ਇਹ ਸਕ੍ਰੀਨ 'ਤੇ ਜੋ ਹੈ ਉਹ ਪੜ੍ਹਦਾ ਹੈ, ਅਤੇ ਟੈਪ ਕਰਦਾ, ਲਿਖਦਾ ਅਤੇ ਸਕ੍ਰੋਲ ਕਰਦਾ ਹੈ। ਸਿਰਫ਼ ਇਸ ਫ਼ੋਨ ਦਾ veles ਇਸ ਤੱਕ ਪਹੁੰਚ ਸਕਦਾ ਹੈ। ਜਦੋਂ ਏਜੰਟ ਫ਼ੋਨ ਵਰਤ ਰਿਹਾ ਹੋਵੇ, ਇੱਕ ਸੂਚਨਾ ਇਹ ਦੱਸਦੀ ਹੈ, ਰੋਕੋ ਸਮੇਤ।
+pa	channel_driving	ਏਜੰਟ ਫ਼ੋਨ ਵਰਤ ਰਿਹਾ ਹੈ
+pa	notify_driving	ਏਜੰਟ ਇਹ ਫ਼ੋਨ ਵਰਤ ਰਿਹਾ ਹੈ।
+pcm	channel_gateway	Di gateway
+pcm	state_starting	Gateway dey start
+pcm	state_running	Gateway dey run
+pcm	state_stopped	Gateway don stop
+pcm	state_restarting	Gateway comot with code %1$d, e go start again for %2$d s
+pcm	action_start	Make e start
+pcm	action_stop	Make e stop
+pcm	log_title	Log for gateway
+pcm	log_empty	Nothing don show yet.
+pcm	label_gateway	Veles gateway
+pcm	channel_asks	Question wey agents dey ask
+pcm	channel_turns	Turns wey don finish
+pcm	channel_device	Notification wey agent send
+pcm	notify_turn_done	Di turn don finish.
+pcm	notify_wake_blocked	Veles no fit start for background, so one trigger or one work wey dem schedule no run. Tap make veles open, then allow am make e dey run for background for im Phone page.
+pcm	driver_description	E dey allow veles agent use dis phone when you ask am: e dey read wetin dey for screen, e dey tap, type and scroll. Na only veles for dis phone fit reach am. When the agent dey use the phone, one notification go talk am, with Make e stop.
+pcm	channel_driving	Agent dey use the phone
+pcm	notify_driving	Agent dey use dis phone.
+pl	channel_gateway	Brama
+pl	state_starting	Brama się uruchamia
+pl	state_running	Brama działa
+pl	state_stopped	Brama zatrzymana
+pl	state_restarting	Brama zakończyła działanie z kodem %1$d, ponowne uruchomienie za %2$d s
+pl	action_start	Uruchom
+pl	action_stop	Zatrzymaj
+pl	log_title	Dziennik bramy
+pl	log_empty	Brak danych wyjściowych.
+pl	label_gateway	Brama Veles
+pl	channel_asks	Pytania od agentów
+pl	channel_turns	Zakończone tury
+pl	channel_device	Powiadomienia od agenta
+pl	notify_turn_done	Tura zakończona.
+pl	notify_wake_blocked	Veles nie mógł uruchomić się w tle, więc wyzwalacz lub zaplanowane zadanie się nie wykonało. Stuknij, aby otworzyć veles, a potem na jego stronie Telefon zezwól na działanie w tle.
+pl	driver_description	Pozwala agentowi veles używać tego telefonu, gdy go o to poprosisz: czyta, co jest na ekranie, stuka, pisze i przewija. Dostęp do niego ma tylko veles na tym telefonie. Gdy agent używa telefonu, mówi o tym powiadomienie z przyciskiem Zatrzymaj.
+pl	channel_driving	Agent używa telefonu
+pl	notify_driving	Agent używa tego telefonu.
+ru	channel_gateway	Шлюз
+ru	state_starting	Шлюз запускается
+ru	state_running	Шлюз работает
+ru	state_stopped	Шлюз остановлен
+ru	state_restarting	Шлюз завершился с кодом %1$d, перезапуск через %2$d с
+ru	action_start	Запустить
+ru	action_stop	Остановить
+ru	log_title	Журнал шлюза
+ru	log_empty	Вывода пока нет.
+ru	label_gateway	Шлюз Veles
+ru	channel_asks	Вопросы от агентов
+ru	channel_turns	Завершённые ходы
+ru	channel_device	Уведомления от агента
+ru	notify_turn_done	Ход завершён.
+ru	notify_wake_blocked	Veles не смог запуститься в фоне, поэтому триггер или запланированное задание не выполнилось. Нажмите, чтобы открыть veles, и разрешите ему работу в фоне на его странице «Телефон».
+ru	driver_description	Позволяет агенту veles пользоваться этим телефоном, когда вы его попросите: он читает то, что на экране, нажимает, вводит текст и прокручивает. Добраться до него может только veles на этом телефоне. Пока агент пользуется телефоном, об этом говорит уведомление с кнопкой «Остановить».
+ru	channel_driving	Агент пользуется телефоном
+ru	notify_driving	Агент пользуется этим телефоном.
+rw	channel_gateway	Gateway
+rw	state_starting	Gateway iratangira
+rw	state_running	Gateway irakora
+rw	state_stopped	Gateway yahagaritswe
+rw	state_restarting	Gateway yasohotse ifite kode %1$d, izongera gutangira mu masegonda %2$d
+rw	action_start	Tangira
+rw	action_stop	Hagarika
+rw	log_title	Inyandiko za gateway
+rw	log_empty	Nta bisohoka biraboneka.
+rw	label_gateway	Gateway ya Veles
+rw	channel_asks	Ibibazo biva ku ba-agents
+rw	channel_turns	Turns zarangiye
+rw	channel_device	Imenyesha riva ku mu-agent
+rw	notify_turn_done	Turn yarangiye.
+rw	notify_wake_blocked	Veles ntiyashoboye gutangira ikorera inyuma, bityo imbarutso cyangwa umurimo wateganyijwe ntibyakoze. Kanda kugira ngo ufungure veles, hanyuma uyemerere gukora inyuma ku rupapuro rwayo rwa Telefoni.
+rw	driver_description	Ireka umu-agent wa veles agakoresha iyi telefoni iyo ubimusabye: asoma ibiri kuri ekarani, akakanda, akandika kandi akazamura cyangwa akamanura. veles iri kuri iyi telefoni yonyine ni yo ishobora kuyigeraho. Igihe umu-agent ari gukoresha telefoni, imenyesha ribivuga, rifite Hagarika.
+rw	channel_driving	Umu-agent ari gukoresha telefoni
+rw	notify_driving	Umu-agent ari gukoresha iyi telefoni.
+si	channel_gateway	Gateway
+si	state_starting	Gateway ආරම්භ වෙමින්
+si	state_running	Gateway ක්‍රියාත්මකයි
+si	state_stopped	Gateway නැවතී ඇත
+si	state_restarting	Gateway කේතය %1$d සමඟ නික්මුණි, තත්පර %2$d කින් නැවත ආරම්භ වේ
+si	action_start	අරඹන්න
+si	action_stop	නවත්වන්න
+si	log_title	Gateway ලොගය
+si	log_empty	තවම ප්‍රතිදානයක් නැත.
+si	label_gateway	Veles gateway
+si	channel_asks	නියෝජිතයන්ගේ ප්රශ්න
+si	channel_turns	අවසන් වූ turn
+si	channel_device	නියෝජිතයාගෙන් දැනුම්දීම්
+si	notify_turn_done	turn එක අවසන් විය.
+si	notify_wake_blocked	Veles හට පසුබිමින් ආරම්භ වීමට නොහැකි වූ නිසා ප්‍රේරකයක් හෝ සැලසුම් කළ කාර්යයක් ධාවනය නොවීය. veles විවෘත කිරීමට තට්ටු කරන්න, ඉන්පසු එහි දුරකථන පිටුවෙන් පසුබිමින් ධාවනය වීමට ඉඩ දෙන්න.
+si	driver_description	ඔබ ඉල්ලූ විට veles නියෝජිතයාට මෙම දුරකථනය භාවිත කිරීමට ඉඩ දෙයි: එය තිරයේ ඇති දේ කියවා, තට්ටු කරයි, ටයිප් කරයි සහ අනුචලනය කරයි. මෙම දුරකථනයේ veles ට පමණක් එයට ළඟා විය හැක. නියෝජිතයා දුරකථනය භාවිත කරන අතරතුර, නවත්වන්න බොත්තම සමඟ දැනුම්දීමක් එය පවසයි.
+si	channel_driving	නියෝජිතයා දුරකථනය භාවිත කරයි
+si	notify_driving	නියෝජිතයා මෙම දුරකථනය භාවිත කරයි.
+sk	channel_gateway	Brána
+sk	state_starting	Brána sa spúšťa
+sk	state_running	Brána beží
+sk	state_stopped	Brána je zastavená
+sk	state_restarting	Brána skončila s kódom %1$d, reštart o %2$d s
+sk	action_start	Spustiť
+sk	action_stop	Zastaviť
+sk	log_title	Záznam brány
+sk	log_empty	Zatiaľ žiadny výstup.
+sk	label_gateway	Brána Veles
+sk	channel_asks	Otázky od agentov
+sk	channel_turns	Dokončené ťahy
+sk	channel_device	Upozornenia od agenta
+sk	notify_turn_done	Ťah je dokončený.
+sk	notify_wake_blocked	Veles sa nemohol spustiť na pozadí, takže spúšťač alebo naplánovaná úloha neprebehli. Ťuknutím otvorte veles a na jeho stránke Telefón povoľte beh na pozadí.
+sk	driver_description	Umožní agentovi veles používať tento telefón, keď ho o to požiadate: číta, čo je na obrazovke, ťuká, píše a posúva. Dostane sa k nemu iba veles v tomto telefóne. Keď agent telefón používa, upozornenie to oznamuje, s tlačidlom Zastaviť.
+sk	channel_driving	Agent používa telefón
+sk	notify_driving	Agent používa tento telefón.
+sn	channel_gateway	Gateway
+sn	state_starting	Gateway iri kutanga
+sn	state_running	Gateway iri kushanda
+sn	state_stopped	Gateway yamira
+sn	state_restarting	Gateway yabuda nekodhi %1$d, ichatangazve mumasekondi %2$d
+sn	action_start	Tanga
+sn	action_stop	Mira
+sn	log_title	Rekodhi yegateway
+sn	log_empty	Hapana zvabuda parizvino.
+sn	label_gateway	Gateway yeVeles
+sn	channel_asks	Mibvunzo inobva kuma-agents
+sn	channel_turns	Turns dzapera
+sn	channel_device	Zviziviso kubva kuna agent
+sn	notify_turn_done	Turn yapera.
+sn	notify_wake_blocked	Veles haina kukwanisa kutanga ichishanda kumashure, saka chinomutsa basa kana basa rakarongwa harina kushanda. Bata kuti uvhure veles, wozoibvumira kushanda kumashure papeji yayo yeRunhare.
+sn	driver_description	Inobvumira agent wa veles kushandisa runhare urwu kana ukaikumbira: inoverenga zviri pachidzitiro, uye inobaya, inonyora uye inotenderedza. veles iri parunhare urwu chete ndiyo inogona kusvika kwairi. Agent paanenge achishandisa runhare, chiziviso chinozvitaura, pamwe neMira.
+sn	channel_driving	Agent ari kushandisa runhare
+sn	notify_driving	Agent ari kushandisa runhare urwu.
+so	channel_gateway	Gateway
+so	state_starting	Gateway-ga wuu bilaabanayaa
+so	state_running	Gateway-ga wuu shaqaynayaa
+so	state_stopped	Gateway-ga waa la joojiyay
+so	state_restarting	Gateway-ga wuxuu ku baxay koodh %1$d, wuxuu dib u bilaabmayaa %2$d ilbiriqsi kadib
+so	action_start	Bilow
+so	action_stop	Jooji
+so	log_title	Diiwaanka gateway-ga
+so	log_empty	Weli wax soo baxay ma jiraan.
+so	label_gateway	Gateway-ga Veles
+so	channel_asks	Su'aalaha wakiilada
+so	channel_turns	Turn-yada dhammaaday
+so	channel_device	Ogeysiisyada wakiilka
+so	notify_turn_done	Turn-ku wuu dhammaaday.
+so	notify_wake_blocked	Veles kama uusan ka bilaabmin gadaasha, sidaas darteed kicin ama hawl la qorsheeyay ma shaqayn. Taabo si aad u furto veles, kadibna u oggolow inuu gadaasha ka shaqeeyo boggiisa Taleefanka.
+so	driver_description	Wuxuu u oggolaanayaa wakiilka veles inuu isticmaalo taleefankan marka aad ka codsato: wuxuu akhriyaa waxa shaashadda ku yaal, wuuna taabtaa, qoraa oo rogaa. veles-ka taleefankan oo keliya ayaa gaari kara. Inta wakiilku isticmaalayo taleefanka, ogeysiis ayaa sheegaya, oo leh Jooji.
+so	channel_driving	Wakiilku wuxuu isticmaalayaa taleefanka
+so	notify_driving	Wakiilku wuxuu isticmaalayaa taleefankan.
+sr_cyrl	channel_gateway	Гејтвеј
+sr_cyrl	state_starting	Гејтвеј се покреће
+sr_cyrl	state_running	Гејтвеј ради
+sr_cyrl	state_stopped	Гејтвеј је заустављен
+sr_cyrl	state_restarting	Гејтвеј је изашао са кодом %1$d, поновно покретање за %2$d с
+sr_cyrl	action_start	Покрени
+sr_cyrl	action_stop	Заустави
+sr_cyrl	log_title	Дневник гејтвеја
+sr_cyrl	log_empty	Још нема излаза.
+sr_cyrl	label_gateway	Veles гејтвеј
+sr_cyrl	channel_asks	Питања агената
+sr_cyrl	channel_turns	Завршене обраде
+sr_cyrl	channel_device	Обавештења агента
+sr_cyrl	notify_turn_done	Обрада је завршена.
+sr_cyrl	notify_wake_blocked	Veles није могао да се покрене у позадини, па се окидач или заказани задатак није извршио. Додирните да отворите veles, а затим на његовој страници „Телефон“ дозволите рад у позадини.
+sr_cyrl	driver_description	Дозвољава агенту veles да користи овај телефон када га замолите: чита шта је на екрану, додирује, куца и помера. До њега може да дође само veles на овом телефону. Док агент користи телефон, обавештење то каже, са дугметом „Заустави“.
+sr_cyrl	channel_driving	Агент користи телефон
+sr_cyrl	notify_driving	Агент користи овај телефон.
+sr_latn	channel_gateway	Gejtvej
+sr_latn	state_starting	Gejtvej se pokreće
+sr_latn	state_running	Gejtvej radi
+sr_latn	state_stopped	Gejtvej je zaustavljen
+sr_latn	state_restarting	Gejtvej je izašao sa kodom %1$d, ponovno pokretanje za %2$d s
+sr_latn	action_start	Pokreni
+sr_latn	action_stop	Zaustavi
+sr_latn	log_title	Dnevnik gejtveja
+sr_latn	log_empty	Još nema izlaza.
+sr_latn	label_gateway	Veles gejtvej
+sr_latn	channel_asks	Pitanja agenata
+sr_latn	channel_turns	Završeni odgovori
+sr_latn	channel_device	Obaveštenja agenta
+sr_latn	notify_turn_done	Odgovor je gotov.
+sr_latn	notify_wake_blocked	Veles nije mogao da se pokrene u pozadini, pa se okidač ili zakazani zadatak nije izvršio. Dodirnite da otvorite veles, a zatim na njegovoj stranici „Telefon“ dozvolite rad u pozadini.
+sr_latn	driver_description	Dozvoljava agentu veles da koristi ovaj telefon kada ga zamolite: čita šta je na ekranu, dodiruje, kuca i pomera. Do njega može da dođe samo veles na ovom telefonu. Dok agent koristi telefon, obaveštenje to kaže, sa dugmetom „Zaustavi“.
+sr_latn	channel_driving	Agent koristi telefon
+sr_latn	notify_driving	Agent koristi ovaj telefon.
+sw	channel_gateway	Gateway
+sw	state_starting	Gateway inaanza
+sw	state_running	Gateway inaendeshwa
+sw	state_stopped	Gateway imesimamishwa
+sw	state_restarting	Gateway imetoka na msimbo %1$d, itaanza upya baada ya sekunde %2$d
+sw	action_start	Anzisha
+sw	action_stop	Simamisha
+sw	log_title	Kumbukumbu za gateway
+sw	log_empty	Bado hakuna matokeo.
+sw	label_gateway	Gateway ya Veles
+sw	channel_asks	Maswali kutoka kwa mawakala
+sw	channel_turns	Zamu zilizokamilika
+sw	channel_device	Arifa kutoka kwa wakala
+sw	notify_turn_done	Zamu imekamilika.
+sw	notify_wake_blocked	Veles haikuweza kuanza chinichini, kwa hivyo kichochezi au kazi iliyopangwa haikufanyika. Gusa ili kufungua veles, kisha iruhusu ifanye kazi chinichini kwenye ukurasa wake wa Simu.
+sw	driver_description	Huruhusu wakala wa veles atumie simu hii unapomwomba: husoma kilicho kwenye skrini, na hugusa, huandika na kusogeza. Ni veles iliyo kwenye simu hii tu inayoweza kuifikia. Wakala anapotumia simu, arifa husema hivyo, pamoja na Simamisha.
+sw	channel_driving	Wakala anatumia simu
+sw	notify_driving	Wakala anatumia simu hii.
+ta	channel_gateway	கேட்வே
+ta	state_starting	கேட்வே தொடங்குகிறது
+ta	state_running	கேட்வே இயங்குகிறது
+ta	state_stopped	கேட்வே நிறுத்தப்பட்டது
+ta	state_restarting	கேட்வே குறியீடு %1$d உடன் வெளியேறியது, %2$d வினாடிகளில் மீண்டும் தொடங்கும்
+ta	action_start	தொடங்கு
+ta	action_stop	நிறுத்து
+ta	log_title	கேட்வே பதிவு
+ta	log_empty	இன்னும் வெளியீடு இல்லை.
+ta	label_gateway	Veles கேட்வே
+ta	channel_asks	முகவர்களின் கேள்விகள்
+ta	channel_turns	முடிந்த turn-கள்
+ta	channel_device	முகவரின் அறிவிப்புகள்
+ta	notify_turn_done	turn முடிந்தது.
+ta	notify_wake_blocked	Veles பின்னணியில் தொடங்க முடியவில்லை, அதனால் ஒரு தூண்டி அல்லது திட்டமிட்ட வேலை இயங்கவில்லை. veles-ஐத் திறக்கத் தட்டவும், பின்னர் அதன் தொலைபேசி பக்கத்தில் பின்னணியில் இயங்க அனுமதிக்கவும்.
+ta	driver_description	நீங்கள் கேட்கும்போது veles முகவர் இந்த தொலைபேசியைப் பயன்படுத்த அனுமதிக்கிறது: அது திரையில் உள்ளதைப் படித்து, தட்டுகிறது, தட்டச்சு செய்கிறது, உருட்டுகிறது. இந்த தொலைபேசியில் உள்ள veles மட்டுமே இதை அணுக முடியும். முகவர் தொலைபேசியைப் பயன்படுத்தும்போது, நிறுத்து பொத்தானுடன் ஒரு அறிவிப்பு அதைச் சொல்கிறது.
+ta	channel_driving	முகவர் தொலைபேசியைப் பயன்படுத்துகிறார்
+ta	notify_driving	முகவர் இந்த தொலைபேசியைப் பயன்படுத்துகிறார்.
+te	channel_gateway	గేట్‌వే
+te	state_starting	గేట్‌వే ప్రారంభమవుతోంది
+te	state_running	గేట్‌వే నడుస్తోంది
+te	state_stopped	గేట్‌వే ఆగిపోయింది
+te	state_restarting	గేట్‌వే కోడ్ %1$d తో నిష్క్రమించింది, %2$d సెకన్లలో మళ్లీ ప్రారంభమవుతుంది
+te	action_start	ప్రారంభించు
+te	action_stop	ఆపు
+te	log_title	గేట్‌వే లాగ్
+te	log_empty	ఇంకా అవుట్‌పుట్ లేదు.
+te	label_gateway	Veles గేట్‌వే
+te	channel_asks	ఏజెంట్ల ప్రశ్నలు
+te	channel_turns	పూర్తయిన టర్న్‌లు
+te	channel_device	ఏజెంట్ నుండి నోటిఫికేషన్లు
+te	notify_turn_done	టర్న్ పూర్తయింది.
+te	notify_wake_blocked	Veles బ్యాక్‌గ్రౌండ్‌లో ప్రారంభం కాలేకపోయింది, కాబట్టి ఒక ట్రిగ్గర్ లేదా షెడ్యూల్ చేసిన పని జరగలేదు. veles తెరవడానికి నొక్కండి, ఆపై దాని ఫోన్ పేజీలో బ్యాక్‌గ్రౌండ్‌లో నడవడానికి అనుమతించండి.
+te	driver_description	మీరు అడిగినప్పుడు veles ఏజెంట్‌ను ఈ ఫోన్ వాడనిస్తుంది: అది స్క్రీన్‌పై ఉన్నది చదువుతుంది, నొక్కుతుంది, టైప్ చేస్తుంది, స్క్రోల్ చేస్తుంది. ఈ ఫోన్‌లోని veles మాత్రమే దీన్ని చేరగలదు. ఏజెంట్ ఫోన్ వాడుతున్నప్పుడు, ఆపు బటన్‌తో ఒక నోటిఫికేషన్ ఆ సంగతి చెబుతుంది.
+te	channel_driving	ఏజెంట్ ఫోన్ వాడుతోంది
+te	notify_driving	ఏజెంట్ ఈ ఫోన్ వాడుతోంది.
+th	channel_gateway	เกตเวย์
+th	state_starting	เกตเวย์กำลังเริ่มทำงาน
+th	state_running	เกตเวย์กำลังทำงาน
+th	state_stopped	เกตเวย์หยุดทำงาน
+th	state_restarting	เกตเวย์ออกด้วยรหัส %1$d จะเริ่มใหม่ใน %2$d วินาที
+th	action_start	เริ่ม
+th	action_stop	หยุด
+th	log_title	บันทึกของเกตเวย์
+th	log_empty	ยังไม่มีเอาต์พุต
+th	label_gateway	เกตเวย์ Veles
+th	channel_asks	คำถามจากเอเจนต์
+th	channel_turns	เทิร์นที่เสร็จแล้ว
+th	channel_device	การแจ้งเตือนจากเอเจนต์
+th	notify_turn_done	เทิร์นเสร็จแล้ว
+th	notify_wake_blocked	Veles เริ่มทำงานเบื้องหลังไม่ได้ ทริกเกอร์หรืองานที่ตั้งเวลาไว้จึงไม่ได้ทำงาน แตะเพื่อเปิด veles แล้วอนุญาตการทำงานเบื้องหลังในหน้าโทรศัพท์ของแอป
+th	driver_description	ให้เอเจนต์ของ veles ใช้โทรศัพท์เครื่องนี้เมื่อคุณขอ: เอเจนต์จะอ่านสิ่งที่อยู่บนหน้าจอ แตะ พิมพ์ และเลื่อน มีเพียง veles บนโทรศัพท์เครื่องนี้ที่เข้าถึงได้ ระหว่างที่เอเจนต์ใช้โทรศัพท์ จะมีการแจ้งเตือนบอก พร้อมปุ่มหยุด
+th	channel_driving	เอเจนต์กำลังใช้โทรศัพท์
+th	notify_driving	เอเจนต์กำลังใช้โทรศัพท์เครื่องนี้
+tl	channel_gateway	Gateway
+tl	state_starting	Nagsisimula ang gateway
+tl	state_running	Tumatakbo ang gateway
+tl	state_stopped	Nakahinto ang gateway
+tl	state_restarting	Lumabas ang gateway na may code %1$d, muling magsisimula sa loob ng %2$d s
+tl	action_start	Simulan
+tl	action_stop	Itigil
+tl	log_title	Log ng gateway
+tl	log_empty	Wala pang output.
+tl	label_gateway	Gateway ng Veles
+tl	channel_asks	Mga tanong mula sa mga agent
+tl	channel_turns	Mga natapos na turn
+tl	channel_device	Mga abiso mula sa agent
+tl	notify_turn_done	Natapos na ang turn.
+tl	notify_wake_blocked	Hindi makapagsimula ang Veles sa background, kaya hindi tumakbo ang isang trigger o naka-iskedyul na gawain. I-tap para buksan ang veles, saka payagan itong tumakbo sa background sa pahina nitong Telepono.
+tl	driver_description	Hinahayaan ang agent ng veles na gamitin ang teleponong ito kapag hiniling mo: binabasa nito ang nasa screen, at nagta-tap, nagta-type at nag-i-scroll. Ang veles lang sa teleponong ito ang makakaabot dito. Habang ginagamit ng agent ang telepono, may abisong nagsasabi nito, may Itigil.
+tl	channel_driving	Ginagamit ng agent ang telepono
+tl	notify_driving	Ginagamit ng agent ang teleponong ito.
+uk	channel_gateway	Шлюз
+uk	state_starting	Шлюз запускається
+uk	state_running	Шлюз працює
+uk	state_stopped	Шлюз зупинено
+uk	state_restarting	Шлюз завершився з кодом %1$d, перезапуск через %2$d с
+uk	action_start	Запустити
+uk	action_stop	Зупинити
+uk	log_title	Журнал шлюзу
+uk	log_empty	Виводу ще немає.
+uk	label_gateway	Шлюз Veles
+uk	channel_asks	Запитання від агентів
+uk	channel_turns	Завершені ходи
+uk	channel_device	Сповіщення від агента
+uk	notify_turn_done	Хід завершено.
+uk	notify_wake_blocked	Veles не зміг запуститися у фоні, тому тригер або заплановане завдання не виконалося. Торкніться, щоб відкрити veles, і дозвольте йому роботу у фоні на його сторінці «Телефон».
+uk	driver_description	Дозволяє агентові veles користуватися цим телефоном, коли ви його попросите: він читає те, що на екрані, торкається, друкує й гортає. Дістатися до нього може тільки veles на цьому телефоні. Поки агент користується телефоном, про це каже сповіщення з кнопкою «Зупинити».
+uk	channel_driving	Агент користується телефоном
+uk	notify_driving	Агент користується цим телефоном.
+vi	channel_gateway	Gateway
+vi	state_starting	Gateway đang khởi động
+vi	state_running	Gateway đang chạy
+vi	state_stopped	Gateway đã dừng
+vi	state_restarting	Gateway đã thoát với mã %1$d, khởi động lại sau %2$d giây
+vi	action_start	Bắt đầu
+vi	action_stop	Dừng
+vi	log_title	Nhật ký gateway
+vi	log_empty	Chưa có đầu ra.
+vi	label_gateway	Gateway Veles
+vi	channel_asks	Câu hỏi từ tác tử
+vi	channel_turns	Lượt đã xong
+vi	channel_device	Thông báo từ tác tử
+vi	notify_turn_done	Lượt đã xong.
+vi	notify_wake_blocked	Veles không thể khởi động trong nền nên một trình kích hoạt hoặc tác vụ đã lên lịch đã không chạy. Chạm để mở veles, rồi cho phép nó chạy trong nền ở trang Điện thoại của nó.
+vi	driver_description	Cho tác tử của veles dùng điện thoại này khi bạn yêu cầu: tác tử đọc những gì trên màn hình, chạm, gõ và cuộn. Chỉ veles trên điện thoại này mới truy cập được. Khi tác tử đang dùng điện thoại, một thông báo sẽ cho biết, kèm nút Dừng.
+vi	channel_driving	Tác tử đang dùng điện thoại
+vi	notify_driving	Tác tử đang dùng điện thoại này.
+wo	channel_gateway	Gateway bi
+wo	state_starting	Gateway bi mungiy tàmbali
+wo	state_running	Gateway bi mungiy dox
+wo	state_stopped	Gateway bi taxaw na
+wo	state_restarting	Gateway bi génn na ak kood %1$d, dina tàmbaliwaat ci %2$d segond
+wo	action_start	Tàmbali
+wo	action_stop	Taxawal
+wo	log_title	Téereb gateway bi
+wo	log_empty	Amul dara ba leegi.
+wo	label_gateway	Gateway bu Veles
+wo	channel_asks	Laaj yi agents yi di laaj
+wo	channel_turns	Turn yi jeex
+wo	channel_device	Yégle yi agent bi yónne
+wo	notify_turn_done	Turn bi jeex na.
+wo	notify_wake_blocked	Veles mënul a tàmbali ci ginnaaw, moo tax benn yeewukaay walla benn liggéey bu ñu waajal doxul. Bësal ngir ubbi veles, te nga may ko mu liggéey ci ginnaaw ci xëtu Telefon bi.
+wo	driver_description	Day may agent bu veles mu jëfandikoo telefon bii bu ko laajee: day jàng li nekk ci ekraan bi, di bës, di bind te di yëngal. veles bi nekk ci telefon bii rekk moo ko mën a jot. Bu agent bi di jëfandikoo telefon bi, benn yégle dina ko wax, ak Taxawal.
+wo	channel_driving	Agent bi mu ngi jëfandikoo telefon bi
+wo	notify_driving	Agent bi mu ngi jëfandikoo telefon bii.
+xh	channel_gateway	I-gateway
+xh	state_starting	I-gateway iyaqala
+xh	state_running	I-gateway iyasebenza
+xh	state_stopped	I-gateway imisiwe
+xh	state_restarting	I-gateway iphume ngekhowudi %1$d, iza kuqala kwakhona kwimizuzwana eyi-%2$d
+xh	action_start	Qalisa
+xh	action_stop	Yeka
+xh	log_title	Ilog ye-gateway
+xh	log_empty	Akukho siphumo okwangoku.
+xh	label_gateway	I-gateway ye-Veles
+xh	channel_asks	Imibuzo evela kwii-agents
+xh	channel_turns	Imijikelo egqityiweyo
+xh	channel_device	Izaziso ezivela kwi-agent
+xh	notify_turn_done	Umjikelo ugqityiwe.
+xh	notify_wake_blocked	I-Veles ayikwazanga ukuqala ngasemva, ngoko isivusi okanye umsebenzi ocwangcisiweyo awuzange usebenze. Thepha ukuze uvule i-veles, emva koko uyivumele isebenze ngasemva kwiphepha layo le-Ifowuni.
+xh	driver_description	Ivumela i-agent ye-veles ukuba isebenzise le fowuni xa uyicela: ifunda okusesikrinini, ize ithephe, ichwetheze kwaye iskrolishe. Yi-veles ekule fowuni kuphela enokufikelela kuyo. Ngelixa i-agent isebenzisa ifowuni, isaziso siyakuxela oko, kunye no-Yeka.
+xh	channel_driving	I-agent isebenzisa ifowuni
+xh	notify_driving	I-agent isebenzisa le fowuni.
+yo	channel_gateway	Gateway
+yo	state_starting	Gateway ń bẹ̀rẹ̀
+yo	state_running	Gateway ń ṣiṣẹ́
+yo	state_stopped	Gateway ti dúró
+yo	state_restarting	Gateway jáde pẹ̀lú kóòdù %1$d, yóò tún bẹ̀rẹ̀ ní ìṣẹ́jú-àáyá %2$d
+yo	action_start	Bẹ̀rẹ̀
+yo	action_stop	Dúró
+yo	log_title	Àkọsílẹ̀ gateway
+yo	log_empty	Kò sí àbájáde síbẹ̀.
+yo	label_gateway	Gateway Veles
+yo	channel_asks	Àwọn ìbéèrè láti ọ̀dọ̀ àwọn aṣojú
+yo	channel_turns	Àwọn ìyí tó ti parí
+yo	channel_device	Àwọn ìfitónilétí láti ọ̀dọ̀ aṣojú
+yo	notify_turn_done	Ìyí náà ti parí.
+yo	notify_wake_blocked	Veles kò lè bẹ̀rẹ̀ lẹ́yìn, nítorí náà okùnfà kan tàbí iṣẹ́ tí a ṣètò kò ṣiṣẹ́. Tẹ̀ láti ṣí veles, lẹ́yìn náà gbà á láàyè láti ṣiṣẹ́ lẹ́yìn lórí ojú-ìwé Fóònù rẹ̀.
+yo	driver_description	Ó jẹ́ kí aṣojú veles lo fóònù yìí nígbà tí o bá ní kó ṣe bẹ́ẹ̀: ó ń ka ohun tó wà lójú iboju, ó ń tẹ̀, ó ń kọ̀wé, ó sì ń yí i. veles tó wà lórí fóònù yìí nìkan ló lè dé ọ̀dọ̀ rẹ̀. Nígbà tí aṣojú bá ń lo fóònù náà, ìfitónilétí kan máa sọ bẹ́ẹ̀, pẹ̀lú Dúró.
+yo	channel_driving	Aṣojú ń lo fóònù
+yo	notify_driving	Aṣojú ń lo fóònù yìí.
+zh_hans	channel_gateway	网关
+zh_hans	state_starting	网关正在启动
+zh_hans	state_running	网关运行中
+zh_hans	state_stopped	网关已停止
+zh_hans	state_restarting	网关已退出（代码 %1$d），%2$d 秒后重启
+zh_hans	action_start	启动
+zh_hans	action_stop	停止
+zh_hans	log_title	网关日志
+zh_hans	log_empty	暂无输出。
+zh_hans	label_gateway	Veles 网关
+zh_hans	channel_asks	来自代理的问题
+zh_hans	channel_turns	已完成的回合
+zh_hans	channel_device	来自代理的通知
+zh_hans	notify_turn_done	回合已完成。
+zh_hans	notify_wake_blocked	Veles 无法在后台启动，因此某个触发器或计划任务没有运行。点按打开 veles，然后在它的“手机”页面中允许后台运行。
+zh_hans	driver_description	在你要求时，让 veles 的代理使用这部手机：它会读取屏幕上的内容，并点按、输入和滚动。只有这部手机上的 veles 能访问它。代理使用手机时，会有一条带“停止”按钮的通知告诉你。
+zh_hans	channel_driving	代理正在使用手机
+zh_hans	notify_driving	代理正在使用这部手机。
+zh_hant	channel_gateway	閘道
+zh_hant	state_starting	閘道正在啟動
+zh_hant	state_running	閘道執行中
+zh_hant	state_stopped	閘道已停止
+zh_hant	state_restarting	閘道已結束（代碼 %1$d），%2$d 秒後重新啟動
+zh_hant	action_start	啟動
+zh_hant	action_stop	停止
+zh_hant	log_title	閘道記錄
+zh_hant	log_empty	尚無輸出。
+zh_hant	label_gateway	Veles 閘道
+zh_hant	channel_asks	來自代理的問題
+zh_hant	channel_turns	已完成的回合
+zh_hant	channel_device	來自代理的通知
+zh_hant	notify_turn_done	回合已完成。
+zh_hant	notify_wake_blocked	Veles 無法在背景啟動，因此某個觸發器或排程工作沒有執行。輕觸以開啟 veles，然後在它的「手機」頁面中允許背景執行。
+zh_hant	driver_description	在你要求時，讓 veles 的代理使用這支手機：它會讀取螢幕上的內容，並輕觸、輸入和捲動。只有這支手機上的 veles 能存取它。代理使用手機時，會有一則附「停止」按鈕的通知告訴你。
+zh_hant	channel_driving	代理正在使用手機
+zh_hant	notify_driving	代理正在使用這支手機。
+zu	channel_gateway	I-gateway
+zu	state_starting	I-gateway iyaqala
+zu	state_running	I-gateway iyasebenza
+zu	state_stopped	I-gateway imisiwe
+zu	state_restarting	I-gateway iphume ngekhodi %1$d, izoqala kabusha emasekhondini angu-%2$d
+zu	action_start	Qala
+zu	action_stop	Misa
+zu	log_title	Ilogi ye-gateway
+zu	log_empty	Akukho okukhiphayo okwamanje.
+zu	label_gateway	I-gateway ye-Veles
+zu	channel_asks	Imibuzo evela kuma-agent
+zu	channel_turns	Amathuba aqediwe
+zu	channel_device	Izaziso ezivela ku-agent
+zu	notify_turn_done	Ithuba liqediwe.
+zu	notify_wake_blocked	I-Veles ayikwazanga ukuqala ngemuva, ngakho isiqalisi noma umsebenzi ohleliwe awuzange usebenze. Thepha ukuze uvule i-veles, bese uyivumela isebenze ngemuva ekhasini layo le-Ifoni.
+zu	driver_description	Ivumela i-agent ye-veles ukuthi isebenzise le foni uma uyicela: ifunda okusesikrinini, bese ithepha, ithayipha futhi iskrole. Yi-veles ekule foni kuphela engafinyelela kuyo. Ngesikhathi i-agent isebenzisa ifoni, isaziso siyakusho lokho, kanye no-Misa.
+zu	channel_driving	I-agent isebenzisa ifoni
+zu	notify_driving	I-agent isebenzisa le foni.

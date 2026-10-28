@@ -1,0 +1,21 @@
+[package]
+name = "veles-module-irc"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The IRC platform as an in-process module (PLAN-plugins-installer.md R4): the dylib the module host loads, over the veles-irc library."
+
+[lib]
+# The module, and only the module. veles-irc itself is a plain rlib: a
+# crate with a dylib form is linked DYNAMICALLY into every binary that
+# depends on it once anything in the graph is a dylib (the runtime is),
+# so the dual-form veles-irc had the gateway load libveles_irc.so at
+# startup, and a reloaded module's symbols bound to that startup copy —
+# a rebuilt module ran the gateway's old IRC code.
+crate-type = ["dylib"]
+
+[dependencies]
+veles-irc = { path = "../veles-irc" }
+# The runtime, linked here (module.rs in veles-core says why a module
+# takes everything the runtime carries from it).
+veles-runtime = { path = "../veles-runtime" }

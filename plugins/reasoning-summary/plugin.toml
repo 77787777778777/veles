@@ -1,0 +1,5 @@
+name = "reasoning-summary"
+kind = "tcl"
+provides_hooks = ["post_llm_call"]
+entry = "plugin.tcl"
+description = "Summarize long reasoning blocks with a cheap aux model before display. Display-side only: the replay reasoning field is never touched (hermes invariant)."

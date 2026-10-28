@@ -1,0 +1,209 @@
+[package]
+name = "veles-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Veles Agent — Rust core + Tcl scripting AI agent framework"
+
+[lib]
+name = "veles_core"
+path = "src/lib.rs"
+
+[dependencies]
+# Async runtime — same choice as slopdrop.
+tokio = { version = "1", features = ["full"] }
+futures = "0.3"
+async-trait = "0.1"
+
+# Tcl bridge — the same crate slopdrop runs on (oooutlk/tcltk), pinned to
+# the exact rev slopdrop's Cargo.lock uses (HEAD of that repo no longer
+# compiles: missing clib symbols).
+tcl = { git = "https://github.com/oooutlk/tcltk", package = "tcl", rev = "6a47ce0e120091f4dd72b89d38fd72808cdc81b3" }
+# Direct dep on clib for the raw Tcl_CreateObjCommand/Tcl_NewStringObj API
+# (tcl's reexport_clib subset is too small for the native FFI bridge).
+# Same version tcl itself uses; cargo unifies them.
+clib = "0.2.4"
+
+# Serialization & config — hermes config.yaml compatibility layer.
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+libc = "0.2"
+toml = "0.8"
+toml_edit = "0.22"
+
+# Out-of-tree Rust plugin loading (Phase B): dlopen a cdylib and speak
+# the C ABI in veles-plugin-abi (the only thing a plugin links).
+libloading = "0.8"
+# Reads a module file's key section and symbols BEFORE dlopen (module.rs).
+object = { version = "0.39", default-features = false, features = ["read_core", "elf", "pe", "std"] }
+veles-plugin-abi = { path = "../veles-plugin-abi" }
+# ABI 4 host services (soservices.rs): a native plugin's TCP sockets,
+# with TLS through the host's own rustls (ring, as veles-irc pins it:
+# rustls panics when ring and aws-lc-rs are both compiled in and no
+# provider is named) and the webpki trust roots reqwest already ships.
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+webpki-roots = "1.0"
+veles-types = { path = "../veles-types" }
+
+# Request heads in the guest browser's proxy (guestproxy.rs); already in
+# the tree under hyper.
+httparse = "1"
+
+# HTTP client for LLM providers (OpenAI-compatible streaming first).
+reqwest = { version = "0.12", features = ["json", "stream", "rustls-tls", "socks"], default-features = false }
+
+# Sync-offer compression (storesync/memsync payloads): flate2 with its
+# pure-Rust miniz backend — no C toolchain, so it cross-builds for
+# Android (aarch64-linux-android) without a NDK zlib. Compression beats
+# the base64 inflation: a fence stays base64 over the DEFLATE stream,
+# and receivers accept both the old (plain JSON) and new (deflated)
+# forms so a mixed pool keeps syncing.
+flate2 = { version = "1", default-features = false, features = ["rust_backend"] }
+
+# LLM provider protocol layer.
+async-openai = "0.23"
+
+# Errors, logging, misc.
+anyhow = "1"
+thiserror = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1", features = ["v4"] }
+chrono = { version = "0.4", features = ["serde"] }
+regex = "1"
+directories = "5"
+notify = "8"
+# NOTE: git state persistence (slopdrop pattern) shells out to `git`
+# (flake wraps it onto PATH) instead of git2/libgit2-sys — keeps the
+# build free of bindgen/libclang until the dev shell is used.
+base64 = "0.22"
+shell-words = "1"
+# Prefix-hash identity (doctor --prefix): the object the prompt-cache
+# story turns on — same hash, same cacheable prefix.
+blake3 = "1"
+
+# CLI surface.
+clap = { version = "4", features = ["derive"] }
+
+# theme.rs builds ratatui styles. The TUI itself (and crossterm,
+# rustyline, termimad, signal-hook, unicode-width) moved to
+# veles-frontends on 2026-09-28.
+ratatui = "0.26"
+
+# The OpenAI-compatible proxy (proxy.rs). The desktop API and the A2A
+# server moved to veles-frontends with tower and async-stream.
+axum = { version = "0.7", features = ["ws"], optional = true }
+tower-http = { version = "0.5", features = ["fs", "cors"], optional = true }
+
+# Cron scheduling.
+croner = "2"
+
+# Checkpoint content hashing. (`nix` and `portable-pty` lived here for
+# "terminal tool sandboxing / process management" but had ZERO code
+# references — verified 2026-09-03. Real unix work goes through raw
+# `libc::` + `std::os::unix`, all #[cfg(unix)]-gated. The sandbox's
+# pluggable backends (sandbox.rs) spawn container CLIs, not a Rust
+# container crate. The Nix PACKAGE MANAGER — flake.nix, `nix flake
+# check`, the dev shell — is untouched; that's dev-time tooling, not
+# this dependency.)
+sha2 = "0.10"
+# Glob matching for memsync's local-memory path filter (B1.5) — same
+# crate (and lock rev) the ignore/walkdir ecosystem already uses; tiny
+# pure-Rust addition, no new tree beyond regex-syntax.
+globset = "0.4"
+# Unified diffs of memory revisions (`veles memory diff`, the desktop's
+# history view). The library, not a hand-rolled line walker — see the
+# approval preview's `unified_diff`, which is only good enough for a
+# yes/no judgement. Pure Rust, no default features needed.
+similar = { version = "2.7", default-features = false, features = ["text"] }
+# HMAC-SHA256 for Alibaba's ACS3 request signing (tokenplan.rs). Pairs with
+# the sha2/digest 0.10 already resolved above, so it pulls in no new tree.
+hmac = "0.12"
+# Markdown → HTML for the TOS-safe slopdrop output layer (a withheld or
+# over-long `/tcl` result is served as a rendered page next to the raw
+# .md). Pure Rust; `html` (a default feature) is the renderer itself.
+pulldown-cmark = { version = "0.13", default-features = false, features = ["html"] }
+age = { version = "0.12", features = ["armor"] }
+# Pool pairing by QR (pool.rs, PLAN-sessions-and-phone.md P2d): the
+# invite drawn as a QR (terminal, PNG), the phone's photo of it read back
+# (rqrr, pure Rust), JPEG/PNG through `image`; WireGuard keys are X25519,
+# already in the tree under `age`.
+qrcode = { version = "0.14", default-features = false }
+rqrr = { version = "0.11", default-features = false }
+image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
+x25519-dalek = "2"
+ring = "0.17"
+
+# Atomic, randomly named files for execute_code (a timestamp is not unique:
+# concurrent runs on a coarse or frozen clock overwrite each other's script).
+# testenv also uses it for OTHER crates' tests under `test-support`; this
+# crate's own tests get the same version from [dev-dependencies].
+tempfile = "3"
+
+# Storage: sessions, memory, FTS session search (rusqlite + FTS5).
+#
+# The SHARED libsqlite3 (nix's), not `bundled`, on every target. Core
+# lives inside libveles_runtime.so (PLAN-plugins-installer.md M1), and a
+# bundled static sqlite would sit in there with LOCAL symbols: any crate
+# that links the runtime and inlines rusqlite code (the gateway binary, a
+# module) would fail to link with undefined sqlite3_* references. A
+# shared libsqlite3 is NEEDED by the runtime and by those crates alike.
+# The flake supplies it: pkgs.sqlite on the host (dev shell rpath + the
+# package), a cross-built libsqlite3.so in the APK on Android. On
+# Windows it is sqlite.org's own `sqlite3.dll` (FTS5 is compiled in)
+# with an import library made from its .def (`lib /DEF:sqlite3.def`):
+# `SQLITE3_LIB_DIR` points libsqlite3-sys at it, and the DLL ships
+# beside `veles.exe` (scripts/install/windows.ps1, scripts/win/check.bat).
+# Without that the link asks for a `sqlite3.lib` nothing provides —
+# `bundled` is NOT the answer there either, for the reason above.
+rusqlite = { version = "0.31" }
+
+# The platform layer's Windows bodies (src/platform/windows.rs): job
+# objects for process trees and memory limits, a named pipe per process
+# for the local IPC, the loader's module table, DACLs on private files,
+# the console's echo bit. Nothing else in core names a Win32 call.
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_Security_Authorization",
+    "Win32_Storage_FileSystem",
+    "Win32_System_Console",
+    "Win32_System_JobObjects",
+    "Win32_System_LibraryLoader",
+    "Win32_System_Pipes",
+    "Win32_System_ProcessStatus",
+    "Win32_System_Threading",
+] }
+
+[build-dependencies]
+# The build key (module.rs) hashes the lock file and the shared sources.
+blake3 = "1"
+
+[features]
+# `frontend-cli` and `frontend-tui` lived here and gated nothing:
+# no `cfg(feature)` in the tree references them, and tui.rs/cli.rs
+# compile unconditionally. Removed 2026-09-03 rather than kept as
+# cargo-folklore. `frontend-gateway-http` is real — gateway.rs gates
+# the axum servers (A2A, desktop API, OpenAI proxy) on it.
+default = ["frontend-gateway-http"]
+frontend-gateway-http = ["axum", "tower-http"]
+# `scratch::kept_dir` for OTHER crates' tests (veles-irc); this crate's
+# own tests get it unconditionally.
+test-support = []
+# Future: frontend-telegram (Rust plugin per USER decision), frontend-irc (ircx)
+
+[dev-dependencies]
+tempfile = "3"
+# `tokio::time::pause` / `#[tokio::test(start_paused = true)]`. The ask
+# relay waits a configured grace period before following the owner to
+# another surface; testing that against a real clock would mean either a
+# 60-second test or a delay so short it proves nothing about the
+# mechanism. Paused time makes "answered in time" and "nobody answered"
+# the same test at different advances.
+tokio = { version = "1", features = ["full", "test-util"] }
+# The fork-safety test observes whether a sandbox launch runs
+# pthread_atfork handlers; that needs pthread_atfork itself.
+libc = "0.2"
