@@ -82,8 +82,8 @@ streaming transport, and they are three ops rather than one because a driver
 runs on a blocking thread and has to PULL: `open` answers as soon as the
 response status is known, `next` yields one event at a time, `close` frees the
 handle. `http_post` buffers a whole body and carries a 30 second total
-timeout, so a driver built on it can neither show incremental output nor
-survive a long turn. See "Writing a provider driver".
+timeout unless given a longer one (`?timeout_secs?`), so a driver built on it
+cannot show incremental output. See "Writing a provider driver".
 
 A cargo test cross-checks that list against the live interpreter, against
 `plugins/veles_api.tcl`, and against what `host_call` accepts. An op
@@ -1035,8 +1035,10 @@ its 1 MB cap, and both take a headers object for the endpoints that are
 not bearer-auth.
 
 `http_post` BUFFERS, and that is a ceiling as much as a convenience: a
-driver built on it cannot show incremental output at all, and it carries a
-30 second total timeout that a long turn on a frontier model blows through.
+driver built on it cannot show incremental output at all, and its total
+timeout is 30 seconds unless the call passes `?timeout_secs?` (up to 900),
+which a non-streaming call must: a long answer on a frontier model takes
+longer than that.
 For a wire that streams, use the three-op transport instead:
 
 ```tcl
@@ -1069,6 +1071,13 @@ wire, because the parts that differ per gateway are typed fields on
 | `auth_style` | `"x-api-key"` or `"bearer"` | `"x-api-key"` |
 | `api_version` | the value of the wire-version header | the driver's pinned version |
 | `max_output_tokens` | the output cap to send | discovered, else the driver's fallback |
+| `cache_ttl` | `"5m"` or `"1h"`: how long the endpoint keeps a cached prefix | the driver's (the Anthropic one: `"1h"`) |
+
+The engine also sends `timeout_secs` on the same key: the total time a
+NON-streaming call may take (600, what its own provider client allows).
+Pass it to `http_post` as the fifth argument. A non-streaming answer arrives
+only once the model has written all of it, and a compaction summary takes
+longer than `http_post`'s 30 second default.
 
 An unknown `auth_style` is refused at config load rather than silently
 defaulted, because the failure it prevents reads as a rejected API key: the

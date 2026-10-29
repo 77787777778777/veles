@@ -38,7 +38,9 @@
 //!       (live / new_sessions / restart_gateway) is the honest answer
 //!       to "does this need a restart".
 //!   veles::http_get <url> / veles::http_post <url> <body> ?content_type?
-//!       HTTP from the bridge runtime: 30s timeout, 1MB body cap
+//!       ?headers_json? ?timeout_secs?
+//!       HTTP from the bridge runtime: 30s timeout (http_post may ask for
+//!       up to 900), 1MB body cap
 //!       (slopdrop parity). The plugins interp is the TRUSTED owner
 //!       surface — no untrusted caller reaches these.
 //!   veles::send_outbound <platform> <chat_id> <text>

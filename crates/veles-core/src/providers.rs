@@ -1342,6 +1342,8 @@ pub fn build_client(
                     .to_string(),
                 max_output_tokens: entry.max_output_tokens,
                 built_in_tools: entry.built_in_tools.clone(),
+                timeout_secs: None,
+                cache_ttl: entry.cache_ttl.as_deref().unwrap_or("").trim().to_string(),
             }))
         }
         "responses" => Ok(RouteClient::Responses(
@@ -1619,7 +1621,20 @@ pub struct PluginRoute {
     /// job to translate the names into whatever the wire wants; the engine
     /// only guarantees the list arrives.
     pub built_in_tools: Vec<String>,
+    /// The total time one NON-streaming call may take, in seconds, carried
+    /// to the driver as `veles.timeout_secs` for its `http_post`. `None` is
+    /// [`PLUGIN_NONSTREAM_TIMEOUT_SECS`], the same 600 s the engine's own
+    /// provider client allows; a driver that dropped it would fall back to
+    /// `http_post`'s 30 s, which a compaction summary on a frontier model
+    /// does not finish inside (every summary timed out, 2026-10-29).
+    pub timeout_secs: Option<u64>,
+    /// The provider entry's `cache_ttl`, carried to the driver as
+    /// `veles.cache_ttl`; empty means the driver's own default.
+    pub cache_ttl: String,
 }
+
+/// See [`PluginRoute::timeout_secs`].
+pub const PLUGIN_NONSTREAM_TIMEOUT_SECS: u64 = 600;
 
 impl PluginRoute {
     fn resolve(&self) -> Result<ProviderDriver, ProviderError> {
@@ -1681,6 +1696,8 @@ impl PluginRoute {
             "api_version": self.api_version,
             "max_output_tokens": self.max_output_tokens,
             "built_in_tools": self.built_in_tools,
+            "timeout_secs": self.timeout_secs.unwrap_or(PLUGIN_NONSTREAM_TIMEOUT_SECS),
+            "cache_ttl": self.cache_ttl,
         });
         // The sink is installed for the whole call, so a driver on
         // ANOTHER thread can emit into it; a driver holding the
@@ -3367,6 +3384,7 @@ mod driver_tests {
             auth_style: None,
             api_version: None,
             max_output_tokens: None,
+            cache_ttl: None,
         }
     }
 

@@ -3812,7 +3812,13 @@ the next turn on this session"
                     // tail still held. The outcome now names the prunes
                     // and says plainly when the target was missed.
                     Some(outcome) => outcome.report(before, hist.len()),
-                    None => "nothing to compact — history too short for a legal cut".to_string(),
+                    // A summary that failed is not "nothing to compact".
+                    None => match agent.take_compaction_failure() {
+                        Some(why) => format!("compaction failed — the history is unchanged: {why}"),
+                        None => {
+                            "nothing to compact — history too short for a legal cut".to_string()
+                        }
+                    },
                 };
                 self.bus.send_outbound_to(
                     &msg.platform,

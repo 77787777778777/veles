@@ -121,6 +121,15 @@ fn required() -> bool {
 /// rounds of that is enough: the loop runs until the test's runtime is
 /// dropped, which is when the test is over.
 async fn fixture_server(body: &'static str) -> (String, Arc<Mutex<Vec<String>>>) {
+    fixture_server_after(body, std::time::Duration::ZERO).await
+}
+
+/// [`fixture_server`], answering each request only after `delay`: an
+/// endpoint whose model takes its time over a non-streaming answer.
+async fn fixture_server_after(
+    body: &'static str,
+    delay: std::time::Duration,
+) -> (String, Arc<Mutex<Vec<String>>>) {
     use tokio::io::{AsyncReadExt, AsyncWriteExt};
     let seen: Arc<Mutex<Vec<String>>> = Arc::new(Mutex::new(Vec::new()));
     let captured = Arc::clone(&seen);
@@ -164,6 +173,7 @@ async fn fixture_server(body: &'static str) -> (String, Arc<Mutex<Vec<String>>>)
                 .lock()
                 .unwrap()
                 .push(String::from_utf8_lossy(&raw).to_string());
+            tokio::time::sleep(delay).await;
             let head = format!(
                 "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
                 body.len()
@@ -882,6 +892,76 @@ fn cache_controls(v: &serde_json::Value) -> usize {
     }
 }
 
+/// The `ttl` of every `cache_control` in `v`, in document order.
+fn cache_ttls(v: &serde_json::Value) -> Vec<Option<String>> {
+    let mut out = Vec::new();
+    fn walk(v: &serde_json::Value, out: &mut Vec<Option<String>>) {
+        match v {
+            serde_json::Value::Object(m) => {
+                for (k, x) in m {
+                    if k == "cache_control" {
+                        out.push(x["ttl"].as_str().map(str::to_string));
+                    } else {
+                        walk(x, out);
+                    }
+                }
+            }
+            serde_json::Value::Array(a) => a.iter().for_each(|x| walk(x, out)),
+            _ => {}
+        }
+    }
+    walk(v, &mut out);
+    out
+}
+
+/// Every breakpoint asks for the 1-hour cache unless the provider entry
+/// says `cache_ttl = "5m"`, in both drivers.
+///
+/// The 5-minute entry expired inside long tool loops: a frontier model
+/// spends minutes writing one answer and more running its tools, and in
+/// one 500k-token session half the cache misses were that expiry, each
+/// rewriting the whole history (2026-10-29).
+#[tokio::test]
+async fn breakpoints_ask_for_the_hour_unless_the_entry_says_otherwise() {
+    both_drivers().await;
+    let drivers = available_drivers();
+    let (url, seen) = fixture_server(ANTHROPIC_RESPONSE).await;
+    const TTLS: [&str; 3] = ["", "5m", "1h"];
+    for ttl in TTLS {
+        for d in &drivers {
+            let knobs = veles_core::providers::PluginRoute {
+                cache_ttl: ttl.to_string(),
+                ..Default::default()
+            };
+            drive_with(
+                d,
+                &url,
+                knobs,
+                request_with_tool_rounds(CacheMode::Explicit),
+            )
+            .await
+            .unwrap_or_else(|e| panic!("{d} cache_ttl={ttl:?}: {e}"));
+        }
+    }
+    let posts = posts_of(&seen.lock().unwrap().clone());
+    assert_eq!(posts.len(), TTLS.len() * drivers.len(), "one POST each");
+    for (n, v) in posts.iter().enumerate() {
+        let d = drivers[n % drivers.len()];
+        let ttl = TTLS[n / drivers.len()];
+        let ttls = cache_ttls(v);
+        assert_eq!(
+            ttls.len(),
+            4,
+            "{d}: system, tools and two history breakpoints: {v}"
+        );
+        let want = if ttl == "5m" { None } else { Some("1h") };
+        assert!(
+            ttls.iter().all(|t| t.as_deref() == want),
+            "{d} cache_ttl={ttl:?}: every breakpoint wants {want:?}, got {ttls:?}"
+        );
+    }
+}
+
 /// The tool_result block for `id`, wherever the driver put it.
 fn tool_result_block(v: &serde_json::Value, id: &str) -> serde_json::Value {
     v["messages"]
@@ -1418,6 +1498,45 @@ async fn a_server_error_fails_over() {
         );
         assert!(err.should_fallback(), "{d}: a 5xx fails over: {err}");
     }
+}
+
+/// A non-streaming call gets the time the engine gives it
+/// (`veles.timeout_secs`), not `http_post`'s 30 second default.
+///
+/// Its answer arrives only when the model has finished writing it. A
+/// compaction summary through this driver took longer than 30 s on every
+/// attempt, so compaction never happened and a 500k-token session paid
+/// for all of it on every turn (2026-10-29). The fixture answers after
+/// 2.5 s: a 1 s budget must fail and a 10 s one must not — a driver that
+/// dropped the figure would get 30 s and pass the first half.
+#[tokio::test]
+async fn a_non_streaming_call_gets_the_time_the_engine_gives_it() {
+    both_drivers().await;
+    let (url, _seen) =
+        fixture_server_after(ANTHROPIC_RESPONSE, std::time::Duration::from_millis(2500)).await;
+    let knobs = |secs| veles_core::providers::PluginRoute {
+        // A pinned output cap, so the driver makes the one POST and no
+        // catalog read the fixture would also answer late.
+        max_output_tokens: Some(1024),
+        timeout_secs: Some(secs),
+        ..Default::default()
+    };
+    for d in available_drivers() {
+        let err = drive_with(d, &url, knobs(1), request("claude-modern"))
+            .await
+            .expect_err("a 1 s budget is shorter than the answer");
+        assert!(
+            err.should_fallback(),
+            "{d}: a timed-out call fails over: {err}"
+        );
+        let ok = drive_with(d, &url, knobs(10), request("claude-modern"))
+            .await
+            .unwrap_or_else(|e| panic!("{d}: a 10 s budget is long enough: {e}"));
+        assert!(!ok.message.content.is_empty(), "{d}: the answer arrived");
+    }
+    // And what the engine sends when the route sets nothing is what its
+    // own provider client allows a call.
+    assert_eq!(veles_core::providers::PLUGIN_NONSTREAM_TIMEOUT_SECS, 600);
 }
 
 /// One SSE stream, as the live API frames it: `message_start`, then typed

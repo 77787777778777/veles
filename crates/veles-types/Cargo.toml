@@ -4,6 +4,9 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 description = "What veles and its process plugins both speak: the bus messages, the sender context, the ask shapes and the JSON-RPC peer. No engine code."
+repository.workspace = true
+keywords = ["veles", "agent", "plugin", "json-rpc"]
+categories = ["development-tools"]
 
 # A process plugin links THIS and the SDK, never veles-core: in a second
 # process every piece of core's per-process state (the live ACL, the ask

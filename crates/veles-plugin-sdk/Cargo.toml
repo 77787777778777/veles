@@ -4,11 +4,16 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 description = "Write a veles process plugin: the handshake, the dispatch loop, --describe, and a typed client for the gateway."
+repository.workspace = true
+keywords = ["veles", "agent", "plugin", "json-rpc"]
+categories = ["development-tools"]
 
 # veles-types and runtime crates only — never veles-core (veles-types'
 # Cargo.toml says why). A plugin built on this is a plain Rust binary.
 [dependencies]
-veles-types = { path = "../veles-types" }
+# The version is what crates.io resolves once this is published; "0.1"
+# keeps it right across patch releases and fails the build at 0.2.
+veles-types = { path = "../veles-types", version = "0.1" }
 tokio = { version = "1", features = ["rt-multi-thread", "io-std", "io-util", "macros", "sync", "time"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

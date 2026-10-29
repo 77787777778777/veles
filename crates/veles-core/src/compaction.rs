@@ -805,9 +805,96 @@ pub(crate) fn human_chars(n: usize) -> String {
     }
 }
 
+/// When the AUTOMATIC compaction may try again after its summarizer failed.
+///
+/// A failed summary leaves the history as it was, so the next turn is still
+/// over the bar and tries again — and if the cause is still there it fails
+/// again. Every summary through the Anthropic driver timed out for a whole
+/// afternoon (2026-10-29): each turn waited 30 s for a summary that never
+/// came, then sent the full 500k-token history anyway. After a failure the
+/// automatic path waits 2, 4, 8, 16, then 30 minutes between attempts. A
+/// forced `/compact` is the user asking, so it is never held back, and a
+/// success clears the count.
+#[derive(Debug, Default)]
+pub struct SummarizerBackoff {
+    failures: u32,
+    retry_at: Option<std::time::Instant>,
+    /// The failure the user has not been told about yet.
+    unreported: Option<String>,
+}
+
+impl SummarizerBackoff {
+    /// The wait after `failures` consecutive failures.
+    pub fn delay(failures: u32) -> std::time::Duration {
+        let minutes = match failures {
+            0 => 0,
+            n => (1u64 << n.min(5)).min(30),
+        };
+        std::time::Duration::from_secs(minutes * 60)
+    }
+
+    /// How long the automatic path must still wait, if at all.
+    pub fn waiting(&self, now: std::time::Instant) -> Option<std::time::Duration> {
+        self.retry_at
+            .filter(|at| *at > now)
+            .map(|at| at.duration_since(now))
+    }
+
+    /// Record a failure; answers the wait before the next attempt.
+    pub fn failed(&mut self, now: std::time::Instant, why: String) -> std::time::Duration {
+        self.failures = self.failures.saturating_add(1);
+        let wait = Self::delay(self.failures);
+        self.retry_at = Some(now + wait);
+        self.unreported = Some(why);
+        wait
+    }
+
+    pub fn succeeded(&mut self) {
+        *self = Self::default();
+    }
+
+    /// The failure to tell the user about, once.
+    pub fn take_unreported(&mut self) -> Option<String> {
+        self.unreported.take()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// The automatic path backs off after a failed summary and a success
+    /// resets it: without this a summarizer that keeps failing is retried
+    /// at the start of every turn, each one stalling for the failed call
+    /// before sending the full history anyway (2026-10-29).
+    #[test]
+    fn a_failed_summary_backs_off_and_a_success_resets() {
+        let t0 = std::time::Instant::now();
+        let mut b = SummarizerBackoff::default();
+        assert_eq!(b.waiting(t0), None, "nothing has failed yet");
+        let first = b.failed(t0, "timed out".into());
+        assert_eq!(first, std::time::Duration::from_secs(120));
+        assert!(b.waiting(t0).is_some(), "the next turn must not try again");
+        assert_eq!(
+            b.waiting(t0 + first),
+            None,
+            "it may try again once the wait is over"
+        );
+        assert_eq!(b.take_unreported().as_deref(), Some("timed out"));
+        assert_eq!(b.take_unreported(), None, "the user hears it once");
+        let second = b.failed(t0 + first, "timed out".into());
+        assert!(second > first, "a second failure waits longer");
+        for _ in 0..10 {
+            b.failed(t0, "x".into());
+        }
+        assert_eq!(
+            SummarizerBackoff::delay(12),
+            std::time::Duration::from_secs(30 * 60),
+            "the wait is capped"
+        );
+        b.succeeded();
+        assert_eq!(b.waiting(t0), None, "a success clears the back-off");
+    }
 
     fn msg(role: &str, content: &str) -> ChatMessage {
         ChatMessage {

@@ -33,7 +33,7 @@ pub const PROTOCOL: u32 = 1;
 /// `0.x` until the first release (any change bumps the minor number),
 /// then semver: a new name is a minor bump, a removed or changed one a
 /// major bump.
-pub const EXT_API_VERSION: &str = "0.9";
+pub const EXT_API_VERSION: &str = "0.10";
 
 /// Method names, both directions.
 pub mod method {

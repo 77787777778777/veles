@@ -71,8 +71,13 @@ mod tests {
             .unwrap();
         assert!(!probe.success());
         drop(lock);
+        // Wait briefly rather than -n: a child another test forks in this
+        // process holds a copy of the lock's descriptor until it execs
+        // (CLOEXEC closes it only then), so the lock can outlive the drop
+        // by a moment. A lock that is never released still fails, after 5 s.
         let probe = std::process::Command::new("flock")
-            .arg("-n")
+            .arg("-w")
+            .arg("5")
             .arg(temp.path().join(".operation.lock"))
             .arg("-c")
             .arg("exit 0")

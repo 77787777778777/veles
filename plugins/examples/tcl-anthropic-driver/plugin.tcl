@@ -95,6 +95,16 @@ namespace eval anthropic {}
 # needs a different value sets `api_version` on the provider entry.
 set ::anthropic::api_version "2023-06-01"
 
+# How long Anthropic keeps a cached prefix, when the provider entry does not
+# say (`cache_ttl`). One hour, not the 5-minute default: a tool loop on a
+# frontier model spends 3-4 minutes writing one answer and more running its
+# tools, so the 5-minute entry was gone before the next request in half the
+# misses of a long session, and each miss rewrote ~500k tokens (2026-10-29).
+# The 1-hour write costs 2x input instead of 1.25x, but a round writes only
+# what it added, so that difference is a few thousand tokens per round
+# against a whole history per miss.
+set ::anthropic::cache_ttl "1h"
+
 # API version 2026-10-21 REMOVED the sampling parameters: a request under
 # that version sending temperature/top_p/top_k is a hard 400 on EVERY model
 # — the ban is per-version, not per-generation, and the capability catalog
@@ -597,7 +607,28 @@ proc anthropic::to_wire {req caps streaming} {
     if {$streaming} {
         lappend parts [list "stream" "true"]
     }
-    return [anthropic::jobj $parts]
+    return [anthropic::with_cache_ttl [anthropic::jobj $parts] [anthropic::cache_ttl_for $req]]
+}
+
+# The cache lifetime to ask for: the provider entry's `cache_ttl` (the engine
+# sends it on the `veles` key), else this driver's default.
+proc anthropic::cache_ttl_for {req} {
+    set t [string trim [::veles::json_get $req veles cache_ttl]]
+    if {$t eq ""} { return $::anthropic::cache_ttl }
+    return $t
+}
+
+# Every breakpoint in `body`, with the lifetime `ttl` asks for. The engine
+# marks breakpoints as `{"type":"ephemeral"}`, which is the 5-minute cache;
+# "1h" adds `"ttl":"1h"` to each. Done on the finished body, so no site that
+# carries a breakpoint can be missed. Matching the serialized text is exact:
+# inside a JSON string every quote is escaped, so the unescaped pattern can
+# only be a real `cache_control` object, never message text that mentions one.
+proc anthropic::with_cache_ttl {body ttl} {
+    if {$ttl ne "1h"} { return $body }
+    return [string map [list \
+        {"cache_control":{"type":"ephemeral"}} \
+        {"cache_control":{"type":"ephemeral","ttl":"1h"}}] $body]
 }
 
 # What the operator pinned as an output cap on the provider entry, or 0 when
@@ -1094,8 +1125,20 @@ proc anthropic::drive {} {
 
     set body [anthropic::to_wire $req $caps 0]
 
+    # A non-streaming answer arrives only once the model has written all of
+    # it, so the call needs the time a whole generation takes, not
+    # `http_post`'s 30 second default: a compaction summary blew through
+    # that on every attempt and compaction never happened (2026-10-29).
+    # The engine sends the figure (`veles.timeout_secs`, the 600 s its own
+    # provider client allows), and only an engine that sends it has the
+    # fifth `http_post` argument: an older one refuses five arguments, and
+    # a user copy of this driver can outlive the engine it came with. So
+    # the timeout goes to `http_post` exactly when the engine named one.
+    set timeout [::veles::json_get $req veles timeout_secs]
+    set post [list ::veles::http_post $url $body "application/json" $headers]
+    if {[string is entier -strict $timeout]} { lappend post $timeout }
     if {[catch {
-        set raw [::veles::http_post $url $body "application/json" $headers]
+        set raw [{*}$post]
     } err]} {
         # `http_post` raises on non-2xx with the body in the message, so the
         # status has to be read back out of it — that is what lets a 429

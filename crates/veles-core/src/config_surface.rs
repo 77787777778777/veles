@@ -2199,14 +2199,19 @@ TELEGRAM_BOT_TOKEN=123:secret
         value.contains('#') || value.trim_end() != value
     }
 
-    /// Documenting a var must not change what any reader resolves. Both
-    /// files are written to a scratch dir and every listed var is resolved
-    /// against each: the dotenv readers skip `#`-prefixed lines, and this
-    /// is the test that says so out loud.
+    /// Documenting a var must not change what the env-file reader
+    /// resolves: it skips `#`-prefixed lines, and this is the test that
+    /// says so out loud. Both texts go through `secrets::parse_env`, the
+    /// reader `resolve_in` applies to `.env`.
+    ///
+    /// The FILE reader only. This used to go through the whole resolver,
+    /// which also consults the process environment and the vault, so the
+    /// answer depended on what else the test process had loaded: on the
+    /// Windows check a live bot token turned up in one of the two
+    /// resolutions and not the other, and the failure message printed it
+    /// (2026-10-29). A failure now names the variables, never their values.
     #[test]
     fn the_documented_lines_resolve_to_nothing() {
-        let dir = std::env::temp_dir().join(format!("veles-env-{}", std::process::id()));
-        std::fs::create_dir_all(&dir).expect("scratch dir");
         let live = "A2A_PORT=9911\n";
         let filled = env_fill(live, &[]).text;
 
@@ -2214,34 +2219,41 @@ TELEGRAM_BOT_TOKEN=123:secret
         names.extend(["IRC_SERVER", "TELEGRAM_BOT_TOKEN"].map(str::to_string));
 
         let resolve = |text: &str| -> Vec<(String, Option<String>)> {
-            std::fs::write(dir.join(".env"), text).expect("writes");
+            let parsed = crate::secrets::parse_env(text);
             names
                 .iter()
-                .map(|n| (n.clone(), crate::providers::resolve_env_or_dotenv(n, &dir)))
+                .map(|n| {
+                    let v = parsed
+                        .iter()
+                        .find(|(k, v)| k == n && !v.is_empty())
+                        .map(|(_, v)| v.clone());
+                    (n.clone(), v)
+                })
                 .collect()
         };
         let before = resolve(live);
         let after = resolve(&filled);
-        assert_eq!(
-            before, after,
-            "documenting the vars changed what the reader resolves"
+        let changed: Vec<&str> = before
+            .iter()
+            .zip(&after)
+            .filter(|(b, a)| b != a)
+            .map(|(b, _)| b.0.as_str())
+            .collect();
+        assert!(
+            changed.is_empty(),
+            "documenting the vars changed what the reader resolves for {changed:?}"
         );
         // The comparison above would also pass if nothing were read at
-        // all, so the live value has to arrive from the file — unless the
-        // ambient environment shadows it, which is the documented
-        // precedence and not something this test gets to decide.
-        if std::env::var("A2A_PORT").is_err() {
-            let port = before
-                .iter()
-                .find(|(n, _)| n == "A2A_PORT")
-                .expect("listed");
-            assert_eq!(
-                port.1.as_deref(),
-                Some("9911"),
-                "the file's live value was not read at all"
-            );
-        }
-        std::fs::remove_dir_all(&dir).ok();
+        // all, so the live value has to arrive from the file.
+        let port = before
+            .iter()
+            .find(|(n, _)| n == "A2A_PORT")
+            .expect("listed");
+        assert_eq!(
+            port.1.as_deref(),
+            Some("9911"),
+            "the file's live value was not read at all"
+        );
     }
 
     #[test]

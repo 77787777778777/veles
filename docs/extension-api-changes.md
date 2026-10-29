@@ -7,6 +7,27 @@ newest one against the spec (`crates/veles-cli/tests/ext_api.rs`).
 Every entry says what changed and what a plugin author has to do. See
 [extending.md](extending.md), "How a change to the API is published".
 
+## 0.10 sha256:40729d740135033b (2026-10-29)
+
+`veles::http_post` takes a total timeout.
+
+Changed:
+- `::veles::http_post url body ?content_type? ?headers_json? ?timeout_secs?`:
+  the new fifth argument is the call's total timeout in seconds, 1 to
+  900; absent or empty is the 30 seconds it always was. The same op through
+  `host_call` takes the same five arguments.
+- A provider driver's request now carries `veles.timeout_secs` (600, what
+  the engine's own provider client allows a call) and `veles.cache_ttl`
+  (the provider entry's `cache_ttl`, `"5m"` or `"1h"`, empty when unset).
+
+What a plugin author has to do: nothing, unless you write a provider
+driver that makes non-streaming calls with `http_post`. Then pass
+`veles.timeout_secs` as the fifth argument when the request carries it:
+a non-streaming answer arrives only once the model has written all of
+it, and a long one takes more than 30 seconds. Pass it only when it is
+there, so your driver keeps working on an older veles, whose `http_post`
+refuses a fifth argument.
+
 ## 0.9 sha256:e2e0cf1484ec608f (2026-10-26)
 
 A plugin can declare the configuration options an installer renders.

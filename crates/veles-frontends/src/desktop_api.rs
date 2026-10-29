@@ -8519,6 +8519,10 @@ finishes (steers sent meanwhile are held and injected at the next turn)" }),
             }
         };
         let outcome = agent.compact_forced(&mut history).await;
+        let failure = outcome
+            .is_none()
+            .then(|| agent.take_compaction_failure())
+            .flatten();
         let after = store
             .lock_ok()
             .load_history(&session_id)
@@ -8552,10 +8556,17 @@ finishes (steers sent meanwhile are held and injected at the next turn)" }),
                      target, so nothing was archived or pruned."
                         .to_string(),
                 ),
-                None => (
-                    format!("compact did not run ({before} messages kept)"),
-                    "No clean cut point in the history — nothing was summarized.".to_string(),
-                ),
+                None => match &failure {
+                    // A summary that failed is not "no cut point".
+                    Some(why) => (
+                        format!("compaction failed ({before} messages kept)"),
+                        format!("{why}. The history is unchanged."),
+                    ),
+                    None => (
+                        format!("compact did not run ({before} messages kept)"),
+                        "No clean cut point in the history — nothing was summarized.".to_string(),
+                    ),
+                },
             };
             let _ = st.record_note(&session_id, "compaction", &summary, Some(&detail), None);
             // The note/marker changed the transcript OUTSIDE a turn, so

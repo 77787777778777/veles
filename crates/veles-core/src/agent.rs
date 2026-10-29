@@ -204,6 +204,9 @@ pub struct Agent {
     /// turn from ANY surface is retryable — only the REPL used to
     /// remember it.
     last_prompt: std::sync::Mutex<Option<String>>,
+    /// When the automatic compaction may try again after a failed summary
+    /// (`compaction::SummarizerBackoff`).
+    compaction_backoff: std::sync::Mutex<crate::compaction::SummarizerBackoff>,
     /// Queued steer message — injected after the next tool round.
     /// Set by /steer, consumed by run_turn.
     ///
@@ -744,6 +747,7 @@ impl Agent {
                 ..Default::default()
             }),
             last_prompt: std::sync::Mutex::new(None),
+            compaction_backoff: std::sync::Mutex::new(Default::default()),
             pending_steer: std::sync::Arc::new(std::sync::Mutex::new(None)),
             system_prompt: std::sync::RwLock::new(system_prompt),
             principal: std::sync::RwLock::new(None),
@@ -1145,7 +1149,7 @@ impl Agent {
     }
 
     /// Keep the stored frozen prompt in step with the one this agent now
-    /// sends — a rebuild (a memory write, a principal, a skill toggle)
+    /// sends — a rebuild (a principal, a skill toggle, a compaction)
     /// changes what the session's requests carry, and a restart must send
     /// the NEW bytes. The tool list is kept as stored.
     fn store_prompt(&self, system_prompt: &str) {
@@ -2099,12 +2103,19 @@ impl Agent {
     }
 
     /// Rebuild the system prompt from the current config, ACL principal
-    /// and skill selection — and from whatever memory holds NOW, which
-    /// is the point: a mid-turn write becomes readable in the same
-    /// session instead of the next process start.
+    /// and skill selection, and from whatever memory holds NOW.
     ///
-    /// `&self` because the field is a RwLock and the caller that matters
-    /// most (`run_turn_inner`'s tool path) only has a shared reference.
+    /// The prompt heads every request's cached prefix, so a rebuild
+    /// rewrites the whole conversation into the provider's cache. It runs
+    /// when the prompt must change (a principal, a skill toggle) or when
+    /// the prefix is being rewritten anyway (a compaction). A memory write
+    /// no longer triggers one: it did, and in a 500k-token Anthropic
+    /// session every note cost a full cache write (2026-10-29); the model
+    /// reads its own write in the transcript, and the next session's
+    /// prompt carries it.
+    ///
+    /// `&self` because the field is a RwLock and the callers (the
+    /// compaction path among them) only have a shared reference.
     /// `set_principal` already did this for its own reason; naming the
     /// operation makes it usable by anything else that changes what the
     /// prompt should say.
@@ -2952,6 +2963,58 @@ impl Agent {
     /// turn-start check vs the mid-turn safety valve (which the user
     /// must be able to tell apart — one is housekeeping, the other
     /// means the window nearly overflowed).
+    /// A compaction that did not happen: say why in the log, and hold the
+    /// automatic path back (`SummarizerBackoff`) so the next turns do not
+    /// each wait for the same failure before sending the full history.
+    fn compaction_failed(&self, forced: bool, why: String) {
+        let wait = self
+            .compaction_backoff
+            .lock_ok()
+            .failed(std::time::Instant::now(), why.clone());
+        tracing::warn!(
+            "compaction{}: {why} — keeping full history; next automatic attempt in {} min",
+            if forced { " (/compact)" } else { "" },
+            wait.as_secs() / 60
+        );
+    }
+
+    /// Why the last compaction did not happen, if nobody has been told:
+    /// the surfaces running `/compact` report it instead of "nothing to
+    /// compact", which is what a failed summary used to read as. Taking it
+    /// also spares the next turn's note.
+    pub fn take_compaction_failure(&self) -> Option<String> {
+        self.compaction_backoff.lock_ok().take_unreported()
+    }
+
+    /// Tell the user, once, that the automatic compaction failed and the
+    /// history is still whole: a session that silently stays at 500k
+    /// tokens is the surprise this replaces.
+    fn compaction_failure_note<F: FnMut(StreamEvent)>(&self, on_event: &mut F) {
+        let Some(why) = self.take_compaction_failure() else {
+            return;
+        };
+        let wait = self
+            .compaction_backoff
+            .lock_ok()
+            .waiting(std::time::Instant::now());
+        let retry = wait
+            .map(|w| {
+                format!(
+                    "The next automatic attempt is in {} min; ",
+                    w.as_secs().div_ceil(60)
+                )
+            })
+            .unwrap_or_default();
+        self.note(
+            on_event,
+            crate::notes::EngineNote::new(
+                crate::notes::NoteKind::Compaction,
+                "compaction failed — the history is unchanged".to_string(),
+            )
+            .with_detail(format!("{why}.\n{retry}/compact tries now.")),
+        );
+    }
+
     fn compaction_note<F: FnMut(StreamEvent)>(
         &self,
         on_event: &mut F,
@@ -3273,6 +3336,21 @@ impl Agent {
         if !force && !self.over_compaction_bar(history, trigger_percent) {
             return None;
         }
+        // A summary that just failed is not retried at every turn start
+        // (`SummarizerBackoff`); `/compact` is the user asking, so it is.
+        if !force {
+            let wait = self
+                .compaction_backoff
+                .lock_ok()
+                .waiting(std::time::Instant::now());
+            if let Some(wait) = wait {
+                tracing::debug!(
+                    "compaction: over the bar, but the last summary failed — next attempt in {}s",
+                    wait.as_secs()
+                );
+                return None;
+            }
+        }
         let cut = if force {
             crate::compaction::choose_cut_forced(
                 history,
@@ -3286,9 +3364,16 @@ impl Agent {
                 env_usize("VELES_COMPACTION_MIN_HEAD").unwrap_or(cc.min_head),
             )?
         };
-        tracing::info!(
-            "compaction: history {est} chars ≥ {threshold} budget — summarizing {cut} head messages"
-        );
+        // Which bar it crossed: `over_compaction_bar` decides on the last
+        // reported prompt tokens when it has them, so the char estimate
+        // can be well UNDER the char budget here (928k chars against 1.8M,
+        // logged as "≥", 2026-10-29).
+        let why = if force {
+            "/compact".to_string()
+        } else {
+            format!("over the bar at {trigger_percent}% (history ~{est} chars, char budget {threshold})")
+        };
+        tracing::info!("compaction: {why} — summarizing {cut} head messages");
 
         // S11 compact_start hook: fires BEFORE the summarizer with the
         // cut plan. A handler may return JSON{"action":"cancel"} to stop
@@ -3375,7 +3460,7 @@ impl Agent {
         let drop_indices: std::collections::HashSet<usize> =
             drop_plan.indices.iter().copied().collect();
         tracing::info!(
-            "compaction: history {est} chars ≥ {threshold} budget — summarizing {cut} head rows, \
+            "compaction: {why} — summarizing {cut} head rows, \
              pruning {} tool outputs, dropping {} rows ({} rounds), target {target}",
             prune_plan.prunes.len(),
             drop_plan.indices.len(),
@@ -3425,14 +3510,15 @@ impl Agent {
         let completion = match self.call_nonstream_with_fallback(&req).await {
             Ok(c) => c,
             Err(e) => {
-                tracing::warn!("compaction summarizer failed: {e} — keeping full history");
+                self.compaction_failed(force, format!("the summarizer call failed: {e}"));
                 return None;
             }
         };
         if completion.message.content.trim().is_empty() {
-            tracing::warn!("compaction summarizer returned empty — keeping full history");
+            self.compaction_failed(force, "the summarizer answered nothing".to_string());
             return None;
         }
+        self.compaction_backoff.lock_ok().succeeded();
         let marker_content = crate::compaction::compaction_message(&completion.message.content);
         // RM3-S4/A4: the marker is the ONLY injection that cannot be
         // muted — it IS the compacted history's head. It still carries
@@ -3707,6 +3793,11 @@ impl Agent {
              ({dropped_rows} rows) dropped into the summary, target {target_chars}, \
              reached={reached_target})"
         );
+        // The prefix was just rewritten, so this is the one moment a
+        // rebuilt system prompt costs nothing extra in the cache: pick up
+        // what memory now holds. A memory write itself leaves the prompt
+        // alone mid-session (`a_memory_write_keeps_the_cached_prompt_byte_identical`).
+        self.rebuild_system_prompt();
         self.hooks
             .fire(
                 "compact_end",
@@ -5255,6 +5346,7 @@ impl Agent {
         {
             self.compaction_note(&mut on_event, &outcome, false);
         }
+        self.compaction_failure_note(&mut on_event);
         // After the routine pass: a compaction just shrank history, so
         // this only fires when the session is genuinely over the soft
         // line. One note per session, naming /compress.
@@ -6511,29 +6603,12 @@ impl Agent {
                     // NAMES it in the result ([bash →
                     // terminal]) — the gates above
                     // already judged the target.
-                    // A memory write changes what the
-                    // resident prompt should say. The
-                    // prompt was frozen for the life of
-                    // the cached Agent, so the model
-                    // could write a note and never read
-                    // it back in the same session.
-                    // Rebuild after dispatch — the write
-                    // is already on disk by then.
-                    let memory_wrote = gate_target == "memory"
-                        && (gate_args["operations"].is_array()
-                            || matches!(
-                                gate_args["action"].as_str(),
-                                Some("add") | Some("replace") | Some("remove") | Some("write_file")
-                            ));
                     let mut result = self.tools.dispatch(dispatch_name, final_args).await;
                     // The note the human typed with the approval, in
                     // front of the result the model reads next — the
                     // `[arg notes]` precedent below.
                     if let Some(n) = approval_note {
                         result = format!("[the user approved this call and wrote: {n}]\n{result}");
-                    }
-                    if memory_wrote {
-                        self.rebuild_system_prompt();
                     }
                     if !arg_notes.is_empty() {
                         result = format!("[arg notes] {}\n{result}", arg_notes.join("; "));
@@ -10233,6 +10308,54 @@ mod tests {
             .unwrap()
             .load_history(sid)
             .expect("reload")
+    }
+
+    /// A failed summary holds the AUTOMATIC compaction back, the failure is
+    /// handed over once (for the turn's note, or a `/compact` reply that
+    /// says why instead of "nothing to compact"), and `/compact` still
+    /// tries.
+    ///
+    /// Before: every summary through the Anthropic driver timed out, every
+    /// turn start tried again, waited for the same failure, and sent the
+    /// whole 500k-token history anyway (2026-10-29).
+    #[tokio::test]
+    async fn a_failed_summary_is_not_retried_at_every_turn_start() {
+        let (_home, _env) = crate::testenv::scratch_home();
+        let empty = r#"{"choices":[{"message":{"role":"assistant","content":""}}],"usage":{"prompt_tokens":10,"completion_tokens":0}}"#.to_string();
+        let url = dual_mock(vec![], empty).await;
+        let agent = crate::testenv::mock_agent_with(&url, "summary-backoff", |cfg| {
+            let c = &mut cfg.agent.compaction;
+            c.threshold_chars = 10_000;
+            c.keep_recent = 4;
+            c.min_head = 2;
+        });
+        let mut history = oversized_history(&agent, "summary-backoff");
+
+        assert!(
+            agent.maybe_compact(&mut history, 85.0).await.is_none(),
+            "the summarizer answered nothing, so nothing was compacted"
+        );
+        let why = agent
+            .take_compaction_failure()
+            .expect("the failure is handed over");
+        assert!(why.contains("answered nothing"), "{why}");
+        assert_eq!(agent.take_compaction_failure(), None, "once");
+
+        // The next turn start is still over the bar, and must not ask the
+        // summarizer again: no new failure appears.
+        assert!(agent.maybe_compact(&mut history, 85.0).await.is_none());
+        assert_eq!(
+            agent.take_compaction_failure(),
+            None,
+            "the automatic path waited instead of failing again"
+        );
+
+        // `/compact` is the user asking: it is not held back.
+        assert!(agent.compact_forced(&mut history).await.is_none());
+        assert!(
+            agent.take_compaction_failure().is_some(),
+            "a forced compaction tried, and says why it failed"
+        );
     }
 
     /// A plan presented in plan mode lives in exactly ONE place: session
@@ -14172,6 +14295,62 @@ mod tests {
         assert!(
             req.contains("UNIQUE-MEMORY-SENTINEL-7f3a"),
             "and the note itself, not just the banner"
+        );
+    }
+
+    /// A memory write mid-session leaves the system prompt the next round
+    /// sends byte for byte as it was, and the write is still on disk for
+    /// the next session's prompt.
+    ///
+    /// The prompt sits at the front of every request's cached prefix, so
+    /// rebuilding it after each write rewrote the whole conversation into
+    /// the cache: in a 500k-token Anthropic session each memory write cost
+    /// a full cache write instead of a read (2026-10-29). The model needs
+    /// no rebuilt prompt to know what it wrote: its own call and the
+    /// tool's answer are in the transcript. Compaction rewrites the prefix
+    /// anyway, and that is where the prompt picks up memory again.
+    #[tokio::test]
+    async fn a_memory_write_keeps_the_cached_prompt_byte_identical() {
+        let (_home, _env) = crate::testenv::scratch_home();
+        let mem = crate::memory::MemoryStore::new();
+        mem.ensure_hierarchy().unwrap();
+        let args = serde_json::json!({
+            "target": "memory",
+            "action": "add",
+            "content": "WRITTEN-MID-SESSION-4c1e",
+        });
+        let (url, seen) = crate::providers::tests::sse_server_seq_capture(vec![
+            sse_tool_round("call_mem", "memory", &args),
+            SSE_ANSWER.to_string(),
+        ])
+        .await;
+        let agent = agent_at_sid(&url, "memory-cache-session");
+        let mut history: Vec<ChatMessage> = Vec::new();
+        agent
+            .run_turn(&mut history, "note this", None, |_| {})
+            .await
+            .expect("turn");
+
+        let system_of = |raw: &str| -> String {
+            let body = raw.split_once("\r\n\r\n").map(|(_, b)| b).unwrap_or(raw);
+            let v: serde_json::Value = serde_json::from_str(body).expect("request body is JSON");
+            v["messages"][0]["content"].to_string()
+        };
+        let requests = seen.lock_ok().clone();
+        assert_eq!(requests.len(), 2, "one tool round, then the answer");
+        assert_eq!(
+            system_of(&requests[0]),
+            system_of(&requests[1]),
+            "a memory write must not rewrite the cached prompt mid-session"
+        );
+        assert!(
+            !system_of(&requests[1]).contains("WRITTEN-MID-SESSION-4c1e"),
+            "the note reaches this session through the transcript, not the prompt"
+        );
+        assert!(
+            crate::prompt::build_for_session(&agent.cfg, None, &agent.skill_selection(), None)
+                .contains("WRITTEN-MID-SESSION-4c1e"),
+            "the write is on disk, so the next session's prompt carries it"
         );
     }
 

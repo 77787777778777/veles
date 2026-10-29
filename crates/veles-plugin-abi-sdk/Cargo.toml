@@ -4,8 +4,13 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 description = "Write a veles native (.so) plugin in safe Rust: the ABI 4 contract (veles-plugin-abi) wrapped so that registering, platforms, timers, sockets and async tools are closures, and a panic never crosses the boundary."
+repository.workspace = true
+keywords = ["veles", "agent", "plugin", "ffi"]
+categories = ["development-tools::ffi"]
 
 # The SDK links the ABI crate and nothing else, so a plugin built on it
 # stays out-of-tree: no engine code, no shared dependency graph.
 [dependencies]
-veles-plugin-abi = { path = "../veles-plugin-abi" }
+# The version is what crates.io resolves once this is published; "0.1"
+# keeps it right across patch releases and fails the build at 0.2.
+veles-plugin-abi = { path = "../veles-plugin-abi", version = "0.1" }

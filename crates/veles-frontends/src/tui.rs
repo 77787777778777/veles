@@ -1898,9 +1898,15 @@ fn spawn_compact(
                          outputs included.",
                     )
                 }
+                // A summary that failed is not "nothing to compact".
                 None => veles_core::notes::EngineNote::new(
                     veles_core::notes::NoteKind::Compaction,
-                    "nothing to compact — history too short for a legal cut".to_string(),
+                    match cur(&agent).take_compaction_failure() {
+                        Some(why) => format!("compaction failed — the history is unchanged: {why}"),
+                        None => {
+                            "nothing to compact — history too short for a legal cut".to_string()
+                        }
+                    },
                 ),
             }
         });
@@ -7728,6 +7734,7 @@ and a bare https://example.com/y, plus a list:\n- one\n- two\n\n```rust\nfn main
             auth_style: None,
             api_version: None,
             max_output_tokens: None,
+            cache_ttl: None,
         }];
         let cfg = Arc::new(cfg);
         store.lock().unwrap().create_session("s1").unwrap();
@@ -7784,6 +7791,7 @@ and a bare https://example.com/y, plus a list:\n- one\n- two\n\n```rust\nfn main
             auth_style: None,
             api_version: None,
             max_output_tokens: None,
+            cache_ttl: None,
         }];
         let cfg = Arc::new(cfg);
         store.lock().unwrap().create_session("s1").unwrap();

@@ -2,8 +2,12 @@
 name = "veles-textart"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
-description = "IRC text art as a picture: mIRC and ANSI formatting parsed into a cell grid and drawn with GNU Unifont into a small PNG (PLAN-slopdrop-art.md). Pure: no IO, no config."
+# The crate ships GNU Unifont (font/), which it redistributes under the OFL.
+license = "AGPL-3.0-only AND OFL-1.1"
+description = "IRC text art as a picture: mIRC and ANSI formatting parsed into a cell grid and drawn with GNU Unifont into a small PNG. Pure: no IO, no config."
+repository.workspace = true
+keywords = ["irc", "mirc", "ansi", "unifont", "png"]
+categories = ["rendering", "text-processing"]
 
 [dependencies]
 png = "0.18"

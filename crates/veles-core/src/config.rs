@@ -130,6 +130,14 @@ pub struct ProviderEntry {
     /// it exists and is a number.
     #[serde(default)]
     pub max_output_tokens: Option<u64>,
+    /// How long the provider keeps a cached prompt prefix, on a wire that
+    /// lets the client choose: `"5m"` or `"1h"` (`validate_cache_ttls`). A
+    /// plugin driver receives it on the `veles` key; absent means the
+    /// driver's own default — the Anthropic driver's is `"1h"`, because
+    /// the 5-minute entry expired inside long tool loops and every expiry
+    /// rewrote the whole history into the cache.
+    #[serde(default)]
+    pub cache_ttl: Option<String>,
     /// Server-side ("built-in") tools to declare on every request this
     /// provider's routes send, e.g. `["web_search", "web_extractor",
     /// "code_interpreter"]`. The endpoint runs them itself and bills per
@@ -3309,7 +3317,33 @@ pub(crate) fn finish_loaded(cfg: &mut VelesConfig) -> Result<()> {
     apply_node_overrides(cfg);
     apply_model_api_mode_default(cfg);
     validate_api_modes(cfg)?;
-    validate_auth_styles(cfg)
+    validate_auth_styles(cfg)?;
+    validate_cache_ttls(cfg)
+}
+
+/// The cache lifetimes a driver can be asked for (Anthropic's two).
+pub const SUPPORTED_CACHE_TTLS: &[&str] = &["5m", "1h"];
+
+/// Refuse a `cache_ttl` the wire does not have, by name, rather than let a
+/// typo silently become the driver's default.
+fn validate_cache_ttls(cfg: &VelesConfig) -> Result<()> {
+    for p in &cfg.custom_providers {
+        let Some(ttl) = p
+            .cache_ttl
+            .as_deref()
+            .map(str::trim)
+            .filter(|s| !s.is_empty())
+        else {
+            continue;
+        };
+        if !SUPPORTED_CACHE_TTLS.contains(&ttl) {
+            anyhow::bail!(
+                "provider \"{}\": cache_ttl = \"{ttl}\" is not one this build can ask for — use \"5m\" or \"1h\" (or remove the line for the driver's default)",
+                p.name
+            );
+        }
+    }
+    Ok(())
 }
 
 /// The credential styles a driver can be asked to send.
@@ -3985,6 +4019,27 @@ mod api_mode_tests {
         assert!(validate_auth_styles(&cfg_with_auth_style(Some("   "))).is_ok());
         assert!(validate_auth_styles(&cfg_with_auth_style(Some("x-api-key"))).is_ok());
         assert!(validate_auth_styles(&cfg_with_auth_style(Some("bearer"))).is_ok());
+    }
+
+    /// `cache_ttl` takes Anthropic's two lifetimes or nothing, and a typo is
+    /// refused by name instead of silently becoming the driver's default.
+    #[test]
+    fn a_cache_ttl_is_one_of_the_wire_s_two() {
+        let with = |ttl: Option<&str>| VelesConfig {
+            custom_providers: vec![ProviderEntry {
+                name: "anthropic".into(),
+                cache_ttl: ttl.map(str::to_string),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+        for ok in [None, Some(""), Some("5m"), Some("1h")] {
+            assert!(validate_cache_ttls(&with(ok)).is_ok(), "{ok:?}");
+        }
+        let msg = validate_cache_ttls(&with(Some("60m")))
+            .expect_err("not a lifetime the wire has")
+            .to_string();
+        assert!(msg.contains("anthropic") && msg.contains("60m"), "{msg}");
     }
 
     /// An unknown style is refused BY NAME at load, not silently defaulted.

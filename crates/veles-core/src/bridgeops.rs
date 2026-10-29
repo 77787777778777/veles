@@ -567,29 +567,63 @@ fn config_set(args: &[String]) -> Result<String, String> {
 /// must not blow the caller's result string.
 const HTTP_BODY_CAP: usize = 1_000_000;
 
+/// The total timeout `http_get`/`http_post` apply unless told otherwise.
+const HTTP_DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);
+/// The most `http_post`'s `timeout_secs` may ask for: the engine's own
+/// provider client allows a call 600 s, and a driver may need that
+/// headroom and some more, but not an unbounded hang.
+const HTTP_MAX_TIMEOUT_SECS: u64 = 900;
+
 fn http_get(bridge: &Bridge, args: &[String]) -> Result<String, String> {
     arity(args, 1, 2, "veles::http_get <url> ?headers_json?")?;
-    http_request(bridge, "GET", &args[0], None, args.get(1))
+    http_request(
+        bridge,
+        "GET",
+        &args[0],
+        None,
+        args.get(1),
+        HTTP_DEFAULT_TIMEOUT,
+    )
 }
 
+/// `veles::http_post <url> <body> ?content_type? ?headers_json? ?timeout_secs?`
+///
+/// `timeout_secs` exists for a provider driver's NON-streaming call. The
+/// answer to one arrives only when the model has finished writing it,
+/// and a compaction summary on a frontier model takes longer than the 30
+/// second default: every summary through the Anthropic driver timed out,
+/// compaction kept the full history, and a 500k-token session paid for
+/// all of it on every turn (2026-10-29). Empty means the default.
 fn http_post(bridge: &Bridge, args: &[String]) -> Result<String, String> {
     arity(
         args,
         2,
-        4,
-        "veles::http_post <url> <body> ?content_type? ?headers_json?",
+        5,
+        "veles::http_post <url> <body> ?content_type? ?headers_json? ?timeout_secs?",
     )?;
     let ct = args
         .get(2)
         .filter(|s| !s.is_empty())
         .cloned()
         .unwrap_or_else(|| "application/json".into());
+    let timeout = match args.get(4).map(|s| s.trim()).filter(|s| !s.is_empty()) {
+        None => HTTP_DEFAULT_TIMEOUT,
+        Some(s) => match s.parse::<u64>() {
+            Ok(n) if (1..=HTTP_MAX_TIMEOUT_SECS).contains(&n) => Duration::from_secs(n),
+            _ => {
+                return Err(format!(
+                    "veles::http_post: timeout_secs must be 1..={HTTP_MAX_TIMEOUT_SECS}, got {s:?}"
+                ))
+            }
+        },
+    };
     http_request(
         bridge,
         "POST",
         &args[0],
         Some((args[1].clone(), ct)),
         args.get(3),
+        timeout,
     )
 }
 
@@ -706,19 +740,21 @@ pub(crate) fn parse_headers_arg(raw: Option<&str>) -> Result<Vec<(String, String
     Ok(out)
 }
 
-/// 30s timeout, 1MB body cap. The plugins interpreter is the TRUSTED
-/// owner surface — untrusted callers never reach these.
+/// A total timeout (30 s unless `http_post` was given one), 1MB body cap.
+/// The plugins interpreter is the TRUSTED owner surface — untrusted
+/// callers never reach these.
 fn http_request(
     bridge: &Bridge,
     method: &str,
     url: &str,
     body: Option<(String, String)>,
     headers_json: Option<&String>,
+    timeout: Duration,
 ) -> Result<String, String> {
     let headers = parse_headers(headers_json)?;
     bridge.block_on(async {
         let client = reqwest::Client::builder()
-            .timeout(Duration::from_secs(30))
+            .timeout(timeout)
             .build()
             .map_err(|e| format!("http client: {e}"))?;
         let req = match method {
@@ -1137,7 +1173,7 @@ mod tests {
             ("config_get", too_many.clone()),           // exactly 1
             ("history", vec![]),                        // needs 1..=2
             ("history", too_many.clone()),              // 1..=2
-            ("http_post", vec!["u".to_string()]),       // needs 2..=3
+            ("http_post", vec!["u".to_string()]),       // needs 2..=5
             ("send_outbound", vec!["irc".to_string()]), // needs exactly 3
             ("note", vec![]),                           // needs 1..=2
             ("task_cancel", vec![]),                    // needs exactly 1
@@ -1154,6 +1190,56 @@ mod tests {
                 "`{op}` must answer with its usage line, got: {err}"
             );
             assert!(err.contains(op), "the usage line must name the op: {err}");
+        }
+    }
+
+    /// A local endpoint that answers `ok` after `delay`, `n` times.
+    fn slow_server(delay: Duration, n: usize) -> String {
+        use std::io::{Read, Write};
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").expect("bind");
+        let addr = listener.local_addr().expect("addr");
+        std::thread::spawn(move || {
+            for stream in listener.incoming().take(n) {
+                let Ok(mut s) = stream else { continue };
+                let mut buf = [0u8; 4096];
+                let _ = s.read(&mut buf);
+                std::thread::sleep(delay);
+                let _ = s.write_all(
+                    b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: close\r\n\r\nok",
+                );
+            }
+        });
+        format!("http://{addr}/v1/messages")
+    }
+
+    /// `timeout_secs` reaches the client: a reply slower than the
+    /// timeout asked for fails, the same reply inside a longer one
+    /// arrives. A driver's non-streaming call (a compaction summary)
+    /// needs more than the 30 s default, and before this argument it
+    /// could not ask for it — every summary timed out (2026-10-29).
+    #[test]
+    fn http_post_honours_its_timeout_argument() {
+        let (_h, _g, b) = bridge();
+        let url = slow_server(Duration::from_millis(1500), 2);
+        let args = |t: &str| {
+            vec![
+                url.clone(),
+                "{}".to_string(),
+                String::new(),
+                String::new(),
+                t.to_string(),
+            ]
+        };
+        let err = dispatch(&b, "http_post", &args("1")).expect_err("1 s is shorter than the reply");
+        assert!(
+            err.starts_with("http:"),
+            "a timeout is a transport error: {err}"
+        );
+        let ok = dispatch(&b, "http_post", &args("5")).expect("5 s is long enough");
+        assert_eq!(ok, "ok");
+        for bad in ["0", "901", "soon"] {
+            let err = dispatch(&b, "http_post", &args(bad)).expect_err(bad);
+            assert!(err.contains("timeout_secs"), "{bad}: {err}");
         }
     }
 

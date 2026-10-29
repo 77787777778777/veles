@@ -101,6 +101,16 @@ const SAMPLING_REMOVED_VERSION: &str = "2026-10-21";
 /// costs output length on one turn.
 const FALLBACK_MAX_TOKENS: u64 = 8192;
 
+/// How long Anthropic keeps a cached prefix when the provider entry does not
+/// say (`cache_ttl`). One hour, not the 5-minute default: a tool loop on a
+/// frontier model spends 3-4 minutes writing one answer and more running its
+/// tools, so the 5-minute entry was gone before the next request in half the
+/// misses of a long session, and each miss rewrote ~500k tokens (2026-10-29).
+/// The 1-hour write costs 2x input instead of 1.25x, but a round writes only
+/// what it added, so that is a few thousand tokens per round against a whole
+/// history per miss.
+const CACHE_TTL: &str = "1h";
+
 /// The effort names this wire accepts. veles' ladder is a superset;
 /// anything outside this set is dropped rather than sent, because an
 /// unknown effort is a hard 400 and losing a turn over a spelling is a bad
@@ -671,7 +681,41 @@ fn to_wire(req: &Value, c: Caps, streaming: bool) -> Value {
     if streaming {
         body.insert("stream".into(), json!(true));
     }
-    Value::Object(body)
+    let mut body = Value::Object(body);
+    with_cache_ttl(&mut body, &cache_ttl_for(req));
+    body
+}
+
+/// The cache lifetime to ask for: the provider entry's `cache_ttl` (the
+/// engine sends it on the `veles` key), else [`CACHE_TTL`].
+fn cache_ttl_for(req: &Value) -> String {
+    match req["veles"]["cache_ttl"].as_str().map(str::trim) {
+        Some(t) if !t.is_empty() => t.to_string(),
+        _ => CACHE_TTL.to_string(),
+    }
+}
+
+/// Every breakpoint in `body`, with the lifetime `ttl` asks for. The engine
+/// marks breakpoints as `{"type":"ephemeral"}`, the 5-minute cache; "1h"
+/// adds `"ttl":"1h"` to each. Done on the finished body, so no site that
+/// carries a breakpoint can be missed.
+fn with_cache_ttl(v: &mut Value, ttl: &str) {
+    if ttl != "1h" {
+        return;
+    }
+    match v {
+        Value::Object(o) => {
+            for (k, child) in o.iter_mut() {
+                if k == "cache_control" && child.is_object() {
+                    child["ttl"] = json!("1h");
+                } else {
+                    with_cache_ttl(child, ttl);
+                }
+            }
+        }
+        Value::Array(items) => items.iter_mut().for_each(|i| with_cache_ttl(i, ttl)),
+        _ => {}
+    }
 }
 
 /// OpenAI's tool_choice spellings → this wire's. `None` means "do not
@@ -1210,7 +1254,20 @@ fn drive(request_json: &str) -> Value {
     // and a dated `anthropic-version` — are what the headers argument to
     // `http_post` exists for: a driver that cannot set headers cannot
     // authenticate against anything real.
-    let raw = match engine("http_post", &[&url, &body, "application/json", &headers]) {
+    //
+    // A non-streaming answer arrives only once the model has written all of
+    // it, which a compaction summary on a frontier model does not do inside
+    // `http_post`'s 30 second default (every summary timed out,
+    // 2026-10-29). The engine sends the figure (`veles.timeout_secs`, the
+    // 600 s its own provider client allows), and only an engine that sends
+    // it has the fifth `http_post` argument: an older one refuses five. So
+    // the timeout goes along exactly when the engine named one.
+    let timeout = req["veles"]["timeout_secs"].as_u64().map(|n| n.to_string());
+    let mut args: Vec<&str> = vec![&url, &body, "application/json", &headers];
+    if let Some(t) = &timeout {
+        args.push(t);
+    }
+    let raw = match engine("http_post", &args) {
         Ok(r) => r,
         Err(e) => {
             // `http_post` raises on non-2xx with the body in the message, so

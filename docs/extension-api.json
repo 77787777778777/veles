@@ -359,7 +359,7 @@
       }
     ]
   },
-  "api_version": "0.9",
+  "api_version": "0.10",
   "bindings": {
     "js": [
       "call",
@@ -478,7 +478,7 @@
       "::veles::config_get path",
       "::veles::config_set path value",
       "::veles::http_get url ?headers_json?",
-      "::veles::http_post url body ?content_type? ?headers_json?",
+      "::veles::http_post url body ?content_type? ?headers_json? ?timeout_secs?",
       "::veles::http_stream_open url body ?content_type? ?headers_json?",
       "::veles::http_stream_next id",
       "::veles::http_stream_close id",
@@ -657,7 +657,7 @@
       "lisp": "http-post",
       "name": "http_post",
       "racket": "http-post",
-      "tcl": "::veles::http_post url body ?content_type? ?headers_json?"
+      "tcl": "::veles::http_post url body ?content_type? ?headers_json? ?timeout_secs?"
     },
     {
       "js": "httpStreamClose",

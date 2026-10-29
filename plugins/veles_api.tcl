@@ -80,7 +80,10 @@ proc ::veles::config_set {path value} { return "" }
 # A driver that cannot set headers cannot authenticate, which is why
 # this exists (see plugins/examples/tcl-anthropic-driver).
 proc ::veles::http_get {url {headers_json ""}} { return "" }
-proc ::veles::http_post {url body {content_type "application/json"} {headers_json ""}} { return "" }
+# ?timeout_secs? (1..900, default 30) is the call's total timeout; a
+# provider driver's non-streaming call passes the engine's figure
+# (veles.timeout_secs), because its answer arrives only when complete.
+proc ::veles::http_post {url body {content_type "application/json"} {headers_json ""} {timeout_secs ""}} { return "" }
 
 # Streaming HTTP: the transport a provider driver needs, because the two
 # above BUFFER. http_post awaits the whole body, so a driver using it

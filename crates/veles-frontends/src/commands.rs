@@ -1653,7 +1653,11 @@ async fn compress_command(ctx: &mut CommandCtx<'_>) -> Handled {
                 reload: true,
             }
         }
-        None => "(nothing to compact — history too short for a legal cut)".into(),
+        // A summary that failed is not "nothing to compact": say why.
+        None => match agent.take_compaction_failure() {
+            Some(why) => format!("(compaction failed — the history is unchanged: {why})").into(),
+            None => "(nothing to compact — history too short for a legal cut)".into(),
+        },
     }
 }
 

@@ -1,6 +1,6 @@
 # Extending and overriding veles without forking it
 
-<!-- extension-api: 0.9 sha256:e2e0cf1484ec608f -->
+<!-- extension-api: 0.10 sha256:40729d740135033b -->
 
 You change how veles behaves from your own plugin directory, not from a
 patch to this repository. An update replaces the program and leaves
@@ -325,7 +325,7 @@ so does a first-column name the spec no longer has.
 | `config_set` | `::veles::config_set path value` | `configSet` | `config-set` | `config-set` |
 | `history` | `::veles::history session_id ?limit?` | `history` | `history` | `history` |
 | `http_get` | `::veles::http_get url ?headers_json?` | `httpGet` | `http-get` | `http-get` |
-| `http_post` | `::veles::http_post url body ?content_type? ?headers_json?` | `httpPost` | `http-post` | `http-post` |
+| `http_post` | `::veles::http_post url body ?content_type? ?headers_json? ?timeout_secs?` | `httpPost` | `http-post` | `http-post` |
 | `http_stream_close` | `::veles::http_stream_close id` | `httpStreamClose` | `http-stream-close` | `http-stream-close` |
 | `http_stream_next` | `::veles::http_stream_next id` | `httpStreamNext` | `http-stream-next` | `http-stream-next` |
 | `http_stream_open` | `::veles::http_stream_open url body ?content_type? ?headers_json?` | `httpStreamOpen` | `http-stream-open` | `http-stream-open` |
