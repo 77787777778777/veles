@@ -25,13 +25,16 @@ let
       arch
     else
       throw "the portable bundle supports x86_64 and aarch64 Linux, not ${system}";
+  # A numbered release, not `continuous`: upstream rebuilds that one in
+  # place, and the rebuild of 2026-10-29 19:16 UTC broke the v0.1.4
+  # release run with a hash mismatch eleven minutes after the tag.
   appimageToolSource = pkgs.fetchurl {
-    url = "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-${appimageArch}.AppImage";
+    url = "https://github.com/AppImage/appimagetool/releases/download/1.9.1/appimagetool-${appimageArch}.AppImage";
     sha256 =
       if arch == "x86_64" then
-        "sha256-lcvnzOlxf86QxITjQFLufH8ddjWzPBJSW0d2gmp9KbY="
+        "sha256-7UzoTw2cr/ZvULzKb/bzWq5UzoE1QIs/ozq/w8s4TrA="
       else
-        "sha256-pZXqNM1hNsf1lencuxbz6XJddhDvueQ7OMPG6GyvwnA=";
+        "sha256-8IN+dEigweTmUKk7s+hYAlRuYGVO8odXb0bHHBJqkVg=";
   };
   runtimeSource = pkgs.fetchurl {
     url = "https://github.com/AppImage/type2-runtime/releases/download/continuous/runtime-${appimageArch}";
