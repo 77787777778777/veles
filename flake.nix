@@ -611,7 +611,7 @@
         # both packages.default and the OCI image below can reference it.
         velesPkg = pkgs.rustPlatform.buildRustPackage rec {
           pname = "veles-agent";
-          version = "0.1.2";
+          version = "0.1.3";
           src = rustSrc;
           cargoLock = {
             lockFile = ./Cargo.lock;
@@ -1077,7 +1077,7 @@
         androidMinSdk = "26";
         # Raised by hand for each release a store sees; a sideloaded
         # reinstall of the same code keeps it.
-        androidVersionCode = "3";
+        androidVersionCode = "4";
         androidSdk =
           (androidHost.androidenv.composeAndroidPackages {
             platformVersions = [ androidTargetSdk ];
@@ -2289,7 +2289,7 @@
 
         # The image's tag names the commit it was built from, so the VPS
         # can say which one it runs.
-        imageTag = "0.1.2-${self.shortRev or self.dirtyShortRev or "dirty"}";
+        imageTag = "0.1.3-${self.shortRev or self.dirtyShortRev or "dirty"}";
         imageRevision = self.rev or self.dirtyRev or "dirty";
         # The release builder overrides only this label. Published images
         # must be rejected if their source does not name the authenticated
@@ -2750,7 +2750,7 @@
         #     bind-mount owner on the host.
         #   - Entrypoint is the wrapped `veles` binary; Cmd defaults to
         #     `gateway run` but any subcommand works:
-        #     `podman run --rm veles-agent:0.1.2 status` etc.
+        #     `podman run --rm veles-agent:0.1.3 status` etc.
         #   - No s6 / entrypoint.sh — veles' own lifecycle code (pid file,
         #     crash-loop guard, graceful SIGTERM, shutdown log) IS the init
         #     story; PID 1 is `veles` itself. `--restart unless-stopped` on

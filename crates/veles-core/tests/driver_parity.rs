@@ -614,7 +614,18 @@ async fn the_same_driver_in_tcl_and_in_rust_agree_exactly() {
         serde_json::from_str(s.tool_args.as_deref().unwrap_or("")).expect("args are a JSON string");
     assert_eq!(args["q"], "veles");
     assert_eq!(args["limit"], 3);
-    assert_eq!(s.prompt, Some(101));
+    // The WHOLE prompt. Anthropic's input_tokens is only what came after
+    // the last cache breakpoint (101 here); the 5 written and the 90 read
+    // were sent too. The engine reads prompt_tokens the OpenAI way, as
+    // everything the model received: it is the compaction bar's ground
+    // truth and the denominator of every cache share. Passing input_tokens
+    // through as prompt_tokens made a cached 26k prompt report 2 tokens,
+    // so compaction never fired and the status bar read "1317350% cached".
+    assert_eq!(
+        s.prompt,
+        Some(196),
+        "prompt_tokens = input + cache write + cache read"
+    );
     assert_eq!(s.completion, Some(42));
     // Cache accounting, which neither driver computes: it comes from
     // the engine's own `cache_usage`, which already reads Anthropic's

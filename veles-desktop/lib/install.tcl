@@ -859,9 +859,9 @@ proc ::vinstall::choose_signed {} {
         incr row
     }
     if {![info exists ::vinstall::signed_release]} {
-        set ::vinstall::signed_release https://github.com/77787777778777/veles/releases/download/v0.1.2/
+        set ::vinstall::signed_release https://github.com/77787777778777/veles/releases/download/v0.1.3/
         set ::vinstall::signed_repository 77787777778777/veles
-        set ::vinstall::signed_tag v0.1.2
+        set ::vinstall::signed_tag v0.1.3
         set ::vinstall::signed_commit {}
         set ::vinstall::signed_workflow_sha {}
     }

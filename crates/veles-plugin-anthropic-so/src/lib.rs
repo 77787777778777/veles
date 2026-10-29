@@ -42,7 +42,9 @@
 //!     message with `role: "tool"`
 //!   * auth is `x-api-key` + `anthropic-version`, not bearer
 //!   * usage is input_tokens/output_tokens, with cache accounting under
-//!     cache_creation_input_tokens / cache_read_input_tokens
+//!     cache_creation_input_tokens / cache_read_input_tokens, and
+//!     input_tokens EXCLUDES both: it is only what follows the last cache
+//!     breakpoint, where OpenAI's prompt_tokens is the whole prompt
 //!   * an UNKNOWN field is a hard 400 ("Extra inputs are not permitted"),
 //!     so sending something a model does not support fails the turn
 //!
@@ -831,10 +833,20 @@ fn from_wire(resp: &Value) -> Value {
     // the engine's `cache_usage` already reads cache_read_input_tokens and
     // cache_creation_input_tokens, so renaming them here would throw the
     // accounting away.
+    //
+    // prompt_tokens is the WHOLE prompt, the OpenAI meaning the engine reads
+    // it with. Anthropic's input_tokens counts only what came after the last
+    // cache breakpoint, so the cache write and read are added back. Passed
+    // through alone, a cached 26k prompt reported 2 tokens: the compaction
+    // bar never moved and the cache share read in the millions of percent.
     let mut usage = json!({});
     let u = &resp["usage"];
     if let Some(n) = u["input_tokens"].as_u64() {
-        usage["prompt_tokens"] = json!(n);
+        let cached: u64 = ["cache_creation_input_tokens", "cache_read_input_tokens"]
+            .iter()
+            .filter_map(|f| u[*f].as_u64())
+            .sum();
+        usage["prompt_tokens"] = json!(n + cached);
     }
     if let Some(n) = u["output_tokens"].as_u64() {
         usage["completion_tokens"] = json!(n);

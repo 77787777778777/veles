@@ -23,7 +23,9 @@
 #     message with `role: "tool"`
 #   * auth is `x-api-key` + `anthropic-version`, not `Authorization: Bearer`
 #   * usage is input_tokens/output_tokens, with cache accounting under
-#     cache_creation_input_tokens / cache_read_input_tokens
+#     cache_creation_input_tokens / cache_read_input_tokens, and
+#     input_tokens EXCLUDES both: it is only what follows the last cache
+#     breakpoint, where OpenAI's prompt_tokens is the whole prompt
 #   * an UNKNOWN field is a hard 400 ("Extra inputs are not permitted"), so
 #     sending something the model does not support fails the turn rather
 #     than being ignored
@@ -772,10 +774,24 @@ proc anthropic::from_wire {resp} {
     # the engine's `cache_usage` reads cache_read_input_tokens and
     # cache_creation_input_tokens directly, so renaming them here would
     # throw the accounting away.
+    #
+    # prompt_tokens is the WHOLE prompt, the OpenAI meaning the engine
+    # reads it with. Anthropic's input_tokens counts only what came after
+    # the last cache breakpoint, so the cache write and read are added back.
+    # Passed through alone, a cached 26k prompt reported 2 tokens: the
+    # compaction bar never moved and the cache share read in the millions
+    # of percent.
     set usage {}
     set in [::veles::json_get $resp usage input_tokens]
     set out [::veles::json_get $resp usage output_tokens]
-    if {$in ne ""} { lappend usage [list "prompt_tokens" [anthropic::jnum $in]] }
+    if {$in ne ""} {
+        set total $in
+        foreach f {cache_creation_input_tokens cache_read_input_tokens} {
+            set v [::veles::json_get $resp usage $f]
+            if {[string is entier -strict $v]} { set total [expr {$total + $v}] }
+        }
+        lappend usage [list "prompt_tokens" [anthropic::jnum $total]]
+    }
     if {$out ne ""} { lappend usage [list "completion_tokens" [anthropic::jnum $out]] }
     foreach f {cache_creation_input_tokens cache_read_input_tokens} {
         set v [::veles::json_get $resp usage $f]
