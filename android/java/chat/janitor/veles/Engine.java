@@ -197,6 +197,12 @@ final class Engine {
             }
         }
         env.put("VELES_LOCALES_DIR", new File(runtime(c), "locales").getPath());
+        // The bundled Tcl plugins (the Anthropic Messages driver the setup
+        // wizard's Anthropic choice names): plain files in runtime.zip,
+        // unpacked beside the catalogs. The engine's own lookup beside the
+        // binary finds nothing here — the binary is a lib*.so in the native
+        // library directory — so it is told (plugins::BUNDLED_ENV).
+        env.put("VELES_BUNDLED_PLUGINS", new File(runtime(c), "plugins").getPath());
         // The in-process modules (irc, slopdrop, telegram, lang-js): the APK
         // carries each as lib/(abi)/libveles_module_<name>.so, and the
         // module host wants <root>/<name>/plugin.toml naming the file —

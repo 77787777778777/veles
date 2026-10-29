@@ -23,6 +23,9 @@ namespace eval ::vpanes {
     variable preview_img ""
     variable last_focus ""
     variable _seen_preview ""
+    # The session whose agent preview the pane shows; "" when it shows
+    # nothing, or a file the user opened themselves (_poll_tick).
+    variable preview_owner ""
     variable root_dir "~"
     # Widget root of the pane shell. Normally .panes (docked in the .mid
     # pane); while undocked it is the frame inside the float toplevel.
@@ -699,6 +702,7 @@ proc ::vpanes::toggle_preview_source {} {
 
 proc ::vpanes::_preview_empty_state {} {
     variable preview_raw
+    variable preview_owner ""
     variable preview_kind plain
     variable preview_source 0
     set preview_raw "Nothing previewed yet.\n\nClick a file in the Files pane, or the agent can open_preview a URL or file here.\n"
@@ -731,6 +735,7 @@ proc ::vpanes::open_file_preview {path} {
 
 proc ::vpanes::_preview_set_image {path} {
     variable last_preview
+    variable preview_owner ""
     variable preview_raw
     variable preview_kind image
     variable preview_source 0
@@ -742,6 +747,7 @@ proc ::vpanes::_preview_set_image {path} {
 
 proc ::vpanes::_preview_set {text label {kind auto}} {
     variable last_preview
+    variable preview_owner ""
     variable preview_raw
     variable preview_kind
     variable preview_source
@@ -1188,18 +1194,53 @@ proc ::vpanes::_poll_tick {} {
     # stopped under an open, untouched desktop, and a message sent after
     # five minutes of reading met "gateway unreachable" until the app
     # went to the background and back (only a resume starts it).
-    catch { ::vapi::get_json_async /api/preview ::vpanes::_got_preview }
+    #
+    # The preview asked for is the SHOWN session's. Asked for bare, the
+    # last preview any session opened came back on every start (a fresh
+    # window has seen no stamp), raised the pane and handed a days-old
+    # url to the browser (owner, 2026-10-29). The gateway answers only
+    # with a preview that session opened, and only while it is fresh
+    # (panes.rs preview_for); nothing on screen, nothing asked.
+    set sid [_shown_session]
+    _preview_drop_foreign $sid
+    if {$sid ne ""} {
+        if {[catch {
+            ::vapi::get_json_async "/api/preview?session=[::vapi::urlencode $sid]" \
+                [list ::vpanes::_got_preview $sid]
+        } err]} {
+            after idle [list ::vpanes::_got_preview $sid 0 $err]
+        }
+    }
     catch { ::vapi::get_json_async /api/focus ::vpanes::_got_focus }
     set poll_after [after 1500 ::vpanes::_poll_tick]
 }
 
-proc ::vpanes::_got_preview {ok p} {
+proc ::vpanes::_shown_session {} {
+    set sid ""
+    catch { set sid $::vchat::session }
+    return $sid
+}
+
+# The pane shows another session's agent preview: put it away. A file
+# the user opened themselves has no owner and stays.
+proc ::vpanes::_preview_drop_foreign {sid} {
+    variable preview_owner
+    if {$preview_owner ne "" && $preview_owner ne $sid} {
+        catch { _preview_empty_state }
+    }
+}
+
+proc ::vpanes::_got_preview {sid ok p} {
+    variable preview_owner
     if {!$ok || $p eq "null" || $p eq ""} { return }
+    # Asked for a session the window has since left.
+    if {$sid ne [_shown_session]} { return }
     catch {
         set stamp [dict get $p set_at]
         if {$stamp ne $::vpanes::_seen_preview} {
             set ::vpanes::_seen_preview $stamp
             _apply_preview_item $p
+            set preview_owner $sid
         }
     }
 }

@@ -222,11 +222,12 @@ impl ChatMessage {
 
 /// How this route asks the provider to cache the prefix.
 ///
-/// Every provider configured on this machine today caches automatically
-/// and needs nothing on the wire — which is exactly why `Auto` (emit
-/// nothing) is the default and the strict endpoints stay safe. `Explicit`
-/// exists because OpenRouter→Anthropic/Gemini is one config line away,
-/// and those want the breakpoints stated.
+/// On a REQUEST, `Auto` emits nothing: the provider caches on its own.
+/// The CONFIG value `auto` is resolved per route before it gets here
+/// (`resolve_cache_mode`): the wires that cache nothing without
+/// breakpoints — Anthropic's Messages API, OpenRouter's Anthropic
+/// models — resolve to `Explicit`, and everything else stays inert so
+/// the strict endpoints stay safe.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum CacheMode {
     /// Send no cache fields; the provider caches on its own.
@@ -446,6 +447,63 @@ fn mark_cache_breakpoint(msg: &mut Value) {
             *other = json!([{ "type": "text", "text": text, "cache_control": cc }]);
         }
     }
+}
+
+/// Where explicit mode puts its history breakpoints: the end of what
+/// the PREVIOUS request sent, and the end of this one.
+///
+/// A cache entry can only be read where an earlier request wrote one,
+/// so the two have to meet. The previous request is everything before
+/// the reply it got back — the last assistant message — and its own
+/// tail breakpoint sat on the message just before that reply. Marking
+/// that same message here reads the previous round's write exactly,
+/// however much the round added; marking this request's last message
+/// writes the entry the next round will read. The cache then follows
+/// the conversation one round at a time, tool rounds included.
+///
+/// The placement this replaced marked the message before the current
+/// USER turn, on the theory that the turn's tail "changes every turn
+/// and would cache nothing". In a tool loop the opposite is true: the
+/// turn so far is exactly what the next round re-sends, and leaving it
+/// unmarked re-sent it uncached every round (bf03ad, 2026-10-28: fifty
+/// rounds reading the same 168,539 tokens while the uncached part grew
+/// to 53,549). And a user-role message landing mid-turn — a steer, a
+/// background-shell notice — moved that breakpoint onto a position
+/// nothing had written, which dropped the read to system+tools for the
+/// rest of the turn.
+///
+/// A message with no text cannot hold a marker (and several endpoints
+/// reject an empty text part), so each position walks back to the
+/// nearest message that has some. Both ends of the handoff walk by the
+/// same rule, so they still meet.
+fn history_breakpoints(messages: &[Value]) -> Vec<usize> {
+    let Some(last) = messages.len().checked_sub(1) else {
+        return Vec::new();
+    };
+    let markable = |from: usize| {
+        (0..=from).rev().find(|&i| {
+            let m = &messages[i];
+            // The system message has its own breakpoint already.
+            m["role"] != "system"
+                && match &m["content"] {
+                    Value::String(s) => !s.is_empty(),
+                    Value::Array(parts) => !parts.is_empty(),
+                    _ => false,
+                }
+        })
+    };
+    let mut at: Vec<usize> = Vec::new();
+    if let Some(reply) = messages.iter().rposition(|m| m["role"] == "assistant") {
+        if let Some(i) = reply.checked_sub(1).and_then(markable) {
+            at.push(i);
+        }
+    }
+    if let Some(i) = markable(last) {
+        if at.last() != Some(&i) {
+            at.push(i);
+        }
+    }
+    at
 }
 
 /// The wires a route can ride, behind one call surface.
@@ -773,28 +831,18 @@ impl ProviderClient {
             .collect();
 
         let mut messages = messages;
-        // Explicit cache breakpoints, in prefix order (Step 1.5). At
-        // most three, because that is what the wire formats that want
-        // them allow: the system message, the end of the tools array,
-        // and the last message of the STABLE history — everything
-        // before the current user turn, so the third breakpoint rolls
-        // forward one turn at a time instead of being invalidated by it.
+        // Explicit cache breakpoints, in prefix order (Step 1.5). Four,
+        // which is Anthropic's limit: the system message, the end of the
+        // tools array, and the two history positions
+        // `history_breakpoints` names.
         if req.cache_mode == CacheMode::Explicit {
             if let Some(first) = messages.first_mut() {
                 if first["role"] == "system" {
                     mark_cache_breakpoint(first);
                 }
             }
-            // The last message BEFORE the current user turn. Mid-turn
-            // (the last message is a tool result) this still names the
-            // same boundary, so the breakpoint does not move between
-            // the rounds of one turn — which is the whole point.
-            let current_turn = messages
-                .iter()
-                .rposition(|m| m["role"] == "user")
-                .unwrap_or(0);
-            if current_turn > 1 {
-                mark_cache_breakpoint(&mut messages[current_turn - 1]);
+            for i in history_breakpoints(&messages) {
+                mark_cache_breakpoint(&mut messages[i]);
             }
         }
 
@@ -1162,18 +1210,55 @@ pub fn resolve_api_key(entry: &crate::config::ProviderEntry, home: &std::path::P
 /// wins, else the global `[cache] mode`. `[cache] enabled = false` is a
 /// master switch and forces `Off` whatever either of them says — one
 /// line that guarantees nothing cache-related reaches the wire.
+///
+/// `auto` is resolved HERE, per route, to what the wire needs: explicit
+/// breakpoints where the provider caches nothing without them
+/// ([`wants_breakpoints`]), nothing everywhere else.
 pub(crate) fn resolve_cache_mode(
     cfg: &crate::config::VelesConfig,
     entry: &crate::config::ProviderEntry,
+    model: &str,
 ) -> CacheMode {
     if !cfg.cache.enabled {
         return CacheMode::Off;
     }
-    entry
+    let mode = entry
         .cache_mode
         .as_deref()
         .map(CacheMode::parse)
-        .unwrap_or_else(|| CacheMode::parse(&cfg.cache.mode))
+        .unwrap_or_else(|| CacheMode::parse(&cfg.cache.mode));
+    if mode == CacheMode::Auto && wants_breakpoints(entry, model) {
+        CacheMode::Explicit
+    } else {
+        mode
+    }
+}
+
+/// The wires that cache NOTHING unless a breakpoint says where.
+///
+/// Most providers cache a repeated prefix on their own, and `auto` used
+/// to assume they all did. Anthropic does not: its Messages API reads
+/// and writes only at `cache_control` markers, and OpenRouter forwards
+/// the same markers to Anthropic's models. The owner's Anthropic route
+/// ran on `auto` for its first 85 calls (2026-10-28) — 6.48M prompt
+/// tokens, every cache field zero — until `cache_mode = "explicit"` was
+/// added by hand.
+///
+/// Anthropic's OpenAI-compatible surface (`chat_completions` against
+/// api.anthropic.com) is NOT here: it does not cache at all, so there is
+/// nothing a marker could ask for. The native wire is the
+/// `anthropic-messages` driver.
+fn wants_breakpoints(entry: &crate::config::ProviderEntry, model: &str) -> bool {
+    match entry.api_mode.as_str() {
+        // The Messages schema itself carries `cache_control`, so any
+        // endpoint this driver speaks to accepts the field.
+        "plugin" => entry.driver.as_deref() == Some("anthropic-messages"),
+        "responses" => false,
+        _ => {
+            entry.base_url.contains("openrouter.ai")
+                && model.trim_start_matches('~').starts_with("anthropic/")
+        }
+    }
 }
 
 /// Build the wire client an entry asks for. `api_mode` validation
@@ -1701,7 +1786,7 @@ pub fn build_routes(cfg: &crate::config::VelesConfig) -> Result<Vec<Route>> {
         reasoning_effort: entry.reasoning_effort.clone(),
         extra_body: entry.extra_body.clone(),
         replay_reasoning: entry.replay_reasoning.unwrap_or(false),
-        cache_mode: resolve_cache_mode(cfg, entry),
+        cache_mode: resolve_cache_mode(cfg, entry, &primary_model),
     });
 
     // Fallbacks (config order).
@@ -1715,6 +1800,7 @@ pub fn build_routes(cfg: &crate::config::VelesConfig) -> Result<Vec<Route>> {
             .clone()
             .or_else(|| entry.model.clone())
             .unwrap_or_default();
+        let cache_mode = resolve_cache_mode(cfg, entry, &model);
         routes.push(Route {
             provider: entry.name.clone(),
             context_tokens: entry.models.context_length(&model).or(entry.context_length),
@@ -1723,7 +1809,7 @@ pub fn build_routes(cfg: &crate::config::VelesConfig) -> Result<Vec<Route>> {
             reasoning_effort: entry.reasoning_effort.clone(),
             extra_body: entry.extra_body.clone(),
             replay_reasoning: entry.replay_reasoning.unwrap_or(false),
-            cache_mode: resolve_cache_mode(cfg, entry),
+            cache_mode,
         });
     }
     Ok(routes)
@@ -2828,8 +2914,8 @@ pub mod tests {
 
     // ── explicit cache breakpoints (Step 1.5) ───────────────────────
 
-    /// system + 3 history messages + the current user turn, plus two
-    /// tools — enough shape for all three breakpoints to have somewhere
+    /// system + 2 history messages + the current user turn, plus two
+    /// tools — enough shape for all four breakpoints to have somewhere
     /// distinct to land.
     fn cache_req(mode: CacheMode) -> ChatRequest {
         let sys = ChatMessage {
@@ -2875,14 +2961,26 @@ pub mod tests {
         }
     }
 
-    /// Three breakpoints, in prefix order: the system message, the end
-    /// of the tools array, and the last message of the stable history.
-    /// More than three is rejected by the wire formats that want them
-    /// at all, so the count is the contract.
+    /// The indices of the messages that carry a breakpoint, in order.
+    fn marked(body: &Value) -> Vec<usize> {
+        body["messages"]
+            .as_array()
+            .expect("messages")
+            .iter()
+            .enumerate()
+            .filter(|(_, m)| breakpoints(m) > 0)
+            .map(|(i, _)| i)
+            .collect()
+    }
+
+    /// Four breakpoints, in prefix order: the system message, the end
+    /// of the tools array, the end of what the PREVIOUS request sent,
+    /// and the end of this one. Four is Anthropic's limit, so the count
+    /// is the contract.
     #[test]
-    fn explicit_mode_marks_exactly_three_breakpoints() {
+    fn explicit_mode_marks_the_previous_tail_and_this_one() {
         let body = body_of(&cache_req(CacheMode::Explicit));
-        assert_eq!(breakpoints(&body), 3, "body was: {body}");
+        assert_eq!(breakpoints(&body), 4, "body was: {body}");
 
         // 1) The system message, promoted to a parts array so the
         //    marker can sit on a content part.
@@ -2896,17 +2994,171 @@ pub mod tests {
         assert!(body["tools"][0].get("cache_control").is_none());
         assert_eq!(body["tools"][1]["cache_control"]["type"], "ephemeral");
 
-        // 3) The last message BEFORE the current user turn — the
-        //    rolling breakpoint. Not the current turn itself, which
-        //    changes every turn and would cache nothing.
+        // 3) The previous request ended at "older question" — its reply
+        //    is the last assistant message — so that is where its write
+        //    landed and where this request reads it back.
+        // 4) This request's own tail, the current question, so the NEXT
+        //    request has something to read.
+        assert_eq!(marked(&body), vec![0, 1, 3], "body was: {body}");
         assert_eq!(
-            body["messages"][2]["content"][0]["cache_control"]["type"], "ephemeral",
-            "the stable-history boundary: {body}"
+            body["messages"][3]["content"][0]["cache_control"]["type"], "ephemeral",
+            "the current tail: {body}"
         );
         assert!(
-            body["messages"][3]["content"].is_string(),
-            "the current user turn is NOT marked: {body}"
+            body["messages"][2]["content"].is_string(),
+            "the assistant reply in between is not a boundary: {body}"
         );
+    }
+
+    fn tool_round(id: &str, output: &str) -> [ChatMessage; 2] {
+        let mut call = ChatMessage::assistant("", None);
+        call.tool_calls = Some(json!([{
+            "id": id, "type": "function",
+            "function": { "name": "terminal", "arguments": "{}" }
+        }]));
+        [
+            call,
+            ChatMessage::tool_result(id, "terminal", output.into()),
+        ]
+    }
+
+    fn explicit(messages: &[ChatMessage]) -> Value {
+        let mut req = cache_req(CacheMode::Explicit);
+        req.messages = messages.to_vec();
+        body_of(&req)
+    }
+
+    /// A message with its breakpoint taken off, and a single text part
+    /// folded back to the string it was promoted from — the bytes the
+    /// prefix is made of, whatever was marked on them.
+    fn unmarked(m: &Value) -> Value {
+        let mut m = m.clone();
+        if let Some(parts) = m["content"].as_array_mut() {
+            for p in parts.iter_mut() {
+                if let Some(o) = p.as_object_mut() {
+                    o.remove("cache_control");
+                }
+            }
+            if parts.len() == 1 && parts[0]["type"] == "text" {
+                m["content"] = parts[0]["text"].clone();
+            }
+        }
+        m
+    }
+
+    /// THE property explicit mode exists for: every request READS at the
+    /// exact position the request before it WROTE, so the cache follows
+    /// the conversation round by round instead of standing still.
+    ///
+    /// The old placement put the one history breakpoint before the
+    /// current USER turn. Within a turn it never moved, so every tool
+    /// round re-sent the turn so far uncached: session bf03ad
+    /// (2026-10-28) read the same 168,539 tokens for fifty rounds while
+    /// the uncached part grew from 422 to 53,549. And a user-role
+    /// message landing mid-turn — a steer, a `[BACKGROUND SHELL
+    /// COMPLETE]` notice — moved it onto a position nothing had ever
+    /// written, so the read fell to the 23,569-token system+tools prefix
+    /// and stayed there: 199k uncached on every call for 43 minutes.
+    ///
+    /// The sequence covers a tool loop, a steer after a tool result, a
+    /// turn boundary and a notice after a final answer.
+    #[test]
+    fn each_request_reads_where_the_one_before_wrote() {
+        let sys = cache_req(CacheMode::Explicit).messages[0].clone();
+        let mut msgs = vec![sys, ChatMessage::user("first question")];
+        let mut requests = vec![msgs.clone()];
+        let mut push = |msgs: &mut Vec<ChatMessage>, more: Vec<ChatMessage>| {
+            msgs.extend(more);
+            requests.push(msgs.clone());
+        };
+        push(&mut msgs, tool_round("t1", "one").to_vec());
+        let mut more = tool_round("t2", "two").to_vec();
+        more.push(ChatMessage::user("[STEER] look at the logs too"));
+        push(&mut msgs, more);
+        push(&mut msgs, tool_round("t3", "three").to_vec());
+        push(
+            &mut msgs,
+            vec![
+                ChatMessage::assistant("done", None),
+                ChatMessage::user("next question"),
+            ],
+        );
+        push(
+            &mut msgs,
+            vec![
+                ChatMessage::assistant("answered", None),
+                ChatMessage::user("[BACKGROUND SHELL COMPLETE] exit 0"),
+            ],
+        );
+
+        let bodies: Vec<Value> = requests.iter().map(|m| explicit(m)).collect();
+        for (k, pair) in bodies.windows(2).enumerate() {
+            let (before, after) = (&pair[0], &pair[1]);
+            assert!(breakpoints(after) <= 4, "request {}: {after}", k + 1);
+            let wrote = *marked(before).last().expect("a tail breakpoint");
+            assert_eq!(
+                wrote,
+                before["messages"].as_array().unwrap().len() - 1,
+                "request {k} marks its own last message: {before}"
+            );
+            assert!(
+                marked(after).contains(&wrote),
+                "request {} must read at {wrote}, where request {k} wrote; it marked {:?}: {after}",
+                k + 1,
+                marked(after)
+            );
+            for i in 0..=wrote {
+                assert_eq!(
+                    unmarked(&before["messages"][i]),
+                    unmarked(&after["messages"][i]),
+                    "the prefix up to the read must be the bytes that were written (message {i})"
+                );
+            }
+        }
+    }
+
+    /// Mid-turn the tail is a TOOL result, so the marker lands on one:
+    /// promoted to a single text part like any other message, the text
+    /// intact. The drivers that translate this shape must keep both.
+    #[test]
+    fn mid_turn_the_tail_breakpoint_sits_on_the_tool_result() {
+        let sys = cache_req(CacheMode::Explicit).messages[0].clone();
+        let mut msgs = vec![sys, ChatMessage::user("q")];
+        msgs.extend(tool_round("t1", "one"));
+        msgs.extend(tool_round("t2", "[1, 2, 3]"));
+        let body = explicit(&msgs);
+        assert_eq!(marked(&body), vec![0, 3, 5], "body was: {body}");
+        let tail = &body["messages"][5];
+        assert_eq!(tail["role"], "tool");
+        assert_eq!(tail["tool_call_id"], "t2");
+        assert_eq!(tail["content"][0]["type"], "text");
+        assert_eq!(tail["content"][0]["text"], "[1, 2, 3]");
+        assert_eq!(tail["content"][0]["cache_control"]["type"], "ephemeral");
+    }
+
+    /// An empty message has nothing to hold a marker (and an empty text
+    /// part is rejected by several endpoints), so the breakpoint walks
+    /// back to the nearest message that has text. Both ends of the
+    /// round-to-round handoff walk by the same rule, so they still meet.
+    #[test]
+    fn an_empty_tail_walks_back_to_the_nearest_text() {
+        // (An empty TOOL result never gets this far: the engine already
+        // turns it into "[terminal produced no output]". An empty user
+        // message from a surface does.)
+        let sys = cache_req(CacheMode::Explicit).messages[0].clone();
+        let mut first = vec![sys, ChatMessage::user("q")];
+        first.extend(tool_round("t1", "one"));
+        first.push(ChatMessage::user(""));
+        let body = explicit(&first);
+        assert_eq!(marked(&body), vec![0, 1, 3], "body was: {body}");
+        assert_eq!(body["messages"][4]["content"], "", "left exactly as it was");
+
+        // The next request's read walks back from the empty message by
+        // the same rule, to where this one wrote.
+        let mut second = first.clone();
+        second.extend(tool_round("t2", "two"));
+        let body = explicit(&second);
+        assert_eq!(marked(&body), vec![0, 3, 6], "body was: {body}");
     }
 
     /// THE regression that keeps a strict endpoint from 400-ing on a
@@ -3116,6 +3368,87 @@ mod driver_tests {
             api_version: None,
             max_output_tokens: None,
         }
+    }
+
+    /// `auto` means "what this wire needs", and the Anthropic Messages
+    /// wire caches NOTHING unless a breakpoint says where. Until
+    /// 2026-10-28 `auto` meant "emit nothing" everywhere, so the owner's
+    /// Anthropic route sent 6.48M prompt tokens across 85 calls with
+    /// every cache field at zero — the provider reporting faithfully that
+    /// nobody had asked.
+    #[test]
+    fn auto_asks_for_breakpoints_on_the_anthropic_wire() {
+        let cfg = crate::config::VelesConfig::default();
+        let anthropic = entry(
+            "plugin",
+            Some("anthropic-messages"),
+            "https://api.anthropic.com",
+        );
+        assert_eq!(
+            resolve_cache_mode(&cfg, &anthropic, "claude-sonnet-5-5"),
+            CacheMode::Explicit
+        );
+        // A stated `auto` is the same answer as an unset one.
+        let mut stated = anthropic.clone();
+        stated.cache_mode = Some("auto".into());
+        assert_eq!(
+            resolve_cache_mode(&cfg, &stated, "claude-sonnet-5-5"),
+            CacheMode::Explicit
+        );
+        // OpenRouter passes the same breakpoints through to Anthropic's
+        // models, and only to them.
+        let router = entry("chat_completions", None, "https://openrouter.ai/api/v1");
+        assert_eq!(
+            resolve_cache_mode(&cfg, &router, "anthropic/claude-sonnet-5.5"),
+            CacheMode::Explicit
+        );
+        assert_eq!(
+            resolve_cache_mode(&cfg, &router, "deepseek/deepseek-chat"),
+            CacheMode::Auto
+        );
+    }
+
+    /// The wires that cache on their own stay untouched — decorating a
+    /// strict endpoint's body with a field it never asked for is how you
+    /// get a 400.
+    #[test]
+    fn auto_stays_inert_where_the_provider_caches_by_itself() {
+        let cfg = crate::config::VelesConfig::default();
+        for (mode, driver, base) in [
+            ("chat_completions", None, "https://api.deepseek.com/v1"),
+            ("responses", None, "https://example.invalid/v1"),
+            // Anthropic's OpenAI-compatible surface ignores the markers:
+            // it does not cache at all, so there is nothing to ask for.
+            ("chat_completions", None, "https://api.anthropic.com/v1"),
+            (
+                "plugin",
+                Some("some-other-driver"),
+                "https://example.invalid",
+            ),
+        ] {
+            assert_eq!(
+                resolve_cache_mode(&cfg, &entry(mode, driver, base), "m"),
+                CacheMode::Auto,
+                "{mode} {base}"
+            );
+        }
+    }
+
+    /// `off` and the master switch are vetoes the wire default never
+    /// overrides.
+    #[test]
+    fn off_beats_the_wire_default() {
+        let mut cfg = crate::config::VelesConfig::default();
+        let mut anthropic = entry(
+            "plugin",
+            Some("anthropic-messages"),
+            "https://api.anthropic.com",
+        );
+        anthropic.cache_mode = Some("off".into());
+        assert_eq!(resolve_cache_mode(&cfg, &anthropic, "m"), CacheMode::Off);
+        anthropic.cache_mode = None;
+        cfg.cache.enabled = false;
+        assert_eq!(resolve_cache_mode(&cfg, &anthropic, "m"), CacheMode::Off);
     }
 
     /// `api_mode = "plugin"` with no `driver` is a config line that can

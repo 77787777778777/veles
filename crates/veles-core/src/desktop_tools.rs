@@ -128,7 +128,38 @@ pub async fn desktop_get(path: &str) -> Result<Value, String> {
         .map_err(|e| format!("bad response from the gateway: {e}"))
 }
 
-pub struct OpenPreviewTool;
+pub struct OpenPreviewTool {
+    /// The CALLING session. The preview belongs to it: the desktop shows
+    /// it only while that session is the one on screen (panes.rs
+    /// `preview_for`), so another session's page does not come back on
+    /// every start.
+    pub session_id: String,
+}
+
+impl OpenPreviewTool {
+    /// The /api/preview body for `target`, and whether it is a file (with
+    /// its expanded path).
+    fn body(&self, target: &str, label: Option<String>) -> (Value, bool, String) {
+        // File path vs URL: anything with a scheme is a URL; a path that
+        // exists on disk is a file preview; otherwise treat as URL.
+        let is_url = target.contains("://") || target.starts_with("localhost");
+        let expanded = match target.strip_prefix("~/") {
+            Some(rest) => match directories::UserDirs::new() {
+                Some(d) => d.home_dir().join(rest).to_string_lossy().to_string(),
+                None => target.to_string(),
+            },
+            None => target.to_string(),
+        };
+        let is_file = !is_url && std::path::Path::new(&expanded).exists();
+        let session = &self.session_id;
+        let body = if is_file {
+            json!({ "kind": "file", "path": expanded, "label": label, "session": session })
+        } else {
+            json!({ "kind": "url", "url": target, "label": label, "session": session })
+        };
+        (body, is_file, expanded)
+    }
+}
 
 #[async_trait]
 impl Tool for OpenPreviewTool {
@@ -157,22 +188,7 @@ impl Tool for OpenPreviewTool {
             return "error: url is required".into();
         }
         let label = args["label"].as_str().map(|s| s.to_string());
-        // File path vs URL: anything with a scheme is a URL; a path that
-        // exists on disk is a file preview; otherwise treat as URL.
-        let is_url = target.contains("://") || target.starts_with("localhost");
-        let expanded = match target.strip_prefix("~/") {
-            Some(rest) => match directories::UserDirs::new() {
-                Some(d) => d.home_dir().join(rest).to_string_lossy().to_string(),
-                None => target.clone(),
-            },
-            None => target.clone(),
-        };
-        let is_file = !is_url && std::path::Path::new(&expanded).exists();
-        let body = if is_file {
-            json!({ "kind": "file", "path": expanded, "label": label })
-        } else {
-            json!({ "kind": "url", "url": target, "label": label })
-        };
+        let (body, is_file, expanded) = self.body(&target, label);
         match post_json("/api/preview", body).await {
             Ok(v) => {
                 if v["ok"].as_bool() == Some(true) {
@@ -333,13 +349,33 @@ mod tests {
         assert_eq!(&*seen.lock().unwrap(), "focus_pane");
 
         assert_eq!(
-            OpenPreviewTool
-                .call(json!({ "url": "https://example.com" }))
-                .await,
+            OpenPreviewTool {
+                session_id: "s".into()
+            }
+            .call(json!({ "url": "https://example.com" }))
+            .await,
             "handled open_preview in-process"
         );
         assert_eq!(&*seen.lock().unwrap(), "open_preview");
 
         clear_local_pane_target();
+    }
+
+    /// The preview names the session that opened it, url or file, so the
+    /// desktop can keep it to that session (owner, 2026-10-29: the last
+    /// preview came back on every start "regardless of session").
+    /// Mutation: dropping `"session"` from either body turns this red.
+    #[test]
+    fn open_preview_names_the_calling_session() {
+        let t = OpenPreviewTool {
+            session_id: "s-a".into(),
+        };
+        let (url, is_file, _) = t.body("https://example.com", None);
+        assert!(!is_file);
+        assert_eq!(url["session"], "s-a");
+        let here = std::env::current_dir().unwrap();
+        let (file, is_file, _) = t.body(&here.join("Cargo.toml").to_string_lossy(), None);
+        assert!(is_file);
+        assert_eq!(file["session"], "s-a");
     }
 }

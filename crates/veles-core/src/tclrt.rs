@@ -1532,6 +1532,50 @@ mod tests {
         );
     }
 
+    /// The bundled tier through the REAL boot path (0.1.2): a fresh
+    /// config dir with no plugins of its own, and the Anthropic driver
+    /// in a bundled root — laid out the way the release artifacts lay
+    /// it out — registers `anthropic-messages` at spawn. And the bundled
+    /// plugin is not copied into, or committed to, the user's plugins
+    /// repo: the bundled root is read-only to veles.
+    #[test]
+    fn a_bundled_tcl_plugin_loads_at_boot_and_stays_out_of_the_users_repo() {
+        let (home, _guard) = crate::testenv::scratch_home();
+        std::fs::write(home.path().join("config.toml"), "").expect("config");
+        let shipped = tempfile::tempdir().expect("bundled root");
+        let src = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../plugins/examples/tcl-anthropic-driver");
+        let dst = shipped.path().join("tcl-anthropic-driver");
+        std::fs::create_dir_all(&dst).expect("bundled dir");
+        for f in ["plugin.toml", "plugin.tcl"] {
+            std::fs::copy(src.join(f), dst.join(f)).expect("copy the driver");
+        }
+        std::env::set_var(crate::plugins::BUNDLED_ENV, shipped.path());
+        crate::providers::purge_owner_drivers(Some(owner_tag_for("tcl-anthropic-driver")));
+
+        let handle = spawn(home.path().to_path_buf()).expect("spawn");
+        handle.wait_ready().expect("ready");
+        assert!(
+            crate::providers::driver("anthropic-messages").is_some(),
+            "the bundled driver must register at boot; registered: {:?}",
+            crate::providers::drivers()
+                .iter()
+                .map(|d| d.name.clone())
+                .collect::<Vec<_>>()
+        );
+        let user = crate::plugins::plugins_dir();
+        assert!(!user.join("tcl-anthropic-driver").exists());
+        let tracked = std::process::Command::new("git")
+            .args(["ls-files"])
+            .current_dir(&user)
+            .output()
+            .map(|o| String::from_utf8_lossy(&o.stdout).into_owned())
+            .unwrap_or_default();
+        assert!(!tracked.contains("anthropic"), "{tracked}");
+        drop(handle);
+        crate::providers::purge_owner_drivers(Some(owner_tag_for("tcl-anthropic-driver")));
+    }
+
     /// Per-plugin ownership and unload (R7). A plugin sourced by the
     /// loader registers a tool, a command and a hook handler; `Unload`
     /// removes all three — the tool and the command from core's

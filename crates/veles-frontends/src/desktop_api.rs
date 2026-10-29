@@ -5940,6 +5940,10 @@ async fn plugins_list(State(_srv): State<Arc<DesktopServer>>) -> Json<Value> {
                 "entry": p.manifest.entry,
                 "dir": p.dir.display().to_string(),
                 "path": p.dir.join(&p.manifest.entry).display().to_string(),
+                // From the read-only bundled tier rather than the user's
+                // plugins dir: not removable, and an edit belongs in a
+                // user copy of the same name, which then wins.
+                "bundled": veles_core::plugins::is_bundled(p),
                 "enabled": veles_core::plugins::is_enabled(name, &enabled, &disabled),
                 // WHY it is off, so the UI can say "you disabled this"
                 // rather than "not in the allowlist" when both are true.
@@ -12363,6 +12367,21 @@ mod tests {
         assert!(
             ids.contains(&"openrouter") && ids.contains(&"ollama"),
             "{st}"
+        );
+        // The desktop's provider step copies api_mode from the row it
+        // shows; the engine fills the row's driver in. The Anthropic row
+        // is the native wire (0.1.2), not the OpenAI-compatible layer.
+        let anthropic = st["presets"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|p| p["choice"] == "anthropic")
+            .expect("an anthropic row");
+        assert_eq!(anthropic["api_mode"], "plugin", "{anthropic}");
+        assert_eq!(anthropic["driver"], "anthropic-messages", "{anthropic}");
+        assert_eq!(
+            anthropic["base_url"], "https://api.anthropic.com",
+            "{anthropic}"
         );
     }
 

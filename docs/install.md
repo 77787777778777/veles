@@ -118,6 +118,19 @@ leaves its section exactly as it is, comments and everything the wizard
 does not own survive, and the previous text is kept as `config.toml.bak`.
 Re-running the wizard and changing nothing changes no byte.
 
+The **Anthropic** choice writes the native Messages wire — `api_mode =
+"plugin"`, `driver = "anthropic-messages"`, `base_url =
+"https://api.anthropic.com"`, `key_env = "ANTHROPIC_API_KEY"` — spoken by
+the `tcl-anthropic-driver` plugin that every release carries in its
+read-only bundled plugin root (`share/veles/plugins` beside `bin/`; the
+APK points `VELES_BUNDLED_PLUGINS` at its unpacked copy). Nothing has to
+be copied into `plugins/` first; `veles plugins list` shows it as
+`src=bundled`, and `veles doctor --providers` shows the driver
+registered. Until 0.1.2 the choice wrote Anthropic's OpenAI-compatible
+layer at `https://api.anthropic.com/v1`, which has no prompt caching; an
+entry of that shape is still recognised as Anthropic and left as it is
+(docs/plugins.md, "Writing a provider driver", says how to move it).
+
 The provider key, the Telegram bot token and an IRC SASL password are
 typed into hidden fields (the desktop) or prompts that do not echo
 (`veles setup`), and go into the **encrypted vault** — never into

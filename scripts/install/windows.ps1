@@ -293,6 +293,23 @@ Pop-Location
 
 # ── portable release zip (-PortableZip) ──────────────────────────────
 #
+# The bundled Tcl plugins (crates/veles-core/src/plugins.rs
+# bundled_roots; flake.nix bundledTclPlugins is the same list): read-only,
+# loaded at boot, found at <exe>\..\share\veles\plugins\<name>. 0.1.2
+# ships the Anthropic Messages driver the setup wizard's Anthropic choice
+# names, copied from its source directory as it is.
+$BundledTclPlugins = @('tcl-anthropic-driver')
+function Install-BundledTclPlugins([string]$root) {
+    $dest = Join-Path $root 'share\veles\plugins'
+    if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }
+    New-Item -ItemType Directory -Force $dest | Out-Null
+    foreach ($p in $BundledTclPlugins) {
+        $src = Join-Path $Repo "plugins\examples\$p"
+        if (-not (Test-Path (Join-Path $src 'plugin.toml'))) { Die "bundled Tcl plugin $p is missing from $src" }
+        Copy-Item $src (Join-Path $dest $p) -Recurse
+    }
+}
+
 # The prebuilt Windows artifact (PLAN-windows.md §10, "Prebuilt Windows
 # bundle"): the same build, laid out so nothing has to be installed.
 # Tcl's own install layout is the trick: tcl86t.dll in bin\ finds its
@@ -360,6 +377,7 @@ function New-PortableZip([string]$zipPath) {
     }
     Copy-Item (Join-Path $Repo 'veles-desktop') (Join-Path $stage 'veles-desktop') -Recurse
     Copy-Item (Join-Path $Repo 'skills') (Join-Path $stage 'skills') -Recurse
+    Install-BundledTclPlugins $stage
     Copy-Item (Join-Path $Repo 'packaging\veles.svg') $stage -ErrorAction SilentlyContinue
     foreach ($f in 'LICENSE', 'THIRD_PARTY_LICENSES.md') {
         if (Test-Path (Join-Path $Repo $f)) { Copy-Item (Join-Path $Repo $f) $stage }
@@ -417,6 +435,13 @@ function Test-PortableZip([string]$zipPath) {
         $doctor = & $exe.FullName doctor 2>&1 | Out-String
         Write-Host $doctor
         if ($doctor -notmatch '(?i)tcl') { Die "veles doctor did not report on Tcl from the unpacked zip" }
+        # The bundled Tcl plugins are found where the loader looks, from
+        # an APPDATA with no plugins of its own.
+        $listed = & $exe.FullName plugins list 2>&1 | Out-String
+        foreach ($p in $BundledTclPlugins) {
+            if ($listed -notmatch "$p\s.*src=bundled") { Die "the unpacked zip does not list bundled plugin ${p}: $listed" }
+        }
+        Note "bundled Tcl plugins listed: $($BundledTclPlugins -join ', ')"
     } finally {
         foreach ($k in $saved.Keys) { Set-Item "Env:$k" $saved[$k] -ErrorAction SilentlyContinue }
         if (-not $saved.TCL_LIBRARY) { Remove-Item Env:TCL_LIBRARY -ErrorAction SilentlyContinue }
@@ -511,6 +536,9 @@ Note "installed $Prefix\veles-desktop"
 # the same way.
 Install-Tree (Join-Path $Repo 'skills') (Join-Path $Prefix 'skills')
 Note "installed $Prefix\skills"
+# The bundled Tcl plugins, at bin\..\share\veles\plugins.
+Install-BundledTclPlugins $Prefix
+Note "installed $Prefix\share\veles\plugins"
 
 $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
 if (($userPath -split ';') -notcontains $Bin) {

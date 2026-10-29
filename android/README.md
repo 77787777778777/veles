@@ -33,7 +33,7 @@ engine `include_str!`s a file `engineSrc` leaves out.
 | `lib/arm64-v8a/libveles.so` | the engine: the release `veles`, an executable despite its name |
 | `lib/arm64-v8a/libtcl8.6.so` | Tcl, which the engine links |
 | `lib/arm64-v8a/libtclsh.so` | `tclsh`, for the execute_code tool (`VELES_TCLSH`) |
-| `assets/runtime.zip` | Tcl's script library and the engine's 47 catalogs |
+| `assets/runtime.zip` | Tcl's script library, the engine's 47 catalogs, and the bundled Tcl plugins (`plugins/tcl-anthropic-driver`) |
 | `lib/arm64-v8a/lib{tcl,tk,SDL2,freetype,main}.so` | the desktop's Tcl/Tk: AndroWish's, built from source |
 | `assets/tcl8.6`, `assets/sdl2tk8.6`, `assets/json` | their script libraries, and tcllib's `json` |
 | `assets/veles-desktop`, `assets/app/main.tcl` | the desktop, and `android/desktop.tcl`, which starts it |
@@ -124,7 +124,9 @@ fails if any other one appears, or a segment is not aligned to 16 KB.
 - **Engine.** The layout and environment:
   - `files/home`: `VELES_HOME`, which holds config.toml, .env, state.db
     and everything else.
-  - `files/runtime`: unpacked from runtime.zip once per install.
+  - `files/runtime`: unpacked from runtime.zip once per install;
+    `VELES_BUNDLED_PLUGINS` names its `plugins/`, the read-only bundled
+    Tcl plugin tier (docs/plugins.md, "Bundled plugins").
   - `files/gateway.log`: the engine's stdout and stderr, with one old
     copy kept at 4 MB.
   - Environment: `SSL_CERT_DIR` at Android's CA store; `TZ` and

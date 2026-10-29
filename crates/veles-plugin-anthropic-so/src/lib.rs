@@ -402,19 +402,9 @@ fn to_wire(req: &Value, c: Caps, streaming: bool) -> Value {
             // and the breakpoint is preserved — Anthropic's system field
             // takes the same block array, so a cache_control the engine
             // computed survives the translation instead of being dropped.
-            let mut text = String::new();
-            match &m["content"] {
-                Value::Array(parts) => {
-                    for p in parts {
-                        if p["type"].as_str() == Some("text") {
-                            text.push_str(p["text"].as_str().unwrap_or(""));
-                        }
-                        if !p["cache_control"].is_null() {
-                            system_cache = Some(p["cache_control"].clone());
-                        }
-                    }
-                }
-                other => text.push_str(other.as_str().unwrap_or("")),
+            let (text, cache) = content_text(&m["content"]);
+            if cache.is_some() {
+                system_cache = cache;
             }
             if !system.is_empty() {
                 system.push_str("\n\n");
@@ -429,11 +419,23 @@ fn to_wire(req: &Value, c: Caps, streaming: bool) -> Value {
             // canonical shape when the model called several tools in one
             // turn; separate user messages also work, but one message is
             // what the wire means by "here are your results".
-            let block = json!({
+            //
+            // The engine marks a cache breakpoint on a tool message too:
+            // explicit mode marks the last message of every request, and
+            // mid-turn that is a tool result. The mark turns `content` into
+            // a one-part array, so the text goes back into the result and
+            // the marker onto the tool_result block itself. Read with
+            // `as_str`, the array became an EMPTY result and the marker
+            // never reached the wire (2026-10-28).
+            let (text, cache) = content_text(&m["content"]);
+            let mut block = json!({
                 "type": "tool_result",
                 "tool_use_id": m["tool_call_id"].as_str().unwrap_or(""),
-                "content": m["content"].as_str().unwrap_or(""),
+                "content": text,
             });
+            if let Some(cc) = cache {
+                block["cache_control"] = cc;
+            }
             if let Some(last) = messages.last_mut() {
                 if is_tool_result_msg(last) {
                     if let Some(arr) = last["content"].as_array_mut() {
@@ -692,6 +694,32 @@ fn tool_choice(tc: &Value) -> Option<Value> {
             _ => None,
         },
         _ => None,
+    }
+}
+
+/// A message content as text, and the cache_control on any of its parts.
+///
+/// For the blocks that must carry the same bytes whether or not the engine
+/// marked them: a tool_result keeps its plain string content, so the copy
+/// marked this round and the unmarked copy every later round re-sends are
+/// the same prefix; the system prompt is one joined string. The text goes
+/// in, and the breakpoint moves onto the block itself.
+fn content_text(content: &Value) -> (String, Option<Value>) {
+    match content {
+        Value::Array(parts) => {
+            let mut text = String::new();
+            let mut cache = None;
+            for p in parts {
+                if p["type"].as_str() == Some("text") {
+                    text.push_str(p["text"].as_str().unwrap_or(""));
+                }
+                if !p["cache_control"].is_null() {
+                    cache = Some(p["cache_control"].clone());
+                }
+            }
+            (text, cache)
+        }
+        other => (other.as_str().unwrap_or("").to_string(), None),
     }
 }
 

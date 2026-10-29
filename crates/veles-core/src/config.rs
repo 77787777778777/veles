@@ -182,10 +182,13 @@ pub struct ProviderEntry {
     #[serde(default)]
     pub extra_body: Option<serde_json::Value>,
     /// Per-provider prompt-cache mode, overriding the global
-    /// `[cache].mode`: "auto" (do nothing — the provider caches on its
-    /// own), "explicit" (emit cache_control breakpoints), "off" (never
-    /// emit, for strict endpoints). Sending unknown fields to a strict
-    /// endpoint is how you get a 400, so the default is inert.
+    /// `[cache].mode`: "auto" (what the wire needs: cache_control
+    /// breakpoints on the Anthropic Messages driver and on OpenRouter's
+    /// Anthropic models, which cache nothing without them; nothing on
+    /// every other wire, which caches on its own), "explicit" (always
+    /// emit breakpoints), "off" (never emit). Sending unknown fields to a
+    /// strict endpoint is how you get a 400, so `auto` stays inert
+    /// wherever the provider does not need the markers.
     #[serde(default)]
     pub cache_mode: Option<String>,
     /// Whether assistant messages carry their reasoning back to this
@@ -2372,22 +2375,23 @@ fn default_tree_resident() -> usize {
 
 /// Prompt-cache accounting.
 ///
-/// Every provider veles is configured against does automatic prefix
-/// caching keyed on the request bytes; none of them need a header. So
-/// this section is not about opting in — it is about OBSERVING the hit
-/// rate and warning when the prefix stops being stable. `mode` exists
-/// for the providers that DO want explicit breakpoints (OpenRouter →
-/// Anthropic/Gemini is one config line away); the default emits nothing.
+/// Most providers cache a repeated prefix on their own, keyed on the
+/// request bytes, and need nothing on the wire; for them this section is
+/// about OBSERVING the hit rate and warning when the prefix stops being
+/// stable. The exceptions cache NOTHING without explicit breakpoints —
+/// Anthropic's Messages API, and OpenRouter's Anthropic models — and the
+/// default `auto` asks for them on exactly those routes
+/// (`providers::resolve_cache_mode`).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CacheSection {
     /// Master switch for the cache-accounting layer.
     #[serde(default = "default_true")]
     pub enabled: bool,
-    /// auto | explicit | off. "auto" (default): send no cache fields,
-    /// the provider caches on its own. "explicit": emit cache_control
-    /// breakpoints (only meaningful per-provider — see
-    /// ProviderEntry.cache_mode). "off": never emit, for strict
-    /// endpoints that 400 on unknown fields.
+    /// auto | explicit | off. "auto" (default): breakpoints on the wires
+    /// that need them, no cache fields anywhere else. "explicit": emit
+    /// cache_control breakpoints on every route (normally set
+    /// per-provider — see ProviderEntry.cache_mode). "off": never emit,
+    /// for strict endpoints that 400 on unknown fields.
     #[serde(default = "default_cache_mode")]
     pub mode: String,
     /// Emit the Cache note (miss warnings) into the transcript.

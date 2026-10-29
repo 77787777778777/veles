@@ -581,11 +581,37 @@
         tcllibPathExpr =
           "$(echo ${pkgs.tclPackages.tclcurl}/lib ${pkgs.tclPackages.tkimg}/lib ${pkgs.tclPackages.tcllib}/lib/tcllib*)";
 
+        # The BUNDLED Tcl plugins (plugins::bundled_roots): read-only,
+        # loaded at boot, shadowed by a same-named plugin in the user's
+        # config dir. 0.1.2 ships one, the Anthropic Messages driver the
+        # setup wizard's Anthropic row names (setup.rs PROVIDER_PRESETS),
+        # so a fresh install reaches the native wire with nothing copied
+        # by hand. Installed at <prefix>/share/veles/plugins/<name> in the
+        # package — which the Linux bundle, the AppImage and the OCI image
+        # all carry — and as runtime/plugins/<name> in the APK's
+        # runtime.zip (Engine.java points VELES_BUNDLED_PLUGINS there).
+        # The Windows zip copies the same directory (windows.ps1,
+        # $BundledTclPlugins). Packaged from its source path as it is.
+        bundledTclPlugins = [
+          {
+            name = "tcl-anthropic-driver";
+            src = ./plugins/examples/tcl-anthropic-driver;
+          }
+        ];
+        installBundledTclPlugins =
+          dest:
+          pkgs.lib.concatMapStrings (p: ''
+            mkdir -p ${dest}
+            cp -r ${p.src} ${dest}/${p.name}
+            chmod -R u+w ${dest}/${p.name}
+            test -f ${dest}/${p.name}/plugin.toml
+          '') bundledTclPlugins;
+
         # The veles binary (wrapped with TCL_LIBRARY etc.) — a let-binding so
         # both packages.default and the OCI image below can reference it.
         velesPkg = pkgs.rustPlatform.buildRustPackage rec {
           pname = "veles-agent";
-          version = "0.1.1";
+          version = "0.1.2";
           src = rustSrc;
           cargoLock = {
             lockFile = ./Cargo.lock;
@@ -672,6 +698,9 @@
             # The bundled skills, one up from bin/ where
             # config::beside_binary("skills") looks (PLAN-windows.md §6).
             cp -r ${./skills} $out/skills
+            # The bundled Tcl plugins, at <exe>/../share/veles/plugins
+            # where plugins::bundled_roots looks (bundledTclPlugins).
+            ${installBundledTclPlugins "$out/share/veles/plugins"}
             wrapProgram $out/bin/veles \
               --set TCL_LIBRARY "${pkgs.tcl-8_6}/lib/tcl8.6" \
               --set TK_LIBRARY "${tkDesktop}/lib/tk8.6" \
@@ -693,6 +722,15 @@
             out_de=$(HOME=$TMPDIR/ic VELES_LOCALE=de $out/bin/veles memory doctor)
             echo "$out_de" | grep -q 'Speicher-Diagnose' \
               || { echo "installed veles rendered no German: $out_de" >&2; exit 1; }
+            # And finds its bundled Tcl plugins where it looks, from a
+            # home with no plugins of its own: the wrapped binary's
+            # <exe>/.. is $out, so this is the lookup every artifact
+            # built from this package makes.
+            listed=$(HOME=$TMPDIR/ic-plugins $out/bin/veles plugins list)
+            ${pkgs.lib.concatMapStrings (p: ''
+              echo "$listed" | grep -q '${p.name} .*src=bundled' \
+                || { echo "installed veles does not list bundled ${p.name}: $listed" >&2; exit 1; }
+            '') bundledTclPlugins}
             runHook postInstallCheck
           '';
 
@@ -1039,7 +1077,7 @@
         androidMinSdk = "26";
         # Raised by hand for each release a store sees; a sideloaded
         # reinstall of the same code keeps it.
-        androidVersionCode = "2";
+        androidVersionCode = "3";
         androidSdk =
           (androidHost.androidenv.composeAndroidPackages {
             platformVersions = [ androidTargetSdk ];
@@ -1720,6 +1758,10 @@
               # Tcl's script library is the same for every ABI.
               cp -r ${(builtins.head engines).drv}/share/tcl8.6 runtime/tcl8.6
               cp -r ${./crates/veles-core/locales} runtime/locales
+              # The bundled Tcl plugins (bundledTclPlugins): plain files,
+              # so they ride in runtime.zip, and Engine.java names the
+              # unpacked runtime/plugins in VELES_BUNDLED_PLUGINS.
+              ${installBundledTclPlugins "runtime/plugins"}
               chmod -R u+w payload runtime
               find payload runtime -exec touch -t $stamp {} +
               (cd runtime && find . -type f | sort | zip -X -D -q ../payload/assets/runtime.zip -@)
@@ -2247,7 +2289,7 @@
 
         # The image's tag names the commit it was built from, so the VPS
         # can say which one it runs.
-        imageTag = "0.1.1-${self.shortRev or self.dirtyShortRev or "dirty"}";
+        imageTag = "0.1.2-${self.shortRev or self.dirtyShortRev or "dirty"}";
         imageRevision = self.rev or self.dirtyRev or "dirty";
         # The release builder overrides only this label. Published images
         # must be rejected if their source does not name the authenticated
@@ -2708,7 +2750,7 @@
         #     bind-mount owner on the host.
         #   - Entrypoint is the wrapped `veles` binary; Cmd defaults to
         #     `gateway run` but any subcommand works:
-        #     `podman run --rm veles-agent:0.1.1 status` etc.
+        #     `podman run --rm veles-agent:0.1.2 status` etc.
         #   - No s6 / entrypoint.sh — veles' own lifecycle code (pid file,
         #     crash-loop guard, graceful SIGTERM, shutdown log) IS the init
         #     story; PID 1 is `veles` itself. `--restart unless-stopped` on
@@ -2770,6 +2812,9 @@
               "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
               "SSL_CERT_DIR=${pkgs.cacert}/etc/ssl/certs"
             ];
+            # The bundled Tcl plugins need no variable here: the wrapped
+            # binary's <exe>/.. is velesPkg, whose share/veles/plugins
+            # holds them (bundledTclPlugins).
             Entrypoint = [ "${velesPkg}/bin/veles" ];
             Cmd = [ "gateway" "run" ];
             Labels = {

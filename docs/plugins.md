@@ -185,6 +185,29 @@ git repo the runtime snapshots on every change, so `veles plugins
 rollback <commit>` is a real undo — and it commits the working tree
 first, so uncommitted edits survive the rollback that overwrites them.
 
+### Bundled plugins
+
+A release also carries a few Tcl plugins of its own, in a second,
+**read-only** root: `<prefix>/share/veles/plugins/<name>/` beside the
+binary (`bin/../share/veles/plugins` in the Linux archive, the AppImage,
+the nix package and so the OCI image, and the Windows zip), or the
+directories named in `VELES_BUNDLED_PLUGINS` (a search path: `:`
+between entries, `;` on Windows — the APK sets it to the plugins it
+unpacks from `runtime.zip`). 0.1.2 ships one: `tcl-anthropic-driver`,
+the Anthropic Messages driver the setup wizard's Anthropic choice uses
+(see [Writing a provider driver](#writing-a-provider-driver)).
+
+The two roots merge by manifest name, and **your copy wins**: a
+`~/.config/veles/plugins/tcl-anthropic-driver/` replaces the bundled one
+entirely, which is how you edit or pin a bundled plugin. A bundled
+plugin obeys `[plugins] enabled` / `disabled` like any other —
+`disabled = ["tcl-anthropic-driver"]` switches it off. veles never
+writes to the bundled root: it is not part of the plugins git repo, the
+watcher does not watch it, and `veles plugins remove` refuses a bundled
+plugin by name (disable it, or shadow it, instead). `veles plugins list`
+names the bundled roots it found and marks each row `src=bundled` or
+`src=user`; `/api/plugins` carries `bundled: true|false`.
+
 Reloading is automatic (a watcher on the directory) and manual
 (`veles tcl reload`, which asks the RUNNING gateway over loopback — it
 is the live interpreter you want, not a fresh one).
@@ -965,6 +988,18 @@ base_url = "https://api.anthropic.com"
 key_env  = "ANTHROPIC_API_KEY"
 ```
 
+That entry works on a fresh install: `anthropic-messages` is registered
+by `tcl-anthropic-driver`, a [bundled plugin](#bundled-plugins), and it
+is exactly what `veles setup`'s Anthropic choice writes (as `name =
+"anthropic"`). The wizard wrote Anthropic's OpenAI-compatible layer
+(`api_mode = "chat_completions"` at `https://api.anthropic.com/v1`)
+before 0.1.2; Anthropic documents that layer as having no prompt
+caching, and it ignores `reasoning_effort` and returns no thinking. An
+entry of that older shape keeps working, and a wizard re-run recognises
+it as Anthropic and keeps its URL and wire as they are; to move it to
+the native wire, change its `base_url` and `api_mode` and add the
+`driver` line as above.
+
 A driver **translates**; it does not assemble and it does not parse. It
 receives the OpenAI-shaped request body the engine already built —
 attachment parts, cache breakpoints, tool serialization,
@@ -1091,6 +1126,7 @@ nobody can account for.
 | path | what |
 | --- | --- |
 | `~/.config/veles/plugins/` | your plugins (a git repo) |
+| `<prefix>/share/veles/plugins/`, `$VELES_BUNDLED_PLUGINS` | the bundled Tcl plugins, read-only; yours shadow them by name |
 | `plugins/veles_api.tcl` | the signature reference, copied there at boot |
 | `crates/veles-plugin-abi/` | the C ABI (version 4), what a non-Rust `.so` implements |
 | `crates/veles-plugin-abi-sdk/` | the safe Rust SDK over it, what a Rust `.so` links; catches panics at the boundary |

@@ -835,6 +835,126 @@ async fn plain_text_starting_with_a_bracket_reaches_the_endpoint_intact() {
     }
 }
 
+/// A tool loop as the engine sends it: a question, two tool rounds.
+/// The question and the first result are text that IS valid JSON array
+/// syntax — which a tool's output very often is.
+fn request_with_tool_rounds(mode: CacheMode) -> ChatRequest {
+    let call = |id: &str, text: &str| {
+        let mut m = ChatMessage::assistant(text, None);
+        m.tool_calls = Some(serde_json::json!([{
+            "id": id, "type": "function",
+            "function": { "name": "search", "arguments": "{}" }
+        }]));
+        m
+    };
+    let mut req = request("claude-x");
+    req.cache_mode = mode;
+    req.messages = vec![
+        req.messages[0].clone(),
+        ChatMessage::user(r#"["a", "b"]"#),
+        call("toolu_1", "Let me look."),
+        ChatMessage::tool_result("toolu_1", "search", "[1, 2, 3]".into()),
+        call("toolu_2", ""),
+        ChatMessage::tool_result("toolu_2", "search", "an agent".into()),
+    ];
+    req
+}
+
+fn cache_controls(v: &serde_json::Value) -> usize {
+    match v {
+        serde_json::Value::Object(m) => m
+            .iter()
+            .map(|(k, x)| usize::from(k == "cache_control") + cache_controls(x))
+            .sum(),
+        serde_json::Value::Array(a) => a.iter().map(cache_controls).sum(),
+        _ => 0,
+    }
+}
+
+/// The tool_result block for `id`, wherever the driver put it.
+fn tool_result_block(v: &serde_json::Value, id: &str) -> serde_json::Value {
+    v["messages"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter(|m| m["role"] == "user")
+        .flat_map(|m| m["content"].as_array().cloned().unwrap_or_default())
+        .find(|b| b["type"] == "tool_result" && b["tool_use_id"] == id)
+        .unwrap_or_else(|| panic!("no tool_result for {id} in {v}"))
+}
+
+/// Explicit mode marks the end of every request — mid-turn, a TOOL
+/// result — and the engine marks it the only way the OpenAI shape can:
+/// the content becomes a one-part array. Both drivers read tool content
+/// as a plain string, so the marker never reached the wire and the
+/// session's rolling cache died at the first mid-turn user message
+/// (2026-10-28, sessions bf03ad and cb3de7: reads fell to the 23.5k
+/// system+tools prefix and stayed there). Worse, the Tcl driver handed
+/// the model the parts array AS TEXT — `[{"cache_control":…,"text":…}]`
+/// — and the Rust one handed it an empty result.
+///
+/// The marker must land on the tool_result block (Anthropic caches at
+/// any content block) with the text intact, and text that merely LOOKS
+/// like an array must stay text, marked or not.
+#[tokio::test]
+async fn a_breakpoint_on_a_tool_result_reaches_the_wire_with_its_text() {
+    both_drivers().await;
+    let drivers = available_drivers();
+    let (url, seen) = fixture_server(ANTHROPIC_RESPONSE).await;
+
+    for mode in [CacheMode::Explicit, CacheMode::Off] {
+        for d in &drivers {
+            drive_with(d, &url, default_route(), request_with_tool_rounds(mode))
+                .await
+                .unwrap_or_else(|e| panic!("{d} {mode:?}: {e}"));
+        }
+    }
+
+    let posts = posts_of(&seen.lock().unwrap().clone());
+    assert_eq!(
+        posts.len(),
+        2 * drivers.len(),
+        "one POST per driver per mode"
+    );
+    for (n, v) in posts.iter().enumerate() {
+        let d = drivers[n % drivers.len()];
+        let explicit = n < drivers.len();
+
+        // The question survives as the text it was, not as a "parts
+        // array" with no parts the driver recognised.
+        let question = &v["messages"][0];
+        assert_eq!(question["role"], "user", "{d}: {v}");
+        assert_eq!(
+            question["content"][0]["text"].as_str(),
+            Some(r#"["a", "b"]"#),
+            "{d}: a user message that parses as JSON must still be its text: {v}"
+        );
+
+        let first = tool_result_block(v, "toolu_1");
+        let second = tool_result_block(v, "toolu_2");
+        assert_eq!(first["content"], "[1, 2, 3]", "{d}: tool text intact: {v}");
+        assert_eq!(second["content"], "an agent", "{d}: tool text intact: {v}");
+
+        if explicit {
+            // system + tools + the previous request's tail (the first
+            // result) + this request's tail (the second).
+            assert_eq!(cache_controls(v), 4, "{d}: {v}");
+            assert_eq!(
+                v["system"][0]["cache_control"]["type"], "ephemeral",
+                "{d}: {v}"
+            );
+            assert_eq!(
+                v["tools"][0]["cache_control"]["type"], "ephemeral",
+                "{d}: {v}"
+            );
+            assert_eq!(first["cache_control"]["type"], "ephemeral", "{d}: {v}");
+            assert_eq!(second["cache_control"]["type"], "ephemeral", "{d}: {v}");
+        } else {
+            assert_eq!(cache_controls(v), 0, "{d}: off means nothing: {v}");
+        }
+    }
+}
+
 /// A capability catalog: what `/v1/models` says about one model.
 ///
 /// The shapes are the live API's, trimmed to the three fields the driver

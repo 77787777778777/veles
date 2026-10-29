@@ -120,6 +120,7 @@ const DROP: &[&str] = &[
     "VELES_TCLSH",
     "VELES_MODULE_PATH",
     "VELES_LOCALES_DIR",
+    "VELES_BUNDLED_PLUGINS",
 ];
 const DROP_PREFIX: &[&str] = &[
     "ANDROID_",

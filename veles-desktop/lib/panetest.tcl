@@ -221,5 +221,90 @@ ok "…and a failing exit says so" {
 }
 file delete -force $run_dir
 
+# ── the Preview belongs to the session that opened it ───────────────
+#
+# OWNER (2026-10-29): "fix the Preview always opening the last preview
+# page presented on every start regardless of session or how long it's
+# been since it was relevant". The 1.5 s poll asked for THE preview,
+# and a fresh window has seen no stamp, so the first reply after every
+# start raised the Preview pane and handed a days-old url to the
+# browser, whichever session was on screen. The gateway now answers
+# per session (panes.rs preview_for: its owner, and fresh); the window
+# has to ask for the session it shows, keep a late reply for a session
+# it has left off the screen, and drop another session's page when it
+# switches.
+puts "\nthe Preview belongs to the session that opened it"
+if {![llength [info commands ::vmedia::is_image]]} {
+    namespace eval ::vmedia { proc is_image {p} { return 0 } }
+}
+::vpanes::_build_preview .ptest.preview
+set ::pv_asked {}
+set ::pv_shown {}
+set ::pv_opened {}
+namespace eval ::vapi {
+    proc unattached {} { return 0 }
+    if {![llength [info commands urlencode]]} {
+        proc urlencode {s} { return $s }
+    }
+    proc get_json_async {path cmd {ms 0}} {
+        if {[string match /api/preview* $path]} {
+            lappend ::pv_asked [list $path $cmd]
+        }
+        return tok
+    }
+}
+proc ::vmd::open_url {url} { lappend ::pv_opened $url }
+proc ::vpanes::show {tab} { lappend ::pv_shown $tab }
+proc pv_tick {} {
+    set ::pv_asked {}
+    ::vpanes::_poll_tick
+    after cancel $::vpanes::poll_after
+    return [lindex $::pv_asked end]
+}
+set pv_item [dict create kind url url http://localhost:3000/ label "" \
+    session sess-1 set_at 2026-10-29T12:00:00+00:00]
+
+set ::vchat::session sess-1
+::vpanes::_preview_empty_state
+lassign [pv_tick] pv_path pv_cmd
+ok "the poll asks for the preview of the session on screen" {
+    $pv_path eq "/api/preview?session=sess-1"
+}
+# The reply comes back after the window moved to another session.
+set ::vchat::session sess-2
+uplevel #0 [list {*}$pv_cmd 1 $pv_item]
+ok "a reply for a session no longer on screen is not shown" {
+    $::pv_shown eq {} && $::pv_opened eq {}
+}
+set ::vchat::session sess-1
+lassign [pv_tick] pv_path pv_cmd
+uplevel #0 [list {*}$pv_cmd 1 $pv_item]
+ok "its own session's preview is shown" {
+    $::pv_shown eq {preview} && $::pv_opened eq {http://localhost:3000/}
+}
+uplevel #0 [list {*}$pv_cmd 1 $pv_item]
+ok "…once" { [llength $::pv_shown] == 1 }
+# Switch: the gateway has nothing for sess-2, and sess-1's page goes.
+set ::vchat::session sess-2
+lassign [pv_tick] pv_path pv_cmd
+uplevel #0 [list {*}$pv_cmd 1 null]
+ok "switching sessions takes the other session's page off the pane" {
+    [string match "Nothing previewed yet*" [.ptest.preview.body get 1.0 end]]
+}
+ok "…and opens nothing" { [llength $::pv_shown] == 1 && [llength $::pv_opened] == 1 }
+# A file the user clicked in the Files pane is theirs, not a session's:
+# opened over sess-2's agent preview, it is no longer sess-2's page.
+dict set pv_item session sess-2
+dict set pv_item set_at 2026-10-29T12:01:00+00:00
+lassign [pv_tick] pv_path pv_cmd
+uplevel #0 [list {*}$pv_cmd 1 $pv_item]
+ok "precondition: sess-2's own preview is up" { [llength $::pv_shown] == 2 }
+::vpanes::_preview_set "user text" /tmp/mine.txt
+set ::vchat::session sess-3
+pv_tick
+ok "a file the user opened stays when the session changes" {
+    [string match "*user text*" [.ptest.preview.body get 1.0 end]]
+}
+
 puts "\npanetest: $passed passed, $failed failed"
 exit [expr {$failed > 0 ? 1 : 0}]

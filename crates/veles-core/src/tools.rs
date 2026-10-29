@@ -2581,7 +2581,9 @@ pub fn base_registry(
     // Desktop pane tools — drive the veles-desktop right-pane shell
     // (open_preview / focus_pane, hermes parity).
     r.register_tiered(
-        Arc::new(crate::desktop_tools::OpenPreviewTool),
+        Arc::new(crate::desktop_tools::OpenPreviewTool {
+            session_id: session_id.to_string(),
+        }),
         Tier::Deferred,
     );
     r.register_tiered(

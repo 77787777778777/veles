@@ -2,7 +2,10 @@
 //! since 2026-09-03 (docs/plugin-plan.md records the design decisions).
 //!
 //! Tcl plugins (hot, fast iteration — the slopdrop lesson):
-//! `~/.config/veles/plugins/<name>/plugin.tcl` (+ `plugin.toml` manifest)
+//! `~/.config/veles/plugins/<name>/plugin.tcl` (+ `plugin.toml` manifest),
+//! merged with the read-only BUNDLED tier a release carries
+//! (`bundled_roots`: `$VELES_BUNDLED_PLUGINS`, then
+//! `<exe>/../share/veles/plugins`), the user's copy winning by name
 //! - loaded into the plugins interpreter at boot; `kind = "rust"`
 //!   manifests go to the `.so` loader instead (see below), `"module"`
 //!   to the module host, `"process"` to the process host, and `"js"` /
@@ -183,8 +186,88 @@ pub struct LoadedPlugin {
 /// use `discover_all_in`.
 ///
 /// Sorted by name so the list does not reshuffle with directory order.
+///
+/// # Two roots
+///
+/// The user's `plugins_dir()` and the read-only BUNDLED tier
+/// ([`bundled_roots`]), merged by manifest name with the user's copy
+/// winning. The bundled tier is what lets a fresh install speak a wire
+/// the engine has no native client for (the Anthropic Messages driver,
+/// 0.1.2) without anyone copying a plugin into their config dir first.
+/// Everything downstream of this — `discover`, the loader, every
+/// listing — sees one merged list, so a bundled plugin obeys the same
+/// `[plugins] enabled/disabled` rules as one the user wrote.
 pub fn discover_all() -> Result<Vec<LoadedPlugin>> {
-    discover_all_in(&plugins_dir())
+    discover_all_from(&plugins_dir(), &bundled_roots())
+}
+
+/// The variable naming extra bundled Tcl-plugin roots (a search path:
+/// `:`-separated, `;` on Windows). The APK sets it to the plugins it
+/// unpacks from `runtime.zip`; anything else finds its bundle beside
+/// the binary and needs no variable.
+pub const BUNDLED_ENV: &str = "VELES_BUNDLED_PLUGINS";
+
+/// Where bundled Tcl plugins are looked for, first match wins per name:
+/// `$VELES_BUNDLED_PLUGINS`, then `<exe>/../share/veles/plugins` (the
+/// Linux archive and AppImage, the nix package and so the OCI image,
+/// and the Windows zip, which all put the binary in `bin/`).
+///
+/// The same shape as the process tier's and the module tier's roots
+/// (`pluginhost::default_roots`, `modulehost::default_roots`), minus a
+/// data-dir entry: the USER's root for this tier is `plugins_dir()`,
+/// which [`discover_all`] puts in front of these.
+///
+/// These roots are READ-ONLY to veles. Nothing here or in tclrt writes
+/// to them: `snapshot`/`rollback` run git in `plugins_dir()` only,
+/// `remove` refuses a bundled plugin by name, and the hot-reload watcher
+/// watches `plugins_dir()`. A bundled root is usually a nix store path
+/// or a directory inside an unpacked release, and an edit there would
+/// be lost on the next upgrade anyway.
+pub fn bundled_roots() -> Vec<PathBuf> {
+    let mut v = crate::platform::split_search_path(BUNDLED_ENV);
+    if let Some(prefix) = std::env::current_exe()
+        .ok()
+        .and_then(|e| e.parent().and_then(Path::parent).map(Path::to_path_buf))
+    {
+        v.push(prefix.join("share").join("veles").join("plugins"));
+    }
+    v
+}
+
+/// `discover_all` against an explicit user root and explicit bundled
+/// roots. A plugin in `user` shadows a bundled one with the same
+/// manifest name, and an earlier bundled root shadows a later one. A
+/// bundled root that is missing or unreadable contributes nothing and
+/// hides nothing.
+pub fn discover_all_from(user: &Path, bundled: &[PathBuf]) -> Result<Vec<LoadedPlugin>> {
+    let mut out = discover_all_in(user)?;
+    for root in bundled {
+        // A bundled root that IS the user root (a misset variable) must
+        // not make the user's plugins count twice.
+        if root == user {
+            continue;
+        }
+        let Ok(found) = discover_all_in(root) else {
+            continue;
+        };
+        for p in found {
+            if !out.iter().any(|q| q.manifest.name == p.manifest.name) {
+                out.push(p);
+            }
+        }
+    }
+    out.sort_by(|a, b| a.manifest.name.cmp(&b.manifest.name));
+    Ok(out)
+}
+
+/// Did this plugin come from a bundled root rather than the user's
+/// `plugins_dir()`? For the listings, which say where a plugin came
+/// from, and for `remove`, which refuses one.
+pub fn is_bundled(p: &LoadedPlugin) -> bool {
+    let Some(parent) = p.dir.parent() else {
+        return false;
+    };
+    parent != plugins_dir() && bundled_roots().iter().any(|r| r == parent)
 }
 
 /// `discover_all` against an explicit plugins ROOT (not a home).
@@ -242,7 +325,10 @@ pub fn is_enabled(name: &str, enabled: &[String], disabled: &[String]) -> bool {
 /// The plugins the loader will actually source. Takes no directory for
 /// the reason spelled out on `discover_all`.
 pub fn discover(enabled: &[String], disabled: &[String]) -> Result<Vec<LoadedPlugin>> {
-    discover_in(&plugins_dir(), enabled, disabled)
+    // Both tiers (see `discover_all`), then the same filter.
+    let mut all = discover_all()?;
+    all.retain(|p| is_enabled(&p.manifest.name, enabled, disabled));
+    Ok(all)
 }
 
 /// `discover` against an explicit plugins ROOT (not a home).
@@ -906,7 +992,26 @@ fn install_via(url: &str, as_name: Option<&str>, staging: &std::path::Path) -> R
 pub fn remove(name: &str) -> Result<PathBuf> {
     let name = validate_name(name)?;
     let dir = plugins_dir().join(&name);
-    anyhow::ensure!(dir.is_dir(), "no such plugin: {name}");
+    if !dir.is_dir() {
+        // Bundled with veles, not the user's: its directory belongs to
+        // the install (often a nix store path), and deleting it would
+        // either fail or come back with the next upgrade. Say how to
+        // switch it off instead.
+        if let Some(b) = discover_all()
+            .unwrap_or_default()
+            .into_iter()
+            .find(|p| p.manifest.name == name && is_bundled(p))
+        {
+            anyhow::bail!(
+                "{name} is bundled with veles ({}) and is not removed; switch it off with \
+                 `[plugins] disabled = [\"{name}\"]` in config.toml, or put your own copy in {} \
+                 to replace it",
+                b.dir.display(),
+                plugins_dir().join(&name).display()
+            );
+        }
+        anyhow::bail!("no such plugin: {name}");
+    }
     snapshot(&format!("veles: state before removing {name}"))?;
     std::fs::remove_dir_all(&dir).with_context(|| format!("removing {}", dir.display()))?;
     snapshot(&format!("veles: remove plugin {name}"))?;
@@ -1161,6 +1266,112 @@ mod tests {
             ["in-config"],
             "the data-dir decoy must be invisible"
         );
+    }
+
+    /// The bundled tier (0.1.2): a second root merged by manifest name,
+    /// the user's copy shadowing the bundled one, the first bundled root
+    /// shadowing a later one, and a missing bundled root hiding nothing.
+    #[test]
+    fn the_bundled_tier_merges_and_the_users_copy_wins() {
+        let user = tempfile::tempdir().expect("user root");
+        let first = tempfile::tempdir().expect("bundled root 1");
+        let second = tempfile::tempdir().expect("bundled root 2");
+        plant(user.path(), "mine", "name = \"mine\"\n");
+        plant(user.path(), "shared", "name = \"shared\"\n");
+        plant(first.path(), "shared", "name = \"shared\"\n");
+        plant(first.path(), "driver", "name = \"driver\"\n");
+        plant(second.path(), "driver", "name = \"driver\"\n");
+        plant(second.path(), "late", "name = \"late\"\n");
+        let missing = user.path().join("no-such-root");
+
+        let found = discover_all_from(
+            user.path(),
+            &[
+                missing,
+                first.path().to_path_buf(),
+                second.path().to_path_buf(),
+            ],
+        )
+        .expect("discover");
+        assert_eq!(named(&found), ["driver", "late", "mine", "shared"]);
+        let dir_of = |n: &str| {
+            found
+                .iter()
+                .find(|p| p.manifest.name == n)
+                .map(|p| p.dir.clone())
+                .expect("present")
+        };
+        assert_eq!(
+            dir_of("shared"),
+            user.path().join("shared"),
+            "the user's copy wins"
+        );
+        assert_eq!(
+            dir_of("driver"),
+            first.path().join("driver"),
+            "first bundled root wins"
+        );
+        assert_eq!(dir_of("late"), second.path().join("late"));
+
+        // The user root named again as a bundled root counts once.
+        let twice = discover_all_from(user.path(), &[user.path().to_path_buf()]).expect("again");
+        assert_eq!(named(&twice), ["mine", "shared"]);
+    }
+
+    /// The live path: `$VELES_BUNDLED_PLUGINS` reaches `discover_all`,
+    /// so a bundled plugin is listed, loaded and filtered exactly like
+    /// a user one — `[plugins] disabled` switches it off — and is marked
+    /// as bundled until a user copy of the same name replaces it.
+    #[test]
+    fn a_bundled_plugin_is_discovered_filtered_and_shadowed() {
+        let (_cfg, _data, _guard) = crate::testenv::scratch_xdg();
+        let bundled = tempfile::tempdir().expect("bundled root");
+        plant(bundled.path(), "shipped", "name = \"shipped\"\n");
+        std::env::set_var(BUNDLED_ENV, bundled.path());
+        assert!(bundled_roots().contains(&bundled.path().to_path_buf()));
+
+        let found = discover_all().expect("discover_all");
+        assert_eq!(named(&found), ["shipped"]);
+        assert!(is_bundled(&found[0]), "{:?}", found[0].dir);
+        assert_eq!(named(&discover(&[], &[]).expect("discover")), ["shipped"]);
+        assert!(
+            discover(&[], &["shipped".to_string()])
+                .expect("discover")
+                .is_empty(),
+            "[plugins] disabled must reach a bundled plugin"
+        );
+        assert!(
+            discover(&["other".to_string()], &[])
+                .expect("discover")
+                .is_empty(),
+            "an allowlist must reach a bundled plugin"
+        );
+
+        // A user copy shadows it, and is the user's.
+        plant(&plugins_dir(), "shipped", "name = \"shipped\"\n");
+        let found = discover_all().expect("discover_all");
+        assert_eq!(named(&found), ["shipped"]);
+        assert_eq!(found[0].dir, plugins_dir().join("shipped"));
+        assert!(!is_bundled(&found[0]));
+    }
+
+    /// `remove` touches the user's root only. A bundled plugin is
+    /// refused by name with the way to switch it off, and its files stay.
+    #[test]
+    fn a_bundled_plugin_is_refused_by_remove_and_left_in_place() {
+        let (_cfg, _data, _guard) = crate::testenv::scratch_xdg();
+        let bundled = tempfile::tempdir().expect("bundled root");
+        plant(bundled.path(), "shipped", "name = \"shipped\"\n");
+        std::env::set_var(BUNDLED_ENV, bundled.path());
+
+        let err = remove("shipped").expect_err("a bundled plugin is not removable");
+        let msg = err.to_string();
+        assert!(msg.contains("bundled"), "{msg}");
+        assert!(msg.contains("[plugins] disabled"), "{msg}");
+        assert!(bundled.path().join("shipped/plugin.toml").exists());
+        // A name that is nowhere is still the plain answer.
+        let err = remove("nowhere").expect_err("absent");
+        assert!(err.to_string().contains("no such plugin"), "{err}");
     }
 
     /// `kind` and `entry` are what the loader branches on: a manifest

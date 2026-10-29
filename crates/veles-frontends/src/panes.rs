@@ -399,26 +399,85 @@ fn load_preview_state() -> Value {
     v
 }
 
-/// GET /api/preview — current preview item (or null).
-pub async fn preview_get(State(_srv): State<Arc<DesktopServer>>) -> Json<Value> {
-    Json(load_preview_state())
+/// How long a preview stays worth putting back on the screen.
+///
+/// The preview is durable (ab7c8c1a, "so the pane survives a desktop
+/// restart"): a window closed and reopened, crashed, or opened just
+/// after the agent called open_preview still shows what the agent put
+/// there. A restart is minutes. What that persistence also did, with
+/// nothing to bound it, was put the LAST preview of ANY session back on
+/// every start, days later (owner, 2026-10-29: "regardless of session or
+/// how long it's been since it was relevant") — and a url preview opens
+/// the browser when it is applied, so every start opened a stale page.
+///
+/// A fixed age from `set_at`, judged on the gateway's own clock (the
+/// clock that stamped it, so an attached remote's skew does not matter).
+/// Not "older than the session's last activity": the turn that called
+/// open_preview ends after it, so that rule would drop every preview.
+pub const PREVIEW_RELEVANT: chrono::Duration = chrono::Duration::minutes(15);
+
+/// The preview `session` may be shown, or null. A preview belongs to the
+/// session whose agent opened it (`session`, recorded by preview_set);
+/// one with no owner — every preview a 0.1.1 gateway wrote — is never
+/// shown, nor one older than [`PREVIEW_RELEVANT`].
+fn preview_for(item: &Value, session: &str, now: chrono::DateTime<chrono::Utc>) -> Value {
+    let owner = item["session"].as_str().unwrap_or_default();
+    if session.is_empty() || owner != session {
+        return Value::Null;
+    }
+    let Some(set_at) = item["set_at"]
+        .as_str()
+        .and_then(|s| chrono::DateTime::parse_from_rfc3339(s).ok())
+    else {
+        return Value::Null;
+    };
+    if now.signed_duration_since(set_at.with_timezone(&chrono::Utc)) > PREVIEW_RELEVANT {
+        return Value::Null;
+    }
+    item.clone()
+}
+
+#[derive(Deserialize)]
+pub struct PreviewQuery {
+    #[serde(default)]
+    pub session: Option<String>,
+}
+
+/// GET /api/preview?session=<sid> — the preview that session may show
+/// (or null), by [`preview_for`]. Without `session` (a 0.1.1 desktop
+/// polling a newer gateway) the raw item, as before.
+pub async fn preview_get(
+    State(_srv): State<Arc<DesktopServer>>,
+    Query(q): Query<PreviewQuery>,
+) -> Json<Value> {
+    let item = load_preview_state();
+    match q.session {
+        Some(sid) => Json(preview_for(&item, &sid, chrono::Utc::now())),
+        None => Json(item),
+    }
+}
+
+fn preview_item(body: &Value) -> Value {
+    let kind = body["kind"].as_str().unwrap_or("url");
+    json!({
+        "kind": kind,
+        "url": body["url"],
+        "path": body["path"],
+        "label": body["label"],
+        // The session whose agent asked (open_preview sends it).
+        "session": body["session"],
+        "set_at": chrono::Utc::now().to_rfc3339(),
+    })
 }
 
 /// POST /api/preview — set the preview item. Body: {kind, url?, path?,
-/// label?}. Also written to desktop_state.json so the pane survives a
+/// label?, session?}. Also written to desktop_state.json so the pane survives a
 /// desktop restart.
 pub async fn preview_set(
     State(_srv): State<Arc<DesktopServer>>,
     Json(body): Json<Value>,
 ) -> Json<Value> {
-    let kind = body["kind"].as_str().unwrap_or("url");
-    let item = json!({
-        "kind": kind,
-        "url": body["url"],
-        "path": body["path"],
-        "label": body["label"],
-        "set_at": chrono::Utc::now().to_rfc3339(),
-    });
+    let item = preview_item(&body);
     *PREVIEW.lock_ok() = Some(item.clone());
     if let Ok(mut st) = Ok::<_, anyhow::Error>(super::desktop_api::load_desktop_state_pub()) {
         if !st.is_object() {
@@ -458,4 +517,90 @@ pub async fn focus_set(
 pub async fn focus_get(State(_srv): State<Arc<DesktopServer>>) -> Json<Value> {
     let st = super::desktop_api::load_desktop_state_pub();
     Json(st.get("focus_request").cloned().unwrap_or(json!(null)))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn at(rfc: &str) -> chrono::DateTime<chrono::Utc> {
+        chrono::DateTime::parse_from_rfc3339(rfc)
+            .unwrap()
+            .with_timezone(&chrono::Utc)
+    }
+
+    // The owner, 2026-10-29: "the Preview always opening the last preview
+    // page presented on every start regardless of session or how long it's
+    // been since it was relevant". The live state file held a url preview
+    // five days old, and every desktop start applied it (and opened the
+    // browser on it).
+    #[test]
+    fn a_preview_is_shown_only_to_its_own_session_and_only_while_fresh() {
+        let item = json!({
+            "kind": "url", "url": "http://localhost:3000/", "label": null,
+            "path": null, "session": "s-a",
+            "set_at": "2026-10-29T12:00:00+00:00",
+        });
+        let soon = at("2026-10-29T12:05:00+00:00");
+        assert_eq!(
+            preview_for(&item, "s-a", soon),
+            item,
+            "its own session, fresh"
+        );
+        assert_eq!(
+            preview_for(&item, "s-b", soon),
+            Value::Null,
+            "another session"
+        );
+        assert_eq!(
+            preview_for(&item, "", soon),
+            Value::Null,
+            "no session in view"
+        );
+        let old = json!({
+            "kind": "url", "url": "http://x/", "session": "s-a",
+            "set_at": "2026-10-24T17:51:02+00:00",
+        });
+        let days = at("2026-10-29T17:51:02+00:00");
+        assert_eq!(preview_for(&old, "s-a", days), Value::Null, "days old");
+        let edge = at("2026-10-29T12:00:00+00:00") + PREVIEW_RELEVANT;
+        assert_eq!(
+            preview_for(&item, "s-a", edge),
+            item,
+            "at the window's edge"
+        );
+        let past = edge + chrono::Duration::seconds(1);
+        assert_eq!(
+            preview_for(&item, "s-a", past),
+            Value::Null,
+            "past the window"
+        );
+    }
+
+    // A desktop_state.json written by 0.1.1 has no `session` in its
+    // preview (and a shredded label, vstate.tcl): it loads, and it is
+    // never shown.
+    #[test]
+    fn a_0_1_1_preview_without_an_owner_is_never_shown() {
+        let st: Value = serde_json::from_str(
+            r#"{"theme":"synthwave","preview":{"kind":"url","url":"http://x/",
+                "path":null,"label":{"X.Org":"logo"},
+                "set_at":"2026-10-29T12:00:00.977576107+00:00"}}"#,
+        )
+        .unwrap();
+        let item = st["preview"].clone();
+        let now = at("2026-10-29T12:00:01+00:00");
+        assert_eq!(preview_for(&item, "s-a", now), Value::Null);
+        assert_eq!(preview_for(&Value::Null, "s-a", now), Value::Null);
+        let bad = json!({"kind": "url", "session": "s-a", "set_at": "garbage"});
+        assert_eq!(preview_for(&bad, "s-a", now), Value::Null);
+    }
+
+    #[test]
+    fn preview_set_records_the_session_that_asked() {
+        let item = preview_item(&json!({"kind": "url", "url": "http://x/", "session": "s-a"}));
+        assert_eq!(item["session"], "s-a");
+        let none = preview_item(&json!({"kind": "url", "url": "http://x/"}));
+        assert_eq!(none["session"], Value::Null);
+    }
 }

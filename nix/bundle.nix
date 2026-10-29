@@ -83,6 +83,11 @@ let
         "atproto"
         "echo"
       ];
+      # The read-only bundled Tcl tier, in velesPkg's share/veles/plugins
+      # (flake.nix bundledTclPlugins); asserted present in `tree` below.
+      tclPlugins = [
+        "tcl-anthropic-driver"
+      ];
       sourcePackage = velesPkg;
     }
   );
@@ -121,6 +126,12 @@ let
             rm -f "$pkg/bin/ulsh" "$pkg/bin/veles-userland-broker" \
               "$pkg/bin/veles-gw" "$pkg/bin/veles-plugin-echo" "$pkg/bin/veles-plugin-atproto"
             test -x "$pkg/bin/veles"
+            # The bundled Tcl plugins ride in the package, at the
+            # <exe>/../share/veles/plugins plugins::bundled_roots reads.
+            for p in tcl-anthropic-driver; do
+              test -f "$pkg/share/veles/plugins/$p/plugin.toml" \
+                || { echo "the bundle lost bundled Tcl plugin $p" >&2; exit 1; }
+            done
 
             # Modules MUST come from the SAME velesPkg invocation as the core.
             # The normal discovery layout is <prefix>/lib/veles/modules/<name>/.

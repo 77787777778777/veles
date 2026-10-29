@@ -330,18 +330,9 @@ proc anthropic::to_wire {req caps streaming} {
             # and the breakpoint is preserved — Anthropic's system field
             # takes the same block array, so a cache_control the engine
             # computed survives the translation instead of being dropped.
-            if {[anthropic::is_json_array $content]} {
-                set text ""
-                for {set p 0} {1} {incr p} {
-                    set t [::veles::json_get $content $p type]
-                    if {$t eq ""} { break }
-                    if {$t eq "text"} {
-                        append text [::veles::json_get $content $p text]
-                    }
-                    set cc [::veles::json_get $content $p cache_control]
-                    if {$cc ne ""} { set system_cache $cc }
-                }
-                set content $text
+            if {[anthropic::content_is_parts $req $i]} {
+                lassign [anthropic::parts_text $content] content cc
+                if {$cc ne ""} { set system_cache $cc }
             }
             if {$system eq ""} {
                 set system $content
@@ -357,11 +348,27 @@ proc anthropic::to_wire {req caps streaming} {
             # canonical shape when the model called several tools in one
             # turn; separate user messages also work, but one message is
             # what the wire means by "here are your results".
+            #
+            # The engine marks a cache breakpoint on a tool message too:
+            # explicit mode marks the last message of every request, and
+            # mid-turn that is a tool result. The mark turns `content` into
+            # a one-part array, so the text goes back into the result and
+            # the marker onto the tool_result block itself, where Anthropic
+            # caches like at any content block. Read as a plain string, the
+            # array reached the model as its own JSON and the marker never
+            # reached the wire, which is how a session's rolling cache died
+            # at the first steer (2026-10-28).
             set id [::veles::json_get $req messages $i tool_call_id]
-            set block [anthropic::jobj [list \
+            set cache ""
+            if {[anthropic::content_is_parts $req $i]} {
+                lassign [anthropic::parts_text $content] content cache
+            }
+            set fields [list \
                 [list "type" [anthropic::jstr "tool_result"]] \
                 [list "tool_use_id" [anthropic::jstr $id]] \
-                [list "content" [anthropic::jstr $content]]]]
+                [list "content" [anthropic::jstr $content]]]
+            if {$cache ne ""} { lappend fields [list "cache_control" $cache] }
+            set block [anthropic::jobj $fields]
             set last [lindex $out_msgs end]
             if {[anthropic::is_tool_result_msg $last]} {
                 # Append into the message already there rather than opening a
@@ -391,7 +398,7 @@ proc anthropic::to_wire {req caps streaming} {
         # An assistant turn that CALLED tools carries them as blocks beside
         # its text, not in a separate field.
         set blocks {}
-        if {[anthropic::is_json_array $content]} {
+        if {[anthropic::content_is_parts $req $i]} {
             # A user message with attachments arrives as OpenAI parts: text
             # and image_url. Translated to this wire's blocks, which is the
             # difference between an image reaching the model and an image
@@ -1279,6 +1286,42 @@ proc anthropic::is_json_object {v} {
 # which is the right answer anyway.
 proc anthropic::parses_as_json {v} {
     return [expr {![catch {::veles::json_get $v __veles_shape_probe__}]}]
+}
+
+# Is message `i`'s content a parts ARRAY in the request the engine sent, or
+# a string?
+#
+# Asked of the REQUEST, not of the extracted content: json_get hands back a
+# string node and an array node alike, as text, so `is_json_array` on that
+# text cannot tell a parts array from a message whose text merely parses as
+# one — a tool's `[1, 2, 3]`, a user pasting a JSON list. Such a message went
+# down the parts path, the loop found no parts, and a user message vanished
+# from the request outright. Indexing INTO the node succeeds only when it
+# really is an array, which is the same question the Rust driver's
+# `Value::Array` arm asks.
+proc anthropic::content_is_parts {req i} {
+    return [expr {[::veles::json_get $req messages $i content 0] ne ""}]
+}
+
+# The text of an engine parts array, and the cache_control on any of its
+# parts — a two-element list. Used where the wire block must carry the same
+# bytes whether or not the engine marked it: a tool_result keeps its plain
+# string content, so the copy marked this round and the unmarked copy every
+# later round re-sends are the same prefix; the system prompt is one joined
+# string. The text goes in, and the breakpoint moves onto the block itself.
+proc anthropic::parts_text {content} {
+    set text ""
+    set cache ""
+    for {set p 0} {1} {incr p} {
+        set t [::veles::json_get $content $p type]
+        if {$t eq ""} { break }
+        if {$t eq "text"} {
+            append text [::veles::json_get $content $p text]
+        }
+        set cc [::veles::json_get $content $p cache_control]
+        if {$cc ne ""} { set cache $cc }
+    }
+    return [list $text $cache]
 }
 
 # Is this an already-built user message holding only tool_result blocks? The

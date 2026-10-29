@@ -548,6 +548,13 @@ pub fn plugins(action: Option<PluginsCmd>) -> Result<()> {
             // only surface that said so was the failure message nobody
             // had a reason to read.
             println!("{}", dir.display());
+            // The bundled tier's roots that exist: a plugin listed
+            // below with src=bundled came from one of these, read-only.
+            for root in veles_core::plugins::bundled_roots() {
+                if root.is_dir() {
+                    println!("{} (bundled, read-only)", root.display());
+                }
+            }
             if found.is_empty() {
                 println!("(no directory here has a plugin.toml)");
                 return Ok(());
@@ -565,10 +572,15 @@ pub fn plugins(action: Option<PluginsCmd>) -> Result<()> {
                     off += 1;
                 }
                 println!(
-                    "{} {:<24} kind={:<5} hooks={}",
+                    "{} {:<24} kind={:<5} src={:<7} hooks={}",
                     if live { "\u{25cf}" } else { "\u{25cb}" },
                     p.manifest.name,
                     p.manifest.kind,
+                    if veles_core::plugins::is_bundled(p) {
+                        "bundled"
+                    } else {
+                        "user"
+                    },
                     if p.manifest.provides_hooks.is_empty() {
                         "-".to_string()
                     } else {

@@ -129,6 +129,10 @@ const DIR_VARS: &[&str] = &[
     "XDG_CACHE_HOME",
     "VELES_PROFILE",
     "VELES_DESKTOP_PORT",
+    // A bundled Tcl-plugin root (plugins::BUNDLED_ENV): a test that
+    // points it at a scratch tree must not leave every later test
+    // discovering that tree.
+    "VELES_BUNDLED_PLUGINS",
 ];
 
 impl Drop for EnvGuard {
@@ -206,6 +210,7 @@ pub fn scratch_home() -> (tempfile::TempDir, EnvGuard) {
         crate::config::DirOverride::forced(dir.path()),
     )));
     std::env::set_var("VELES_HOME", dir.path());
+    std::env::remove_var("VELES_BUNDLED_PLUGINS");
     (dir, guard)
 }
 
@@ -233,6 +238,8 @@ pub fn scratch_xdg() -> (tempfile::TempDir, tempfile::TempDir, EnvGuard) {
     // VELES_HOME wins over both, so it has to go for the split to exist.
     std::env::remove_var("VELES_HOME");
     std::env::remove_var("VELES_PROFILE");
+    // An ambient bundled root would put plugins in every listing.
+    std::env::remove_var("VELES_BUNDLED_PLUGINS");
     std::env::set_var("XDG_CONFIG_HOME", cfg.path());
     std::env::set_var("XDG_DATA_HOME", data.path());
     // The override mirrors what those vars mean on this thread, with

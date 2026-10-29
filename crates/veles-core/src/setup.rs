@@ -123,6 +123,11 @@ pub struct ProviderPreset {
     /// Empty: the endpoint takes no key (a local server).
     pub key_env: &'static str,
     pub api_mode: &'static str,
+    /// The provider DRIVER a plugin registers, for `api_mode = "plugin"`;
+    /// "" for the native wires. The Anthropic row names the bundled Tcl
+    /// driver (`plugins::bundled_roots`), so a fresh install reaches the
+    /// Messages API with no plugin copied by hand.
+    pub driver: &'static str,
     /// A model id the provider keeps stable (an alias where it has one),
     /// or "" when there is none to suggest and the user picks from the
     /// provider's own catalog ([`list_models`]). Catalogs move every
@@ -131,6 +136,18 @@ pub struct ProviderPreset {
     /// Where to get a key ("" for none).
     pub key_url: &'static str,
 }
+
+/// The Anthropic preset's base URL: the Messages API's host, which the
+/// driver appends `/v1/messages` to.
+pub const ANTHROPIC_BASE_URL: &str = "https://api.anthropic.com";
+
+/// The base URL the Anthropic preset wrote before 0.1.2: Anthropic's
+/// OpenAI-compatible surface, reached with `api_mode =
+/// "chat_completions"`. Still recognised as the Anthropic choice
+/// ([`choice_for_base_url`]), so a re-run over such a config shows
+/// Anthropic rather than "another OpenAI-compatible server" and keeps
+/// the entry's own URL and wire.
+pub const ANTHROPIC_OPENAI_COMPAT_BASE_URL: &str = "https://api.anthropic.com/v1";
 
 /// The provider step's choices, in the order the wizards show them.
 pub const PROVIDER_PRESETS: &[ProviderPreset] = &[
@@ -141,6 +158,7 @@ pub const PROVIDER_PRESETS: &[ProviderPreset] = &[
         base_url: "https://openrouter.ai/api/v1",
         key_env: "OPENROUTER_API_KEY",
         api_mode: "chat_completions",
+        driver: "",
         model: "openrouter/auto",
         key_url: "https://openrouter.ai/keys",
     },
@@ -151,6 +169,7 @@ pub const PROVIDER_PRESETS: &[ProviderPreset] = &[
         base_url: "https://api.openai.com/v1",
         key_env: "OPENAI_API_KEY",
         api_mode: "chat_completions",
+        driver: "",
         model: "",
         key_url: "https://platform.openai.com/api-keys",
     },
@@ -158,10 +177,18 @@ pub const PROVIDER_PRESETS: &[ProviderPreset] = &[
         choice: ProviderChoice::Anthropic,
         label: "Anthropic",
         entry_name: "anthropic",
-        // Anthropic's OpenAI-compatible surface.
-        base_url: "https://api.anthropic.com/v1",
+        // The NATIVE Messages wire, through the bundled Tcl driver
+        // (plugins/examples/tcl-anthropic-driver, shipped under
+        // share/veles/plugins). Not Anthropic's OpenAI-compatible
+        // surface (`ANTHROPIC_OPENAI_COMPAT_BASE_URL`, what this row
+        // wrote until 0.1.2): Anthropic documents that layer as having
+        // no prompt caching, and it ignores `reasoning_effort` and never
+        // returns thinking. The driver appends `/v1/messages` itself,
+        // so the base URL has no path.
+        base_url: ANTHROPIC_BASE_URL,
         key_env: "ANTHROPIC_API_KEY",
-        api_mode: "chat_completions",
+        api_mode: "plugin",
+        driver: "anthropic-messages",
         model: "",
         key_url: "https://console.anthropic.com/settings/keys",
     },
@@ -172,6 +199,7 @@ pub const PROVIDER_PRESETS: &[ProviderPreset] = &[
         base_url: "https://generativelanguage.googleapis.com/v1beta/openai",
         key_env: "GEMINI_API_KEY",
         api_mode: "chat_completions",
+        driver: "",
         model: "gemini-flash-latest",
         key_url: "https://aistudio.google.com/apikey",
     },
@@ -182,6 +210,7 @@ pub const PROVIDER_PRESETS: &[ProviderPreset] = &[
         base_url: "https://api.deepseek.com/v1",
         key_env: "DEEPSEEK_API_KEY",
         api_mode: "chat_completions",
+        driver: "",
         model: "deepseek-chat",
         key_url: "https://platform.deepseek.com/api_keys",
     },
@@ -192,6 +221,7 @@ pub const PROVIDER_PRESETS: &[ProviderPreset] = &[
         base_url: "http://localhost:11434/v1",
         key_env: "",
         api_mode: "chat_completions",
+        driver: "",
         model: "",
         key_url: "",
     },
@@ -202,6 +232,7 @@ pub const PROVIDER_PRESETS: &[ProviderPreset] = &[
         base_url: ALI_TOKEN_PLAN_BASE_URL,
         key_env: "ALI_TOKEN_PLAN_API_KEY",
         api_mode: "chat_completions",
+        driver: "",
         model: "qwen3.8-flash",
         key_url: "https://modelstudio.console.alibabacloud.com/",
     },
@@ -212,6 +243,7 @@ pub const PROVIDER_PRESETS: &[ProviderPreset] = &[
         base_url: "http://localhost:8000/v1",
         key_env: "",
         api_mode: "chat_completions",
+        driver: "",
         model: "",
         key_url: "",
     },
@@ -226,12 +258,37 @@ pub fn preset(choice: ProviderChoice) -> Option<&'static ProviderPreset> {
 /// base URL; anything unrecognised is "another OpenAI-compatible server".
 pub fn choice_for_base_url(base_url: &str) -> ProviderChoice {
     let norm = |s: &str| s.trim_end_matches('/').to_ascii_lowercase();
+    if norm(base_url) == norm(ANTHROPIC_OPENAI_COMPAT_BASE_URL) {
+        return ProviderChoice::Anthropic;
+    }
     PROVIDER_PRESETS
         .iter()
         .find(|p| {
             p.choice != ProviderChoice::OpenAiCompatible && norm(p.base_url) == norm(base_url)
         })
         .map_or(ProviderChoice::OpenAiCompatible, |p| p.choice)
+}
+
+/// Where a provider's model catalog is, from its base URL.
+///
+/// The OpenAI wire's base URLs end in their version (`…/v1`,
+/// `…/v1beta/openai`), and the catalog is `{base}/models`. A base URL
+/// with NO path is a native wire whose driver appends the version
+/// itself — the Anthropic preset's `https://api.anthropic.com`, which
+/// the driver turns into `/v1/messages` — so its catalog is
+/// `{base}/v1/models`, with `limit=1000`: Anthropic pages that list at
+/// 20 by default, and a wizard showing the first page would hide most
+/// of the catalog.
+pub fn models_url(base_url: &str) -> String {
+    let base = base_url.trim_end_matches('/');
+    let path = base
+        .split_once("://")
+        .map_or("", |(_, rest)| rest.find('/').map_or("", |i| &rest[i..]));
+    if path.is_empty() {
+        format!("{base}/v1/models?limit=1000")
+    } else {
+        format!("{base}/models")
+    }
 }
 
 /// The model ids a provider's `/models` lists, for the wizard's model
@@ -247,7 +304,7 @@ pub async fn list_models(base_url: &str, key: &str) -> Result<Vec<String>> {
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(15))
         .build()?;
-    let mut req = client.get(format!("{base}/models"));
+    let mut req = client.get(models_url(base));
     if !key.is_empty() {
         // Bearer for the OpenAI wire; Anthropic's /models reads
         // x-api-key, and the extra header is harmless elsewhere.
@@ -303,8 +360,13 @@ pub struct SetupAnswers {
     pub base_url: String,
     /// NAME of the env var holding the provider key (`key_env`).
     pub key_env: String,
-    /// Wire protocol; empty → `chat_completions`.
+    /// Wire protocol; empty → the choice's own (`plugin` for Anthropic,
+    /// `chat_completions` for the rest).
     pub api_mode: String,
+    /// The provider driver for `api_mode = "plugin"`; empty → the
+    /// choice's own (`anthropic-messages` for Anthropic). Ignored, and
+    /// not written, for any other wire.
+    pub driver: String,
     /// `[[custom_providers]] name`. Empty → the choice's default.
     pub provider_name: String,
     /// `[model] default`. Empty → the choice's default.
@@ -347,6 +409,7 @@ impl Default for SetupAnswers {
             base_url: String::new(),
             key_env: String::new(),
             api_mode: String::new(),
+            driver: String::new(),
             provider_name: String::new(),
             model: String::new(),
             default_provider: String::new(),
@@ -440,6 +503,8 @@ struct ProviderAnswer {
     base_url: String,
     key_env: String,
     api_mode: String,
+    /// Non-empty exactly when `api_mode` is `plugin`.
+    driver: String,
     default_model: &'static str,
 }
 
@@ -652,7 +717,18 @@ fn provider_answer(a: &SetupAnswers) -> Result<Option<ProviderAnswer>> {
             &[("example", "OPENROUTER_API_KEY".to_string())]
         ));
     }
-    let api_mode = or_default(&a.api_mode, "chat_completions");
+    let base_url = or_default(&a.base_url, base);
+    // The choice's own wire when none was given — but only at the
+    // choice's own URL. An Anthropic entry at the pre-0.1.2 OpenAI-
+    // compatible URL with no api_mode is a chat_completions entry; the
+    // plugin wire there would post to `/v1/v1/messages`.
+    let norm = |s: &str| s.trim_end_matches('/').to_ascii_lowercase();
+    let wire_default = if norm(&base_url) == norm(base) {
+        p.api_mode
+    } else {
+        "chat_completions"
+    };
+    let api_mode = or_default(&a.api_mode, wire_default);
     if !crate::config::SUPPORTED_API_MODES.contains(&api_mode.as_str()) {
         bail!(crate::i18n::lookup(
             "unknown api_mode %{mode} — expected one of %{modes}",
@@ -662,11 +738,28 @@ fn provider_answer(a: &SetupAnswers) -> Result<Option<ProviderAnswer>> {
             ],
         ));
     }
+    let driver = if api_mode == "plugin" {
+        let d = or_default(&a.driver, p.driver);
+        if d.is_empty() {
+            // The same refusal build_client would make at boot, made
+            // before anything is written. (English, like build_client's:
+            // it names config keys, and no wizard row reaches it — every
+            // preset with the plugin wire names its driver.)
+            bail!(
+                "api_mode = \"plugin\" needs `driver = \"<name>\"` naming a driver some plugin \
+                 registers. `veles doctor --providers` lists the ones that are loaded."
+            );
+        }
+        d
+    } else {
+        String::new()
+    };
     Ok(Some(ProviderAnswer {
         name: or_default(&a.provider_name, name),
-        base_url: or_default(&a.base_url, base),
+        base_url,
         key_env,
         api_mode,
+        driver,
         default_model: model,
     }))
 }
@@ -736,6 +829,7 @@ fn fresh_text(
             &p.base_url,
             &p.key_env,
             &p.api_mode,
+            &p.driver,
         ));
         cfg.push('\n');
     }
@@ -958,7 +1052,7 @@ fn has_table(doc: &DocumentMut, path: &[&str]) -> bool {
 /// `models`, `context_length`, `extra_body` and anything else the
 /// operator wrote into that entry stay.
 fn upsert_provider(doc: &mut DocumentMut, p: &ProviderAnswer) -> Result<()> {
-    let block = provider_setup_block(&p.name, &p.base_url, &p.key_env, &p.api_mode);
+    let block = provider_setup_block(&p.name, &p.base_url, &p.key_env, &p.api_mode, &p.driver);
     let frag: DocumentMut = block.parse().context("the provider block did not parse")?;
     let new_entry = frag
         .get("custom_providers")
@@ -1060,7 +1154,17 @@ pub fn current_answers(existing: &str) -> Result<SetupAnswers> {
         a.provider_name = p.name.clone();
         a.base_url = p.base_url.clone();
         a.key_env = p.key_env.clone().unwrap_or_default();
-        a.api_mode = p.api_mode.clone();
+        // The entry's EFFECTIVE wire: an absent api_mode is
+        // chat_completions, and saying so here keeps a wizard from
+        // filling the empty field with its choice's own wire — which,
+        // for an Anthropic entry at the old OpenAI-compatible URL, is
+        // the plugin wire at a URL it cannot use.
+        a.api_mode = if p.api_mode.trim().is_empty() {
+            "chat_completions".to_string()
+        } else {
+            p.api_mode.clone()
+        };
+        a.driver = p.driver.clone().unwrap_or_default();
     }
     let plat = |name: &str, key: &str| cfg.platforms.get(name).and_then(|t| t.get(key)).cloned();
     a.telegram = plat("telegram", "enabled")
@@ -1298,18 +1402,33 @@ pub fn write_private(path: &Path, text: &str) -> Result<()> {
 /// the first-run wizard had a base URL and no key — and what the operator
 /// saw was a 401 from their own server rather than a config error naming
 /// the field.
-pub fn provider_setup_block(name: &str, base_url: &str, key_env: &str, api_mode: &str) -> String {
+///
+/// `driver` is written only when non-empty: it is the `api_mode =
+/// "plugin"` wire's other half, and the Anthropic preset has had no
+/// usable entry without it since that preset moved to the native wire
+/// (0.1.2) — `build_client` refuses a plugin entry that names none.
+pub fn provider_setup_block(
+    name: &str,
+    base_url: &str,
+    key_env: &str,
+    api_mode: &str,
+    driver: &str,
+) -> String {
     // `key_env` is emitted even when empty: `key_env = ""` means "call
     // this endpoint with no key" (an unauthenticated local server).
     // Leaving the key OUT would mean something else — `resolve_api_key`
     // then falls back to `VELES_API_KEY`.
-    format!(
+    let mut block = format!(
         "[[custom_providers]]\nname = {name}\nbase_url = {base_url}\nkey_env = {key_env}\napi_mode = {api_mode}\n",
         name = q(name),
         base_url = q(base_url),
         key_env = q(key_env),
         api_mode = q(api_mode),
-    )
+    );
+    if !driver.is_empty() {
+        block.push_str(&format!("driver = {}\n", q(driver)));
+    }
+    block
 }
 
 /// The `[platforms.telegram]` block the wizard writes.
@@ -1899,6 +2018,18 @@ mod tests {
             let entry = &c.custom_providers[0];
             assert_eq!(entry.name, p.entry_name, "{}", p.label);
             assert_eq!(entry.base_url, p.base_url, "{}", p.label);
+            assert_eq!(entry.api_mode, p.api_mode, "{}", p.label);
+            assert_eq!(
+                entry.driver.as_deref().unwrap_or(""),
+                p.driver,
+                "{}",
+                p.label
+            );
+            // "Routable" means a route builds from it, not only that it
+            // parses: a plugin entry with no driver parses fine.
+            let ua = crate::providers::UserAgentProfile::veles();
+            crate::providers::build_client(entry, "k", &ua)
+                .unwrap_or_else(|e| panic!("{}: {e:#}", p.label));
             assert_eq!(
                 c.model.provider.as_deref(),
                 Some(p.entry_name),
@@ -1914,6 +2045,187 @@ mod tests {
             let back = current_answers(&plan.config_toml).unwrap();
             assert_eq!(back.provider, p.choice, "{} prefills as itself", p.label);
         }
+    }
+
+    /// The Anthropic preset (0.1.2) writes the NATIVE Messages wire: the
+    /// plugin api_mode, the driver the bundled Tcl plugin registers, and
+    /// the host-only base URL that driver appends `/v1/messages` to. It
+    /// used to write `chat_completions` at `/v1`, Anthropic's OpenAI-
+    /// compatible layer, which has no prompt caching. The entry it writes
+    /// builds a plugin route — the check config load cannot make, made
+    /// here — and the driver it names is the one the bundled plugin
+    /// registers, read from the plugin itself.
+    #[test]
+    fn the_anthropic_preset_writes_the_native_wire_through_the_bundled_driver() {
+        let plan = fresh(&SetupAnswers {
+            provider: ProviderChoice::Anthropic,
+            model: "claude-x".into(),
+            ..Default::default()
+        });
+        let c = parsed(&plan.config_toml);
+        let e = &c.custom_providers[0];
+        assert_eq!(e.name, "anthropic");
+        assert_eq!(
+            e.base_url, "https://api.anthropic.com",
+            "{}",
+            plan.config_toml
+        );
+        assert_eq!(e.api_mode, "plugin", "{}", plan.config_toml);
+        assert_eq!(e.driver.as_deref(), Some("anthropic-messages"));
+        assert_eq!(e.key_env.as_deref(), Some("ANTHROPIC_API_KEY"));
+        let ua = crate::providers::UserAgentProfile::veles();
+        match crate::providers::build_client(e, "k", &ua).expect("a routable entry") {
+            crate::providers::RouteClient::Plugin(r) => {
+                assert_eq!(r.driver, "anthropic-messages")
+            }
+            _ => panic!("the Anthropic preset must build a plugin route"),
+        }
+        let shipped = std::fs::read_to_string(
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("../../plugins/examples/tcl-anthropic-driver/plugin.tcl"),
+        )
+        .expect("the bundled driver's source");
+        assert!(
+            shipped.contains(&format!(
+                "register_provider {}",
+                preset(ProviderChoice::Anthropic).unwrap().driver
+            )),
+            "the preset names a driver the bundled plugin does not register"
+        );
+        // No other row grows a driver line.
+        let plain = fresh(&SetupAnswers::default()).config_toml;
+        assert!(!plain.contains("driver"), "{plain}");
+    }
+
+    /// Configs the pre-0.1.2 wizard wrote — Anthropic at its OpenAI-
+    /// compatible `/v1` — are still recognised as Anthropic, and a re-run
+    /// keeps their URL and their wire: the plugin wire at `/v1` would
+    /// post to `/v1/v1/messages`. Pinned both ways an empty api_mode can
+    /// arrive: prefilled from a config that has none, and in answers
+    /// that name the old URL with no wire.
+    #[test]
+    fn an_anthropic_entry_at_the_old_compat_url_stays_anthropic_on_its_own_wire() {
+        assert_eq!(
+            choice_for_base_url(ANTHROPIC_OPENAI_COMPAT_BASE_URL),
+            ProviderChoice::Anthropic
+        );
+        assert_eq!(
+            choice_for_base_url("https://api.anthropic.com/v1/"),
+            ProviderChoice::Anthropic
+        );
+        assert_eq!(
+            choice_for_base_url(ANTHROPIC_BASE_URL),
+            ProviderChoice::Anthropic
+        );
+
+        let old = "[model]\nprovider = \"anthropic\"\ndefault = \"claude-x\"\n\n\
+                   [[custom_providers]]\nname = \"anthropic\"\n\
+                   base_url = \"https://api.anthropic.com/v1\"\nkey_env = \"ANTHROPIC_API_KEY\"\n";
+        let back = current_answers(old).expect("prefill");
+        assert_eq!(back.provider, ProviderChoice::Anthropic);
+        assert_eq!(
+            back.api_mode, "chat_completions",
+            "the entry's effective wire"
+        );
+        let t = setup_plan(&back, Some(old)).expect("plan").config_toml;
+        let e = parsed(&t).custom_providers[0].clone();
+        assert_eq!(e.base_url, ANTHROPIC_OPENAI_COMPAT_BASE_URL, "{t}");
+        assert_eq!(e.api_mode, "chat_completions", "{t}");
+        assert!(e.driver.is_none(), "{t}");
+
+        let t = fresh(&SetupAnswers {
+            provider: ProviderChoice::Anthropic,
+            base_url: ANTHROPIC_OPENAI_COMPAT_BASE_URL.into(),
+            model: "claude-x".into(),
+            ..Default::default()
+        })
+        .config_toml;
+        let e = parsed(&t).custom_providers[0].clone();
+        assert_eq!(e.api_mode, "chat_completions", "{t}");
+        assert!(e.driver.is_none(), "{t}");
+    }
+
+    /// A plugin wire with no driver anywhere is refused before anything
+    /// is written, naming where to look — the same words build_client
+    /// would use at boot.
+    #[test]
+    fn a_plugin_wire_without_a_driver_is_refused() {
+        let err = setup_plan(
+            &SetupAnswers {
+                provider: ProviderChoice::OpenAiCompatible,
+                api_mode: "plugin".into(),
+                model: "m".into(),
+                ..Default::default()
+            },
+            None,
+        )
+        .unwrap_err()
+        .to_string();
+        assert!(err.contains("driver"), "{err}");
+        assert!(err.contains("doctor --providers"), "{err}");
+    }
+
+    /// Where the model step looks. The OpenAI wire's base URLs carry
+    /// their version and list at `{base}/models`; a host-only base URL
+    /// (the Anthropic native preset) lists at `/v1/models`, unpaged.
+    #[test]
+    fn the_model_list_url_follows_the_base_url_shape() {
+        assert_eq!(
+            models_url("https://openrouter.ai/api/v1"),
+            "https://openrouter.ai/api/v1/models"
+        );
+        assert_eq!(
+            models_url(ANTHROPIC_OPENAI_COMPAT_BASE_URL),
+            "https://api.anthropic.com/v1/models"
+        );
+        assert_eq!(
+            models_url(ANTHROPIC_BASE_URL),
+            "https://api.anthropic.com/v1/models?limit=1000"
+        );
+        assert_eq!(
+            models_url("https://api.anthropic.com/"),
+            "https://api.anthropic.com/v1/models?limit=1000"
+        );
+        assert_eq!(
+            models_url("http://localhost:11434/v1"),
+            "http://localhost:11434/v1/models"
+        );
+    }
+
+    /// `list_models` asks the URL `models_url` names, with the headers
+    /// Anthropic's catalog reads: a server that answers ONLY
+    /// `/v1/models?limit=1000` with an `x-api-key` lists for the Anthropic
+    /// preset's host-only base URL.
+    #[tokio::test]
+    async fn the_model_step_lists_a_host_only_base_url_at_v1_models() {
+        use std::io::{Read, Write};
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").expect("bind");
+        let port = listener.local_addr().expect("addr").port();
+        let server = std::thread::spawn(move || {
+            let (mut s, _) = listener.accept().expect("accept");
+            let mut buf = [0u8; 4096];
+            let n = s.read(&mut buf).expect("read");
+            let req = String::from_utf8_lossy(&buf[..n]).to_ascii_lowercase();
+            let ok = req.starts_with("get /v1/models?limit=1000 ")
+                && req.contains("x-api-key: k")
+                && req.contains("anthropic-version: ");
+            let (status, body) = if ok {
+                (
+                    "200 OK",
+                    r#"{"data":[{"id":"claude-b","type":"model"},{"id":"claude-a","type":"model"}],"has_more":false}"#,
+                )
+            } else {
+                ("404 Not Found", "{}")
+            };
+            let _ = write!(
+                s,
+                "HTTP/1.1 {status}\r\ncontent-type: application/json\r\ncontent-length: {}\r\nconnection: close\r\n\r\n{body}",
+                body.len()
+            );
+        });
+        let got = list_models(&format!("http://127.0.0.1:{port}"), "k").await;
+        server.join().expect("server");
+        assert_eq!(got.expect("listed"), ["claude-a", "claude-b"]);
     }
 
     #[test]

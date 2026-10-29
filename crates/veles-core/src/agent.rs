@@ -1631,7 +1631,7 @@ impl Agent {
                     // they differed (a responses route's session-cache
                     // header rides cache_mode, so it was not invisible
                     // there at all).
-                    r.cache_mode = crate::providers::resolve_cache_mode(&self.cfg, entry);
+                    r.cache_mode = crate::providers::resolve_cache_mode(&self.cfg, entry, mo);
                     r.extra_body = entry.extra_body.clone();
                     r.replay_reasoning = entry.replay_reasoning.unwrap_or(false);
                 }
@@ -1639,6 +1639,11 @@ impl Agent {
         } else if let Some(mo) = &ov.model {
             if let Some(r) = routes.first_mut() {
                 r.model = mo.clone();
+                // The cache posture can follow the model (OpenRouter's
+                // Anthropic models want breakpoints, its others do not).
+                if let Some(entry) = self.cfg.provider(&r.provider) {
+                    r.cache_mode = crate::providers::resolve_cache_mode(&self.cfg, entry, mo);
+                }
             }
         }
         routes
@@ -9675,6 +9680,31 @@ mod tests {
             first[0].client.client_id(),
             second[0].client.client_id(),
             "the memoized client must keep ONE connection pool across calls"
+        );
+    }
+
+    /// The cache posture can depend on the MODEL (OpenRouter's Anthropic
+    /// models cache only at breakpoints, its others on their own), so a
+    /// `/model` override that keeps the provider must re-resolve it —
+    /// otherwise switching an OpenRouter session onto Claude leaves it on
+    /// the posture of the model it started with, caching nothing.
+    #[test]
+    fn a_model_override_carries_its_own_cache_posture() {
+        let (_home, _env) = crate::testenv::scratch_home();
+        let agent = crate::testenv::mock_agent_with(
+            "https://openrouter.ai/api/v1",
+            "model-override-cache",
+            |cfg| cfg.model.default = Some("deepseek/deepseek-chat".into()),
+        );
+        assert_eq!(
+            agent.effective_routes()[0].cache_mode,
+            crate::providers::CacheMode::Auto
+        );
+        agent.overrides.write_ok().model = Some("anthropic/claude-sonnet-5.5".into());
+        assert_eq!(
+            agent.effective_routes()[0].cache_mode,
+            crate::providers::CacheMode::Explicit,
+            "the overridden model's wire wants breakpoints"
         );
     }
 

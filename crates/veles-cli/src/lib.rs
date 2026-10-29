@@ -1143,6 +1143,7 @@ pub fn run_setup() -> anyhow::Result<()> {
         a.base_url.clear();
         a.key_env.clear();
         a.api_mode.clear();
+        a.driver.clear();
         a.model.clear();
         a.default_provider.clear();
     }
@@ -1161,6 +1162,9 @@ pub fn run_setup() -> anyhow::Result<()> {
         a.base_url = or(&a.base_url, p.base_url);
         a.key_env = or(&a.key_env, p.key_env);
         a.api_mode = or(&a.api_mode, p.api_mode);
+        if a.api_mode == "plugin" {
+            a.driver = or(&a.driver, p.driver);
+        }
         if matches!(
             a.provider,
             ProviderChoice::OpenAiCompatible | ProviderChoice::Ollama
@@ -1190,7 +1194,15 @@ pub fn run_setup() -> anyhow::Result<()> {
             .eq_ignore_ascii_case("y")
         {
             a.provider_name = ask("Provider entry name", &a.provider_name)?;
-            a.api_mode = ask("Wire protocol (chat_completions or responses)", &a.api_mode)?;
+            a.api_mode = ask(
+                "Wire protocol (chat_completions, responses or plugin)",
+                &a.api_mode,
+            )?;
+            if a.api_mode == "plugin" {
+                // The driver a plugin registers; `veles doctor --providers`
+                // lists the loaded ones.
+                a.driver = ask("Provider driver", &a.driver)?;
+            }
         }
     }
 
@@ -2485,6 +2497,11 @@ mod setup_wizard_tests {
             "http://localhost:8000/v1",
             "OPENAI_API_KEY",
             "chat_completions",
+            "",
+        );
+        assert!(
+            !block.contains("driver"),
+            "no driver for a native wire: {block}"
         );
         let cfg: crate::veles_core::config::VelesConfig = toml::from_str(&block).expect("parses");
         assert_eq!(cfg.custom_providers.len(), 1, "{block}");

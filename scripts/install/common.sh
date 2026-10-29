@@ -217,6 +217,15 @@ install_veles() {
     mkdir -p "$VELES_PREFIX/bin"
     install -m 0755 "$VELES_REPO/target/release/veles" "$VELES_PREFIX/bin/veles"
     note "installed $VELES_PREFIX/bin/veles"
+    # The bundled Tcl plugins, at bin/../share/veles/plugins where the
+    # loader looks (plugins.rs bundled_roots; flake.nix bundledTclPlugins
+    # is the same list). Replaced whole: the tier is read-only to veles.
+    for p in tcl-anthropic-driver; do
+        rm -rf "$VELES_PREFIX/share/veles/plugins/$p"
+        mkdir -p "$VELES_PREFIX/share/veles/plugins"
+        cp -R "$VELES_REPO/plugins/examples/$p" "$VELES_PREFIX/share/veles/plugins/$p"
+    done
+    note "installed $VELES_PREFIX/share/veles/plugins"
     case ":$PATH:" in
         *":$VELES_PREFIX/bin:"*) ;;
         *) note "NOTE: $VELES_PREFIX/bin is not on your PATH — add it." ;;
