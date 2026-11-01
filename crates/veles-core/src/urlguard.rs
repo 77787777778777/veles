@@ -74,6 +74,15 @@ fn classify(ip: IpAddr) -> Option<&'static str> {
                 Some("carrier-grade NAT space")
             } else if o[0] == 0 || o[0] == 192 && o[1] == 0 && o[2] == 0 {
                 Some("a reserved range")
+            } else if o[0] == 198 && (o[1] & 0xfe) == 18 {
+                // 198.18.0.0/15, inter-device benchmark testing. Not
+                // ordinary public unicast; commonly used for local NAT
+                // virtual interfaces (for example, proxy/VPN software).
+                Some("benchmark/test address space")
+            } else if o[0] & 0xf0 == 0xf0 {
+                // 240.0.0.0/4, reserved for future use (broadcast was
+                // already refused above).
+                Some("reserved address space")
             } else {
                 None
             }
@@ -86,6 +95,21 @@ fn classify(ip: IpAddr) -> Option<&'static str> {
                 return classify(IpAddr::V4(v4));
             }
             let seg = v6.segments();
+            // NAT64's well-known /96 carries IPv4 in the final four
+            // bytes (RFC 6052); 6to4 carries it immediately after the
+            // 2002::/16 prefix (RFC 3056). They are not interchangeable.
+            if seg[0] == 0x0064 && seg[1] == 0xff9b && seg[2..6].iter().all(|s| *s == 0) {
+                let octets = v6.octets();
+                return classify(IpAddr::V4(std::net::Ipv4Addr::new(
+                    octets[12], octets[13], octets[14], octets[15],
+                )));
+            }
+            if seg[0] == 0x2002 {
+                let octets = v6.octets();
+                return classify(IpAddr::V4(std::net::Ipv4Addr::new(
+                    octets[2], octets[3], octets[4], octets[5],
+                )));
+            }
             if v6.is_loopback() {
                 Some("loopback")
             } else if v6.is_unspecified() || v6.is_multicast() {
@@ -273,6 +297,26 @@ mod tests {
         }
     }
 
+    /// An IPv4 address translated into or embedded in IPv6 must be
+    /// judged by its embedded IPv4 class, not waved through as public
+    /// IPv6 (reported privately by Matt Abate).
+    #[tokio::test]
+    async fn translated_and_reserved_addresses_are_refused() {
+        for url in [
+            "http://[64:ff9b::a00:1]/",
+            "http://[64:ff9b::a9fe:a9fe]/",
+            "http://[2002:0a00:0001::1]/",
+            "http://[2002:a9fe:a9fe::1]/",
+            "http://198.18.0.1/",
+            "http://198.19.255.254/",
+            "http://240.0.0.1/",
+            "http://255.255.255.254/",
+        ] {
+            let e = check(url).await.unwrap_err();
+            assert!(e.starts_with("refused:"), "{url} passed the SSRF guard");
+        }
+    }
+
     #[tokio::test]
     async fn only_http_is_fetchable() {
         for url in [
@@ -300,6 +344,31 @@ mod tests {
     /// reqwest's own redirect policy cannot catch it (its hook is sync,
     /// so it cannot resolve a hostname) — which is why `get` follows
     /// them by hand.
+    #[test]
+    fn translated_ipv4_offsets_match_their_encapsulation() {
+        for (addr, expected) in [
+            ("64:ff9b::a00:1", Some("private")),
+            ("64:ff9b::a9fe:a9fe", Some("link-local")),
+            ("64:ff9b::5db8:d822", None),
+            // The first two segments are not enough: the well-known
+            // prefix is exactly /96. This ordinary public IPv6 address
+            // has private-looking trailing bytes but is not NAT64.
+            ("64:ff9b:1::a00:1", None),
+            // A public 6to4 relay whose bytes 4..7 happen to be private:
+            // reading the NAT64 offset here rejects a valid public address.
+            ("2002:5db8:d822:0a00:1::1", None),
+            ("2002:0a00:0001::1", Some("private")),
+            ("2002:a9fe:a9fe::1", Some("link-local")),
+        ] {
+            let ip = addr.parse::<std::net::Ipv6Addr>().unwrap();
+            let verdict = classify(IpAddr::V6(ip));
+            assert_eq!(verdict.is_some(), expected.is_some(), "{addr}");
+            if let Some(text) = expected {
+                assert!(verdict.unwrap().contains(text), "{addr}: {verdict:?}");
+            }
+        }
+    }
+
     #[tokio::test]
     async fn a_redirect_into_private_space_is_refused_at_the_hop() {
         use tokio::io::{AsyncReadExt as _, AsyncWriteExt as _};

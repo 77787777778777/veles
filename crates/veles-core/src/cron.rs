@@ -1125,7 +1125,7 @@ impl std::fmt::Debug for JobOutcome {
 /// Accepted (hermes cronjob parity):
 ///   '30m' | '90s' | '2h' | '1d'            → every:<seconds>
 ///   'every 2h' | 'every 30 minutes'        → every:<seconds>
-///   '0 9 * * *' (5 fields, 6 with seconds) → cron:<spec>
+///   '0 9 * * *' (5 fields, 6 with seconds) → cron:<spec> (local time)
 ///   '2026-06-01T09:00:00' (ISO, RFC3339)   → once:<rfc3339-utc>
 pub fn normalize_schedule(input: &str) -> Result<String> {
     let s = input.trim();
@@ -1270,6 +1270,16 @@ pub fn next_fire(
         let cron = Cron::new(spec)
             .parse()
             .map_err(|e| anyhow!("bad cron pattern '{spec}': {e}"))?;
+        // A previously calculated slot is an absolute instant. Keep it
+        // across the UTC-to-local interpretation upgrade; finish_run
+        // clears this field before computing the following local slot.
+        // Reading it unconditionally would pin a job to an already-fired
+        // slot forever.
+        if let Some(stored) = &job.next_run_at {
+            if let Ok(dt) = DateTime::parse_from_rfc3339(stored) {
+                return Ok(Some(dt.with_timezone(&Utc)));
+            }
+        }
         // Anchor: last actual run, else creation. First-ever fire is the
         // first match AFTER creation — a brand-new '0 9 * * *' job created
         // at 10:00 fires tomorrow 09:00, never retroactively.
@@ -1280,8 +1290,12 @@ pub fn next_fire(
             .or_else(|| parse_sqlite_utc(&job.created_at))
             .unwrap_or(now);
         let anchor = if anchor > now { now } else { anchor };
+        // A calendar pattern is wall-clock time on this node, just like
+        // a naïve ISO one-shot. Evaluating it against DateTime<Utc>
+        // silently made `0 9 * * *` mean 09:00 UTC instead.
+        let local = anchor.with_timezone(&chrono::Local);
         return Ok(cron
-            .find_next_occurrence(&anchor, false)
+            .find_next_occurrence(&local, false)
             .ok()
             .map(|d| d.with_timezone(&Utc)));
     }
@@ -1459,7 +1473,7 @@ pub fn describe_schedule(schedule: &str) -> String {
         return format!("every {n} {unit}{}", if n == 1 { "" } else { "s" });
     }
     if let Some(spec) = schedule.strip_prefix("cron:") {
-        return format!("cron '{spec}'");
+        return format!("cron '{spec}' (local time)");
     }
     schedule.to_string()
 }
@@ -1661,6 +1675,21 @@ mod tests {
         );
     }
 
+    /// Point the fixture at a real TZif file rather than relying on a
+    /// developer machine's /usr/share/zoneinfo. Nix's build sandbox has
+    /// no such directory; the test derivation supplies VELES_TEST_TZDIR.
+    /// An absolute path is the supported Chrono lookup that works in both
+    /// environments and still exercises the actual IANA/DST rules.
+    #[cfg(unix)]
+    fn use_test_timezone(name: &str) {
+        let root = std::env::var("VELES_TEST_TZDIR")
+            .or_else(|_| std::env::var("TZDIR"))
+            .unwrap_or_else(|_| "/usr/share/zoneinfo".into());
+        let path = std::path::Path::new(&root).join(name);
+        assert!(path.is_file(), "missing test timezone file: {path:?}");
+        std::env::set_var("TZ", path);
+    }
+
     fn job(schedule: &str, created: &str, last: Option<&str>, next: Option<&str>) -> CronJob {
         CronJob {
             id: "j".into(),
@@ -1760,34 +1789,117 @@ mod tests {
         assert!(dream_slot("whenever", None, now).is_err());
     }
 
+    /// Calendar patterns mean local wall-clock time, like naïve ISO
+    /// one-shots, not an undocumented UTC schedule (GitHub issue #2).
+    #[cfg(unix)]
+    #[test]
+    fn cron_patterns_use_the_local_timezone() {
+        let _env = crate::testenv::guard();
+        use_test_timezone("America/New_York");
+        let created = "2026-08-09 10:00:00"; // 06:00 in New York.
+        let j = job("cron:0 9 * * *", created, None, None);
+        let now = Utc.with_ymd_and_hms(2026, 8, 9, 10, 30, 0).unwrap();
+        let next = next_fire(&j.schedule, &j, now).unwrap().unwrap();
+        assert_eq!(next, Utc.with_ymd_and_hms(2026, 8, 9, 13, 0, 0).unwrap());
+    }
+
+    /// Croner resolves local DST gaps and repeated times consistently;
+    /// pin that behavior at our scheduling boundary rather than adding a
+    /// separate hand-written DST resolver.
+    #[cfg(unix)]
+    #[test]
+    fn cron_patterns_cross_dst_using_croner_local_time_rules() {
+        let _env = crate::testenv::guard();
+        use_test_timezone("America/New_York");
+        let spring = job("cron:30 2 * * *", "2026-03-07 12:00:00", None, None);
+        let now = Utc.with_ymd_and_hms(2026, 3, 7, 13, 0, 0).unwrap();
+        let skipped = next_fire(&spring.schedule, &spring, now).unwrap().unwrap();
+        let fall = job("cron:30 1 * * *", "2026-10-31 12:00:00", None, None);
+        let now = Utc.with_ymd_and_hms(2026, 10, 31, 13, 0, 0).unwrap();
+        let repeated = next_fire(&fall.schedule, &fall, now).unwrap().unwrap();
+        // 02:30 does not exist on 2026-03-08. Croner advances one
+        // second at a time to 03:00 EDT, the first valid local time in
+        // the gap, then accepts the adjusted minute. This is NOT the
+        // 03:30 result a naive "preserve the minute" rule would give.
+        assert_eq!(skipped, Utc.with_ymd_and_hms(2026, 3, 8, 7, 0, 0).unwrap());
+        // The local pattern can also match the second 01:30 after the
+        // fallback. Croner's from_naive normally picks the first side,
+        // but a next-slot search that crosses the transition can arrive
+        // at this second occurrence; the durable UTC slot keeps it distinct.
+        assert_eq!(
+            repeated,
+            Utc.with_ymd_and_hms(2026, 11, 1, 6, 30, 0).unwrap()
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn a_pending_legacy_cron_slot_survives_the_timezone_upgrade() {
+        let _env = crate::testenv::guard();
+        use_test_timezone("America/New_York");
+        // The old engine persisted 09:00 UTC for a daily 09:00 pattern.
+        // That already-calculated instant must survive the upgrade; only
+        // the slot AFTER it is reinterpreted as local wall-clock time.
+        let mut j = job("cron:0 9 * * *", "2026-08-08 10:00:00", None, None);
+        j.next_run_at = Some("2026-08-09T09:00:00+00:00".into());
+        let before = Utc.with_ymd_and_hms(2026, 8, 9, 8, 0, 0).unwrap();
+        assert_eq!(
+            next_fire(&j.schedule, &j, before).unwrap(),
+            Some(Utc.with_ymd_and_hms(2026, 8, 9, 9, 0, 0).unwrap())
+        );
+        assert_eq!(
+            due_slot(&j, before).unwrap(),
+            None,
+            "a future stored slot is not due yet"
+        );
+        let due = Utc.with_ymd_and_hms(2026, 8, 9, 9, 1, 0).unwrap();
+        assert_eq!(due_slot(&j, due).unwrap(), Some("20260809T090000Z".into()));
+        let mut probe = j.clone();
+        probe.next_run_at = None;
+        probe.last_run_at = Some("2026-08-09 09:00:00".into());
+        // The preserved UTC slot fires at 05:00 New York time. Its
+        // successor is 09:00 local LATER THAT DAY, not tomorrow.
+        assert_eq!(
+            next_fire(&j.schedule, &probe, due).unwrap(),
+            Some(Utc.with_ymd_and_hms(2026, 8, 9, 13, 0, 0).unwrap())
+        );
+    }
+
+    #[cfg(unix)]
     #[test]
     fn cron_first_fire_is_after_creation_not_now() {
-        // Created at 10:00 UTC; '0 9 * * *' must fire NEXT day 09:00,
+        let _env = crate::testenv::guard();
+        use_test_timezone("UTC");
+        // Created at 10:00; '0 9 * * *' must fire NEXT day 09:00,
         // never retroactively at today's 09:00.
         let created = "2026-08-09 10:00:00";
         let j = job("cron:0 9 * * *", created, None, None);
         let now = Utc.with_ymd_and_hms(2026, 8, 9, 10, 30, 0).unwrap();
         let next = next_fire(&j.schedule, &j, now).unwrap().unwrap();
+        let due = due_slot(&j, now).unwrap();
         assert_eq!(next, Utc.with_ymd_and_hms(2026, 8, 10, 9, 0, 0).unwrap());
-        assert!(due_slot(&j, now).unwrap().is_none(), "not due yet");
+        assert!(due.is_none(), "not due yet");
         // At tomorrow 09:00 it becomes due with a minute-floored slot key.
         let at = Utc.with_ymd_and_hms(2026, 8, 10, 9, 0, 5).unwrap();
         assert_eq!(due_slot(&j, at).unwrap(), Some("20260810T090000Z".into()));
     }
 
+    #[cfg(unix)]
     #[test]
     fn catch_up_after_downtime_fires_once() {
-        // Last ran Aug 1 09:00; pattern daily 09:00; now Aug 9. The first
-        // missed instant (Aug 2 09:00) is due exactly once.
+        let _env = crate::testenv::guard();
+        use_test_timezone("America/New_York");
+        // Last ran Aug 1 at 09:00 New York time (13:00 UTC). The first
+        // missed wall-clock instant is Aug 2 at 09:00 local, not 09:00 UTC.
         let j = job(
             "cron:0 9 * * *",
             "2026-07-01 00:00:00",
-            Some("2026-08-01 09:00:05"),
+            Some("2026-08-01 13:00:05"),
             None,
         );
         let now = Utc.with_ymd_and_hms(2026, 8, 9, 12, 0, 0).unwrap();
         let slot = due_slot(&j, now).unwrap();
-        assert_eq!(slot, Some("20260802T090000Z".into()));
+        assert_eq!(slot, Some("20260802T130000Z".into()));
     }
 
     #[test]
@@ -1804,7 +1916,10 @@ mod tests {
     fn describe_schedule_shapes() {
         assert_eq!(describe_schedule("every:1800"), "every 30 mins");
         assert_eq!(describe_schedule("every:7200"), "every 2 hours");
-        assert_eq!(describe_schedule("cron:0 9 * * *"), "cron '0 9 * * *'");
+        assert_eq!(
+            describe_schedule("cron:0 9 * * *"),
+            "cron '0 9 * * *' (local time)"
+        );
         assert!(describe_schedule("once:2026-06-01T09:00:00Z").starts_with("once at"));
     }
 

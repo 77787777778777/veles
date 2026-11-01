@@ -133,6 +133,9 @@ const DIR_VARS: &[&str] = &[
     // points it at a scratch tree must not leave every later test
     // discovering that tree.
     "VELES_BUNDLED_PLUGINS",
+    // A calendar test's local timezone is process-global too; restore on
+    // unwind so a failed fixture cannot poison the next scheduling test.
+    "TZ",
 ];
 
 impl Drop for EnvGuard {

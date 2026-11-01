@@ -74,7 +74,7 @@ namespace eval ::wire {
         } elseif {[string match "/api/quota*" $path]} {
             set body {{"enabled":true,"cold":false,"age_secs":1,"poll_secs":900,"active_plan":null,"plan_fractions":{},"team_error":null,"personal_error":null,"zai_error":null,"kimi_error":null}}
         } elseif {[string match "*/context" $path]} {
-            set body {{"busy":false,"history_percent_of_budget":12.0,"context_window_tokens":200000,"cache_hit_rate_last_call":null}}
+            set body {{"busy":false,"history_percent_of_budget":12.0,"last_call_prompt_tokens":24000,"context_window_tokens":200000,"cache_hit_rate_last_call":null}}
         } else {
             set body {{"uptime_s":42,"platforms":["desktop"],"plan_mode":false}}
         }

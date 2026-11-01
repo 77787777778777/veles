@@ -682,26 +682,9 @@ proc ::vstatus::_paint_right_payload {sid u cx} {
     set busy 0
     if {$cx ne ""} { catch { set busy [dict get $cx busy] } }
     if {$cx ne "" && !$busy} {
-        set pct ""
-        catch { set pct [dict get $cx history_percent_of_budget] }
-        set win ""
-        catch { set win [dict get $cx context_window_tokens] }
-        if {$pct ne "" && [string is double -strict $pct]} {
-            set trig 85
-            catch { set trig [dict get $cx compaction_trigger_percent] }
-            set tok_est [expr {$win > 0 ? int($win * $pct / 100.0) : 0}]
-            set seg "  ·  ctx [format %.1f $pct]% · [::vstatus::_group $tok_est]/[::vstatus::_group $win] tok"
-            # Crossing the trigger is a CONDITION, not an event. Mid-turn
-            # compaction is a conditional valve — it may or may not fire
-            # this round — so say what is true (the window is at or past
-            # the trigger), never "(compacting)", which claims the
-            # summarizer is running when only a percent comparison
-            # happened. (PENDING 2026-09-12 round, "compaction due".)
-            if {$pct >= $trig} {
-                append seg " (compaction due)"
-            } elseif {$pct >= [expr {$trig * 0.8}]} {
-                append seg " (near compaction)"
-            }
+        set ctx_seg [::vstatus::_context_segment $cx]
+        if {$ctx_seg ne ""} {
+            set seg $ctx_seg
             variable last_ctx_line
             variable last_ctx
             variable last_ctx_sid
@@ -721,22 +704,11 @@ proc ::vstatus::_paint_right_payload {sid u cx} {
         # answer carries no figures (or a fetch that failed).
         variable last_ctx_line
         variable last_ctx_sid
-        set pct ""
-        catch { set pct [dict get $cx history_percent_of_budget] }
-        set win ""
-        catch { set win [dict get $cx context_window_tokens] }
-        if {$pct ne "" && [string is double -strict $pct]} {
-            set trig 85
-            catch { set trig [dict get $cx compaction_trigger_percent] }
-            set tok_est [expr {$win > 0 ? int($win * $pct / 100.0) : 0}]
-            set seg "  ·  ctx [format %.1f $pct]% · [::vstatus::_group $tok_est]/[::vstatus::_group $win] tok"
-            # Same honesty rule as the idle arm above: a crossed trigger
-            # is "compaction due", never "(compacting)".
-            if {$pct >= $trig} {
-                append seg " (compaction due)"
-            } elseif {$pct >= [expr {$trig * 0.8}]} {
-                append seg " (near compaction)"
-            }
+        set ctx_seg [::vstatus::_context_segment $cx]
+        if {$ctx_seg ne ""} {
+            set seg $ctx_seg
+            # Same honesty rule as the idle arm: "due" is a threshold
+            # condition, never a claim that a compaction is running.
             append seg " (turn running)"
             set last_ctx_line $seg
             set last_ctx_sid $sid
@@ -746,6 +718,57 @@ proc ::vstatus::_paint_right_payload {sid u cx} {
         }
     }
     .statusbar.right configure -text $right
+}
+
+# A provider's last prompt count includes the fixed prompt, tool schema,
+# history and reasoning input sent on that call. history_percent_of_budget is
+# instead a character estimate against the CAPPED compaction bar; multiplying
+# it by the whole window inflates the figure when the window exceeds that bar.
+# The count is the last completed call's input, not the in-flight turn's total.
+# Retain the character-estimate fallback when no provider count is reported.
+# It is explicitly a different, approximate measure, not a provider reading.
+proc ::vstatus::_context_segment {cx} {
+    set win ""
+    catch { set win [dict get $cx context_window_tokens] }
+    if {![string is double -strict $win] || $win <= 0} { return "" }
+    set measured ""
+    catch { set measured [dict get $cx last_call_prompt_tokens] }
+    set has_measured [expr {[string is double -strict $measured] && $measured > 0}]
+    set trig 85
+    catch { set trig [dict get $cx compaction_trigger_percent] }
+    if {![string is double -strict $trig]} { set trig 85 }
+    set cap 0
+    catch { set cap [dict get $cx compaction_max_context_tokens] }
+    if {![string is double -strict $cap] || $cap < 0} { set cap 0 }
+    set bar [expr {$win * $trig / 100.0}]
+    if {$cap > 0 && $cap < $bar} { set bar $cap }
+    if {$has_measured} {
+        set tok $measured
+        set pct [expr {100.0 * $tok / $win}]
+        set seg "  ·  ctx [format %.1f $pct]% · [::vstatus::_group $tok]/[::vstatus::_group $win] tok"
+        # Last prompt is behind the NEXT call by this turn's user message and
+        # any tool/answer output. Treat crossing the bar as due as before, but
+        # start the near band early enough to expose that approaching gap.
+        if {$tok >= $bar} {
+            append seg " (compaction due)"
+        } elseif {$tok >= $bar * 0.8} {
+            append seg " (near compaction)"
+        }
+    } else {
+        # Without a provider reading there is no measured token total to
+        # present. Show the budget estimate for what it is, not as an
+        # inflated count against a larger window.
+        set pct ""
+        catch { set pct [dict get $cx history_percent_of_budget] }
+        if {![string is double -strict $pct]} { return "" }
+        set seg "  ·  ctx est [format %.1f $pct]% of compaction bar"
+        if {$pct >= 100} {
+            append seg " (compaction due)"
+        } elseif {$pct >= 80} {
+            append seg " (near compaction)"
+        }
+    }
+    return $seg
 }
 
 # The upstream plan's headline figure: the fraction USED of the pool

@@ -116,7 +116,9 @@ set c [dict create busy false \
                    cache_hit_rate_last_call 0.98 \
                    cache_hit_rate 0.733 \
                    history_percent_of_budget 12.0 \
+                   last_call_prompt_tokens 24000 \
                    context_window_tokens 200000 \
+                   compaction_max_context_tokens 450000 \
                    compaction_trigger_percent 85]
 set bar [tick $u $c]
 ok "the LAST CALL rate is shown"        {[string match "*98% last call*" $bar]}
@@ -139,6 +141,7 @@ set ur [dict create session [dict create prompt_tokens 4500 \
 set cr [dict create busy false \
                     cache_hit_rate_last_call null \
                     history_percent_of_budget 12.0 \
+                    last_call_prompt_tokens 24000 \
                     context_window_tokens 200000 \
                     session_reasoning_tokens 2800]
 set barr [tick $ur $cr]
@@ -156,6 +159,7 @@ set u0 [dict create session [dict create prompt_tokens 4500 \
 set c0 [dict create busy false \
                     cache_hit_rate_last_call null \
                     history_percent_of_budget 3.0 \
+                    last_call_prompt_tokens 6000 \
                     context_window_tokens 200000]
 set bar0 [tick $u0 $c0]
 ok "no cache segment at all"        {![string match "*cache*" $bar0]}
@@ -173,6 +177,7 @@ set cc [dict create busy false \
                     note {compaction in progress} \
                     cache_hit_rate_last_call null \
                     history_percent_of_budget 9.5 \
+                    last_call_prompt_tokens 19000 \
                     context_window_tokens 200000]
 set barc [tick $u0 $cc]
 ok "the fill renders while compacting" {[string match "*ctx 9.5%*" $barc]}
@@ -198,6 +203,7 @@ puts "\nmid-turn busy paints FRESH figures, marked turn running"
 set cg [dict create busy true \
         cache_hit_rate_last_call null \
         history_percent_of_budget 14.5 \
+        last_call_prompt_tokens 29000 \
         context_window_tokens 200000]
 set barg [tick $u $cg]
 ok "fresh fill wins over the retained line" {[string match "*ctx 14.5%*" $barg]}
@@ -214,7 +220,9 @@ puts "\ncrossing the trigger is a condition, not an announcement"
 set cd [dict create busy false \
                     cache_hit_rate_last_call null \
                     history_percent_of_budget 90.0 \
+                    last_call_prompt_tokens 180000 \
                     context_window_tokens 200000 \
+                    compaction_max_context_tokens 450000 \
                     compaction_trigger_percent 85]
 set bard [tick $u $cd]
 ok "the crossing renders as due, not in-flight" \
@@ -224,7 +232,9 @@ ok "…and never claims a compaction is running" \
 set cn [dict create busy false \
                     cache_hit_rate_last_call null \
                     history_percent_of_budget 70.0 \
+                    last_call_prompt_tokens 140000 \
                     context_window_tokens 200000 \
+                    compaction_max_context_tokens 450000 \
                     compaction_trigger_percent 85]
 set barn [tick $u $cn]
 ok "the near band still says near" {[string match "*(near compaction)*" $barn]}
@@ -233,12 +243,48 @@ ok "…and the near band is not 'due'" {![string match "*(compaction due)*" $bar
 set ce [dict create busy true \
                     cache_hit_rate_last_call null \
                     history_percent_of_budget 90.0 \
+                    last_call_prompt_tokens 180000 \
                     context_window_tokens 200000 \
+                    compaction_max_context_tokens 450000 \
                     compaction_trigger_percent 85]
 set bare [tick $u $ce]
 ok "mid-turn the label stays honest too" \
     {[string match "*(compaction due)*" $bare]
      && ![string match "*(compacting)*" $bare]}
+
+# The bar must use the provider's measured prompt count, not history chars
+# as a fraction of the capped compaction budget multiplied by the whole
+# window. On a 1M-window route the old figure is about 2.3x too large.
+puts "\nthe provider's prompt count drives the fill and the capped trigger"
+set measured [dict create busy false \
+    history_percent_of_budget 82.8 \
+    last_call_prompt_tokens 400000 \
+    context_window_tokens 1048576 \
+    compaction_trigger_percent 85 \
+    compaction_max_context_tokens 450000]
+set barm [tick $u $measured]
+ok "the provider count, not the inflated estimate, is shown" \
+    {[string match "*400,000/1,048,576 tok*" $barm] \
+     && ![string match "*868,000*" $barm]}
+ok "its percentage is of the real window" {[string match "*ctx 38.1%*" $barm]}
+ok "400k is near the 450k bar, not due" \
+    {[string match "*(near compaction)*" $barm]}
+dict set measured last_call_prompt_tokens 450000
+ok "the capped compaction threshold is due" \
+    {[string match "*(compaction due)*" [tick $u $measured]]}
+dict set measured busy true
+dict set measured last_call_prompt_tokens 400000
+set barbm [tick $u $measured]
+ok "a busy turn uses the same measured reading" \
+    {[string match "*ctx 38.1%*400,000/1,048,576 tok*(near compaction)*(turn running)*" $barbm]}
+
+dict set measured busy false
+dict set measured last_call_prompt_tokens null
+set bareestimate [tick $u $measured]
+ok "an unavailable provider count is labelled as a budget estimate" \
+    {[string match "*ctx est 82.8% of compaction bar*(near compaction)*" $bareestimate]}
+ok "the fallback invents neither a window percentage nor a token count" \
+    {![string match "*ctx 82.8%*868,000*" $bareestimate]}
 
 # The context endpoint being unreachable must not take the usage numbers
 # down with it: the session mean is still a real reading.

@@ -543,6 +543,18 @@ fn veles_binary() -> anyhow::Result<PathBuf> {
             return Ok(PathBuf::from(p));
         }
     }
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    {
+        // Linux and Android retain the running image after its pathname is
+        // replaced by a development rebuild. current_exe() includes
+        // in that state; passing it to Command::spawn fails with ENOENT.
+        // /proc/self/exe resolves the live image instead (Rust also uses
+        // it for current_exe), and preserves dev-build → dev children.
+        // The executable survives; sibling resources discovered from
+        // current_exe() in the child still need a valid installed layout.
+        Ok(PathBuf::from("/proc/self/exe"))
+    }
+    #[cfg(not(any(target_os = "linux", target_os = "android")))]
     std::env::current_exe().map_err(|e| anyhow::anyhow!("cannot resolve own binary path: {e}"))
 }
 
@@ -1686,6 +1698,87 @@ impl crate::tools::Tool for DelegateTaskTool {
 mod tests {
     use super::*;
     use crate::tools::Tool;
+
+    /// A development rebuild replaces target/debug/veles while the old
+    /// gateway is still running it. The child's executable must still
+    /// resolve to the LIVE process image, not the removed pathname.
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    #[test]
+    fn a_deleted_executable_path_does_not_prevent_spawning() {
+        let dir = tempfile::tempdir().unwrap();
+        let copy = dir.path().join("deleted-veles-test");
+        std::fs::copy(std::env::current_exe().unwrap(), &copy).unwrap();
+        let marker = dir.path().join("spawned");
+        let mut child = std::process::Command::new(&copy)
+            // VELES_BINARY is process-global in the parallel suite; this
+            // regression is specifically about the automatic live-image
+            // fallback, so no sibling's override may enter the harness.
+            .env_remove("VELES_BINARY")
+            .env("VELES_DELETED_EXE_TEST_MARKER", &marker)
+            .arg("--exact")
+            .arg("delegate::tests::a_deleted_executable_path_does_not_prevent_spawning_child")
+            .arg("--ignored")
+            .arg("--nocapture")
+            .arg("--test-threads=1")
+            .spawn()
+            .unwrap();
+        std::fs::remove_file(&copy).unwrap();
+        assert_eq!(child.wait().unwrap().code(), Some(0));
+        assert_eq!(std::fs::read_to_string(marker).unwrap(), "spawned");
+    }
+
+    /// A development rebuild atomically replaces target/debug/veles
+    /// while the old gateway is still running it. The old process image
+    /// remains executable through /proc even when its path is occupied
+    /// by a different file, or has no name at all.
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    #[test]
+    fn a_replaced_executable_path_does_not_prevent_spawning() {
+        let dir = tempfile::tempdir().unwrap();
+        let copy = dir.path().join("replaced-veles-test");
+        std::fs::copy(std::env::current_exe().unwrap(), &copy).unwrap();
+        let marker = dir.path().join("spawned-replaced");
+        let mut child = std::process::Command::new(&copy)
+            .env_remove("VELES_BINARY")
+            .env("VELES_DELETED_EXE_TEST_MARKER", &marker)
+            .arg("--exact")
+            .arg("delegate::tests::a_deleted_executable_path_does_not_prevent_spawning_child")
+            .arg("--ignored")
+            .arg("--test-threads=1")
+            .spawn()
+            .unwrap();
+        let replacement = dir.path().join("replacement");
+        std::fs::write(&replacement, b"a new build occupies this path").unwrap();
+        std::fs::rename(replacement, &copy).unwrap();
+        assert_eq!(child.wait().unwrap().code(), Some(0));
+        assert_eq!(std::fs::read_to_string(marker).unwrap(), "spawned");
+        assert_ne!(
+            std::fs::read(&copy).unwrap(),
+            std::fs::read("/proc/self/exe").unwrap()
+        );
+    }
+
+    /// Subprocess helper for the deleted-path regression. Keep separate
+    /// from the parent test so deleting the copied executable cannot
+    /// affect the test runner's own image.
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    #[test]
+    #[ignore]
+    fn a_deleted_executable_path_does_not_prevent_spawning_child() {
+        let path = veles_binary().unwrap();
+        assert_eq!(path, std::path::Path::new("/proc/self/exe"));
+        let status = std::process::Command::new(path)
+            .arg("--help")
+            .status()
+            .unwrap();
+        assert!(status.success(), "spawning the live image must succeed");
+        std::fs::write(
+            std::env::var_os("VELES_DELETED_EXE_TEST_MARKER")
+                .expect("the parent must request this isolated helper"),
+            "spawned",
+        )
+        .unwrap();
+    }
 
     fn completion(id: u32) -> BackgroundEvent {
         BackgroundEvent {

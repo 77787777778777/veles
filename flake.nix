@@ -611,7 +611,7 @@
         # both packages.default and the OCI image below can reference it.
         velesPkg = pkgs.rustPlatform.buildRustPackage rec {
           pname = "veles-agent";
-          version = "0.1.4";
+          version = "0.1.5";
           src = rustSrc;
           cargoLock = {
             lockFile = ./Cargo.lock;
@@ -1007,7 +1007,12 @@
         # developer runs, with overflow checks and debug assertions on.
         testsCheck = velesPkg.overrideAttrs (old: {
           pname = "veles-agent-tests";
-          env = old.env // { VELES_CHECK_AFTER = "${clippyCheck}"; };
+          env = old.env // {
+            VELES_CHECK_AFTER = "${clippyCheck}";
+            # An absolute TZif path works in the build sandbox; Chrono
+            # does not consult TZDIR for an IANA zone name.
+            VELES_TEST_TZDIR = "${pkgs.tzdata}/share/zoneinfo";
+          };
           buildPhase = ''
             runHook preBuild
             # cargo gives no build-order guarantee for a sibling cdylib
@@ -1077,7 +1082,7 @@
         androidMinSdk = "26";
         # Raised by hand for each release a store sees; a sideloaded
         # reinstall of the same code keeps it.
-        androidVersionCode = "5";
+        androidVersionCode = "6";
         androidSdk =
           (androidHost.androidenv.composeAndroidPackages {
             platformVersions = [ androidTargetSdk ];
@@ -2289,7 +2294,7 @@
 
         # The image's tag names the commit it was built from, so the VPS
         # can say which one it runs.
-        imageTag = "0.1.4-${self.shortRev or self.dirtyShortRev or "dirty"}";
+        imageTag = "0.1.5-${self.shortRev or self.dirtyShortRev or "dirty"}";
         imageRevision = self.rev or self.dirtyRev or "dirty";
         # The release builder overrides only this label. Published images
         # must be rejected if their source does not name the authenticated

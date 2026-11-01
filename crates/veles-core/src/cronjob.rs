@@ -391,7 +391,7 @@ impl crate::tools::Tool for CronjobTool {
     fn description(&self) -> &str {
         "Manage durable scheduled jobs (sqlite-backed; run by the gateway scheduler). \
          Actions: create (schedule + prompt REQUIRED), list, update, pause, resume, remove, run. \
-         Schedule forms: '30m', 'every 2h' (min interval 60s); cron pattern '0 9 * * *' (5 fields); \
+         Schedule forms: '30m', 'every 2h' (min interval 60s); cron pattern '0 9 * * *' (5 fields, local time); \
          ISO timestamp for one-shots. By default a job runs in a FRESH session with no context — \
          its prompt must be self-contained. session=<id-or-prefix> makes it a WAKEUP instead: the \
          job resumes THAT session with its full history as context (one-off or recurring — 'check \

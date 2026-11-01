@@ -1,3 +1,11 @@
+veles-agent (0.1.5) unstable; urgency=medium
+
+  * Cover every approval trigger, refuse translated/private URL targets,
+    schedule cron patterns in local time, spawn after a dev rebuild,
+    recognize gallery alt-text events, and correct the context display.
+
+ -- veles-agent maintainers <noreply@example.invalid>  Sun, 01 Nov 2026 01:20:00 +0000
+
 veles-agent (0.1.4) unstable; urgency=medium
 
   * Compaction works on Anthropic routes again (the summary no longer

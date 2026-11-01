@@ -45,13 +45,22 @@ pub fn image_cid(image: &Value) -> String {
     }
 }
 
-/// The `images` array of an embed: a plain images embed, or the media of
-/// a quote-with-media.
+/// The image array of an embed: `images` for the original images embed,
+/// `items` for the newer gallery embed, or the media of a quote-with-media.
+/// Gallery items use `app.bsky.embed.gallery#image`, but the blob and alt
+/// fields have the same shape as the original image entries.
 pub fn embed_images(embed: &Value) -> &[Value] {
     let t = embed.get("$type").and_then(Value::as_str).unwrap_or("");
     let images = match t {
         "app.bsky.embed.images" => embed.get("images"),
-        "app.bsky.embed.recordWithMedia" => embed.get("media").and_then(|m| m.get("images")),
+        "app.bsky.embed.gallery" => embed.get("items"),
+        "app.bsky.embed.recordWithMedia" => embed.get("media").and_then(|m| {
+            if m.get("$type").and_then(Value::as_str) == Some("app.bsky.embed.gallery") {
+                m.get("items")
+            } else {
+                m.get("images")
+            }
+        }),
         _ => None,
     };
     images

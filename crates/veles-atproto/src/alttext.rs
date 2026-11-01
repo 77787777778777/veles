@@ -565,6 +565,53 @@ mod tests {
         assert!(missing_alt(&json!({"text": "no embed"})).is_empty());
     }
 
+    fn gallery(images: &[Value]) -> Value {
+        json!({"$type": "app.bsky.feed.post", "text": "a gallery", "langs": ["en"],
+               "embed": {"$type": "app.bsky.embed.gallery", "items": images}})
+    }
+
+    fn gallery_image(cid: &str, alt: &str) -> Value {
+        json!({"$type": "app.bsky.embed.gallery#image", "alt": alt,
+               "image": {"$type": "blob", "ref": {"$link": cid},
+                         "mimeType": "image/jpeg", "size": 1964440}})
+    }
+
+    #[test]
+    fn galleries_supply_their_missing_alt_images_without_a_backfill() {
+        let record = gallery(&[
+            gallery_image("bafy-first", "already described"),
+            gallery_image("bafy-second", ""),
+            gallery_image("bafy-third", "  "),
+        ]);
+        assert_eq!(
+            missing_alt(&record),
+            [(2, "bafy-second".into()), (3, "bafy-third".into())]
+        );
+        assert_eq!(image_count(&record), 3);
+
+        let dir = tempfile::tempdir().unwrap();
+        let alt = AltText::load(dir.path(), AltSettings::default(), "did:plc:op");
+        let fresh = ev("did:plc:op", record.clone(), now_secs());
+        assert!(alt.candidate(&fresh), "a new gallery is a candidate");
+        alt.mark_done(&fresh.post_uri);
+        assert!(
+            !alt.candidate(&fresh),
+            "a handled gallery is never repeated"
+        );
+        let after_restart = AltText::load(dir.path(), AltSettings::default(), "did:plc:op");
+        assert!(
+            !after_restart.candidate(&fresh),
+            "the durable done record survives a restart; no historical backfill"
+        );
+
+        let quoted = json!({"$type": "app.bsky.feed.post", "embed": {
+            "$type": "app.bsky.embed.recordWithMedia",
+            "media": {"$type": "app.bsky.embed.gallery",
+                      "items": [gallery_image("bafy-quoted", "")]}
+        }});
+        assert_eq!(missing_alt(&quoted), [(1, "bafy-quoted".into())]);
+    }
+
     #[test]
     fn the_operator_and_opted_in_mutuals_are_candidates_and_nobody_else() {
         let dir = tempfile::tempdir().unwrap();
