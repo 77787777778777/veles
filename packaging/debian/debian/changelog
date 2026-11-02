@@ -1,3 +1,11 @@
+veles-agent (0.1.6) unstable; urgency=medium
+
+  * Let owners select which matched approval classes a standing grant
+    remembers, and keep guard notes inline during incremental desktop
+    transcript finalization.
+
+ -- veles-agent maintainers <noreply@example.invalid>  Mon, 02 Nov 2026 00:30:00 +0000
+
 veles-agent (0.1.5) unstable; urgency=medium
 
   * Cover every approval trigger, refuse translated/private URL targets,

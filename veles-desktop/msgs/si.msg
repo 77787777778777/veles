@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset si choice_wait {තත්පර %{secs} රැඳී සිටින්න (භාවිත යළි පිහිටුවීම), පසුව එම මාර්ගයෙන්ම නැවත උත්සාහ කරන්න}
 ::msgcat::mcset si {choose a default model for %{provider} — the model step can list the provider's models} {%{provider} සඳහා පෙරනිමි මාදිලියක් තෝරන්න — මාදිලි පියවරට සැපයුම්කරුගේ මාදිලි ලැයිස්තුගත කළ හැක}
 ::msgcat::mcset si {choose a model: pick one from the list, or type its name} {මාදිලියක් තෝරන්න: ලැයිස්තුවෙන් එකක් තෝරන්න, හෝ එහි නම ටයිප් කරන්න}
+::msgcat::mcset si {choose an approval scope before answering} {පිළිතුරු දීමට පෙර අනුමැති විෂය පථයක් තෝරන්න}
 ::msgcat::mcset si {clear failed: %s} {clear අසමත්: %s}
 ::msgcat::mcset si {click a job in the list first} {මුලින් ලැයිස්තුවේ රැකියාවක් ක්ලික් කරන්න}
 ::msgcat::mcset si {click a job to select it} {රැකියාවක් තේරීමට ක්ලික් කරන්න}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset si {filter skills by name} {නම අනුව කුසලතා පෙරහන් කරන්න}
 ::msgcat::mcset si {find in transcript} {transcript එකේ සොයන්න}
 ::msgcat::mcset si {find references} {යොමු සොයන්න}
+::msgcat::mcset si {finishing the transcript; try sending again in a moment} {පිටපත සම්පූර්ණ වෙමින් පවතී; මොහොතකින් නැවත යැවීමට උත්සාහ කරන්න}
 ::msgcat::mcset si {fire the Tcl hook} {Tcl hook එක ක්‍රියාත්මක කරන්න}
 ::msgcat::mcset si {fires for %s:} {%s සඳහා ක්‍රියාත්මක වේ:}
 ::msgcat::mcset si {fires per hour} {පැයකට වෙඩි ගැසීම්}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset si {tools the engine has registered} {එන්ජිම ලියාපදිංචි කර ඇති මෙවලම්}
 ::msgcat::mcset si {tools unavailable} {මෙවලම් ලබාගත නොහැක}
 ::msgcat::mcset si {tools unavailable: %s} {මෙවලම් ලබාගත නොහැක: %s}
+::msgcat::mcset si {transcript finalization failed: %s} {පිටපත අවසන් කිරීම අසමත් විය: %s}
 ::msgcat::mcset si {transcript refetched} {පිටපත නැවත ලබා ගන්නා ලදී}
 ::msgcat::mcset si {transcript — arrows to read, %s for composer} {පිටපත — කියවීමට ඊතල, කියවුම් කොටුවට %s}
 ::msgcat::mcset si {trigger %1$s %2$sd} {ප්රේරකය %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset si {☰ shows or hides the session list; picking a session closes it.} {☰ සැසි ලැයිස්තුව පෙන්වයි හෝ සඟවයි; සැසියක් තේරූ විට එය වැසේ.}
 ::msgcat::mcset si {⚙ %s} {⚙ %s}
 ::msgcat::mcset si {⚠ %s} {⚠ %s}
+::msgcat::mcset si {⚠ transcript finalization failed; preserved available text} {⚠ පිටපත අවසන් කිරීම අසමත් විය; තිබෙන පෙළ ආරක්ෂා කර ඇත}
 ::msgcat::mcset si {✖ %s} {✖ %s}
 ::msgcat::mcset si {✖ detach failed: %s} {✖ වෙන් කිරීම අසාර්ථක විය: %s}
 ::msgcat::mcset si {✖ session stream: %s} {✖ සැසි stream එක: %s}

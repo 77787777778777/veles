@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset ta choice_wait {%{secs} வினாடிகள் காத்திரு (பயன்பாட்டு மீட்டமைவு), பிறகு அதே தடத்தில் மீண்டும் முயல்}
 ::msgcat::mcset ta {choose a default model for %{provider} — the model step can list the provider's models} {%{provider}-க்கான இயல்புநிலை மாடலைத் தேர்ந்தெடுக்கவும் — model படி வழங்குநரின் மாடல்களைப் பட்டியலிட முடியும்}
 ::msgcat::mcset ta {choose a model: pick one from the list, or type its name} {மாடலைத் தேர்ந்தெடுக்கவும்: பட்டியலிலிருந்து ஒன்றைத் தேர்ந்தெடுக்கவும் அல்லது அதன் பெயரைத் தட்டச்சு செய்யவும்}
+::msgcat::mcset ta {choose an approval scope before answering} {பதிலளிப்பதற்கு முன் அனுமதி வரம்பைத் தேர்ந்தெடுக்கவும்}
 ::msgcat::mcset ta {clear failed: %s} {அழிக்க முடியவில்லை: %s}
 ::msgcat::mcset ta {click a job in the list first} {முதலில் பட்டியலில் ஒரு வேலையை கிளிக் செய்யவும்}
 ::msgcat::mcset ta {click a job to select it} {தேர்ந்தெடுக்க ஒரு வேலையை கிளிக் செய்யவும்}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset ta {filter skills by name} {திறன்களை பெயரால் வடிகட்டு}
 ::msgcat::mcset ta {find in transcript} {தொடர்வரியில் தேடு}
 ::msgcat::mcset ta {find references} {குறிப்புகளைக் கண்டறி}
+::msgcat::mcset ta {finishing the transcript; try sending again in a moment} {உரையாடல் தொகுப்பு முடிக்கப்படுகிறது; சிறிது நேரத்தில் மீண்டும் அனுப்ப முயற்சிக்கவும்}
 ::msgcat::mcset ta {fire the Tcl hook} {Tcl hook-ஐ இயக்கு}
 ::msgcat::mcset ta {fires for %s:} {%s க்கு இயங்கும்:}
 ::msgcat::mcset ta {fires per hour} {மணிக்கு இயங்கும் முறை}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset ta {tools the engine has registered} {இயந்திரம் பதிவு செய்த கருவிகள்}
 ::msgcat::mcset ta {tools unavailable} {கருவிகள் கிடைக்கவில்லை}
 ::msgcat::mcset ta {tools unavailable: %s} {கருவிகள் கிடைக்கவில்லை: %s}
+::msgcat::mcset ta {transcript finalization failed: %s} {உரையாடல் தொகுப்பு தோல்வி: %s}
 ::msgcat::mcset ta {transcript refetched} {உரையாடல் மீண்டும் பெறப்பட்டது}
 ::msgcat::mcset ta {transcript — arrows to read, %s for composer} {உரையாடல் — படிக்க அம்புகள், உள்ளீட்டிற்கு %s}
 ::msgcat::mcset ta {trigger %1$s %2$sd} {தூண்டு %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset ta {☰ shows or hides the session list; picking a session closes it.} {☰ அமர்வு பட்டியலைக் காட்டும் அல்லது மறைக்கும்; ஒரு அமர்வைத் தேர்ந்தெடுத்தால் அது மூடும்.}
 ::msgcat::mcset ta {⚙ %s} {⚙ %s}
 ::msgcat::mcset ta {⚠ %s} {⚠ %s}
+::msgcat::mcset ta {⚠ transcript finalization failed; preserved available text} {⚠ உரையாடல் தொகுப்பு தோல்வி; கிடைக்கும் உரை பாதுகாக்கப்பட்டது}
 ::msgcat::mcset ta {✖ %s} {✖ %s}
 ::msgcat::mcset ta {✖ detach failed: %s} {✖ பிரிப்பது தோல்வி: %s}
 ::msgcat::mcset ta {✖ session stream: %s} {✖ அமர்வு ஸ்ட்ரீம்: %s}

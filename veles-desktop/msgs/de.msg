@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset de choice_wait {%{secs} s warten (Nutzung wird zurückgesetzt), dann dieselbe Route erneut versuchen}
 ::msgcat::mcset de {choose a default model for %{provider} — the model step can list the provider's models} {wähle ein Standardmodell für %{provider} — der Modellschritt kann die Modelle des Providers auflisten}
 ::msgcat::mcset de {choose a model: pick one from the list, or type its name} {wähle ein Modell: nimm eines aus der Liste oder gib seinen Namen ein}
+::msgcat::mcset de {choose an approval scope before answering} {wähle einen Genehmigungsbereich, bevor du antwortest}
 ::msgcat::mcset de {clear failed: %s} {Löschen fehlgeschlagen: %s}
 ::msgcat::mcset de {click a job in the list first} {klicke zuerst einen Job in der Liste an}
 ::msgcat::mcset de {click a job to select it} {klicke auf einen Job, um ihn auszuwählen}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset de {filter skills by name} {Skills nach Name filtern}
 ::msgcat::mcset de {find in transcript} {im Transcript suchen}
 ::msgcat::mcset de {find references} {Referenzen suchen}
+::msgcat::mcset de {finishing the transcript; try sending again in a moment} {Transkript wird fertiggestellt; bitte gleich erneut senden}
 ::msgcat::mcset de {fire the Tcl hook} {Tcl-Hook auslösen}
 ::msgcat::mcset de {fires for %s:} {Auslösungen für %s:}
 ::msgcat::mcset de {fires per hour} {Auslösungen pro Stunde}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset de {tools the engine has registered} {Vom Engine registrierte Tools}
 ::msgcat::mcset de {tools unavailable} {Tools nicht verfügbar}
 ::msgcat::mcset de {tools unavailable: %s} {Tools nicht verfügbar: %s}
+::msgcat::mcset de {transcript finalization failed: %s} {Fertigstellung des Transkripts fehlgeschlagen: %s}
 ::msgcat::mcset de {transcript refetched} {Transkript neu geladen}
 ::msgcat::mcset de {transcript — arrows to read, %s for composer} {Transkript — Pfeile zum Lesen, %s für Composer}
 ::msgcat::mcset de {trigger %1$s %2$sd} {Trigger %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset de {☰ shows or hides the session list; picking a session closes it.} {☰ blendet die Sitzungsliste ein oder aus; die Wahl einer Sitzung schließt sie.}
 ::msgcat::mcset de {⚙ %s} {⚙ %s}
 ::msgcat::mcset de {⚠ %s} {⚠ %s}
+::msgcat::mcset de {⚠ transcript finalization failed; preserved available text} {⚠ Fertigstellung des Transkripts fehlgeschlagen; verfügbarer Text wurde erhalten}
 ::msgcat::mcset de {✖ %s} {✖ %s}
 ::msgcat::mcset de {✖ detach failed: %s} {✖ Abkoppeln fehlgeschlagen: %s}
 ::msgcat::mcset de {✖ session stream: %s} {✖ Sitzungsstream: %s}

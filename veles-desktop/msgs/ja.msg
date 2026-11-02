@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset ja choice_wait {%{secs} 秒待って（使用量リセット）同じルートで再試行}
 ::msgcat::mcset ja {choose a default model for %{provider} — the model step can list the provider's models} {%{provider} のデフォルトモデルを選んでください — モデルのステップではプロバイダーのモデルを一覧できます}
 ::msgcat::mcset ja {choose a model: pick one from the list, or type its name} {モデルを選択: リストから選ぶか、名前を入力してください}
+::msgcat::mcset ja {choose an approval scope before answering} 回答する前に承認範囲を選択してください
 ::msgcat::mcset ja {clear failed: %s} {クリアに失敗: %s}
 ::msgcat::mcset ja {click a job in the list first} 先にリストのジョブをクリックしてください
 ::msgcat::mcset ja {click a job to select it} ジョブをクリックして選択
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset ja {filter skills by name} 名前でスキルを絞り込む
 ::msgcat::mcset ja {find in transcript} トランスクリプト内を検索
 ::msgcat::mcset ja {find references} 参照を検索
+::msgcat::mcset ja {finishing the transcript; try sending again in a moment} {トランスクリプトを仕上げています; しばらくしてから再送信してください}
 ::msgcat::mcset ja {fire the Tcl hook} {Tcl フックを起動}
 ::msgcat::mcset ja {fires for %s:} {%s で発火:}
 ::msgcat::mcset ja {fires per hour} 1時間あたりの発火数
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset ja {tools the engine has registered} エンジンが登録したツール
 ::msgcat::mcset ja {tools unavailable} ツール利用不可
 ::msgcat::mcset ja {tools unavailable: %s} {ツール利用不可: %s}
+::msgcat::mcset ja {transcript finalization failed: %s} {トランスクリプトの確定に失敗しました: %s}
 ::msgcat::mcset ja {transcript refetched} トランスクリプト再取得済み
 ::msgcat::mcset ja {transcript — arrows to read, %s for composer} {トランスクリプト — 矢印で閲覧、%s でコンポーザ}
 ::msgcat::mcset ja {trigger %1$s %2$sd} {トリガー %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset ja {☰ shows or hides the session list; picking a session closes it.} ☰でセッション一覧を表示／非表示にします。セッションを選ぶと閉じます。
 ::msgcat::mcset ja {⚙ %s} {⚙ %s}
 ::msgcat::mcset ja {⚠ %s} {⚠ %s}
+::msgcat::mcset ja {⚠ transcript finalization failed; preserved available text} {⚠ トランスクリプトの確定に失敗しました；利用可能なテキストは保持されました}
 ::msgcat::mcset ja {✖ %s} {✖ %s}
 ::msgcat::mcset ja {✖ detach failed: %s} {✖ デタッチ失敗: %s}
 ::msgcat::mcset ja {✖ session stream: %s} {✖ セッションストリーム: %s}

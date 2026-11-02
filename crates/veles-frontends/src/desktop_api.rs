@@ -779,12 +779,16 @@ struct DecideRequest {
     /// {"q1":{"selected":["c1"],"text":"…"}, …}.
     #[serde(default)]
     answers: Option<serde_json::Value>,
+    /// Questions deliberately answered, including an empty selection.
+    /// Omitted means the legacy all-supplied-questions behavior.
+    #[serde(default)]
+    answered: Option<Vec<String>>,
 }
 
 /// Answer an open question. Returns ok=false when it already expired.
 async fn decide_ask(Path(id): Path<String>, Json(req): Json<DecideRequest>) -> Json<Value> {
     let answer = if let Some(ref v) = req.answers {
-        match veles_core::ask::answers_value(v) {
+        match veles_core::ask::answers_value_answered(v, req.answered.as_deref()) {
             Some(a) => a,
             None => return Json(json!({ "ok": false, "error": "bad answers payload" })),
         }
@@ -11713,6 +11717,22 @@ mod tests {
         let a = decide(&mq(), r#"{"answers":{"q2":{"selected":["c2"],"text":""}}}"#).await;
         assert_eq!(a.per_question.len(), 1, "{a:?}");
         assert_eq!(a.per_question["q2"].selected, vec!["c2"]);
+        assert_eq!(
+            a.answered,
+            std::collections::BTreeSet::from(["q2".to_string()])
+        );
+
+        let a = decide(
+            &mq(),
+            r#"{"answers":{"q1":{"selected":["c1"],"text":""},"q2":{"selected":[],"text":""}},"answered":["q2"]}"#,
+        )
+        .await;
+        assert_eq!(
+            a.answered,
+            std::collections::BTreeSet::from(["q2".to_string()])
+        );
+        assert!(a.per_question["q2"].selected.is_empty());
+        assert!(!a.per_question.contains_key("q3"));
 
         let single = AskRequest::new(
             "s-wire",

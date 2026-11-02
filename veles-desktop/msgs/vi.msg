@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset vi choice_wait {chờ %{secs} giây (đặt lại hạn mức) rồi thử lại cùng tuyến}
 ::msgcat::mcset vi {choose a default model for %{provider} — the model step can list the provider's models} {chọn một mô hình mặc định cho %{provider} — bước mô hình có thể liệt kê các mô hình của nhà cung cấp}
 ::msgcat::mcset vi {choose a model: pick one from the list, or type its name} {chọn một mô hình: chọn một mô hình từ danh sách, hoặc nhập tên của nó}
+::msgcat::mcset vi {choose an approval scope before answering} {chọn phạm vi phê duyệt trước khi trả lờ}
 ::msgcat::mcset vi {clear failed: %s} {xóa thất bại: %s}
 ::msgcat::mcset vi {click a job in the list first} {bấm vào một công việc trong danh sách trước}
 ::msgcat::mcset vi {click a job to select it} {bấm vào công việc để chọn}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset vi {filter skills by name} {lọc kỹ năng theo tên}
 ::msgcat::mcset vi {find in transcript} {tìm trong bản ghi}
 ::msgcat::mcset vi {find references} {tìm tham chiếu}
+::msgcat::mcset vi {finishing the transcript; try sending again in a moment} {đang hoàn tất bản ghi; hãy thử gửi lại sau}
 ::msgcat::mcset vi {fire the Tcl hook} {kích hook Tcl}
 ::msgcat::mcset vi {fires for %s:} {kích hoạt cho %s:}
 ::msgcat::mcset vi {fires per hour} {kích hoạt mỗi giờ}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset vi {tools the engine has registered} {các công cụ engine đã đăng ký}
 ::msgcat::mcset vi {tools unavailable} {công cụ không khả dụng}
 ::msgcat::mcset vi {tools unavailable: %s} {tools không khả dụng: %s}
+::msgcat::mcset vi {transcript finalization failed: %s} {không hoàn tất được bản ghi: %s}
 ::msgcat::mcset vi {transcript refetched} {đã tải lại bản ghi hội thoại}
 ::msgcat::mcset vi {transcript — arrows to read, %s for composer} {bản ghi hội thoại — mũi tên để đọc, %s cho ô soạn thảo}
 ::msgcat::mcset vi {trigger %1$s %2$sd} {kích hoạt %1$s %2$s}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset vi {☰ shows or hides the session list; picking a session closes it.} {☰ hiện hoặc ẩn danh sách phiên; chọn một phiên sẽ đóng danh sách.}
 ::msgcat::mcset vi {⚙ %s} {⚙ %s}
 ::msgcat::mcset vi {⚠ %s} {⚠ %s}
+::msgcat::mcset vi {⚠ transcript finalization failed; preserved available text} {⚠ không hoàn tất được bản ghi; đã giữ lại phần văn bản hiện có}
 ::msgcat::mcset vi {✖ %s} {✖ %s}
 ::msgcat::mcset vi {✖ detach failed: %s} {✖ tách thất bại: %s}
 ::msgcat::mcset vi {✖ session stream: %s} {✖ luồng phiên: %s}

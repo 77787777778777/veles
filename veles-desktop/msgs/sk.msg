@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset sk choice_wait {počkať %{secs} s (reset limitu), potom skúsiť znova rovnakú trasu}
 ::msgcat::mcset sk {choose a default model for %{provider} — the model step can list the provider's models} {vyberte predvolený model pre %{provider} — krok modelu dokáže vypísať modely poskytovateľa}
 ::msgcat::mcset sk {choose a model: pick one from the list, or type its name} {vyberte model: vyberte jeden zo zoznamu alebo napíšte jeho názov}
+::msgcat::mcset sk {choose an approval scope before answering} {Pred odpoveďou vyber rozsah schválenia}
 ::msgcat::mcset sk {clear failed: %s} {vymazanie zlyhalo: %s}
 ::msgcat::mcset sk {click a job in the list first} {najprv kliknite na úlohu v zozname}
 ::msgcat::mcset sk {click a job to select it} {kliknutím na úlohu ju vyberiete}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset sk {filter skills by name} {filtrovať zručnosti podľa názvu}
 ::msgcat::mcset sk {find in transcript} {hľadať v prepise}
 ::msgcat::mcset sk {find references} {nájsť odkazy}
+::msgcat::mcset sk {finishing the transcript; try sending again in a moment} {dokončuje sa prepis; skúste poslať znova o chvíľu}
 ::msgcat::mcset sk {fire the Tcl hook} {spustiť Tcl hook}
 ::msgcat::mcset sk {fires for %s:} {spúšťa sa pre %s:}
 ::msgcat::mcset sk {fires per hour} {spúšťa sa každú hodinu}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset sk {tools the engine has registered} {nástroje, ktoré engine zaregistroval}
 ::msgcat::mcset sk {tools unavailable} {nástroje nedostupné}
 ::msgcat::mcset sk {tools unavailable: %s} {nástroje nedostupné: %s}
+::msgcat::mcset sk {transcript finalization failed: %s} {dokončenie prepisu zlyhalo: %s}
 ::msgcat::mcset sk {transcript refetched} {prepis znovu načítaný}
 ::msgcat::mcset sk {transcript — arrows to read, %s for composer} {prepis — šípky na čítanie, %s na vstup}
 ::msgcat::mcset sk {trigger %1$s %2$sd} {spúšťač %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset sk {☰ shows or hides the session list; picking a session closes it.} {☰ zobrazí alebo skryje zoznam relácií; výberom relácie sa zatvorí.}
 ::msgcat::mcset sk {⚙ %s} {⚙ %s}
 ::msgcat::mcset sk {⚠ %s} {⚠ %s}
+::msgcat::mcset sk {⚠ transcript finalization failed; preserved available text} {⚠ dokončenie prepisu zlyhalo; dostupný text bol zachovaný}
 ::msgcat::mcset sk {✖ %s} {✖ %s}
 ::msgcat::mcset sk {✖ detach failed: %s} {✖ odpojenie zlyhalo: %s}
 ::msgcat::mcset sk {✖ session stream: %s} {✖ stream relácie: %s}

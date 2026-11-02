@@ -491,8 +491,13 @@ proc ::vmd::_inline_bold {w text} {
 # widget writable; this is a pure pass-through, so it adds no state
 # toggling. tags defaults to {} so a bare newline run needs no empty
 # list at the call site.
+if {![llength [info commands ::vchat::_append_index]]} {
+    namespace eval ::vchat {}
+    proc ::vchat::_append_index {w} { return end }
+}
+
 proc ::vmd::_emit {w text {tags {}}} {
-    $w insert end $text $tags
+    $w insert [::vchat::_append_index $w] $text $tags
 }
 
 # ── block-level renderer ─────────────────────────────────────────────

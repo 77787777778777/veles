@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset am choice_wait {%{secs} ሰከንድ ጠብቅ (የአጠቃቀም ዳግም ማስጀመሪያ)፣ ከዚያ በዚያው መንገድ እንደገና ሞክር}
 ::msgcat::mcset am {choose a default model for %{provider} — the model step can list the provider's models} {ለ%{provider} ነባሪ ሞዴል ይምረጡ — የሞዴል ደረጃው የአቅራቢውን ሞዴሎች ማሳየት ይችላል}
 ::msgcat::mcset am {choose a model: pick one from the list, or type its name} {ሞዴል ይምረጡ፦ ከዝርዝሩ አንዱን ይምረጡ፣ ወይም ስሙን ይጻፉ}
+::msgcat::mcset am {choose an approval scope before answering} {ከመመለስዎ በፊት የፍቃድ ስኮፕ ይምረጡ}
 ::msgcat::mcset am {clear failed: %s} {ማጽዳት አልተሳካም: %s}
 ::msgcat::mcset am {click a job in the list first} {መጀመሪያ በዝርዝሩ ውስጥ አንድ ስራ ጠቅ ያድርጉ}
 ::msgcat::mcset am {click a job to select it} {ስራ ለመምረጥ ጠቅ ያድርጉ}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset am {filter skills by name} {ክህሎቶችን በስም አጣራ}
 ::msgcat::mcset am {find in transcript} {በትራንስክሪፕቱ ውስጥ ፈልግ}
 ::msgcat::mcset am {find references} {ማጣቀሻዎችን ፈልግ}
+::msgcat::mcset am {finishing the transcript; try sending again in a moment} {ትራንስክሪፕቱ እየተጠናቀቀ ነው፤ ትንሽ ቆይተው እንደገና ለመላክ ይሞክሩ}
 ::msgcat::mcset am {fire the Tcl hook} {የTcl hook አፈጻጸድ}
 ::msgcat::mcset am {fires for %s:} {ለ %s ይነሳል፦}
 ::msgcat::mcset am {fires per hour} {በሰዓት ይነሳል}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset am {tools the engine has registered} {ሞተሩ ያስመዘገባቸው መሳሪያዎች}
 ::msgcat::mcset am {tools unavailable} {መሳሪያዎች አይገኙም}
 ::msgcat::mcset am {tools unavailable: %s} {መሣሪያዎች አይገኙም: %s}
+::msgcat::mcset am {transcript finalization failed: %s} {ትራንስክሪፕት ማጠናቀቅ አልተሳካም: %s}
 ::msgcat::mcset am {transcript refetched} {ግልባጩ እንደገና ተሳበ}
 ::msgcat::mcset am {transcript — arrows to read, %s for composer} {ግልባጭ — ለማንበብ ቀስቶች, ለcomposer %s}
 ::msgcat::mcset am {trigger %1$s %2$sd} {ቀስቅስ %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset am {☰ shows or hides the session list; picking a session closes it.} {☰ የክፍለ-ጊዜ ዝርዝሩን ያሳያል ወይም ይደብቃል፤ ክፍለ ጊዜ ሲመርጡ ይዘጋል።}
 ::msgcat::mcset am {⚙ %s} {⚙ %s}
 ::msgcat::mcset am {⚠ %s} {⚠ %s}
+::msgcat::mcset am {⚠ transcript finalization failed; preserved available text} {⚠ ትራንስክሪፕት ማጠናቀቅ አልተሳካም; ያለው ጽሑፍ ተጠብቋል}
 ::msgcat::mcset am {✖ %s} {✖ %s}
 ::msgcat::mcset am {✖ detach failed: %s} {✖ ማንሳት አልተሳካም፦ %s}
 ::msgcat::mcset am {✖ session stream: %s} {✖ የሴሽን ዥረት፦ %s}

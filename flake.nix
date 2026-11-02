@@ -611,7 +611,7 @@
         # both packages.default and the OCI image below can reference it.
         velesPkg = pkgs.rustPlatform.buildRustPackage rec {
           pname = "veles-agent";
-          version = "0.1.5";
+          version = "0.1.6";
           src = rustSrc;
           cargoLock = {
             lockFile = ./Cargo.lock;
@@ -1082,7 +1082,7 @@
         androidMinSdk = "26";
         # Raised by hand for each release a store sees; a sideloaded
         # reinstall of the same code keeps it.
-        androidVersionCode = "6";
+        androidVersionCode = "7";
         androidSdk =
           (androidHost.androidenv.composeAndroidPackages {
             platformVersions = [ androidTargetSdk ];
@@ -2294,7 +2294,7 @@
 
         # The image's tag names the commit it was built from, so the VPS
         # can say which one it runs.
-        imageTag = "0.1.5-${self.shortRev or self.dirtyShortRev or "dirty"}";
+        imageTag = "0.1.6-${self.shortRev or self.dirtyShortRev or "dirty"}";
         imageRevision = self.rev or self.dirtyRev or "dirty";
         # The release builder overrides only this label. Published images
         # must be rejected if their source does not name the authenticated

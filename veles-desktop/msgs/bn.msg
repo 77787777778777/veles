@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset bn choice_wait {%{secs} সেকেন্ড অপেক্ষা করুন (ব্যবহার রিসেট), তারপর একই রুটে আবার চেষ্টা করুন}
 ::msgcat::mcset bn {choose a default model for %{provider} — the model step can list the provider's models} {%{provider}-এর জন্য একটি ডিফল্ট মডেল বেছে নিন — মডেল ধাপটি প্রোভাইডারের মডেলের তালিকা আনতে পারে}
 ::msgcat::mcset bn {choose a model: pick one from the list, or type its name} {একটি মডেল বেছে নিন: তালিকা থেকে একটি নিন, অথবা তার নাম লিখুন}
+::msgcat::mcset bn {choose an approval scope before answering} {উত্তর দেওয়ার আগে অনুমোদনের স্কোপ বেছে নিন}
 ::msgcat::mcset bn {clear failed: %s} {ক্লিয়ার ব্যর্থ: %s}
 ::msgcat::mcset bn {click a job in the list first} {আগে লিস্টে একটি জবে ক্লিক করুন}
 ::msgcat::mcset bn {click a job to select it} {জব বাছাই করতে ক্লিক করুন}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset bn {filter skills by name} {নাম দিয়ে স্কিল ফিল্টার করুন}
 ::msgcat::mcset bn {find in transcript} {ট্রান্সক্রিপ্টে খুঁজুন}
 ::msgcat::mcset bn {find references} {রেফারেন্স খুঁজুন}
+::msgcat::mcset bn {finishing the transcript; try sending again in a moment} {ট্রান্সক্রিপ্ট শেষ হচ্ছে; একটু পরে আবার পাঠানোর চেষ্টা করুন}
 ::msgcat::mcset bn {fire the Tcl hook} {Tcl হুক চালান}
 ::msgcat::mcset bn {fires for %s:} {%s-এর জন্য ট্রিগার হয়:}
 ::msgcat::mcset bn {fires per hour} {প্রতি ঘণ্টায় ট্রিগার হয়}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset bn {tools the engine has registered} {ইঞ্জিনের নিবন্ধিত টুলগুলো}
 ::msgcat::mcset bn {tools unavailable} {টুল অনুপলব্ধ}
 ::msgcat::mcset bn {tools unavailable: %s} {টুল অনুপলব্ধ: %s}
+::msgcat::mcset bn {transcript finalization failed: %s} {ট্রান্সক্রিপ্ট চূড়ান্তকরণ ব্যর্থ হয়েছে: %s}
 ::msgcat::mcset bn {transcript refetched} {ট্রান্সক্রিপ্ট পুনরায় আনা হয়েছে}
 ::msgcat::mcset bn {transcript — arrows to read, %s for composer} {ট্রান্সক্রিপ্ট — পড়তে তীর, কম্পোজারের জন্য %s}
 ::msgcat::mcset bn {trigger %1$s %2$sd} {ট্রিগার %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset bn {☰ shows or hides the session list; picking a session closes it.} {☰ সেশন তালিকা দেখায় বা লুকায়; একটি সেশন বাছলে এটি বন্ধ হয়।}
 ::msgcat::mcset bn {⚙ %s} {⚙ %s}
 ::msgcat::mcset bn {⚠ %s} {⚠ %s}
+::msgcat::mcset bn {⚠ transcript finalization failed; preserved available text} {⚠ ট্রান্সক্রিপ্ট চূড়ান্তকরণ ব্যর্থ হয়েছে; উপলব্ধ লেখা সংরক্ষণ করা হয়েছে}
 ::msgcat::mcset bn {✖ %s} {✖ %s}
 ::msgcat::mcset bn {✖ detach failed: %s} {✖ ডিট্যাচ ব্যর্থ: %s}
 ::msgcat::mcset bn {✖ session stream: %s} {✖ সেশন স্ট্রিম: %s}

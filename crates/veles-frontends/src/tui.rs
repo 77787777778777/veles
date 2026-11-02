@@ -385,7 +385,16 @@ pub fn run(resume: bool, ov: &veles_core::agent::ModelOverrides) -> Result<()> {
                     st.ask_input.clear();
                     st.ask_scroll = 0;
                     st.ask_sel = 0;
-                    st.ask_toggles.clear();
+                    st.ask_toggles = st
+                        .pending_ask
+                        .as_ref()
+                        .map(|req| {
+                            req.default_toggles()
+                                .into_iter()
+                                .map(|(qk, ck)| format!("{qk}:{ck}"))
+                                .collect()
+                        })
+                        .unwrap_or_default();
                     st.ask_other.clear();
                     st.ask_note_mode = false;
                     draw(&mut terminal, &mut st)?;
@@ -5372,6 +5381,13 @@ enum AskRow {
 /// failovers answer on single keys (see `ask_key`), so their note lives on
 /// a line of its own that Tab gives the keys to. Text-shaped asks
 /// (clarify, ticket, challenge) already type into their rows.
+/// Multi-hazard approvals use the same explicit toggle+commit protocol
+/// as other multi-question asks. Ordinary approvals keep their legacy
+/// explicit-key behavior (Space scrolls, no highlighted default).
+fn multi_ask_uses_toggle_protocol(req: &veles_core::ask::AskRequest) -> bool {
+    req.questions.len() > 1
+}
+
 fn takes_note(req: &veles_core::ask::AskRequest) -> bool {
     !matches!(
         req.kind,
@@ -5486,12 +5502,14 @@ fn ask_key(
     // key) and Enter (a composer Enter racing the popup) approve row 0,
     // which is "allow once". A ticket ask is typed into like a clarify:
     // its answer is the pasted ticket.
-    if !matches!(
-        req.kind,
-        veles_core::ask::AskKind::Clarify
-            | veles_core::ask::AskKind::Ticket
-            | veles_core::ask::AskKind::Challenge
-    ) {
+    if !multi_ask_uses_toggle_protocol(req)
+        && !matches!(
+            req.kind,
+            veles_core::ask::AskKind::Clarify
+                | veles_core::ask::AskKind::Ticket
+                | veles_core::ask::AskKind::Challenge
+        )
+    {
         return match key {
             KeyCode::PageUp => AskKeyEffect::ScrollUp,
             KeyCode::PageDown | KeyCode::Char(' ') => AskKeyEffect::ScrollDown,
@@ -5600,12 +5618,14 @@ fn commit_ask(
     use veles_core::ask::AskAnswer;
     // Nothing assembles an approval or failover answer: those answer
     // on an explicit key only (see ask_key).
-    if !matches!(
-        req.kind,
-        veles_core::ask::AskKind::Clarify
-            | veles_core::ask::AskKind::Ticket
-            | veles_core::ask::AskKind::Challenge
-    ) {
+    if !multi_ask_uses_toggle_protocol(req)
+        && !matches!(
+            req.kind,
+            veles_core::ask::AskKind::Clarify
+                | veles_core::ask::AskKind::Ticket
+                | veles_core::ask::AskKind::Challenge
+        )
+    {
         return None;
     }
     // The no-choices ask keeps its exact legacy shape.
@@ -5619,7 +5639,7 @@ fn commit_ask(
         let mut selected: Vec<String> = toggles
             .iter()
             .filter(|a| a.starts_with(&prefix))
-            .filter_map(|a| a.split(':').nth(1).map(str::to_string))
+            .filter_map(|a| a.strip_prefix(&prefix).map(str::to_string))
             .filter(|k| k != "other")
             .collect();
         selected.sort();
@@ -5627,20 +5647,38 @@ fn commit_ask(
             .get(&q.key)
             .map(|s| s.trim().to_string())
             .unwrap_or_default();
-        if !selected.is_empty() || !otext.is_empty() {
+        if !selected.is_empty()
+            || !otext.is_empty()
+            || (req.kind == veles_core::ask::AskKind::Approval
+                && multi_ask_uses_toggle_protocol(req)
+                && q.key == "q2")
+        {
             let mut a = AskAnswer {
                 selected,
                 ..Default::default()
             };
-            if !otext.is_empty() {
-                a.free_text = Some(otext);
+            if !otext.is_empty() || (q.key == "q1" && !input.trim().is_empty()) {
+                a.free_text = Some(if q.key == "q1" && !input.trim().is_empty() {
+                    input.trim().to_string()
+                } else {
+                    otext
+                });
             }
             per.insert(q.key.clone(), a);
         }
     }
+    if multi_ask_uses_toggle_protocol(req)
+        && req.kind == veles_core::ask::AskKind::Approval
+        && !per.contains_key("q1")
+    {
+        return None;
+    }
     if !per.is_empty() {
         return Some(if req.questions.len() > 1 {
-            AskAnswer::from_per_question(per)
+            let answered = per.keys().cloned().collect();
+            let mut answer = AskAnswer::from_per_question(per);
+            answer.answered = answered;
+            answer
         } else {
             per.into_values().next().unwrap()
         });
@@ -5784,7 +5822,7 @@ fn draw_ask(
             let toggled = toggles.contains(&format!("{}:{}", q.key, c.key));
             // No cursor on an approval/failover: a highlighted row reads
             // as the default, and those answer on an explicit key only.
-            let selected_here = is_clarify && row_idx == sel;
+            let selected_here = (is_clarify || multi_q) && row_idx == sel;
             let marker = if multi_q || q.multi {
                 if toggled {
                     "◉"
@@ -5823,7 +5861,7 @@ fn draw_ask(
         }
         // The text row: "Other:" next to choices, the answer field for
         // a free-text question (mirroring ask_rows).
-        if !q.choices.is_empty() || multi_q {
+        if is_clarify && (!q.choices.is_empty() || multi_q) {
             let selected_here = row_idx == sel;
             let otext = other.get(&q.key).cloned().unwrap_or_default();
             let otext_empty = otext.is_empty();
@@ -5882,7 +5920,9 @@ fn draw_ask(
         ]));
     }
     lines.push(Line::from(""));
-    let hint = if takes_note(req) && note_mode {
+    let hint = if multi_q {
+        "  ↑/↓ move · Space picks scope/permissions · Enter sends · Esc = deny"
+    } else if takes_note(req) && note_mode {
         "  typing a note · Enter sends the note alone · Tab/Esc = back to the keys"
     } else if takes_note(req) {
         "  1-4 picks (with the note) · Tab = write a note · Esc = deny/skip"
@@ -6551,6 +6591,62 @@ mod tui_tests {
             .map(|s| s.content.as_ref())
             .collect::<Vec<_>>()
             .join("")
+    }
+
+    /// A multi-hazard approval needs a scope choice plus independently
+    /// selectable permission classes. It must not fall into the legacy
+    /// one-key approval parser.
+    #[test]
+    fn multi_hazard_approval_uses_the_toggle_and_commit_protocol() {
+        let req = veles_core::ask::AskRequest::multi_question(
+            "s1",
+            veles_core::ask::AskKind::Approval,
+            vec![
+                veles_core::ask::AskQuestion::new(
+                    "q1",
+                    "scope?",
+                    veles_core::ask::approval_choices(true),
+                ),
+                veles_core::ask::AskQuestion::new(
+                    "q2",
+                    "permissions?",
+                    vec![
+                        veles_core::ask::AskChoice::new("terminal:recursive-delete", "delete"),
+                        veles_core::ask::AskChoice::new("terminal:remote-code-execution", "remote"),
+                    ],
+                )
+                .with_multi(true)
+                .with_defaults(vec![
+                    "terminal:recursive-delete".into(),
+                    "terminal:remote-code-execution".into(),
+                ]),
+            ],
+        );
+        assert_eq!(req.default_toggles().len(), 2);
+        let rows = ask_rows(&req);
+        let scope = rows
+            .iter()
+            .position(|r| matches!(r, AskRow::Choice { addr, .. } if addr == "q1:always"))
+            .unwrap();
+        assert!(matches!(
+            ask_key(&req, scope, &Default::default(), &KeyCode::Char(' ')),
+            AskKeyEffect::Toggle { .. }
+        ));
+        let toggles = std::collections::BTreeSet::from([
+            "q1:always".to_string(),
+            "q2:terminal:remote-code-execution".to_string(),
+        ]);
+        let answer = commit_ask(&req, 0, &toggles, &Default::default(), "").unwrap();
+        assert_eq!(answer.first(), Some("always"));
+        assert_eq!(
+            answer.per_question["q2"].selected,
+            vec!["terminal:remote-code-execution"]
+        );
+        assert!(draw_ask_accepts_the_toggle_protocol(&req));
+    }
+
+    fn draw_ask_accepts_the_toggle_protocol(req: &veles_core::ask::AskRequest) -> bool {
+        multi_ask_uses_toggle_protocol(req)
     }
 
     // ── the ask popup's keyboard model (2026-09-26 parity) ──────────

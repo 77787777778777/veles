@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset sn choice_wait {mirira masekondi %{secs} (kushandiswa kunotangwazve), wozoedza zvakare nzira imwe chete}
 ::msgcat::mcset sn {choose a default model for %{provider} — the model step can list the provider's models} {sarudza modheru yakajaira ye %{provider} — nhanho yemodheru inogona kunyora runyorwa rwemamodheru emupi}
 ::msgcat::mcset sn {choose a model: pick one from the list, or type its name} {sarudza modheru: tora imwe kubva pane runyorwa, kana nyora zita rayo}
+::msgcat::mcset sn {choose an approval scope before answering} {sarudza chikamu chemvumo usati wapindura}
 ::msgcat::mcset sn {clear failed: %s} {kuchenesa kwakatadza: %s}
 ::msgcat::mcset sn {click a job in the list first} {tinya job murondedzero kutanga}
 ::msgcat::mcset sn {click a job to select it} {tinya job kuti uisarudze}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset sn {filter skills by name} {Sefa skills nezita}
 ::msgcat::mcset sn {find in transcript} {tsvaga mukati mechanism}
 ::msgcat::mcset sn {find references} {tsvaga references}
+::msgcat::mcset sn {finishing the transcript; try sending again in a moment} {kupedzisira chinyorwa; edza kutumira zvakare mukashoma}
 ::msgcat::mcset sn {fire the Tcl hook} {vhura iyo Tcl hook}
 ::msgcat::mcset sn {fires for %s:} {inobuda pa%s:}
 ::msgcat::mcset sn {fires per hour} {inobuda paawa imwe chete}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset sn {tools the engine has registered} {tools dzakanyoreswa neengine}
 ::msgcat::mcset sn {tools unavailable} {tools dzisipo}
 ::msgcat::mcset sn {tools unavailable: %s} {maturusi haa wanikwe: %s}
+::msgcat::mcset sn {transcript finalization failed: %s} {kupedzisira kwachinyorwa kwakundikana: %s}
 ::msgcat::mcset sn {transcript refetched} {transcript yatorwa patsva}
 ::msgcat::mcset sn {transcript — arrows to read, %s for composer} {transcript — miseve kuti uverenge, %s kune composer}
 ::msgcat::mcset sn {trigger %1$s %2$sd} {trigger %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset sn {☰ shows or hides the session list; picking a session closes it.} {☰ inoratidza kana kuviga runyoro rwemasession; kusarudza session kunoruvhara.}
 ::msgcat::mcset sn {⚙ %s} {⚙ %s}
 ::msgcat::mcset sn {⚠ %s} {⚠ %s}
+::msgcat::mcset sn {⚠ transcript finalization failed; preserved available text} {⚠ kupedzisira kwachinyorwa kwakundikana; zvinyorwa zviripo zvachengetwa}
 ::msgcat::mcset sn {✖ %s} {✖ %s}
 ::msgcat::mcset sn {✖ detach failed: %s} {✖ kudzikisa kunyatadza: %s}
 ::msgcat::mcset sn {✖ session stream: %s} {✖ mutsetse wechikamu: %s}

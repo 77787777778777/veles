@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset zu choice_wait {linda imizuzwana engu-%{secs} (ukusetshenziswa kuyasethwa kabusha), bese uzama futhi umzila ofanayo}
 ::msgcat::mcset zu {choose a default model for %{provider} — the model step can list the provider's models} {khetha imodeli ezenzakalelayo ye-%{provider} — isinyathelo semodeli singafaka amamodeli kamhlinzeki ohlwini}
 ::msgcat::mcset zu {choose a model: pick one from the list, or type its name} {khetha imodeli: khetha eyodwa ohlwini, noma thayipha igama layo}
+::msgcat::mcset zu {choose an approval scope before answering} {khetha ububanzi bemvume ngaphambi kokuphendula}
 ::msgcat::mcset zu {clear failed: %s} {ukusula kwehlulekile: %s}
 ::msgcat::mcset zu {click a job in the list first} {chofoza umsebenzi ohlwini kuqala}
 ::msgcat::mcset zu {click a job to select it} {chofoza umsebenzi ukuze uwukhethe}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset zu {filter skills by name} {hluza amakhono ngegama}
 ::msgcat::mcset zu {find in transcript} {thola kutranscript}
 ::msgcat::mcset zu {find references} {thola izinkomba}
+::msgcat::mcset zu {finishing the transcript; try sending again in a moment} {kuqedwa umbhalo wengxoxo; zama ukuthumela futhi ngemva kwesikhashana}
 ::msgcat::mcset zu {fire the Tcl hook} {qalisa i-hook ye-Tcl}
 ::msgcat::mcset zu {fires for %s:} {iyabamba kwa-%s:}
 ::msgcat::mcset zu {fires per hour} {iyabamba ngehora}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset zu {tools the engine has registered} {amathuluzi abhaliswe yi-engine}
 ::msgcat::mcset zu {tools unavailable} {amathuluzi awatholakali}
 ::msgcat::mcset zu {tools unavailable: %s} {amathuluzi atholakalanga: %s}
+::msgcat::mcset zu {transcript finalization failed: %s} {ukuqedwa kombhalo wengxoxo kwehlulekile: %s}
 ::msgcat::mcset zu {transcript refetched} {umlando wengxoxo uthathwe kabusha}
 ::msgcat::mcset zu {transcript — arrows to read, %s for composer} {umlando wengxoxo — izicibhiyelo zokufunda, %s ku-composer}
 ::msgcat::mcset zu {trigger %1$s %2$sd} {qalisa %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset zu {☰ shows or hides the session list; picking a session closes it.} {☰ ibonisa noma ifihla uhlu lweziseshini; ukukhetha iseshini kuyaluvala.}
 ::msgcat::mcset zu {⚙ %s} {⚙ %s}
 ::msgcat::mcset zu {⚠ %s} {⚠ %s}
+::msgcat::mcset zu {⚠ transcript finalization failed; preserved available text} {⚠ ukuqedwa kombhalo wengxoxo kwehlulekile; umbhalo otholakalayo ugciniwe}
 ::msgcat::mcset zu {✖ %s} {✖ %s}
 ::msgcat::mcset zu {✖ detach failed: %s} {✖ ukwahlukanisa kwehlulekile: %s}
 ::msgcat::mcset zu {✖ session stream: %s} {✖ isiphequluli seseshini: %s}

@@ -433,8 +433,13 @@ proc ::vmedia::_cache_prune {{keep 128}} {
 # is decided in ONE place (the transcript's ::vchat::_run and markdown's
 # ::vmd::_emit are the sibling chokepoints). Callers hold the widget
 # writable; this is a pure pass-through, so it adds no state toggling.
+if {![llength [info commands ::vchat::_append_index]]} {
+    namespace eval ::vchat {}
+    proc ::vchat::_append_index {w} { return end }
+}
+
 proc ::vmedia::_emit {w text {tags {}}} {
-    $w insert end $text $tags
+    $w insert [::vchat::_append_index $w] $text $tags
 }
 
 proc ::vmedia::insert {w path args} {
@@ -443,7 +448,7 @@ proc ::vmedia::insert {w path args} {
     if {[renderable $path] && [file isfile $path]} {
         set im [load $path $o(-maxw) $o(-maxh)]
         if {$im ne ""} {
-            $w image create end -image $im -padx 4 -pady 3
+            $w image create [::vchat::_append_index $w] -image $im -padx 4 -pady 3
             _emit $w "\n"
             card $w $path -tagprefix $o(-tagprefix) -caption 1
             return $im

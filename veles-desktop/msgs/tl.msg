@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset tl choice_wait {maghintay ng %{secs} s (magre-reset ang usage), tapos subukan ulit ang parehong route}
 ::msgcat::mcset tl {choose a default model for %{provider} — the model step can list the provider's models} {pumili ng default na modelo para sa %{provider} — maaaring ilista ng hakbang ng modelo ang mga modelo ng provider}
 ::msgcat::mcset tl {choose a model: pick one from the list, or type its name} {pumili ng modelo: pumili ng isa sa listahan, o i-type ang pangalan nito}
+::msgcat::mcset tl {choose an approval scope before answering} {pumili ng saklaw ng pag-apruba bago sumagot}
 ::msgcat::mcset tl {clear failed: %s} {nabigo ang pag-clear: %s}
 ::msgcat::mcset tl {click a job in the list first} {i-click muna ang isang job sa listahan}
 ::msgcat::mcset tl {click a job to select it} {i-click ang isang job para mapili ito}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset tl {filter skills by name} {i-filter ang skills ayon sa pangalan}
 ::msgcat::mcset tl {find in transcript} {hanapin sa transcript}
 ::msgcat::mcset tl {find references} {hanapin ang mga reference}
+::msgcat::mcset tl {finishing the transcript; try sending again in a moment} {Ini-render pa ang transcript; subukang magpadala ulit sa ilang sandali}
 ::msgcat::mcset tl {fire the Tcl hook} {paganahin ang Tcl hook}
 ::msgcat::mcset tl {fires for %s:} {gumagana para sa %s:}
 ::msgcat::mcset tl {fires per hour} {gumagana kada oras}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset tl {tools the engine has registered} {mga tool na ni-register ng engine}
 ::msgcat::mcset tl {tools unavailable} {hindi available ang mga tool}
 ::msgcat::mcset tl {tools unavailable: %s} {hindi available ang mga tool: %s}
+::msgcat::mcset tl {transcript finalization failed: %s} {Nabigo ang pagsasapinal ng transcript: %s}
 ::msgcat::mcset tl {transcript refetched} {muling kinuha ang transcript}
 ::msgcat::mcset tl {transcript — arrows to read, %s for composer} {transcript — mga arrow para basahin, %s para sa composer}
 ::msgcat::mcset tl {trigger %1$s %2$sd} {i-trigger ang %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset tl {☰ shows or hides the session list; picking a session closes it.} {☰ ipinapakita o itinatago ang listahan ng session; nagsasara ito kapag pumili ka ng session.}
 ::msgcat::mcset tl {⚙ %s} {⚙ %s}
 ::msgcat::mcset tl {⚠ %s} {⚠ %s}
+::msgcat::mcset tl {⚠ transcript finalization failed; preserved available text} {⚠ Nabigo ang pagsasapinal ng transcript; naingatan ang available na teksto}
 ::msgcat::mcset tl {✖ %s} {✖ %s}
 ::msgcat::mcset tl {✖ detach failed: %s} {✖ nabigo ang detach: %s}
 ::msgcat::mcset tl {✖ session stream: %s} {✖ stream ng session: %s}

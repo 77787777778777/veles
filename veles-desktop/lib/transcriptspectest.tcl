@@ -28,7 +28,8 @@ if {![info exists ::env(XVFB_RUNNING)]
 
 # ── the pieces chat.tcl leans on (same stub set as sessiontest) ────
 namespace eval ::vstatus {
-    proc set_msg {m} {}
+    variable last ""
+    proc set_msg {m} { set ::vstatus::last $m }
     proc set_route {t {ovr 0}} {}
 }
 namespace eval ::vsidebar {
@@ -69,6 +70,18 @@ namespace eval ::vmd [list proc forget_links {w} {}]
 
 # The REAL module under test.
 source [file join $_dir chat.tcl]
+# These are layout specs, not scheduler specs. Treat a completed turn as
+# complete when the case captures it; sessiontest owns the async contract.
+rename ::vchat::on_done ::vchat::_on_done_async
+proc ::vchat::on_done {d} {
+    ::vchat::_on_done_async $d
+    ::vchat::_drain_finalizers
+}
+rename ::vchat::on_session_event ::vchat::_on_session_event_async
+proc ::vchat::on_session_event {sid ev d} {
+    ::vchat::_on_session_event_async $sid $ev $d
+    if {$ev in {turn-result turn-error}} { ::vchat::_drain_finalizers }
+}
 
 # The composer/transcript widgets the handlers poke at. The transcript
 # is gated like the app gates every claimed log (_arm_pose via
@@ -179,6 +192,7 @@ proc run_case {kind name rule setup checks} {
         incr ::failed
         return
     }
+    ::vchat::_drain_finalizers
     set bad 0
     foreach {desc cond} $checks {
         if {[catch {uplevel #0 [list expr $cond]} got] || !$got} {

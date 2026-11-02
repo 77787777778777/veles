@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset th choice_wait {รอ %{secs} วินาที (รีเซ็ตโควตา) แล้วลองเส้นทางเดิมอีกครั้ง}
 ::msgcat::mcset th {choose a default model for %{provider} — the model step can list the provider's models} {เลือกโมเดลเริ่มต้นสำหรับ %{provider} — ขั้นโมเดลสามารถขอรายการโมเดลของผู้ให้บริการได้}
 ::msgcat::mcset th {choose a model: pick one from the list, or type its name} {เลือกโมเดล: เลือกจากรายการ หรือพิมพ์ชื่อโมเดล}
+::msgcat::mcset th {choose an approval scope before answering} เลือกขอบเขตการอนุมัติก่อนตอบ
 ::msgcat::mcset th {clear failed: %s} {ล้างไม่สำเร็จ: %s}
 ::msgcat::mcset th {click a job in the list first} คลิกงานในรายการก่อน
 ::msgcat::mcset th {click a job to select it} คลิกงานเพื่อเลือก
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset th {filter skills by name} กรองสกิลตามชื่อ
 ::msgcat::mcset th {find in transcript} {ค้นหาใน transcript}
 ::msgcat::mcset th {find references} ค้นหาการอ้างอิง
+::msgcat::mcset th {finishing the transcript; try sending again in a moment} {กำลังปิดท้ายทรานสคริปต์; ลองส่งอีกครั้งในอีกสักครู่}
 ::msgcat::mcset th {fire the Tcl hook} {ยิง Tcl hook}
 ::msgcat::mcset th {fires for %s:} {ทำงานเมื่อ %s:}
 ::msgcat::mcset th {fires per hour} ทำงานต่อชั่วโมง
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset th {tools the engine has registered} เครื่องมือที่เอนจินลงทะเบียนไว้
 ::msgcat::mcset th {tools unavailable} เครื่องมือไม่พร้อมใช้งาน
 ::msgcat::mcset th {tools unavailable: %s} {tools ใช้ไม่ได้: %s}
+::msgcat::mcset th {transcript finalization failed: %s} {ปิดท้ายทรานสคริปต์ล้มเหลว: %s}
 ::msgcat::mcset th {transcript refetched} ดึงทรานสคริปต์ใหม่แล้ว
 ::msgcat::mcset th {transcript — arrows to read, %s for composer} {ทรานสคริปต์ — ลูกศรเลื่อนอ่าน, %s สำหรับช่องพิมพ์}
 ::msgcat::mcset th {trigger %1$s %2$sd} {ทริกเกอร์ %1$s ทุก %2$s วัน}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset th {☰ shows or hides the session list; picking a session closes it.} {☰ แสดงหรือซ่อนรายการเซสชัน เมื่อเลือกเซสชันรายการจะปิดเอง}
 ::msgcat::mcset th {⚙ %s} {⚙ %s}
 ::msgcat::mcset th {⚠ %s} {⚠ %s}
+::msgcat::mcset th {⚠ transcript finalization failed; preserved available text} {⚠ ปิดท้ายทรานสคริปต์ล้มเหลว; เก็บรักษาข้อความที่มีอยู่ไว้แล้ว}
 ::msgcat::mcset th {✖ %s} {✖ %s}
 ::msgcat::mcset th {✖ detach failed: %s} {✖ แยกไม่สำเร็จ: %s}
 ::msgcat::mcset th {✖ session stream: %s} {✖ สตรีมเซสชัน: %s}

@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset hr choice_wait {pričekaj %{secs} s (reset ograničenja), zatim pokušaj ponovno istom rutom}
 ::msgcat::mcset hr {choose a default model for %{provider} — the model step can list the provider's models} {odaberi zadani model za %{provider} — korak za model može dohvatiti modele pružatelja}
 ::msgcat::mcset hr {choose a model: pick one from the list, or type its name} {odaberi model: izaberi jedan s popisa ili upiši naziv}
+::msgcat::mcset hr {choose an approval scope before answering} {odaberite opseg odobrenja prije odgovaranja}
 ::msgcat::mcset hr {clear failed: %s} {čišćenje nije uspjelo: %s}
 ::msgcat::mcset hr {click a job in the list first} {prvo kliknite posao na popisu}
 ::msgcat::mcset hr {click a job to select it} {kliknite posao da ga odaberete}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset hr {filter skills by name} {filtriraj vještine po imenu}
 ::msgcat::mcset hr {find in transcript} {pronađi u transkriptu}
 ::msgcat::mcset hr {find references} {pronađi reference}
+::msgcat::mcset hr {finishing the transcript; try sending again in a moment} {dovršavam transkript; pokušajte ponovno poslati za koji trenutak}
 ::msgcat::mcset hr {fire the Tcl hook} {okini Tcl hook}
 ::msgcat::mcset hr {fires for %s:} {okida se za %s:}
 ::msgcat::mcset hr {fires per hour} {okida se svaki sat}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset hr {tools the engine has registered} {alati koje je motor registrirao}
 ::msgcat::mcset hr {tools unavailable} {alati nedostupni}
 ::msgcat::mcset hr {tools unavailable: %s} {alati nisu dostupni: %s}
+::msgcat::mcset hr {transcript finalization failed: %s} {dovršenje transkripta nije uspjelo: %s}
 ::msgcat::mcset hr {transcript refetched} {transkript ponovno dohvaćen}
 ::msgcat::mcset hr {transcript — arrows to read, %s for composer} {transkript — strelice za čitanje, %s za unos}
 ::msgcat::mcset hr {trigger %1$s %2$sd} {okidač %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset hr {☰ shows or hides the session list; picking a session closes it.} {☰ prikazuje ili skriva popis sesija; odabir sesije ga zatvara.}
 ::msgcat::mcset hr {⚙ %s} {⚙ %s}
 ::msgcat::mcset hr {⚠ %s} {⚠ %s}
+::msgcat::mcset hr {⚠ transcript finalization failed; preserved available text} {⚠ dovršenje transkripta nije uspjelo; dostupan tekst je sačuvan}
 ::msgcat::mcset hr {✖ %s} {✖ %s}
 ::msgcat::mcset hr {✖ detach failed: %s} {✖ odvajanje nije uspjelo: %s}
 ::msgcat::mcset hr {✖ session stream: %s} {✖ tok sesije: %s}

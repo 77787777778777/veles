@@ -359,7 +359,12 @@ impl TelegramAdapter {
                         // one-tap path).
                         let toggle_mode = multi_q || req.multi;
                         let kb: InlineKeyboardMarkup = if toggle_mode {
-                            tg_ask_keyboard(&req, &[])
+                            let initial = req.default_toggles();
+                            TG_TOGGLES
+                                .lock()
+                                .unwrap_or_else(|e| e.into_inner())
+                                .insert(req.id.clone(), initial.clone());
+                            tg_ask_keyboard(&req, &initial)
                         } else {
                             InlineKeyboardMarkup::new(req.choices.iter().map(|c| {
                                 vec![InlineKeyboardButton::callback(
@@ -1143,7 +1148,11 @@ fn done_answer(
     req: &ask::AskRequest,
     sel: &[(String, String)],
 ) -> Option<(ask::AskAnswer, String)> {
-    if sel.is_empty() {
+    if sel.is_empty()
+        || (req.questions.len() > 1
+            && matches!(req.kind, ask::AskKind::Approval | ask::AskKind::Failover)
+            && !sel.iter().any(|(qk, _)| qk == "q1"))
+    {
         return None;
     }
     let questions = req.all_questions();
@@ -1178,6 +1187,10 @@ fn done_answer(
     for q in &questions {
         let keys = keys_for(&q.key);
         if keys.is_empty() {
+            if matches!(req.kind, ask::AskKind::Approval | ask::AskKind::Failover) && q.key == "q2"
+            {
+                per.insert(q.key.clone(), ask::AskAnswer::default());
+            }
             continue;
         }
         let labels = keys.iter().map(|c| label(&q.key, c)).collect::<Vec<_>>();
@@ -1190,7 +1203,10 @@ fn done_answer(
             },
         );
     }
-    Some((ask::AskAnswer::from_per_question(per), shown.join("; ")))
+    let answered = per.keys().cloned().collect();
+    let mut answer = ask::AskAnswer::from_per_question(per);
+    answer.answered = answered;
+    Some((answer, shown.join("; ")))
 }
 
 /// The text of an ask message. The buttons carry choices; this says
@@ -1676,6 +1692,42 @@ mod tests {
             "no such question"
         );
         assert_eq!(sel.len(), 2);
+    }
+
+    /// Permission classes start checked. Done still requires the owner
+    /// to pick the approval scope explicitly.
+    #[test]
+    fn approval_permission_defaults_and_scope_are_both_required() {
+        let req = veles_core::ask::AskRequest::multi_question(
+            "s-tg",
+            ask::AskKind::Approval,
+            vec![
+                ask::AskQuestion::new("q1", "scope?", ask::approval_choices(true)),
+                ask::AskQuestion::new(
+                    "q2",
+                    "permissions?",
+                    vec![
+                        ask::AskChoice::new("terminal:recursive-delete", "delete"),
+                        ask::AskChoice::new("terminal:remote-code-execution", "remote"),
+                    ],
+                )
+                .with_multi(true)
+                .with_defaults(vec![
+                    "terminal:recursive-delete".into(),
+                    "terminal:remote-code-execution".into(),
+                ]),
+            ],
+        );
+        let mut sel = req.default_toggles();
+        assert_eq!(sel.len(), 2);
+        assert!(done_answer(&req, &sel).is_none(), "no scope yet");
+        assert!(apply_toggle(&req, &mut sel, "q1", "always"));
+        let (answer, _) = done_answer(&req, &sel).unwrap();
+        assert_eq!(answer.first(), Some("always"));
+        assert_eq!(answer.per_question["q2"].selected.len(), 2);
+        assert!(answer.per_question["q2"]
+            .selected
+            .contains(&"terminal:remote-code-execution".to_string()));
     }
 
     /// Done with nothing ticked answers nothing (the ask stays open);

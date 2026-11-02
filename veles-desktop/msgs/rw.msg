@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset rw choice_wait {tegereza amasegonda %{secs} (ikoreshwa risubizwa ku ntangiriro), hanyuma wongere ugerageze inzira imwe}
 ::msgcat::mcset rw {choose a default model for %{provider} — the model step can list the provider's models} {hitamo icyitegererezo gisanzwe cya %{provider} — intambwe y'icyitegererezo ishobora kugaragaza urutonde rw'ibyitegererezo by'utanga serivisi}
 ::msgcat::mcset rw {choose a model: pick one from the list, or type its name} {hitamo icyitegererezo: toranya kimwe mu rutonde, cyangwa wandike izina ryacyo}
+::msgcat::mcset rw {choose an approval scope before answering} {hitamo urwego rwo kwemeza mbere yo gusubiza}
 ::msgcat::mcset rw {clear failed: %s} {gusukura byanze: %s}
 ::msgcat::mcset rw {click a job in the list first} {banza ukande job muri list}
 ::msgcat::mcset rw {click a job to select it} {kanda job kugira ngo uyihore}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset rw {filter skills by name} {Shungura skills ku izina}
 ::msgcat::mcset rw {find in transcript} {shakisha muri transcript}
 ::msgcat::mcset rw {find references} {shakisha ibisubizo}
+::msgcat::mcset rw {finishing the transcript; try sending again in a moment} {Turangiza inyandiko y'ikiganiro; ongere wohereze mu kanya}
 ::msgcat::mcset rw {fire the Tcl hook} {hatuma Tcl hook}
 ::msgcat::mcset rw {fires for %s:} {umuriro urimo %s:}
 ::msgcat::mcset rw {fires per hour} {umuriro kuri isaha}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset rw {tools the engine has registered} {tools engine yiyandikishije}
 ::msgcat::mcset rw {tools unavailable} {tools ntiboneka}
 ::msgcat::mcset rw {tools unavailable: %s} {tools ntiziboneka: %s}
+::msgcat::mcset rw {transcript finalization failed: %s} {Gusoza inyandiko y'ikiganiro byanze: %s}
 ::msgcat::mcset rw {transcript refetched} {transcript yongeye gukurwa}
 ::msgcat::mcset rw {transcript — arrows to read, %s for composer} {transcript — imyambi yo gusoma, %s kuri composer}
 ::msgcat::mcset rw {trigger %1$s %2$sd} {trigger %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset rw {☰ shows or hides the session list; picking a session closes it.} {☰ yerekana cyangwa ihisha urutonde rwa sessions; guhitamo session birufunga.}
 ::msgcat::mcset rw {⚙ %s} {⚙ %s}
 ::msgcat::mcset rw {⚠ %s} {⚠ %s}
+::msgcat::mcset rw {⚠ transcript finalization failed; preserved available text} {⚠ Gusoza inyandiko y'ikiganiro byanze; inyandiko iboneka yabitswe}
 ::msgcat::mcset rw {✖ %s} {✖ %s}
 ::msgcat::mcset rw {✖ detach failed: %s} {✖ kwegera byanze: %s}
 ::msgcat::mcset rw {✖ session stream: %s} {✖ umukoro w'umukino: %s}

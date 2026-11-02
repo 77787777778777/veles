@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset pcm choice_wait {wait %{secs}s (usage go reset), then try the same route again}
 ::msgcat::mcset pcm {choose a default model for %{provider} — the model step can list the provider's models} {choose default model for %{provider} — di model step fit list di provider im models}
 ::msgcat::mcset pcm {choose a model: pick one from the list, or type its name} {choose model: pick one from di list, or type im name}
+::msgcat::mcset pcm {choose an approval scope before answering} {pick approval scope before you answer}
 ::msgcat::mcset pcm {clear failed: %s} {clear no gree: %s}
 ::msgcat::mcset pcm {click a job in the list first} {first click di job wey dey di list}
 ::msgcat::mcset pcm {click a job to select it} {click di job make you select am}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset pcm {filter skills by name} {filter skills by name}
 ::msgcat::mcset pcm {find in transcript} {find inside transcript}
 ::msgcat::mcset pcm {find references} {find references}
+::msgcat::mcset pcm {finishing the transcript; try sending again in a moment} {dey finish di transcript; try send am again for small time}
 ::msgcat::mcset pcm {fire the Tcl hook} {fire di Tcl hook}
 ::msgcat::mcset pcm {fires for %s:} {e go fire for %s:}
 ::msgcat::mcset pcm {fires per hour} {e dey fire every hour}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset pcm {tools the engine has registered} {the tools wey the engine register}
 ::msgcat::mcset pcm {tools unavailable} {tools no dey}
 ::msgcat::mcset pcm {tools unavailable: %s} {tools no dey available: %s}
+::msgcat::mcset pcm {transcript finalization failed: %s} {transcript finalization don fail: %s}
 ::msgcat::mcset pcm {transcript refetched} {don fetch the transcript again}
 ::msgcat::mcset pcm {transcript — arrows to read, %s for composer} {transcript — arrow keys to read am, %s for composer}
 ::msgcat::mcset pcm {trigger %1$s %2$sd} {trigger %1$s — we don %2$s am}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset pcm {☰ shows or hides the session list; picking a session closes it.} {☰ dey show or hide di session list; if you pick session, e go close.}
 ::msgcat::mcset pcm {⚙ %s} {⚙ %s}
 ::msgcat::mcset pcm {⚠ %s} {⚠ %s}
+::msgcat::mcset pcm {⚠ transcript finalization failed; preserved available text} {⚠ transcript finalization don fail; di text wey dey available still dey}
 ::msgcat::mcset pcm {✖ %s} {✖ %s}
 ::msgcat::mcset pcm {✖ detach failed: %s} {✖ detach fail: %s}
 ::msgcat::mcset pcm {✖ session stream: %s} {✖ session stream: %s}

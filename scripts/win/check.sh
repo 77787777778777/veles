@@ -38,6 +38,7 @@ fi
 tgz="$(mktemp -t veles-win-XXXXXX.tgz)"
 trap 'rm -f "$tgz"' EXIT
 ( cd "$HERE" && git ls-files -z --cached --others --exclude-standard \
+    | while IFS= read -r -d '' path; do [ ! -e "$path" ] || printf '%s\0' "$path"; done \
     | tar --null -T - -czf "$tgz" ) || { echo "windows check: snapshot failed"; exit 1; }
 echo "windows check: $(du -h "$tgz" | cut -f1) → $HOST (step: $STEP)"
 

@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl choice_wait {сачекај %{secs} с (ресет ограничења), па покушај поново истом рутом}
 ::msgcat::mcset sr_cyrl {choose a default model for %{provider} — the model step can list the provider's models} {изабери подразумевани модел за %{provider} — у кораку за модел може се исписати листа модела провајдера}
 ::msgcat::mcset sr_cyrl {choose a model: pick one from the list, or type its name} {изабери модел: узми један са листе или укуцај његово име}
+::msgcat::mcset sr_cyrl {choose an approval scope before answering} {изабери обим одобрења пре одговора}
 ::msgcat::mcset sr_cyrl {clear failed: %s} {чишћење није успело: %s}
 ::msgcat::mcset sr_cyrl {click a job in the list first} {прво кликни на посао у листи}
 ::msgcat::mcset sr_cyrl {click a job to select it} {кликни на посао да га изабереш}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {filter skills by name} {филтрирај вештине по имену}
 ::msgcat::mcset sr_cyrl {find in transcript} {пронађи у транскрипту}
 ::msgcat::mcset sr_cyrl {find references} {пронађи референце}
+::msgcat::mcset sr_cyrl {finishing the transcript; try sending again in a moment} {препис се завршава; пошаљите поново за који тренутак}
 ::msgcat::mcset sr_cyrl {fire the Tcl hook} {покрени Tcl кукu}
 ::msgcat::mcset sr_cyrl {fires for %s:} {активира се за %s:}
 ::msgcat::mcset sr_cyrl {fires per hour} {активира се на сат}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {tools the engine has registered} {алати које је мотор регистровао}
 ::msgcat::mcset sr_cyrl {tools unavailable} {алати недоступни}
 ::msgcat::mcset sr_cyrl {tools unavailable: %s} {алати нису доступни: %s}
+::msgcat::mcset sr_cyrl {transcript finalization failed: %s} {довршавање преписа није успело: %s}
 ::msgcat::mcset sr_cyrl {transcript refetched} {транскрипт поново преузет}
 ::msgcat::mcset sr_cyrl {transcript — arrows to read, %s for composer} {транскрипт — стрелице за читање, %s за унос поруке}
 ::msgcat::mcset sr_cyrl {trigger %1$s %2$sd} {окидач %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {☰ shows or hides the session list; picking a session closes it.} {☰ приказује или сакрива листу сесија; избор сесије је затвара.}
 ::msgcat::mcset sr_cyrl {⚙ %s} {⚙ %s}
 ::msgcat::mcset sr_cyrl {⚠ %s} {⚠ %s}
+::msgcat::mcset sr_cyrl {⚠ transcript finalization failed; preserved available text} {⚠ довршавање преписа није успело; доступан текст је сачуван}
 ::msgcat::mcset sr_cyrl {✖ %s} {✖ %s}
 ::msgcat::mcset sr_cyrl {✖ detach failed: %s} {✖ одвајање није успело: %s}
 ::msgcat::mcset sr_cyrl {✖ session stream: %s} {✖ ток сесије: %s}

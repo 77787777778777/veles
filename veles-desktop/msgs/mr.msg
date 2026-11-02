@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset mr choice_wait {%{secs} सेकंद थांबा (वापर रीसेट), मग त्याच रूटवर पुन्हा प्रयत्न करा}
 ::msgcat::mcset mr {choose a default model for %{provider} — the model step can list the provider's models} {%{provider} साठी डीफॉल्ट मॉडेल निवडा — मॉडेल स्टेप प्रोव्हायडरची मॉडेल दाखवू शकते}
 ::msgcat::mcset mr {choose a model: pick one from the list, or type its name} {मॉडेल निवडा: यादीतून एक निवडा किंवा त्याचे नाव टाइप करा}
+::msgcat::mcset mr {choose an approval scope before answering} {उत्तर देण्यापूर्वी परवानगी स्कोप निवडा}
 ::msgcat::mcset mr {clear failed: %s} {साफ करणे अयशस्वी: %s}
 ::msgcat::mcset mr {click a job in the list first} {आधी सूचीतील job निवडा}
 ::msgcat::mcset mr {click a job to select it} {job निवडण्यासाठी तिच्यावर क्लिक करा}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset mr {filter skills by name} {नावानुसार स्किल्स फिल्टर करा}
 ::msgcat::mcset mr {find in transcript} {ट्रान्सक्रिप्टमध्ये शोधा}
 ::msgcat::mcset mr {find references} {संदर्भ शोधा}
+::msgcat::mcset mr {finishing the transcript; try sending again in a moment} {ट्रान्स्क्रिप्ट पूर्ण करत आहे; काही क्षणांनी पुन्हा पाठवण्याचा प्रयत्न करा}
 ::msgcat::mcset mr {fire the Tcl hook} {Tcl हूक चालवा}
 ::msgcat::mcset mr {fires for %s:} {%s साठी सुरू होते:}
 ::msgcat::mcset mr {fires per hour} {तासाला सुरू होते}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset mr {tools the engine has registered} {इंजिनने नोंदणी केलेली टूल्स}
 ::msgcat::mcset mr {tools unavailable} {टूल्स अनुपलब्ध}
 ::msgcat::mcset mr {tools unavailable: %s} {tools उपलब्ध नाहीत: %s}
+::msgcat::mcset mr {transcript finalization failed: %s} {ट्रान्स्क्रिप्ट अंतिमीकरण अयशस्वी: %s}
 ::msgcat::mcset mr {transcript refetched} {ट्रान्सक्रिप्ट पुन्हा मिळवली}
 ::msgcat::mcset mr {transcript — arrows to read, %s for composer} {ट्रान्सक्रिप्ट — वाचण्यासाठी बाण, कंपोझरसाठी %s}
 ::msgcat::mcset mr {trigger %1$s %2$sd} {ट्रिगर %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset mr {☰ shows or hides the session list; picking a session closes it.} {☰ सत्र यादी दाखवते किंवा लपवते; सत्र निवडल्यावर ती बंद होते.}
 ::msgcat::mcset mr {⚙ %s} {⚙ %s}
 ::msgcat::mcset mr {⚠ %s} {⚠ %s}
+::msgcat::mcset mr {⚠ transcript finalization failed; preserved available text} {⚠ ट्रान्स्क्रिप्ट अंतिमीकरण अयशस्वी; उपलब्ध मजकूर जतन केला आहे}
 ::msgcat::mcset mr {✖ %s} {✖ %s}
 ::msgcat::mcset mr {✖ detach failed: %s} {✖ डिटॅच अयशस्वी: %s}
 ::msgcat::mcset mr {✖ session stream: %s} {✖ सेशन स्ट्रीम: %s}

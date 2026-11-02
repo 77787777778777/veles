@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset yo choice_wait {dúró fún ìṣẹ́jú-àáyá %{secs} (àtúnṣètò ìlò), lẹ́yìn náà tún gbìyànjú ipa-ọ̀nà kan náà}
 ::msgcat::mcset yo {choose a default model for %{provider} — the model step can list the provider's models} {yan mọ́dẹ́ẹ̀lì àṣàyàn fún %{provider} — ìgbésẹ̀ mọ́dẹ́ẹ̀lì lè ṣàkójọ àwọn mọ́dẹ́ẹ̀lì olùpèsè náà}
 ::msgcat::mcset yo {choose a model: pick one from the list, or type its name} {yan mọ́dẹ́ẹ̀lì kan: yan ọ̀kan láti inú àkójọ, tàbí kọ orúkọ rẹ̀}
+::msgcat::mcset yo {choose an approval scope before answering} {yàn ààyè ìfọwọ́sí kí o tó dáhùn}
 ::msgcat::mcset yo {clear failed: %s} {ìparẹ́ kùnà: %s}
 ::msgcat::mcset yo {click a job in the list first} {tẹ iṣẹ́ kan nínú àkójọ kọ́kọ́}
 ::msgcat::mcset yo {click a job to select it} {tẹ iṣẹ́ láti yàn án}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset yo {filter skills by name} {Ṣàlẹ̀mọ́ skills nípasẹ̀ orúkọ}
 ::msgcat::mcset yo {find in transcript} {wá nínú ọ̀rọ̀ àtòrọ̀}
 ::msgcat::mcset yo {find references} {wá àwọn ìtọ́kasí}
+::msgcat::mcset yo {finishing the transcript; try sending again in a moment} {ń parí transcript rẹ̀; tún gbìyànjú láti firanṣẹ́ ní àáyá díẹ̀}
 ::msgcat::mcset yo {fire the Tcl hook} {tan àmì Tcl hook}
 ::msgcat::mcset yo {fires for %s:} {o ń tan fún %s:}
 ::msgcat::mcset yo {fires per hour} {o ń tan lẹ́ẹ̀kan ní ààyá}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset yo {tools the engine has registered} {àwọn irinṣẹ́ tí ẹ̀rọ forúkọ sílẹ̀}
 ::msgcat::mcset yo {tools unavailable} {àwọn irinṣẹ́ kò sí lọ́wọ́}
 ::msgcat::mcset yo {tools unavailable: %s} {tools kò sí: %s}
+::msgcat::mcset yo {transcript finalization failed: %s} {ìparí transcript kùnà: %s}
 ::msgcat::mcset yo {transcript refetched} {a tún gba gbédègbẹ́yọ̀ padà}
 ::msgcat::mcset yo {transcript — arrows to read, %s for composer} {gbédègbẹ́yọ̀ — àwọn ọfà láti kà á, %s fún olùkọ̀wé}
 ::msgcat::mcset yo {trigger %1$s %2$sd} {ṣe ìbẹ̀rẹ̀ %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset yo {☰ shows or hides the session list; picking a session closes it.} {☰ ń fi àkójọ ìpàdé hàn tàbí fi pamọ́; yíyan ìpàdé kan ń pa á dé.}
 ::msgcat::mcset yo {⚙ %s} {⚙ %s}
 ::msgcat::mcset yo {⚠ %s} {⚠ %s}
+::msgcat::mcset yo {⚠ transcript finalization failed; preserved available text} {⚠ ìparí transcript kùnà; ọ̀rọ̀ tó wà ni wọ́n ti pamọ́}
 ::msgcat::mcset yo {✖ %s} {✖ %s}
 ::msgcat::mcset yo {✖ detach failed: %s} {✖ ìyọkúrò kò ṣeéṣe: %s}
 ::msgcat::mcset yo {✖ session stream: %s} {✖ ìtàn-ṣíṣe àpèjọ: %s}

@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset cs choice_wait {počkat %{secs} s (reset limitu), pak zkusit znovu stejnou trasu}
 ::msgcat::mcset cs {choose a default model for %{provider} — the model step can list the provider's models} {zvolte výchozí model pro %{provider} — krok s modelem umí vypsat modely poskytovatele}
 ::msgcat::mcset cs {choose a model: pick one from the list, or type its name} {zvolte model: vyberte jej ze seznamu nebo napište jeho název}
+::msgcat::mcset cs {choose an approval scope before answering} {před odpovědí zvolte rozsah schválení}
 ::msgcat::mcset cs {clear failed: %s} {vymazání selhalo: %s}
 ::msgcat::mcset cs {click a job in the list first} {nejprve klikněte na úlohu v seznamu}
 ::msgcat::mcset cs {click a job to select it} {kliknutím na úlohu ji vyberete}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset cs {filter skills by name} {filtrovat dovednosti podle názvu}
 ::msgcat::mcset cs {find in transcript} {najít v transkriptu}
 ::msgcat::mcset cs {find references} {najít reference}
+::msgcat::mcset cs {finishing the transcript; try sending again in a moment} {dokončuji přepis; zkuste za chvíli poslat znovu}
 ::msgcat::mcset cs {fire the Tcl hook} {spustit Tcl hook}
 ::msgcat::mcset cs {fires for %s:} {spouští se pro %s:}
 ::msgcat::mcset cs {fires per hour} {spouští se každou hodinu}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset cs {tools the engine has registered} {nástroje, které engine registroval}
 ::msgcat::mcset cs {tools unavailable} {nástroje nedostupné}
 ::msgcat::mcset cs {tools unavailable: %s} {nástroje nedostupné: %s}
+::msgcat::mcset cs {transcript finalization failed: %s} {dokončení přepisu selhalo: %s}
 ::msgcat::mcset cs {transcript refetched} {transkript znovu načten}
 ::msgcat::mcset cs {transcript — arrows to read, %s for composer} {transkript — šipkami se čte, %s pro kompozitor}
 ::msgcat::mcset cs {trigger %1$s %2$sd} {spustit %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset cs {☰ shows or hides the session list; picking a session closes it.} {☰ zobrazí nebo skryje seznam session; výběrem session se zavře.}
 ::msgcat::mcset cs {⚙ %s} {⚙ %s}
 ::msgcat::mcset cs {⚠ %s} {⚠ %s}
+::msgcat::mcset cs {⚠ transcript finalization failed; preserved available text} {⚠ dokončení přepisu selhalo; dostupný text byl zachován}
 ::msgcat::mcset cs {✖ %s} {✖ %s}
 ::msgcat::mcset cs {✖ detach failed: %s} {✖ oddělení selhalo: %s}
 ::msgcat::mcset cs {✖ session stream: %s} {✖ stream relace: %s}

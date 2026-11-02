@@ -95,8 +95,8 @@ namespace eval ::vsidebar { proc selected_sid {} { return "" } }
 # old flush deleted nothing (its mark sat at the phantom `end`), so the
 # render error was never observed. The flush now actually deletes and
 # re-renders, so `render` (and the media it may route through) must exist.
-namespace eval ::vmd    { proc forget_links {w} {} ; proc render {w text} { $w insert end $text {} } }
-namespace eval ::vmedia { proc forget {w} {} ; proc insert {w p} { $w insert end "MEDIA:$p\n" {} } }
+namespace eval ::vmd    { proc forget_links {w} {} ; proc render {w text} { ::vchat::_run $w $text {} } }
+namespace eval ::vmedia { proc forget {w} {} ; proc insert {w p} { ::vchat::_run $w "MEDIA:$p\n" {} } }
 namespace eval ::vfind  { proc reset_marks {} {} ; proc build {} {} }
 namespace eval ::vedit  { proc hist_push {t} {} }
 namespace eval ::vt     { variable T ; array set T {bg_input #101018 bg_panel #181820 fg #e0e0e0 fg_dim #9a9aa8 pink #ff79c6 reasoning #8888aa accent #88c0d0 green #50fa7b red #ff5555 gold #f1fa8c user #ff79c6 cyan #8be9fd assistant #e0e0e0 tool #f1fa8c system #6272a4} }
@@ -116,6 +116,16 @@ namespace eval ::vtext  { proc readonly {w} { $w configure -state disabled } ;
 namespace eval ::vask   { proc show {d} {} ; proc secret_dialog {nm id} {} }
 namespace eval ::vplace { proc centered {args} {} ; proc near {args} {} }
 source [file join $_dir chat.tcl]
+# Fixtures below replace this callback; retain the real one for tests
+# that exercise the live-note/reconcile path later in this file.
+rename ::vchat::on_note ::vchat::_on_note_original
+proc ::vchat::on_note {d {live 1}} {
+    return [::vchat::_on_note_original $d $live]
+}
+rename ::vchat::emit_message ::vchat::_emit_message_original
+proc ::vchat::emit_message {kind text {reason ""} {tools {}} {at now}} {
+    return [::vchat::_emit_message_original $kind $text $reason $tools $at]
+}
 
 # The composer/transcript widgets the handlers poke at.
 foreach f {.mid .mid.chatwrap .mid.chatwrap.chat .mid.chatwrap.chat.bar} { frame $f }
@@ -137,6 +147,8 @@ pack .mid.chatwrap.chat -fill both -expand true
 update idletasks
 
 proc reset {} {
+    ::vchat::_drain_finalizers
+    ::vchat::forget_raw .mid.chatwrap.chat.log
     set ::vchat::session ""
     set ::vchat::busy 0
     set ::vchat::running {}
@@ -554,6 +566,7 @@ dict set ::vchat::turn_anchor A 1.0
 ::vchat::on_done [dict create provider p model m prompt_tokens 1 \
     completion_tokens 40 text "" \
     notice "the model returned no message text (p/m, 0 tool round(s), 40 completion tokens)"]
+::vchat::_drain_finalizers
 ok "the transcript says the reply was empty" \
     {[string match "*no message text*" [body]]}
 ok "…and the reasoning is still there to look at" \
@@ -1117,10 +1130,287 @@ ok "turn-ended leaves the reconcile to the verdict that follows" \
     {[::vchat::is_running "A"]}
 ::vchat::on_session_event "A" turn-result [dict create text "final answer" provider p model m \
     prompt_tokens 1 completion_tokens 2 display_reasoning "" notice "" last_msg_id 43]
+::vchat::_drain_finalizers
 ok "turn-result reconciles and clears running" {![::vchat::is_running "A"]}
 ok "…replacing the raw stream with the finished reply" \
     {[string match "*final answer*" [body]] && ![string match "*live answer*" [body]]}
 ok "…and advances the cursor to the store head" {$::vchat::ev_cursor(A) == 43}
+
+# A guard belongs where it happened. Painting it live and then painting
+# it again during the turn's final reconcile duplicates both the entry
+# and the expensive Tk work, which is especially visible after many notes.
+reset
+set ::vchat::session "A"
+set ::vchat::stream_session "A"
+proc ::vchat::on_note {d {live 1}} {
+    return [::vchat::_on_note_original $d $live]
+}
+proc ::vchat::emit_message {kind text {reason ""} {tools {}} {at now}} {
+    return [::vchat::_emit_message_original $kind $text $reason $tools $at]
+}
+set note_paints 0
+rename ::vchat::emit_note ::vchat::_emit_note_counted
+proc ::vchat::emit_note {d} {
+    incr ::note_paints
+    return [::vchat::_emit_note_counted $d]
+}
+::vchat::on_session_event "A" turn-started [dict create surface desktop base_msg_id 42]
+::vchat::on_session_event "A" delta [dict create text "before the guard"]
+::vchat::on_session_event "A" note [dict create note_id 1 kind guard summary "guard one"]
+::vchat::on_session_event "A" delta [dict create text " after the guard"]
+set before_guard [string first "before the guard" [body]]
+set guard_pos [string first "⚠ guard one" [body]]
+set after_guard [string first "after the guard" [body]]
+ok "a live guard is painted where it happened" \
+    {$before_guard >= 0 && $guard_pos > $before_guard && $after_guard > $guard_pos}
+set before_done $note_paints
+::vchat::on_session_event "A" turn-result [dict create text "finished" provider p model m \
+    prompt_tokens 1 completion_tokens 2 display_reasoning "" notice "" last_msg_id 43]
+::vchat::_drain_finalizers
+ok "finishing the turn does not paint the guard a second time" \
+    {$note_paints == $before_done}
+ok "the guard still appears exactly once in the final transcript" \
+    {[regexp -all {⚠ guard one} [body]] == 1}
+set final_guard [string first "⚠ guard one" [body]]
+set final_reply [string first "finished" [body]]
+ok "the guard remains before the final reply" \
+    {$final_guard >= 0 && $final_reply > $final_guard}
+rename ::vchat::emit_note {}
+rename ::vchat::_emit_note_counted ::vchat::emit_note
+
+reset
+set ::vchat::session "A"
+set ::vchat::stream_session "A"
+proc ::vchat::on_note {d {live 1}} { return [::vchat::_on_note_original $d $live] }
+proc ::vchat::emit_message {kind text {reason ""} {tools {}} {at now}} {
+    return [::vchat::_emit_message_original $kind $text $reason $tools $at]
+}
+set note_paints 0
+rename ::vchat::emit_note ::vchat::_emit_note_counted
+proc ::vchat::emit_note {d} { incr ::note_paints; return [::vchat::_emit_note_counted $d] }
+::vchat::on_session_event "A" turn-started [dict create surface desktop base_msg_id 42]
+::vchat::on_session_event "A" delta [dict create text "call one"]
+::vchat::on_session_event "A" tool [dict create state start name terminal args "{}"]
+::vchat::on_session_event "A" tool [dict create state end name terminal result "first result"]
+::vchat::on_session_event "A" note [dict create note_id 1 kind guard summary "guard between rounds"]
+::vchat::on_session_event "A" delta [dict create text "call two"]
+::vchat::on_session_event "A" tool [dict create state start name read_file args "{}"]
+::vchat::on_session_event "A" tool [dict create state end name read_file result "second result"]
+::vchat::on_session_event "A" note [dict create note_id 2 kind guard summary "guard after second"]
+::vchat::on_session_event "A" turn-result [dict create text "done" provider p model m \
+    prompt_tokens 1 completion_tokens 2 display_reasoning "" notice "" last_msg_id 43]
+::vchat::_drain_finalizers
+set sequence {}
+foreach needle {"call one" "first result" "guard between rounds" "call two" "second result" "guard after second" "done"} {
+    lappend sequence [string first $needle [body]]
+}
+ok "multiple notes retain their exact positions between completed rounds" \
+    {[lsort -integer -increasing $sequence] eq $sequence && [lindex $sequence 0] >= 0}
+ok "multiple live notes are not repainted at turn end" {$note_paints == 2}
+set completed_body [body]
+# Provider/token footer is status chrome, not a persisted transcript row.
+set footer [string first "· p/m ·" $completed_body]
+if {$footer >= 0} { set completed_body [string range $completed_body 0 $footer-1] }
+::vchat::rebuild
+set rebuilt_body [body]
+set footer [string first "· p/m ·" $rebuilt_body]
+if {$footer >= 0} { set rebuilt_body [string range $rebuilt_body 0 $footer-1] }
+ok "the complete rebuilt message content equals the finalized live transcript" \
+    {$rebuilt_body eq $completed_body}
+ok "both notes survive a source/theme transcript rebuild exactly once" {
+    [regexp -all {⚠ guard between rounds} [body]] == 1 &&
+    [regexp -all {⚠ guard after second} [body]] == 1
+}
+rename ::vchat::emit_note {}
+rename ::vchat::_emit_note_counted ::vchat::emit_note
+
+reset
+set ::vchat::session "A"
+set ::vchat::stream_session "A"
+proc ::vchat::on_note {d {live 1}} { return [::vchat::_on_note_original $d $live] }
+proc ::vchat::emit_message {kind text {reason ""} {tools {}} {at now}} {
+    return [::vchat::_emit_message_original $kind $text $reason $tools $at]
+}
+::vchat::on_session_event "A" turn-started [dict create surface desktop base_msg_id 42]
+for {set i 1} {$i <= 100} {incr i} {
+    ::vchat::on_session_event "A" delta [dict create text "call $i"]
+    ::vchat::on_session_event "A" tool [dict create state start name terminal args "{}"]
+    ::vchat::on_session_event "A" tool [dict create state end name terminal result "result $i"]
+    ::vchat::on_session_event "A" note [dict create note_id $i kind guard summary "guard $i"]
+}
+set ::timer_ran 0
+after 1 {set ::timer_ran 1}
+set started [clock milliseconds]
+::vchat::on_session_event "A" turn-result [dict create text "done" provider p model m \
+    prompt_tokens 1 completion_tokens 2 display_reasoning "" notice "" last_msg_id 43]
+set elapsed [expr {[clock milliseconds] - $started}]
+puts "BENCH: 100-note turn-result ${elapsed}ms; timer_after=$::timer_ran"
+ok "turn-result returns before a queued Tk event runs" {!$::timer_ran}
+vwait ::timer_ran
+::vchat::_drain_finalizers
+ok "many-note completion eventually finishes after yielding" {
+    ![::vchat::is_running "A"] &&
+    [string first "done" [body]] >= 0 &&
+    [string first "guard 100" [body]] >= 0
+}
+
+# A slow markdown render must not monopolize Tk's event loop. Use a
+# controlled cost so this remains a regression test on fast machines.
+rename ::vmd::render ::vmd::_render_slow_original
+proc ::vmd::render {w text} {
+    after 20
+    ::vmd::_render_slow_original $w $text
+}
+reset
+set ::vchat::session "A"
+set ::vchat::stream_session "A"
+::vchat::on_session_event "A" turn-started [dict create surface desktop base_msg_id 42]
+for {set i 1} {$i <= 6} {incr i} {
+    ::vchat::on_session_event "A" delta [dict create text "slow row $i"]
+    ::vchat::on_session_event "A" tool [dict create state start name terminal args "{}"]
+    ::vchat::on_session_event "A" tool [dict create state end name terminal result "slow result $i"]
+}
+set ::slow_timer 0
+after 1 {set ::slow_timer 1}
+::vchat::on_session_event "A" turn-result [dict create text "slow done" provider p model m \
+    prompt_tokens 1 completion_tokens 2 display_reasoning "" notice "" last_msg_id 43]
+ok "a slow transcript rebuild still lets queued events run" {!$::slow_timer}
+vwait ::slow_timer
+::vchat::_drain_finalizers
+ok "the slow rebuild completes correctly after yielding" \
+    {[string first "slow done" [body]] >= 0 && ![::vchat::is_running "A"]}
+rename ::vmd::render {}
+rename ::vmd::_render_slow_original ::vmd::render
+
+# Finalization belongs to the session, not the visible window. A switch
+# must leave it running while another session remains fully usable.
+reset
+set ::vchat::session "A"
+set ::vchat::stream_session "A"
+::vchat::open_session "A"
+::vchat::on_session_event "A" turn-started [dict create surface desktop base_msg_id 42]
+::vchat::on_session_event "A" delta [dict create text "finish A"]
+::vchat::on_session_event "A" turn-result [dict create text "A done" provider p model m \
+    prompt_tokens 1 completion_tokens 2 display_reasoning "" notice "" last_msg_id 43]
+ok "session A is finalizing, not still running on the engine" \
+    {[::vchat::_finalizing "A"] && [::vchat::is_running "A"]}
+::vchat::open_session "B"
+ok "another session stays usable during A's finalization" {!$::vchat::busy}
+::vchat::_drain_finalizers
+ok "A finishes in its own transcript after switching away" \
+    {[string first "A done" [body_of "A"]] >= 0 && ![::vchat::is_running "A"]}
+
+# An error is still a completed turn, with the error row after its
+# rebuilt transcript. No completion callback may eat it.
+reset
+set ::vchat::session "A"
+set ::vchat::stream_session "A"
+::vchat::on_session_event "A" turn-started [dict create surface desktop base_msg_id 42]
+::vchat::on_session_event "A" delta [dict create text "partial failure"]
+::vchat::on_session_event "A" turn-error [dict create error "synthetic failure"]
+::vchat::_drain_finalizers
+ok "a failed async turn keeps its partial output and error row" \
+    {[string first "partial failure" [body]] >= 0 &&
+     [string first "✖ turn failed: synthetic failure" [body]] > [string first "partial failure" [body]]}
+ok "a failed async turn releases its running state" {![::vchat::is_running "A"]}
+ok "a failed async turn retains its error status" \
+    {[string match "*synthetic failure*" $::vstatus::last]}
+
+# A new turn cannot race the transcript rebuild. Slash commands and
+# other sessions remain available; only this session's send is held.
+reset
+set ::vchat::session "A"
+set ::vchat::stream_session "A"
+::vchat::on_session_event "A" turn-started [dict create surface desktop base_msg_id 42]
+::vchat::on_session_event "A" delta [dict create text "finalizing send"]
+::vchat::on_session_event "A" turn-result [dict create text "done" provider p model m \
+    prompt_tokens 1 completion_tokens 2 display_reasoning "" notice "" last_msg_id 43]
+.mid.chatwrap.chat.input insert end "do not steer a completed turn"
+set ::vapi::steers 0
+proc ::vapi::post_json {path body} { incr ::vapi::steers; return [dict create] }
+::vchat::send_current
+ok "sending during finalization cannot become a steer to a dead turn" \
+    {$::vapi::steers == 0 && [string match "*finishing the transcript*" $::vstatus::last]}
+::vchat::_drain_finalizers
+
+# A redraw invalidates the finalizer's positional marks. It must finish
+# safely before rebuilding, rather than resume against a new layout.
+reset
+set ::vchat::session "A"
+set ::vchat::stream_session "A"
+::vchat::on_session_event "A" turn-started [dict create surface desktop base_msg_id 42]
+::vchat::on_session_event "A" delta [dict create text "call before redraw"]
+::vchat::on_session_event "A" tool [dict create state start name terminal args "{}"]
+::vchat::on_session_event "A" tool [dict create state end name terminal result "result before redraw"]
+::vchat::on_session_event "A" note [dict create note_id 1 kind guard summary "guard during redraw"]
+::vchat::on_session_event "A" turn-result [dict create text "answer after redraw" provider p model m \
+    prompt_tokens 1 completion_tokens 2 display_reasoning "" notice "" last_msg_id 43]
+::vchat::rebuild
+::vchat::_drain_finalizers
+set redraw_sequence {}
+foreach needle {"call before redraw" "result before redraw" "guard during redraw" "answer after redraw"} {
+    lappend redraw_sequence [string first $needle [body]]
+}
+ok "a redraw during finalization keeps every row in order" \
+    {[lindex $redraw_sequence 0] >= 0 && [lsort -integer -increasing $redraw_sequence] eq $redraw_sequence}
+parray ::vchat::raw_kind
+set redraw_body [body]
+::vchat::rebuild
+ok "a second redraw agrees with the safely completed first one" \
+    {[body] eq $redraw_body}
+
+# A renderer error must not erase the durable turn or claim success.
+reset
+set ::vchat::session "A"
+set ::vchat::stream_session "A"
+rename ::vmd::render ::vmd::_render_fail_original
+proc ::vmd::render {w text} { error "synthetic render failure" }
+::vchat::on_session_event "A" turn-started [dict create surface desktop base_msg_id 42]
+::vchat::on_session_event "A" delta [dict create text "partial render"]
+::vchat::on_session_event "A" turn-result [dict create text "final render" provider p model m \
+    prompt_tokens 1 completion_tokens 2 display_reasoning "" notice "" last_msg_id 43]
+::vchat::_drain_finalizers
+ok "a failed finalization preserves the answer for inspection" \
+    {[string first "final render" [body]] >= 0}
+ok "a failed finalization never claims done" \
+    {[string match "*synthetic render failure*" $::vstatus::last]
+     && ![string match "done*" $::vstatus::last]}
+parray ::vchat::raw_kind
+parray ::vchat::raw_w
+rename ::vmd::render {}
+rename ::vmd::_render_fail_original ::vmd::render
+
+# A status/context refresh can ask to drain finalizers. Completion must
+# retire its own job first; draining a still-registered completed job
+# recurses until the process hangs (reproduced before the 0.1.6 fix).
+reset
+set ::vchat::session "A"
+set ::vchat::stream_session "A"
+namespace eval ::vstatus {
+    proc refresh_context {sid} { ::vchat::_drain_finalizers }
+}
+::vchat::on_session_event "A" turn-started [dict create surface desktop base_msg_id 42]
+::vchat::on_session_event "A" delta [dict create text "recursive drain"]
+::vchat::on_session_event "A" turn-result [dict create text "done" provider p model m \
+    prompt_tokens 1 completion_tokens 2 display_reasoning "" notice "" last_msg_id 43]
+::vchat::_drain_finalizers
+ok "a completion-time context refresh cannot recursively drain its own job" \
+    {![::vchat::_finalizing "A"] && ![::vchat::is_running "A"]}
+namespace eval ::vstatus {
+    proc refresh_context {sid} {}
+}
+
+proc ::vchat::_restore_message_stub {} {
+    proc ::vchat::emit_message {kind text {reason ""} {tools {}} {at now}} {
+        incr ::paints
+        set w [::vchat::log]
+        $w configure -state normal
+        $w insert end "$kind: $text\n"
+        if {$reason ne ""} { $w insert end "reason: $reason\n" }
+        $w configure -state disabled
+    }
+}
+::vchat::_restore_message_stub
 
 # The verdict comes from run_turn itself now, for EVERY surface — a
 # desktop window watching an IRC/cron/telegram turn reconciles it the
@@ -1135,6 +1425,7 @@ ok "turn-ended does not wedge a non-desktop turn either (the verdict is next)" \
     {[::vchat::is_running "A"]}
 ::vchat::on_session_event "A" turn-result [dict create text "the irc answer" provider p model m \
     prompt_tokens 1 completion_tokens 1 display_reasoning "" notice "" last_msg_id 4]
+::vchat::_drain_finalizers
 ok "an irc-started turn reconciles on the watcher's screen" \
     {[string match "*the irc answer*" [body]] && ![string match "*irc is typing*" [body]]}
 ok "…clears running and heals the cache like a desktop turn" \

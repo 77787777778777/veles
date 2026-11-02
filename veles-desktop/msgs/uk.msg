@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset uk choice_wait {зачекати %{secs} с (скидання ліміту), потім повторити тим самим маршрутом}
 ::msgcat::mcset uk {choose a default model for %{provider} — the model step can list the provider's models} {виберіть типову модель для %{provider} — на кроці вибору моделі можна показати моделі провайдера}
 ::msgcat::mcset uk {choose a model: pick one from the list, or type its name} {виберіть модель: оберіть одну зі списку або введіть її назву}
+::msgcat::mcset uk {choose an approval scope before answering} {виберіть сферу схвалення перед відповіддю}
 ::msgcat::mcset uk {clear failed: %s} {не вдалося очистити: %s}
 ::msgcat::mcset uk {click a job in the list first} {спершу оберіть завдання у списку}
 ::msgcat::mcset uk {click a job to select it} {клацніть завдання, щоб вибрати його}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset uk {filter skills by name} {фільтрувати навички за назвою}
 ::msgcat::mcset uk {find in transcript} {пошук у транскрипті}
 ::msgcat::mcset uk {find references} {знайти посилання}
+::msgcat::mcset uk {finishing the transcript; try sending again in a moment} {завершую розшифровку; спробуйте надіслати знову за мить}
 ::msgcat::mcset uk {fire the Tcl hook} {запустити Tcl-гачок}
 ::msgcat::mcset uk {fires for %s:} {спрацьовує для %s:}
 ::msgcat::mcset uk {fires per hour} {спрацьовує щогодини}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset uk {tools the engine has registered} {інструменти, зареєстровані рушієм}
 ::msgcat::mcset uk {tools unavailable} {інструменти недоступні}
 ::msgcat::mcset uk {tools unavailable: %s} {інструменти недоступні: %s}
+::msgcat::mcset uk {transcript finalization failed: %s} {не вдалося завершити розшифровку: %s}
 ::msgcat::mcset uk {transcript refetched} {транскрипт перечитано}
 ::msgcat::mcset uk {transcript — arrows to read, %s for composer} {транскрипт — стрілки для читання, %s — для вводу}
 ::msgcat::mcset uk {trigger %1$s %2$sd} {тригер %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset uk {☰ shows or hides the session list; picking a session closes it.} {☰ показує або ховає список сесій; вибір сесії його закриває.}
 ::msgcat::mcset uk {⚙ %s} {⚙ %s}
 ::msgcat::mcset uk {⚠ %s} {⚠ %s}
+::msgcat::mcset uk {⚠ transcript finalization failed; preserved available text} {⚠ не вдалося завершити розшифровку; наявний текст збережено}
 ::msgcat::mcset uk {✖ %s} {✖ %s}
 ::msgcat::mcset uk {✖ detach failed: %s} {✖ помилка від’єднання: %s}
 ::msgcat::mcset uk {✖ session stream: %s} {✖ потік сесії: %s}

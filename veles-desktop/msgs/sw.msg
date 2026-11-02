@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset sw choice_wait {subiri sekunde %{secs} (matumizi yawekwe upya), kisha jaribu tena njia ileile}
 ::msgcat::mcset sw {choose a default model for %{provider} — the model step can list the provider's models} {chagua modeli chaguo-msingi kwa %{provider} — hatua ya modeli inaweza kuorodhesha modeli za mtoa huduma}
 ::msgcat::mcset sw {choose a model: pick one from the list, or type its name} {chagua modeli: chagua moja kutoka kwenye orodha, au andika jina lake}
+::msgcat::mcset sw {choose an approval scope before answering} {chagua wigo wa idhini kabla ya kujibu}
 ::msgcat::mcset sw {clear failed: %s} {kufuta kumeshindikana: %s}
 ::msgcat::mcset sw {click a job in the list first} {bofya kazi kwenye orodha kwanza}
 ::msgcat::mcset sw {click a job to select it} {bofya kazi kuichagua}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset sw {filter skills by name} {chuja ujuzi kwa jina}
 ::msgcat::mcset sw {find in transcript} {tafuta ndani ya mazungumzo}
 ::msgcat::mcset sw {find references} {tafuta marejeo}
+::msgcat::mcset sw {finishing the transcript; try sending again in a moment} {nakala inakamilika; jaribu kutuma tena hivi punde}
 ::msgcat::mcset sw {fire the Tcl hook} {anzisha Tcl hook}
 ::msgcat::mcset sw {fires for %s:} {huwaka kwa %s:}
 ::msgcat::mcset sw {fires per hour} {huwaka kila saa}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset sw {tools the engine has registered} {zana ambazo injini imesajili}
 ::msgcat::mcset sw {tools unavailable} {zana hazipatikani}
 ::msgcat::mcset sw {tools unavailable: %s} {tools hazipatikani: %s}
+::msgcat::mcset sw {transcript finalization failed: %s} {kukamilisha nakala kumeshindikana: %s}
 ::msgcat::mcset sw {transcript refetched} {nakala imepakiwa upya}
 ::msgcat::mcset sw {transcript — arrows to read, %s for composer} {nakala — mishale kusoma, %s kuandika}
 ::msgcat::mcset sw {trigger %1$s %2$sd} {kichocheo %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset sw {☰ shows or hides the session list; picking a session closes it.} {☰ huonyesha au kuficha orodha ya vikao; kuchagua kikao huifunga.}
 ::msgcat::mcset sw {⚙ %s} {⚙ %s}
 ::msgcat::mcset sw {⚠ %s} {⚠ %s}
+::msgcat::mcset sw {⚠ transcript finalization failed; preserved available text} {⚠ kukamilisha nakala kumeshindikana; maandishi yanayopatikana yamehifadhiwa}
 ::msgcat::mcset sw {✖ %s} {✖ %s}
 ::msgcat::mcset sw {✖ detach failed: %s} {✖ kutenganisha kumeshindikana: %s}
 ::msgcat::mcset sw {✖ session stream: %s} {✖ mtiririko wa kipindi: %s}

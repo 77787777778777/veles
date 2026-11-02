@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset ml choice_wait {%{secs} സെക്കൻഡ് കാത്തിരിക്കുക (ഉപയോഗ റീസെറ്റ്), തുടർന്ന് അതേ റൂട്ടിൽ വീണ്ടും ശ്രമിക്കുക}
 ::msgcat::mcset ml {choose a default model for %{provider} — the model step can list the provider's models} {%{provider}-ന് ഒരു ഡിഫോൾട്ട് മോഡൽ തിരഞ്ഞെടുക്കുക — മോഡൽ സ്റ്റെപ്പ് പ്രൊവൈഡറുടെ മോഡലുകൾ ലിസ്റ്റ് ചെയ്യും}
 ::msgcat::mcset ml {choose a model: pick one from the list, or type its name} {ഒരു മോഡൽ തിരഞ്ഞെടുക്കുക: പട്ടികയിൽ നിന്ന് ഒന്ന് തിരഞ്ഞെടുക്കുക, അല്ലെങ്കിൽ അതിന്റെ പേര് ടൈപ്പ് ചെയ്യുക}
+::msgcat::mcset ml {choose an approval scope before answering} {ഉത്തരം നൽകുന്നതിന് മുമ്പ് ഒരു അംഗീകാര വ്യാപ്തി തിരഞ്ഞെടുക്കുക}
 ::msgcat::mcset ml {clear failed: %s} {മായ്ക്കൽ പരാജയപ്പെട്ടു: %s}
 ::msgcat::mcset ml {click a job in the list first} {ആദ്യം ലിസ്റ്റിലെ ഒരു ജോബിൽ ക്ലിക്ക് ചെയ്യുക}
 ::msgcat::mcset ml {click a job to select it} {ഒരു ജോബ് തിരഞ്ഞെടുക്കാൻ അതിൽ ക്ലിക്ക് ചെയ്യുക}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset ml {filter skills by name} {പേരനുസരിച്ച് സ്കിലുകൾ ഫിൽറ്റർ ചെയ്യുക}
 ::msgcat::mcset ml {find in transcript} {ട്രാൻസ്ക്രിപ്റ്റിൽ തിരയുക}
 ::msgcat::mcset ml {find references} {റഫറൻസുകൾ കണ്ടെത്തുക}
+::msgcat::mcset ml {finishing the transcript; try sending again in a moment} {ട്രാൻസ്ക്രിപ്റ്റ് പൂർത്തിയാക്കുന്നു; ഒരു നിമിഷം കഴിഞ്ഞ് വീണ്ടും അയയ്ക്കാൻ ശ്രമിക്കുക}
 ::msgcat::mcset ml {fire the Tcl hook} {Tcl ഹൂക്ക് പ്രവർത്തിപ്പിക്കുക}
 ::msgcat::mcset ml {fires for %s:} {%s-നായി പ്രവർത്തിക്കുന്നു:}
 ::msgcat::mcset ml {fires per hour} {മണിക്കൂറിൽ പ്രവർത്തിക്കുന്നു}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset ml {tools the engine has registered} {എഞ്ചിൻ രജിസ്റ്റർ ചെയ്ത ടൂളുകൾ}
 ::msgcat::mcset ml {tools unavailable} {ടൂളുകൾ ലഭ്യമല്ല}
 ::msgcat::mcset ml {tools unavailable: %s} {ടൂളുകൾ ലഭ്യമല്ല: %s}
+::msgcat::mcset ml {transcript finalization failed: %s} {ട്രാൻസ്ക്രിപ്റ്റ് പൂർത്തിയാക്കൽ പരാജയപ്പെട്ടു: %s}
 ::msgcat::mcset ml {transcript refetched} {ട്രാൻസ്ക്രിപ്റ്റ് വീണ്ടും വലിച്ചു}
 ::msgcat::mcset ml {transcript — arrows to read, %s for composer} {ട്രാൻസ്ക്രിപ്റ്റ് — വായിക്കാൻ അമ്പുകൾ, കമ്പോസറിന് %s}
 ::msgcat::mcset ml {trigger %1$s %2$sd} {ട്രിഗർ %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset ml {☰ shows or hides the session list; picking a session closes it.} {☰ സെഷൻ പട്ടിക കാണിക്കുകയോ മറയ്ക്കുകയോ ചെയ്യുന്നു; ഒരു സെഷൻ തിരഞ്ഞെടുത്താൽ അത് അടയും.}
 ::msgcat::mcset ml {⚙ %s} {⚙ %s}
 ::msgcat::mcset ml {⚠ %s} {⚠ %s}
+::msgcat::mcset ml {⚠ transcript finalization failed; preserved available text} {⚠ ട്രാൻസ്ക്രിപ്റ്റ് പൂർത്തിയാക്കൽ പരാജയപ്പെട്ടു; ലഭ്യമായ വാചകം സൂക്ഷിച്ചു}
 ::msgcat::mcset ml {✖ %s} {✖ %s}
 ::msgcat::mcset ml {✖ detach failed: %s} {✖ വേർപെടുത്തൽ പരാജയപ്പെട്ടു: %s}
 ::msgcat::mcset ml {✖ session stream: %s} {✖ സെഷൻ സ്ട്രീം: %s}

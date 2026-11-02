@@ -145,6 +145,9 @@ namespace eval ::vchat {
     ;# reap ONE session's messages. msg_seq is global, so ids never
     ;# collide across sessions; only the reap needed teaching.
     variable raw_w
+    ;# Actual transcript order, widget -> raw ids. Creation ids are not
+    ;# sufficient when notes survive and rebuilt rows are inserted.
+    variable raw_order {}
     ;# Per-session PARSED HISTORY, so switching between two sessions is
     ;# a local repaint instead of an HTTP round trip + JSON parse +
     ;# full render from zero each time. USER: "It takes long and a lot
@@ -168,12 +171,9 @@ namespace eval ::vchat {
     ;# streaming region) — re-rendered through markdown at turn end.
     ;# Live delta region: the accumulated raw DELTA text since the last
     ;# render, the MARK anchoring where it starts, and the debounce timer.
-    ;# One region at a time (there is one event stream), owned by
-    ;# live_delta_sid. The region renders markdown on a debounced schedule
-    ;# — not every chunk — and closes (flushes) whenever a non-delta
-    ;# construct arrives, so a note or tool line never welds onto or gets
-    ;# deleted with the raw streaming region.
+    ;# The end mark bounds replacement when a note has already followed.
     variable live_delta_mark ""
+    variable live_delta_end ""
     variable live_delta_buf ""
     variable live_delta_after ""
     ;# How long to wait before the NEXT flush, in ms. Adaptive: set from
@@ -186,6 +186,142 @@ namespace eval ::vchat {
     ;# stash for everyone else. See _live_ctx.
     variable live_ctx ""
     variable live_saved {}
+    ;# Non-empty only while a note-preserving reconcile is rebuilding
+    ;# rows before a later note. All renderers use this insertion point
+    ;# instead of end; ordinary transcript painting leaves it empty.
+    variable insert_at {}
+    ;# Incremental end-of-turn transcript finalizers, sid -> job dict.
+    ;# One row per idle callback keeps Tk's event loop responsive.
+    variable finalizing {}
+    variable final_seq 0
+    ;# Repaints deferred until a finalizer has stable raw rows, sid -> 1.
+    variable redraw_pending {}
+}
+
+proc ::vchat::_finalizing {sid} {
+    variable finalizing
+    return [dict exists $finalizing $sid]
+}
+
+proc ::vchat::_drain_finalizers {} {
+    variable finalizing
+    variable redraw_pending
+    set guard 0
+    while {[dict size $finalizing] || [dict size $redraw_pending]} {
+        update
+        incr guard
+        if {$guard > 10000} { error "transcript finalizer did not finish" }
+    }
+}
+
+proc ::vchat::_cancel_finalizer {sid} {
+    variable finalizing
+    if {![dict exists $finalizing $sid]} { return }
+    set job [dict get $finalizing $sid]
+    catch { after cancel [dict get $job after] }
+    catch { dict unset insert_at [dict get $job w] }
+    dict unset finalizing $sid
+    variable redraw_pending
+    catch { dict unset redraw_pending $sid }
+    if {$sid eq $::vchat::session} { ::vchat::_sync_buttons }
+}
+
+proc ::vchat::_finish_finalizer {sid token} {
+    variable finalizing
+    if {![dict exists $finalizing $sid]} { return }
+    set job [dict get $finalizing $sid]
+    if {[dict get $job token] != $token} { return }
+    set w [dict get $job w]
+    # Retire the callback before status/session hooks. Those hooks may
+    # drain finalizers; leaving this completed job registered recurses.
+    dict unset finalizing $sid
+    variable insert_at
+    catch { dict unset insert_at $w }
+    if {[dict exists $job insert_mark] && [dict get $job insert_mark] ne ""} {
+        catch { $w mark unset [dict get $job insert_mark] }
+    }
+    if {[dict exists $job error]} {
+        if {$sid eq $::vchat::session} {
+            ::vstatus::set_msg [format [::vi18n::mc {transcript finalization failed: %s}] [dict get $job error]]
+        }
+    }
+    # Notification rendering must never prevent turn-state cleanup: a
+    # failing markdown renderer here used to strand the session running
+    # after the finalizer had already unregistered itself.
+    if {[catch {
+        if {[dict exists $job live_extra]} {
+            foreach line [dict get $job live_extra] {
+                ::vchat::log_insert $line status $sid
+            }
+        }
+        if {[dict exists $job error_row]} {
+            ::vchat::emit_message system [dict get $job error_row]
+        }
+        if {[dict exists $job notice] && [dict get $job notice] ne ""} {
+            ::vchat::log_insert "\n[format [::vi18n::mc {⚠ %s}] [dict get $job notice]]\n" system $sid
+        }
+        if {[dict exists $job provider]} {
+            # i18n-exempt: this line has no static user-visible words; all fields are runtime data.
+            ::vchat::log_insert "· [dict get $job provider]/[dict get $job model] · [dict get $job prompt]→[dict get $job completion] tok\n" status $sid ;# i18n-exempt: provider/model/counts only
+        }
+        if {[dict exists $job error]} {
+            # Content is retained, but the transcript may be partial/plain.
+            # Tell the reader where to look instead of implying success.
+            ::vchat::log_insert "\n[::vi18n::mc {⚠ transcript finalization failed; preserved available text}]\n" system $sid
+        }
+    } notify_err]} {
+        puts stderr "veles-desktop: finalizer notification failed for $sid: $notify_err"
+    }
+    catch { dict unset ::vchat::live_extra $sid }
+    catch { dict unset ::vchat::turn_anchor $sid }
+    catch { dict unset ::vchat::turn_prompt_ids $sid }
+    ::vchat::_mark_running $sid 0
+    catch { ::vstatus::refresh_context $sid }
+    catch { dict unset ::vchat::hist_cache $sid }
+    if {$sid eq $::vchat::session && [dict get $job status] ne ""
+        && ![dict exists $job error]} {
+        ::vstatus::set_msg [dict get $job status]
+    }
+    # on_done's final window-chrome update must not overwrite a renderer
+    # failure with the provider's successful verdict.
+    if {[dict exists $job error]} { set ::vchat::final_error($sid) 1 }
+}
+
+proc ::vchat::_append_index {w} {
+    variable insert_at
+    if {[info exists insert_at] && [dict exists $insert_at $w]} {
+        return [dict get $insert_at $w]
+    }
+    return end
+}
+
+proc ::vchat::_raw_append {w id {after ""} {before ""}} {
+    variable raw_order
+    variable finalizing
+    set rows [expr {[dict exists $raw_order $w] ? [dict get $raw_order $w] : {}}]
+    # The finalizer's raw-order cursor advances across notes. Before
+    # the first one, however, the first row belongs BEFORE that note.
+    set at -1
+    set offset 1
+    if {[dict exists $finalizing $::vchat::stream_session]} {
+        set job [dict get $finalizing $::vchat::stream_session]
+        if {[dict get $job w] eq $w} {
+            if {[dict exists $job insert_raw_after]} {
+                set after [dict get $job insert_raw_after]
+            } elseif {$before ne ""} {
+                set after $before
+                set offset 0
+            }
+            dict set finalizing $::vchat::stream_session insert_raw_after $id
+        }
+    }
+    if {$after ne ""} { set at [lsearch -exact $rows $after] }
+    if {$at >= 0} {
+        set rows [linsert $rows [expr {$at + $offset}] $id]
+    } else {
+        lappend rows $id
+    }
+    dict set raw_order $w $rows
 }
 
 # Tk SILENTLY IGNORES insert and delete on a `-state disabled` text
@@ -230,7 +366,7 @@ proc ::vchat::_writable {w script} {
 # (via _writable), so this adds no state toggling and no per-run cost.
 # tags defaults to {} so a bare separator newline needs no empty list.
 proc ::vchat::_run {w text {tags {}}} {
-    $w insert end $text $tags
+    $w insert [::vchat::_append_index $w] $text $tags
 }
 
 # The in-place sibling: a targeted splice at an index rather than an
@@ -622,6 +758,7 @@ proc ::vchat::forget_raw {{w ""}} {
     variable live_rtext
     variable live_blocks
     variable live_ptext
+    variable raw_order
     if {$w eq ""} { set w [log] }
     foreach id [array names raw] {
         if {[info exists raw_w($id)] && $raw_w($id) ne $w} { continue }
@@ -630,6 +767,7 @@ proc ::vchat::forget_raw {{w ""}} {
             catch { unset ::vchat::${a}($id) }
         }
     }
+    catch { dict unset raw_order $w }
     catch { unset ::vchat::stamp_day($w) }
     # Collapsible state belongs to tags that just went away. This is a
     # SESSION change, not a repaint — `rebuild` deliberately does not
@@ -811,6 +949,13 @@ proc ::vchat::emit_message {kind text {reason ""} {tools {}} {at now}} {
     set raw_at($id) [expr {$at eq "now" ? [clock seconds] : [_stamp_secs $at]}]
     variable raw_w
     set raw_w($id) [log]
+    set before ""
+    variable insert_at
+    if {[dict exists $insert_at $raw_w($id)]} {
+        set mark [dict get $insert_at $raw_w($id)]
+        regexp {^reconcile_.*_before_(\d+)$} $mark -> before
+    }
+    _raw_append $raw_w($id) $id "" $before
     set raw_src($id) [expr {[info exists source_mode] ? $source_mode : 0}]
     if {$reason ne "" && $reason ne "null"} { set raw_reason($id) $reason }
     if {[llength $tools]} { set raw_tools($id) $tools }
@@ -823,15 +968,12 @@ proc ::vchat::emit_message {kind text {reason ""} {tools {}} {at now}} {
     # pre-insert read is the only honest one.
     _at_bottom_prestash
     _writable $w {
-        $w mark set msgstart_$id [$w index end-1c]
+        $w mark set msgstart_$id [_block_start $w]
         $w mark gravity msgstart_$id left
         _paint_message $id
-        # Left, like the start: what comes after the message is not in
-        # it. With Tk's default (right) the end moved on with every
-        # message after it, every message ran to the end of the
-        # transcript, and "Copy message" copied whichever of them came
-        # up first: an engine note (USER 2026-10-01, on the phone).
-        $w mark set msgend_$id [$w index end-1c]
+        # Whichever row precedes the new block: left gravity keeps it
+        # outside that row, including a block inserted before a note.
+        $w mark set msgend_$id [_block_end $w]
         $w mark gravity msgend_$id left
     }
     _maybe_follow
@@ -848,11 +990,24 @@ proc ::vchat::emit_message {kind text {reason ""} {tools {}} {at now}} {
 # welded onto whatever came before. The spec pinned those as gaps; this
 # retires them. Bodies end with a single newline; the separator owns
 # every blank between blocks.
+proc ::vchat::_block_start {w} {
+    set at [_append_index $w]
+    return [$w index [expr {$at eq "end" ? "end-1c" : $at}]]
+}
+
+proc ::vchat::_block_end {w} {
+    return [$w index "[_append_index $w] -1c"]
+}
+
 proc ::vchat::_block_sep {w} {
-    if {[$w compare end-1c == 1.0]} { return }
-    # Tk keeps a final newline at end-1c; look at the tail before it and
-    # count the run of newlines ending the content.
-    set tail [$w get end-12c end-1c]
+    set at [_append_index $w]
+    if {$at eq "end"} {
+        if {[$w compare end-1c == 1.0]} { return }
+        set tail [$w get end-12c end-1c]
+    } else {
+        if {[$w compare $at == 1.0]} { return }
+        set tail [$w get "$at -12c" $at]
+    }
     set nl 0
     foreach c [split $tail ""] {
         if {$c eq "\n"} { incr nl } else { set nl 0 }
@@ -895,7 +1050,9 @@ proc ::vchat::_paint_message {id} {
     }
     if {$raw_kind($id) eq "note"} {
         variable raw_note
-        if {[info exists raw_note($id)]} { _paint_note $id $raw_note($id) }
+        if {[info exists raw_note($id)]} {
+            _paint_note_body $id $raw_note($id)
+        }
         return
     }
     if {$raw_kind($id) eq "user"} {
@@ -940,8 +1097,31 @@ proc ::vchat::_paint_message {id} {
 proc ::vchat::rebuild {} {
     variable raw
     variable raw_w
+    variable raw_kind
+    variable raw_order
     set w [::vchat::log]
+    # Rebuild normally retains the old transcript's complete raw rows.
+    # A finalizing turn has not emitted those rows yet; its logical
+    # blocks and positional marks must survive until its last row lands.
+    # Schedule this repaint after that finalizer rather than deleting
+    # its anchors, without nesting a drain inside a Tk callback.
+    variable session
+    set rebuild_sid $session
+    if {[_finalizing $rebuild_sid]} {
+        variable redraw_pending
+        if {![dict exists $redraw_pending $rebuild_sid]} {
+            dict set redraw_pending $rebuild_sid 1
+            after idle [list ::vchat::_rebuild_when_finalized $rebuild_sid $w]
+        }
+        return
+    }
     set yview [lindex [$w yview] 0]
+    set ordered [expr {[dict exists $raw_order $w] ? [dict get $raw_order $w] : {}}]
+    if {![llength $ordered]} {
+        foreach id [lsort -integer [array names raw]] {
+            if {[info exists raw_w($id)] && $raw_w($id) eq $w} { lappend ordered $id }
+        }
+    }
     _writable $w {
         # Named Tk images are not garbage-collected — drop the ones this
         # transcript owns or every rebuild leaks (a pre-existing leak in
@@ -951,7 +1131,7 @@ proc ::vchat::rebuild {} {
         $w delete 1.0 end
         catch { ::vmd::forget_links $w }
         catch { unset ::vchat::stamp_day($w) }
-        foreach id [lsort -integer [array names raw]] {
+        foreach id $ordered {
             # ONLY THIS WIDGET'S messages. `raw` holds every loaded
             # session's sources (each session keeps its transcript
             # widget), and repainting all of them into the current one
@@ -969,6 +1149,24 @@ proc ::vchat::rebuild {} {
     }
     $w yview moveto $yview
     _forget_anchors [event_session]
+}
+
+proc ::vchat::_rebuild_when_finalized {sid w} {
+    variable redraw_pending
+    if {![winfo exists $w] || $w ne [::vchat::log_for $sid]} {
+        catch { dict unset redraw_pending $sid }
+        return
+    }
+    if {[_finalizing $sid]} {
+        after idle [list ::vchat::_rebuild_when_finalized $sid $w]
+        return
+    }
+    dict unset redraw_pending $sid
+    set old_stream $::vchat::stream_session
+    set ::vchat::stream_session $sid
+    set rc [catch { ::vchat::rebuild } err opts]
+    set ::vchat::stream_session $old_stream
+    if {$rc} { return -options $opts $err }
 }
 
 # Global rendered⇄source toggle (Ctrl-R / palette).
@@ -1784,7 +1982,10 @@ proc ::vchat::open_session {sid} {
     _show_log $sid
     _touch_log $sid
     set busy [is_running $sid]
+    variable finalizing
+    if {[dict exists $finalizing $sid]} { set busy 1 }
     _sync_buttons
+    _sync_readonly
     retitle_window
     variable ev_cursor
     if {$kept} {
@@ -2252,6 +2453,10 @@ proc ::vchat::send_current {} {
         ::vsidebar::new_session
         set session [::vsidebar::selected_sid]
         if {$session eq ""} return
+    }
+    if {[_finalizing $session]} {
+        ::vstatus::set_msg [::vi18n::mc {finishing the transcript; try sending again in a moment}]
+        return
     }
     # Another node's session is read here, not continued.
     if {[is_remote $session]} {
@@ -3537,8 +3742,14 @@ proc ::vchat::_sync_buttons {} {
     } else {
         catch { ::vi18n::label .mid.chatwrap.chat.bar.send {Send} }
     }
+    variable session
+    if {[_finalizing $session]} {
+        catch { .mid.chatwrap.chat.bar.send configure -state disabled }
+    } else {
+        catch { .mid.chatwrap.chat.bar.send configure -state normal }
+    }
     catch {
-        .mid.chatwrap.chat.bar.stop configure -state [expr {$busy ? "normal" : "disabled"}]
+        .mid.chatwrap.chat.bar.stop configure -state [expr {$busy && ![_finalizing $session] ? "normal" : "disabled"}]
     }
     # Detach arms whenever Stop does: whether the turn is INSIDE a
     # foreground terminal call right now is engine state the client
@@ -3799,7 +4010,7 @@ proc ::vchat::_live_ctx {sid} {
 # region cannot be added to two of the three and forgotten in the last.
 proc ::vchat::_live_vars {} {
     return {live_rtag live_rhdr live_rtext live_rpend live_r_after
-            live_last_kind live_blocks live_ptext live_delta_mark live_delta_buf
+            live_last_kind live_blocks live_ptext live_delta_mark live_delta_end live_delta_buf
             live_delta_after live_delta_period live_delta_sid}
 }
 
@@ -3959,6 +4170,10 @@ proc ::vchat::_live_block_note {d id} {
 # twice. forget_raw's per-id cleanup, for one id.
 proc ::vchat::_forget_raw_entry {id {w ""}} {
     if {$w eq ""} { set w [::vchat::log] }
+    variable raw_order
+    if {[dict exists $raw_order $w]} {
+        dict set raw_order $w [lsearch -all -inline -not -exact [dict get $raw_order $w] $id]
+    }
     catch { $w mark unset msgstart_$id msgend_$id }
     foreach a {raw raw_kind raw_src raw_reason raw_tools raw_note raw_w raw_at raw_msgid} {
         catch { unset ::vchat::${a}($id) }
@@ -4154,6 +4369,7 @@ proc ::vchat::_click_live_reasoning {} {
 proc ::vchat::on_delta {text} {
     variable live_delta_mark
     variable live_delta_buf
+    variable live_delta_end
     variable live_delta_after
     variable live_delta_period
     variable live_delta_sid
@@ -4202,6 +4418,9 @@ proc ::vchat::on_delta {text} {
             # duplicated-assistant garble).
             $w mark set $live_delta_mark end-1c
             $w mark gravity $live_delta_mark left
+            set live_delta_end "${live_delta_mark}_end"
+            $w mark set $live_delta_end end-1c
+            $w mark gravity $live_delta_end right
         }
         _run $w $text assistant
     }
@@ -4247,6 +4466,7 @@ proc ::vchat::on_delta {text} {
 # thinking.
 proc ::vchat::_flush_live_delta {sid {close 0}} {
     variable live_delta_mark
+    variable live_delta_end
     variable live_delta_buf
     variable live_delta_after
     variable live_delta_period
@@ -4286,13 +4506,20 @@ proc ::vchat::_flush_live_delta {sid {close 0}} {
     set raw_tail [expr {[string length $tail] > 4096}]
     _at_bottom_prestash $w
     _writable $w {
-        # Deleting to `end` eats exactly ONE newline before the mark
-        # (verified: "PRIOR\n" + mark + "TAIL" deletes back to "PRIOR").
-        # The restore below puts exactly one back, so the balance holds
-        # whether the mark sits after a break or after settled text.
-        $w delete $live_delta_mark end
-        if {![$w compare end-1c == 1.0]} {
-            _run $w "\n" {}
+        # Replace this delta's own tail only. A note may already be
+        # painted after it; deleting to end used to erase that note.
+        set delta_tail [expr {$live_delta_end ne "" && [$w compare $live_delta_end < end-1c] ? $live_delta_end : "end"}]
+        variable insert_at
+        set had_insert [dict exists $insert_at $w]
+        set old_insert [expr {$had_insert ? [dict get $insert_at $w] : ""}]
+        if {$delta_tail eq "end"} {
+            $w delete $live_delta_mark end
+            catch { dict unset insert_at $w }
+            if {![$w compare end-1c == 1.0]} { _run $w "\n" {} }
+        } else {
+            $w delete $live_delta_mark $delta_tail
+            dict set insert_at $w $delta_tail
+            if {![$w compare $delta_tail == 1.0]} { _run $w "\n" {} }
         }
         if {$settled ne ""} {
             # A mid-stream chunk is a FRAGMENT of the answer; the close
@@ -4317,7 +4544,11 @@ proc ::vchat::_flush_live_delta {sid {close 0}} {
         # disappeared a flush or two after it was drawn. Re-anchoring
         # here, unconditionally, makes the mark mean one thing: the tail
         # starts here and nothing before it is ever touched again.
-        $w mark set $live_delta_mark end-1c
+        if {$delta_tail eq "end"} {
+            $w mark set $live_delta_mark end-1c
+        } else {
+            $w mark set $live_delta_mark $delta_tail
+        }
         $w mark gravity $live_delta_mark left
         if {$tail ne ""} {
             if {$raw_tail} {
@@ -4326,11 +4557,17 @@ proc ::vchat::_flush_live_delta {sid {close 0}} {
                 _render_with_media $w $tail
             }
         }
+        if {$had_insert} {
+            dict set insert_at $w $old_insert
+        } else {
+            dict unset insert_at $w
+        }
     }
     _maybe_follow $w
     set live_delta_period [_next_flush_period [expr {[clock milliseconds] - $t0}]]
     if {$close} {
         set live_delta_mark ""
+        set live_delta_end ""
         set live_delta_buf ""
         set live_delta_sid ""
     }
@@ -4361,6 +4598,7 @@ proc ::vchat::_next_flush_period {elapsed_ms} {
 # fresh stream (on_delta's first chunk, session switch).
 proc ::vchat::_reset_live_delta {{sid ""}} {
     variable live_delta_mark
+    variable live_delta_end
     variable live_delta_buf
     variable live_delta_after
     variable live_delta_period
@@ -4369,6 +4607,7 @@ proc ::vchat::_reset_live_delta {{sid ""}} {
     if {$live_delta_after ne ""} { catch { after cancel $live_delta_after } }
     set live_delta_after ""
     set live_delta_mark ""
+    set live_delta_end ""
     set live_delta_buf ""
     set live_delta_sid ""
     # A fresh region starts from the floor: the last turn's worst render
@@ -4638,28 +4877,43 @@ proc ::vchat::emit_note {d} {
     set raw_at($id) [_stamp_secs $at]
     variable raw_w
     set raw_w($id) $w
+    _raw_append $w $id
     # Same bracket discipline as emit_message (R6): notes with
     # collapsible bodies elide — the bottom MOVES under the view.
     _at_bottom_prestash
     _writable $w {
-        $w mark set msgstart_$id [$w index end-1c]
+        # The separator is part of this note's protected region. A start
+        # mark placed after it can end up after the block when Tk's
+        # implicit final newline is the insertion point.
+        _block_sep $w
+        # Include the separator just painted in the note's protected
+        # span; it is not part of the preceding assistant/tool row.
+        set note_start [_block_start $w]
+        if {[$w get "$note_start -1c" $note_start] eq "\n"} {
+            set note_start [$w index "$note_start -1c"]
+        }
+        $w mark set msgstart_$id $note_start
         $w mark gravity msgstart_$id left
-        _paint_note $id $d
-        $w mark set msgend_$id [$w index end-1c]
+        _stamped_render $w $id [list _paint_note_body $id $d]
+        $w mark set msgend_$id [_block_end $w]
         $w mark gravity msgend_$id left
     }
     _maybe_follow
     return $id
 }
 
-# One dim line at the point it happened, expandable for the detail and,
-# when the mechanism has a knob, the control to change it — so the
+# One dim line at the point it happened, expandable for the detail and,# when the mechanism has a knob, the control to change it — so the
 # setting is reachable from where you noticed you wanted it.
 #
 # The tag is keyed by MESSAGE ID, not by a running counter: a rebuild
 # repaints the same note and must land on the same tag, or the click
 # binding and the stashed payload drift apart from the text.
 proc ::vchat::_paint_note {id d} {
+    _emit_block note "" {} [list _stamped_render [::vchat::log] $id \
+        [list _paint_note_body $id $d]]
+}
+
+proc ::vchat::_paint_note_body {id d} {
     set kind ""
     set summary ""
     catch { set kind [dict get $d kind] }
@@ -4668,7 +4922,6 @@ proc ::vchat::_paint_note {id d} {
     catch { set detail [dict get $d detail] }
     set toggle {}
     catch { set toggle [dict get $d toggle] }
-
     set glyph [_note_glyph $kind]
     set w [::vchat::log]
     set head "$glyph $summary"
@@ -4678,7 +4931,7 @@ proc ::vchat::_paint_note {id d} {
     # A note is a logical block: _emit_block separates it like every
     # other one (R1) — separation is no longer hand-rolled here.
     if {$detail eq "" && ![llength $toggle]} {
-        _emit_block note "" {} [list _stamped_render $w $id [list _run $w "$head\n" note]]
+        _run $w "$head\n" note
         return
     }
 
@@ -4717,7 +4970,7 @@ proc ::vchat::_paint_note {id d} {
         htags  [list note] \
         btags  [list note] \
         bconf  [list -lmargin1 12 -lmargin2 12]]
-    _emit_block note "" {} [list _stamped_render $w $id [list _collapsible $w "note$id" $opts]]
+    _collapsible $w "note$id" $opts
     return
 }
 
@@ -4792,11 +5045,73 @@ proc ::vchat::_injection_caption {inj} {
 # Reads this session's accumulators, so `_live_ctx $sid` must already
 # have run. `reply` REPLACES the last call's streamed prose (see the
 # note inside) — a failed turn passes "" and keeps what it streamed.
-proc ::vchat::_reconcile_turn {sid reply {fallback_reasoning ""}} {
+# Prepare the same assistant/tool row sequence as a reload, leaving notes
+# as stable boundaries in the already-painted transcript.
+proc ::vchat::_final_blocks {blocks tools reply fallback_reasoning} {
+    if {![llength $blocks]} {
+        foreach t $tools { lappend blocks [linsert $t 0 tool] }
+        if {$fallback_reasoning ne ""} {
+            lappend blocks [list call $fallback_reasoning ""]
+        }
+    }
+    # TurnResult.reply is the final provider call's content, not an
+    # accumulation. Replace that call's streamed prose; a trailing tool
+    # result still gets its own final call row.
+    if {$reply ne ""} {
+        set last -1
+        for {set i [expr {[llength $blocks] - 1}]} {$i >= 0} {incr i -1} {
+            if {[lindex $blocks $i 0] ne "note"} { set last $i ; break }
+        }
+        if {$last >= 0 && [lindex $blocks $last 0] eq "call"} {
+            lset blocks $last 2 $reply
+        } else {
+            lappend blocks [list call "" $reply]
+        }
+    }
+    return $blocks
+}
+
+proc ::vchat::_paint_final_block {w b {fallback 0}} {
+    lassign $b bkind bx by bz bw
+    if {$bkind eq "call"} {
+        if {$bx eq "" && $by eq ""} { return }
+        if {$fallback} {
+            emit_message assistant $by "" {} [expr {$bz eq "" ? "now" : $bz}]
+        } else {
+            emit_message assistant $by $bx {} [expr {$bz eq "" ? "now" : $bz}]
+        }
+    } elseif {$bkind eq "tool"} {
+        if {$fallback} {
+            emit_message tool $bz {} {} [expr {$bw eq "" ? "now" : $bw}]
+        } else {
+            emit_message tool $bz {} [list [list $bx $by $bz]] \
+                [expr {$bw eq "" ? "now" : $bw}]
+        }
+    }
+}
+
+proc ::vchat::_emit_source_fallback {b} {
+    lassign $b bkind bx by bz bw
+    set body [expr {$bkind eq "call" ? $by : $bz}]
+    if {$body eq ""} { return }
+    set at [expr {$bkind eq "call" ? $bz : $bw}]
+    set old_source [expr {[info exists ::vchat::source_mode] ? $::vchat::source_mode : 0}]
+    set ::vchat::source_mode 1
+    set rc [catch {
+        emit_message [expr {$bkind eq "call" ? "assistant" : "tool"}] \
+            $body "" {} [expr {$at eq "" ? "now" : $at}]
+    } id opts]
+    set ::vchat::source_mode $old_source
+    if {$rc} { return -options $opts $id }
+    # No markdown call on this path: raw_src is captured by emit_message.
+}
+
+proc ::vchat::_reconcile_turn {sid reply {fallback_reasoning ""} {meta {}}} {
     variable live_blocks
     variable live_extra
     variable turn_anchor
     variable tool_rounds
+    variable raw_w
     set w [::vchat::log_for $sid]
     if {[winfo exists $w]} {
         # live_blocks is THIS session's, loaded by the _live_ctx above —
@@ -4822,36 +5137,25 @@ proc ::vchat::_reconcile_turn {sid reply {fallback_reasoning ""}} {
         catch { unset tool_rounds($sid) }
         if {$anchor ne "" && ($reply ne "" || [llength $tools] || [llength $blocks])} {
             _writable $w {
-                $w delete $anchor end
+            # Rebuild only assistant/tool regions. Notes are already in
+            # their true positions: deleting and recreating them moved
+            # them to the end and paid their Tk rendering cost twice.
+            set cursor $anchor
+            foreach b $blocks {
+                if {[lindex $b 0] ne "note"} { continue }
+                set note_id [lindex $b 2]
+                if {![info exists raw_w($note_id)] || $raw_w($note_id) ne $w} { continue }
+                if {[catch {$w index msgstart_$note_id} note_at]} { continue }
+                $w delete $cursor $note_at
+                set cursor [$w index msgend_$note_id]
             }
-            # The live tool rounds were painted OUTSIDE the region the
-            # delete above spans in one case: a background completion
-            # (live_extra) lands between the last prose and a tool round,
-            # so the round can sit BELOW the anchor and survive the wipe.
-            # The rebuild from live_blocks paints every round again, so
-            # any live round that escaped the delete is a duplicate —
-            # the "exactly one round" half of R3. Each round's start mark
-            # was recorded when it streamed; delete from there to the
-            # tail, then unset the mark. Oldest first: marks are left
-            # gravity and stable, so removing an earlier span does not
-            # move a later round's mark above its target.
+            $w delete $cursor end
+            # Delete only the old tool-round tags/state. Their text was
+            # removed by the note-bounded region deletion above.
             variable live_tool_marks
             if {[dict exists $live_tool_marks $sid]} {
                 lassign [dict get $live_tool_marks $sid] cnt marks
-                foreach m $marks {
-                    if {[catch { $w index $m } mi] || $mi eq ""} { continue }
-                    $w delete $m end
-                    catch { $w mark unset $m }
-                }
-                # The delete removed the live rounds' TEXT but not their
-                # collapsible tags or state — a tag with no ranges still
-                # answers `tag names`, so the next reload/rebuild counting
-                # chdr_* would see the dead round's tag beside the live
-                # one. The rebuilt round re-paints under the RELOAD
-                # ladder's own key (tool<msgid>.<n>, not the live
-                # tool<sid>.<n>), so the live keys must be dropped whole —
-                # tag and collapse state — or they leak one entry per
-                # round for the life of the widget.
+                foreach m $marks { catch { $w mark unset $m } }
                 variable collapse_open
                 variable collapse_text
                 for {set i 1} {$i <= $cnt} {incr i} {
@@ -4900,87 +5204,149 @@ proc ::vchat::_reconcile_turn {sid reply {fallback_reasoning ""}} {
             # two shapes, walking the rows this turn produced, and the
             # equality is structural rather than something two
             # hand-written ladders are asserted to agree about.
-            if {![llength $blocks]} {
-                # NO row record of this turn — this window never saw it
-                # start. All we have is the rounds, in order, and ONE
-                # reasoning text: wrap_for_bus (agent.rs) keeps the LAST
-                # provider call's, i.e. the thinking that produced the
-                # ANSWER, after the last tool round.
-                #
-                # This used to stack every round of the turn under that
-                # one block — a collapsible claiming to be the thinking
-                # behind calls it never saw. USER 2026-09-18: "these
-                # reasoning blocks seem to also all get merged into one
-                # single reasoning even though they were actually
-                # interspersed with tool calls". And with no reasoning at
-                # all it emitted only the reply, so the turn's tool
-                # rounds vanished off the screen the delete had just
-                # cleared.
-                #
-                # Rounds first, then the answer carrying the one reasoning
-                # that led to it: the shape a RELOAD of the same turn
-                # paints, and the most that can honestly be claimed from
-                # what the done event carries.
-                set dr ""
-                set dr $fallback_reasoning
-                foreach t $tools { lappend blocks [linsert $t 0 tool] }
-                if {$dr ne ""} { lappend blocks [list call $dr ""] }
+            # Prepare the row sequence BEFORE removing text: a note is a
+            # boundary only for its own display block, not for the
+            # provider call's final prose.
+            set blocks [_final_blocks $blocks $tools $reply $fallback_reasoning]
+            # raw_order retains the original note rows and is advanced
+            # by the finalizer as it paints. Do not scan/prune it from
+            # positional marks here: a note must remain a stable row,
+            # and a missing/stale mark must never discard transcript
+            # metadata. The cursor in _raw_append is the sole ordering
+            # authority during this incremental rebuild.
             }
-            # THE ANSWER IS THE LAST CALL'S CONTENT. TurnResult.reply is
-            # `message.content.clone()` (agent.rs) — the last provider
-            # call's content, not an accumulation — so it REPLACES that
-            # call's streamed prose rather than being appended after it,
-            # and nothing doubles. A turn that ended on a tool round and
-            # still produced text (the reconnect shapes) gets it as a
-            # trailing call, because that is the row it would be.
-            #
-            # Notes do not end a call: a note that arrived after the last
-            # prose (a cache miss, the verification hint) still leaves
-            # that call the last one, so look past trailing notes.
-            if {$reply ne ""} {
-                set last -1
-                for {set i [expr {[llength $blocks] - 1}]} {$i >= 0} {incr i -1} {
-                    if {[lindex $blocks $i 0] ne "note"} { set last $i ; break }
-                }
-                if {$last >= 0 && [lindex $blocks $last 0] eq "call"} {
-                    lset blocks $last 2 $reply
-                } else {
-                    lappend blocks [list call "" $reply]
-                }
+            _schedule_finalizer $sid $w $anchor $blocks $meta
+        }
+    }
+}
+
+# Paint one final row per idle callback. Notes are boundaries, never
+# repainted; the temporary insertion mark advances between them. A token
+# and the session's widget identity make stale callbacks harmless.
+proc ::vchat::_finalizer_step {sid token} {
+    variable finalizing
+    variable insert_at
+    if {![dict exists $finalizing $sid]} { return }
+    set job [dict get $finalizing $sid]
+    if {[dict get $job token] != $token} { return }
+    set w [dict get $job w]
+    if {![winfo exists $w] || $w ne [::vchat::log_for $sid]} {
+        _cancel_finalizer $sid
+        return
+    }
+    set i [dict get $job index]
+    set blocks [dict get $job blocks]
+    if {$i >= [llength $blocks]} {
+        _finish_finalizer $sid $token
+        return
+    }
+    set b [lindex $blocks $i]
+    dict set finalizing $sid index [incr i]
+    set old_ctx $::vchat::live_ctx
+    set old_stream $::vchat::stream_session
+    set ::vchat::stream_session $sid
+    _live_ctx $sid
+    set insert_mark [dict get $job insert_mark]
+    if {$insert_mark ne ""} {
+        dict set insert_at $w $insert_mark
+    } else {
+        catch { dict unset insert_at $w }
+    }
+    set rc [catch {
+        if {[lindex $b 0] eq "note"} {
+            # The note is already painted. Following rows belong after
+            # its whole block, not at its start. A note-end mark with
+            # right gravity also carries this insertion point past the
+            # separator painted by the next row.
+            set next_mark ""
+            set note_id [lindex $b 2]
+            # Advance the raw-order cursor across this preserved note as
+            # well as the Tk insertion mark.
+            dict set finalizing $sid insert_raw_after $note_id
+            if {[info exists ::vchat::raw_w($note_id)]
+                && $::vchat::raw_w($note_id) eq $w
+                && ![catch {$w index msgend_$note_id} next_at]} {
+                set next_mark "reconcile_${sid}_${token}_after_${note_id}"
+                $w mark set $next_mark $next_at
+                $w mark gravity $next_mark right
             }
-            foreach b $blocks {
-                lassign $b bkind bx by bz bw
-                if {$bkind eq "call"} {
-                    # A call that neither thought nor spoke has nothing
-                    # to show. The reload ladder does emit the empty
-                    # block for such a row; _block_sep collapses runs of
-                    # blanks, so both paths render the same characters.
-                    if {$bx eq "" && $by eq ""} { continue }
-                    emit_message assistant $by $bx {} [expr {$bz eq "" ? "now" : $bz}]
-                } elseif {$bkind eq "note"} {
-                    # Painted again in its place; its live copy went with
-                    # the delete above, and its old entry in the ordered
-                    # store goes too, or a rebuild would show it twice.
-                    _forget_raw_entry $by
-                    emit_note $bx
-                } else {
-                    emit_message tool $bz {} [list [list $bx $by $bz]] \
-                        [expr {$bw eq "" ? "now" : $bw}]
-                }
+            if {$insert_mark ne ""} { catch { $w mark unset $insert_mark } }
+            dict set finalizing $sid insert_mark $next_mark
+            if {$next_mark ne ""} {
+                dict set insert_at $w $next_mark
+            } else {
+                catch { dict unset insert_at $w }
             }
-            # Foreign lines painted INTO this region while the turn ran —
-            # a background child/shell/monitor that finished — went with
-            # the delete above. Put them back after the reconciled turn,
-            # which is where a reload shows them too: the engine injects
-            # its [BACKGROUND … COMPLETE] row at the turn BOUNDARY, not
-            # inside the turn.
-            if {[dict exists $live_extra $sid]} {
-                foreach line [dict get $live_extra $sid] {
-                    log_insert $line status $sid
+        } else {
+            # Markdown/render failure must not lose the reply. Keep the
+            # exact source as ordinary transcript text, report the error,
+            # and let the user request a fresh server-backed transcript.
+            if {[catch {_paint_final_block $w $b} paint_err]} {
+                # A source-only emit must be attempted independently of
+                # the failed rich renderer; it retains raw metadata too.
+                if {[catch {_emit_source_fallback $b} fallback_err]} {
+                    append paint_err "; source fallback failed: $fallback_err"
+                }
+                error $paint_err
+            }
+        }
+    } err opts]
+    if {$rc} {
+        # Keep every not-yet-rendered row as source, in THIS session's
+        # context. Restoring the previous stream first would target a
+        # different transcript.
+        while {$i < [llength $blocks]} {
+            set b [lindex $blocks $i]
+            incr i
+            if {[lindex $b 0] eq "note"} { continue }
+            lassign $b bkind bx by bz bw
+            set fallback [expr {$bkind eq "call" ? $by : $bz}]
+            if {$fallback ne ""} {
+                if {[catch {_emit_source_fallback $b} fallback_err]} {
+                    append err "; fallback failed: $fallback_err"
                 }
             }
         }
+        dict set finalizing $sid error $err
+        set ::vchat::stream_session $old_stream
+        _live_ctx $old_ctx
+        _finish_finalizer $sid $token
+        return
     }
+    set ::vchat::stream_session $old_stream
+    _live_ctx $old_ctx
+    dict set finalizing $sid after [after idle [list ::vchat::_finalizer_step $sid $token]]
+}
+
+proc ::vchat::_schedule_finalizer {sid w anchor blocks {meta {}}} {
+    variable finalizing
+    variable final_seq
+    variable insert_at
+    _cancel_finalizer $sid
+    incr final_seq
+    set job [dict create token $final_seq w $w anchor $anchor blocks $blocks \
+        index 0 insert_mark "" after "" status ""]
+    if {[llength $meta]} { set job [dict merge $job $meta] }
+    dict set finalizing $sid $job
+    # Find the first note boundary before painting the first row. A
+    # boundary later in the list still governs the rows preceding it.
+    foreach b $blocks {
+        if {[lindex $b 0] ne "note"} { continue }
+        set note_id [lindex $b 2]
+        if {![info exists ::vchat::raw_w($note_id)]} { continue }
+        if {$::vchat::raw_w($note_id) ne $w} { continue }
+        if {[catch {$w index msgstart_$note_id} note_at]} { continue }
+        set mark "reconcile_${sid}_${final_seq}_before_${note_id}"
+        $w mark set $mark $note_at
+        $w mark gravity $mark right
+        dict set job insert_mark $mark
+        dict set insert_at $w $mark
+        break
+    }
+    dict set finalizing $sid $job
+    _sync_buttons
+    _finalizer_step $sid $final_seq
+    return $final_seq
 }
 
 proc ::vchat::on_done {d} {
@@ -5056,9 +5422,16 @@ proc ::vchat::on_done {d} {
     set display_reasoning ""
     catch { set display_reasoning [dict get $d display_reasoning] }
     if {$display_reasoning eq "null"} { set display_reasoning "" }
-    _reconcile_turn $sid $reply $display_reasoning
+    set final_status [expr {[for_display] \
+        ? ($notice ne "" ? [::vi18n::mc {done, but the model returned no text}] \
+            : [::vi18n::mc {done · %1$s/%2$s} $provider $model]) \
+        : [::vi18n::mc {a turn finished in another session}]}]
+    _reconcile_turn $sid $reply $display_reasoning [dict create \
+        provider $provider model $model prompt $turn_prompt completion $turn_completion \
+        notice $notice status $final_status \
+        live_extra [expr {[dict exists $live_extra $sid] ? [dict get $live_extra $sid] : {}}]]
     set w [::vchat::log_for $sid]
-    if {[winfo exists $w]} {
+    if {[winfo exists $w] && ![_finalizing $sid]} {
         # A turn can finish having produced reasoning and no answer.
         # Saying nothing left the reasoning looking like the reply —
         # USER: "I only got reasoning output to my first prompt? model
@@ -5088,29 +5461,26 @@ proc ::vchat::on_done {d} {
     set live_last_kind ""
     # The STATUS LINE is window chrome and still belongs to the session
     # on screen — a background turn finishing says so and no more.
-    if {[for_display]} {
-        ::vstatus::set_msg [expr {$notice ne "" \
-            ? [::vi18n::mc {done, but the model returned no text}] \
-            : [::vi18n::mc {done · %1$s/%2$s} $provider $model]}]
-    } else {
-        ::vstatus::set_msg [::vi18n::mc {a turn finished in another session}]
+    if {![info exists ::vchat::final_error($sid)]} {
+        if {[for_display]} {
+            ::vstatus::set_msg [expr {$notice ne "" \
+                ? [::vi18n::mc {done, but the model returned no text}] \
+                : [::vi18n::mc {done · %1$s/%2$s} $provider $model]}]
+        } else {
+            ::vstatus::set_msg [::vi18n::mc {a turn finished in another session}]
+        }
     }
-    dict unset turn_anchor $sid
-    # A later turn may legitimately reuse this session's replay cursor,
-    # but never this completed turn's prompt-ID mappings.
-    catch { dict unset turn_prompt_ids $sid }
-    _mark_running $sid 0
-    # Context window just changed — the turn appended rows. Refresh the
-    # context segment NOW rather than waiting up to 15s for the status
-    # poll (USER: "context should update every turn, not just when
-    # control is returned"). The report is computed from the store
-    # without the agent lock, so the figures are real the moment the
-    # guard drops.
-    catch { ::vstatus::refresh_context $sid }
-    # The cache for THIS session is now stale — the turn persisted at
-    # least one new row. The next open's background verify would heal
-    # it, but dropping it now makes the very next switch paint AND
-    # verify the truth, not yesterday's.
+    catch { unset ::vchat::final_error($sid) }
+    # on_done no longer clears this session's live anchors here. The
+    # incremental finalizer owns them until its last row has landed.
+    if {![_finalizing $sid]} {
+        catch { dict unset live_extra $sid }
+        dict unset turn_anchor $sid
+        catch { dict unset turn_prompt_ids $sid }
+        _mark_running $sid 0
+    }
+    # The cache is stale as soon as the engine's verdict arrives; a new
+    # open must not paint yesterday's transcript while finalization runs.
     variable hist_cache
     if {[info exists hist_cache]} { catch { dict unset hist_cache $sid } }
 }
@@ -6094,6 +6464,7 @@ proc ::vchat::turn_error {msg} {
     variable live_extra
     variable turn_anchor
     variable turn_prompt_ids
+    variable finalizing
     set sid [event_session]
     _live_ctx $sid
     if {1} {
@@ -6141,9 +6512,18 @@ proc ::vchat::turn_error {msg} {
         # completions, and a turn that failed is not chrome. Put it in
         # the transcript so it survives a reload and reads as an error,
         # exactly where the turn would have left its answer.
-        emit_message system [::vi18n::mc {✖ turn failed: %s} $msg]
-        ::vstatus::set_msg [format [::vi18n::mc {error: %s}] $msg]
+        set error_status [format [::vi18n::mc {error: %s}] $msg]
+        set error_row [::vi18n::mc {✖ turn failed: %s} $msg]
+        if {[_finalizing $sid]} {
+            dict set finalizing $sid error_row $error_row
+            dict set finalizing $sid status $error_status
+        } else {
+            emit_message system $error_row
+        }
+        ::vstatus::set_msg $error_status
     }
+    # A finalizer is local transcript work, not a running engine turn.
+    if {[_finalizing $sid]} { return }
     dict unset turn_anchor $sid
     catch { dict unset turn_prompt_ids $sid }
     _mark_running $sid 0
@@ -6302,6 +6682,7 @@ proc ::vchat::_drop_log {sid} {
     variable logs
     variable logs_lru
     if {![dict exists $logs $sid]} { return }
+    _cancel_finalizer $sid
     _forget_anchors $sid
     set w [dict get $logs $sid]
     # Named Tk images are never garbage-collected: destroying the widget

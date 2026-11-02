@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset ha choice_wait {jira daƙiƙa %{secs} (sake saitin amfani), sannan a sake gwada hanya ɗaya}
 ::msgcat::mcset ha {choose a default model for %{provider} — the model step can list the provider's models} {zaɓi samfurin asali don %{provider} — matakin samfuri zai iya lissafa samfuran mai samarwa}
 ::msgcat::mcset ha {choose a model: pick one from the list, or type its name} {zaɓi samfuri: zaɓi ɗaya daga jerin, ko rubuta sunansa}
+::msgcat::mcset ha {choose an approval scope before answering} {zaɓi yankin amincewa kafin amsa}
 ::msgcat::mcset ha {clear failed: %s} {sharewa ta kasa: %s}
 ::msgcat::mcset ha {click a job in the list first} {danna wani aiki a jerin farko}
 ::msgcat::mcset ha {click a job to select it} {danna wani aiki don zaɓe shi}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset ha {filter skills by name} {tace gwaninta da suna}
 ::msgcat::mcset ha {find in transcript} {nemo a cikin rubutun}
 ::msgcat::mcset ha {find references} {nemo references}
+::msgcat::mcset ha {finishing the transcript; try sending again in a moment} {ana kammala rubutun magana; sake aikawa da wani dan lokaci}
 ::msgcat::mcset ha {fire the Tcl hook} {harba Tcl hook}
 ::msgcat::mcset ha {fires for %s:} {yana kunnawa ga %s:}
 ::msgcat::mcset ha {fires per hour} {yana kunnawa sa'a daya}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset ha {tools the engine has registered} {kayan aikin da injin ya yi rijista}
 ::msgcat::mcset ha {tools unavailable} {kayan aiki ba a samuwa}
 ::msgcat::mcset ha {tools unavailable: %s} {tools ba a samu ba: %s}
+::msgcat::mcset ha {transcript finalization failed: %s} {kammala rubutun magana ya gaza: %s}
 ::msgcat::mcset ha {transcript refetched} {an sake ɗaukar rubutun tattaunawa}
 ::msgcat::mcset ha {transcript — arrows to read, %s for composer} {rubutun tattaunawa — kibiyoyi don karantawa, %s don composer}
 ::msgcat::mcset ha {trigger %1$s %2$sd} {farawa %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset ha {☰ shows or hides the session list; picking a session closes it.} {☰ yana nuna ko ɓoye jerin zaman; zaɓar zama yana rufe shi.}
 ::msgcat::mcset ha {⚙ %s} {⚙ %s}
 ::msgcat::mcset ha {⚠ %s} {⚠ %s}
+::msgcat::mcset ha {⚠ transcript finalization failed; preserved available text} {⚠ kammala rubutun magana ya gaza; an kiyaye rubutun da ake da shi}
 ::msgcat::mcset ha {✖ %s} {✖ %s}
 ::msgcat::mcset ha {✖ detach failed: %s} {✖ rabuwa ta gaza: %s}
 ::msgcat::mcset ha {✖ session stream: %s} {✖ zama-zaman kai tsaye: %s}

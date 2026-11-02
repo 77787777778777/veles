@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset zh_hant choice_wait {等待 %{secs} 秒（用量重設）後重試同一路由}
 ::msgcat::mcset zh_hant {choose a default model for %{provider} — the model step can list the provider's models} {為 %{provider} 選擇預設模型 — 模型步驟可以列出該供應商的模型}
 ::msgcat::mcset zh_hant {choose a model: pick one from the list, or type its name} 選擇模型：請從清單中選一個，或輸入名稱
+::msgcat::mcset zh_hant {choose an approval scope before answering} 請先選擇核准範圍再回答
 ::msgcat::mcset zh_hant {clear failed: %s} 清除失敗：%s
 ::msgcat::mcset zh_hant {click a job in the list first} 請先點選清單中的工作
 ::msgcat::mcset zh_hant {click a job to select it} 點選工作以選取
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {filter skills by name} 依名稱篩選技能
 ::msgcat::mcset zh_hant {find in transcript} 在逐字稿中尋找
 ::msgcat::mcset zh_hant {find references} 尋找參考
+::msgcat::mcset zh_hant {finishing the transcript; try sending again in a moment} 正在完成對話紀錄；請稍後再傳送
 ::msgcat::mcset zh_hant {fire the Tcl hook} {觸發 Tcl hook}
 ::msgcat::mcset zh_hant {fires for %s:} {於 %s 時觸發：}
 ::msgcat::mcset zh_hant {fires per hour} 每小時觸發次數
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {tools the engine has registered} 引擎已註冊的工具
 ::msgcat::mcset zh_hant {tools unavailable} 工具無法使用
 ::msgcat::mcset zh_hant {tools unavailable: %s} 工具無法使用：%s
+::msgcat::mcset zh_hant {transcript finalization failed: %s} 對話紀錄完成失敗：%s
 ::msgcat::mcset zh_hant {transcript refetched} 已重新擷取對話紀錄
 ::msgcat::mcset zh_hant {transcript — arrows to read, %s for composer} {對話紀錄 — 方向鍵閱讀，%s 回輸入列}
 ::msgcat::mcset zh_hant {trigger %1$s %2$sd} {%1$s 已%2$s}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {☰ shows or hides the session list; picking a session closes it.} ☰顯示或隱藏工作階段清單；選取工作階段後清單會關閉。
 ::msgcat::mcset zh_hant {⚙ %s} {⚙ %s}
 ::msgcat::mcset zh_hant {⚠ %s} {⚠ %s}
+::msgcat::mcset zh_hant {⚠ transcript finalization failed; preserved available text} {⚠ 對話紀錄完成失敗；已保留可用文字}
 ::msgcat::mcset zh_hant {✖ %s} {✖ %s}
 ::msgcat::mcset zh_hant {✖ detach failed: %s} {✖ 分離失敗：%s}
 ::msgcat::mcset zh_hant {✖ session stream: %s} {✖ 工作階段串流：%s}

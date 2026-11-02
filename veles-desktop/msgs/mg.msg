@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset mg choice_wait {miandrasa segondra %{secs} (havaozina ny fampiasana), avy eo andramo indray ny lalana mitovy}
 ::msgcat::mcset mg {choose a default model for %{provider} — the model step can list the provider's models} {misafidy modely fototra ho an'ny %{provider} — afaka milista ny modelin'ny mpamatsy ny dingan'ny modely}
 ::msgcat::mcset mg {choose a model: pick one from the list, or type its name} {safidio modely: iray ao amin'ny lisitra, na soraty ny anarany}
+::msgcat::mcset mg {choose an approval scope before answering} {Safidio ny faritry ny fanekena alohan'ny fanaovana valiny}
 ::msgcat::mcset mg {clear failed: %s} {Tsy nahomby ny fanadiovana: %s}
 ::msgcat::mcset mg {click a job in the list first} {Tsindrio aloha ny job iray ao amin'ny lisitra}
 ::msgcat::mcset mg {click a job to select it} {Tsindrio ny job iray mba hofidina}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset mg {filter skills by name} {Sivano ny skill araka ny anarana}
 ::msgcat::mcset mg {find in transcript} {hitady ao amin'ny transcript}
 ::msgcat::mcset mg {find references} {hitady references}
+::msgcat::mcset mg {finishing the transcript; try sending again in a moment} {Miavona ny transcript; andramo alefa indray rehefa kely}
 ::msgcat::mcset mg {fire the Tcl hook} {mandehana ny Tcl hook}
 ::msgcat::mcset mg {fires for %s:} {mandeha isaky ny %s:}
 ::msgcat::mcset mg {fires per hour} {mandeha isaky ny ora}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset mg {tools the engine has registered} {fitaovana voasoratra ao amin'ny engine}
 ::msgcat::mcset mg {tools unavailable} {tsy misy fitaovana}
 ::msgcat::mcset mg {tools unavailable: %s} {tools tsy misy: %s}
+::msgcat::mcset mg {transcript finalization failed: %s} {Tsy nahomby ny famaranana ny transcript: %s}
 ::msgcat::mcset mg {transcript refetched} {voaverina alaina ny raki-dresaka}
 ::msgcat::mcset mg {transcript — arrows to read, %s for composer} {raki-dresaka — zana-tsipìka hamakiana, %s ho an'ny composer}
 ::msgcat::mcset mg {trigger %1$s %2$sd} {trigger %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset mg {☰ shows or hides the session list; picking a session closes it.} {☰ mampiseho na manafina ny lisitry ny fivoriana; mihidy izy rehefa misafidy fivoriana ianao.}
 ::msgcat::mcset mg {⚙ %s} {⚙ %s}
 ::msgcat::mcset mg {⚠ %s} {⚠ %s}
+::msgcat::mcset mg {⚠ transcript finalization failed; preserved available text} {⚠ Tsy nahomby ny famaranana ny transcript; voatahiry ny lahatsoratra misy}
 ::msgcat::mcset mg {✖ %s} {✖ %s}
 ::msgcat::mcset mg {✖ detach failed: %s} {✖ tsy nahomby ny detach: %s}
 ::msgcat::mcset mg {✖ session stream: %s} {✖ session stream: %s}

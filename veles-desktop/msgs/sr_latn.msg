@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset sr_latn choice_wait {sačekaj %{secs} s (reset ograničenja), pa pokušaj ponovo istom rutom}
 ::msgcat::mcset sr_latn {choose a default model for %{provider} — the model step can list the provider's models} {izaberi podrazumevani model za %{provider} — korak za modele može da izlista modele provajdera}
 ::msgcat::mcset sr_latn {choose a model: pick one from the list, or type its name} {izaberi model: izaberi jedan sa liste ili ukucaj njegovo ime}
+::msgcat::mcset sr_latn {choose an approval scope before answering} {izaberi obim odobrenja pre odgovaranja}
 ::msgcat::mcset sr_latn {clear failed: %s} {čišćenje neuspešno: %s}
 ::msgcat::mcset sr_latn {click a job in the list first} {prvo klikni na posao u listi}
 ::msgcat::mcset sr_latn {click a job to select it} {klikni na posao da ga izabereš}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {filter skills by name} {filtriraj veštine po imenu}
 ::msgcat::mcset sr_latn {find in transcript} {nađi u transkriptu}
 ::msgcat::mcset sr_latn {find references} {nađi reference}
+::msgcat::mcset sr_latn {finishing the transcript; try sending again in a moment} {završavam transkript; pokušajte ponovo za trenutak}
 ::msgcat::mcset sr_latn {fire the Tcl hook} {okini Tcl hook}
 ::msgcat::mcset sr_latn {fires for %s:} {okida se za %s:}
 ::msgcat::mcset sr_latn {fires per hour} {okida se na sat}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {tools the engine has registered} {alati koje je engine registrovao}
 ::msgcat::mcset sr_latn {tools unavailable} {alati nedostupni}
 ::msgcat::mcset sr_latn {tools unavailable: %s} {alati nedostupni: %s}
+::msgcat::mcset sr_latn {transcript finalization failed: %s} {finalizacija transkripta nije uspela: %s}
 ::msgcat::mcset sr_latn {transcript refetched} {transkript ponovo dohvaćen}
 ::msgcat::mcset sr_latn {transcript — arrows to read, %s for composer} {transkript — strelice za čitanje, %s za unos}
 ::msgcat::mcset sr_latn {trigger %1$s %2$sd} {okidač %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {☰ shows or hides the session list; picking a session closes it.} {☰ prikazuje ili sakriva listu sesija; izbor sesije je zatvara.}
 ::msgcat::mcset sr_latn {⚙ %s} {⚙ %s}
 ::msgcat::mcset sr_latn {⚠ %s} {⚠ %s}
+::msgcat::mcset sr_latn {⚠ transcript finalization failed; preserved available text} {⚠ finalizacija transkripta nije uspela; dostupan tekst je sačuvan}
 ::msgcat::mcset sr_latn {✖ %s} {✖ %s}
 ::msgcat::mcset sr_latn {✖ detach failed: %s} {✖ otkačivanje nije uspelo: %s}
 ::msgcat::mcset sr_latn {✖ session stream: %s} {✖ tok sesije: %s}

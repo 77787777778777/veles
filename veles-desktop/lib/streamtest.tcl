@@ -449,6 +449,7 @@ set ::turn_done_returned 0
     prompt_tokens 120 completion_tokens 12 \
     text "the completed answer is visible"]
 set ::turn_done_returned 1
+::vchat::_drain_finalizers
 ok "on_done returns before the scheduled status fetch even starts" \
     {$::turn_done_returned == 1 && [llength $::turnwire::calls] == 0}
 ok "the reconciled answer is in the real transcript immediately" \

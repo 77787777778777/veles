@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset wo choice_wait {xaar %{secs} saa (jëfandikoo bi dina tàmbaliwaat), ba noppi jéemaatal ci yoon wi}
 ::msgcat::mcset wo {choose a default model for %{provider} — the model step can list the provider's models} {tànnal benn model bu defò ngir %{provider} — etab model bi mën na lim model yu joxekat bi}
 ::msgcat::mcset wo {choose a model: pick one from the list, or type its name} {tànnal benn model: tànnal benn ci lim bi, walla bind tur bi}
+::msgcat::mcset wo {choose an approval scope before answering} {tànnal taxawaayu sañ-sañ balaa tontu}
 ::msgcat::mcset wo {clear failed: %s} {Clear bi defeku: %s}
 ::msgcat::mcset wo {click a job in the list first} {Tànnal job bi ci limu bi jëkk}
 ::msgcat::mcset wo {click a job to select it} {Tànnal job bi ngir ñu ko tànn}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset wo {filter skills by name} {Filteer skills yi ci tur}
 ::msgcat::mcset wo {find in transcript} {seet ci transcript bi}
 ::msgcat::mcset wo {find references} {seet references yi}
+::msgcat::mcset wo {finishing the transcript; try sending again in a moment} {transkri bi a ngi mujjandoo; jéemaat yónnee ci gànnaawaayi}
 ::msgcat::mcset wo {fire the Tcl hook} {yaatal Tcl hook bi}
 ::msgcat::mcset wo {fires for %s:} {mooy jëm ci %s:}
 ::msgcat::mcset wo {fires per hour} {mooy jëm ci waxtu wi}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset wo {tools the engine has registered} {tools yi engine bi registre na}
 ::msgcat::mcset wo {tools unavailable} {tools yi amul}
 ::msgcat::mcset wo {tools unavailable: %s} {tools yi nostena: %s}
+::msgcat::mcset wo {transcript finalization failed: %s} {mujjandoo transkri bi fàccu na: %s}
 ::msgcat::mcset wo {transcript refetched} {jëlati nañu ko transcript bi}
 ::msgcat::mcset wo {transcript — arrows to read, %s for composer} {transcript — arrow yi ngir jàng, %s ngir composer}
 ::msgcat::mcset wo {trigger %1$s %2$sd} {trigger %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset wo {☰ shows or hides the session list; picking a session closes it.} {☰ dafay wone walla nëbb limu session yi; tànn benn session dafay tëj limu bi.}
 ::msgcat::mcset wo {⚙ %s} {⚙ %s}
 ::msgcat::mcset wo {⚠ %s} {⚠ %s}
+::msgcat::mcset wo {⚠ transcript finalization failed; preserved available text} {⚠ mujjandoo transkri bi fàccu na; mbind mi am mi dafa ko aar}
 ::msgcat::mcset wo {✖ %s} {✖ %s}
 ::msgcat::mcset wo {✖ detach failed: %s} {✖ detach bi gàññ: %s}
 ::msgcat::mcset wo {✖ session stream: %s} {✖ séans stream bi: %s}

@@ -1453,6 +1453,16 @@ fn choice_by_token(req: &AskRequest, token: &str) -> Option<String> {
 /// key with `selected`/`text`. Shared by the CLI's and desktop's
 /// decide paths so the two frontends cannot drift apart.
 pub fn answers_value(v: &serde_json::Value) -> Option<AskAnswer> {
+    answers_value_answered(v, None)
+}
+
+/// Parse a structured answer plus the questions the human deliberately
+/// answered. The marker is request metadata, not a reserved question key;
+/// it permits a present, intentionally empty selection.
+pub fn answers_value_answered(
+    v: &serde_json::Value,
+    explicit: Option<&[String]>,
+) -> Option<AskAnswer> {
     match v {
         serde_json::Value::Array(items) => {
             let mut selected = Vec::new();
@@ -1484,15 +1494,24 @@ pub fn answers_value(v: &serde_json::Value) -> Option<AskAnswer> {
                 if let Some(t) = obj.get("text").and_then(|t| t.as_str()) {
                     a.free_text = Some(t.to_string());
                 }
-                if a.selected.is_empty() && a.free_text.as_deref().unwrap_or("").trim().is_empty() {
+                if a.selected.is_empty()
+                    && a.free_text.as_deref().unwrap_or("").trim().is_empty()
+                    && !explicit.is_some_and(|keys| keys.iter().any(|key| key == qk))
+                {
                     return None;
                 }
                 per.insert(qk.clone(), a);
             }
-            if per.is_empty() {
+            if per.is_empty()
+                || explicit.is_some_and(|keys| keys.iter().any(|key| !per.contains_key(key)))
+            {
                 return None;
             }
-            Some(AskAnswer::from_per_question(per))
+            let mut answer = AskAnswer::from_per_question(per);
+            answer.answered = explicit
+                .map(|keys| keys.iter().cloned().collect())
+                .unwrap_or_else(|| answer.per_question.keys().cloned().collect());
+            Some(answer)
         }
         _ => None,
     }
@@ -1566,13 +1585,16 @@ fn parse_multi_question_reply(req: &AskRequest, t: &str) -> Option<AskAnswer> {
             answers.insert(q.key.clone(), a);
         }
         if !answers.is_empty() {
+            let answered = answers.keys().cloned().collect();
             // Every question appears in the answer — an unanswered one
             // as "(empty answer)" — so the model SEES which questions
             // the human skipped instead of wondering where they went.
             for q in &questions {
                 answers.entry(q.key.clone()).or_default();
             }
-            return Some(AskAnswer::from_per_question(answers));
+            let mut answer = AskAnswer::from_per_question(answers);
+            answer.answered = answered;
+            return Some(answer);
         }
     }
 
@@ -1610,10 +1632,13 @@ fn parse_multi_question_reply(req: &AskRequest, t: &str) -> Option<AskAnswer> {
         );
     }
     if all_labelled && !labelled.is_empty() {
+        let answered = labelled.keys().cloned().collect();
         for q in &questions {
             labelled.entry(q.key.clone()).or_default();
         }
-        return Some(AskAnswer::from_per_question(labelled));
+        let mut answer = AskAnswer::from_per_question(labelled);
+        answer.answered = answered;
+        return Some(answer);
     }
 
     // Shape 3: positional — every question has choices, the parts
@@ -1642,7 +1667,10 @@ fn parse_multi_question_reply(req: &AskRequest, t: &str) -> Option<AskAnswer> {
                 answers.insert(q.key.clone(), a);
             }
             if !answers.is_empty() {
-                return Some(AskAnswer::from_per_question(answers));
+                let answered = answers.keys().cloned().collect();
+                let mut answer = AskAnswer::from_per_question(answers);
+                answer.answered = answered;
+                return Some(answer);
             }
         }
     }
@@ -2283,6 +2311,41 @@ mod tests {
         assert!(v.get("questions").is_none());
     }
 
+    /// Full permission keys survive typed multi-select replies. They
+    /// contain colons of their own and must not be truncated.
+    #[test]
+    fn typed_permission_selection_preserves_rule_keys() {
+        let req = AskRequest::multi_question(
+            "s1",
+            AskKind::Approval,
+            vec![
+                AskQuestion::new("q1", "scope?", approval_choices(true)),
+                AskQuestion::new(
+                    "q2",
+                    "permissions?",
+                    vec![
+                        AskChoice::new("terminal:recursive-delete", "delete"),
+                        AskChoice::new("terminal:remote-code-execution", "remote"),
+                    ],
+                )
+                .with_multi(true),
+            ],
+        );
+        let a = parse_reply(
+            &req,
+            "3; terminal:recursive-delete terminal:remote-code-execution",
+        )
+        .unwrap();
+        assert_eq!(a.first(), Some(CHOICE_ALWAYS));
+        assert_eq!(
+            a.per_question["q2"].selected,
+            vec![
+                "terminal:recursive-delete",
+                "terminal:remote-code-execution"
+            ]
+        );
+    }
+
     /// Shape 1: a JSON reply keyed by question key (or ordinal).
     #[test]
     fn multi_question_json_reply_answers_every_question() {
@@ -2353,6 +2416,11 @@ mod tests {
         let a = parse_reply(&r, r#"{"q1":"1"}"#).unwrap();
         assert_eq!(a.per_question.len(), 3, "every question appears");
         assert_eq!(a.per_question["q1"].selected, vec!["c1"]);
+        assert_eq!(
+            a.answered,
+            std::collections::BTreeSet::from(["q1".to_string()]),
+            "display placeholders are not answered"
+        );
         for skipped in ["q2", "q3"] {
             let sq = &a.per_question[skipped];
             assert!(

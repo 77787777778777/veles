@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset ig choice_wait {chere sekọnd %{secs} (mweghachi ojiji), wee gbalịa otu ụzọ ahụ ọzọ}
 ::msgcat::mcset ig {choose a default model for %{provider} — the model step can list the provider's models} {họrọ model ndabere maka %{provider} — nzọụkwụ model nwere ike ịdepụta model nke onye na-eweta ọrụ}
 ::msgcat::mcset ig {choose a model: pick one from the list, or type its name} {họrọ model: họrọ otu na ndepụta, ma ọ bụ dee aha ya}
+::msgcat::mcset ig {choose an approval scope before answering} {Họrọ ọkwa nkwenye tupu ịzaa.}
 ::msgcat::mcset ig {clear failed: %s} {Ịkpochapụ dara: %s}
 ::msgcat::mcset ig {click a job in the list first} {buru ụzọ pịa ọrụ dị na ndepụta ahụ}
 ::msgcat::mcset ig {click a job to select it} {pịa ọrụ ka ịhọrọ ya}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset ig {filter skills by name} {Nza nka site n'aha}
 ::msgcat::mcset ig {find in transcript} {chọta na mkparịta ụka}
 ::msgcat::mcset ig {find references} {chọta ntụaka}
+::msgcat::mcset ig {finishing the transcript; try sending again in a moment} {Na-emechara ederede; nwaa izipu ọzọ n'oge obere}
 ::msgcat::mcset ig {fire the Tcl hook} {kụọ Tcl hook}
 ::msgcat::mcset ig {fires for %s:} {na-agbapụ maka %s:}
 ::msgcat::mcset ig {fires per hour} {na-agbapụ kwa awa}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset ig {tools the engine has registered} {ngwá ọrụ engine debanyere aha}
 ::msgcat::mcset ig {tools unavailable} {ngwá ọrụ adịghị}
 ::msgcat::mcset ig {tools unavailable: %s} {ngwaọrụ adịghị: %s}
+::msgcat::mcset ig {transcript finalization failed: %s} {Ịmecha ederede dara: %s}
 ::msgcat::mcset ig {transcript refetched} {egharịala transcript ọzọ}
 ::msgcat::mcset ig {transcript — arrows to read, %s for composer} {transcript — akụ dị ka ịgụ, %s maka composer}
 ::msgcat::mcset ig {trigger %1$s %2$sd} {kpali %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset ig {☰ shows or hides the session list; picking a session closes it.} {☰ na-egosi ma ọ bụ zoo ndepụta session; ịhọrọ session na-emechi ya.}
 ::msgcat::mcset ig {⚙ %s} {⚙ %s}
 ::msgcat::mcset ig {⚠ %s} {⚠ %s}
+::msgcat::mcset ig {⚠ transcript finalization failed; preserved available text} {⚠ Ịmecha ederede dara; echekwara ederede dị}
 ::msgcat::mcset ig {✖ %s} {✖ %s}
 ::msgcat::mcset ig {✖ detach failed: %s} {✖ ịnapụ ọdịghị aga nke ọma: %s}
 ::msgcat::mcset ig {✖ session stream: %s} {✖ usoro nnọkọ: %s}

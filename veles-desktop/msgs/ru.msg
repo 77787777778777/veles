@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset ru choice_wait {подождать %{secs} с (сброс лимита) и повторить на том же маршруте}
 ::msgcat::mcset ru {choose a default model for %{provider} — the model step can list the provider's models} {выберите модель по умолчанию для %{provider} — на шаге выбора модели можно запросить список моделей провайдера}
 ::msgcat::mcset ru {choose a model: pick one from the list, or type its name} {выберите модель: укажите одну из списка или введите её имя}
+::msgcat::mcset ru {choose an approval scope before answering} {выберите область одобрения перед ответом}
 ::msgcat::mcset ru {clear failed: %s} {не удалось очистить: %s}
 ::msgcat::mcset ru {click a job in the list first} {сначала нажмите на задание в списке}
 ::msgcat::mcset ru {click a job to select it} {нажмите на задание, чтобы выбрать его}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset ru {filter skills by name} {фильтровать навыки по имени}
 ::msgcat::mcset ru {find in transcript} {поиск по транскрипту}
 ::msgcat::mcset ru {find references} {найти ссылки}
+::msgcat::mcset ru {finishing the transcript; try sending again in a moment} {транскрипт дорисовывается; попробуйте отправить ещё раз через мгновение}
 ::msgcat::mcset ru {fire the Tcl hook} {запустить Tcl-хук}
 ::msgcat::mcset ru {fires for %s:} {срабатывает для %s:}
 ::msgcat::mcset ru {fires per hour} {срабатываний в час}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset ru {tools the engine has registered} {инструменты, зарегистрированные движком}
 ::msgcat::mcset ru {tools unavailable} {инструменты недоступны}
 ::msgcat::mcset ru {tools unavailable: %s} {инструменты недоступны: %s}
+::msgcat::mcset ru {transcript finalization failed: %s} {не удалось завершить транскрипт: %s}
 ::msgcat::mcset ru {transcript refetched} {транскрипт перечитан}
 ::msgcat::mcset ru {transcript — arrows to read, %s for composer} {транскрипт — стрелки для чтения, %s — в композер}
 ::msgcat::mcset ru {trigger %1$s %2$sd} {триггер %1$s %2$s раз}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset ru {☰ shows or hides the session list; picking a session closes it.} {☰ показывает или скрывает список сессий; выбор сессии его закрывает.}
 ::msgcat::mcset ru {⚙ %s} {⚙ %s}
 ::msgcat::mcset ru {⚠ %s} {⚠ %s}
+::msgcat::mcset ru {⚠ transcript finalization failed; preserved available text} {⚠ не удалось завершить транскрипт; доступный текст сохранён}
 ::msgcat::mcset ru {✖ %s} {✖ %s}
 ::msgcat::mcset ru {✖ detach failed: %s} {✖ не удалось открепить: %s}
 ::msgcat::mcset ru {✖ session stream: %s} {✖ поток сессии: %s}

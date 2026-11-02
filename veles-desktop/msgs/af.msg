@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset af choice_wait {wag %{secs} s (gebruik herstel), probeer dan dieselfde roete weer}
 ::msgcat::mcset af {choose a default model for %{provider} — the model step can list the provider's models} {kies 'n verstekmodel vir %{provider} — die model-stap kan die verskaffer se modelle lys}
 ::msgcat::mcset af {choose a model: pick one from the list, or type its name} {kies 'n model: kies een uit die lys, of tik sy naam}
+::msgcat::mcset af {choose an approval scope before answering} {kies 'n goedkeuringsomvang voordat jy antwoord}
 ::msgcat::mcset af {clear failed: %s} {uitvee misluk: %s}
 ::msgcat::mcset af {click a job in the list first} {klik eers op 'n job in die lys}
 ::msgcat::mcset af {click a job to select it} {klik op 'n job om dit te kies}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset af {filter skills by name} {filter vaardighede op naam}
 ::msgcat::mcset af {find in transcript} {soek in transkrip}
 ::msgcat::mcset af {find references} {vind verwysings}
+::msgcat::mcset af {finishing the transcript; try sending again in a moment} {transkripsie word voltooi; probeer oor 'n oomblik weer stuur}
 ::msgcat::mcset af {fire the Tcl hook} {vuur die Tcl-hook af}
 ::msgcat::mcset af {fires for %s:} {vuur vir %s:}
 ::msgcat::mcset af {fires per hour} {vuur per uur}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset af {tools the engine has registered} {hulpmiddels wat die enjin geregistreer het}
 ::msgcat::mcset af {tools unavailable} {hulpmiddels onbeskikbaar}
 ::msgcat::mcset af {tools unavailable: %s} {tools nie beskikbaar nie: %s}
+::msgcat::mcset af {transcript finalization failed: %s} {transkripsie se voltooiing het misluk: %s}
 ::msgcat::mcset af {transcript refetched} {transkrip weer opgehaal}
 ::msgcat::mcset af {transcript — arrows to read, %s for composer} {transkrip — pylpies om te lees, %s vir die samesteller}
 ::msgcat::mcset af {trigger %1$s %2$sd} {sneller %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset af {☰ shows or hides the session list; picking a session closes it.} {☰ wys of versteek die sessielys; as jy 'n sessie kies, gaan dit toe.}
 ::msgcat::mcset af {⚙ %s} {⚙ %s}
 ::msgcat::mcset af {⚠ %s} {⚠ %s}
+::msgcat::mcset af {⚠ transcript finalization failed; preserved available text} {⚠ transkripsie se voltooiing het misluk; beskikbare teks is bewaar}
 ::msgcat::mcset af {✖ %s} {✖ %s}
 ::msgcat::mcset af {✖ detach failed: %s} {✖ losmaak het misluk: %s}
 ::msgcat::mcset af {✖ session stream: %s} {✖ sessiestroom: %s}

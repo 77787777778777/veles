@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset pl choice_wait {poczekaj %{secs} s (reset limitu), potem ponów na tej samej trasie}
 ::msgcat::mcset pl {choose a default model for %{provider} — the model step can list the provider's models} {wybierz domyślny model dla %{provider} — krok z modelem potrafi pobrać listę modeli dostawcy}
 ::msgcat::mcset pl {choose a model: pick one from the list, or type its name} {wybierz model: wskaż jeden z listy lub wpisz jego nazwę}
+::msgcat::mcset pl {choose an approval scope before answering} {wybierz zakres zatwierdzania przed odpowiedzią}
 ::msgcat::mcset pl {clear failed: %s} {błąd czyszczenia: %s}
 ::msgcat::mcset pl {click a job in the list first} {najpierw kliknij zadanie na liście}
 ::msgcat::mcset pl {click a job to select it} {kliknij zadanie, aby je wybrać}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset pl {filter skills by name} {filtruj skille po nazwie}
 ::msgcat::mcset pl {find in transcript} {znajdź w transkrypcie}
 ::msgcat::mcset pl {find references} {znajdź odwołania}
+::msgcat::mcset pl {finishing the transcript; try sending again in a moment} {kończę transkrypcję; spróbuj wysłać ponownie za chwilę}
 ::msgcat::mcset pl {fire the Tcl hook} {odpal hak Tcl}
 ::msgcat::mcset pl {fires for %s:} {odpala się dla %s:}
 ::msgcat::mcset pl {fires per hour} {odpala się co godzinę}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset pl {tools the engine has registered} {narzędzia zarejestrowane przez silnik}
 ::msgcat::mcset pl {tools unavailable} {narzędzia niedostępne}
 ::msgcat::mcset pl {tools unavailable: %s} {narzędzia niedostępne: %s}
+::msgcat::mcset pl {transcript finalization failed: %s} {nie udało się sfinalizować transkrypcji: %s}
 ::msgcat::mcset pl {transcript refetched} {odświeżono transkrypt}
 ::msgcat::mcset pl {transcript — arrows to read, %s for composer} {transkrypt — strzałki do czytania, %s do kompozytora}
 ::msgcat::mcset pl {trigger %1$s %2$sd} {wyzwalacz %1$s %2$s}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset pl {☰ shows or hides the session list; picking a session closes it.} {☰ pokazuje lub ukrywa listę sesji; wybranie sesji ją zamyka.}
 ::msgcat::mcset pl {⚙ %s} {⚙ %s}
 ::msgcat::mcset pl {⚠ %s} {⚠ %s}
+::msgcat::mcset pl {⚠ transcript finalization failed; preserved available text} {⚠ nie udało się sfinalizować transkrypcji; zachowano dostępny tekst}
 ::msgcat::mcset pl {✖ %s} {✖ %s}
 ::msgcat::mcset pl {✖ detach failed: %s} {✖ odłączenie nie powiodło się: %s}
 ::msgcat::mcset pl {✖ session stream: %s} {✖ strumień sesji: %s}

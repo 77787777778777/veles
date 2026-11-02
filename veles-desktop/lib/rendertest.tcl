@@ -238,6 +238,7 @@ dict set ::vchat::turn_anchor T 1.0
 ::vchat::on_tool end "shell" [dict create result "echo hi"]
 ::vchat::on_done [dict create provider p model m prompt_tokens 1 \
     completion_tokens 4 text "ran it" notice null]
+::vchat::_drain_finalizers
 ok "on_done re-renders the turn with its tool round" \
     {[string match "*⚙ shell*" [body]] && [string match "*ran it*" [body]]}
 
@@ -494,7 +495,7 @@ ok "a replayed note is not one of the live turn's blocks" \
     {![string match "*NOTE-OLD*" $::vchat::live_blocks]}
 ::vchat::on_done [dict create provider p model m prompt_tokens 1 \
     completion_tokens 1 text "NOTE-ANSWER here."]
-update
+::vchat::_drain_finalizers
 ok "after the turn ends: in place, once"        {[note_order $reload_order] eq "ok"}
 ::vchat::rebuild
 update
@@ -1035,6 +1036,7 @@ ok "the second snapshot replaces only the live region" \
 ::vchat::on_session_event "A" turn-result [dict create text "one answer" \
     provider p model m prompt_tokens 1 completion_tokens 1 display_reasoning "" \
     notice "" last_msg_id 9]
+::vchat::_drain_finalizers
 ok "completion leaves one prompt followed by its answer" \
     {[regexp -all {one question only} [body]] == 1 && \
      [string first "one question only" [body]] < [string first "one answer" [body]]}

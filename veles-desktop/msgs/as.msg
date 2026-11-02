@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset as choice_wait {%{secs} ছেকেণ্ড অপেক্ষা কৰক (ব্যৱহাৰ ৰিছেট), তাৰ পিছত একেটা ৰুটত পুনৰ চেষ্টা কৰক}
 ::msgcat::mcset as {choose a default model for %{provider} — the model step can list the provider's models} {%{provider}ৰ বাবে এটা ডিফল্ট মডেল বাছক — মডেল পদক্ষেপে প্ৰ'ভাইডাৰৰ মডেলবোৰ তালিকাবদ্ধ কৰিব পাৰে}
 ::msgcat::mcset as {choose a model: pick one from the list, or type its name} {এটা মডেল বাছক: তালিকাৰ পৰা এটা বাছক, বা তাৰ নাম লিখক}
+::msgcat::mcset as {choose an approval scope before answering} {উত্তৰ দিয়াৰ আগে এটা অনুমোদন ব্যাপ্তি বাছক}
 ::msgcat::mcset as {clear failed: %s} {পৰিষ্কাৰ ব্যৰ্থ: %s}
 ::msgcat::mcset as {click a job in the list first} {প্ৰথমে তালিকাৰ পৰা এটা জব ক্লিক কৰক}
 ::msgcat::mcset as {click a job to select it} {বাছিবলৈ এটা জব ক্লিক কৰক}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset as {filter skills by name} {নামেৰে স্কিল ফিল্টাৰ কৰক}
 ::msgcat::mcset as {find in transcript} {ট্ৰান্সক্ৰিপ্টত বিচাৰক}
 ::msgcat::mcset as {find references} {উল্লেখসমূহ বিচাৰক}
+::msgcat::mcset as {finishing the transcript; try sending again in a moment} {ট্ৰান্সক্ৰিপ্টটো সামৰি থকা হৈছে; এমুহূৰ্তৰ পিছত আকৌ পাঠাবলৈ চেষ্টা কৰক}
 ::msgcat::mcset as {fire the Tcl hook} {Tcl হুক ফায়াৰ কৰক}
 ::msgcat::mcset as {fires for %s:} {%s ৰ বাবে ফায়াৰ হয়:}
 ::msgcat::mcset as {fires per hour} {প্ৰতি ঘণ্টাত ফায়াৰ হয়}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset as {tools the engine has registered} {ইঞ্জিনে পঞ্জীভুক্ত কৰা টুলসমূহ}
 ::msgcat::mcset as {tools unavailable} {টুল অনুপলব্ধ}
 ::msgcat::mcset as {tools unavailable: %s} {টুল উপলব্ধ নহয়: %s}
+::msgcat::mcset as {transcript finalization failed: %s} {ট্ৰান্সক্ৰিপ্টৰ সামৰণ বিফল হ'ল: %s}
 ::msgcat::mcset as {transcript refetched} {ট্ৰান্সক্ৰিপ্ট পুনৰ আহৰণ হ'ল}
 ::msgcat::mcset as {transcript — arrows to read, %s for composer} {ট্ৰান্সক্ৰিপ্ট — পঢ়িবলৈ কাঁড়, কম্প'জাৰৰ বাবে %s}
 ::msgcat::mcset as {trigger %1$s %2$sd} {ট্ৰিগাৰ %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset as {☰ shows or hides the session list; picking a session closes it.} {☰ এ ছেছন তালিকা দেখুৱায় বা লুকুৱায়; এটা ছেছন বাছিলে ই বন্ধ হয়।}
 ::msgcat::mcset as {⚙ %s} {⚙ %s}
 ::msgcat::mcset as {⚠ %s} {⚠ %s}
+::msgcat::mcset as {⚠ transcript finalization failed; preserved available text} {⚠ ট্ৰান্সক্ৰিপ্টৰ সামৰণ বিফল হ'ল; উপলব্ধ পাঠ সংৰক্ষণ কৰা হৈছে}
 ::msgcat::mcset as {✖ %s} {✖ %s}
 ::msgcat::mcset as {✖ detach failed: %s} {✖ ডিটেচ ব্যৰ্থ হ'ল: %s}
 ::msgcat::mcset as {✖ session stream: %s} {✖ ছেছন ষ্ট্ৰীম: %s}

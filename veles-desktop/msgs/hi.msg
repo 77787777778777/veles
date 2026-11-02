@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset hi choice_wait {%{secs} सेकंड रुकें (उपयोग रीसेट), फिर उसी रूट पर कोशिश करें}
 ::msgcat::mcset hi {choose a default model for %{provider} — the model step can list the provider's models} {%{provider} के लिए डिफ़ॉल्ट मॉडल चुनें — मॉडल चरण प्रोवाइडर के मॉडल की सूची दिखा सकता है}
 ::msgcat::mcset hi {choose a model: pick one from the list, or type its name} {मॉडल चुनें: सूची में से एक चुनें, या उसका नाम टाइप करें}
+::msgcat::mcset hi {choose an approval scope before answering} {उत्तर देने से पहले स्वीकृति का दायरा चुनें}
 ::msgcat::mcset hi {clear failed: %s} {साफ़ करना विफल: %s}
 ::msgcat::mcset hi {click a job in the list first} {पहले सूची में कोई जॉब चुनें}
 ::msgcat::mcset hi {click a job to select it} {जॉब चुनने के लिए उस पर क्लिक करें}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset hi {filter skills by name} {नाम से skills फ़िल्टर करें}
 ::msgcat::mcset hi {find in transcript} {ट्रांसक्रिप्ट में खोजें}
 ::msgcat::mcset hi {find references} {संदर्भ खोजें}
+::msgcat::mcset hi {finishing the transcript; try sending again in a moment} {ट्रांसक्रिप्ट पूरी हो रही है; थोड़ी देर में फिर भेजकर देखें}
 ::msgcat::mcset hi {fire the Tcl hook} {Tcl हुक चलाएँ}
 ::msgcat::mcset hi {fires for %s:} {%s के लिए चलता है:}
 ::msgcat::mcset hi {fires per hour} {प्रति घंटा चलता है}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset hi {tools the engine has registered} {इंजन के पंजीकृत टूल}
 ::msgcat::mcset hi {tools unavailable} {टूल अनुपलब्ध}
 ::msgcat::mcset hi {tools unavailable: %s} {टूल्स अनुपलब्ध: %s}
+::msgcat::mcset hi {transcript finalization failed: %s} {ट्रांसक्रिप्ट फ़ाइनलाइज़ नहीं हो सकी: %s}
 ::msgcat::mcset hi {transcript refetched} {ट्रांसक्रिप्ट फिर लाया गया}
 ::msgcat::mcset hi {transcript — arrows to read, %s for composer} {ट्रांसक्रिप्ट — पढ़ने हेतु तीर कुंजियाँ, कंपोज़र हेतु %s}
 ::msgcat::mcset hi {trigger %1$s %2$sd} {ट्रिगर %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset hi {☰ shows or hides the session list; picking a session closes it.} {☰ सेशन सूची दिखाता या छिपाता है; कोई सेशन चुनने पर यह बंद हो जाती है।}
 ::msgcat::mcset hi {⚙ %s} {⚙ %s}
 ::msgcat::mcset hi {⚠ %s} {⚠ %s}
+::msgcat::mcset hi {⚠ transcript finalization failed; preserved available text} {⚠ ट्रांसक्रिप्ट फ़ाइनलाइज़ नहीं हो सकी; उपलब्ध टेक्स्ट सुरक्षित रखा गया है}
 ::msgcat::mcset hi {✖ %s} {✖ %s}
 ::msgcat::mcset hi {✖ detach failed: %s} {✖ डिटैच विफल: %s}
 ::msgcat::mcset hi {✖ session stream: %s} {✖ सेशन स्ट्रीम: %s}

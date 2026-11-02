@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset gu choice_wait {%{secs} સેકન્ડ રાહ જુઓ (વપરાશ રીસેટ), પછી એ જ રૂટ પર ફરી પ્રયાસ કરો}
 ::msgcat::mcset gu {choose a default model for %{provider} — the model step can list the provider's models} {%{provider} માટે મૂળભૂત મોડેલ પસંદ કરો — મોડેલનું પગલું પ્રોવાઇડરના મોડેલની યાદી બતાવી શકે છે}
 ::msgcat::mcset gu {choose a model: pick one from the list, or type its name} {મોડેલ પસંદ કરો: યાદીમાંથી એક પસંદ કરો, અથવા તેનું નામ લખો}
+::msgcat::mcset gu {choose an approval scope before answering} {જવાબ આપતા પહેલા મંજૂરીનો દાયરો પસંદ કરો}
 ::msgcat::mcset gu {clear failed: %s} {સાફ કરવું નિષ્ફળ: %s}
 ::msgcat::mcset gu {click a job in the list first} {પહેલા યાદીમાંથી કોઈ જોબ ક્લિક કરો}
 ::msgcat::mcset gu {click a job to select it} {જોબ પસંદ કરવા તેના પર ક્લિક કરો}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset gu {filter skills by name} {નામથી સ્કિલ્સ ફિલ્ટર કરો}
 ::msgcat::mcset gu {find in transcript} {ટ્રાન્સ્ક્રિપ્ટમાં શોધો}
 ::msgcat::mcset gu {find references} {સંદર્ભો શોધો}
+::msgcat::mcset gu {finishing the transcript; try sending again in a moment} {ટ્રાન્સ્ક્રિપ્ટ પૂર્ણ થઈ રહ્યું છે; થોડી વારમાં ફરી મોકલવાનો પ્રયાસ કરો}
 ::msgcat::mcset gu {fire the Tcl hook} {Tcl હૂક ચલાવો}
 ::msgcat::mcset gu {fires for %s:} {%s માટે ચાલે છે:}
 ::msgcat::mcset gu {fires per hour} {કલાક દીઠ ચાલે છે}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset gu {tools the engine has registered} {એન્જિને નોંધેલા ટૂલ્સ}
 ::msgcat::mcset gu {tools unavailable} {ટૂલ્સ ઉપલબ્ધ નથી}
 ::msgcat::mcset gu {tools unavailable: %s} {ટૂલ્સ અનુપલબ્ધ: %s}
+::msgcat::mcset gu {transcript finalization failed: %s} {ટ્રાન્સ્ક્રિપ્ટ અંતિમીકરણ નિષ્ફળ: %s}
 ::msgcat::mcset gu {transcript refetched} {ટ્રાન્સક્રિપ્ટ ફરી મેળવાઈ}
 ::msgcat::mcset gu {transcript — arrows to read, %s for composer} {ટ્રાન્સક્રિપ્ટ — વાંચવા તીર, %s કંપોઝર માટે}
 ::msgcat::mcset gu {trigger %1$s %2$sd} {ટ્રિગર %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset gu {☰ shows or hides the session list; picking a session closes it.} {☰ સેશન યાદી બતાવે છે અથવા છુપાવે છે; સેશન પસંદ કરવાથી તે બંધ થાય છે.}
 ::msgcat::mcset gu {⚙ %s} {⚙ %s}
 ::msgcat::mcset gu {⚠ %s} {⚠ %s}
+::msgcat::mcset gu {⚠ transcript finalization failed; preserved available text} {⚠ ટ્રાન્સ્ક્રિપ્ટ અંતિમીકરણ નિષ્ફળ; ઉપલબ્ધ લખાણ જાળવી રાખ્યું છે}
 ::msgcat::mcset gu {✖ %s} {✖ %s}
 ::msgcat::mcset gu {✖ detach failed: %s} {✖ ડિટેચ નિષ્ફળ: %s}
 ::msgcat::mcset gu {✖ session stream: %s} {✖ સેશન સ્ટ્રીમ: %s}

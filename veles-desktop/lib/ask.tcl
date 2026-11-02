@@ -35,6 +35,8 @@ namespace eval ::vask {
     ;# Toggle state for check-row questions: dict qk -> list of choice
     ;# keys currently checked.
     variable checked
+    ;# The current ask's kind; permission defaults never imply its scope.
+    variable current_kind ""
 }
 
 # The questions of an ask payload, normalised: a list of dicts
@@ -77,8 +79,11 @@ proc ::vask::_questions {d} {
             set multi 0
             catch { set multi [dict get $q multi] }
             if {![string is boolean -strict $multi]} { set multi 0 }
+            set defaults {}
+            catch { set defaults [dict get $q defaults] }
             lappend out [dict create key $k \
-                prompt $text choices $ch multi [expr {$multi ? 1 : 0}]]
+                prompt $text choices $ch multi [expr {$multi ? 1 : 0}] \
+                defaults $defaults]
         }
     }
     return $out
@@ -87,6 +92,7 @@ proc ::vask::_questions {d} {
 proc ::vask::show {d} {
     variable current
     variable current_sid
+    variable current_kind
     variable checked
     if {[catch {dict get $d id} id]} {
         puts stderr "veles-desktop: ask show: no id in event, dropped: $d"
@@ -103,6 +109,7 @@ proc ::vask::show {d} {
 
     set kind "clarify"
     catch { set kind [dict get $d kind] }
+    set current_kind $kind
     # A clarify's detail is JSON null, which `dict get` returns as the
     # word: the question showed "null" under it (emulator, 2026-09-30).
     set prompt [::vapi::field $d prompt]
@@ -134,6 +141,20 @@ proc ::vask::show {d} {
 
     set questions [::vask::_questions $d]
     set multi_q [expr {[llength $questions] > 1}]
+    # Permission classes default to checked. This is presentation state:
+    # the engine still validates every returned key against the call.
+    foreach q $questions {
+        set qk [dict get $q key]
+        set valid {}
+        foreach c [dict get $q choices] { lappend valid [dict get $c key] }
+        set initial {}
+        if {[catch {dict get $q defaults} defaults] == 0} {
+            foreach key $defaults {
+                if {[lsearch -exact $valid $key] >= 0} { lappend initial $key }
+            }
+        }
+        if {[llength $initial] > 0} { dict set checked $qk $initial }
+    }
 
     toplevel $w
     # `mc` of an [expr] result is a NO-OP: the argument is a computed
@@ -323,7 +344,9 @@ proc ::vask::show {d} {
                     -highlightbackground $::vt::T(bg_panel) \
                     -highlightcolor $::vt::T(accent) \
                     -takefocus 1 -cursor hand2
-                ttk::label $f.box -text "☐" -width 2 -anchor center \
+                set checked_now {}
+                catch { set checked_now [dict get $checked $qk] }
+                ttk::label $f.box -text [expr {[lsearch -exact $checked_now $key] >= 0 ? "☑" : "☐"}] -width 2 -anchor center \
                     -font {TkDefaultFont 11}
                 ttk::label $f.l -wraplength 430 -justify left \
                     -anchor w -padding {6 8}
@@ -397,6 +420,13 @@ proc ::vask::show {d} {
     if {$any_toggle || $multi_q} {
         # Toggle mode: OK assembles the whole answer (checked rows per
         # question + each Other entry's text). Cancel stays Escape.
+        if {$kind eq "approval" || $kind eq "failover"} {
+            ttk::label $w.btns.l -text [::vi18n::mc {Note for the agent (optional):}]
+            pack $w.btns.l -side left -padx {0 4}
+            ttk::entry $w.btns.e
+            pack $w.btns.e -side left -fill x -expand 1
+            bind $w.btns.e <Return> [list ::vask::_answer_note $id $w.btns.e]
+        }
         ttk::button $w.btns.ok -text [::vi18n::mc {OK}] \
             -command [list ::vask::_commit $id]
         pack $w.btns.ok -side right -padx 4
@@ -653,26 +683,39 @@ proc ::vask::_toggle {id qk key box {radio 0}} {
 proc ::vask::_commit {id} {
     variable checked
     variable current_sid
+    variable current_kind
     set w .ask
     set answers {}
+    set answered {}
     set any 0
-    # Which questions this dialog holds (rebuilt from the row widgets:
-    # the o$qk entries and ch${qk}_N rows are the source of truth).
+    # Which questions this dialog holds. Choice rows matter as well as
+    # Other entries: an approval's permission checkboxes have no Other.
     set qks {}
     foreach kid [winfo children $w.body.c.inner] {
-        if {[regexp {^o(.+)$} [winfo name $kid] -> qk]} {
-            lappend qks $qk
+        set name [winfo name $kid]
+        if {[regexp {^o(.+)$} $name -> qk]} {
+            if {$qk ni $qks} { lappend qks $qk }
+        } elseif {[regexp {^ch(q[0-9]+)_[0-9]+$} $name -> qk]} {
+            if {$qk ni $qks} { lappend qks $qk }
         }
     }
     foreach qk $qks {
         set sel {}
         catch { set sel [dict get $checked $qk] }
         set txt ""
-        if {[catch { set txt [string trim [$w.body.c.inner.o$qk.e get]] } read_err]} {
+        if {[winfo exists $w.body.c.inner.o$qk.e]
+            && [catch { set txt [string trim [$w.body.c.inner.o$qk.e get]] } read_err]} {
             puts stderr "veles-desktop: ask _commit: could not read answer text for $qk: $read_err"
         }
         if {[llength $sel] > 0 || $txt ne ""} {
             set any 1
+        }
+        if {$current_kind in {approval failover} && $qk eq "q2"} {
+            # q2 is a real answer even when every permission was
+            # unchecked; omission is reserved for legacy replies.
+            lappend answered q2
+        }
+        if {[llength $sel] > 0 || $txt ne "" || ($current_kind in {approval failover} && $qk eq "q2")} {
             lappend answers $qk [list \
                 selected $sel \
                 text $txt]
@@ -680,6 +723,15 @@ proc ::vask::_commit {id} {
     }
     if {!$any} {
         ::vstatus::set_msg [::vi18n::mc {nothing selected — check a row or type an answer}]
+        return
+    }
+    # Several questions begin with the approval scope. Checked permission
+    # defaults are not consent to a scope, and the engine cannot infer it
+    # from a permission key. Keep the dialog open rather than deny by
+    # submitting a malformed answer (the TUI/Telegram rule too).
+    if {[llength $qks] > 1 && $current_kind in {approval failover}
+        && ![dict exists $answers q1]} {
+        ::vstatus::set_msg [::vi18n::mc {choose an approval scope before answering}]
         return
     }
     # A ONE-QUESTION dialog with ONE checked row: the plain
@@ -709,6 +761,15 @@ proc ::vask::_commit {id} {
             return
         }
     }
+    if {[llength $qks] > 1 && [winfo exists $w.btns.e]} {
+        set txt [string trim [$w.btns.e get]]
+        if {$txt ne ""} {
+            set a [dict create selected {} text $txt]
+            if {[dict exists $answers q1]} { set a [dict get $answers q1] }
+            dict set a text $txt
+            dict set answers q1 $a
+        }
+    }
     if {[winfo exists $w]} {
         catch { grab release $w }
         destroy $w
@@ -716,8 +777,7 @@ proc ::vask::_commit {id} {
     set sid $current_sid
     variable current
     if {$current eq $id} { set current "" ; set current_sid "" }
-    if {[catch {::vapi::ask_decide_answers $id $answers} err]} {
-        ::vstatus::set_msg [format [::vi18n::mc {answer failed: %s}] $err]
+    if {[catch {::vapi::ask_decide_answers $id $answers $answered} err]} {        ::vstatus::set_msg [format [::vi18n::mc {answer failed: %s}] $err]
         return
     }
     # The shown line: the checked labels would be nicer, but keys are

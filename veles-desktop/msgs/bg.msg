@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset bg choice_wait {изчакай %{secs} с (нулиране на лимита), после опитай отново по същия маршрут}
 ::msgcat::mcset bg {choose a default model for %{provider} — the model step can list the provider's models} {изберете модел по подразбиране за %{provider} — стъпката за модел може да изброи моделите на доставчика}
 ::msgcat::mcset bg {choose a model: pick one from the list, or type its name} {изберете модел: изберете един от списъка или въведете името му}
+::msgcat::mcset bg {choose an approval scope before answering} {Изберете обхват на одобрение преди отговор}
 ::msgcat::mcset bg {clear failed: %s} {грешка при изчистване: %s}
 ::msgcat::mcset bg {click a job in the list first} {първо избери задача от списъка}
 ::msgcat::mcset bg {click a job to select it} {кликни задача, за да я избереш}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset bg {filter skills by name} {филтрирай уменията по име}
 ::msgcat::mcset bg {find in transcript} {търсене в преписа}
 ::msgcat::mcset bg {find references} {намери референции}
+::msgcat::mcset bg {finishing the transcript; try sending again in a moment} {завършва се транскрипцията; опитайте отново след малко}
 ::msgcat::mcset bg {fire the Tcl hook} {задействай Tcl hook-а}
 ::msgcat::mcset bg {fires for %s:} {задейства се за %s:}
 ::msgcat::mcset bg {fires per hour} {задействания на час}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset bg {tools the engine has registered} {инструментите, които engine-ът е регистрирал}
 ::msgcat::mcset bg {tools unavailable} {инструментите са недостъпни}
 ::msgcat::mcset bg {tools unavailable: %s} {инструментите са недостъпни: %s}
+::msgcat::mcset bg {transcript finalization failed: %s} {завършването на транскрипцията се провали: %s}
 ::msgcat::mcset bg {transcript refetched} {преписът е изтеглен отново}
 ::msgcat::mcset bg {transcript — arrows to read, %s for composer} {препис — стрелки за четене, %s за редактора}
 ::msgcat::mcset bg {trigger %1$s %2$sd} {тригер %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset bg {☰ shows or hides the session list; picking a session closes it.} {☰ показва или скрива списъка със сесии; изборът на сесия го затваря.}
 ::msgcat::mcset bg {⚙ %s} {⚙ %s}
 ::msgcat::mcset bg {⚠ %s} {⚠ %s}
+::msgcat::mcset bg {⚠ transcript finalization failed; preserved available text} {⚠ завършването на транскрипцията се провали; наличният текст е запазен}
 ::msgcat::mcset bg {✖ %s} {✖ %s}
 ::msgcat::mcset bg {✖ detach failed: %s} {✖ отделянето не успя: %s}
 ::msgcat::mcset bg {✖ session stream: %s} {✖ потокът на сесията: %s}

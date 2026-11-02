@@ -895,6 +895,7 @@ package require msgcat
 ::msgcat::mcset en choice_wait choice_wait
 ::msgcat::mcset en {choose a default model for %{provider} — the model step can list the provider's models} {choose a default model for %{provider} — the model step can list the provider's models}
 ::msgcat::mcset en {choose a model: pick one from the list, or type its name} {choose a model: pick one from the list, or type its name}
+::msgcat::mcset en {choose an approval scope before answering} {choose an approval scope before answering}
 ::msgcat::mcset en {clear failed: %s} {clear failed: %s}
 ::msgcat::mcset en {click a job in the list first} {click a job in the list first}
 ::msgcat::mcset en {click a job to select it} {click a job to select it}
@@ -1081,6 +1082,7 @@ package require msgcat
 ::msgcat::mcset en {filter skills by name} {filter skills by name}
 ::msgcat::mcset en {find in transcript} {find in transcript}
 ::msgcat::mcset en {find references} {find references}
+::msgcat::mcset en {finishing the transcript; try sending again in a moment} {finishing the transcript; try sending again in a moment}
 ::msgcat::mcset en {fire the Tcl hook} {fire the Tcl hook}
 ::msgcat::mcset en {fires for %s:} {fires for %s:}
 ::msgcat::mcset en {fires per hour} {fires per hour}
@@ -1729,6 +1731,8 @@ package require msgcat
 ::msgcat::mcset en {tools the engine has registered} {tools the engine has registered}
 ::msgcat::mcset en {tools unavailable} {tools unavailable}
 ::msgcat::mcset en {tools unavailable: %s} {tools unavailable: %s}
+::msgcat::mcset en {transcript finalization failed: %s} {transcript finalization failed: %s}
+::msgcat::mcset en {⚠ transcript finalization failed; preserved available text} {⚠ transcript finalization failed; preserved available text}
 ::msgcat::mcset en {transcript refetched} {transcript refetched}
 ::msgcat::mcset en {transcript — arrows to read, %s for composer} {transcript — arrows to read, %s for composer}
 ::msgcat::mcset en {trigger %1$s %2$sd} {trigger %1$s %2$sd}

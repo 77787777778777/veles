@@ -1072,8 +1072,10 @@ proc ::vapi::ask_decide {id choice {text ""}} {
 
 # The multi answer (2026-09-26 parity): `answers` is a Tcl dict
 #   qk -> {selected {c1 c2} text "..."}
-# sent as the request's `answers` object.
-proc ::vapi::ask_decide_answers {id answers} {
+# sent as the request's `answers` object. `explicit` names questions
+# deliberately answered, including an empty permission selection.
+proc ::vapi::ask_decide_answers {id answers args} {
+    set explicit [lindex $args 0]
     set parts {}
     foreach {qk a} $answers {
         set sel {}
@@ -1086,7 +1088,11 @@ proc ::vapi::ask_decide_answers {id answers} {
         }
         lappend parts "\"[json_escape $qk]\":{\"selected\":\[[join $sitems ,]\],\"text\":\"[json_escape $txt]\"}"
     }
-    set body "{\"answers\":\{[join $parts ,]\}}"
+    set body [format {"answers":{%s}} [join $parts ,]]
+    if {[llength $explicit]} {
+        append body , "\"answered\":[lindex [json_strings $explicit] 1]"
+    }
+    set body "{$body}"
     return [post /api/approvals/$id/decide $body]
 }
 

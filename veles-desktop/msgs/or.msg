@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset or choice_wait {%{secs} ସେକେଣ୍ଡ ଅପେକ୍ଷା କର (ବ୍ୟବହାର ରିସେଟ୍), ତାପରେ ସେହି ରୁଟରେ ପୁଣି ଚେଷ୍ଟା କର}
 ::msgcat::mcset or {choose a default model for %{provider} — the model step can list the provider's models} {%{provider} ପାଇଁ ଏକ ଡିଫଲ୍ଟ ମଡେଲ୍ ବାଛନ୍ତୁ — ମଡେଲ୍ ସୋପାନ ପ୍ରୋଭାଇଡରର ମଡେଲ୍‌ଗୁଡ଼ିକ ତାଲିକାଭୁକ୍ତ କରିପାରିବ}
 ::msgcat::mcset or {choose a model: pick one from the list, or type its name} {ଏକ ମଡେଲ୍ ବାଛନ୍ତୁ: ତାଲିକାରୁ ଗୋଟିଏ ବାଛନ୍ତୁ, କିମ୍ବା ନାମ ଟାଇପ୍ କରନ୍ତୁ}
+::msgcat::mcset or {choose an approval scope before answering} {ଉତ୍ତର ଦେବା ପୂର୍ବରୁ ଅନୁମତି ସ୍କୋପ୍ ବାଛନ୍ତୁ}
 ::msgcat::mcset or {clear failed: %s} {ସଫା ବିଫଳ: %s}
 ::msgcat::mcset or {click a job in the list first} {ପ୍ରଥମେ ତାଲିକାରେ ଏକ କାର୍ଯ୍ୟ କ୍ଲିକ୍ କର}
 ::msgcat::mcset or {click a job to select it} {ବାଛିବାକୁ ଏକ କାର୍ଯ୍ୟ କ୍ଲିକ୍ କର}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset or {filter skills by name} {ନାମ ଅନୁସାରେ ସ୍କିଲ୍ ଫିଲ୍ଟର୍ କରନ୍ତୁ}
 ::msgcat::mcset or {find in transcript} {ଟ୍ରାନ୍ସକ୍ରିପ୍ଟରେ ଖୋଜନ୍ତୁ}
 ::msgcat::mcset or {find references} {ରେଫରେନ୍ସ ଖୋଜନ୍ତୁ}
+::msgcat::mcset or {finishing the transcript; try sending again in a moment} {ପ୍ରତିଲିପି ସମାପ୍ତ ହେଉଛି; ଅଳ୍ପକ୍ଷଣରେ ପୁଣି ଥରେ ପଠାଇବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ}
 ::msgcat::mcset or {fire the Tcl hook} {Tcl ହୁକ୍ ଚଲାନ୍ତୁ}
 ::msgcat::mcset or {fires for %s:} {%s ପାଇଁ ଚାଲେ:}
 ::msgcat::mcset or {fires per hour} {ଘଣ୍ଟାପ୍ରତି ଚାଲେ}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset or {tools the engine has registered} {ଇଞ୍ଜିନ ପଞ୍ଜୀକୃତ କରିଥିବା ଟୁଲ}
 ::msgcat::mcset or {tools unavailable} {ଟୁଲ ଉପଲବ୍ଧ ନାହିଁ}
 ::msgcat::mcset or {tools unavailable: %s} {ଟୁଲ୍ ଉପଲବ୍ଧ ନାହିଁ: %s}
+::msgcat::mcset or {transcript finalization failed: %s} {ପ୍ରତିଲିପି ସମାପ୍ତି ବିଫଳ ହେଲା: %s}
 ::msgcat::mcset or {transcript refetched} {ଟ୍ରାନ୍ସକ୍ରିପ୍ଟ ପୁଣି ଆଣିଲା}
 ::msgcat::mcset or {transcript — arrows to read, %s for composer} {ଟ୍ରାନ୍ସକ୍ରିପ୍ଟ — ପଢ଼ିବାକୁ ତୀର, composer ପାଇଁ %s}
 ::msgcat::mcset or {trigger %1$s %2$sd} {%1$s ଟ୍ରିଗର %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset or {☰ shows or hides the session list; picking a session closes it.} {☰ ସେସନ ତାଲିକା ଦେଖାଏ ବା ଲୁଚାଏ; ଗୋଟିଏ ସେସନ ବାଛିଲେ ଏହା ବନ୍ଦ ହୁଏ।}
 ::msgcat::mcset or {⚙ %s} {⚙ %s}
 ::msgcat::mcset or {⚠ %s} {⚠ %s}
+::msgcat::mcset or {⚠ transcript finalization failed; preserved available text} {⚠ ପ୍ରତିଲିପି ସମାପ୍ତି ବିଫଳ ହେଲା; ଉପଲବ୍ଧ ପାଠ୍ୟ ସଂରକ୍ଷିତ ହୋଇଛି}
 ::msgcat::mcset or {✖ %s} {✖ %s}
 ::msgcat::mcset or {✖ detach failed: %s} {✖ ଅଲଗା କରିବା ବିଫଳ ହେଲା: %s}
 ::msgcat::mcset or {✖ session stream: %s} {✖ ସେସନ୍ ଷ୍ଟ୍ରିମ୍: %s}

@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset xh choice_wait {linda imizuzwana engu-%{secs} (ukusetyenziswa kuyasetwa kwakhona), uze uzame kwakhona umendo ofanayo}
 ::msgcat::mcset xh {choose a default model for %{provider} — the model step can list the provider's models} {khetha imodeli emiselweyo ye-%{provider} — inyathelo leemodeli lingakwazi ukudwelisa iimodeli zomboneleli}
 ::msgcat::mcset xh {choose a model: pick one from the list, or type its name} {khetha imodeli: khetha enye kuluhlu, okanye uchwetheze igama layo}
+::msgcat::mcset xh {choose an approval scope before answering} {Khetha ububanzi bemvume phambi kokuphendula}
 ::msgcat::mcset xh {clear failed: %s} {ukucima kusilele: %s}
 ::msgcat::mcset xh {click a job in the list first} {cofa kuqala umsebenzi kuluhlu}
 ::msgcat::mcset xh {click a job to select it} {cofa umsebenzi ukuze uwukhethe}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset xh {filter skills by name} {hlunga amakhono ngegama}
 ::msgcat::mcset xh {find in transcript} {fumana kwi-transcript}
 ::msgcat::mcset xh {find references} {fumana iireferensi}
+::msgcat::mcset xh {finishing the transcript; try sending again in a moment} {kugqitywa ithranskripti; zama ukuthumela kwakhona kamsinya}
 ::msgcat::mcset xh {fire the Tcl hook} {qalisa i-hook ye-Tcl}
 ::msgcat::mcset xh {fires for %s:} {iyabamba kwa-%s:}
 ::msgcat::mcset xh {fires per hour} {iyabamba ngeyure}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset xh {tools the engine has registered} {izixhobo ezibhaliswe yinjini}
 ::msgcat::mcset xh {tools unavailable} {izixhobo azifumaneki}
 ::msgcat::mcset xh {tools unavailable: %s} {izixhobo azifumaneki: %s}
+::msgcat::mcset xh {transcript finalization failed: %s} {ukugqitywa kwethranskripti kuhlulekile: %s}
 ::msgcat::mcset xh {transcript refetched} {itranscript iphinde yalandwa}
 ::msgcat::mcset xh {transcript — arrows to read, %s for composer} {itranscript — iintolo zokufunda, %s kwi-composer}
 ::msgcat::mcset xh {trigger %1$s %2$sd} {qalisa %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset xh {☰ shows or hides the session list; picking a session closes it.} {☰ ibonisa okanye ifihla uluhlu lweeseshini; ukukhetha iseshoni kuyaluvala.}
 ::msgcat::mcset xh {⚙ %s} {⚙ %s}
 ::msgcat::mcset xh {⚠ %s} {⚠ %s}
+::msgcat::mcset xh {⚠ transcript finalization failed; preserved available text} {⚠ ukugqitywa kwethranskripti kuhlulekile; umbhalo okhoyo ugcinwe}
 ::msgcat::mcset xh {✖ %s} {✖ %s}
 ::msgcat::mcset xh {✖ detach failed: %s} {✖ ukwehlukanisa akuphumelelanga: %s}
 ::msgcat::mcset xh {✖ session stream: %s} {✖ iseshoni yesasazo: %s}

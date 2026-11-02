@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset so choice_wait {sug %{secs} ilbiriqsi (dib-u-dejinta isticmaalka), kadibna isku day waddo isku mid ah mar kale}
 ::msgcat::mcset so {choose a default model for %{provider} — the model step can list the provider's models} {dooro model caadi ah oo %{provider} — tallaabada model-ka waxay liis gelin kartaa modelada bixiyaha}
 ::msgcat::mcset so {choose a model: pick one from the list, or type its name} {dooro model: mid liiska ka dooro, ama qor magaciisa}
+::msgcat::mcset so {choose an approval scope before answering} {dooro baaxadda ogolaanshaha ka hor inta aanad jawaabin}
 ::msgcat::mcset so {clear failed: %s} {nadiifintu way fashilantay: %s}
 ::msgcat::mcset so {click a job in the list first} {marka hore ku dhufo shaqo liiska ku jirta}
 ::msgcat::mcset so {click a job to select it} {ku dhufo shaqo si aad u xulato}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset so {filter skills by name} {shaandheey xirfadaha magac ahaan}
 ::msgcat::mcset so {find in transcript} {ku raadi qoraalka}
 ::msgcat::mcset so {find references} {hawla-wixinnada raadi}
+::msgcat::mcset so {finishing the transcript; try sending again in a moment} {dhamaynta qoraalka wada hadalka; isku day inaad mar kale dirto wax yar kadib}
 ::msgcat::mcset so {fire the Tcl hook} {hook-ka Tcl fuli}
 ::msgcat::mcset so {fires for %s:} {wuu firfircoon yahay %s:}
 ::msgcat::mcset so {fires per hour} {saac kasta wuu firfircoon yahay}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset so {tools the engine has registered} {aaladaha uu mashiinku diiwaangeliyay}
 ::msgcat::mcset so {tools unavailable} {aaladaha lama heli karo}
 ::msgcat::mcset so {tools unavailable: %s} {qalab la helin: %s}
+::msgcat::mcset so {transcript finalization failed: %s} {dhamaynta qoraalka wada hadalka waa guuldareystay: %s}
 ::msgcat::mcset so {transcript refetched} {qoraalka dib baa loo soo qaaday}
 ::msgcat::mcset so {transcript — arrows to read, %s for composer} {qoraalka — fallaadho: akhris, %s: qorista}
 ::msgcat::mcset so {trigger %1$s %2$sd} {kici %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset so {☰ shows or hides the session list; picking a session closes it.} {☰ wuxuu muujiyaa ama qariyaa liiska kalfadhiyada; dooro kalfadhi ayaa xira.}
 ::msgcat::mcset so {⚙ %s} {⚙ %s}
 ::msgcat::mcset so {⚠ %s} {⚠ %s}
+::msgcat::mcset so {⚠ transcript finalization failed; preserved available text} {⚠ dhamaynta qoraalka wada hadalka waa guuldareystay; qoraalka la heli karo waa la ilaaliyay}
 ::msgcat::mcset so {✖ %s} {✖ %s}
 ::msgcat::mcset so {✖ detach failed: %s} {✖ kala saariddu way fashilantay: %s}
 ::msgcat::mcset so {✖ session stream: %s} {✖ socdaalka fadhiga: %s}

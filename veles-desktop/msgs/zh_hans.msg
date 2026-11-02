@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset zh_hans choice_wait {等待 %{secs} 秒（用量重置）后重试同一路由}
 ::msgcat::mcset zh_hans {choose a default model for %{provider} — the model step can list the provider's models} {请为 %{provider} 选择一个默认模型 — 模型步骤可以列出该提供商的模型}
 ::msgcat::mcset zh_hans {choose a model: pick one from the list, or type its name} 请选择模型：从列表中选择一个，或输入其名称
+::msgcat::mcset zh_hans {choose an approval scope before answering} 回答前请选择批准范围
 ::msgcat::mcset zh_hans {clear failed: %s} {清除失败: %s}
 ::msgcat::mcset zh_hans {click a job in the list first} 请先点击列表中的任务
 ::msgcat::mcset zh_hans {click a job to select it} 点击任务以选中它
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {filter skills by name} 按名称筛选技能
 ::msgcat::mcset zh_hans {find in transcript} 在转录中查找
 ::msgcat::mcset zh_hans {find references} 查找引用
+::msgcat::mcset zh_hans {finishing the transcript; try sending again in a moment} 正在完成转录，请稍后再试
 ::msgcat::mcset zh_hans {fire the Tcl hook} {触发 Tcl 钩子}
 ::msgcat::mcset zh_hans {fires for %s:} {在 %s 时触发：}
 ::msgcat::mcset zh_hans {fires per hour} 每小时触发
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {tools the engine has registered} 引擎注册的工具
 ::msgcat::mcset zh_hans {tools unavailable} 工具不可用
 ::msgcat::mcset zh_hans {tools unavailable: %s} 工具不可用：%s
+::msgcat::mcset zh_hans {transcript finalization failed: %s} 转录完成失败：%s
 ::msgcat::mcset zh_hans {transcript refetched} 对话记录已重新获取
 ::msgcat::mcset zh_hans {transcript — arrows to read, %s for composer} {对话记录 — 方向键阅读，%s 输入}
 ::msgcat::mcset zh_hans {trigger %1$s %2$sd} {触发器 %1$s：%2$s}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {☰ shows or hides the session list; picking a session closes it.} ☰显示或隐藏会话列表；选中一个会话后列表会关闭。
 ::msgcat::mcset zh_hans {⚙ %s} {⚙ %s}
 ::msgcat::mcset zh_hans {⚠ %s} {⚠ %s}
+::msgcat::mcset zh_hans {⚠ transcript finalization failed; preserved available text} {⚠ 转录完成失败；已保留可用文本}
 ::msgcat::mcset zh_hans {✖ %s} {✖ %s}
 ::msgcat::mcset zh_hans {✖ detach failed: %s} {✖ 分离失败：%s}
 ::msgcat::mcset zh_hans {✖ session stream: %s} {✖ 会话流：%s}

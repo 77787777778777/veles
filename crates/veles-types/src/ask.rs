@@ -146,6 +146,10 @@ pub struct AskQuestion {
     pub choices: Vec<AskChoice>,
     #[serde(default)]
     pub multi: bool,
+    /// Choice keys selected when the question is first displayed. Used
+    /// for multi-select permission grants; empty means none preselected.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub defaults: Vec<String>,
 }
 
 impl AskQuestion {
@@ -155,10 +159,15 @@ impl AskQuestion {
             prompt: prompt.to_string(),
             choices,
             multi: false,
+            defaults: Vec::new(),
         }
     }
     pub fn with_multi(mut self, multi: bool) -> Self {
         self.multi = multi;
+        self
+    }
+    pub fn with_defaults(mut self, defaults: Vec<String>) -> Self {
+        self.defaults = defaults;
         self
     }
 }
@@ -214,9 +223,24 @@ impl AskRequest {
                 prompt: self.prompt.clone(),
                 choices: self.choices.clone(),
                 multi: self.multi,
+                defaults: Vec::new(),
             }];
         }
         self.questions.clone()
+    }
+    pub fn default_toggles(&self) -> Vec<(String, String)> {
+        self.all_questions()
+            .into_iter()
+            .flat_map(|q| {
+                let offered: std::collections::HashSet<&str> =
+                    q.choices.iter().map(|c| c.key.as_str()).collect();
+                q.defaults
+                    .into_iter()
+                    .filter(|key| offered.contains(key.as_str()))
+                    .map(|key| (q.key.clone(), key))
+                    .collect::<Vec<_>>()
+            })
+            .collect()
     }
     pub fn with_detail(mut self, d: impl Into<String>) -> Self {
         self.detail = Some(d.into());
@@ -259,6 +283,12 @@ pub struct AskAnswer {
     /// knowing the shape exists.
     #[serde(default, skip_serializing_if = "std::collections::BTreeMap::is_empty")]
     pub per_question: std::collections::BTreeMap<String, AskAnswer>,
+    /// Questions explicitly answered by an adapter, including a deliberate
+    /// empty multi-select. Missing means a legacy answer with no such
+    /// information, so defaults may apply; an empty q2 in `answered` is
+    /// an intentional deselection, never an omitted legacy answer.
+    #[serde(default, skip_serializing_if = "std::collections::BTreeSet::is_empty")]
+    pub answered: std::collections::BTreeSet<String>,
 }
 
 impl AskAnswer {

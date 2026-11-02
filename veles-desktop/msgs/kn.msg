@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset kn choice_wait {%{secs} ಸೆಕೆಂಡುಗಳು ಕಾಯಿ (ಬಳಕೆ ಮರುಹೊಂದಿಕೆ), ನಂತರ ಅದೇ ಮಾರ್ಗದಲ್ಲಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸು}
 ::msgcat::mcset kn {choose a default model for %{provider} — the model step can list the provider's models} {%{provider} ಗೆ ಡೀಫಾಲ್ಟ್ ಮಾದರಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ — ಮಾದರಿ ಹಂತವು ಪ್ರೊವೈಡರ್‌ನ ಮಾದರಿಗಳನ್ನು ಪಟ್ಟಿ ಮಾಡಬಹುದು}
 ::msgcat::mcset kn {choose a model: pick one from the list, or type its name} {ಮಾದರಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ: ಪಟ್ಟಿಯಿಂದ ಒಂದನ್ನು ಆರಿಸಿ, ಅಥವಾ ಅದರ ಹೆಸರನ್ನು ಟೈಪ್ ಮಾಡಿ}
+::msgcat::mcset kn {choose an approval scope before answering} {ಉತ್ತರಿಸುವ ಮೊದಲು ಅನುಮೋದನಾ ವ್ಯಾಪ್ತಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ}
 ::msgcat::mcset kn {clear failed: %s} {ತೆರವು ವಿಫಲ: %s}
 ::msgcat::mcset kn {click a job in the list first} {ಮೊದಲು ಪಟ್ಟಿಯಲ್ಲಿನ ಜಾಬ್ ಕ್ಲಿಕ್ ಮಾಡಿ}
 ::msgcat::mcset kn {click a job to select it} {ಆಯ್ಕೆ ಮಾಡಲು ಜಾಬ್ ಕ್ಲಿಕ್ ಮಾಡಿ}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset kn {filter skills by name} {ಹೆಸರಿನಿಂದ ಸ್ಕಿಲ್ಗಳನ್ನು ಫಿಲ್ಟರ್ ಮಾಡಿ}
 ::msgcat::mcset kn {find in transcript} {ಟ್ರಾನ್ಸ್‌ಕ್ರಿಪ್ಟ್‌ನಲ್ಲಿ ಹುಡುಕು}
 ::msgcat::mcset kn {find references} {ಉಲ್ಲೇಖಗಳನ್ನು ಹುಡುಕು}
+::msgcat::mcset kn {finishing the transcript; try sending again in a moment} {ಟ್ರಾನ್ಸ್ಕ್ರಿಪ್ಟ್ ಮುಗಿಸಲಾಗುತ್ತಿದೆ; ಸ್ವಲ್ಪದರಲ್ಲಿ ಮತ್ತೆ ಕಳುಹಿಸಿ ಪ್ರಯತ್ನಿಸಿ}
 ::msgcat::mcset kn {fire the Tcl hook} {Tcl ಹುಕ್ ಪ್ರಚೋದಿಸಿ}
 ::msgcat::mcset kn {fires for %s:} {%s ಗಾಗಿ ಪ್ರಚೋದಿಸುತ್ತದೆ:}
 ::msgcat::mcset kn {fires per hour} {ಗಂಟೆಗೆ ಪ್ರಚೋದನೆಗಳು}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset kn {tools the engine has registered} {ಎಂಜಿನ್ ನೋಂದಾಯಿಸಿದ ಟೂಲ್ಗಳು}
 ::msgcat::mcset kn {tools unavailable} {ಟೂಲ್ಗಳು ಲಭ್ಯವಿಲ್ಲ}
 ::msgcat::mcset kn {tools unavailable: %s} {ಟೂಲ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ: %s}
+::msgcat::mcset kn {transcript finalization failed: %s} {ಟ್ರಾನ್ಸ್ಕ್ರಿಪ್ಟ್ ಅಂತಿಮಗೊಳಿಸುವುದು ವಿಫಲವಾಗಿದೆ: %s}
 ::msgcat::mcset kn {transcript refetched} {ಟ್ರಾನ್ಸ್ಕ್ರಿಪ್ಟ್ ಮತ್ತೆ ಪಡೆಯಲಾಗಿದೆ}
 ::msgcat::mcset kn {transcript — arrows to read, %s for composer} {ಟ್ರಾನ್ಸ್ಕ್ರಿಪ್ಟ್ — ಓದಲು ಬಾಣಗಳು, ಕಂಪೋಸರ್ಗೆ %s}
 ::msgcat::mcset kn {trigger %1$s %2$sd} {ಟ್ರಿಗರ್ %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset kn {☰ shows or hides the session list; picking a session closes it.} {☰ ಸೆಷನ್ ಪಟ್ಟಿಯನ್ನು ತೋರಿಸುತ್ತದೆ ಅಥವಾ ಮರೆಮಾಡುತ್ತದೆ; ಸೆಷನ್ ಆರಿಸಿದಾಗ ಅದು ಮುಚ್ಚುತ್ತದೆ.}
 ::msgcat::mcset kn {⚙ %s} {⚙ %s}
 ::msgcat::mcset kn {⚠ %s} {⚠ %s}
+::msgcat::mcset kn {⚠ transcript finalization failed; preserved available text} {⚠ ಟ್ರಾನ್ಸ್ಕ್ರಿಪ್ಟ್ ಅಂತಿಮಗೊಳಿಸುವುದು ವಿಫಲವಾಗಿದೆ; ಲಭ್ಯವಿರುವ ಪಠ್ಯವನ್ನು ಉಳಿಸಲಾಗಿದೆ}
 ::msgcat::mcset kn {✖ %s} {✖ %s}
 ::msgcat::mcset kn {✖ detach failed: %s} {✖ ಬೇರ್ಪಡಿಸುವಿಕೆ ವಿಫಲವಾಗಿದೆ: %s}
 ::msgcat::mcset kn {✖ session stream: %s} {✖ ಸೆಷನ್ ಸ್ಟ್ರೀಮ್: %s}

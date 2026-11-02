@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset pa choice_wait {%{secs} ਸਕਿੰਟ ਉਡੀਕੋ (ਵਰਤੋਂ ਰੀਸੈੱਟ), ਫਿਰ ਉਸੇ ਰੂਟ ’ਤੇ ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ}
 ::msgcat::mcset pa {choose a default model for %{provider} — the model step can list the provider's models} {%{provider} ਲਈ ਇੱਕ ਡਿਫਾਲਟ ਮਾਡਲ ਚੁਣੋ — ਮਾਡਲ ਪੜਾਅ ਪ੍ਰੋਵਾਈਡਰ ਦੇ ਮਾਡਲਾਂ ਦੀ ਸੂਚੀ ਬਣਾ ਸਕਦਾ ਹੈ}
 ::msgcat::mcset pa {choose a model: pick one from the list, or type its name} {ਇੱਕ ਮਾਡਲ ਚੁਣੋ: ਸੂਚੀ ਵਿੱਚੋਂ ਇੱਕ ਚੁਣੋ, ਜਾਂ ਇਸਦਾ ਨਾਮ ਟਾਈਪ ਕਰੋ}
+::msgcat::mcset pa {choose an approval scope before answering} {ਜਵਾਬ ਦੇਣ ਤੋਂ ਪਹਿਲਾਂ ਪ੍ਰਵਾਨਗੀ ਦਾ ਦਾਇਰਾ ਚੁਣੋ}
 ::msgcat::mcset pa {clear failed: %s} {ਸਾਫ਼ ਕਰਨਾ ਅਸਫਲ: %s}
 ::msgcat::mcset pa {click a job in the list first} {ਪਹਿਲਾਂ ਸੂਚੀ ਵਿੱਚ ਕੋਈ ਕੰਮ ਚੁਣੋ}
 ::msgcat::mcset pa {click a job to select it} {ਕੰਮ ਚੁਣਨ ਲਈ ਉਸ 'ਤੇ ਕਲਿੱਕ ਕਰੋ}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset pa {filter skills by name} {ਸਕਿੱਲਾਂ ਨਾਂ ਨਾਲ ਫਿਲਟਰ ਕਰੋ}
 ::msgcat::mcset pa {find in transcript} {ਟ੍ਰਾਂਸਕ੍ਰਿਪਟ ਵਿੱਚ ਲੱਭੋ}
 ::msgcat::mcset pa {find references} {ਹਵਾਲੇ ਲੱਭੋ}
+::msgcat::mcset pa {finishing the transcript; try sending again in a moment} {ਟਰਾਂਸਕ੍ਰਿਪਟ ਪੂਰੀ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ; ਇੱਕ ਪਲ ਬਾਅਦ ਦੁਬਾਰਾ ਭੇਜਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ}
 ::msgcat::mcset pa {fire the Tcl hook} {Tcl ਹੂਕ ਚਲਾਓ}
 ::msgcat::mcset pa {fires for %s:} {%s ਲਈ ਚੱਲਦਾ ਹੈ:}
 ::msgcat::mcset pa {fires per hour} {ਪ੍ਰਤੀ ਘੰਟਾ ਚੱਲਦਾ ਹੈ}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset pa {tools the engine has registered} {ਇੰਜਣ ਦੁਆਰਾ ਰਜਿਸਟਰ ਕੀਤੇ ਟੂਲ}
 ::msgcat::mcset pa {tools unavailable} {ਟੂਲ ਅਣਉਪਲਬਧ}
 ::msgcat::mcset pa {tools unavailable: %s} {ਟੂਲ ਉਪਲਬਧ ਨਹੀਂ: %s}
+::msgcat::mcset pa {transcript finalization failed: %s} {ਟਰਾਂਸਕ੍ਰਿਪਟ ਅੰਤਿਮ ਰੂਪ ਦੇਣ ਵਿੱਚ ਅਸਫਲ: %s}
 ::msgcat::mcset pa {transcript refetched} {ਟ੍ਰਾਂਸਕ੍ਰਿਪਟ ਮੁੜ ਲਿਆ ਗਈ}
 ::msgcat::mcset pa {transcript — arrows to read, %s for composer} {ਟ੍ਰਾਂਸਕ੍ਰਿਪਟ — ਪੜ੍ਹਨ ਲਈ ਤੀਰ, ਕੰਪੋਜ਼ਰ ਲਈ %s}
 ::msgcat::mcset pa {trigger %1$s %2$sd} {ਟਰਿੱਗਰ %1$s %2$s ਕੀਤਾ ਗਿਆ}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset pa {☰ shows or hides the session list; picking a session closes it.} {☰ ਸੈਸ਼ਨ ਸੂਚੀ ਦਿਖਾਉਂਦਾ ਜਾਂ ਲੁਕਾਉਂਦਾ ਹੈ; ਕੋਈ ਸੈਸ਼ਨ ਚੁਣਨ ਨਾਲ ਇਹ ਬੰਦ ਹੋ ਜਾਂਦੀ ਹੈ।}
 ::msgcat::mcset pa {⚙ %s} {⚙ %s}
 ::msgcat::mcset pa {⚠ %s} {⚠ %s}
+::msgcat::mcset pa {⚠ transcript finalization failed; preserved available text} {⚠ ਟਰਾਂਸਕ੍ਰਿਪਟ ਅੰਤਿਮ ਰੂਪ ਦੇਣ ਵਿੱਚ ਅਸਫਲ; ਉਪਲਬਧ ਟੈਕਸਟ ਸੁਰੱਖਿਅਤ ਰੱਖਿਆ ਗਿਆ ਹੈ}
 ::msgcat::mcset pa {✖ %s} {✖ %s}
 ::msgcat::mcset pa {✖ detach failed: %s} {✖ ਡਿਟੈਚ ਅਸਫਲ: %s}
 ::msgcat::mcset pa {✖ session stream: %s} {✖ ਸੈਸ਼ਨ ਸਟ੍ਰੀਮ: %s}

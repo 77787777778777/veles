@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset te choice_wait {%{secs} సెకన్లు ఆగు (వినియోగ రీసెట్), ఆపై అదే రూట్‌లో మళ్లీ ప్రయత్నించు}
 ::msgcat::mcset te {choose a default model for %{provider} — the model step can list the provider's models} {%{provider} కోసం డిఫాల్ట్ మోడల్ ఎంచుకోండి — మోడల్ స్టెప్ ప్రొవైడర్ మోడల్స్ జాబితా చేయగలదు}
 ::msgcat::mcset te {choose a model: pick one from the list, or type its name} {మోడల్ ఎంచుకోండి: జాబితా నుండి ఒకటి ఎంచుకోండి, లేదా దాని పేరు టైప్ చేయండి}
+::msgcat::mcset te {choose an approval scope before answering} {సమాధానం ఇచ్చే ముందు ఆమోద పరిధిని ఎంచుకోండి}
 ::msgcat::mcset te {clear failed: %s} {క్లియర్ విఫలమైంది: %s}
 ::msgcat::mcset te {click a job in the list first} {ముందు జాబితాలోని జాబ్‌ను క్లిక్ చేయండి}
 ::msgcat::mcset te {click a job to select it} {ఎంచుకోవడానికి జాబ్‌ను క్లిక్ చేయండి}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset te {filter skills by name} {పేరుతో స్కిల్స్ ఫిల్టర్ చేయండి}
 ::msgcat::mcset te {find in transcript} {ట్రాన్స్‌క్రిప్ట్‌లో వెతుకు}
 ::msgcat::mcset te {find references} {రిఫరెన్సులను కనుగొను}
+::msgcat::mcset te {finishing the transcript; try sending again in a moment} {ట్రాన్స్క్రిప్ట్ పూర్తవుతోంది; కొద్దిసేపటి తర్వాత మళ్లీ పంపడానికి ప్రయత్నించండి}
 ::msgcat::mcset te {fire the Tcl hook} {Tcl హుక్‌ను అమలు చేయి}
 ::msgcat::mcset te {fires for %s:} {%s కోసం అమలవుతుంది:}
 ::msgcat::mcset te {fires per hour} {గంటకు అమలవుతుంది}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset te {tools the engine has registered} {ఇంజిన్ నమోదు చేసిన టూల్స్}
 ::msgcat::mcset te {tools unavailable} {టూల్స్ అందుబాటులో లేవు}
 ::msgcat::mcset te {tools unavailable: %s} {టూల్స్ అందుబాటులో లేవు: %s}
+::msgcat::mcset te {transcript finalization failed: %s} {ట్రాన్స్క్రిప్ట్ పూర్తి చేయడం విఫలమైంది: %s}
 ::msgcat::mcset te {transcript refetched} {ట్రాన్స్క్రిప్ట్ మళ్లీ తెచ్చాం}
 ::msgcat::mcset te {transcript — arrows to read, %s for composer} {ట్రాన్స్క్రిప్ట్ — చదవడానికి బాణాలు, కంపోజర్కి %s}
 ::msgcat::mcset te {trigger %1$s %2$sd} {ట్రిగ్గర్ %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset te {☰ shows or hides the session list; picking a session closes it.} {☰ సెషన్ జాబితాను చూపిస్తుంది లేదా దాస్తుంది; ఒక సెషన్ ఎంచుకుంటే అది మూసుకుంటుంది.}
 ::msgcat::mcset te {⚙ %s} {⚙ %s}
 ::msgcat::mcset te {⚠ %s} {⚠ %s}
+::msgcat::mcset te {⚠ transcript finalization failed; preserved available text} {⚠ ట్రాన్స్క్రిప్ట్ పూర్తి చేయడం విఫలమైంది; అందుబాటులో ఉన్న పాఠ్యాన్ని భద్రపరిచారు}
 ::msgcat::mcset te {✖ %s} {✖ %s}
 ::msgcat::mcset te {✖ detach failed: %s} {✖ డిట్యాచ్ విఫలమైంది: %s}
 ::msgcat::mcset te {✖ session stream: %s} {✖ సెషన్ స్ట్రీమ్: %s}

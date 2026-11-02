@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset ms choice_wait {tunggu %{secs} saat (tetapan semula kuota) kemudian cuba semula laluan yang sama}
 ::msgcat::mcset ms {choose a default model for %{provider} — the model step can list the provider's models} {pilih model lalai untuk %{provider} — langkah model boleh menyenaraikan model penyedia}
 ::msgcat::mcset ms {choose a model: pick one from the list, or type its name} {pilih model: pilih satu daripada senarai, atau taip namanya}
+::msgcat::mcset ms {choose an approval scope before answering} {pilih skop kelulusan sebelum menjawab}
 ::msgcat::mcset ms {clear failed: %s} {kosongkan gagal: %s}
 ::msgcat::mcset ms {click a job in the list first} {klik dahulu kerja dalam senarai}
 ::msgcat::mcset ms {click a job to select it} {klik kerja untuk memilihnya}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset ms {filter skills by name} {tapis kemahiran mengikut nama}
 ::msgcat::mcset ms {find in transcript} {cari dalam transkrip}
 ::msgcat::mcset ms {find references} {cari rujukan}
+::msgcat::mcset ms {finishing the transcript; try sending again in a moment} {menyiapkan transkrip; cuba hantar semula sebentar lagi}
 ::msgcat::mcset ms {fire the Tcl hook} {jalankan kait Tcl}
 ::msgcat::mcset ms {fires for %s:} {berlaku untuk %s:}
 ::msgcat::mcset ms {fires per hour} {berlaku setiap jam}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset ms {tools the engine has registered} {alat yang didaftarkan enjin}
 ::msgcat::mcset ms {tools unavailable} {alat tidak tersedia}
 ::msgcat::mcset ms {tools unavailable: %s} {alat tidak tersedia: %s}
+::msgcat::mcset ms {transcript finalization failed: %s} {penyiapan transkrip gagal: %s}
 ::msgcat::mcset ms {transcript refetched} {transkrip diambil semula}
 ::msgcat::mcset ms {transcript — arrows to read, %s for composer} {transkrip — anak panah untuk membaca, %s untuk komposer}
 ::msgcat::mcset ms {trigger %1$s %2$sd} {cetus %1$s %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset ms {☰ shows or hides the session list; picking a session closes it.} {☰ menunjukkan atau menyembunyikan senarai sesi; memilih sesi akan menutupnya.}
 ::msgcat::mcset ms {⚙ %s} {⚙ %s}
 ::msgcat::mcset ms {⚠ %s} {⚠ %s}
+::msgcat::mcset ms {⚠ transcript finalization failed; preserved available text} {⚠ penyiapan transkrip gagal; teks yang tersedia dikekalkan}
 ::msgcat::mcset ms {✖ %s} {✖ %s}
 ::msgcat::mcset ms {✖ detach failed: %s} {✖ penanggalkan gagal: %s}
 ::msgcat::mcset ms {✖ session stream: %s} {✖ strim sesi: %s}

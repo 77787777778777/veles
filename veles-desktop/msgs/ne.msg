@@ -896,6 +896,7 @@ package require msgcat
 ::msgcat::mcset ne choice_wait {%{secs} सेकेन्ड पर्खनुहोस् (कोटा रिसेट), अनि उही रुटमा फेरि प्रयास गर्नुहोस्}
 ::msgcat::mcset ne {choose a default model for %{provider} — the model step can list the provider's models} {%{provider} का लागि पूर्वनिर्धारित मोडेल छान्नुहोस् — मोडेल चरणले प्रोभाइडरका मोडेलहरूको सूची देखाउन सक्छ}
 ::msgcat::mcset ne {choose a model: pick one from the list, or type its name} {मोडेल छान्नुहोस्: सूचीबाट एउटा रोज्नुहोस्, वा यसको नाम टाइप गर्नुहोस्}
+::msgcat::mcset ne {choose an approval scope before answering} {जवाफ दिनुअघि स्वीकृति दायरा छान्नुहोस्}
 ::msgcat::mcset ne {clear failed: %s} {खाली गर्न असफल: %s}
 ::msgcat::mcset ne {click a job in the list first} {पहिले सूचीमा एउटा कार्य क्लिक गर्नुहोस्}
 ::msgcat::mcset ne {click a job to select it} {चयन गर्न कार्यमा क्लिक गर्नुहोस्}
@@ -1082,6 +1083,7 @@ package require msgcat
 ::msgcat::mcset ne {filter skills by name} {नामले सीप फिल्टर गर्नुहोस्}
 ::msgcat::mcset ne {find in transcript} {ट्रान्स्क्रिप्टमा खोज्नुहोस्}
 ::msgcat::mcset ne {find references} {सन्दर्भहरू खोज्नुहोस्}
+::msgcat::mcset ne {finishing the transcript; try sending again in a moment} {प्रतिलेख टुंग्याइँदै; कृपया क्षणभरपछि फेरि पठाउनुहोस्}
 ::msgcat::mcset ne {fire the Tcl hook} {Tcl हुक चलाउनुहोस्}
 ::msgcat::mcset ne {fires for %s:} {%s का लागि चल्छ:}
 ::msgcat::mcset ne {fires per hour} {प्रति घण्टा चल्छ}
@@ -1730,6 +1732,7 @@ package require msgcat
 ::msgcat::mcset ne {tools the engine has registered} {इन्जिनले दर्ता गरेका टुलहरू}
 ::msgcat::mcset ne {tools unavailable} {टुलहरू उपलब्ध छैनन्}
 ::msgcat::mcset ne {tools unavailable: %s} {टुलहरू उपलब्ध छैनन्: %s}
+::msgcat::mcset ne {transcript finalization failed: %s} {प्रतिलेख टुंग्याउन असफल: %s}
 ::msgcat::mcset ne {transcript refetched} {ट्रान्सक्रिप्ट पुनः तानियो}
 ::msgcat::mcset ne {transcript — arrows to read, %s for composer} {ट्रान्सक्रिप्ट — पढ्न तीरहरू, कम्पोजरका लागि %s}
 ::msgcat::mcset ne {trigger %1$s %2$sd} {%1$s ट्रिगर गरियो %2$sd}
@@ -1854,6 +1857,7 @@ package require msgcat
 ::msgcat::mcset ne {☰ shows or hides the session list; picking a session closes it.} {☰ ले सेसन सूची देखाउँछ वा लुकाउँछ; सेसन छान्दा यो बन्द हुन्छ।}
 ::msgcat::mcset ne {⚙ %s} {⚙ %s}
 ::msgcat::mcset ne {⚠ %s} {⚠ %s}
+::msgcat::mcset ne {⚠ transcript finalization failed; preserved available text} {⚠ प्रतिलेख टुंग्याउन असफल; उपलब्ध पाठ सुरक्षित राखियो}
 ::msgcat::mcset ne {✖ %s} {✖ %s}
 ::msgcat::mcset ne {✖ detach failed: %s} {✖ अलग गर्न असफल: %s}
 ::msgcat::mcset ne {✖ session stream: %s} {✖ सेसन स्ट्रिम: %s}

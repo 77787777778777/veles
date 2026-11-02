@@ -604,6 +604,70 @@ ok "q3 answered with the typed text" \
     {[dict get [dict get $got q3] text] eq "Imperial Grid"}
 catch { destroy .ask }
 
+# An approval with several permission classes starts with every
+# eligible class checked. The owner may narrow the remembered grants.
+set ::posted {}
+set ap [dict create id ask-permissions kind approval prompt "terminal" \
+    questions [list \
+        [dict create key q1 prompt "run the command?" choices [list \
+            [dict create key once label "allow once"] \
+            [dict create key session label "allow for this session"] \
+            [dict create key always label "always allow"] \
+            [dict create key deny label "deny"]] multi false] \
+        [dict create key q2 prompt "permissions to remember" multi true \
+            defaults [list terminal:recursive-delete terminal:remote-code-execution] \
+            choices [list \
+                [dict create key terminal:recursive-delete label "recursive delete"] \
+                [dict create key terminal:remote-code-execution label "remote code execution"]]]]]
+::vask::show $ap
+update idletasks
+update
+ok "all approval permission classes begin checked" \
+    {[.ask.body.c.inner.chq2_1.box cget -text] eq "☑"
+     && [.ask.body.c.inner.chq2_2.box cget -text] eq "☑"}
+event generate .ask.body.c.inner.chq2_1.l <Button-1>
+event generate .ask.body.c.inner.chq1_3.l <Button-1>
+update
+ok "the approval scope radio is selected" \
+    {[.ask.body.c.inner.chq1_3.box cget -text] eq "☑"}
+.ask.btns.ok invoke
+update
+set got [dict get [::_last_body] answers]
+ok "scope and only the checked permission are posted" \
+    {[dict get [dict get $got q1] selected] eq [list always]
+     && [dict get [dict get $got q2] selected] eq [list terminal:remote-code-execution]}
+catch { destroy .ask }
+
+# Permission defaults are not an approval scope. OK must leave the dialog
+# open until the owner explicitly chooses once/session/always/deny.
+set ::posted {}
+::vask::show $ap
+update idletasks
+update
+.ask.btns.ok invoke
+update
+ok "default permissions alone cannot commit a multi-hazard approval" \
+    {[llength $::posted] == 0 && [winfo exists .ask]
+     && [string match "*scope*" $::vstatus::last]}
+catch { destroy .ask }
+
+# Deliberately deselecting both permission classes is an explicit empty
+# answer, not a legacy omitted q2. The wire marks q2 answered.
+set ::posted {}
+::vask::show $ap
+update idletasks
+update
+event generate .ask.body.c.inner.chq2_1.l <Button-1>
+event generate .ask.body.c.inner.chq2_2.l <Button-1>
+event generate .ask.body.c.inner.chq1_3.l <Button-1>
+.ask.btns.ok invoke
+update
+set got [::_last_body]
+ok "deselecting every permission preserves an explicit empty selection" \
+    {[dict get [dict get [dict get $got answers] q2] selected] eq {}
+     && [dict get $got answered] eq [list q2]}
+catch { destroy .ask }
+
 # ONE question of three answered: still keyed by its question. The
 # parity round took the single-question shortcut whenever ONE answer
 # was present, posting a bare {"choice":"c2"} that the engine files
