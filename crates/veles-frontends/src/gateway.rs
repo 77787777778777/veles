@@ -131,7 +131,7 @@ impl veles_core::presence::PresenceSource for GatewaySessionRunner {
             .meta
             .lock_ok()
             .iter()
-            .map(|(sid, (platform, _))| veles_core::presence::OpenSession {
+            .map(|(sid, (platform, ..))| veles_core::presence::OpenSession {
                 session_id: sid.clone(),
                 surface: platform.clone(),
             })
@@ -367,6 +367,10 @@ fn tail_progress(w: &ProgressWindows, turn_key: &str) -> Option<String> {
 /// `platform:chat_id` → turn-lock key. See [`Voice`].
 pub(crate) type RoomSpeakers = std::sync::Mutex<HashMap<String, String>>;
 
+/// Where a session the gateway holds lives: (platform, chat_id, the
+/// adapter route its own person last spoke through). See `GatewayCore::meta`.
+type SessionAddress = (String, String, Option<String>);
+
 /// One turn's outbound channel into its chat. In a shared room it
 /// addresses the session's owner (`nick: …`) whenever the room's
 /// previous line spoke for a different session.
@@ -484,10 +488,23 @@ pub(crate) struct JoinBinding {
     target_principal: Option<veles_core::acl::Principal>,
     #[serde(default)]
     target_sender: Option<veles_core::acl::SenderContext>,
+    /// The adapter route the target's person speaks through (an IRC
+    /// network), so a restored join answers on the right connection.
+    #[serde(default)]
+    target_route: Option<String>,
+    /// The joiner IS the owner. False for a `session-join` grantee, whose
+    /// lines run clamped like mail. Bindings saved before grants existed
+    /// were all the owner's.
+    #[serde(default = "joined_by_owner")]
+    by_owner: bool,
     /// Desktop's opaque id. Execution and restart use this same shared
     /// gateway binding; the client keeps its own return-view mapping.
     #[serde(default)]
     desktop: Option<DesktopJoinMetadata>,
+}
+
+fn joined_by_owner() -> bool {
+    true
 }
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -514,6 +531,44 @@ impl Joinable {
             format!("[{} in {}]", self.speaker, self.chat)
         }
     }
+}
+
+enum JoinResolution {
+    Missing,
+    One(Joinable),
+    Many(Vec<Joinable>),
+}
+
+fn resolve_joinable(list: &[Joinable], rest: &str) -> JoinResolution {
+    let want = rest.to_lowercase();
+    let exact: Vec<&Joinable> = list.iter().filter(|j| j.sid == rest).collect();
+    let hits: Vec<&Joinable> = if exact.is_empty() {
+        list.iter()
+            .filter(|j| {
+                (rest.len() >= 4 && j.sid.starts_with(rest)) || j.speaker.to_lowercase() == want
+            })
+            .collect()
+    } else {
+        exact
+    };
+    match hits.as_slice() {
+        [] => JoinResolution::Missing,
+        [one] => JoinResolution::One((*one).clone()),
+        many => JoinResolution::Many(many.iter().map(|j| (*j).clone()).collect()),
+    }
+}
+
+/// Are two (platform, chat, route) addresses the same conversation? A
+/// route that is not known on one side (an older binding, a surface with
+/// one adapter) does not tell them apart; two KNOWN routes that differ
+/// do: `#flashsupport` on synirc is not `#flashsupport` on IRC4Fun.
+fn same_place(a: (&str, &str, Option<&str>), b: (&str, &str, Option<&str>)) -> bool {
+    a.0 == b.0
+        && a.1 == b.1
+        && match (a.2, b.2) {
+            (Some(x), Some(y)) => x == y,
+            _ => true,
+        }
 }
 
 /// Does `text` already open by addressing `name` (`name: …`, `name, …`)?
@@ -737,7 +792,13 @@ pub struct GatewayCore {
     /// Hydrated in `agent_for_sender` exactly as the forward map is,
     /// so the two agree by construction — no second enumeration of
     /// "which platforms exist" to drift.
-    meta: Mutex<HashMap<String, (String, String)>>,
+    ///
+    /// The third field is the adapter ROUTE the session's own person last
+    /// spoke through (an IRC network). A row re-entering without one —
+    /// session mail, a `/join` line, a wake — must answer through it:
+    /// with two IRC networks connected, `resolve_outbound` refuses to
+    /// guess, and the reply reached only the transcript (SI-3).
+    meta: Mutex<HashMap<String, SessionAddress>>,
     /// The owner, joined to someone else's session from one of their own
     /// chats (`/join`, `veles_core::join`): the owner's turn key in that
     /// chat → the session their lines go into. One session per chat.
@@ -1010,8 +1071,27 @@ impl GatewayCore {
     pub fn mark_chat_backed(&self, session_id: &str, platform: &str, chat_id: &str) {
         self.meta.lock_ok().insert(
             session_id.to_string(),
-            (platform.to_string(), chat_id.to_string()),
+            (platform.to_string(), chat_id.to_string(), None),
         );
+    }
+
+    /// The adapter route `session_id`'s person last spoke through.
+    fn session_route(&self, session_id: &str) -> Option<String> {
+        self.meta
+            .lock_ok()
+            .get(session_id)
+            .and_then(|(_, _, r)| r.clone())
+    }
+
+    /// Remember the route a line of `session_id`'s own person came in
+    /// on. A line with no route (a re-injected row) leaves it alone.
+    fn note_session_route(&self, session_id: &str, route: Option<&str>) {
+        let Some(route) = route else {
+            return;
+        };
+        if let Some(m) = self.meta.lock_ok().get_mut(session_id) {
+            m.2 = Some(route.to_string());
+        }
     }
 
     /// Does this gateway hold THIS session (created it as a chat-backed
@@ -1021,10 +1101,32 @@ impl GatewayCore {
         self.meta.lock_ok().contains_key(session_id)
     }
 
+    /// Every live chat-backed agent with the platform it serves
+    /// ("telegram", "irc", …). The grant-review panel lists and revokes
+    /// their session grants; the desktop's own agent map never holds
+    /// them (review finding approvals-3).
+    pub(crate) fn live_agents(&self) -> Vec<(String, Arc<Agent>)> {
+        let agents: Vec<Arc<Agent>> = self.sessions.lock_ok().values().cloned().collect();
+        let meta = self.meta.lock_ok();
+        agents
+            .into_iter()
+            .map(|a| {
+                let surface = meta
+                    .get(&a.session_id)
+                    .map(|(platform, _, _)| platform.clone())
+                    .unwrap_or_else(|| "gateway".to_string());
+                (surface, a)
+            })
+            .collect()
+    }
+
     /// The (platform, chat_id) a completion event's session belongs
     /// to — the wake turn's delivery address.
     fn session_chat(&self, session_id: &str) -> Option<(String, String)> {
-        self.meta.lock_ok().get(session_id).cloned()
+        self.meta
+            .lock_ok()
+            .get(session_id)
+            .map(|(p, c, _)| (p.clone(), c.clone()))
     }
 
     /// The turn-lock key of a session this gateway holds, for the paths
@@ -1104,10 +1206,10 @@ impl GatewayCore {
         self.joins.lock_ok().get(owner_key).cloned()
     }
 
-    /// The owner's chats that joined `sid` from somewhere other than its
-    /// own chat: they get a copy of what it says.
+    /// The owner's chats that joined `sid`: each gets a copy of what the
+    /// session says, including from another participant's session in the
+    /// same shared channel.
     fn tees_for(&self, sid: &str) -> Vec<Tee> {
-        let here = self.session_chat(sid);
         let joined: Vec<JoinBinding> = self
             .joins
             .lock_ok()
@@ -1115,9 +1217,34 @@ impl GatewayCore {
             .filter(|b| b.sid == sid)
             .cloned()
             .collect();
+        let target = self.meta.lock_ok().get(sid).cloned();
         joined
             .into_iter()
-            .filter(|b| here.as_ref() != Some(&(b.owner_platform.clone(), b.owner_chat.clone())))
+            // A joiner sitting in the session's own chat already reads
+            // what the session says there: a copy would post every reply
+            // into that channel twice, and echo its person's own lines
+            // back as `<a> …` (SI-4). The copy is kept only when the
+            // session's own voice cannot deliver: that is the case the
+            // removed filter was papering over, a reply dropped for want
+            // of a route (SI-3), which `session_route` now supplies.
+            .filter(|b| {
+                let Some((platform, chat, route)) = &target else {
+                    return true;
+                };
+                let shared = same_place(
+                    (platform.as_str(), chat.as_str(), route.as_deref()),
+                    (
+                        b.owner_platform.as_str(),
+                        b.owner_chat.as_str(),
+                        b.owner_route.as_deref(),
+                    ),
+                );
+                !(shared
+                    && self
+                        .bus
+                        .outbound_channel(platform, route.as_deref())
+                        .is_some())
+            })
             .filter_map(|b| {
                 let tx = self
                     .bus
@@ -1182,7 +1309,7 @@ impl GatewayCore {
                 if p.role == veles_core::acl::Role::Owner {
                     return None;
                 }
-                let (platform, chat) = meta.get(&a.session_id)?.clone();
+                let (platform, chat, _) = meta.get(&a.session_id)?.clone();
                 let ctx = veles_core::acl::session_sender(&a.session_id);
                 Some(Joinable {
                     speaker: veles_core::join::speaker_name(&a.session_id, Some(&p))
@@ -1209,6 +1336,36 @@ impl GatewayCore {
             .lock_ok()
             .iter()
             .any(|(key, b)| b.sid == sid && key != owner_key)
+    }
+
+    /// The owner outranks a `session-join` grantee: a grantee's join to
+    /// `sid` must never lock the owner out of it (the engine holds one
+    /// joiner per session). Every grantee join to `sid` other than
+    /// `keep_key`'s ends, and its joiner is told where they typed.
+    fn displace_grantees(&self, keep_key: &str, sid: &str) {
+        let displaced: Vec<(String, JoinBinding)> = self
+            .joins
+            .lock_ok()
+            .iter()
+            .filter(|(k, b)| b.sid == sid && k.as_str() != keep_key && !b.by_owner)
+            .map(|(k, b)| (k.clone(), b.clone()))
+            .collect();
+        for (key, b) in displaced {
+            self.leave_command(&key);
+            self.bus.send_outbound_to(
+                &b.owner_platform,
+                b.owner_route.as_deref(),
+                OutboundMessage::plain(
+                    &b.owner_chat,
+                    format!(
+                        "{}: the owner has joined {}, so your join ended; what you write \
+                         here is your own session's again",
+                        b.owner_name, b.label
+                    ),
+                    MessageKind::Reply,
+                ),
+            );
+        }
     }
 
     fn persist_join(&self, owner_key: &str, b: &JoinBinding) -> anyhow::Result<()> {
@@ -1270,12 +1427,16 @@ impl GatewayCore {
             target_chat: chat_id.clone(),
             target_principal: Some((*p).clone()),
             target_sender: ctx.as_deref().cloned(),
+            target_route: self.session_route(target),
+            by_owner: true,
             desktop: Some(DesktopJoinMetadata {
                 join_id: join_id.clone(),
             }),
         };
         // One owner-question route per session. A second view must not
         // leave its credential alive while asks go to a different owner.
+        // A grantee's join yields to the owner's instead.
+        self.displace_grantees(owner_key, target);
         let stale = self.another_owner_joined(owner_key, target);
         if stale {
             anyhow::bail!("session {target} is already joined from another owner view; /leave that join first")
@@ -1560,7 +1721,17 @@ impl GatewayCore {
             self.session_ids.lock_ok().insert(key, b.sid.clone());
             self.meta.lock_ok().insert(
                 b.sid.clone(),
-                (b.target_platform.clone(), b.target_chat.clone()),
+                (
+                    b.target_platform.clone(),
+                    b.target_chat.clone(),
+                    b.target_route.clone().or_else(|| {
+                        // A binding saved before the route was: an IRC
+                        // sender's network IS its adapter route.
+                        (b.target_platform == "irc")
+                            .then(|| ctx.network.clone())
+                            .flatten()
+                    }),
+                ),
             );
             veles_core::acl::set_session_sender(&b.sid, ctx.clone());
             // Startup, status and every live input must apply the SAME
@@ -1599,6 +1770,7 @@ impl GatewayCore {
                         shared_audience: b.owner_platform == "irc" && b.owner_chat.starts_with('#'),
                     })
                 },
+                owner: b.by_owner,
             },
         );
     }
@@ -1618,8 +1790,47 @@ impl GatewayCore {
         }
     }
 
-    /// `/join [name|id]` from the owner's chat whose turn key is
-    /// `owner_key`.
+    /// The sessions `principal`, typing in `msg`'s chat under turn key
+    /// `own_key`, may join. The owner: every open one. A `session-join`
+    /// grantee (SI-5): only another person's session in the very channel
+    /// they are typing in, on the same network — never a DM, never a
+    /// chat they are not in. What such a join can show them, they could
+    /// already read there; the grant adds a voice, not a window.
+    fn joinable_for(
+        &self,
+        principal: &veles_core::acl::Principal,
+        msg: &InboundMessage,
+        own_key: &str,
+    ) -> Vec<Joinable> {
+        let all = self.joinable();
+        if principal.role == veles_core::acl::Role::Owner
+            && principal.has(veles_core::acl::Cap::All)
+        {
+            return all;
+        }
+        let own = self.session_ids.lock_ok().get(own_key).cloned();
+        all.into_iter()
+            .filter(|j| {
+                !j.direct
+                    && own.as_deref() != Some(j.sid.as_str())
+                    && same_place(
+                        (
+                            j.platform.as_str(),
+                            j.chat.as_str(),
+                            self.session_route(&j.sid).as_deref(),
+                        ),
+                        (
+                            msg.platform.as_str(),
+                            msg.chat_id.as_str(),
+                            msg.route.as_deref(),
+                        ),
+                    )
+            })
+            .collect()
+    }
+
+    /// `/join [name|id]` from the chat whose turn key is `owner_key`:
+    /// the owner's, or a `session-join` grantee's.
     fn join_command(
         &self,
         msg: &InboundMessage,
@@ -1628,14 +1839,20 @@ impl GatewayCore {
         rest: &str,
     ) -> String {
         let rest = rest.trim();
-        let list = self.joinable();
+        let by_owner = principal.role == veles_core::acl::Role::Owner
+            && principal.has(veles_core::acl::Cap::All);
+        let list = self.joinable_for(principal, msg, owner_key);
         if rest.is_empty() {
             let mut out = match self.join_of(owner_key) {
                 Some(b) => format!("joined: {} ({}); /leave to stop\n", b.label, b.sid),
                 None => String::new(),
             };
             if list.is_empty() {
-                out.push_str("nobody else's session is open on this node right now");
+                out.push_str(if by_owner {
+                    "nobody else's session is open on this node right now"
+                } else {
+                    "nobody else's session in this channel can be joined right now"
+                });
                 return out;
             }
             out.push_str("sessions you can join (/join <name or id>):");
@@ -1644,25 +1861,14 @@ impl GatewayCore {
             }
             return out;
         }
-        let want = rest.to_lowercase();
-        let exact: Vec<&Joinable> = list.iter().filter(|j| j.sid == rest).collect();
-        let hits: Vec<&Joinable> = if exact.is_empty() {
-            list.iter()
-                .filter(|j| {
-                    (rest.len() >= 4 && j.sid.starts_with(rest)) || j.speaker.to_lowercase() == want
-                })
-                .collect()
-        } else {
-            exact
-        };
-        let j = match hits.as_slice() {
-            [] => {
+        let j = match resolve_joinable(&list, rest) {
+            JoinResolution::Missing => {
                 return format!(
                     "no session of \"{rest}\" is open here; /join lists the ones you can join"
                 )
             }
-            [one] => (*one).clone(),
-            many => {
+            JoinResolution::One(j) => j,
+            JoinResolution::Many(many) => {
                 let mut out = format!("\"{rest}\" names {} sessions; /join <id>:", many.len());
                 for j in many {
                     out.push_str(&format!("\n  {}  {}", j.sid, j.label()));
@@ -1697,6 +1903,8 @@ impl GatewayCore {
                 .and_then(|a| a.standing_principal())
                 .map(|p| (*p).clone()),
             target_sender: veles_core::acl::session_sender(&j.sid).as_deref().cloned(),
+            target_route: self.session_route(&j.sid),
+            by_owner,
             desktop: None,
         };
         if let Err(e) = self.live_join_target(&b) {
@@ -1704,7 +1912,15 @@ impl GatewayCore {
         }
         // The engine has one owner-question route per session. Preserve
         // that invariant across both entry points, not just the Desktop.
+        // The owner's join displaces a grantee's; a grantee's never
+        // displaces anyone.
+        if by_owner {
+            self.displace_grantees(owner_key, &b.sid);
+        }
         if self.another_owner_joined(owner_key, &b.sid) {
+            if !by_owner {
+                return format!("{} is already joined by someone else", b.label);
+            }
             return format!(
                 "{} is already joined from another owner view; /leave that join first",
                 b.label
@@ -1737,6 +1953,17 @@ impl GatewayCore {
             b.sid,
             owner_key
         );
+        if !by_owner {
+            return format!(
+                "joined {label} ({sid}). What you write here now goes into {who}'s session \
+                 instead of yours, and runs with no more than your own rights (the lower of \
+                 yours and {who}'s). Questions from your lines are asked of you only. Commands \
+                 stay your own. /leave to stop.",
+                label = b.label,
+                sid = b.sid,
+                who = j.speaker,
+            );
+        }
         format!(
             "joined {label} ({sid}). What you write here goes into {who}'s session and runs with \
              your rights; it shows in their chat as \"{owner_name} (owner): …\". What happens \
@@ -1821,13 +2048,25 @@ impl GatewayCore {
         }
         // Their chat sees the owner's words, unless the owner wrote them
         // there.
-        if (platform.as_str(), chat.as_str()) != (msg.platform.as_str(), msg.chat_id.as_str()) {
+        let route = self.session_route(&b.sid);
+        if !same_place(
+            (platform.as_str(), chat.as_str(), route.as_deref()),
+            (
+                msg.platform.as_str(),
+                msg.chat_id.as_str(),
+                msg.route.as_deref(),
+            ),
+        ) {
             self.bus.send_outbound_to(
                 &platform,
-                None,
+                route.as_deref(),
                 OutboundMessage::plain(
                     &chat,
-                    format!("{} (owner): {text}", b.owner_name),
+                    if b.by_owner {
+                        format!("{} (owner): {text}", b.owner_name)
+                    } else {
+                        format!("{}: {text}", b.owner_name)
+                    },
                     MessageKind::Reply,
                 ),
             );
@@ -2183,9 +2422,10 @@ impl GatewayCore {
             // the SESSION, and the waker needs the chat it belongs to.
             // Written with the forward entry, so the two can never
             // disagree about who owns which.
-            self.meta
-                .lock_ok()
-                .insert(sid.clone(), (platform.to_string(), chat_id.to_string()));
+            self.meta.lock_ok().insert(
+                sid.clone(),
+                (platform.to_string(), chat_id.to_string(), None),
+            );
             let display_key = if key.contains(':') && key.matches(':').count() >= 2 {
                 // platform:chat:sender — show sender so the desktop
                 // sidebar distinguishes guest sessions from the owner's.
@@ -2483,8 +2723,9 @@ impl GatewayCore {
         // A wake turn speaks for its session like any other, so a room
         // that last heard from someone else hears who this one is for.
         let sender = veles_core::acl::session_sender(&event.session_id);
+        let route = self.session_route(&event.session_id);
         let out_tx = self.with_tees(
-            bus.outbound_channel(&platform, None).map(|tx| {
+            bus.outbound_channel(&platform, route.as_deref()).map(|tx| {
                 self.voice_on(
                     tx,
                     &platform,
@@ -2614,8 +2855,13 @@ impl GatewayCore {
             platform,
             // The adapter instance the question came in on: two IRC
             // networks are two audiences, and the answer must leave the
-            // way the question arrived.
-            route: item.route.clone(),
+            // way the question arrived. A mail or `/join` row records no
+            // route of its own: it answers where the session's person
+            // last spoke (SI-3), or a two-network gateway drops it.
+            route: item
+                .route
+                .clone()
+                .or_else(|| self.session_route(session_id)),
             chat_id,
             msg_id: item.reply_to.clone(),
             dedup_id: Some(format!(
@@ -3213,18 +3459,20 @@ impl GatewayCore {
                 let head = words.next().unwrap_or("");
                 match head {
                     "join" | "leave" => {
-                        // The owner's alone: a joined chat's lines run in
-                        // someone else's session with the owner's rights.
-                        if principal.role != veles_core::acl::Role::Owner
-                            || !principal.has(veles_core::acl::Cap::All)
-                        {
+                        // `session-join` (`builtin_cap`), which the owner
+                        // holds through `all` and anyone else only by a
+                        // grant. A grantee's lines run clamped to the
+                        // lower of their rights and the session's, and
+                        // `joinable_for` keeps them to their own channel.
+                        if !principal.has(veles_core::acl::Cap::SessionJoin) {
                             self.bus.send_outbound_to(
                                 &msg.platform,
                                 msg.route.as_deref(),
                                 reply_plain(
                                     &msg,
                                     format!(
-                                        "[acl] `{head}` is the owner's — denied for {}.",
+                                        "[acl] `{head}` requires the {} capability — denied for {}.",
+                                        veles_core::acl::Cap::SessionJoin.as_str(),
                                         principal.label()
                                     ),
                                     MessageKind::Reply,
@@ -3383,15 +3631,18 @@ the next turn on this session"
         // ── the owner's line in a chat joined to someone's session ──
         // Before this chat's own lock: the line is not a turn of the
         // owner's session, it is the next turn of the joined one.
-        if !msg.text.trim_start().starts_with('/')
-            && principal.role == veles_core::acl::Role::Owner
-            && principal.has(veles_core::acl::Cap::All)
-        {
+        if !msg.text.trim_start().starts_with('/') {
             if let Some(b) = self.join_of(&turn_key) {
-                if let Err(e) = self.join_line(&msg, &principal, &turn_key, &b) {
-                    tracing::warn!("join input failed: {e:#}");
+                if principal.has(veles_core::acl::Cap::SessionJoin) {
+                    if let Err(e) = self.join_line(&msg, &principal, &turn_key, &b) {
+                        tracing::warn!("join input failed: {e:#}");
+                    }
+                    return;
                 }
-                return;
+                // The grant was revoked while joined: the join ends, and
+                // this line is the caller's own again.
+                let left = self.leave_command(&turn_key);
+                tracing::info!("join: {turn_key} lost session-join; {left}");
             }
         }
 
@@ -3491,6 +3742,7 @@ the next turn on this session"
                             return;
                         }
                     };
+                    self.note_session_route(&agent.session_id, msg.route.as_deref());
                     // Record WHERE this row's answer belongs. The drain
                     // runs it at a turn boundary, where the `msg` in
                     // scope is the turn-STARTING message: answering with
@@ -3683,6 +3935,9 @@ the next turn on this session"
                 return;
             }
         };
+        // Where this person speaks from, for the rows that re-enter
+        // without a route of their own (mail, `/join`, a wake).
+        self.note_session_route(&agent.session_id, msg.route.as_deref());
 
         // C3: this chat's session may have left the node since it was
         // bound here — migrated, or taken over by a survivor while this
@@ -4009,6 +4264,26 @@ the next turn on this session"
                     },
                 )
                 .await;
+                self.bus.send_outbound_to(
+                    &msg.platform,
+                    msg.route.as_deref(),
+                    reply_plain(&msg, reply, MessageKind::Reply),
+                );
+                return;
+            }
+            if head == "/translate" || head == "/fleet" {
+                let ctx = super::commands::CommandCtx {
+                    agent: &agent,
+                    surface: super::commands::Surface::Gateway,
+                    history: None,
+                    turn_live: false,
+                    principal: Some(&principal),
+                };
+                let reply = if head == "/translate" {
+                    super::commands::translate_command(&ctx, rest).await
+                } else {
+                    super::commands::fleet_command(&ctx, rest).await
+                };
                 self.bus.send_outbound_to(
                     &msg.platform,
                     msg.route.as_deref(),
@@ -5025,6 +5300,17 @@ impl Gateway {
         // and probed nvidia-smi (no deadline) while holding the store
         // mutex, so a wedged driver stalled the boot and every store user
         // behind it. Nothing below needs the node id.
+        //
+        // The fleet watcher (fleet_watch.rs) rides the same cadence: it
+        // turns each registry node's health into once-per-change alerts
+        // (listed in /api/fleet; sent only with `[notify] fleet_alerts`,
+        // and only from the node that runs the home chat's adapter).
+        crate::fleet_obs::mark_started();
+        veles_core::rt::spawn(crate::fleet_watch::run(
+            core.store.clone(),
+            core.bus.clone(),
+            core.cfg.cluster.gossip_interval_secs.max(5),
+        ));
         {
             let store = core.store.clone();
             let cfg = core.cfg.clone();
@@ -5061,6 +5347,30 @@ impl Gateway {
                     Ok(Err(e)) => tracing::warn!("cluster: node registration failed: {e:#}"),
                     Err(e) => tracing::warn!("cluster: node registration task failed: {e:#}"),
                 }
+                // 306787.b: reconcile the placement work table with what
+                // is actually running. A child that outlived the last
+                // gateway (its process is still there) keeps counting;
+                // a claim whose placer died, or a child that exited,
+                // goes.
+                {
+                    let s = store.clone();
+                    let pruned = veles_core::rt::spawn_blocking(move || {
+                        let s = s.lock().unwrap_or_else(|p| p.into_inner());
+                        veles_core::placement::prune(s.conn(), &veles_core::placement::pid_lives)
+                    })
+                    .await;
+                    match pruned {
+                        Ok(Ok(p)) if p.kept + p.dropped > 0 => tracing::info!(
+                            "cluster: placement work from before this start: {} still \
+                             running or held, {} gone",
+                            p.kept,
+                            p.dropped
+                        ),
+                        Ok(Ok(_)) => {}
+                        Ok(Err(e)) => tracing::warn!("cluster: placement reconcile failed: {e:#}"),
+                        Err(e) => tracing::warn!("cluster: placement reconcile task failed: {e:#}"),
+                    }
+                }
                 // B5: the store log + its triggers, only while
                 // `[cluster] storesync_peers` names someone — and removed
                 // when it names nobody (the log copies every message it
@@ -5091,15 +5401,35 @@ impl Gateway {
                     // same tick, same row, one lock. Read on THIS side
                     // of the spawn_blocking boundary (off the async
                     // runtime's threads, though /proc is cheap).
-                    let load = veles_core::rt::spawn_blocking(veles_core::node::probe_load_one)
-                        .await
-                        .ok()
-                        .flatten()
-                        .map(|l| l.value);
+                    // 306787.b: with it the core count and disk IO
+                    // pressure, and this node's own delegate work (dead
+                    // rows pruned first), which every peer's ranking
+                    // reads off this row once gossip carries it.
+                    let (load, cores, io) = veles_core::rt::spawn_blocking(|| {
+                        (
+                            veles_core::node::probe_load_one().map(|l| l.value),
+                            veles_core::node::probe_cores(),
+                            veles_core::node::probe_io_pressure(),
+                        )
+                    })
+                    .await
+                    .unwrap_or((None, None, None));
                     let r = veles_core::rt::spawn_blocking(move || {
-                        s.lock()
-                            .unwrap_or_else(|p| p.into_inner())
-                            .node_heartbeat(&id, load)
+                        let s = s.lock().unwrap_or_else(|p| p.into_inner());
+                        let _ = veles_core::placement::prune(
+                            s.conn(),
+                            &veles_core::placement::pid_lives,
+                        );
+                        let work = veles_core::placement::own_report(s.conn(), &id).ok();
+                        s.node_heartbeat_sample(
+                            &id,
+                            &veles_core::store::HeartbeatSample {
+                                load1: load,
+                                cores,
+                                io,
+                                work,
+                            },
+                        )
                     })
                     .await;
                     match r {
@@ -5144,6 +5474,16 @@ impl Gateway {
                             bearer.as_deref(),
                         )
                         .await;
+                        // The Instances tab's "last gossip" per peer, the
+                        // same record an explicit Gossip now writes.
+                        match &r {
+                            Ok(line) => crate::fleet_ops::record("gossip", &peer_name, Ok(line)),
+                            Err(e) => crate::fleet_ops::record(
+                                "gossip",
+                                &peer_name,
+                                Err(&format!("{e:#}")),
+                            ),
+                        }
                         match r {
                             Ok(line) => {
                                 tracing::debug!("cluster: gossip {line}");
@@ -5721,11 +6061,7 @@ fn install_owner_ask_relay(
 fn peer_target(name: &str) -> Option<(String, Option<String>)> {
     let cfg = veles_core::config::load().ok()?;
     let peer = cfg.a2a_agents.get(name)?;
-    let bearer = {
-        let t = peer.auth.token.trim();
-        (!t.is_empty()).then(|| t.to_string())
-    };
-    Some((peer.url.clone(), bearer))
+    Some((peer.url.clone(), peer.bearer()))
 }
 
 /// B5 tail — AUTO store sync: push this node's log to every storesync
@@ -5807,7 +6143,7 @@ async fn storesync_push_loop(
             // until the peer has caught up, and the phone 5,000 rows
             // behind over LTE held the loop for minutes (2026-10-04) —
             // and with it config, vault and memory sync to every peer.
-            let Some(flight) = PushInFlight::claim(peer_name) else {
+            let Some(flight) = veles_core::storesync::PushInFlight::claim(peer_name) else {
                 continue;
             };
             let (store, me, peer_name) = (store.clone(), me.clone(), peer_name.clone());
@@ -5827,12 +6163,14 @@ async fn storesync_push_loop(
                 match r {
                     Ok(line) => {
                         backoff.succeeded(&key);
+                        crate::fleet_ops::record("store", &peer_name, Ok(&line));
                         if line != "nothing to push" {
                             tracing::info!("storesync: {peer_name}: {line}")
                         }
                     }
                     Err(e) => {
                         let wait = backoff.failed(&key, base, std::time::Instant::now());
+                        crate::fleet_ops::record("store", &peer_name, Err(&format!("{e:#}")));
                         tracing::warn!(
                             "storesync: auto-push to {peer_name} failed (next try in {}s): {e:#}",
                             wait.as_secs()
@@ -5910,29 +6248,6 @@ async fn storesync_push_loop(
                 r.msg
             );
         }
-    }
-}
-
-/// A store push pass under way to one peer; the next tick skips that
-/// peer until it ends (dropped, also on a panic or a cancelled task).
-struct PushInFlight(String);
-
-static PUSHES_IN_FLIGHT: std::sync::Mutex<std::collections::BTreeSet<String>> =
-    std::sync::Mutex::new(std::collections::BTreeSet::new());
-
-impl PushInFlight {
-    fn claim(peer: &str) -> Option<Self> {
-        let mut set = PUSHES_IN_FLIGHT.lock().unwrap_or_else(|p| p.into_inner());
-        set.insert(peer.to_string()).then(|| Self(peer.to_string()))
-    }
-}
-
-impl Drop for PushInFlight {
-    fn drop(&mut self) {
-        PUSHES_IN_FLIGHT
-            .lock()
-            .unwrap_or_else(|p| p.into_inner())
-            .remove(&self.0);
     }
 }
 
@@ -6074,6 +6389,7 @@ async fn configsync_push(
                     tracing::warn!("configsync: saving {peer}'s cursor failed: {e:#}");
                 }
                 let said = reply.split("\n\n").nth(1).unwrap_or(&reply);
+                crate::fleet_ops::record("config", peer, Ok(said.trim()));
                 tracing::info!(
                     "configsync: pushed {} row(s) to {peer}: {}",
                     offer.rows.len(),
@@ -6082,6 +6398,7 @@ async fn configsync_push(
             }
             Err(e) => {
                 let wait = backoff.failed(&bkey, base, std::time::Instant::now());
+                crate::fleet_ops::record("config", peer, Err(&format!("{e:#}")));
                 tracing::warn!(
                     "configsync: auto-push to {peer} failed (next try in {}s): {e:#}",
                     wait.as_secs()
@@ -6205,10 +6522,12 @@ async fn vaultsync_push(
                 // The peer's own line ("stored a vault offer — merged …"),
                 // not the summary's `state:` header.
                 let said = reply.split("\n\n").nth(1).unwrap_or(&reply);
+                crate::fleet_ops::record("vault", peer, Ok(said.trim()));
                 tracing::info!("vault: pushed to {peer}: {}", said.trim());
             }
             Err(e) => {
                 let wait = backoff.failed(&bkey, base, std::time::Instant::now());
+                crate::fleet_ops::record("vault", peer, Err(&format!("{e:#}")));
                 tracing::warn!(
                     "vault: auto-push to {peer} failed (next try in {}s): {e:#}",
                     wait.as_secs()
@@ -6281,6 +6600,11 @@ async fn memsync_push(
                 {
                     tracing::warn!("memsync: saving {peer}'s cursor failed: {e:#}");
                 }
+                crate::fleet_ops::record(
+                    "memory",
+                    peer,
+                    Ok(line.lines().next().unwrap_or_default()),
+                );
                 tracing::info!(
                     "memsync: pushed revisions {cursor}..{high} to {peer}: {}",
                     line.lines().next().unwrap_or_default()
@@ -6288,6 +6612,7 @@ async fn memsync_push(
             }
             Err(e) => {
                 let wait = backoff.failed(&bkey, base, std::time::Instant::now());
+                crate::fleet_ops::record("memory", peer, Err(&format!("{e:#}")));
                 tracing::warn!(
                     "memsync: auto-push to {peer} failed (next try in {}s): {e:#}",
                     wait.as_secs()
@@ -6344,22 +6669,152 @@ async fn run_tokenplan_poller(cfg: std::sync::Arc<veles_core::config::VelesConfi
 mod tests {
     use super::*;
 
+    #[test]
+    fn join_a_resolves_the_persons_live_session_without_an_id() {
+        let list = vec![
+            Joinable {
+                sid: "20261106_a".into(),
+                platform: "irc".into(),
+                chat: "#one".into(),
+                speaker: "alice".into(),
+                direct: false,
+            },
+            Joinable {
+                sid: "20261106_b".into(),
+                platform: "irc".into(),
+                chat: "#two".into(),
+                speaker: "bob".into(),
+                direct: false,
+            },
+        ];
+        match resolve_joinable(&list, "alice") {
+            JoinResolution::One(j) => assert_eq!(j.sid, "20261106_a"),
+            _ => panic!("a name must resolve to its conversation"),
+        }
+        match resolve_joinable(&list, "20261106") {
+            JoinResolution::Many(rows) => assert_eq!(rows.len(), 2),
+            _ => panic!("an ambiguous prefix must not choose a session"),
+        }
+        assert!(matches!(
+            resolve_joinable(&list, "nobody"),
+            JoinResolution::Missing
+        ));
+    }
+
     /// One store push per peer at a time, and the claim goes with the
     /// pass however it ends.
     #[test]
     fn a_push_in_flight_blocks_a_second_for_that_peer_only() {
-        let a = PushInFlight::claim("test-peer-a").expect("free");
+        let a = veles_core::storesync::PushInFlight::claim("test-peer-a").expect("free");
         assert!(
-            PushInFlight::claim("test-peer-a").is_none(),
+            veles_core::storesync::PushInFlight::claim("test-peer-a").is_none(),
             "one at a time"
         );
-        let b = PushInFlight::claim("test-peer-b").expect("another peer is free");
+        let b = veles_core::storesync::PushInFlight::claim("test-peer-b")
+            .expect("another peer is free");
         drop(a);
         assert!(
-            PushInFlight::claim("test-peer-a").is_some(),
+            veles_core::storesync::PushInFlight::claim("test-peer-a").is_some(),
             "released on drop"
         );
         drop(b);
+    }
+
+    /// SI-4: a joiner sitting in the session's own channel reads its
+    /// replies there already. Every reply reaches that channel exactly
+    /// once, and the participant's own line is not echoed back as
+    /// `<a> …`. The same channel NAME on another network is another
+    /// audience, and keeps its copy.
+    #[tokio::test]
+    async fn a_same_channel_join_posts_each_reply_once_and_echoes_nothing() {
+        let dir = tempfile::tempdir().unwrap();
+        let store = Arc::new(Mutex::new(
+            Store::open(&dir.path().join("state.db")).unwrap(),
+        ));
+        let core = GatewayCore::new_join_test(store);
+        let participant = core
+            .test_sender(
+                "irc",
+                "#flashsupport",
+                "irc:a",
+                veles_core::acl::SenderContext {
+                    mask: Some("a!~a@example.invalid".into()),
+                    channel: Some("#flashsupport".into()),
+                    ..Default::default()
+                },
+            )
+            .unwrap();
+        core.note_session_route(&participant, Some("synirc"));
+        let binding = |owner_route: &str| JoinBinding {
+            sid: participant.clone(),
+            owner_name: "owner".into(),
+            owner_subject: "irc:owner".into(),
+            owner_platform: "irc".into(),
+            owner_route: Some(owner_route.into()),
+            owner_chat: "#flashsupport".into(),
+            label: "[a in #flashsupport]".into(),
+            target_key: "irc:#flashsupport:irc:a".into(),
+            target_platform: "irc".into(),
+            target_chat: "#flashsupport".into(),
+            target_principal: None,
+            target_sender: None,
+            target_route: Some("synirc".into()),
+            by_owner: true,
+            desktop: None,
+        };
+        core.joins
+            .lock_ok()
+            .insert("irc:#flashsupport".into(), binding("synirc"));
+        let (syn_tx, mut syn) = tokio::sync::mpsc::unbounded_channel();
+        let (i4f_tx, mut i4f) = tokio::sync::mpsc::unbounded_channel();
+        core.bus
+            .register_outbound_route("irc", "synirc", syn_tx.clone());
+        core.bus.register_outbound_route("irc", "irc4fun", i4f_tx);
+        let voice = Voice {
+            tx: syn_tx,
+            room: None,
+            tees: core.tees_for(&participant),
+        };
+        assert!(voice.send(OutboundMessage::plain(
+            "#flashsupport",
+            "the answer",
+            MessageKind::Reply
+        )));
+        let agent = core
+            .sessions
+            .lock_ok()
+            .values()
+            .find(|a| a.session_id == participant)
+            .cloned()
+            .unwrap();
+        core.mirror_turn_text(&agent, "my own line");
+        // A routed registration relays through a scrubbing task, so a
+        // copy arrives asynchronously: wait for it rather than poll.
+        let mut lines = Vec::new();
+        while let Ok(Some(out)) =
+            tokio::time::timeout(std::time::Duration::from_millis(200), syn.recv()).await
+        {
+            lines.push(out.text);
+        }
+        assert_eq!(
+            lines,
+            vec!["the answer".to_string()],
+            "one copy of the reply in the shared channel, and no echo"
+        );
+
+        // The owner in #flashsupport on IRC4Fun is not in a's channel.
+        core.joins
+            .lock_ok()
+            .insert("irc:#flashsupport".into(), binding("irc4fun"));
+        let tees = core.tees_for(&participant);
+        assert_eq!(tees.len(), 1, "another network is another audience");
+        tees[0].send(MessageKind::Reply, "the answer");
+        let copy = tokio::time::timeout(std::time::Duration::from_millis(500), i4f.recv())
+            .await
+            .ok()
+            .flatten()
+            .map(|o| o.text);
+        assert_eq!(copy.as_deref(), Some("[a in #flashsupport] the answer"));
     }
 
     /// A blocking task the runtime cancelled is the gateway stopping,
@@ -8601,11 +9056,30 @@ mod tests {
         tempfile::TempDir,
         veles_core::testenv::EnvGuard,
     ) {
+        join_core_acl(
+            base_url,
+            "owner: [\"telegram:1\"]\nroles: {\"irc:alice\": user}\n",
+        )
+    }
+
+    /// [`join_core`] with its ACL supplied.
+    #[allow(clippy::type_complexity)]
+    fn join_core_acl(
+        base_url: &str,
+        acl_yaml: &str,
+    ) -> (
+        Arc<GatewayCore>,
+        tokio::sync::mpsc::UnboundedReceiver<OutboundMessage>,
+        tokio::sync::mpsc::UnboundedReceiver<OutboundMessage>,
+        tokio::sync::mpsc::UnboundedReceiver<InboundMessage>,
+        tempfile::TempDir,
+        veles_core::testenv::EnvGuard,
+    ) {
         let (tmp, guard) = veles_core::testenv::scratch_home();
         let (core, irc_rx) = budget_core_with_at(
             tmp.path(),
             base_url,
-            "owner: [\"telegram:1\"]\nroles: {\"irc:alice\": user}\n",
+            acl_yaml,
             veles_core::config::InjectionsSection::default(),
         );
         let (tg_tx, tg_rx) = tokio::sync::mpsc::unbounded_channel();
@@ -8795,6 +9269,78 @@ mod tests {
         );
     }
 
+    /// SI-3: with TWO IRC networks connected, a row that re-enters with
+    /// no route of its own (the owner's `/join` line, session mail) must
+    /// answer on the network the session's person speaks on. Before,
+    /// `resolve_outbound` got `None`, refused to guess between synirc and
+    /// IRC4Fun, and the answer reached only the transcript.
+    #[tokio::test]
+    async fn joined_and_mailed_rows_answer_on_the_sessions_own_network() {
+        let (url, seen) = capturing_llm().await;
+        let (core, _default_irc, mut tg, mut inbound, _home, _guard) = join_core(&url);
+        let (syn_tx, mut syn) = tokio::sync::mpsc::unbounded_channel();
+        let (i4f_tx, mut i4f) = tokio::sync::mpsc::unbounded_channel();
+        core.bus.outbound.lock().unwrap().insert(
+            "irc".into(),
+            HashMap::from([
+                ("synirc".to_string(), syn_tx),
+                ("irc4fun".to_string(), i4f_tx),
+            ]),
+        );
+        let on_synirc = |text: &str| {
+            let mut m = alice(text);
+            m.route = Some("synirc".into());
+            m
+        };
+        core.handle(on_synirc("hi")).await;
+        assert_eq!(drain_texts(&mut syn), vec!["pong".to_string()]);
+        let key = core.session_key_for("irc", "#chan", Some("irc:alice"), &alice("x").sender_ctx);
+        let sid = core.session_ids.lock_ok().get(&key).cloned().unwrap();
+
+        core.handle(owner_tg("/join alice")).await;
+        assert!(drain_texts(&mut tg).join("\n").starts_with("joined"));
+        core.handle(owner_tg("alice, try -v")).await;
+        assert_eq!(
+            drain_texts(&mut syn),
+            vec!["wrath (owner): alice, try -v".to_string()],
+            "the owner's words reach alice's network"
+        );
+        core.kick_parked_queue(&sid);
+        let m = inbound.try_recv().expect("the joined line re-enters");
+        assert_eq!(m.route.as_deref(), Some("synirc"));
+        core.handle(m).await;
+        assert_eq!(
+            drain_texts(&mut syn),
+            vec!["pong".to_string()],
+            "alice reads the answer to the owner's line"
+        );
+        assert_eq!(
+            drain_texts(&mut tg),
+            vec!["[alice in #chan] pong".to_string()]
+        );
+        core.handle(owner_tg("/leave")).await;
+        drain_texts(&mut tg);
+
+        // Mail from the command line: also routeless, also alice's.
+        let before = seen.lock().unwrap().len();
+        veles_core::mail::send(
+            &core.store,
+            &veles_core::mail::Sender::default(),
+            &sid,
+            "status?",
+        )
+        .unwrap();
+        core.kick_parked_queue(&sid);
+        let m = inbound.try_recv().expect("the mail re-enters");
+        core.handle(m).await;
+        assert_eq!(seen.lock().unwrap().len(), before + 1, "the mail ran");
+        assert_eq!(drain_texts(&mut syn), vec!["pong".to_string()]);
+        assert!(
+            drain_texts(&mut i4f).is_empty(),
+            "nothing on the other network"
+        );
+    }
+
     /// A live ACL change also closes an ordinary IRC/Telegram join, not
     /// only the Desktop endpoint. No participant message is needed to
     /// refresh the cached role before the owner's next joined line.
@@ -8832,23 +9378,167 @@ mod tests {
         assert!(veles_core::join::active(&sid).is_none());
     }
 
-    /// Joining is the owner's alone: anyone else is refused by name, and
-    /// is not shown the command in their help.
+    /// Without a `session-join` grant joining is the owner's alone:
+    /// anyone else is refused by name, and is not shown the command in
+    /// their help.
     #[tokio::test]
-    async fn join_is_the_owners_alone() {
+    async fn join_without_the_grant_is_the_owners_alone() {
         let (url, seen) = capturing_llm().await;
         let (core, mut irc, _tg, _in, _home, _guard) = join_core(&url);
         core.handle(alice("/join wrath")).await;
         let out = drain_texts(&mut irc).join("\n");
-        assert!(out.contains("[acl] `join` is the owner's"), "{out}");
+        assert!(
+            out.contains("[acl] `join` requires the session-join capability"),
+            "{out}"
+        );
         core.handle(alice("/leave")).await;
         assert!(drain_texts(&mut irc)
             .join("\n")
-            .contains("[acl] `leave` is the owner's"));
+            .contains("[acl] `leave` requires the session-join capability"));
         assert!(seen.lock().unwrap().is_empty(), "no turn");
         core.handle(alice("/help")).await;
         let help = drain_texts(&mut irc).join("\n");
         assert!(!help.contains("/join"), "{help}");
+    }
+
+    /// SI-5, the grant made real: bob holds `session-join` and joins
+    /// alice's session in the channel they share. Only sessions in that
+    /// channel are offered to him (not a DM, not his own), his line runs
+    /// in alice's session as HIS — never as the owner's, never raised —
+    /// and its answer reaches the channel once. carol, ungranted, is
+    /// refused. The owner still sees everything.
+    #[tokio::test]
+    async fn a_granted_participant_joins_a_session_in_their_channel() {
+        let (url, seen) = capturing_llm().await;
+        let (core, mut irc, mut tg, mut inbound, _home, _guard) = join_core_acl(
+            &url,
+            "owner: [\"telegram:1\"]\n\
+             roles: {\"irc:alice\": user, \"irc:bob\": user, \"irc:carol\": user, \
+             \"irc:dave\": user}\n\
+             extra_caps: {\"irc:bob\": [\"session-join\"]}\n",
+        );
+        let person = |who: &str, text: &str| {
+            let mut m = acl_msg(Some(&format!("irc:{who}")), text);
+            m.sender = who.into();
+            m.sender_ctx.mask = Some(format!("{who}!~{who}@host"));
+            m.sender_ctx.channel = Some("#chan".into());
+            m
+        };
+        core.handle(alice("hi")).await;
+        core.handle(person("bob", "hello")).await;
+        // dave, in a DM with the bot: never offered to a grantee.
+        let mut dm = person("dave", "psst");
+        dm.chat_id = "dave".into();
+        dm.sender_ctx.channel = None;
+        dm.sender_ctx.direct = true;
+        let dave_key = core.session_key_for("irc", "dave", dm.sender_id.as_deref(), &dm.sender_ctx);
+        core.handle(dm).await;
+        drain_texts(&mut irc);
+        let sid_of = |key: &str| {
+            core.session_ids
+                .lock_ok()
+                .get(key)
+                .cloned()
+                .unwrap_or_else(|| panic!("no session at {key}"))
+        };
+        let key_of = |m: InboundMessage| {
+            core.session_key_for("irc", "#chan", m.sender_id.as_deref(), &m.sender_ctx)
+        };
+        let alice_sid = sid_of(&key_of(alice("x")));
+        let bob_sid = sid_of(&key_of(person("bob", "x")));
+        let dave_sid = sid_of(&dave_key);
+
+        core.handle(person("carol", "/join alice")).await;
+        assert!(drain_texts(&mut irc)
+            .join("\n")
+            .contains("[acl] `join` requires the session-join capability"));
+
+        core.handle(person("bob", "/join")).await;
+        let list = drain_texts(&mut irc).join("\n");
+        assert!(list.contains(&alice_sid), "{list}");
+        assert!(!list.contains(&bob_sid), "not his own: {list}");
+        assert!(!list.contains(&dave_sid), "never a DM: {list}");
+        core.handle(owner_tg("/join")).await;
+        assert!(
+            drain_texts(&mut tg).join("\n").contains(&dave_sid),
+            "the owner's list is not narrowed"
+        );
+        core.handle(person("bob", "/join dave")).await;
+        assert!(drain_texts(&mut irc)
+            .join("\n")
+            .starts_with("no session of \"dave\""));
+
+        core.handle(person("bob", "/join alice")).await;
+        let joined = drain_texts(&mut irc).join("\n");
+        assert!(joined.starts_with("joined [alice in #chan]"), "{joined}");
+        assert!(joined.contains("no more than your own rights"), "{joined}");
+        let j = veles_core::join::active(&alice_sid).expect("published");
+        assert!(!j.owner, "the engine is told bob is not the owner");
+
+        let before = seen.lock().unwrap().len();
+        core.handle(person("bob", "alice, try -v")).await;
+        assert_eq!(seen.lock().unwrap().len(), before, "no turn of bob's own");
+        assert!(
+            drain_texts(&mut irc).is_empty(),
+            "no echo of bob's words into the channel he wrote them in"
+        );
+        core.kick_parked_queue(&alice_sid);
+        let m = inbound
+            .try_recv()
+            .expect("bob's line re-enters alice's session");
+        core.handle(m).await;
+        let req = seen.lock().unwrap().last().cloned().unwrap();
+        assert!(req.contains("bob has joined this conversation"), "{req}");
+        assert!(req.contains("bob is not the owner of this agent"), "{req}");
+        assert!(
+            !req.contains("the owner of this agent, has joined"),
+            "{req}"
+        );
+        assert!(req.contains("alice, try -v"), "{req}");
+        // Once, and as alice's session speaking: the room last heard
+        // bob, so the voice addresses the session's own person.
+        assert_eq!(
+            drain_texts(&mut irc),
+            vec!["alice: pong".to_string()],
+            "the answer reaches the shared channel once"
+        );
+        // alice's own next line names bob as a participant, not the owner.
+        core.handle(alice("ok")).await;
+        let req = seen.lock().unwrap().last().cloned().unwrap();
+        assert!(
+            req.contains("bob (not the owner of this agent) has joined"),
+            "{req}"
+        );
+        drain_texts(&mut irc);
+
+        core.handle(person("bob", "/leave")).await;
+        assert!(drain_texts(&mut irc)[0].starts_with("left [alice in #chan]"));
+        assert!(veles_core::join::active(&alice_sid).is_none());
+
+        // A grantee's join never locks the owner out: the owner's /join
+        // ends bob's, bob is told, and bob's next line is his own again.
+        core.handle(person("bob", "/join alice")).await;
+        drain_texts(&mut irc);
+        core.handle(owner_tg("/join alice")).await;
+        assert!(
+            drain_texts(&mut tg).join("\n").starts_with("joined"),
+            "the owner joins a session a grantee holds"
+        );
+        assert!(
+            drain_texts(&mut irc)
+                .join("\n")
+                .contains("the owner has joined [alice in #chan], so your join ended"),
+            "bob is told his join ended"
+        );
+        assert!(veles_core::join::active(&alice_sid).is_some_and(|j| j.owner));
+        core.handle(person("bob", "/join alice")).await;
+        assert!(
+            drain_texts(&mut irc)
+                .join("\n")
+                .contains("already joined by someone else"),
+            "a grantee never displaces the owner"
+        );
+        core.handle(owner_tg("/leave")).await;
     }
 
     /// The owner's line while alice's turn runs: it queues behind that

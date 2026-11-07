@@ -46,7 +46,7 @@ fn main() {
             "content": "hi",
             "reasoning": "just one line of thought",
             "provider": "ali-token-plan-personal",
-            "model": "deepseek-v4-flash-0731"
+            "model": "deepseek-v4.1-flash-1017"
         })
         .to_string(),
         reply: tx,
@@ -69,7 +69,7 @@ fn main() {
             "content": "the answer",
             "reasoning": long_reasoning,
             "provider": "ali-token-plan-personal",
-            "model": "deepseek-v4-flash-0731"
+            "model": "deepseek-v4.1-flash-1017"
         })
         .to_string(),
         reply: tx,

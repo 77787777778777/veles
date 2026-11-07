@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset gu {%1$s %2$s failed: %3$s} {%1$s %2$s નિષ્ફળ: %3$s}
 ::msgcat::mcset gu {%1$s %2$s over ssh…} {%1$s %2$s ssh પર…}
 ::msgcat::mcset gu {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset gu {%1$s (%2$s waiting)} {%1$s (%2$s પ્રતીક્ષામાં)}
 ::msgcat::mcset gu {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  તર્ક %3$s}
 ::msgcat::mcset gu {%1$s = %2$s here} {%1$s = %2$s અહીં}
 ::msgcat::mcset gu {%1$s NOT saved: %2$s} {%1$s સાચવ્યું નથી: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset gu {%1$s every cron job on %2$s?} {%1$s દરેક cron કાર્ય %2$s પર?}
 ::msgcat::mcset gu {%1$s failed: %2$s} {%1$s નિષ્ફળ: %2$s}
 ::msgcat::mcset gu {%1$s in / %2$s out / %3$s calls} {%1$s અંદર / %2$s બહાર / %3$s કૉલ્સ}
+::msgcat::mcset gu {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s એ નોડ %2$s છે, %3$s નહીં. Edit… માં તેની નોડ id સુધારો.}
 ::msgcat::mcset gu {%1$s is not a whole number} {%1$s એ પૂર્ણ સંખ્યા નથી}
+::msgcat::mcset gu {%1$s is reachable (%2$s ms).} {%1$s સુધી પહોંચી શકાય છે (%2$s ms).}
 ::msgcat::mcset gu {%1$s is set to something this box cannot edit (%2$s)} {%1$s કંઈક એવું સેટ છે જે આ મશીન સંપાદિત કરી શકતું નથી (%2$s)}
+::msgcat::mcset gu {%1$s is unreachable: %2$s} {%1$s સુધી પહોંચી શકાતું નથી: %2$s}
 ::msgcat::mcset gu {%1$s of %2$s characters} {%1$s/%2$s અક્ષરો}
 ::msgcat::mcset gu {%1$s of %2$s sessions} {%2$s સેશનમાંથી %1$s}
 ::msgcat::mcset gu {%1$s of %2$s skills reach the prompt} {%1$s/%2$s કૌશલ્યો પ્રોમ્પ્ટ સુધી પહોંચે છે}
 ::msgcat::mcset gu {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s %2$s પર: %3$d ઠીક, %4$d નિષ્ફળ}
+::msgcat::mcset gu {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s કોઈ ક્લસ્ટર નોડ ઓળખ જાહેર કરતું નથી, તેથી તેને %2$s તરીકે ચકાસી શકાતું નથી.}
+::msgcat::mcset gu {%1$s sync failed: %2$s} {%1$s સમન્વય નિષ્ફળ: %2$s}
+::msgcat::mcset gu {%1$s sync with %2$s (%3$s)} {%1$s, %2$s સાથે સમન્વય (%3$s)}
+::msgcat::mcset gu {%1$s sync: %2$s} {%1$s સમન્વય: %2$s}
 ::msgcat::mcset gu {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset gu {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter વડે જાઓ, Esc વડે બંધ કરો}
 ::msgcat::mcset gu {%1$s — revision r%2$s} {%1$s — પુનરાવર્તન r%2$s}
 ::msgcat::mcset gu {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset gu {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset gu {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset gu {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset gu {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: %3$s લાઇનમાંથી છેવટની %2$s, જે તેનો ગેટવે મેમરીમાં રાખે છે; તે નોડ પર સિક્રેટ દૂર કરાયેલા.}
 ::msgcat::mcset gu {%d MCP server(s) configured} {%d MCP સર્વર ગોઠવાયેલા}
 ::msgcat::mcset gu {%d entries} {%d એન્ટ્રીઓ}
+::msgcat::mcset gu {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {એક્સટેન્શનની %d ફાઇલ(ઓ) સમીક્ષા પ્રમાણે જ લખાશે. જો પૂર્વદર્શન પછી તેમાંથી કોઈ બદલાઈ હોય, તો કંઈ લખાશે નહીં. કોઈ commit, push કે PR થતું નથી.}
 ::msgcat::mcset gu {%d handler(s) registered} {%d હેન્ડલર નોંધાયેલા}
 ::msgcat::mcset gu {%d identities · %d users} {%d ઓળખો · %d વપરાશકર્તાઓ}
 ::msgcat::mcset gu {%d models — pick one from the list or type a name.} {%d મોડેલ — યાદીમાંથી એક પસંદ કરો અથવા નામ લખો.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset gu {%d shown} {%d બતાવ્યા}
 ::msgcat::mcset gu {%s %s%%} {%s %s%%}
 ::msgcat::mcset gu {%s (%s)} {%s (%s)}
+::msgcat::mcset gu {%s (referral)} {%s (રેફરલ)}
+::msgcat::mcset gu {%s (stale)} {%s (જૂનું)}
 ::msgcat::mcset gu {%s (this session)} {%s (આ સત્ર)}
 ::msgcat::mcset gu {%s GB free of %s GB} {%s GB ખાલી, કુલ %s GB}
 ::msgcat::mcset gu {%s already exists — open it from the list} {%s પહેલેથી અસ્તિત્વમાં છે — તેને યાદીમાંથી ખોલો}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset gu {%s comes from config.toml [acl] — edit there} {%s config.toml [acl] માંથી આવે છે — ત્યાં સંપાદિત કરો}
 ::msgcat::mcset gu {%s config change(s) wait for you — /configsync} {%s કોન્ફિગ ફેરફાર(ો) તમારી રાહ જુએ છે — /configsync}
 ::msgcat::mcset gu {%s did not become healthy within 30s} {%s 30 સેકન્ડમાં સ્વસ્થ ન થયું}
+::msgcat::mcset gu {%s done} {%s થયું}
 ::msgcat::mcset gu {%s failed: %s} {%s નિષ્ફળ: %s}
 ::msgcat::mcset gu {%s is already split} {%s પહેલેથી વિભાજિત છે}
 ::msgcat::mcset gu {%s is the language in use — pick another one to swap with} {%s હાલ વપરાતી ભાષા છે — અદલબદલ માટે બીજી ભાષા પસંદ કરો}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset gu {%s opens the command palette in %s.} {%s, %s માં કમાન્ડ પેલેટ ખોલે છે.}
 ::msgcat::mcset gu {%s session(s)} {%s સત્ર}
 ::msgcat::mcset gu {%s skill(s):} {%s સ્કિલ(s):}
+::msgcat::mcset gu {%s standing grants} {%s સ્થાયી અનુમતિઓ}
 ::msgcat::mcset gu {%s takes no completable arguments} {%s પૂર્ણ કરી શકાય તેવી દલીલો સ્વીકારતું નથી}
 ::msgcat::mcset gu {%s takes on or off} {%s on કે off સ્વીકારે છે}
 ::msgcat::mcset gu {%s —} {%s —}
+::msgcat::mcset gu {%s — changes data, asks to confirm} {%s — ડેટા બદલે છે, પુષ્ટિ માંગે છે}
 ::msgcat::mcset gu {%s — deleted; History… can restore it} {%s — કાઢી નાખી; ઇતિહાસ… તેને પાછી લાવી શકે છે}
 ::msgcat::mcset gu {%s — new: type, then Save} {%s — નવી: લખો, પછી સાચવો}
 ::msgcat::mcset gu {%s — not attached; press Attach in the Instances tab} {%s — જોડાયેલું નથી; Instances ટેબમાં Attach દબાવો}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset gu {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} [acl] વિભાગ વિના ચાલુ છે: .env માં %{var} બૉટ સાથે કોણ વાત કરી શકે તે ન જણાવે ત્યાં સુધી, તેના સુધી પહોંચનાર દરેક વ્યક્તિ માલિક ગણાય છે, બધા ટૂલ સાથે}
 ::msgcat::mcset gu (%{route}) (%{route})
 ::msgcat::mcset gu {(CLI redraws automatically)} {(CLI આપમેળે ફરી દોરાય છે)}
+::msgcat::mcset gu {(binary; not publishable)} {(બાઇનરી; પ્રકાશિત કરી શકાય નહીં)}
 ::msgcat::mcset gu {(clipboard empty or no clipboard tool)} {(ક્લિપબોર્ડ ખાલી છે અથવા ક્લિપબોર્ડ સાધન નથી)}
 ::msgcat::mcset gu (deleted) {(કાઢી નાખેલ)}
 ::msgcat::mcset gu (empty) (ખાલી)
 ::msgcat::mcset gu {(no sessions)} {(કોઈ સેશન નથી)}
+::msgcat::mcset gu {(not a memsync peer of this gateway: config is not synced with it)} {(આ ગેટવેનું memsync પીઅર નથી: તેની સાથે કૉન્ફિગ સમન્વયિત નથી)}
 ::msgcat::mcset gu {(nothing to reload — read from disk per use)} {(ફરી લોડ કરવા જેવું કંઈ નથી — દરેક ઉપયોગે ડિસ્કમાંથી વંચાય છે)}
 ::msgcat::mcset gu {(retrying last prompt…)} {(છેલ્લો પ્રોમ્પ્ટ ફરી પ્રયાસ થઈ રહ્યો છે…)}
 ::msgcat::mcset gu {(route did not resolve: %{e})} {(રૂટ ઉકેલાયો નહીં: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset gu {/url needs a number from /urls} {/url ને /urls માંથી નંબર જોઈએ}
 ::msgcat::mcset gu {/whois needs a nick} {/whois ને નિક જોઈએ}
 ::msgcat::mcset gu {; could not save the cleared return view: %s} {; સાફ કરેલ પાછા ફરવાનું દૃશ્ય સાચવી શકાયું નથી: %s}
+::msgcat::mcset gu {; shadows bundled} {; બંડલ પર છાયા પાડે છે}
+::msgcat::mcset gu {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {કોન્ફિગ ઑફર સેટિંગ્સ બદલી શકે છે અને તિજોરીની ઑફર સિક્રેટ્સ મર્જ કરે છે; સુરક્ષા વિભાગમાં ફેરફાર હજી માલિકની રાહ જુએ છે.}
 ::msgcat::mcset gu {A failing plugin may drop hooks mid-turn.} {નિષ્ફળ પ્લગિન ટર્ન વચ્ચે હૂક્સ છોડી શકે છે.}
 ::msgcat::mcset gu {A local server: no key is needed unless you set one up.} {સ્થાનિક સર્વર: તમે જાતે સેટ ન કરો ત્યાં સુધી કોઈ કીની જરૂર નથી.}
+::msgcat::mcset gu {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {હસ્તાક્ષરિત રિલીઝ પ્રીફ્લાઇટ પછી જ સ્ટેજ થાય છે. ફરી શરૂ કરવું/ચકાસવું, આગળ વધવું અને રોલબેક અલગ ક્રિયાઓ છે. સ્વસ્થ પ્રક્રિયાએ સમીક્ષિત સ્રોત પુનરાવર્તન બરાબર જાહેર કરવું જોઈએ.}
 ::msgcat::mcset gu {A value is stored for %s — leave this empty to keep it.} {%s માટે એક મૂલ્ય રાખેલું છે — તેને રાખવા માટે આ ખાલી છોડો.}
 ::msgcat::mcset gu {ACL: ban mask} {ACL: માસ્ક પર પ્રતિબંધ મૂકો}
 ::msgcat::mcset gu {ACL: grant admin} {ACL: admin અધિકાર આપો}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset gu {ACL: grant user} {ACL: user અધિકાર આપો}
 ::msgcat::mcset gu {ACL: revoke} {ACL: પાછો ખેંચો}
 ::msgcat::mcset gu {ACME account email} {ACME એકાઉન્ટ ઈમેલ}
+::msgcat::mcset gu {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI assist ચાર સ્તરે કામ કરે છે: ડિઝાઇન પ્રશ્ન પૂછો (ફાઇલની જરૂર નથી), આ ફાઇલ બદલો, આ એક્સટેન્શનની કેટલીક ફાઇલો બદલો, અથવા હાલના ડાયગ્નોસ્ટિક્સ સમજાવો. New extension તેના હેતુ પરથી આખું એક્સટેન્શન પણ જનરેટ કરી શકે છે. દરેક વિનંતી ટૂલ વગર મોકલાય છે અને જો તેમાં નોંધાયેલું સિક્રેટ કે ક્રેડેન્શિયલ જેવું મૂલ્ય હોય તો નકારાય છે; ફેરફારો diff તરીકે દેખાય છે અને તમે તેને લાગુ કરો ત્યારે જ લખાય છે. પહેલા એક્સટેન્શન ડિઝાઇન માંગો; ખૂટતું API ઓળખ્યા પછી જ કોર પેચ માંગો.}
+::msgcat::mcset gu {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI સહાય ફક્ત વપરાશકર્તાના એક્સટેન્શન સંપાદિત કરે છે, અને આ ફાઇલ તેમાંની ભાગ નથી. મોટાભાગના ફેરફારો એક્સટેન્શનમાં (હૂક, ટૂલ, સેવા ઓવરરાઇડ કે પ્રોવાઇડર ડ્રાઇવર) બંધ બેસે છે જે અપગ્રેડ પછી ટકી રહે છે; કોર પૅચ એ માટે છે જે એક્સટેન્શન API વ્યક્ત કરી શકતું નથી. આ ફેરફાર માટે નવું એક્સટેન્શન બનાવવું? કંઈ પણ લખાય તે પહેલા તેની ફાઇલોનું પૂર્વદર્શન થાય છે.}
+::msgcat::mcset gu {AI assist…} {AI સહાય…}
+::msgcat::mcset gu {AI extension assistance} {AI એક્સટેન્શન સહાય}
 ::msgcat::mcset gu {API calls} {API કૉલ્સ}
+::msgcat::mcset gu {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {Anthropic રેફરલના API ક્રેડિટ ફક્ત ત્યારે મળે જો તમે Max કે Ultra ખરીદો. Veles તે સબસ્ક્રિપ્શનને લોગિન કે API પ્રમાણીકરણ તરીકે વાપરવાનું સમર્થન કરતું નથી.}
 ::msgcat::mcset gu {API key (hidden)} {API key (છુપાયેલી)}
 ::msgcat::mcset gu {API key env var name} {API કી env var નું નામ}
+::msgcat::mcset gu {API reference} {API સંદર્ભ}
+::msgcat::mcset gu {Abandon untouched operation} {અસ્પૃષ્ટ કામગીરી છોડી દો}
 ::msgcat::mcset gu {Access control} {એક્સેસ નિયંત્રણ}
 ::msgcat::mcset gu {Access control (ACL)} {એક્સેસ નિયંત્રણ (ACL)}
 ::msgcat::mcset gu Add ઉમેરો
 ::msgcat::mcset gu {Add MCP server} {MCP સર્વર ઉમેરો}
 ::msgcat::mcset gu {Add instance} {ઇન્સ્ટન્સ ઉમેરો}
 ::msgcat::mcset gu {Add server…} {સર્વર ઉમેરો…}
+::msgcat::mcset gu {Adds selected extension sources. Review the branch diff and checks before merging.} {પસંદ કરેલા એક્સટેન્શન સ્રોતો ઉમેરે છે. મર્જ કરતા પહેલાં બ્રાન્ચનો ડિફ અને તપાસો તપાસો.}
 ::msgcat::mcset gu Add… ઉમેરો…
 ::msgcat::mcset gu {Agent & engine} {એજન્ટ અને એન્જિન}
 ::msgcat::mcset gu {Alias %s} {ઉપનામ %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset gu {Applies to} {લાગુ પડે છે}
 ::msgcat::mcset gu Apply {લાગુ કરો}
 ::msgcat::mcset gu {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {લાગુ કરો ફક્ત RUNNING સત્ર બદલે છે. TOML નકલ કરો પેસ્ટ કરવાના બ્લોક આપે છે. બધે સાચવો તેમને config.toml માં જોડે છે — ફક્ત failover વિભાગો બદલાય છે, બાકીની દરેક લાઇન અને ટિપ્પણી એમ જ રહે છે, અને જૂની ફાઇલ config.toml.bak તરીકે રાખાય છે.}
+::msgcat::mcset gu {Apply proposal…} {પ્રસ્તાવ લાગુ કરો…}
+::msgcat::mcset gu {Apply received} {પ્રાપ્ત થયેલું લાગુ કરો}
+::msgcat::mcset gu {Apply this AI proposal?} {આ AI પ્રસ્તાવ લાગુ કરવો છે?}
+::msgcat::mcset gu {Apply this change set?} {આ ફેરફાર-સમૂહ લાગુ કરવો?}
 ::msgcat::mcset gu {Apply to session} {સત્ર પર લાગુ કરો}
+::msgcat::mcset gu {Apply what this node received:} {આ નોડને જે મળ્યું તે લાગુ કરો:}
 ::msgcat::mcset gu {Approval needed} {મંજૂરી જરૂરી}
 ::msgcat::mcset gu Apps ઍપ્સ
 ::msgcat::mcset gu Archive આર્કાઇવ
 ::msgcat::mcset gu {Archive SHA-256} {આર્કાઇવ SHA-256}
+::msgcat::mcset gu Ask પૂછો
+::msgcat::mcset gu {Ask a design question} {ડિઝાઇન પ્રશ્ન પૂછો}
+::msgcat::mcset gu {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {એક્સટેન્શન કેવી રીતે બનાવવું તે પૂછો: કઈ સીમા, કઈ ભાષા, કયું API. કોઈ સ્રોત મોકલાતો નથી, અને કંઈ લખી શકાતું નથી.}
 ::msgcat::mcset gu {Ask the agent to change it} {એજન્ટને તેને બદલવા કહો}
+::msgcat::mcset gu {Asking %s…} {%s ને પૂછી રહ્યા છીએ…}
 ::msgcat::mcset gu {Asking the provider for its models…} {પ્રોવાઇડર પાસેથી તેના મોડેલ માંગી રહ્યા છીએ…}
 ::msgcat::mcset gu Attach જોડાવો
 ::msgcat::mcset gu {Attach to the next message} {આગામી સંદેશ સાથે જોડો}
+::msgcat::mcset gu {Author guide} {લેખક માર્ગદર્શિકા}
+::msgcat::mcset gu {Automatically discovered from the attached gateway's cluster registry.} {જોડાયેલા ગેટવેની ક્લસ્ટર રજિસ્ટ્રીમાંથી આપમેળે શોધાય છે.}
 ::msgcat::mcset gu Back પાછળ
 ::msgcat::mcset gu {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {પાછળ ઉપર જે હોય તે બંધ કરે છે: મેનુ, સેશન યાદી, વિન્ડો. કંઈ ખુલ્લું ન હોય ત્યારે veles પૃષ્ઠભૂમિમાં જાય છે અને ચાલતું રહે છે.}
 ::msgcat::mcset gu {Base URL} {Base URL}
+::msgcat::mcset gu {Base branch} {આધાર બ્રાન્ચ}
 ::msgcat::mcset gu {Bot token (hidden)} {બોટ ટોકન (છુપાયેલો)}
+::msgcat::mcset gu Branch બ્રાન્ચ
+::msgcat::mcset gu {Branch and commit prepared; nothing has been pushed} {બ્રાન્ચ અને કમિટ તૈયાર છે; કંઈ પણ પુશ કરાયું નથી}
+::msgcat::mcset gu {Branch pushed and verified on origin} {બ્રાન્ચ પુશ થઈ અને origin પર ચકાસાઈ}
 ::msgcat::mcset gu {Browse sessions} {સેશન્સ બ્રાઉઝ કરો}
+::msgcat::mcset gu {Build manifest + preflight} {મેનિફેસ્ટ બનાવો + પ્રીફ્લાઇટ}
+::msgcat::mcset gu {Build: veles %1$s, revision %2$s (%3$s %4$s)} {બિલ્ડ: veles %1$s, પુનરાવર્તન %2$s (%3$s %4$s)}
 ::msgcat::mcset gu {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e લાઇન છેડા · C-b/C-f અક્ષર · M-b/M-f શબ્દ · C-k EOL સુધી કાઢો · C-y yank · M-w કૉપિ · C-w પ્રદેશ કાઢો · C-space માર્ક સેટ કરો · C-/ અન્ડૂ}
 ::msgcat::mcset gu {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g બધું રદ કરે · C-j નવી લાઇન · M-p/M-n ઇતિહાસ · Tab પૂર્ણ કરે}
+::msgcat::mcset gu {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s કોર, લોડ %2$s / %3$s / %4$s (કોરના %5$s%%)}
 ::msgcat::mcset gu Cancel {રદ કરો}
+::msgcat::mcset gu {Cancel task} {કાર્ય રદ કરો}
+::msgcat::mcset gu {Cancel task %1$s? This cannot be undone.} {કાર્ય %1$s રદ કરીએ? આ પાછું ન લઈ શકાય.}
+::msgcat::mcset gu {Cannot verify that %1$s is node %2$s: %3$s} {ચકાસી શકાયું નહીં કે %1$s એ નોડ %2$s છે: %3$s}
 ::msgcat::mcset gu Capabilities ક્ષમતાઓ
 ::msgcat::mcset gu {Change my app “%s” (%s): } {મારી ઍપ “%s” (%s) બદલો: }
+::msgcat::mcset gu {Change this extension's files} {આ એક્સટેન્શનની ફાઇલો બદલો}
+::msgcat::mcset gu {Change this file} {આ ફાઇલ બદલો}
 ::msgcat::mcset gu Change… બદલો…
 ::msgcat::mcset gu {Channels (e.g. #veles #dev)} {ચેનલો (દા.ત. #veles #dev)}
 ::msgcat::mcset gu Chat ચેટ
 ::msgcat::mcset gu {Chat — not attached; press Attach in the Instances tab} {Chat — જોડાયેલું નથી; Instances ટેબમાં Attach દબાવો}
 ::msgcat::mcset gu {Check (lsp)} {Check (lsp)}
+::msgcat::mcset gu {Check again} {ફરી ચકાસો}
+::msgcat::mcset gu {Check files} {ફાઇલો તપાસો}
 ::msgcat::mcset gu Checkpoints ચેકપોઇન્ટ્સ
 ::msgcat::mcset gu {Checkpoints (undo)} {ચેકપોઇન્ટ્સ (અન્ડૂ)}
+::msgcat::mcset gu {Checks and next steps} {તપાસો અને આગળના પગલાં}
+::msgcat::mcset gu {Checks run} {તપાસો ચલાવો}
 ::msgcat::mcset gu {Choose BUNDLE-INFO.json in the managed install-sources directory} {managed install-sources ડિરેક્ટરીમાં BUNDLE-INFO.json પસંદ કરો}
 ::msgcat::mcset gu {Choose a failover script} {ફેઇલઓવર સ્ક્રિપ્ટ પસંદ કરો}
 ::msgcat::mcset gu {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {મોડ્યુલ અથવા પ્રક્રિયા પ્લગિનની ઝાંખી કરવા પસંદ કરો. શોધ ફક્ત plugin.toml વાંચે છે; ઘટક પસંદ કરવાથી તેનું જાહેર મેનિફેસ્ટ અને વિકલ્પો માગવામાં આવે છે. આ પગલું ખોલવાથી કંઈ ઇન્સ્ટોલ થતું નથી.}
+::msgcat::mcset gu {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {નામ, હેતુ અને ભાષા પસંદ કરો, પછી ચોક્કસ ફાઇલોનું પૂર્વાવલોકન કરો. કંઈ પણ લખાયું નથી.}
 ::msgcat::mcset gu {Choose a user unit or a system service for the server profile. Neither starts a service.} {સર્વર પ્રોફાઇલ માટે વપરાશકર્તા એકમ અથવા સિસ્ટમ સેવા પસંદ કરો. બંને કોઈપણ સેવા શરૂ કરતા નથી.}
 ::msgcat::mcset gu {Choose core bundle…} {કોર બંડલ પસંદ કરો…}
 ::msgcat::mcset gu {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {ઇન્સ્ટોલેશનનું સ્વરૂપ પસંદ કરો. સ્થાનિક પ્રોફાઇલો સમીક્ષિત ઇન્સ્ટોલર વાપરે છે. સિસ્ટમ અને કન્ટેઈનર પ્રોફાઇલો સ્પષ્ટ CLI હેન્ડઓફ માટે સહી કરેલ વિનંતી તૈયાર કરે છે. NixOS ફક્ત એક મોડ્યુલ સ્નિપેટ બહાર પાડે છે.}
+::msgcat::mcset gu {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {સૌથી સાંકડી સીમા પસંદ કરો: Tool મોડેલ જેને કૉલ કરી શકે એવી ક્ષમતા ઉમેરે છે; Hook લાઇફસાઇકલ ઘટના નિહાળે કે તેમાં સુધારો કરે છે; Service કે ઓવરરાઇડ પૉઇન્ટ નામવાળા નિર્ણયને લપેટે છે; Provider ડ્રાઇવર પ્રોવાઇડરની વાયર ઉમેરે છે; પ્રકાશિત એક્સટેન્શન API ફેરફાર વ્યક્ત કરી ન શકે ત્યારે જ કોર પૅચ યોગ્ય છે.}
 ::msgcat::mcset gu {Choose typed container-host options JSON} {પ્રકારિત કન્ટેઈનર-હોસ્ટ વિકલ્પો JSON પસંદ કરો}
 ::msgcat::mcset gu {Choose typed container-host options…} {પ્રકારિત કન્ટેઈનર-હોસ્ટ વિકલ્પો પસંદ કરો…}
 ::msgcat::mcset gu Clear {સાફ કરો}
 ::msgcat::mcset gu {Clear composer} {કમ્પોઝર સાફ કરો}
 ::msgcat::mcset gu {Clear override} {ઓવરરાઇડ સાફ કરો}
 ::msgcat::mcset gu {Click the picture where you would click on the page.} {જે જગ્યાએ તમે પેજ પર ક્લિક કરતા ત્યાં ચિત્ર પર ક્લિક કરો.}
+::msgcat::mcset gu {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {%1$s ક્લોન કરો, %2$s બનાવો, અને %4$s/<extension>/ નીચે ફક્ત %3$s ની સમીક્ષિત ફાઇલો કૉપિ કરો. ફાઇલો તપાસીને કમિટ થાય છે. અત્યારે કોઈ પુશ કે પુલ રિક્વેસ્ટ થતું નથી.}
 ::msgcat::mcset gu Close {બંધ કરો}
 ::msgcat::mcset gu {Close (Esc)} {Close (Esc)}
 ::msgcat::mcset gu {Close the setup wizard? Nothing has been written yet.} {સેટઅપ વિઝાર્ડ બંધ કરવો છે? હજી કંઈ લખાયું નથી.}
 ::msgcat::mcset gu {Code actions} {કોડ એક્શન્સ}
+::msgcat::mcset gu Commit {કમિટ કરો}
+::msgcat::mcset gu {Commit ready for review. Push is a separate action.} {કમિટ સમીક્ષા માટે તૈયાર છે. પુશ એ અલગ ક્રિયા છે.}
 ::msgcat::mcset gu {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {હેન્ડઓફનું પ્રિવ્યુ કરતાં પહેલાં પિન કરેલ ઈમેજ ડાઈજેસ્ટ સહિત દરેક PDS ક્ષેત્ર પૂર્ણ કરો.}
 ::msgcat::mcset gu {Complete every typed container-host field before previewing this profile.} {આ પ્રોફાઇલનું પૂર્વાવલોકન કરતા પહેલાં દરેક ટાઇપ કરેલ કન્ટેઈનર-હોસ્ટ ક્ષેત્ર પૂર્ણ કરો.}
 ::msgcat::mcset gu {Component configuration returned an invalid result; nothing was accepted as applied.} {ઘટક રૂપરેખાએ અમાન્ય પરિણામ આપ્યું; લાગુ ગણાય એવું કંઈ સ્વીકારાયું નથી.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset gu {Component options changed. Review the new preview before applying.} {ઘટક વિકલ્પો બદલાયા. લાગુ કરતા પહેલા નવું પૂર્વાવલોકન સમીક્ષા કરો.}
 ::msgcat::mcset gu Components ઘટકો
 ::msgcat::mcset gu {Composer preview} {કમ્પોઝર પ્રીવ્યૂ}
+::msgcat::mcset gu Config કોન્ફિગ
+::msgcat::mcset gu {Config differs: %s} {કૉન્ફિગ અલગ છે: %s}
+::msgcat::mcset gu {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {કૉન્ફિગ લોગ: તે નોડ પાસે %1$s ના ફેરફારો %3$s સુધીના છે, આ ગેટવે પાસે %2$s સુધીના}
+::msgcat::mcset gu {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {કૉન્ફિગ લોગ: આ ગેટવે પાસે %1$s ના ફેરફારો %2$s સુધીના છે, તે નોડ પાસે %3$s સુધીના}
+::msgcat::mcset gu {Config only on that node: %s} {કૉન્ફિગ ફક્ત તે નોડ પર: %s}
+::msgcat::mcset gu {Config only on this gateway: %s} {કૉન્ફિગ ફક્ત આ ગેટવે પર: %s}
 ::msgcat::mcset gu Configure ગોઠવો
 ::msgcat::mcset gu {Configure %s} {%s ગોઠવો}
+::msgcat::mcset gu {Configure translator} {અનુવાદક ગોઠવો}
+::msgcat::mcset gu {Configured desktop gateway} {ગોઠવાયેલું ડેસ્કટૉપ ગેટવે}
 ::msgcat::mcset gu Configure… ગોઠવો…
 ::msgcat::mcset gu {Configuring %s} {%s નું કોન્ફિગરેશન કરી રહ્યા છીએ}
 ::msgcat::mcset gu {Confirm or discard the current signed review before starting another download.} {નવું ડાઉનલોડ શરૂ કરતા પહેલા વર્તમાન સાઇન્ડ સમીક્ષાની પુષ્ટિ કરો અથવા રદ કરો.}
 ::msgcat::mcset gu {Container host: typed host plan and privileged CLI handoff} {કન્ટેઈનર હોસ્ટ: પ્રકારિત હોસ્ટ યોજના અને વ્યવસ્થાપક અધિકાર જરૂરી CLI હેન્ડઓફ}
 ::msgcat::mcset gu {Context window} {કોન્ટેક્સ્ટ વિન્ડો}
+::msgcat::mcset gu {Continue to next target} {આગલા લક્ષ્ય પર આગળ વધો}
+::msgcat::mcset gu {Contribute extensions: %s} {એક્સટેન્શન યોગદાન આપો: %s}
+::msgcat::mcset gu Contribute… {યોગદાન કરો…}
+::msgcat::mcset gu {Contribution branch} {યોગદાન બ્રાન્ચ}
+::msgcat::mcset gu {Contribution destination} {યોગદાનનું ગંતવ્ય}
 ::msgcat::mcset gu Copy {નકલ કરો}
 ::msgcat::mcset gu {Copy TOML} {TOML નકલ કરો}
+::msgcat::mcset gu {Copy a bundled extension into your user plugin directory before preparing a contribution.} {યોગદાન તૈયાર કરતા પહેલાં બંડલમાં સામેલ એક્સટેન્શનને તમારી વપરાશકર્તા પ્લગિન ડિરેક્ટરીમાં કૉપિ કરો.}
 ::msgcat::mcset gu {Copy message} {સંદેશની નકલ કરો}
 ::msgcat::mcset gu {Copy name} {નામની નકલ કરો}
 ::msgcat::mcset gu {Copy nick} {નિકની નકલ કરો}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset gu {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {ઘટકો શોધી શકાયા નથી. પ્રોવાઇડર સેટઅપ પગલાં હજી પણ કામ કરે છે; જરૂર હોય તો લક્ષ્ય મશીન પર CLI વડે ઇન્સ્ટોલ કરો.}
 ::msgcat::mcset gu {Could not join: %s} {જોડાઈ શકાયું નહીં: %s}
 ::msgcat::mcset gu {Could not list the models (%s) — type the model's name.} {મોડેલની યાદી બતાવી શકાઈ નહીં (%s) — મોડેલનું નામ લખો.}
+::msgcat::mcset gu {Create a PR in} {માં PR બનાવો}
+::msgcat::mcset gu {Create extension} {એક્સટેન્શન બનાવો}
 ::msgcat::mcset gu {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {@BotFather વડે બોટ બનાવો, પછી તેનો ટોકન નીચે પેસ્ટ કરો: તે એન્ક્રિપ્ટેડ તિજોરીમાં જાય છે, ક્યારેય config.toml માં નહીં.}
+::msgcat::mcset gu {Create this extension?} {આ એક્સટેન્શન બનાવવું છે?}
+::msgcat::mcset gu {Create this generated extension?} {આ જનરેટ કરેલું એક્સટેન્શન બનાવવું?}
+::msgcat::mcset gu {Created and reloaded. Review and test the extension before publishing.} {એક્સટેન્શન બનાવાયું અને ફરી લોડ થયું. પ્રકાશિત કરતા પહેલાં એક્સટેન્શનની સમીક્ષા કરો અને તેનું પરીક્ષણ કરો.}
+::msgcat::mcset gu {Created, but reload failed} {બનાવાયું, પરંતુ ફરી લોડ ન થઈ શક્યું}
 ::msgcat::mcset gu {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {ટેમ્પલેટમાંથી %s/<name>/SKILL.md બનાવે છે અને ખોલે છે. પ્રોમ્પ્ટ ઇન્ડેક્સ સુધી ફક્ત frontmatter વર્ણન પહોંચે છે, તેથી તેમાં કૌશલ્યનો ઉપયોગ ક્યારે કરવો તે લખો.}
 ::msgcat::mcset gu {Cron history} {Cron ઇતિહાસ}
 ::msgcat::mcset gu {Cron jobs} {Cron કાર્યો}
 ::msgcat::mcset gu {Curated — write the first owner entry} {ક્યુરેટેડ — પહેલી owner એન્ટ્રી લખો}
 ::msgcat::mcset gu Cut કાપો
 ::msgcat::mcset gu Decline નકારો
+::msgcat::mcset gu {Dedicated translator} {સમર્પિત અનુવાદક}
 ::msgcat::mcset gu {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset gu Default મૂળભૂત
 ::msgcat::mcset gu {Default model} {મૂળભૂત મોડેલ}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset gu {Delete user} {વપરાશકર્તા કાઢી નાખો}
 ::msgcat::mcset gu {Delete workspace?} {વર્કસ્પેસ કાઢી નાખીએ?}
 ::msgcat::mcset gu Deop {ઓપ લઈ લો}
+::msgcat::mcset gu {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {ફેરફારનું વર્ણન કરો. AI આ એક્સટેન્શનની કેટલીક ફાઇલો બદલી કે ઉમેરી શકે છે. દરેક ફાઇલ diff તરીકે દેખાય છે, અને તમે પુષ્ટિ ન કરો ત્યાં સુધી કંઈ લખાતું નથી.}
+::msgcat::mcset gu {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {ફેરફારનું વર્ણન કરો. AI બદલીને મૂકવા માટેનો પ્રસ્તાવ આપી શકે છે, પરંતુ તમે ડિફ તપાસીને પુષ્ટિ કરો તે પહેલાં તે ફેરફાર લખી શકતું નથી.}
+::msgcat::mcset gu {Describe the requested extension change first.} {પહેલા ઇચ્છિત એક્સટેન્શન ફેરફારનું વર્ણન કરો.}
+::msgcat::mcset gu Description વર્ણન
 ::msgcat::mcset gu {Desktop: local core, modules and process plugins} {ડેસ્કટોપ: સ્થાનિક કોર, મોડ્યુલો અને પ્રક્રિયા પ્લગિનો}
 ::msgcat::mcset gu Detach {અલગ કરો}
+::msgcat::mcset gu {Detach foreground} {ફોરગ્રાઉન્ડ અલગ કરો}
 ::msgcat::mcset gu Dev ડેવ
 ::msgcat::mcset gu {Dev pane (REPL + LSP)} {ડેવ પેન (REPL + LSP)}
 ::msgcat::mcset gu {Dev: arm / disarm live patching} {ડેવ: લાઇવ પેચિંગ સક્ષમ / અક્ષમ કરો}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset gu Devoice {વૉઇસ લઈ લો}
 ::msgcat::mcset gu {Discard review} {સમીક્ષા રદ કરો}
 ::msgcat::mcset gu {Discard your changes to %s?} {%s માં તમારા ફેરફારો રદ કરવા?}
+::msgcat::mcset gu {Disk: %1$s free of %2$s at %3$s} {ડિસ્ક: %3$s પર %2$s માંથી %1$s ખાલી}
 ::msgcat::mcset gu Done {થઈ ગયું}
 ::msgcat::mcset gu {Done — config written} {થઈ ગયું — config લખાયો}
 ::msgcat::mcset gu {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {સ્થાપિત કરતા પહેલા રિલીઝ મેનિફેસ્ટ અને હોસ્ટ આર્કાઇવ ડાઉનલોડ કરો અને ચકાસો. બધી પાંચ ઓળખ ક્ષેત્રો જરૂરી છે. ગેટવે ખાનગી સ્ટેજ કરેલ આર્કાઇવ રાખે છે; આ પૂર્વાવલોકનથી કંઈ સ્થાપિત થતું નથી.}
 ::msgcat::mcset gu {Downloading and verifying the signed release…} {સાઇન્ડ રિલીઝ ડાઉનલોડ અને ચકાસી રહ્યું છે…}
+::msgcat::mcset gu {Draft this as an extension?} {આને એક્સટેન્શન તરીકે ડ્રાફ્ટ કરવું?}
 ::msgcat::mcset gu {Drag to scroll; a quick swipe goes further.} {સ્ક્રોલ કરવા ખેંચો; ઝડપી સ્વાઇપ વધુ આગળ જાય છે.}
+::msgcat::mcset gu {Drift check failed: %s} {ડ્રિફ્ટ ચકાસણી નિષ્ફળ: %s}
+::msgcat::mcset gu {Drift check: %s node(s) differ from this gateway.} {ડ્રિફ્ટ ચકાસણી: %s નોડ આ ગેટવેથી અલગ છે.}
+::msgcat::mcset gu {Drift: built from revision %1$s, this gateway from %2$s} {ડ્રિફ્ટ: પુનરાવર્તન %1$s પરથી બનેલું, આ ગેટવે %2$s પરથી}
+::msgcat::mcset gu {Drift: none — same version, revision and replicated config} {ડ્રિફ્ટ: કંઈ નહીં — એ જ આવૃત્તિ, પુનરાવર્તન અને નકલ કરેલો કૉન્ફિગ}
+::msgcat::mcset gu {Drift: not compared — %s} {ડ્રિફ્ટ: સરખાવ્યું નથી — %s}
+::msgcat::mcset gu {Drift: runs version %1$s, this gateway %2$s} {ડ્રિફ્ટ: %1$s આવૃત્તિ ચલાવે છે, આ ગેટવે %2$s}
+::msgcat::mcset gu Drift… ડ્રિફ્ટ…
 ::msgcat::mcset gu {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset gu {ESC %s is not bound} {ESC %s બંધાયેલું નથી}
 ::msgcat::mcset gu {ESC- … (Meta prefix)} {ESC- … (Meta પ્રિફિક્સ)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset gu Edit… {સંપાદિત કરો…}
 ::msgcat::mcset gu {Enable / disable} {સક્ષમ / અક્ષમ કરો}
 ::msgcat::mcset gu {Enable the Telegram adapter} {Telegram એડેપ્ટર સક્રિય કરો}
+::msgcat::mcset gu Endpoint એન્ડપૉઇન્ટ
 ::msgcat::mcset gu Engine એન્જિન
 ::msgcat::mcset gu Eval→gw Eval→gw
 ::msgcat::mcset gu {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {%s માં દરેક ફેરફાર કમિટ થાય છે. પુનઃસ્થાપિત કરવાથી આખી ડિરેક્ટરી તે કમિટ પર પાછી જાય છે — અને પહેલા વર્તમાન સ્થિતિનો સ્નેપશોટ લે છે, તેથી તે એકતરફી દરવાજો નથી.}
 ::msgcat::mcset gu {Every plugin file goes back to that commit. The current state is committed first.} {દરેક પ્લગિન ફાઇલ તે કમિટ પર પાછી જાય છે. વર્તમાન સ્થિતિ પહેલા કમિટ થાય છે.}
+::msgcat::mcset gu {Exact commit} {બરાબર કમિટ}
+::msgcat::mcset gu {Exact permission rule} {બરાબર પરવાનગી નિયમ}
+::msgcat::mcset gu {Example: a hook} {ઉદાહરણ: એક હૂક}
+::msgcat::mcset gu {Example: a provider driver} {ઉદાહરણ: પ્રોવાઇડર ડ્રાઇવર}
+::msgcat::mcset gu {Example: a service override wrapping core} {ઉદાહરણ: કોરને લપેટતો સર્વિસ ઓવરરાઇડ}
+::msgcat::mcset gu {Example: a tool} {ઉદાહરણ: એક સાધન}
 ::msgcat::mcset gu {Existing shared container network} {વર્તમાન શેર્ડ કન્ટેઈનર નેટવર્ક}
+::msgcat::mcset gu Explain સમજાવો
+::msgcat::mcset gu {Explain the diagnostics} {ડાયગ્નોસ્ટિક્સ સમજાવો}
 ::msgcat::mcset gu Export… {નિકાસ કરો…}
+::msgcat::mcset gu {Extension API} {એક્સટેન્શન API}
+::msgcat::mcset gu {Extension development} {એક્સટેન્શન ડેવલપમેન્ટ}
+::msgcat::mcset gu {Extension guide} {એક્સટેન્શન માર્ગદર્શિકા}
+::msgcat::mcset gu {Extension source} {એક્સટેન્શન સ્રોત}
 ::msgcat::mcset gu {Failover blueprint} {ફેઇલઓવર બ્લુપ્રિન્ટ}
 ::msgcat::mcset gu {Failover blueprint (edit the route chain)} {ફેઇલઓવર બ્લુપ્રિન્ટ (રૂટ ચેઇન સંપાદિત કરો)}
 ::msgcat::mcset gu {Failover hook script (what `script` mode runs)} {ફેઇલઓવર હૂક સ્ક્રિપ્ટ (`script` મોડ શું ચલાવે છે)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset gu {Find in transcript} {ટ્રાન્સ્ક્રિપ્ટમાં શોધો}
 ::msgcat::mcset gu {Find in transcript…} {ટ્રાન્સ્ક્રિપ્ટમાં શોધો…}
 ::msgcat::mcset gu {Find references} {સંદર્ભો શોધો}
+::msgcat::mcset gu {Finish rollback} {રોલબેક પૂરો કરો}
 ::msgcat::mcset gu {First run: no config.toml yet.} {પહેલી વાર ચાલે છે: હજી config.toml નથી.}
+::msgcat::mcset gu {Fix the failed syntax checks before preparing a contribution.} {યોગદાન તૈયાર કરતા પહેલાં નિષ્ફળ ગયેલી સિન્ટૅક્સ તપાસોમાંની ભૂલો સુધારો.}
+::msgcat::mcset gu {Fleet deployment} {ફ્લીટ ડિપ્લોયમેન્ટ}
+::msgcat::mcset gu {Fleet deployment runs from a desktop computer; it is not available on Android.} {ફ્લીટ ડિપ્લોયમેન્ટ ડેસ્કટોપ કમ્પ્યુટર પરથી ચાલે છે; તે Android પર ઉપલબ્ધ નથી.}
+::msgcat::mcset gu {Fleet deploy…} {ફ્લીટ ડિપ્લોય…}
+::msgcat::mcset gu {Fleet drift} {ફ્લીટ ડ્રિફ્ટ}
 ::msgcat::mcset gu {Fold / unfold} {ફોલ્ડ / અનફોલ્ડ}
 ::msgcat::mcset gu {Forget declaration} {ઘોષણા ભૂલી જાઓ}
+::msgcat::mcset gu {Forget node %s?} {નોડ %s ભૂલી જવું?}
+::msgcat::mcset gu {Forget node…} {નોડ ભૂલી જાવ…}
+::msgcat::mcset gu {Forgetting %1$s failed: %2$s} {%1$s ભૂલવું નિષ્ફળ: %2$s}
+::msgcat::mcset gu {Forgot node %s.} {નોડ %s ભૂલી ગયું.}
+::msgcat::mcset gu {Forgotten fleet-wide (refused until they heartbeat again): %s} {ફ્લીટ-વ્યાપી ભૂલાવ્યું (ફરી heartbeat આપે નહીં ત્યાં સુધી નકારાયેલા): %s}
 ::msgcat::mcset gu Fork {શાખા બનાવો}
 ::msgcat::mcset gu {Free space} {ખાલી જગ્યા}
 ::msgcat::mcset gu {Full source commit SHA} {પૂર્ણ સ્રોત કમિટ SHA}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset gu {Gateway image sha256 digest} {ગેટવે ઇમેજ sha256 ડાઇઝેસ્ટ}
 ::msgcat::mcset gu {Gateway quadlet name} {ગેટવે quadlet નામ}
 ::msgcat::mcset gu {Gateway status} {ગેટવે સ્થિતિ}
+::msgcat::mcset gu {Generate with AI…} {AI સાથે જનરેટ કરો…}
+::msgcat::mcset gu {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {%s દ્વારા જનરેટ થયું - કંઈ લખાયું નથી. દરેક ફાઇલની સમીક્ષા કરો, પછી Create extension બરાબર આ જ લખશે.}
 ::msgcat::mcset gu {Get a key at %s} {%s પરથી કી મેળવો}
 ::msgcat::mcset gu {GitHub release URL} {GitHub રિલીઝ URL}
+::msgcat::mcset gu {Give the extension a name and describe what it should do (the purpose), then generate.} {એક્સટેન્શનને નામ આપો અને તે શું કરવું જોઈએ (હેતુ) તેનું વર્ણન કરો, પછી જનરેટ કરો.}
 ::msgcat::mcset gu {Give up} {છોડી દો}
 ::msgcat::mcset gu Go જાઓ
 ::msgcat::mcset gu {Go to definition} {ડેફિનિશન પર જાઓ}
+::msgcat::mcset gu {Gossip failed: %s} {ગૉસિપ નિષ્ફળ: %s}
+::msgcat::mcset gu {Gossip now} {હવે ગૉસિપ કરો}
+::msgcat::mcset gu {Gossip with %1$s: %2$s} {%1$s સાથે ગૉસિપ: %2$s}
+::msgcat::mcset gu {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {ગૉસિપ: %2$s પીઅરમાંથી %1$s એ જવાબ આપ્યો (%3$s).}
 ::msgcat::mcset gu Grant {અધિકાર આપો}
 ::msgcat::mcset gu {Grant access} {એક્સેસ અધિકાર આપો}
+::msgcat::mcset gu {Granted at} {અનુમતિ સમય}
 ::msgcat::mcset gu Grant… {અધિકાર આપો…}
 ::msgcat::mcset gu {Guards — what the harness stops, and where it stands now} {Guards — હાર્નેસ શું રોકે છે, અને હાલની સ્થિતિ}
 ::msgcat::mcset gu {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {હેન્ડલરો દર્શાવેલા ક્રમમાં ચાલે છે; બિન-ખાલી મૂલ્ય આપનાર પહેલું જીતે છે. એકને બંધ કરવાથી તે છોડાય છે પણ અનરજિસ્ટર થતું નથી, અને પસંદગી config.toml માં રહે છે જેથી પ્લગિન રીલોડ તેને શાંતિથી ફરી ચાલુ ન કરી શકે.}
+::msgcat::mcset gu Health આરોગ્ય
+::msgcat::mcset gu {Health alerts (%s):} {સ્વાસ્થ્ય ચેતવણીઓ (%s):}
+::msgcat::mcset gu Heartbeat હાર્ટબીટ
+::msgcat::mcset gu {Heartbeat age: %s s} {હાર્ટબીટની ઉંમર: %s s}
 ::msgcat::mcset gu Help સહાય
 ::msgcat::mcset gu {Help & keys} {સહાય અને કી}
 ::msgcat::mcset gu {Hide right panes} {જમણી પેન છુપાવો}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset gu {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {પકડી રાખો, પછી આંગળી ઉઠાવતાં પહેલાં ખેંચો: પસંદગી શબ્દે શબ્દે તમારી આંગળીને અનુસરે છે, ઉપર કે નીચેની કિનારે સ્ક્રોલ કરતાં.}
 ::msgcat::mcset gu Hooks હૂક્સ
 ::msgcat::mcset gu {Hooks (what plugins run on)} {હૂક્સ (પ્લગઇન્સ શેના પર ચાલે છે)}
+::msgcat::mcset gu Host હોસ્ટ
 ::msgcat::mcset gu {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {પકડી રાખવામાં કેટલો સમય લાગે તે Androidનો સ્પર્શ કરીને પકડી રાખવાનો વિલંબ છે, તેની ઍક્સેસિબિલિટી સેટિંગ્સમાં.}
 ::msgcat::mcset gu {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {KEK અને PLC રોટેશન કી ઑફલાઇન બેકઅપ કરી; સમીક્ષિત TLS અને સક્રિયકરણ હેન્ડઓફ મંજૂર કરો}
 ::msgcat::mcset gu {I-search backward: type to search, C-r for previous} {I-search backward: type to search, C-r for previous}
 ::msgcat::mcset gu {I-search: type to search, C-s for next} {I-search: type to search, C-s for next}
+::msgcat::mcset gu {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {IO દબાણ: %1$s%% / %2$s%% / %3$s%% સમય કોઈ કાર્ય પ્રતીક્ષામાં રહ્યું (10 સેકન્ડ / 1 મિનિટ / 5 મિનિટ)}
 ::msgcat::mcset gu IRC IRC
 ::msgcat::mcset gu {IRC buffers} {IRC બફર્સ}
 ::msgcat::mcset gu {IRC composer} {IRC કંપોઝર}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset gu {IRC split: %s} {IRC વિભાજન: %s}
 ::msgcat::mcset gu {IRC transcript} {IRC ટ્રાન્સક્રિપ્ટ}
 ::msgcat::mcset gu {IRC — nothing to show} {IRC — બતાવવા કંઈ નથી}
+::msgcat::mcset gu {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {ચાલુ: %1$s ટર્ન %2$s, %3$s પૃષ્ઠભૂમિ કાર્ય %4$s}
 ::msgcat::mcset gu {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {%s ને મેનેજ કરેલ ઘટક સ્ટોરમાં ઇન્સ્ટોલ કરો? તેનું મેનિફેસ્ટ બતાવવામાં આવ્યું છે; આથી કોઈ સેવા શરૂ થતી નથી.}
 ::msgcat::mcset gu {Install component} {ઘટક ઇન્સ્ટોલ કરો}
 ::msgcat::mcset gu {Install components…} {ઘટકો ઇન્સ્ટોલ કરો…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset gu Instances Instances
 ::msgcat::mcset gu {It becomes the current content, as a new revision — so the restore can be undone too.} {તે નવા પુનરાવર્તન તરીકે વર્તમાન સામગ્રી બનશે — તેથી પુનઃસ્થાપન પણ પાછું ફેરવી શકાય છે.}
 ::msgcat::mcset gu {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {તે આ મશીનની એન્ક્રિપ્ટેડ તિજોરીમાં જાય છે. એજન્ટ તેને ક્યારેય જોતો નથી: તે તેને ફક્ત કમાન્ડમાં $%s તરીકે વાપરી શકે છે, અથવા મંજૂર હોસ્ટને મોકલી શકે છે.}
+::msgcat::mcset gu {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {તે ક્લસ્ટર રજિસ્ટ્રીમાંથી ફ્લીટ-વ્યાપી દૂર થાય છે: આગામી ગૉસિપ આદાનપ્રદાન દરેક 0.2.0 પીઅરને પણ તેને છોડી દેવાનું કહે છે, અને તેમાંથી કોઈ તેને પાછું ભેળવતું નથી. 0.2.0 કરતાં જૂનું પીઅર તેને યાદીમાં બતાવતું રહે છે. જો મશીન પાછું આવે અને heartbeat આપે, તો તે ફરી નોંધાય છે. સમન્વય પીઅર અને સાચવેલા ઇન્સ્ટન્સને કંઈ થતું નથી.}
 ::msgcat::mcset gu {It leaves memory now. Its history keeps every revision, and History… can restore it.} {તે હવે મેમરીમાંથી નીકળી જશે. તેનો ઇતિહાસ દરેક પુનરાવર્તન રાખે છે, અને ઇતિહાસ… તેને પાછી લાવી શકે છે.}
 ::msgcat::mcset gu Join જોડાઓ
 ::msgcat::mcset gu {Join a pool} {મશીનોના જૂથમાં જોડાઓ}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset gu {Language (i18n)} {ભાષા (i18n)}
 ::msgcat::mcset gu Language… ભાષા…
 ::msgcat::mcset gu {Last active} {છેલ્લે સક્રિય}
+::msgcat::mcset gu {Last probe: %1$s — %2$s} {છેલ્લી પ્રોબ: %1$s — %2$s}
 ::msgcat::mcset gu {Leave %s?} {%s છોડીએ?}
 ::msgcat::mcset gu Leave… છોડો…
 ::msgcat::mcset gu {Legacy open — no [acl] section} {લેગસી ઓપન — કોઈ [acl] વિભાગ નથી}
 ::msgcat::mcset gu {Let %s:} {%s ને આ કરવા દો:}
 ::msgcat::mcset gu {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {અક્ષરો, અંકો, - અને _. plugin.toml અને plugin.tcl બનાવે છે જે post_llm_call હૂક રજિસ્ટર કરે છે, પછી તેને Dev પેનમાં ખોલે છે.}
+::msgcat::mcset gu Level સ્તર
 ::msgcat::mcset gu {Lift lockdown} {લોકડાઉન ઉઠાવો}
+::msgcat::mcset gu Lines લાઇન
 ::msgcat::mcset gu {List the provider's models} {પ્રોવાઇડરના મોડેલની યાદી બતાવો}
+::msgcat::mcset gu Load લોડ
 ::msgcat::mcset gu {Load more} {વધુ લોડ કરો}
 ::msgcat::mcset gu {Loading discovered components…} {શોધેલા ઘટકો લોડ કરી રહ્યા છીએ…}
 ::msgcat::mcset gu {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {સ્થાનિક બંડલ સમીક્ષિત થયું. સ્થાપન પુષ્ટિ કરવા પસંદ કરેલ ઘટક સ્થાપિત કરો પસંદ કરો; હજુ સુધી કંઈ સ્થાપિત થયું નથી.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset gu {Lock down} {લોકડાઉન કરો}
 ::msgcat::mcset gu Log લોગ
 ::msgcat::mcset gu {Log (engine + status)} {લોગ (એન્જિન + સ્થિતિ)}
+::msgcat::mcset gu {Log of %s} {%s નો લોગ}
+::msgcat::mcset gu Logs… લોગ…
 ::msgcat::mcset gu {M-g- (g: goto line)} {M-g- (g: goto line)}
 ::msgcat::mcset gu {M-p/M-n history · Tab complete} {M-p/M-n ઇતિહાસ · Tab પૂર્ણ}
 ::msgcat::mcset gu {MCP server list} {MCP સર્વર યાદી}
 ::msgcat::mcset gu {MCP servers (from config.toml)} {MCP સર્વર્સ (config.toml માંથી)}
 ::msgcat::mcset gu {Make default} {મૂળભૂત બનાવો}
 ::msgcat::mcset gu {Make default (config.toml)} {ડિફોલ્ટ બનાવો (config.toml)}
+::msgcat::mcset gu {Manage extensions} {એક્સટેન્શન મેનેજ કરો}
 ::msgcat::mcset gu {Manifest SHA-256} {મેનિફેસ્ટ SHA-256}
 ::msgcat::mcset gu {Mark read} {વાંચેલું ચિહ્નિત કરો}
 ::msgcat::mcset gu {Mechanisms (what the engine does on its own)} {મિકેનિઝમ્સ (એન્જિન પોતાની રીતે શું કરે છે)}
 ::msgcat::mcset gu {Mechanisms — what the engine does on its own, and how to stop it} {Mechanisms — એન્જિન પોતાની મેળે શું કરે છે, અને તેને કેવી રીતે રોકવું}
 ::msgcat::mcset gu Memory મેમરી
 ::msgcat::mcset gu {Memory history} {મેમરી ઇતિહાસ}
+::msgcat::mcset gu {Memory: %1$s available of %2$s (%3$s%% used)} {મેમરી: %2$s માંથી %1$s ઉપલબ્ધ (%3$s%% વપરાયેલ)}
+::msgcat::mcset gu {Merge the received %s into this node?} {મળેલું %s આ નોડમાં મર્જ કરવું?}
 ::msgcat::mcset gu Messages સંદેશા
+::msgcat::mcset gu Metrics મેટ્રિક્સ
+::msgcat::mcset gu {Metrics (asked %s):} {મેટ્રિક્સ (%s પૂછ્યું):}
+::msgcat::mcset gu {Metrics of %1$s failed: %2$s} {%1$s ના મેટ્રિક્સ નિષ્ફળ: %2$s}
+::msgcat::mcset gu {Metrics of %s received.} {%s ના મેટ્રિક્સ મળ્યા.}
+::msgcat::mcset gu {Metrics: not asked yet — use Metrics.} {મેટ્રિક્સ: હજી પૂછ્યું નથી — Metrics વાપરો.}
 ::msgcat::mcset gu Model મોડેલ
 ::msgcat::mcset gu {Model for this session} {આ સત્ર માટે મોડેલ}
 ::msgcat::mcset gu {Models & settings} {મોડેલો અને સેટિંગ્સ}
+::msgcat::mcset gu Monitors મોનિટર્સ
+::msgcat::mcset gu Name નામ
+::msgcat::mcset gu {Need an account? Optional sign-up links (open in your browser):} {એકાઉન્ટ જોઈએ? વૈકલ્પિક સાઇન-અપ લિંક્સ (તમારા બ્રાઉઝરમાં ખોલો):}
 ::msgcat::mcset gu Network નેટવર્ક
 ::msgcat::mcset gu {New alias} {નવું ઉપનામ}
+::msgcat::mcset gu {New branch name} {નવી બ્રાન્ચનું નામ}
 ::msgcat::mcset gu {New cron job} {નવું cron કાર્ય}
+::msgcat::mcset gu {New extension} {નવું એક્સટેન્શન}
 ::msgcat::mcset gu {New memory file} {નવી મેમરી ફાઇલ}
 ::msgcat::mcset gu {New plugin} {નવો પ્લગિન}
 ::msgcat::mcset gu {New session} {નવું સેશન}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset gu Next આગળ
 ::msgcat::mcset gu Nickname નિકનેમ
 ::msgcat::mcset gu {NixOS: emit a module snippet; do not edit host declarations} {NixOS: મોડ્યુલ સ્નિપેટ ઉત્પન્ન કરો; હોસ્ટ ઘોષણાઓ સંપાદિત ન કરો}
+::msgcat::mcset gu {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {આ નોડ માટે કોઈ SSH લાઇફસાઇકલ લક્ષ્ય ગોઠવેલું નથી. તેને ડિપ્લોય કે ફરી શરૂ કરવા ઇન્સ્ટન્સ સ્પષ્ટ રીતે ઉમેરો.}
+::msgcat::mcset gu {No additional push happens.} {કોઈ વધારાનું પુશ થતું નથી.}
 ::msgcat::mcset gu {No apps yet. Ask the agent to make one: “make me an app that…”} {હજી કોઈ ઍપ નથી. એજન્ટને એક બનાવવા કહો: “મારા માટે એવી ઍપ બનાવો જે…”}
 ::msgcat::mcset gu {No code in the picture. Hold the phone closer, straight on, and scan again.} {ચિત્રમાં કોઈ કોડ નથી. ફોનને નજીક, સીધો પકડીને ફરી સ્કેન કરો.}
 ::msgcat::mcset gu {No configuration snapshot will be restored.} {કોઈ રૂપરેખા સ્નેપશોટ પુનઃસ્થાપિત કરવામાં આવશે નહીં.}
+::msgcat::mcset gu {No configured sync peer for this node.} {આ નોડ માટે કોઈ ગોઠવાયેલ સમન્વય પીઅર નથી.}
+::msgcat::mcset gu {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {કોઈ સમર્પિત અનુવાદક ગોઠવાયેલું નથી. તેનો પ્રોવાઇડર, મોડેલ અને લક્ષ્ય ભાષા પસંદ કરવા અનુવાદક ગોઠવો પર ક્લિક કરો.}
+::msgcat::mcset gu {No deployment started.} {કોઈ ડિપ્લોયમેન્ટ શરૂ થયું નથી.}
+::msgcat::mcset gu {No diagnostics reported by the current LSP document.} {વર્તમાન LSP દસ્તાવેજે કોઈ ડાયગ્નોસ્ટિક્સ જણાવ્યાં નથી.}
+::msgcat::mcset gu {No explicitly configured desktop gateway is bound to this node.} {આ નોડ સાથે કોઈ સ્પષ્ટ રીતે ગોઠવાયેલું ડેસ્કટૉપ ગેટવે જોડાયેલું નથી.}
+::msgcat::mcset gu {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {આ નોડ સાથે કોઈ સ્પષ્ટ રીતે ગોઠવાયેલું ગેટવે જોડાયેલું નથી. પહેલા ગેટવે ઉમેરો; તેના રજિસ્ટ્રી એન્ડપોઇન્ટનો ઉપયોગ ડેસ્કટૉપ URL તરીકે થતો નથી.}
+::msgcat::mcset gu {No file is open. Ask a design question, or open an extension file for help with its code.} {કોઈ ફાઇલ ખુલ્લી નથી. ડિઝાઇન પ્રશ્ન પૂછો, અથવા તેના કોડ માટે મદદ લેવા એક્સટેન્શન ફાઇલ ખોલો.}
+::msgcat::mcset gu {No files have been written. Review the exact manifest and source, then confirm creation.} {કોઈ ફાઇલ લખાઈ નથી. ચોક્કસ મેનિફેસ્ટ અને સ્રોત તપાસો, પછી બનાવવાની પુષ્ટિ કરો.}
 ::msgcat::mcset gu {No modules or process plugins were discovered. The provider setup steps can still continue.} {કોઈ મોડ્યુલ અથવા પ્રક્રિયા પ્લગિન શોધાયા નથી. પ્રોવાઇડર સેટઅપ પગલાં છતાં ચાલુ રાખી શકાય છે.}
+::msgcat::mcset gu {No other registered node to compare with.} {સરખાવવા માટે બીજું નોંધાયેલું નોડ નથી.}
 ::msgcat::mcset gu {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {આ વિઝાર્ડમાંથી કોઈ પણ પ્રોફાઇલ સેવા શરૂ કરતી નથી અથવા એડમિન અધિકારવાળી સ્ક્રિપ્ટ ચલાવતી નથી. તે ચલાવતા પહેલાં યોજના અને કોઈપણ હેન્ડઓફની સમીક્ષા કરો.}
+::msgcat::mcset gu {No proposal has been requested. Nothing will be written automatically.} {કોઈ પ્રસ્તાવ માંગવામાં આવ્યો નથી. કંઈ પણ આપમેળે લખાશે નહીં.}
+::msgcat::mcset gu {No proposal. Nothing was written.} {કોઈ પ્રસ્તાવ નથી. કંઈ લખાયું નથી.}
 ::msgcat::mcset gu {No routes configured.} {કોઈ રૂટ ગોઠવાયેલ નથી.}
 ::msgcat::mcset gu {No session selected — pick one in the sidebar or start a new one} {કોઈ સત્ર પસંદ નથી — બાજુની પટ્ટીમાંથી એક પસંદ કરો અથવા નવું શરૂ કરો}
 ::msgcat::mcset gu {No swap target yet: pick a language and press “Set as swap target”.} {હજુ અદલબદલની ભાષા નથી: ભાષા પસંદ કરો અને “અદલબદલની ભાષા બનાવો” દબાવો.}
 ::msgcat::mcset gu {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {config.toml માં {[}acl{]} વિભાગ નથી: ગેટવે સુધી પહોંચતો દરેક મોકલનાર માલિક ગણાય છે, એટલે કે ACL પહેલાનું એક-વપરાશકર્તા વર્તન. ગ્રાન્ટ અને રિવોક હજુ પણ કામ કરે છે અને {[}acl{]} અસ્તિત્વમાં આવતાં જ અસરકારક થાય છે.}
+::msgcat::mcset gu {Node id} {નોડ id}
+::msgcat::mcset gu {Non-evaluating syntax checks} {કોડ ચલાવ્યા વગરની સિન્ટૅક્સ તપાસો}
+::msgcat::mcset gu {Not available: %s} {ઉપલબ્ધ નથી: %s}
+::msgcat::mcset gu Note નોંધ
 ::msgcat::mcset gu {Note for the agent (optional):} {એજન્ટ માટે નોંધ (વૈકલ્પિક):}
+::msgcat::mcset gu {Nothing selected.} {કંઈ પસંદ કરેલું નથી.}
 ::msgcat::mcset gu {Nothing typed yet.} {હજુ કંઈ ટાઇપ કર્યું નથી.}
+::msgcat::mcset gu {Nothing was generated or written.} {કંઈ જનરેટ કે લખાયું નથી.}
+::msgcat::mcset gu {Nothing was prepared: the chosen repository already has these paths.} {કંઈ તૈયાર થયું નથી: પસંદ કરેલ રિપોઝિટરીમાં આ પાથ પહેલેથી છે.}
 ::msgcat::mcset gu Notifications સૂચનાઓ
 ::msgcat::mcset gu OK OK
 ::msgcat::mcset gu Off બંધ
 ::msgcat::mcset gu On ચાલુ
+::msgcat::mcset gu {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {ફક્ત સમીક્ષા કરેલું એક્સટેન્શન બફર બદલાશે. આ પૂર્વાવલોકન પછી થયેલા ફેરફારો સામે ફાઇલ હજુ સુરક્ષિત છે. કોઈ કમિટ, પુશ કે PR થતો નથી.}
+::msgcat::mcset gu {Only this new branch is committed. Your ambient git identity is used.} {ફક્ત આ નવી બ્રાન્ચ પર કમિટ થાય છે. તમારી હાલમાં સેટ કરેલી git ઓળખ વપરાય છે.}
 ::msgcat::mcset gu Op {ઓપ આપો}
 ::msgcat::mcset gu Open ખોલો
+::msgcat::mcset gu {Open PR…} {PR ખોલો…}
 ::msgcat::mcset gu {Open a window} {વિન્ડો ખોલો}
 ::msgcat::mcset gu {Open in Dev} {Dev માં ખોલો}
 ::msgcat::mcset gu {Open in browser} {બ્રાઉઝરમાં ખોલો}
 ::msgcat::mcset gu {Open plugin} {પ્લગિન ખોલો}
 ::msgcat::mcset gu {Open terminal} {ટર્મિનલ ખોલો}
+::msgcat::mcset gu {Open this pull request?} {આ પુલ રિક્વેસ્ટ ખોલવી છે?}
 ::msgcat::mcset gu {Open veles in Android's settings} {Android સેટિંગ્સમાં veles ખોલો}
 ::msgcat::mcset gu {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {વૈકલ્પિક: જોડાવાનું IRC નેટવર્ક. ચેનલોને સ્પેસ કે અલ્પવિરામથી અલગ કરીને લખો; .env માં IRC_CHANNELS સેટ હોય તો એ આ યાદીને બદલી નાખે છે.}
 ::msgcat::mcset gu {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {વિકલ્પો પસંદ કરેલ ઘટકના મેનિફેસ્ટમાંથી આવે છે. સિક્રેટ જેવા ક્ષેત્રો સેટઅપ/તિજોરી પ્રવાહમાં જ રહે છે. ખાલી ક્ષેત્રો તે વિકલ્પ બદલતા નથી.}
 ::msgcat::mcset gu {Or paste a ticket signed on another device} {અથવા બીજા ડિવાઇસ પર સાઇન કરેલી ટિકિટ પેસ્ટ કરો}
 ::msgcat::mcset gu {Or type an answer:} {અથવા જવાબ લખો:}
+::msgcat::mcset gu Origin {મૂળ (Origin)}
 ::msgcat::mcset gu Other… અન્ય…
 ::msgcat::mcset gu Outline રૂપરેખા
+::msgcat::mcset gu Output આઉટપુટ
 ::msgcat::mcset gu {Override for THIS session (leave blank to inherit the default)} {આ સત્ર માટે ઓવરરાઇડ (મૂળભૂત વારસામાં લેવા ખાલી છોડો)}
 ::msgcat::mcset gu {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {માલિકની ઓળખ (telegram:123456, irc:account, અથવા nick!user@host માસ્ક)}
 ::msgcat::mcset gu {PDS and handle domain} {PDS અને હેન્ડલ ડોમેન}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset gu {Pause scheduler} {શેડ્યુલર થોભાવો}
 ::msgcat::mcset gu {Peek (C-c C-p)} {Peek (C-c C-p)}
 ::msgcat::mcset gu {Peek definition} {વ્યાખ્યા ઝલકાવો}
+::msgcat::mcset gu {Permission grants} {પરવાનગી અનુમતિઓ}
+::msgcat::mcset gu {Permission grants…} {પરવાનગી અનુમતિઓ…}
 ::msgcat::mcset gu Phone ફોન
 ::msgcat::mcset gu {Phone: permissions, battery, storage} {ફોન: પરવાનગીઓ, બેટરી, સ્ટોરેજ}
 ::msgcat::mcset gu {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {%s દ્વારા બનાવેલા ફોન પોતે પણ ઍપ બંધ કરી દે છે. veles ના ઍપ સેટિંગ્સમાં તેને જાતે શરૂ થવા અને બૅકગ્રાઉન્ડમાં ચાલવા દો.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset gu Port પોર્ટ
 ::msgcat::mcset gu {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {પ્રીફિક્સ કોર્ડ્સ (C-x, M-o) સક્રિય થતાં જ which-key પોપઅપ બતાવે છે.}
 ::msgcat::mcset gu {Prepare an own vlpds PDS through the signed CLI handoff} {સાઈન થયેલ CLI હેન્ડઓફ દ્વારા પોતાનું vlpds PDS તૈયાર કરો}
+::msgcat::mcset gu {Prepare branch…} {બ્રાન્ચ તૈયાર કરો…}
+::msgcat::mcset gu {Prepare this branch and commit?} {આ બ્રાન્ચ અને કમિટ તૈયાર કરવા છે?}
 ::msgcat::mcset gu Preview પૂર્વદર્શન
+::msgcat::mcset gu {Preview change set} {ફેરફાર-સમૂહનું પૂર્વદર્શન}
+::msgcat::mcset gu {Preview files} {ફાઇલોનું પૂર્વાવલોકન કરો}
 ::msgcat::mcset gu {Preview here} {અહીં પૂર્વદર્શન}
 ::msgcat::mcset gu {Preview pane} {પ્રીવ્યૂ પેન}
+::msgcat::mcset gu {Preview proposal} {પ્રસ્તાવનું પૂર્વાવલોકન કરો}
+::msgcat::mcset gu {Preview the changed name or language before creating it.} {તેને બનાવતા પહેલાં બદલાયેલા નામ અથવા ભાષાનું પૂર્વાવલોકન કરો.}
+::msgcat::mcset gu Probe પ્રોબ
+::msgcat::mcset gu {Probe of %1$s failed: %2$s} {%1$s ની પ્રોબ નિષ્ફળ: %2$s}
 ::msgcat::mcset gu {Profile result} {પ્રોફાઇલ પરિણામ}
 ::msgcat::mcset gu {Promote into config.toml} {config.toml માં પ્રમોટ કરો}
 ::msgcat::mcset gu Promote… {પ્રમોટ કરો…}
 ::msgcat::mcset gu Provider પ્રદાતા
+::msgcat::mcset gu {Provider driver (plugin wire only)} {પ્રોવાઇડર ડ્રાઇવર (ફક્ત પ્લગિન વાયર)}
 ::msgcat::mcset gu {Provider entry name} {Provider એન્ટ્રીનું નામ}
 ::msgcat::mcset gu {Provider for this session} {આ સત્ર માટે પ્રોવાઇડર}
 ::msgcat::mcset gu Providers પ્રોવાઇડર્સ
 ::msgcat::mcset gu {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {પ્રોવાઇડર્સ ટેબલોની યાદી છે: custom_providers.0.base_url, .0.api_mode, .0.key_env … નીચે દર્શાવેલા ક્રમ પ્રમાણે ઇન્ડેક્સ કરો.}
 ::msgcat::mcset gu {Public HTTPS URL} {પબ્લિક HTTPS URL}
+::msgcat::mcset gu {Pull request base} {પુલ રિક્વેસ્ટની આધાર બ્રાન્ચ}
+::msgcat::mcset gu {Pull request created} {પુલ રિક્વેસ્ટ બનાવાઈ}
+::msgcat::mcset gu {Pull request description} {પુલ રિક્વેસ્ટનું વર્ણન}
+::msgcat::mcset gu {Pull request opened.} {પુલ રિક્વેસ્ટ ખોલાઈ.}
+::msgcat::mcset gu {Pull request repository} {પુલ રિક્વેસ્ટ રિપોઝિટરી}
+::msgcat::mcset gu {Pull request title} {પુલ રિક્વેસ્ટનું શીર્ષક}
 ::msgcat::mcset gu {Purge + delete files} {પર્જ + ફાઇલો કાઢી નાખો}
 ::msgcat::mcset gu {Purge container} {કન્ટેનર પર્જ કરો}
+::msgcat::mcset gu Purpose હેતુ
+::msgcat::mcset gu Push {પુશ કરો}
+::msgcat::mcset gu {Push branch…} {બ્રાન્ચ પુશ કરો…}
+::msgcat::mcset gu {Push complete. No pull request has been opened.} {પુશ પૂર્ણ થયું. કોઈ પુલ રિક્વેસ્ટ ખોલવામાં આવી નથી.}
+::msgcat::mcset gu {Push this branch?} {આ બ્રાન્ચ પુશ કરવી છે?}
+::msgcat::mcset gu {Push to %s:} {%s પર પુશ કરો:}
 ::msgcat::mcset gu Question પ્રશ્ન
 ::msgcat::mcset gu Questions પ્રશ્નો
 ::msgcat::mcset gu Quit છોડો
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset gu {Reading notifications, for triggers} {સૂચનાઓ વાંચવી, ટ્રિગર્સ માટે}
 ::msgcat::mcset gu Reasoning તર્ક
 ::msgcat::mcset gu {Reasoning effort} {તર્ક પ્રયત્ન}
+::msgcat::mcset gu {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {મળ્યું, લાગુ કરવાની રાહ: સ્ટોર %1$s · મેમરી %2$s · કોન્ફિગ %3$s · તિજોરી %4$s}
+::msgcat::mcset gu {Recommended checks} {ભલામણ કરેલી તપાસો}
 ::msgcat::mcset gu {Refetch this transcript from the store} {આ ટ્રાન્સ્ક્રિપ્ટ સ્ટોરમાંથી ફરી મેળવો}
 ::msgcat::mcset gu Refresh {રિફ્રેશ કરો}
 ::msgcat::mcset gu {Refresh preview} {પ્રિવ્યૂ તાજું કરો}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset gu {Rename symbol} {સિમ્બોલનું નામ બદલો}
 ::msgcat::mcset gu Rename… {નામ બદલો…}
 ::msgcat::mcset gu Rendered {રેન્ડર થયું}
+::msgcat::mcset gu {Replace existing repository files?} {હાલની રિપોઝિટરી ફાઇલો બદલવી?}
+::msgcat::mcset gu {Replace them in the new branch? Nothing else in the repository changes.} {નવી બ્રાન્ચમાં તેને બદલવી? રિપોઝિટરીમાં બીજું કંઈ બદલાતું નથી.}
 ::msgcat::mcset gu Repository રિપોઝિટરી
 ::msgcat::mcset gu {Repository (owner/name)} {રિપોઝિટરી (માલિક/નામ)}
+::msgcat::mcset gu {Repository directory} {રિપોઝિટરી ડિરેક્ટરી}
+::msgcat::mcset gu {Repository paths} {રિપોઝિટરી પાથ}
+::msgcat::mcset gu {Request a new preview before trying again.} {ફરી પ્રયાસ કરતા પહેલાં નવું પૂર્વાવલોકન માંગો.}
 ::msgcat::mcset gu {Reset to default} {ડિફૉલ્ટ પર પાછું લાવો}
 ::msgcat::mcset gu {Reset to template} {ટેમ્પલેટ પર રીસેટ કરો}
 ::msgcat::mcset gu Restart {ફરી શરૂ કરો}
+::msgcat::mcset gu {Restart + verify canary} {કેનરી ફરી શરૂ કરો + ચકાસો}
 ::msgcat::mcset gu {Restore hidden windows} {છુપાવેલી વિન્ડો પુનઃસ્થાપિત કરો}
 ::msgcat::mcset gu {Restore plugins to %s?} {પ્લગિન્સને %s પર પુનઃસ્થાપિત કરીએ?}
 ::msgcat::mcset gu {Restore revision r%1$s of %2$s?} {%2$s નું પુનરાવર્તન r%1$s પુનઃસ્થાપિત કરવું?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset gu {Restore this commit} {આ કમિટ પુનઃસ્થાપિત કરો}
 ::msgcat::mcset gu {Restore this revision} {આ પુનરાવર્તન પુનઃસ્થાપિત કરો}
 ::msgcat::mcset gu {Resume scheduler} {શેડ્યુલર ફરી શરૂ કરો}
+::msgcat::mcset gu {Resume unfinished operation} {અધૂરું કાર્ય ફરી ચાલુ કરો}
 ::msgcat::mcset gu Revert {પાછું ફેરવો}
 ::msgcat::mcset gu {Revert %s to HEAD? Uncommitted changes in this file are lost.} {%s ને HEAD પર પાછું લાવવું છે? આ ફાઇલમાં કરેલા અનકમિટેડ ફેરફારો ખોવાશે.}
 ::msgcat::mcset gu Revert… {પાછું ફેરવો…}
 ::msgcat::mcset gu Review રિવ્યૂ
 ::msgcat::mcset gu {Review (git) pane} {Review (git) પેન}
+::msgcat::mcset gu {Review deployment} {ડિપ્લોયમેન્ટની સમીક્ષા કરો}
+::msgcat::mcset gu {Review extension contribution} {એક્સટેન્શન યોગદાનની સમીક્ષા કરો}
 ::msgcat::mcset gu {Review managed local bundle…} {સંચાલિત સ્થાનિક બંડલ સમીક્ષા કરો…}
 ::msgcat::mcset gu {Review rollback} {રોલબેક સમીક્ષા કરો}
+::msgcat::mcset gu {Review selected files} {પસંદ કરેલી ફાઇલોની સમીક્ષા કરો}
 ::msgcat::mcset gu {Review the component options on the summary screen before applying.} {લાગુ કરતા પહેલા સારાંશ સ્ક્રીન પર ઘટક વિકલ્પોની સમીક્ષા કરો.}
 ::msgcat::mcset gu {Review the component preview before applying. No component configuration has been written.} {લાગુ કરતા પહેલા ઘટકનું પૂર્વાવલોકન સમીક્ષા કરો. હજી સુધી કોઈ ઘટક રૂપરેખા લખવામાં આવી નથી.}
+::msgcat::mcset gu {Review the selected files and remove credential findings before preparing.} {તૈયારી કરતા પહેલાં પસંદ કરેલી ફાઇલોની સમીક્ષા કરો અને ઓળખપત્રો તરીકે ઓળખાયેલી વિગતો દૂર કરો.}
 ::msgcat::mcset gu {Reviewed core bundle in the managed install-sources directory} {સંચાલિત install-sources ડિરેક્ટરીમાં સમીક્ષિત કોર બંડલ}
+::msgcat::mcset gu {Reviewed fleet deployment} {સમીક્ષિત ફ્લીટ ડિપ્લોયમેન્ટ}
 ::msgcat::mcset gu {Reviewed local bundle} {સમીક્ષિત સ્થાનિક બંડલ}
 ::msgcat::mcset gu {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {સમીક્ષિત સ્થાનિક બંડલ સ્થાપિત થયું. તે સાઇન-ડાઉનલોડ ચકાસાયેલું ન હતું. નવા કોરનો ઉપયોગ કરતા પહેલા ફરી શરૂ કરવું જરૂરી છે.}
 ::msgcat::mcset gu Revision પુનરાવર્તન
 ::msgcat::mcset gu Revoke {પાછો ખેંચો}
+::msgcat::mcset gu {Revoke selected} {પસંદ કરેલ પાછું ખેંચો}
 ::msgcat::mcset gu Roles ભૂમિકાઓ
 ::msgcat::mcset gu {Roll back %1$s from %2$s to %3$s?} {%1$s ને %2$s થી %3$s પર રોલબેક કરો?}
+::msgcat::mcset gu {Roll back selected target} {પસંદ કરેલ લક્ષ્ય રોલ બેક કરો}
 ::msgcat::mcset gu {Rollback completed. Reload the component or restart as requested by the report.} {રોલબેક પૂર્ણ થયું. રિપોર્ટ મુજબ ઘટક ફરી લોડ કરો અથવા ફરી શરૂ કરો.}
 ::msgcat::mcset gu {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {રોલબેક સમીક્ષિત થયું. પુનઃસ્થાપન પુષ્ટિ કરવા પસંદ કરેલ ઘટક સ્થાપિત કરો પસંદ કરો; હજુ સુધી કંઈ પુનઃસ્થાપિત થયું નથી.}
 ::msgcat::mcset gu Run ચલાવો
 ::msgcat::mcset gu {Run the wizard again} {વિઝાર્ડ ફરી ચલાવો}
 ::msgcat::mcset gu {Running in the background} {બૅકગ્રાઉન્ડમાં ચાલવું}
-::msgcat::mcset gu {Running tasks} {ચાલુ કાર્યો}
-::msgcat::mcset gu {Running tasks (subagents, shells, monitors)} {ચાલુ કાર્યો (સબએજન્ટ, શેલ, મોનિટર)}
 ::msgcat::mcset gu {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {રનટાઇમ ગ્રાન્ટ અને વપરાશકર્તાઓ સ્ટોરમાં રહે છે, અને સ્ટોર રીસેટ તેમને દૂર કરે છે. પ્રમોટ સ્ટોરે નક્કી કરેલા તેમને config.toml માં ઉમેરે છે — ફાઇલની ટિપ્પણીઓ અને કી ક્રમ એમ જ રહે છે, સાથે બેકઅપ લખાય છે, સ્ટોર નકલો છોડી દેવાય છે — અને ફાઇલમાં પહેલેથી અભિપ્રાય હોય ત્યાં અનુમાન કરવાને બદલે ઇનકાર કરે છે.}
 ::msgcat::mcset gu {S3 HTTPS endpoint} {S3 HTTPS એન્ડપોઈન્ટ}
 ::msgcat::mcset gu {S3 bucket} {S3 બકેટ}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset gu {Save as default} {મૂળભૂત તરીકે સાચવો}
 ::msgcat::mcset gu {Save attachment as} {એટેચમેન્ટ સેવ કરો}
 ::msgcat::mcset gu {Save globally} {બધે સાચવો}
+::msgcat::mcset gu {Save or revert the open buffer before applying a change set.} {ફેરફાર-સમૂહ લાગુ કરતા પહેલા ખુલ્લું બફર સાચવો અથવા પાછું લાવો.}
 ::msgcat::mcset gu Scan {સ્કેન કરો}
 ::msgcat::mcset gu {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {આ ફોનને આમંત્રણ આપનાર મશીનનો veles કોડ સ્કેન કરો. જો તેણે પહેલાં WireGuard કોડ બતાવ્યો હોય, તો આ પહેલાં તેને WireGuard ઍપથી સ્કેન કરો.}
 ::msgcat::mcset gu {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {સમયપત્રક: અંતરાલ ("30m", "every 2h"), cron પેટર્ન ("0 9 * * 1"), અથવા એક-વખત માટે ISO ટાઇમસ્ટેમ્પ. ઉપરની લાઇન બતાવે છે કે એન્જિન તેને શું વાંચે છે. પહોંચાડો: "local" આઉટપુટ લોગમાં રાખે છે — ડેસ્કટોપ માટે એકમાત્ર પ્રામાણિક મૂળભૂત, કારણ કે તેની પાછળ કોઈ ચેટ પ્લેટફોર્મ નથી — અથવા "platform:chat_id". સત્ર જગાડો: નવા સત્રમાં ચલાવવા ખાલી છોડો; સંપૂર્ણ ઇતિહાસ સાથે તે સત્ર ફરી શરૂ કરવા સત્ર id (અથવા અનન્ય પ્રિફિક્સ) સેટ કરો — વ્યસ્ત સત્ર પ્રોમ્પ્ટ તેના આગલા ટર્ન બાઉન્ડ્રી પર લે છે.}
+::msgcat::mcset gu Scope વ્યાપ
 ::msgcat::mcset gu {Scroll to end} {અંત સુધી સ્ક્રોલ કરો}
 ::msgcat::mcset gu {Search commands and sessions…} {કમાન્ડ્સ અને સેશન શોધો…}
 ::msgcat::mcset gu {Search message text} {સંદેશાનું લખાણ શોધો}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset gu Section વિભાગ
 ::msgcat::mcset gu {Select a component first. No component options will be changed if you skip this step.} {પહેલા ઘટક પસંદ કરો. આ પગલું છોડી દો તો કોઈ ઘટક વિકલ્પ બદલાશે નથી.}
 ::msgcat::mcset gu {Select all} {બધું પસંદ કરો}
+::msgcat::mcset gu {Select all extensions} {બધા એક્સટેન્શન પસંદ કરો}
+::msgcat::mcset gu {Select at least one source file.} {ઓછામાં ઓછી એક સ્રોત ફાઇલ પસંદ કરો.}
+::msgcat::mcset gu {Select none} {કંઈ પસંદ ન કરો}
+::msgcat::mcset gu {Select text to translate first.} {અનુવાદ કરવા પહેલા ટેક્સ્ટ પસંદ કરો.}
+::msgcat::mcset gu {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {યોગદાન આપવા માટે એક્સટેન્શન અને ફાઇલો પસંદ કરો. તે એક બ્રાન્ચ અને એક પુલ રિક્વેસ્ટમાં જાય છે, દરેક એક્સટેન્શન પોતાની ડિરેક્ટરીમાં. સમીક્ષા કરો, મૂલ્યાંકન ન કરતી ચેક ચલાવો, પછી અલગ બ્રાન્ચ તૈયાર કરીને કમિટ કરો. પુશ અને પુલ રિક્વેસ્ટ બનાવવી એ અલગ પુષ્ટિવાળી ક્રિયાઓ છે.}
 ::msgcat::mcset gu Send મોકલો
+::msgcat::mcset gu {Send %s to the peer?} {%s પીઅરને મોકલવું?}
 ::msgcat::mcset gu {Send a %d-line message to the channel?} {ચેનલ પર %d લાઈનનો સંદેશ મોકલવો?}
 ::msgcat::mcset gu {Send raw line to the server? (%s)} {સર્વરને કાચી લાઈન મોકલવી? (%s)}
 ::msgcat::mcset gu {Server (empty = no IRC)} {સર્વર (ખાલી = IRC નહીં)}
 ::msgcat::mcset gu {Server: gateway configuration and a reviewed user unit} {સર્વર: ગેટવે ગોઠવણી અને સમીક્ષિત વપરાશકર્તા યુનિટ}
 ::msgcat::mcset gu {Server: install a user unit and prepare the separate linger handoff} {સર્વર: વપરાશકર્તા યુનિટ ઇન્સ્ટોલ કરો અને અલગ linger હેન્ડઓફ તૈયાર કરો}
 ::msgcat::mcset gu {Server: use a system service and prepare a privileged CLI request} {સર્વર: સિસ્ટમ સર્વિસ વાપરો અને વ્યવસ્થાપક અધિકાર જરૂરી CLI વિનંતી તૈયાર કરો}
+::msgcat::mcset gu Session સેશન
 ::msgcat::mcset gu {Session id} {સત્ર આઈડી}
 ::msgcat::mcset gu {Session id…} {સત્ર આઈડી…}
 ::msgcat::mcset gu Sessions સેશન્સ
 ::msgcat::mcset gu {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {આ એલિયાસ પર હાલમાં ઓવરરાઇડ કરાયેલા સત્રો પોતાનો મળેલો રૂટ જાળવી રાખે છે; નવા ઓવરરાઇડને આ નામ નહીં મળે.}
+::msgcat::mcset gu {Sessions served} {સેવા આપેલા સેશન}
 ::msgcat::mcset gu Set {સેટ કરો}
 ::msgcat::mcset gu {Set [model] provider/default in config.toml.} {config.tomlમાં [model] પ્રોવાઇડર/ડિફોલ્ટ સેટ કરો.}
 ::msgcat::mcset gu {Set as swap target} {અદલબદલની ભાષા બનાવો}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset gu {Setup — summary} {સેટઅપ — સારાંશ}
 ::msgcat::mcset gu {Setup — welcome} {સેટઅપ — સ્વાગત}
 ::msgcat::mcset gu {Shared container network} {શેર્ડ કન્ટેઈનર નેટવર્ક}
+::msgcat::mcset gu Shells શેલ્સ
+::msgcat::mcset gu {Shells and monitors} {શેલ્સ અને મોનિટર્સ}
+::msgcat::mcset gu {Shells and monitors (subagents, shells, monitors)} {શેલ્સ અને મોનિટર્સ (સબએજન્ટ્સ, શેલ્સ, મોનિટર્સ)}
 ::msgcat::mcset gu {Show diff} {ડિફ બતાવો}
 ::msgcat::mcset gu {Show every key} {દરેક કી બતાવો}
 ::msgcat::mcset gu Sign {સાઇન કરો}
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset gu Solved {ઉકેલાઈ ગયું}
 ::msgcat::mcset gu Source સ્રોત
 ::msgcat::mcset gu {Source commit} {સ્રોત કમિટ}
+::msgcat::mcset gu {Source text} {મૂળ લખાણ}
 ::msgcat::mcset gu {Source→app (C-c C-c)} {સ્રોત→એપ (C-c C-c)}
 ::msgcat::mcset gu Stage {સ્ટેજ કરો}
+::msgcat::mcset gu {Stage canary} {કેનરી સ્ટેજ કરો}
+::msgcat::mcset gu Stale જૂનું
+::msgcat::mcset gu {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {સ્થાયી પરવાનગીઓ પછીના ટૂલ કૉલ્સ ફરી પૂછ્યા વિના થવા દે છે. સેશન અનુમતિ દરેક સપાટી (desktop, Telegram, IRC, …) પરના જીવંત સેશન પાસે રહે છે; ગ્લોબલ અનુમતિ ટકી રહે છે; config.toml ની [approvals] allowlist એન્ટ્રીઓ વાંચન-માત્ર તરીકે દર્શાવાય છે. એક પાછી ખેંચવાથી બીજી અનુમતિઓ ક્યારેય બદલાતી નથી.}
 ::msgcat::mcset gu Start {શરૂ કરો}
+::msgcat::mcset gu {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {તમારી વપરાશકર્તા પ્લગિન ડિરેક્ટરીમાં રહેલા એક્સટેન્શનથી શરૂઆત કરો. તે અપગ્રેડ પછી પણ ટકી રહે છે અને ગેટવે ફરી બિલ્ડ કરવાની જરૂર રાખતું નથી. નવું એક્સટેન્શન લખતા પહેલાં ચોક્કસ મેનિફેસ્ટ અને સ્રોતનું પૂર્વાવલોકન કરે છે. સમર્થિત ભાષા અને API સંસ્કરણ પસંદ કરો, ફાઇલોની સમીક્ષા કરો, પછી એક્સટેન્શનનું અલગ વાતાવરણમાં પરીક્ષણ કરો.}
 ::msgcat::mcset gu {Start with the phone} {ફોન સાથે શરૂ થવું}
+::msgcat::mcset gu {Static IP} {સ્થિર IP}
 ::msgcat::mcset gu Status સ્થિતિ
 ::msgcat::mcset gu Steer {દિશા આપો}
 ::msgcat::mcset gu {Step %1$d of %2$d} {પગલું %1$d માંથી %2$d}
 ::msgcat::mcset gu {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {હજુ સેટ કરવાનું બાકી: %s — અહીં /secret set NAME ટાઇપ કરો, અથવા ગેટવેના મશીન પર veles secret set NAME ચલાવો.}
 ::msgcat::mcset gu Stop રોકો
 ::msgcat::mcset gu {Storage root} {સ્ટોરેજ રુટ}
+::msgcat::mcset gu Store સ્ટોર
 ::msgcat::mcset gu {Store a secret: %s} {સિક્રેટ રાખો: %s}
 ::msgcat::mcset gu {Store it} રાખો
+::msgcat::mcset gu {Store replica} {સ્ટોર રેપ્લિકા}
 ::msgcat::mcset gu Subagents સબએજન્ટ
 ::msgcat::mcset gu {Subagents (/agents)} {સબએજન્ટ (/agents)}
 ::msgcat::mcset gu Summary સારાંશ
+::msgcat::mcset gu Surface સપાટી
 ::msgcat::mcset gu {Swap ⇄} {અદલબદલ ⇄}
+::msgcat::mcset gu {Sync cancelled.} {સમન્વય રદ થયો.}
+::msgcat::mcset gu {Sync complete.} {સિંક પૂર્ણ થયું.}
+::msgcat::mcset gu {Sync now} {હવે સિંક કરો}
 ::msgcat::mcset gu {TOML copied — paste it into config.toml} {TOML કૉપિ થયું — તેને config.tomlમાં પેસ્ટ કરો}
 ::msgcat::mcset gu Tag ટૅગ
 ::msgcat::mcset gu {Tap a link to open it, or a block's header to open or close the block.} {લિંક ખોલવા તેના પર ટૅપ કરો, અથવા બ્લૉક ખોલવા કે બંધ કરવા તેના મથાળા પર ટૅપ કરો.}
 ::msgcat::mcset gu {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {ટાઇપ કરવા નીચેના બૉક્સ પર ટૅપ કરો. મોકલો મોકલે છે, રોકો ટર્ન પૂરો કરે છે, અને અલગ કરો ચાલતા કમાન્ડને પૃષ્ઠભૂમિમાં ખસેડે છે.}
 ::msgcat::mcset gu {Tap the text to clear the selection.} {પસંદગી દૂર કરવા લખાણ પર ટૅપ કરો.}
+::msgcat::mcset gu {Target language:} {લક્ષ્ય ભાષા:}
+::msgcat::mcset gu {Target node IDs (canary first, comma separated)} {લક્ષ્ય નોડ ID (કેનરી પહેલા, અલ્પવિરામથી છૂટા)}
 ::msgcat::mcset gu {Task list} {ટાસ્ક સૂચિ}
 ::msgcat::mcset gu {Task list (right pane)} {ટાસ્ક સૂચિ (જમણી પેન)}
 ::msgcat::mcset gu Tasks ટાસ્ક
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset gu {That is not a ticket.} {આ ટિકિટ નથી.}
 ::msgcat::mcset gu {That is not a veles pool code.} {એ veles જૂથનો કોડ નથી.}
 ::msgcat::mcset gu {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {એ WireGuard કોડ છે: તેને WireGuard ઍપથી સ્કેન કરો. veles કોડ બીજો છે.}
+::msgcat::mcset gu {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {સમીક્ષિત %d ફાઇલ તમારી વપરાશકર્તા પ્લગિન ડિરેક્ટરીમાં નવી ડિરેક્ટરીમાં લખાશે, અને veles એક્સટેન્શન લોડ કરવાનો પ્રયાસ કરશે. જો પૂર્વદર્શન પછી એ નામની ડિરેક્ટરી દેખાઈ હોય, તો કંઈ લખાશે નહીં. પ્રકાશન આ ક્રિયાનો ભાગ નથી.}
 ::msgcat::mcset gu {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {Dev પેનનું REPL LIVE એપમાં ચાલે છે — UI પોતે લિસ્પ છે.}
 ::msgcat::mcset gu {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {[mcp_servers.<name>] ટેબલ config.tomlમાંથી કાઢી નાખાય છે. અગાઉની ફાઈલ config.toml.bak તરીકે રાખાય છે.}
 ::msgcat::mcset gu {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {એડેપ્ટરની અનુમતિ-યાદીઓ (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) વિશ્વાસની સીમા છે, અને દરેક માન્ય મોકલનાર owner તરીકે ઓળખાય છે. આ pre-ACL મુદ્રા છે.}
 ::msgcat::mcset gu {The agent asks for a secret: %s} {એજન્ટ એક સિક્રેટ માંગે છે: %s}
+::msgcat::mcset gu {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {પહેલેથી પુશ થયેલી બ્રાન્ચ PR હેડ તરીકે વપરાશે. તમારા ફોર્કની બ્રાન્ચ owner:branch તરીકે આપમેળે નામ પામે છે.}
+::msgcat::mcset gu {The author asks} {લેખક પૂછે છે}
+::msgcat::mcset gu {The buffer changed. Request a new proposal before applying.} {બફર બદલાયું છે. લાગુ કરતા પહેલાં નવો પ્રસ્તાવ માંગો.}
 ::msgcat::mcset gu {The bundle operation returned an invalid result. Verify the installation before retrying.} {બંડલ ક્રિયાએ અમાન્ય પરિણામ આપ્યું. ફરીથી પ્રયાસ કરતા પહેલા સ્થાપન ચકાસો.}
 ::msgcat::mcset gu {The bundle preview was malformed; nothing was installed.} {બંડલ પૂર્વાવલોકન અમાન્ય હતું; કંઈ સ્થાપિત થયું નથી.}
 ::msgcat::mcset gu {The camera did not open; paste the code instead.} {કૅમેરા ખૂલ્યો નહીં; તેના બદલે કોડ પેસ્ટ કરો.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset gu {The component manifest is still loading. Wait for it or choose another component.} {ઘટક મેનિફેસ્ટ હજી લોડ થઈ રહ્યું છે. તેની રાહ જુઓ અથવા બીજો ઘટક પસંદ કરો.}
 ::msgcat::mcset gu {The component preview is not ready yet. Refresh it and review the result before applying.} {ઘટક પૂર્વાવલોકન હજી તૈયાર નથી. તેને તાજું કરો અને પરિણામની સમીક્ષા કરો પછી લાગુ કરો.}
 ::msgcat::mcset gu {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {ઘટક પૂર્વાવલોકન હજી લોડ થઈ રહ્યું છે. સંયુક્ત ફેરફારોની સમીક્ષા કરતા પહેલા જવાબની રાહ જુઓ.}
+::msgcat::mcset gu {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {હાલના ડાયગ્નોસ્ટિક્સ (લેંગ્વેજ સર્વર કે Check તરફથી) આ ફાઇલ સાથે મોકલાય છે. વૈકલ્પિક રીતે પ્રશ્ન ઉમેરો. જવાબ ફક્ત ટેક્સ્ટ છે; કંઈ લખી શકાતું નથી.}
 ::msgcat::mcset gu {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {ડિરેક્ટરી અને તેમાંનું બધું દૂર થાય છે. આ પાછું વાળી શકાતું નથી — માત્ર પ્રોમ્પ્ટમાંથી બહાર રાખવું હોય તો તેના બદલે તેને બંધ કરી દો.}
 ::msgcat::mcset gu {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {ડિરેક્ટરી કાઢી નાખાય છે. પ્લગઇન ફોલ્ડર git રિપોઝિટરી છે અને પહેલા સ્નેપશોટ કમિટ થાય છે, એટલે History… તેને પાછું લાવી શકે છે.}
+::msgcat::mcset gu {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {એડિટર ગેટવેની ફાઇલો ખોલે છે, જેમાં રિમોટ ઇન્સ્ટન્સ પણ સામેલ છે, અને ફાઇલની ભાષા માટેનું લેંગ્વેજ સર્વર ગેટવે પર ચલાવે છે: tcl-lsp, typescript-language-server (TypeScript અને JavaScript), rust-analyzer (Rust પ્લગિન crate કે મોડ્યુલ), clangd (C), racket-langserver અને Common Lisp સર્વર. જે ભાષા માટે ગેટવે પાસે સર્વર છે તે દરેક માટે Hover, વ્યાખ્યા પર જાઓ, પૂર્તિ અને જીવંત ડાયગ્નોસ્ટિક્સ કામ કરે છે; જ્યારે સર્વર ન હોય, ત્યારે એડિટર કહે છે કે ત્યાં કયો પ્રોગ્રામ ઇન્સ્ટોલ કરવો, અને સિન્ટેક્સ હાઇલાઇટિંગ ચાલુ રાખે છે. Check ગેટવે પર અનુરૂપ ચેકર ચલાવે છે: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, અથવા Racket અને Lisp રીડર્સ. સાચવો, Manage extensions માં ફરી લોડ કરો, અને સ્થાનિક સ્થિતિ પ્રકાશિત કર્યા વિના એક્સટેન્શનનું પરીક્ષણ કરો.}
 ::msgcat::mcset gu {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {પહેલું હેન્ડઓફ સિક્રેટ્સ, પિન કરેલ ઈમેજ અને રનટાઈમ ફાઈલ્સ તૈયાર કરે છે પરંતુ PDS શરૂ કરતું નથી. KEK અને PLC રોટેશન કી ઓફલાઈન બેકઅપ કરો, પછી HTTP-01 TLS અને ઍક્ટિવેશન સેટ કરવા બેકઅપ સ્વીકૃતિ સાથે નવી રીતે રિવ્યુ કરેલ વિનંતી કરો. DNS રેકોર્ડ્સ સીધા આ હોસ્ટ તરફ નિર્દેશિત હોવા જોઈએ; veles કોઈ CDN પ્રોક્સી અથવા DNS ફેરફાર કરતું નથી.}
+::msgcat::mcset gu {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {એક્સટેન્શન જનરેટ થયા પછી ફોર્મ બદલાયું છે. ફરી જનરેટ કરો, અથવા સાદું scaffold જુઓ.}
 ::msgcat::mcset gu {The gateway itself is untouched.} {ગેટવે પોતે અસ્પર્શિત રહે છે.}
 ::msgcat::mcset gu {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {ગેટવેએ કોન્ફિગ ફરી લોડ કરી, એટલે નવા સેશન હમણાંથી જ તેને વાપરે છે, અને તિજોરીમાં રાખેલી key આગલી વિનંતીમાં વપરાશે. Telegram અને IRC ગેટવેના આગલા રીસ્ટાર્ટ વખતે શરૂ થશે: veles gateway restart.}
 ::msgcat::mcset gu {The installed component no longer matches the selected manifest. Review the component list again.} {ઇન્સ્ટોલ થયેલ ઘટક હવે પસંદ કરેલ મેનિફેસ્ટ સાથે મેળ ખાતું નથી. ઘટક યાદીની ફરી સમીક્ષા કરો.}
 ::msgcat::mcset gu {The installer preview has no verification signatures; apply is disabled.} {ઇન્સ્ટોલર પૂર્વાવલોકનમાં કોઈ ચકાસણી હસ્તાક્ષર નથી; લાગુ કરવાનું અક્ષમ છે.}
 ::msgcat::mcset gu {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {જોબ અને તેનો રન ઇતિહાસ દૂર થાય છે. આ પાછું વાળી શકાતું નથી — માત્ર રોકવું હોય તો તેના બદલે તેને પોઝ કરો.}
+::msgcat::mcset gu {The log could not be read: %s} {લોગ વાંચી શકાયો નથી: %s}
 ::msgcat::mcset gu {The manifest belongs to another component; its reply was discarded.} {મેનિફેસ્ટ બીજા ઘટકનું છે; તેનો જવાબ કાઢી નાખવામાં આવ્યો.}
 ::msgcat::mcset gu {The profile changed. Review the fresh plan before applying it.} {પ્રોફાઇલ બદલાઈ ગઈ છે. તે લાગુ કરતા પહેલાં નવી યોજનાની સમીક્ષા કરો.}
 ::msgcat::mcset gu {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {રિપોઝિટરીના મૂળમાં કે એક કેટેગરી અંદર SKILL.md જોઈએ. તે %sમાં મૂકાય છે.}
 ::msgcat::mcset gu {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {રિપોઝિટરીના મૂળમાં plugin.toml હોવું જોઈએ. મેનિફેસ્ટના નામે તે %sમાં ક્લોન થાય છે.}
+::msgcat::mcset gu {The reviewed change set was applied (%d files). Review and test it before publishing.} {સમીક્ષિત ફેરફાર-સમૂહ લાગુ થયો (%d ફાઇલ). પ્રકાશિત કરતા પહેલા તેની સમીક્ષા અને પરીક્ષણ કરો.}
 ::msgcat::mcset gu {The reviewed configuration snapshot will also be restored.} {સમીક્ષિત રૂપરેખા સ્નેપશોટ પણ પુનઃસ્થાપિત કરવામાં આવશે.}
+::msgcat::mcset gu {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {સમીક્ષા કરેલી ફાઇલો તમારી વપરાશકર્તા પ્લગિન ડિરેક્ટરીમાં લખવામાં આવશે. veles સ્થાનિક પુનઃપ્રાપ્તિ સ્નૅપશૉટ સાચવે છે અને એક્સટેન્શન ફરી લોડ કરવાનો પ્રયાસ કરે છે; પ્રકાશન આ ક્રિયાનો ભાગ નથી.}
+::msgcat::mcset gu {The reviewed proposal was applied locally. Review and test it before publishing.} {સમીક્ષા કરેલો પ્રસ્તાવ સ્થાનિક રીતે લાગુ કરાયો. પ્રકાશિત કરતા પહેલાં તેની સમીક્ષા કરો અને તેનું પરીક્ષણ કરો.}
 ::msgcat::mcset gu {The rollback preview was malformed or named another component; nothing was restored.} {રોલબેક પૂર્વાવલોકન અમાન્ય હતું અથવા બીજા ઘટકનું નામ હતું; કંઈ પુનઃસ્થાપિત થયું નથી.}
 ::msgcat::mcset gu {The rollback returned an invalid result. Verify the installation before retrying.} {રોલબેકે અમાન્ય પરિણામ આપ્યું. ફરીથી પ્રયાસ કરતા પહેલા સ્થાપન ચકાસો.}
 ::msgcat::mcset gu {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {નવા સેશન જે રૂટ પર શરૂ થાય છે તે. /model અને મોડેલ ઓવરલે તેને પછીથી બદલે છે, દર સેશન મુજબ અથવા નવા ડિફોલ્ટ રૂપે.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset gu {The signed download discard returned an invalid response; no installation was requested.} {સાઇન્ડ ડાઉનલોડ રદ કરવાનો અમાન્ય જવાબ મળ્યો; કોઈ સ્થાપનની વિનંતી કરવામાં આવી નથી.}
 ::msgcat::mcset gu {The signed installation returned an invalid result. Verify the installation before retrying.} {સાઇન્ડ સ્થાપને અમાન્ય પરિણામ આપ્યું. ફરીથી પ્રયાસ કરતા પહેલા સ્થાપન ચકાસો.}
 ::msgcat::mcset gu {The signed release preview was malformed; nothing was installed.} {સાઇન્ડ રિલીઝ પૂર્વાવલોકન અમાન્ય હતું; કંઈ સ્થાપિત થયું નથી.}
+::msgcat::mcset gu {The source buffer changed. Request a new proposal before applying.} {સ્રોત બફર બદલાયું છે. લાગુ કરતા પહેલાં નવો પ્રસ્તાવ માંગો.}
 ::msgcat::mcset gu {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {સ્ટોર એક રિવિઝન પાછળ જાય છે. રોલબેક પોતે પણ એક રિવિઝન છે, એટલે તેને પણ પૂર્વવત્ કરી શકાય છે.}
+::msgcat::mcset gu {The translator returned no text.} {અનુવાદકે કોઈ ટેક્સ્ટ પરત કર્યું નથી.}
 ::msgcat::mcset gu {The verification reply was malformed; no integrity result was accepted.} {ચકાસણી જવાબ અમાન્ય હતો; કોઈ અખંડિતા પરિણામ સ્વીકારાયું નથી.}
 ::msgcat::mcset gu Themes થીમ્સ
+::msgcat::mcset gu {These paths already exist in the chosen repository:} {આ પાથ પસંદ કરેલ રિપોઝિટરીમાં પહેલેથી છે:}
 ::msgcat::mcset gu {They have not been saved.} {તે સાચવવામાં આવ્યા નથી.}
+::msgcat::mcset gu {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {આ બફરમાં સમજાવવા જેવા ડાયગ્નોસ્ટિક્સ નથી. Check ચલાવો, અથવા લેંગ્વેજ સર્વરની રાહ જુઓ.}
 ::msgcat::mcset gu {This challenge is over.} {આ પડકાર પૂરો થયો.}
 ::msgcat::mcset gu {This code has expired. Ask for a new one.} {આ કોડની મુદત પૂરી થઈ ગઈ છે. નવો માંગો.}
 ::msgcat::mcset gu {This does not start a service or claim signed-download verification.} {આ કોઈ સેવા શરૂ કરતું નથી અથવા સાઇન-ડાઉનલોડ ચકાસણીનો દાવો કરતું નથી.}
 ::msgcat::mcset gu {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {આ ગેટવે આ મશીન પરથી સિક્રેટ મૂલ્યો સ્વીકારતો નથી: ત્યાં જ veles secret set %s વડે દાખલ કરો, અથવા આ નેટવર્કને તેના [vault] trusted_networks માં ઉમેરો}
 ::msgcat::mcset gu {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {બરાબર આ જ લખાશે — એન્જિનના પોતાના બાઇટ્સ, લાઇવ લેવાયેલા. હજી ડિસ્કને કંઈ અડક્યું નથી.}
+::msgcat::mcset gu {This node is not a configured sync peer for any kind.} {આ નોડ કોઈ પણ પ્રકાર માટે ગોઠવાયેલ સમન્વય પીઅર નથી.}
+::msgcat::mcset gu {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {આ પ્લગિન બંડલ છે અને વાંચન-માત્ર છે. બંડલ કૉપિ વાપરવા માટે સમાન નામવાળી વપરાશકર્તા નકલ દૂર કરો.}
+::msgcat::mcset gu {This publishes the commit; no pull request is created yet.} {આ કમિટ પ્રકાશિત કરે છે; હજુ કોઈ પુલ રિક્વેસ્ટ બનાવવામાં આવતી નથી.}
 ::msgcat::mcset gu {This review expires after %s seconds. Closing or cancelling discards its private staging.} {આ સમીક્ષા %s સેકન્ડ પછી મુદત પૂરી થાય છે. બંધ કરવું કે રદ કરવું તેની ખાનગી સ્ટેજિંગ રદ કરે છે.}
 ::msgcat::mcset gu {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {આ વિઝાર્ડ config.toml લખે છે, અને તમે આપેલી keys એન્ક્રિપ્ટેડ તિજોરીમાં મૂકે છે. દરેક પગલું છોડી શકાય છે: છોડેલું પગલું નવી કોન્ફિગમાં આવતું નથી, અને હાલની કોન્ફિગમાં જેમ છે તેમ જ રહે છે. હાલની config.toml ત્યાં જ સંપાદિત થાય છે — ફક્ત તમે જવાબ આપેલા વિભાગો બદલાય છે, અને બાકીનું બધું, ટિપ્પણીઓ સહિત, રહે છે.}
 ::msgcat::mcset gu {Ticket needed} {ટિકિટ જરૂરી છે}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset gu {Topic for %s} {%s માટે વિષય}
 ::msgcat::mcset gu {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {મેનુ ખોલવા સેશન, અથવા મેનુ ધરાવતી બીજી કોઈપણ વસ્તુને સ્પર્શ કરીને પકડી રાખો. તેની બહાર ટૅપ, અથવા પાછળ, તેને બંધ કરે છે.}
 ::msgcat::mcset gu {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {શબ્દ પસંદ કરવા તેને સ્પર્શ કરીને પકડી રાખો. આંગળી ઉઠાવો ત્યારે તેનું મેનુ ખુલે છે, સૌથી ઉપર નકલ કરો સાથે.}
+::msgcat::mcset gu Translate {અનુવાદ કરો}
+::msgcat::mcset gu {Translate selection} {પસંદગીનો અનુવાદ કરો}
+::msgcat::mcset gu Translating… {અનુવાદ થઈ રહ્યો છે…}
+::msgcat::mcset gu {Translation cancelled.} {અનુવાદ રદ કરાયો.}
+::msgcat::mcset gu {Translation copied.} {અનુવાદ કૉપિ થયો.}
+::msgcat::mcset gu {Translation failed} {અનુવાદ નિષ્ફળ}
+::msgcat::mcset gu {Translation result} {અનુવાદનું પરિણામ}
+::msgcat::mcset gu {Translator configuration unavailable} {અનુવાદકનું કોન્ફિગરેશન ઉપલબ્ધ નથી}
 ::msgcat::mcset gu {Trigger history} {ટ્રિગર ઇતિહાસ}
 ::msgcat::mcset gu Triggers ટ્રિગર્સ
 ::msgcat::mcset gu {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {ટ્રિગર્સ ટર્ન વગર ચેનલ ઈવેન્ટ પર પ્રતિક્રિયા આપે છે. slopdrop ઈવેન્ટ બ્રિજને મોકલે છે અને જવાબ પાછો લાવે છે; vision કૂલડાઉન અને પ્રતિ કલાક મર્યાદાની અંદર ઇમેજ URL વર્ણવે છે. [triggers] કોન્ફિગ સ્વિચ અને વ્યુત્પન્ન માસ્ક બંને પરવાનગી આપે ત્યાં જ પંક્તિ ફાયર થાય છે — લાઈવ slopdrop બાઈન્ડિંગ્સ હેઠળ #coven કંઈ ફોરવર્ડ કરતું નથી.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset gu {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {.env માં IRC_ALLOWED_USERS તમારું એકાઉન્ટ ન જણાવે ત્યાં સુધી, નેટવર્ક પરનું કોઈ પણ બૉટ સાથે વાત કરી શકે છે — અને [acl] વિભાગ ન હોય તો માલિક તરીકે, બધા ટૂલ સાથે.}
 ::msgcat::mcset gu {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {.env માં TELEGRAM_ALLOWED_USERS તમારો યુઝર આઈડી ન જણાવે ત્યાં સુધી, બૉટને શોધનાર કોઈ પણ તેની સાથે વાત કરી શકે છે — અને [acl] વિભાગ ન હોય તો માલિક તરીકે, બધા ટૂલ સાથે.}
 ::msgcat::mcset gu Untitled {શીર્ષક વગરના}
+::msgcat::mcset gu {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {અપસ્ટ્રીમ યોગદાન એ સ્પષ્ટ પ્રકાશન ક્રિયા છે, આપમેળે અપલોડ નહીં. Manage extensions માં, Contribute દરેક વપરાશકર્તા એક્સટેન્શનની યાદી બતાવે છે: એક્સટેન્શન અને ફાઇલો પસંદ કરો, ડિફ અને સિક્રેટ્સ સ્કેન તપાસો, ચેક ચલાવો, પછી તમારી પસંદ કરેલી git ઓળખ સાથે એક બ્રાન્ચ અને એક PR બનાવો (મૂળભૂત રીતે veles પર). દરેક એક્સટેન્શન રિપોઝિટરીમાં પોતાની ડિરેક્ટરી હેઠળ જાય છે, અને ત્યાંની હાલની ફાઇલ ફક્ત અલગ પુષ્ટિ પછી બદલાય છે. node.toml, સ્થાનિક ક્રેડેન્શિયલ, ટોકન, ખાનગી એન્ડપોઇન્ટ કે અસંબંધિત પ્લગિન સ્થિતિ ક્યારેય પ્રકાશિત ન કરો. સ્થાનિક રિકવરી સ્નેપશોટ એ અપસ્ટ્રીમ કમિટ કે PR નથી.}
+::msgcat::mcset gu {Upstream repository or fork URL} {અપસ્ટ્રીમ રિપોઝિટરી અથવા ફોર્ક URL}
+::msgcat::mcset gu {Uptime class} {અપટાઇમ વર્ગ}
+::msgcat::mcset gu {Uptime: host %1$s, gateway %2$s} {અપટાઇમ: હોસ્ટ %1$s, ગેટવે %2$s}
 ::msgcat::mcset gu Usage ઉપયોગ
 ::msgcat::mcset gu {Usage & Quota} {વપરાશ અને ક્વોટા}
 ::msgcat::mcset gu {Use TLS} {TLS વાપરો}
 ::msgcat::mcset gu {Use now} {હમણાં વાપરો}
+::msgcat::mcset gu {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {વાસ્તવિક કરારો માટે લેખક માર્ગદર્શિકા અને API સંદર્ભ બટનો વાપરો. પ્લગિન્સ ઓવરલે જીવંત હૂક્સની યાદી આપે છે; સેવાઓ અને ઓવરરાઇડ પોઇન્ટ્સ ગેટવેની પોતાની રજિસ્ટ્રીમાંથી આવે છે, આ માર્ગદર્શિકામાંની નકલ કરેલી યાદીમાંથી નહીં.}
 ::msgcat::mcset gu {Use this ticket} {આ ટિકિટ વાપરો}
+::msgcat::mcset gu {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {તમારો ફોર્ક વાપરો (https://github.com/<you>/veles.git અથવા git@github.com:<you>/veles.git) સિવાય કે તમે veles પર જ પુશ કરી શકો. પસંદ કરેલ રિપોઝિટરી અલગ વર્કટ્રીમાં ક્લોન થાય છે. કંઈ પણ પુશ થતું નથી.}
 ::msgcat::mcset gu {Users — one role across networks and platforms} {વપરાશકર્તાઓ — બધા નેટવર્ક અને પ્લેટફોર્મ પર એક જ ભૂમિકા}
 ::msgcat::mcset gu {Using the phone, for the agent} {ફોનનો ઉપયોગ, એજન્ટ માટે}
 ::msgcat::mcset gu {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {સામાન્ય રીતે provider એન્ટ્રીના નામ જેવું જ. Skip પસંદગી પર બંને ખાલી રાખો — અધૂરી જોડી રૂટ થતી નથી.}
 ::msgcat::mcset gu {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {મૂલ્યો TOML હોય છે: અવતરણવાળી સ્ટ્રિંગ, આંકડા, કે યાદી. [mcp_servers.<name>]માં લખાય છે — તમારી ટિપ્પણીઓ અને બીજા બધા વિભાગો અકબંધ રહે છે.}
+::msgcat::mcset gu Vault તિજોરી
 ::msgcat::mcset gu {Verified signed bundle installed. Restart the gateway before using the new core.} {ચકાસાયેલ સાઇન્ડ બંડલ સ્થાપિત થયું. નવા કોરનો ઉપયોગ કરતા પહેલા ગેટવે ફરી શરૂ કરો.}
 ::msgcat::mcset gu {Verified signed release — not installed yet} {ચકાસાયેલ સાઇન્ડ રિલીઝ — હજુ સ્થાપિત નથી}
 ::msgcat::mcset gu {Verify and review release…} {રિલીઝ ચકાસો અને સમીક્ષા કરો…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset gu {Verify signed release} {સાઇન્ડ રિલીઝ ચકાસો}
 ::msgcat::mcset gu {Verify signed release…} {સાઇન્ડ રિલીઝ ચકાસી રહ્યું છે…}
 ::msgcat::mcset gu Version આવૃત્તિ
+::msgcat::mcset gu {Version %1$s: %2$s} {આવૃત્તિ %1$s: %2$s}
+::msgcat::mcset gu {Version drift in the registry: %s} {રજિસ્ટ્રીમાં આવૃત્તિ ડ્રિફ્ટ: %s}
 ::msgcat::mcset gu View દૃશ્ય
 ::msgcat::mcset gu {View markdown source} {માર્કડાઉન સ્રોત જુઓ}
 ::msgcat::mcset gu {View source / rendered} {સ્રોત / રેન્ડર થયેલું}
 ::msgcat::mcset gu Voice {વૉઇસ આપો}
+::msgcat::mcset gu {Waiting for the model…} {મોડેલની રાહ જોઈ રહ્યા છીએ…}
+::msgcat::mcset gu {Waiting for the model… Nothing has been written.} {મોડેલની રાહ જોઈ રહ્યા છીએ… કંઈ લખાયું નથી.}
 ::msgcat::mcset gu {Welcome to veles} {veles માં સ્વાગત છે}
 ::msgcat::mcset gu {What the agent can do here} {એજન્ટ અહીં શું કરી શકે છે}
 ::msgcat::mcset gu {What veles may do on this phone. Each button opens the Android setting that changes it.} {આ ફોન પર veles શું કરી શકે છે. દરેક બટન તેને બદલતું Android સેટિંગ ખોલે છે.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset gu {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {veles પૃષ્ઠભૂમિમાં હોય ત્યારે એજન્ટનો પ્રશ્ન કે પૂરો થયેલો ટર્ન સૂચના બને છે; સેશન ખોલવા તેના પર ટૅપ કરો.}
 ::msgcat::mcset gu {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {બોટ સાથે કોણ વાત કરી શકે. આ પસંદગી નક્કી કરે છે કે config.toml માં [acl] વિભાગ છે કે નહીં — અને તે આખી મુદ્રા બદલી નાખે છે.}
 ::msgcat::mcset gu Whois Whois
-::msgcat::mcset gu {Wire protocol (chat_completions or responses)} {વાયર પ્રોટોકોલ (chat_completions અથવા responses)}
+::msgcat::mcset gu {Wire protocol (chat_completions, responses or plugin)} {વાયર પ્રોટોકોલ (chat_completions, responses અથવા plugin)}
 ::msgcat::mcset gu {With a keyboard attached, every key works as on a laptop.} {કીબોર્ડ જોડેલું હોય ત્યારે દરેક કી લૅપટૉપની જેમ કામ કરે છે.}
 ::msgcat::mcset gu {Workflow SHA} {વર્કફ્લો SHA}
+::msgcat::mcset gu {Workflow commit} {વર્કફ્લો કમિટ}
+::msgcat::mcset gu Worktree વર્કટ્રી
 ::msgcat::mcset gu {Write it} લખો
+::msgcat::mcset gu {Write the design question first.} {પહેલા ડિઝાઇન પ્રશ્ન લખો.}
 ::msgcat::mcset gu {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {કોઈ provider લખતું નથી. જ્યાં સુધી [[custom_providers]] એન્ટ્રી અને [model] જોડી અસ્તિત્વમાં ન આવે ત્યાં સુધી ગેટવે ટર્ન રૂટ કરશે નહીં.}
 ::msgcat::mcset gu {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {કોઈ પણ [acl] કી લખવાથી આ ગેટવે ક્યુરેટેડ મોડમાં જાય છે: ડિફૉલ્ટ ભૂમિકા guest (fail-closed) બને છે અને મંજૂરી સૂચિઓ સીમા રહેતી નથી. વિશ્વાસપાત્ર માલિક ઓળખ હોય તો જ આ પસંદ કરો.}
 ::msgcat::mcset gu {[model] provider} {[model] provider}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset gu {also list hooks with no handler} {હેન્ડલર વગરના હુક પણ યાદીમાં બતાવો}
 ::msgcat::mcset gu {also write grants that still have an expiry} {જે grantsની સમાપ્તિ બાકી છે તે પણ લખો}
 ::msgcat::mcset gu {also write runtime users} {runtime વપરાશકર્તાઓ પણ લખો}
+::msgcat::mcset gu {an allowlist entry is removed by editing config.toml} {allowlist એન્ટ્રી config.toml સંપાદિત કરીને દૂર થાય છે}
 ::msgcat::mcset gu {an allowlist is in force: a plugin not on it stays off} {allowlist અમલમાં છે: તેમાં ન હોય તેવું પ્લગઇન બંધ જ રહે છે}
 ::msgcat::mcset gu {answer failed: %s} {જવાબ નિષ્ફળ: %s}
+::msgcat::mcset gu {answer only, nothing to apply} {ફક્ત જવાબ, લાગુ કરવા જેવું કંઈ નથી}
 ::msgcat::mcset gu {append these rules to config.toml} {આ નિયમો config.tomlમાં ઉમેરો}
 ::msgcat::mcset gu {apply failed: %s} {લાગુ કરવું નિષ્ફળ: %s}
 ::msgcat::mcset gu {apply to:} {લાગુ કરો:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset gu {ask the agent} {એજન્ટને પૂછવું}
 ::msgcat::mcset gu {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset gu {asked by: %s} {પૂછનાર: %s}
+::msgcat::mcset gu {asking %s for its metrics…} {%s ને તેના મેટ્રિક્સ પૂછી રહ્યા છીએ…}
 ::msgcat::mcset gu {attach a file} {ફાઇલ જોડો}
 ::msgcat::mcset gu {attach an image or file} {છબી અથવા ફાઇલ જોડો}
 ::msgcat::mcset gu {attach failed: %1$s} {જોડાવું નિષ્ફળ: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset gu {attached %1$s (%2$s pending)} {%1$s જોડાયેલું (%2$s બાકી)}
 ::msgcat::mcset gu {attached to %s} {%s સાથે જોડાયેલું}
 ::msgcat::mcset gu {attached to child session %1$s} {ચાઈલ્ડ સત્ર %1$s સાથે જોડાયેલું}
+::msgcat::mcset gu automatic આપમેળે
 ::msgcat::mcset gu {aux model} {aux મોડેલ}
 ::msgcat::mcset gu {aux provider} {aux પ્રદાતા}
+::msgcat::mcset gu available ઉપલબ્ધ
 ::msgcat::mcset gu {available components} {ઉપલબ્ધ ઘટકો}
 ::msgcat::mcset gu {back up N user turns} {વપરાશકર્તાના N ટર્ન પાછળ જાઓ}
 ::msgcat::mcset gu {backed up the previous config to %s} {પહેલો config %s માં બેકઅપ થયો}
 ::msgcat::mcset gu {background shells; /shells output|kill <id>} {બેકગ્રાઉન્ડ શેલ; /shells output|kill <id>}
+::msgcat::mcset gu {backing off: %1$s failure(s), next automatic try in %2$s s} {પાછું હટી રહ્યું છે: %1$s નિષ્ફળતા, આગલો આપમેળે પ્રયાસ %2$s s માં}
 ::msgcat::mcset gu {bad host for %1$s: %2$s} {%1$s માટે ખોટો હોસ્ટ: %2$s}
 ::msgcat::mcset gu {bad unit for %1$s: %2$s} {%1$s માટે ખોટું યુનિટ: %2$s}
 ::msgcat::mcset gu {bare display off} {બેર ડિસ્પ્લે બંધ}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset gu {browse the filesystem} {ફાઇલ સિસ્ટમ જુઓ}
 ::msgcat::mcset gu {browse the repo's files} {રેપોની ફાઇલો બ્રાઉઝ કરો}
 ::msgcat::mcset gu {builtin (%s):} {બિલ્ટ-ઇન (%s):}
+::msgcat::mcset gu bundled બંડલ
+::msgcat::mcset gu {bundled, read-only} {બંડલ, વાંચન-માત્ર}
 ::msgcat::mcset gu by દ્વારા
 ::msgcat::mcset gu {by plan — all sessions} {પ્લાન મુજબ — બધા સત્રો}
 ::msgcat::mcset gu {by plan — this session} {પ્લાન મુજબ — આ સત્ર}
 ::msgcat::mcset gu {by tool} {ટૂલ મુજબ}
 ::msgcat::mcset gu {cancel failed: %1$s} {રદ કરવું નિષ્ફળ: %1$s}
 ::msgcat::mcset gu {cancel the running turn} {ચાલી રહેલો ટર્ન રદ કરો}
+::msgcat::mcset gu {cancel the selected task} {પસંદ કરેલ કાર્ય રદ કરો}
 ::msgcat::mcset gu {cancelled task %1$s} {કાર્ય %1$s રદ થયું}
 ::msgcat::mcset gu {cannot list scripts (gateway offline?)} {સ્ક્રિપ્ટ યાદી કરી શકાતી નથી (ગેટવે ઑફલાઇન?)}
 ::msgcat::mcset gu {cannot reach the gateway: %s} {ગેટવે સુધી પહોંચી શકાતું નથી: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset gu commit {કમિટ કરો}
 ::msgcat::mcset gu {compacting %s messages in the background — the transcript reloads when it finishes} {બેકગ્રાઉન્ડમાં %s મેસેજ કોમ્પેક્ટ થઈ રહ્યા છે — પૂર્ણ થતાં ટ્રાન્સ્ક્રિપ્ટ ફરી લોડ થશે}
 ::msgcat::mcset gu compacting… {કોમ્પેક્ટ થઈ રહ્યું છે…}
+::msgcat::mcset gu {comparing the nodes' versions and config…} {નોડની આવૃત્તિઓ અને કૉન્ફિગ સરખાવી રહ્યા છીએ…}
 ::msgcat::mcset gu {completion tokens} {કમ્પ્લીશન ટોકન}
 ::msgcat::mcset gu {component options and declared actions} {ઘટક વિકલ્પો અને જાહેર કરેલ ક્રિયાઓ}
 ::msgcat::mcset gu composer કમ્પોઝર
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset gu {could not open %s} {%s ખોલી શકાયું નહીં}
 ::msgcat::mcset gu {could not open %s (no working browser opener)} {%s ખોલી શકાયું નહીં (કોઈ કામનું બ્રાઉઝર ઓપનર નથી)}
 ::msgcat::mcset gu {could not open %{url}: %{e}} {%{url} ખોલી શકાયું નહીં: %{e}}
+::msgcat::mcset gu {could not open the optional referral link: %s} {વૈકલ્પિક રેફરલ લિંક ખોલી શકાઈ નહીં: %s}
 ::msgcat::mcset gu {could not read %s: %s} {%s વાંચી શકાયું નહીં: %s}
 ::msgcat::mcset gu {could not read the current route} {વર્તમાન રૂટ વાંચી શકાયું નહીં}
 ::msgcat::mcset gu {could not save this session's language: %{e}} {આ સેશનની ભાષા સાચવી શકાઈ નહીં: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset gu {ctxmenu: no widget %s (attached too early?)} {ctxmenu: વિજેટ %s નથી (વહેલું અટેચ થયું?)}
 ::msgcat::mcset gu {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {ક્યુરેટેડ ઍક્સેસ પસંદ કર્યો પણ માલિકની ઓળખ આપી નથી, તેથી [acl] નિષ્ક્રિય રહે છે — તેને ચાલુ કરવા telegram:123456 અથવા irc:account જેવી ઓળખ આપો}
 ::msgcat::mcset gu {current theme: %{name} · /theme <name>} {હાલની થીમ: %{name} · /theme <name>}
+::msgcat::mcset gu {cursor %1$s of %2$s (%3$s behind)} {કર્સર %2$s માંથી %1$s (%3$s પાછળ)}
 ::msgcat::mcset gu {custom command /%s…} {કસ્ટમ કમાન્ડ /%s…}
 ::msgcat::mcset gu {custom commands (.veles/commands/) and config aliases} {કસ્ટમ કમાન્ડ્સ (.veles/commands/) અને કૉન્ફિગના ઉપનામો}
 ::msgcat::mcset gu {cycle ends} {ચક્ર સમાપ્ત}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset gu doctor_resident {દરેક પ્રોમ્પ્ટમાં કાયમી: %{total} માંથી %{shown} અક્ષરો (~%{tokens} ટોકન્સ) — બાકીનું જરૂર પડ્યે આનાથી લોડ થાય: memory action=read path=%{path}}
 ::msgcat::mcset gu doctor_title {મેમરી તપાસ}
 ::msgcat::mcset gu doctor_total {કુલ: %{files} ફાઇલોમાં %{chars} અક્ષરો (~%{tokens} ટોકન્સ)}
+::msgcat::mcset gu {documentation is not in this source checkout: %s} {આ સ્રોત ચેકઆઉટમાં દસ્તાવેજીકરણ નથી: %s}
 ::msgcat::mcset gu done {થઈ ગયું}
 ::msgcat::mcset gu {done · %1$s/%2$s} {થઈ ગયું · %1$s/%2$s}
 ::msgcat::mcset gu {done, but the model returned no text} {થઈ ગયું, પણ મોડેલે કોઈ ટેક્સ્ટ આપ્યો નહીં}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset gu {evaluate Tcl and answer with the result — no model turn} {Tcl ચલાવો અને પરિણામથી જવાબ આપો — મોડેલના ટર્ન વગર}
 ::msgcat::mcset gu everyone દરેક
 ::msgcat::mcset gu everywhere બધે
+::msgcat::mcset gu {exchanging registry gossip…} {રજિસ્ટ્રી ગૉસિપનું આદાનપ્રદાન કરી રહ્યા છીએ…}
 ::msgcat::mcset gu exit {બહાર નીકળો}
 ::msgcat::mcset gu {exit veles-desktop} {veles-desktop માંથી બહાર નીકળો}
 ::msgcat::mcset gu {export failed: %s} {એક્સપોર્ટ નિષ્ફળ: %s}
 ::msgcat::mcset gu {export session} {સેશન નિકાસ કરો}
 ::msgcat::mcset gu {exported to %s} {%s માં એક્સપોર્ટ થયું}
+::msgcat::mcset gu {extension architecture, examples and LSP help} {એક્સટેન્શન આર્કિટેક્ચર, ઉદાહરણો અને LSP સહાય}
+::msgcat::mcset gu {extension development guide} {એક્સટેન્શન ડેવલપમેન્ટ માર્ગદર્શિકા}
+::msgcat::mcset gu failed નિષ્ફળ
 ::msgcat::mcset gu {failed to load history: %s} {હિસ્ટ્રી લોડ કરવામાં નિષ્ફળતા: %s}
 ::msgcat::mcset gu {failed to paint cached history: %s} {કેશ થયેલ હિસ્ટ્રી દેખાડવામાં નિષ્ફળતા: %s}
 ::msgcat::mcset gu {failed to paint replayed history: %s} {રીપ્લે થયેલ હિસ્ટ્રી દેખાડવામાં નિષ્ફળતા: %s}
 ::msgcat::mcset gu {failed: %s} {નિષ્ફળ: %s}
+::msgcat::mcset gu {failing — heartbeating, but a sync push or the last probe failed} {નિષ્ફળ — હાર્ટબીટ ચાલુ છે, પણ સમન્વય પુશ કે છેલ્લી પ્રોબ નિષ્ફળ}
 ::msgcat::mcset gu {failover blueprint: cannot reach the gateway} {ફેઇલઓવર બ્લુપ્રિન્ટ: ગેટવે સુધી પહોંચી શકાતું નથી}
 ::msgcat::mcset gu {failover graph unavailable: %1$s} {ફેલઓવર ગ્રાફ ઉપલબ્ધ નથી: %1$s}
 ::msgcat::mcset gu {failover script: cannot reach the gateway} {ફેઇલઓવર સ્ક્રિપ્ટ: ગેટવે સુધી પહોંચી શકાતું નથી}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset gu {fire the Tcl hook} {Tcl હૂક ચલાવો}
 ::msgcat::mcset gu {fires for %s:} {%s માટે ચાલે છે:}
 ::msgcat::mcset gu {fires per hour} {કલાક દીઠ ચાલે છે}
+::msgcat::mcset gu {fleet drift} {ફ્લીટ ડ્રિફ્ટ}
 ::msgcat::mcset gu {focus composer} {કમ્પોઝર પર ફોકસ}
 ::msgcat::mcset gu {focus failed: %{e}} {ફોકસ નિષ્ફળ: %{e}}
 ::msgcat::mcset gu {focus next region} {પછીના વિસ્તાર પર ફોકસ}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset gu {four splits is the maximum} {વધુમાં વધુ ચાર વિભાગો}
 ::msgcat::mcset gu {fresh session} {નવું સેશન}
 ::msgcat::mcset gu {fresh session (Ctrl-N too)} {નવું સેશન (Ctrl-N પણ)}
+::msgcat::mcset gu {fresh — heartbeating, sync passing} {તાજું — હાર્ટબીટ ચાલુ, સમન્વય પસાર}
+::msgcat::mcset gu from માંથી
 ::msgcat::mcset gu {from node %{node}} {નોડ %{node} તરફથી}
 ::msgcat::mcset gu {gateway     v%1$s · up %2$s} {ગેટવે     v%1$s · ચાલુ %2$s}
 ::msgcat::mcset gu {gateway unreachable — is `veles gateway run` up?} {ગેટવે અપ્રાપ્ય — શું `veles gateway run` ચાલુ છે?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset gu {in %s} {%s માં}
 ::msgcat::mcset gu {insert the next key literally (^B bold, ^C colour, ^O reset)} {આગળની કી શાબ્દિક રીતે દાખલ કરો (^B બોલ્ડ, ^C રંગ, ^O રીસેટ)}
 ::msgcat::mcset gu {inserted %s} {%s દાખલ કર્યું}
+::msgcat::mcset gu {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {ક્લસ્ટરની તપાસ કરો; સ્ટોર, મેમરી, કૉન્ફિગ કે તિજોરીનો સમન્વય સ્પષ્ટપણે push/લાગુ કરો; જૂનું નોડ ફ્લીટ-વ્યાપી ભૂલાવો; નોડનો લોગ ટેલ કે મેટ્રિક્સ વાંચો; આવૃત્તિ અને કૉન્ફિગ સરખાવો; હવે ગૉસિપ કરો}
 ::msgcat::mcset gu {inspector — app internals · core state · gw plugins} {ઇન્સ્પેક્ટર — એપ આંતરિક · કોર સ્ટેટ · gw પ્લગઇન્સ}
 ::msgcat::mcset gu {install a plugin from a git URL} {git URL થી પ્લગઇન ઇન્સ્ટોલ કરો}
 ::msgcat::mcset gu {install a skill from a git URL} {git URL થી સ્કિલ ઇન્સ્ટોલ કરો}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset gu instance ઇન્સ્ટન્સ
 ::msgcat::mcset gu {instance controls} {ઇન્સ્ટન્સ નિયંત્રણો}
 ::msgcat::mcset gu {instance detail} {ઇન્સ્ટન્સ વિગત}
+::msgcat::mcset gu {instance names may not start with "cluster:" or "g:": %s} {ઇન્સ્ટન્સ નામ "cluster:" કે "g:" થી શરૂ થઈ શકે નહીં: %s}
 ::msgcat::mcset gu {instance needs a name} {ઇન્સ્ટન્સને નામ જોઈએ}
 ::msgcat::mcset gu {instance unreachable} {ઇન્સ્ટન્સ અપ્રાપ્ય}
 ::msgcat::mcset gu instances ઇન્સ્ટન્સ
 ::msgcat::mcset gu interrupting… {વિક્ષેપિત કરી રહ્યાં…}
+::msgcat::mcset gu into માં
 ::msgcat::mcset gu {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset gu {irc: %s} {irc: %s}
 ::msgcat::mcset gu {irc: %s failed — %s} {irc: %s નિષ્ફળ — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset gu {language list} {ભાષા યાદી}
 ::msgcat::mcset gu {language picker (the swap for THIS window)} {ભાષા પસંદગી (આ વિન્ડો માટે બદલો)}
 ::msgcat::mcset gu {language saved: %s} {ભાષા સાચવાઈ: %s}
+::msgcat::mcset gu {language server} {લેંગ્વેજ સર્વર}
+::msgcat::mcset gu {language server: event stream unavailable: %s} {લેંગ્વેજ સર્વર: ઇવેન્ટ સ્ટ્રીમ ઉપલબ્ધ નથી: %s}
+::msgcat::mcset gu {language server: not started on the gateway — %s} {લેંગ્વેજ સર્વર: ગેટવે પર શરૂ થયું નથી — %s}
+::msgcat::mcset gu {language server: the gateway would not start one: %s} {લેંગ્વેજ સર્વર: ગેટવે તેને શરૂ કરશે નહીં: %s}
 ::msgcat::mcset gu {language swapped: %1$s ⇄ %2$s} {ભાષા બદલાઈ: %1$s ⇄ %2$s}
 ::msgcat::mcset gu {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {ભાષા → %1$s (પહેલાં %2$s) · માત્ર ચાલતી વિન્ડો — 'મૂળભૂત તરીકે સાચવો' config.toml લખે છે}
 ::msgcat::mcset gu {language: %s} {ભાષા: %s}
 ::msgcat::mcset gu {last error} {છેલ્લી ભૂલ}
+::msgcat::mcset gu {last pass %1$s at %2$s: %3$s} {છેલ્લો રાઉન્ડ %1$s %2$s વાગ્યે: %3$s}
 ::msgcat::mcset gu {last reply copied (%s chars)} {છેલ્લો જવાબ નકલ થયો (%s અક્ષરો)}
 ::msgcat::mcset gu {layout not saved: %s} {લેઆઉટ સાચવાયો નથી: %s}
 ::msgcat::mcset gu {leave (cancels a running turn first)} {બહાર નીકળો (પહેલાં ચાલુ ટર્ન રદ કરે છે)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset gu {list sessions} {સેશનોની યાદી}
 ::msgcat::mcset gu {list skills} {સ્કિલ્સની યાદી}
 ::msgcat::mcset gu {list tools} {ટૂલ્સની યાદી}
+::msgcat::mcset gu {listed here only; [notify] fleet_alerts is off} {ફક્ત અહીં યાદીમાં; [notify] fleet_alerts બંધ છે}
 ::msgcat::mcset gu {live patching ARMED} {લાઇવ પેચિંગ ARMED}
 ::msgcat::mcset gu {live patching ARMED — an agent can now redefine procs in this window} {લાઇવ પેચિંગ ARMED — એજન્ટ હવે આ વિન્ડોમાં procs ફરીથી વ્યાખ્યાયિત કરી શકે છે}
 ::msgcat::mcset gu {live patching disarmed} {લાઇવ પેચિંગ નિષ્ક્રિય}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset gu {log pane shown} {લોગ પેન બતાવ્યું}
 ::msgcat::mcset gu {log: %s} {લોગ: %s}
 ::msgcat::mcset gu {make media: image/video/audio, route = comfyui or provider[/model]} {મીડિયા બનાવો: image/video/audio, રૂટ = comfyui અથવા provider[/model]}
+::msgcat::mcset gu {managed via %s} {%s દ્વારા સંચાલિત}
+::msgcat::mcset gu {manual only} {ફક્ત મેન્યુઅલ}
 ::msgcat::mcset gu {mark set} {માર્ક સેટ થયો}
 ::msgcat::mcset gu {mark whole buffer (emacs select-all)} {આખો બફર માર્ક કરો (emacs select-all)}
 ::msgcat::mcset gu {markdown preview of the composer} {કમ્પોઝરનું માર્કડાઉન પૂર્વાવલોકન}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset gu model મોડેલ
 ::msgcat::mcset gu {model aliases} {મોડેલ ઉપનામ}
 ::msgcat::mcset gu {monitor %1$s fired} {મોનિટર %1$s સક્રિય થયું}
-::msgcat::mcset gu monitors મોનિટર
 ::msgcat::mcset gu monitors_header મોનિટર:
 ::msgcat::mcset gu monitors_none {(કોઈ મોનિટર નથી — મોડેલ આને monitor tool વડે શરૂ કરે છે)}
 ::msgcat::mcset gu {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {ટર્ન સીમા પર સેશન (અને તેનું સબટ્રી) બીજા પૂલ નોડ પર ખસેડો; પાર્ક કરેલ હેન્ડઓફ પૂર્ણ/અનડૂ કરો; સેશન કોની પાસે છે તે પૂછો (એડમિન)}
 ::msgcat::mcset gu {move the running foreground command to the background} {ચાલુ ફોરગ્રાઉન્ડ કમાન્ડને બેકગ્રાઉન્ડમાં ખસેડો}
 ::msgcat::mcset gu {move the running foreground command to the background (keeps running)} {ચાલી રહેલી ફોરગ્રાઉન્ડ કમાન્ડને બેકગ્રાઉન્ડમાં ખસેડો (ચાલુ જ રહે)}
+::msgcat::mcset gu {move this session's running foreground command to a background shell; keeps running} {આ સેશનનો ચાલુ ફોરગ્રાઉન્ડ કમાન્ડ બેકગ્રાઉન્ડ શેલમાં ખસેડે છે; તે ચાલુ રહે છે}
 ::msgcat::mcset gu {moving around} {આસપાસ ફરવું}
 ::msgcat::mcset gu name નામ
 ::msgcat::mcset gu {name a key first} {પહેલાં કીને નામ આપો}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset gu {neon impressionism} {નિયોન ઇમ્પ્રેશનિઝમ}
 ::msgcat::mcset gu {network (optional — e.g. libera; empty = any)} {નેટવર્ક (વૈકલ્પિક — દા.ત. libera; ખાલી = કોઈપણ)}
 ::msgcat::mcset gu {network to scope the grant to} {ગ્રાન્ટ મર્યાદિત કરવાનું નેટવર્ક}
+::msgcat::mcset gu new નવું
 ::msgcat::mcset gu {new buffer} {નવું બફર}
 ::msgcat::mcset gu {new entry — replace this text, then Save} {નવી એન્ટ્રી — આ લખાણ બદલો, પછી સાચવો}
 ::msgcat::mcset gu {new name for %s} {%s માટે નવું નામ}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset gu {no IRC buffer selected} {કોઈ IRC બફર પસંદ નથી}
 ::msgcat::mcset gu {no MCP servers configured — Add server… writes one into config.toml} {કોઈ MCP સર્વર ગોઠવાયેલ નથી — 'સર્વર ઉમેરો…' config.toml માં એક લખે છે}
 ::msgcat::mcset gu {no URLs in this buffer} {આ બફરમાં કોઈ URL નથી}
+::msgcat::mcset gu {no [a2a_agents] entry — this peer cannot be dialed} {[a2a_agents] એન્ટ્રી નથી — આ પીઅર ડાયલ કરી શકાતું નથી}
 ::msgcat::mcset gu {no alias /%s} {કોઈ ઉપનામ /%s}
 ::msgcat::mcset gu {no background refresh} {કોઈ બેકગ્રાઉન્ડ રિફ્રેશ નથી}
 ::msgcat::mcset gu {no buffer %s} {બફર %s નથી}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset gu {no code block in the last reply} {છેલ્લા જવાબમાં કોઈ કોડ બ્લોક નથી}
 ::msgcat::mcset gu {no cron jobs} {કોઈ cron જોબ નથી}
 ::msgcat::mcset gu {no cron jobs — New… creates one} {કોઈ cron જોબ નથી — 'નવું…' એક બનાવે છે}
+::msgcat::mcset gu {no exchange yet} {હજી કોઈ આદાનપ્રદાન નથી}
 ::msgcat::mcset gu {no file — pick a guts file or type a path} {કોઈ ફાઈલ નથી — guts ફાઈલ પસંદ કરો કે પાથ લખો}
 ::msgcat::mcset gu {no handler} {કોઈ હેન્ડલર નથી}
+::msgcat::mcset gu {no heartbeat for %{mins} min} {%{mins} મિનિટથી heartbeat નથી}
+::msgcat::mcset gu {no heartbeat within the threshold} {થ્રેશોલ્ડમાં heartbeat નથી}
 ::msgcat::mcset gu {no history yet} {હજી કોઈ ઇતિહાસ નથી}
 ::msgcat::mcset gu {no host configured for this instance} {આ ઇન્સ્ટન્સ માટે કોઈ હોસ્ટ ગોઠવાયેલ નથી}
 ::msgcat::mcset gu {no instance selected} {કોઈ ઇન્સ્ટન્સ પસંદ નથી}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset gu {no program to open URLs} {URL ખોલવા કોઈ પ્રોગ્રામ નથી}
 ::msgcat::mcset gu {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {કોઈ પ્રોવાઇડર કૉન્ફિગર થયેલો નથી — ટર્ન ચલાવતાં પહેલાં [[custom_providers]] એન્ટ્રી ઉમેરો અને [model] જોડી સેટ કરો}
 ::msgcat::mcset gu {no reading yet — press Refresh} {હજી કોઈ વાંચન નથી — 'તાજું કરો' દબાવો}
-::msgcat::mcset gu {no running tasks} {કોઈ ચાલતાં કાર્ય નથી}
 ::msgcat::mcset gu {no sample available} {કોઈ નમૂનો ઉપલબ્ધ નથી}
 ::msgcat::mcset gu {no search bar on this surface} {આ સરફેસ પર કોઈ શોધ પટ્ટી નથી}
 ::msgcat::mcset gu {no session matching %s} {%s સાથે મેળ ખાતું કોઈ સેશન નથી}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset gu {no session open — switch the scope to the default, or open a session} {કોઈ સત્ર ખુલ્લું નથી — સ્કોપ મૂળભૂત પર બદલો, અથવા સત્ર ખોલો}
 ::msgcat::mcset gu {no session open — the catalogue needs one; the default scope still works from config.toml} {કોઈ સત્ર ખુલ્લું નથી — કેટલોગ માટે એક જોઈએ; મૂળભૂત સ્કોપ config.toml થી હજી ચાલે છે}
 ::msgcat::mcset gu {no setting %s — try filter or bare} {%s સેટિંગ નથી — filter કે bare અજમાવો}
+::msgcat::mcset gu {no shells or monitors to show} {બતાવવા માટે કોઈ શેલ્સ અથવા મોનિટર્સ નથી}
 ::msgcat::mcset gu {no skills found} {કોઈ સ્કિલ્સ મળી નથી}
 ::msgcat::mcset gu {no such URL — /urls lists them} {આવો કોઈ URL નથી — /urls યાદી બતાવે છે}
 ::msgcat::mcset gu {no such file: %s} {આવી કોઈ ફાઈલ નથી: %s}
 ::msgcat::mcset gu {no swap target yet — set one with /locale secondary <id>} {હજુ અદલબદલની ભાષા નથી — /locale secondary <id> વડે સેટ કરો}
+::msgcat::mcset gu {no task selected} {કોઈ કાર્ય પસંદ કરેલ નથી}
 ::msgcat::mcset gu {no triggers} {કોઈ ટ્રિગર નથી}
 ::msgcat::mcset gu {no triggers — New… creates one} {કોઈ ટ્રિગર નથી — 'નવું…' એક બનાવે છે}
 ::msgcat::mcset gu {no upstream reading for %s} {%s માટે કોઈ અપસ્ટ્રીમ વાંચન નથી}
 ::msgcat::mcset gu {no word match} {કોઈ શબ્દ મેળ નથી}
 ::msgcat::mcset gu {no xdg-open — path copied instead} {કોઈ xdg-open નથી — તેના બદલે પાથ નકલ થયો}
+::msgcat::mcset gu {node log} {નોડ લોગ}
 ::msgcat::mcset gu {none loaded} {કંઈ લોડ નથી}
 ::msgcat::mcset gu {none recorded} {કંઈ નોંધાયું નથી}
+::msgcat::mcset gu {none since this gateway started} {આ ગેટવે શરૂ થયા પછી કંઈ નહીં}
 ::msgcat::mcset gu {none yet} {હજુ નથી}
 ::msgcat::mcset gu {normie is pure Ctrl — no emacs prefix chords.} {normie સંપૂર્ણ Ctrl છે — કોઈ emacs પ્રીફિક્સ કોર્ડ્સ નહીં.}
 ::msgcat::mcset gu {normie: select all · emacs: start of line} {normie: select all · emacs: લાઇનનું શરૂઆત}
 ::msgcat::mcset gu {not a channel} {ચેનલ નથી}
 ::msgcat::mcset gu {not a key = value line: %s} {કી = કિંમત જેવી લાઇન નથી: %s}
+::msgcat::mcset gu {not a node in the attached gateway's cluster registry: %s} {જોડાયેલા ગેટવેની ક્લસ્ટર નોંધણીમાં નોડ નથી: %s}
 ::msgcat::mcset gu {not a number} {સંખ્યા નથી}
 ::msgcat::mcset gu {not a valid http(s) url: %s} {માન્ય http(s) url નથી: %s}
 ::msgcat::mcset gu {not a valid ssh host: %s} {માન્ય ssh હોસ્ટ નથી: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset gu {not attached to a gateway} {ગેટવે સાથે જોડાયેલ નથી}
 ::msgcat::mcset gu {not configured} {ગોઠવાયેલ નથી}
 ::msgcat::mcset gu {not ignoring %s} {%s અવગણાતું નથી}
+::msgcat::mcset gu {not installed} {ઇન્સ્ટૉલ કરેલું નથી}
 ::msgcat::mcset gu {not reported} {જાણ નથી}
 ::msgcat::mcset gu {not running} {ચાલતું નથી}
 ::msgcat::mcset gu {not set in config.toml — the built-in default applies. %s} {config.toml માં સેટ નથી — બિલ્ટ-ઇન મૂળભૂત લાગુ થાય છે. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset gu off બંધ
 ::msgcat::mcset gu {off (the default)} {બંધ (મૂળભૂત)}
 ::msgcat::mcset gu offline ઑફલાઇન
+::msgcat::mcset gu ok ઠીક
 ::msgcat::mcset gu on ચાલુ
 ::msgcat::mcset gu {on (the default)} {ચાલુ (મૂળભૂત)}
 ::msgcat::mcset gu {on failure} {નિષ્ફળતા પર}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset gu {open links} {લિંક ખોલવી}
 ::msgcat::mcset gu {open the engine log} {એન્જિન લોગ ખોલો}
 ::msgcat::mcset gu {open the joined session before /leave (on %s)} {જોડાયેલ સેશન /leave કરતા પહેલા ખોલો (%s પર)}
+::msgcat::mcset gu {open the selected child session} {પસંદ કરેલ ચાઇલ્ડ સેશન ખોલો}
 ::msgcat::mcset gu {open the selected skill in the Dev editor} {પસંદ કરેલી સ્કિલ Dev સંપાદકમાં ખોલો}
 ::msgcat::mcset gu {open the setup wizard (re-runnable; edits config.toml in place)} {સેટઅપ વિઝાર્ડ ખોલો (ફરી ચલાવી શકાય; config.toml ત્યાં જ સંપાદિત કરે છે)}
 ::msgcat::mcset gu {open the share sheet} {શેર શીટ ખોલવી}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset gu {override cleared — the default applies} {ઓવરરાઇડ સાફ — મૂળભૂત લાગુ}
 ::msgcat::mcset gu {override failed: %s} {ઓવરરાઇડ નિષ્ફળ: %s}
 ::msgcat::mcset gu {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {માલિકની ઓળખ %{id} ને ACL મેળવી શકતું નથી — telegram:<સંખ્યાત્મક આઈડી>, irc:<services એકાઉન્ટ>, અથવા nick!user@host માસ્ક વાપરો}
+::msgcat::mcset gu owner/repository માલિક/રિપોઝિટરી
 ::msgcat::mcset gu {owners: %s} {માલિકો: %s}
 ::msgcat::mcset gu {pair a desktop with this agent} {આ એજન્ટ સાથે ડેસ્કટોપ જોડો}
 ::msgcat::mcset gu {partly failed: %s} {અંશતઃ નિષ્ફળ: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset gu plugin પ્લગઇન
 ::msgcat::mcset gu {plugin directory git history} {પ્લગઇન ડિરેક્ટરી ગિટ ઇતિહાસ}
 ::msgcat::mcset gu {plugin list} {પ્લગઇન યાદી}
+::msgcat::mcset gu {plugin provider driver} {પ્લગિન પ્રોવાઇડર ડ્રાઇવર}
 ::msgcat::mcset gu {plugins reloaded on %s} {%s પર પ્લગઇન્સ ફરી લોડ થયાં}
 ::msgcat::mcset gu {pop %s out into its own window} {%sને પોતાની વિન્ડોમાં અલગ કાઢો}
 ::msgcat::mcset gu {pop the buffer out into its own window} {બફરને પોતાની વિન્ડોમાં ખસેડો}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset gu {prefix: window & dock commands} {પ્રીફિક્સ: વિન્ડો અને ડોક કમાન્ડ્સ}
 ::msgcat::mcset gu {press Attach in the Instances tab} {ઇન્સ્ટન્સ ટૅબમાં Attach દબાવો}
 ::msgcat::mcset gu preview પૂર્વદર્શન
+::msgcat::mcset gu {preview an AI extension change and explicitly apply its diff} {AI એક્સટેન્શનના ફેરફારનું પૂર્વાવલોકન કરો અને તેનો ડિફ સ્પષ્ટ રીતે લાગુ કરો}
 ::msgcat::mcset gu {preview failed: %s} {પૂર્વદર્શન નિષ્ફળ: %s}
 ::msgcat::mcset gu {previous buffer} {પહેલાનો બફર}
 ::msgcat::mcset gu {previous command was not a yank} {પહેલો આદેશ યેન્ક નહોતો}
 ::msgcat::mcset gu {previous match} {પહેલો મેળ}
 ::msgcat::mcset gu {previous session} {પાછલું સેશન}
+::msgcat::mcset gu {probing %s…} {%s ની પ્રોબ થઈ રહી છે…}
 ::msgcat::mcset gu {proc body} {proc બોડી}
 ::msgcat::mcset gu {profile unavailable: %s} {પ્રોફાઇલ અનુપલબ્ધ: %s}
 ::msgcat::mcset gu profiles: પ્રોફાઇલ્સ:
 ::msgcat::mcset gu prompt પ્રોમ્પ્ટ
 ::msgcat::mcset gu {prompt breakdown} {પ્રોમ્પ્ટનું વિભાજન}
 ::msgcat::mcset gu {prompt tokens} {પ્રોમ્પ્ટ ટોકન્સ}
+::msgcat::mcset gu {proposal only, not applied} {ફક્ત પ્રસ્તાવ, લાગુ કરાયો નથી}
 ::msgcat::mcset gu provider પ્રોવાઇડર
 ::msgcat::mcset gu {provider / model} {પ્રોવાઇડર / મોડેલ}
 ::msgcat::mcset gu {provider base URL} {provider નો base URL}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset gu {re-sync the slopdrop state mirror} {slopdrop સ્ટેટ મિરર ફરી સિંક કરો}
 ::msgcat::mcset gu {read and set the clipboard} {ક્લિપબોર્ડ વાંચવું અને સેટ કરવું}
 ::msgcat::mcset gu {read text aloud} {લખાણ મોટેથી વાંચવું}
+::msgcat::mcset gu {read-only: [approvals] allowlist} {વાંચન-માત્ર: [approvals] allowlist}
 ::msgcat::mcset gu {read-only: this session lives on %1$s (as read at %2$s)} {ફક્ત વાંચન: આ સેશન %1$s પર છે (%2$s વાગ્યે વાંચ્યા મુજબ)}
 ::msgcat::mcset gu {read-only: this skill comes from the %s library} {ફક્ત વાંચન: આ સ્કિલ %s લાઇબ્રેરીમાંથી આવે છે}
 ::msgcat::mcset gu reasoning તર્ક
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset gu {refused to open %s (only http, https, mailto)} {%s ખોલવાનો ઇનકાર (માત્ર http, https, mailto)}
 ::msgcat::mcset gu {refused: %s} {નકાર્યું: %s}
 ::msgcat::mcset gu {region copied} {વિસ્તાર નકલ થયો}
+::msgcat::mcset gu registered નોંધાયેલ
 ::msgcat::mcset gu {registry not saved: %s} {રજિસ્ટ્રી સાચવાઈ નહીં: %s}
 ::msgcat::mcset gu {reload on %1$s failed: %2$s} {%1$s પર રીલોડ નિષ્ફળ: %2$s}
 ::msgcat::mcset gu {reload the mechanisms} {મિકેનિઝમ્સ રીલોડ કરો}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset gu {resume a session (prefix ok)} {સેશન ફરી શરૂ કરો (ઉપસર્ગ પૂરતો)}
 ::msgcat::mcset gu {retry failed: %s} {ફરી પ્રયાસ નિષ્ફળ: %s}
 ::msgcat::mcset gu {retrying last prompt…} {છેલ્લો પ્રોમ્પ્ટ ફરી પ્રયત્ન…}
+::msgcat::mcset gu {review files for an explicit upstream contribution} {સ્પષ્ટ અપસ્ટ્રીમ યોગદાન માટે ફાઇલોની સમીક્ષા કરો}
+::msgcat::mcset gu {review standing global and session tool permissions} {સ્થાયી ગ્લોબલ અને સેશન ટૂલ પરવાનગીઓની સમીક્ષા કરો}
 ::msgcat::mcset gu revision પુનરાવર્તન
 ::msgcat::mcset gu {revision history} {પુનરાવર્તન ઇતિહાસ}
+::msgcat::mcset gu {revoke refused} {પાછું ખેંચવાનો ઇનકાર}
 ::msgcat::mcset gu {revoke the selected identity's grant} {પસંદ કરેલ ઓળખની મંજૂરી પાછી ખેંચો}
 ::msgcat::mcset gu role ભૂમિકા
 ::msgcat::mcset gu {role to grant} {મંજૂર કરવાની ભૂમિકા}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset gu {saved to %s} {%s માં સાચવાયું}
 ::msgcat::mcset gu saved. સાચવાયું.
 ::msgcat::mcset gu {scaffold a new plugin} {નવું પ્લગઇન સ્કેફોલ્ડ કરો}
+::msgcat::mcset gu {scaffold a user plugin and open it in this editor} {વપરાશકર્તા પ્લગિનનું ઢાંચું બનાવો અને તેને આ એડિટરમાં ખોલો}
 ::msgcat::mcset gu {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {નિર્ધારિત કામો; /crons add "<sched>" [session=<id>] <prompt> (ઉપનામ /cron)}
 ::msgcat::mcset gu scope અવકાશ
 ::msgcat::mcset gu script સ્ક્રિપ્ટ
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset gu {select %s first} {પહેલા %s પસંદ કરો}
 ::msgcat::mcset gu {select a checkpoint first} {પહેલા ચેકપોઇન્ટ પસંદ કરો}
 ::msgcat::mcset gu {select a file, or New… to create one} {ફાઇલ પસંદ કરો, અથવા બનાવવા માટે નવું…}
+::msgcat::mcset gu {select a grant first} {પહેલા એક અનુમતિ પસંદ કરો}
 ::msgcat::mcset gu {select a handler first} {પહેલા હેન્ડલર પસંદ કરો}
 ::msgcat::mcset gu {select a member first} {પહેલા સભ્ય પસંદ કરો}
 ::msgcat::mcset gu {select a route} {રૂટ પસંદ કરો}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset gu {select an assignment first} {પહેલા સોંપણી પસંદ કરો}
 ::msgcat::mcset gu {select an entry first} {પહેલા એન્ટ્રી પસંદ કરો}
 ::msgcat::mcset gu {select an identity first} {પહેલા ઓળખ પસંદ કરો}
+::msgcat::mcset gu {selected task details and shell output} {પસંદ કરેલ કાર્યની વિગતો અને શેલ આઉટપુટ}
 ::msgcat::mcset gu {selected: %s} {પસંદ: %s}
 ::msgcat::mcset gu {send clipboard as prompt} {ક્લિપબોર્ડને પ્રોમ્પ્ટ તરીકે મોકલો}
 ::msgcat::mcset gu {send failed: %s} {મોકલવામાં નિષ્ફળ: %s}
 ::msgcat::mcset gu {send the message; while a turn runs, queue it as steering} {સંદેશ મોકલો; ટર્ન ચાલુ હોય ત્યારે તેને સ્ટિયરિંગ તરીકે કતારમાં મૂકો}
+::msgcat::mcset gu sent મોકલ્યું
+::msgcat::mcset gu {sent to the owner's home chat} {માલિકની હોમ ચેટ પર મોકલ્યું}
 ::msgcat::mcset gu server સર્વર
 ::msgcat::mcset gu {server buffers merged} {સર્વર બફર મર્જ થયાં}
 ::msgcat::mcset gu {server buffers separate} {સર્વર બફર અલગ}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset gu {settings, one key = value per line} {સેટિંગ્સ, દરેક લાઇનમાં એક key = value}
 ::msgcat::mcset gu {setup_done marker NOT saved: %s} {setup_done માર્કર સાચવાયું નથી: %s}
 ::msgcat::mcset gu {shell %1$s finished} {શેલ %1$s પૂરો થયો}
-::msgcat::mcset gu shells શેલ
+::msgcat::mcset gu {shells, monitors and subagents} {શેલ્સ, મોનિટર્સ અને સબએજન્ટ્સ}
 ::msgcat::mcset gu shells_header {બેકગ્રાઉન્ડ શેલ:}
 ::msgcat::mcset gu shells_none {(કોઈ બેકગ્રાઉન્ડ શેલ નથી — /background <cmd> એક શરૂ કરે છે)}
 ::msgcat::mcset gu {show current configuration} {વર્તમાન કૉન્ફિગરેશન બતાવો}
 ::msgcat::mcset gu {show every key in this mode} {આ મોડની દરેક કી બતાવો}
 ::msgcat::mcset gu {show or hide the session list} {સેશન યાદી બતાવો અથવા છુપાવો}
 ::msgcat::mcset gu {show or switch model (alias | model@provider | custom:<prov>)} {મોડેલ બતાવો અથવા બદલો (alias | model@provider | custom:<prov>)}
+::msgcat::mcset gu {show selected shell output} {પસંદ કરેલ શેલ આઉટપુટ બતાવો}
 ::msgcat::mcset gu {show short messages} {ટૂંકા સંદેશા બતાવવા}
 ::msgcat::mcset gu {show the model's reasoning blocks (same as /reasoning)} {મોડેલના રિઝનિંગ બ્લોક બતાવો (/reasoning જેવું જ)}
 ::msgcat::mcset gu {show unclaimed} {બિનકબજે બતાવો}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset gu spend ખર્ચ
 ::msgcat::mcset gu {split: %s} {વિભાજન: %s}
 ::msgcat::mcset gu {ssh to %1$s failed: %2$s} {%1$s પર ssh નિષ્ફળ: %2$s}
+::msgcat::mcset gu {stale — no heartbeat within the threshold} {જૂનું — થ્રેશોલ્ડમાં કોઈ હાર્ટબીટ નથી}
+::msgcat::mcset gu {standing global and session permission grants} {સ્થાયી ગ્લોબલ અને સેશન પરવાનગી અનુમતિઓ}
 ::msgcat::mcset gu state સ્થિતિ
 ::msgcat::mcset gu {state       never reached} {સ્થિતિ       ક્યારેય પહોંચાયું નહીં}
 ::msgcat::mcset gu {state       reachable} {સ્થિતિ       પ્રાપ્ય}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset gu {stored in the encrypted vault (%1$s): %2$s} {એન્ક્રિપ્ટેડ તિજોરીમાં રાખ્યું (%1$s): %2$s}
 ::msgcat::mcset gu {stream handler: %s} {સ્ટ્રીમ હેન્ડલર: %s}
 ::msgcat::mcset gu {subagent %1$s finished} {સબએજન્ટ %1$s પૂરો થયો}
-::msgcat::mcset gu subagents સબએજન્ટ્સ
 ::msgcat::mcset gu subagents_header {ચાલુ સબએજન્ટ્સ:}
 ::msgcat::mcset gu subagents_none {(કોઈ ચાલતાં સબએજન્ટ નથી — /btw <prompt> એક શરૂ કરે છે, અથવા મોડેલ delegate_task વાપરે છે)}
 ::msgcat::mcset gu {suspend failed: %{e}} {સસ્પેન્ડ નિષ્ફળ: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset gu {switch the selected skill off} {પસંદ કરેલ સ્કિલ બંધ કરો}
 ::msgcat::mcset gu {switch the selected skill on} {પસંદ કરેલ સ્કિલ ચાલુ કરો}
 ::msgcat::mcset gu {switch to the %s tab} {%s ટૅબ પર જાઓ}
+::msgcat::mcset gu {sync requested: %s} {સમન્વય વિનંતી: %s}
 ::msgcat::mcset gu {tab 1} {ટેબ 1}
 ::msgcat::mcset gu {tab 2} {ટેબ 2}
 ::msgcat::mcset gu {tab 3} {ટેબ 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset gu tasks_none {(કોઈ ચાલુ કાર્ય નથી)}
 ::msgcat::mcset gu tasks_not_found {આવું કોઈ કાર્ય નથી: %{id}}
 ::msgcat::mcset gu tasks_not_running {કાર્ય %{id} પહેલેથી પૂરું થયું છે}
-::msgcat::mcset gu {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset gu {tcl-lsp: event stream unavailable: %s} {tcl-lsp: ઇવેન્ટ સ્ટ્રીમ ઉપલબ્ધ નથી: %s}
-::msgcat::mcset gu {tcl-lsp: gateway would not start it: %s} {tcl-lsp: ગેટવે તે શરૂ કરશે નહીં: %s}
-::msgcat::mcset gu {tcl-lsp: not started on the gateway — %s} {tcl-lsp: ગેટવે પર શરૂ થયું નથી — %s}
 ::msgcat::mcset gu {that buffer is not split} {તે બફર વિભાજિત નથી}
 ::msgcat::mcset gu {the %s plan} {%s યોજના}
 ::msgcat::mcset gu {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {API key ફીલ્ડમાં environment variable નું નામ (જેમ કે %{example}) આવે છે, કી પોતે નહીં — કી છુપાયેલા ફીલ્ડમાં જાય છે}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset gu {the gateway answered without a report} {ગેટવેએ રિપોર્ટ વગર જવાબ આપ્યો}
 ::msgcat::mcset gu {the model/provider pair is incomplete — the gateway will not route until both are present} {મૉડેલ/પ્રોવાઇડર જોડી અધૂરી છે — બંને ન હોય ત્યાં સુધી ગેટવે રૂટ કરશે નહીં}
 ::msgcat::mcset gu {the options changed, so that is a fresh preview — press “Write it” again to write it} {વિકલ્પો બદલાયા, તેથી તે નવું પૂર્વદર્શન છે — લખવા ફરી “Write it” દબાવો}
+::msgcat::mcset gu {the peer has not been sent this vault yet} {આ તિજોરી હજી પીઅરને મોકલાઈ નથી}
+::msgcat::mcset gu {the peer holds this vault} {પીઅર પાસે આ તિજોરી છે}
 ::msgcat::mcset gu {the primary route is \[model\] provider/default — change it there, not here} {પ્રાથમિક રૂટ \[model\] provider/default છે — તે ત્યાં બદલો, અહીં નહીં}
 ::msgcat::mcset gu {the provider/model route this session sends to} {આ સત્ર જે પ્રોવાઈડર/મોડેલ રૂટ પર મોકલે છે}
 ::msgcat::mcset gu {the same, on the privileged path (owner only)} {એ જ, વિશેષાધિકાર માર્ગે (ફક્ત owner)}
 ::msgcat::mcset gu {the selected entry (edit, then Save)} {પસંદ કરેલ એન્ટ્રી (સંપાદિત કરો, પછી Save)}
+::msgcat::mcset gu {the server stopped: %s} {સર્વર બંધ થયું: %s}
 ::msgcat::mcset gu {the synthwave splash} {synthwave સ્વાગત સ્ક્રીન}
 ::msgcat::mcset gu {the text after the name was NOT sent anywhere — type the value into the masked field} {નામ પછીનું લખાણ ક્યાંય મોકલાયું નથી — મૂલ્ય છુપાયેલા ખાનામાં ટાઇપ કરો}
 ::msgcat::mcset gu {the transcript} ટ્રાન્સ્ક્રિપ્ટ
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset gu thinking… {વિચારી રહ્યું…}
 ::msgcat::mcset gu {thinking… (%s)} {વિચારી રહ્યું… (%s)}
 ::msgcat::mcset gu {this file's revisions, their diffs, and restore} {આ ફાઇલના પુનરાવર્તનો, તેમના તફાવતો અને પુનઃસ્થાપન}
+::msgcat::mcset gu {this gateway} {આ ગેટવે}
 ::msgcat::mcset gu {this gateway has no Tcl interpreter} {આ ગેટવે પાસે Tcl ઇન્ટરપ્રિટર નથી}
 ::msgcat::mcset gu {this list} {આ યાદી}
+::msgcat::mcset gu {this node has no vault} {આ નોડ પાસે કોઈ તિજોરી નથી}
 ::msgcat::mcset gu {this route} {આ રૂટ}
 ::msgcat::mcset gu {this session} {આ સેશન}
 ::msgcat::mcset gu {this session follows the default language again (%{def})} {આ સેશન ફરી મૂળભૂત ભાષા અનુસરે છે (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset gu {transcript finalization failed: %s} {ટ્રાન્સ્ક્રિપ્ટ અંતિમીકરણ નિષ્ફળ: %s}
 ::msgcat::mcset gu {transcript refetched} {ટ્રાન્સક્રિપ્ટ ફરી મેળવાઈ}
 ::msgcat::mcset gu {transcript — arrows to read, %s for composer} {ટ્રાન્સક્રિપ્ટ — વાંચવા તીર, %s કંપોઝર માટે}
+::msgcat::mcset gu {translate text with the dedicated translation model, without an agent turn} {સમર્પિત અનુવાદ મોડેલ વડે લખાણનો અનુવાદ કરો, એજન્ટ ટર્ન વગર}
+::msgcat::mcset gu {translation result} {અનુવાદ પરિણામ}
 ::msgcat::mcset gu {trigger %1$s %2$sd} {ટ્રિગર %1$s %2$sd}
 ::msgcat::mcset gu {trigger created} {ટ્રિગર બનાવાયું}
 ::msgcat::mcset gu {trigger updated} {ટ્રિગર અપડેટ થયું}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset gu {usage: /steer <instruction>} {વપરાશ: /steer <instruction>}
 ::msgcat::mcset gu used વપરાયેલ
 ::msgcat::mcset gu user વપરાશકર્તા
+::msgcat::mcset gu {user copy} {વપરાશકર્તા નકલ}
 ::msgcat::mcset gu {user identities, one per line} {વપરાશકર્તા ઓળખ, દરેક લાઇનમાં એક}
 ::msgcat::mcset gu {user name} {વપરાશકર્તા નામ}
 ::msgcat::mcset gu {user profile} {વપરાશકર્તા પ્રોફાઇલ}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset gu {value (TOML: 5, true, "text", ["a","b"])} {મૂલ્ય (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset gu veles veles
 ::msgcat::mcset gu {veles editor} {veles એડિટર}
+::msgcat::mcset gu {veles fleet: node %{node} is failing — %{detail}} {veles ફ્લીટ: નોડ %{node} નિષ્ફળ થઈ રહ્યું છે — %{detail}}
+::msgcat::mcset gu {veles fleet: node %{node} is stale — %{detail}} {veles ફ્લીટ: નોડ %{node} જૂનું છે — %{detail}}
+::msgcat::mcset gu {veles fleet: node %{node} recovered (it was %{was})} {veles ફ્લીટ: નોડ %{node} સ્વસ્થ થયું (પહેલા %{was} હતું)}
 ::msgcat::mcset gu {veles · keyboard help (bindings: %s)} {veles · કીબોર્ડ મદદ (bindings: %s)}
 ::msgcat::mcset gu {veles · touch help} {veles · સ્પર્શ સહાય}
 ::msgcat::mcset gu {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset gu widgets વિજેટ્સ
 ::msgcat::mcset gu {will be stored in the encrypted vault} {એન્ક્રિપ્ટેડ તિજોરીમાં રાખવામાં આવશે}
 ::msgcat::mcset gu {wire protocol} {વાયર પ્રોટોકોલ}
+::msgcat::mcset gu {without force to} {ફોર્સ વગર આ પર}
 ::msgcat::mcset gu {wizard language} {વિઝાર્ડ ભાષા}
 ::msgcat::mcset gu {wizard language: %s} {વિઝાર્ડ ભાષા: %s}
 ::msgcat::mcset gu {write failed: %s} {લખવું નિષ્ફળ: %s}
 ::msgcat::mcset gu {write grants that still expire (the expiry is dropped — a config line cannot expire)} {હજુ સમાપ્ત થતી મંજૂરીઓ લખો (સમાપ્તિ છોડાય છે — કોન્ફિગ લાઇન સમાપ્ત થઈ શકે નહીં)}
 ::msgcat::mcset gu {write the entries back} {એન્ટ્રીઓ પાછી લખો}
 ::msgcat::mcset gu {write the store's runtime rules into config.toml} {સ્ટોરના રનટાઇમ નિયમો config.toml માં લખો}
+::msgcat::mcset gu {write the whole extension from its purpose, as a reviewed preview} {તેના હેતુ પરથી આખું એક્સટેન્શન લખો, સમીક્ષિત પૂર્વદર્શન તરીકે}
 ::msgcat::mcset gu {write these values into config.toml as the defaults} {આ મૂલ્યો config.toml માં મૂળભૂત તરીકે લખો}
 ::msgcat::mcset gu writing લખવું
 ::msgcat::mcset gu {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {પહેલો [acl] માલિક લખવાથી આ ગેટવે ક્યુરેટેડ મોડમાં જાય છે: ડિફૉલ્ટ ભૂમિકા guest (fail-closed) બને છે અને ઍડેપ્ટરની મંજૂરી સૂચિ વિશ્વાસની સીમા રહેતી નથી}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset gu {▲ VELES — neon impressionism} {▲ VELES — નિયોન ઇમ્પ્રેશનિઝમ}
 ::msgcat::mcset gu {▲ earlier} {▲ અગાઉ}
 ::msgcat::mcset gu {▼ later} {▼ પછી}
+::msgcat::mcset gu {▾ Cluster registry} {▾ ક્લસ્ટર રજિસ્ટ્રી}
 ::msgcat::mcset gu {▾ new output — follow} {▾ નવું આઉટપુટ — અનુસરો}
 ::msgcat::mcset gu {○ unattached} {○ અજોડાયેલ}
 ::msgcat::mcset gu {● %1$s — %2$s} {● %1$s — %2$s}

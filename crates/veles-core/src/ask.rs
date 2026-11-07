@@ -1227,6 +1227,42 @@ pub fn clear_session_asker(session_id: &str) {
     session_askers_map().lock_ok().remove(session_id);
 }
 
+/// Validate an already-parsed frontend answer against the request that
+/// opened it. Parsing alone cannot tell an unavailable permanent grant
+/// from a legitimate one; resolution consumes the ask, so this check
+/// belongs before `resolve`, not after it.
+pub fn answer_error(req: &AskRequest, answer: &AskAnswer) -> Option<String> {
+    let questions = req.all_questions();
+    let is_multi = !req.questions.is_empty();
+    for (question, selected) in if is_multi {
+        questions
+            .iter()
+            .filter_map(|q| {
+                answer
+                    .per_question
+                    .get(&q.key)
+                    .map(|a| (q, a.selected.as_slice()))
+            })
+            .collect::<Vec<_>>()
+    } else {
+        questions
+            .first()
+            .map(|q| vec![(q, answer.selected.as_slice())])
+            .unwrap_or_default()
+    } {
+        if !question.multi && selected.len() > 1 {
+            return Some(format!("question '{}' accepts one choice", question.key));
+        }
+        if let Some(key) = selected
+            .iter()
+            .find(|key| !question.choices.iter().any(|choice| choice.key == **key))
+        {
+            return Some(format!("unknown choice '{key}' for this question"));
+        }
+    }
+    None
+}
+
 /// Every open ask, oldest first — lets a frontend that reconnected
 /// (desktop reload) redraw questions it missed.
 pub fn open_all() -> Vec<AskRequest> {
@@ -1278,7 +1314,10 @@ pub fn parse_reply(req: &AskRequest, text: &str) -> Option<AskAnswer> {
     // stays open for a properly-shaped one — the same convention
     // approvals have always had for prose.
     if req.questions.len() > 1 {
-        return parse_multi_question_reply(req, t);
+        if let Some(a) = parse_multi_question_reply(req, t) {
+            return Some(a);
+        }
+        return parse_approval_scope_reply(req, t);
     }
 
     // A ticket ask is answered by the ticket itself, wherever it sits in
@@ -1415,6 +1454,43 @@ pub fn parse_reply(req: &AskRequest, text: &str) -> Option<AskAnswer> {
 
     // Clarify: anything else is a free-text answer.
     Some(AskAnswer::text(t))
+}
+
+/// The scope question of a multi-permission approval (agent.rs: q1 is
+/// once/session/always/deny, q2 the permission classes, all checked by
+/// default), or `None` for any other multi-question ask.
+fn approval_scope_question(req: &AskRequest) -> Option<AskQuestion> {
+    if req.kind != AskKind::Approval || req.questions.len() < 2 {
+        return None;
+    }
+    let q1 = req.questions.first()?;
+    let has = |k: &str| q1.choices.iter().any(|c| c.key == k);
+    (has(CHOICE_ONCE) && has(CHOICE_DENY)).then(|| q1.clone())
+}
+
+/// A one-part reply to a multi-permission approval ("2", "y", "deny",
+/// "always", "2 go ahead"): the usual single approval reply, read
+/// against the scope question with the full approval grammar. q2 is
+/// left unanswered, so the engine applies its all-checked default —
+/// what the reply's author saw offered (review finding approvals-2).
+/// A reply that names a permission key is a narrowing attempt in a
+/// shape we do not parse; it is rejected, never widened to all.
+fn parse_approval_scope_reply(req: &AskRequest, t: &str) -> Option<AskAnswer> {
+    let q1 = approval_scope_question(req)?;
+    let lower = t.to_ascii_lowercase();
+    let names_permission = req.questions[1..]
+        .iter()
+        .flat_map(|q| q.choices.iter())
+        .any(|c| lower.contains(&c.key.to_ascii_lowercase()));
+    if names_permission {
+        return None;
+    }
+    let mut single = req.clone();
+    single.questions.clear();
+    single.prompt = q1.prompt;
+    single.choices = q1.choices;
+    single.multi = false;
+    parse_reply(&single, t)
 }
 
 /// [`choice_by_token`] without the label-prefix match: a number, a key
@@ -1803,6 +1879,12 @@ choice, anything else is your own answer",
             s.push_str(&format!(
                 "\n  or every choice in order on one line, e.g. \"{example}\""
             ));
+        }
+        if approval_scope_question(req).is_some() {
+            s.push_str(
+                "\n  or just the first answer, e.g. \"2\" or \"deny\", which keeps \
+every permission checked",
+            );
         }
     } else if !req.choices.is_empty() {
         let opts: Vec<String> = req
@@ -2344,6 +2426,112 @@ mod tests {
                 "terminal:remote-code-execution"
             ]
         );
+    }
+
+    /// The multi-permission approval (agent.rs builds q1 scope + q2
+    /// permissions) as every typed surface sees it.
+    fn permission_approval_req() -> AskRequest {
+        AskRequest::multi_question(
+            "s1",
+            AskKind::Approval,
+            vec![
+                AskQuestion::new("q1", "terminal: rm + curl|sh", approval_choices(true)),
+                AskQuestion::new(
+                    "q2",
+                    "Permissions to remember (all checked by default)",
+                    vec![
+                        AskChoice::new("terminal:recursive-delete", "terminal:recursive-delete"),
+                        AskChoice::new(
+                            "terminal:remote-code-execution",
+                            "terminal:remote-code-execution",
+                        ),
+                    ],
+                )
+                .with_multi(true)
+                .with_defaults(vec![
+                    "terminal:recursive-delete".into(),
+                    "terminal:remote-code-execution".into(),
+                ]),
+            ],
+        )
+    }
+
+    /// Review finding approvals-2: on IRC, Telegram text, NDJSON and the
+    /// chat REPL the usual single approval reply ("2", "y", "deny",
+    /// "always") was rejected for a multi-hazard approval, because every
+    /// multi-question ask demanded one answer per question; the ask then
+    /// timed out to deny. A one-part reply answers the SCOPE and leaves
+    /// q2 unanswered, so the all-checked default applies.
+    #[test]
+    fn a_single_reply_answers_a_multi_permission_approval_scope() {
+        let r = permission_approval_req();
+        for (reply, want) in [
+            ("1", CHOICE_ONCE),
+            ("2", CHOICE_SESSION),
+            ("3", CHOICE_ALWAYS),
+            ("4", CHOICE_DENY),
+            ("y", CHOICE_ONCE),
+            ("yes", CHOICE_ONCE),
+            ("deny", CHOICE_DENY),
+            ("no", CHOICE_DENY),
+            ("always", CHOICE_ALWAYS),
+            ("session", CHOICE_SESSION),
+        ] {
+            let a = parse_reply(&r, reply).unwrap_or_else(|| panic!("{reply:?} rejected"));
+            assert_eq!(a.first(), Some(want), "{reply:?}");
+            assert!(
+                !a.per_question.contains_key("q2") && !a.answered.contains("q2"),
+                "{reply:?} must leave q2 to its default: {a:?}"
+            );
+        }
+        // A scope with a note, the desktop note box typed.
+        let a = parse_reply(&r, "2 go ahead for now").unwrap();
+        assert_eq!(a.first(), Some(CHOICE_SESSION));
+        assert_eq!(a.free_text.as_deref(), Some("go ahead for now"));
+        // Prose still answers nothing.
+        assert!(parse_reply(&r, "what does it do?").is_none());
+        assert!(parse_reply(&r, "nothing yet").is_none());
+        // Naming a permission outside the positional/labelled forms is
+        // a narrowing the parser cannot read; never widened to all.
+        assert!(parse_reply(&r, "3 terminal:recursive-delete").is_none());
+        // The structured forms keep their meaning: an explicit q2.
+        let a = parse_reply(&r, "3; terminal:recursive-delete").unwrap();
+        assert_eq!(a.first(), Some(CHOICE_ALWAYS));
+        assert_eq!(
+            a.per_question["q2"].selected,
+            vec!["terminal:recursive-delete"]
+        );
+        let a = parse_reply(&r, "1: 2").unwrap();
+        assert_eq!(a.first(), Some(CHOICE_SESSION));
+        // The scope-only fallback is the approval's, not every
+        // multi-question ask's: a clarify still wants every question.
+        assert!(parse_reply(&three_question_req(), "1").is_none());
+    }
+
+    /// The same, through the chat surface's entry point: a bare "2" in
+    /// an IRC/Telegram chat is consumed by the open multi-hazard ask.
+    #[tokio::test]
+    async fn a_chat_reply_resolves_a_multi_permission_approval() {
+        let chat = crate::testenv::chat_key();
+        let r = permission_approval_req();
+        let who = Some("irc:alice");
+        let rx = register(&r, Some(&chat), who).expect("open ask");
+        assert!(resolve_for_chat(&chat, "hm, why?", who).is_none());
+        assert_eq!(
+            resolve_for_chat(&chat, "2", who).as_deref(),
+            Some(r.id.as_str())
+        );
+        let a = rx.wait().await;
+        assert_eq!(a.first(), Some(CHOICE_SESSION));
+        assert!(!a.per_question.contains_key("q2"));
+    }
+
+    /// The typed prompt for that ask names the one-word reply.
+    #[test]
+    fn render_prompt_names_the_scope_only_reply_for_a_permission_approval() {
+        let p = render_prompt(&permission_approval_req());
+        assert!(p.contains("keeps every permission checked"), "{p}");
+        assert!(!render_prompt(&three_question_req()).contains("keeps every permission"));
     }
 
     /// Shape 1: a JSON reply keyed by question key (or ordinal).

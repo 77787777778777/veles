@@ -18,6 +18,10 @@
 //!   in their own chat, answerable by them alone. An approval for a turn
 //!   with the owner's rights is the owner's to give, never the session's
 //!   person's (`Agent::asker`, `ask::ask_session`).
+//!
+//! Someone else holding `session-join` (a grant) may join too ([`Joined::owner`]
+//! false): their lines run clamped like mail, and the model is told they
+//! are not the owner (SI-5).
 
 use crate::acl::Principal;
 use crate::ask::Asker;
@@ -33,6 +37,11 @@ pub struct Joined {
     /// The owner's own chat, answerable by the owner alone: where the
     /// questions of the owner's lines go.
     pub asker: Arc<dyn Asker>,
+    /// Whether the person who joined IS the owner. False for someone
+    /// holding `session-join` (`/grant`): their lines are clamped like
+    /// mail (`crate::mail::is_participant_line`), and the model is never
+    /// told they are the owner.
+    pub owner: bool,
 }
 
 fn joins() -> &'static Mutex<HashMap<String, Arc<Joined>>> {
@@ -86,6 +95,22 @@ pub fn speaker_origin_line(surface: &str, speaker: Option<&str>, owner_name: &st
     )
 }
 
+/// [`speaker_origin_line`] while someone who is NOT the owner has joined.
+pub fn participant_speaker_origin_line(
+    surface: &str,
+    speaker: Option<&str>,
+    participant: &str,
+) -> String {
+    let who = speaker
+        .filter(|s| !s.trim().is_empty())
+        .unwrap_or("the person this conversation belongs to");
+    format!(
+        "[origin] this message arrived via the {surface} surface, from {who}. {participant} \
+         (not the owner of this agent) has joined this conversation and may write here too; \
+         their messages are marked as theirs."
+    )
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -107,6 +132,7 @@ mod tests {
             Joined {
                 owner_name: "wrath".into(),
                 asker: Arc::new(Nobody),
+                owner: true,
             },
         );
         assert_eq!(active("join-t1").unwrap().owner_name, "wrath");

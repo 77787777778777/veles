@@ -351,7 +351,12 @@ fn api_version_for(req: &Value) -> String {
 /// anything outside the two (`validate_auth_styles`), so this arm is a
 /// defence against a caller that bypassed validation, not a silent default.
 fn headers_for(req: &Value, key: &str) -> String {
-    headers_for_key(key, &veles_str(req, "auth_style"), &api_version_for(req))
+    let mut headers = headers_for_key(key, &veles_str(req, "auth_style"), &api_version_for(req));
+    if req["veles"]["message_threads"]["enabled"].as_bool() == Some(true) {
+        headers.pop();
+        headers.push_str(",\"anthropic-beta\":\"message-threads-2026-08-12\"}");
+    }
+    headers
 }
 
 fn headers_for_key(key: &str, style: &str, version: &str) -> String {
@@ -681,6 +686,13 @@ fn to_wire(req: &Value, c: Caps, streaming: bool) -> Value {
     if streaming {
         body.insert("stream".into(), json!(true));
     }
+    if req["veles"]["message_threads"]["enabled"].as_bool() == Some(true) {
+        if req["thread"]["type"].as_str() == Some("continue") {
+            body.remove("system");
+            body.remove("tools");
+        }
+        body.insert("thread".into(), req["thread"].clone());
+    }
     let mut body = Value::Object(body);
     with_cache_ttl(&mut body, &cache_ttl_for(req));
     body
@@ -914,13 +926,30 @@ fn from_wire(resp: &Value) -> Value {
     // whether a tool round follows, so mapping it is not cosmetic:
     // `tool_use` has to become `tool_calls` or the loop stops at the first
     // tool call instead of running it.
-    json!({
+    let mut out = json!({
         "choices": [{
             "message": message,
             "finish_reason": finish_reason(resp["stop_reason"].as_str().unwrap_or("")),
         }],
         "usage": usage
-    })
+    });
+    for field in ["id", "stop_reason", "fallback_message"] {
+        // Empty response metadata is absence, not a server-side fallback.
+        // In particular Some("") would make every successful response
+        // ineligible as a Message Threads continuation point.
+        if !resp[field].is_null() && resp[field].as_str() != Some("") {
+            out[field] = resp[field].clone();
+        }
+    }
+    // The stream path hands over a top-level marker it read from the final
+    // message_delta; a plain response carries `usage.iterations`.
+    if out.get("fallback_message").is_none() {
+        if let Some(model) = fallback_model(&resp["usage"]) {
+            out["fallback_message"] = json!(model);
+        }
+    }
+    out["response_complete"] = json!(resp["response_complete"].as_bool().unwrap_or(true));
+    out
 }
 
 fn finish_reason(stop: &str) -> &'static str {
@@ -987,6 +1016,9 @@ fn drive_stream(body: &str, url: &str, headers: &str) -> Value {
     let mut tool_name: HashMap<u64, String> = HashMap::new();
     let mut usage: Value = json!({});
     let mut stop_reason = String::new();
+    let mut response_id = String::new();
+    let mut fallback_message = String::new();
+    let mut response_complete = false;
 
     loop {
         let nxt = match engine("http_stream_next", &[&id]) {
@@ -1026,6 +1058,7 @@ fn drive_stream(body: &str, url: &str, headers: &str) -> Value {
 
         match data["type"].as_str().unwrap_or("") {
             "message_start" => {
+                response_id = data["message"]["id"].as_str().unwrap_or("").to_string();
                 // Input usage arrives FIRST on this wire, and the output
                 // count with it is a placeholder — message_delta corrects it.
                 merge_usage(&mut usage, &data["message"]["usage"]);
@@ -1101,14 +1134,25 @@ fn drive_stream(body: &str, url: &str, headers: &str) -> Value {
                         stop_reason = sr.to_string();
                     }
                 }
+                if let Some(fallback) = fallback_model(&data["usage"]) {
+                    fallback_message = fallback;
+                }
                 merge_usage(&mut usage, &data["usage"]);
             }
-            "message_stop" => break,
+            "message_stop" => {
+                response_complete = true;
+                break;
+            }
             "error" => {
-                let m = data["error"]["message"].as_str().unwrap_or("stream error");
+                let m = envelope_message(&data).unwrap_or_else(|| {
+                    data["error"]["message"]
+                        .as_str()
+                        .unwrap_or("stream error")
+                        .to_string()
+                });
                 let t = data["error"]["type"].as_str().unwrap_or("");
                 let _ = engine("http_stream_close", &[&id]);
-                return err(m, status_of_type(t));
+                return err(&m, status_of_type(t));
             }
             // ping, and anything a future wire adds, are ignored: a driver
             // that failed on an event it did not recognize would break the
@@ -1157,9 +1201,12 @@ fn drive_stream(body: &str, url: &str, headers: &str) -> Value {
     }
 
     from_wire(&json!({
+        "id": response_id,
         "content": content,
         "stop_reason": stop_reason,
         "usage": usage,
+        "fallback_message": fallback_message,
+        "response_complete": response_complete,
     }))
 }
 
@@ -1364,8 +1411,8 @@ fn error_message(raw: &str) -> String {
         return String::new();
     }
     if let Ok(v) = serde_json::from_str::<Value>(raw) {
-        if let (Some(t), Some(m)) = (v["error"]["type"].as_str(), v["error"]["message"].as_str()) {
-            return format!("{t}: {m}");
+        if let Some(msg) = envelope_message(&v) {
+            return msg;
         }
     }
     // `http_post`'s raise shape: "http NNN: <body>". Find the FIRST "http "
@@ -1377,15 +1424,64 @@ fn error_message(raw: &str) -> String {
         if let Some(rel) = raw[h..].find(": ") {
             let body = &raw[h + rel + 2..];
             if let Ok(v) = serde_json::from_str::<Value>(body) {
-                if let (Some(t), Some(m)) =
-                    (v["error"]["type"].as_str(), v["error"]["message"].as_str())
-                {
-                    return format!("{t}: {m}");
+                if let Some(msg) = envelope_message(&v) {
+                    return msg;
                 }
             }
         }
     }
     raw.to_string()
+}
+
+/// "type: message" out of an error envelope, plus its machine-readable
+/// details when it has them: " [error_code: X; unsupported: a, b]". Message
+/// Threads errors are identified ONLY by `error.details.error_code` (the type
+/// is plain invalid_request_error or not_found_error), so a driver that
+/// dropped it left the engine's replay classifier matching prose, and a
+/// thread 400 failed the turn instead of replaying. The Tcl twin
+/// (`anthropic::envelope_message`) formats it identically.
+fn envelope_message(v: &Value) -> Option<String> {
+    let t = v["error"]["type"].as_str()?;
+    let m = v["error"]["message"].as_str()?;
+    let mut out = format!("{t}: {m}");
+    let details = &v["error"]["details"];
+    let mut extra: Vec<String> = Vec::new();
+    if let Some(code) = details["error_code"].as_str().filter(|c| !c.is_empty()) {
+        extra.push(format!("error_code: {code}"));
+    }
+    let names: Vec<&str> = details["unsupported"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(Value::as_str)
+        .collect();
+    if !names.is_empty() {
+        extra.push(format!("unsupported: {}", names.join(", ")));
+    }
+    if !extra.is_empty() {
+        out.push_str(&format!(" [{}]", extra.join("; ")));
+    }
+    Some(out)
+}
+
+/// The model that served a turn after a server-side fallback. The marker is
+/// an ENTRY in `usage.iterations` whose `type` is `fallback_message`
+/// (refusals-and-fallback docs), not a field of that name. The API does not
+/// store such a turn in a Message Thread, so the engine must never continue
+/// from it.
+fn fallback_model(usage: &Value) -> Option<String> {
+    usage["iterations"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .find(|it| it["type"].as_str() == Some("fallback_message"))
+        .map(|it| {
+            it["model"]
+                .as_str()
+                .filter(|m| !m.is_empty())
+                .unwrap_or("fallback")
+                .to_string()
+        })
 }
 
 fn init(h: &Host) -> Result<(), String> {

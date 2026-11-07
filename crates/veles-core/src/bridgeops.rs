@@ -325,6 +325,7 @@ fn call_llm(bridge: &Bridge, args: &[String]) -> Result<String, String> {
         replay_reasoning: false,
         cache_mode: crate::providers::CacheMode::Auto,
         extra_body: None,
+        thread: None,
     };
     let provider_name = route.provider.clone();
     bridge

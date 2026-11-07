@@ -659,6 +659,89 @@ pub async fn event(
     Ok(out)
 }
 
+/// Forward one IRC event with a room context. The context's nick,
+/// channel, network, topic and members are merged into the event body
+/// so slopdrop's `[names]` / `[name]` / `[channel]` procs see the room.
+#[allow(clippy::too_many_arguments)]
+pub async fn event_with_context(
+    cfg: &crate::settings::SlopdropSection,
+    network: &str,
+    event: &str,
+    args: &[String],
+    answered: &[String],
+    log: bool,
+    bsky: Option<&serde_json::Value>,
+    owner: bool,
+    ctx: &Context,
+) -> Result<Vec<EventReply>, String> {
+    let r = route(cfg, false)?;
+    let client = reqwest::Client::builder()
+        .timeout(r.timeout)
+        .build()
+        .map_err(|e| e.to_string())?;
+    let mut body = event_body(network, event, args, answered, log, bsky, owner);
+    // Merge the room context into the event body, in the shape `eval`
+    // uses. Slopdrop applies it since 07663bc (SI-1): its `EventRequest`
+    // takes nick/mask/channel/topic/members and `tcl_service::with_event_room`
+    // sets `::nick`, `::channel` and `::slopdrop_channel_members` for the
+    // dispatch, restoring the previous values in a `finally`. An older
+    // slopdrop (pre-07663bc) ignores them harmlessly.
+    if !ctx.is_empty() {
+        let obj = body.as_object_mut().expect("json! built an object");
+        for (k, v) in [
+            ("nick", &ctx.nick),
+            ("mask", &ctx.mask),
+            ("channel", &ctx.channel),
+            ("network", &ctx.network),
+            ("topic", &ctx.topic),
+        ] {
+            if !v.is_empty() {
+                obj.insert(k.to_string(), Value::String(v.clone()));
+            }
+        }
+        if let Some(members) = &ctx.members {
+            obj.insert(
+                "members".to_string(),
+                Value::Array(members.iter().cloned().map(Value::String).collect()),
+            );
+        }
+    }
+    let mut req = client.post(format!("{}/api/event", r.url)).json(&body);
+    if let Some(t) = &r.token {
+        req = req.header("Authorization", format!("Bearer {t}"));
+    }
+    let resp = req
+        .send()
+        .await
+        .map_err(|e| format!("slopdrop unreachable at {}: {e}", r.url))?;
+    let status = resp.status();
+    if !status.is_success() {
+        let b = resp.text().await.unwrap_or_default();
+        return Err(format!("slopdrop: HTTP {status}: {b}"));
+    }
+    let json: serde_json::Value = resp
+        .json()
+        .await
+        .map_err(|e| format!("slopdrop sent something that is not json: {e}"))?;
+    if json["is_error"].as_bool().unwrap_or(false) {
+        return Err("slopdrop event dispatch failed".into());
+    }
+    let mut out = Vec::new();
+    if let Some(arr) = json["responses"].as_array() {
+        for item in arr {
+            if let (Some(c), Some(m)) = (item["channel"].as_str(), item["message"].as_str()) {
+                out.push(EventReply {
+                    channel: c.to_string(),
+                    message: m.to_string(),
+                    proc_name: item["proc"].as_str().map(str::to_string),
+                    invoked_hash: item["invoked_hash"].as_str().map(str::to_string),
+                });
+            }
+        }
+    }
+    Ok(out)
+}
+
 /// Fire due timers on the other side, getting the `{channel, message}`
 /// pairs back. The channel may carry a `network:` prefix in slopdrop's
 /// spelling; mapping it to a connection is ours.

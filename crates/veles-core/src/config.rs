@@ -138,6 +138,11 @@ pub struct ProviderEntry {
     /// rewrote the whole history into the cache.
     #[serde(default)]
     pub cache_ttl: Option<String>,
+    /// Opt in to Anthropic's Message Threads beta on this provider's
+    /// native Messages driver. Off by default: threads are not ZDR or
+    /// HIPAA eligible and require replay from veles' authoritative store.
+    #[serde(default)]
+    pub message_threads: Option<bool>,
     /// Server-side ("built-in") tools to declare on every request this
     /// provider's routes send, e.g. `["web_search", "web_extractor",
     /// "code_interpreter"]`. The endpoint runs them itself and bills per
@@ -258,6 +263,9 @@ pub struct VelesConfig {
     /// Vision-capable model (for the image tools). See `VisionSection`.
     #[serde(default)]
     pub vision: VisionSection,
+    /// Dedicated route for translating selected text without an agent turn.
+    #[serde(default)]
+    pub translation: TranslationSection,
     /// Default image-generation route (for `generate_image` and the
     /// `/gen image` command). See `GenSection`.
     #[serde(default)]
@@ -793,6 +801,18 @@ pub struct A2APeerAuth {
     pub token: String,
 }
 
+impl A2APeer {
+    /// The bearer to send this peer: the configured token TRIMMED, or
+    /// none when it is blank. One helper for every dialer, because the
+    /// automatic sync loops trimmed and the explicit fleet push did not —
+    /// a token pasted with a trailing newline worked on the timer and
+    /// failed (an invalid header) on "Sync now".
+    pub fn bearer(&self) -> Option<String> {
+        let t = self.auth.token.trim();
+        (!t.is_empty()).then(|| t.to_string())
+    }
+}
+
 impl VelesConfig {
     /// Find a custom provider by name ("custom:<name>" or bare name).
     pub fn provider(&self, key: &str) -> Option<&ProviderEntry> {
@@ -857,6 +877,19 @@ pub struct ModelBind {
     pub model: Option<String>,
     #[serde(default)]
     pub reasoning: Option<String>,
+}
+
+/// `[translation]` — the explicit, dedicated model route for selected text.
+/// No default chat model is borrowed: unconfigured translation says how to
+/// configure it rather than making an unrelated paid model call.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct TranslationSection {
+    #[serde(default)]
+    pub provider: String,
+    #[serde(default)]
+    pub model: String,
+    #[serde(default)]
+    pub target_language: String,
 }
 
 /// The vision route — a model that can actually see images. The default
@@ -1130,6 +1163,25 @@ pub struct NotifySection {
     /// `failover`. Anything not listed stays where it was asked.
     #[serde(default = "default_ask_relay_kinds")]
     pub ask_relay_kinds: Vec<String>,
+    /// Fleet alerts (0.2.0): tell the owner, in the same home chat the ask
+    /// relay uses, when a registry node goes stale or failing and when it
+    /// recovers — one message per change. Every gateway tracks the changes
+    /// (the Instances tab lists them); only the node that runs the home
+    /// chat's adapter sends them, so a fleet with this on everywhere (it
+    /// replicates with `[notify]`) still sends each one once. Needs
+    /// `ask_relay` and a `[platforms.telegram.home_channel]`. Off by
+    /// default.
+    #[serde(default)]
+    pub fleet_alerts: bool,
+    /// How long a node's new state must hold before it is reported,
+    /// seconds — the per-node debounce. A node that goes failing and
+    /// recovers inside it is reported not at all. Default 120.
+    #[serde(default = "default_fleet_alert_debounce")]
+    pub fleet_alert_debounce_secs: u64,
+}
+
+fn default_fleet_alert_debounce() -> u64 {
+    120
 }
 
 fn default_ask_relay_delay() -> u64 {
@@ -1146,6 +1198,8 @@ impl Default for NotifySection {
             ask_relay: false,
             ask_relay_delay_secs: default_ask_relay_delay(),
             ask_relay_kinds: default_ask_relay_kinds(),
+            fleet_alerts: false,
+            fleet_alert_debounce_secs: default_fleet_alert_debounce(),
         }
     }
 }
@@ -3318,7 +3372,39 @@ pub(crate) fn finish_loaded(cfg: &mut VelesConfig) -> Result<()> {
     apply_model_api_mode_default(cfg);
     validate_api_modes(cfg)?;
     validate_auth_styles(cfg)?;
-    validate_cache_ttls(cfg)
+    validate_cache_ttls(cfg)?;
+    validate_message_threads(cfg)
+}
+
+/// The `driver` spellings that name a bundled native Anthropic driver.
+/// Qualified names carry the full owner tag (`tcl:tcl-anthropic-driver`,
+/// `so:anthropic-so`); `tcl-anthropic-driver:anthropic-messages` never
+/// resolves, so accepting it here only moved the failure to the first turn.
+pub(crate) const NATIVE_THREAD_DRIVERS: &[&str] = &[
+    "anthropic-messages",
+    "tcl:tcl-anthropic-driver:anthropic-messages",
+    "so:anthropic-so:anthropic-messages",
+];
+
+/// Message Threads belongs to the bundled native Anthropic Messages wire,
+/// not to every plugin that happens to share a provider name.
+fn validate_message_threads(cfg: &VelesConfig) -> Result<()> {
+    for p in &cfg.custom_providers {
+        if p.message_threads != Some(true) {
+            continue;
+        }
+        let native = p
+            .driver
+            .as_deref()
+            .is_some_and(|name| NATIVE_THREAD_DRIVERS.contains(&name));
+        if p.api_mode != "plugin" || !native {
+            anyhow::bail!(
+                "provider \"{}\": message_threads = true requires api_mode = \"plugin\" and the bundled native anthropic-messages driver",
+                p.name
+            );
+        }
+    }
+    Ok(())
 }
 
 /// The cache lifetimes a driver can be asked for (Anthropic's two).
@@ -3994,6 +4080,42 @@ mod api_mode_tests {
             ..Default::default()
         };
         assert!(validate_api_modes(&ok).is_ok());
+    }
+
+    #[test]
+    fn message_threads_is_refused_on_an_unrelated_wire() {
+        let provider = |driver: &str| VelesConfig {
+            custom_providers: vec![ProviderEntry {
+                name: "anthropic".into(),
+                api_mode: "plugin".into(),
+                driver: Some(driver.into()),
+                message_threads: Some(true),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+        assert!(validate_message_threads(&provider("anthropic-messages")).is_ok());
+        assert!(
+            validate_message_threads(&provider("tcl:tcl-anthropic-driver:anthropic-messages"))
+                .is_ok()
+        );
+        assert!(validate_message_threads(&provider("so:anthropic-so:anthropic-messages")).is_ok());
+        // The owner tags are `tcl:tcl-anthropic-driver` and `so:anthropic-so`;
+        // a spelling without the `tcl:`/`so:` kind never resolves at run
+        // time ("no provider driver named"), so it must not validate either.
+        for unresolvable in [
+            "tcl-anthropic-driver:anthropic-messages",
+            "anthropic-so:anthropic-messages",
+        ] {
+            assert!(
+                validate_message_threads(&provider(unresolvable)).is_err(),
+                "{unresolvable} validates but cannot resolve"
+            );
+        }
+        let err = validate_message_threads(&provider("some-other-driver"))
+            .expect_err("unrelated drivers cannot silently ignore the beta");
+        assert!(err.to_string().contains("anthropic-messages"));
+        assert!(err.to_string().contains("anthropic"));
     }
 
     /// A provider whose `auth_style` is one of the two this build can send.

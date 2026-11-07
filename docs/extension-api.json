@@ -359,7 +359,7 @@
       }
     ]
   },
-  "api_version": "0.10",
+  "api_version": "0.11",
   "bindings": {
     "js": [
       "call",
@@ -1234,7 +1234,8 @@
       "optional_services",
       "provides_hooks",
       "provides_services",
-      "uses_services"
+      "uses_services",
+      "version"
     ],
     "kinds": [
       "tcl",

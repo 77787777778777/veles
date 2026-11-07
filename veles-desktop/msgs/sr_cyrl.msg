@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {%1$s %2$s failed: %3$s} {%1$s %2$s није успело: %3$s}
 ::msgcat::mcset sr_cyrl {%1$s %2$s over ssh…} {%1$s %2$s преко ssh…}
 ::msgcat::mcset sr_cyrl {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset sr_cyrl {%1$s (%2$s waiting)} {%1$s (%2$s на чекању)}
 ::msgcat::mcset sr_cyrl {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  размишљање %3$s}
 ::msgcat::mcset sr_cyrl {%1$s = %2$s here} {%1$s = %2$s овде}
 ::msgcat::mcset sr_cyrl {%1$s NOT saved: %2$s} {%1$s НИЈЕ сачувано: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {%1$s every cron job on %2$s?} {%1$s сваки cron посао на %2$s?}
 ::msgcat::mcset sr_cyrl {%1$s failed: %2$s} {%1$s није успело: %2$s}
 ::msgcat::mcset sr_cyrl {%1$s in / %2$s out / %3$s calls} {%1$s улаз / %2$s излаз / %3$s позива}
+::msgcat::mcset sr_cyrl {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s је чвор %2$s, а не %3$s. Исправите његов ID чвора у Уреди….}
 ::msgcat::mcset sr_cyrl {%1$s is not a whole number} {%1$s није цео број}
+::msgcat::mcset sr_cyrl {%1$s is reachable (%2$s ms).} {%1$s је доступан (%2$s мс).}
 ::msgcat::mcset sr_cyrl {%1$s is set to something this box cannot edit (%2$s)} {%1$s је подешено на нешто што се овде не може мењати (%2$s)}
+::msgcat::mcset sr_cyrl {%1$s is unreachable: %2$s} {%1$s је недоступан: %2$s}
 ::msgcat::mcset sr_cyrl {%1$s of %2$s characters} {%1$s од %2$s знакова}
 ::msgcat::mcset sr_cyrl {%1$s of %2$s sessions} {%1$s од %2$s сесија}
 ::msgcat::mcset sr_cyrl {%1$s of %2$s skills reach the prompt} {%1$s од %2$s вештина доспева у промпт}
 ::msgcat::mcset sr_cyrl {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s на %2$s: %3$d у реду, %4$d грешака}
+::msgcat::mcset sr_cyrl {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s не пријављује идентитет чвора кластера, па се не може потврдити као %2$s.}
+::msgcat::mcset sr_cyrl {%1$s sync failed: %2$s} {Синхронизација %1$s није успела: %2$s}
+::msgcat::mcset sr_cyrl {%1$s sync with %2$s (%3$s)} {Синхронизација %1$s са %2$s (%3$s)}
+::msgcat::mcset sr_cyrl {%1$s sync: %2$s} {Синхронизација %1$s: %2$s}
 ::msgcat::mcset sr_cyrl {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset sr_cyrl {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter за скок, Esc за затварање}
 ::msgcat::mcset sr_cyrl {%1$s — revision r%2$s} {%1$s — измена r%2$s}
 ::msgcat::mcset sr_cyrl {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset sr_cyrl {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset sr_cyrl {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset sr_cyrl {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset sr_cyrl {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: последњих %2$s од %3$s линија које његов гејтвеј држи у меморији; тајне су уклоњене на том чвору.}
 ::msgcat::mcset sr_cyrl {%d MCP server(s) configured} {%d MCP сервер(а) подешено}
 ::msgcat::mcset sr_cyrl {%d entries} {%d уноса}
+::msgcat::mcset sr_cyrl {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {%d датотека екстензије биће уписано тачно онако како је прегледано. Ако се нека од њих променила од прегледа, ништа се не уписује. Не дешава се commit, push ни PR.}
 ::msgcat::mcset sr_cyrl {%d handler(s) registered} {%d руковалац(а) регистровано}
 ::msgcat::mcset sr_cyrl {%d identities · %d users} {%d идентитета · %d корисника}
 ::msgcat::mcset sr_cyrl {%d models — pick one from the list or type a name.} {%d модела — изабери један са листе или укуцај име.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {%d shown} {%d приказано}
 ::msgcat::mcset sr_cyrl {%s %s%%} {%s %s%%}
 ::msgcat::mcset sr_cyrl {%s (%s)} {%s (%s)}
+::msgcat::mcset sr_cyrl {%s (referral)} {%s (реферална веза)}
+::msgcat::mcset sr_cyrl {%s (stale)} {%s (застарео)}
 ::msgcat::mcset sr_cyrl {%s (this session)} {%s (ова сесија)}
 ::msgcat::mcset sr_cyrl {%s GB free of %s GB} {%s ГБ слободно од %s ГБ}
 ::msgcat::mcset sr_cyrl {%s already exists — open it from the list} {%s већ постоји — отвори је са листе}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {%s comes from config.toml [acl] — edit there} {%s долази из config.toml [acl] — уређуј тамо}
 ::msgcat::mcset sr_cyrl {%s config change(s) wait for you — /configsync} {измене конфигурације које чекају вас: %s — /configsync}
 ::msgcat::mcset sr_cyrl {%s did not become healthy within 30s} {%s није постао здрав у року од 30s}
+::msgcat::mcset sr_cyrl {%s done} {%s готово}
 ::msgcat::mcset sr_cyrl {%s failed: %s} {%s није успело: %s}
 ::msgcat::mcset sr_cyrl {%s is already split} {%s је већ подељен}
 ::msgcat::mcset sr_cyrl {%s is the language in use — pick another one to swap with} {%s је језик у употреби — изабери други за замену}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {%s opens the command palette in %s.} {%s отвара командну палету у %s.}
 ::msgcat::mcset sr_cyrl {%s session(s)} {%s сесија(а)}
 ::msgcat::mcset sr_cyrl {%s skill(s):} {%s вештина:}
+::msgcat::mcset sr_cyrl {%s standing grants} {%s сталних дозвола}
 ::msgcat::mcset sr_cyrl {%s takes no completable arguments} {%s не прима аргументе за допуну}
 ::msgcat::mcset sr_cyrl {%s takes on or off} {%s прима on или off}
 ::msgcat::mcset sr_cyrl {%s —} {%s —}
+::msgcat::mcset sr_cyrl {%s — changes data, asks to confirm} {%s — мења податке, тражи потврду}
 ::msgcat::mcset sr_cyrl {%s — deleted; History… can restore it} {%s — обрисана; Историја… може да је врати}
 ::msgcat::mcset sr_cyrl {%s — new: type, then Save} {%s — нова: куцај, па Сачувај}
 ::msgcat::mcset sr_cyrl {%s — not attached; press Attach in the Instances tab} {%s — није прикључен; притисни Прикључи у картици Инстанце}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} је укључен без одељка [acl]: док %{var} у .env не наведе ко сме да пише боту, свако ко до њега стигне сматра се власником — са свим алатима}
 ::msgcat::mcset sr_cyrl (%{route}) (%{route})
 ::msgcat::mcset sr_cyrl {(CLI redraws automatically)} {(CLI се сам исцртава)}
+::msgcat::mcset sr_cyrl {(binary; not publishable)} {(бинарно; не може се објавити)}
 ::msgcat::mcset sr_cyrl {(clipboard empty or no clipboard tool)} {(клипборд је празан или нема алатке за клипборд)}
 ::msgcat::mcset sr_cyrl (deleted) (обрисано)
 ::msgcat::mcset sr_cyrl (empty) (празно)
 ::msgcat::mcset sr_cyrl {(no sessions)} {(нема сесија)}
+::msgcat::mcset sr_cyrl {(not a memsync peer of this gateway: config is not synced with it)} {(није memsync парњак овог гејтвеја: конфигурација се не синхронизује с њим)}
 ::msgcat::mcset sr_cyrl {(nothing to reload — read from disk per use)} {(нема шта да се поново учита — чита се са диска при свакој употреби)}
 ::msgcat::mcset sr_cyrl {(retrying last prompt…)} {(понављам последњи промпт…)}
 ::msgcat::mcset sr_cyrl {(route did not resolve: %{e})} {(рута није разрешена: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {/url needs a number from /urls} {/url захтева број из /urls}
 ::msgcat::mcset sr_cyrl {/whois needs a nick} {/whois захтева ник}
 ::msgcat::mcset sr_cyrl {; could not save the cleared return view: %s} {; није могуће сачувати обрисани повратни приказ: %s}
+::msgcat::mcset sr_cyrl {; shadows bundled} {; засењује уграђени}
+::msgcat::mcset sr_cyrl {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Понуда конфигурације може да промени подешавања, а понуда трезора спаја тајне; измене безбедносног одељка и даље чекају власника.}
 ::msgcat::mcset sr_cyrl {A failing plugin may drop hooks mid-turn.} {Неисправан плугин може да изгуби руковаоце усред окрета.}
 ::msgcat::mcset sr_cyrl {A local server: no key is needed unless you set one up.} {Локални сервер: кључ није потребан осим ако сте га сами подесили.}
+::msgcat::mcset sr_cyrl {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Потписано издање се поставља тек након предпровере. Поновно покретање/провера, наставак и повратак су засебне радње. Здрав процес мора да пријави тачно прегледану ревизију извора.}
 ::msgcat::mcset sr_cyrl {A value is stored for %s — leave this empty to keep it.} {За %s је сачувана вредност — оставите ово празно да је задржите.}
 ::msgcat::mcset sr_cyrl {ACL: ban mask} {ACL: забрани маску}
 ::msgcat::mcset sr_cyrl {ACL: grant admin} {ACL: додели admin}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {ACL: grant user} {ACL: додели user}
 ::msgcat::mcset sr_cyrl {ACL: revoke} {ACL: опозови}
 ::msgcat::mcset sr_cyrl {ACME account email} {Имејл ACME налога}
+::msgcat::mcset sr_cyrl {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI assist ради на четири нивоа: постави дизајнерско питање (датотека није потребна), измени ову датотеку, измени више датотека ове екстензије или објасни тренутну дијагностику. Нова екстензија може и да генерише целу екстензију из њене намене. Сваки захтев се шаље без алата и бива одбијен ако садржи регистровану тајну или вредност која личи на акредитив; измене се приказују као diff-ови и уписују се само када их примениш. Прво тражи дизајн екстензије; закрпу језгра тражи тек пошто утврдиш API који недостаје.}
+::msgcat::mcset sr_cyrl {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI помоћ уређује само корисничке екстензије, а ова датотека није део ниједне. Већина измена стаје у екстензију (hook, алат, замена сервиса или драјвер провајдера) која преживљава надоградње; core патч је за оно што API екстензија не може да изрази. Да ли да уместо тога направим нову екстензију за ову измену? Њене датотеке се приказују пре него што се било шта упише.}
+::msgcat::mcset sr_cyrl {AI assist…} {AI помоћ…}
+::msgcat::mcset sr_cyrl {AI extension assistance} {AI помоћ за екстензије}
 ::msgcat::mcset sr_cyrl {API calls} {API позиви}
+::msgcat::mcset sr_cyrl {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {API кредити из Anthropic препоруке додељују се само ако купите Max или Ultra. Veles не подржава коришћење те претплате као пријаву или API аутентификацију.}
 ::msgcat::mcset sr_cyrl {API key (hidden)} {API кључ (скривен)}
 ::msgcat::mcset sr_cyrl {API key env var name} {Назив env променљиве за API кључ}
+::msgcat::mcset sr_cyrl {API reference} {API референца}
+::msgcat::mcset sr_cyrl {Abandon untouched operation} {Напусти непокренуту радњу}
 ::msgcat::mcset sr_cyrl {Access control} {Контрола приступа}
 ::msgcat::mcset sr_cyrl {Access control (ACL)} {Контрола приступа (ACL)}
 ::msgcat::mcset sr_cyrl Add Додај
 ::msgcat::mcset sr_cyrl {Add MCP server} {Додај MCP сервер}
 ::msgcat::mcset sr_cyrl {Add instance} {Додај инстанцу}
 ::msgcat::mcset sr_cyrl {Add server…} {Додај сервер…}
+::msgcat::mcset sr_cyrl {Adds selected extension sources. Review the branch diff and checks before merging.} {Додаје изворе изабраних екстензија. Пре спајања прегледај измене гране и провере.}
 ::msgcat::mcset sr_cyrl Add… Додај…
 ::msgcat::mcset sr_cyrl {Agent & engine} {Агент и погон}
 ::msgcat::mcset sr_cyrl {Alias %s} {Алијас %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Applies to} {Односи се на}
 ::msgcat::mcset sr_cyrl Apply Примени
 ::msgcat::mcset sr_cyrl {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Примена мења само ТРЕНУТНУ сесију. Копирај TOML ти даје блокове за лепљење. Сачувај глобално их убацује у config.toml — мењају се само failover одељци, свака друга линија и коментар остају нетакнути, а стари фајл се чува као config.toml.bak.}
+::msgcat::mcset sr_cyrl {Apply proposal…} {Примени предлог…}
+::msgcat::mcset sr_cyrl {Apply received} {Примени примљено}
+::msgcat::mcset sr_cyrl {Apply this AI proposal?} {Применити овај AI предлог?}
+::msgcat::mcset sr_cyrl {Apply this change set?} {Применити овај скуп измена?}
 ::msgcat::mcset sr_cyrl {Apply to session} {Примени на сесију}
+::msgcat::mcset sr_cyrl {Apply what this node received:} {Примени оно што је овај чвор примио:}
 ::msgcat::mcset sr_cyrl {Approval needed} {Потребно одобрење}
 ::msgcat::mcset sr_cyrl Apps Апликације
 ::msgcat::mcset sr_cyrl Archive Архива
 ::msgcat::mcset sr_cyrl {Archive SHA-256} {SHA-256 архиве}
+::msgcat::mcset sr_cyrl Ask Питај
+::msgcat::mcset sr_cyrl {Ask a design question} {Постави дизајнерско питање}
+::msgcat::mcset sr_cyrl {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {Питај како се гради екстензија: која граница, који језик, који API. Изворни код се не шаље и ништа не може бити уписано.}
 ::msgcat::mcset sr_cyrl {Ask the agent to change it} {Замоли агента да је промени}
+::msgcat::mcset sr_cyrl {Asking %s…} {Питам %s…}
 ::msgcat::mcset sr_cyrl {Asking the provider for its models…} {Питам провајдера за његове моделе…}
 ::msgcat::mcset sr_cyrl Attach Прикачи
 ::msgcat::mcset sr_cyrl {Attach to the next message} {Приложи на следећу поруку}
+::msgcat::mcset sr_cyrl {Author guide} {Водич за ауторе}
+::msgcat::mcset sr_cyrl {Automatically discovered from the attached gateway's cluster registry.} {Аутоматски откривено из регистра кластера придруженог гејтвеја.}
 ::msgcat::mcset sr_cyrl Back Назад
 ::msgcat::mcset sr_cyrl {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {Назад затвара оно што је на врху: мени, листу сесија, прозор. Кад ништа није отворено, veles одлази у позадину и наставља да ради.}
 ::msgcat::mcset sr_cyrl {Base URL} {Базни URL}
+::msgcat::mcset sr_cyrl {Base branch} {Основна грана}
 ::msgcat::mcset sr_cyrl {Bot token (hidden)} {Токен бота (скривен)}
+::msgcat::mcset sr_cyrl Branch Грана
+::msgcat::mcset sr_cyrl {Branch and commit prepared; nothing has been pushed} {Грана и комит су припремљени; ништа није гурнуто}
+::msgcat::mcset sr_cyrl {Branch pushed and verified on origin} {Грана је гурнута и проверена на оригину}
 ::msgcat::mcset sr_cyrl {Browse sessions} {Прегледај сесије}
+::msgcat::mcset sr_cyrl {Build manifest + preflight} {Манифест билда + предпровера}
+::msgcat::mcset sr_cyrl {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Издање: veles %1$s, измена %2$s (%3$s %4$s)}
 ::msgcat::mcset sr_cyrl {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e крајеви линије · C-b/C-f знак · M-b/M-f реч · C-k брисање до краја линије · C-y убацивање · M-w копирање · C-w брисање региона · C-space постављање маркера · C-/ опозив}
 ::msgcat::mcset sr_cyrl {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g прекида све · C-j нови ред · M-p/M-n историја · Tab довршавање}
+::msgcat::mcset sr_cyrl {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s језгара, оптерећење %2$s / %3$s / %4$s (%5$s%% језгара)}
 ::msgcat::mcset sr_cyrl Cancel Откажи
+::msgcat::mcset sr_cyrl {Cancel task} {Откажи задатак}
+::msgcat::mcset sr_cyrl {Cancel task %1$s? This cannot be undone.} {Отказати задатак %1$s? Ово се не може вратити.}
+::msgcat::mcset sr_cyrl {Cannot verify that %1$s is node %2$s: %3$s} {Није могуће потврдити да је %1$s чвор %2$s: %3$s}
 ::msgcat::mcset sr_cyrl Capabilities Могућности
 ::msgcat::mcset sr_cyrl {Change my app “%s” (%s): } {Промени моју апликацију „%s” (%s): }
+::msgcat::mcset sr_cyrl {Change this extension's files} {Измени датотеке ове екстензије}
+::msgcat::mcset sr_cyrl {Change this file} {Измени ову датотеку}
 ::msgcat::mcset sr_cyrl Change… Промени…
 ::msgcat::mcset sr_cyrl {Channels (e.g. #veles #dev)} {Канали (нпр. #veles #dev)}
 ::msgcat::mcset sr_cyrl Chat Разговор
 ::msgcat::mcset sr_cyrl {Chat — not attached; press Attach in the Instances tab} {Разговор — није прикључен; притисни Прикључи у картици Инстанце}
 ::msgcat::mcset sr_cyrl {Check (lsp)} {Провери (lsp)}
+::msgcat::mcset sr_cyrl {Check again} {Провери поново}
+::msgcat::mcset sr_cyrl {Check files} {Провери датотеке}
 ::msgcat::mcset sr_cyrl Checkpoints {Контролне тачке}
 ::msgcat::mcset sr_cyrl {Checkpoints (undo)} {Контролне тачке (опозив)}
+::msgcat::mcset sr_cyrl {Checks and next steps} {Провере и следећи кораци}
+::msgcat::mcset sr_cyrl {Checks run} {Провере су покренуте}
 ::msgcat::mcset sr_cyrl {Choose BUNDLE-INFO.json in the managed install-sources directory} {Изаберите BUNDLE-INFO.json у managed директоријуму install-sources}
 ::msgcat::mcset sr_cyrl {Choose a failover script} {Изаберите скрипту за пребацивање}
 ::msgcat::mcset sr_cyrl {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {Изаберите модул или процесни плугин који ћете прегледати. Само откривање чита plugin.toml; избором компоненте траже се њени манифест и наведене опције. Отварањем овог корака ништа се не инсталира.}
+::msgcat::mcset sr_cyrl {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {Изабери назив, намену и језик, па прегледај тачне датотеке. Ништа није уписано.}
 ::msgcat::mcset sr_cyrl {Choose a user unit or a system service for the server profile. Neither starts a service.} {Изабери корисничку јединицу или системски сервис за профил сервера. Ниједна опција не покреће сервис.}
 ::msgcat::mcset sr_cyrl {Choose core bundle…} {Изабери основни пакет…}
 ::msgcat::mcset sr_cyrl {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {Изабери облик инсталације. Локални профили користе прегледани инсталатер. Системски и контејнерски профили припремају потписан захтев за изричиту предају преко CLI-ја. NixOS само исписује фрагмент модула.}
+::msgcat::mcset sr_cyrl {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {Изабери најужу границу: Tool додаје могућност коју модел може позвати; Hook посматра или мења догађај у животном циклусу; Service или тачка премошћавања обавија именовану одлуку; Provider driver додаје жицу за провајдера; Core патч је примерен само када објављени extension API не може да изрази промену.}
 ::msgcat::mcset sr_cyrl {Choose typed container-host options JSON} {Изабери JSON структурираних опција домаћина контејнера}
 ::msgcat::mcset sr_cyrl {Choose typed container-host options…} {Изабери структуриране опције домаћина контејнера…}
 ::msgcat::mcset sr_cyrl Clear Очисти
 ::msgcat::mcset sr_cyrl {Clear composer} {Очисти композер}
 ::msgcat::mcset sr_cyrl {Clear override} {Очисти превазилажење}
 ::msgcat::mcset sr_cyrl {Click the picture where you would click on the page.} {Кликните на слику тамо где бисте кликнули на страници.}
+::msgcat::mcset sr_cyrl {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {Клонирај %1$s, направи %2$s и копирај само прегледане датотеке %3$s у %4$s/<extension>/. Датотеке се проверавају и уписују у комит. Сада се не врши push ни креирање pull request-а.}
 ::msgcat::mcset sr_cyrl Close Затвори
 ::msgcat::mcset sr_cyrl {Close (Esc)} {Затвори (Esc)}
 ::msgcat::mcset sr_cyrl {Close the setup wizard? Nothing has been written yet.} {Затвори чаробњака за подешавање? Још ништа није уписано.}
 ::msgcat::mcset sr_cyrl {Code actions} {Код акције}
+::msgcat::mcset sr_cyrl Commit Комит
+::msgcat::mcset sr_cyrl {Commit ready for review. Push is a separate action.} {Комит је спреман за преглед. Гурање је засебна радња.}
 ::msgcat::mcset sr_cyrl {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Попуните сва PDS поља, укључујући и прикачени digest слике, пре прегледа handoff-а.}
 ::msgcat::mcset sr_cyrl {Complete every typed container-host field before previewing this profile.} {Попуни свако типизовано поље домаћина контејнера пре прегледа овог профила.}
 ::msgcat::mcset sr_cyrl {Component configuration returned an invalid result; nothing was accepted as applied.} {Подешавање компоненте вратило је неважећи резултат; ништа није прихваћено као примењено.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Component options changed. Review the new preview before applying.} {Опције компоненте су се промениле. Погледајте нови преглед пре примене.}
 ::msgcat::mcset sr_cyrl Components Компоненте
 ::msgcat::mcset sr_cyrl {Composer preview} {Преглед састављача}
+::msgcat::mcset sr_cyrl Config Конфигурација
+::msgcat::mcset sr_cyrl {Config differs: %s} {Конфигурација се разликује: %s}
+::msgcat::mcset sr_cyrl {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Дневник конфигурације: тај чвор има измене %1$s до %3$s, овај гејтвеј до %2$s}
+::msgcat::mcset sr_cyrl {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Дневник конфигурације: овај гејтвеј има измене %1$s до %2$s, тај чвор до %3$s}
+::msgcat::mcset sr_cyrl {Config only on that node: %s} {Конфигурација само на том чвору: %s}
+::msgcat::mcset sr_cyrl {Config only on this gateway: %s} {Конфигурација само на овом гејтвеју: %s}
 ::msgcat::mcset sr_cyrl Configure Подеси
 ::msgcat::mcset sr_cyrl {Configure %s} {Подеси %s}
+::msgcat::mcset sr_cyrl {Configure translator} {Подеси преводиоца}
+::msgcat::mcset sr_cyrl {Configured desktop gateway} {Подешени десктоп гејтвеј}
 ::msgcat::mcset sr_cyrl Configure… Подеси…
 ::msgcat::mcset sr_cyrl {Configuring %s} {Подешавање %s}
 ::msgcat::mcset sr_cyrl {Confirm or discard the current signed review before starting another download.} {Потврди или одбаци тренутни преглед потписаног издања пре покретања новог преузимања.}
 ::msgcat::mcset sr_cyrl {Container host: typed host plan and privileged CLI handoff} {Домаћин контејнера: структуриран план домаћина и CLI пренос уз администраторска права}
 ::msgcat::mcset sr_cyrl {Context window} {Прозор контекста}
+::msgcat::mcset sr_cyrl {Continue to next target} {Настави на следећу мету}
+::msgcat::mcset sr_cyrl {Contribute extensions: %s} {Допринеси екстензије: %s}
+::msgcat::mcset sr_cyrl Contribute… Допринеси…
+::msgcat::mcset sr_cyrl {Contribution branch} {Грана за допринос}
+::msgcat::mcset sr_cyrl {Contribution destination} {Одредиште доприноса}
 ::msgcat::mcset sr_cyrl Copy Копирај
 ::msgcat::mcset sr_cyrl {Copy TOML} {Копирај TOML}
+::msgcat::mcset sr_cyrl {Copy a bundled extension into your user plugin directory before preparing a contribution.} {Копирај уграђену екстензију у свој кориснички директоријум плугина пре припреме доприноса.}
 ::msgcat::mcset sr_cyrl {Copy message} {Копирај поруку}
 ::msgcat::mcset sr_cyrl {Copy name} {Копирај назив}
 ::msgcat::mcset sr_cyrl {Copy nick} {Копирај надимак}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {Није могуће открити компоненте. Кораци подешавања провајдера и даље раде; по потреби инсталирајте преко CLI-ја на циљној машини.}
 ::msgcat::mcset sr_cyrl {Could not join: %s} {Придруживање није успело: %s}
 ::msgcat::mcset sr_cyrl {Could not list the models (%s) — type the model's name.} {Није могуће исписати моделе (%s) — укуцај име модела.}
+::msgcat::mcset sr_cyrl {Create a PR in} {Направи PR у}
+::msgcat::mcset sr_cyrl {Create extension} {Направи екстензију}
 ::msgcat::mcset sr_cyrl {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Направите бота преко @BotFather, па налепите његов токен испод: иде у шифровани трезор, никад у config.toml.}
+::msgcat::mcset sr_cyrl {Create this extension?} {Направити ову екстензију?}
+::msgcat::mcset sr_cyrl {Create this generated extension?} {Креирати ову генерисану екстензију?}
+::msgcat::mcset sr_cyrl {Created and reloaded. Review and test the extension before publishing.} {Екстензија је направљена и поново учитана. Прегледај је и тестирај пре објављивања.}
+::msgcat::mcset sr_cyrl {Created, but reload failed} {Направљено је, али поновно учитавање није успело}
 ::msgcat::mcset sr_cyrl {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Прави %s/<name>/SKILL.md из шаблона и отвара га. Опис у frontmatter-у је једини део који стиже до индекса промпта, па нека говори КАДА се вештина користи.}
 ::msgcat::mcset sr_cyrl {Cron history} {Историја Cron-а}
 ::msgcat::mcset sr_cyrl {Cron jobs} {Cron послови}
 ::msgcat::mcset sr_cyrl {Curated — write the first owner entry} {Курирано — упиши први унос власника}
 ::msgcat::mcset sr_cyrl Cut Исеци
 ::msgcat::mcset sr_cyrl Decline Одбиј
+::msgcat::mcset sr_cyrl {Dedicated translator} {Посебни преводилац}
 ::msgcat::mcset sr_cyrl {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset sr_cyrl Default Подразумевано
 ::msgcat::mcset sr_cyrl {Default model} {Подразумевани модел}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Delete user} {Обриши корисника}
 ::msgcat::mcset sr_cyrl {Delete workspace?} {Обриши радни простор?}
 ::msgcat::mcset sr_cyrl Deop {Одузми op}
+::msgcat::mcset sr_cyrl {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Опиши измену. AI може да измени или дода више датотека ове екстензије. Свака датотека се приказује као diff и ништа се не уписује пре твоје потврде.}
+::msgcat::mcset sr_cyrl {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Опиши измену. AI може да предложи замену, али не може да је упише пре него што прегледаш и потврдиш разлике.}
+::msgcat::mcset sr_cyrl {Describe the requested extension change first.} {Прво опиши жељену измену екстензије.}
+::msgcat::mcset sr_cyrl Description Опис
 ::msgcat::mcset sr_cyrl {Desktop: local core, modules and process plugins} {Десктоп: локално језгро, модули и плугини процеса}
 ::msgcat::mcset sr_cyrl Detach Откачи
+::msgcat::mcset sr_cyrl {Detach foreground} {Пребаци у позадину}
 ::msgcat::mcset sr_cyrl Dev Dev
 ::msgcat::mcset sr_cyrl {Dev pane (REPL + LSP)} {Dev панел (REPL + LSP)}
 ::msgcat::mcset sr_cyrl {Dev: arm / disarm live patching} {Dev: укључи / искључи live закрпу}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset sr_cyrl Devoice {Одузми voice}
 ::msgcat::mcset sr_cyrl {Discard review} {Одбаци преглед}
 ::msgcat::mcset sr_cyrl {Discard your changes to %s?} {Одбацити твоје измене у %s?}
+::msgcat::mcset sr_cyrl {Disk: %1$s free of %2$s at %3$s} {Диск: %1$s слободно од %2$s на %3$s}
 ::msgcat::mcset sr_cyrl Done Готово
 ::msgcat::mcset sr_cyrl {Done — config written} {Готово — конфигурација уписана}
 ::msgcat::mcset sr_cyrl {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Пре инсталирања преузми и провери манифест издања и архиву домаћина. Свих пет поља идентитета је обавезно. Гејтвеј задржава приватну припремљену архиву; овим прегледом ништа се не инсталира.}
 ::msgcat::mcset sr_cyrl {Downloading and verifying the signed release…} {Преузимање и провера потписаног издања…}
+::msgcat::mcset sr_cyrl {Draft this as an extension?} {Да ли да се ово осмисли као екстензија?}
 ::msgcat::mcset sr_cyrl {Drag to scroll; a quick swipe goes further.} {Превуците да померите; брзо превлачење иде даље.}
+::msgcat::mcset sr_cyrl {Drift check failed: %s} {Провера раскорака није успела: %s}
+::msgcat::mcset sr_cyrl {Drift check: %s node(s) differ from this gateway.} {Провера раскорака: %s чвор(ова) се разликује од овог гејтвеја.}
+::msgcat::mcset sr_cyrl {Drift: built from revision %1$s, this gateway from %2$s} {Раскорак: направљен из измене %1$s, овај гејтвеј из %2$s}
+::msgcat::mcset sr_cyrl {Drift: none — same version, revision and replicated config} {Раскорак: нема — иста верзија, измена и репликована конфигурација}
+::msgcat::mcset sr_cyrl {Drift: not compared — %s} {Раскорак: није упоређено — %s}
+::msgcat::mcset sr_cyrl {Drift: runs version %1$s, this gateway %2$s} {Раскорак: ради верзија %1$s, овај гејтвеј %2$s}
+::msgcat::mcset sr_cyrl Drift… Раскорак…
 ::msgcat::mcset sr_cyrl {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset sr_cyrl {ESC %s is not bound} {ESC %s није везано}
 ::msgcat::mcset sr_cyrl {ESC- … (Meta prefix)} {ESC- … (Meta префикс)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset sr_cyrl Edit… Уреди…
 ::msgcat::mcset sr_cyrl {Enable / disable} {Омогући / онемогући}
 ::msgcat::mcset sr_cyrl {Enable the Telegram adapter} {Укључи Telegram адаптер}
+::msgcat::mcset sr_cyrl Endpoint {Крајња тачка}
 ::msgcat::mcset sr_cyrl Engine Погон
 ::msgcat::mcset sr_cyrl Eval→gw Eval→gw
 ::msgcat::mcset sr_cyrl {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Свака измена у %s се комитује. Враћање враћа цео директоријум на ту комиту — прво се сними тренутно стање, па то није неповратно.}
 ::msgcat::mcset sr_cyrl {Every plugin file goes back to that commit. The current state is committed first.} {Сваки фајл плугина се враћа на ту комиту. Тренутно стање се прво комитује.}
+::msgcat::mcset sr_cyrl {Exact commit} {Тачан комит}
+::msgcat::mcset sr_cyrl {Exact permission rule} {Тачно правило дозволе}
+::msgcat::mcset sr_cyrl {Example: a hook} {Пример: hook}
+::msgcat::mcset sr_cyrl {Example: a provider driver} {Пример: драјвер провајдера}
+::msgcat::mcset sr_cyrl {Example: a service override wrapping core} {Пример: service override који обавија језгро}
+::msgcat::mcset sr_cyrl {Example: a tool} {Пример: алатка}
 ::msgcat::mcset sr_cyrl {Existing shared container network} {Постојећа заједничка мрежа контејнера}
+::msgcat::mcset sr_cyrl Explain Објасни
+::msgcat::mcset sr_cyrl {Explain the diagnostics} {Објасни дијагностику}
 ::msgcat::mcset sr_cyrl Export… Извези…
+::msgcat::mcset sr_cyrl {Extension API} {API екстензија}
+::msgcat::mcset sr_cyrl {Extension development} {Развој екстензија}
+::msgcat::mcset sr_cyrl {Extension guide} {Водич за екстензије}
+::msgcat::mcset sr_cyrl {Extension source} {Изворни код екстензије}
 ::msgcat::mcset sr_cyrl {Failover blueprint} {План пребацивања на резерву}
 ::msgcat::mcset sr_cyrl {Failover blueprint (edit the route chain)} {План пребацивања на резерву (уреди ланац рутирања)}
 ::msgcat::mcset sr_cyrl {Failover hook script (what `script` mode runs)} {Скрипта за пребацивање (шта `script` режим извршава)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Find in transcript} {Пронађи у запису}
 ::msgcat::mcset sr_cyrl {Find in transcript…} {Пронађи у запису…}
 ::msgcat::mcset sr_cyrl {Find references} {Пронађи референце}
+::msgcat::mcset sr_cyrl {Finish rollback} {Заврши повратак}
 ::msgcat::mcset sr_cyrl {First run: no config.toml yet.} {Први покрет: config.toml још не постоји.}
+::msgcat::mcset sr_cyrl {Fix the failed syntax checks before preparing a contribution.} {Исправи грешке из неуспелих синтаксних провера пре припреме доприноса.}
+::msgcat::mcset sr_cyrl {Fleet deployment} {Размештање флоте}
+::msgcat::mcset sr_cyrl {Fleet deployment runs from a desktop computer; it is not available on Android.} {Размештање флоте ради са десктоп рачунара; није доступно на Android-у.}
+::msgcat::mcset sr_cyrl {Fleet deploy…} {Размештање флоте…}
+::msgcat::mcset sr_cyrl {Fleet drift} {Раскорак флоте}
 ::msgcat::mcset sr_cyrl {Fold / unfold} {Склопи / развиј}
 ::msgcat::mcset sr_cyrl {Forget declaration} {Заборави декларацију}
+::msgcat::mcset sr_cyrl {Forget node %s?} {Заборавити чвор %s?}
+::msgcat::mcset sr_cyrl {Forget node…} {Заборави чвор…}
+::msgcat::mcset sr_cyrl {Forgetting %1$s failed: %2$s} {Заборављање %1$s није успело: %2$s}
+::msgcat::mcset sr_cyrl {Forgot node %s.} {Чвор %s је заборављен.}
+::msgcat::mcset sr_cyrl {Forgotten fleet-wide (refused until they heartbeat again): %s} {Заборављено у целој флоти (одбија се док поново не пошаљу откуцај): %s}
 ::msgcat::mcset sr_cyrl Fork Разгранај
 ::msgcat::mcset sr_cyrl {Free space} {Слободан простор}
 ::msgcat::mcset sr_cyrl {Full source commit SHA} {Пун SHA изворног commit-а}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Gateway image sha256 digest} {sha256 дигест слике гејтвеја}
 ::msgcat::mcset sr_cyrl {Gateway quadlet name} {Назив quadlet-а гејтвеја}
 ::msgcat::mcset sr_cyrl {Gateway status} {Статус гејтвеја}
+::msgcat::mcset sr_cyrl {Generate with AI…} {Генериши уз AI…}
+::msgcat::mcset sr_cyrl {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {Генерисао %s - ништа није уписано. Прегледај сваку датотеку, па Креирај екстензију уписује тачно ово.}
 ::msgcat::mcset sr_cyrl {Get a key at %s} {Набави кључ на %s}
 ::msgcat::mcset sr_cyrl {GitHub release URL} {URL GitHub издања}
+::msgcat::mcset sr_cyrl {Give the extension a name and describe what it should do (the purpose), then generate.} {Дај екстензији име и опиши шта треба да ради (намену), па генериши.}
 ::msgcat::mcset sr_cyrl {Give up} Одустани
 ::msgcat::mcset sr_cyrl Go Иди
 ::msgcat::mcset sr_cyrl {Go to definition} {Иди на дефиницију}
+::msgcat::mcset sr_cyrl {Gossip failed: %s} {Госип није успео: %s}
+::msgcat::mcset sr_cyrl {Gossip now} {Госип сада}
+::msgcat::mcset sr_cyrl {Gossip with %1$s: %2$s} {Госип са %1$s: %2$s}
+::msgcat::mcset sr_cyrl {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {Госип: одговорило %1$s од %2$s парњака (%3$s).}
 ::msgcat::mcset sr_cyrl Grant Додели
 ::msgcat::mcset sr_cyrl {Grant access} {Додели приступ}
+::msgcat::mcset sr_cyrl {Granted at} Додељено
 ::msgcat::mcset sr_cyrl Grant… Додели…
 ::msgcat::mcset sr_cyrl {Guards — what the harness stops, and where it stands now} {Гардови — шта harness зауставља и где тренутно стоји}
 ::msgcat::mcset sr_cyrl {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Руковаоци се извршавају редоследом којим су приказани; први који врати непразну вредност побеђује. Искључивање га прескаче без одјављивања, а избор се чува у config.toml, па поновно учитавање плугина не може тихо да га врати.}
+::msgcat::mcset sr_cyrl Health Здравље
+::msgcat::mcset sr_cyrl {Health alerts (%s):} {Упозорења о здрављу (%s):}
+::msgcat::mcset sr_cyrl Heartbeat {Откуцај срца}
+::msgcat::mcset sr_cyrl {Heartbeat age: %s s} {Старост откуцаја: %s с}
 ::msgcat::mcset sr_cyrl Help Помоћ
 ::msgcat::mcset sr_cyrl {Help & keys} {Помоћ и тастери}
 ::msgcat::mcset sr_cyrl {Hide right panes} {Сакриј десне панеле}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {Задржите, па превуците пре него што подигнете прст: избор прати ваш прст реч по реч и помера се на горњој или доњој ивици.}
 ::msgcat::mcset sr_cyrl Hooks Хукови
 ::msgcat::mcset sr_cyrl {Hooks (what plugins run on)} {Hooks (на чему се покрећу додаци)}
+::msgcat::mcset sr_cyrl Host Домаћин
 ::msgcat::mcset sr_cyrl {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {Колико задржавање траје одређује Андроидово кашњење додира и задржавања, у подешавањима приступачности.}
 ::msgcat::mcset sr_cyrl {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {Сачувао сам KEK и кључ за ротацију PLC-а офлајн; дозволи проверени TLS и предатак активације}
 ::msgcat::mcset sr_cyrl {I-search backward: type to search, C-r for previous} {I-search уназад: куцај за претрагу, C-r за претходни}
 ::msgcat::mcset sr_cyrl {I-search: type to search, C-s for next} {I-search: куцај за претрагу, C-s за следећи}
+::msgcat::mcset sr_cyrl {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {Притисак IO: %1$s%% / %2$s%% / %3$s%% времена је неки задатак чекао (10 s / 1 min / 5 min)}
 ::msgcat::mcset sr_cyrl IRC IRC
 ::msgcat::mcset sr_cyrl {IRC buffers} {IRC бафери}
 ::msgcat::mcset sr_cyrl {IRC composer} {IRC композитор}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {IRC split: %s} {IRC подела: %s}
 ::msgcat::mcset sr_cyrl {IRC transcript} {IRC транскрипт}
 ::msgcat::mcset sr_cyrl {IRC — nothing to show} {IRC — нема ничега за приказ}
+::msgcat::mcset sr_cyrl {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {У току: %1$s окрет(а) %2$s, %3$s позадинских задатака %4$s}
 ::msgcat::mcset sr_cyrl {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {Инсталирати %s у управљано складиште компонената? Њен манифест је приказан; овде се не покреће ниједна услуга.}
 ::msgcat::mcset sr_cyrl {Install component} {Инсталирај компоненту}
 ::msgcat::mcset sr_cyrl {Install components…} {Инсталирај компоненте…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl Instances Инстанце
 ::msgcat::mcset sr_cyrl {It becomes the current content, as a new revision — so the restore can be undone too.} {Постаје тренутни садржај, као нова измена — па се и враћање може поништити.}
 ::msgcat::mcset sr_cyrl {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Иде у шифровани трезор на овом рачунару. Агент га никад не види: може само да га користи као $%s у командама или да га шаље на дозвољене хостове.}
+::msgcat::mcset sr_cyrl {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Уклоњен је из регистра кластера у целој флоти: следећа размена госипа каже сваком 0.2.0 парњаку да га и он одбаци, и ниједан га неће поново спојити. Парњак старији од 0.2.0 наставља да га приказује. Ако се машина врати и пошаље откуцај, поново се региструје. Парњаци за синхронизацију и сачуване инстанце остају нетакнути.}
 ::msgcat::mcset sr_cyrl {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Сада напушта меморију. Њена историја чува сваку измену, а Историја… може да је врати.}
 ::msgcat::mcset sr_cyrl Join {Придружи се}
 ::msgcat::mcset sr_cyrl {Join a pool} {Придружи се групи машина}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Language (i18n)} {Језик (i18n)}
 ::msgcat::mcset sr_cyrl Language… Језик…
 ::msgcat::mcset sr_cyrl {Last active} {Последња активност}
+::msgcat::mcset sr_cyrl {Last probe: %1$s — %2$s} {Последња провера: %1$s — %2$s}
 ::msgcat::mcset sr_cyrl {Leave %s?} {Напусти %s?}
 ::msgcat::mcset sr_cyrl Leave… Напусти…
 ::msgcat::mcset sr_cyrl {Legacy open — no [acl] section} {Легаси отворено — без [acl] секције}
 ::msgcat::mcset sr_cyrl {Let %s:} {Дозволи апликацији %s да:}
 ::msgcat::mcset sr_cyrl {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {Слова, цифре, - и _. Прави plugin.toml и plugin.tcl који региструје post_llm_call руковаоца, затим га отвара у Dev панелу.}
+::msgcat::mcset sr_cyrl Level Ниво
 ::msgcat::mcset sr_cyrl {Lift lockdown} {Укини блокаду}
+::msgcat::mcset sr_cyrl Lines Линије
 ::msgcat::mcset sr_cyrl {List the provider's models} {Испиши моделе провајдера}
+::msgcat::mcset sr_cyrl Load Оптерећење
 ::msgcat::mcset sr_cyrl {Load more} {Учитај још}
 ::msgcat::mcset sr_cyrl {Loading discovered components…} {Учитавање откривених компоненти…}
 ::msgcat::mcset sr_cyrl {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {Локални пакет је прегледан. Изаберите „Инсталирај изабрану компоненту“ да потврдите инсталирање; ништа није инсталирано.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Lock down} Закључај
 ::msgcat::mcset sr_cyrl Log Дневник
 ::msgcat::mcset sr_cyrl {Log (engine + status)} {Дневник (engine + статус)}
+::msgcat::mcset sr_cyrl {Log of %s} {Дневник %s}
+::msgcat::mcset sr_cyrl Logs… Дневници…
 ::msgcat::mcset sr_cyrl {M-g- (g: goto line)} {M-g- (g: пређи на линију)}
 ::msgcat::mcset sr_cyrl {M-p/M-n history · Tab complete} {M-p/M-n историја · Tab допуњавање}
 ::msgcat::mcset sr_cyrl {MCP server list} {Листа MCP сервера}
 ::msgcat::mcset sr_cyrl {MCP servers (from config.toml)} {MCP сервери (из config.toml)}
 ::msgcat::mcset sr_cyrl {Make default} {Постави као подразумевани}
 ::msgcat::mcset sr_cyrl {Make default (config.toml)} {Постави подразумевано (config.toml)}
+::msgcat::mcset sr_cyrl {Manage extensions} {Управљај екстензијама}
 ::msgcat::mcset sr_cyrl {Manifest SHA-256} {SHA-256 манифеста}
 ::msgcat::mcset sr_cyrl {Mark read} {Означи као прочитано}
 ::msgcat::mcset sr_cyrl {Mechanisms (what the engine does on its own)} {Механизми (шта engine сам ради)}
 ::msgcat::mcset sr_cyrl {Mechanisms — what the engine does on its own, and how to stop it} {Механизми — шта мотор ради сам и како да га зауставиш}
 ::msgcat::mcset sr_cyrl Memory Меморија
 ::msgcat::mcset sr_cyrl {Memory history} {Историја меморије}
+::msgcat::mcset sr_cyrl {Memory: %1$s available of %2$s (%3$s%% used)} {Меморија: %1$s доступно од %2$s (%3$s%% искоришћено)}
+::msgcat::mcset sr_cyrl {Merge the received %s into this node?} {Спојити примљено %s у овај чвор?}
 ::msgcat::mcset sr_cyrl Messages Поруке
+::msgcat::mcset sr_cyrl Metrics Метрике
+::msgcat::mcset sr_cyrl {Metrics (asked %s):} {Метрике (питано %s):}
+::msgcat::mcset sr_cyrl {Metrics of %1$s failed: %2$s} {Метрике %1$s нису успеле: %2$s}
+::msgcat::mcset sr_cyrl {Metrics of %s received.} {Метрике %s примљене.}
+::msgcat::mcset sr_cyrl {Metrics: not asked yet — use Metrics.} {Метрике: још нису затражене — користи Метрике.}
 ::msgcat::mcset sr_cyrl Model Модел
 ::msgcat::mcset sr_cyrl {Model for this session} {Модел за ову сесију}
 ::msgcat::mcset sr_cyrl {Models & settings} {Модели и подешавања}
+::msgcat::mcset sr_cyrl Monitors Пратиоци
+::msgcat::mcset sr_cyrl Name Назив
+::msgcat::mcset sr_cyrl {Need an account? Optional sign-up links (open in your browser):} {Треба вам налог? Опционалне везе за регистрацију (отварају се у вашем претраживачу):}
 ::msgcat::mcset sr_cyrl Network Мрежа
 ::msgcat::mcset sr_cyrl {New alias} {Нови алијас}
+::msgcat::mcset sr_cyrl {New branch name} {Назив нове гране}
 ::msgcat::mcset sr_cyrl {New cron job} {Нови cron посао}
+::msgcat::mcset sr_cyrl {New extension} {Нова екстензија}
 ::msgcat::mcset sr_cyrl {New memory file} {Нова датотека меморије}
 ::msgcat::mcset sr_cyrl {New plugin} {Нови плугин}
 ::msgcat::mcset sr_cyrl {New session} {Нова сесија}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset sr_cyrl Next Даље
 ::msgcat::mcset sr_cyrl Nickname Надимак
 ::msgcat::mcset sr_cyrl {NixOS: emit a module snippet; do not edit host declarations} {NixOS: испиши исечак модула; не уређуј декларације домаћина}
+::msgcat::mcset sr_cyrl {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {За овај чвор није подешена SSH мета животног циклуса. Експлицитно додај инстанцу да би је распоредио или поново покренуо.}
+::msgcat::mcset sr_cyrl {No additional push happens.} {Нема додатног гурања.}
 ::msgcat::mcset sr_cyrl {No apps yet. Ask the agent to make one: “make me an app that…”} {Још нема апликација. Замолите агента да направи једну: „направи ми апликацију која…”}
 ::msgcat::mcset sr_cyrl {No code in the picture. Hold the phone closer, straight on, and scan again.} {На слици нема кода. Држите телефон ближе, право, и скенирајте поново.}
 ::msgcat::mcset sr_cyrl {No configuration snapshot will be restored.} {Снимак подешавања неће бити враћен.}
+::msgcat::mcset sr_cyrl {No configured sync peer for this node.} {Нема подешеног партнера за синхронизацију за овај чвор.}
+::msgcat::mcset sr_cyrl {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Посебан преводилац није подешен. Користи Подеси преводиоца да изабереш његовог провајдера, модел и циљни језик.}
+::msgcat::mcset sr_cyrl {No deployment started.} {Ниједно размештање није започето.}
+::msgcat::mcset sr_cyrl {No diagnostics reported by the current LSP document.} {Тренутни LSP документ није пријавио дијагностику.}
+::msgcat::mcset sr_cyrl {No explicitly configured desktop gateway is bound to this node.} {Ниједан изричито подешени десктоп гејтвеј није везан за овај чвор.}
+::msgcat::mcset sr_cyrl {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {Ниједан изричито подешени гејтвеј није везан за овај чвор. Прво додај гејтвеј; његова крајња тачка регистра не користи се као десктоп URL.}
+::msgcat::mcset sr_cyrl {No file is open. Ask a design question, or open an extension file for help with its code.} {Ниједна датотека није отворена. Постави дизајнерско питање или отвори датотеку екстензије за помоћ са њеним кодом.}
+::msgcat::mcset sr_cyrl {No files have been written. Review the exact manifest and source, then confirm creation.} {Ниједна датотека није уписана. Прегледај тачан манифест и изворни код, па потврди прављење.}
 ::msgcat::mcset sr_cyrl {No modules or process plugins were discovered. The provider setup steps can still continue.} {Нису откривени ни модули ни процесни плугини. Кораци подешавања провајдера могу и даље да се наставе.}
+::msgcat::mcset sr_cyrl {No other registered node to compare with.} {Нема другог регистрованог чвора за поређење.}
 ::msgcat::mcset sr_cyrl {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {Ниједан профил не покреће сервис и не извршава скрипту са администраторским правима из овог чаробњака. Прегледај план и евентуалну предају пре покретања.}
+::msgcat::mcset sr_cyrl {No proposal has been requested. Nothing will be written automatically.} {Предлог није затражен. Ништа неће бити аутоматски уписано.}
+::msgcat::mcset sr_cyrl {No proposal. Nothing was written.} {Нема предлога. Ништа није уписано.}
 ::msgcat::mcset sr_cyrl {No routes configured.} {Нема подешених рута.}
 ::msgcat::mcset sr_cyrl {No session selected — pick one in the sidebar or start a new one} {Није изабрана сесија — изабери у бочној траци или започни нову}
 ::msgcat::mcset sr_cyrl {No swap target yet: pick a language and press “Set as swap target”.} {Још нема циља замене: изабери језик и притисни „Постави као циљ замене”.}
 ::msgcat::mcset sr_cyrl {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {Нема {[}acl{]} одељка у config.toml: сваки пошиљалац који стигне до gateway-а третира се као власник, понашање пре ACL-а са једним корисником. Додела и опозив и даље раде и ступају на снагу чим {[}acl{]} постоји.}
+::msgcat::mcset sr_cyrl {Node id} {ID чвора}
+::msgcat::mcset sr_cyrl {Non-evaluating syntax checks} {Синтаксне провере без извршавања кода}
+::msgcat::mcset sr_cyrl {Not available: %s} {Није доступно: %s}
+::msgcat::mcset sr_cyrl Note Белешка
 ::msgcat::mcset sr_cyrl {Note for the agent (optional):} {Белешка за агента (опционо):}
+::msgcat::mcset sr_cyrl {Nothing selected.} {Ништа није изабрано.}
 ::msgcat::mcset sr_cyrl {Nothing typed yet.} {Још ништа није унето.}
+::msgcat::mcset sr_cyrl {Nothing was generated or written.} {Ништа није генерисано нити уписано.}
+::msgcat::mcset sr_cyrl {Nothing was prepared: the chosen repository already has these paths.} {Ништа није припремљено: изабрани репозиторијум већ има ове путање.}
 ::msgcat::mcset sr_cyrl Notifications Обавештења
 ::msgcat::mcset sr_cyrl OK ОК
 ::msgcat::mcset sr_cyrl Off Искључено
 ::msgcat::mcset sr_cyrl On Укључено
+::msgcat::mcset sr_cyrl {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {Замењен ће бити само прегледани бафер екстензије. Датотека је и даље заштићена од измена направљених након овог прегледа. Не прави се комит, не гура се нити се отвара PR.}
+::msgcat::mcset sr_cyrl {Only this new branch is committed. Your ambient git identity is used.} {Комитује се само ова нова грана. Користи се твој git идентитет из окружења.}
 ::msgcat::mcset sr_cyrl Op {Дај op}
 ::msgcat::mcset sr_cyrl Open Отвори
+::msgcat::mcset sr_cyrl {Open PR…} {Отвори PR…}
 ::msgcat::mcset sr_cyrl {Open a window} {Отвори прозор}
 ::msgcat::mcset sr_cyrl {Open in Dev} {Отвори у Dev}
 ::msgcat::mcset sr_cyrl {Open in browser} {Отвори у прегледачу}
 ::msgcat::mcset sr_cyrl {Open plugin} {Отвори плугин}
 ::msgcat::mcset sr_cyrl {Open terminal} {Отвори терминал}
+::msgcat::mcset sr_cyrl {Open this pull request?} {Отворити овај захтев за повлачење?}
 ::msgcat::mcset sr_cyrl {Open veles in Android's settings} {Отвори veles у подешавањима Андроида}
 ::msgcat::mcset sr_cyrl {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {Опционо: IRC мрежа на коју се придружујеш. Канале раздвој размацима или зарезима; IRC_CHANNELS у .env, ако је подешен, заменује ову листу.}
 ::msgcat::mcset sr_cyrl {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {Опције долазе из манифеста изабране компоненте. Поља која личе на тајне остају у току подешавања и трезора. Празна поља остављају дату опцију непромењену.}
 ::msgcat::mcset sr_cyrl {Or paste a ticket signed on another device} {Или налепите карту потписану на другом уређају}
 ::msgcat::mcset sr_cyrl {Or type an answer:} {Или унесите одговор:}
+::msgcat::mcset sr_cyrl Origin Оригин
 ::msgcat::mcset sr_cyrl Other… Друго…
 ::msgcat::mcset sr_cyrl Outline Структура
+::msgcat::mcset sr_cyrl Output Излаз
 ::msgcat::mcset sr_cyrl {Override for THIS session (leave blank to inherit the default)} {Превазилажење за ОВУ сесију (остави празно да наследи подразумевано)}
 ::msgcat::mcset sr_cyrl {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {Идентитет власника (telegram:123456, irc:account или маска nick!user@host)}
 ::msgcat::mcset sr_cyrl {PDS and handle domain} {PDS и handle домен}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Pause scheduler} {Паузирај планер}
 ::msgcat::mcset sr_cyrl {Peek (C-c C-p)} {Погледај (C-c C-p)}
 ::msgcat::mcset sr_cyrl {Peek definition} {Погледај дефиницију}
+::msgcat::mcset sr_cyrl {Permission grants} Дозволе
+::msgcat::mcset sr_cyrl {Permission grants…} Дозволе…
 ::msgcat::mcset sr_cyrl Phone Телефон
 ::msgcat::mcset sr_cyrl {Phone: permissions, battery, storage} {Телефон: дозволе, батерија, складиште}
 ::msgcat::mcset sr_cyrl {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Телефони произвођача %s и сами заустављају апликације. У подешавањима апликације veles дозволите јој да се сама покреће и ради у позадини.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset sr_cyrl Port Порт
 ::msgcat::mcset sr_cyrl {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {Префикс акорди (C-x, M-o) приказују which-key искачући прозор чим се активирају.}
 ::msgcat::mcset sr_cyrl {Prepare an own vlpds PDS through the signed CLI handoff} {Припремите сопствени vlpds PDS преко потписаног CLI handoff-а}
+::msgcat::mcset sr_cyrl {Prepare branch…} {Припреми грану…}
+::msgcat::mcset sr_cyrl {Prepare this branch and commit?} {Припремити ову грану и комит?}
 ::msgcat::mcset sr_cyrl Preview Преглед
+::msgcat::mcset sr_cyrl {Preview change set} {Прегледај скуп измена}
+::msgcat::mcset sr_cyrl {Preview files} {Прегледај датотеке}
 ::msgcat::mcset sr_cyrl {Preview here} {Преглед овде}
 ::msgcat::mcset sr_cyrl {Preview pane} {Панел за преглед}
+::msgcat::mcset sr_cyrl {Preview proposal} {Прегледај предлог}
+::msgcat::mcset sr_cyrl {Preview the changed name or language before creating it.} {Прегледај промењени назив или језик пре него што направиш екстензију.}
+::msgcat::mcset sr_cyrl Probe Провери
+::msgcat::mcset sr_cyrl {Probe of %1$s failed: %2$s} {Провера %1$s није успела: %2$s}
 ::msgcat::mcset sr_cyrl {Profile result} {Резултат профила}
 ::msgcat::mcset sr_cyrl {Promote into config.toml} {Промовиши у config.toml}
 ::msgcat::mcset sr_cyrl Promote… Промовиши…
 ::msgcat::mcset sr_cyrl Provider Провајдер
+::msgcat::mcset sr_cyrl {Provider driver (plugin wire only)} {Драјвер провајдера (само уз plugin протокол)}
 ::msgcat::mcset sr_cyrl {Provider entry name} {Назив уноса провајдера}
 ::msgcat::mcset sr_cyrl {Provider for this session} {Провајдер за ову сесију}
 ::msgcat::mcset sr_cyrl Providers Провајдери
 ::msgcat::mcset sr_cyrl {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {Провајдери су листа табела: custom_providers.0.base_url, .0.api_mode, .0.key_env … Индекс је по редоследу приказаном испод.}
 ::msgcat::mcset sr_cyrl {Public HTTPS URL} {Јавни HTTPS URL}
+::msgcat::mcset sr_cyrl {Pull request base} {Основна грана захтева за повлачење}
+::msgcat::mcset sr_cyrl {Pull request created} {Захтев за повлачење је направљен}
+::msgcat::mcset sr_cyrl {Pull request description} {Опис захтева за повлачење}
+::msgcat::mcset sr_cyrl {Pull request opened.} {Захтев за повлачење је отворен.}
+::msgcat::mcset sr_cyrl {Pull request repository} {Репозиторијум захтева за повлачење}
+::msgcat::mcset sr_cyrl {Pull request title} {Наслов захтева за повлачење}
 ::msgcat::mcset sr_cyrl {Purge + delete files} {Очисти + обриши датотеке}
 ::msgcat::mcset sr_cyrl {Purge container} {Очисти контејнер}
+::msgcat::mcset sr_cyrl Purpose Намена
+::msgcat::mcset sr_cyrl Push Гурни
+::msgcat::mcset sr_cyrl {Push branch…} {Гурни грану…}
+::msgcat::mcset sr_cyrl {Push complete. No pull request has been opened.} {Гурање је завршено. Захтев за повлачење није отворен.}
+::msgcat::mcset sr_cyrl {Push this branch?} {Гурнути ову грану?}
+::msgcat::mcset sr_cyrl {Push to %s:} {Пошаљи на %s:}
 ::msgcat::mcset sr_cyrl Question Питање
 ::msgcat::mcset sr_cyrl Questions Питања
 ::msgcat::mcset sr_cyrl Quit Излаз
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Reading notifications, for triggers} {Читање обавештења, за окидаче}
 ::msgcat::mcset sr_cyrl Reasoning Резоновање
 ::msgcat::mcset sr_cyrl {Reasoning effort} {Ниво размишљања}
+::msgcat::mcset sr_cyrl {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {Примљено, чека примену: складиште %1$s · меморија %2$s · конфигурација %3$s · трезор %4$s}
+::msgcat::mcset sr_cyrl {Recommended checks} {Препоручене провере}
 ::msgcat::mcset sr_cyrl {Refetch this transcript from the store} {Поново довуци овај транскрипт из складишта}
 ::msgcat::mcset sr_cyrl Refresh Освежи
 ::msgcat::mcset sr_cyrl {Refresh preview} {Освежи преглед}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Rename symbol} {Преименуј симбол}
 ::msgcat::mcset sr_cyrl Rename… Преименуј…
 ::msgcat::mcset sr_cyrl Rendered Приказано
+::msgcat::mcset sr_cyrl {Replace existing repository files?} {Заменити постојеће датотеке репозиторијума?}
+::msgcat::mcset sr_cyrl {Replace them in the new branch? Nothing else in the repository changes.} {Заменити их у новој грани? Ништа друго у репозиторијуму се не мења.}
 ::msgcat::mcset sr_cyrl Repository Репозиторијум
 ::msgcat::mcset sr_cyrl {Repository (owner/name)} {Репозиторијум (власник/име)}
+::msgcat::mcset sr_cyrl {Repository directory} {Директоријум репозиторијума}
+::msgcat::mcset sr_cyrl {Repository paths} {Путање репозиторијума}
+::msgcat::mcset sr_cyrl {Request a new preview before trying again.} {Затражи нови преглед пре поновног покушаја.}
 ::msgcat::mcset sr_cyrl {Reset to default} {Врати на подразумевано}
 ::msgcat::mcset sr_cyrl {Reset to template} {Врати на шаблон}
 ::msgcat::mcset sr_cyrl Restart Рестартуј
+::msgcat::mcset sr_cyrl {Restart + verify canary} {Поново покрени + провери канаринац}
 ::msgcat::mcset sr_cyrl {Restore hidden windows} {Врати скривене прозоре}
 ::msgcat::mcset sr_cyrl {Restore plugins to %s?} {Врати плугине на %s?}
 ::msgcat::mcset sr_cyrl {Restore revision r%1$s of %2$s?} {Вратити измену r%1$s датотеке %2$s?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Restore this commit} {Врати ову комиту}
 ::msgcat::mcset sr_cyrl {Restore this revision} {Врати ову измену}
 ::msgcat::mcset sr_cyrl {Resume scheduler} {Настави планер}
+::msgcat::mcset sr_cyrl {Resume unfinished operation} {Настави незавршену радњу}
 ::msgcat::mcset sr_cyrl Revert Поврати
 ::msgcat::mcset sr_cyrl {Revert %s to HEAD? Uncommitted changes in this file are lost.} {Вратити %s на HEAD? Несачуване измене у овој датотеци биће изгубљене.}
 ::msgcat::mcset sr_cyrl Revert… Поврати…
 ::msgcat::mcset sr_cyrl Review {Преглед измена}
 ::msgcat::mcset sr_cyrl {Review (git) pane} {Панел Review (git)}
+::msgcat::mcset sr_cyrl {Review deployment} {Прегледај размештање}
+::msgcat::mcset sr_cyrl {Review extension contribution} {Преглед доприноса екстензије}
 ::msgcat::mcset sr_cyrl {Review managed local bundle…} {Прегледајте managed локални пакет…}
 ::msgcat::mcset sr_cyrl {Review rollback} {Прегледајте враћање}
+::msgcat::mcset sr_cyrl {Review selected files} {Прегледај изабране датотеке}
 ::msgcat::mcset sr_cyrl {Review the component options on the summary screen before applying.} {Проверите опције компоненте на екрану са прегледом, пре примене.}
 ::msgcat::mcset sr_cyrl {Review the component preview before applying. No component configuration has been written.} {Погледајте преглед компоненте пре примене. Конфигурација компоненте још није уписана.}
+::msgcat::mcset sr_cyrl {Review the selected files and remove credential findings before preparing.} {Прегледај изабране датотеке и уклони пронађене акредитиве пре припреме.}
 ::msgcat::mcset sr_cyrl {Reviewed core bundle in the managed install-sources directory} {Прегледани основни пакет у управљаном директоријуму извора инсталације}
+::msgcat::mcset sr_cyrl {Reviewed fleet deployment} {Прегледано размештање флоте}
 ::msgcat::mcset sr_cyrl {Reviewed local bundle} {Прегледани локални пакет}
 ::msgcat::mcset sr_cyrl {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {Прегледани локални пакет је инсталиран. Преузимање није проверено потписом. Потребно је поновно покретање пре коришћења новог језгра.}
 ::msgcat::mcset sr_cyrl Revision Измена
 ::msgcat::mcset sr_cyrl Revoke Опозови
+::msgcat::mcset sr_cyrl {Revoke selected} {Опозови изабрано}
 ::msgcat::mcset sr_cyrl Roles Улоге
 ::msgcat::mcset sr_cyrl {Roll back %1$s from %2$s to %3$s?} {Вратити %1$s са %2$s на %3$s?}
+::msgcat::mcset sr_cyrl {Roll back selected target} {Врати изабрану мету}
 ::msgcat::mcset sr_cyrl {Rollback completed. Reload the component or restart as requested by the report.} {Враћање је завршено. Поново учитајте компоненту или извршите поновно покретање, како тражи извештај.}
 ::msgcat::mcset sr_cyrl {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {Враћање је прегледано. Изаберите „Инсталирај изабрану компоненту“ да потврдите враћање; ништа није враћено.}
 ::msgcat::mcset sr_cyrl Run Покрени
 ::msgcat::mcset sr_cyrl {Run the wizard again} {Покрени чаробњака поново}
 ::msgcat::mcset sr_cyrl {Running in the background} {Рад у позадини}
-::msgcat::mcset sr_cyrl {Running tasks} {Активни задаци}
-::msgcat::mcset sr_cyrl {Running tasks (subagents, shells, monitors)} {Покренути задаци (подагенти, шкољке, монитори)}
 ::msgcat::mcset sr_cyrl {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {Дозволе и корисници из извршавања живе у складишту, а ресет складишта их брише. Промовиши дописује у config.toml оне које складиште изабере — коментари и редослед кључева у фајлу остају, бекап се пише поред, копије из складишта се бришу — и одбија да нагађа тамо где фајл већ има став.}
 ::msgcat::mcset sr_cyrl {S3 HTTPS endpoint} {S3 HTTPS крајња тачка}
 ::msgcat::mcset sr_cyrl {S3 bucket} {S3 бакет}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Save as default} {Сачувај као подразумевано}
 ::msgcat::mcset sr_cyrl {Save attachment as} {Сачувај прилог као}
 ::msgcat::mcset sr_cyrl {Save globally} {Сачувај глобално}
+::msgcat::mcset sr_cyrl {Save or revert the open buffer before applying a change set.} {Сачувај или врати отворени бафер пре примене скупа измена.}
 ::msgcat::mcset sr_cyrl Scan Скенирај
 ::msgcat::mcset sr_cyrl {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {Скенирајте veles код са машине која је позвала овај телефон. Ако је прво показала WireGuard код, пре овога скенирајте њега апликацијом WireGuard.}
 ::msgcat::mcset sr_cyrl {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {Распоред: интервал („30m", „every 2h"), cron шаблон („0 9 * * 1") или ISO временска ознака за једнократни посао. Линија изнад показује како је мотор то прочитао. Испорука: „local" оставља излаз у дневнику — једина искрена подразумевана вредност са десктопа, иза којег нема платформе за ћаскање — или „platform:chat_id". Буђење сесије: остави празно да ради у новој сесији; постави id сесије (или јединствени префикс) да наставиш ту сесију са пуном историјом — заузета сесија уместо тога узима промпт на следећој граници окрета.}
+::msgcat::mcset sr_cyrl Scope Обим
 ::msgcat::mcset sr_cyrl {Scroll to end} {Помери до краја}
 ::msgcat::mcset sr_cyrl {Search commands and sessions…} {Претражи команде и сесије…}
 ::msgcat::mcset sr_cyrl {Search message text} {Претражи текст порука}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset sr_cyrl Section Одељак
 ::msgcat::mcset sr_cyrl {Select a component first. No component options will be changed if you skip this step.} {Прво изаберите компоненту. Ако прескочите овај корак, опције компоненте се не мењају.}
 ::msgcat::mcset sr_cyrl {Select all} {Изабери све}
+::msgcat::mcset sr_cyrl {Select all extensions} {Изабери све екстензије}
+::msgcat::mcset sr_cyrl {Select at least one source file.} {Изабери бар једну изворну датотеку.}
+::msgcat::mcset sr_cyrl {Select none} {Не изабери ниједну}
+::msgcat::mcset sr_cyrl {Select text to translate first.} {Прво означи текст за превод.}
+::msgcat::mcset sr_cyrl {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {Изаберите екстензије и датотеке за допринос. Иду у једну грану и један pull request, свака екстензија у свом директоријуму. Прегледајте, покрените провере које не оцењују, па припремите изоловану грану и комит. Push и креирање pull request-а су одвојене радње које се потврђују.}
 ::msgcat::mcset sr_cyrl Send Пошаљи
+::msgcat::mcset sr_cyrl {Send %s to the peer?} {Послати %s партнеру?}
 ::msgcat::mcset sr_cyrl {Send a %d-line message to the channel?} {Пошаљи поруку од %d реда у канал?}
 ::msgcat::mcset sr_cyrl {Send raw line to the server? (%s)} {Пошаљи сирову линију на сервер? (%s)}
 ::msgcat::mcset sr_cyrl {Server (empty = no IRC)} {Сервер (празно = без IRC-а)}
 ::msgcat::mcset sr_cyrl {Server: gateway configuration and a reviewed user unit} {Сервер: конфигурација гејтвеја и прегледана корисничка јединица}
 ::msgcat::mcset sr_cyrl {Server: install a user unit and prepare the separate linger handoff} {Сервер: инсталирај корисничку јединицу и припреми засебан пренос за linger}
 ::msgcat::mcset sr_cyrl {Server: use a system service and prepare a privileged CLI request} {Сервер: користи системски сервис и припреми CLI захтев уз администраторска права}
+::msgcat::mcset sr_cyrl Session Сесија
 ::msgcat::mcset sr_cyrl {Session id} {ИД сесије}
 ::msgcat::mcset sr_cyrl {Session id…} {ИД сесије…}
 ::msgcat::mcset sr_cyrl Sessions Сесије
 ::msgcat::mcset sr_cyrl {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Сесије тренутно преусмерене на овај алијас задржавају руту коју су добиле; нова преусмерења неће наћи име.}
+::msgcat::mcset sr_cyrl {Sessions served} {Опслужене сесије}
 ::msgcat::mcset sr_cyrl Set Постави
 ::msgcat::mcset sr_cyrl {Set [model] provider/default in config.toml.} {Подеси provider/default за [model] у config.toml.}
 ::msgcat::mcset sr_cyrl {Set as swap target} {Постави као циљ замене}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Setup — summary} {Подешавање — преглед}
 ::msgcat::mcset sr_cyrl {Setup — welcome} {Подешавање — добродошлица}
 ::msgcat::mcset sr_cyrl {Shared container network} {Заједничка мрежа контејнера}
+::msgcat::mcset sr_cyrl Shells Шели
+::msgcat::mcset sr_cyrl {Shells and monitors} {Шели и пратиоци}
+::msgcat::mcset sr_cyrl {Shells and monitors (subagents, shells, monitors)} {Шели и пратиоци (под-агенти, шели, пратиоци)}
 ::msgcat::mcset sr_cyrl {Show diff} {Прикажи разлике}
 ::msgcat::mcset sr_cyrl {Show every key} {Прикажи све тастере}
 ::msgcat::mcset sr_cyrl Sign Потпиши
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset sr_cyrl Solved Решено
 ::msgcat::mcset sr_cyrl Source Извор
 ::msgcat::mcset sr_cyrl {Source commit} {Изворни commit}
+::msgcat::mcset sr_cyrl {Source text} {Изворни текст}
 ::msgcat::mcset sr_cyrl {Source→app (C-c C-c)} {Извор→апликација (C-c C-c)}
 ::msgcat::mcset sr_cyrl Stage {У индекс}
+::msgcat::mcset sr_cyrl {Stage canary} {Постави канаринац}
+::msgcat::mcset sr_cyrl Stale Застарео
+::msgcat::mcset sr_cyrl {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {Сталне дозволе омогућавају касније позиве алата без поновног питања. Дозволе сесије држе активне сесије на свакој површини (десктоп, Telegram, IRC, …); глобалне дозволе остају трајно; уноси [approvals] allowlist из config.toml приказани су само за читање. Опозив једне никада не мења остале дозволе.}
 ::msgcat::mcset sr_cyrl Start Покрени
+::msgcat::mcset sr_cyrl {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {Почни са екстензијом у свом корисничком директоријуму плугина. Она преживљава надоградње и не захтева поновну изградњу гејтвеја. Нова екстензија пре уписивања нуди преглед тачног манифеста и изворног кода. Изабери подржани језик и верзију API-ја, прегледај датотеке, па тестирај екстензију у изолацији.}
 ::msgcat::mcset sr_cyrl {Start with the phone} {Покретање са телефоном}
+::msgcat::mcset sr_cyrl {Static IP} {Статичка IP}
 ::msgcat::mcset sr_cyrl Status Статус
 ::msgcat::mcset sr_cyrl Steer Управљај
 ::msgcat::mcset sr_cyrl {Step %1$d of %2$d} {Корак %1$d од %2$d}
 ::msgcat::mcset sr_cyrl {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {Још треба подесити: %s — овде унесите /secret set NAME или на рачунару пролаза покрените veles secret set NAME.}
 ::msgcat::mcset sr_cyrl Stop Заустави
 ::msgcat::mcset sr_cyrl {Storage root} {Корен складиштења}
+::msgcat::mcset sr_cyrl Store Складиште
 ::msgcat::mcset sr_cyrl {Store a secret: %s} {Сачувај тајну: %s}
 ::msgcat::mcset sr_cyrl {Store it} Сачувај
+::msgcat::mcset sr_cyrl {Store replica} {Реплика складишта}
 ::msgcat::mcset sr_cyrl Subagents Подагенти
 ::msgcat::mcset sr_cyrl {Subagents (/agents)} {Подагенти (/agents)}
 ::msgcat::mcset sr_cyrl Summary Преглед
+::msgcat::mcset sr_cyrl Surface Површина
 ::msgcat::mcset sr_cyrl {Swap ⇄} {Замени ⇄}
+::msgcat::mcset sr_cyrl {Sync cancelled.} {Синхронизација је отказана.}
+::msgcat::mcset sr_cyrl {Sync complete.} {Синхронизација је завршена.}
+::msgcat::mcset sr_cyrl {Sync now} {Синхронизуј сада}
 ::msgcat::mcset sr_cyrl {TOML copied — paste it into config.toml} {TOML копиран — налепи га у config.toml}
 ::msgcat::mcset sr_cyrl Tag Ознака
 ::msgcat::mcset sr_cyrl {Tap a link to open it, or a block's header to open or close the block.} {Додирните везу да је отворите, или заглавље блока да блок отворите или затворите.}
 ::msgcat::mcset sr_cyrl {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {Додирните поље на дну да куцате. Пошаљи шаље, Заустави завршава потез, а Откачи премешта команду која ради у позадину.}
 ::msgcat::mcset sr_cyrl {Tap the text to clear the selection.} {Додирните текст да поништите избор.}
+::msgcat::mcset sr_cyrl {Target language:} {Циљни језик:}
+::msgcat::mcset sr_cyrl {Target node IDs (canary first, comma separated)} {ID-ови циљних чворова (канаринац први, раздвојени зарезом)}
 ::msgcat::mcset sr_cyrl {Task list} {Листа задатака}
 ::msgcat::mcset sr_cyrl {Task list (right pane)} {Листа задатака (десни панел)}
 ::msgcat::mcset sr_cyrl Tasks Задаци
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {That is not a ticket.} {То није карта.}
 ::msgcat::mcset sr_cyrl {That is not a veles pool code.} {То није код veles групе.}
 ::msgcat::mcset sr_cyrl {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {То је WireGuard код: скенирајте га апликацијом WireGuard. Veles код је други.}
+::msgcat::mcset sr_cyrl {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {%d прегледаних датотека биће уписано у нови директоријум у твом корисничком директоријуму плугина и veles покушава да учита екстензију. Ако се директоријум тог имена појавио од прегледа, ништа се не уписује. Објављивање није део ове радње.}
 ::msgcat::mcset sr_cyrl {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {REPL у Dev панелу извршава се у ЖИВОј апликацији — UI је сопствени лисп.}
 ::msgcat::mcset sr_cyrl {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {Табела [mcp_servers.<name>] се брише из config.toml. Претходна датотека остаје као config.toml.bak.}
 ::msgcat::mcset sr_cyrl {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {Адаптерске беле листе (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) су граница поверења и сваки дозвољени пошиљалац се сматра власником. Ово је режим пре увођења [acl] секције.}
 ::msgcat::mcset sr_cyrl {The agent asks for a secret: %s} {Агент тражи тајну: %s}
+::msgcat::mcset sr_cyrl {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {Већ push-ована грана ће се користити као PR head. Грана на твом форку се аутоматски именује као owner:branch.}
+::msgcat::mcset sr_cyrl {The author asks} {Аутор пита}
+::msgcat::mcset sr_cyrl {The buffer changed. Request a new proposal before applying.} {Бафер се променио. Затражи нови предлог пре примене.}
 ::msgcat::mcset sr_cyrl {The bundle operation returned an invalid result. Verify the installation before retrying.} {Рад са пакетом вратио је неважећи резултат. Проверите инсталирање пре понављања.}
 ::msgcat::mcset sr_cyrl {The bundle preview was malformed; nothing was installed.} {Преглед пакета је био неисправан; ништа није инсталирано.}
 ::msgcat::mcset sr_cyrl {The camera did not open; paste the code instead.} {Камера се није отворила; уместо тога налепите код.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {The component manifest is still loading. Wait for it or choose another component.} {Манифест компоненте се још учитава. Сачекајте га или изаберите другу компоненту.}
 ::msgcat::mcset sr_cyrl {The component preview is not ready yet. Refresh it and review the result before applying.} {Преглед компоненте још није спреман. Освежите га и погледајте резултат пре примене.}
 ::msgcat::mcset sr_cyrl {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {Преглед компоненте се још учитава. Сачекајте одговор пре него што прегледате све измене заједно.}
+::msgcat::mcset sr_cyrl {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Тренутна дијагностика (од језичког сервера или Провере) шаље се уз ову датотеку. Опционо додај питање. Одговор је само текст; ништа не може бити уписано.}
 ::msgcat::mcset sr_cyrl {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Директоријум и све у њему се уклања. Ово се не може поништити — уместо тога га искључи ако само желиш да га нема у промпту.}
 ::msgcat::mcset sr_cyrl {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Директоријум се брише. Фасцикла плагина је git репозиторијум и прво се комитује снимак, па га History… може вратити.}
+::msgcat::mcset sr_cyrl {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Уређивач отвара датотеке гејтвеја, укључујући удаљене инстанце, и покреће језички сервер за језик датотеке на гејтвеју: tcl-lsp, typescript-language-server (TypeScript и JavaScript), rust-analyzer (Rust плугин крејт или модул), clangd (C), racket-langserver и сервер за Common Lisp. Прелазак мишем, иди на дефиницију, довршавање и дијагностика уживо раде за сваки језик за који гејтвеј има сервер; када га нема, уређивач каже који програм тамо треба инсталирати и задржава истицање синтаксе. Провера покреће одговарајући проверавач на гејтвеју: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only или читаче за Racket и Lisp. Сачувај, поново учитај у Управљању екстензијама и тестирај екстензију без објављивања локалног стања.}
 ::msgcat::mcset sr_cyrl {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Први handoff припрема тајне, прикачену слику и фајлове извршног окружења, али не покреће PDS. Начините офлајн резервну копију KEK-а и PLC кључа за ротацију, па поднесете поново прегледан захтев уз потврду о резервној копији, за подешавање HTTP-01 TLS и активацију. DNS записи морају да показују директно на овог хоста; veles не мења подешавања CDN проксија ни DNS записа.}
+::msgcat::mcset sr_cyrl {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Формулар се променио од генерисања екстензије. Генериши поново или прегледај обичан скелет.}
 ::msgcat::mcset sr_cyrl {The gateway itself is untouched.} {Сам гејтвеј је нетакнут.}
 ::msgcat::mcset sr_cyrl {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Пролаз је поново учитао конфигурацију: нове сесије је користе одмах, а кључ сачуван у трезору користи следећи захтев. Telegram и IRC се покрећу при следећем поновном покретању пролаза: veles gateway restart.}
 ::msgcat::mcset sr_cyrl {The installed component no longer matches the selected manifest. Review the component list again.} {Инсталирана компонента се више не поклапа са изабраним манифестом. Поново прегледајте листу компоненти.}
 ::msgcat::mcset sr_cyrl {The installer preview has no verification signatures; apply is disabled.} {Преглед инсталатера нема потписе верификације; примена је онемогућена.}
 ::msgcat::mcset sr_cyrl {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Посао и његова историја покретања се уклањају. Ово се не може поништити — уместо тога га паузирај ако само желиш да престане.}
+::msgcat::mcset sr_cyrl {The log could not be read: %s} {Дневник није могао бити прочитан: %s}
 ::msgcat::mcset sr_cyrl {The manifest belongs to another component; its reply was discarded.} {Манифест припада другој компоненти; њен одговор је одбачен.}
 ::msgcat::mcset sr_cyrl {The profile changed. Review the fresh plan before applying it.} {Профил је измењен. Прегледај нови план пре примене.}
 ::msgcat::mcset sr_cyrl {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {Репозиторијум треба да има SKILL.md у корену или један ниво дубље. Стиже у %s.}
 ::msgcat::mcset sr_cyrl {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {Корен репозиторијума мора да садржи plugin.toml. Клонира се у %s под именом из манифеста.}
+::msgcat::mcset sr_cyrl {The reviewed change set was applied (%d files). Review and test it before publishing.} {Прегледани скуп измена је примењен (%d датотека). Прегледај га и тестирај пре објављивања.}
 ::msgcat::mcset sr_cyrl {The reviewed configuration snapshot will also be restored.} {Прегледани снимак подешавања биће такође враћен.}
+::msgcat::mcset sr_cyrl {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {Прегледане датотеке биће уписане у твој кориснички директоријум плугина. Veles чува локални снимак за опоравак и покушава да поново учита екстензију; објављивање није део ове радње.}
+::msgcat::mcset sr_cyrl {The reviewed proposal was applied locally. Review and test it before publishing.} {Прегледани предлог је примењен локално. Прегледај га и тестирај пре објављивања.}
 ::msgcat::mcset sr_cyrl {The rollback preview was malformed or named another component; nothing was restored.} {Преглед враћања је био неисправан или је навео другу компоненту; ништа није враћено.}
 ::msgcat::mcset sr_cyrl {The rollback returned an invalid result. Verify the installation before retrying.} {Враћање је вратило неважећи резултат. Проверите инсталирање пре понављања.}
 ::msgcat::mcset sr_cyrl {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {Рута на којој нове сесије стартују. /model и преглед модела је мењају касније — по сесији или као нову подразумевану вредност.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {The signed download discard returned an invalid response; no installation was requested.} {Одбацивање потписаног преузимања вратило је неважећи одговор; инсталирање није тражено.}
 ::msgcat::mcset sr_cyrl {The signed installation returned an invalid result. Verify the installation before retrying.} {Потписана инсталација вратила је неважећи резултат. Провери инсталацију пре понављања.}
 ::msgcat::mcset sr_cyrl {The signed release preview was malformed; nothing was installed.} {Преглед потписаног издања није правилно формиран; ништа није инсталирано.}
+::msgcat::mcset sr_cyrl {The source buffer changed. Request a new proposal before applying.} {Изворни бафер се променио. Затражи нови предлог пре примене.}
 ::msgcat::mcset sr_cyrl {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Сториџ се враћа за једну ревизију. Сам повратак је такође ревизија, па се може поништити заузврат.}
+::msgcat::mcset sr_cyrl {The translator returned no text.} {Преводилац није вратио текст.}
 ::msgcat::mcset sr_cyrl {The verification reply was malformed; no integrity result was accepted.} {Одговор на проверу био је неисправан; резултат интегритета није прихваћен.}
 ::msgcat::mcset sr_cyrl Themes Теме
+::msgcat::mcset sr_cyrl {These paths already exist in the chosen repository:} {Ове путање већ постоје у изабраном репозиторијуму:}
 ::msgcat::mcset sr_cyrl {They have not been saved.} {Нису сачуване.}
+::msgcat::mcset sr_cyrl {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {Овај бафер нема дијагностику за објашњење. Покрени Проверу или сачекај језички сервер.}
 ::msgcat::mcset sr_cyrl {This challenge is over.} {Овај изазов је завршен.}
 ::msgcat::mcset sr_cyrl {This code has expired. Ask for a new one.} {Овај код је истекао. Затражите нови.}
 ::msgcat::mcset sr_cyrl {This does not start a service or claim signed-download verification.} {Ово не покреће услугу нити тврди да је преузимање проверено потписом.}
 ::msgcat::mcset sr_cyrl {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Овај пролаз не прима тајне вредности са овог рачунара: унесите га тамо помоћу veles secret set %s или додајте ову мрежу у његов [vault] trusted_networks}
 ::msgcat::mcset sr_cyrl {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Ово је тачно оно што ће бити уписано — прави бајтови самог мотора, преузети уживо. Још ништа није дирнуло диск.}
+::msgcat::mcset sr_cyrl {This node is not a configured sync peer for any kind.} {Овај чвор није подешени партнер за синхронизацију ниједне врсте.}
+::msgcat::mcset sr_cyrl {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Овај плугин је уграђен и само је за читање. Уклоните корисничку копију истог имена да бисте уместо ње користили уграђену копију.}
+::msgcat::mcset sr_cyrl {This publishes the commit; no pull request is created yet.} {Ово објављује комит; захтев за повлачење још није направљен.}
 ::msgcat::mcset sr_cyrl {This review expires after %s seconds. Closing or cancelling discards its private staging.} {Овај преглед истиче после %s секунди. Затварање или отказивање одбацује његову приватну припрему.}
 ::msgcat::mcset sr_cyrl {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {Овај чаробњак уписује config.toml, а кључеве које му дате чува у шифрованом трезору. Сваки корак може да се прескочи: прескочен корак изостаје из нове конфигурације и остаје тачно какав јесте у постојећој. Постојећи config.toml се уређује на лицу места — мењају се само одељци на које одговорите, а све остало у њему, укључујући коментаре, остаје.}
 ::msgcat::mcset sr_cyrl {Ticket needed} {Потребна карта}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Topic for %s} {Тема за %s}
 ::msgcat::mcset sr_cyrl {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {Додирните и задржите сесију, или било шта друго што има мени, да отворите мени. Додир изван њега, или Назад, га затвара.}
 ::msgcat::mcset sr_cyrl {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {Додирните и задржите реч да је изаберете. Кад подигнете прст, отвара се њен мени, са Копирај на врху.}
+::msgcat::mcset sr_cyrl Translate Преведи
+::msgcat::mcset sr_cyrl {Translate selection} {Преведи означено}
+::msgcat::mcset sr_cyrl Translating… Преводим…
+::msgcat::mcset sr_cyrl {Translation cancelled.} {Превођење је отказано.}
+::msgcat::mcset sr_cyrl {Translation copied.} {Превод копиран.}
+::msgcat::mcset sr_cyrl {Translation failed} {Превод није успео}
+::msgcat::mcset sr_cyrl {Translation result} {Резултат превода}
+::msgcat::mcset sr_cyrl {Translator configuration unavailable} {Подешавање преводиоца није доступно}
 ::msgcat::mcset sr_cyrl {Trigger history} {Историјат окидача}
 ::msgcat::mcset sr_cyrl Triggers Окидачи
 ::msgcat::mcset sr_cyrl {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {Окидачи реагују на догађаје у каналу без окрета. slopdrop прослеђује догађај мосту и преноси одговор; vision описује URL слике унутар паузе и сатне границе. Ред се окида само тамо где конфиг-прекидач [triggers] И изведена маска то дозвољавају — #coven не прослеђује ништа под живим slopdrop везивањима.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Док IRC_ALLOWED_USERS у .env не наведе ваш налог, свако на мрежи може да разговара са ботом — а без одељка [acl] као власник, са свим алатима.}
 ::msgcat::mcset sr_cyrl {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Док TELEGRAM_ALLOWED_USERS у .env не наведе ваш кориснички ID, свако ко пронађе бота може да разговара с њим — а без одељка [acl] као власник, са свим алатима.}
 ::msgcat::mcset sr_cyrl Untitled {Без наслова}
+::msgcat::mcset sr_cyrl {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Допринос узводно је изричита радња објављивања, а не аутоматско отпремање. У Управљању екстензијама, Допринеси приказује сваку корисничку екстензију: изаберите екстензије и датотеке, прегледајте diff и скенирање тајни, покрените провере, па направите једну грану и један PR (подразумевано ка veles) са својим изабраним git идентитетом. Свака екстензија иде у свој директоријум у репозиторијуму, а постојећа датотека тамо се замењује само након засебне потврде. Никада не објављујте node.toml, локалне акредитиве, токене, приватне endpoint-е ни невезано стање плугина. Локални опоравни снимци нису узводни комит ни PR.}
+::msgcat::mcset sr_cyrl {Upstream repository or fork URL} {URL узводног репозиторијума или форка}
+::msgcat::mcset sr_cyrl {Uptime class} {Класа доступности}
+::msgcat::mcset sr_cyrl {Uptime: host %1$s, gateway %2$s} {Време рада: домаћин %1$s, гејтвеј %2$s}
 ::msgcat::mcset sr_cyrl Usage Употреба
 ::msgcat::mcset sr_cyrl {Usage & Quota} {Коришћење и квота}
 ::msgcat::mcset sr_cyrl {Use TLS} {Користи TLS}
 ::msgcat::mcset sr_cyrl {Use now} {Користи сада}
+::msgcat::mcset sr_cyrl {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {Стварне уговоре потражи преко дугмади Водич за ауторе и API референца. Преклопни приказ Плугини наводи активне куке; сервиси и тачке преиначавања долазе из сопственог регистра гејтвеја, а не из копиране листе у овом водичу.}
 ::msgcat::mcset sr_cyrl {Use this ticket} {Користи ову карту}
+::msgcat::mcset sr_cyrl {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {Користите свој форк (https://github.com/<you>/veles.git или git@github.com:<you>/veles.git) осим ако можете да push-ујете у сам veles. Изабрани репозиторијум се клонира у изоловани worktree. Ништа се не push-ује.}
 ::msgcat::mcset sr_cyrl {Users — one role across networks and platforms} {Корисници — једна улога на свим мрежама и платформама}
 ::msgcat::mcset sr_cyrl {Using the phone, for the agent} {Коришћење телефона, за агента}
 ::msgcat::mcset sr_cyrl {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Обично је исто као и назив уноса провајдера. На „Прескочи“ остави оба празна — полуподешен пар не рутира.}
 ::msgcat::mcset sr_cyrl {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Вредности су у TOML: ниске под наводницима, бројеви или листе. Уписују се у [mcp_servers.<name>] — твоји коментари и сви остали одељци остају нетакнути.}
+::msgcat::mcset sr_cyrl Vault Трезор
 ::msgcat::mcset sr_cyrl {Verified signed bundle installed. Restart the gateway before using the new core.} {Проверен потписани пакет је инсталиран. Поново покрени гејтвеј пре коришћења новог језгра.}
 ::msgcat::mcset sr_cyrl {Verified signed release — not installed yet} {Проверено потписано издање — још није инсталирано}
 ::msgcat::mcset sr_cyrl {Verify and review release…} {Провери и прегледај издање…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {Verify signed release} {Провери потписано издање}
 ::msgcat::mcset sr_cyrl {Verify signed release…} {Провери потписано издање…}
 ::msgcat::mcset sr_cyrl Version Верзија
+::msgcat::mcset sr_cyrl {Version %1$s: %2$s} {Верзија %1$s: %2$s}
+::msgcat::mcset sr_cyrl {Version drift in the registry: %s} {Раскорак верзија у регистру: %s}
 ::msgcat::mcset sr_cyrl View Приказ
 ::msgcat::mcset sr_cyrl {View markdown source} {Прикажи markdown извор}
 ::msgcat::mcset sr_cyrl {View source / rendered} {Извор / приказано}
 ::msgcat::mcset sr_cyrl Voice {Дај voice}
+::msgcat::mcset sr_cyrl {Waiting for the model…} {Чекам модел…}
+::msgcat::mcset sr_cyrl {Waiting for the model… Nothing has been written.} {Чекам модел… Ништа није уписано.}
 ::msgcat::mcset sr_cyrl {Welcome to veles} {Добро дошао у veles}
 ::msgcat::mcset sr_cyrl {What the agent can do here} {Шта агент овде може да ради}
 ::msgcat::mcset sr_cyrl {What veles may do on this phone. Each button opens the Android setting that changes it.} {Шта veles сме да ради на овом телефону. Свако дугме отвара подешавање Андроида које то мења.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {Док је veles у позадини, питање агента или завршени потез постаје обавештење; додирните га да отворите сесију.}
 ::msgcat::mcset sr_cyrl {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {Ко сме да прича са ботом. Овај избор одлучује да ли config.toml уопште носи [acl] секцију — а то окреће целу поставку.}
 ::msgcat::mcset sr_cyrl Whois Whois
-::msgcat::mcset sr_cyrl {Wire protocol (chat_completions or responses)} {Wire протокол (chat_completions или responses)}
+::msgcat::mcset sr_cyrl {Wire protocol (chat_completions, responses or plugin)} {Преносни протокол (chat_completions, responses или plugin)}
 ::msgcat::mcset sr_cyrl {With a keyboard attached, every key works as on a laptop.} {Са прикљученом тастатуром сваки тастер ради као на лаптопу.}
 ::msgcat::mcset sr_cyrl {Workflow SHA} {SHA тока рада}
+::msgcat::mcset sr_cyrl {Workflow commit} {Комит радног тока}
+::msgcat::mcset sr_cyrl Worktree {Радно стабло}
 ::msgcat::mcset sr_cyrl {Write it} Запиши
+::msgcat::mcset sr_cyrl {Write the design question first.} {Прво напиши дизајнерско питање.}
 ::msgcat::mcset sr_cyrl {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Не уписује ниједног провајдера. Гејтвеј неће рутирати ниједну поруку док не постоје [[custom_providers]] унос и [model] пар.}
 ::msgcat::mcset sr_cyrl {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Уписивање БИЛО КОГ кључа у [acl] пребацује овај пролаз у курирани режим: подразумевана улога постаје guest (fail-closed), а листе дозвољених више нису граница. Бирајте ово само са идентитетом власника коме верујете.}
 ::msgcat::mcset sr_cyrl {[model] provider} {[model] провајдер}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {also list hooks with no handler} {такође наведи куке без обрађивача}
 ::msgcat::mcset sr_cyrl {also write grants that still have an expiry} {такође упиши дозволе које још имају рок трајања}
 ::msgcat::mcset sr_cyrl {also write runtime users} {такође упиши runtime кориснике}
+::msgcat::mcset sr_cyrl {an allowlist entry is removed by editing config.toml} {унос на allowlist-и се уклања уређивањем config.toml}
 ::msgcat::mcset sr_cyrl {an allowlist is in force: a plugin not on it stays off} {на снази је листа дозвољених: плагин који није на њој остаје искључен}
 ::msgcat::mcset sr_cyrl {answer failed: %s} {одговор није успео: %s}
+::msgcat::mcset sr_cyrl {answer only, nothing to apply} {само одговор, нема шта да се примени}
 ::msgcat::mcset sr_cyrl {append these rules to config.toml} {додај ова правила у config.toml}
 ::msgcat::mcset sr_cyrl {apply failed: %s} {примена није успела: %s}
 ::msgcat::mcset sr_cyrl {apply to:} {примени на:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {ask the agent} {да пита агента}
 ::msgcat::mcset sr_cyrl {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset sr_cyrl {asked by: %s} {пита: %s}
+::msgcat::mcset sr_cyrl {asking %s for its metrics…} {тражим метрике од %s…}
 ::msgcat::mcset sr_cyrl {attach a file} {прикачи фајл}
 ::msgcat::mcset sr_cyrl {attach an image or file} {приложи слику или датотеку}
 ::msgcat::mcset sr_cyrl {attach failed: %1$s} {прикључивање није успело: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {attached %1$s (%2$s pending)} {прикачен %1$s (%2$s на чекању)}
 ::msgcat::mcset sr_cyrl {attached to %s} {прикачен на %s}
 ::msgcat::mcset sr_cyrl {attached to child session %1$s} {прикачен на подређену сесију %1$s}
+::msgcat::mcset sr_cyrl automatic аутоматски
 ::msgcat::mcset sr_cyrl {aux model} {помоћни модел}
 ::msgcat::mcset sr_cyrl {aux provider} {помоћни провајдер}
+::msgcat::mcset sr_cyrl available доступно
 ::msgcat::mcset sr_cyrl {available components} {доступних компонената}
 ::msgcat::mcset sr_cyrl {back up N user turns} {врати се N корисничких потеза}
 ::msgcat::mcset sr_cyrl {backed up the previous config to %s} {направио бекап претходне конфигурације у %s}
 ::msgcat::mcset sr_cyrl {background shells; /shells output|kill <id>} {љуске у позадини; /shells output|kill <id>}
+::msgcat::mcset sr_cyrl {backing off: %1$s failure(s), next automatic try in %2$s s} {одступање: %1$s неуспеха, следећи аутоматски покушај за %2$s с}
 ::msgcat::mcset sr_cyrl {bad host for %1$s: %2$s} {лош хост за %1$s: %2$s}
 ::msgcat::mcset sr_cyrl {bad unit for %1$s: %2$s} {лош unit за %1$s: %2$s}
 ::msgcat::mcset sr_cyrl {bare display off} {голи приказ искључен}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {browse the filesystem} {прегледај систем датотека}
 ::msgcat::mcset sr_cyrl {browse the repo's files} {прегледај датотеке репозиторијума}
 ::msgcat::mcset sr_cyrl {builtin (%s):} {уграђено (%s):}
+::msgcat::mcset sr_cyrl bundled уграђен
+::msgcat::mcset sr_cyrl {bundled, read-only} {уграђен, само за читање}
 ::msgcat::mcset sr_cyrl by ко
 ::msgcat::mcset sr_cyrl {by plan — all sessions} {по плану — све сесије}
 ::msgcat::mcset sr_cyrl {by plan — this session} {по плану — ова сесија}
 ::msgcat::mcset sr_cyrl {by tool} {по алатки}
 ::msgcat::mcset sr_cyrl {cancel failed: %1$s} {отказивање није успело: %1$s}
 ::msgcat::mcset sr_cyrl {cancel the running turn} {прекини текућу обраду}
+::msgcat::mcset sr_cyrl {cancel the selected task} {отказати одабрани задатак}
 ::msgcat::mcset sr_cyrl {cancelled task %1$s} {отказан задатак %1$s}
 ::msgcat::mcset sr_cyrl {cannot list scripts (gateway offline?)} {не могу да излистам скрипте (гејтвеј ван мреже?)}
 ::msgcat::mcset sr_cyrl {cannot reach the gateway: %s} {не могу да приступим гејтвеју: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl commit комит
 ::msgcat::mcset sr_cyrl {compacting %s messages in the background — the transcript reloads when it finishes} {компакција %s порука у позадини — транскрипт се поново учитава када се заврши}
 ::msgcat::mcset sr_cyrl compacting… сажимање…
+::msgcat::mcset sr_cyrl {comparing the nodes' versions and config…} {упоређујем верзије и конфигурацију чворова…}
 ::msgcat::mcset sr_cyrl {completion tokens} {токени за довршавање}
 ::msgcat::mcset sr_cyrl {component options and declared actions} {опције компоненте и наведене акције}
 ::msgcat::mcset sr_cyrl composer композер
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {could not open %s} {не могу да отворим %s}
 ::msgcat::mcset sr_cyrl {could not open %s (no working browser opener)} {не могу да отворим %s (нема исправног отварача прегледача)}
 ::msgcat::mcset sr_cyrl {could not open %{url}: %{e}} {не могу да отворим %{url}: %{e}}
+::msgcat::mcset sr_cyrl {could not open the optional referral link: %s} {није могуће отворити опционалну рефералну везу: %s}
 ::msgcat::mcset sr_cyrl {could not read %s: %s} {није могуће прочитати %s: %s}
 ::msgcat::mcset sr_cyrl {could not read the current route} {не могу да прочитам тренутну руту}
 ::msgcat::mcset sr_cyrl {could not save this session's language: %{e}} {језик ове сесије није могуће сачувати: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {ctxmenu: no widget %s (attached too early?)} {ctxmenu: нема виџета %s (прикачен прерано?)}
 ::msgcat::mcset sr_cyrl {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {изабран је курирани приступ без идентитета власника, па [acl] остаје неактиван — наведите га, нпр. telegram:123456 или irc:account, да бисте га укључили}
 ::msgcat::mcset sr_cyrl {current theme: %{name} · /theme <name>} {тренутна тема: %{name} · /theme <name>}
+::msgcat::mcset sr_cyrl {cursor %1$s of %2$s (%3$s behind)} {показивач %1$s од %2$s (%3$s заостаје)}
 ::msgcat::mcset sr_cyrl {custom command /%s…} {прилагођена команда /%s…}
 ::msgcat::mcset sr_cyrl {custom commands (.veles/commands/) and config aliases} {сопствене команде (.veles/commands/) и алијаси из конфигурације}
 ::msgcat::mcset sr_cyrl {cycle ends} {крај циклуса}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl doctor_resident {стално у сваком промпту: %{shown} од %{total} знакова (~%{tokens} токена) — остатак се учитава по потреби са: memory action=read path=%{path}}
 ::msgcat::mcset sr_cyrl doctor_title {дијагностика меморије}
 ::msgcat::mcset sr_cyrl doctor_total {укупно: %{chars} знакова у %{files} датотека (~%{tokens} токена)}
+::msgcat::mcset sr_cyrl {documentation is not in this source checkout: %s} {документација није у овој локалној копији извора: %s}
 ::msgcat::mcset sr_cyrl done готово
 ::msgcat::mcset sr_cyrl {done · %1$s/%2$s} {готово · %1$s/%2$s}
 ::msgcat::mcset sr_cyrl {done, but the model returned no text} {готово, али модел није вратио текст}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {evaluate Tcl and answer with the result — no model turn} {изврши Tcl и одговори резултатом — без потеза модела}
 ::msgcat::mcset sr_cyrl everyone сви
 ::msgcat::mcset sr_cyrl everywhere свуда
+::msgcat::mcset sr_cyrl {exchanging registry gossip…} {размењујем госип регистра…}
 ::msgcat::mcset sr_cyrl exit излаз
 ::msgcat::mcset sr_cyrl {exit veles-desktop} {излаз из veles-desktop}
 ::msgcat::mcset sr_cyrl {export failed: %s} {извоз није успео: %s}
 ::msgcat::mcset sr_cyrl {export session} {извези сесију}
 ::msgcat::mcset sr_cyrl {exported to %s} {извезено у %s}
+::msgcat::mcset sr_cyrl {extension architecture, examples and LSP help} {архитектура екстензија, примери и LSP помоћ}
+::msgcat::mcset sr_cyrl {extension development guide} {водич за развој екстензија}
+::msgcat::mcset sr_cyrl failed {није успело}
 ::msgcat::mcset sr_cyrl {failed to load history: %s} {учитавање историјата није успело: %s}
 ::msgcat::mcset sr_cyrl {failed to paint cached history: %s} {цртање кешираног историјата није успело: %s}
 ::msgcat::mcset sr_cyrl {failed to paint replayed history: %s} {цртање репродукованог историјата није успело: %s}
 ::msgcat::mcset sr_cyrl {failed: %s} {неуспех: %s}
+::msgcat::mcset sr_cyrl {failing — heartbeating, but a sync push or the last probe failed} {неисправно — откуцаји стижу, али push синхронизације или последња провера није успела}
 ::msgcat::mcset sr_cyrl {failover blueprint: cannot reach the gateway} {failover blueprint: недоступан gateway}
 ::msgcat::mcset sr_cyrl {failover graph unavailable: %1$s} {граф пребацивања није доступан: %1$s}
 ::msgcat::mcset sr_cyrl {failover script: cannot reach the gateway} {failover скрипта: недоступан gateway}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {fire the Tcl hook} {покрени Tcl кукu}
 ::msgcat::mcset sr_cyrl {fires for %s:} {активира се за %s:}
 ::msgcat::mcset sr_cyrl {fires per hour} {активира се на сат}
+::msgcat::mcset sr_cyrl {fleet drift} {раскорак флоте}
 ::msgcat::mcset sr_cyrl {focus composer} {фокусирај композитор}
 ::msgcat::mcset sr_cyrl {focus failed: %{e}} {фокус није успео: %{e}}
 ::msgcat::mcset sr_cyrl {focus next region} {фокусирај следећу област}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {four splits is the maximum} {највише четири поделе}
 ::msgcat::mcset sr_cyrl {fresh session} {нова сесија}
 ::msgcat::mcset sr_cyrl {fresh session (Ctrl-N too)} {нова сесија (и Ctrl-N)}
+::msgcat::mcset sr_cyrl {fresh — heartbeating, sync passing} {свеже — откуцаји стижу, синхронизација пролази}
+::msgcat::mcset sr_cyrl from из
 ::msgcat::mcset sr_cyrl {from node %{node}} {са чвора %{node}}
 ::msgcat::mcset sr_cyrl {gateway     v%1$s · up %2$s} {gateway     v%1$s · ради %2$s}
 ::msgcat::mcset sr_cyrl {gateway unreachable — is `veles gateway run` up?} {gateway недоступан — да ли је `veles gateway run` покренут?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {in %s} {у %s}
 ::msgcat::mcset sr_cyrl {insert the next key literally (^B bold, ^C colour, ^O reset)} {убаци следећи тастер литерално (^B подебљано, ^C боја, ^O ресет)}
 ::msgcat::mcset sr_cyrl {inserted %s} {уметнуто %s}
+::msgcat::mcset sr_cyrl {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {прегледај кластер; експлицитно пошаљи/примени синхронизацију складишта, меморије, конфигурације или трезора; заборави застарео чвор у целој флоти; прочитај крај дневника или метрике чвора; упореди верзије и конфигурацију; госип сада}
 ::msgcat::mcset sr_cyrl {inspector — app internals · core state · gw plugins} {инспектор — унутрашњост апликације · стање језгра · gw додаци}
 ::msgcat::mcset sr_cyrl {install a plugin from a git URL} {инсталирај додатак са git URL-а}
 ::msgcat::mcset sr_cyrl {install a skill from a git URL} {инсталирај вештину са git URL-а}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset sr_cyrl instance инстанца
 ::msgcat::mcset sr_cyrl {instance controls} {контроле инстанце}
 ::msgcat::mcset sr_cyrl {instance detail} {детаљи инстанце}
+::msgcat::mcset sr_cyrl {instance names may not start with "cluster:" or "g:": %s} {имена инстанци не могу почињати са "cluster:" или "g:": %s}
 ::msgcat::mcset sr_cyrl {instance needs a name} {инстанца захтева име}
 ::msgcat::mcset sr_cyrl {instance unreachable} {инстанца недоступна}
 ::msgcat::mcset sr_cyrl instances инстанце
 ::msgcat::mcset sr_cyrl interrupting… прекидам…
+::msgcat::mcset sr_cyrl into у
 ::msgcat::mcset sr_cyrl {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset sr_cyrl {irc: %s} {irc: %s}
 ::msgcat::mcset sr_cyrl {irc: %s failed — %s} {irc: %s није успело — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {language list} {листа језика}
 ::msgcat::mcset sr_cyrl {language picker (the swap for THIS window)} {избор језика (замена за ОВАЈ прозор)}
 ::msgcat::mcset sr_cyrl {language saved: %s} {језик сачуван: %s}
+::msgcat::mcset sr_cyrl {language server} {језички сервер}
+::msgcat::mcset sr_cyrl {language server: event stream unavailable: %s} {језички сервер: ток догађаја није доступан: %s}
+::msgcat::mcset sr_cyrl {language server: not started on the gateway — %s} {језички сервер: није покренут на гејтвеју — %s}
+::msgcat::mcset sr_cyrl {language server: the gateway would not start one: %s} {језички сервер: гејтвеј није хтео да га покрене: %s}
 ::msgcat::mcset sr_cyrl {language swapped: %1$s ⇄ %2$s} {језици замењени: %1$s ⇄ %2$s}
 ::msgcat::mcset sr_cyrl {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {језик → %1$s (био %2$s) · само текући прозор — Сачувај као подразумевано уписује у config.toml}
 ::msgcat::mcset sr_cyrl {language: %s} {језик: %s}
 ::msgcat::mcset sr_cyrl {last error} {последња грешка}
+::msgcat::mcset sr_cyrl {last pass %1$s at %2$s: %3$s} {последњи пролаз %1$s у %2$s: %3$s}
 ::msgcat::mcset sr_cyrl {last reply copied (%s chars)} {последњи одговор копиран (%s знакова)}
 ::msgcat::mcset sr_cyrl {layout not saved: %s} {распоред није сачуван: %s}
 ::msgcat::mcset sr_cyrl {leave (cancels a running turn first)} {изађи (прво отказује потез у току)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {list sessions} {списак сесија}
 ::msgcat::mcset sr_cyrl {list skills} {списак вештина}
 ::msgcat::mcset sr_cyrl {list tools} {списак алата}
+::msgcat::mcset sr_cyrl {listed here only; [notify] fleet_alerts is off} {само је овде наведено; [notify] fleet_alerts је искључено}
 ::msgcat::mcset sr_cyrl {live patching ARMED} {живо крпење АКТИВНО}
 ::msgcat::mcset sr_cyrl {live patching ARMED — an agent can now redefine procs in this window} {живо крпење АКТИВНО — агент сада може да редефинише процедуре у овом прозору}
 ::msgcat::mcset sr_cyrl {live patching disarmed} {живо крпење искључено}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {log pane shown} {панел дневника приказан}
 ::msgcat::mcset sr_cyrl {log: %s} {дневник: %s}
 ::msgcat::mcset sr_cyrl {make media: image/video/audio, route = comfyui or provider[/model]} {направи медије: image/video/audio, рута = comfyui или provider[/model]}
+::msgcat::mcset sr_cyrl {managed via %s} {управљано преко %s}
+::msgcat::mcset sr_cyrl {manual only} {само ручно}
 ::msgcat::mcset sr_cyrl {mark set} {маркер постављен}
 ::msgcat::mcset sr_cyrl {mark whole buffer (emacs select-all)} {означи цео бафер (emacs изабери-све)}
 ::msgcat::mcset sr_cyrl {markdown preview of the composer} {markdown преглед уноса}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset sr_cyrl model модел
 ::msgcat::mcset sr_cyrl {model aliases} {алијаси модела}
 ::msgcat::mcset sr_cyrl {monitor %1$s fired} {монитор %1$s се окинуо}
-::msgcat::mcset sr_cyrl monitors монитори
 ::msgcat::mcset sr_cyrl monitors_header монитори:
 ::msgcat::mcset sr_cyrl monitors_none {(нема монитора — модел их покреће преко monitor tool)}
 ::msgcat::mcset sr_cyrl {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {премести сесију (и њено подстабло) на други чвор базена на граници потеза; заврши/опозови паркирани пребацивање; питај ко поседује сесију (админ)}
 ::msgcat::mcset sr_cyrl {move the running foreground command to the background} {премести команду из првог плана у позадину}
 ::msgcat::mcset sr_cyrl {move the running foreground command to the background (keeps running)} {пребаци текућу команду у позадину (наставља да ради)}
+::msgcat::mcset sr_cyrl {move this session's running foreground command to a background shell; keeps running} {пребаци тренутну покренуту наредбу из првог плана у позадинску шкољку; наставља да ради}
 ::msgcat::mcset sr_cyrl {moving around} кретање
 ::msgcat::mcset sr_cyrl name име
 ::msgcat::mcset sr_cyrl {name a key first} {прво именуј кључ}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {neon impressionism} {неонски импресионизам}
 ::msgcat::mcset sr_cyrl {network (optional — e.g. libera; empty = any)} {мрежа (опционално — нпр. libera; празно = било која)}
 ::msgcat::mcset sr_cyrl {network to scope the grant to} {мрежа којом се ограничава додела}
+::msgcat::mcset sr_cyrl new ново
 ::msgcat::mcset sr_cyrl {new buffer} {нови бафер}
 ::msgcat::mcset sr_cyrl {new entry — replace this text, then Save} {нови унос — замени овај текст, па Сачувај}
 ::msgcat::mcset sr_cyrl {new name for %s} {ново име за %s}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {no IRC buffer selected} {није изабран IRC бафер}
 ::msgcat::mcset sr_cyrl {no MCP servers configured — Add server… writes one into config.toml} {није конфигурисан ниједан MCP сервер — Додај сервер… уписује један у config.toml}
 ::msgcat::mcset sr_cyrl {no URLs in this buffer} {нема URL-ова у овом баферу}
+::msgcat::mcset sr_cyrl {no [a2a_agents] entry — this peer cannot be dialed} {нема уноса [a2a_agents] — овај партнер се не може позвати}
 ::msgcat::mcset sr_cyrl {no alias /%s} {нема алијаса /%s}
 ::msgcat::mcset sr_cyrl {no background refresh} {нема позадинског освежавања}
 ::msgcat::mcset sr_cyrl {no buffer %s} {нема бафера %s}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {no code block in the last reply} {нема блока кода у последњем одговору}
 ::msgcat::mcset sr_cyrl {no cron jobs} {нема cron задатака}
 ::msgcat::mcset sr_cyrl {no cron jobs — New… creates one} {нема cron задатака — Ново… креира један}
+::msgcat::mcset sr_cyrl {no exchange yet} {још нема размене}
 ::msgcat::mcset sr_cyrl {no file — pick a guts file or type a path} {нема датотеке — изабери guts датотеку или унеси путању}
 ::msgcat::mcset sr_cyrl {no handler} {нема обрађивача}
+::msgcat::mcset sr_cyrl {no heartbeat for %{mins} min} {нема откуцаја %{mins} мин}
+::msgcat::mcset sr_cyrl {no heartbeat within the threshold} {нема откуцаја у оквиру прага}
 ::msgcat::mcset sr_cyrl {no history yet} {још нема историје}
 ::msgcat::mcset sr_cyrl {no host configured for this instance} {није конфигурисан хост за ову инстанцу}
 ::msgcat::mcset sr_cyrl {no instance selected} {није изабрана инстанца}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {no program to open URLs} {нема програма за отварање URL-ова}
 ::msgcat::mcset sr_cyrl {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {ниједан провајдер није подешен — додајте запис у [[custom_providers]] и поставите пар [model] пре покретања потеза}
 ::msgcat::mcset sr_cyrl {no reading yet — press Refresh} {још нема читања — притисни Освежи}
-::msgcat::mcset sr_cyrl {no running tasks} {нема задатака у току}
 ::msgcat::mcset sr_cyrl {no sample available} {нема доступног узорка}
 ::msgcat::mcset sr_cyrl {no search bar on this surface} {нема траке за претрагу на овом сучељу}
 ::msgcat::mcset sr_cyrl {no session matching %s} {ниједна сесија не одговара %s}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {no session open — switch the scope to the default, or open a session} {није отворена ниједна сесија — пребаци опсег на подразумевани или отвори сесију}
 ::msgcat::mcset sr_cyrl {no session open — the catalogue needs one; the default scope still works from config.toml} {није отворена ниједна сесија — каталог захтева једну; подразумевани опсег и даље ради из config.toml}
 ::msgcat::mcset sr_cyrl {no setting %s — try filter or bare} {нема поставке %s — пробај филтер или голу вредност}
+::msgcat::mcset sr_cyrl {no shells or monitors to show} {нема шелова ни пратилаца за приказ}
 ::msgcat::mcset sr_cyrl {no skills found} {није пронађена ниједна вештина}
 ::msgcat::mcset sr_cyrl {no such URL — /urls lists them} {нема таквог URL-а — /urls их наводи}
 ::msgcat::mcset sr_cyrl {no such file: %s} {нема такве датотеке: %s}
 ::msgcat::mcset sr_cyrl {no swap target yet — set one with /locale secondary <id>} {још нема циља замене — постави га са /locale secondary <id>}
+::msgcat::mcset sr_cyrl {no task selected} {задатак није одабран}
 ::msgcat::mcset sr_cyrl {no triggers} {нема окидача}
 ::msgcat::mcset sr_cyrl {no triggers — New… creates one} {нема окидача — Ново… креира један}
 ::msgcat::mcset sr_cyrl {no upstream reading for %s} {нема читања одозго за %s}
 ::msgcat::mcset sr_cyrl {no word match} {нема поклапања речи}
 ::msgcat::mcset sr_cyrl {no xdg-open — path copied instead} {нема xdg-open — путања је копирана уместо тога}
+::msgcat::mcset sr_cyrl {node log} {дневник чвора}
 ::msgcat::mcset sr_cyrl {none loaded} {ништа није учитано}
 ::msgcat::mcset sr_cyrl {none recorded} {ништа није забележено}
+::msgcat::mcset sr_cyrl {none since this gateway started} {ништа од покретања овог гејтвеја}
 ::msgcat::mcset sr_cyrl {none yet} {још нема}
 ::msgcat::mcset sr_cyrl {normie is pure Ctrl — no emacs prefix chords.} {normie је чисти Ctrl — без emacs префикс акорда.}
 ::msgcat::mcset sr_cyrl {normie: select all · emacs: start of line} {normie: изабери све · emacs: почетак реда}
 ::msgcat::mcset sr_cyrl {not a channel} {није канал}
 ::msgcat::mcset sr_cyrl {not a key = value line: %s} {није линија кључ = вредност: %s}
+::msgcat::mcset sr_cyrl {not a node in the attached gateway's cluster registry: %s} {није чвор у регистру кластера прикљученог гејтвеја: %s}
 ::msgcat::mcset sr_cyrl {not a number} {није број}
 ::msgcat::mcset sr_cyrl {not a valid http(s) url: %s} {није исправан http(s) URL: %s}
 ::msgcat::mcset sr_cyrl {not a valid ssh host: %s} {није исправан ssh хост: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {not attached to a gateway} {није прикачено на gateway}
 ::msgcat::mcset sr_cyrl {not configured} {није конфигурисано}
 ::msgcat::mcset sr_cyrl {not ignoring %s} {не занемарујем %s}
+::msgcat::mcset sr_cyrl {not installed} {није инсталирано}
 ::msgcat::mcset sr_cyrl {not reported} {није пријављено}
 ::msgcat::mcset sr_cyrl {not running} {не ради}
 ::msgcat::mcset sr_cyrl {not set in config.toml — the built-in default applies. %s} {није постављено у config.toml — важи уграђена подразумевана вредност. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl off искључено
 ::msgcat::mcset sr_cyrl {off (the default)} {искључено (подразумевано)}
 ::msgcat::mcset sr_cyrl offline {ван мреже}
+::msgcat::mcset sr_cyrl ok {у реду}
 ::msgcat::mcset sr_cyrl on укључено
 ::msgcat::mcset sr_cyrl {on (the default)} {укључено (подразумевано)}
 ::msgcat::mcset sr_cyrl {on failure} {при неуспеху}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {open links} {да отвара везе}
 ::msgcat::mcset sr_cyrl {open the engine log} {отвори евиденцију мотора}
 ::msgcat::mcset sr_cyrl {open the joined session before /leave (on %s)} {отвори придружену сесију пре /leave (на %s)}
+::msgcat::mcset sr_cyrl {open the selected child session} {отворити одабрану дечју сесију}
 ::msgcat::mcset sr_cyrl {open the selected skill in the Dev editor} {отвори изабрану вештину у Dev уређивачу}
 ::msgcat::mcset sr_cyrl {open the setup wizard (re-runnable; edits config.toml in place)} {отвори чаробњак за подешавање (може поново; уређује config.toml на месту)}
 ::msgcat::mcset sr_cyrl {open the share sheet} {да отвори мени за дељење}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {override cleared — the default applies} {превазилажење уклоњено — важи подразумевано}
 ::msgcat::mcset sr_cyrl {override failed: %s} {превазилажење није успело: %s}
 ::msgcat::mcset sr_cyrl {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {ACL не може да упари идентитет власника %{id} — користите telegram:<бројчани ID>, irc:<налог на services> или маску nick!user@host}
+::msgcat::mcset sr_cyrl owner/repository власник/репозиторијум
 ::msgcat::mcset sr_cyrl {owners: %s} {власници: %s}
 ::msgcat::mcset sr_cyrl {pair a desktop with this agent} {упари десктоп са овим агентом}
 ::msgcat::mcset sr_cyrl {partly failed: %s} {делимично неуспело: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl plugin плугин
 ::msgcat::mcset sr_cyrl {plugin directory git history} {git историја директоријума плугина}
 ::msgcat::mcset sr_cyrl {plugin list} {листа плугина}
+::msgcat::mcset sr_cyrl {plugin provider driver} {плугински драјвер провајдера}
 ::msgcat::mcset sr_cyrl {plugins reloaded on %s} {плугини поново учитани на %s}
 ::msgcat::mcset sr_cyrl {pop %s out into its own window} {издвој %s у посебан прозор}
 ::msgcat::mcset sr_cyrl {pop the buffer out into its own window} {издвој бафер у засебан прозор}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {prefix: window & dock commands} {префикс: команде прозора и дока}
 ::msgcat::mcset sr_cyrl {press Attach in the Instances tab} {притисни Прикључи у картици Инстанце}
 ::msgcat::mcset sr_cyrl preview преглед
+::msgcat::mcset sr_cyrl {preview an AI extension change and explicitly apply its diff} {прегледај AI измену екстензије и изричито примени њене разлике}
 ::msgcat::mcset sr_cyrl {preview failed: %s} {преглед није успео: %s}
 ::msgcat::mcset sr_cyrl {previous buffer} {претходни бафер}
 ::msgcat::mcset sr_cyrl {previous command was not a yank} {претходна команда није била yank}
 ::msgcat::mcset sr_cyrl {previous match} {претходно поклапање}
 ::msgcat::mcset sr_cyrl {previous session} {претходна сесија}
+::msgcat::mcset sr_cyrl {probing %s…} {провера %s…}
 ::msgcat::mcset sr_cyrl {proc body} {тело процедуре}
 ::msgcat::mcset sr_cyrl {profile unavailable: %s} {профил није доступан: %s}
 ::msgcat::mcset sr_cyrl profiles: профили:
 ::msgcat::mcset sr_cyrl prompt промпт
 ::msgcat::mcset sr_cyrl {prompt breakdown} {рашчлањивање промпта}
 ::msgcat::mcset sr_cyrl {prompt tokens} {токени упита}
+::msgcat::mcset sr_cyrl {proposal only, not applied} {само предлог, није примењен}
 ::msgcat::mcset sr_cyrl provider провајдер
 ::msgcat::mcset sr_cyrl {provider / model} {провајдер / модел}
 ::msgcat::mcset sr_cyrl {provider base URL} {базни URL провајдера}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {re-sync the slopdrop state mirror} {поново синхронизуј slopdrop огледало стања}
 ::msgcat::mcset sr_cyrl {read and set the clipboard} {да чита и поставља привремену меморију}
 ::msgcat::mcset sr_cyrl {read text aloud} {да чита текст наглас}
+::msgcat::mcset sr_cyrl {read-only: [approvals] allowlist} {само за читање: [approvals] allowlist}
 ::msgcat::mcset sr_cyrl {read-only: this session lives on %1$s (as read at %2$s)} {само за читање: ова сесија је на %1$s (стање прочитано у %2$s)}
 ::msgcat::mcset sr_cyrl {read-only: this skill comes from the %s library} {само за читање: ова вештина је из библиотеке %s}
 ::msgcat::mcset sr_cyrl reasoning резоновање
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {refused to open %s (only http, https, mailto)} {одбијено отварање %s (само http, https, mailto)}
 ::msgcat::mcset sr_cyrl {refused: %s} {одбијено: %s}
 ::msgcat::mcset sr_cyrl {region copied} {регион копиран}
+::msgcat::mcset sr_cyrl registered регистровано
 ::msgcat::mcset sr_cyrl {registry not saved: %s} {регистар није сачуван: %s}
 ::msgcat::mcset sr_cyrl {reload on %1$s failed: %2$s} {поновно учитавање на %1$s није успело: %2$s}
 ::msgcat::mcset sr_cyrl {reload the mechanisms} {поново учитај механизме}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {resume a session (prefix ok)} {настави сесију (довољан је префикс)}
 ::msgcat::mcset sr_cyrl {retry failed: %s} {поновни покушај није успео: %s}
 ::msgcat::mcset sr_cyrl {retrying last prompt…} {поновни покушај последњег промпта…}
+::msgcat::mcset sr_cyrl {review files for an explicit upstream contribution} {прегледај датотеке за изричити узводни допринос}
+::msgcat::mcset sr_cyrl {review standing global and session tool permissions} {прегледај сталне глобалне и сесијске дозволе алата}
 ::msgcat::mcset sr_cyrl revision измена
 ::msgcat::mcset sr_cyrl {revision history} {историја измена}
+::msgcat::mcset sr_cyrl {revoke refused} {опозив одбијен}
 ::msgcat::mcset sr_cyrl {revoke the selected identity's grant} {опозови дозволу изабраног идентитета}
 ::msgcat::mcset sr_cyrl role улога
 ::msgcat::mcset sr_cyrl {role to grant} {улога за доделу}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {saved to %s} {сачувано у %s}
 ::msgcat::mcset sr_cyrl saved. сачувано.
 ::msgcat::mcset sr_cyrl {scaffold a new plugin} {направи нови плугин}
+::msgcat::mcset sr_cyrl {scaffold a user plugin and open it in this editor} {изгради кориснички плугин и отвори га у овом уређивачу}
 ::msgcat::mcset sr_cyrl {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {заказани послови; /crons add "<sched>" [session=<id>] <prompt> (алијас /cron)}
 ::msgcat::mcset sr_cyrl scope опсег
 ::msgcat::mcset sr_cyrl script скрипта
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {select %s first} {прво изабери %s}
 ::msgcat::mcset sr_cyrl {select a checkpoint first} {прво изабери контролну тачку}
 ::msgcat::mcset sr_cyrl {select a file, or New… to create one} {изабери датотеку, или Ново… да направиш нову}
+::msgcat::mcset sr_cyrl {select a grant first} {прво изаберите дозволу}
 ::msgcat::mcset sr_cyrl {select a handler first} {прво изабери руковаоца}
 ::msgcat::mcset sr_cyrl {select a member first} {прво изабери члана}
 ::msgcat::mcset sr_cyrl {select a route} {изабери руту}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {select an assignment first} {прво изабери доделу}
 ::msgcat::mcset sr_cyrl {select an entry first} {прво изабери унос}
 ::msgcat::mcset sr_cyrl {select an identity first} {прво изабери идентитет}
+::msgcat::mcset sr_cyrl {selected task details and shell output} {детаљи одабраног задатка и излаз шелла}
 ::msgcat::mcset sr_cyrl {selected: %s} {изабрано: %s}
 ::msgcat::mcset sr_cyrl {send clipboard as prompt} {пошаљи клипборд као промпт}
 ::msgcat::mcset sr_cyrl {send failed: %s} {слање није успело: %s}
 ::msgcat::mcset sr_cyrl {send the message; while a turn runs, queue it as steering} {пошаљи поруку; док је обрада у току, стави је у ред као усмеравање}
+::msgcat::mcset sr_cyrl sent послато
+::msgcat::mcset sr_cyrl {sent to the owner's home chat} {послато у власников главни чет}
 ::msgcat::mcset sr_cyrl server сервер
 ::msgcat::mcset sr_cyrl {server buffers merged} {серверски бафери спојени}
 ::msgcat::mcset sr_cyrl {server buffers separate} {серверски бафери одвојени}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {settings, one key = value per line} {подешавања, један кључ = вредност по линији}
 ::msgcat::mcset sr_cyrl {setup_done marker NOT saved: %s} {setup_done ознака НИЈЕ сачувана: %s}
 ::msgcat::mcset sr_cyrl {shell %1$s finished} {љуска %1$s завршена}
-::msgcat::mcset sr_cyrl shells љуске
+::msgcat::mcset sr_cyrl {shells, monitors and subagents} {шели, пратиоци и под-агенти}
 ::msgcat::mcset sr_cyrl shells_header {позадинске љуске:}
 ::msgcat::mcset sr_cyrl shells_none {(нема позадинских љуски — /background <cmd> покреће једну)}
 ::msgcat::mcset sr_cyrl {show current configuration} {прикажи тренутну конфигурацију}
 ::msgcat::mcset sr_cyrl {show every key in this mode} {прикажи све тастере у овом режиму}
 ::msgcat::mcset sr_cyrl {show or hide the session list} {прикажи или сакриј листу сесија}
 ::msgcat::mcset sr_cyrl {show or switch model (alias | model@provider | custom:<prov>)} {прикажи или промени модел (alias | model@provider | custom:<prov>)}
+::msgcat::mcset sr_cyrl {show selected shell output} {приказати излаз одабраног шелла}
 ::msgcat::mcset sr_cyrl {show short messages} {да приказује кратке поруке}
 ::msgcat::mcset sr_cyrl {show the model's reasoning blocks (same as /reasoning)} {прикажи блокове размишљања модела (исто као /reasoning)}
 ::msgcat::mcset sr_cyrl {show unclaimed} {прикажи непреузете}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset sr_cyrl spend потрошња
 ::msgcat::mcset sr_cyrl {split: %s} {подела: %s}
 ::msgcat::mcset sr_cyrl {ssh to %1$s failed: %2$s} {ssh на %1$s није успео: %2$s}
+::msgcat::mcset sr_cyrl {stale — no heartbeat within the threshold} {застарело — нема откуцаја у оквиру прага}
+::msgcat::mcset sr_cyrl {standing global and session permission grants} {сталне глобалне и сесијске дозволе}
 ::msgcat::mcset sr_cyrl state стање
 ::msgcat::mcset sr_cyrl {state       never reached} {стање       никада достигнуто}
 ::msgcat::mcset sr_cyrl {state       reachable} {стање       достижно}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {stored in the encrypted vault (%1$s): %2$s} {сачувано у шифрованом трезору (%1$s): %2$s}
 ::msgcat::mcset sr_cyrl {stream handler: %s} {руковалац тока: %s}
 ::msgcat::mcset sr_cyrl {subagent %1$s finished} {потагент %1$s завршен}
-::msgcat::mcset sr_cyrl subagents потагенти
 ::msgcat::mcset sr_cyrl subagents_header {потагенти у току:}
 ::msgcat::mcset sr_cyrl subagents_none {(нема потагената у току — /btw <prompt> покреће један, или модел користи delegate_task)}
 ::msgcat::mcset sr_cyrl {suspend failed: %{e}} {паузирање није успело: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {switch the selected skill off} {искључи изабрану вештину}
 ::msgcat::mcset sr_cyrl {switch the selected skill on} {укључи изабрану вештину}
 ::msgcat::mcset sr_cyrl {switch to the %s tab} {пређи на картицу %s}
+::msgcat::mcset sr_cyrl {sync requested: %s} {затражена синхронизација: %s}
 ::msgcat::mcset sr_cyrl {tab 1} {таб 1}
 ::msgcat::mcset sr_cyrl {tab 2} {таб 2}
 ::msgcat::mcset sr_cyrl {tab 3} {таб 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset sr_cyrl tasks_none {(нема покренутих задатака)}
 ::msgcat::mcset sr_cyrl tasks_not_found {нема таквог задатка: %{id}}
 ::msgcat::mcset sr_cyrl tasks_not_running {задатак %{id} је већ завршен}
-::msgcat::mcset sr_cyrl {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset sr_cyrl {tcl-lsp: event stream unavailable: %s} {tcl-lsp: ток догађаја недоступан: %s}
-::msgcat::mcset sr_cyrl {tcl-lsp: gateway would not start it: %s} {tcl-lsp: гејтвеј га не би покренуо: %s}
-::msgcat::mcset sr_cyrl {tcl-lsp: not started on the gateway — %s} {tcl-lsp: није покренут на гејтвеју — %s}
 ::msgcat::mcset sr_cyrl {that buffer is not split} {тај бафер није подељен}
 ::msgcat::mcset sr_cyrl {the %s plan} {%s план}
 ::msgcat::mcset sr_cyrl {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {поље за API кључ прима НАЗИВ променљиве окружења (попут %{example}), а не сам кључ — кључ се уписује у скривено поље}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {the gateway answered without a report} {гејтвеј је одговорио без извештаја}
 ::msgcat::mcset sr_cyrl {the model/provider pair is incomplete — the gateway will not route until both are present} {пар модел/провајдер је непотпун — пролаз неће усмеравати док нису задата оба}
 ::msgcat::mcset sr_cyrl {the options changed, so that is a fresh preview — press “Write it” again to write it} {опције су се промениле, ово је свеж преглед — притисни „Упиши“ поново да би се уписало}
+::msgcat::mcset sr_cyrl {the peer has not been sent this vault yet} {партнеру још није послат овај трезор}
+::msgcat::mcset sr_cyrl {the peer holds this vault} {партнер има овај трезор}
 ::msgcat::mcset sr_cyrl {the primary route is \[model\] provider/default — change it there, not here} {примарна рута је \[model\] provider/default — мењај је тамо, не овде}
 ::msgcat::mcset sr_cyrl {the provider/model route this session sends to} {рута провајдер/модел којој ова сесија шаље}
 ::msgcat::mcset sr_cyrl {the same, on the privileged path (owner only)} {исто, привилегованим путем (само owner)}
 ::msgcat::mcset sr_cyrl {the selected entry (edit, then Save)} {изабрани унос (уреди, па Сачувај)}
+::msgcat::mcset sr_cyrl {the server stopped: %s} {сервер се зауставио: %s}
 ::msgcat::mcset sr_cyrl {the synthwave splash} {synthwave уводни екран}
 ::msgcat::mcset sr_cyrl {the text after the name was NOT sent anywhere — type the value into the masked field} {текст после назива НИЈЕ нигде послат — унесите вредност у маскирано поље}
 ::msgcat::mcset sr_cyrl {the transcript} транскрипт
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset sr_cyrl thinking… размишљам…
 ::msgcat::mcset sr_cyrl {thinking… (%s)} {размишљам… (%s)}
 ::msgcat::mcset sr_cyrl {this file's revisions, their diffs, and restore} {измене ове датотеке, њихове разлике и враћање}
+::msgcat::mcset sr_cyrl {this gateway} {овај гејтвеј}
 ::msgcat::mcset sr_cyrl {this gateway has no Tcl interpreter} {овај гејтвеј нема Tcl интерпретер}
 ::msgcat::mcset sr_cyrl {this list} {ова листа}
+::msgcat::mcset sr_cyrl {this node has no vault} {овај чвор нема трезор}
 ::msgcat::mcset sr_cyrl {this route} {ова рута}
 ::msgcat::mcset sr_cyrl {this session} {ова сесија}
 ::msgcat::mcset sr_cyrl {this session follows the default language again (%{def})} {ова сесија опет прати подразумевани језик (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {transcript finalization failed: %s} {довршавање преписа није успело: %s}
 ::msgcat::mcset sr_cyrl {transcript refetched} {транскрипт поново преузет}
 ::msgcat::mcset sr_cyrl {transcript — arrows to read, %s for composer} {транскрипт — стрелице за читање, %s за унос поруке}
+::msgcat::mcset sr_cyrl {translate text with the dedicated translation model, without an agent turn} {преведи текст намењеним моделом за превођење, без окрета агента}
+::msgcat::mcset sr_cyrl {translation result} {резултат превода}
 ::msgcat::mcset sr_cyrl {trigger %1$s %2$sd} {окидач %1$s %2$sd}
 ::msgcat::mcset sr_cyrl {trigger created} {окидач направљен}
 ::msgcat::mcset sr_cyrl {trigger updated} {окидач ажуриран}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {usage: /steer <instruction>} {употреба: /steer <instruction>}
 ::msgcat::mcset sr_cyrl used искоришћено
 ::msgcat::mcset sr_cyrl user корисник
+::msgcat::mcset sr_cyrl {user copy} {корисничка копија}
 ::msgcat::mcset sr_cyrl {user identities, one per line} {кориснички идентитети, један по линији}
 ::msgcat::mcset sr_cyrl {user name} {корисничко име}
 ::msgcat::mcset sr_cyrl {user profile} {кориснички профил}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {value (TOML: 5, true, "text", ["a","b"])} {вредност (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset sr_cyrl veles veles
 ::msgcat::mcset sr_cyrl {veles editor} {veles едитор}
+::msgcat::mcset sr_cyrl {veles fleet: node %{node} is failing — %{detail}} {veles флота: чвор %{node} не ради — %{detail}}
+::msgcat::mcset sr_cyrl {veles fleet: node %{node} is stale — %{detail}} {veles флота: чвор %{node} је застарео — %{detail}}
+::msgcat::mcset sr_cyrl {veles fleet: node %{node} recovered (it was %{was})} {veles флота: чвор %{node} се опоравио (био је %{was})}
 ::msgcat::mcset sr_cyrl {veles · keyboard help (bindings: %s)} {veles · помоћ за тастатуру (пречице: %s)}
 ::msgcat::mcset sr_cyrl {veles · touch help} {veles · помоћ за додир}
 ::msgcat::mcset sr_cyrl {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset sr_cyrl widgets виџети
 ::msgcat::mcset sr_cyrl {will be stored in the encrypted vault} {биће сачувано у шифрованом трезору}
 ::msgcat::mcset sr_cyrl {wire protocol} {wire протокол}
+::msgcat::mcset sr_cyrl {without force to} {без форсирања у}
 ::msgcat::mcset sr_cyrl {wizard language} {језик чаробњака}
 ::msgcat::mcset sr_cyrl {wizard language: %s} {језик чаробњака: %s}
 ::msgcat::mcset sr_cyrl {write failed: %s} {упис није успео: %s}
 ::msgcat::mcset sr_cyrl {write grants that still expire (the expiry is dropped — a config line cannot expire)} {упиши дозволе које још истичу (истицање се одбацује — линија конфигурације не може да истекне)}
 ::msgcat::mcset sr_cyrl {write the entries back} {упиши уносе назад}
 ::msgcat::mcset sr_cyrl {write the store's runtime rules into config.toml} {упиши радна правила складишта у config.toml}
+::msgcat::mcset sr_cyrl {write the whole extension from its purpose, as a reviewed preview} {напиши целу екстензију из њене намене, као предлог за преглед}
 ::msgcat::mcset sr_cyrl {write these values into config.toml as the defaults} {упиши ове вредности у config.toml као подразумеване}
 ::msgcat::mcset sr_cyrl writing писање
 ::msgcat::mcset sr_cyrl {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {први власник у [acl] пребацује овај пролаз у КУРИРАНИ режим: подразумевана улога постаје guest (fail-closed), а листа дозвољених адаптера више није граница поверења}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset sr_cyrl {▲ VELES — neon impressionism} {▲ VELES — неонски импресионизам}
 ::msgcat::mcset sr_cyrl {▲ earlier} {▲ раније}
 ::msgcat::mcset sr_cyrl {▼ later} {▼ касније}
+::msgcat::mcset sr_cyrl {▾ Cluster registry} {▾ Регистар кластера}
 ::msgcat::mcset sr_cyrl {▾ new output — follow} {▾ нови излаз — прати}
 ::msgcat::mcset sr_cyrl {○ unattached} {○ неприкључено}
 ::msgcat::mcset sr_cyrl {● %1$s — %2$s} {● %1$s — %2$s}

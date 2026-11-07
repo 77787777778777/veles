@@ -201,6 +201,7 @@ pub struct SessionRun {
     pub surface: String,
     pub started_at: String,
     pub heartbeat_at: String,
+    pub turn_id: Option<String>,
 }
 
 /// How an id-or-prefix resolved against the node registry.
@@ -220,6 +221,58 @@ pub struct SessionOverride {
     pub provider: Option<String>,
     pub model: Option<String>,
     pub reasoning: Option<String>,
+}
+
+/// A claim to continue one interrupted run. `started_at` is the
+/// generation: releasing an old claim must not clear a newer turn.
+#[derive(Debug, Clone)]
+pub struct RecoveryClaim {
+    pub session_id: String,
+    pub turn_id: String,
+    pub previous_pid: i64,
+    pub previous_started_at: String,
+    pub recovery_started_at: String,
+    /// Which recovery attempt this claim is, counting every claim of this
+    /// checkpoint across processes (1 = the first). Bounds a turn that
+    /// fails, or kills its process, on every boot.
+    pub attempt: i64,
+}
+
+/// A run whose owning process is gone, but whose history survives.
+#[derive(Debug, Clone)]
+pub struct InterruptedRun {
+    pub session_id: String,
+    pub turn_id: String,
+    pub pid: i64,
+    pub host: String,
+    pub surface: String,
+    pub started_at: String,
+    pub start_msg_id: i64,
+    pub final_msg_id: Option<i64>,
+    pub active_tool: Option<String>,
+    pub owner_pid: i64,
+    pub owner_start: String,
+    pub claim_pid: Option<i64>,
+    pub claim_start: Option<String>,
+}
+
+/// Durable execution state, separate from the transcript. Tool arguments
+/// and results stay in their existing access-controlled records.
+#[derive(Debug, Clone)]
+pub struct TurnCheckpoint {
+    pub turn_id: String,
+    pub session_id: String,
+    pub host: String,
+    pub surface: String,
+    pub state: String,
+    pub start_msg_id: i64,
+    pub final_msg_id: Option<i64>,
+    pub active_tool: Option<String>,
+    pub owner_pid: i64,
+    pub owner_start: String,
+    pub owner_nonce: String,
+    pub claim_pid: Option<i64>,
+    pub claim_start: Option<String>,
 }
 
 /// One queued message (R4.6) — text that arrived while the session's
@@ -396,6 +449,31 @@ pub struct NodeRow {
     pub sessions_served: i64,
     pub registered_at: String,
     pub heartbeat_at: String,
+    /// 306787.b, from the node's own heartbeat, each NULL = unknown (a
+    /// 0.1.6 node reports none of them, Windows reports no IO
+    /// pressure): the CPUs it may use (`node::probe_cores`), its disk IO
+    /// pressure (`node::IoPressure`, whole percent), and its delegate
+    /// work (`placement::WorkReport`) — children whose process runs
+    /// there, children placed there and not started, and the running
+    /// ones by origin node as JSON, so a node can tell its own
+    /// placements from everyone else's.
+    pub cores: Option<i64>,
+    pub io_some: Option<i64>,
+    pub io_full: Option<i64>,
+    pub children: Option<i64>,
+    pub queued: Option<i64>,
+    pub children_from: Option<String>,
+}
+
+/// One heartbeat's self-measurement (B4 load, 306787.b the rest). Every
+/// `None` keeps the previous value in the row — an unreadable sample
+/// must not erase a known one, and must never be written as 0.
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct HeartbeatSample {
+    pub load1: Option<u8>,
+    pub cores: Option<u32>,
+    pub io: Option<crate::node::IoPressure>,
+    pub work: Option<crate::placement::WorkReport>,
 }
 
 /// A registry row as it travels between nodes (B3a gossip).
@@ -428,6 +506,22 @@ pub struct GossipNodeRow {
     pub sessions_served: i64,
     pub registered_at: String,
     pub heartbeat_at: String,
+    /// 306787.b. Absent from a 0.1.6 peer's rows, which parse with all
+    /// of them unknown; a 0.1.6 peer ignores them (serde skips unknown
+    /// fields) and relays our rows WITHOUT them, which the merge must
+    /// not read as "now unknown" (`node_merge_from_gossip`).
+    #[serde(default)]
+    pub cores: Option<i64>,
+    #[serde(default)]
+    pub io_some: Option<i64>,
+    #[serde(default)]
+    pub io_full: Option<i64>,
+    #[serde(default)]
+    pub children: Option<i64>,
+    #[serde(default)]
+    pub queued: Option<i64>,
+    #[serde(default)]
+    pub children_from: Option<String>,
 }
 
 impl GossipNodeRow {
@@ -449,8 +543,29 @@ impl GossipNodeRow {
             sessions_served: r.sessions_served,
             registered_at: r.registered_at.clone(),
             heartbeat_at: r.heartbeat_at.clone(),
+            cores: r.cores,
+            io_some: r.io_some,
+            io_full: r.io_full,
+            children: r.children,
+            queued: r.queued,
+            children_from: r.children_from.clone(),
         }
     }
+}
+
+/// A node forgotten fleet-wide, as gossip carries it (`node_tombstones`).
+///
+/// Its own struct, beside [`GossipNodeRow`] rather than inside it: a
+/// tombstone is a fact about the FORGETTING node's decision, not
+/// something the forgotten node asserts about itself, and it travels in
+/// its own list of the gossip message (`gossip::GossipMessage`), where a
+/// peer before 0.2.0 simply does not read it.
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+pub struct NodeTombstone {
+    pub id: String,
+    /// When it was forgotten: SQLite `datetime('now')` text, UTC, the
+    /// fixed-width shape `heartbeat_at` has.
+    pub forgotten_at: String,
 }
 
 /// This node's registry id, from `<config_dir>/node.toml` (B1.5).
@@ -1088,8 +1203,29 @@ impl Store {
                     pid INTEGER NOT NULL,
                     host TEXT NOT NULL,
                     surface TEXT NOT NULL,
+                    turn_id TEXT,
                     started_at TEXT NOT NULL,
                     heartbeat_at TEXT NOT NULL
+                );
+                -- Execution checkpoints for a restart, not a second copy
+                -- of the conversation. The referenced message IDs bind
+                -- completion to the exact saved reply or tool result.
+                CREATE TABLE IF NOT EXISTS turn_checkpoints (
+                    session_id TEXT PRIMARY KEY,
+                    turn_id TEXT NOT NULL UNIQUE,
+                    host TEXT NOT NULL,
+                    surface TEXT NOT NULL,
+                    state TEXT NOT NULL,
+                    start_msg_id INTEGER NOT NULL,
+                    final_msg_id INTEGER,
+                    active_tool TEXT,
+                    owner_pid INTEGER NOT NULL DEFAULT 0,
+                    owner_start TEXT NOT NULL DEFAULT '',
+                    owner_nonce TEXT NOT NULL DEFAULT '',
+                    claim_pid INTEGER,
+                    claim_start TEXT,
+                    recovery_attempts INTEGER NOT NULL DEFAULT 0,
+                    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
                 );
                 -- PER-SESSION OVERRIDES (R4.5). The desktop used to keep
                 -- these as `override:<sid>` keys in desktop_state.json —
@@ -1301,7 +1437,34 @@ impl Store {
                     load_at TEXT,                -- when load1 was sampled, RFC 3339 UTC
                     sessions_served INTEGER NOT NULL DEFAULT 0, -- lifetime sessions owned (B4)
                     registered_at TEXT DEFAULT (datetime('now')),
-                    heartbeat_at TEXT DEFAULT (datetime('now'))
+                    heartbeat_at TEXT DEFAULT (datetime('now')),
+                    -- 306787.b: what placement weighs besides load1, each
+                    -- NULL = unknown (a 0.1.6 peer sends none of them).
+                    cores INTEGER,               -- CPUs the node may use
+                    io_some INTEGER,             -- PSI io some avg10, whole percent
+                    io_full INTEGER,             -- PSI io full avg10, whole percent
+                    children INTEGER,            -- delegate children running there
+                    queued INTEGER,              -- placed there, not started yet
+                    children_from TEXT           -- JSON {origin node id: running}
+                );
+                -- PLACEMENT WORK (306787.b): the delegate children this
+                -- node's processes have placed and not seen finish
+                -- ('placed', any target) and the children whose process
+                -- runs HERE ('running', from any origin). A row's life
+                -- is bounded by `pid` (the placing process, or the child
+                -- itself), so a gateway restart neither forgets an
+                -- orphaned child that is still running nor keeps
+                -- counting one that is gone: `placement::prune` drops
+                -- every row whose process has exited. Local only, never
+                -- gossiped; the heartbeat publishes its counts.
+                CREATE TABLE IF NOT EXISTS placement_work (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    state TEXT NOT NULL,         -- 'placed' | 'running'
+                    target TEXT NOT NULL,        -- the node the child runs on
+                    origin TEXT NOT NULL,        -- the node whose session asked
+                    pid INTEGER NOT NULL,        -- placed: the placer; running: the child
+                    pid_start TEXT,              -- platform::process_start_id; NULL = unchecked
+                    started_at TEXT NOT NULL DEFAULT (datetime('now'))
                 );
                 -- SINGLETON LEASES (B3a). The fail-closed arbiter's whole
                 -- state: one row per singleton duty (cron scheduler,
@@ -1394,6 +1557,29 @@ impl Store {
                  WHERE at IS NOT NULL AND at < datetime('now', '-30 days');
                 "#,
             )?;
+            // FORGOTTEN NODES (fleet-wide forget, 0.2.0). `veles nodes
+            // forget`, `/fleet forget` and the Instances tab used to
+            // delete only this store's `nodes` row, and the next gossip
+            // exchange with any peer that still listed the node put it
+            // back. A forget now leaves a tombstone that gossip carries:
+            // a peer drops the row, and every merge refuses a copy of it
+            // whose heartbeat is not newer than `forgotten_at` — so a
+            // retired machine stays gone, and one that comes back (its
+            // own heartbeat moves past the stamp) is let in again and
+            // the tombstone dropped. Times are SQLite `datetime('now')`
+            // text, the same fixed-width shape as `nodes.heartbeat_at`,
+            // so the comparison is a string compare. Kept 90 days: long
+            // enough for every peer to have heard of it.
+            conn.execute_batch(
+                r#"
+                CREATE TABLE IF NOT EXISTS node_tombstones (
+                    id TEXT PRIMARY KEY,
+                    forgotten_at TEXT NOT NULL
+                );
+                DELETE FROM node_tombstones
+                 WHERE forgotten_at < datetime('now', '-90 days');
+                "#,
+            )?;
             // M10 context compression: archive flag on messages. Archived
             // rows are NEVER deleted — they stay FTS-searchable — but
             // load_history skips them. Race-safe idempotent column add.
@@ -1403,6 +1589,46 @@ impl Store {
                 "archived",
                 "ALTER TABLE messages ADD COLUMN archived INTEGER NOT NULL DEFAULT 0;",
             )?;
+            add_column_if_missing(
+                &conn,
+                "session_runs",
+                "turn_id",
+                "ALTER TABLE session_runs ADD COLUMN turn_id TEXT;",
+            )?;
+            add_column_if_missing(
+                &conn,
+                "turn_checkpoints",
+                "host",
+                "ALTER TABLE turn_checkpoints ADD COLUMN host TEXT NOT NULL DEFAULT '';",
+            )?;
+            for (column, ddl) in [
+                (
+                    "owner_pid",
+                    "ALTER TABLE turn_checkpoints ADD COLUMN owner_pid INTEGER NOT NULL DEFAULT 0;",
+                ),
+                (
+                    "owner_start",
+                    "ALTER TABLE turn_checkpoints ADD COLUMN owner_start TEXT NOT NULL DEFAULT '';",
+                ),
+                (
+                    "owner_nonce",
+                    "ALTER TABLE turn_checkpoints ADD COLUMN owner_nonce TEXT NOT NULL DEFAULT '';",
+                ),
+                (
+                    "claim_pid",
+                    "ALTER TABLE turn_checkpoints ADD COLUMN claim_pid INTEGER;",
+                ),
+                (
+                    "claim_start",
+                    "ALTER TABLE turn_checkpoints ADD COLUMN claim_start TEXT;",
+                ),
+                (
+                    "recovery_attempts",
+                    "ALTER TABLE turn_checkpoints ADD COLUMN recovery_attempts INTEGER NOT NULL DEFAULT 0;",
+                ),
+            ] {
+                add_column_if_missing(&conn, "turn_checkpoints", column, ddl)?;
+            }
             // Peer-observed address columns (B3a, same idempotent shape).
             // Fresh CREATE TABLEs carry them; pre-B3a DBs append them.
             // NULL = never observed, which reads correctly as "no
@@ -1642,6 +1868,16 @@ impl Store {
                     "sessions_served",
                     "ALTER TABLE nodes ADD COLUMN sessions_served INTEGER NOT NULL DEFAULT 0;",
                 ),
+                // 306787.b: cores, IO pressure and the work counts.
+                ("cores", "ALTER TABLE nodes ADD COLUMN cores INTEGER;"),
+                ("io_some", "ALTER TABLE nodes ADD COLUMN io_some INTEGER;"),
+                ("io_full", "ALTER TABLE nodes ADD COLUMN io_full INTEGER;"),
+                ("children", "ALTER TABLE nodes ADD COLUMN children INTEGER;"),
+                ("queued", "ALTER TABLE nodes ADD COLUMN queued INTEGER;"),
+                (
+                    "children_from",
+                    "ALTER TABLE nodes ADD COLUMN children_from TEXT;",
+                ),
             ] {
                 add_column_if_missing(&conn, "nodes", col, ddl)?;
             }
@@ -1724,13 +1960,56 @@ impl Store {
     /// the previous sample — an unreadable load must not zero it, which
     /// would make `any` placement read the node as idle.
     pub fn node_heartbeat(&self, id: &str, load1: Option<u8>) -> Result<usize> {
+        self.node_heartbeat_sample(
+            id,
+            &HeartbeatSample {
+                load1,
+                ..Default::default()
+            },
+        )
+    }
+
+    /// [`Store::node_heartbeat`] with the whole self-measurement
+    /// (306787.b): cores, IO pressure and the work counts ride the same
+    /// write. Same rule for every field: `None` keeps what the row had.
+    /// IO pressure is written as one sample — a reading that has `some`
+    /// but no `full` line says `full` is unknown NOW, not "as before".
+    pub fn node_heartbeat_sample(&self, id: &str, s: &HeartbeatSample) -> Result<usize> {
+        let io_known = s.io.is_some();
+        let (io_some, io_full) =
+            s.io.map(|p| (p.some.map(i64::from), p.full.map(i64::from)))
+                .unwrap_or((None, None));
+        let (children, queued, from) = match &s.work {
+            Some(w) => (
+                Some(i64::from(w.running)),
+                Some(i64::from(w.queued)),
+                Some(w.from_json()),
+            ),
+            None => (None, None, None),
+        };
         Ok(self.conn.execute(
             "UPDATE nodes SET heartbeat_at = datetime('now'),
                     load1 = COALESCE(?2, load1),
                     load_at = CASE WHEN ?2 IS NULL THEN load_at
-                                   ELSE datetime('now') END
+                                   ELSE datetime('now') END,
+                    cores = COALESCE(?3, cores),
+                    io_some = CASE WHEN ?4 THEN ?5 ELSE io_some END,
+                    io_full = CASE WHEN ?4 THEN ?6 ELSE io_full END,
+                    children = COALESCE(?7, children),
+                    queued = COALESCE(?8, queued),
+                    children_from = COALESCE(?9, children_from)
              WHERE id = ?1",
-            params![id, load1],
+            params![
+                id,
+                s.load1,
+                s.cores.map(i64::from),
+                io_known,
+                io_some,
+                io_full,
+                children,
+                queued,
+                from
+            ],
         )?)
     }
 
@@ -1764,6 +2043,98 @@ impl Store {
             .conn
             .execute("DELETE FROM nodes WHERE id = ?1", params![id])?;
         Ok(n > 0)
+    }
+
+    /// Forget a node FLEET-WIDE: remove its row and leave a tombstone
+    /// (`node_tombstones`) that gossip carries to every peer. One
+    /// transaction, so a crash cannot leave the row gone without the
+    /// tombstone that keeps it gone. Returns whether a row was removed.
+    pub fn node_forget_everywhere(&self, id: &str) -> Result<bool> {
+        let tx = self.conn.unchecked_transaction()?;
+        let n = tx.execute("DELETE FROM nodes WHERE id = ?1", params![id])?;
+        tx.execute(
+            "INSERT INTO node_tombstones (id, forgotten_at) VALUES (?1, datetime('now'))
+             ON CONFLICT(id) DO UPDATE SET
+                 forgotten_at = MAX(forgotten_at, excluded.forgotten_at)",
+            params![id],
+        )?;
+        tx.commit()?;
+        Ok(n > 0)
+    }
+
+    /// Every tombstone this store holds, oldest first — what a gossip
+    /// exchange sends.
+    pub fn node_tombstones(&self) -> Result<Vec<NodeTombstone>> {
+        let mut stmt = self
+            .conn
+            .prepare("SELECT id, forgotten_at FROM node_tombstones ORDER BY forgotten_at, id")?;
+        let rows = stmt
+            .query_map([], |r| {
+                Ok(NodeTombstone {
+                    id: r.get(0)?,
+                    forgotten_at: r.get(1)?,
+                })
+            })?
+            .collect::<std::result::Result<Vec<_>, _>>()?;
+        Ok(rows)
+    }
+
+    fn node_tombstone_at(&self, id: &str) -> Result<Option<String>> {
+        Ok(self
+            .conn
+            .query_row(
+                "SELECT forgotten_at FROM node_tombstones WHERE id = ?1",
+                params![id],
+                |r| r.get(0),
+            )
+            .optional()?)
+    }
+
+    /// Fold a peer's tombstone in: drop the node's row unless it has
+    /// heartbeat since it was forgotten, and keep the tombstone (the
+    /// later stamp wins) so this node refuses relayed copies too and
+    /// passes it on. Returns whether anything changed here.
+    ///
+    /// Refused, changing nothing: a tombstone for THIS node (it is alive
+    /// — that is what is reading this), one whose node heartbeat after
+    /// it, and a stamp that is not a `YYYY-MM-DD HH:MM:SS` time or lies
+    /// more than an hour ahead of this clock — a far-future stamp would
+    /// otherwise keep the node out for good, whatever it did.
+    pub fn node_tombstone_merge(&self, t: &NodeTombstone) -> Result<bool> {
+        if local_node_id().as_deref() == Some(t.id.as_str()) {
+            return Ok(false);
+        }
+        let Ok(at) = chrono::NaiveDateTime::parse_from_str(&t.forgotten_at, "%Y-%m-%d %H:%M:%S")
+        else {
+            return Ok(false);
+        };
+        if at > chrono::Utc::now().naive_utc() + chrono::Duration::hours(1) {
+            return Ok(false);
+        }
+        let heartbeat: Option<String> = self
+            .conn
+            .query_row(
+                "SELECT heartbeat_at FROM nodes WHERE id = ?1",
+                params![t.id],
+                |r| r.get(0),
+            )
+            .optional()?;
+        if heartbeat
+            .as_deref()
+            .is_some_and(|hb| hb > t.forgotten_at.as_str())
+        {
+            return Ok(false);
+        }
+        let removed = self
+            .conn
+            .execute("DELETE FROM nodes WHERE id = ?1", params![t.id])?;
+        let stamped = self.conn.execute(
+            "INSERT INTO node_tombstones (id, forgotten_at) VALUES (?1, ?2)
+             ON CONFLICT(id) DO UPDATE SET forgotten_at = excluded.forgotten_at
+                 WHERE excluded.forgotten_at > node_tombstones.forgotten_at",
+            params![t.id, t.forgotten_at],
+        )?;
+        Ok(removed > 0 || stamped > 0)
     }
 
     // ── singleton leases (B3a) ─────────────────────────────────────
@@ -1991,6 +2362,17 @@ impl Store {
             )?;
             return Ok(false);
         }
+        // Forgotten fleet-wide: a copy that is not newer than the
+        // forget is the row a peer still lists, relayed back — refused.
+        // A heartbeat after it is the node itself, back: it is let in
+        // and the tombstone dropped, so a later forget starts fresh.
+        if let Some(forgotten_at) = self.node_tombstone_at(&row.id)? {
+            if row.heartbeat_at.as_str() <= forgotten_at.as_str() {
+                return Ok(false);
+            }
+            self.conn
+                .execute("DELETE FROM node_tombstones WHERE id = ?1", params![row.id])?;
+        }
         let existing = self.conn.query_row(
             "SELECT COUNT(*) FROM nodes WHERE id = ?1",
             params![row.id],
@@ -2004,9 +2386,11 @@ impl Store {
                     "INSERT INTO nodes (id, name, host, version, uptime_class, gpu,
                                         endpoint, static_ip, static_ip_source, caps,
                                         load1, load_at, sessions_served,
-                                        registered_at, heartbeat_at)
+                                        registered_at, heartbeat_at,
+                                        cores, io_some, io_full, children, queued,
+                                        children_from)
                      VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10,
-                             ?11, ?12, ?13, ?14, ?15)",
+                             ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20, ?21)",
                     params![
                         row.id,
                         row.name,
@@ -2022,7 +2406,13 @@ impl Store {
                         row.load_at,
                         row.sessions_served,
                         row.registered_at,
-                        row.heartbeat_at
+                        row.heartbeat_at,
+                        row.cores,
+                        row.io_some,
+                        row.io_full,
+                        row.children,
+                        row.queued,
+                        row.children_from
                     ],
                 )?;
                 Ok(true)
@@ -2036,13 +2426,34 @@ impl Store {
                 // node's endpoint and load, and walked the "monotone"
                 // sessions_served backwards. Last writer wins by the
                 // node's own heartbeat, the one clock it authors.
+                //
+                // 306787.b's columns take one more rule: a copy of the
+                // SAME heartbeat that lacks them is a relay through a
+                // 0.1.6 peer (it parsed our row, dropped the fields it
+                // does not know, and passed it on), not the node saying
+                // "unknown" — so it keeps what we have. (SET expressions
+                // read the OLD row, so `heartbeat_at` there is ours.) A
+                // strictly newer heartbeat without them is the node's
+                // own word, and is taken.
                 self.conn.execute(
                     "UPDATE nodes SET
                         name = ?2, host = ?3, version = ?4, uptime_class = ?5,
                         gpu = ?6, endpoint = ?7, static_ip = ?8,
                         static_ip_source = ?9, caps = ?10,
                         load1 = ?11, load_at = ?12, sessions_served = ?13,
-                        heartbeat_at = ?14
+                        heartbeat_at = ?14,
+                        cores = CASE WHEN ?15 IS NULL AND heartbeat_at = ?14
+                                     THEN cores ELSE ?15 END,
+                        io_some = CASE WHEN ?16 IS NULL AND heartbeat_at = ?14
+                                       THEN io_some ELSE ?16 END,
+                        io_full = CASE WHEN ?17 IS NULL AND heartbeat_at = ?14
+                                       THEN io_full ELSE ?17 END,
+                        children = CASE WHEN ?18 IS NULL AND heartbeat_at = ?14
+                                        THEN children ELSE ?18 END,
+                        queued = CASE WHEN ?19 IS NULL AND heartbeat_at = ?14
+                                      THEN queued ELSE ?19 END,
+                        children_from = CASE WHEN ?20 IS NULL AND heartbeat_at = ?14
+                                             THEN children_from ELSE ?20 END
                      WHERE id = ?1 AND heartbeat_at <= ?14",
                     params![
                         row.id,
@@ -2058,7 +2469,13 @@ impl Store {
                         row.load1,
                         row.load_at,
                         row.sessions_served,
-                        row.heartbeat_at
+                        row.heartbeat_at,
+                        row.cores,
+                        row.io_some,
+                        row.io_full,
+                        row.children,
+                        row.queued,
+                        row.children_from
                     ],
                 )?;
                 Ok(true)
@@ -2196,10 +2613,16 @@ impl Store {
             sessions_served: r.get(15)?,
             registered_at: r.get(16)?,
             heartbeat_at: r.get(17)?,
+            cores: r.get(18)?,
+            io_some: r.get(19)?,
+            io_full: r.get(20)?,
+            children: r.get(21)?,
+            queued: r.get(22)?,
+            children_from: r.get(23)?,
         })
     }
 
-    const NODE_COLS: &'static str = "id, name, host, version, uptime_class, gpu, endpoint, static_ip, static_ip_source, caps, observed_addr, observed_at, observed_by, load1, load_at, sessions_served, registered_at, heartbeat_at";
+    const NODE_COLS: &'static str = "id, name, host, version, uptime_class, gpu, endpoint, static_ip, static_ip_source, caps, observed_addr, observed_at, observed_by, load1, load_at, sessions_served, registered_at, heartbeat_at, cores, io_some, io_full, children, queued, children_from";
 
     /// Every registered node, self first isn't knowable here — ordered
     /// by registration time (the pool's seniority order).
@@ -2542,17 +2965,55 @@ impl Store {
     /// oldest id in the kept tail (or one past the newest head id when
     /// nothing is kept), so no kept row can fall inside it. One
     /// transaction: half an archive is a malformed request.
+    ///
+    /// `replayed_history` is the repaired view the caller compacted. A
+    /// stored assistant whose unanswered calls were stripped is still in
+    /// that view as text, even when the raw row is empty after encoding
+    /// its calls. Do not sweep that row through the below-tail catch-all:
+    /// it would leave an orphaned result live after the next reload.
     pub fn archive_compacted_head(
         &self,
         session_id: &str,
         head_ids: &[i64],
         below: i64,
+        replayed_history: &[crate::providers::ChatMessage],
     ) -> Result<u32> {
+        let replayed_without_calls: std::collections::HashSet<i64> = replayed_history
+            .iter()
+            .filter(|m| m.role == "assistant" && m.tool_calls.is_none())
+            .filter_map(|m| m.msg_id)
+            .collect();
+        let mut candidates = self.conn.prepare(
+            "SELECT msg_id FROM messages
+             WHERE session_id = ?1 AND msg_id = ?2 AND role = 'assistant'
+               AND tool_calls IS NOT NULL AND tool_calls NOT IN ('[]', 'null')",
+        )?;
+        let protected: Vec<i64> = head_ids
+            .iter()
+            .copied()
+            .filter(|id| replayed_without_calls.contains(id))
+            .filter(|id| {
+                candidates
+                    .query_row(params![session_id, id], |row| row.get::<_, i64>(0))
+                    .is_ok()
+            })
+            .collect();
+        drop(candidates);
         let tx = self.conn.unchecked_transaction()?;
-        let mut n = tx.execute(
+        let mut sql = String::from(
             "UPDATE messages SET archived = 1
              WHERE session_id = ?1 AND COALESCE(archived, 0) = 0 AND msg_id < ?2",
-            params![session_id, below],
+        );
+        for (index, _) in protected.iter().enumerate() {
+            sql.push_str(&format!(" AND msg_id != ?{}", index + 3));
+        }
+        let mut n = tx.execute(
+            &sql,
+            rusqlite::params_from_iter(
+                std::iter::once(&session_id as &dyn rusqlite::ToSql)
+                    .chain(std::iter::once(&below as &dyn rusqlite::ToSql))
+                    .chain(protected.iter().map(|id| id as &dyn rusqlite::ToSql)),
+            ),
         )?;
         {
             let mut stmt = tx.prepare(
@@ -2560,6 +3021,9 @@ impl Store {
                  WHERE session_id = ?1 AND msg_id = ?2 AND COALESCE(archived, 0) = 0",
             )?;
             for id in head_ids {
+                if protected.contains(id) {
+                    continue;
+                }
                 n += stmt.execute(params![session_id, id])?;
             }
         }
@@ -3758,6 +4222,7 @@ impl Store {
         let Some(mut job) = self.cron_get(id)? else {
             return Ok(None);
         };
+        let old_schedule = job.schedule.clone();
         if let Some(v) = name {
             job.name = Some(v.to_string());
         }
@@ -3794,10 +4259,20 @@ impl Store {
         if let Some(v) = node {
             job.node = v.map(String::from);
         }
+        // The stored next fire belongs to the schedule it was computed
+        // for; a changed schedule gets its first slot from this edit on,
+        // in the same write so no tick sees the stale or a cleared slot.
+        let rescheduled = job.schedule != old_schedule;
+        if rescheduled {
+            job.next_run_at = crate::cron::next_fire_after_edit(&job, chrono::Utc::now())?
+                .map(|t| t.to_rfc3339());
+        }
         self.conn.execute(
             "UPDATE cron_jobs SET name=?2, schedule=?3, prompt=?4, deliver=?5,
              script=?6, skills=?7, model=?8, provider=?9, reasoning=?10,
-             session=?11, repeat_max=?12, node=?13, updated_at=datetime('now') WHERE id=?1",
+             session=?11, repeat_max=?12, node=?13,
+             next_run_at = CASE WHEN ?15 THEN ?14 ELSE next_run_at END,
+             updated_at=datetime('now') WHERE id=?1",
             params![
                 job.id,
                 job.name,
@@ -3812,6 +4287,8 @@ impl Store {
                 job.session,
                 job.repeat_max,
                 job.node,
+                job.next_run_at,
+                rescheduled,
             ],
         )?;
         Ok(Some(job))
@@ -4476,6 +4953,91 @@ impl Store {
         Ok((rows, total.max(0) as u64))
     }
 
+    /// The ancestors of the named sessions, including ancestors beyond the
+    /// current page. Parent-by-parent reads work on both the writer and the
+    /// desktop's read-only connections; only the selected ancestry is
+    /// materialised. The visited set also terminates a corrupt parent cycle.
+    pub fn session_ancestor_rows(&self, ids: &[String]) -> Result<Vec<SessionRow>> {
+        let mut pending: std::collections::VecDeque<String> = ids.iter().cloned().collect();
+        let mut seen = std::collections::HashSet::new();
+        let mut out = Vec::new();
+        while let Some(id) = pending.pop_front() {
+            if !seen.insert(id.clone()) {
+                continue;
+            }
+            let row = self
+                .conn
+                .query_row(
+                    &format!(
+                        "SELECT s.id, COALESCE(s.title,''), COALESCE(s.created_at,''),
+                                COALESCE(s.updated_at,''), s.parent, {SESSION_PREVIEW},
+                                (SELECT COUNT(*) FROM messages m WHERE m.session_id = s.id)
+                         FROM sessions s WHERE s.id = ?1"
+                    ),
+                    [&id],
+                    session_row,
+                )
+                .optional()?;
+            let Some(row) = row else { continue };
+            if let Some(parent) = row.parent.clone() {
+                if !parent.is_empty() {
+                    pending.push_back(parent);
+                }
+            }
+            if !ids.contains(&id) {
+                out.push(row);
+            }
+        }
+        Ok(out)
+    }
+
+    /// The DESCENDANTS of `ids` (children, their children, …), newest
+    /// first per parent, at most `per_parent` per parent and `max` in
+    /// all; the starting ids are never in the answer.
+    ///
+    /// The other half of [`Self::session_ancestor_rows`] (SI-6). A page
+    /// is ranked by `updated_at`, so a flood of newer parentless sessions
+    /// pushes a visible parent's subagent children onto later pages,
+    /// where the sidebar never fetches: measured live, 7 of 11 children
+    /// of one page-1 parent ranked 328–922. One query per tree level,
+    /// with a seen set, so a parent cycle ends.
+    pub fn session_descendant_rows(
+        &self,
+        ids: &[String],
+        per_parent: usize,
+        max: usize,
+    ) -> Result<Vec<SessionRow>> {
+        let mut seen: std::collections::HashSet<String> = ids.iter().cloned().collect();
+        let mut level: Vec<String> = ids.to_vec();
+        let mut out = Vec::new();
+        let mut stmt = self.conn.prepare(&format!(
+            "SELECT s.id, COALESCE(s.title,''), COALESCE(s.created_at,''),
+                    COALESCE(s.updated_at,''), s.parent, {SESSION_PREVIEW},
+                    (SELECT COUNT(*) FROM messages m WHERE m.session_id = s.id)
+             FROM sessions s WHERE s.parent IN (SELECT value FROM json_each(?1))
+             ORDER BY s.parent, s.updated_at DESC, s.id"
+        ))?;
+        while !level.is_empty() && out.len() < max {
+            let rows = stmt
+                .query_map(params![serde_json::to_string(&level)?], session_row)?
+                .collect::<std::result::Result<Vec<_>, _>>()?;
+            let mut per: std::collections::HashMap<String, usize> = Default::default();
+            let mut next = Vec::new();
+            for row in rows {
+                let parent = row.parent.clone().unwrap_or_default();
+                let n = per.entry(parent).or_default();
+                if *n >= per_parent || out.len() >= max || !seen.insert(row.id.clone()) {
+                    continue;
+                }
+                *n += 1;
+                next.push(row.id.clone());
+                out.push(row);
+            }
+            level = next;
+        }
+        Ok(out)
+    }
+
     /// The browser rows of these sessions, whatever page they fall on —
     /// the sidebar's pinned sessions are listed even when old.
     pub fn session_rows(&self, ids: &[String]) -> Result<Vec<SessionRow>> {
@@ -4762,15 +5324,184 @@ impl Store {
         Ok(())
     }
 
+    /// Create the durable checkpoint in the same transaction as the run.
+    pub fn turn_checkpoint_start(
+        &self,
+        session_id: &str,
+        turn_id: &str,
+        surface: &str,
+        start_msg_id: i64,
+        host: &str,
+    ) -> Result<()> {
+        self.conn.execute(
+            "INSERT OR REPLACE INTO turn_checkpoints
+             (session_id, turn_id, host, surface, state, start_msg_id, final_msg_id, active_tool,
+              owner_pid, owner_start, owner_nonce, claim_pid, claim_start, updated_at)
+             VALUES (?1, ?2, ?3, ?4, 'running', ?5, NULL, NULL, ?6, ?7, ?8, NULL, NULL, datetime('now'))",
+            params![
+                session_id,
+                turn_id,
+                host,
+                surface,
+                start_msg_id,
+                std::process::id() as i64,
+                crate::platform::process_start_id(std::process::id()).unwrap_or_default(),
+                uuid::Uuid::new_v4().to_string()
+            ],
+        )?;
+        Ok(())
+    }
+
+    #[cfg(any(test, feature = "test-support"))]
+    pub fn turn_checkpoint_set_owner_for_test(
+        &self,
+        session_id: &str,
+        pid: u32,
+        start: &str,
+    ) -> Result<()> {
+        self.conn.execute(
+            "UPDATE turn_checkpoints SET owner_pid = ?2, owner_start = ?3 WHERE session_id = ?1",
+            params![session_id, pid, start],
+        )?;
+        Ok(())
+    }
+
+    pub fn turn_checkpoint(&self, session_id: &str) -> Result<Option<TurnCheckpoint>> {
+        Ok(self
+            .conn
+            .query_row(
+                "SELECT c.turn_id, c.session_id, c.host, c.surface, c.state, c.start_msg_id,
+                    c.final_msg_id, c.active_tool, c.owner_pid, c.owner_start, c.owner_nonce,
+                    c.claim_pid, c.claim_start
+             FROM turn_checkpoints c WHERE session_id = ?1",
+                params![session_id],
+                |row| {
+                    Ok(TurnCheckpoint {
+                        turn_id: row.get(0)?,
+                        session_id: row.get(1)?,
+                        host: row.get(2)?,
+                        surface: row.get(3)?,
+                        state: row.get(4)?,
+                        start_msg_id: row.get(5)?,
+                        final_msg_id: row.get(6)?,
+                        active_tool: row.get(7)?,
+                        owner_pid: row.get(8)?,
+                        owner_start: row.get(9)?,
+                        owner_nonce: row.get(10)?,
+                        claim_pid: row.get(11)?,
+                        claim_start: row.get(12)?,
+                    })
+                },
+            )
+            .optional()?)
+    }
+
+    pub fn turn_checkpoint_finish(
+        &self,
+        turn_id: &str,
+        state: &str,
+        final_msg_id: Option<i64>,
+    ) -> Result<()> {
+        self.conn.execute(
+            "UPDATE turn_checkpoints
+             SET state = ?2, final_msg_id = ?3, active_tool = NULL, updated_at = datetime('now')
+             WHERE turn_id = ?1",
+            params![turn_id, state, final_msg_id],
+        )?;
+        Ok(())
+    }
+
+    /// Re-label a running checkpoint's surface. A session-mail turn runs
+    /// on the desktop's agent (surface "desktop") but with the sender's
+    /// capped rights; it is marked "mail" so restart recovery, which
+    /// resumes only "desktop" turns and has no mail clamp, leaves it be.
+    pub fn turn_checkpoint_set_surface(&self, turn_id: &str, surface: &str) -> Result<()> {
+        self.conn.execute(
+            "UPDATE turn_checkpoints SET surface = ?2, updated_at = datetime('now')
+             WHERE turn_id = ?1",
+            params![turn_id, surface],
+        )?;
+        Ok(())
+    }
+
+    pub fn turn_checkpoint_close_if_running(&self, turn_id: &str) -> Result<()> {
+        self.conn.execute(
+            "UPDATE turn_checkpoints SET state = 'closed', active_tool = NULL,
+                    claim_pid = NULL, claim_start = NULL, updated_at = datetime('now')
+             WHERE turn_id = ?1 AND state = 'running'",
+            params![turn_id],
+        )?;
+        Ok(())
+    }
+
+    pub fn turn_tool_started(&self, turn_id: &str, call_id: &str) -> Result<()> {
+        self.conn.execute(
+            "UPDATE turn_checkpoints SET active_tool = ?2, updated_at = datetime('now')
+             WHERE turn_id = ?1 AND state = 'running'",
+            params![turn_id, call_id],
+        )?;
+        Ok(())
+    }
+
+    pub fn turn_tool_finished(&self, turn_id: &str, call_id: &str) -> Result<()> {
+        self.conn.execute(
+            "UPDATE turn_checkpoints SET active_tool = NULL, updated_at = datetime('now')
+             WHERE turn_id = ?1 AND active_tool = ?2",
+            params![turn_id, call_id],
+        )?;
+        Ok(())
+    }
+
     /// Register (or refresh) a live turn. `INSERT OR REPLACE` because a
     /// session has one turn at a time — the row IS the statement "this
     /// session is busy", not an append-only log.
     pub fn run_start(&self, session_id: &str, pid: u32, host: &str, surface: &str) -> Result<()> {
+        self.run_start_with_generation(session_id, pid, host, surface, None)
+    }
+
+    fn run_start_with_generation(
+        &self,
+        session_id: &str,
+        pid: u32,
+        host: &str,
+        surface: &str,
+        generation: Option<String>,
+    ) -> Result<()> {
+        let existing = self
+            .conn
+            .query_row(
+                "SELECT turn_id FROM session_runs WHERE session_id = ?1",
+                params![session_id],
+                |row| row.get::<_, Option<String>>(0),
+            )
+            .optional()?
+            .flatten();
+        let turn_id = generation
+            .or(existing)
+            .unwrap_or_else(|| uuid::Uuid::new_v4().to_string());
         self.conn.execute(
             "INSERT OR REPLACE INTO session_runs
-             (session_id, pid, host, surface, started_at, heartbeat_at)
-             VALUES (?1, ?2, ?3, ?4, datetime('now'), datetime('now'))",
-            params![session_id, pid, host, surface],
+             (session_id, pid, host, surface, turn_id, started_at, heartbeat_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, strftime('%Y-%m-%d %H:%M:%f', 'now'), datetime('now'))",
+            params![session_id, pid, host, surface, turn_id],
+        )?;
+        Ok(())
+    }
+
+    pub fn run_rebind(&self, session_id: &str, turn_id: &str, pid: u32) -> Result<()> {
+        self.conn.execute(
+            "UPDATE session_runs SET pid = ?3, heartbeat_at = datetime('now')
+             WHERE session_id = ?1 AND turn_id = ?2",
+            params![session_id, turn_id, pid],
+        )?;
+        Ok(())
+    }
+
+    pub fn turn_checkpoint_resume(&self, turn_id: &str) -> Result<()> {
+        self.conn.execute(
+            "UPDATE turn_checkpoints SET state = 'running', active_tool = NULL,
+                    updated_at = datetime('now') WHERE turn_id = ?1",
+            params![turn_id],
         )?;
         Ok(())
     }
@@ -4800,7 +5531,27 @@ impl Store {
             if crate::migration::is_parked(n) || crate::migration::is_retired(n) {
                 return Ok(stamp);
             }
-            self.run_start(session_id, pid, host, surface)?;
+            self.run_start_with_generation(
+                session_id,
+                pid,
+                host,
+                surface,
+                Some(uuid::Uuid::new_v4().to_string()),
+            )?;
+            let turn_id = self
+                .conn
+                .query_row(
+                    "SELECT turn_id FROM session_runs WHERE session_id = ?1",
+                    params![session_id],
+                    |row| row.get::<_, Option<String>>(0),
+                )?
+                .ok_or_else(|| anyhow::anyhow!("turn registration lost its generation"))?;
+            let start_msg_id = self
+                .load_history_since(session_id, 0)?
+                .last()
+                .and_then(|message| message.msg_id)
+                .unwrap_or(0);
+            self.turn_checkpoint_start(session_id, &turn_id, surface, start_msg_id, host)?;
             Ok(None)
         })();
         match &r {
@@ -4824,6 +5575,14 @@ impl Store {
         Ok(())
     }
 
+    pub fn run_end_for(&self, session_id: &str, turn_id: &str) -> Result<()> {
+        self.conn.execute(
+            "DELETE FROM session_runs WHERE session_id = ?1 AND turn_id = ?2",
+            params![session_id, turn_id],
+        )?;
+        Ok(())
+    }
+
     /// Clear a live turn — `TurnGuard::drop` reaches here, so a turn
     /// that errored, was cancelled or panicked still deregisters.
     pub fn run_end(&self, session_id: &str) -> Result<()> {
@@ -4834,12 +5593,175 @@ impl Store {
         Ok(())
     }
 
+    /// Select interrupted checkpoints, including those whose liveness row
+    /// was already reaped. Only `running` and `final` qualify: `delivered`,
+    /// `recovered`, `closed`, `needs-review` and `abandoned` (a dead
+    /// owner's turn on a surface nothing resumes) are terminal records.
+    /// The original process-start identity, not a bare PID, distinguishes
+    /// a dead owner from a recycled process id.
+    pub fn recovery_candidates(&self) -> Result<Vec<InterruptedRun>> {
+        let host = crate::session_tap::hostname();
+        let mut stmt = self.conn.prepare(
+            "SELECT c.session_id, c.turn_id, c.host, c.surface, c.updated_at,
+                    c.start_msg_id, c.final_msg_id, c.active_tool,
+                    c.owner_pid, c.owner_start, c.claim_pid, c.claim_start
+             FROM turn_checkpoints c
+             WHERE c.state IN ('running', 'final')
+             ORDER BY c.updated_at",
+        )?;
+        let rows = stmt.query_map([], |r| {
+            Ok(InterruptedRun {
+                session_id: r.get(0)?,
+                turn_id: r.get(1)?,
+                host: r.get(2)?,
+                surface: r.get(3)?,
+                started_at: r.get(4)?,
+                start_msg_id: r.get(5)?,
+                final_msg_id: r.get(6)?,
+                active_tool: r.get(7)?,
+                pid: r.get(8)?,
+                owner_pid: r.get(8)?,
+                owner_start: r.get(9)?,
+                claim_pid: r.get(10)?,
+                claim_start: r.get(11)?,
+            })
+        })?;
+        let mut out = Vec::new();
+        for row in rows {
+            let run = row?;
+            if run.host != host || run.owner_pid <= 0 || run.owner_start.is_empty() {
+                continue;
+            }
+            if let (Some(pid), Some(start)) = (run.claim_pid, run.claim_start.as_deref()) {
+                if pid > 0
+                    && crate::platform::process_start_id(pid as u32).as_deref() == Some(start)
+                {
+                    continue;
+                }
+            }
+            let owner_is_current = crate::platform::process_start_id(run.owner_pid as u32)
+                .as_deref()
+                == Some(run.owner_start.as_str());
+            if owner_is_current {
+                continue;
+            }
+            out.push(run);
+        }
+        Ok(out)
+    }
+
+    /// Claim this checkpoint generation atomically. A live original owner
+    /// or a live recovery owner wins; a reaped session_runs row is not
+    /// allowed to erase the checkpoint's evidence of unfinished work.
+    pub fn recovery_claim(
+        &self,
+        run: &InterruptedRun,
+        pid: u32,
+        surface: &str,
+    ) -> Result<Option<RecoveryClaim>> {
+        self.conn.execute_batch("BEGIN IMMEDIATE")?;
+        let result = (|| -> Result<Option<RecoveryClaim>> {
+            let checkpoint = self.turn_checkpoint(&run.session_id)?;
+            let Some(checkpoint) = checkpoint else {
+                return Ok(None);
+            };
+            if checkpoint.turn_id != run.turn_id
+                || checkpoint.host != crate::session_tap::hostname()
+                || !matches!(checkpoint.state.as_str(), "running" | "final")
+                || checkpoint.owner_start.is_empty()
+                || crate::platform::process_start_id(checkpoint.owner_pid as u32).as_deref()
+                    == Some(checkpoint.owner_start.as_str())
+            {
+                return Ok(None);
+            }
+            if let (Some(owner), Some(start)) =
+                (checkpoint.claim_pid, checkpoint.claim_start.as_deref())
+            {
+                if owner > 0
+                    && crate::platform::process_start_id(owner as u32).as_deref() == Some(start)
+                {
+                    return Ok(None);
+                }
+            }
+            let stamp = self.session_node_stamp(&run.session_id)?;
+            if crate::migration::is_parked(stamp.as_deref())
+                || crate::migration::is_retired(stamp.as_deref())
+            {
+                return Ok(None);
+            }
+            let Some(start) = crate::platform::process_start_id(pid) else {
+                return Ok(None);
+            };
+            let claimed = format!("{}:{pid}:{start}", uuid::Uuid::new_v4());
+            self.conn.execute(
+                "UPDATE turn_checkpoints SET claim_pid = ?2, claim_start = ?3,
+                        recovery_attempts = recovery_attempts + 1,
+                        updated_at = datetime('now')
+                 WHERE session_id = ?1 AND turn_id = ?4",
+                params![run.session_id, pid as i64, start, run.turn_id],
+            )?;
+            let attempt: i64 = self.conn.query_row(
+                "SELECT recovery_attempts FROM turn_checkpoints WHERE turn_id = ?1",
+                params![run.turn_id],
+                |r| r.get(0),
+            )?;
+            let previous_started = run.started_at.clone();
+            let old_pid = run.owner_pid;
+            self.conn.execute(
+                "INSERT OR REPLACE INTO session_runs
+                 (session_id, pid, host, surface, turn_id, started_at, heartbeat_at)
+                 VALUES (?1, ?2, ?3, ?4, ?5, strftime('%Y-%m-%d %H:%M:%f', 'now'), datetime('now'))",
+                params![run.session_id, pid as i64, run.host, surface, run.turn_id],
+            )?;
+            Ok(Some(RecoveryClaim {
+                session_id: run.session_id.clone(),
+                turn_id: run.turn_id.clone(),
+                previous_pid: old_pid,
+                previous_started_at: previous_started,
+                recovery_started_at: claimed,
+                attempt,
+            }))
+        })();
+        match &result {
+            Ok(_) => self.conn.execute_batch("COMMIT")?,
+            Err(_) => {
+                let _ = self.conn.execute_batch("ROLLBACK");
+            }
+        }
+        result
+    }
+
+    /// Release only this process's claim. The checkpoint itself is left
+    /// as the recovery left it: `recovered`/`needs-review` when it ended,
+    /// still `running` when the continuation failed (a provider or the
+    /// network not up yet after a boot), so a later attempt — this
+    /// process's backoff, or the next boot — can claim it again, up to
+    /// the attempt bound (`recovery_attempts`).
+    pub fn recovery_release(&self, claim: &RecoveryClaim) -> Result<()> {
+        let start = crate::platform::process_start_id(std::process::id());
+        self.conn.execute(
+            "UPDATE turn_checkpoints SET claim_pid = NULL, claim_start = NULL
+             WHERE session_id = ?1 AND turn_id = ?2 AND claim_pid = ?3 AND claim_start = ?4",
+            params![
+                claim.session_id,
+                claim.turn_id,
+                std::process::id() as i64,
+                start
+            ],
+        )?;
+        self.conn.execute(
+            "DELETE FROM session_runs WHERE session_id = ?1 AND turn_id = ?2",
+            params![claim.session_id, claim.turn_id],
+        )?;
+        Ok(())
+    }
+
     /// The live runs WITHOUT reaping: what a read-only listing uses, so
     /// a GET is never a write competing for SQLite's write lock (a batch
     /// of `chat -q` writers made `GET /api/sessions` wait on it).
     pub fn runs_current(&self, max_stale_secs: i64) -> Result<Vec<SessionRun>> {
         let mut stmt = self.conn.prepare(
-            "SELECT session_id, pid, host, surface, started_at, heartbeat_at
+            "SELECT session_id, pid, host, surface, started_at, heartbeat_at, turn_id
              FROM session_runs WHERE heartbeat_at >= datetime('now', ?1)
              ORDER BY started_at",
         )?;
@@ -4851,6 +5773,7 @@ impl Store {
                 surface: r.get(3)?,
                 started_at: r.get(4)?,
                 heartbeat_at: r.get(5)?,
+                turn_id: r.get(6)?,
             })
         })?;
         Ok(rows.collect::<std::result::Result<Vec<_>, _>>()?)
@@ -4869,7 +5792,7 @@ impl Store {
             params![format!("-{max_stale_secs} seconds")],
         )?;
         let mut stmt = self.conn.prepare(
-            "SELECT session_id, pid, host, surface, started_at, heartbeat_at
+            "SELECT session_id, pid, host, surface, started_at, heartbeat_at, turn_id
              FROM session_runs ORDER BY started_at",
         )?;
         let rows = stmt.query_map([], |r| {
@@ -4880,6 +5803,7 @@ impl Store {
                 surface: r.get(3)?,
                 started_at: r.get(4)?,
                 heartbeat_at: r.get(5)?,
+                turn_id: r.get(6)?,
             })
         })?;
         let mut out = Vec::new();
@@ -5244,6 +6168,49 @@ impl Store {
             params![session_id, seq],
         )?;
         Ok(n == 1)
+    }
+
+    /// Restart recovery's half of `queue_release`: the interrupted turn
+    /// came from a queue row, its prompt is already in the transcript
+    /// (`prompt`, the persisted user text — the row's body, with any
+    /// parked attachments folded onto its end), and its drainer died
+    /// before releasing the row. Recovery continues that turn from saved
+    /// history, so the row is done: left `running`, the next take would
+    /// demote it and send the same prompt as a NEW turn.
+    ///
+    /// Only `running` message rows whose body IS that prompt (or its
+    /// head): a row whose prompt never reached the transcript (the crash
+    /// came between the take and the turn) keeps its place and runs.
+    pub fn queue_release_running_prompt(&self, session_id: &str, prompt: &str) -> Result<usize> {
+        let tx = self.write_tx()?;
+        let mut stmt = tx.prepare(
+            "SELECT seq, body FROM session_queue
+             WHERE session_id = ?1 AND state = 'running' AND kind = 'message'",
+        )?;
+        let rows = stmt
+            .query_map(params![session_id], |r| {
+                Ok((r.get::<_, i64>(0)?, r.get::<_, String>(1)?))
+            })?
+            .collect::<rusqlite::Result<Vec<_>>>()?;
+        drop(stmt);
+        let mut released = 0;
+        for (seq, body) in rows {
+            // `media::with_attachments` is the only rewrite between the
+            // row and the persisted prompt.
+            let head = body.trim_end();
+            let same = prompt == body
+                || (!head.is_empty() && prompt.starts_with(&format!("{head}\nMEDIA:")))
+                || (head.is_empty() && prompt.starts_with("MEDIA:"));
+            if same {
+                released += tx.execute(
+                    "DELETE FROM session_queue
+                     WHERE session_id = ?1 AND seq = ?2 AND state = 'running'",
+                    params![session_id, seq],
+                )?;
+            }
+        }
+        tx.commit()?;
+        Ok(released)
     }
 
     /// The drainer's take: the oldest pending item, promoted to
@@ -7057,7 +8024,7 @@ mod tests {
         // Memory: [marker, t1 | t2, t3, t4]; "hidden" is a row the
         // repair kept out of memory. Head = marker + t1, tail from t2.
         let n = store
-            .archive_compacted_head("s1", &[ids[5], ids[1]], ids[2])
+            .archive_compacted_head("s1", &[ids[5], ids[1]], ids[2], &[])
             .expect("archive");
         assert_eq!(n, 3, "marker, t1, and the hidden row below the tail");
         let live: Vec<String> = store
@@ -7067,6 +8034,73 @@ mod tests {
             .map(|m| m.content)
             .collect();
         assert_eq!(live, vec!["t2", "t3", "t4"]);
+    }
+
+    /// A replay repair can STRIP a call without removing its assistant
+    /// row. The store row must remain live when the compaction cut passes
+    /// between that call and an unrelated orphaned result: it is the
+    /// conversation text the caller still has in memory, not an empty
+    /// husk to sweep away as an invisible head row. Passing the repaired
+    /// replay history makes that distinction without archiving the call's
+    /// original arguments into the summary it never supplied.
+    #[test]
+    fn compacted_head_archive_keeps_an_assistant_whose_unanswered_call_was_stripped() {
+        let (_d, store) = scratch();
+        let user = store
+            .append_message("s1", &ChatMessage::user("keep this turn"))
+            .expect("user");
+        let interrupted = store
+            .append_message("s1", &call_row("never_answered"))
+            .expect("call interrupted before its result");
+        let orphan = store
+            .append_message("s1", &result_row("call_gone", "orphan"))
+            .expect("orphan");
+        let tail = store
+            .append_message("s1", &ChatMessage::assistant("the kept tail", None))
+            .expect("tail");
+
+        let repaired = store.load_history("s1").expect("repaired replay");
+        assert!(repaired.iter().any(|m| {
+            m.msg_id == Some(interrupted) && m.role == "assistant" && m.tool_calls.is_none()
+        }));
+        assert!(!repaired.iter().any(|m| m.msg_id == Some(orphan)));
+
+        let n = store
+            .archive_compacted_head("s1", &[user, interrupted], tail, &repaired)
+            .expect("archive");
+        assert_eq!(
+            n, 2,
+            "the user and orphan are archived, not the visible text"
+        );
+        let live = store.load_history_since("s1", 0).expect("raw live rows");
+        assert_eq!(
+            live.iter().map(|m| m.msg_id).collect::<Vec<_>>(),
+            vec![Some(interrupted), Some(tail)]
+        );
+    }
+
+    #[test]
+    fn compacted_head_archive_does_not_protect_an_ordinary_assistant() {
+        let (_d, store) = scratch();
+        let answer = store
+            .append_message("s1", &ChatMessage::assistant("summarize me", None))
+            .expect("ordinary answer");
+        let tail = store
+            .append_message("s1", &ChatMessage::user("the kept tail"))
+            .expect("tail");
+        let replayed = store.load_history("s1").expect("replay");
+        let n = store
+            .archive_compacted_head("s1", &[answer], tail, &replayed)
+            .expect("archive");
+        assert_eq!(
+            n, 1,
+            "an assistant with no stored calls is an ordinary head row"
+        );
+        assert!(store
+            .load_history_since("s1", 0)
+            .expect("live")
+            .iter()
+            .all(|m| m.msg_id != Some(answer)));
     }
 
     // ── IRC scrollback ───────────────────────────────────────────────
@@ -7519,6 +8553,139 @@ mod tests {
     /// and a row that went SILENT is reaped by the reader, which is
     /// the half that keeps a crashed process from freezing a session
     /// as "running" forever.
+    fn dead_process_fixture() -> (u32, String) {
+        crate::platform::exited_process_for_test()
+    }
+
+    #[test]
+    fn restart_recovery_claims_only_an_orphaned_local_run_once() {
+        let (_d, store) = scratch();
+        store.create_session("interrupted").unwrap();
+        let (old_pid, process_start) = dead_process_fixture();
+        store
+            .begin_turn_fenced(
+                "interrupted",
+                old_pid,
+                &crate::session_tap::hostname(),
+                "desktop",
+            )
+            .unwrap();
+        store
+            .turn_checkpoint_set_owner_for_test("interrupted", old_pid, &process_start)
+            .unwrap();
+        store
+            .run_start(
+                "live",
+                std::process::id(),
+                &crate::session_tap::hostname(),
+                "desktop",
+            )
+            .unwrap();
+        let candidates = store.recovery_candidates().unwrap();
+        assert_eq!(candidates.len(), 1);
+        assert_eq!(candidates[0].session_id, "interrupted");
+        let claim = store
+            .recovery_claim(&candidates[0], std::process::id(), "desktop")
+            .unwrap()
+            .expect("orphan claimed");
+        assert_eq!(claim.previous_pid, old_pid as i64);
+        assert!(
+            store
+                .recovery_claim(&candidates[0], std::process::id(), "desktop")
+                .unwrap()
+                .is_none(),
+            "a second recovery cannot reclaim the new run"
+        );
+        store.recovery_release(&claim).unwrap();
+        let remaining = store.runs_current(30).unwrap();
+        assert!(remaining.iter().all(|run| run.session_id != "interrupted"));
+        assert!(remaining.iter().any(|run| run.session_id == "live"));
+    }
+
+    #[test]
+    fn recovered_is_not_a_restart_candidate() {
+        let (_d, store) = scratch();
+        store.create_session("completed-recovery").unwrap();
+        let (pid, process_start) = dead_process_fixture();
+        store
+            .begin_turn_fenced(
+                "completed-recovery",
+                pid,
+                &crate::session_tap::hostname(),
+                "desktop",
+            )
+            .unwrap();
+        store
+            .turn_checkpoint_set_owner_for_test("completed-recovery", pid, &process_start)
+            .unwrap();
+        assert_eq!(store.recovery_candidates().unwrap().len(), 1);
+        let run = store.recovery_candidates().unwrap().remove(0);
+        store
+            .turn_checkpoint_finish(&run.turn_id, "recovered", None)
+            .unwrap();
+        assert!(store.recovery_candidates().unwrap().is_empty());
+    }
+
+    #[test]
+    fn a_run_refresh_keeps_its_checkpoint_generation() {
+        let (_d, store) = scratch();
+        store.create_session("interrupted").unwrap();
+        store
+            .begin_turn_fenced(
+                "interrupted",
+                std::process::id(),
+                &crate::session_tap::hostname(),
+                "desktop",
+            )
+            .unwrap();
+        let before = store.runs_current(30).unwrap().remove(0);
+        store
+            .run_start(
+                "interrupted",
+                std::process::id(),
+                &crate::session_tap::hostname(),
+                "desktop",
+            )
+            .unwrap();
+        let after = store.runs_current(30).unwrap().remove(0);
+        assert_eq!(before.turn_id, after.turn_id);
+    }
+
+    #[test]
+    fn recovery_claim_preserves_the_original_history_and_its_queue() {
+        let (_d, store) = scratch();
+        store.create_session("interrupted").unwrap();
+        store
+            .append_message("interrupted", &ChatMessage::user("finish the work"))
+            .unwrap();
+        store.queue_push("interrupted", "next question").unwrap();
+        let (pid, process_start) = dead_process_fixture();
+        store
+            .begin_turn_fenced(
+                "interrupted",
+                pid,
+                &crate::session_tap::hostname(),
+                "desktop",
+            )
+            .unwrap();
+        store
+            .turn_checkpoint_set_owner_for_test("interrupted", pid, &process_start)
+            .unwrap();
+        let run = store.recovery_candidates().unwrap().remove(0);
+        let claim = store
+            .recovery_claim(&run, std::process::id(), "desktop")
+            .unwrap()
+            .expect("claim");
+        let history = store.load_history("interrupted").unwrap();
+        assert_eq!(history.len(), 1);
+        assert_eq!(history[0].content, "finish the work");
+        assert_eq!(
+            store.queue_take_next("interrupted").unwrap().unwrap().body,
+            "next question"
+        );
+        store.recovery_release(&claim).unwrap();
+    }
+
     #[test]
     fn run_registry_round_trips_and_reaps_silent_rows() {
         let dir = tempfile::tempdir().unwrap();
@@ -8322,6 +9489,12 @@ mod tests {
             heartbeat_at: (chrono::Utc::now() + chrono::Duration::minutes(1))
                 .format("%Y-%m-%d %H:%M:%S")
                 .to_string(),
+            cores: None,
+            io_some: None,
+            io_full: None,
+            children: None,
+            queued: None,
+            children_from: None,
         };
         // NOTE: this is not our own row here (local_node_id is None in
         // the scratch env), so the merge takes the peer's claims — the
@@ -8353,6 +9526,12 @@ mod tests {
             sessions_served: 9,
             registered_at: "2026-09-01 00:00:00".into(),
             heartbeat_at: "2026-09-27 12:00:00".into(),
+            cores: None,
+            io_some: None,
+            io_full: None,
+            children: None,
+            queued: None,
+            children_from: None,
         };
         store.node_merge_from_gossip(&third).unwrap();
         let row = store.node_get("third-3").unwrap().unwrap();
@@ -8464,6 +9643,245 @@ mod tests {
         assert_eq!(row.load1, Some(11));
         store.node_served_bump("old").unwrap();
         assert_eq!(store.node_get("old").unwrap().unwrap().sessions_served, 1);
+        // 306787.b: and a pre-306787 one — cores, IO pressure and the
+        // work counts arrive unknown, and the sample writer works.
+        let row = store.node_get("old").unwrap().unwrap();
+        assert_eq!((row.cores, row.io_some, row.children), (None, None, None));
+        store
+            .node_heartbeat_sample(
+                "old",
+                &HeartbeatSample {
+                    cores: Some(6),
+                    ..Default::default()
+                },
+            )
+            .unwrap();
+        assert_eq!(store.node_get("old").unwrap().unwrap().cores, Some(6));
+        let has_work_table: i64 = store
+            .conn()
+            .query_row(
+                "SELECT COUNT(*) FROM sqlite_master WHERE name = 'placement_work'",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap();
+        assert_eq!(has_work_table, 1);
+    }
+
+    /// 306787.b: the heartbeat carries cores, IO pressure and the work
+    /// counts; every `None` keeps the previous value (an unreadable
+    /// sample must not erase a known one), and IO pressure is one sample
+    /// (a reading without a `full` line says full is unknown now).
+    #[test]
+    fn the_heartbeat_sample_writes_and_keeps_what_it_cannot_read() {
+        let dir = tempfile::tempdir().unwrap();
+        let store = Store::open(&dir.path().join("state.db")).unwrap();
+        store
+            .node_register(
+                "hb",
+                "laptop",
+                "h",
+                "0",
+                "always-on",
+                None,
+                None,
+                None,
+                None,
+            )
+            .unwrap();
+        let work = crate::placement::WorkReport {
+            running: 3,
+            queued: 1,
+            from: [("hb".to_string(), 2), ("vps".to_string(), 1)].into(),
+        };
+        store
+            .node_heartbeat_sample(
+                "hb",
+                &HeartbeatSample {
+                    load1: Some(40),
+                    cores: Some(16),
+                    io: Some(crate::node::IoPressure {
+                        some: Some(12),
+                        full: Some(3),
+                    }),
+                    work: Some(work.clone()),
+                },
+            )
+            .unwrap();
+        let row = store.node_get("hb").unwrap().unwrap();
+        assert_eq!(row.load1, Some(40));
+        assert_eq!(row.cores, Some(16));
+        assert_eq!((row.io_some, row.io_full), (Some(12), Some(3)));
+        assert_eq!((row.children, row.queued), (Some(3), Some(1)));
+        let from = crate::placement::WorkReport::parse_from(row.children_from.as_deref());
+        assert_eq!(from.get("vps"), Some(&1));
+        // Nothing readable this tick: everything stays.
+        store
+            .node_heartbeat_sample("hb", &HeartbeatSample::default())
+            .unwrap();
+        let again = store.node_get("hb").unwrap().unwrap();
+        assert_eq!(
+            (again.load1, again.cores, again.io_some, again.children),
+            (Some(40), Some(16), Some(12), Some(3))
+        );
+        // A PSI reading with no `full` line replaces both halves.
+        store
+            .node_heartbeat_sample(
+                "hb",
+                &HeartbeatSample {
+                    io: Some(crate::node::IoPressure {
+                        some: Some(1),
+                        full: None,
+                    }),
+                    ..Default::default()
+                },
+            )
+            .unwrap();
+        let io = store.node_get("hb").unwrap().unwrap();
+        assert_eq!((io.io_some, io.io_full), (Some(1), None));
+        // And the old one-argument heartbeat still moves only the load.
+        store.node_heartbeat("hb", Some(7)).unwrap();
+        let old = store.node_get("hb").unwrap().unwrap();
+        assert_eq!(
+            (old.load1, old.cores, old.children),
+            (Some(7), Some(16), Some(3))
+        );
+    }
+
+    /// 306787.b wire compatibility, both directions. A 0.1.6 peer's row
+    /// (no cores/IO/work fields) parses with all of them unknown — never
+    /// 0 — and our row parses in a 0.1.6 peer's shape of the struct
+    /// (serde skips the fields it does not know).
+    #[test]
+    fn registry_rows_cross_the_0_1_6_wire_both_ways() {
+        let old_json = r#"{"id":"n1","name":"vps","host":"h","version":"0.1.6",
+            "uptime_class":"always-on","gpu":null,"endpoint":null,"static_ip":null,
+            "static_ip_source":null,"caps":null,"load1":12,"load_at":"2026-11-01 00:00:00",
+            "sessions_served":4,"registered_at":"2026-09-01 00:00:00",
+            "heartbeat_at":"2026-11-01 00:00:00"}"#;
+        let row: GossipNodeRow = serde_json::from_str(old_json).unwrap();
+        assert_eq!(row.load1, Some(12));
+        assert_eq!(
+            (
+                row.cores,
+                row.io_some,
+                row.io_full,
+                row.children,
+                row.queued
+            ),
+            (None, None, None, None, None)
+        );
+        assert!(row.children_from.is_none());
+        // The whole 0.1.6 message shape still decodes.
+        let msg = format!(r#"{{"from_node":"n1","rows":[{old_json}]}}"#);
+        let m: crate::gossip::GossipMessage = serde_json::from_str(&msg).unwrap();
+        assert_eq!(m.rows[0].cores, None);
+        // Merged, it stays unknown in the registry: NULL, not 0, which
+        // placement would read as a node with no IO and no children.
+        let dir = tempfile::tempdir().unwrap();
+        let store = Store::open(&dir.path().join("state.db")).unwrap();
+        store.node_merge_from_gossip(&m.rows[0]).unwrap();
+        let merged = store.node_get("n1").unwrap().unwrap();
+        assert_eq!(merged.load1, Some(12));
+        assert_eq!(
+            (merged.cores, merged.io_some, merged.io_full),
+            (None, None, None)
+        );
+        assert_eq!((merged.children, merged.queued), (None, None));
+        assert!(merged.children_from.is_none());
+
+        /// `GossipNodeRow` as 0.1.6 declares it.
+        #[derive(serde::Deserialize)]
+        #[allow(dead_code)]
+        struct Row016 {
+            id: String,
+            name: String,
+            host: String,
+            version: String,
+            uptime_class: String,
+            gpu: Option<String>,
+            endpoint: Option<String>,
+            static_ip: Option<String>,
+            static_ip_source: Option<String>,
+            caps: Option<String>,
+            #[serde(default)]
+            load1: Option<i64>,
+            #[serde(default)]
+            load_at: Option<String>,
+            #[serde(default)]
+            sessions_served: i64,
+            registered_at: String,
+            heartbeat_at: String,
+        }
+        let ours = GossipNodeRow {
+            cores: Some(16),
+            io_some: Some(5),
+            io_full: Some(1),
+            children: Some(2),
+            queued: Some(0),
+            children_from: Some(r#"{"n1":2}"#.into()),
+            ..row
+        };
+        let wire = serde_json::to_string(&ours).unwrap();
+        let theirs: Row016 = serde_json::from_str(&wire).expect("a 0.1.6 peer reads our row");
+        assert_eq!(theirs.load1, Some(12));
+    }
+
+    /// A 0.1.6 peer relays our row without the new fields under the SAME
+    /// heartbeat: that copy must not wipe them (it is the old peer's
+    /// parse, not the node saying "unknown"). A strictly newer heartbeat
+    /// without them is the node's own word and is taken.
+    #[test]
+    fn a_relay_through_a_0_1_6_peer_keeps_the_new_columns() {
+        let dir = tempfile::tempdir().unwrap();
+        let store = Store::open(&dir.path().join("state.db")).unwrap();
+        let fresh = GossipNodeRow {
+            id: "relay-1".into(),
+            name: "vps".into(),
+            host: "h".into(),
+            version: "0.2.0".into(),
+            uptime_class: "always-on".into(),
+            gpu: None,
+            endpoint: None,
+            static_ip: None,
+            static_ip_source: None,
+            caps: None,
+            load1: Some(20),
+            load_at: Some("2026-11-07 10:00:00".into()),
+            sessions_served: 1,
+            registered_at: "2026-09-01 00:00:00".into(),
+            heartbeat_at: "2026-11-07 10:00:00".into(),
+            cores: Some(2),
+            io_some: Some(30),
+            io_full: Some(6),
+            children: Some(1),
+            queued: Some(0),
+            children_from: Some(r#"{"lap":1}"#.into()),
+        };
+        store.node_merge_from_gossip(&fresh).unwrap();
+        let stripped = GossipNodeRow {
+            cores: None,
+            io_some: None,
+            io_full: None,
+            children: None,
+            queued: None,
+            children_from: None,
+            ..fresh.clone()
+        };
+        store.node_merge_from_gossip(&stripped).unwrap();
+        let row = store.node_get("relay-1").unwrap().unwrap();
+        assert_eq!(row.cores, Some(2), "a stripped relay keeps cores");
+        assert_eq!((row.io_some, row.io_full), (Some(30), Some(6)));
+        assert_eq!((row.children, row.queued), (Some(1), Some(0)));
+        assert_eq!(row.children_from.as_deref(), Some(r#"{"lap":1}"#));
+        // The node itself downgraded (a newer beat without them).
+        let downgraded = GossipNodeRow {
+            heartbeat_at: "2026-11-07 10:01:00".into(),
+            ..stripped
+        };
+        store.node_merge_from_gossip(&downgraded).unwrap();
+        let row = store.node_get("relay-1").unwrap().unwrap();
+        assert_eq!((row.cores, row.io_some, row.children), (None, None, None));
     }
 
     /// B1.5: every session row records its owner. A node with an
@@ -8539,6 +9957,103 @@ mod tests {
             })
             .unwrap();
         assert_eq!(stamped, id.id, "insert-time stamping matches the backfill");
+    }
+
+    #[test]
+    fn ancestor_context_follows_a_chain_and_terminates_a_cycle() {
+        let (_d, store) = scratch();
+        for id in ["grandparent", "parent", "child"] {
+            store.create_session(id).unwrap();
+        }
+        store
+            .conn()
+            .execute_batch(
+                "UPDATE sessions SET parent = 'grandparent' WHERE id = 'parent';
+             UPDATE sessions SET parent = 'parent' WHERE id = 'child';",
+            )
+            .unwrap();
+        let rows = store.session_ancestor_rows(&["child".into()]).unwrap();
+        let ids: std::collections::HashSet<String> = rows.into_iter().map(|r| r.id).collect();
+        assert_eq!(
+            ids,
+            ["grandparent".to_string(), "parent".to_string()].into()
+        );
+        store
+            .conn()
+            .execute_batch("UPDATE sessions SET parent = 'child' WHERE id = 'grandparent';")
+            .unwrap();
+        let mut ids: Vec<String> = store
+            .session_ancestor_rows(&["child".into()])
+            .unwrap()
+            .into_iter()
+            .map(|r| r.id)
+            .collect();
+        ids.sort();
+        assert_eq!(
+            ids,
+            ["grandparent", "parent"],
+            "the starting child is not its own context"
+        );
+    }
+
+    /// SI-6: a parent's children, wherever they rank, newest first, with
+    /// nested children, the per-parent and total bounds, and a cycle that
+    /// ends.
+    #[test]
+    fn descendant_context_follows_children_down_bounded_and_cycle_safe() {
+        let (_d, store) = scratch();
+        for id in ["root", "a", "b", "c", "a1", "other"] {
+            store.create_session(id).unwrap();
+        }
+        store
+            .conn()
+            .execute_batch(
+                "UPDATE sessions SET parent = 'root', updated_at = '2026-01-01 00:00:01' WHERE id = 'a';
+                 UPDATE sessions SET parent = 'root', updated_at = '2026-01-01 00:00:03' WHERE id = 'b';
+                 UPDATE sessions SET parent = 'root', updated_at = '2026-01-01 00:00:02' WHERE id = 'c';
+                 UPDATE sessions SET parent = 'a' WHERE id = 'a1';",
+            )
+            .unwrap();
+        let ids = |rows: Vec<SessionRow>| rows.into_iter().map(|r| r.id).collect::<Vec<_>>();
+        assert_eq!(
+            ids(store
+                .session_descendant_rows(&["root".into()], 10, 100)
+                .unwrap()),
+            ["b", "c", "a", "a1"],
+            "children newest first, then the next level"
+        );
+        assert_eq!(
+            ids(store
+                .session_descendant_rows(&["root".into()], 2, 100)
+                .unwrap()),
+            ["b", "c"],
+            "per-parent bound; a's subtree is not reached through a dropped a"
+        );
+        assert_eq!(
+            store
+                .session_descendant_rows(&["root".into()], 10, 3)
+                .unwrap()
+                .len(),
+            3,
+            "total bound"
+        );
+        assert!(store
+            .session_descendant_rows(&["other".into()], 10, 100)
+            .unwrap()
+            .is_empty());
+        store
+            .conn()
+            .execute_batch("UPDATE sessions SET parent = 'a1' WHERE id = 'root';")
+            .unwrap();
+        let mut got = ids(store
+            .session_descendant_rows(&["root".into()], 10, 100)
+            .unwrap());
+        got.sort();
+        assert_eq!(
+            got,
+            ["a", "a1", "b", "c"],
+            "the start is not its own context"
+        );
     }
 
     #[test]
@@ -10374,6 +11889,12 @@ mod b3a_store_pins {
             sessions_served: 0,
             registered_at: "1999-01-01 00:00:00".into(),
             heartbeat_at: "2026-09-27 12:00:00".into(),
+            cores: None,
+            io_some: None,
+            io_full: None,
+            children: None,
+            queued: None,
+            children_from: None,
         };
         let touched = store.node_merge_from_gossip(&incoming).unwrap();
         assert!(!touched, "our own row is a no-op merge");
@@ -10500,5 +12021,150 @@ mod b3a_store_pins {
         // And the select with the new column did not misalign the rest.
         assert_eq!(job.schedule, "every:60");
         assert_eq!(job.prompt, "x");
+    }
+}
+
+/// Fleet-wide forget (FLEET-6 forget propagation, 0.2.0): the tombstone
+/// a forget leaves, and what gossip merges do with it.
+#[cfg(test)]
+mod tombstone_pins {
+    use super::*;
+
+    /// A registry row as gossip carries it, built from its wire JSON so
+    /// a column added to the row later does not have to be named here.
+    fn wire(id: &str, heartbeat_at: &str) -> GossipNodeRow {
+        serde_json::from_value(serde_json::json!({
+            "id": id, "name": id, "host": "h", "version": "0.2.0",
+            "uptime_class": "ephemeral",
+            "registered_at": "2026-11-01 00:00:00",
+            "heartbeat_at": heartbeat_at,
+        }))
+        .expect("a wire row")
+    }
+
+    fn stamp(offset_secs: i64) -> String {
+        (chrono::Utc::now() + chrono::Duration::seconds(offset_secs))
+            .format("%Y-%m-%d %H:%M:%S")
+            .to_string()
+    }
+
+    /// The forget's own node: the row goes, the tombstone stays, and a
+    /// peer relaying its older copy back does not resurrect it. The node
+    /// itself, heartbeating after the forget, is let back in and the
+    /// tombstone is dropped.
+    #[test]
+    fn a_forgotten_node_stays_gone_until_it_heartbeats_again() {
+        let (_cfg, _data, _guard) = crate::testenv::scratch_xdg();
+        let dir = tempfile::tempdir().unwrap();
+        let store = Store::open(&dir.path().join("s.db")).unwrap();
+        store
+            .node_merge_from_gossip(&wire("gone", &stamp(-3600)))
+            .unwrap();
+        assert!(store.node_forget_everywhere("gone").unwrap());
+        let tombs = store.node_tombstones().unwrap();
+        assert_eq!(tombs.len(), 1, "{tombs:?}");
+        assert_eq!(tombs[0].id, "gone");
+        // A peer that still lists it gossips its copy back.
+        store
+            .node_merge_from_gossip(&wire("gone", &stamp(-3500)))
+            .unwrap();
+        assert!(
+            store.node_get("gone").unwrap().is_none(),
+            "a relayed copy older than the forget is refused"
+        );
+        // The machine comes back: its heartbeat is after the forget.
+        store
+            .node_merge_from_gossip(&wire("gone", &stamp(5)))
+            .unwrap();
+        assert!(
+            store.node_get("gone").unwrap().is_some(),
+            "a node that heartbeats after the forget is back"
+        );
+        assert!(
+            store.node_tombstones().unwrap().is_empty(),
+            "and its tombstone is dropped"
+        );
+    }
+
+    /// A peer's tombstone: drops the row here, is kept (and refuses the
+    /// relayed copy after it), and is idempotent. It changes nothing for
+    /// a node that has heartbeat since, for this node itself, or with a
+    /// stamp that is not a time or lies far in the future.
+    #[test]
+    fn a_peers_tombstone_drops_the_row_unless_the_node_came_back() {
+        let (_cfg, _data, _guard) = crate::testenv::scratch_xdg();
+        let me = crate::node::NodeIdentity::load_or_create(&crate::config::config_dir()).unwrap();
+        let dir = tempfile::tempdir().unwrap();
+        let store = Store::open(&dir.path().join("s.db")).unwrap();
+        store
+            .node_merge_from_gossip(&wire("retired", &stamp(-7200)))
+            .unwrap();
+        let t = NodeTombstone {
+            id: "retired".into(),
+            forgotten_at: stamp(-1800),
+        };
+        assert!(store.node_tombstone_merge(&t).unwrap());
+        assert!(store.node_get("retired").unwrap().is_none());
+        assert!(
+            !store.node_tombstone_merge(&t).unwrap(),
+            "the same tombstone again changes nothing"
+        );
+        store
+            .node_merge_from_gossip(&wire("retired", &stamp(-6000)))
+            .unwrap();
+        assert!(
+            store.node_get("retired").unwrap().is_none(),
+            "a held tombstone refuses a third peer's relayed copy"
+        );
+
+        store
+            .node_merge_from_gossip(&wire("alive", &stamp(-60)))
+            .unwrap();
+        let late = NodeTombstone {
+            id: "alive".into(),
+            forgotten_at: stamp(-600),
+        };
+        assert!(!store.node_tombstone_merge(&late).unwrap());
+        assert!(store.node_get("alive").unwrap().is_some());
+        assert!(
+            !store
+                .node_tombstones()
+                .unwrap()
+                .iter()
+                .any(|t| t.id == "alive"),
+            "a tombstone older than the node's heartbeat is not kept"
+        );
+
+        for bad in ["9999-01-01 00:00:00", "yesterday", ""] {
+            let t = NodeTombstone {
+                id: "alive".into(),
+                forgotten_at: bad.into(),
+            };
+            assert!(!store.node_tombstone_merge(&t).unwrap(), "{bad:?}");
+        }
+        assert!(store.node_get("alive").unwrap().is_some());
+
+        store
+            .node_register(
+                &me.id,
+                "me",
+                "h",
+                "0.2.0",
+                "ephemeral",
+                None,
+                None,
+                None,
+                None,
+            )
+            .unwrap();
+        let about_me = NodeTombstone {
+            id: me.id.clone(),
+            forgotten_at: stamp(60),
+        };
+        assert!(!store.node_tombstone_merge(&about_me).unwrap());
+        assert!(
+            store.node_get(&me.id).unwrap().is_some(),
+            "a peer cannot forget this node for it"
+        );
     }
 }

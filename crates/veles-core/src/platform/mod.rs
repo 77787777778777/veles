@@ -160,6 +160,33 @@ fn os_notes(_userland: bool) -> &'static str {
     NOTES
 }
 
+/// A child that stays alive until its stdin closes or it is killed: the
+/// platform's own command interpreter (`sh` / `cmd`) reading commands
+/// from a pipe. Portable, unlike `sh -c "exit 0"`, and alive for as long
+/// as a test needs to read its lifetime identity.
+#[cfg(any(test, feature = "test-support"))]
+pub fn stdin_waiting_child_for_test() -> std::process::Child {
+    let shell = if cfg!(windows) { "cmd" } else { "sh" };
+    std::process::Command::new(shell)
+        .stdin(std::process::Stdio::piped())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+        .expect("fixture child")
+}
+
+/// A (pid, lifetime identity) pair whose process has exited — the
+/// "dead owner" every restart-recovery fixture forges a checkpoint with.
+#[cfg(any(test, feature = "test-support"))]
+pub fn exited_process_for_test() -> (u32, String) {
+    let mut child = stdin_waiting_child_for_test();
+    let pid = child.id();
+    let start = process_start_id(pid).expect("child process start identity");
+    child.kill().expect("kill the fixture child");
+    child.wait().expect("reap the fixture child");
+    (pid, start)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

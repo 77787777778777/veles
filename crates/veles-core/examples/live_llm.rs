@@ -31,7 +31,7 @@ fn main() {
                 .model
                 .default
                 .clone()
-                .unwrap_or_else(|| "deepseek-v4-flash-0731".into()),
+                .unwrap_or_else(|| "deepseek-v4.1-flash-1017".into()),
             messages: vec![veles_core::providers::ChatMessage::user(
                 "Reply with exactly: VELES_OK",
             )],
@@ -41,6 +41,7 @@ fn main() {
             replay_reasoning: false,
             cache_mode: veles_core::providers::CacheMode::Auto,
             extra_body: None,
+            thread: None,
         };
         match client.chat(&req, &entry.name).await {
             Ok(completion) => {

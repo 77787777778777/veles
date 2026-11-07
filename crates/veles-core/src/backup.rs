@@ -109,6 +109,10 @@ pub const BACKUP_SET: &[(&str, Root)] = &[
     ("gateway-state.json", Root::Data),
     ("gateway-shutdown.log", Root::Data),
     ("desktop_state.json", Root::Data),
+    // Reviewed fleet deployment manifests and their transition journals.
+    // They contain no credentials, but are the audit trail needed after a
+    // restart or rollback decision.
+    ("fleet-deployments", Root::Data),
     // Other nodes' stores as this node holds them (storesync:
     // `replicas/<node-id>.db`). A sender moves its cursor past what this
     // node reports applying, so a restore without them loses those rows

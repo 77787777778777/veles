@@ -36,6 +36,19 @@ namespace eval ::vinstpane {
     variable R_detail ".instdetail"
     variable R_ctl    ".instctl"
 
+    variable fleet_nodes {}
+    variable fleet_sync {}
+    # /api/fleet's alerts (recent health changes), version spread and
+    # fleet-wide forgotten nodes (lib/fleetobs.tcl renders them).
+    variable fleet_alerts {}
+    variable fleet_versions {}
+    variable fleet_forgotten {}
+    variable fleet_generation 0
+    # The registry group's tree id. Saved groups are `g:<name>`, and a
+    # saved group literally named `cluster-registry` collided with the
+    # old fixed id and stopped the list rendering (FLEET-13); a control
+    # character cannot come from the editor.
+    variable registry_group "g:\x01cluster-registry"
     variable selected ""            ;# instance name, or ""
     variable health                  ;# name -> up|down|unauth|never
     array set health {}
@@ -221,6 +234,37 @@ proc ::vinstpane::refresh_list {} {
             set mark [expr {$n eq $attached ? " ⚡" : ""}]
             $R_list.list insert "g:$g" end -id $n -text "$dot $n$mark" \
                 -values [list $ver $up $plats] -tags $tag ;# i18n-exempt: glyph + node name
+        }
+    }
+    # The gateway's cluster registry is automatic; manually configured
+    # SSH instances remain above it. `cluster:` rows have no SSH target.
+    variable fleet_nodes
+    variable registry_group
+    if {[llength $fleet_nodes]} {
+        set group $registry_group
+        $R_list.list insert {} end -id $group \
+            -text [::vi18n::mc {▾ Cluster registry}] -tags group
+        foreach node $fleet_nodes {
+            set id "cluster:[dict get $node id]"
+            # Health, not just heartbeat age: a node whose sync pushes
+            # or last probe fail is red, a stale one grey (FLEET-6).
+            set state [_node_state $node]
+            switch -- $state {
+                stale   { set dot "○" ; set tag never }
+                failing { set dot "●" ; set tag down }
+                default { set dot "●" ; set tag up }
+            }
+            set name [dict get $node name]
+            set load [dict get $node load1]
+            if {$load eq "null" || $load eq ""} { set load "?" }
+            # A node bound to a saved instance is the SAME machine as that
+            # row: say so, rather than showing it twice as unrelated.
+            set gateway [_cluster_gateway $node]
+            set how [expr {$gateway eq "" ? [::vi18n::mc {registered}]
+                : [format [::vi18n::mc {managed via %s}] $gateway]}]
+            $R_list.list insert $group end -id $id -text "$dot $name" ;# i18n-exempt: registry name, no UI prose
+            $R_list.list item $id -values [list [dict get $node version] "load $load" $how]
+            $R_list.list item $id -tags $tag
         }
     }
     if {$keep ne "" && [$R_list.list exists $keep]} {
@@ -577,6 +621,52 @@ proc ::vinstpane::_fmt_logs {l} {
     return $lines
 }
 
+# The attached gateway's registry, not the selected instance's URL:
+# cluster-only rows have no manually configured target to route through.
+#
+# `http::geturl` raises SYNCHRONOUSLY when the attached gateway's host
+# name does not resolve (VPN or tailnet down): "couldn't open socket".
+# Uncaught, that unwound _poll_list_tick before it re-armed its timer and
+# the whole Instances poll froze until restart (FLEET-2). A failure here
+# is an empty registry, reported like any other failed fetch.
+proc ::vinstpane::refresh_fleet {} {
+    variable fleet_generation
+    set generation [incr fleet_generation]
+    if {[catch {
+        ::vapi::get_json_async /api/fleet \
+            [list ::vinstpane::_fleet_loaded $generation]
+    } err]} {
+        _fleet_loaded $generation 0 $err
+    }
+}
+
+proc ::vinstpane::_fleet_loaded {generation ok response} {
+    variable fleet_generation
+    variable fleet_nodes
+    variable fleet_sync
+    variable fleet_alerts
+    variable fleet_versions
+    variable fleet_forgotten
+    if {$generation != $fleet_generation} { return }
+    if {!$ok || [catch {dict get $response nodes} nodes]} {
+        set fleet_nodes {}
+        set fleet_sync {}
+        set fleet_alerts {}
+        set fleet_versions {}
+        set fleet_forgotten {}
+    } else {
+        set fleet_nodes $nodes
+        set fleet_sync [::vapi::field $response sync]
+        set fleet_alerts [::vapi::field $response alerts]
+        set fleet_versions [::vapi::field $response versions]
+        set fleet_forgotten [::vapi::field $response forgotten {}]
+    }
+    refresh_list
+    # A registry row's controls follow its node (stale → Forget, a new
+    # sync kind → Sync now), so they are recomputed with the data.
+    if {[_is_cluster [selected]]} { _enable_buttons }
+}
+
 # ── polling ─────────────────────────────────────────────────────────
 #
 # List poll: GET /api/health for every row, every 15s — unauthenticated
@@ -605,10 +695,12 @@ proc ::vinstpane::_tab_current {} {
 proc ::vinstpane::_poll_list_tick {} {
     variable list_after
     variable poll_list_ms
+    # Re-arm FIRST: nothing a tick does may be able to stop the next one.
+    set list_after [after $poll_list_ms ::vinstpane::_poll_list_tick]
     if {[_tab_current]} {
+        refresh_fleet
         foreach n [::vinst::names] { _health_one $n }
     }
-    set list_after [after $poll_list_ms ::vinstpane::_poll_list_tick]
 }
 
 proc ::vinstpane::_poll_detail_tick {} {
@@ -654,6 +746,476 @@ proc ::vinstpane::_health_one {n} {
     if {$n eq [selected]} { _enable_buttons }
 }
 
+proc ::vinstpane::_is_cluster {name} {
+    return [string match {cluster:*} $name]
+}
+
+proc ::vinstpane::_cluster_node {name} {
+    variable fleet_nodes
+    set id [string range $name 8 end]
+    foreach node $fleet_nodes {
+        if {[dict get $node id] eq $id} { return $node }
+    }
+    return ""
+}
+
+proc ::vinstpane::_cluster_gateway {node} {
+    set id [dict get $node id]
+    foreach instance [::vinst::names] {
+        set spec [::vinst::get $instance]
+        if {[dict exists $spec node_id] && [dict get $spec node_id] eq $id} {
+            return $instance
+        }
+    }
+    return ""
+}
+
+# ── the command center's registry-row verbs ────────────────────────
+#
+# Every sync kind the gateway runs — store, memory, config, vault —
+# has a status in the detail pane and an explicit push/apply here, all
+# through /api/fleet/sync (crates/veles-frontends/src/fleet_ops.rs). The
+# registry row supplies the node ID only; the gateway dials its own
+# [a2a_agents] entry. Operations that change data (a config or vault
+# offer either way, a memory merge here) are confirmed first, and the
+# gateway refuses them unconfirmed anyway (FLEET-5).
+
+# The node's health from /api/fleet (`health.state`: fresh|stale|
+# failing|self), falling back to the heartbeat flag for a gateway that
+# predates it.
+proc ::vinstpane::_node_state {node} {
+    set state ""
+    catch { set state [dict get $node health state] }
+    if {$state eq "" || $state eq "null"} {
+        set state [expr {[::vapi::field $node stale 0] ? "stale" : "fresh"}]
+    }
+    return $state
+}
+
+# The sync kinds this node is a configured peer for, in display order.
+proc ::vinstpane::_node_sync_kinds {node} {
+    set kinds [::vapi::field $node sync_kinds {}]
+    if {![llength $kinds] && [::vapi::field $node sync_peer] ne ""} {
+        # A gateway before per-kind status: store sync only.
+        set kinds store
+    }
+    set out {}
+    foreach k {store memory config vault} {
+        if {$k in $kinds} { lappend out $k }
+    }
+    return $out
+}
+
+proc ::vinstpane::_kind_label {kind} {
+    switch -- $kind {
+        store  { return [::vi18n::mc {Store}] }
+        memory { return [::vi18n::mc {Memory}] }
+        config { return [::vi18n::mc {Config}] }
+        vault  { return [::vi18n::mc {Vault}] }
+    }
+    return $kind
+}
+
+# Mirrors fleet_ops::needs_confirmation. A store push lands in the
+# peer's inbox and a store apply writes replicas only; a memory push is
+# merged by the peer's own rules. Everything else changes data.
+proc ::vinstpane::_needs_confirm {kind operation} {
+    if {$kind eq "store"} { return 0 }
+    if {$kind eq "memory" && $operation eq "push"} { return 0 }
+    return 1
+}
+
+# The one confirmation prompt, so the suite can answer it.
+proc ::vinstpane::_confirm {message detail} {
+    return [expr {[tk_messageBox -type yesno -icon warning \
+        -title [::vi18n::mc {Instances}] -message $message -detail $detail] eq "yes"}]
+}
+
+# One POST per kind. `confirmed` is 1 only after _confirm said yes, and
+# only the kinds that need it carry `confirm: true`.
+proc ::vinstpane::_sync_request {operation kinds node_id confirmed} {
+    variable selected
+    set sent 0
+    foreach kind $kinds {
+        set body [dict create kind $kind operation $operation]
+        if {$operation eq "push"} { dict set body node $node_id }
+        if {$confirmed && [_needs_confirm $kind $operation]} {
+            dict set body confirm [::vapi::json_bool 1]
+        }
+        # post_json_async raises synchronously on a name that does not
+        # resolve, exactly like the GET in refresh_fleet.
+        if {[catch {
+            ::vapi::post_json_async /api/fleet/sync $body \
+                [list ::vinstpane::_sync_failed $selected $kind] \
+                [list ::vinstpane::_sync_done $selected $kind]
+        } err]} {
+            _sync_failed $selected $kind $err
+            continue
+        }
+        incr sent
+    }
+    return $sent
+}
+
+# Sync now / Apply received: pick the kinds. Not modal — OK runs
+# _sync_dialog_ok — so a slow gateway never holds the event loop.
+proc ::vinstpane::_sync_dialog {operation} {
+    variable selected
+    variable _sync_pick
+    variable _sync_op
+    variable fleet_sync
+    set node [_cluster_node $selected]
+    if {$node eq ""} { return "" }
+    if {$operation eq "push"} {
+        set kinds [_node_sync_kinds $node]
+    } else {
+        set kinds {store memory config vault}
+    }
+    if {![llength $kinds]} {
+        ::vstatus::set_msg [::vi18n::mc {This node is not a configured sync peer for any kind.}]
+        return ""
+    }
+    set inbox {}
+    catch { set inbox [dict get $fleet_sync inbox] }
+    set dlg .fleetsync
+    if {[winfo exists $dlg]} { destroy $dlg }
+    toplevel $dlg
+    catch { wm transient $dlg . }
+    if {$operation eq "push"} {
+        wm title $dlg [::vi18n::mc {Sync now}]
+        set head [format [::vi18n::mc {Push to %s:}] [dict get $node name]]
+    } else {
+        wm title $dlg [::vi18n::mc {Apply received}]
+        set head [::vi18n::mc {Apply what this node received:}]
+    }
+    ttk::label $dlg.head -text $head
+    pack $dlg.head -anchor w -padx 8 -pady 6
+    array unset _sync_pick
+    foreach kind $kinds {
+        set _sync_pick($kind) [expr {![_needs_confirm $kind $operation]}]
+        set text [_kind_label $kind]
+        if {$operation eq "apply"} {
+            set waiting [::vapi::field $inbox $kind 0]
+            set text [format [::vi18n::mc {%1$s (%2$s waiting)}] $text $waiting]
+        }
+        if {[_needs_confirm $kind $operation]} {
+            set text [format [::vi18n::mc {%s — changes data, asks to confirm}] $text]
+        }
+        ttk::checkbutton $dlg.k$kind -text $text -variable ::vinstpane::_sync_pick($kind)
+        pack $dlg.k$kind -anchor w -padx 16 -pady 2
+    }
+    ttk::frame $dlg.btns
+    ttk::button $dlg.btns.ok -text [::vi18n::mc {OK}] -command ::vinstpane::_sync_dialog_ok
+    ttk::button $dlg.btns.cancel -text [::vi18n::mc {Cancel}] -command [list destroy $dlg]
+    pack $dlg.btns.ok $dlg.btns.cancel -side left -padx 6
+    pack $dlg.btns -pady 8
+    bind $dlg <Escape> [list destroy $dlg]
+    set _sync_op [list $operation [dict get $node id]]
+    return $dlg
+}
+
+proc ::vinstpane::_sync_dialog_ok {} {
+    variable _sync_pick
+    variable _sync_op
+    lassign $_sync_op operation node_id
+    set kinds {}
+    foreach k {store memory config vault} {
+        if {[info exists _sync_pick($k)] && $_sync_pick($k)} { lappend kinds $k }
+    }
+    catch { destroy .fleetsync }
+    if {![llength $kinds]} {
+        ::vstatus::set_msg [::vi18n::mc {Nothing selected.}]
+        return 0
+    }
+    set risky {}
+    foreach k $kinds {
+        if {[_needs_confirm $k $operation]} { lappend risky [_kind_label $k] }
+    }
+    set confirmed 0
+    if {[llength $risky]} {
+        if {$operation eq "push"} {
+            set message [format [::vi18n::mc {Send %s to the peer?}] [join $risky ", "]]
+        } else {
+            set message [format [::vi18n::mc {Merge the received %s into this node?}] [join $risky ", "]]
+        }
+        set detail [::vi18n::mc {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.}]
+        if {![_confirm $message $detail]} {
+            ::vstatus::set_msg [::vi18n::mc {Sync cancelled.}]
+            return 0
+        }
+        set confirmed 1
+    }
+    set labels {}
+    foreach k $kinds { lappend labels [_kind_label $k] }
+    ::vstatus::set_msg [format [::vi18n::mc {sync requested: %s}] [join $labels ", "]]
+    return [_sync_request $operation $kinds $node_id $confirmed]
+}
+
+proc ::vinstpane::_cluster_sync {} { return [_sync_dialog push] }
+proc ::vinstpane::_cluster_apply {} { return [_sync_dialog apply] }
+
+proc ::vinstpane::_sync_failed {selection kind why} {
+    if {$selection ne $::vinstpane::selected} { return }
+    ::vstatus::set_msg [format [::vi18n::mc {%1$s sync failed: %2$s}] [_kind_label $kind] $why]
+}
+
+proc ::vinstpane::_sync_done {selection kind response} {
+    if {$selection ne $::vinstpane::selected} { return }
+    set message [::vi18n::mc {Sync complete.}]
+    catch { set message [dict get $response result] }
+    ::vstatus::set_msg [format [::vi18n::mc {%1$s sync: %2$s}] [_kind_label $kind] $message]
+    refresh_fleet
+}
+
+proc ::vinstpane::_ctl_sync {} { _cluster_sync }
+proc ::vinstpane::_ctl_apply {} { _cluster_apply }
+
+# Forget a STALE registry row (the gateway refuses this node and a node
+# still heartbeating). Destructive: confirmed here and by the body.
+proc ::vinstpane::_ctl_forget {} {
+    variable selected
+    set node [_cluster_node $selected]
+    if {$node eq ""} { return 0 }
+    set name [dict get $node name]
+    if {![_confirm [format [::vi18n::mc {Forget node %s?}] $name] \
+            [::vi18n::mc {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.}]]} {
+        return 0
+    }
+    set body [dict create node [dict get $node id] confirm [::vapi::json_bool 1]]
+    if {[catch {
+        ::vapi::post_json_async /api/fleet/forget $body \
+            [list ::vinstpane::_forget_failed $name] \
+            [list ::vinstpane::_forget_done $selected $name]
+    } err]} {
+        _forget_failed $name $err
+        return 0
+    }
+    return 1
+}
+
+proc ::vinstpane::_forget_failed {name why} {
+    ::vstatus::set_msg [format [::vi18n::mc {Forgetting %1$s failed: %2$s}] $name $why]
+}
+
+proc ::vinstpane::_forget_done {row name response} {
+    variable selected
+    ::vstatus::set_msg [format [::vi18n::mc {Forgot node %s.}] $name]
+    if {$selected eq $row} {
+        set selected ""
+        _clear_detail
+        _enable_buttons
+    }
+    refresh_fleet
+}
+
+# Is the node reachable on its configured A2A card? The gateway dials
+# its own [a2a_agents] entry, never the registry endpoint.
+proc ::vinstpane::_ctl_probe {} {
+    variable selected
+    set node [_cluster_node $selected]
+    if {$node eq ""} { return 0 }
+    set name [dict get $node name]
+    if {[catch {
+        ::vapi::post_json_async /api/fleet/probe [dict create node [dict get $node id]] \
+            [list ::vinstpane::_probe_failed $name] \
+            [list ::vinstpane::_probe_done $name]
+    } err]} {
+        _probe_failed $name $err
+        return 0
+    }
+    ::vstatus::set_msg [format [::vi18n::mc {probing %s…}] $name]
+    return 1
+}
+
+# Observation verbs (lib/fleetobs.tcl): the selected registry node's log
+# tail and metrics, the fleet's drift, and a gossip exchange now.
+proc ::vinstpane::_ctl_logs {} {
+    variable selected
+    set node [_cluster_node $selected]
+    if {$node eq ""} { return 0 }
+    return [expr {[::vfleetobs::open_logs [dict get $node id] [dict get $node name]] ne ""}]
+}
+
+proc ::vinstpane::_ctl_metrics {} {
+    variable selected
+    set node [_cluster_node $selected]
+    if {$node eq ""} { return 0 }
+    return [::vfleetobs::fetch_metrics [dict get $node id] [dict get $node name]]
+}
+
+proc ::vinstpane::_ctl_drift {} { return [::vfleetobs::check_drift] }
+proc ::vinstpane::_ctl_gossip {} { return [::vfleetobs::gossip_now] }
+
+proc ::vinstpane::_probe_failed {name why} {
+    ::vstatus::set_msg [format [::vi18n::mc {Probe of %1$s failed: %2$s}] $name $why]
+}
+
+proc ::vinstpane::_probe_done {name response} {
+    if {[::vapi::field $response reachable 0] eq "true" || [::vapi::field $response reachable 0] == 1} {
+        ::vstatus::set_msg [format [::vi18n::mc {%1$s is reachable (%2$s ms).}] $name \
+            [::vapi::field $response latency_ms ?]]
+    } else {
+        ::vstatus::set_msg [format [::vi18n::mc {%1$s is unreachable: %2$s}] $name \
+            [::vapi::field $response error ?]]
+    }
+    refresh_fleet
+}
+
+# The node's health and per-kind sync state, as detail-pane lines.
+proc ::vinstpane::_health_lines {node} {
+    set lines {}
+    set state [_node_state $node]
+    switch -- $state {
+        fresh   { set label [::vi18n::mc {fresh — heartbeating, sync passing}] }
+        stale   { set label [::vi18n::mc {stale — no heartbeat within the threshold}] }
+        failing { set label [::vi18n::mc {failing — heartbeating, but a sync push or the last probe failed}] }
+        self    { set label [::vi18n::mc {this gateway}] }
+        default { set label $state }
+    }
+    lappend lines "[::vi18n::mc {Health}]: $label"
+    set age ""
+    catch { set age [dict get $node health heartbeat_age_secs] }
+    if {$age ne "" && $age ne "null"} {
+        lappend lines [format [::vi18n::mc {Heartbeat age: %s s}] $age]
+    }
+    set probe ""
+    catch { set probe [dict get $node health probe] }
+    if {$probe ne "" && $probe ne "null"} {
+        lappend lines [format [::vi18n::mc {Last probe: %1$s — %2$s}] \
+            [::vapi::field $probe at ?] [::vapi::field $probe line]]
+    }
+    return $lines
+}
+
+proc ::vinstpane::_sync_lines {node} {
+    variable fleet_sync
+    set lines {}
+    set status {}
+    catch { set status [dict get $node sync_status] }
+    if {$status eq "null"} { set status {} }
+    foreach kind [_node_sync_kinds $node] {
+        if {![dict exists $status $kind]} { continue }
+        set s [dict get $status $kind]
+        set mode [expr {[::vapi::field $s auto 0] eq "true" || [::vapi::field $s auto 0] == 1
+            ? [::vi18n::mc {automatic}] : [::vi18n::mc {manual only}]}]
+        lappend lines [format [::vi18n::mc {%1$s sync with %2$s (%3$s)}] \
+            [_kind_label $kind] [::vapi::field $s peer ?] $mode]
+        if {[::vapi::field $s dialable 1] in {false 0}} {
+            lappend lines "  [::vi18n::mc {no [a2a_agents] entry — this peer cannot be dialed}]"
+        }
+        if {$kind eq "vault"} {
+            if {[::vapi::field $s has_vault 0] in {false 0}} {
+                lappend lines "  [::vi18n::mc {this node has no vault}]"
+            } elseif {[::vapi::field $s current 0] in {true 1}} {
+                lappend lines "  [::vi18n::mc {the peer holds this vault}]"
+            } else {
+                lappend lines "  [::vi18n::mc {the peer has not been sent this vault yet}]"
+            }
+        } else {
+            lappend lines "  [format [::vi18n::mc {cursor %1$s of %2$s (%3$s behind)}] \
+                [::vapi::field $s cursor 0] [::vapi::field $s local ?] [::vapi::field $s behind ?]]"
+        }
+        set last [::vapi::field $s last]
+        if {$last ne ""} {
+            set verdict [expr {[::vapi::field $last ok 0] in {true 1}
+                ? [::vi18n::mc {ok}] : [::vi18n::mc {failed}]}]
+            lappend lines "  [format [::vi18n::mc {last pass %1$s at %2$s: %3$s}] \
+                $verdict [::vapi::field $last at ?] [::vapi::field $last line]]"
+        }
+        set backoff [::vapi::field $s backoff]
+        if {$backoff ne ""} {
+            lappend lines "  [format [::vi18n::mc {backing off: %1$s failure(s), next automatic try in %2$s s}] \
+                [::vapi::field $backoff failures ?] [::vapi::field $backoff retry_in_secs ?]]"
+        }
+    }
+    if {![llength $lines]} {
+        lappend lines [::vi18n::mc {No configured sync peer for this node.}]
+    }
+    if {[::vapi::field $node self 0] in {true 1}} {
+        set inbox {}
+        catch { set inbox [dict get $fleet_sync inbox] }
+        if {$inbox ne "" && $inbox ne "null"} {
+            lappend lines [format [::vi18n::mc {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s}] \
+                [::vapi::field $inbox store 0] [::vapi::field $inbox memory 0] \
+                [::vapi::field $inbox config 0] [::vapi::field $inbox vault 0]]
+        }
+    }
+    return $lines
+}
+
+proc ::vinstpane::_paint_cluster_detail {name} {
+    variable R_detail
+    set node [_cluster_node $name]
+    if {$node eq "" || ![winfo exists $R_detail.body]} { return }
+    set lines [list [::vi18n::mc {Automatically discovered from the attached gateway's cluster registry.}]]
+    foreach {key label} {
+        id {Node id} name {Name} host {Host} version {Version}
+        endpoint {Endpoint} static_ip {Static IP} heartbeat_at {Heartbeat}
+        uptime_class {Uptime class} sessions_served {Sessions served}
+    } {
+        lappend lines "[::vi18n::mc $label]: [dict get $node $key]"
+    }
+    set load [dict get $node load1]
+    if {$load eq "null"} { set load "unknown" }
+    lappend lines "[::vi18n::mc {Load}]: $load"
+    lappend lines "[::vi18n::mc {Stale}]: [dict get $node stale]"
+    lappend lines {*}[_health_lines $node]
+    if {[dict get $node capabilities] ne "null"} {
+        lappend lines "[::vi18n::mc {Capabilities}]: [dict get $node capabilities]"
+    }
+    if {[dict get $node replica] ne "null"} {
+        lappend lines "[::vi18n::mc {Store replica}]: [dict get $node replica]"
+    }
+    lappend lines "" {*}[_sync_lines $node] ""
+    # Observation (lib/fleetobs.tcl): metrics and drift as last asked,
+    # this node's recent health alerts, the registry's version spread,
+    # gossip and the nodes forgotten fleet-wide.
+    if {[llength [info commands ::vfleetobs::detail_lines]]} {
+        variable fleet_alerts
+        variable fleet_versions
+        variable fleet_forgotten
+        variable fleet_sync
+        lappend lines {*}[::vfleetobs::detail_lines [dict get $node id]]
+        set vline [::vfleetobs::version_line $fleet_versions]
+        if {$vline ne ""} { lappend lines $vline }
+        set is_self [expr {[::vapi::field $node self 0] in {true 1}}]
+        set alerts [::vfleetobs::alert_lines $fleet_alerts [expr {$is_self ? "" : [dict get $node id]}]]
+        set on [expr {[::vapi::field $fleet_alerts enabled 0] in {true 1}}]
+        lappend lines [format [::vi18n::mc {Health alerts (%s):}] \
+            [expr {$on ? [::vi18n::mc {sent to the owner's home chat}] : [::vi18n::mc {listed here only; [notify] fleet_alerts is off}]}]]
+        if {[llength $alerts]} {
+            foreach a $alerts { lappend lines "  $a" }
+        } else {
+            lappend lines "  [::vi18n::mc {none since this gateway started}]"
+        }
+        if {$is_self} {
+            foreach g [::vapi::field $fleet_sync gossip {}] {
+                set last [::vapi::field $g last]
+                set said [expr {$last eq "" ? [::vi18n::mc {no exchange yet}]
+                    : "[::vapi::field $last at ?] [::vapi::field $last line]"}]
+                lappend lines [format [::vi18n::mc {Gossip with %1$s: %2$s}] [::vapi::field $g peer ?] $said]
+            }
+            if {[llength $fleet_forgotten]} {
+                set ids {}
+                foreach f $fleet_forgotten { lappend ids [::vapi::field $f id ?] }
+                lappend lines [format [::vi18n::mc {Forgotten fleet-wide (refused until they heartbeat again): %s}] [join $ids {, }]]
+            }
+        }
+        lappend lines ""
+    }
+    set gateway [_cluster_gateway $node]
+    if {$gateway ne ""} {
+        lappend lines "[::vi18n::mc {Configured desktop gateway}]: $gateway"
+    } else {
+        lappend lines [::vi18n::mc {No explicitly configured desktop gateway is bound to this node.}]
+    }
+    lappend lines "" [::vi18n::mc {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.}]
+    _clear_detail
+    $R_detail.body configure -state normal
+    $R_detail.body insert end [join $lines \n]
+    $R_detail.body configure -state disabled
+}
+
 proc ::vinstpane::poll_detail_once {} {
     variable selected
     variable meta
@@ -662,6 +1224,10 @@ proc ::vinstpane::poll_detail_once {} {
     variable health
     variable gen
     if {$selected eq ""} { return }
+    if {[_is_cluster $selected]} {
+        _paint_cluster_detail $selected
+        return
+    }
     # The not-current-tab short circuit lives HERE as well as in the
     # timer, because _select calls this directly — and _select runs at
     # boot, from ::vinstpane::boot, BEFORE ::vtabs::boot and
@@ -746,10 +1312,56 @@ proc ::vinstpane::poll_detail_once {} {
 # the management view the app returns to.
 
 proc ::vinstpane::attach {name} {
+    if {[_is_cluster $name]} {
+        set node [_cluster_node $name]
+        set gateway [expr {$node eq "" ? "" : [_cluster_gateway $node]}]
+        if {$gateway eq ""} {
+            ::vstatus::set_msg [::vi18n::mc {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.}]
+            return 0
+        }
+        set why [verify_node_binding $gateway [dict get $node id]]
+        if {$why ne ""} {
+            ::vstatus::set_msg $why
+            return 0
+        }
+        set name $gateway
+    }
     set rc [::vapp::attach $name]
     refresh_list
     _enable_buttons
     return $rc
+}
+
+# Is the gateway behind saved instance `instance` really registry node
+# `node_id`? The association is operator-typed text, and string
+# equality with it proved nothing about the machine at that URL
+# (FLEET-4): a typo or a stale binding attached — and deployed — to the
+# wrong host. The gateway's own /api/fleet names its `self` row; that
+# must match. "" = verified, else the reason, ready for the status bar.
+# Exported for the deploy preflight as well.
+proc ::vinstpane::verify_node_binding {instance node_id} {
+    if {[catch {
+        ::vapi::with_instance $instance { ::vapi::get_json /api/fleet 5000 }
+    } resp]} {
+        return [format [::vi18n::mc {Cannot verify that %1$s is node %2$s: %3$s}] \
+            $instance $node_id $resp]
+    }
+    set self_id ""
+    foreach n [::vapi::field $resp nodes {}] {
+        if {[::vapi::field $n self 0] in {true 1}} {
+            set self_id [::vapi::field $n id]
+            break
+        }
+    }
+    if {$self_id eq ""} {
+        return [format [::vi18n::mc {%1$s reports no cluster node identity, so it cannot be verified as %2$s.}] \
+            $instance $node_id]
+    }
+    if {$self_id ne $node_id} {
+        return [format [::vi18n::mc {%1$s is node %2$s, not %3$s. Fix its node id in Edit….}] \
+            $instance $self_id $node_id]
+    }
+    return ""
 }
 
 proc ::vinstpane::detach {} {
@@ -796,12 +1408,21 @@ proc ::vinstpane::build_ctl {{root ""}} {
         detach    {Detach}
         |         {}
         reload    {Reload plugins}
+        sync      {Sync now}
+        apply     {Apply received}
+        probe     {Probe}
+        forget    {Forget node…}
+        logs      {Logs…}
+        metrics   {Metrics}
+        drift     {Drift…}
+        gossip    {Gossip now}
         pause     {Pause scheduler}
         resume    {Resume scheduler}
         |         {}
         start     {Start}
         stop      {Stop}
         restart   {Restart}
+        deploy    {Fleet deploy…}
         |         {}
         add       {Add…}
         edit      {Edit…}
@@ -882,6 +1503,7 @@ proc ::vinstpane::button_states {name spec st} {
     dict set out restart [expr {
         $name eq "" ? [::vi18n::mc {no instance selected}] :
         (!$has_host ? $nohost : "")}]
+    dict set out deploy [expr {$name eq "" ? [::vi18n::mc {no instance selected}] : ""}]
     dict set out add    ""
     set nosel [::vi18n::mc {no instance selected}]
     dict set out edit   [expr {$name eq "" ? $nosel : ""}]
@@ -896,6 +1518,43 @@ proc ::vinstpane::_enable_buttons {} {
     variable health
     if {![winfo exists $R_ctl]} { return }
     set name $selected
+    if {[_is_cluster $name]} {
+        foreach id {attach detach reload sync apply pause resume start stop restart edit remove} {
+            catch { $R_ctl.$id configure -state disabled }
+        }
+        foreach id {forget probe logs metrics drift gossip} { catch { $R_ctl.$id configure -state disabled } }
+        set node [_cluster_node $name]
+        if {$node ne ""} {
+            # Any registry node can be asked for its log and metrics (the
+            # gateway answers for itself and asks another node over its
+            # [a2a_agents] link); drift compares the whole registry, and
+            # gossip runs with the configured gossip peers.
+            catch { $R_ctl.logs configure -state normal }
+            catch { $R_ctl.metrics configure -state normal }
+            catch { $R_ctl.drift configure -state normal }
+            variable fleet_sync
+            if {[llength [::vapi::field $fleet_sync gossip_peers {}]]} {
+                catch { $R_ctl.gossip configure -state normal }
+            }
+            if {[_cluster_gateway $node] ne ""} { catch { $R_ctl.attach configure -state normal } }
+            if {[llength [_node_sync_kinds $node]]} { catch { $R_ctl.sync configure -state normal } }
+            if {[dict get $node self]} { catch { $R_ctl.apply configure -state normal } }
+            # Forget only a stale row that is not this gateway's own (the
+            # gateway refuses the rest too); probe any other node.
+            set is_self [expr {[::vapi::field $node self 0] in {true 1}}]
+            if {!$is_self && [_node_state $node] eq "stale"} {
+                catch { $R_ctl.forget configure -state normal }
+            }
+            if {!$is_self} { catch { $R_ctl.probe configure -state normal } }
+        }
+        # Fleet deploy needs a registry node bound to a saved instance;
+        # it used to keep whatever state the previous row left (FLEET-3).
+        set deployable [expr {$node ne "" && [_cluster_gateway $node] ne "" &&
+            (![llength [info commands ::vfleetui::available]] || [::vfleetui::available])}]
+        catch { $R_ctl.deploy configure -state [expr {$deployable ? "normal" : "disabled"}] }
+        catch { $R_ctl.add configure -state normal }
+        return
+    }
     if {$name eq ""} {
         set spec [dict create]
         set st never
@@ -905,6 +1564,12 @@ proc ::vinstpane::_enable_buttons {} {
         set st [expr {[info exists health($name)] ? $health($name) : "never"}]
     }
     set states [button_states $name $spec $st]
+    foreach id {sync apply} {
+        if {[winfo exists $R_ctl.$id]} { $R_ctl.$id configure -state disabled }
+    }
+    foreach id {forget probe logs metrics drift gossip} {
+        if {[winfo exists $R_ctl.$id]} { $R_ctl.$id configure -state disabled }
+    }
     dict for {id reason} $states {
         if {![winfo exists $R_ctl.$id]} { continue }
         if {$reason eq ""} {
@@ -1178,6 +1843,9 @@ proc ::vinstpane::_ctl_restart {} {
     if {$n eq ""} { return 0 }
     return [_ssh_run $n restart]
 }
+proc ::vinstpane::_ctl_deploy {} {
+    return [::vfleetui::open]
+}
 
 # ── registry editing ────────────────────────────────────────────────
 
@@ -1189,6 +1857,7 @@ proc ::vinstpane::_fields {} {
         host  {host — ssh target, optional}
         unit  {systemd --user unit}
         group {group}
+        node_id {cluster node id — explicit attach association, optional}
     }
 }
 
@@ -1261,8 +1930,39 @@ proc ::vinstpane::_save_entry {name v} {
         ::vstatus::set_msg [format [::vi18n::mc {not a valid unit name: %s}] $unit]
         return 0
     }
+    # Tree ids: a saved row's id is its name and a group's is `g:<name>`,
+    # and `cluster:` marks a registry row. A saved `cluster:x` lost its
+    # controls as a registry row would (FLEET-13).
+    if {[string match {cluster:*} $name] || [string match {g:*} $name]} {
+        ::vstatus::set_msg [format [::vi18n::mc {instance names may not start with "cluster:" or "g:": %s}] $name]
+        return 0
+    }
+    # node_id decides which machine a registry row attaches and deploys
+    # to, so an id the attached registry does not know is refused. With
+    # no registry loaded it cannot be checked here; attach verifies it
+    # against the gateway itself either way.
+    # An UNCHANGED id is not re-judged: editing a token must not fail
+    # because the node has since been forgotten.
+    variable fleet_nodes
+    set node_id [dict get $v node_id]
+    set previous_id ""
+    catch { set previous_id [dict get [::vinst::get $name] node_id] }
+    if {$node_id ne "" && $node_id ne $previous_id && [llength $fleet_nodes]} {
+        set known 0
+        foreach node $fleet_nodes {
+            if {[dict get $node id] eq $node_id} { set known 1 ; break }
+        }
+        if {!$known} {
+            ::vstatus::set_msg [format [::vi18n::mc {not a node in the attached gateway's cluster registry: %s}] $node_id]
+            return 0
+        }
+    }
+    # The dialog shows every field, so what it returns is the whole
+    # entry: an emptied node id is a cleared association, and re-adding
+    # a name does not inherit the old one's binding (FLEET-4). The old
+    # carry-over of `previous` node_id made both impossible.
     ::vinst::add $name $url [dict get $v token]
-    foreach k {host unit group} {
+    foreach k {host unit group node_id} {
         if {[dict get $v $k] ne ""} {
             ::vinst::update $name $k [dict get $v $k]
         }
@@ -1278,9 +1978,27 @@ proc ::vinstpane::_save_entry {name v} {
     return 1
 }
 
+# The Add… dialog's starting values. With a registry row selected, the
+# new instance is that node ADOPTED: its name and node id are filled in.
+# Not its URL or SSH host — the registry endpoint is the A2A address,
+# not the desktop API, and a guessed SSH target is how one restarts the
+# wrong machine.
+proc ::vinstpane::add_defaults {} {
+    variable selected
+    set d [dict create name "" url http://127.0.0.1:8642 token "" host "" \
+        unit veles-gateway group "" node_id ""]
+    if {[_is_cluster $selected]} {
+        set node [_cluster_node $selected]
+        if {$node ne ""} {
+            dict set d name [dict get $node name]
+            dict set d node_id [dict get $node id]
+        }
+    }
+    return $d
+}
+
 proc ::vinstpane::add_entry {} {
-    set v [_ask [::vi18n::mc {Add instance}] [dict create \
-        name "" url http://127.0.0.1:8642 token "" host "" unit veles-gateway group ""]]
+    set v [_ask [::vi18n::mc {Add instance}] [add_defaults]]
     if {$v eq ""} { return 0 }
     return [_save_entry [dict get $v name] $v]
 }
@@ -1290,7 +2008,7 @@ proc ::vinstpane::edit_entry {} {
     if {$n eq ""} { return 0 }
     set spec [::vinst::get $n]
     set defaults [dict create name $n]
-    foreach k {url token host unit group} {
+    foreach k {url token host unit group node_id} {
         set val ""
         catch { set val [dict get $spec $k] }
         dict set defaults $k $val

@@ -158,6 +158,11 @@ pub fn rule_key(tool: &str, trigger: &Trigger) -> String {
 
 /// Triggers not covered by one particular standing-permission source.
 /// A source clears the call only when this returns an empty vector.
+///
+/// A hard trigger is never covered. Nothing can store a standing rule
+/// for one since 0.1.5, but before that a typed or forged 'always' was
+/// stored for any key, and such a row (or a session rule of that key)
+/// would otherwise clear a hard rule with no human, every time.
 pub fn uncovered<'a>(
     tool: &str,
     triggers: &'a [Trigger],
@@ -165,7 +170,7 @@ pub fn uncovered<'a>(
 ) -> Vec<&'a Trigger> {
     triggers
         .iter()
-        .filter(|t| !covered(&rule_key(tool, t)))
+        .filter(|t| t.hard || !covered(&rule_key(tool, t)))
         .collect()
 }
 
@@ -958,6 +963,19 @@ mod tests {
             } => assert!(!allow_permanent),
             other => panic!("a hard trigger was cleared by the screen: {other:?}"),
         }
+        // "Anywhere" is pinned by hand: classify_all happens to put the
+        // hard rule first, so a check of triggers[0] alone would pass
+        // above. Here the hard trigger is LAST (review finding
+        // approvals-7).
+        let mut reordered = triggers.clone();
+        reordered.sort_by_key(|t| t.hard);
+        assert!(reordered.last().is_some_and(|t| t.hard) && !reordered[0].hard);
+        match after_screen(&reordered, Some((Verdict::Allow, "routine".into()))) {
+            AfterScreen::Ask {
+                allow_permanent, ..
+            } => assert!(!allow_permanent),
+            other => panic!("a trailing hard trigger was cleared: {other:?}"),
+        }
     }
 
     #[test]
@@ -1065,6 +1083,26 @@ mod tests {
             assert!(!t.hard, "{cmd} is the screen's call");
         }
         assert!(classify("terminal", &term("cd build\nls -la")).is_none());
+    }
+
+    /// No standing source covers a hard trigger, whatever it holds.
+    #[test]
+    fn a_standing_rule_never_covers_a_hard_trigger() {
+        let triggers = [
+            Trigger {
+                rule: "unchained-cd-delete",
+                reason: "r",
+                hard: true,
+            },
+            Trigger {
+                rule: "recursive-delete",
+                reason: "r",
+                hard: false,
+            },
+        ];
+        let missing = uncovered("terminal", &triggers, |_| true);
+        assert_eq!(missing.len(), 1, "{missing:?}");
+        assert_eq!(missing[0].rule, "unchained-cd-delete");
     }
 
     #[test]

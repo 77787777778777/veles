@@ -103,9 +103,10 @@ proc ::vinst::load {} {
             continue
         }
         set entry [list url $url token $tok]
-        # Optional keys (Instances pane, PLAN Part 1). Absent means
-        # absent: no host ⇒ no start/stop, no group ⇒ group by URL host.
-        foreach k {host unit group} {
+        # Optional keys (Instances pane, PLAN Part 1). node_id explicitly
+        # associates this saved gateway with a registry node. It is not
+        # inferred from the instance name, URL, or SSH hostname.
+        foreach k {host unit group node_id} {
             set v ""
             catch { set v [dict get $spec $k] }
             if {$v ne ""} { dict set entry $k $v }
@@ -148,7 +149,7 @@ proc ::vinst::save {} {
         }
         # Optional keys ride along when set, so a hand-edited file keeps
         # loading after a round trip through the pane's editor.
-        foreach k {host unit group} {
+        foreach k {host unit group node_id} {
             set v ""
             catch { set v [dict get $spec $k] }
             if {$v ne ""} {

@@ -62,7 +62,7 @@ proc ::vpalette::_table {} {
         {"Models & settings"      {::voverlay::open models} agent}
         {"Cron jobs"              {::voverlay::open cron} agent}
         {"Triggers"               {::voverlay::open triggers} agent}
-        {"Running tasks"          {::voverlay::open tasks} agent}
+        {"Shells and monitors"    {::voverlay::open tasks} agent}
         {"Skills"                 {::voverlay::open skills} agent}
         {"Memory"                 {::voverlay::open memory} agent}
         {"Access control (ACL)"  {::voverlay::open acl} agent}

@@ -70,6 +70,36 @@ pub fn owner_tag(tag: &str) -> &'static str {
     leaked
 }
 
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct PluginProvenance {
+    pub root: Option<std::path::PathBuf>,
+    pub version: Option<String>,
+    pub hash: Option<String>,
+}
+
+thread_local! {
+    static PLUGIN_PROVENANCE: std::cell::RefCell<Option<PluginProvenance>> =
+        const { std::cell::RefCell::new(None) };
+}
+
+/// Attach the host-known source to registrations made by a plugin while
+/// `f` runs. This is trusted loader metadata, not a plugin-supplied claim.
+pub fn with_plugin_provenance<R>(source: PluginProvenance, f: impl FnOnce() -> R) -> R {
+    struct Restore(Option<PluginProvenance>);
+    impl Drop for Restore {
+        fn drop(&mut self) {
+            PLUGIN_PROVENANCE.with(|slot| *slot.borrow_mut() = self.0.take());
+        }
+    }
+    let previous = PLUGIN_PROVENANCE.with(|slot| slot.replace(Some(source)));
+    let _restore = Restore(previous);
+    f()
+}
+
+pub fn plugin_provenance() -> Option<PluginProvenance> {
+    PLUGIN_PROVENANCE.with(|slot| slot.borrow().clone())
+}
+
 /// Restore a previous owner tag (test-only). Production sets the tag once
 /// from a runtime's thread-start hook and never clears it; a TEST scopes a
 /// tag so one case's module identity does not leak into the next case on

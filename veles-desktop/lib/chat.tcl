@@ -216,14 +216,40 @@ proc ::vchat::_drain_finalizers {} {
 
 proc ::vchat::_cancel_finalizer {sid} {
     variable finalizing
+    variable insert_at
     if {![dict exists $finalizing $sid]} { return }
     set job [dict get $finalizing $sid]
     catch { after cancel [dict get $job after] }
     catch { dict unset insert_at [dict get $job w] }
+    if {[dict exists $job insert_mark] && [dict get $job insert_mark] ne ""} {
+        catch { [dict get $job w] mark unset [dict get $job insert_mark] }
+    }
     dict unset finalizing $sid
     variable redraw_pending
     catch { dict unset redraw_pending $sid }
     if {$sid eq $::vchat::session} { ::vchat::_sync_buttons }
+}
+
+# Paint a finalizer's remaining rows now, in this callback. Used when
+# the session's NEXT turn begins while the previous one is still being
+# finalized: the gateway starts a queued or wake turn the moment
+# run_turn returns, so its events can arrive between two idle steps.
+# Letting them in would paint the new turn at the reconcile mark (mid
+# transcript), and the old job's completion would then clear the new
+# turn's running mark and anchor. One synchronous catch-up is the
+# price; it only happens on that overlap.
+proc ::vchat::_complete_finalizer {sid} {
+    variable finalizing
+    set steps 0
+    while {[dict exists $finalizing $sid]} {
+        set job [dict get $finalizing $sid]
+        catch { after cancel [dict get $job after] }
+        _finalizer_step $sid [dict get $job token]
+        if {[incr steps] > 100000} {
+            _cancel_finalizer $sid
+            error "transcript finalizer did not finish"
+        }
+    }
 }
 
 proc ::vchat::_finish_finalizer {sid token} {
@@ -1312,18 +1338,42 @@ proc ::vchat::clear {} {
 # sidebar's menu (the session you picked) — the menu's Export… used to
 # run /export, which exported the CURRENT session whatever row was
 # right-clicked.
+#
+# The gateway renders (GET /api/sessions/:id/export, the shared
+# veles_core::export the TUI, connectors and the session_export tool
+# use); this side only writes the bytes it was handed. It used to rebuild
+# the file from /history, a renderer's shape: engine-note rows have no
+# `content` (Markdown failed on every real session), nested tool calls
+# came back as Tcl list strings in the JSON, and reasoning rides as
+# `display_reasoning`, which it never read.
+#
+# The file is NEW (CREAT EXCL: never an existing file or a planted link)
+# and owner-only from the moment it exists, under <data>/exports —
+# outside media/, which a below-owner principal's MEDIA: marker may
+# name. No `file attributes -permissions`: Windows has no such option
+# and the call failed after the file was written. The id is mapped to a
+# portable file name (a `:` names an NTFS alternate data stream).
 proc ::vchat::export_session {sid fmt} {
-    set data [::vapi::get_json "/api/sessions/$sid/history"]
-    set path "/tmp/veles_export_$sid.[expr {$fmt eq "json" ? "json" : "md"}]"
-    set f [open $path w]
-    if {$fmt eq "json"} {
-        puts $f $data
-    } else {
-        puts $f "# Session $sid\n"
-        foreach m [dict get $data messages] {
-            puts $f "\n## [dict get $m role]\n\n[dict get $m content]\n"
-        }
+    if {$fmt ni {markdown json}} { error "export format must be markdown or json" }
+    if {![regexp {^[A-Za-z0-9_.:-]+$} $sid]} { error "invalid session id" }
+    set data [::vapi::get_json "/api/sessions/$sid/export?format=$fmt"]
+    set ext [expr {$fmt eq "json" ? "json" : "md"}]
+    set stem [string trim [regsub -all {[^A-Za-z0-9_.-]} $sid _] .]
+    if {$stem eq ""} { set stem session }
+    set dir [file join [::vpaths::data_dir] exports]
+    file mkdir $dir
+    if {$::tcl_platform(platform) eq "unix"} {
+        catch { file attributes $dir -permissions 0700 }
     }
+    set base [file join $dir "veles-$stem-[clock milliseconds]"]
+    set path $base.$ext
+    set n 0
+    while {[catch {open $path {WRONLY CREAT EXCL} 0600} f]} {
+        if {![file exists $path] || [incr n] > 50} { error $f }
+        set path "$base-$n.$ext"
+    }
+    fconfigure $f -encoding utf-8 -translation lf
+    puts -nonewline $f [dict get $data content]
     close $f
     return $path
 }
@@ -2950,6 +3000,22 @@ proc ::vchat::slash_command {cmd} {
                     [dict create title [::vapi::json_string $rest]]} e]} {
                     emit_message system [::vi18n::mc {rename failed: %s} $e]
                 }
+            }
+        }
+        "shells" - "monitors" {
+            # The bare command is an editor on this surface. Arguments
+            # retain the engine's shared output/kill/cancel grammar. A
+            # switch arm never falls through to `default`, so the shared
+            # path is called from here (TSG-2: it silently did nothing).
+            if {$rest eq ""} {
+                ::voverlay::open tasks
+                return
+            }
+            set sid [::vsidebar::selected_sid]
+            if {$sid eq ""} {
+                emit_message system [::vi18n::mc {no session open}]
+            } elseif {![_try_shared_command $sid $cmd]} {
+                emit_message system [format [::vi18n::mc {unknown command: /%s}] $name]
             }
         }
         "sessions" {
@@ -5719,6 +5785,13 @@ proc ::vchat::on_session_event {sid ev d} {
     variable turn_anchor
     variable session
     variable stream_session
+    # Every one of these after a turn-result belongs to a LATER turn (or
+    # a post-turn note). The finished turn's rows must land first; see
+    # _complete_finalizer.
+    if {$ev in {turn-started turn-snapshot delta reasoning route tool note
+            turn-result turn-error} && [_finalizing $sid]} {
+        _complete_finalizer $sid
+    }
     switch -- $ev {
         history {
             # A persisted row replayed after the cursor. Buffer it; the
@@ -6625,9 +6698,17 @@ proc ::vchat::_show_log {sid} {
         # A scrollbar drag is a user scroll this widget's own bindings
         # never see. The release is where the latch is read — reading
         # during motion would race the drag itself.
-        catch {
-            bind .mid.chatwrap.chat.sb <ButtonRelease-1> \
-                {+after idle {catch {::vchat::_read_pose}}}
+        if {[catch {
+            # _show_log runs on every session switch. Append this only
+            # when absent: {+…} otherwise adds another pose read on every
+            # switch, and one scrollbar release eventually schedules many
+            # idle callbacks. Leave any other release handlers untouched.
+            set sb .mid.chatwrap.chat.sb
+            if {[string first "::vchat::_read_pose" [bind $sb <ButtonRelease-1>]] < 0} {
+                bind $sb <ButtonRelease-1> {+after idle {catch {::vchat::_read_pose}}}
+            }
+        } pose_bind_err]} {
+            puts stderr "veles-desktop: scrollbar pose binding failed: $pose_bind_err"
         }
     }
     if {[catch {

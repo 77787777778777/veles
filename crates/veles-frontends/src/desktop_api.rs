@@ -21,6 +21,7 @@
 //!   POST /api/sessions/new            create a session → {session_id}
 //!   DELETE /api/sessions/{id}         delete a session
 //!   GET  /api/sessions/{id}/history   [{role, content, display_reasoning}]
+//!   GET  /api/sessions/{id}/export    ?format=markdown|json → {content, ext, …}
 //!   POST /api/chat                    {session_id, text} → SSE stream:
 //!        event: route|reasoning|delta|tool|done|error
 //!
@@ -97,14 +98,14 @@ pub fn desktop_enabled(cfg: &VelesConfig) -> bool {
 /// The desktop enforces that itself; `armed` here is a mirror of what it
 /// last told us, so a request can be refused with a useful message
 /// instead of timing out.
-struct DesktopEvalBus {
+pub(crate) struct DesktopEvalBus {
     requests: tokio::sync::broadcast::Sender<Value>,
     pending: Mutex<HashMap<String, tokio::sync::oneshot::Sender<Value>>>,
     armed: std::sync::atomic::AtomicBool,
 }
 
 impl DesktopEvalBus {
-    fn new() -> Self {
+    pub(crate) fn new() -> Self {
         let (requests, _) = tokio::sync::broadcast::channel(64);
         Self {
             requests,
@@ -147,7 +148,7 @@ pub struct DesktopServer {
     /// The lock a turn used to hold for its whole life is now
     /// `turn_locks` below, which serializes turns without also blocking
     /// every command, steer or status read issued during one.
-    agents: Mutex<HashMap<String, Arc<Agent>>>,
+    pub(crate) agents: Mutex<HashMap<String, Arc<Agent>>>,
     /// Per-session turn serialization — the `turn_lock` shape the
     /// gateway already uses. Two `POST /api/chat` on one session must
     /// not interleave their history writes; that used to fall out of
@@ -166,6 +167,15 @@ pub struct DesktopServer {
     /// opaque id is the only handle a desktop client receives.
     pub(crate) signed_download: crate::desktop_install::SignedDownloads,
 }
+
+/// How many times one interrupted turn is claimed for a provider
+/// continuation, across every process and boot, before it goes to the
+/// user for review instead.
+const MAX_RECOVERY_ATTEMPTS: i64 = 6;
+/// This process's waits between a failed continuation and the next try
+/// (about six minutes in all); a later boot gets what remains of the
+/// attempt bound.
+const RECOVERY_BACKOFF_SECS: [u64; 3] = [20, 60, 300];
 
 impl DesktopServer {
     /// May the desktop wake this session? It owns every session it
@@ -351,7 +361,7 @@ impl DesktopServer {
 
     /// The config as currently loaded. Every reader goes through this so
     /// the swap in `reload_config` has exactly one place to happen.
-    fn cfg(&self) -> Arc<VelesConfig> {
+    pub(crate) fn cfg(&self) -> Arc<VelesConfig> {
         self.cfg.read_ok().clone()
     }
 
@@ -452,6 +462,340 @@ impl DesktopServer {
             .as_ref()
             .map(|b| b.outbound_platforms())
             .unwrap_or_default()
+    }
+
+    /// A restart can leave a desktop turn's durable run row behind after
+    /// its process died. Only ordinary local desktop turns are eligible:
+    /// a connector, A2A or session-mail turn needs its original principal
+    /// and outbound route (or the mail clamp), and must never fall back
+    /// to desktop-owner privileges.
+    ///
+    /// The open-question filter only covers asks registered in THIS
+    /// process (the in-memory ask registry is empty after a restart). The
+    /// guard that holds across a restart is the checkpoint's
+    /// `active_tool`: an approval or a clarify is asked inside a tool
+    /// call, so an interrupted one sends the turn to review, never to a
+    /// silent continuation.
+    fn recovery_candidates(&self) -> Result<Vec<veles_core::store::InterruptedRun>> {
+        let runs = veles_core::turn_recovery::candidates(&self.store.lock_ok())?;
+        Ok(runs
+            .into_iter()
+            .filter(|run| {
+                if crate::gateway::gateway_owns_session(&run.session_id) {
+                    tracing::warn!(
+                        "turn recovery: {} is chat-backed; not using desktop rights",
+                        run.session_id
+                    );
+                    return false;
+                }
+                if veles_core::ask::open_all()
+                    .iter()
+                    .any(|ask| ask.session_id == run.session_id)
+                {
+                    tracing::warn!(
+                        "turn recovery: {} has an open question; no continuation",
+                        run.session_id
+                    );
+                    return false;
+                }
+                true
+            })
+            .collect())
+    }
+
+    /// Claim each interrupted local desktop turn exactly once per attempt
+    /// and continue it. A continuation that fails (after a boot the
+    /// provider or the network is often not up yet) keeps its checkpoint
+    /// and is retried here with backoff, then on the next boot, until the
+    /// checkpoint's attempt bound hands it to the user for review.
+    pub fn spawn_interrupted_turn_recovery(self: &Arc<Self>) {
+        match veles_core::turn_recovery::retire_unresumable(&self.store.lock_ok()) {
+            Ok(0) => {}
+            Ok(n) => tracing::info!("turn recovery: closed {n} non-resumable interrupted turn(s)"),
+            Err(error) => {
+                tracing::warn!("turn recovery: could not close stale checkpoints: {error:#}")
+            }
+        }
+        let candidates = match self.recovery_candidates() {
+            Ok(rows) => rows,
+            Err(error) => {
+                tracing::warn!("turn recovery: could not inspect checkpoints: {error:#}");
+                return;
+            }
+        };
+        for run in candidates {
+            let srv = self.clone();
+            veles_core::rt::spawn(async move {
+                srv.recover_with_retries(run).await;
+            });
+        }
+    }
+
+    async fn recover_with_retries(self: &Arc<Self>, mut run: veles_core::store::InterruptedRun) {
+        let mut waits = RECOVERY_BACKOFF_SECS.iter();
+        loop {
+            if !self.recover_once(&run).await {
+                return;
+            }
+            // The next boot claims it again if this process stops first.
+            let Some(wait) = waits.next() else {
+                return;
+            };
+            tokio::time::sleep(std::time::Duration::from_secs(*wait)).await;
+            // Still the same interrupted turn? A turn the user started in
+            // the meantime replaced the checkpoint, and that one is live.
+            match self.recovery_candidates() {
+                Ok(rows) => match rows.into_iter().find(|r| r.turn_id == run.turn_id) {
+                    Some(again) => run = again,
+                    None => return,
+                },
+                Err(error) => {
+                    tracing::warn!("turn recovery: could not re-inspect checkpoints: {error:#}");
+                    return;
+                }
+            }
+        }
+    }
+
+    /// One claimed attempt. True when it failed and left the checkpoint
+    /// running for another.
+    async fn recover_once(self: &Arc<Self>, run: &veles_core::store::InterruptedRun) -> bool {
+        let sid = run.session_id.clone();
+        let claim = match veles_core::turn_recovery::claim(&self.store.lock_ok(), run) {
+            Ok(Some(claim)) => claim,
+            Ok(None) => return false,
+            Err(error) => {
+                tracing::warn!("turn recovery: {sid}: {error:#}");
+                return false;
+            }
+        };
+        let result = self.resume_interrupted_turn(run, &claim).await;
+        if let Err(error) = self.store.lock_ok().recovery_release(&claim) {
+            tracing::warn!("turn recovery: {sid} claim cleanup failed: {error:#}");
+        }
+        let Err(error) = result else {
+            return false;
+        };
+        let retained = self
+            .store
+            .lock_ok()
+            .turn_checkpoint(&sid)
+            .ok()
+            .flatten()
+            .is_some_and(|c| c.turn_id == run.turn_id && c.state == "running");
+        tracing::warn!(
+            "turn recovery: {sid} attempt {} failed{}: {error:#}",
+            claim.attempt,
+            if retained { "; it will be retried" } else { "" }
+        );
+        retained
+    }
+
+    /// Run the session's queue after a recovery ended, whichever way: a
+    /// message parked behind the interrupted turn has no other boundary
+    /// to wait for.
+    fn recovery_kick(self: &Arc<Self>, sid: &str) {
+        // Only when something waits: a kick builds the session's agent.
+        let waiting = self
+            .store
+            .lock_ok()
+            .queue_items(sid)
+            .map(|rows| {
+                rows.iter()
+                    .any(|r| matches!(r.state.as_str(), "pending" | "running"))
+            })
+            .unwrap_or(true);
+        if waiting {
+            veles_core::cron::SessionRunner::kick_queue(
+                &DesktopSessionRunner { srv: self.clone() },
+                sid,
+            );
+        }
+    }
+
+    /// Mark an interrupted turn for the user's review with an explanation
+    /// in the transcript, and say so on the session's bus.
+    fn recovery_review(
+        self: &Arc<Self>,
+        run: &veles_core::store::InterruptedRun,
+        text: &str,
+    ) -> Result<()> {
+        let sid = &run.session_id;
+        self.store.lock_ok().append_message(
+            sid,
+            &veles_core::providers::ChatMessage::assistant(text, None),
+        )?;
+        self.store
+            .lock_ok()
+            .turn_checkpoint_finish(&run.turn_id, "needs-review", None)?;
+        veles_core::session_tap::publish(
+            sid,
+            "turn-result",
+            serde_json::json!({
+                "text": text, "interrupted": true, "recovered": true,
+                "last_msg_id": self.store.lock_ok().last_msg_id(sid).unwrap_or(0),
+            }),
+        );
+        Ok(())
+    }
+
+    async fn resume_interrupted_turn(
+        self: &Arc<Self>,
+        run: &veles_core::store::InterruptedRun,
+        claim: &veles_core::store::RecoveryClaim,
+    ) -> Result<()> {
+        let sid = run.session_id.clone();
+        let lock = self.turn_lock(&sid);
+        let _held = lock.lock().await;
+        let history = self.store.lock_ok().load_history_since(&sid, 0)?;
+        let after_start: Vec<&veles_core::providers::ChatMessage> = history
+            .iter()
+            .filter(|m| m.msg_id.is_some_and(|id| id > run.start_msg_id))
+            .collect();
+        // A turn that came from a queue row: its prompt is in the
+        // transcript, so the row is done. Left `running`, the kick below
+        // demoted it and sent the same prompt again as a new turn.
+        if let Some(prompt) = after_start
+            .iter()
+            .find(|m| m.role == "user" && m.injection.is_none())
+        {
+            let released = self
+                .store
+                .lock_ok()
+                .queue_release_running_prompt(&sid, &prompt.content)?;
+            if released > 0 {
+                publish_queue_changed(self, &sid);
+            }
+        }
+        // Nothing of the turn reached the transcript but its provenance
+        // row: the process died before the prompt was saved, so there is
+        // nothing to continue. Its queue row, if it had one, still holds
+        // the prompt and runs from the kick.
+        if !after_start.iter().any(|m| {
+            !m.injection
+                .as_deref()
+                .is_some_and(|class| class.starts_with("origin:"))
+        }) {
+            self.store
+                .lock_ok()
+                .turn_checkpoint_finish(&run.turn_id, "closed", None)?;
+            self.recovery_kick(&sid);
+            return Ok(());
+        }
+        if run.active_tool.is_some() {
+            let tool_result_saved = after_start.iter().any(|message| {
+                message.role == "tool"
+                    && message.tool_meta.as_ref().is_some_and(|meta| {
+                        Some(meta.tool_call_id.as_str()) == run.active_tool.as_deref()
+                    })
+            });
+            if !tool_result_saved {
+                self.recovery_review(
+                    run,
+                    "[veles] the gateway restarted during a tool action whose result was not saved. The action was not repeated. Review its effects and tell the agent how to proceed.",
+                )?;
+                self.recovery_kick(&sid);
+                return Ok(());
+            }
+            // The result row is durable even if the marker-clearing write
+            // was lost. Reuse it; never dispatch the action again.
+            self.store
+                .lock_ok()
+                .turn_tool_finished(&run.turn_id, run.active_tool.as_deref().unwrap_or_default())?;
+        }
+        // A saved final reply: the checkpoint's own, or — when the process
+        // died before that write landed — a text-only reply that is the
+        // LAST row of the turn. A text reply with anything after it (a
+        // verification nudge and the tool rounds it started) was not the
+        // end, and redelivering it would abandon the rest of the work.
+        //
+        // Only before the first restart note: an earlier attempt already
+        // judged that tail unfinished, and what follows the note is a
+        // continuation's. A continuation that ended sets the checkpoint's
+        // final id itself; a text-only row after the note without one is
+        // a FAILED attempt's residue ("[veles] all routes failed: …"),
+        // and redelivering it as the answer dropped the turn again.
+        let continued = after_start
+            .iter()
+            .any(|m| m.injection.as_deref() == Some("restart"));
+        let saved_final = run
+            .final_msg_id
+            .and_then(|id| {
+                history
+                    .iter()
+                    .find(|message| message.msg_id == Some(id))
+                    .map(|message| (id, message.content.clone()))
+            })
+            .or_else(|| {
+                if continued {
+                    return None;
+                }
+                let last = after_start.last()?;
+                (last.role == "assistant" && last.tool_calls.is_none())
+                    .then_some((last.msg_id?, last.content.clone()))
+            });
+        if let Some((final_id, text)) = saved_final {
+            veles_core::session_tap::publish(
+                &sid,
+                "turn-result",
+                serde_json::json!({
+                    "text": text, "provider": "saved", "model": "saved",
+                    "interrupted": false, "recovered": true, "last_msg_id": final_id,
+                }),
+            );
+            self.store.lock_ok().turn_checkpoint_finish(
+                &run.turn_id,
+                "recovered",
+                Some(final_id),
+            )?;
+            self.recovery_kick(&sid);
+            return Ok(());
+        }
+        // Bounded: a turn whose continuation keeps failing, or keeps
+        // killing its process mid-stream, is not paid for on every boot.
+        if claim.attempt > MAX_RECOVERY_ATTEMPTS {
+            self.recovery_review(
+                run,
+                &format!(
+                    "[veles] the gateway restarted while this turn was running, and continuing it failed {} times. Nothing was repeated. Tell the agent how to proceed.",
+                    claim.attempt - 1
+                ),
+            )?;
+            self.recovery_kick(&sid);
+            return Ok(());
+        }
+        let agent = self.agent_for(&sid)?;
+        // One note per attempt that needs one: a retry after an attempt
+        // that died silently finds that attempt's note as the turn's last
+        // row and reuses it. One that failed with a provider error left
+        // an error row after its note; a fresh note keeps the request
+        // ending on a user-role row rather than on that error.
+        let noted = after_start
+            .last()
+            .is_some_and(|m| m.injection.as_deref() == Some("restart"));
+        if !noted {
+            let note = veles_core::turn_recovery::interruption_note(run);
+            agent.persist(
+                &veles_core::providers::ChatMessage::user(&note).with_injection("restart"),
+            );
+        }
+        let mut history = self.store.lock_ok().load_history(&sid)?;
+        agent
+            .resume_background_turn(&mut history, &claim.turn_id, None, |_| {})
+            .await?;
+        let final_id = self
+            .store
+            .lock_ok()
+            .load_history_since(&sid, 0)?
+            .iter()
+            .rev()
+            .find(|message| message.role == "assistant" && message.tool_calls.is_none())
+            .and_then(|message| message.msg_id);
+        self.store
+            .lock_ok()
+            .turn_checkpoint_finish(&run.turn_id, "recovered", final_id)?;
+        self.recovery_kick(&sid);
+        Ok(())
     }
 
     /// Lazily build (or fetch) the agent for a session id. Errors when
@@ -810,6 +1154,11 @@ async fn decide_ask(Path(id): Path<String>, Json(req): Json<DecideRequest>) -> J
             _ => veles_core::ask::AskAnswer::choice(veles_core::ask::CHOICE_DENY),
         }
     };
+    if let Some(request) = veles_core::ask::open_all().into_iter().find(|r| r.id == id) {
+        if let Some(error) = veles_core::ask::answer_error(&request, &answer) {
+            return Json(json!({ "ok": false, "error": error }));
+        }
+    }
     let ok = veles_core::ask::resolve(&id, answer);
     Json(json!({ "ok": ok }))
 }
@@ -926,10 +1275,15 @@ struct ChatRequest {
 }
 
 async fn health(State(srv): State<Arc<DesktopServer>>) -> Json<Value> {
+    // The selected artifact and the running process are different facts.
+    // Fleet rollout health may not claim the reviewed commit from the
+    // package version alone; release builds carry their exact source id.
+    let revision = option_env!("VELES_SOURCE_REVISION").unwrap_or("unreported-development-build");
     Json(json!({
         "status": "ok",
         "uptime_s": srv.started.elapsed().as_secs(),
         "version": env!("CARGO_PKG_VERSION"),
+        "revision": revision,
         "profile": veles_core::profiles::active_profile(),
     }))
 }
@@ -1020,7 +1374,15 @@ fn list_sessions_on(
         .into_iter()
         .filter(|id| !rows.iter().any(|r| &r.id == id))
         .collect();
-    let pinned_extra = store.session_rows(&missing).unwrap_or_default();
+    // Pins and tree context are best-effort, as the replica branch below
+    // always was: a read error on them omits them, it does not blank the
+    // whole list (SI-10).
+    let pinned_extra = store.session_rows(&missing).unwrap_or_else(|e| {
+        tracing::warn!("sessions: pinned rows unavailable: {e:#}");
+        Vec::new()
+    });
+    let extra_ids: std::collections::HashSet<String> =
+        pinned_extra.iter().map(|r| r.id.clone()).collect();
     // Cross-process liveness (R4.5): which sessions have a turn in
     // flight, on which surface, in which process — read from the
     // session_runs registry, not from this server's own bus (which
@@ -1070,7 +1432,7 @@ fn list_sessions_on(
     }
     rows.extend(pinned_extra);
     let sessions: Vec<Value> = rows
-        .into_iter()
+        .iter()
         .map(|m| {
             // The fork link: a subagent child names its parent here, so
             // the sidebar can mark children and offer "go to parent"
@@ -1099,7 +1461,128 @@ fn list_sessions_on(
             v
         })
         .collect();
-    Ok(json!({ "sessions": sessions, "total": total, "offset": query.offset }))
+    let page_ids: std::collections::HashSet<String> = rows
+        .iter()
+        .filter(|r| !extra_ids.contains(&r.id))
+        .map(|r| r.id.clone())
+        .collect();
+    let child_ids: Vec<String> = rows
+        .iter()
+        .filter(|r| r.parent.is_some() && !owner.contains_key(&r.id))
+        .map(|r| r.id.clone())
+        .collect();
+    let mut ancestor_rows = store
+        .session_ancestor_rows(&child_ids)
+        .unwrap_or_else(|e| {
+            tracing::warn!("sessions: ancestor context unavailable: {e:#}");
+            Vec::new()
+        })
+        .into_iter()
+        .filter(|r| !page_ids.contains(&r.id))
+        .map(|r| (r, None))
+        .collect::<Vec<(veles_core::store::SessionRow, Option<(String, String)>)>>();
+    if remote {
+        // A replica's parent is on the SAME node as its child. Never join a
+        // remote child to an unrelated local session with the same id.
+        let mut by_node: std::collections::HashMap<String, Vec<String>> = Default::default();
+        for row in &rows {
+            if let Some((node, _)) = owner.get(&row.id) {
+                by_node
+                    .entry(node.clone())
+                    .or_default()
+                    .push(row.id.clone());
+            }
+        }
+        for (replica_node, replica) in veles_core::storesync::replicas_ro() {
+            let Some(ids) = by_node.get(&replica_node) else {
+                continue;
+            };
+            let name = owner
+                .get(&ids[0])
+                .map(|(_, name)| name.clone())
+                .unwrap_or_default();
+            if let Ok(ancestors) = replica.session_ancestor_rows(ids) {
+                ancestor_rows.extend(
+                    ancestors
+                        .into_iter()
+                        .filter(|r| !page_ids.contains(&r.id))
+                        .map(|r| (r, Some((replica_node.clone(), name.clone())))),
+                );
+            }
+        }
+    }
+    // DOWNWARD context (SI-6): the children of the local sessions on this
+    // page that the page itself does not hold. Ranked by `updated_at`, a
+    // visible parent's subagent children can sit hundreds of rows down
+    // behind newer parentless sessions; without this they never appear
+    // under it. Bounded per parent and in all; same context-only shape
+    // as the ancestors, in a field of its own so a client can tell the
+    // two apart, and never counted in `total`.
+    let context_ids: std::collections::HashSet<String> =
+        ancestor_rows.iter().map(|(r, _)| r.id.clone()).collect();
+    let local_ids: Vec<String> = rows
+        .iter()
+        .filter(|r| !owner.contains_key(&r.id))
+        .map(|r| r.id.clone())
+        .collect();
+    let on_list: std::collections::HashSet<String> = rows.iter().map(|r| r.id.clone()).collect();
+    let descendant_rows: Vec<veles_core::store::SessionRow> = store
+        .session_descendant_rows(&local_ids, 50, 500)
+        .unwrap_or_else(|e| {
+            tracing::warn!("sessions: child context unavailable: {e:#}");
+            Vec::new()
+        })
+        .into_iter()
+        .filter(|r| !on_list.contains(&r.id) && !context_ids.contains(&r.id))
+        .collect();
+    let context_json = |row: veles_core::store::SessionRow, owner: Option<(String, String)>| {
+        let mut v = json!({
+            "id": row.id,
+            "title": row.title,
+            "preview": row.preview,
+            "parent": row.parent,
+            "created_at": row.created_at,
+            "updated_at": row.updated_at,
+            "message_count": row.message_count,
+            "running": runs.contains_key(&row.id),
+            "context_only": true,
+        });
+        if let Some((node, name)) = owner {
+            v["remote"] = json!(true);
+            v["node"] = json!(node);
+            v["node_name"] = json!(name);
+        }
+        v
+    };
+    let children_json: Vec<Value> = descendant_rows
+        .into_iter()
+        .map(|r| context_json(r, None))
+        .collect();
+    let ancestor_json: Vec<Value> = ancestor_rows
+        .into_iter()
+        .map(|(row, owner)| {
+            let mut v = json!({
+                "id": row.id,
+                "title": row.title,
+                "preview": row.preview,
+                "parent": row.parent,
+                "created_at": row.created_at,
+                "updated_at": row.updated_at,
+                "message_count": row.message_count,
+                "running": false,
+                "context_only": true,
+            });
+            if let Some((node, name)) = owner {
+                v["remote"] = json!(true);
+                v["node"] = json!(node);
+                v["node_name"] = json!(name);
+            }
+            v
+        })
+        .collect();
+    Ok(
+        json!({ "sessions": sessions, "parents": ancestor_json, "children": children_json, "total": total, "offset": query.offset }),
+    )
 }
 
 /// `POST /api/sessions/delete {"ids": [...]}` — delete many sessions in
@@ -1563,6 +2046,60 @@ async fn history(
     })
 }
 
+/// GET /api/sessions/:id/export?format=markdown|json → `{format, ext,
+/// content, message_count}`. The transcript rendered by the ONE shared
+/// exporter (`veles_core::export`), which the desktop writes to a local
+/// file. The desktop used to rebuild the file from `/history`, whose
+/// rows are a renderer's shape (engine notes with no `content`, nested
+/// tool calls), and failed on every real session.
+async fn export_session(
+    State(srv): State<Arc<DesktopServer>>,
+    Path(id): Path<String>,
+    Query(q): Query<StdMap<String, String>>,
+) -> (StatusCode, Json<Value>) {
+    let raw = q.get("format").cloned().unwrap_or_default();
+    let Some(format) = veles_core::export::Format::parse(&raw) else {
+        return (
+            StatusCode::BAD_REQUEST,
+            Json(json!({ "error": "export format must be markdown or json" })),
+        );
+    };
+    veles_core::rt::spawn_blocking(move || {
+        srv.read("desktop::export", |s| {
+            if !s.session_exists(&id).unwrap_or(false) {
+                return (
+                    StatusCode::NOT_FOUND,
+                    Json(json!({ "error": format!("no session {id} on this node") })),
+                );
+            }
+            match veles_core::export::render_session(s, &id, format, None) {
+                Ok(r) => (
+                    StatusCode::OK,
+                    Json(json!({
+                        "session_id": id,
+                        "format": format.as_str(),
+                        "ext": format.ext(),
+                        "file_stem": veles_core::export::file_stem(&id),
+                        "message_count": r.message_count,
+                        "content": r.content,
+                    })),
+                ),
+                Err(e) => (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Json(json!({ "error": format!("{e:#}") })),
+                ),
+            }
+        })
+    })
+    .await
+    .unwrap_or_else(|e| {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(json!({ "error": format!("exporting the session: {e}") })),
+        )
+    })
+}
+
 /// POST /api/chat → 202 Accepted. Starts a turn and returns at once.
 ///
 /// The turn runs detached, holding the per-session mutex, so two desktop
@@ -1635,7 +2172,7 @@ async fn chat(State(srv): State<Arc<DesktopServer>>, Json(req): Json<ChatRequest
                 StatusCode::BAD_REQUEST,
                 Json(json!({ "error": format!("{e:#}") })),
             )
-                .into_response()
+                .into_response();
         }
     };
     let text = veles_core::media::with_attachments(&req.text, &req.attachments);
@@ -1790,7 +2327,7 @@ async fn chat(State(srv): State<Arc<DesktopServer>>, Json(req): Json<ChatRequest
                         StatusCode::INTERNAL_SERVER_ERROR,
                         Json(json!({ "error": format!("{e:#}") })),
                     )
-                        .into_response()
+                        .into_response();
                 }
             }
         }
@@ -1936,24 +2473,27 @@ async fn context_view(
             return (
                 StatusCode::NOT_FOUND,
                 Json(json!({ "error": format!("{e:#}") })),
-            )
+            );
         }
     };
-    // The whole history is read to measure it: off the async workers, on
-    // a pooled connection, so a long session neither waits for the store
-    // lock nor holds it.
-    let hist_bytes = {
+    // The whole history is read to measure it, and the report's usage
+    // reads with it: off the async workers, on a pooled connection, so a
+    // long session neither waits for the store lock nor holds it. The
+    // status bar polls this through every turn, whose per-round writes
+    // hold that lock (review DR-3: 1–4 s answers mid-turn).
+    let (hist_bytes, reads) = {
         let (srv, id) = (srv.clone(), id.clone());
         veles_core::rt::spawn_blocking(move || {
             srv.read("desktop::context", |s| {
-                s.load_history(&id)
+                let bytes = s
+                    .load_history(&id)
                     .map(|h| h.iter().map(|m| m.content.len()).sum::<usize>())
-                    .ok()
+                    .ok();
+                (bytes, veles_core::agent::ContextReads::load(s, &id))
             })
         })
         .await
-        .ok()
-        .flatten()
+        .unwrap_or_default()
     };
     // Liveness comes from the process-wide registry, NOT from whether
     // this handler could lock its own Agent.
@@ -1975,7 +2515,7 @@ async fn context_view(
     // twice could only introduce a way for the two answers to
     // disagree" — is now structurally impossible, because `busy` has
     // exactly one source.
-    let mut report = agent.context_report(hist_bytes);
+    let mut report = agent.context_report_from(hist_bytes, reads);
     report["busy"] = json!(snap.is_some());
     // Which surface owns the running turn, when one does. A desktop
     // showing "busy" with no idea whether that is its own turn or a cron
@@ -2727,7 +3267,7 @@ async fn command_run(
             return (
                 StatusCode::NOT_FOUND,
                 Json(json!({"error": format!("{e:#}")})),
-            )
+            );
         }
     };
     let line = body.command.trim().to_string();
@@ -2769,7 +3309,7 @@ async fn command_run(
                     return (
                         StatusCode::INTERNAL_SERVER_ERROR,
                         Json(json!({ "error": format!("{e:#}") })),
-                    )
+                    );
                 }
             };
             let route = match fresh.set_model(&al.model_arg()) {
@@ -2783,7 +3323,7 @@ async fn command_run(
                             "reload": false,
                             "session_id": sid,
                         })),
-                    )
+                    );
                 }
             };
             if let Some(r) = &al.reasoning {
@@ -3845,65 +4385,110 @@ async fn notify_events(
 struct LspStart {
     /// A file being edited. The project root is derived from it HERE,
     /// because the filesystem it lives on is this one — the desktop
-    /// cannot stat a remote path to look for a `.git`.
+    /// cannot stat a remote path to look for a `.git`. Its type picks the
+    /// server (`veles_core::lsp_servers`).
     #[serde(default)]
     path: Option<String>,
     /// An explicit root, when the caller knows better than the walk.
     #[serde(default)]
     root: Option<String>,
-    /// Server command; defaults to tcl-lsp, resolved on the GATEWAY's
-    /// PATH. That is the point: the desktop machine no longer needs it
-    /// installed at all.
+    /// An explicit server command, resolved on the GATEWAY's PATH. Absent,
+    /// the file type decides (tcl-lsp, typescript-language-server,
+    /// rust-analyzer, clangd, racket-langserver, a Lisp server).
     #[serde(default)]
     cmd: Option<String>,
     #[serde(default)]
     args: Vec<String>,
 }
 
-/// Walk up from a file to the directory that looks like its project.
-///
-/// `rootUri` was `null` before this, so no language server this app ever
-/// ran had a project to index — which is why "go to definition in another
-/// file" never worked, locally as much as remotely.
+/// `?session=<key>` on send/events/stop; absent is the last started.
+#[derive(Deserialize, Default)]
+struct LspSession {
+    #[serde(default)]
+    session: Option<String>,
+}
+
+/// The pre-0.2.0 single-language root walk, for a start that names an
+/// explicit command and no language (`lsp_servers::project_root`'s Tcl
+/// rule is the same walk).
 fn project_root_for(path: &std::path::Path) -> std::path::PathBuf {
-    let start = if path.is_dir() {
-        path.to_path_buf()
-    } else {
-        path.parent()
-            .map(|p| p.to_path_buf())
-            .unwrap_or_else(|| std::path::PathBuf::from("/"))
-    };
-    for dir in start.ancestors() {
-        for marker in [".git", ".hg", ".jj", "Cargo.toml", "flake.nix"] {
-            if dir.join(marker).exists() {
-                return dir.to_path_buf();
-            }
-        }
-    }
-    start
+    veles_core::lsp_servers::project_root(veles_core::lsp_servers::Language::Tcl, path)
 }
 
 async fn lsp_start(Json(body): Json<LspStart>) -> Json<Value> {
-    let cmd = body.cmd.unwrap_or_else(|| "tcl-lsp".to_string());
-    let (root, canonical) = match (&body.root, &body.path) {
-        (Some(r), _) => (std::path::PathBuf::from(r), body.path.clone()),
-        (None, Some(p)) => {
-            let pb = std::path::Path::new(p)
-                .canonicalize()
-                .unwrap_or_else(|_| std::path::PathBuf::from(p));
-            (
-                project_root_for(&pb),
-                Some(pb.to_string_lossy().to_string()),
-            )
-        }
+    use veles_core::lsp_servers::{self as servers, Language};
+    let os = veles_core::platform::OS;
+    let canonical = body
+        .path
+        .as_deref()
+        .map(|p| servers::canonical(std::path::Path::new(p)));
+    let language = canonical.as_deref().and_then(Language::from_path);
+    // What runs: the explicit command when the caller named one (any file
+    // type — the 0.1.x contract), else the server for the file's type.
+    let (cmd, args, derived_root, note) = match (&body.cmd, &canonical) {
+        (Some(cmd), _) => (
+            cmd.clone(),
+            body.args.clone(),
+            canonical.as_deref().map(|p| match language {
+                Some(l) => servers::project_root(l, p),
+                None => project_root_for(p),
+            }),
+            None,
+        ),
+        (None, Some(path)) => match servers::select(path) {
+            Ok(sel) => (sel.program, sel.args, Some(sel.root), sel.note),
+            Err(Some(missing)) => {
+                return Json(json!({
+                    "ok": false,
+                    "error": missing.message(),
+                    "language": missing.language.id(),
+                    "missing": missing.tried,
+                    "install": missing.language.install_hint(),
+                    "path": servers::display_path(path),
+                }))
+            }
+            Err(None) => {
+                return Json(json!({
+                    "ok": false,
+                    "error": format!(
+                        "no language server is known for {} files",
+                        path.extension()
+                            .map(|e| format!(".{}", e.to_string_lossy()))
+                            .unwrap_or_else(|| "extension-less".into())
+                    ),
+                    "language": null,
+                    "path": servers::display_path(path),
+                }))
+            }
+        },
+        (None, None) => ("tcl-lsp".to_string(), body.args.clone(), None, None),
+    };
+    let root = match (&body.root, derived_root) {
+        (Some(r), _) => std::path::PathBuf::from(r),
+        (None, Some(r)) => r,
         (None, None) => return Json(json!({"ok": false, "error": "need a path or a root"})),
     };
-    let root_s = root.to_string_lossy().to_string();
-    match veles_core::lsp_proxy::start(&cmd, &body.args, &root_s).await {
-        Ok(()) => Json(json!({
-            "ok": true, "cmd": cmd, "root": root_s, "path": canonical
+    let root_s = servers::display_path(&root);
+    let key = language.map_or(veles_core::lsp_proxy::DEFAULT_KEY, Language::server_key);
+    let path_s = canonical.as_deref().map(servers::display_path);
+    match veles_core::lsp_proxy::start(key, &cmd, &args, &root_s).await {
+        Ok(outcome) => Json(json!({
+            "ok": true, "cmd": cmd, "args": args, "root": root_s, "path": path_s,
+            "reused": outcome == veles_core::lsp_proxy::StartOutcome::Reused,
+            "session": key,
+            "language": language.map(Language::id),
+            "language_name": language.map(Language::display),
+            // Built here, for this gateway's platform: the desktop may be
+            // on another OS than the files (dev-ext-13).
+            "uri": path_s.as_deref().map(|p| servers::file_uri(p, os)),
+            "root_uri": servers::file_uri(&root_s, os),
+            "platform": os,
+            "note": note,
         })),
-        Err(e) => Json(json!({"ok": false, "error": e, "root": root_s})),
+        Err(e) => Json(json!({
+            "ok": false, "error": e, "root": root_s, "cmd": cmd,
+            "language": language.map(Language::id), "session": key,
+        })),
     }
 }
 
@@ -3912,24 +4497,56 @@ async fn lsp_start(Json(body): Json<LspStart>) -> Json<Value> {
 /// The body is the message itself, not a wrapper around it: the client
 /// already builds LSP JSON and re-encoding it here would mean this file
 /// had opinions about a protocol it is only carrying.
-async fn lsp_send(body: String) -> Json<Value> {
+async fn lsp_send(
+    axum::extract::Query(q): axum::extract::Query<LspSession>,
+    body: String,
+) -> Json<Value> {
     if body.trim().is_empty() {
         return Json(json!({"ok": false, "error": "empty body"}));
     }
-    match veles_core::lsp_proxy::send(&body).await {
+    let key = veles_core::lsp_proxy::resolve_key(q.session.as_deref());
+    match veles_core::lsp_proxy::send(&key, &body).await {
         Ok(()) => Json(json!({"ok": true})),
         Err(e) => Json(json!({"ok": false, "error": e})),
     }
 }
 
-async fn lsp_stop() -> Json<Value> {
-    Json(json!({"ok": true, "was_running": veles_core::lsp_proxy::stop()}))
+/// POST /api/lsp/stop — one session (`?session=`), or every one.
+async fn lsp_stop(axum::extract::Query(q): axum::extract::Query<LspSession>) -> Json<Value> {
+    Json(json!({"ok": true, "was_running": veles_core::lsp_proxy::stop(q.session.as_deref())}))
 }
 
 async fn lsp_status() -> Json<Value> {
-    match veles_core::lsp_proxy::current() {
-        Some((root, cmd)) => Json(json!({"running": true, "root": root, "cmd": cmd})),
-        None => Json(json!({"running": false})),
+    let sessions = veles_core::lsp_proxy::current();
+    let mut v = json!({
+        "running": !sessions.is_empty(),
+        "sessions": sessions.iter().map(|s| json!({"session": s.key, "root": s.root, "cmd": s.cmd})).collect::<Vec<_>>(),
+    });
+    // The 0.1.x shape, for the most recent session.
+    if let Some(s) = sessions.first() {
+        v["root"] = json!(s.root);
+        v["cmd"] = json!(s.cmd);
+    }
+    Json(v)
+}
+
+/// POST /api/lsp/check {path} — the Dev pane's Check: the file type's
+/// checker, run here where the file and the tools are
+/// (`veles_core::dev_check`).
+async fn lsp_check(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
+    let Some(path) = body["path"].as_str().filter(|p| !p.trim().is_empty()) else {
+        return (
+            StatusCode::BAD_REQUEST,
+            Json(json!({"error": "need the path of a saved file"})),
+        );
+    };
+    let path = std::path::PathBuf::from(path);
+    match veles_core::rt::spawn_blocking(move || veles_core::dev_check::check_file(&path)).await {
+        Ok(report) => (StatusCode::OK, Json(report)),
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(json!({"error": format!("the check worker failed: {e}")})),
+        ),
     }
 }
 
@@ -3938,24 +4555,45 @@ async fn lsp_status() -> Json<Value> {
 /// Responses AND notifications: only the client knows a
 /// `publishDiagnostics` from an answer to something it asked.
 ///
-/// No replay on attach, unlike the IRC stream. A response to a request
-/// nobody is waiting for is noise, and a reattaching client re-runs
-/// `initialize` anyway. `lsp-lagged` is still worth saying: a client that
-/// silently missed a response would sit on a pending id forever.
+/// One replay on attach: when the running process has completed its
+/// handshake, its captured initialize response follows `lsp-live` as
+/// `lsp-initialized`, because a client attaching to a reused process
+/// (`/api/lsp/start` answered `reused: true`) must not initialize it a
+/// second time. Nothing else is replayed; a response to a request nobody
+/// is waiting for is noise. `lsp-lagged` is still worth saying: a client
+/// that silently missed a response would sit on a pending id forever.
+/// `lsp-exit` says the server died on its own, with its last words — it
+/// used to be a stream that simply went quiet.
 async fn lsp_events(
+    axum::extract::Query(q): axum::extract::Query<LspSession>,
 ) -> Sse<impl Stream<Item = std::result::Result<Event, std::convert::Infallible>>> {
-    let mut rx = veles_core::lsp_proxy::subscribe();
+    let key = veles_core::lsp_proxy::resolve_key(q.session.as_deref());
+    let mut rx = veles_core::lsp_proxy::subscribe(&key);
     let stream = async_stream::stream! {
-        yield Ok(Event::default().event("lsp-live").data("{}"));
+        yield Ok(Event::default().event("lsp-live").data(json!({"session": key}).to_string()));
+        if let Some(frame) = veles_core::lsp_proxy::initialize_result(&key) {
+            yield Ok(Event::default()
+                .event("lsp-initialized")
+                .data(json!({"frame": frame}).to_string()));
+        }
         loop {
             match rx.recv().await {
                 // Wrapped, not raw: axum splits a payload containing a
                 // newline into several `data:` lines, and the client
                 // reads one. serde_json escapes newlines, so the wrapper
                 // is always a single line whatever the server emitted.
-                Ok(frame) => yield Ok(Event::default()
+                Ok(veles_core::lsp_proxy::Frame::Message(frame)) => yield Ok(Event::default()
                     .event("lsp")
                     .data(json!({"frame": frame}).to_string())),
+                Ok(veles_core::lsp_proxy::Frame::Exited { generation, reason }) => {
+                    // A notice from a server a later start already
+                    // replaced is not about this client's server.
+                    if veles_core::lsp_proxy::exit_is_current(&key, generation) {
+                        yield Ok(Event::default()
+                            .event("lsp-exit")
+                            .data(json!({"reason": reason}).to_string()));
+                    }
+                }
                 Err(tokio::sync::broadcast::error::RecvError::Lagged(n)) => {
                     yield Ok(Event::default()
                         .event("lsp-lagged")
@@ -3968,17 +4606,33 @@ async fn lsp_events(
     Sse::new(stream).keep_alive(KeepAlive::default())
 }
 
+/// The answering gateway's identity, additive to the existing eval
+/// result. The CLI reports it on stderr; stdout remains exactly the Tcl
+/// result for scripts that consume it.
+fn tcl_gateway() -> Value {
+    let identity = veles_core::node::NodeIdentity::load(&veles_core::config::config_dir())
+        .ok()
+        .flatten();
+    let port = veles_core::config::desktop_port(&veles_core::config::live());
+    json!({
+        "node": identity.as_ref().map(|n| n.id.as_str()).unwrap_or(""),
+        "node_name": identity.as_ref().map(|n| n.name.as_str()).unwrap_or(""),
+        "endpoint": format!("127.0.0.1:{port}"),
+        "pid": std::process::id(),
+    })
+}
+
 /// POST /api/tcl/eval — evaluate Tcl in the live gateway interpreter.
 /// Body: {"code": "..."} → {"ok": bool, "result": "..."}.
 /// Loopback-only; this is the REPL/debugger/hot-patch surface.
 async fn tcl_eval(State(srv): State<Arc<DesktopServer>>, Json(body): Json<Value>) -> Json<Value> {
     let code = body["code"].as_str().unwrap_or("");
     if code.trim().is_empty() {
-        return Json(json!({"ok": false, "result": "error: empty code"}));
+        return Json(json!({"ok": false, "result": "error: empty code", "gateway": tcl_gateway()}));
     }
     match srv.hooks.eval_tcl(code).await {
-        Ok(result) => Json(json!({"ok": true, "result": result})),
-        Err(e) => Json(json!({"ok": false, "result": e})),
+        Ok(result) => Json(json!({"ok": true, "result": result, "gateway": tcl_gateway()})),
+        Err(e) => Json(json!({"ok": false, "result": e, "gateway": tcl_gateway()})),
     }
 }
 
@@ -4293,7 +4947,7 @@ async fn config_get(Query(q): Query<ConfigPathQuery>) -> (StatusCode, Json<Value
             return (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(json!({ "error": format!("{e:#}") })),
-            )
+            );
         }
     };
     let segments: Vec<&str> = path.split('.').collect();
@@ -4442,7 +5096,7 @@ async fn app_ask(
             return (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(json!({"error": format!("{e:#}")})),
-            )
+            );
         }
     };
     match run_turn_as(&srv, &agent, &sid, app_principal(&name), "app", &text).await {
@@ -4591,7 +5245,7 @@ async fn pool_scan(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
                 return (
                     StatusCode::BAD_REQUEST,
                     Json(json!({"error": format!("the photo is not base64: {e}")})),
-                )
+                );
             }
         };
         match veles_core::rt::spawn_blocking(move || veles_core::pool::qr_read(&bytes)).await {
@@ -4607,7 +5261,7 @@ async fn pool_scan(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
                 return (
                     StatusCode::INTERNAL_SERVER_ERROR,
                     Json(json!({"error": e.to_string()})),
-                )
+                );
             }
         }
     } else {
@@ -4653,7 +5307,7 @@ async fn pool_join(
             return (
                 StatusCode::BAD_REQUEST,
                 Json(json!({"error": format!("{e:#}")})),
-            )
+            );
         }
     };
     match veles_core::pool::join(&inv).await {
@@ -5336,7 +5990,7 @@ async fn session_skill(
             return (
                 StatusCode::NOT_FOUND,
                 Json(json!({ "error": e.to_string() })),
-            )
+            );
         }
     };
     let a = &agent;
@@ -5742,7 +6396,7 @@ async fn memory_rollback(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
                 return (
                     StatusCode::BAD_REQUEST,
                     Json(json!({ "error": "send a `path`, or a `store` of `memory`/`user`" })),
-                )
+                );
             }
         },
     };
@@ -5803,7 +6457,7 @@ async fn hooks_list(State(srv): State<Arc<DesktopServer>>) -> (StatusCode, Json<
             return (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(json!({ "error": format!("hook introspection failed: {e}") })),
-            )
+            );
         }
     };
     let mut hooks: Value = serde_json::from_str(raw.trim()).unwrap_or_else(
@@ -5932,10 +6586,15 @@ async fn plugins_list(State(_srv): State<Arc<DesktopServer>>) -> Json<Value> {
     let enabled = loaded.plugins.enabled.clone();
     let disabled = loaded.plugins.disabled.clone();
     let found = veles_core::plugins::discover_all().unwrap_or_default();
+    let shadows: Vec<String> = found
+        .iter()
+        .filter_map(veles_core::plugins::shadow_report)
+        .collect();
     let out: Vec<Value> = found
         .iter()
         .map(|p| {
             let name = &p.manifest.name;
+            let shadow = veles_core::plugins::shadowed_bundled(p);
             json!({
                 "name": name,
                 "kind": p.manifest.kind,
@@ -5948,6 +6607,12 @@ async fn plugins_list(State(_srv): State<Arc<DesktopServer>>) -> Json<Value> {
                 // plugins dir: not removable, and an edit belongs in a
                 // user copy of the same name, which then wins.
                 "bundled": veles_core::plugins::is_bundled(p),
+                "version": p.manifest.version,
+                "sha256": p.digest,
+                "shadow": veles_core::plugins::shadow_report(p),
+                "shadow_bundled_root": shadow.as_ref().map(|b| b.dir.display().to_string()),
+                "shadow_bundled_sha256": shadow.as_ref().map(|b| b.digest.clone()),
+                "shadow_same_content": shadow.as_ref().is_some_and(|b| b.digest == p.digest),
                 "enabled": veles_core::plugins::is_enabled(name, &enabled, &disabled),
                 // WHY it is off, so the UI can say "you disabled this"
                 // rather than "not in the allowlist" when both are true.
@@ -5958,6 +6623,15 @@ async fn plugins_list(State(_srv): State<Arc<DesktopServer>>) -> Json<Value> {
         .collect();
     Json(json!({
         "plugins": out,
+        "shadows": shadows,
+        "drivers": veles_core::providers::drivers().iter().map(|d| json!({
+            "name": d.name,
+            "qualified": d.qualified_name(),
+            "plugin": d.plugin,
+            "root": d.provenance.root.as_ref().map(|p| p.display().to_string()),
+            "version": d.provenance.version,
+            "sha256": d.provenance.hash,
+        })).collect::<Vec<_>>(),
         // An allowlist changes what "not mentioned" means, and the UI
         // has to say so or a newly installed plugin looks broken.
         "allowlist_active": !enabled.is_empty(),
@@ -6299,7 +6973,7 @@ async fn plugin_set_enabled(
             return (
                 StatusCode::BAD_REQUEST,
                 Json(json!({ "error": e.to_string() })),
-            )
+            );
         }
     };
     let on = match action.as_str() {
@@ -6309,7 +6983,7 @@ async fn plugin_set_enabled(
             return (
                 StatusCode::BAD_REQUEST,
                 Json(json!({ "error": format!("unknown action `{other}`") })),
-            )
+            );
         }
     };
     let allowlist_active = !veles_core::config::load()
@@ -6338,7 +7012,7 @@ async fn plugin_set_enabled(
             return (
                 StatusCode::BAD_REQUEST,
                 Json(json!({ "error": format!("{e:#}") })),
-            )
+            );
         }
     };
     let mut resp = edit_response(report);
@@ -6356,28 +7030,738 @@ async fn plugin_set_enabled(
     (StatusCode::OK, Json(resp))
 }
 
-/// POST /api/plugins/new {name, description?} — scaffold a plugin.
+fn contribution_files(body: &Value) -> Vec<String> {
+    body["files"]
+        .as_array()
+        .map(|rows| {
+            rows.iter()
+                .filter_map(|row| row.as_str().map(str::to_string))
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default()
+}
+
+fn contribution_root(name: &str) -> Result<std::path::PathBuf, String> {
+    let name = veles_core::plugins::validate_name(name).map_err(|e| e.to_string())?;
+    let root = veles_core::plugins::plugins_dir().join(name);
+    if !root.is_dir() {
+        return Err("the selected extension is not a user plugin directory".into());
+    }
+    if root
+        .symlink_metadata()
+        .is_ok_and(|m| m.file_type().is_symlink())
+    {
+        return Err("a symlinked plugin directory cannot be published".into());
+    }
+    Ok(root)
+}
+
+async fn plugin_contribution_files(Path(name): Path<String>) -> (StatusCode, Json<Value>) {
+    match contribution_root(&name)
+        .and_then(|root| veles_core::contribute::candidates(&root).map_err(|e| format!("{e:#}")))
+    {
+        Ok(body) => (StatusCode::OK, Json(body)),
+        Err(error) => (StatusCode::BAD_REQUEST, Json(json!({"error": error}))),
+    }
+}
+
+async fn plugin_contribution_review(
+    Path(name): Path<String>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let files = body["files"]
+        .as_array()
+        .map(|rows| {
+            rows.iter()
+                .filter_map(|row| row.as_str().map(str::to_string))
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    match contribution_root(&name).and_then(|root| {
+        veles_core::contribute::review(&root, &files).map_err(|e| format!("{e:#}"))
+    }) {
+        Ok(body) => (StatusCode::OK, Json(body)),
+        Err(error) => (StatusCode::BAD_REQUEST, Json(json!({"error": error}))),
+    }
+}
+
+async fn plugin_contribution_checks(
+    Path(name): Path<String>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let files = body["files"]
+        .as_array()
+        .map(|rows| {
+            rows.iter()
+                .filter_map(|row| row.as_str().map(str::to_string))
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    match contribution_root(&name).and_then(|root| {
+        veles_core::contribute::run_checks(&root, &files).map_err(|e| format!("{e:#}"))
+    }) {
+        Ok(body) => (StatusCode::OK, Json(body)),
+        Err(error) => (StatusCode::BAD_REQUEST, Json(json!({"error": error}))),
+    }
+}
+
+async fn contribution_blocking(
+    operation: impl FnOnce() -> anyhow::Result<Value> + Send + 'static,
+) -> (StatusCode, Json<Value>) {
+    match veles_core::rt::spawn_blocking(operation).await {
+        Ok(Ok(body)) => (StatusCode::OK, Json(body)),
+        Ok(Err(error)) => (
+            StatusCode::BAD_REQUEST,
+            Json(
+                json!({"error": veles_core::secrets::scrub(&format!("{error:#}"), &veles_core::secrets::scrubbable())}),
+            ),
+        ),
+        Err(error) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(json!({"error": format!("contribution worker failed: {error}")})),
+        ),
+    }
+}
+
+async fn plugin_contribution_prepare(
+    Path(name): Path<String>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let root = match contribution_root(&name) {
+        Ok(root) => root,
+        Err(error) => return (StatusCode::BAD_REQUEST, Json(json!({"error": error}))),
+    };
+    let files = contribution_files(&body);
+    let destination = body["destination"].as_str().unwrap_or("").to_string();
+    let branch = body["branch"]
+        .as_str()
+        .unwrap_or("veles-extension-contribution")
+        .to_string();
+    contribution_blocking(move || {
+        veles_core::contribute::prepare(&root, &files, &destination, &branch)
+    })
+    .await
+}
+
+/// `{"extensions": [{"name", "files": [...]}, ...], "directory"}` — the
+/// multi-extension contribution body. Every name must be a user plugin
+/// directory (bundled extensions are copied to the user directory first).
+fn contribution_selections(
+    body: &Value,
+) -> Result<(Vec<veles_core::contribute::Selection>, String), String> {
+    let rows = body["extensions"]
+        .as_array()
+        .filter(|rows| !rows.is_empty())
+        .ok_or("select at least one extension")?;
+    let selections = rows
+        .iter()
+        .map(|row| {
+            let name = row["name"].as_str().unwrap_or("");
+            Ok(veles_core::contribute::Selection {
+                name: name.to_string(),
+                root: contribution_root(name)?,
+                files: contribution_files(row),
+            })
+        })
+        .collect::<Result<Vec<_>, String>>()?;
+    let directory = body["directory"]
+        .as_str()
+        .unwrap_or(veles_core::contribute::DEFAULT_DIRECTORY)
+        .to_string();
+    Ok((selections, directory))
+}
+
+async fn plugin_contribution_review_many(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
+    let (selections, directory) = match contribution_selections(&body) {
+        Ok(parsed) => parsed,
+        Err(error) => return (StatusCode::BAD_REQUEST, Json(json!({"error": error}))),
+    };
+    contribution_blocking(move || veles_core::contribute::review_many(&selections, &directory))
+        .await
+}
+
+async fn plugin_contribution_checks_many(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
+    let (selections, directory) = match contribution_selections(&body) {
+        Ok(parsed) => parsed,
+        Err(error) => return (StatusCode::BAD_REQUEST, Json(json!({"error": error}))),
+    };
+    contribution_blocking(move || veles_core::contribute::run_checks_many(&selections, &directory))
+        .await
+}
+
+async fn plugin_contribution_prepare_many(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
+    let (selections, directory) = match contribution_selections(&body) {
+        Ok(parsed) => parsed,
+        Err(error) => return (StatusCode::BAD_REQUEST, Json(json!({"error": error}))),
+    };
+    let destination = body["destination"].as_str().unwrap_or("").to_string();
+    let branch = body["branch"]
+        .as_str()
+        .unwrap_or("veles-extension-contribution")
+        .to_string();
+    let replace_existing = body["replace_existing"].as_bool().unwrap_or(false);
+    contribution_blocking(move || {
+        veles_core::contribute::prepare_many(
+            &selections,
+            &destination,
+            &branch,
+            &directory,
+            replace_existing,
+        )
+    })
+    .await
+}
+
+async fn plugin_contribution_publish(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
+    let worktree = std::path::PathBuf::from(body["worktree"].as_str().unwrap_or(""));
+    contribution_blocking(move || veles_core::contribute::publish(&worktree)).await
+}
+
+async fn plugin_contribution_pr(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
+    let worktree = std::path::PathBuf::from(body["worktree"].as_str().unwrap_or(""));
+    let repo = body["repo"].as_str().unwrap_or("").to_string();
+    let base = body["base"].as_str().unwrap_or("main").to_string();
+    let title = body["title"].as_str().unwrap_or("").to_string();
+    let text = body["body"].as_str().unwrap_or("").to_string();
+    contribution_blocking(move || {
+        veles_core::contribute::pr(&worktree, &repo, &base, &title, &text)
+    })
+    .await
+}
+
+async fn plugin_api_version() -> Json<Value> {
+    Json(json!({"version": veles_core::plugins::extension_api_version()}))
+}
+
+/// POST /api/plugins/preview — exact proposed files, with no writes,
+/// snapshots or reloads. The form and the confirmation review share this.
+async fn plugin_preview(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
+    let name = body["name"].as_str().unwrap_or("");
+    let desc = body["description"].as_str().unwrap_or("");
+    let kind = body["kind"].as_str().unwrap_or("tcl");
+    match veles_core::plugins::scaffold_files(name, desc, kind) {
+        Ok(files) => (
+            StatusCode::OK,
+            Json(json!({
+                "name": name.trim(),
+                "kind": kind,
+                "api": veles_core::plugins::extension_api_version(),
+                "files": files.into_iter().map(|file| json!({
+                    "name": file.name,
+                    "text": file.text,
+                })).collect::<Vec<_>>(),
+            })),
+        ),
+        Err(error) => (
+            StatusCode::BAD_REQUEST,
+            Json(json!({"error": format!("{error:#}")})),
+        ),
+    }
+}
+
+/// POST /api/extensions/assist/preview — a direct, tool-free proposal for
+/// the current user-plugin buffer. No file write or agent session occurs.
+async fn extension_assist_preview(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let path = std::path::PathBuf::from(body["path"].as_str().unwrap_or(""));
+    let content = body["content"].as_str().unwrap_or("").to_string();
+    let instruction = body["instruction"].as_str().unwrap_or("").to_string();
+    let diagnostics = body["diagnostics"].as_str().unwrap_or("").to_string();
+    let disk = match std::fs::read_to_string(&path) {
+        Ok(text) => text,
+        Err(error) => {
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(json!({"error": format!("cannot read extension buffer: {error}")})),
+            )
+        }
+    };
+    let buffer = match veles_core::extension_assist::buffer(&path, &content, &disk) {
+        Ok(buffer) => buffer,
+        Err(error) => {
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(json!({
+                    "error": error.to_string(),
+                    "draft_as_extension": veles_core::extension_assist::draft_as_extension(&path),
+                })),
+            )
+        }
+    };
+    let cfg = srv.cfg();
+    let (route, request) = match veles_core::extension_assist::request(
+        &cfg,
+        &buffer,
+        &content,
+        &instruction,
+        &diagnostics,
+    ) {
+        Ok(request) => request,
+        Err(error) => {
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(json!({"error": error.to_string()})),
+            )
+        }
+    };
+    let completion = match route.client.chat(&request, &route.provider).await {
+        Ok(completion) => completion,
+        Err(error) => {
+            return (
+                StatusCode::BAD_GATEWAY,
+                Json(json!({"error": error.to_string()})),
+            )
+        }
+    };
+    let after =
+        match veles_core::extension_assist::proposed_text(&completion.message.content, &content) {
+            Ok(after) => after,
+            Err(error) => {
+                return (
+                    StatusCode::BAD_GATEWAY,
+                    Json(json!({"error": error.to_string()})),
+                )
+            }
+        };
+    (
+        StatusCode::OK,
+        Json({
+            let proposal_id = veles_core::extension_assist::propose(
+                buffer.path.clone(),
+                content.clone(),
+                after.clone(),
+                buffer.base_sha.clone(),
+            );
+            json!({
+            "operation": "preview",
+            "proposal_id": proposal_id,
+            "path": buffer.path.display().to_string(),
+            "before": content,
+            "after": after,
+            "diff": veles_core::extension_assist::diff(&buffer.path, &content, &after),
+            "base_sha": buffer.base_sha,
+            "proposal_sha": veles_core::extension_assist::sha256(&after),
+            "provider": route.provider,
+            "model": route.model,
+            "api": veles_core::plugins::extension_api_version(),
+            "checks_run": false,
+            "recommended_checks": match buffer.path.extension().and_then(|ext| ext.to_str()) {
+                Some("tcl") => "check command completeness with Tcl info complete, then reload and test the extension after applying",
+                Some("ts") | Some("js") => "use the available non-evaluating JavaScript/TypeScript checker, then test the extension",
+                _ => "run an appropriate non-evaluating check and test the extension",
+            },
+            "extension_first": true,
+            "applied": false,
+            })
+        }),
+    )
+}
+
+/// The model's answer to one direct, tool-free assistance request.
+async fn assist_completion(
+    route: &veles_core::providers::Route,
+    request: &veles_core::providers::ChatRequest,
+) -> Result<String, (StatusCode, Json<Value>)> {
+    match route.client.chat(request, &route.provider).await {
+        Ok(completion) => Ok(completion.message.content),
+        Err(error) => Err((
+            StatusCode::BAD_GATEWAY,
+            Json(json!({"error": error.to_string()})),
+        )),
+    }
+}
+
+fn assist_refusal(error: anyhow::Error) -> (StatusCode, Json<Value>) {
+    (
+        StatusCode::BAD_REQUEST,
+        Json(json!({"error": format!("{error:#}")})),
+    )
+}
+
+/// POST /api/extensions/assist/ask {question, path?} — a design question,
+/// with no buffer. A path inside a user extension adds that extension's
+/// manifest and file list (not its source). Read-only: an answer, never
+/// a write.
+async fn extension_assist_ask(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let question = body["question"].as_str().unwrap_or("");
+    let path = body["path"].as_str().filter(|p| !p.trim().is_empty());
+    let context = path.and_then(|p| {
+        let (name, dir) =
+            veles_core::extension_assist::extension_of(std::path::Path::new(p)).ok()?;
+        let manifest = std::fs::read_to_string(dir.join("plugin.toml")).unwrap_or_default();
+        let files = veles_core::extension_assist::extension_files(&dir)
+            .map(|(files, _)| files.into_iter().map(|f| f.path).collect::<Vec<_>>())
+            .unwrap_or_default();
+        Some((name, manifest, files))
+    });
+    let cfg = srv.cfg();
+    let (route, request) = match veles_core::extension_assist::ask_request(
+        &cfg,
+        question,
+        context
+            .as_ref()
+            .map(|(n, m, f)| (n.as_str(), m.as_str(), f.as_slice())),
+    ) {
+        Ok(r) => r,
+        Err(e) => return assist_refusal(e),
+    };
+    let raw = match assist_completion(&route, &request).await {
+        Ok(raw) => raw,
+        Err(reply) => return reply,
+    };
+    match veles_core::extension_assist::answer_text(&raw) {
+        Ok(answer) => (
+            StatusCode::OK,
+            Json(json!({
+                "operation": "answer",
+                "answer": answer,
+                "extension": context.as_ref().map(|(n, _, _)| n),
+                "provider": route.provider,
+                "model": route.model,
+                "api": veles_core::plugins::extension_api_version(),
+                "applied": false,
+            })),
+        ),
+        Err(e) => (
+            StatusCode::BAD_GATEWAY,
+            Json(json!({"error": e.to_string()})),
+        ),
+    }
+}
+
+/// POST /api/extensions/assist/explain {path, content, diagnostics} —
+/// what the current diagnostics of a saved user-extension file mean.
+/// Read-only.
+async fn extension_assist_explain(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let path = std::path::PathBuf::from(body["path"].as_str().unwrap_or(""));
+    let content = body["content"].as_str().unwrap_or("").to_string();
+    let diagnostics = body["diagnostics"].as_str().unwrap_or("").to_string();
+    let disk = match std::fs::read_to_string(&path) {
+        Ok(text) => text,
+        Err(error) => {
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(json!({"error": format!("cannot read extension buffer: {error}")})),
+            )
+        }
+    };
+    let buffer = match veles_core::extension_assist::buffer(&path, &content, &disk) {
+        Ok(buffer) => buffer,
+        Err(e) => return assist_refusal(e),
+    };
+    let cfg = srv.cfg();
+    let (route, request) = match veles_core::extension_assist::explain_request(
+        &cfg,
+        &buffer,
+        &content,
+        &diagnostics,
+    ) {
+        Ok(r) => r,
+        Err(e) => return assist_refusal(e),
+    };
+    let raw = match assist_completion(&route, &request).await {
+        Ok(raw) => raw,
+        Err(reply) => return reply,
+    };
+    match veles_core::extension_assist::answer_text(&raw) {
+        Ok(answer) => (
+            StatusCode::OK,
+            Json(json!({
+                "operation": "explain",
+                "answer": answer,
+                "path": veles_core::lsp_servers::display_path(&buffer.path),
+                "provider": route.provider,
+                "model": route.model,
+                "applied": false,
+            })),
+        ),
+        Err(e) => (
+            StatusCode::BAD_GATEWAY,
+            Json(json!({"error": e.to_string()})),
+        ),
+    }
+}
+
+/// The reply for a reviewed change set: the diff, every file's before and
+/// after, and the opaque id an explicit apply takes.
+fn changeset_reply(
+    operation: &str,
+    kind: veles_core::extension_assist::ChangeKind,
+    files: Vec<veles_core::extension_assist::ProposedFile>,
+    summary: &str,
+    route: &veles_core::providers::Route,
+) -> (StatusCode, Json<Value>) {
+    let diff = veles_core::extension_assist::changeset_diff(&files);
+    let rows = files
+        .iter()
+        .map(|f| {
+            json!({
+                "path": f.path,
+                "created": f.before.is_none(),
+                "before": f.before,
+                "after": f.after,
+                "sha256": veles_core::extension_assist::sha256(&f.after),
+            })
+        })
+        .collect::<Vec<_>>();
+    let dir = veles_core::lsp_servers::display_path(kind.dir());
+    let id = veles_core::extension_assist::propose_changeset(kind, files);
+    (
+        StatusCode::OK,
+        Json(json!({
+            "operation": operation,
+            "proposal_id": id,
+            "dir": dir,
+            "summary": summary,
+            "files": rows,
+            "diff": diff,
+            "provider": route.provider,
+            "model": route.model,
+            "api": veles_core::plugins::extension_api_version(),
+            "checks_run": false,
+            "applied": false,
+        })),
+    )
+}
+
+/// POST /api/extensions/assist/propose {path, instruction, diagnostics?} —
+/// a change across the files of the user extension `path` is in, as one
+/// reviewed change set. No write happens here.
+async fn extension_assist_propose(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let path = std::path::PathBuf::from(body["path"].as_str().unwrap_or(""));
+    let instruction = body["instruction"].as_str().unwrap_or("").to_string();
+    let diagnostics = body["diagnostics"].as_str().unwrap_or("").to_string();
+    let (name, dir) = match veles_core::extension_assist::extension_of(&path) {
+        Ok(found) => found,
+        Err(e) => {
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(json!({
+                    "error": format!("{e:#}"),
+                    "draft_as_extension": veles_core::extension_assist::draft_as_extension(&path),
+                })),
+            )
+        }
+    };
+    let (files, omitted) = match veles_core::extension_assist::extension_files(&dir) {
+        Ok(found) => found,
+        Err(e) => return assist_refusal(e),
+    };
+    let focus = path
+        .strip_prefix(&dir)
+        .ok()
+        .map(|p| p.to_string_lossy().replace('\\', "/"));
+    let cfg = srv.cfg();
+    let (route, request) = match veles_core::extension_assist::changeset_request(
+        &cfg,
+        &name,
+        &files,
+        &instruction,
+        &diagnostics,
+        focus.as_deref(),
+    ) {
+        Ok(r) => r,
+        Err(e) => return assist_refusal(e),
+    };
+    let raw = match assist_completion(&route, &request).await {
+        Ok(raw) => raw,
+        Err(reply) => return reply,
+    };
+    let (summary, proposed) = match veles_core::extension_assist::parse_changeset(&raw) {
+        Ok(parsed) => parsed,
+        Err(e) => {
+            return (
+                StatusCode::BAD_GATEWAY,
+                Json(json!({"error": format!("{e:#}")})),
+            )
+        }
+    };
+    let changed = match veles_core::extension_assist::edit_changeset(&dir, proposed) {
+        Ok(changed) => changed,
+        Err(e) => {
+            return (
+                StatusCode::BAD_GATEWAY,
+                Json(json!({"error": format!("{e:#}")})),
+            )
+        }
+    };
+    let (code, Json(mut reply)) = changeset_reply(
+        "changeset",
+        veles_core::extension_assist::ChangeKind::Edit { dir },
+        changed,
+        &summary,
+        &route,
+    );
+    reply["extension"] = json!(name);
+    reply["omitted"] = json!(omitted);
+    (code, Json(reply))
+}
+
+/// POST /api/extensions/assist/generate {name, kind, description} — a new
+/// extension from a description: the scaffold completed by the model,
+/// previewed as one change set. Created only by an explicit apply.
+async fn extension_assist_generate(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let name = body["name"].as_str().unwrap_or("").trim().to_string();
+    let kind = body["kind"].as_str().unwrap_or("tcl").to_string();
+    let description = body["description"].as_str().unwrap_or("").to_string();
+    let cfg = srv.cfg();
+    let (route, request, scaffold) =
+        match veles_core::extension_assist::generate_request(&cfg, &name, &kind, &description) {
+            Ok(r) => r,
+            Err(e) => return assist_refusal(e),
+        };
+    let raw = match assist_completion(&route, &request).await {
+        Ok(raw) => raw,
+        Err(reply) => return reply,
+    };
+    let built = veles_core::extension_assist::parse_changeset(&raw).and_then(|(summary, files)| {
+        Ok((
+            summary,
+            veles_core::extension_assist::generated_changeset(&name, &kind, &scaffold, files)?,
+        ))
+    });
+    let (summary, files) = match built {
+        Ok(built) => built,
+        Err(e) => {
+            return (
+                StatusCode::BAD_GATEWAY,
+                Json(json!({"error": format!("{e:#}")})),
+            )
+        }
+    };
+    let dir = match veles_core::extension_assist::create_target(&name) {
+        Ok(dir) => dir,
+        Err(e) => return assist_refusal(e),
+    };
+    let (code, Json(mut reply)) = changeset_reply(
+        "generate",
+        veles_core::extension_assist::ChangeKind::Create {
+            dir,
+            name: name.clone(),
+        },
+        files,
+        &summary,
+        &route,
+    );
+    reply["name"] = json!(name);
+    reply["kind"] = json!(kind);
+    (code, Json(reply))
+}
+
+/// POST /api/extensions/assist/apply — apply exactly the reviewed proposal,
+/// only if its hashes and the current on-disk base still match. The normal
+/// filesystem save performs its second hash check at the write boundary.
+async fn extension_assist_apply(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let id = body["proposal_id"].as_str().unwrap_or("");
+    // A change set (several files of one extension, or a generated new
+    // extension) is written and revalidated as one unit in core.
+    if veles_core::extension_assist::is_changeset(id) {
+        let id = id.to_string();
+        return match veles_core::rt::spawn_blocking(move || {
+            veles_core::extension_assist::apply_changeset(&id)
+        })
+        .await
+        {
+            Ok(Ok(mut reply)) => {
+                if reply["created"] == true {
+                    match srv.hooks.reload_plugins().await {
+                        Ok(()) => reply["reloaded"] = json!(true),
+                        Err(error) => {
+                            reply["reloaded"] = json!(false);
+                            reply["reload_error"] = json!(error);
+                        }
+                    }
+                }
+                (StatusCode::OK, Json(reply))
+            }
+            Ok(Err(error)) => (
+                StatusCode::CONFLICT,
+                Json(json!({"error": format!("{error:#}")})),
+            ),
+            Err(error) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(json!({"error": format!("the apply worker failed: {error}")})),
+            ),
+        };
+    }
+    let (write, pending) = match veles_core::extension_assist::apply(id) {
+        Ok(write) => write,
+        Err(error) => {
+            return (
+                StatusCode::CONFLICT,
+                Json(json!({"error": error.to_string()})),
+            )
+        }
+    };
+    let response = panes::fs_write(
+        State(srv),
+        Json(panes::WriteFileBody {
+            path: write["path"].as_str().unwrap_or("").to_string(),
+            content: write["content"].as_str().unwrap_or("").to_string(),
+            base_sha: write["base_sha"].as_str().map(str::to_string),
+        }),
+    )
+    .await;
+    let body = response.0;
+    if body.get("error").is_some() {
+        (StatusCode::CONFLICT, Json(body))
+    } else {
+        pending.complete();
+        (StatusCode::OK, Json(body))
+    }
+}
+
+/// POST /api/plugins/new {name, description?, kind?, template?} — scaffold
+/// an extension. Creation happens only when the desktop's confirmed form
+/// submits; no placeholder draft is written by the preview endpoint.
 async fn plugin_new(
     State(srv): State<Arc<DesktopServer>>,
     Json(body): Json<Value>,
 ) -> (StatusCode, Json<Value>) {
     let name = body["name"].as_str().unwrap_or("");
     let desc = body["description"].as_str().unwrap_or("");
-    match veles_core::plugins::scaffold(name, desc) {
+    let kind = body["kind"].as_str().unwrap_or("tcl");
+    match veles_core::plugins::scaffold_kind(name, desc, kind) {
         Ok(dir) => {
-            let entry = dir.join("plugin.tcl");
-            let _ = srv.hooks.reload_plugins().await;
-            (
-                StatusCode::CREATED,
-                Json(json!({
-                    "name": name,
-                    "dir": dir.display().to_string(),
-                    // The UI opens this in the Dev editor straight away —
-                    // a scaffold you then have to go and find is half a
-                    // feature.
-                    "path": entry.display().to_string(),
-                })),
-            )
+            let entry_name = match kind {
+                "js" => "plugin.ts",
+                "racket" => "plugin.rkt",
+                "lisp" => "plugin.lisp",
+                _ => "plugin.tcl",
+            };
+            let entry = dir.join(entry_name);
+            let mut response = json!({
+                "name": name,
+                "dir": dir.display().to_string(),
+                "path": entry.display().to_string(),
+                "api": veles_core::plugins::extension_api_version(),
+                "kind": kind,
+            });
+            match srv.hooks.reload_plugins().await {
+                Ok(()) => response["reloaded"] = json!(true),
+                Err(error) => {
+                    response["reloaded"] = json!(false);
+                    response["reload_error"] = json!(error);
+                }
+            }
+            (StatusCode::CREATED, Json(response))
         }
         Err(e) => (
             StatusCode::BAD_REQUEST,
@@ -6555,7 +7939,7 @@ async fn cron_new(
                 return (
                     StatusCode::BAD_REQUEST,
                     Json(json!({ "error": format!("{e:#}") })),
-                )
+                );
             }
         };
     // Session-wakeup target (Stage 5), resolved NOW so a typo or an
@@ -6581,7 +7965,7 @@ async fn cron_new(
                     return (
                         StatusCode::BAD_REQUEST,
                         Json(json!({ "error": format!("{e:#}") })),
-                    )
+                    );
                 }
             }
         }
@@ -6656,7 +8040,7 @@ async fn cron_edit(
                 return (
                     StatusCode::BAD_REQUEST,
                     Json(json!({ "error": format!("{e:#}") })),
-                )
+                );
             }
         },
     };
@@ -6684,7 +8068,7 @@ async fn cron_edit(
                 return (
                     StatusCode::BAD_REQUEST,
                     Json(json!({ "error": format!("{e:#}") })),
-                )
+                );
             }
         },
     };
@@ -6719,17 +8103,8 @@ async fn cron_edit(
     );
     match updated {
         Ok(Some(job)) => {
-            // A changed schedule invalidates the stored next fire.
-            if schedule.is_some() {
-                let next = veles_core::cron::next_fire(&job.schedule, &job, chrono::Utc::now())
-                    .ok()
-                    .flatten()
-                    .map(|t| t.to_rfc3339());
-                let _ = srv.store.lock_ok().cron_set_next(&id, next.as_deref());
-                let mut shown = job.clone();
-                shown.next_run_at = next;
-                return (StatusCode::OK, Json(cron_to_json(shown)));
-            }
+            // A changed schedule already carries its new next fire:
+            // Store::cron_update recomputes it from the edit on.
             (StatusCode::OK, Json(cron_to_json(job)))
         }
         Ok(None) => (
@@ -6855,7 +8230,7 @@ async fn cron_run(
             return (
                 StatusCode::SERVICE_UNAVAILABLE,
                 Json(json!({ "error": "scheduler not attached (desktop running standalone?)" })),
-            )
+            );
         }
     };
     let job = match srv.store.lock_ok().cron_get(&id) {
@@ -6864,13 +8239,13 @@ async fn cron_run(
             return (
                 StatusCode::NOT_FOUND,
                 Json(json!({ "error": "job not found" })),
-            )
+            );
         }
         Err(e) => {
             return (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(json!({ "error": format!("{e:#}") })),
-            )
+            );
         }
     };
     let id2 = id.clone();
@@ -7137,6 +8512,11 @@ async fn trigger_new(
         last_fired_at: None,
         last_status: None,
     };
+    if let Err(e) =
+        veles_core::triggers::validate_action_on(&row.action, &row.event, row.platform.as_deref())
+    {
+        return (StatusCode::BAD_REQUEST, Json(json!({ "error": e })));
+    }
     // ONE lock for the whole handler. The earlier shape put `lock_ok()`
     // in the `match` scrutinee and locked AGAIN in the `Ok` arm; the
     // scrutinee guard is a temporary that lives until the end of the
@@ -7216,6 +8596,32 @@ async fn trigger_edit(
         Some(_) => min_role_set.map(Some),
         None => None,
     };
+    if action.is_some() || event.is_some() {
+        // The edited row's action, event and platform together decide
+        // whether anything would run it.
+        let current = match srv.store.lock_ok().trigger_get(&name) {
+            Ok(Some(t)) => t,
+            Ok(None) => {
+                return (
+                    StatusCode::NOT_FOUND,
+                    Json(json!({ "error": format!("no such trigger: {name}") })),
+                )
+            }
+            Err(e) => {
+                return (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Json(json!({ "error": format!("{e:#}") })),
+                )
+            }
+        };
+        if let Err(e) = veles_core::triggers::validate_action_on(
+            action.as_deref().unwrap_or(&current.action),
+            event.as_deref().unwrap_or(&current.event),
+            current.platform.as_deref(),
+        ) {
+            return (StatusCode::BAD_REQUEST, Json(json!({ "error": e })));
+        }
+    }
 
     let updated = srv.store.lock_ok().trigger_update(
         &name,
@@ -7338,6 +8744,38 @@ async fn shell_start(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
     (StatusCode::OK, Json(json!({ "task_id": id })))
 }
 
+/// GET /api/translate/config — public default target and readiness only.
+/// Ready means a route translate.rs will actually use: `[translation]`
+/// naming both halves, or a configured provider that lists the default
+/// translator model (`translate::ready`).
+async fn translate_config(State(srv): State<Arc<DesktopServer>>) -> Json<Value> {
+    let cfg = srv.cfg();
+    Json(json!({
+        "target_language": cfg.translation.target_language,
+        "configured": veles_core::translate::ready(&cfg),
+    }))
+}
+
+/// POST /api/translate — one direct call to the configured translator.
+/// Selected text never becomes an agent turn or enters session history.
+async fn translate_text(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let text = body["text"].as_str().unwrap_or("").to_string();
+    let target = body["target_language"].as_str().map(str::to_string);
+    // Dropping this response future on a client disconnect drops the
+    // provider future with it. translate.rs has a live-socket regression
+    // for that cancellation path; do not move the call onto a detached task.
+    match veles_core::translate::translate(&srv.cfg(), &text, target.as_deref()).await {
+        Ok(value) => (StatusCode::OK, Json(value)),
+        Err(error) => (
+            StatusCode::BAD_REQUEST,
+            Json(json!({"error": format!("{error:#}")})),
+        ),
+    }
+}
+
 /// POST /api/btw — start a one-off subagent for a session.
 ///
 /// The HTTP twin of the `/btw` command (was `/api/background` before
@@ -7370,22 +8808,292 @@ async fn btw_start(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
     (StatusCode::OK, Json(json!({ "task_id": id })))
 }
 
+/// GET /api/fleet — registered cluster nodes and their synchronization state.
+///
+/// This is the authoritative node registry, not the desktop's manually
+/// configured SSH instance list. Only an explicit allowlist is exposed:
+/// peer tokens, signing keys and local configuration never enter it.
+async fn fleet_inventory(State(srv): State<Arc<DesktopServer>>) -> (StatusCode, Json<Value>) {
+    let cfg = srv.cfg();
+    let nodes = match srv.store.lock_ok().nodes_list() {
+        Ok(nodes) => nodes,
+        Err(e) => {
+            return (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(json!({"error": format!("could not read node registry: {e}")})),
+            )
+        }
+    };
+    let replicas = veles_core::storesync::list_replicas().unwrap_or_default();
+    let me = veles_core::node::NodeIdentity::load(&veles_core::config::config_dir())
+        .ok()
+        .flatten()
+        .map(|id| id.id);
+    let mut body = fleet_inventory_json(
+        &nodes,
+        me.as_deref(),
+        cfg.cluster.stale_after_secs,
+        &cfg.cluster,
+        &replicas,
+    );
+    // Per-kind sync status, per-node health and the inbox counts
+    // (crate::fleet_ops) — names, cursors and counts, never a token.
+    crate::fleet_ops::annotate(&mut body, &nodes, &srv.store.lock_ok(), &cfg);
+    (StatusCode::OK, Json(body))
+}
+
+/// A store apply that applied NOTHING and refused something is a
+/// conflict; one that applied some offers is a success that also names
+/// its refusals (FLEET-8: a partial pass used to read "Sync failed:
+/// HTTP 409").
+fn fleet_sync_status(body: &Value) -> StatusCode {
+    let refused = body["refusals"]
+        .as_array()
+        .is_some_and(|rows| !rows.is_empty());
+    if refused && body["applied"].as_u64().unwrap_or(0) == 0 {
+        StatusCode::CONFLICT
+    } else {
+        StatusCode::OK
+    }
+}
+
+/// The HTTP status for a fleet operation's refusal.
+fn fleet_error_status(error: &veles_core::storesync::OperationError) -> StatusCode {
+    use veles_core::storesync::OperationError as E;
+    match error {
+        E::UnknownNode => StatusCode::NOT_FOUND,
+        E::NotConfigured(_) | E::AlreadyRunning(_) | E::Refused(_) => StatusCode::CONFLICT,
+        E::InvalidOperation(_) | E::NeedsConfirmation(_) => StatusCode::BAD_REQUEST,
+        E::Failed(_) => StatusCode::BAD_GATEWAY,
+    }
+}
+
+/// POST /api/fleet/forget {node, confirm} — remove a STALE registry row
+/// (never this node, never one still heartbeating). Destructive, so the
+/// body must carry `confirm: true`; the desktop asks first.
+async fn fleet_forget(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let requested = body["node"].as_str().unwrap_or("");
+    let confirmed = body["confirm"].as_bool().unwrap_or(false);
+    let me = veles_core::node::NodeIdentity::load(&veles_core::config::config_dir())
+        .ok()
+        .flatten()
+        .map(|id| id.id);
+    match crate::fleet_ops::forget(&srv.store, &srv.cfg(), requested, me.as_deref(), confirmed) {
+        Ok(body) => (StatusCode::OK, Json(body)),
+        Err(error) => (
+            fleet_error_status(&error),
+            Json(json!({"error": error.to_string()})),
+        ),
+    }
+}
+
+/// POST /api/fleet/probe {node} — is the node reachable on its
+/// configured `[a2a_agents]` URL (its public card, no bearer)? Never
+/// the registry endpoint. Unreachable is a 200 with `reachable: false`.
+async fn fleet_probe(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let requested = body["node"].as_str().unwrap_or("");
+    match crate::fleet_ops::probe(&srv.store, &srv.cfg(), requested).await {
+        Ok(body) => (StatusCode::OK, Json(body)),
+        Err(error) => (
+            fleet_error_status(&error),
+            Json(json!({"error": error.to_string()})),
+        ),
+    }
+}
+
+fn fleet_answer(
+    r: Result<Value, veles_core::storesync::OperationError>,
+) -> (StatusCode, Json<Value>) {
+    match r {
+        Ok(body) => (StatusCode::OK, Json(body)),
+        Err(error) => (
+            fleet_error_status(&error),
+            Json(json!({"error": error.to_string()})),
+        ),
+    }
+}
+
+/// POST /api/fleet/logs {node, lines?, level?} — the last `lines` (at
+/// most 500, default 100) lines of that node's gateway log, at or above
+/// `level` (all|info|warn|error), secrets redacted on the node before
+/// they leave it. This node answers locally; another one is asked over
+/// its `[a2a_agents]` link (crate::fleet_obs), and answers only if this
+/// node is in its `[cluster] memsync_peers`.
+async fn fleet_logs(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let requested = body["node"].as_str().unwrap_or("").to_string();
+    let params = json!({
+        "op": "logs",
+        "lines": body["lines"]
+            .as_u64()
+            .unwrap_or(crate::fleet_obs::DEFAULT_LINES as u64),
+        "level": body["level"].as_str().unwrap_or("all"),
+    });
+    fleet_answer(crate::fleet_obs::ask(&srv.store, &srv.cfg(), &requested, params).await)
+}
+
+/// POST /api/fleet/metrics {node} — that node's CPU load and cores,
+/// memory, free disk, IO pressure, uptime, version and revision, and the
+/// work running in it, sampled now (crate::fleet_obs).
+async fn fleet_metrics(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let requested = body["node"].as_str().unwrap_or("").to_string();
+    fleet_answer(
+        crate::fleet_obs::ask(&srv.store, &srv.cfg(), &requested, json!({"op": "metrics"})).await,
+    )
+}
+
+/// POST /api/fleet/drift — version, revision and config drift: every
+/// registry node that is not stale and has an `[a2a_agents]` entry is
+/// asked for its fingerprint and compared with this node's, by key name
+/// and config-log high-water mark (no value is sent).
+async fn fleet_drift(State(srv): State<Arc<DesktopServer>>) -> (StatusCode, Json<Value>) {
+    fleet_answer(crate::fleet_obs::drift(&srv.store, &srv.cfg()).await)
+}
+
+/// POST /api/fleet/gossip {peer?} — exchange registry gossip now with
+/// every `[cluster] gossip_peers` entry, or the one named.
+async fn fleet_gossip(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let peer = body["peer"].as_str().map(str::to_string);
+    fleet_answer(crate::fleet_obs::gossip_now(&srv.store, &srv.cfg(), peer.as_deref()).await)
+}
+
+/// POST /api/fleet/sync {node, kind?, operation?, confirm?} — run one
+/// explicit sync pass (`kind`: store (default), memory, config or vault;
+/// crate::fleet_ops) for a configured peer. The registry supplies
+/// identity only; endpoint and bearer come from the operator's
+/// [a2a_agents] entry and are never returned. `operation: "apply"`
+/// drains this node's inbox of that kind. Data-changing kinds need
+/// `confirm: true`.
+async fn fleet_sync(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let requested = body["node"].as_str().unwrap_or("").trim();
+    let operation = body["operation"].as_str().unwrap_or("push");
+    let kind = body["kind"].as_str().unwrap_or("store");
+    let confirmed = body["confirm"].as_bool().unwrap_or(false);
+    match crate::fleet_ops::operate(
+        &srv.store,
+        &srv.cfg(),
+        kind,
+        requested,
+        operation,
+        confirmed,
+    )
+    .await
+    {
+        Ok(body) => (fleet_sync_status(&body), Json(body)),
+        Err(error) => (
+            fleet_error_status(&error),
+            Json(json!({"error": error.to_string()})),
+        ),
+    }
+}
+
+fn fleet_inventory_json(
+    nodes: &[veles_core::store::NodeRow],
+    me: Option<&str>,
+    stale_after_secs: u64,
+    cluster: &veles_core::config::ClusterSection,
+    replicas: &[veles_core::storesync::ReplicaInfo],
+) -> Value {
+    let nodes = nodes
+        .iter()
+        .map(|n| {
+            let replica = replicas.iter().find(|r| r.node == n.id || r.node == n.name);
+            let sync_peer = cluster
+                .storesync_peers
+                .iter()
+                .find(|peer| peer.as_str() == n.name || peer.as_str() == n.id);
+            json!({
+                "id": n.id,
+                "name": n.name,
+                "host": n.host,
+                "version": n.version,
+                "uptime_class": n.uptime_class,
+                "endpoint": n.endpoint,
+                "static_ip": n.static_ip,
+                "static_ip_source": n.static_ip_source,
+                "gpu": n.gpu.as_deref().and_then(|g| serde_json::from_str::<Value>(g).ok()),
+                "capabilities": n.caps.as_deref().and_then(|c| serde_json::from_str::<Value>(c).ok()),
+                "load1": n.load1,
+                "load_at": n.load_at,
+                "sessions_served": n.sessions_served,
+                "registered_at": n.registered_at,
+                "heartbeat_at": n.heartbeat_at,
+                "self": me == Some(n.id.as_str()),
+                "stale": veles_core::node::is_stale(&n.heartbeat_at, stale_after_secs as i64),
+                "sync_peer": sync_peer,
+                "replica": replica.map(|r| json!({
+                    "applied_seq": r.applied_seq,
+                    "sessions": r.sessions,
+                    "messages": r.messages,
+                    "bytes": r.bytes,
+                })),
+            })
+        })
+        .collect::<Vec<_>>();
+    json!({
+        "nodes": nodes,
+        "stale_after_secs": stale_after_secs,
+        "sync": {
+            "gossip_peers": cluster.gossip_peers,
+            "memory_peers": cluster.memsync_peers,
+            "store_peers": cluster.storesync_peers,
+            "memory_auto": cluster.memsync_auto,
+            "store_auto": cluster.storesync_auto,
+            "config_auto": cluster.configsync_auto,
+            "config_waiting": veles_core::configsync::inbox_waiting()
+                .map(|waiting| waiting.len())
+                .unwrap_or(0),
+        },
+    })
+}
+
 /// GET /api/tasks — running subagents, background shells and monitors.
 ///
 /// The first surface to read the task registry at all. Its predecessor
 /// (`SubagentRegistry`) was written on every delegate call and read by
 /// nothing for the life of the feature.
-async fn tasks_list() -> Json<Value> {
-    let mut v = veles_core::tasks::snapshot();
-    // The same text every other frontend prints, so a desktop user and a
-    // terminal user are never looking at differently-worded state.
+async fn tasks_list(Query(query): Query<HashMap<String, String>>) -> Json<Value> {
+    let session = query.get("session").map(String::as_str).unwrap_or("");
+    let mut v = if session.is_empty() {
+        // Compatibility for the owner-authorized desktop API: no caller
+        // session means the process-wide view it always exposed.
+        veles_core::tasks::snapshot()
+    } else {
+        veles_core::tasks::snapshot_for(session)
+    };
     v["listing"] = json!(veles_core::tasks::listing());
     Json(v)
 }
 
 /// GET /api/tasks/:id/output — captured output for a background shell.
-async fn task_output(Path(id): Path<u32>) -> (StatusCode, Json<Value>) {
-    match veles_core::shells::detail(id) {
+async fn task_output(
+    Path(id): Path<u32>,
+    Query(query): Query<HashMap<String, String>>,
+) -> (StatusCode, Json<Value>) {
+    let session = query.get("session").map(String::as_str).unwrap_or("");
+    let detail = if session.is_empty() {
+        veles_core::shells::detail(id)
+    } else {
+        veles_core::shells::detail_for(id, session)
+    };
+    match detail {
         Some(v) => (StatusCode::OK, Json(v)),
         None => (
             StatusCode::NOT_FOUND,
@@ -7394,9 +9102,38 @@ async fn task_output(Path(id): Path<u32>) -> (StatusCode, Json<Value>) {
     }
 }
 
+/// GET /api/tasks/:id — registry details for a shell, monitor or subagent.
+async fn task_detail(
+    Path(id): Path<u32>,
+    Query(query): Query<HashMap<String, String>>,
+) -> (StatusCode, Json<Value>) {
+    let session = query.get("session").map(String::as_str).unwrap_or("");
+    let detail = if session.is_empty() {
+        veles_core::tasks::detail(id)
+    } else {
+        veles_core::tasks::detail_for(id, session)
+    };
+    match detail {
+        Some(v) => (StatusCode::OK, Json(v)),
+        None => (
+            StatusCode::NOT_FOUND,
+            Json(json!({"error": "no such reachable task", "id": id})),
+        ),
+    }
+}
+
 /// POST /api/tasks/:id/cancel — stop one task.
-async fn task_cancel(Path(id): Path<u32>) -> (StatusCode, Json<Value>) {
-    if veles_core::tasks::cancel(id) {
+async fn task_cancel(
+    Path(id): Path<u32>,
+    Query(query): Query<HashMap<String, String>>,
+) -> (StatusCode, Json<Value>) {
+    let session = query.get("session").map(String::as_str).unwrap_or("");
+    let cancelled = if session.is_empty() {
+        veles_core::tasks::cancel(id)
+    } else {
+        veles_core::tasks::cancel_for(id, session)
+    };
+    if cancelled {
         (StatusCode::OK, Json(json!({"cancelled": id})))
     } else {
         (
@@ -8036,13 +9773,13 @@ async fn set_override(
             return (
                 StatusCode::NOT_FOUND,
                 Json(json!({ "error": format!("session not found: {id}") })),
-            )
+            );
         }
         Err(e) => {
             return (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(json!({ "error": format!("{e:#}") })),
-            )
+            );
         }
     }
     // A "clear" is all three fields EXPLICITLY empty (the UI's clear
@@ -8105,7 +9842,7 @@ async fn set_override(
                         return (
                             StatusCode::BAD_REQUEST,
                             Json(json!({ "error": format!("{e:#}") })),
-                        )
+                        );
                     }
                 }
             } else {
@@ -8290,7 +10027,7 @@ async fn session_mechanism_view(
             return (
                 StatusCode::NOT_FOUND,
                 Json(json!({ "error": e.to_string() })),
-            )
+            );
         }
     };
     (StatusCode::OK, Json(mechanism_snapshot(&agent)))
@@ -8341,7 +10078,7 @@ async fn session_mechanism(
             return (
                 StatusCode::NOT_FOUND,
                 Json(json!({ "error": e.to_string() })),
-            )
+            );
         }
     };
     let name = body["name"].as_str().unwrap_or("");
@@ -8628,7 +10365,7 @@ async fn session_branch(
             return (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(json!({ "error": format!("{e:#}") })),
-            )
+            );
         }
     };
     // A watcher attached to the new session (the desktop opens it right
@@ -8685,7 +10422,7 @@ async fn session_retry(
             return (
                 StatusCode::NOT_FOUND,
                 Json(json!({ "error": "session not active" })),
-            )
+            );
         }
     };
     let Some(text) = agent.last_prompt() else {
@@ -8875,6 +10612,9 @@ async fn setup_state(
         "vault_path": veles_core::vault::vault_dir().display().to_string(),
         // The provider step renders these rows (veles_core::setup).
         "presets": veles_core::setup::PROVIDER_PRESETS,
+        // Public constants for optional external sign-up links. They are
+        // not setup answers and no setup route fetches or transmits them.
+        "referrals": veles_core::setup::REFERRAL_LINKS,
     }))
 }
 
@@ -8968,7 +10708,7 @@ pub(crate) async fn setup_preview(Json(body): Json<SetupPreviewBody>) -> (Status
             return (
                 StatusCode::BAD_REQUEST,
                 Json(json!({"ok":false,"error":format!("{e:#}")})),
-            )
+            );
         }
     };
     let answers = body.answers;
@@ -8982,7 +10722,7 @@ pub(crate) async fn setup_preview(Json(body): Json<SetupPreviewBody>) -> (Status
             return (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(json!({ "ok": false, "error": format!("{e:#}") })),
-            )
+            );
         }
     };
     match veles_core::setup::setup_plan(&answers, existing.as_deref()) {
@@ -9116,13 +10856,13 @@ async fn secrets_set(
                 return refuse(
                     StatusCode::BAD_REQUEST,
                     format!("that request was for {}, not {name}", p.name),
-                )
+                );
             }
             None => {
                 return refuse(
                     StatusCode::CONFLICT,
                     "that request is no longer open".to_string(),
-                )
+                );
             }
         },
         None => veles_core::secrets::policy_of(&name, &veles_core::config::live()),
@@ -9178,7 +10918,7 @@ async fn setup_apply(
             return refuse(
                 StatusCode::BAD_REQUEST,
                 "component options require a selected component".into(),
-            )
+            );
         }
     };
     if component.is_some() {
@@ -9232,7 +10972,7 @@ async fn setup_apply(
     let (report, plan) = match applied {
         Ok(Ok(r)) => r,
         Ok(Err(e)) if e.downcast_ref::<veles_core::setup::StaleBase>().is_some() => {
-            return refuse(StatusCode::CONFLICT, e.to_string())
+            return refuse(StatusCode::CONFLICT, e.to_string());
         }
         Ok(Err(e)) => return refuse(StatusCode::INTERNAL_SERVER_ERROR, format!("{e:#}")),
         Err(e) => return refuse(StatusCode::INTERNAL_SERVER_ERROR, e.to_string()),
@@ -9378,6 +11118,16 @@ pub fn router(srv: Arc<DesktopServer>, auth: Arc<veles_core::authn::AuthConfig>)
         .route("/challenge/:token/state", get(challenge_state))
         .route("/challenge/:token/answer", post(challenge_answer))
         .route("/api/status", get(status))
+        .route("/api/fleet", get(fleet_inventory))
+        .route("/api/fleet/sync", post(fleet_sync))
+        .route("/api/fleet/forget", post(fleet_forget))
+        .route("/api/fleet/probe", post(fleet_probe))
+        .route("/api/fleet/logs", post(fleet_logs))
+        .route("/api/fleet/metrics", post(fleet_metrics))
+        .route("/api/fleet/drift", post(fleet_drift))
+        .route("/api/fleet/gossip", post(fleet_gossip))
+        .route("/api/translate", post(translate_text))
+        .route("/api/translate/config", get(translate_config))
         .route("/api/guards", get(guards))
         .route("/api/sessions/:id/context", get(context_view))
         .route("/api/config/failover", post(save_failover))
@@ -9440,6 +11190,59 @@ pub fn router(srv: Arc<DesktopServer>, auth: Arc<veles_core::authn::AuthConfig>)
         .route("/api/hooks/toggle", post(hooks_toggle))
         .route("/api/plugins", get(plugins_list))
         .route("/api/plugins/new", post(plugin_new))
+        .route("/api/plugins/preview", post(plugin_preview))
+        .route(
+            "/api/extensions/assist/preview",
+            post(extension_assist_preview),
+        )
+        .route("/api/extensions/assist/apply", post(extension_assist_apply))
+        .route("/api/extensions/assist/ask", post(extension_assist_ask))
+        .route(
+            "/api/extensions/assist/explain",
+            post(extension_assist_explain),
+        )
+        .route(
+            "/api/extensions/assist/propose",
+            post(extension_assist_propose),
+        )
+        .route(
+            "/api/extensions/assist/generate",
+            post(extension_assist_generate),
+        )
+        .route("/api/plugins/api", get(plugin_api_version))
+        .route(
+            "/api/plugins/:name/contribution/files",
+            get(plugin_contribution_files),
+        )
+        .route(
+            "/api/plugins/:name/contribution/review",
+            post(plugin_contribution_review),
+        )
+        .route(
+            "/api/plugins/:name/contribution/checks",
+            post(plugin_contribution_checks),
+        )
+        .route(
+            "/api/plugins/:name/contribution/prepare",
+            post(plugin_contribution_prepare),
+        )
+        .route(
+            "/api/plugins/contribution/publish",
+            post(plugin_contribution_publish),
+        )
+        .route("/api/plugins/contribution/pr", post(plugin_contribution_pr))
+        .route(
+            "/api/plugins/contribution/review",
+            post(plugin_contribution_review_many),
+        )
+        .route(
+            "/api/plugins/contribution/checks",
+            post(plugin_contribution_checks_many),
+        )
+        .route(
+            "/api/plugins/contribution/prepare",
+            post(plugin_contribution_prepare_many),
+        )
         .route("/api/plugins/install", post(plugin_install))
         .route("/api/plugins/history", get(plugin_history))
         .route("/api/plugins/rollback", post(plugin_rollback))
@@ -9501,6 +11304,7 @@ pub fn router(srv: Arc<DesktopServer>, auth: Arc<veles_core::authn::AuthConfig>)
         .route("/api/sessions/:id", delete(delete_session))
         .route("/api/sessions/:id/head", get(session_head))
         .route("/api/sessions/:id/history", get(history))
+        .route("/api/sessions/:id/export", get(export_session))
         // Attach to a session's live event stream. The counterpart to
         // history: that returns the transcript, this returns the
         // transcript AND everything after it, including a turn already
@@ -9548,6 +11352,7 @@ pub fn router(srv: Arc<DesktopServer>, auth: Arc<veles_core::authn::AuthConfig>)
         .route("/api/btw", post(btw_start))
         .route("/api/shells", post(shell_start))
         .route("/api/tasks", get(tasks_list))
+        .route("/api/tasks/:id", get(task_detail))
         .route("/api/tasks/:id/output", get(task_output))
         .route("/api/tasks/:id/cancel", post(task_cancel))
         .route("/api/agents", get(agents_list))
@@ -9555,6 +11360,10 @@ pub fn router(srv: Arc<DesktopServer>, auth: Arc<veles_core::authn::AuthConfig>)
         .route("/api/sessions/:id/todos", get(session_todos))
         .route("/api/checkpoints", get(list_checkpoints))
         .route("/api/checkpoints/:id/restore", post(restore_checkpoint))
+        .route(
+            "/api/approvals/grants",
+            get(crate::grants_api::view).delete(crate::grants_api::revoke),
+        )
         .route("/api/approvals/:id/decide", post(decide_ask))
         .route(
             "/api/desktop/state",
@@ -9661,6 +11470,7 @@ pub fn router(srv: Arc<DesktopServer>, auth: Arc<veles_core::authn::AuthConfig>)
         .route("/api/lsp/events", get(lsp_events))
         .route("/api/lsp/stop", post(lsp_stop))
         .route("/api/lsp/status", get(lsp_status))
+        .route("/api/lsp/check", post(lsp_check))
         .route("/api/chat", post(chat))
         // Axum's default request-body cap is 2MB, and the Dev pane now
         // ships whole files through two POSTs: didOpen/didChange to
@@ -9923,7 +11733,7 @@ async fn challenge_answer(Path(token): Path<String>, Json(body): Json<Value>) ->
                 StatusCode::BAD_REQUEST,
                 Json(json!({ "error": "not something to do on the page" })),
             )
-                .into_response()
+                .into_response();
         }
     };
     if veles_core::challenge::answer_page(&token, answer) {
@@ -9938,6 +11748,10 @@ pub async fn serve(srv: Arc<DesktopServer>) -> Result<()> {
     // Hand edits of config.toml reach the live handle without a
     // restart (R4.5) — the same watcher tclrt runs for plugins.
     srv.spawn_config_watcher();
+    // Resume ordinary desktop turns whose previous owner died. This uses
+    // durable run generations and saved history; it does not replay the
+    // original user prompt or resurrect connector/A2A ownership.
+    srv.spawn_interrupted_turn_recovery();
     // Background completion wake turns (2026-09-13, USER's contract):
     // the desktop wakes sessions IT owns (not chat-backed ones — the
     // gateway in this process owns those, and the process-wide claim
@@ -10127,6 +11941,825 @@ mod tests {
         );
     }
 
+    #[tokio::test]
+    async fn task_panel_is_scoped_and_finished_shell_output_stays_readable() {
+        let (_d, _srv, _h, _e) = scratch_server();
+        let session = "panel-owner";
+        let foreign = "panel-stranger";
+        veles_core::acl::set_session_principal(
+            foreign,
+            veles_core::acl::Principal::known("irc:stranger", veles_core::acl::Role::User),
+        );
+        let output_command = if cfg!(windows) {
+            "Write-Output 'finished panel output'"
+        } else {
+            "printf 'finished panel output\\n'"
+        };
+        let finished = veles_core::shells::start(
+            output_command,
+            session,
+            veles_core::user_envs::ZoneArg::Unset,
+        );
+        let monitor = veles_core::monitor::start(
+            veles_core::monitor::Predicate::Shell("sleep 30".into()),
+            Some(60),
+            session,
+        );
+        let hidden = veles_core::tasks::start(
+            veles_core::tasks::TaskKind::Shell,
+            "not for the stranger",
+            foreign,
+        )
+        .0;
+        for _ in 0..50 {
+            if veles_core::tasks::get(finished).is_some_and(|t| t.status.is_terminal()) {
+                break;
+            }
+            tokio::time::sleep(std::time::Duration::from_millis(20)).await;
+        }
+        // Bind only after starting the real host shell: a principal-named
+        // test session otherwise selects its offline user-env container.
+        veles_core::acl::set_session_principal(
+            session,
+            veles_core::acl::Principal::known("irc:panel-owner", veles_core::acl::Role::User),
+        );
+        let Json(body) = tasks_list(axum::extract::Query(std::collections::HashMap::from([(
+            "session".into(),
+            session.into(),
+        )])))
+        .await;
+        let ids: Vec<u64> = body["tasks"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|t| t["id"].as_u64().unwrap())
+            .collect();
+        assert!(ids.contains(&(finished as u64)), "{body}");
+        assert!(ids.contains(&(monitor as u64)), "{body}");
+        assert!(!ids.contains(&(hidden as u64)), "{body}");
+        let (code, Json(output)) = task_output(
+            Path(finished),
+            axum::extract::Query(std::collections::HashMap::from([(
+                "session".into(),
+                foreign.into(),
+            )])),
+        )
+        .await;
+        assert_eq!(code, StatusCode::NOT_FOUND, "{output}");
+        let (code, Json(cancel)) = task_cancel(
+            Path(monitor),
+            axum::extract::Query(std::collections::HashMap::from([(
+                "session".into(),
+                foreign.into(),
+            )])),
+        )
+        .await;
+        assert_eq!(code, StatusCode::NOT_FOUND, "{cancel}");
+        assert!(
+            veles_core::tasks::get(monitor).unwrap().status
+                == veles_core::tasks::TaskStatus::Running
+        );
+        let (code, Json(output)) = task_output(
+            Path(monitor),
+            axum::extract::Query(std::collections::HashMap::from([(
+                "session".into(),
+                session.into(),
+            )])),
+        )
+        .await;
+        assert_eq!(code, StatusCode::NOT_FOUND, "{output}");
+        let (code, Json(detail)) = task_detail(
+            Path(monitor),
+            axum::extract::Query(std::collections::HashMap::from([(
+                "session".into(),
+                session.into(),
+            )])),
+        )
+        .await;
+        assert_eq!(code, StatusCode::OK, "{detail}");
+        assert_eq!(detail["kind"], "monitor");
+        assert_eq!(detail["label"], "shell: sleep 30");
+        let (code, Json(output)) = task_output(
+            Path(finished),
+            axum::extract::Query(std::collections::HashMap::from([(
+                "session".into(),
+                session.into(),
+            )])),
+        )
+        .await;
+        assert_eq!(code, StatusCode::OK, "{output}");
+        assert_eq!(output["output"], "finished panel output");
+        assert!(veles_core::tasks::cancel_for(monitor, session));
+        veles_core::acl::clear_session_principal(session);
+        veles_core::acl::clear_session_principal(foreign);
+    }
+
+    #[tokio::test]
+    async fn translate_config_exposes_only_the_default_target_and_readiness() {
+        let (_d, srv, _h, _e) = scratch_server();
+        let Json(body) = translate_config(State(srv)).await;
+        assert_eq!(body["configured"], false);
+        assert_eq!(body["target_language"], "");
+        assert!(body.get("provider").is_none());
+        assert!(body.get("model").is_none());
+    }
+
+    #[tokio::test]
+    async fn the_translate_endpoint_requires_a_dedicated_route_without_a_network_call() {
+        let (_d, srv, _h, _e) = scratch_server();
+        let (code, Json(body)) = translate_text(
+            State(srv),
+            Json(json!({"text": "hello", "target_language": "German"})),
+        )
+        .await;
+        assert_eq!(code, StatusCode::BAD_REQUEST);
+        assert!(
+            body["error"]
+                .as_str()
+                .unwrap()
+                .contains("[translation] provider and model"),
+            "{body}"
+        );
+    }
+
+    #[test]
+    fn fleet_inventory_lists_registry_capabilities_and_sync_without_secrets() {
+        let dir = tempfile::tempdir().unwrap();
+        let store = Store::open(&dir.path().join("state.db")).unwrap();
+        store
+            .node_register(
+                "node-one",
+                "worker-one",
+                "worker-one",
+                "0.2.0",
+                "always-on",
+                Some(r#"{"name":"Test GPU"}"#),
+                Some("http://10.0.30.2:8642"),
+                None,
+                None,
+            )
+            .unwrap();
+        let nodes = store.nodes_list().unwrap();
+        let cluster = veles_core::config::ClusterSection {
+            storesync_peers: vec!["trusted-peer".into()],
+            memsync_peers: vec!["memory-peer".into()],
+            storesync_auto: true,
+            ..Default::default()
+        };
+        let body = fleet_inventory_json(&nodes, Some("node-one"), 600, &cluster, &[]);
+        assert_eq!(body["nodes"][0]["name"], "worker-one");
+        assert_eq!(body["nodes"][0]["self"], true);
+        assert_eq!(body["nodes"][0]["stale"], false);
+        assert_eq!(body["nodes"][0]["gpu"]["name"], "Test GPU");
+        assert_eq!(body["sync"]["store_peers"][0], "trusted-peer");
+        assert_eq!(body["sync"]["store_auto"], true);
+        let text = body.to_string();
+        for forbidden in ["A2A_PEER_TOKENS", "ticket_signers", "signers", "api_key"] {
+            assert!(!text.contains(forbidden), "secret field leaked: {text}");
+        }
+    }
+
+    /// FLEET-10(b): the leak check above can never fail — nothing it
+    /// builds from holds a secret. This one SEEDS them: the node is a
+    /// store and memory peer whose [a2a_agents] entry carries a bearer
+    /// and a private URL, and the full handler body (inventory plus the
+    /// command-center annotation that does read the whole config) must
+    /// name the peer without ever carrying either.
+    #[test]
+    fn fleet_inventory_never_carries_a_seeded_peer_bearer_or_dial_url() {
+        let (_home, _env) = veles_core::testenv::scratch_home();
+        let store = Store::open(&veles_core::config::veles_home().join("state.db")).unwrap();
+        store
+            .node_register(
+                "node-two",
+                "worker-two",
+                "worker-two",
+                "0.2.0",
+                "always-on",
+                None,
+                Some("http://10.0.30.3:8642"),
+                None,
+                None,
+            )
+            .unwrap();
+        let nodes = store.nodes_list().unwrap();
+        let mut cfg = VelesConfig::default();
+        cfg.cluster.storesync_peers = vec!["worker-two".into()];
+        cfg.cluster.memsync_peers = vec!["worker-two".into()];
+        cfg.a2a_agents.insert(
+            "worker-two".into(),
+            veles_core::config::A2APeer {
+                url: "http://dial-only.invalid:9911".into(),
+                auth: veles_core::config::A2APeerAuth {
+                    kind: "bearer".into(),
+                    token: "SEEDED-PEER-BEARER-0451".into(),
+                },
+            },
+        );
+        let mut body = fleet_inventory_json(&nodes, None, 600, &cfg.cluster, &[]);
+        crate::fleet_ops::annotate(&mut body, &nodes, &store, &cfg);
+        assert_eq!(
+            body["nodes"][0]["sync_status"]["store"]["peer"],
+            "worker-two"
+        );
+        assert_eq!(body["nodes"][0]["sync_status"]["store"]["dialable"], true);
+        assert_eq!(
+            body["nodes"][0]["sync_kinds"],
+            json!(["config", "memory", "store", "vault"])
+        );
+        assert!(body["sync"]["inbox"]["store"].is_number(), "{body}");
+        let text = body.to_string();
+        for forbidden in ["SEEDED-PEER-BEARER-0451", "dial-only.invalid"] {
+            assert!(!text.contains(forbidden), "{forbidden} leaked: {text}");
+        }
+    }
+
+    #[tokio::test]
+    async fn fleet_sync_rejects_unknown_and_unconfigured_nodes_before_network() {
+        let (_d, srv, _h, _e) = scratch_server();
+        srv.store
+            .lock_ok()
+            .node_register(
+                "node-local",
+                "worker",
+                "worker",
+                "0.1.6",
+                "ephemeral",
+                None,
+                Some("http://127.0.0.1:9900"),
+                None,
+                None,
+            )
+            .unwrap();
+        let (code, Json(body)) =
+            fleet_sync(State(srv.clone()), Json(json!({"node": "unknown"}))).await;
+        assert_eq!(code, StatusCode::NOT_FOUND, "{body}");
+        let (code, Json(body)) =
+            fleet_sync(State(srv.clone()), Json(json!({"node": "node-local"}))).await;
+        assert_eq!(code, StatusCode::CONFLICT, "{body}");
+        assert!(body["error"].as_str().unwrap().contains("storesync_peers"));
+        let (code, Json(body)) = fleet_sync(
+            State(srv.clone()),
+            Json(json!({"node": "node-local", "operation": "arbitrary"})),
+        )
+        .await;
+        assert_eq!(code, StatusCode::BAD_REQUEST, "{body}");
+        // A config apply rewrites config.toml: refused unconfirmed.
+        let (code, Json(body)) = fleet_sync(
+            State(srv.clone()),
+            Json(json!({"kind": "config", "operation": "apply"})),
+        )
+        .await;
+        assert_eq!(code, StatusCode::BAD_REQUEST, "{body}");
+        assert!(
+            body["error"].as_str().unwrap().contains("confirm"),
+            "{body}"
+        );
+        // Forget: a live node is refused, a missing confirm is refused.
+        let (code, Json(body)) = fleet_forget(
+            State(srv.clone()),
+            Json(json!({"node": "node-local", "confirm": true})),
+        )
+        .await;
+        assert_eq!(
+            code,
+            StatusCode::CONFLICT,
+            "a heartbeating node stays: {body}"
+        );
+        let (code, _) = fleet_forget(State(srv), Json(json!({"node": "unknown"}))).await;
+        assert_eq!(code, StatusCode::NOT_FOUND);
+    }
+
+    #[test]
+    fn a_partial_store_apply_is_a_success_that_names_its_refusals() {
+        let refusal = json!([{"node": "n", "error": "gap"}]);
+        assert_eq!(
+            fleet_sync_status(&json!({"applied": 2, "refusals": refusal})),
+            StatusCode::OK
+        );
+        assert_eq!(
+            fleet_sync_status(&json!({"applied": 0, "refusals": refusal})),
+            StatusCode::CONFLICT
+        );
+        assert_eq!(
+            fleet_sync_status(&json!({"applied": 0, "refusals": []})),
+            StatusCode::OK
+        );
+    }
+
+    #[tokio::test]
+    async fn extension_assist_preview_is_pure_and_apply_is_single_use() {
+        use tokio::io::{AsyncReadExt, AsyncWriteExt};
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+            .await
+            .expect("bind loopback provider");
+        let addr = listener.local_addr().expect("provider address");
+        let (seen_tx, seen_rx) = tokio::sync::oneshot::channel();
+        let provider = veles_core::rt::spawn(async move {
+            let (mut sock, _) = listener.accept().await.expect("provider accept");
+            let mut raw = Vec::new();
+            let mut chunk = [0u8; 8192];
+            let mut need = None;
+            loop {
+                let n = sock.read(&mut chunk).await.expect("read provider request");
+                assert!(n > 0, "preview disconnected before its request body");
+                raw.extend_from_slice(&chunk[..n]);
+                if need.is_none() {
+                    if let Some(end) = raw.windows(4).position(|w| w == b"\r\n\r\n").map(|i| i + 4)
+                    {
+                        let headers = String::from_utf8_lossy(&raw[..end]).to_lowercase();
+                        let length = headers
+                            .split("content-length:")
+                            .nth(1)
+                            .and_then(|tail| tail.split(['\r', '\n']).next())
+                            .and_then(|n| n.trim().parse::<usize>().ok())
+                            .expect("request content length");
+                        need = Some(end + length);
+                    }
+                }
+                if matches!(need, Some(total) if raw.len() >= total) {
+                    break;
+                }
+            }
+            let body_start = raw.windows(4).position(|w| w == b"\r\n\r\n").unwrap() + 4;
+            let body: Value = serde_json::from_slice(&raw[body_start..]).expect("request JSON");
+            assert_eq!(body["model"], "test-model");
+            assert_eq!(body["stream"], false);
+            assert!(
+                body.get("tools").is_none(),
+                "a direct completion must not advertise tools"
+            );
+            assert_eq!(body["messages"].as_array().unwrap().len(), 2);
+            assert!(body["messages"][0]["content"]
+                .as_str()
+                .unwrap()
+                .contains("extension API"));
+            assert!(body["messages"][1]["content"]
+                .as_str()
+                .unwrap()
+                .contains("fixture diagnostic"));
+            assert!(body["messages"][1]["content"]
+                .as_str()
+                .unwrap()
+                .contains("isolated preview fixture"));
+            let _ = seen_tx.send(());
+            let answer = json!({
+                "id": "fixture", "object": "chat.completion", "created": 1,
+                "model": "test-model",
+                "choices": [{"index": 0, "message": {"role": "assistant", "content": "proc demo {} {return reviewed}\n"}, "finish_reason": "stop"}],
+                "usage": {"prompt_tokens": 1, "completion_tokens": 1},
+            }).to_string();
+            let head = format!("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n", answer.len());
+            sock.write_all(head.as_bytes())
+                .await
+                .expect("provider headers");
+            sock.write_all(answer.as_bytes())
+                .await
+                .expect("provider body");
+            sock.shutdown().await.expect("provider close");
+        });
+        let (_d, srv, _h, _e) = scratch_server();
+        let mut cfg = (*srv.cfg()).clone();
+        cfg.custom_providers[0].base_url = format!("http://{addr}/v1");
+        *srv.cfg.write().unwrap_or_else(|p| p.into_inner()) = std::sync::Arc::new(cfg);
+        let root = veles_core::plugins::plugins_dir().join("assist-fixture");
+        std::fs::create_dir_all(&root).unwrap();
+        let source = root.join("plugin.tcl");
+        let before = "proc demo {} {return old}\n";
+        std::fs::write(&source, before).unwrap();
+        std::fs::write(
+            root.join("plugin.toml"),
+            "name = \"assist-fixture\"\ndescription = \"isolated preview fixture\"\n",
+        )
+        .unwrap();
+        let sessions = srv.store.lock_ok().session_count().unwrap();
+        let (code, Json(preview)) = extension_assist_preview(
+            State(srv.clone()),
+            Json(json!({
+                "path": source, "content": before, "instruction": "return reviewed",
+                "diagnostics": "1:1 INFO fixture diagnostic",
+            })),
+        )
+        .await;
+        assert_eq!(code, StatusCode::OK, "{preview}");
+        assert_eq!(std::fs::read_to_string(&source).unwrap(), before);
+        assert_eq!(srv.store.lock_ok().session_count().unwrap(), sessions);
+        assert_eq!(preview["applied"], false);
+        assert_eq!(preview["checks_run"], false);
+        assert!(preview["diff"]
+            .as_str()
+            .unwrap()
+            .contains("return reviewed"));
+        tokio::time::timeout(std::time::Duration::from_secs(5), seen_rx)
+            .await
+            .unwrap()
+            .unwrap();
+        tokio::time::timeout(std::time::Duration::from_secs(5), provider)
+            .await
+            .unwrap()
+            .unwrap();
+        let id = preview["proposal_id"].as_str().unwrap();
+        let (code, Json(applied)) =
+            extension_assist_apply(State(srv.clone()), Json(json!({"proposal_id": id}))).await;
+        assert_eq!(code, StatusCode::OK, "{applied}");
+        assert_eq!(
+            std::fs::read_to_string(&source).unwrap(),
+            "proc demo {} {return reviewed}\n"
+        );
+        assert_eq!(
+            applied["sha256"],
+            veles_core::extension_assist::sha256("proc demo {} {return reviewed}\n")
+        );
+        let (code, Json(replay)) =
+            extension_assist_apply(State(srv), Json(json!({"proposal_id": id}))).await;
+        assert_eq!(code, StatusCode::CONFLICT, "{replay}");
+        assert_eq!(
+            std::fs::read_to_string(&source).unwrap(),
+            "proc demo {} {return reviewed}\n"
+        );
+    }
+
+    /// A loopback OpenAI-shaped provider answering `answers` in order, one
+    /// connection each; the join handle yields every request body it got.
+    async fn fake_provider(
+        answers: Vec<String>,
+    ) -> (std::net::SocketAddr, tokio::task::JoinHandle<Vec<Value>>) {
+        use tokio::io::{AsyncReadExt, AsyncWriteExt};
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+            .await
+            .expect("bind loopback provider");
+        let addr = listener.local_addr().expect("provider address");
+        let task = veles_core::rt::spawn(async move {
+            let mut seen = Vec::new();
+            for content in answers {
+                let (mut sock, _) = listener.accept().await.expect("provider accept");
+                let mut raw = Vec::new();
+                let mut chunk = [0u8; 8192];
+                let mut need = None;
+                loop {
+                    let n = sock.read(&mut chunk).await.expect("read provider request");
+                    assert!(n > 0, "the request ended before its body");
+                    raw.extend_from_slice(&chunk[..n]);
+                    if need.is_none() {
+                        if let Some(end) =
+                            raw.windows(4).position(|w| w == b"\r\n\r\n").map(|i| i + 4)
+                        {
+                            let headers = String::from_utf8_lossy(&raw[..end]).to_lowercase();
+                            let length = headers
+                                .split("content-length:")
+                                .nth(1)
+                                .and_then(|tail| tail.split(['\r', '\n']).next())
+                                .and_then(|n| n.trim().parse::<usize>().ok())
+                                .expect("request content length");
+                            need = Some(end + length);
+                        }
+                    }
+                    if matches!(need, Some(total) if raw.len() >= total) {
+                        break;
+                    }
+                }
+                let start = raw.windows(4).position(|w| w == b"\r\n\r\n").unwrap() + 4;
+                seen.push(serde_json::from_slice::<Value>(&raw[start..]).expect("request JSON"));
+                let answer = json!({
+                    "id": "fixture", "object": "chat.completion", "created": 1,
+                    "model": "test-model",
+                    "choices": [{"index": 0, "message": {"role": "assistant", "content": content}, "finish_reason": "stop"}],
+                    "usage": {"prompt_tokens": 1, "completion_tokens": 1},
+                })
+                .to_string();
+                let head = format!("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n", answer.len());
+                sock.write_all(head.as_bytes()).await.expect("headers");
+                sock.write_all(answer.as_bytes()).await.expect("body");
+                sock.shutdown().await.expect("close");
+            }
+            seen
+        });
+        (addr, task)
+    }
+
+    fn assist_provider_at(srv: &Arc<DesktopServer>, addr: std::net::SocketAddr) {
+        let mut cfg = (*srv.cfg()).clone();
+        cfg.custom_providers[0].base_url = format!("http://{addr}/v1");
+        *srv.cfg.write().unwrap_or_else(|p| p.into_inner()) = std::sync::Arc::new(cfg);
+    }
+
+    fn tool_free(body: &Value) {
+        assert_eq!(body["model"], "test-model");
+        assert!(
+            body.get("tools").is_none(),
+            "a direct completion advertised tools"
+        );
+        assert_eq!(body["messages"].as_array().unwrap().len(), 2);
+    }
+
+    #[tokio::test]
+    async fn design_questions_and_diagnostic_explanations_answer_without_writing() {
+        // dev-ext-10: "AI assistance on all levels" — a question before
+        // there is any code, and what the editor's diagnostics mean.
+        let (addr, provider) = fake_provider(vec![
+            "Use a pre_tool_call hook; a service override is for decisions.".into(),
+            "Line 2 opens a brace it never closes; add `}` after `return`.".into(),
+        ])
+        .await;
+        let (_d, srv, _h, _e) = scratch_server();
+        assist_provider_at(&srv, addr);
+        let root = veles_core::plugins::plugins_dir().join("explain-fixture");
+        std::fs::create_dir_all(&root).unwrap();
+        std::fs::write(root.join("plugin.toml"), "name = \"explain-fixture\"\n").unwrap();
+        let source = root.join("plugin.tcl");
+        let text = "proc a {} {\n  return 1\n";
+        std::fs::write(&source, text).unwrap();
+        let sessions = srv.store.lock_ok().session_count().unwrap();
+
+        let (code, Json(answer)) = extension_assist_ask(
+            State(srv.clone()),
+            Json(json!({"question": "Hook or service to rate-limit tools?", "path": source})),
+        )
+        .await;
+        assert_eq!(code, StatusCode::OK, "{answer}");
+        assert!(answer["answer"].as_str().unwrap().contains("pre_tool_call"));
+        assert_eq!(answer["extension"], "explain-fixture");
+        assert_eq!(answer["applied"], false);
+
+        let (code, Json(none)) = extension_assist_explain(
+            State(srv.clone()),
+            Json(json!({"path": source, "content": text, "diagnostics": ""})),
+        )
+        .await;
+        assert_eq!(code, StatusCode::BAD_REQUEST, "{none}");
+        assert!(none["error"].as_str().unwrap().contains("no diagnostics"));
+        let (code, Json(explained)) = extension_assist_explain(
+            State(srv.clone()),
+            Json(json!({"path": source, "content": text, "diagnostics": "1:10 ERROR missing close-brace"})),
+        )
+        .await;
+        assert_eq!(code, StatusCode::OK, "{explained}");
+        assert!(explained["answer"].as_str().unwrap().contains("brace"));
+        assert_eq!(
+            std::fs::read_to_string(&source).unwrap(),
+            text,
+            "nothing was written"
+        );
+        assert_eq!(
+            srv.store.lock_ok().session_count().unwrap(),
+            sessions,
+            "no session"
+        );
+
+        let seen = tokio::time::timeout(std::time::Duration::from_secs(10), provider)
+            .await
+            .unwrap()
+            .unwrap();
+        assert_eq!(seen.len(), 2);
+        tool_free(&seen[0]);
+        tool_free(&seen[1]);
+        let ask = seen[0]["messages"][1]["content"].as_str().unwrap();
+        assert!(ask.contains("rate-limit tools") && ask.contains("plugin.tcl"));
+        assert!(
+            !ask.contains("return 1"),
+            "a design question does not send source"
+        );
+        let explain = seen[1]["messages"][1]["content"].as_str().unwrap();
+        assert!(explain.contains("    2|   return 1") && explain.contains("missing close-brace"));
+    }
+
+    #[tokio::test]
+    async fn a_multi_file_change_set_is_previewed_and_applied_once() {
+        let answer = json!({
+            "summary": "Split the helper out.",
+            "files": [
+                {"path": "plugin.tcl", "content": "source [file join [file dirname [info script]] lib/util.tcl]\n"},
+                {"path": "lib/util.tcl", "content": "proc util {} {return 1}\n"},
+            ]
+        })
+        .to_string();
+        let (addr, provider) = fake_provider(vec![answer]).await;
+        let (_d, srv, _h, _e) = scratch_server();
+        assist_provider_at(&srv, addr);
+        let root = veles_core::plugins::plugins_dir().join("multi-fixture");
+        std::fs::create_dir_all(&root).unwrap();
+        std::fs::write(root.join("plugin.toml"), "name = \"multi-fixture\"\n").unwrap();
+        let entry = root.join("plugin.tcl");
+        std::fs::write(&entry, "proc util {} {return 1}\n").unwrap();
+        let (code, Json(preview)) = extension_assist_propose(
+            State(srv.clone()),
+            Json(json!({"path": entry, "instruction": "move util into lib/util.tcl"})),
+        )
+        .await;
+        assert_eq!(code, StatusCode::OK, "{preview}");
+        assert_eq!(preview["files"].as_array().unwrap().len(), 2);
+        assert!(preview["diff"]
+            .as_str()
+            .unwrap()
+            .contains("+++ b/lib/util.tcl"));
+        assert_eq!(preview["applied"], false);
+        assert!(
+            !root.join("lib/util.tcl").exists(),
+            "the preview wrote a file"
+        );
+        let seen = provider.await.unwrap();
+        tool_free(&seen[0]);
+        assert!(seen[0]["messages"][1]["content"]
+            .as_str()
+            .unwrap()
+            .contains("--- file: plugin.tcl"));
+        let id = preview["proposal_id"].as_str().unwrap();
+        let (code, Json(applied)) =
+            extension_assist_apply(State(srv.clone()), Json(json!({"proposal_id": id}))).await;
+        assert_eq!(code, StatusCode::OK, "{applied}");
+        assert_eq!(
+            std::fs::read_to_string(root.join("lib/util.tcl")).unwrap(),
+            "proc util {} {return 1}\n"
+        );
+        let (code, _) = extension_assist_apply(State(srv), Json(json!({"proposal_id": id}))).await;
+        assert_eq!(code, StatusCode::CONFLICT, "a change set applies once");
+    }
+
+    #[tokio::test]
+    async fn a_generated_extension_is_previewed_then_created_and_loaded() {
+        let body = "namespace eval ::gen_fixture {}\nproc ::gen_fixture::seen {} {return \"\"}\n::veles::hook post_llm_call ::gen_fixture::seen\n";
+        let answer = format!(
+            "```json\n{}\n```",
+            json!({"summary": "A hook.", "files": [{"path": "plugin.tcl", "content": body}]})
+        );
+        let (addr, provider) = fake_provider(vec![answer]).await;
+        let (_d, srv, _h, _e) = scratch_server();
+        assist_provider_at(&srv, addr);
+        let (code, Json(preview)) = extension_assist_generate(
+            State(srv.clone()),
+            Json(json!({"name": "gen-fixture", "kind": "tcl", "description": "Notice every model reply"})),
+        )
+        .await;
+        assert_eq!(code, StatusCode::OK, "{preview}");
+        let names: Vec<&str> = preview["files"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|f| f["path"].as_str().unwrap())
+            .collect();
+        assert_eq!(names, ["plugin.tcl", "plugin.toml"]);
+        let dir = veles_core::plugins::plugins_dir().join("gen-fixture");
+        assert!(!dir.exists(), "the preview created the extension");
+        let seen = provider.await.unwrap();
+        tool_free(&seen[0]);
+        let id = preview["proposal_id"].as_str().unwrap();
+        let (code, Json(applied)) =
+            extension_assist_apply(State(srv.clone()), Json(json!({"proposal_id": id}))).await;
+        assert_eq!(code, StatusCode::OK, "{applied}");
+        assert_eq!(applied["created"], true);
+        assert_eq!(
+            std::fs::read_to_string(dir.join("plugin.tcl")).unwrap(),
+            body
+        );
+        assert!(applied.get("reloaded").is_some(), "{applied}");
+    }
+
+    #[tokio::test]
+    async fn one_contribution_review_carries_several_user_extensions() {
+        // dev-ext-3: the route behind "wrap all my extensions into a PR".
+        let (_cfg, _data, _guard) = veles_core::testenv::scratch_xdg();
+        for name in ["alpha", "beta"] {
+            let dir = veles_core::plugins::plugins_dir().join(name);
+            std::fs::create_dir_all(&dir).unwrap();
+            std::fs::write(dir.join("plugin.tcl"), format!("proc {name} {{}} {{}}\n")).unwrap();
+        }
+        let (code, Json(body)) = plugin_contribution_review_many(Json(json!({
+            "extensions": [
+                {"name": "alpha", "files": ["plugin.tcl"]},
+                {"name": "beta", "files": ["plugin.tcl"]},
+            ],
+            "directory": "plugins/examples",
+        })))
+        .await;
+        assert_eq!(code, StatusCode::OK, "{body}");
+        assert_eq!(
+            body["files"][0]["destination"],
+            "plugins/examples/alpha/plugin.tcl"
+        );
+        assert_eq!(
+            body["files"][1]["destination"],
+            "plugins/examples/beta/plugin.tcl"
+        );
+        let (code, Json(body)) = plugin_contribution_review_many(Json(json!({
+            "extensions": [{"name": "../escape", "files": ["plugin.tcl"]}],
+        })))
+        .await;
+        assert_eq!(code, StatusCode::BAD_REQUEST, "{body}");
+        let (code, _) = plugin_contribution_review_many(Json(json!({"extensions": []}))).await;
+        assert_eq!(code, StatusCode::BAD_REQUEST);
+    }
+
+    /// `/api/lsp/start` and `/api/lsp/check` as the Dev pane calls them:
+    /// the FILE TYPE picks the server on the gateway (no `cmd` sent), the
+    /// reply names the session, the language and the gateway-built URIs,
+    /// and a language without a server says which program, where. The
+    /// server-table pieces are unit-tested in veles-core; this is the glue
+    /// that used to be the constant `tcl-lsp`.
+    #[tokio::test]
+    async fn the_dev_pane_s_lsp_start_and_check_pick_by_file_type() {
+        let dir = tempfile::tempdir().unwrap();
+        let ext = dir.path().join("cplug");
+        std::fs::create_dir_all(&ext).unwrap();
+        std::fs::write(ext.join("plugin.toml"), "name = \"cplug\"\n").unwrap();
+        let c = ext.join("plugin.c");
+        std::fs::write(&c, "int f(void) {\n  return missing;\n}\n").unwrap();
+        let start = |path: &std::path::Path| LspStart {
+            path: Some(path.display().to_string()),
+            root: None,
+            cmd: None,
+            args: vec![],
+        };
+
+        // No server is known for a README; nothing is spawned.
+        let readme = ext.join("README.md");
+        std::fs::write(&readme, "# cplug\n").unwrap();
+        let Json(none) = lsp_start(Json(start(&readme))).await;
+        assert_eq!(none["ok"], false, "{none}");
+        assert!(none["error"].as_str().unwrap().contains(".md"), "{none}");
+
+        // A Common Lisp file on a gateway with no Lisp server: the reply
+        // names the program it looked for and the machine.
+        let lisp = ext.join("plugin.lisp");
+        std::fs::write(&lisp, "(defun f () 1)\n").unwrap();
+        if veles_core::shell::which("cl-lsp").is_none() {
+            let Json(missing) = lsp_start(Json(start(&lisp))).await;
+            assert_eq!(missing["ok"], false, "{missing}");
+            assert_eq!(missing["language"], "commonlisp", "{missing}");
+            assert_eq!(missing["missing"], json!(["cl-lsp"]), "{missing}");
+            assert!(
+                missing["error"]
+                    .as_str()
+                    .unwrap()
+                    .contains("on the gateway"),
+                "{missing}"
+            );
+        }
+
+        // A C file starts clangd in the `c` session, rooted at the
+        // extension, with the URIs built here.
+        if veles_core::shell::which("clangd").is_some() {
+            let Json(started) = lsp_start(Json(start(&c))).await;
+            assert_eq!(started["ok"], true, "{started}");
+            assert_eq!(started["session"], "c", "{started}");
+            assert_eq!(started["language"], "c", "{started}");
+            assert!(started["cmd"].as_str().unwrap().ends_with("clangd"));
+            let root = veles_core::lsp_servers::canonical(&ext);
+            assert_eq!(started["root"], root.display().to_string(), "{started}");
+            assert_eq!(
+                started["uri"],
+                veles_core::lsp_servers::file_uri(
+                    &root.join("plugin.c").display().to_string(),
+                    veles_core::platform::OS
+                ),
+                "{started}"
+            );
+            let Json(stopped) = lsp_stop(axum::extract::Query(LspSession {
+                session: Some("c".into()),
+            }))
+            .await;
+            assert_eq!(stopped["was_running"], true, "{stopped}");
+        } else {
+            let required = std::env::var("VELES_TEST_LSP_REQUIRE").unwrap_or_default();
+            assert!(
+                !required.split(',').any(|r| r.trim() == "clangd"),
+                "clangd is required by VELES_TEST_LSP_REQUIRE but is not on PATH"
+            );
+        }
+
+        // Check: the file type's checker, on the gateway's saved copy.
+        let (code, Json(missing_path)) = lsp_check(Json(json!({}))).await;
+        assert_eq!(code, StatusCode::BAD_REQUEST, "{missing_path}");
+        let (code, Json(report)) = lsp_check(Json(json!({"path": c}))).await;
+        assert_eq!(code, StatusCode::OK, "{report}");
+        assert_eq!(report["language"], "c", "{report}");
+        if veles_core::shell::which("clang").is_some() || veles_core::shell::which("cc").is_some() {
+            assert_eq!(report["status"], "failed", "{report}");
+            assert_eq!(report["diagnostics"][0]["line"], 2, "{report}");
+        } else {
+            assert_eq!(report["status"], "unavailable", "{report}");
+        }
+    }
+
+    #[tokio::test]
+    async fn scaffold_preview_is_exact_and_has_no_filesystem_side_effects() {
+        let (_cfg, _data, _guard) = veles_core::testenv::scratch_xdg();
+        let (code, Json(body)) = plugin_preview(Json(json!({
+            "name": "preview-only", "description": "a test tool", "kind": "js",
+        })))
+        .await;
+        assert_eq!(code, StatusCode::OK, "{body}");
+        assert_eq!(body["api"], "0.11");
+        assert_eq!(body["files"][0]["name"], "plugin.toml");
+        assert_eq!(body["files"][1]["name"], "plugin.ts");
+        assert!(body["files"][0]["text"]
+            .as_str()
+            .unwrap()
+            .contains("api = \"0.11\""));
+        assert!(!veles_core::plugins::plugins_dir()
+            .join("preview-only")
+            .exists());
+    }
+
     fn scratch_server() -> (
         tempfile::TempDir,
         Arc<DesktopServer>,
@@ -10204,6 +12837,1374 @@ mod tests {
             signed_download: crate::desktop_install::SignedDownloads::default(),
         });
         (dir, srv, home, env)
+    }
+
+    fn recovery_orphan(srv: &Arc<DesktopServer>, sid: &str, surface: &str) {
+        let (pid, start) = veles_core::platform::exited_process_for_test();
+        let store = srv.store.lock_ok();
+        store.create_session(sid).unwrap();
+        store
+            .begin_turn_fenced(sid, pid, &veles_core::platform::hostname(), surface)
+            .unwrap();
+        store
+            .turn_checkpoint_set_owner_for_test(sid, pid, &start)
+            .unwrap();
+    }
+
+    #[tokio::test]
+    async fn standing_global_grants_are_reviewable_and_revoked_by_exact_key() {
+        let (_dir, srv, _home, _env) = scratch_server();
+        srv.store
+            .lock_ok()
+            .approval_rule_add("terminal:recursive-delete", Some("review me"))
+            .unwrap();
+        let (status, Json(rows)) = crate::grants_api::view(State(srv.clone())).await;
+        assert_eq!(status, StatusCode::OK);
+        assert_eq!(rows["global"][0]["rule_key"], "terminal:recursive-delete");
+        let (status, _) = crate::grants_api::revoke(
+            State(srv.clone()),
+            Json(crate::grants_api::RevokeBody {
+                scope: "global".into(),
+                rule_key: "terminal:other".into(),
+                session_id: None,
+            }),
+        )
+        .await;
+        assert_eq!(status, StatusCode::NOT_FOUND);
+        let (status, _) = crate::grants_api::revoke(
+            State(srv.clone()),
+            Json(crate::grants_api::RevokeBody {
+                scope: "global".into(),
+                rule_key: "terminal:recursive-delete".into(),
+                session_id: None,
+            }),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK);
+        assert!(!srv
+            .store
+            .lock_ok()
+            .approval_rule_exists("terminal:recursive-delete")
+            .unwrap());
+        let (status, _) = crate::grants_api::revoke(
+            State(srv),
+            Json(crate::grants_api::RevokeBody {
+                scope: "all".into(),
+                rule_key: "terminal:any".into(),
+                session_id: None,
+            }),
+        )
+        .await;
+        assert_eq!(status, StatusCode::BAD_REQUEST);
+    }
+
+    /// Review findings approvals-3 and approvals-4. The panel saw only
+    /// desktop-hosted agents, so a "session" grant made from a Telegram
+    /// or IRC approval could be neither seen nor revoked, `[approvals]
+    /// allowlist` entries were not listed at all, and the session revoke
+    /// branch had no test (`rules.clear()` or a prefix match would have
+    /// passed everything).
+    #[tokio::test]
+    async fn session_grants_from_every_surface_are_reviewable_and_revoked_by_exact_key() {
+        let (_dir, srv, _home, _env) = scratch_server();
+        {
+            let mut cfg = (*srv.cfg()).clone();
+            cfg.approvals.allowlist = vec!["rm -rf ./build*".into()];
+            *srv.cfg.write_ok() = Arc::new(cfg);
+        }
+        srv.store.lock_ok().create_session("desk-grants").unwrap();
+        let desk = srv.agent_for("desk-grants").unwrap();
+        desk.test_add_session_approval_rule("terminal:recursive-delete");
+        desk.test_add_session_approval_rule("terminal:remote-code-execution");
+        let core = crate::gateway::GatewayCore::new_join_test(srv.store.clone());
+        let chat_sid = core
+            .test_sender(
+                "irc",
+                "#chan",
+                "irc:alice",
+                veles_core::acl::SenderContext {
+                    mask: Some("alice!u@example.invalid".into()),
+                    network: Some("testnet".into()),
+                    channel: Some("#chan".into()),
+                    platform: Some("irc".into()),
+                    chat_id: Some("#chan".into()),
+                    ..Default::default()
+                },
+            )
+            .unwrap();
+        let chat = core
+            .live_agents()
+            .into_iter()
+            .find(|(_, a)| a.session_id == chat_sid)
+            .map(|(_, a)| a)
+            .expect("the chat agent is live");
+        chat.test_add_session_approval_rule("browser:navigate");
+
+        let (status, Json(rows)) = crate::grants_api::view_with(&srv, Some(&core));
+        assert_eq!(status, StatusCode::OK);
+        let sessions = rows["sessions"].as_array().unwrap();
+        let has = |sid: &str, surface: &str, key: &str| {
+            sessions
+                .iter()
+                .any(|r| r["session_id"] == sid && r["surface"] == surface && r["rule_key"] == key)
+        };
+        assert!(
+            has("desk-grants", "desktop", "terminal:recursive-delete"),
+            "{rows}"
+        );
+        assert!(
+            has("desk-grants", "desktop", "terminal:remote-code-execution"),
+            "{rows}"
+        );
+        assert!(has(&chat_sid, "irc", "browser:navigate"), "{rows}");
+        assert_eq!(sessions.len(), 3, "{rows}");
+        let config = rows["config"].as_array().unwrap();
+        assert_eq!(config.len(), 1, "{rows}");
+        assert_eq!(config[0]["scope"], "config");
+        assert_eq!(config[0]["rule_key"], "rm -rf ./build*");
+        assert_eq!(config[0]["read_only"], true);
+
+        let revoke = |scope: &str, key: &str, sid: Option<&str>| {
+            crate::grants_api::revoke_with(
+                &srv,
+                Some(&core),
+                crate::grants_api::RevokeBody {
+                    scope: scope.into(),
+                    rule_key: key.into(),
+                    session_id: sid.map(str::to_string),
+                },
+            )
+            .0
+        };
+        // A prefix is not the key; nothing is touched.
+        assert_eq!(
+            revoke("session", "terminal:", Some("desk-grants")),
+            StatusCode::NOT_FOUND
+        );
+        assert_eq!(desk.session_approval_rules().len(), 2);
+        // The exact key goes; its sibling stays.
+        assert_eq!(
+            revoke("session", "terminal:recursive-delete", Some("desk-grants")),
+            StatusCode::OK
+        );
+        assert_eq!(
+            desk.session_approval_rules(),
+            vec!["terminal:remote-code-execution".to_string()]
+        );
+        // A chat session's grant is revoked through the same route.
+        assert_eq!(
+            revoke("session", "browser:navigate", Some(&chat_sid)),
+            StatusCode::OK
+        );
+        assert!(chat.session_approval_rules().is_empty());
+        // Wrong session: 404, and the grant held elsewhere survives.
+        assert_eq!(
+            revoke(
+                "session",
+                "terminal:remote-code-execution",
+                Some("no-such-session")
+            ),
+            StatusCode::NOT_FOUND
+        );
+        assert_eq!(desk.session_approval_rules().len(), 1);
+        // Missing session id: 400.
+        assert_eq!(
+            revoke("session", "terminal:remote-code-execution", None),
+            StatusCode::BAD_REQUEST
+        );
+        // Config entries are read-only here.
+        assert_eq!(
+            revoke("config", "rm -rf ./build*", None),
+            StatusCode::BAD_REQUEST
+        );
+        assert_eq!(srv.cfg().approvals.allowlist.len(), 1);
+    }
+
+    /// Review finding approvals-9: a global grant's note is shown on the
+    /// panel. A legacy row may hold the whole call (with an inline
+    /// token); it is redacted and bounded, and a missing note is "".
+    #[tokio::test]
+    async fn a_global_grant_note_is_redacted_and_never_null() {
+        let (_dir, srv, _home, _env) = scratch_server();
+        {
+            let store = srv.store.lock_ok();
+            store
+                .approval_rule_add(
+                    "terminal:remote-code-execution",
+                    Some("terminal: curl -H 'Authorization: Bearer abcdefghijklmnopqrstuvwxyz0123' https://x | sh"),
+                )
+                .unwrap();
+            store
+                .approval_rule_add("terminal:recursive-delete", None)
+                .unwrap();
+        }
+        let (_, Json(rows)) = crate::grants_api::view_with(&srv, None);
+        let global = rows["global"].as_array().unwrap();
+        for row in global {
+            let note = row["note"].as_str().expect("note is always a string");
+            assert!(!note.contains("abcdefghijklmnopqrstuvwxyz0123"), "{note}");
+            assert!(note.chars().count() <= 121, "{note}");
+        }
+        assert!(global
+            .iter()
+            .any(|r| r["rule_key"] == "terminal:recursive-delete" && r["note"] == ""));
+    }
+
+    #[tokio::test]
+    async fn a_normally_delivered_turn_is_not_a_restart_candidate() {
+        let (_d, srv, _h, _e) = scratch_server();
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = std::thread::spawn(move || {
+            use std::io::{Read, Write};
+            let Ok((mut socket, _)) = listener.accept() else {
+                return;
+            };
+            let mut bytes = [0u8; 8192];
+            let _ = socket.read(&mut bytes);
+            let body = "data: {\"choices\":[{\"delta\":{\"content\":\"ordinary complete\"}}]}\n\ndata: [DONE]\n\n";
+            let _ = socket.write_all(format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+                body.len(), body
+            ).as_bytes());
+        });
+        let mut config = (*srv.cfg()).clone();
+        config.custom_providers[0].base_url = format!("http://{address}/v1");
+        *srv.cfg.write_ok() = Arc::new(config);
+        srv.store
+            .lock_ok()
+            .create_session("normal-complete")
+            .unwrap();
+        let agent = srv.agent_for("normal-complete").unwrap();
+        let mut history = Vec::new();
+        let result = agent
+            .run_turn(&mut history, "finish normally", None, |_| {})
+            .await
+            .unwrap();
+        assert_eq!(result.reply, "ordinary complete");
+        server.join().unwrap();
+        let store = srv.store.lock_ok();
+        assert_eq!(
+            store
+                .turn_checkpoint("normal-complete")
+                .unwrap()
+                .unwrap()
+                .state,
+            "delivered"
+        );
+        assert!(store.recovery_candidates().unwrap().is_empty());
+    }
+
+    #[tokio::test]
+    async fn startup_recovery_selects_an_interrupted_desktop_turn_once() {
+        let (_d, srv, _h, _e) = scratch_server();
+        recovery_orphan(&srv, "recover-me", "desktop");
+        {
+            let store = srv.store.lock_ok();
+            store
+                .append_message(
+                    "recover-me",
+                    &veles_core::providers::ChatMessage::user("finish this"),
+                )
+                .unwrap();
+        }
+        let selected = srv.recovery_candidates().unwrap();
+        assert_eq!(selected.len(), 1);
+        assert_eq!(selected[0].session_id, "recover-me");
+        assert_eq!(srv.recovery_candidates().unwrap().len(), 1);
+    }
+
+    #[tokio::test]
+    async fn interrupted_desktop_turn_continues_from_saved_history() {
+        let (_d, srv, _h, _e) = scratch_server();
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let requests = Arc::new(Mutex::new(Vec::new()));
+        let seen = requests.clone();
+        let server = std::thread::spawn(move || {
+            let Ok((mut socket, _)) = listener.accept() else {
+                return;
+            };
+            let mut bytes = Vec::new();
+            let mut buffer = [0u8; 8192];
+            use std::io::{Read, Write};
+            let _ = socket.set_read_timeout(Some(std::time::Duration::from_secs(10)));
+            let mut body_length = None;
+            for _ in 0..64 {
+                let Ok(count) = socket.read(&mut buffer) else {
+                    break;
+                };
+                if count == 0 {
+                    break;
+                }
+                bytes.extend_from_slice(&buffer[..count]);
+                if let Some(headers) = bytes.windows(4).position(|part| part == b"\r\n\r\n") {
+                    let head = String::from_utf8_lossy(&bytes[..headers]);
+                    body_length = head.lines().find_map(|line| {
+                        line.to_ascii_lowercase()
+                            .strip_prefix("content-length:")
+                            .map(str::to_string)
+                            .and_then(|v| v.trim().parse::<usize>().ok())
+                    });
+                    if body_length.is_some_and(|length| bytes.len() >= headers + 4 + length) {
+                        break;
+                    }
+                }
+            }
+            let body_length = body_length.expect("provider request has a body length");
+            let header_length = bytes
+                .windows(4)
+                .position(|part| part == b"\r\n\r\n")
+                .expect("provider request headers end")
+                + 4;
+            assert_eq!(
+                bytes.len() - header_length,
+                body_length,
+                "the mock captured the complete provider request body"
+            );
+            seen.lock_ok()
+                .push(String::from_utf8_lossy(&bytes).into_owned());
+            let body = concat!(
+                "data: {\"choices\":[{\"delta\":{\"content\":\"continued after restart\"}}]}\n\n",
+                "data: [DONE]\n\n"
+            );
+            let _ = socket.write_all(format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+                body.len(), body
+            ).as_bytes());
+        });
+        {
+            let mut config = (*srv.cfg()).clone();
+            config.custom_providers[0].base_url = format!("http://{address}/v1");
+            *srv.cfg.write_ok() = Arc::new(config);
+            // The real order: the turn registers, THEN saves its prompt.
+            recovery_orphan(&srv, "recover-live", "desktop");
+            srv.store
+                .lock_ok()
+                .append_message(
+                    "recover-live",
+                    &veles_core::providers::ChatMessage::user("finish this"),
+                )
+                .unwrap();
+        }
+        let candidates = srv.recovery_candidates().unwrap();
+        let claim = veles_core::turn_recovery::claim(&srv.store.lock_ok(), &candidates[0])
+            .unwrap()
+            .unwrap();
+        srv.resume_interrupted_turn(&candidates[0], &claim)
+            .await
+            .unwrap();
+        server.join().unwrap();
+        let history = srv.store.lock_ok().load_history("recover-live").unwrap();
+        assert_eq!(
+            history
+                .iter()
+                .filter(|message| message.content == "finish this")
+                .count(),
+            1,
+            "recovery must not repeat the original request"
+        );
+        assert!(history
+            .iter()
+            .any(|message| message.content == "continued after restart"));
+        assert!(history
+            .iter()
+            .any(|message| message.injection.as_deref() == Some("restart")));
+        let request = requests.lock_ok().join("\n");
+        assert_eq!(request.matches("finish this").count(), 1);
+        assert!(srv.store.lock_ok().runs_current(30).unwrap().is_empty());
+        assert_eq!(
+            srv.store
+                .lock_ok()
+                .turn_checkpoint("recover-live")
+                .unwrap()
+                .unwrap()
+                .state,
+            "recovered",
+            "a completed recovery is terminal and records why it ran"
+        );
+        assert!(
+            srv.recovery_candidates().unwrap().is_empty(),
+            "recovered is outside the running/final recovery selector"
+        );
+    }
+
+    #[tokio::test]
+    async fn recovery_redelivers_a_saved_final_reply_without_another_provider_call() {
+        let (_d, srv, _h, _e) = scratch_server();
+        recovery_orphan(&srv, "recover-final", "desktop");
+        let final_id;
+        {
+            let store = srv.store.lock_ok();
+            store
+                .append_message(
+                    "recover-final",
+                    &veles_core::providers::ChatMessage::user("answer"),
+                )
+                .unwrap();
+            final_id = store
+                .append_message(
+                    "recover-final",
+                    &veles_core::providers::ChatMessage::assistant("saved answer", None),
+                )
+                .unwrap();
+            let run = store.recovery_candidates().unwrap().remove(0);
+            store
+                .turn_checkpoint_finish(&run.turn_id, "final", Some(final_id))
+                .unwrap();
+        }
+        let run = srv.recovery_candidates().unwrap().remove(0);
+        let claim = veles_core::turn_recovery::claim(&srv.store.lock_ok(), &run)
+            .unwrap()
+            .unwrap();
+        srv.resume_interrupted_turn(&run, &claim).await.unwrap();
+        srv.store.lock_ok().recovery_release(&claim).unwrap();
+        let store = srv.store.lock_ok();
+        assert_eq!(
+            store
+                .load_history("recover-final")
+                .unwrap()
+                .iter()
+                .filter(|m| m.content == "saved answer")
+                .count(),
+            1
+        );
+        assert_eq!(
+            store
+                .turn_checkpoint("recover-final")
+                .unwrap()
+                .unwrap()
+                .state,
+            "recovered"
+        );
+        assert!(
+            !srv.agents.lock_ok().contains_key("recover-final"),
+            "no agent/provider was created"
+        );
+    }
+
+    #[tokio::test]
+    async fn recovery_uses_a_final_saved_reply_even_before_its_checkpoint_lands() {
+        let (_d, srv, _h, _e) = scratch_server();
+        recovery_orphan(&srv, "recover-final-boundary", "desktop");
+        let final_id;
+        {
+            let store = srv.store.lock_ok();
+            store
+                .append_message(
+                    "recover-final-boundary",
+                    &veles_core::providers::ChatMessage::user("answer"),
+                )
+                .unwrap();
+            final_id = store
+                .append_message(
+                    "recover-final-boundary",
+                    &veles_core::providers::ChatMessage::assistant("already complete", None),
+                )
+                .unwrap();
+        }
+        let run = srv.recovery_candidates().unwrap().remove(0);
+        assert_eq!(run.final_msg_id, None);
+        let claim = veles_core::turn_recovery::claim(&srv.store.lock_ok(), &run)
+            .unwrap()
+            .unwrap();
+        srv.resume_interrupted_turn(&run, &claim).await.unwrap();
+        srv.store.lock_ok().recovery_release(&claim).unwrap();
+        let store = srv.store.lock_ok();
+        assert_eq!(
+            store
+                .load_history("recover-final-boundary")
+                .unwrap()
+                .iter()
+                .filter(|m| m.content == "already complete")
+                .count(),
+            1
+        );
+        assert_eq!(
+            store
+                .turn_checkpoint("recover-final-boundary")
+                .unwrap()
+                .unwrap()
+                .state,
+            "recovered"
+        );
+        assert!(!srv.agents.lock_ok().contains_key("recover-final-boundary"));
+        assert!(final_id > 0);
+    }
+
+    #[tokio::test]
+    async fn recovery_reuses_a_saved_tool_result_when_its_marker_was_not_cleared() {
+        let (_d, srv, _h, _e) = scratch_server();
+        recovery_orphan(&srv, "recover-saved-tool", "desktop");
+        {
+            let store = srv.store.lock_ok();
+            store
+                .append_message(
+                    "recover-saved-tool",
+                    &veles_core::providers::ChatMessage::user("do it"),
+                )
+                .unwrap();
+            let run = store.recovery_candidates().unwrap().remove(0);
+            store.turn_tool_started(&run.turn_id, "call-saved").unwrap();
+            let mut call = veles_core::providers::ChatMessage::assistant("", None);
+            call.tool_calls = Some(serde_json::json!([{
+                "id": "call-saved", "type": "function",
+                "function": {"name": "terminal", "arguments": "{\"command\":\"true\"}"}
+            }]));
+            store.append_message("recover-saved-tool", &call).unwrap();
+            store
+                .append_message(
+                    "recover-saved-tool",
+                    &veles_core::providers::ChatMessage::tool_result(
+                        "call-saved",
+                        "terminal",
+                        "saved result".into(),
+                    ),
+                )
+                .unwrap();
+        }
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let requests = Arc::new(Mutex::new(Vec::new()));
+        let seen = requests.clone();
+        let server = std::thread::spawn(move || {
+            use std::io::{Read, Write};
+            let Ok((mut socket, _)) = listener.accept() else {
+                return;
+            };
+            let mut bytes = [0u8; 16384];
+            let count = socket.read(&mut bytes).unwrap_or(0);
+            seen.lock_ok()
+                .push(String::from_utf8_lossy(&bytes[..count]).into_owned());
+            let body = "data: {\"choices\":[{\"delta\":{\"content\":\"saved tool continued\"}}]}\n\ndata: [DONE]\n\n";
+            let _ = socket.write_all(format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+                body.len(), body
+            ).as_bytes());
+        });
+        let mut config = (*srv.cfg()).clone();
+        config.custom_providers[0].base_url = format!("http://{address}/v1");
+        *srv.cfg.write_ok() = Arc::new(config);
+        let run = srv.recovery_candidates().unwrap().remove(0);
+        let claim = veles_core::turn_recovery::claim(&srv.store.lock_ok(), &run)
+            .unwrap()
+            .unwrap();
+        srv.resume_interrupted_turn(&run, &claim).await.unwrap();
+        srv.store.lock_ok().recovery_release(&claim).unwrap();
+        server.join().unwrap();
+        let history = srv
+            .store
+            .lock_ok()
+            .load_history("recover-saved-tool")
+            .unwrap();
+        assert_eq!(
+            history
+                .iter()
+                .filter(|m| m.content == "saved result")
+                .count(),
+            1
+        );
+        assert!(history.iter().any(|m| m.content == "saved tool continued"));
+        assert!(!history
+            .iter()
+            .any(|m| m.content.contains("was not repeated")));
+        assert!(requests.lock_ok().join("\n").contains("saved result"));
+    }
+
+    #[tokio::test]
+    async fn recovery_does_not_redeliver_an_older_assistant_reply() {
+        let (_d, srv, _h, _e) = scratch_server();
+        {
+            let store = srv.store.lock_ok();
+            store.create_session("recover-old-reply").unwrap();
+            store
+                .append_message(
+                    "recover-old-reply",
+                    &veles_core::providers::ChatMessage::assistant("older answer", None),
+                )
+                .unwrap();
+        }
+        recovery_orphan(&srv, "recover-old-reply", "desktop");
+        srv.store
+            .lock_ok()
+            .append_message(
+                "recover-old-reply",
+                &veles_core::providers::ChatMessage::user("new unfinished request"),
+            )
+            .unwrap();
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = std::thread::spawn(move || {
+            use std::io::{Read, Write};
+            let Ok((mut socket, _)) = listener.accept() else {
+                return;
+            };
+            let mut bytes = [0u8; 8192];
+            let _ = socket.read(&mut bytes);
+            let body = "data: {\"choices\":[{\"delta\":{\"content\":\"continued new request\"}}]}\n\ndata: [DONE]\n\n";
+            let _ = socket.write_all(format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+                body.len(), body
+            ).as_bytes());
+        });
+        let mut config = (*srv.cfg()).clone();
+        config.custom_providers[0].base_url = format!("http://{address}/v1");
+        *srv.cfg.write_ok() = Arc::new(config);
+        let run = srv.recovery_candidates().unwrap().remove(0);
+        let claim = veles_core::turn_recovery::claim(&srv.store.lock_ok(), &run)
+            .unwrap()
+            .unwrap();
+        srv.resume_interrupted_turn(&run, &claim).await.unwrap();
+        srv.store.lock_ok().recovery_release(&claim).unwrap();
+        server.join().unwrap();
+        let history = srv
+            .store
+            .lock_ok()
+            .load_history("recover-old-reply")
+            .unwrap();
+        assert_eq!(
+            history
+                .iter()
+                .filter(|m| m.content == "older answer")
+                .count(),
+            1
+        );
+        assert!(history.iter().any(|m| m.content == "continued new request"));
+    }
+
+    #[tokio::test]
+    async fn recovery_does_not_repeat_an_action_with_an_unknown_result() {
+        let (_d, srv, _h, _e) = scratch_server();
+        recovery_orphan(&srv, "recover-tool", "desktop");
+        {
+            let store = srv.store.lock_ok();
+            store
+                .append_message(
+                    "recover-tool",
+                    &veles_core::providers::ChatMessage::user("do it"),
+                )
+                .unwrap();
+            let run = store.recovery_candidates().unwrap().remove(0);
+            store.turn_tool_started(&run.turn_id, "call-1").unwrap();
+        }
+        let run = srv.recovery_candidates().unwrap().remove(0);
+        let claim = veles_core::turn_recovery::claim(&srv.store.lock_ok(), &run)
+            .unwrap()
+            .unwrap();
+        srv.resume_interrupted_turn(&run, &claim).await.unwrap();
+        srv.store.lock_ok().recovery_release(&claim).unwrap();
+        let store = srv.store.lock_ok();
+        let history = store.load_history("recover-tool").unwrap();
+        assert_eq!(
+            history
+                .iter()
+                .filter(|m| m.content.contains("was not repeated"))
+                .count(),
+            1
+        );
+        assert_eq!(
+            store
+                .turn_checkpoint("recover-tool")
+                .unwrap()
+                .unwrap()
+                .state,
+            "needs-review"
+        );
+        assert!(!srv.agents.lock_ok().contains_key("recover-tool"));
+    }
+
+    /// A provider that answers every request with `reply`, recording each
+    /// request it was sent (a recovery may run more than one turn).
+    fn answering_provider(reply: &'static str) -> (String, Arc<Mutex<Vec<String>>>) {
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let requests = Arc::new(Mutex::new(Vec::new()));
+        let seen = requests.clone();
+        std::thread::spawn(move || {
+            use std::io::{Read, Write};
+            for socket in listener.incoming() {
+                let Ok(mut socket) = socket else { continue };
+                let _ = socket.set_read_timeout(Some(std::time::Duration::from_secs(10)));
+                let mut bytes = Vec::new();
+                let mut buffer = [0u8; 16384];
+                while let Ok(count) = socket.read(&mut buffer) {
+                    if count == 0 {
+                        break;
+                    }
+                    bytes.extend_from_slice(&buffer[..count]);
+                    if let Some(end) = bytes.windows(4).position(|w| w == b"\r\n\r\n") {
+                        let head = String::from_utf8_lossy(&bytes[..end]).to_ascii_lowercase();
+                        let length = head
+                            .split("content-length:")
+                            .nth(1)
+                            .and_then(|t| t.split(['\r', '\n']).next())
+                            .and_then(|t| t.trim().parse::<usize>().ok())
+                            .unwrap_or(0);
+                        if bytes.len() >= end + 4 + length {
+                            break;
+                        }
+                    }
+                }
+                seen.lock_ok()
+                    .push(String::from_utf8_lossy(&bytes).into_owned());
+                let body = format!(
+                    "data: {{\"choices\":[{{\"delta\":{{\"content\":\"{reply}\"}}}}]}}\n\ndata: [DONE]\n\n"
+                );
+                let _ = socket.write_all(format!(
+                    "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+                    body.len(), body
+                ).as_bytes());
+            }
+        });
+        (format!("http://{address}/v1"), requests)
+    }
+
+    fn point_at(srv: &Arc<DesktopServer>, url: &str) {
+        let mut config = (*srv.cfg()).clone();
+        config.custom_providers[0].base_url = url.to_string();
+        *srv.cfg.write_ok() = Arc::new(config);
+    }
+
+    async fn wait_for(what: &str, mut done: impl FnMut() -> bool) {
+        for _ in 0..500 {
+            if done() {
+                return;
+            }
+            tokio::time::sleep(std::time::Duration::from_millis(20)).await;
+        }
+        panic!("timed out waiting for {what}");
+    }
+
+    /// A second server over the first one's database: what a restarted
+    /// gateway is to the turns the old one left behind.
+    fn restarted_server(db: &std::path::Path, url: &str) -> Arc<DesktopServer> {
+        let reopened = Arc::new(Mutex::new(Store::open(db).unwrap()));
+        let cfg = Arc::new(VelesConfig {
+            model: veles_core::config::ModelSection {
+                provider: Some("test-provider".into()),
+                default: Some("test-model".into()),
+                ..Default::default()
+            },
+            custom_providers: vec![veles_core::config::ProviderEntry {
+                name: "test-provider".into(),
+                base_url: url.into(),
+                api_mode: "chat_completions".into(),
+                ..Default::default()
+            }],
+            ..Default::default()
+        });
+        let readers = veles_core::store::ReadPool::new(&reopened.lock_ok());
+        Arc::new(DesktopServer {
+            cfg: std::sync::RwLock::new(cfg),
+            store: reopened,
+            readers,
+            hooks: HookBus::new(None),
+            bus: None,
+            scheduler: None,
+            agents: Mutex::new(HashMap::new()),
+            watchers: Mutex::new(HashMap::new()),
+            turn_locks: Mutex::new(HashMap::new()),
+            started: Instant::now(),
+            desktop_eval: DesktopEvalBus::new(),
+            signed_download: crate::desktop_install::SignedDownloads::default(),
+        })
+    }
+
+    /// The startup path end to end, with a provider that ANSWERS: the
+    /// orphan is continued once, marked recovered, and a second startup
+    /// leaves it alone. (This used to point at a dead port, so the "not
+    /// resumed again" half held only because the failed continuation
+    /// closed the checkpoint — the turn was lost, not recovered.)
+    #[tokio::test]
+    async fn restart_startup_resumes_the_orphan_and_then_does_not_resume_it_again() {
+        let (_d, srv, _h, _e) = scratch_server();
+        recovery_orphan(&srv, "restart-hook", "desktop");
+        srv.store
+            .lock_ok()
+            .append_message(
+                "restart-hook",
+                &veles_core::providers::ChatMessage::user("continue after boot"),
+            )
+            .unwrap();
+        let db = _d.path().join("state.db");
+        drop(srv);
+        let (url, requests) = answering_provider("resumed after boot");
+        let restarted = restarted_server(&db, &url);
+        restarted.spawn_interrupted_turn_recovery();
+        wait_for("the recovered checkpoint", || {
+            restarted
+                .store
+                .lock_ok()
+                .turn_checkpoint("restart-hook")
+                .unwrap()
+                .is_some_and(|c| c.state == "recovered")
+        })
+        .await;
+        let history = restarted
+            .store
+            .lock_ok()
+            .load_history("restart-hook")
+            .unwrap();
+        assert!(history.iter().any(|m| m.content == "resumed after boot"));
+        assert_eq!(
+            history
+                .iter()
+                .filter(|m| m.content == "continue after boot")
+                .count(),
+            1
+        );
+        assert!(!requests.lock_ok().is_empty(), "the provider was asked");
+        assert!(restarted.recovery_candidates().unwrap().is_empty());
+        restarted.spawn_interrupted_turn_recovery();
+        tokio::time::sleep(std::time::Duration::from_millis(200)).await;
+        assert_eq!(
+            restarted
+                .store
+                .lock_ok()
+                .load_history("restart-hook")
+                .unwrap()
+                .iter()
+                .filter(|m| m.injection.as_deref() == Some("restart"))
+                .count(),
+            1
+        );
+        assert_eq!(
+            restarted
+                .store
+                .lock_ok()
+                .load_history("restart-hook")
+                .unwrap()
+                .iter()
+                .filter(|m| m.content == "resumed after boot")
+                .count(),
+            1,
+            "no second continuation"
+        );
+    }
+
+    /// A boot with the provider not up yet: the failed continuation keeps
+    /// its checkpoint (claim released, attempt counted) and the next try
+    /// — this process's backoff or the next boot — finishes the turn.
+    #[tokio::test]
+    async fn a_provider_down_at_boot_does_not_lose_the_interrupted_turn() {
+        let (_d, srv, _h, _e) = scratch_server();
+        recovery_orphan(&srv, "provider-down", "desktop");
+        srv.store
+            .lock_ok()
+            .append_message(
+                "provider-down",
+                &veles_core::providers::ChatMessage::user("survive the outage"),
+            )
+            .unwrap();
+        let db = _d.path().join("state.db");
+        drop(srv);
+        let down = restarted_server(&db, "http://127.0.0.1:2/v1");
+        let run = down.recovery_candidates().unwrap().remove(0);
+        assert!(
+            down.recover_once(&run).await,
+            "a failed attempt asks for a retry"
+        );
+        {
+            let store = down.store.lock_ok();
+            let checkpoint = store.turn_checkpoint("provider-down").unwrap().unwrap();
+            assert_eq!(checkpoint.state, "running", "the turn was not dropped");
+            assert_eq!(checkpoint.claim_pid, None, "the claim was released");
+        }
+        drop(down);
+        let (url, requests) = answering_provider("answered after the outage");
+        let up = restarted_server(&db, &url);
+        let run = up.recovery_candidates().unwrap().remove(0);
+        assert!(!up.recover_once(&run).await);
+        let store = up.store.lock_ok();
+        assert_eq!(
+            store
+                .turn_checkpoint("provider-down")
+                .unwrap()
+                .unwrap()
+                .state,
+            "recovered"
+        );
+        let history = store.load_history("provider-down").unwrap();
+        let rows: Vec<(String, Option<String>, String)> = history
+            .iter()
+            .map(|m| {
+                (
+                    m.role.clone(),
+                    m.injection.clone(),
+                    m.content.chars().take(60).collect(),
+                )
+            })
+            .collect();
+        // The failed attempt's error row is NOT the answer: it used to be
+        // taken for a saved final reply and redelivered.
+        assert_eq!(
+            history.last().map(|m| m.content.as_str()),
+            Some("answered after the outage"),
+            "{rows:?}"
+        );
+        assert!(
+            history
+                .iter()
+                .any(|m| m.content.starts_with("[veles] all routes failed")),
+            "the outage stays visible in the transcript: {rows:?}"
+        );
+        // The retry asked the provider with a user-role note last, not
+        // with the error row as the conversation's final word.
+        let last_wire_role = requests
+            .lock_ok()
+            .last()
+            .and_then(|raw| raw.split("\r\n\r\n").nth(1).map(str::to_string))
+            .and_then(|body| serde_json::from_str::<Value>(&body).ok())
+            .and_then(|v| {
+                v["messages"].as_array()?.last()?["role"]
+                    .as_str()
+                    .map(String::from)
+            });
+        assert_eq!(last_wire_role.as_deref(), Some("user"), "{rows:?}");
+    }
+
+    /// An attempt that died without writing anything after its note (the
+    /// process was killed mid-stream) is retried WITHOUT a second note.
+    #[tokio::test]
+    async fn a_retry_after_a_silent_failure_does_not_repeat_the_note() {
+        let (_d, srv, _h, _e) = scratch_server();
+        let (url, _requests) = answering_provider("answered on the retry");
+        point_at(&srv, &url);
+        recovery_orphan(&srv, "silent-fail", "desktop");
+        {
+            let store = srv.store.lock_ok();
+            store
+                .append_message(
+                    "silent-fail",
+                    &veles_core::providers::ChatMessage::user("go"),
+                )
+                .unwrap();
+            store
+                .append_message(
+                    "silent-fail",
+                    &veles_core::providers::ChatMessage::user("an earlier attempt's note")
+                        .with_injection("restart"),
+                )
+                .unwrap();
+        }
+        let run = srv.recovery_candidates().unwrap().remove(0);
+        assert!(!srv.recover_once(&run).await);
+        let history = srv.store.lock_ok().load_history("silent-fail").unwrap();
+        assert_eq!(
+            history
+                .iter()
+                .filter(|m| m.injection.as_deref() == Some("restart"))
+                .count(),
+            1
+        );
+        assert_eq!(
+            history.last().map(|m| m.content.as_str()),
+            Some("answered on the retry")
+        );
+    }
+
+    /// The attempt bound: a turn that has already been claimed as often
+    /// as allowed goes to review instead of another paid continuation.
+    #[tokio::test]
+    async fn a_turn_that_keeps_failing_recovery_goes_to_review() {
+        let (_d, srv, _h, _e) = scratch_server();
+        recovery_orphan(&srv, "keeps-failing", "desktop");
+        srv.store
+            .lock_ok()
+            .append_message(
+                "keeps-failing",
+                &veles_core::providers::ChatMessage::user("crashes the gateway"),
+            )
+            .unwrap();
+        srv.store
+            .lock_ok()
+            .conn()
+            .execute_batch(&format!(
+                "UPDATE turn_checkpoints SET recovery_attempts = {MAX_RECOVERY_ATTEMPTS} \
+                 WHERE session_id = 'keeps-failing'"
+            ))
+            .unwrap();
+        let run = srv.recovery_candidates().unwrap().remove(0);
+        let claim = veles_core::turn_recovery::claim(&srv.store.lock_ok(), &run)
+            .unwrap()
+            .unwrap();
+        assert_eq!(claim.attempt, MAX_RECOVERY_ATTEMPTS + 1);
+        srv.resume_interrupted_turn(&run, &claim).await.unwrap();
+        srv.store.lock_ok().recovery_release(&claim).unwrap();
+        let store = srv.store.lock_ok();
+        assert_eq!(
+            store
+                .turn_checkpoint("keeps-failing")
+                .unwrap()
+                .unwrap()
+                .state,
+            "needs-review"
+        );
+        assert!(store
+            .load_history("keeps-failing")
+            .unwrap()
+            .iter()
+            .any(|m| m.content.contains("continuing it failed")));
+        assert!(
+            !srv.agents.lock_ok().contains_key("keeps-failing"),
+            "no provider call"
+        );
+    }
+
+    /// The interrupted turn came from the queue: recovery continues it
+    /// from saved history, so its `running` row is done. Left in place,
+    /// the queue kick demoted it and sent the same prompt again as a new
+    /// turn. A message parked behind it still runs, once.
+    #[tokio::test]
+    async fn recovering_a_queued_turn_does_not_replay_its_prompt() {
+        let (_d, srv, _h, _e) = scratch_server();
+        let (url, requests) = answering_provider("queued answer");
+        point_at(&srv, &url);
+        recovery_orphan(&srv, "queued-turn", "desktop");
+        {
+            let store = srv.store.lock_ok();
+            store
+                .queue_push("queued-turn", "the queued prompt")
+                .unwrap();
+            let taken = store.queue_take_next("queued-turn").unwrap().unwrap();
+            assert_eq!(taken.body, "the queued prompt");
+            // The turn saved its prompt, then the process died.
+            store
+                .append_message(
+                    "queued-turn",
+                    &veles_core::providers::ChatMessage::user("the queued prompt"),
+                )
+                .unwrap();
+            store.queue_push("queued-turn", "parked behind it").unwrap();
+        }
+        let run = srv.recovery_candidates().unwrap().remove(0);
+        let claim = veles_core::turn_recovery::claim(&srv.store.lock_ok(), &run)
+            .unwrap()
+            .unwrap();
+        srv.resume_interrupted_turn(&run, &claim).await.unwrap();
+        srv.store.lock_ok().recovery_release(&claim).unwrap();
+        wait_for("the parked message to run", || {
+            srv.store
+                .lock_ok()
+                .queue_items("queued-turn")
+                .unwrap()
+                .is_empty()
+                && srv
+                    .store
+                    .lock_ok()
+                    .load_history("queued-turn")
+                    .unwrap()
+                    .iter()
+                    .filter(|m| m.content == "queued answer")
+                    .count()
+                    == 2
+        })
+        .await;
+        // Settle: a replay, if any, would run right after.
+        tokio::time::sleep(std::time::Duration::from_millis(300)).await;
+        let _turn = srv.turn_lock("queued-turn").lock_owned().await;
+        let history = srv.store.lock_ok().load_history("queued-turn").unwrap();
+        assert_eq!(
+            history
+                .iter()
+                .filter(|m| m.content == "the queued prompt")
+                .count(),
+            1,
+            "the queued prompt reached the transcript once"
+        );
+        assert_eq!(
+            history
+                .iter()
+                .filter(|m| m.content == "parked behind it")
+                .count(),
+            1
+        );
+        assert_eq!(
+            history
+                .iter()
+                .filter(|m| m.content == "queued answer")
+                .count(),
+            2,
+            "the continuation and the parked message, nothing else"
+        );
+        assert!(!requests.lock_ok().is_empty());
+    }
+
+    /// The process died before the turn saved its prompt: nothing of it is
+    /// in the transcript, so there is nothing to continue, and the queue
+    /// row that still holds the prompt runs it instead.
+    #[tokio::test]
+    async fn a_turn_that_never_saved_its_prompt_is_run_from_its_queue_row() {
+        let (_d, srv, _h, _e) = scratch_server();
+        let (url, requests) = answering_provider("ran from the queue");
+        point_at(&srv, &url);
+        recovery_orphan(&srv, "unsaved-prompt", "desktop");
+        {
+            let store = srv.store.lock_ok();
+            store.queue_push("unsaved-prompt", "never saved").unwrap();
+            store.queue_take_next("unsaved-prompt").unwrap().unwrap();
+        }
+        let run = srv.recovery_candidates().unwrap().remove(0);
+        let claim = veles_core::turn_recovery::claim(&srv.store.lock_ok(), &run)
+            .unwrap()
+            .unwrap();
+        srv.resume_interrupted_turn(&run, &claim).await.unwrap();
+        srv.store.lock_ok().recovery_release(&claim).unwrap();
+        wait_for("the queue row's turn", || {
+            srv.store
+                .lock_ok()
+                .load_history("unsaved-prompt")
+                .unwrap()
+                .iter()
+                .any(|m| m.content == "ran from the queue")
+        })
+        .await;
+        let history = srv.store.lock_ok().load_history("unsaved-prompt").unwrap();
+        assert_eq!(
+            history
+                .iter()
+                .filter(|m| m.content == "never saved")
+                .count(),
+            1
+        );
+        assert!(!history
+            .iter()
+            .any(|m| m.injection.as_deref() == Some("restart")));
+        assert!(!requests.lock_ok().is_empty());
+    }
+
+    /// A text reply with work after it (a verification nudge and the tool
+    /// round it started) was not the end of the turn; recovery continues
+    /// instead of redelivering it.
+    #[tokio::test]
+    async fn a_text_reply_followed_by_more_work_is_not_the_saved_final() {
+        let (_d, srv, _h, _e) = scratch_server();
+        let (url, requests) = answering_provider("finished after the nudge");
+        point_at(&srv, &url);
+        recovery_orphan(&srv, "nudged", "desktop");
+        {
+            let store = srv.store.lock_ok();
+            store
+                .append_message(
+                    "nudged",
+                    &veles_core::providers::ChatMessage::user("fix it"),
+                )
+                .unwrap();
+            store
+                .append_message(
+                    "nudged",
+                    &veles_core::providers::ChatMessage::assistant("pre-nudge claim", None),
+                )
+                .unwrap();
+            store
+                .append_message(
+                    "nudged",
+                    &veles_core::providers::ChatMessage::user("verify first")
+                        .with_injection("verification"),
+                )
+                .unwrap();
+            let mut call = veles_core::providers::ChatMessage::assistant("", None);
+            call.tool_calls = Some(serde_json::json!([{
+                "id": "call-v", "type": "function",
+                "function": {"name": "terminal", "arguments": "{\"command\":\"true\"}"}
+            }]));
+            store.append_message("nudged", &call).unwrap();
+            store
+                .append_message(
+                    "nudged",
+                    &veles_core::providers::ChatMessage::tool_result(
+                        "call-v",
+                        "terminal",
+                        "ok".into(),
+                    ),
+                )
+                .unwrap();
+        }
+        let run = srv.recovery_candidates().unwrap().remove(0);
+        let claim = veles_core::turn_recovery::claim(&srv.store.lock_ok(), &run)
+            .unwrap()
+            .unwrap();
+        srv.resume_interrupted_turn(&run, &claim).await.unwrap();
+        srv.store.lock_ok().recovery_release(&claim).unwrap();
+        let history = srv.store.lock_ok().load_history("nudged").unwrap();
+        assert!(history
+            .iter()
+            .any(|m| m.content == "finished after the nudge"));
+        assert!(!requests.lock_ok().is_empty());
+    }
+
+    /// A saved final reply ends the recovery without a provider call — and
+    /// still runs the message parked behind the interrupted turn.
+    #[tokio::test]
+    async fn a_redelivered_final_reply_still_runs_the_queue() {
+        let (_d, srv, _h, _e) = scratch_server();
+        let (url, _requests) = answering_provider("parked answer");
+        point_at(&srv, &url);
+        recovery_orphan(&srv, "final-then-queue", "desktop");
+        {
+            let store = srv.store.lock_ok();
+            store
+                .append_message(
+                    "final-then-queue",
+                    &veles_core::providers::ChatMessage::user("first"),
+                )
+                .unwrap();
+            store
+                .append_message(
+                    "final-then-queue",
+                    &veles_core::providers::ChatMessage::assistant("first answer", None),
+                )
+                .unwrap();
+            store.queue_push("final-then-queue", "second").unwrap();
+        }
+        let run = srv.recovery_candidates().unwrap().remove(0);
+        let claim = veles_core::turn_recovery::claim(&srv.store.lock_ok(), &run)
+            .unwrap()
+            .unwrap();
+        srv.resume_interrupted_turn(&run, &claim).await.unwrap();
+        srv.store.lock_ok().recovery_release(&claim).unwrap();
+        wait_for("the parked message to run", || {
+            srv.store
+                .lock_ok()
+                .load_history("final-then-queue")
+                .unwrap()
+                .iter()
+                .any(|m| m.content == "parked answer")
+        })
+        .await;
+    }
+
+    /// The open-question filter: an ask registered in THIS process (a
+    /// retry while the user is being asked something). The in-memory ask
+    /// registry is empty after a real restart; what protects an approval
+    /// across one is `active_tool` (see
+    /// `recovery_does_not_repeat_an_action_with_an_unknown_result`).
+    #[tokio::test]
+    async fn recovery_skips_a_session_with_an_open_question_in_this_process() {
+        let (_d, srv, _h, _e) = scratch_server();
+        recovery_orphan(&srv, "recover-ask", "desktop");
+        let ask = veles_core::ask::AskRequest::new(
+            "recover-ask",
+            veles_core::ask::AskKind::Approval,
+            "may this action run?",
+            vec![],
+        );
+        let leg = veles_core::ask::register(&ask, None, None).expect("open ask");
+        assert!(srv.recovery_candidates().unwrap().is_empty());
+        veles_core::ask::cancel(&ask.id);
+        drop(leg);
+        let run = srv.recovery_candidates().unwrap().remove(0);
+        let claim = veles_core::turn_recovery::claim(&srv.store.lock_ok(), &run)
+            .unwrap()
+            .unwrap();
+        srv.store.lock_ok().run_end("recover-ask").unwrap();
+        assert!(srv.recovery_candidates().unwrap().is_empty());
+        srv.store.lock_ok().recovery_release(&claim).unwrap();
+    }
+
+    #[tokio::test]
+    async fn startup_recovery_does_not_select_live_connector_or_a2a_turns() {
+        let (_d, srv, _h, _e) = scratch_server();
+        {
+            let store = srv.store.lock_ok();
+            for (sid, pid, surface) in [
+                ("live", std::process::id(), "desktop"),
+                ("irc", u32::MAX - 1, "irc"),
+                ("a2a", u32::MAX - 1, "a2a"),
+            ] {
+                store.create_session(sid).unwrap();
+                store
+                    .begin_turn_fenced(sid, pid, &veles_core::platform::hostname(), surface)
+                    .unwrap();
+            }
+        }
+        assert!(srv.recovery_candidates().unwrap().is_empty());
+    }
+
+    /// The desktop's export reads the shared exporter, not the history
+    /// renderer's rows: a session with an engine note (a row with no
+    /// `content`), a tool round and a tool result exports in both formats.
+    #[tokio::test]
+    async fn export_renders_a_real_session_with_notes_and_tool_rounds() {
+        let (_d, srv, _h, _e) = scratch_server();
+        {
+            let st = srv.store.lock_ok();
+            st.create_session("exp-1").unwrap();
+            st.append_message("exp-1", &veles_core::providers::ChatMessage::user("list"))
+                .unwrap();
+            st.record_note("exp-1", "cron", "a cron job ran here", None, None)
+                .unwrap();
+            let mut call = veles_core::providers::ChatMessage::assistant("", None);
+            call.tool_calls = Some(serde_json::json!([{
+                "id": "c1", "type": "function",
+                "function": {"name": "terminal", "arguments": "{\"cmd\":\"ls\"}"}
+            }]));
+            st.append_message("exp-1", &call).unwrap();
+            st.append_message(
+                "exp-1",
+                &veles_core::providers::ChatMessage::tool_result("c1", "terminal", "a b".into()),
+            )
+            .unwrap();
+        }
+        let q = |f: &str| Query(HashMap::from([("format".to_string(), f.to_string())]));
+        let (code, Json(v)) =
+            export_session(State(srv.clone()), Path("exp-1".into()), q("markdown")).await;
+        assert_eq!(code, StatusCode::OK, "{v}");
+        let md = v["content"].as_str().unwrap();
+        assert!(
+            md.contains("a cron job ran here") && md.contains("Tool call: terminal"),
+            "{md}"
+        );
+        assert_eq!(v["ext"], "md");
+        let (code, Json(v)) =
+            export_session(State(srv.clone()), Path("exp-1".into()), q("json")).await;
+        assert_eq!(code, StatusCode::OK, "{v}");
+        let parsed: Value = serde_json::from_str(v["content"].as_str().unwrap()).unwrap();
+        assert_eq!(
+            parsed["messages"][1]["tool_calls"][0]["function"]["name"],
+            "terminal"
+        );
+        let (code, _) = export_session(State(srv.clone()), Path("nope".into()), q("json")).await;
+        assert_eq!(code, StatusCode::NOT_FOUND);
+        let (code, _) = export_session(State(srv), Path("exp-1".into()), q("xml")).await;
+        assert_eq!(code, StatusCode::BAD_REQUEST);
+    }
+
+    /// A trigger no surface would ever run is refused at the door: the
+    /// form used to accept `command` (no executor anywhere) and `prompt`
+    /// on a channel, which then logged "unsupported" on every match.
+    #[tokio::test]
+    async fn a_trigger_with_no_executor_is_refused() {
+        let (_d, srv, _h, _e) = scratch_server();
+        let new = |action: &str, event: &str| json!({"name": format!("t-{action}-{event}"), "event": event, "action": action});
+        for (action, event) in [
+            ("command", "TEXT"),
+            ("prompt", "TEXT"),
+            ("slopdrop", "NOTIFICATION"),
+        ] {
+            let (code, Json(v)) = trigger_new(State(srv.clone()), Json(new(action, event))).await;
+            assert_eq!(code, StatusCode::BAD_REQUEST, "{action} on {event}: {v}");
+        }
+        let (code, Json(v)) =
+            trigger_new(State(srv.clone()), Json(new("prompt", "NOTIFICATION"))).await;
+        assert_eq!(code, StatusCode::CREATED, "{v}");
+        let (code, Json(v)) = trigger_new(State(srv.clone()), Json(new("slopdrop", "TEXT"))).await;
+        assert_eq!(code, StatusCode::CREATED, "{v}");
+        let (code, _) = trigger_edit(
+            State(srv.clone()),
+            Path("t-slopdrop-TEXT".into()),
+            Json(json!({"action": "command"})),
+        )
+        .await;
+        assert_eq!(code, StatusCode::BAD_REQUEST);
+        // Moving a prompt row off the device events strands it too.
+        let (code, Json(v)) = trigger_edit(
+            State(srv),
+            Path("t-prompt-NOTIFICATION".into()),
+            Json(json!({"event": "TEXT"})),
+        )
+        .await;
+        assert_eq!(code, StatusCode::BAD_REQUEST, "{v}");
     }
 
     /// The session list reads on a connection of its own, so a store
@@ -10295,6 +14296,51 @@ mod tests {
         assert_eq!(found["hits"][0]["session_id"], "s-one", "{found}");
     }
 
+    /// The context figure the status bar polls every few seconds of a
+    /// turn reads beside a held store lock too (review DR-3). The turn's
+    /// own per-round writes hold that lock; on a loaded box /context
+    /// answered in 1–4 s mid-turn while it waited, parked on a tokio
+    /// worker. The holder here is another thread, as a turn's is.
+    #[tokio::test]
+    async fn the_context_figure_reads_beside_a_held_store_lock() {
+        let (_d, srv, _h, _e) = scratch_server();
+        {
+            let st = srv.store.lock_ok();
+            st.create_session("s-ctx").unwrap();
+            st.append_message(
+                "s-ctx",
+                &veles_core::providers::ChatMessage::user("a question"),
+            )
+            .unwrap();
+        }
+        // The session's agent is cached once its window is open; making
+        // it is not what this measures.
+        srv.agent_for("s-ctx").unwrap();
+        let (taken_tx, taken_rx) = std::sync::mpsc::channel();
+        let holder = {
+            let srv = srv.clone();
+            std::thread::spawn(move || {
+                let _held = srv.store.lock_ok();
+                taken_tx.send(()).unwrap();
+                std::thread::sleep(std::time::Duration::from_secs(3));
+            })
+        };
+        taken_rx.recv().unwrap();
+        let t = std::time::Instant::now();
+        let (code, Json(cx)) = context_view(State(srv.clone()), Path("s-ctx".to_string())).await;
+        let took = t.elapsed();
+        holder.join().unwrap();
+        assert_eq!(code, StatusCode::OK, "{cx}");
+        assert!(
+            took < std::time::Duration::from_millis(1500),
+            "/context waited {took:?} for the store lock"
+        );
+        assert!(cx["context_window_tokens"].as_u64() > Some(0), "{cx}");
+        assert_eq!(cx["session_messages"], 1, "{cx}");
+        assert_eq!(cx["last_call_fresh"], true, "{cx}");
+        assert_eq!(cx["busy"], false, "{cx}");
+    }
+
     /// The session browser's API (2026-10-04): a page with its total,
     /// pins included past the page, the gateway-side search, a bulk
     /// delete in one request, a session's head, and a branch that is a
@@ -10374,6 +14420,14 @@ mod tests {
         let (code, Json(v)) = rt.block_on(session_branch(State(srv.clone()), Path("s-old".into())));
         assert_eq!(code, StatusCode::OK, "{v}");
         let child = v["new_session_id"].as_str().unwrap().to_string();
+        srv.store
+            .lock_ok()
+            .conn()
+            .execute(
+                "UPDATE sessions SET updated_at = '1999-01-01 00:00:00' WHERE id = ?1",
+                [&child],
+            )
+            .unwrap();
         let kids = list(&[("q", "kept old")]);
         let row = kids["sessions"]
             .as_array()
@@ -10384,6 +14438,51 @@ mod tests {
             .expect("the branch is listed");
         assert_eq!(row["parent"], "s-old", "a branch is a child of its source");
         assert_eq!(v["messages_copied"], 1);
+
+        let parent = list(&[("limit", "1"), ("include", child.as_str())]);
+        assert_eq!(
+            ids(&parent),
+            ["s-b", child.as_str()],
+            "the included child joins the ordinary page row"
+        );
+        assert_eq!(
+            parent["total"], 4,
+            "parent context does not change the page total"
+        );
+        assert_eq!(
+            parent["parents"].as_array().unwrap().len(),
+            1,
+            "parent context: {parent}"
+        );
+        assert_eq!(parent["parents"][0]["id"], "s-old");
+        assert_eq!(parent["parents"][0]["context_only"], true);
+        let page = list(&[("limit", "1")]);
+        assert!(
+            page["parents"].as_array().unwrap().is_empty(),
+            "a parentless page needs no context"
+        );
+        assert!(
+            page["children"].as_array().unwrap().is_empty(),
+            "a childless page needs no context"
+        );
+        // SI-6: the PARENT is on the page and its child ranks past it
+        // (newer sessions pushed it off). The child comes as downward
+        // context, under its parent, outside the page and its total.
+        let page = list(&[("limit", "3")]);
+        assert_eq!(ids(&page), ["s-b", "s-a", "s-old"]);
+        assert_eq!(page["total"], 4, "child context does not change the total");
+        let kids = page["children"].as_array().unwrap();
+        assert_eq!(kids.len(), 1, "child context: {page}");
+        assert_eq!(kids[0]["id"], child.as_str());
+        assert_eq!(kids[0]["parent"], "s-old");
+        assert_eq!(kids[0]["context_only"], true);
+        assert!(
+            list(&[("limit", "4")])["children"]
+                .as_array()
+                .unwrap()
+                .is_empty(),
+            "a child already on the page is not repeated as context"
+        );
 
         let (code, Json(v)) = rt.block_on(delete_sessions(
             State(srv.clone()),
@@ -10911,6 +15010,12 @@ mod tests {
         let (_d, srv, _home, _env) = scratch_server();
         let Json(h) = health(State(srv.clone())).await;
         assert_eq!(h["status"], "ok");
+        let revision = h["revision"].as_str().unwrap_or_default();
+        assert!(
+            revision.len() == 40 && revision.bytes().all(|b| b.is_ascii_hexdigit())
+                || revision == "unreported-dirty-build",
+            "health reports the exact compile-time source revision, or honestly marks a dirty build: {revision}"
+        );
 
         // bus: None is the desktop-only configuration; status must not
         // assume an attached gateway.
@@ -11620,6 +15725,31 @@ mod tests {
             "an absent field is left alone, not cleared: {edited}"
         );
 
+        // A new schedule takes effect at the edit: the hourly slot is
+        // replaced, not fired once more before the daily one starts.
+        let hourly = job["next_run_at"].as_str().unwrap().to_string();
+        let before = chrono::Utc::now();
+        let (code, Json(edited)) = cron_edit(
+            State(srv.clone()),
+            Path(id.clone()),
+            Json(json!({ "schedule": "every 1d" })),
+        )
+        .await;
+        assert_eq!(code, StatusCode::OK, "{edited}");
+        let next = edited["next_run_at"].as_str().unwrap_or("").to_string();
+        assert_ne!(next, hourly, "{edited}");
+        let at = chrono::DateTime::parse_from_rfc3339(&next).unwrap();
+        assert!(
+            at.with_timezone(&chrono::Utc) - before > chrono::Duration::hours(23),
+            "a day from the edit: {edited}"
+        );
+        let row = srv.store.lock_ok().cron_get(&id).unwrap().unwrap();
+        assert_eq!(
+            row.next_run_at.as_deref(),
+            Some(next.as_str()),
+            "stored too"
+        );
+
         let (code, _) = cron_delete(State(srv.clone()), Path(id.clone())).await;
         assert_eq!(code, StatusCode::OK);
         let (code, _) = cron_delete(State(srv.clone()), Path(id)).await;
@@ -11656,6 +15786,36 @@ mod tests {
             refused["error"].as_str().unwrap().contains("budget"),
             "{refused}"
         );
+    }
+
+    /// An unavailable approval scope must not become a grant through the
+    /// HTTP boundary. The request remains open for a legitimate answer.
+    #[tokio::test]
+    async fn an_unavailable_approval_choice_is_rejected_without_resolving_the_ask() {
+        let req = veles_core::ask::AskRequest::new(
+            "approval-http-boundary",
+            veles_core::ask::AskKind::Approval,
+            "aux denied this call",
+            veles_core::ask::approval_choices(false),
+        );
+        let leg = veles_core::ask::register(&req, None, None).expect("open approval");
+        let Json(v) = decide_ask(
+            Path(req.id.clone()),
+            Json(serde_json::from_value(serde_json::json!({"choice": "always"})).unwrap()),
+        )
+        .await;
+        assert_eq!(v["ok"], false, "{v}");
+        assert!(
+            v["error"].as_str().is_some_and(|e| e.contains("choice")),
+            "{v}"
+        );
+        assert!(veles_core::ask::open_all().iter().any(|r| r.id == req.id));
+        assert!(veles_core::ask::resolve(
+            &req.id,
+            veles_core::ask::AskAnswer::choice(veles_core::ask::CHOICE_DENY)
+        ));
+        let answer = leg.wait().await;
+        assert_eq!(answer.first(), Some(veles_core::ask::CHOICE_DENY));
     }
 
     /// The Files tab's whole contract, through the handlers: list, open
@@ -11734,12 +15894,13 @@ mod tests {
         assert!(a.per_question["q2"].selected.is_empty());
         assert!(!a.per_question.contains_key("q3"));
 
-        let single = AskRequest::new(
+        let mut single = AskRequest::new(
             "s-wire",
             AskKind::Clarify,
             "pick any",
             vec![AskChoice::new("c1", "a"), AskChoice::new("c2", "b")],
         );
+        single.multi = true;
         let a = decide(&single, r#"{"answers":["c1","c2"]}"#).await;
         assert_eq!(a.selected, vec!["c1", "c2"]);
     }
@@ -12323,7 +16484,7 @@ mod tests {
     /// The body lib/setup.tcl's `answers_body` builds, byte for byte —
     /// setuptest.tcl pins the Tcl side to this same string, so the two
     /// halves of the wire are checked against one text.
-    const TK_SETUP_BODY: &str = r#"{"provider": "openai_compatible", "base_url": "http://127.0.0.1:11434/v1", "key_env": "OLLAMA_KEY", "api_mode": "chat_completions", "provider_name": "ollama", "model": "llama3", "default_provider": "ollama", "telegram": true, "irc_server": "", "irc_port": 6697, "irc_use_tls": true, "irc_nickname": "", "irc_channels": "", "irc_sasl_username": "", "acl": "legacy_open", "acl_owner": "", "locale": "de", "skipped": ["irc"]}"#;
+    const TK_SETUP_BODY: &str = r#"{"provider": "openai_compatible", "base_url": "http://127.0.0.1:11434/v1", "key_env": "OLLAMA_KEY", "api_mode": "chat_completions", "driver": "", "provider_name": "ollama", "model": "llama3", "default_provider": "ollama", "telegram": true, "irc_server": "", "irc_port": 6697, "irc_use_tls": true, "irc_nickname": "", "irc_channels": "", "irc_sasl_username": "", "acl": "legacy_open", "acl_owner": "", "locale": "de", "skipped": ["irc"]}"#;
 
     fn preview_body(v: Value) -> SetupPreviewBody {
         serde_json::from_value(v).expect("setup preview body")
@@ -12409,10 +16570,38 @@ mod tests {
             .find(|p| p["choice"] == "anthropic")
             .expect("an anthropic row");
         assert_eq!(anthropic["api_mode"], "plugin", "{anthropic}");
-        assert_eq!(anthropic["driver"], "anthropic-messages", "{anthropic}");
+        assert_eq!(
+            anthropic["driver"], "tcl:tcl-anthropic-driver:anthropic-messages",
+            "{anthropic}"
+        );
         assert_eq!(
             anthropic["base_url"], "https://api.anthropic.com",
             "{anthropic}"
+        );
+        let referrals: Vec<(&str, &str)> = st["referrals"]
+            .as_array()
+            .expect("referral registry")
+            .iter()
+            .map(|link| {
+                (
+                    link["provider"].as_str().expect("provider"),
+                    link["url"].as_str().expect("URL"),
+                )
+            })
+            .collect();
+        assert_eq!(
+            referrals,
+            [
+                (
+                    "Alibaba",
+                    "https://www.alibabacloud.com/campaign/ai-landing-page-token?referral_code=A92XWC",
+                ),
+                ("Anthropic", "https://claude.ai/referral/wmE6hdL3CQ"),
+                (
+                    "Kimi",
+                    "https://www.kimi.ai/activities/en/invite/share?scenario=subscribe&from=share_poster&invitation_code=W5RK7K",
+                ),
+            ]
         );
     }
 

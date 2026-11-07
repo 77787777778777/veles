@@ -377,6 +377,7 @@ pub struct SoPlugin {
     version: String,
     id: VelesPluginId,
     owner: &'static str,
+    provenance: crate::lifecycle::PluginProvenance,
     hooks: Mutex<Vec<(VelesHandle, String, RustHookFn)>>,
     filters: Mutex<Vec<(VelesHandle, GatewayFilterFn)>>,
     free: veles_plugin_abi::VelesFreeFn,
@@ -549,6 +550,7 @@ pub fn load_so(
         version: version.to_string(),
         id,
         owner,
+        provenance: crate::lifecycle::plugin_provenance().unwrap_or_default(),
         hooks: Mutex::new(Vec::new()),
         filters: Mutex::new(Vec::new()),
         free: free_fn,
@@ -661,7 +663,9 @@ pub fn start_so(name: &str) -> anyhow::Result<String> {
         .lock()
         .unwrap_or_else(|p| p.into_inner())
         .remove(name);
-    match load_so(&entry, name, "so") {
+    match crate::lifecycle::with_plugin_provenance(crate::plugins::provenance(p), || {
+        load_so(&entry, name, "so")
+    }) {
         Ok(_) => Ok(format!("{name}: loaded ({})", entry.display())),
         Err(e) => Err(e),
     }
@@ -1033,6 +1037,7 @@ unsafe extern "C" fn host_register_provider(
             name: name.clone(),
             plugin: format!("so:{}", p.name),
             call,
+            provenance: p.provenance.clone(),
         })
     });
     if let Err(e) = r {
@@ -1494,7 +1499,11 @@ pub fn load_rust_manifests(discovered: &[crate::plugins::LoadedPlugin]) {
             );
             continue;
         }
-        if let Err(e) = load_so(&entry, &p.manifest.name, "so") {
+        if let Err(e) =
+            crate::lifecycle::with_plugin_provenance(crate::plugins::provenance(p), || {
+                load_so(&entry, &p.manifest.name, "so")
+            })
+        {
             so_refused()
                 .lock()
                 .unwrap_or_else(|p| p.into_inner())

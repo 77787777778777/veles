@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset sk {%1$s %2$s failed: %3$s} {%1$s %2$s zlyhalo: %3$s}
 ::msgcat::mcset sk {%1$s %2$s over ssh…} {%1$s %2$s cez ssh…}
 ::msgcat::mcset sk {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset sk {%1$s (%2$s waiting)} {%1$s (%2$s čaká)}
 ::msgcat::mcset sk {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  uvažovanie %3$s}
 ::msgcat::mcset sk {%1$s = %2$s here} {%1$s = %2$s tu}
 ::msgcat::mcset sk {%1$s NOT saved: %2$s} {%1$s NEULOŽENÉ: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset sk {%1$s every cron job on %2$s?} {Vymazať %1$s všetky cron úlohy na %2$s?}
 ::msgcat::mcset sk {%1$s failed: %2$s} {%1$s zlyhalo: %2$s}
 ::msgcat::mcset sk {%1$s in / %2$s out / %3$s calls} {%1$s dovnútra / %2$s von / %3$s volaní}
+::msgcat::mcset sk {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s je uzol %2$s, nie %3$s. Opravte jeho id uzla v Upraviť….}
 ::msgcat::mcset sk {%1$s is not a whole number} {%1$s nie je celé číslo}
+::msgcat::mcset sk {%1$s is reachable (%2$s ms).} {%1$s je dostupný (%2$s ms).}
 ::msgcat::mcset sk {%1$s is set to something this box cannot edit (%2$s)} {%1$s je nastavené na hodnotu, ktorú tento počítač nevie upraviť (%2$s)}
+::msgcat::mcset sk {%1$s is unreachable: %2$s} {%1$s je nedostupný: %2$s}
 ::msgcat::mcset sk {%1$s of %2$s characters} {%1$s z %2$s znakov}
 ::msgcat::mcset sk {%1$s of %2$s sessions} {%1$s z %2$s relácií}
 ::msgcat::mcset sk {%1$s of %2$s skills reach the prompt} {%1$s z %2$s zručností sa dostane do promptu}
 ::msgcat::mcset sk {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s na %2$s: %3$d OK, %4$d zlyhalo}
+::msgcat::mcset sk {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s nehlási identitu uzla clusteru, takže ho nemožno overiť ako %2$s.}
+::msgcat::mcset sk {%1$s sync failed: %2$s} {Synchronizácia %1$s zlyhala: %2$s}
+::msgcat::mcset sk {%1$s sync with %2$s (%3$s)} {Synchronizácia %1$s s %2$s (%3$s)}
+::msgcat::mcset sk {%1$s sync: %2$s} {Synchronizácia %1$s: %2$s}
 ::msgcat::mcset sk {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset sk {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter skočí, Esc zatvorí}
 ::msgcat::mcset sk {%1$s — revision r%2$s} {%1$s — revízia r%2$s}
 ::msgcat::mcset sk {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset sk {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset sk {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset sk {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset sk {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: posledných %2$s z %3$s riadkov, ktoré si jeho brána drží v pamäti; tajomstvá sa na tom uzle redigujú.}
 ::msgcat::mcset sk {%d MCP server(s) configured} {nakonfigurovaných MCP serverov: %d}
 ::msgcat::mcset sk {%d entries} {%d záznamov}
+::msgcat::mcset sk {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {Zapíše sa %d súborov rozšírenia presne tak, ako boli skontrolované. Ak sa niektorý z nich od náhľadu zmenil, nezapíše sa nič. Žiadny commit, push ani PR sa nevykoná.}
 ::msgcat::mcset sk {%d handler(s) registered} {zaregistrovaných handlerov: %d}
 ::msgcat::mcset sk {%d identities · %d users} {%d identít · %d používateľov}
 ::msgcat::mcset sk {%d models — pick one from the list or type a name.} {%d modelov — vyberte jeden zo zoznamu alebo napíšte názov.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset sk {%d shown} {zobrazených: %d}
 ::msgcat::mcset sk {%s %s%%} {%s %s%%}
 ::msgcat::mcset sk {%s (%s)} {%s (%s)}
+::msgcat::mcset sk {%s (referral)} {%s (odkaz)}
+::msgcat::mcset sk {%s (stale)} {%s (zastarané)}
 ::msgcat::mcset sk {%s (this session)} {%s (táto relácia)}
 ::msgcat::mcset sk {%s GB free of %s GB} {%s GB voľných z %s GB}
 ::msgcat::mcset sk {%s already exists — open it from the list} {%s už existuje — otvor ho zo zoznamu}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset sk {%s comes from config.toml [acl] — edit there} {%s pochádza z config.toml [acl] — upravte ho tam}
 ::msgcat::mcset sk {%s config change(s) wait for you — /configsync} {zmeny konfigurácie čakajúce na vás: %s — /configsync}
 ::msgcat::mcset sk {%s did not become healthy within 30s} {%s sa nespamätalo do 30 s}
+::msgcat::mcset sk {%s done} {%s hotovo}
 ::msgcat::mcset sk {%s failed: %s} {%s zlyhalo: %s}
 ::msgcat::mcset sk {%s is already split} {%s je už rozdelené}
 ::msgcat::mcset sk {%s is the language in use — pick another one to swap with} {%s je práve používaný jazyk — vyber iný na výmenu}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset sk {%s opens the command palette in %s.} {%s otvára príkazovú paletu v %s.}
 ::msgcat::mcset sk {%s session(s)} {%s relácií}
 ::msgcat::mcset sk {%s skill(s):} {%s zručnosť(i):}
+::msgcat::mcset sk {%s standing grants} {%s trvalých povolení}
 ::msgcat::mcset sk {%s takes no completable arguments} {%s neprijíma žiadne dokončiteľné argumenty}
 ::msgcat::mcset sk {%s takes on or off} {%s prijíma on alebo off}
 ::msgcat::mcset sk {%s —} {%s —}
+::msgcat::mcset sk {%s — changes data, asks to confirm} {%s — mení údaje, vyžaduje potvrdenie}
 ::msgcat::mcset sk {%s — deleted; History… can restore it} {%s — vymazaný; História… ho môže obnoviť}
 ::msgcat::mcset sk {%s — new: type, then Save} {%s — nový: píš, potom Uložiť}
 ::msgcat::mcset sk {%s — not attached; press Attach in the Instances tab} {%s — nepripojené; stlačte Pripojiť v záložke Inštancie}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset sk {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} je zapnutý bez sekcie [acl]: kým %{var} v .env neurčí, kto smie botovi písať, každý, kto sa k nemu dostane, sa považuje za vlastníka — so všetkými nástrojmi}
 ::msgcat::mcset sk (%{route}) (%{route})
 ::msgcat::mcset sk {(CLI redraws automatically)} {(CLI sa prekresľuje automaticky)}
+::msgcat::mcset sk {(binary; not publishable)} {(binárne; nedá sa publikovať)}
 ::msgcat::mcset sk {(clipboard empty or no clipboard tool)} {(schránka je prázdna alebo chýba nástroj schránky)}
 ::msgcat::mcset sk (deleted) (vymazané)
 ::msgcat::mcset sk (empty) (prázdne)
 ::msgcat::mcset sk {(no sessions)} {(žiadne relácie)}
+::msgcat::mcset sk {(not a memsync peer of this gateway: config is not synced with it)} {(nie je memsync partnerom tejto brány: konfigurácia sa s ním nesynchronizuje)}
 ::msgcat::mcset sk {(nothing to reload — read from disk per use)} {(niet čo znova načítať — číta sa z disku pri každom použití)}
 ::msgcat::mcset sk {(retrying last prompt…)} {(opakujem posledný prompt…)}
 ::msgcat::mcset sk {(route did not resolve: %{e})} {(cesta sa nevyriešila: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset sk {/url needs a number from /urls} {/url vyžaduje číslo z /urls}
 ::msgcat::mcset sk {/whois needs a nick} {/whois vyžaduje prezývku}
 ::msgcat::mcset sk {; could not save the cleared return view: %s} {; nepodarilo sa uložiť vymazaný návratový pohľad: %s}
+::msgcat::mcset sk {; shadows bundled} {; zatieňuje zabudovaný}
+::msgcat::mcset sk {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Ponuka konfigurácie môže zmeniť nastavenia a ponuka trezora zlúči tajomstvá; zmeny v bezpečnostnej sekcii stále čakajú na vlastníka.}
 ::msgcat::mcset sk {A failing plugin may drop hooks mid-turn.} {Zlyhaný plugin môže počas prebiehajúceho kola zahodiť hooky.}
 ::msgcat::mcset sk {A local server: no key is needed unless you set one up.} {Lokálny server: kľúč netreba, ak si ho sami nenastavíte.}
+::msgcat::mcset sk {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Podpísané vydanie sa pripraví až po preflight kontrole. Reštart/overenie, pokračovanie a vrátenie späť sú samostatné akcie. Zdravý proces musí hlásiť presnú skontrolovanú revíziu zdroja.}
 ::msgcat::mcset sk {A value is stored for %s — leave this empty to keep it.} {Pre %s je uložená hodnota — nechajte pole prázdne, aby zostala.}
 ::msgcat::mcset sk {ACL: ban mask} {ACL: zakázať masku}
 ::msgcat::mcset sk {ACL: grant admin} {ACL: udeliť admin}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset sk {ACL: grant user} {ACL: udeliť user}
 ::msgcat::mcset sk {ACL: revoke} {ACL: odobrať}
 ::msgcat::mcset sk {ACME account email} {E-mail účtu ACME}
+::msgcat::mcset sk {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI asistencia funguje na štyroch úrovniach: opýtajte sa na návrhovú otázku (súbor nie je potrebný), zmeňte tento súbor, zmeňte viacero súborov tohto rozšírenia alebo vysvetlite aktuálnu diagnostiku. Nové rozšírenie dokáže vygenerovať celé rozšírenie z jeho účelu. Každá požiadavka sa odosiela bez nástrojov a odmietne sa, ak obsahuje registrované tajomstvo alebo hodnotu pripomínajúcu prihlasovacie údaje; zmeny sa zobrazujú ako diffy a zapíšu sa len vtedy, keď ich použijete. Najprv si vypýtajte návrh rozšírenia; záplatu jadra žiadajte až po identifikovaní chýbajúceho API.}
+::msgcat::mcset sk {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI asistencia upravuje len používateľské rozšírenia a tento súbor nie je ich súčasťou. Väčšina zmien sa zmestí do rozšírenia (hook, nástroj, prepis služby alebo ovládač poskytovateľa), ktoré prežije aktualizácie; zásah do jadra je pre to, čo API rozšírení nevie vyjadriť. Chcete pre túto zmenu vytvoriť nové rozšírenie? Jeho súbory sa ukážu skôr, než sa čokoľvek zapíše.}
+::msgcat::mcset sk {AI assist…} {AI asistencia…}
+::msgcat::mcset sk {AI extension assistance} {AI asistencia pre rozšírenia}
 ::msgcat::mcset sk {API calls} {Volania API}
+::msgcat::mcset sk {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {Kredity API z odporúčacieho programu Anthropic sa udeľujú len pri kúpe Max alebo Ultra. Veles nepodporuje používanie tohto predplatného ako prihlásenia ani ako overenia API.}
 ::msgcat::mcset sk {API key (hidden)} {Kľúč API (skrytý)}
 ::msgcat::mcset sk {API key env var name} {Meno env premennej pre API kľúč}
+::msgcat::mcset sk {API reference} {Referencia API}
+::msgcat::mcset sk {Abandon untouched operation} {Zrušiť nedotknutú operáciu}
 ::msgcat::mcset sk {Access control} {Kontrola prístupu}
 ::msgcat::mcset sk {Access control (ACL)} {Kontrola prístupu (ACL)}
 ::msgcat::mcset sk Add Pridať
 ::msgcat::mcset sk {Add MCP server} {Pridať MCP server}
 ::msgcat::mcset sk {Add instance} {Pridať inštanciu}
 ::msgcat::mcset sk {Add server…} {Pridať server…}
+::msgcat::mcset sk {Adds selected extension sources. Review the branch diff and checks before merging.} {Pridá vybrané zdrojáky rozšírenia. Pred zlúčením si prejdite diff vetvy a kontroly.}
 ::msgcat::mcset sk Add… Pridať…
 ::msgcat::mcset sk {Agent & engine} {Agent a jadro}
 ::msgcat::mcset sk {Alias %s} {Alias %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset sk {Applies to} {Vzťahuje sa na}
 ::msgcat::mcset sk Apply Použiť
 ::msgcat::mcset sk {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Použiť zmení len BEŽIACU reláciu. Kopírovať TOML vám dá bloky na vloženie. Uložiť globálne ich vpletie do config.toml — dotknuté sú len sekcie failoveru, každý iný riadok a komentár zostane nedotknutý a starý súbor sa zachová ako config.toml.bak.}
+::msgcat::mcset sk {Apply proposal…} {Použiť návrh…}
+::msgcat::mcset sk {Apply received} {Použiť prijaté}
+::msgcat::mcset sk {Apply this AI proposal?} {Použiť tento návrh AI?}
+::msgcat::mcset sk {Apply this change set?} {Použiť túto sadu zmien?}
 ::msgcat::mcset sk {Apply to session} {Použiť na reláciu}
+::msgcat::mcset sk {Apply what this node received:} {Použiť to, čo tento uzol prijal:}
 ::msgcat::mcset sk {Approval needed} {Potrebné schválenie}
 ::msgcat::mcset sk Apps Aplikácie
 ::msgcat::mcset sk Archive Archív
 ::msgcat::mcset sk {Archive SHA-256} {SHA-256 archívu}
+::msgcat::mcset sk Ask {Opýtať sa}
+::msgcat::mcset sk {Ask a design question} {Opýtať sa na návrhovú otázku}
+::msgcat::mcset sk {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {Opýtajte sa, ako zostaviť rozšírenie: ktorú hranicu, ktorý jazyk, ktoré API. Zdrojový kód sa neodosiela a nič sa nedá zapísať.}
 ::msgcat::mcset sk {Ask the agent to change it} {Požiadať agenta o zmenu}
+::msgcat::mcset sk {Asking %s…} {Pýtam sa %s…}
 ::msgcat::mcset sk {Asking the provider for its models…} {Zisťujem modely u poskytovateľa…}
 ::msgcat::mcset sk Attach Priložiť
 ::msgcat::mcset sk {Attach to the next message} {Priložiť k ďalšej správe}
+::msgcat::mcset sk {Author guide} {Príručka autora}
+::msgcat::mcset sk {Automatically discovered from the attached gateway's cluster registry.} {Automaticky zistené z registra klastra pripojenej brány.}
 ::msgcat::mcset sk Back Späť
 ::msgcat::mcset sk {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {Späť zatvorí to, čo je navrchu: ponuku, zoznam relácií, okno. Keď nie je nič otvorené, veles prejde do pozadia a beží ďalej.}
 ::msgcat::mcset sk {Base URL} {Base URL}
+::msgcat::mcset sk {Base branch} {Základná vetva}
 ::msgcat::mcset sk {Bot token (hidden)} {Token bota (skrytý)}
+::msgcat::mcset sk Branch Vetva
+::msgcat::mcset sk {Branch and commit prepared; nothing has been pushed} {Vetva a commit pripravené; nič nebolo pushnuté}
+::msgcat::mcset sk {Branch pushed and verified on origin} {Vetva pushnutá a overená na origin}
 ::msgcat::mcset sk {Browse sessions} {Prehliadať relácie}
+::msgcat::mcset sk {Build manifest + preflight} {Zostaviť manifest + preflight kontrola}
+::msgcat::mcset sk {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Zostavenie: veles %1$s, revízia %2$s (%3$s %4$s)}
 ::msgcat::mcset sk {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e konce riadkov · C-b/C-f znak · M-b/M-f slovo · C-k zmaž do konca riadku · C-y vlož · M-w kopíruj · C-w zmaž oblasť · C-space nastav značku · C-/ späť}
 ::msgcat::mcset sk {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g preruší všetko · C-j nový riadok · M-p/M-n história · Tab doplň}
+::msgcat::mcset sk {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s jadier, zaťaženie %2$s / %3$s / %4$s (%5$s%% jadier)}
 ::msgcat::mcset sk Cancel Zrušiť
+::msgcat::mcset sk {Cancel task} {Zrušiť úlohu}
+::msgcat::mcset sk {Cancel task %1$s? This cannot be undone.} {Zrušiť úlohu %1$s? Toto sa nedá vrátiť späť.}
+::msgcat::mcset sk {Cannot verify that %1$s is node %2$s: %3$s} {Nemožno overiť, že %1$s je uzol %2$s: %3$s}
 ::msgcat::mcset sk Capabilities Schopnosti
 ::msgcat::mcset sk {Change my app “%s” (%s): } {Zmeň moju aplikáciu „%s“ (%s): }
+::msgcat::mcset sk {Change this extension's files} {Zmeniť súbory tohto rozšírenia}
+::msgcat::mcset sk {Change this file} {Zmeniť tento súbor}
 ::msgcat::mcset sk Change… Zmeniť…
 ::msgcat::mcset sk {Channels (e.g. #veles #dev)} {Kanály (napr. #veles #dev)}
 ::msgcat::mcset sk Chat Chat
 ::msgcat::mcset sk {Chat — not attached; press Attach in the Instances tab} {Chat — nepripojené; stlačte Pripojiť v záložke Inštancie}
 ::msgcat::mcset sk {Check (lsp)} {Kontrola (lsp)}
+::msgcat::mcset sk {Check again} {Skontrolovať znova}
+::msgcat::mcset sk {Check files} {Skontrolovať súbory}
 ::msgcat::mcset sk Checkpoints {Kontrolné body}
 ::msgcat::mcset sk {Checkpoints (undo)} {Kontrolné body (späť)}
+::msgcat::mcset sk {Checks and next steps} {Kontroly a ďalšie kroky}
+::msgcat::mcset sk {Checks run} {Kontroly spustené}
 ::msgcat::mcset sk {Choose BUNDLE-INFO.json in the managed install-sources directory} {Vyberte súbor BUNDLE-INFO.json v spravovanom adresári install-sources}
 ::msgcat::mcset sk {Choose a failover script} {Vyberte failover skript}
 ::msgcat::mcset sk {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {Vyberte modul alebo procesný plugin na prehliadnutie. Objavovanie číta len plugin.toml; výber komponentu vyžiada jeho deklarovaný manifest a možnosti. Otvorením tohto kroku sa nič nenainštaluje.}
+::msgcat::mcset sk {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {Zvoľte názov, účel a jazyk, potom si pozrite presné súbory. Nič nebolo zapísané.}
 ::msgcat::mcset sk {Choose a user unit or a system service for the server profile. Neither starts a service.} {Vyberte používateľskú jednotku alebo systémovú službu pre serverový profil. Ani jedno nespustí službu.}
 ::msgcat::mcset sk {Choose core bundle…} {Vybrať balík jadra…}
 ::msgcat::mcset sk {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {Vyberte tvar inštalácie. Lokálne profily používajú skontrolovaný inštalátor. Systémové a kontajnerové profily pripravia podpísanú žiadosť pre explicitné odovzdanie cez CLI. NixOS vydá len výstrižok modulu.}
+::msgcat::mcset sk {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {Vyberte najužšiu hranicu: Nástroj pridáva schopnosť volateľnú modelom; Hook sleduje alebo upravuje udalosť životného cyklu; Služba alebo bod prepisu obaľuje pomenované rozhodnutie; ovládač Poskytovateľa pridáva komunikačnú vrstvu poskytovateľa; zásah do jadra je vhodný len vtedy, keď publikované API rozšírení nedokáže zmenu vyjadriť.}
 ::msgcat::mcset sk {Choose typed container-host options JSON} {Vybrať JSON s typizovanými možnosťami hosta kontajnerov}
 ::msgcat::mcset sk {Choose typed container-host options…} {Vybrať typizované možnosti hosta kontajnerov…}
 ::msgcat::mcset sk Clear Vyčistiť
 ::msgcat::mcset sk {Clear composer} {Vyčistiť vstupné pole}
 ::msgcat::mcset sk {Clear override} {Zrušiť override}
 ::msgcat::mcset sk {Click the picture where you would click on the page.} {Kliknite na obrázok tam, kde by ste klikli na stránke.}
+::msgcat::mcset sk {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {Naklonovať %1$s, vytvoriť %2$s a skopírovať len skontrolované súbory z %3$s do %4$s/<extension>/. Súbory sa skontrolujú a zapíšu do commitu. Push ani pull request sa teraz nedeje.}
 ::msgcat::mcset sk Close Zavrieť
 ::msgcat::mcset sk {Close (Esc)} {Zavrieť (Esc)}
 ::msgcat::mcset sk {Close the setup wizard? Nothing has been written yet.} {Zavrieť sprievodcu nastavením? Ešte nič nebolo zapísané.}
 ::msgcat::mcset sk {Code actions} {Akcie kódu}
+::msgcat::mcset sk Commit Commit
+::msgcat::mcset sk {Commit ready for review. Push is a separate action.} {Commit pripravený na kontrolu. Push je samostatná akcia.}
 ::msgcat::mcset sk {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Pred náhľadom handoffu vyplňte všetky polia PDS vrátane pripnutého digestu obrazu.}
 ::msgcat::mcset sk {Complete every typed container-host field before previewing this profile.} {Pred náhľadom tohto profilu vyplňte každé typované pole kontajnerového hostiteľa.}
 ::msgcat::mcset sk {Component configuration returned an invalid result; nothing was accepted as applied.} {Konfigurácia komponentu vrátila neplatný výsledok; nič nebolo prijaté ako použité.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset sk {Component options changed. Review the new preview before applying.} {Možnosti komponentu sa zmenili. Pred aplikovaním skontrolujte nový náhľad.}
 ::msgcat::mcset sk Components Komponenty
 ::msgcat::mcset sk {Composer preview} {Náhľad editora}
+::msgcat::mcset sk Config Konfigurácia
+::msgcat::mcset sk {Config differs: %s} {Konfigurácia sa líši: %s}
+::msgcat::mcset sk {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Záznam konfigurácie: ten uzol má zmeny od %1$s po %3$s, táto brána po %2$s}
+::msgcat::mcset sk {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Záznam konfigurácie: táto brána má zmeny od %1$s po %2$s, ten uzol po %3$s}
+::msgcat::mcset sk {Config only on that node: %s} {Konfigurácia len na tom uzle: %s}
+::msgcat::mcset sk {Config only on this gateway: %s} {Konfigurácia len na tejto bráne: %s}
 ::msgcat::mcset sk Configure Nastaviť
 ::msgcat::mcset sk {Configure %s} {Nastaviť %s}
+::msgcat::mcset sk {Configure translator} {Nastaviť prekladač}
+::msgcat::mcset sk {Configured desktop gateway} {Nakonfigurovaná desktop brána}
 ::msgcat::mcset sk Configure… Nastaviť…
 ::msgcat::mcset sk {Configuring %s} {Konfigurácia: %s}
 ::msgcat::mcset sk {Confirm or discard the current signed review before starting another download.} {Pred začatím ďalšieho sťahovania potvrďte alebo zahoďte aktuálne overené preskúmanie.}
 ::msgcat::mcset sk {Container host: typed host plan and privileged CLI handoff} {Host kontajnerov: typizovaný plán hosta a odovzdanie CLI vyžadujúce administrátorské práva}
 ::msgcat::mcset sk {Context window} {Kontextové okno}
+::msgcat::mcset sk {Continue to next target} {Pokračovať na ďalší cieľ}
+::msgcat::mcset sk {Contribute extensions: %s} {Prispieť rozšíreniami: %s}
+::msgcat::mcset sk Contribute… Prispieť…
+::msgcat::mcset sk {Contribution branch} {Vetva príspevku}
+::msgcat::mcset sk {Contribution destination} {Cieľ príspevku}
 ::msgcat::mcset sk Copy Kopírovať
 ::msgcat::mcset sk {Copy TOML} {Kopírovať TOML}
+::msgcat::mcset sk {Copy a bundled extension into your user plugin directory before preparing a contribution.} {Pred prípravou príspevku skopírujte zabudované rozšírenie do svojho adresára používateľských pluginov.}
 ::msgcat::mcset sk {Copy message} {Kopírovať správu}
 ::msgcat::mcset sk {Copy name} {Kopírovať názov}
 ::msgcat::mcset sk {Copy nick} {Kopírovať prezývku}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset sk {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {Nepodarilo sa objaviť komponenty. Kroky nastavenia poskytovateľa stále fungujú; v prípade potreby nainštalujte cez CLI na cieľovom počítači.}
 ::msgcat::mcset sk {Could not join: %s} {Pripojenie zlyhalo: %s}
 ::msgcat::mcset sk {Could not list the models (%s) — type the model's name.} {Nepodarilo sa vypísať modely (%s) — napíšte názov modelu.}
+::msgcat::mcset sk {Create a PR in} {Vytvoriť PR v}
+::msgcat::mcset sk {Create extension} {Vytvoriť rozšírenie}
 ::msgcat::mcset sk {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Vytvorte bota cez @BotFather a vložte jeho token nižšie: uloží sa do šifrovaného trezoru, nikdy do config.toml.}
+::msgcat::mcset sk {Create this extension?} {Vytvoriť toto rozšírenie?}
+::msgcat::mcset sk {Create this generated extension?} {Vytvoriť toto vygenerované rozšírenie?}
+::msgcat::mcset sk {Created and reloaded. Review and test the extension before publishing.} {Vytvorené a znova načítané. Pred publikovaním rozšírenie skontrolujte a otestujte.}
+::msgcat::mcset sk {Created, but reload failed} {Vytvorené, ale znovunačítanie zlyhalo}
 ::msgcat::mcset sk {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Vytvorí %s/<name>/SKILL.md zo šablóny a otvorí ho. Popis vo frontmatteri je jediná časť, ktorá sa dostane do indexu promptov, takže napíšte, KEDY zručnosť použiť.}
 ::msgcat::mcset sk {Cron history} {História cron}
 ::msgcat::mcset sk {Cron jobs} {Cron úlohy}
 ::msgcat::mcset sk {Curated — write the first owner entry} {Spravovaný — zapíš prvý záznam vlastníka}
 ::msgcat::mcset sk Cut Vystrihnúť
 ::msgcat::mcset sk Decline Odmietnuť
+::msgcat::mcset sk {Dedicated translator} {Vyhradený prekladač}
 ::msgcat::mcset sk {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset sk Default Predvolené
 ::msgcat::mcset sk {Default model} {Predvolený model}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset sk {Delete user} {Vymazať používateľa}
 ::msgcat::mcset sk {Delete workspace?} {Vymazať pracovný priestor?}
 ::msgcat::mcset sk Deop {Odobrať op}
+::msgcat::mcset sk {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Opíšte zmenu. AI môže zmeniť alebo pridať viacero súborov tohto rozšírenia. Každý súbor sa zobrazí ako diff a nič sa nezapíše, kým to nepotvrdíte.}
+::msgcat::mcset sk {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Opíšte zmenu. AI môže navrhnúť náhradu, ale nemôže ju zapísať, kým si neprezriete a nepotvrdíte diff.}
+::msgcat::mcset sk {Describe the requested extension change first.} {Najprv opíšte požadovanú zmenu rozšírenia.}
+::msgcat::mcset sk Description Popis
 ::msgcat::mcset sk {Desktop: local core, modules and process plugins} {Pracovná plocha: lokálne jadro, moduly a procesné pluginy}
 ::msgcat::mcset sk Detach Odpojiť
+::msgcat::mcset sk {Detach foreground} {Odpojiť popredie}
 ::msgcat::mcset sk Dev Dev
 ::msgcat::mcset sk {Dev pane (REPL + LSP)} {Dev panel (REPL + LSP)}
 ::msgcat::mcset sk {Dev: arm / disarm live patching} {Dev: zapnúť / vypnúť živé patchovanie}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset sk Devoice {Odobrať voice}
 ::msgcat::mcset sk {Discard review} {Zahodiť preskúmanie}
 ::msgcat::mcset sk {Discard your changes to %s?} {Zahodiť tvoje zmeny v %s?}
+::msgcat::mcset sk {Disk: %1$s free of %2$s at %3$s} {Disk: %1$s voľných z %2$s v %3$s}
 ::msgcat::mcset sk Done Hotovo
 ::msgcat::mcset sk {Done — config written} {Hotovo — konfigurácia zapísaná}
 ::msgcat::mcset sk {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Pred inštaláciou stiahnite a overte manifest vydania a archív hostiteľa. Všetkých päť polí identity je povinných. Brána drží súkromný pripravený archív; týmto náhľadom sa nič nenainštaluje.}
 ::msgcat::mcset sk {Downloading and verifying the signed release…} {Sťahovanie a overovanie podpísaného vydania…}
+::msgcat::mcset sk {Draft this as an extension?} {Navrhnúť toto ako rozšírenie?}
 ::msgcat::mcset sk {Drag to scroll; a quick swipe goes further.} {Ťahaním posúvate; rýchle potiahnutie posunie ďalej.}
+::msgcat::mcset sk {Drift check failed: %s} {Kontrola odchýlok zlyhala: %s}
+::msgcat::mcset sk {Drift check: %s node(s) differ from this gateway.} {Kontrola odchýlok: %s uzlov sa líši od tejto brány.}
+::msgcat::mcset sk {Drift: built from revision %1$s, this gateway from %2$s} {Odchýlka: zostavené z revízie %1$s, táto brána z %2$s}
+::msgcat::mcset sk {Drift: none — same version, revision and replicated config} {Odchýlka: žiadna — rovnaká verzia, revízia aj replikovaná konfigurácia}
+::msgcat::mcset sk {Drift: not compared — %s} {Odchýlka: neporovnané — %s}
+::msgcat::mcset sk {Drift: runs version %1$s, this gateway %2$s} {Odchýlka: beží verzia %1$s, táto brána %2$s}
+::msgcat::mcset sk Drift… Odchýlka…
 ::msgcat::mcset sk {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset sk {ESC %s is not bound} {ESC %s nie je naviazaný}
 ::msgcat::mcset sk {ESC- … (Meta prefix)} {ESC- … (predpona Meta)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset sk Edit… Upraviť…
 ::msgcat::mcset sk {Enable / disable} {Zapnúť / vypnúť}
 ::msgcat::mcset sk {Enable the Telegram adapter} {Povoliť Telegram adaptér}
+::msgcat::mcset sk Endpoint {Koncový bod}
 ::msgcat::mcset sk Engine Jadro
 ::msgcat::mcset sk Eval→gw Eval→gw
 ::msgcat::mcset sk {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Každá zmena v %s sa commitne. Obnovenie vráti celý priečinok na ten commit — a najprv uloží snímku aktuálneho stavu, takže to nie je jednosmerné dvere.}
 ::msgcat::mcset sk {Every plugin file goes back to that commit. The current state is committed first.} {Všetky súbory pluginov sa vrátia na ten commit. Aktuálny stav sa najprv commitne.}
+::msgcat::mcset sk {Exact commit} {Presný commit}
+::msgcat::mcset sk {Exact permission rule} {Presné pravidlo povolenia}
+::msgcat::mcset sk {Example: a hook} {Príklad: hook}
+::msgcat::mcset sk {Example: a provider driver} {Príklad: ovládač poskytovateľa}
+::msgcat::mcset sk {Example: a service override wrapping core} {Príklad: prepis služby obaľujúci jadro}
+::msgcat::mcset sk {Example: a tool} {Príklad: nástroj}
 ::msgcat::mcset sk {Existing shared container network} {Existujúca zdieľaná sieť kontajnerov}
+::msgcat::mcset sk Explain Vysvetliť
+::msgcat::mcset sk {Explain the diagnostics} {Vysvetliť diagnostiku}
 ::msgcat::mcset sk Export… Exportovať…
+::msgcat::mcset sk {Extension API} {API rozšírení}
+::msgcat::mcset sk {Extension development} {Vývoj rozšírení}
+::msgcat::mcset sk {Extension guide} {Príručka rozšírení}
+::msgcat::mcset sk {Extension source} {Zdroják rozšírenia}
 ::msgcat::mcset sk {Failover blueprint} {Plán prepnutia (failover)}
 ::msgcat::mcset sk {Failover blueprint (edit the route chain)} {Plán prepnutia (úprava reťazca trás)}
 ::msgcat::mcset sk {Failover hook script (what `script` mode runs)} {Hook skript prepnutia (čo spúšťa režim `script`)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset sk {Find in transcript} {Hľadať v prepise}
 ::msgcat::mcset sk {Find in transcript…} {Hľadať v prepise…}
 ::msgcat::mcset sk {Find references} {Nájsť odkazy}
+::msgcat::mcset sk {Finish rollback} {Dokončiť vrátenie späť}
 ::msgcat::mcset sk {First run: no config.toml yet.} {Prvé spustenie: config.toml ešte neexistuje.}
+::msgcat::mcset sk {Fix the failed syntax checks before preparing a contribution.} {Pred prípravou príspevku opravte zlyhané syntaktické kontroly.}
+::msgcat::mcset sk {Fleet deployment} {Nasadenie flotily}
+::msgcat::mcset sk {Fleet deployment runs from a desktop computer; it is not available on Android.} {Nasadenie flotily sa spúšťa z desktopového počítača; na Androide nie je dostupné.}
+::msgcat::mcset sk {Fleet deploy…} {Nasadenie flotily…}
+::msgcat::mcset sk {Fleet drift} {Odchýlky flotily}
 ::msgcat::mcset sk {Fold / unfold} {Zložiť / rozložiť}
 ::msgcat::mcset sk {Forget declaration} {Zabudnúť deklaráciu}
+::msgcat::mcset sk {Forget node %s?} {Zabudnúť uzol %s?}
+::msgcat::mcset sk {Forget node…} {Zabudnúť uzol…}
+::msgcat::mcset sk {Forgetting %1$s failed: %2$s} {Zabudnutie %1$s zlyhalo: %2$s}
+::msgcat::mcset sk {Forgot node %s.} {Uzol %s zabudnutý.}
+::msgcat::mcset sk {Forgotten fleet-wide (refused until they heartbeat again): %s} {Zabudnuté v celej flotile (odmietnuté, kým znova neošlú heartbeat): %s}
 ::msgcat::mcset sk Fork Rozvetviť
 ::msgcat::mcset sk {Free space} {Voľné miesto}
 ::msgcat::mcset sk {Full source commit SHA} {Celý SHA commitu zdroja}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset sk {Gateway image sha256 digest} {Digest obrazu brány sha256}
 ::msgcat::mcset sk {Gateway quadlet name} {Názov quadletu brány}
 ::msgcat::mcset sk {Gateway status} {Stav brány}
+::msgcat::mcset sk {Generate with AI…} {Vygenerovať pomocou AI…}
+::msgcat::mcset sk {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {Vygeneroval %s - nič nebolo zapísané. Skontrolujte každý súbor, potom Vytvoriť rozšírenie zapíše presne tieto.}
 ::msgcat::mcset sk {Get a key at %s} {Kľúč získate na %s}
 ::msgcat::mcset sk {GitHub release URL} {URL vydania na GitHube}
+::msgcat::mcset sk {Give the extension a name and describe what it should do (the purpose), then generate.} {Zadajte rozšíreniu názov a opíšte, čo má robiť (účel), potom ho vygenerujte.}
 ::msgcat::mcset sk {Give up} {Vzdať to}
 ::msgcat::mcset sk Go Ísť
 ::msgcat::mcset sk {Go to definition} {Prejsť na definíciu}
+::msgcat::mcset sk {Gossip failed: %s} {Gossip zlyhal: %s}
+::msgcat::mcset sk {Gossip now} {Gossip teraz}
+::msgcat::mcset sk {Gossip with %1$s: %2$s} {Gossip s %1$s: %2$s}
+::msgcat::mcset sk {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {Gossip: odpovedali %1$s z %2$s partnerov (%3$s).}
 ::msgcat::mcset sk Grant Udeliť
 ::msgcat::mcset sk {Grant access} {Udeliť prístup}
+::msgcat::mcset sk {Granted at} Udelené
 ::msgcat::mcset sk Grant… Udeliť…
 ::msgcat::mcset sk {Guards — what the harness stops, and where it stands now} {Guards — čo harness zastavuje a kde to práve stojí}
 ::msgcat::mcset sk {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handlery bežia v zobrazenom poradí; vyhráva prvý, ktorý vráti neprázdnu hodnotu. Vypnutie ho preskočí bez odregistrovania a voľba sa uloží do config.toml, takže reload pluginu ho nemôže potichu znovu zapnúť.}
+::msgcat::mcset sk Health Stav
+::msgcat::mcset sk {Health alerts (%s):} {Upozornenia na stav (%s):}
+::msgcat::mcset sk Heartbeat {Tep srdca}
+::msgcat::mcset sk {Heartbeat age: %s s} {Vek heartbeatu: %s s}
 ::msgcat::mcset sk Help Pomocník
 ::msgcat::mcset sk {Help & keys} {Pomocník a klávesy}
 ::msgcat::mcset sk {Hide right panes} {Skryť pravé panely}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset sk {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {Podržte a pred zdvihnutím prsta ťahajte: výber sleduje váš prst slovo po slove a pri hornom alebo dolnom okraji posúva.}
 ::msgcat::mcset sk Hooks Hooky
 ::msgcat::mcset sk {Hooks (what plugins run on)} {Hooky (čo spúšťajú pluginy)}
+::msgcat::mcset sk Host Hostiteľ
 ::msgcat::mcset sk {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {Ako dlho podržanie trvá, určuje oneskorenie dotyku a podržania v Androide, v nastaveniach dostupnosti.}
 ::msgcat::mcset sk {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {KEK a rotačný kľúč PLC som zálohoval offline; povoľ skontrolované odovzdanie TLS a aktivácie}
 ::msgcat::mcset sk {I-search backward: type to search, C-r for previous} {I-search dozadu: píšte na hľadanie, C-r pre predchádzajúce}
 ::msgcat::mcset sk {I-search: type to search, C-s for next} {I-search: píšte na hľadanie, C-s pre ďalšie}
+::msgcat::mcset sk {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {Tlak IO: %1$s%% / %2$s%% / %3$s%% času niektorá úloha čakala (10 s / 1 min / 5 min)}
 ::msgcat::mcset sk IRC IRC
 ::msgcat::mcset sk {IRC buffers} {IRC buffery}
 ::msgcat::mcset sk {IRC composer} {IRC kompozér}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset sk {IRC split: %s} {IRC rozdelenie: %s}
 ::msgcat::mcset sk {IRC transcript} {IRC prepis}
 ::msgcat::mcset sk {IRC — nothing to show} {IRC — nič na zobrazenie}
+::msgcat::mcset sk {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {Prebieha: %1$s ťahov %2$s, %3$s úloh na pozadí %4$s}
 ::msgcat::mcset sk {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {Nainštalovať %s do spravovaného úložiska komponentov? Jeho manifest bol zobrazený; týmto sa nespúšťa žiadna služba.}
 ::msgcat::mcset sk {Install component} {Nainštalovať komponent}
 ::msgcat::mcset sk {Install components…} {Nainštalovať komponenty…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset sk Instances Inštancie
 ::msgcat::mcset sk {It becomes the current content, as a new revision — so the restore can be undone too.} {Stane sa aktuálnym obsahom ako nová revízia — takže aj obnovenie sa dá vrátiť.}
 ::msgcat::mcset sk {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Uloží sa do šifrovaného trezoru na tomto počítači. Agent ho nikdy nevidí: môže ho len použiť ako $%s v príkazoch alebo poslať na povolené hostiteľské servery.}
+::msgcat::mcset sk {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Odstráni sa z registra clusteru v celej flotile: najbližšia gossip výmena povie každému partnerovi 0.2.0, aby ho tiež zahodil, a žiadny z nich ho už nezlúči späť. Partner starší ako 0.2.0 ho bude naďalej uvádzať. Ak sa stroj vráti a odošle heartbeat, znova sa zaregistruje. Synchrónnych partnerov ani uložené inštancie sa to netýka.}
 ::msgcat::mcset sk {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Teraz opúšťa pamäť. Jeho história uchováva každú revíziu a História… ho môže obnoviť.}
 ::msgcat::mcset sk Join Pripojiť
 ::msgcat::mcset sk {Join a pool} {Pripojiť sa k skupine strojov}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset sk {Language (i18n)} {Jazyk (i18n)}
 ::msgcat::mcset sk Language… Jazyk…
 ::msgcat::mcset sk {Last active} {Naposledy aktívne}
+::msgcat::mcset sk {Last probe: %1$s — %2$s} {Posledná sonda: %1$s — %2$s}
 ::msgcat::mcset sk {Leave %s?} {Opustiť %s?}
 ::msgcat::mcset sk Leave… Opustiť…
 ::msgcat::mcset sk {Legacy open — no [acl] section} {Otvorený (legacy) — bez sekcie [acl]}
 ::msgcat::mcset sk {Let %s:} {Povoliť aplikácii %s:}
 ::msgcat::mcset sk {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {Písmená, číslice, - a _. Vytvorí plugin.toml a plugin.tcl, ktorý registruje hook post_llm_call, a potom ho otvorí v paneli Dev.}
+::msgcat::mcset sk Level Úroveň
 ::msgcat::mcset sk {Lift lockdown} {Zrušiť uzamknutie}
+::msgcat::mcset sk Lines Riadky
 ::msgcat::mcset sk {List the provider's models} {Vypísať modely poskytovateľa}
+::msgcat::mcset sk Load Zaťaženie
 ::msgcat::mcset sk {Load more} {Načítať ďalšie}
 ::msgcat::mcset sk {Loading discovered components…} {Načítavanie objavených komponentov…}
 ::msgcat::mcset sk {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {Lokálny balík bol skontrolovaný. Vyberte Inštalovať vybraný komponent na potvrdenie inštalácie; zatiaľ nebolo nič nainštalované.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset sk {Lock down} Uzamknúť
 ::msgcat::mcset sk Log Protokol
 ::msgcat::mcset sk {Log (engine + status)} {Protokol (engine + stav)}
+::msgcat::mcset sk {Log of %s} {Záznam %s}
+::msgcat::mcset sk Logs… Záznamy…
 ::msgcat::mcset sk {M-g- (g: goto line)} {M-g- (g: prejsť na riadok)}
 ::msgcat::mcset sk {M-p/M-n history · Tab complete} {M-p/M-n história · Tab dopĺňanie}
 ::msgcat::mcset sk {MCP server list} {Zoznam MCP serverov}
 ::msgcat::mcset sk {MCP servers (from config.toml)} {MCP servery (z config.toml)}
 ::msgcat::mcset sk {Make default} {Nastaviť ako predvolený}
 ::msgcat::mcset sk {Make default (config.toml)} {Nastaviť ako predvolené (config.toml)}
+::msgcat::mcset sk {Manage extensions} {Spravovať rozšírenia}
 ::msgcat::mcset sk {Manifest SHA-256} {SHA-256 manifestu}
 ::msgcat::mcset sk {Mark read} {Označiť ako prečítané}
 ::msgcat::mcset sk {Mechanisms (what the engine does on its own)} {Mechanizmy (čo engine robí sám)}
 ::msgcat::mcset sk {Mechanisms — what the engine does on its own, and how to stop it} {Mechanizmy — čo engine robí sám a ako to zastaviť}
 ::msgcat::mcset sk Memory Pamäť
 ::msgcat::mcset sk {Memory history} {História pamäte}
+::msgcat::mcset sk {Memory: %1$s available of %2$s (%3$s%% used)} {Pamäť: %1$s dostupných z %2$s (využitých %3$s%%)}
+::msgcat::mcset sk {Merge the received %s into this node?} {Zlúčiť prijaté %s do tohto uzla?}
 ::msgcat::mcset sk Messages Správy
+::msgcat::mcset sk Metrics Metriky
+::msgcat::mcset sk {Metrics (asked %s):} {Metriky (vyžiadané %s):}
+::msgcat::mcset sk {Metrics of %1$s failed: %2$s} {Metriky %1$s zlyhali: %2$s}
+::msgcat::mcset sk {Metrics of %s received.} {Metriky %s prijaté.}
+::msgcat::mcset sk {Metrics: not asked yet — use Metrics.} {Metriky: zatiaľ nevyžiadané — použite Metriky.}
 ::msgcat::mcset sk Model Model
 ::msgcat::mcset sk {Model for this session} {Model pre túto reláciu}
 ::msgcat::mcset sk {Models & settings} {Modely a nastavenia}
+::msgcat::mcset sk Monitors Monitory
+::msgcat::mcset sk Name Názov
+::msgcat::mcset sk {Need an account? Optional sign-up links (open in your browser):} {Potrebujete účet? Nepovinné odkazy na registráciu (otvoria sa v prehliadači):}
 ::msgcat::mcset sk Network Sieť
 ::msgcat::mcset sk {New alias} {Nový alias}
+::msgcat::mcset sk {New branch name} {Názov novej vetvy}
 ::msgcat::mcset sk {New cron job} {Nová cron úloha}
+::msgcat::mcset sk {New extension} {Nové rozšírenie}
 ::msgcat::mcset sk {New memory file} {Nový súbor pamäte}
 ::msgcat::mcset sk {New plugin} {Nový plugin}
 ::msgcat::mcset sk {New session} {Nová relácia}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset sk Next Ďalej
 ::msgcat::mcset sk Nickname Prezývka
 ::msgcat::mcset sk {NixOS: emit a module snippet; do not edit host declarations} {NixOS: vygenerovať fragment modulu; neupravovať deklarácie hosta}
+::msgcat::mcset sk {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Pre tento uzol nie je nastavený cieľ životného cyklu SSH. Ak ho chcete nasadiť alebo reštartovať, pridajte inštanciu ručne.}
+::msgcat::mcset sk {No additional push happens.} {Nedeje sa žiadny ďalší push.}
 ::msgcat::mcset sk {No apps yet. Ask the agent to make one: “make me an app that…”} {Zatiaľ žiadne aplikácie. Požiadajte agenta, nech nejakú urobí: „urob mi aplikáciu, ktorá…“}
 ::msgcat::mcset sk {No code in the picture. Hold the phone closer, straight on, and scan again.} {Na snímke nie je žiadny kód. Podržte telefón bližšie, rovno, a skenujte znova.}
 ::msgcat::mcset sk {No configuration snapshot will be restored.} {Žiadny konfiguračný snapshot nebude obnovený.}
+::msgcat::mcset sk {No configured sync peer for this node.} {Pre tento uzol nie je nakonfigurovaný žiadny synchronizačný peer.}
+::msgcat::mcset sk {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Nie je nakonfigurovaný samostatný prekladač. V Nastaviť prekladač zvoľte jeho poskytovateľa, model a cieľový jazyk.}
+::msgcat::mcset sk {No deployment started.} {Žiadne nasadenie sa nezačalo.}
+::msgcat::mcset sk {No diagnostics reported by the current LSP document.} {Aktuálny LSP dokument nehlási žiadnu diagnostiku.}
+::msgcat::mcset sk {No explicitly configured desktop gateway is bound to this node.} {K tomuto uzlu nie je viazaná žiadna explicitne nakonfigurovaná desktop brána.}
+::msgcat::mcset sk {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {K tomuto uzlu nie je viazaná žiadna explicitne nakonfigurovaná brána. Najprv pridajte bránu; jej registračný endpoint sa nepoužíva ako desktop URL.}
+::msgcat::mcset sk {No file is open. Ask a design question, or open an extension file for help with its code.} {Nie je otvorený žiadny súbor. Opýtajte sa na návrhovú otázku alebo otvorte súbor rozšírenia, ak potrebujete pomoc s jeho kódom.}
+::msgcat::mcset sk {No files have been written. Review the exact manifest and source, then confirm creation.} {Nič nebolo zapísané. Prejdite si presný manifest a zdroják, potom potvrďte vytvorenie.}
 ::msgcat::mcset sk {No modules or process plugins were discovered. The provider setup steps can still continue.} {Neboli objavené žiadne moduly ani procesné pluginy. Kroky nastavenia poskytovateľa môžu pokračovať.}
+::msgcat::mcset sk {No other registered node to compare with.} {Žiadny iný registrovaný uzol na porovnanie.}
 ::msgcat::mcset sk {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {Žiadny profil nespúšťa službu ani nevykonáva skript vyžadujúci práva správcu z tohto sprievodcu. Pred spustením si preverte plán a prípadné odovzdanie.}
+::msgcat::mcset sk {No proposal has been requested. Nothing will be written automatically.} {Nebol vyžiadaný žiadny návrh. Nič sa nezapíše automaticky.}
+::msgcat::mcset sk {No proposal. Nothing was written.} {Žiadny návrh. Nič nebolo zapísané.}
 ::msgcat::mcset sk {No routes configured.} {Nie sú nakonfigurované žiadne cesty.}
 ::msgcat::mcset sk {No session selected — pick one in the sidebar or start a new one} {Nie je vybratá žiadna relácia — vyberte jednu v bočnom paneli alebo začnite novú}
 ::msgcat::mcset sk {No swap target yet: pick a language and press “Set as swap target”.} {Zatiaľ žiadny cieľ výmeny: vyber jazyk a stlač „Nastaviť ako cieľ výmeny“.}
 ::msgcat::mcset sk {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {V config.toml nie je sekcia {[}acl{]}: každý odosielateľ, ktorý sa dostane ku gatewayu, sa považuje za vlastníka — správanie spred ACL pre jedného používateľa. Udeľovanie a odoberanie stále funguje a začne platiť v momente, keď {[}acl{]} vznikne.}
+::msgcat::mcset sk {Node id} {ID uzla}
+::msgcat::mcset sk {Non-evaluating syntax checks} {Syntaktické kontroly bez vyhodnocovania}
+::msgcat::mcset sk {Not available: %s} {Nie je k dispozícii: %s}
+::msgcat::mcset sk Note Poznámka
 ::msgcat::mcset sk {Note for the agent (optional):} {Poznámka pre agenta (voliteľné):}
+::msgcat::mcset sk {Nothing selected.} {Nič nie je vybrané.}
 ::msgcat::mcset sk {Nothing typed yet.} {Zatiaľ nič nezadané.}
+::msgcat::mcset sk {Nothing was generated or written.} {Nič sa nevygenerovalo ani nezapísalo.}
+::msgcat::mcset sk {Nothing was prepared: the chosen repository already has these paths.} {Nič sa nepripravilo: zvolený repozitár už tieto cesty obsahuje.}
 ::msgcat::mcset sk Notifications Upozornenia
 ::msgcat::mcset sk OK OK
 ::msgcat::mcset sk Off Vypnuté
 ::msgcat::mcset sk On Zapnuté
+::msgcat::mcset sk {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {Nahradí sa len skontrolovaný buffer rozšírenia. Súbor je stále chránený proti zmenám urobeným po tomto náhľade. Nedeje sa žiadny commit, push ani PR.}
+::msgcat::mcset sk {Only this new branch is committed. Your ambient git identity is used.} {Commitne sa len táto nová vetva. Použije sa vaša okolitá git identita.}
 ::msgcat::mcset sk Op {Dať op}
 ::msgcat::mcset sk Open Otvoriť
+::msgcat::mcset sk {Open PR…} {Otvoriť PR…}
 ::msgcat::mcset sk {Open a window} {Otvoriť okno}
 ::msgcat::mcset sk {Open in Dev} {Otvoriť v Dev}
 ::msgcat::mcset sk {Open in browser} {Otvoriť v prehliadači}
 ::msgcat::mcset sk {Open plugin} {Otvoriť plugin}
 ::msgcat::mcset sk {Open terminal} {Otvoriť terminál}
+::msgcat::mcset sk {Open this pull request?} {Otvoriť tento pull request?}
 ::msgcat::mcset sk {Open veles in Android's settings} {Otvoriť veles v nastaveniach Androidu}
 ::msgcat::mcset sk {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {Voliteľné: IRC sieť, ku ktorej sa pripojiť. Kanály uveďte oddelené medzerami alebo čiarkami; IRC_CHANNELS v .env, ak je nastavené, tento zoznam nahrádza.}
 ::msgcat::mcset sk {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {Možnosti pochádzajú z vybraného manifestu komponentu. Polia vyzerajúce ako tajomstvá zostávajú v toku nastavenia/trezoru. Prázdne polia ponechajú danú možnosť nezmenenú.}
 ::msgcat::mcset sk {Or paste a ticket signed on another device} {Alebo vložte tiket podpísaný na inom zariadení}
 ::msgcat::mcset sk {Or type an answer:} {Alebo napíšte odpoveď:}
+::msgcat::mcset sk Origin Origin
 ::msgcat::mcset sk Other… Iné…
 ::msgcat::mcset sk Outline Osnova
+::msgcat::mcset sk Output Výstup
 ::msgcat::mcset sk {Override for THIS session (leave blank to inherit the default)} {Override PRE TÚTO reláciu (nechajte prázdne, aby sa zdedilo predvolené)}
 ::msgcat::mcset sk {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {Identita vlastníka (telegram:123456, irc:account alebo maska nick!user@host)}
 ::msgcat::mcset sk {PDS and handle domain} {Doména PDS a handle}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset sk {Pause scheduler} {Pozastaviť plánovač}
 ::msgcat::mcset sk {Peek (C-c C-p)} {Nahliadnuť (C-c C-p)}
 ::msgcat::mcset sk {Peek definition} {Nahliadnuť do definície}
+::msgcat::mcset sk {Permission grants} Povolenia
+::msgcat::mcset sk {Permission grants…} Povolenia…
 ::msgcat::mcset sk Phone Telefón
 ::msgcat::mcset sk {Phone: permissions, battery, storage} {Telefón: povolenia, batéria, úložisko}
 ::msgcat::mcset sk {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Telefóny značky %s aj samy zastavujú aplikácie. V nastaveniach aplikácie veles jej povoľte, aby sa spúšťala sama a bežala na pozadí.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset sk Port Port
 ::msgcat::mcset sk {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {Prefixové akordy (C-x, M-o) zobrazia which-key okamžite po ich aktivovaní.}
 ::msgcat::mcset sk {Prepare an own vlpds PDS through the signed CLI handoff} {Pripraviť vlastný vlpds PDS podpísaným CLI handoffom}
+::msgcat::mcset sk {Prepare branch…} {Pripraviť vetvu…}
+::msgcat::mcset sk {Prepare this branch and commit?} {Pripraviť túto vetvu a commit?}
 ::msgcat::mcset sk Preview Náhľad
+::msgcat::mcset sk {Preview change set} {Náhľad sady zmien}
+::msgcat::mcset sk {Preview files} {Náhľad súborov}
 ::msgcat::mcset sk {Preview here} {Náhľad tu}
 ::msgcat::mcset sk {Preview pane} {Panel náhľadu}
+::msgcat::mcset sk {Preview proposal} {Náhľad návrhu}
+::msgcat::mcset sk {Preview the changed name or language before creating it.} {Pred vytvorením si pozrite zmenený názov alebo jazyk.}
+::msgcat::mcset sk Probe Sonda
+::msgcat::mcset sk {Probe of %1$s failed: %2$s} {Sonda %1$s zlyhala: %2$s}
 ::msgcat::mcset sk {Profile result} {Výsledok profilu}
 ::msgcat::mcset sk {Promote into config.toml} {Povýšiť do config.toml}
 ::msgcat::mcset sk Promote… Povýšiť…
 ::msgcat::mcset sk Provider Poskytovateľ
+::msgcat::mcset sk {Provider driver (plugin wire only)} {Ovládač poskytovateľa (len plugin wire)}
 ::msgcat::mcset sk {Provider entry name} {Názov záznamu poskytovateľa}
 ::msgcat::mcset sk {Provider for this session} {Poskytovateľ pre túto reláciu}
 ::msgcat::mcset sk Providers Poskytovatelia
 ::msgcat::mcset sk {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {Poskytovatelia sú zoznam tabuliek: custom_providers.0.base_url, .0.api_mode, .0.key_env … Indexujte podľa poradia zobrazeného nižšie.}
 ::msgcat::mcset sk {Public HTTPS URL} {Verejná HTTPS URL}
+::msgcat::mcset sk {Pull request base} {Základ pull requestu}
+::msgcat::mcset sk {Pull request created} {Pull request vytvorený}
+::msgcat::mcset sk {Pull request description} {Popis pull requestu}
+::msgcat::mcset sk {Pull request opened.} {Pull request otvorený.}
+::msgcat::mcset sk {Pull request repository} {Repozitár pull requestu}
+::msgcat::mcset sk {Pull request title} {Názov pull requestu}
 ::msgcat::mcset sk {Purge + delete files} {Vyčistiť + vymazať súbory}
 ::msgcat::mcset sk {Purge container} {Vyčistiť kontajner}
+::msgcat::mcset sk Purpose Účel
+::msgcat::mcset sk Push Push
+::msgcat::mcset sk {Push branch…} {Pushnuť vetvu…}
+::msgcat::mcset sk {Push complete. No pull request has been opened.} {Push hotový. Nebol otvorený žiadny pull request.}
+::msgcat::mcset sk {Push this branch?} {Pushnuť túto vetvu?}
+::msgcat::mcset sk {Push to %s:} {Odoslať do %s:}
 ::msgcat::mcset sk Question Otázka
 ::msgcat::mcset sk Questions Otázky
 ::msgcat::mcset sk Quit Ukončiť
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset sk {Reading notifications, for triggers} {Čítanie upozornení pre triggery}
 ::msgcat::mcset sk Reasoning Uvažovanie
 ::msgcat::mcset sk {Reasoning effort} {Miera uvažovania}
+::msgcat::mcset sk {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {Prijaté, čaká na použitie: úložisko %1$s · pamäť %2$s · konfigurácia %3$s · trezor %4$s}
+::msgcat::mcset sk {Recommended checks} {Odporúčané kontroly}
 ::msgcat::mcset sk {Refetch this transcript from the store} {Znovu načítať tento prepis z úložiska}
 ::msgcat::mcset sk Refresh Obnoviť
 ::msgcat::mcset sk {Refresh preview} {Obnoviť náhľad}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset sk {Rename symbol} {Premenovať symbol}
 ::msgcat::mcset sk Rename… Premenovať…
 ::msgcat::mcset sk Rendered Vykreslené
+::msgcat::mcset sk {Replace existing repository files?} {Nahradiť existujúce súbory repozitára?}
+::msgcat::mcset sk {Replace them in the new branch? Nothing else in the repository changes.} {Nahradiť ich v novej vetve? Nič iné v repozitári sa nemení.}
 ::msgcat::mcset sk Repository Repozitár
 ::msgcat::mcset sk {Repository (owner/name)} {Repozitár (vlastník/názov)}
+::msgcat::mcset sk {Repository directory} {Adresár repozitára}
+::msgcat::mcset sk {Repository paths} {Cesty repozitára}
+::msgcat::mcset sk {Request a new preview before trying again.} {Pred ďalším pokusom vyžiadajte nový náhľad.}
 ::msgcat::mcset sk {Reset to default} {Obnoviť predvolené}
 ::msgcat::mcset sk {Reset to template} {Obnoviť na šablónu}
 ::msgcat::mcset sk Restart Reštartovať
+::msgcat::mcset sk {Restart + verify canary} {Reštart + overenie canary}
 ::msgcat::mcset sk {Restore hidden windows} {Obnoviť skryté okná}
 ::msgcat::mcset sk {Restore plugins to %s?} {Obnoviť pluginy na %s?}
 ::msgcat::mcset sk {Restore revision r%1$s of %2$s?} {Obnoviť revíziu r%1$s súboru %2$s?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset sk {Restore this commit} {Obnoviť tento commit}
 ::msgcat::mcset sk {Restore this revision} {Obnoviť túto revíziu}
 ::msgcat::mcset sk {Resume scheduler} {Pokračovať v plánovači}
+::msgcat::mcset sk {Resume unfinished operation} {Pokračovať v nedokončanej operácii}
 ::msgcat::mcset sk Revert {Vrátiť späť}
 ::msgcat::mcset sk {Revert %s to HEAD? Uncommitted changes in this file are lost.} {Vrátiť %s na HEAD? Nezapísané zmeny v tomto súbory sa stratia.}
 ::msgcat::mcset sk Revert… {Vrátiť späť…}
 ::msgcat::mcset sk Review Revízia
 ::msgcat::mcset sk {Review (git) pane} {Panel Revízia (git)}
+::msgcat::mcset sk {Review deployment} {Skontrolovať nasadenie}
+::msgcat::mcset sk {Review extension contribution} {Kontrola príspevku rozšírenia}
 ::msgcat::mcset sk {Review managed local bundle…} {Skontrolovať spravovaný lokálny balík…}
 ::msgcat::mcset sk {Review rollback} {Skontrolovať rollback}
+::msgcat::mcset sk {Review selected files} {Skontrolovať vybrané súbory}
 ::msgcat::mcset sk {Review the component options on the summary screen before applying.} {Skontrolujte možnosti komponentu na súhrnnom obrazovke pred aplikovaním.}
 ::msgcat::mcset sk {Review the component preview before applying. No component configuration has been written.} {Skontrolujte náhľad komponentu pred aplikovaním. Žiadna konfigurácia komponentu zatiaľ nebola zapísaná.}
+::msgcat::mcset sk {Review the selected files and remove credential findings before preparing.} {Pred prípravou si prejdite vybrané súbory a odstráňte nálezy prihlasovacích údajov.}
 ::msgcat::mcset sk {Reviewed core bundle in the managed install-sources directory} {Overený balík jadra v spravovanom adresári install-sources}
+::msgcat::mcset sk {Reviewed fleet deployment} {Skontrolované nasadenie flotily}
 ::msgcat::mcset sk {Reviewed local bundle} {Skontrolovaný lokálny balík}
 ::msgcat::mcset sk {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {Skontrolovaný lokálny balík bol nainštalovaný. Overenie podpisom sťahovania nebolo vykonané. Pred použitím nového jadra je potrebný reštart.}
 ::msgcat::mcset sk Revision Revízia
 ::msgcat::mcset sk Revoke Odobrať
+::msgcat::mcset sk {Revoke selected} {Odobrať vybrané}
 ::msgcat::mcset sk Roles Roly
 ::msgcat::mcset sk {Roll back %1$s from %2$s to %3$s?} {Vrátiť %1$s z %2$s na %3$s?}
+::msgcat::mcset sk {Roll back selected target} {Vrátiť späť vybraný cieľ}
 ::msgcat::mcset sk {Rollback completed. Reload the component or restart as requested by the report.} {Rollback dokončený. Znova načítajte komponent alebo reštartujte podľa požiadavky v správe.}
 ::msgcat::mcset sk {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {Rollback bol skontrolovaný. Vyberte Inštalovať vybraný komponent na potvrdenie obnovenia; zatiaľ nebolo nič obnovené.}
 ::msgcat::mcset sk Run Spustiť
 ::msgcat::mcset sk {Run the wizard again} {Spustiť sprievodcu znova}
 ::msgcat::mcset sk {Running in the background} {Beh na pozadí}
-::msgcat::mcset sk {Running tasks} {Bežiace úlohy}
-::msgcat::mcset sk {Running tasks (subagents, shells, monitors)} {Bežiace úlohy (subagenti, shelly, monitory)}
 ::msgcat::mcset sk {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {Behové granty a používatelia žijú v store a reset store ich zmaže. Povýšiť pripojí tie, ktoré store odsúhlasí, do config.toml — komentáre a poradie kľúčov v súbore zostanú, vedľa sa zapíše záloha a kópie v store sa zmažú — a odmietne skôr, ako by hádal tam, kde už súbor má vlastný názor.}
 ::msgcat::mcset sk {S3 HTTPS endpoint} {S3 HTTPS endpoint}
 ::msgcat::mcset sk {S3 bucket} {S3 bucket}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset sk {Save as default} {Uložiť ako predvolené}
 ::msgcat::mcset sk {Save attachment as} {Uložiť prílohu ako}
 ::msgcat::mcset sk {Save globally} {Uložiť globálne}
+::msgcat::mcset sk {Save or revert the open buffer before applying a change set.} {Pred použitím sady zmien uložte alebo vráťte otvorený buffer.}
 ::msgcat::mcset sk Scan Skenovať
 ::msgcat::mcset sk {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {Naskenujte kód veles zo stroja, ktorý pozval tento telefón. Ak najprv ukázal kód WireGuard, naskenujte ho predtým v aplikácii WireGuard.}
 ::msgcat::mcset sk {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {Plán: interval ("30m", "every 2h"), cron vzor ("0 9 * * 1") alebo ISO časová pečiatka pre jednorazovú úlohu. Riadok vyššie ukazuje, ako to engine číta. Doručenie: "local" nechá výstup v logu — jediná poctivá predvolená voľba z desktopu, za ktorým nie je žiadna chat platforma — alebo "platform:chat_id". Prebudenie relácie: nechajte prázdne, aby sa bežalo v novej relácii; nastavte id relácie (alebo jedinečnú predponu) na obnovenie tej relácie s celou jej históriou — zaneprázdnená relácia prevezme prompt pri najbližšej hranici kola.}
+::msgcat::mcset sk Scope Rozsah
 ::msgcat::mcset sk {Scroll to end} {Posunúť na koniec}
 ::msgcat::mcset sk {Search commands and sessions…} {Hľadať príkazy a relácie…}
 ::msgcat::mcset sk {Search message text} {Hľadať v texte správ}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset sk Section Sekcia
 ::msgcat::mcset sk {Select a component first. No component options will be changed if you skip this step.} {Najprv vyberte komponent. Ak tento krok preskočíte, žiadne možnosti komponentu sa nezmenia.}
 ::msgcat::mcset sk {Select all} {Vybrať všetko}
+::msgcat::mcset sk {Select all extensions} {Vybrať všetky rozšírenia}
+::msgcat::mcset sk {Select at least one source file.} {Vyberte aspoň jeden zdroják.}
+::msgcat::mcset sk {Select none} {Nevyberať žiadne}
+::msgcat::mcset sk {Select text to translate first.} {Najprv vyberte text na preklad.}
+::msgcat::mcset sk {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {Vyberte rozšírenia a súbory, ktorými chcete prispieť. Pôjdu do jednej vetvy a jedného pull requestu, každé rozšírenie vo vlastnom adresári. Skontrolujte ich, spustite nekódujúce kontroly, potom pripravte izolovanú vetvu a commit. Push a vytvorenie pull requestu sú samostatné potvrdené akcie.}
 ::msgcat::mcset sk Send Odoslať
+::msgcat::mcset sk {Send %s to the peer?} {Odoslať %s peerovi?}
 ::msgcat::mcset sk {Send a %d-line message to the channel?} {Odoslať správu o %d riadkoch do kanála?}
 ::msgcat::mcset sk {Send raw line to the server? (%s)} {Odoslať surový riadok na server? (%s)}
 ::msgcat::mcset sk {Server (empty = no IRC)} {Server (prázdne = bez IRC)}
 ::msgcat::mcset sk {Server: gateway configuration and a reviewed user unit} {Server: konfigurácia brány a overená používateľská jednotka}
 ::msgcat::mcset sk {Server: install a user unit and prepare the separate linger handoff} {Server: nainštalovať používateľskú jednotku a pripraviť samostatné odovzdanie pre linger}
 ::msgcat::mcset sk {Server: use a system service and prepare a privileged CLI request} {Server: použiť systémovú službu a pripraviť žiadosť o CLI vyžadujúcu administrátorské práva}
+::msgcat::mcset sk Session Relácia
 ::msgcat::mcset sk {Session id} {ID relácie}
 ::msgcat::mcset sk {Session id…} {ID relácie…}
 ::msgcat::mcset sk Sessions Relácie
 ::msgcat::mcset sk {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Relácie momentálne presmerované na tento alias si ponechajú trasu, ktorú dostali; nové presmerovania toto meno nenájdu.}
+::msgcat::mcset sk {Sessions served} {Obslúžených relácií}
 ::msgcat::mcset sk Set Nastaviť
 ::msgcat::mcset sk {Set [model] provider/default in config.toml.} {Nastaví provider/default pre [model] v config.toml.}
 ::msgcat::mcset sk {Set as swap target} {Nastaviť ako cieľ výmeny}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset sk {Setup — summary} {Nastavenie — súhrn}
 ::msgcat::mcset sk {Setup — welcome} {Nastavenie — privítanie}
 ::msgcat::mcset sk {Shared container network} {Zdieľaná sieť kontajnerov}
+::msgcat::mcset sk Shells Shelly
+::msgcat::mcset sk {Shells and monitors} {Shelly a monitory}
+::msgcat::mcset sk {Shells and monitors (subagents, shells, monitors)} {Shelly a monitory (subagenti, shelly, monitory)}
 ::msgcat::mcset sk {Show diff} {Zobraziť rozdiely}
 ::msgcat::mcset sk {Show every key} {Zobraziť všetky klávesy}
 ::msgcat::mcset sk Sign Podpísať
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset sk Solved Vyriešené
 ::msgcat::mcset sk Source Zdroj
 ::msgcat::mcset sk {Source commit} {Commit zdroja}
+::msgcat::mcset sk {Source text} {Zdrojový text}
 ::msgcat::mcset sk {Source→app (C-c C-c)} {Zdroj→aplikácia (C-c C-c)}
 ::msgcat::mcset sk Stage {Pridať do indexu}
+::msgcat::mcset sk {Stage canary} {Pripraviť canary}
+::msgcat::mcset sk Stale Neaktuálny
+::msgcat::mcset sk {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {Trvalé povolenia umožňujú ďalšie volania nástrojov bez ďalšieho pýtania. Povolenia relácie držia živé relácie na každom rozhraní (desktop, Telegram, IRC, …); globálne povolenia pretrvávajú; záznamy allowlistu v [approvals] z config.toml sa zobrazujú len na čítanie. Odobratie jedného nikdy nezmení ostatné povolenia.}
 ::msgcat::mcset sk Start Spustiť
+::msgcat::mcset sk {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {Začnite rozšírením vo svojom adresári používateľských pluginov. Prežije aktualizácie a nevyžaduje rebuild brány. Nové rozšírenie ukáže presný manifest a zdroják pred zápisom. Zvoľte podporovaný jazyk a verziu API, prejdite si súbory, potom rozšírenie otestujte v izolácii.}
 ::msgcat::mcset sk {Start with the phone} {Spúšťanie s telefónom}
+::msgcat::mcset sk {Static IP} {Statická IP}
 ::msgcat::mcset sk Status Stav
 ::msgcat::mcset sk Steer Usmerňovať
 ::msgcat::mcset sk {Step %1$d of %2$d} {Krok %1$d z %2$d}
 ::msgcat::mcset sk {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {Zostáva nastaviť: %s — napíšte sem /secret set NAME alebo na počítači brány spustite veles secret set NAME.}
 ::msgcat::mcset sk Stop Zastaviť
 ::msgcat::mcset sk {Storage root} {Koreň úložiska}
+::msgcat::mcset sk Store Úložisko
 ::msgcat::mcset sk {Store a secret: %s} {Uložiť tajomstvo: %s}
 ::msgcat::mcset sk {Store it} Uložiť
+::msgcat::mcset sk {Store replica} {Replika úložiska}
 ::msgcat::mcset sk Subagents Subagenti
 ::msgcat::mcset sk {Subagents (/agents)} {Subagenti (/agents)}
 ::msgcat::mcset sk Summary Súhrn
+::msgcat::mcset sk Surface Rozhranie
 ::msgcat::mcset sk {Swap ⇄} {Vymeniť ⇄}
+::msgcat::mcset sk {Sync cancelled.} {Synchronizácia zrušená.}
+::msgcat::mcset sk {Sync complete.} {Synchronizácia hotová.}
+::msgcat::mcset sk {Sync now} {Synchronizovať teraz}
 ::msgcat::mcset sk {TOML copied — paste it into config.toml} {TOML skopírovaný — vložte ho do config.toml}
 ::msgcat::mcset sk Tag Značka
 ::msgcat::mcset sk {Tap a link to open it, or a block's header to open or close the block.} {Ťuknutím na odkaz ho otvoríte, ťuknutím na hlavičku bloku blok rozbalíte alebo zbalíte.}
 ::msgcat::mcset sk {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {Ťuknutím na pole dole začnete písať. Odoslať odošle, Zastaviť ukončí ťah a Odpojiť presunie bežiaci príkaz do pozadia.}
 ::msgcat::mcset sk {Tap the text to clear the selection.} {Ťuknutím na text výber zrušíte.}
+::msgcat::mcset sk {Target language:} {Cieľový jazyk:}
+::msgcat::mcset sk {Target node IDs (canary first, comma separated)} {ID cieľových uzlov (canary prvý, oddelené čiarkami)}
 ::msgcat::mcset sk {Task list} {Zoznam úloh}
 ::msgcat::mcset sk {Task list (right pane)} {Zoznam úloh (pravý panel)}
 ::msgcat::mcset sk Tasks Úlohy
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset sk {That is not a ticket.} {To nie je ticket.}
 ::msgcat::mcset sk {That is not a veles pool code.} {To nie je kód skupiny veles.}
 ::msgcat::mcset sk {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {To je kód WireGuard: naskenujte ho v aplikácii WireGuard. Kód veles je ten druhý.}
+::msgcat::mcset sk {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {%d skontrolovaných súborov sa zapíše do nového adresára vo vašom používateľskom adresári pluginov a veles sa pokúsi rozšírenie načítať. Ak sa od náhľadu objavil adresár s týmto názvom, nič sa nezapíše. Publikovanie nie je súčasťou tejto akcie.}
 ::msgcat::mcset sk {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {REPL panelu Dev beží v ŽIVEJ aplikácii — UI je vlastný lisp.}
 ::msgcat::mcset sk {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {Tabuľka [mcp_servers.<name>] sa odstráni z config.toml. Predchádzajúci súbor zostane ako config.toml.bak.}
 ::msgcat::mcset sk {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {Zoznamy povolených adaptérov (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) sú hranicou dôvery a každý povolený odosielateľ sa považuje za vlastníka. Toto je správanie spred ACL.}
 ::msgcat::mcset sk {The agent asks for a secret: %s} {Agent žiada o tajomstvo: %s}
+::msgcat::mcset sk {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {Už odoslaná vetva sa použije ako hlava PR. Vetva na vašom forku sa automaticky pomenuje ako owner:branch.}
+::msgcat::mcset sk {The author asks} {Autor sa pýta}
+::msgcat::mcset sk {The buffer changed. Request a new proposal before applying.} {Buffer sa zmenil. Pred použitím vyžiadajte nový návrh.}
 ::msgcat::mcset sk {The bundle operation returned an invalid result. Verify the installation before retrying.} {Operácia s balíkom vrátila neplatný výsledok. Pred opakovaním overte inštaláciu.}
 ::msgcat::mcset sk {The bundle preview was malformed; nothing was installed.} {Náhľad balíka bol chybný; nič nebolo nainštalované.}
 ::msgcat::mcset sk {The camera did not open; paste the code instead.} {Fotoaparát sa neotvoril; namiesto toho vložte kód.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset sk {The component manifest is still loading. Wait for it or choose another component.} {Manifest komponentu sa stále načítava. Počkajte alebo vyberte iný komponent.}
 ::msgcat::mcset sk {The component preview is not ready yet. Refresh it and review the result before applying.} {Náhľad komponentu ešte nie je pripravený. Obnovte ho a skontrolujte výsledok pred aplikovaním.}
 ::msgcat::mcset sk {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {Náhľad komponentu sa stále načítava. Pred skontrolovaním kombinovaných zmien počkajte na odpoveď.}
+::msgcat::mcset sk {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Aktuálna diagnostika (z jazykového servera alebo z príkazu Skontrolovať) sa odošle spolu s týmto súborom. Voliteľne pridajte otázku. Odpoveď je len text; nič sa nedá zapísať.}
 ::msgcat::mcset sk {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Adresár aj so všetkým, čo obsahuje, sa odstráni. Toto sa nedá vrátiť — ak ho chcete len vynechať z promptu, radšej ho vypnite.}
 ::msgcat::mcset sk {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Adresár sa odstráni. Priečinok pluginu je git repozitár a najprv sa vytvorí snímka, takže History… ho môže obnoviť.}
+::msgcat::mcset sk {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Editor otvára súbory brány vrátane vzdialených inštancií a na bráne spúšťa jazykový server pre jazyk daného súboru: tcl-lsp, typescript-language-server (TypeScript a JavaScript), rust-analyzer (crate alebo modul Rust pluginu), clangd (C), racket-langserver a server pre Common Lisp. Pre každý jazyk, pre ktorý brána má server, funguje hover, prechod na definíciu, dopĺňanie a živá diagnostika; keď žiadny nemá, editor povie, ktorý program tam treba nainštalovať, a ponechá zvýrazňovanie syntaxe. Skontrolovať spustí na bráne príslušný nástroj: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only alebo čítacie nástroje pre Racket a Lisp. Uložte, znova načítajte v Správa rozšírení a otestujte rozšírenie bez publikovania lokálneho stavu.}
 ::msgcat::mcset sk {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Prvý handoff pripraví tajomstvá, pripnutý obraz a runtime súbory, ale nespustí PDS. Zálohujte KEK a rotačný kľúč PLC offline, potom zašlite novo skontrolovanú požiadavku s potvrdením zálohy, aby sa nastavilo HTTP-01 TLS a aktivácia. DNS záznamy musia ukazovať priamo na tento hostiteľ; veles nepridáva žiadnu CDN proxy ani neupravuje DNS.}
+::msgcat::mcset sk {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Formulár sa od vygenerovania rozšírenia zmenil. Vygenerujte znova alebo si prezrite holý základ.}
 ::msgcat::mcset sk {The gateway itself is untouched.} {Samotný gateway sa nedotýka.}
 ::msgcat::mcset sk {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Brána znova načítala konfiguráciu: nové relácie ju používajú hneď a kľúč uložený v trezore použije ďalšia požiadavka. Telegram a IRC sa spustia pri ďalšom reštarte brány: veles gateway restart.}
 ::msgcat::mcset sk {The installed component no longer matches the selected manifest. Review the component list again.} {Nainštalovaný komponent už nezodpovedá vybranému manifestu. Znova skontrolujte zoznam komponentov.}
 ::msgcat::mcset sk {The installer preview has no verification signatures; apply is disabled.} {Náhľad inštalátora nemá overovacie podpisy; aplikovanie je zakázané.}
 ::msgcat::mcset sk {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Úloha a história jej spustení sa odstránia. Toto sa nedá vrátiť — ak ju chcete len zastaviť, radšej ju pozastavte.}
+::msgcat::mcset sk {The log could not be read: %s} {Záznam sa nepodarilo prečítať: %s}
 ::msgcat::mcset sk {The manifest belongs to another component; its reply was discarded.} {Manifest patrí inému komponentu; jeho odpoveď bola zahodená.}
 ::msgcat::mcset sk {The profile changed. Review the fresh plan before applying it.} {Profil sa zmenil. Pred použitím si preverte nový plán.}
 ::msgcat::mcset sk {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {Repozitár musí mať SKILL.md v koreni alebo o úroveň kategórie hlbšie. Skončí v %s.}
 ::msgcat::mcset sk {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {V koreni repozitára musí byť plugin.toml. Naklonuje sa do %s pod názvom z manifestu.}
+::msgcat::mcset sk {The reviewed change set was applied (%d files). Review and test it before publishing.} {Skontrolovaná sada zmien bola použitá (%d súborov). Pred publikovaním ju skontrolujte a otestujte.}
 ::msgcat::mcset sk {The reviewed configuration snapshot will also be restored.} {Skontrolovaný konfiguračný snapshot bude tiež obnovený.}
+::msgcat::mcset sk {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {Skontrolované súbory sa zapíšu do vášho adresára používateľských pluginov. Veles uloží lokálny obnovovací snapshot a pokúsi sa rozšírenie znova načítať; publikovanie nie je súčasťou tejto akcie.}
+::msgcat::mcset sk {The reviewed proposal was applied locally. Review and test it before publishing.} {Skontrolovaný návrh bol použitý lokálne. Pred publikovaním ho skontrolujte a otestujte.}
 ::msgcat::mcset sk {The rollback preview was malformed or named another component; nothing was restored.} {Náhľad rollbacku bol chybný alebo pomenoval iný komponent; nič nebolo obnovené.}
 ::msgcat::mcset sk {The rollback returned an invalid result. Verify the installation before retrying.} {Rollback vrátil neplatný výsledok. Pred opakovaním overte inštaláciu.}
 ::msgcat::mcset sk {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {Trasa, na ktorej nové relácie štartujú. /model a overlay modelov ju neskôr zmenia — pre reláciu alebo ako nové predvolené.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset sk {The signed download discard returned an invalid response; no installation was requested.} {Zahadzovanie podpísaného prevzatého súboru vrátilo neplatnú odpoveď; inštalácia nebola požadovaná.}
 ::msgcat::mcset sk {The signed installation returned an invalid result. Verify the installation before retrying.} {Podpísaná inštalácia vrátila neplatný výsledok. Pred opakovaním overte stav inštalácie.}
 ::msgcat::mcset sk {The signed release preview was malformed; nothing was installed.} {Náhľad podpísaného vydania bol chybný; nič sa nenainštalovalo.}
+::msgcat::mcset sk {The source buffer changed. Request a new proposal before applying.} {Zdrojový buffer sa zmenil. Pred použitím vyžiadajte nový návrh.}
 ::msgcat::mcset sk {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Úložisko sa vráti o jednu revíziu. Vrátenie je samo o sebe revízia, takže sa dá zase vrátiť späť.}
+::msgcat::mcset sk {The translator returned no text.} {Prekladač nevrátil žiadny text.}
 ::msgcat::mcset sk {The verification reply was malformed; no integrity result was accepted.} {Odpoveď overenia bola chybná; nebol prijatý žiadny výsledok integrity.}
 ::msgcat::mcset sk Themes Témy
+::msgcat::mcset sk {These paths already exist in the chosen repository:} {Tieto cesty už v zvolenom repozitári existujú:}
 ::msgcat::mcset sk {They have not been saved.} {Neboli uložené.}
+::msgcat::mcset sk {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {Tento buffer nemá diagnostiku na vysvetlenie. Spustite Skontrolovať alebo počkajte na jazykový server.}
 ::msgcat::mcset sk {This challenge is over.} {Táto výzva sa skončila.}
 ::msgcat::mcset sk {This code has expired. Ask for a new one.} {Platnosť tohto kódu vypršala. Požiadajte o nový.}
 ::msgcat::mcset sk {This does not start a service or claim signed-download verification.} {Týmto sa nespúšťa žiadna služba ani nevyhlasuje overenie podpisom sťahovania.}
 ::msgcat::mcset sk {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Táto brána neprijíma tajné hodnoty z tohto počítača: zadajte ho tam pomocou veles secret set %s, alebo túto sieť uveďte v jej [vault] trusted_networks}
 ::msgcat::mcset sk {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Toto je presne to, čo sa zapíše — vlastné bajty enginu, načítané za behu. Nič sa ešte nedotklo disku.}
+::msgcat::mcset sk {This node is not a configured sync peer for any kind.} {Tento uzol nie je nakonfigurovaným synchronizačným peerom pre žiadny druh.}
+::msgcat::mcset sk {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Tento plugin je zabudovaný a len na čítanie. Ak chcete použiť zabudovanú kópiu, odstráňte používateľskú kópiu s rovnakým názvom.}
+::msgcat::mcset sk {This publishes the commit; no pull request is created yet.} {Toto publikuje commit; pull request sa zatiaľ nevytvára.}
 ::msgcat::mcset sk {This review expires after %s seconds. Closing or cancelling discards its private staging.} {Toto preskúmanie vyprší po %s sekundách. Zatvorenie alebo zrušenie zahodí jeho súkromné prípravné úložisko.}
 ::msgcat::mcset sk {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {Tento sprievodca zapisuje config.toml a kľúče, ktoré mu dáte, ukladá do šifrovaného trezoru. Každý krok sa dá preskočiť: preskočený krok v novej konfigurácii chýba a v existujúcej zostane presne taký, aký je. Existujúci config.toml sa upravuje na mieste — menia sa len sekcie, na ktoré odpoviete, a všetko ostatné v ňom, vrátane komentárov, zostáva.}
 ::msgcat::mcset sk {Ticket needed} {Ticket je potrebný}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset sk {Topic for %s} {Téma pre %s}
 ::msgcat::mcset sk {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {Podržte prst na relácii alebo na čomkoľvek inom, čo má ponuku, a ponuka sa otvorí. Ťuknutie mimo nej alebo Späť ju zatvorí.}
 ::msgcat::mcset sk {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {Dotknite sa slova a podržte ho, tým ho vyberiete. Keď zdvihnete prst, otvorí sa jeho ponuka s položkou Kopírovať navrchu.}
+::msgcat::mcset sk Translate Preložiť
+::msgcat::mcset sk {Translate selection} {Preložiť výber}
+::msgcat::mcset sk Translating… Prekladám…
+::msgcat::mcset sk {Translation cancelled.} {Preklad zrušený.}
+::msgcat::mcset sk {Translation copied.} {Preklad skopírovaný.}
+::msgcat::mcset sk {Translation failed} {Preklad zlyhal}
+::msgcat::mcset sk {Translation result} {Výsledok prekladu}
+::msgcat::mcset sk {Translator configuration unavailable} {Nastavenie prekladača nedostupné}
 ::msgcat::mcset sk {Trigger history} {História spúšťača}
 ::msgcat::mcset sk Triggers Triggery
 ::msgcat::mcset sk {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {Triggery reagujú na udalosti kanála bez ťahu. slopdrop prepošle udalosť mostíku a sprostredkuje odpoveď; vision opíše URL obrázka v rámci cooldownu a hodinového limitu. Riadok sa spustí len tam, kde to povoľuje prepínač [triggers] v konfigurácii aj odvodená maska — #coven pri živých slopdrop väzbách neprepošle nič.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset sk {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Kým IRC_ALLOWED_USERS v .env neuvedie váš účet, s botom môže hovoriť ktokoľvek v sieti — a bez sekcie [acl] ako vlastník, so všetkými nástrojmi.}
 ::msgcat::mcset sk {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Kým TELEGRAM_ALLOWED_USERS v .env neuvedie vaše používateľské ID, s botom môže hovoriť ktokoľvek, kto ho nájde — a bez sekcie [acl] ako vlastník, so všetkými nástrojmi.}
 ::msgcat::mcset sk Untitled {Bez názvu}
+::msgcat::mcset sk {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Prispievanie do upstreamu je výslovná publikačná akcia, nie automatické nahrávanie. V Správe rozšírení položka Prispieť vypíše všetky používateľské rozšírenia: vyberte rozšírenia a súbory, pozrite si diff a sken tajomstiev, spustite kontroly, potom vytvorte jednu vetvu a jeden PR (predvolene do veles) so zvolenou git identitou. Každé rozšírenie ide do vlastného adresára v repozitári a existujúci súbor sa tam nahradí až po samostatnom potvrdení. Nikdy nepublikujte node.toml, lokálne prihlasovacie údaje, tokeny, súkromné endpointy ani nesúvisiaci stav pluginov. Lokálne záložné snímky nie sú upstream commit ani PR.}
+::msgcat::mcset sk {Upstream repository or fork URL} {URL upstream repozitára alebo forku}
+::msgcat::mcset sk {Uptime class} {Trieda dostupnosti}
+::msgcat::mcset sk {Uptime: host %1$s, gateway %2$s} {Doba behu: hostiteľ %1$s, brána %2$s}
 ::msgcat::mcset sk Usage Použitie
 ::msgcat::mcset sk {Usage & Quota} {Využitie a kvóta}
 ::msgcat::mcset sk {Use TLS} {Použiť TLS}
 ::msgcat::mcset sk {Use now} {Použiť teraz}
+::msgcat::mcset sk {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {Skutočné kontrakty nájdete pod tlačidlami Príručka autora a Referencia API. Prekrytie Pluginy vypisuje živé hooky; služby a body prepísania pochádzajú z vlastného registra brány, nie zo skopírovaného zoznamu v tejto príručke.}
 ::msgcat::mcset sk {Use this ticket} {Použiť tento ticket}
+::msgcat::mcset sk {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {Použite svoj fork (https://github.com/<you>/veles.git alebo git@github.com:<you>/veles.git), ak nemôžete pushovať priamo do veles. Zvolený repozitár sa klonuje do izolovaného worktree. Nič sa nepushuje.}
 ::msgcat::mcset sk {Users — one role across networks and platforms} {Používatelia — jedna rola naprieč sieťami a platformami}
 ::msgcat::mcset sk {Using the phone, for the agent} {Používanie telefónu agentom}
 ::msgcat::mcset sk {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Zvyčajne rovnaké ako názov záznamu poskytovateľa. Pri voľbe Preskočiť nechaj obe prázdne — napoly vyplnená dvojica netvorí trasu.}
 ::msgcat::mcset sk {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Hodnoty sú TOML: reťazce v úvodzovkách, čísla alebo zoznamy. Zapíšu sa do [mcp_servers.<name>] — vaše komentáre a všetky ostatné sekcie zostanú nedotknuté.}
+::msgcat::mcset sk Vault Trezor
 ::msgcat::mcset sk {Verified signed bundle installed. Restart the gateway before using the new core.} {Overený podpísaný balík nainštalovaný. Pred použitím nového jadra reštartujte bránu.}
 ::msgcat::mcset sk {Verified signed release — not installed yet} {Overené podpísané vydanie — zatiaľ nenainštalované}
 ::msgcat::mcset sk {Verify and review release…} {Overiť a preskúmať vydanie…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset sk {Verify signed release} {Overiť podpísané vydanie}
 ::msgcat::mcset sk {Verify signed release…} {Overovanie podpísaného vydania…}
 ::msgcat::mcset sk Version Verzia
+::msgcat::mcset sk {Version %1$s: %2$s} {Verzia %1$s: %2$s}
+::msgcat::mcset sk {Version drift in the registry: %s} {Odchýlka verzií v registri: %s}
 ::msgcat::mcset sk View Zobrazenie
 ::msgcat::mcset sk {View markdown source} {Zobraziť zdroj markdown}
 ::msgcat::mcset sk {View source / rendered} {Zdroj / vykreslené}
 ::msgcat::mcset sk Voice {Dať voice}
+::msgcat::mcset sk {Waiting for the model…} {Čaká sa na model…}
+::msgcat::mcset sk {Waiting for the model… Nothing has been written.} {Čaká sa na model… Nič nebolo zapísané.}
 ::msgcat::mcset sk {Welcome to veles} {Vitaj vo veles}
 ::msgcat::mcset sk {What the agent can do here} {Čo tu agent môže robiť}
 ::msgcat::mcset sk {What veles may do on this phone. Each button opens the Android setting that changes it.} {Čo smie veles na tomto telefóne robiť. Každé tlačidlo otvorí nastavenie Androidu, ktoré to mení.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset sk {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {Keď je veles v pozadí, otázka agenta alebo dokončený ťah príde ako upozornenie; ťuknutím naň otvoríte reláciu.}
 ::msgcat::mcset sk {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {Kto môže s botom hovoriť. Táto voľba určuje, či config.toml vôbec ponesie sekciu [acl] — a to preklopí celý režim.}
 ::msgcat::mcset sk Whois Whois
-::msgcat::mcset sk {Wire protocol (chat_completions or responses)} {Wire protokol (chat_completions alebo responses)}
+::msgcat::mcset sk {Wire protocol (chat_completions, responses or plugin)} {Wire protokol (chat_completions, responses alebo plugin)}
 ::msgcat::mcset sk {With a keyboard attached, every key works as on a laptop.} {S pripojenou klávesnicou funguje každý kláves ako na notebooku.}
 ::msgcat::mcset sk {Workflow SHA} {SHA pracovného postupu}
+::msgcat::mcset sk {Workflow commit} {Commit workflow}
+::msgcat::mcset sk Worktree Worktree
 ::msgcat::mcset sk {Write it} Zapísať
+::msgcat::mcset sk {Write the design question first.} {Najprv napíšte návrhovú otázku.}
 ::msgcat::mcset sk {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Nezapíše žiadneho poskytovateľa. Gateway neobslúži žiadny ťah, kým neexistuje záznam [[custom_providers]] a dvojica [model].}
 ::msgcat::mcset sk {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Zápis AKÉHOKOĽVEK kľúča [acl] prepne túto bránu do spravovaného režimu: predvolená rola sa stane guest (fail-closed) a zoznamy povolených prestanú byť hranicou. Vyberte to len s identitou vlastníka, ktorej dôverujete.}
 ::msgcat::mcset sk {[model] provider} {[model] poskytovateľ}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset sk {also list hooks with no handler} {tiež vypísať hooky bez handlera}
 ::msgcat::mcset sk {also write grants that still have an expiry} {tiež zapísať oprávnenia, ktoré majú ešte platnosť}
 ::msgcat::mcset sk {also write runtime users} {tiež zapísať runtime používateľov}
+::msgcat::mcset sk {an allowlist entry is removed by editing config.toml} {záznam allowlistu sa odstráni úpravou config.toml}
 ::msgcat::mcset sk {an allowlist is in force: a plugin not on it stays off} {platí zoznam povolených: plugin, ktorý v ňom nie je, zostáva vypnutý}
 ::msgcat::mcset sk {answer failed: %s} {odpoveď zlyhala: %s}
+::msgcat::mcset sk {answer only, nothing to apply} {len odpoveď, niet čo použiť}
 ::msgcat::mcset sk {append these rules to config.toml} {pridať tieto pravidlá do config.toml}
 ::msgcat::mcset sk {apply failed: %s} {aplikovanie zlyhalo: %s}
 ::msgcat::mcset sk {apply to:} {použiť na:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset sk {ask the agent} {pýtať sa agenta}
 ::msgcat::mcset sk {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset sk {asked by: %s} {požiadal: %s}
+::msgcat::mcset sk {asking %s for its metrics…} {vyžadujú sa metriky od %s…}
 ::msgcat::mcset sk {attach a file} {priložiť súbor}
 ::msgcat::mcset sk {attach an image or file} {pripojiť obrázok alebo súbor}
 ::msgcat::mcset sk {attach failed: %1$s} {pripojenie zlyhalo: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset sk {attached %1$s (%2$s pending)} {pripojené %1$s (%2$s čaká)}
 ::msgcat::mcset sk {attached to %s} {pripojené k %s}
 ::msgcat::mcset sk {attached to child session %1$s} {pripojené k podradenej relácii %1$s}
+::msgcat::mcset sk automatic automaticky
 ::msgcat::mcset sk {aux model} {aux model}
 ::msgcat::mcset sk {aux provider} {aux provider}
+::msgcat::mcset sk available dostupné
 ::msgcat::mcset sk {available components} {dostupné komponenty}
 ::msgcat::mcset sk {back up N user turns} {vrátiť sa o N ťahov používateľa}
 ::msgcat::mcset sk {backed up the previous config to %s} {predchádzajúca konfigurácia bola zálohovaná do %s}
 ::msgcat::mcset sk {background shells; /shells output|kill <id>} {shelly na pozadí; /shells output|kill <id>}
+::msgcat::mcset sk {backing off: %1$s failure(s), next automatic try in %2$s s} {odstup: %1$s zlyhaní, ďalší automatický pokus o %2$s s}
 ::msgcat::mcset sk {bad host for %1$s: %2$s} {zlý host pre %1$s: %2$s}
 ::msgcat::mcset sk {bad unit for %1$s: %2$s} {zlý unit pre %1$s: %2$s}
 ::msgcat::mcset sk {bare display off} {holé zobrazenie vypnuté}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset sk {browse the filesystem} {prehliadať súborový systém}
 ::msgcat::mcset sk {browse the repo's files} {prezerať súbory repozitára}
 ::msgcat::mcset sk {builtin (%s):} {vstavané (%s):}
+::msgcat::mcset sk bundled zabudovaný
+::msgcat::mcset sk {bundled, read-only} {zabudovaný, len na čítanie}
 ::msgcat::mcset sk by kto
 ::msgcat::mcset sk {by plan — all sessions} {podľa plánu — všetky relácie}
 ::msgcat::mcset sk {by plan — this session} {podľa plánu — táto relácia}
 ::msgcat::mcset sk {by tool} {podľa nástroja}
 ::msgcat::mcset sk {cancel failed: %1$s} {zrušenie zlyhalo: %1$s}
 ::msgcat::mcset sk {cancel the running turn} {zrušiť prebiehajúci ťah}
+::msgcat::mcset sk {cancel the selected task} {zrušiť vybranú úlohu}
 ::msgcat::mcset sk {cancelled task %1$s} {úloha %1$s zrušená}
 ::msgcat::mcset sk {cannot list scripts (gateway offline?)} {nemožno vypísať skripty (gateway offline?)}
 ::msgcat::mcset sk {cannot reach the gateway: %s} {brána je nedostupná: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset sk commit Commit
 ::msgcat::mcset sk {compacting %s messages in the background — the transcript reloads when it finishes} {kompaktnie sa %s správ na pozadí — po dokončení sa prepis znovu načíta}
 ::msgcat::mcset sk compacting… komprimácia…
+::msgcat::mcset sk {comparing the nodes' versions and config…} {porovnávajú sa verzie a konfigurácia uzlov…}
 ::msgcat::mcset sk {completion tokens} {tokeny dokončenia}
 ::msgcat::mcset sk {component options and declared actions} {možnosti komponentu a deklarované akcie}
 ::msgcat::mcset sk composer skladateľ
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset sk {could not open %s} {nepodarilo sa otvoriť %s}
 ::msgcat::mcset sk {could not open %s (no working browser opener)} {nepodarilo sa otvoriť %s (nefunguje otvárač prehliadača)}
 ::msgcat::mcset sk {could not open %{url}: %{e}} {nepodarilo sa otvoriť %{url}: %{e}}
+::msgcat::mcset sk {could not open the optional referral link: %s} {nepodarilo sa otvoriť nepovinný odkaz na registráciu: %s}
 ::msgcat::mcset sk {could not read %s: %s} {nedá sa prečítať %s: %s}
 ::msgcat::mcset sk {could not read the current route} {nepodarilo sa prečítať aktuálnu trasu}
 ::msgcat::mcset sk {could not save this session's language: %{e}} {jazyk tejto relácie sa nepodarilo uložiť: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset sk {ctxmenu: no widget %s (attached too early?)} {ctxmenu: žiadny widget %s (pripojené príliš skoro?)}
 ::msgcat::mcset sk {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {bol zvolený spravovaný prístup bez identity vlastníka, preto [acl] zostáva neaktívny — uveďte ju, napr. telegram:123456 alebo irc:account, aby ste ho zapli}
 ::msgcat::mcset sk {current theme: %{name} · /theme <name>} {aktuálny motív: %{name} · /theme <name>}
+::msgcat::mcset sk {cursor %1$s of %2$s (%3$s behind)} {kurzor %1$s z %2$s (%3$s pozadu)}
 ::msgcat::mcset sk {custom command /%s…} {vlastný príkaz /%s…}
 ::msgcat::mcset sk {custom commands (.veles/commands/) and config aliases} {vlastné príkazy (.veles/commands/) a aliasy z konfigurácie}
 ::msgcat::mcset sk {cycle ends} {koniec cyklu}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset sk doctor_resident {natrvalo v každej výzve: %{shown} z %{total} znakov (~%{tokens} tokenov) — zvyšok sa načíta na požiadanie cez: memory action=read path=%{path}}
 ::msgcat::mcset sk doctor_title {diagnostika pamäte}
 ::msgcat::mcset sk doctor_total {spolu: %{chars} znakov v %{files} súboroch (~%{tokens} tokenov)}
+::msgcat::mcset sk {documentation is not in this source checkout: %s} {dokumentácia nie je v tomto checkoute zdrojákov: %s}
 ::msgcat::mcset sk done hotovo
 ::msgcat::mcset sk {done · %1$s/%2$s} {hotovo · %1$s/%2$s}
 ::msgcat::mcset sk {done, but the model returned no text} {hotovo, ale model nevrátil žiadny text}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset sk {evaluate Tcl and answer with the result — no model turn} {vyhodnotiť Tcl a odpovedať výsledkom — bez ťahu modelu}
 ::msgcat::mcset sk everyone všetci
 ::msgcat::mcset sk everywhere všade
+::msgcat::mcset sk {exchanging registry gossip…} {vymieňa sa gossip registra…}
 ::msgcat::mcset sk exit koniec
 ::msgcat::mcset sk {exit veles-desktop} {ukončiť veles-desktop}
 ::msgcat::mcset sk {export failed: %s} {export zlyhal: %s}
 ::msgcat::mcset sk {export session} {exportovať reláciu}
 ::msgcat::mcset sk {exported to %s} {exportované do %s}
+::msgcat::mcset sk {extension architecture, examples and LSP help} {architektúra rozšírení, príklady a pomoc k LSP}
+::msgcat::mcset sk {extension development guide} {príručka vývoja rozšírení}
+::msgcat::mcset sk failed zlyhalo
 ::msgcat::mcset sk {failed to load history: %s} {nepodarilo sa načítať históriu: %s}
 ::msgcat::mcset sk {failed to paint cached history: %s} {nepodarilo sa vykresliť cacheovanú históriu: %s}
 ::msgcat::mcset sk {failed to paint replayed history: %s} {nepodarilo sa vykresliť prehranú históriu: %s}
 ::msgcat::mcset sk {failed: %s} {zlyhalo: %s}
+::msgcat::mcset sk {failing — heartbeating, but a sync push or the last probe failed} {zlyháva — heartbeat ide, ale synchronizačný push alebo posledná sonda zlyhali}
 ::msgcat::mcset sk {failover blueprint: cannot reach the gateway} {failover blueprint: brána je nedostupná}
 ::msgcat::mcset sk {failover graph unavailable: %1$s} {prechodový graf nie je k dispozícii: %1$s}
 ::msgcat::mcset sk {failover script: cannot reach the gateway} {failover skript: brána je nedostupná}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset sk {fire the Tcl hook} {spustiť Tcl hook}
 ::msgcat::mcset sk {fires for %s:} {spúšťa sa pre %s:}
 ::msgcat::mcset sk {fires per hour} {spúšťa sa každú hodinu}
+::msgcat::mcset sk {fleet drift} {odchýlky flotily}
 ::msgcat::mcset sk {focus composer} {zamerať composer}
 ::msgcat::mcset sk {focus failed: %{e}} {zameranie zlyhalo: %{e}}
 ::msgcat::mcset sk {focus next region} {zamerať ďalšiu oblasť}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset sk {four splits is the maximum} {maximálne štyri rozdelenia}
 ::msgcat::mcset sk {fresh session} {nová relácia}
 ::msgcat::mcset sk {fresh session (Ctrl-N too)} {nová relácia (aj Ctrl-N)}
+::msgcat::mcset sk {fresh — heartbeating, sync passing} {čerstvý — heartbeat ide, synchronizácia prechádza}
+::msgcat::mcset sk from z
 ::msgcat::mcset sk {from node %{node}} {z uzla %{node}}
 ::msgcat::mcset sk {gateway     v%1$s · up %2$s} {gateway     v%1$s · beží %2$s}
 ::msgcat::mcset sk {gateway unreachable — is `veles gateway run` up?} {gateway je nedostupná — beží `veles gateway run`?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset sk {in %s} {za %s}
 ::msgcat::mcset sk {insert the next key literally (^B bold, ^C colour, ^O reset)} {vložiť ďalší kláves doslova (^B tučne, ^C farba, ^O reset)}
 ::msgcat::mcset sk {inserted %s} {vložené: %s}
+::msgcat::mcset sk {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {preskúmať cluster; výslovne odoslať alebo použiť synchronizáciu store, pamäte, konfigurácie či trezora; zabudnúť zastaraný uzol v celej flotile; prečítať koniec záznamu alebo metriky uzla; porovnať verzie a konfiguráciu; Gossip teraz}
 ::msgcat::mcset sk {inspector — app internals · core state · gw plugins} {inšpektor — vnútro aplikácie · stav jadra · gw pluginy}
 ::msgcat::mcset sk {install a plugin from a git URL} {nainštalovať plugin z git URL}
 ::msgcat::mcset sk {install a skill from a git URL} {nainštalovať zručnosť z git URL}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset sk instance inštancia
 ::msgcat::mcset sk {instance controls} {ovládanie inštancie}
 ::msgcat::mcset sk {instance detail} {detail inštancie}
+::msgcat::mcset sk {instance names may not start with "cluster:" or "g:": %s} {názvy inštancií nesmú začínať na "cluster:" ani "g:": %s}
 ::msgcat::mcset sk {instance needs a name} {inštancia potrebuje názov}
 ::msgcat::mcset sk {instance unreachable} {inštancia je nedostupná}
 ::msgcat::mcset sk instances inštancie
 ::msgcat::mcset sk interrupting… prerušujem…
+::msgcat::mcset sk into do
 ::msgcat::mcset sk {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset sk {irc: %s} {irc: %s}
 ::msgcat::mcset sk {irc: %s failed — %s} {irc: %s zlyhalo — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset sk {language list} {zoznam jazykov}
 ::msgcat::mcset sk {language picker (the swap for THIS window)} {výber jazyka (zámena pre TOTO okno)}
 ::msgcat::mcset sk {language saved: %s} {jazyk uložený: %s}
+::msgcat::mcset sk {language server} {jazykový server}
+::msgcat::mcset sk {language server: event stream unavailable: %s} {jazykový server: prúd udalostí nie je dostupný: %s}
+::msgcat::mcset sk {language server: not started on the gateway — %s} {jazykový server: na bráne sa nespustil — %s}
+::msgcat::mcset sk {language server: the gateway would not start one: %s} {jazykový server: brána ho odmietla spustiť: %s}
 ::msgcat::mcset sk {language swapped: %1$s ⇄ %2$s} {jazyky vymenené: %1$s ⇄ %2$s}
 ::msgcat::mcset sk {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {jazyk → %1$s (bol %2$s) · len pre toto okno — Uložiť ako predvolené zapíše config.toml}
 ::msgcat::mcset sk {language: %s} {jazyk: %s}
 ::msgcat::mcset sk {last error} {posledná chyba}
+::msgcat::mcset sk {last pass %1$s at %2$s: %3$s} {posledný prechod %1$s o %2$s: %3$s}
 ::msgcat::mcset sk {last reply copied (%s chars)} {posledná odpoveď skopírovaná (%s znakov)}
 ::msgcat::mcset sk {layout not saved: %s} {rozloženie sa neuložilo: %s}
 ::msgcat::mcset sk {leave (cancels a running turn first)} {odísť (najprv zruší prebiehajúci ťah)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset sk {list sessions} {vypísať relácie}
 ::msgcat::mcset sk {list skills} {vypísať zručnosti}
 ::msgcat::mcset sk {list tools} {vypísať nástroje}
+::msgcat::mcset sk {listed here only; [notify] fleet_alerts is off} {uvedené len tu; [notify] fleet_alerts je vypnuté}
 ::msgcat::mcset sk {live patching ARMED} {live patching AKTÍVNY}
 ::msgcat::mcset sk {live patching ARMED — an agent can now redefine procs in this window} {live patching AKTÍVNY — agent teraz môže v tomto okne nanovo definovať procs}
 ::msgcat::mcset sk {live patching disarmed} {live patching vypnutý}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset sk {log pane shown} {panel logu zobrazený}
 ::msgcat::mcset sk {log: %s} {log: %s}
 ::msgcat::mcset sk {make media: image/video/audio, route = comfyui or provider[/model]} {vytvoriť médiá: image/video/audio, trasa = comfyui alebo provider[/model]}
+::msgcat::mcset sk {managed via %s} {spravuje sa cez %s}
+::msgcat::mcset sk {manual only} {len manuálne}
 ::msgcat::mcset sk {mark set} {značka nastavená}
 ::msgcat::mcset sk {mark whole buffer (emacs select-all)} {označiť celý buffer (emacs vybrať všetko)}
 ::msgcat::mcset sk {markdown preview of the composer} {markdown náhľad vstupného poľa}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset sk model model
 ::msgcat::mcset sk {model aliases} {aliasy modelov}
 ::msgcat::mcset sk {monitor %1$s fired} {monitor %1$s sa spustil}
-::msgcat::mcset sk monitors monitory
 ::msgcat::mcset sk monitors_header monitory:
 ::msgcat::mcset sk monitors_none {(žiadne monitory — model ich spúšťa s monitor tool)}
 ::msgcat::mcset sk {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {presunúť reláciu (a jej podstrom) na iný pool uzol na hranici ťahu; dokončiť/zrušiť odložený odovzdávania; opýtať sa, kto vlastní reláciu (admin)}
 ::msgcat::mcset sk {move the running foreground command to the background} {presunúť bežiaci príkaz z popredia na pozadie}
 ::msgcat::mcset sk {move the running foreground command to the background (keeps running)} {presunúť bežiaci príkaz na pozadie (beží ďalej)}
+::msgcat::mcset sk {move this session's running foreground command to a background shell; keeps running} {spustený príkaz v popredí tejto relácie sa presunie do shellu na pozadí; beží ďalej}
 ::msgcat::mcset sk {moving around} pohyb
 ::msgcat::mcset sk name názov
 ::msgcat::mcset sk {name a key first} {najprv pomenuj kľúč}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset sk {neon impressionism} {neónový impresionizmus}
 ::msgcat::mcset sk {network (optional — e.g. libera; empty = any)} {sieť (voliteľné — napr. libera; prázdne = ľubovoľná)}
 ::msgcat::mcset sk {network to scope the grant to} {sieť, na ktorú sa grant obmedzí}
+::msgcat::mcset sk new nové
 ::msgcat::mcset sk {new buffer} {nový buffer}
 ::msgcat::mcset sk {new entry — replace this text, then Save} {nový záznam — nahraď tento text, potom Uložiť}
 ::msgcat::mcset sk {new name for %s} {nový názov pre %s}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset sk {no IRC buffer selected} {nie je vybraný žiadny IRC buffer}
 ::msgcat::mcset sk {no MCP servers configured — Add server… writes one into config.toml} {nie sú nakonfigurované žiadne MCP servery — Pridať server… zapíše jeden do config.toml}
 ::msgcat::mcset sk {no URLs in this buffer} {v tomto bufferi nie sú žiadne URL}
+::msgcat::mcset sk {no [a2a_agents] entry — this peer cannot be dialed} {žiadny záznam v [a2a_agents] — tomuto peerovi sa nedá zavolať}
 ::msgcat::mcset sk {no alias /%s} {alias /%s neexistuje}
 ::msgcat::mcset sk {no background refresh} {žiadne obnovovanie na pozadí}
 ::msgcat::mcset sk {no buffer %s} {buffer %s neexistuje}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset sk {no code block in the last reply} {v poslednej odpovedi nie je žiadny blok kódu}
 ::msgcat::mcset sk {no cron jobs} {žiadne cron úlohy}
 ::msgcat::mcset sk {no cron jobs — New… creates one} {žiadne cron úlohy — Nový… vytvorí jednu}
+::msgcat::mcset sk {no exchange yet} {zatiaľ žiadna výmena}
 ::msgcat::mcset sk {no file — pick a guts file or type a path} {žiadny súbor — vyber súbor guts alebo zadaj cestu}
 ::msgcat::mcset sk {no handler} {žiadny handler}
+::msgcat::mcset sk {no heartbeat for %{mins} min} {žiadny heartbeat %{mins} min}
+::msgcat::mcset sk {no heartbeat within the threshold} {žiadny heartbeat v rámci prahu}
 ::msgcat::mcset sk {no history yet} {zatiaľ žiadna história}
 ::msgcat::mcset sk {no host configured for this instance} {pre túto inštanciu nie je nakonfigurovaný žiadny host}
 ::msgcat::mcset sk {no instance selected} {nie je vybraná žiadna inštancia}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset sk {no program to open URLs} {žiadny program na otváranie URL}
 ::msgcat::mcset sk {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {nie je nastavený žiadny poskytovateľ — pridajte položku [[custom_providers]] a nastavte dvojicu [model] pred spustením ťahu}
 ::msgcat::mcset sk {no reading yet — press Refresh} {zatiaľ nič načítané — stlač Obnoviť}
-::msgcat::mcset sk {no running tasks} {žiadne bežiace úlohy}
 ::msgcat::mcset sk {no sample available} {žiadna ukážka nie je k dispozícii}
 ::msgcat::mcset sk {no search bar on this surface} {na tomto rozhraní nie je panel vyhľadávania}
 ::msgcat::mcset sk {no session matching %s} {žiadna relácia nezodpovedá %s}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset sk {no session open — switch the scope to the default, or open a session} {nie je otvorená žiadna relácia — prepni rozsah na predvolený, alebo otvor reláciu}
 ::msgcat::mcset sk {no session open — the catalogue needs one; the default scope still works from config.toml} {nie je otvorená žiadna relácia — katalóg ju potrebuje; predvolený rozsah stále funguje z config.toml}
 ::msgcat::mcset sk {no setting %s — try filter or bare} {žiadne nastavenie %s — skús filter alebo holý názov}
+::msgcat::mcset sk {no shells or monitors to show} {žiadne shelly ani monitory na zobrazenie}
 ::msgcat::mcset sk {no skills found} {žiadne skill sa nenašli}
 ::msgcat::mcset sk {no such URL — /urls lists them} {také URL neexistuje — /urls ich vypíše}
 ::msgcat::mcset sk {no such file: %s} {súbor neexistuje: %s}
 ::msgcat::mcset sk {no swap target yet — set one with /locale secondary <id>} {zatiaľ žiadny cieľ výmeny — nastav ho cez /locale secondary <id>}
+::msgcat::mcset sk {no task selected} {nie je vybraná úloha}
 ::msgcat::mcset sk {no triggers} {žiadne triggery}
 ::msgcat::mcset sk {no triggers — New… creates one} {žiadne triggery — Nový… vytvorí jeden}
 ::msgcat::mcset sk {no upstream reading for %s} {žiadne upstream čítanie pre %s}
 ::msgcat::mcset sk {no word match} {žiadna zhoda slova}
 ::msgcat::mcset sk {no xdg-open — path copied instead} {xdg-open chýba — namiesto toho skopírovaná cesta}
+::msgcat::mcset sk {node log} {záznam uzla}
 ::msgcat::mcset sk {none loaded} {nič nie je načítané}
 ::msgcat::mcset sk {none recorded} nezaznamenané
+::msgcat::mcset sk {none since this gateway started} {žiadne od spustenia tejto brány}
 ::msgcat::mcset sk {none yet} {zatiaľ žiadny}
 ::msgcat::mcset sk {normie is pure Ctrl — no emacs prefix chords.} {normie je čisté Ctrl — žiadne emacs prefixové akordy.}
 ::msgcat::mcset sk {normie: select all · emacs: start of line} {normie: vybrať všetko · emacs: začiatok riadku}
 ::msgcat::mcset sk {not a channel} {nie je to kanál}
 ::msgcat::mcset sk {not a key = value line: %s} {nie je to riadok kľúč = hodnota: %s}
+::msgcat::mcset sk {not a node in the attached gateway's cluster registry: %s} {nie je uzlom v registri clusteru pripojenej brány: %s}
 ::msgcat::mcset sk {not a number} {nie je číslo}
 ::msgcat::mcset sk {not a valid http(s) url: %s} {neplatná http(s) url: %s}
 ::msgcat::mcset sk {not a valid ssh host: %s} {neplatný ssh host: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset sk {not attached to a gateway} {nepripojené k gateway}
 ::msgcat::mcset sk {not configured} nenakonfigurované
 ::msgcat::mcset sk {not ignoring %s} {neignorujem %s}
+::msgcat::mcset sk {not installed} nenainštalované
 ::msgcat::mcset sk {not reported} nenahlásené
 ::msgcat::mcset sk {not running} nebeží
 ::msgcat::mcset sk {not set in config.toml — the built-in default applies. %s} {nie je nastavené v config.toml — platí vstavaná predvolená hodnota. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset sk off vypnuté
 ::msgcat::mcset sk {off (the default)} {vypnuté (predvolené)}
 ::msgcat::mcset sk offline offline
+::msgcat::mcset sk ok ok
 ::msgcat::mcset sk on zapnuté
 ::msgcat::mcset sk {on (the default)} {zapnuté (predvolené)}
 ::msgcat::mcset sk {on failure} {pri zlyhaní}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset sk {open links} {otvárať odkazy}
 ::msgcat::mcset sk {open the engine log} {otvoriť log engine}
 ::msgcat::mcset sk {open the joined session before /leave (on %s)} {otvorte pripojenú reláciu pred /leave (na %s)}
+::msgcat::mcset sk {open the selected child session} {otvoriť vybranú podriadenú reláciu}
 ::msgcat::mcset sk {open the selected skill in the Dev editor} {otvoriť vybranú zručnosť v Dev editore}
 ::msgcat::mcset sk {open the setup wizard (re-runnable; edits config.toml in place)} {otvoriť sprievodcu nastavením (dá sa spustiť znova; upravuje config.toml na mieste)}
 ::msgcat::mcset sk {open the share sheet} {otvoriť ponuku zdieľania}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset sk {override cleared — the default applies} {override zrušený — platí predvolené}
 ::msgcat::mcset sk {override failed: %s} {override zlyhal: %s}
 ::msgcat::mcset sk {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {identitu vlastníka %{id} ACL nespáruje — použite telegram:<číselné ID>, irc:<účet v services> alebo masku nick!user@host}
+::msgcat::mcset sk owner/repository vlastník/repozitár
 ::msgcat::mcset sk {owners: %s} {vlastníci: %s}
 ::msgcat::mcset sk {pair a desktop with this agent} {spárovať desktop s týmto agentom}
 ::msgcat::mcset sk {partly failed: %s} {čiastočne zlyhalo: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset sk plugin plugin
 ::msgcat::mcset sk {plugin directory git history} {git história adresára pluginov}
 ::msgcat::mcset sk {plugin list} {zoznam pluginov}
+::msgcat::mcset sk {plugin provider driver} {ovládač poskytovateľa pre plugin}
 ::msgcat::mcset sk {plugins reloaded on %s} {pluginy znovu načítané %s}
 ::msgcat::mcset sk {pop %s out into its own window} {vysunúť %s do vlastného okna}
 ::msgcat::mcset sk {pop the buffer out into its own window} {vyklopiť buffer do vlastného okna}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset sk {prefix: window & dock commands} {prefix: príkazy okna & docku}
 ::msgcat::mcset sk {press Attach in the Instances tab} {stlač Attach v karte Inštancie}
 ::msgcat::mcset sk preview náhľad
+::msgcat::mcset sk {preview an AI extension change and explicitly apply its diff} {náhľad zmeny rozšírenia od AI a explicitné použitie jej diffu}
 ::msgcat::mcset sk {preview failed: %s} {náhľad zlyhal: %s}
 ::msgcat::mcset sk {previous buffer} {predchádzajúci buffer}
 ::msgcat::mcset sk {previous command was not a yank} {predchádzajúci príkaz nebol yank}
 ::msgcat::mcset sk {previous match} {predchádzajúca zhoda}
 ::msgcat::mcset sk {previous session} {predchádzajúca relácia}
+::msgcat::mcset sk {probing %s…} {sondáž %s…}
 ::msgcat::mcset sk {proc body} {telo proc}
 ::msgcat::mcset sk {profile unavailable: %s} {profil nedostupný: %s}
 ::msgcat::mcset sk profiles: profily:
 ::msgcat::mcset sk prompt výzva
 ::msgcat::mcset sk {prompt breakdown} {rozpis výzvy}
 ::msgcat::mcset sk {prompt tokens} {prompt tokeny}
+::msgcat::mcset sk {proposal only, not applied} {len návrh, nepoužitý}
 ::msgcat::mcset sk provider poskytovateľ
 ::msgcat::mcset sk {provider / model} {poskytovateľ / model}
 ::msgcat::mcset sk {provider base URL} {base URL poskytovateľa}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset sk {re-sync the slopdrop state mirror} {znova synchronizovať zrkadlo stavu slopdrop}
 ::msgcat::mcset sk {read and set the clipboard} {čítať a nastavovať schránku}
 ::msgcat::mcset sk {read text aloud} {čítať text nahlas}
+::msgcat::mcset sk {read-only: [approvals] allowlist} {len na čítanie: allowlist v [approvals]}
 ::msgcat::mcset sk {read-only: this session lives on %1$s (as read at %2$s)} {iba na čítanie: táto relácia je na %1$s (stav načítaný o %2$s)}
 ::msgcat::mcset sk {read-only: this skill comes from the %s library} {iba na čítanie: táto zručnosť pochádza z knižnice %s}
 ::msgcat::mcset sk reasoning uvažovanie
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset sk {refused to open %s (only http, https, mailto)} {odmietnuté otvoriť %s (iba http, https, mailto)}
 ::msgcat::mcset sk {refused: %s} {odmietnuté: %s}
 ::msgcat::mcset sk {region copied} {oblasť skopírovaná}
+::msgcat::mcset sk registered zaregistrovaný
 ::msgcat::mcset sk {registry not saved: %s} {register neuložený: %s}
 ::msgcat::mcset sk {reload on %1$s failed: %2$s} {znovu načítanie na %1$s zlyhalo: %2$s}
 ::msgcat::mcset sk {reload the mechanisms} {znovu načítať mechanizmy}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset sk {resume a session (prefix ok)} {pokračovať v relácii (stačí prefix)}
 ::msgcat::mcset sk {retry failed: %s} {opakovanie zlyhalo: %s}
 ::msgcat::mcset sk {retrying last prompt…} {opakujem poslednú výzvu…}
+::msgcat::mcset sk {review files for an explicit upstream contribution} {kontrola súborov pre explicitný upstream príspevok}
+::msgcat::mcset sk {review standing global and session tool permissions} {skontrolovať trvalé globálne a reláciové povolenia nástrojov}
 ::msgcat::mcset sk revision revízia
 ::msgcat::mcset sk {revision history} {história revízií}
+::msgcat::mcset sk {revoke refused} {odobratie odmietnuté}
 ::msgcat::mcset sk {revoke the selected identity's grant} {odvolať grant vybranej identity}
 ::msgcat::mcset sk role rola
 ::msgcat::mcset sk {role to grant} {rola na udelenie}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset sk {saved to %s} {uložené do %s}
 ::msgcat::mcset sk saved. uložené.
 ::msgcat::mcset sk {scaffold a new plugin} {vytvoriť kostru nového pluginu}
+::msgcat::mcset sk {scaffold a user plugin and open it in this editor} {vytvorí kostru používateľského pluginu a otvorí ho v tomto editore}
 ::msgcat::mcset sk {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {naplánované úlohy; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)}
 ::msgcat::mcset sk scope rozsah
 ::msgcat::mcset sk script skript
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset sk {select %s first} {najprv vyber %s}
 ::msgcat::mcset sk {select a checkpoint first} {najprv vyber checkpoint}
 ::msgcat::mcset sk {select a file, or New… to create one} {vyber súbor alebo Nový… na vytvorenie}
+::msgcat::mcset sk {select a grant first} {najprv vyberte povolenie}
 ::msgcat::mcset sk {select a handler first} {najprv vyber handler}
 ::msgcat::mcset sk {select a member first} {najprv vyber člena}
 ::msgcat::mcset sk {select a route} {vyber trasu}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset sk {select an assignment first} {najprv vyber priradenie}
 ::msgcat::mcset sk {select an entry first} {najprv vyber záznam}
 ::msgcat::mcset sk {select an identity first} {najprv vyber identitu}
+::msgcat::mcset sk {selected task details and shell output} {detaily vybranej úlohy a výstup shellu}
 ::msgcat::mcset sk {selected: %s} {vybrané: %s}
 ::msgcat::mcset sk {send clipboard as prompt} {odoslať schránku ako výzvu}
 ::msgcat::mcset sk {send failed: %s} {odoslanie zlyhalo: %s}
 ::msgcat::mcset sk {send the message; while a turn runs, queue it as steering} {poslať správu; počas prebiehajúceho ťahu sa zaradí ako steering}
+::msgcat::mcset sk sent odoslané
+::msgcat::mcset sk {sent to the owner's home chat} {odoslané do domovského chatu vlastníka}
 ::msgcat::mcset sk server server
 ::msgcat::mcset sk {server buffers merged} {buffery servera zlúčené}
 ::msgcat::mcset sk {server buffers separate} {buffery servera oddelené}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset sk {settings, one key = value per line} {nastavenia, jeden kľúč = hodnota na riadok}
 ::msgcat::mcset sk {setup_done marker NOT saved: %s} {značka setup_done sa NEULOŽILA: %s}
 ::msgcat::mcset sk {shell %1$s finished} {shell %1$s skončil}
-::msgcat::mcset sk shells shelly
+::msgcat::mcset sk {shells, monitors and subagents} {shelly, monitory a subagenti}
 ::msgcat::mcset sk shells_header {shelly na pozadí:}
 ::msgcat::mcset sk shells_none {(žiadne shelly na pozadí — /background <cmd> spustí jeden)}
 ::msgcat::mcset sk {show current configuration} {zobraziť aktuálnu konfiguráciu}
 ::msgcat::mcset sk {show every key in this mode} {zobraziť každú klávesu v tomto režime}
 ::msgcat::mcset sk {show or hide the session list} {zobraziť alebo skryť zoznam relácií}
 ::msgcat::mcset sk {show or switch model (alias | model@provider | custom:<prov>)} {zobraziť alebo prepnúť model (alias | model@provider | custom:<prov>)}
+::msgcat::mcset sk {show selected shell output} {zobraziť výstup vybraného shellu}
 ::msgcat::mcset sk {show short messages} {zobrazovať krátke správy}
 ::msgcat::mcset sk {show the model's reasoning blocks (same as /reasoning)} {zobraziť reasoning bloky modelu (rovnako ako /reasoning)}
 ::msgcat::mcset sk {show unclaimed} {zobraziť nenárokované}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset sk spend spotreba
 ::msgcat::mcset sk {split: %s} {rozdelené: %s}
 ::msgcat::mcset sk {ssh to %1$s failed: %2$s} {ssh na %1$s zlyhalo: %2$s}
+::msgcat::mcset sk {stale — no heartbeat within the threshold} {zastaraný — žiadny heartbeat v rámci limitu}
+::msgcat::mcset sk {standing global and session permission grants} {trvalé globálne a reláciové povolenia}
 ::msgcat::mcset sk state stav
 ::msgcat::mcset sk {state       never reached} {stav       nikdy nedosiahnutý}
 ::msgcat::mcset sk {state       reachable} {stav       dostupný}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset sk {stored in the encrypted vault (%1$s): %2$s} {uložené v šifrovanom trezore (%1$s): %2$s}
 ::msgcat::mcset sk {stream handler: %s} {handler streamu: %s}
 ::msgcat::mcset sk {subagent %1$s finished} {subagent %1$s skončil}
-::msgcat::mcset sk subagents subagenti
 ::msgcat::mcset sk subagents_header {bežiace subagenty:}
 ::msgcat::mcset sk subagents_none {(žiadne bežiace subagenty — /btw <prompt> spustí jedného, alebo model použije delegate_task)}
 ::msgcat::mcset sk {suspend failed: %{e}} {pozastavenie zlyhalo: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset sk {switch the selected skill off} {vypnúť vybranú zručnosť}
 ::msgcat::mcset sk {switch the selected skill on} {zapnúť vybranú zručnosť}
 ::msgcat::mcset sk {switch to the %s tab} {prepnúť na kartu %s}
+::msgcat::mcset sk {sync requested: %s} {synchronizácia vyžiadaná: %s}
 ::msgcat::mcset sk {tab 1} {karta 1}
 ::msgcat::mcset sk {tab 2} {karta 2}
 ::msgcat::mcset sk {tab 3} {karta 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset sk tasks_none {(žiadne bežiace úlohy)}
 ::msgcat::mcset sk tasks_not_found {taká úloha neexistuje: %{id}}
 ::msgcat::mcset sk tasks_not_running {úloha %{id} už skončila}
-::msgcat::mcset sk {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset sk {tcl-lsp: event stream unavailable: %s} {tcl-lsp: stream udalostí nedostupný: %s}
-::msgcat::mcset sk {tcl-lsp: gateway would not start it: %s} {tcl-lsp: gateway ho nespustil: %s}
-::msgcat::mcset sk {tcl-lsp: not started on the gateway — %s} {tcl-lsp: na gateway nespustené — %s}
 ::msgcat::mcset sk {that buffer is not split} {tento buffer nie je rozdelený}
 ::msgcat::mcset sk {the %s plan} {plán %s}
 ::msgcat::mcset sk {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {pole pre API kľúč prijíma NÁZOV premennej prostredia (napríklad %{example}), nie samotný kľúč — kľúč patrí do skrytého poľa}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset sk {the gateway answered without a report} {gateway odpovedal bez reportu}
 ::msgcat::mcset sk {the model/provider pair is incomplete — the gateway will not route until both are present} {dvojica model/poskytovateľ je neúplná — brána nebude smerovať, kým nebudú zadané obe}
 ::msgcat::mcset sk {the options changed, so that is a fresh preview — press “Write it” again to write it} {možnosti sa zmenili, takže toto je čerstvý náhľad — stlač „Write it“ znova pre zápis}
+::msgcat::mcset sk {the peer has not been sent this vault yet} {peerovi tento trezor ešte nebol odoslaný}
+::msgcat::mcset sk {the peer holds this vault} {peer tento trezor má}
 ::msgcat::mcset sk {the primary route is \[model\] provider/default — change it there, not here} {primárna trasa je \[model\] poskytovateľ/predvolené — zmeň to tam, nie tu}
 ::msgcat::mcset sk {the provider/model route this session sends to} {cesta provider/model, ktorou táto relácia posiela}
 ::msgcat::mcset sk {the same, on the privileged path (owner only)} {to isté, privilegovanou cestou (len owner)}
 ::msgcat::mcset sk {the selected entry (edit, then Save)} {vybraný záznam (uprav, potom Uložiť)}
+::msgcat::mcset sk {the server stopped: %s} {server sa zastavil: %s}
 ::msgcat::mcset sk {the synthwave splash} {úvodná obrazovka synthwave}
 ::msgcat::mcset sk {the text after the name was NOT sent anywhere — type the value into the masked field} {text za názvom sa NIKAM neposlal — zadajte hodnotu do maskovaného poľa}
 ::msgcat::mcset sk {the transcript} prepis
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset sk thinking… premýšľam…
 ::msgcat::mcset sk {thinking… (%s)} {premýšľam… (%s)}
 ::msgcat::mcset sk {this file's revisions, their diffs, and restore} {revízie tohto súboru, ich rozdiely a obnovenie}
+::msgcat::mcset sk {this gateway} {táto brána}
 ::msgcat::mcset sk {this gateway has no Tcl interpreter} {tento gateway nemá interpret Tcl}
 ::msgcat::mcset sk {this list} {tento zoznam}
+::msgcat::mcset sk {this node has no vault} {tento uzol nemá trezor}
 ::msgcat::mcset sk {this route} {táto trasa}
 ::msgcat::mcset sk {this session} {táto relácia}
 ::msgcat::mcset sk {this session follows the default language again (%{def})} {táto relácia opäť používa predvolený jazyk (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset sk {transcript finalization failed: %s} {dokončenie prepisu zlyhalo: %s}
 ::msgcat::mcset sk {transcript refetched} {prepis znovu načítaný}
 ::msgcat::mcset sk {transcript — arrows to read, %s for composer} {prepis — šípky na čítanie, %s na vstup}
+::msgcat::mcset sk {translate text with the dedicated translation model, without an agent turn} {preložiť text vyhradeným prekladovým modelom, bez ťahu agenta}
+::msgcat::mcset sk {translation result} {výsledok prekladu}
 ::msgcat::mcset sk {trigger %1$s %2$sd} {spúšťač %1$s %2$sd}
 ::msgcat::mcset sk {trigger created} {spúšťač vytvorený}
 ::msgcat::mcset sk {trigger updated} {spúšťač aktualizovaný}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset sk {usage: /steer <instruction>} {použitie: /steer <instruction>}
 ::msgcat::mcset sk used použité
 ::msgcat::mcset sk user používateľ
+::msgcat::mcset sk {user copy} {používateľská kópia}
 ::msgcat::mcset sk {user identities, one per line} {identity používateľov, jedna na riadok}
 ::msgcat::mcset sk {user name} {používateľské meno}
 ::msgcat::mcset sk {user profile} {profil používateľa}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset sk {value (TOML: 5, true, "text", ["a","b"])} {hodnota (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset sk veles veles
 ::msgcat::mcset sk {veles editor} {veles editor}
+::msgcat::mcset sk {veles fleet: node %{node} is failing — %{detail}} {veles flotila: uzol %{node} zlyháva — %{detail}}
+::msgcat::mcset sk {veles fleet: node %{node} is stale — %{detail}} {veles flotila: uzol %{node} je zastaraný — %{detail}}
+::msgcat::mcset sk {veles fleet: node %{node} recovered (it was %{was})} {veles flotila: uzol %{node} sa spamätal (predtým %{was})}
 ::msgcat::mcset sk {veles · keyboard help (bindings: %s)} {veles · pomoc pre klávesnicu (väzby: %s)}
 ::msgcat::mcset sk {veles · touch help} {veles · pomocník pre dotyk}
 ::msgcat::mcset sk {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset sk widgets widgety
 ::msgcat::mcset sk {will be stored in the encrypted vault} {uloží sa do šifrovaného trezoru}
 ::msgcat::mcset sk {wire protocol} {wire protokol}
+::msgcat::mcset sk {without force to} {bez force do}
 ::msgcat::mcset sk {wizard language} {jazyk sprievodcu}
 ::msgcat::mcset sk {wizard language: %s} {jazyk sprievodcu: %s}
 ::msgcat::mcset sk {write failed: %s} {zápis zlyhal: %s}
 ::msgcat::mcset sk {write grants that still expire (the expiry is dropped — a config line cannot expire)} {zapísať granty, ktoré stále expirujú (expirácia sa zahodí — riadok konfigurácie nemôže expirovať)}
 ::msgcat::mcset sk {write the entries back} {zapísať záznamy späť}
 ::msgcat::mcset sk {write the store's runtime rules into config.toml} {zapísať aktuálne pravidlá úložiska do config.toml}
+::msgcat::mcset sk {write the whole extension from its purpose, as a reviewed preview} {napísať celé rozšírenie z jeho účelu ako skontrolovaný náhľad}
 ::msgcat::mcset sk {write these values into config.toml as the defaults} {zapísať tieto hodnoty do config.toml ako predvolené}
 ::msgcat::mcset sk writing písanie
 ::msgcat::mcset sk {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {prvý vlastník v [acl] prepne túto bránu do SPRAVOVANÉHO režimu: predvolená rola sa stane guest (fail-closed) a zoznam povolených adaptéra prestane byť hranicou dôvery}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset sk {▲ VELES — neon impressionism} {▲ VELES — neonový impresionizmus}
 ::msgcat::mcset sk {▲ earlier} {▲ skôr}
 ::msgcat::mcset sk {▼ later} {▼ neskôr}
+::msgcat::mcset sk {▾ Cluster registry} {▾ Register klastra}
 ::msgcat::mcset sk {▾ new output — follow} {▾ nový výstup — sledovať}
 ::msgcat::mcset sk {○ unattached} {○ nepripojené}
 ::msgcat::mcset sk {● %1$s — %2$s} {● %1$s — %2$s}

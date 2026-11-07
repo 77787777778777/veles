@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset ig {%1$s %2$s failed: %3$s} {%1$s %2$s dara: %3$s}
 ::msgcat::mcset ig {%1$s %2$s over ssh…} {%1$s %2$s site na ssh…}
 ::msgcat::mcset ig {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset ig {%1$s (%2$s waiting)} {%1$s (%2$s na-eche)}
 ::msgcat::mcset ig {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  echiche %3$s}
 ::msgcat::mcset ig {%1$s = %2$s here} {%1$s = %2$s ebe a}
 ::msgcat::mcset ig {%1$s NOT saved: %2$s} {echekwaghị %1$s: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset ig {%1$s every cron job on %2$s?} {%1$s ọrụ cron ọ bụla na %2$s?}
 ::msgcat::mcset ig {%1$s failed: %2$s} {%1$s dara: %2$s}
 ::msgcat::mcset ig {%1$s in / %2$s out / %3$s calls} {%1$s banye / %2$s pụta / %3$s oku}
+::msgcat::mcset ig {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s bụ node %2$s, ọ́ bụghị %3$s. Dozie njirimara node ya na Dezie….}
 ::msgcat::mcset ig {%1$s is not a whole number} {%1$s abụghị ọnụọgụ zuru ezu}
+::msgcat::mcset ig {%1$s is reachable (%2$s ms).} {Enwere ike iru %1$s (%2$s ms).}
 ::msgcat::mcset ig {%1$s is set to something this box cannot edit (%2$s)} {%1$s edozirila ka ọ bụrụ ihe igbe a na-apụghị idezi (%2$s)}
+::msgcat::mcset ig {%1$s is unreachable: %2$s} {Enweghị ike iru %1$s: %2$s}
 ::msgcat::mcset ig {%1$s of %2$s characters} {%1$s n'ime mkpụrụedemede %2$s}
 ::msgcat::mcset ig {%1$s of %2$s sessions} {%1$s n'ime nnọkọ %2$s}
 ::msgcat::mcset ig {%1$s of %2$s skills reach the prompt} {%1$s n'ime ị̀kà %2$s na-eru na prompt}
 ::msgcat::mcset ig {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s na %2$s: %3$d dị mma, %4$d dara}
+::msgcat::mcset ig {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s anaghị akọ njirimara node cluster, ya mere enweghị ike inyocha ya dị ka %2$s.}
+::msgcat::mcset ig {%1$s sync failed: %2$s} {sync %1$s dara: %2$s}
+::msgcat::mcset ig {%1$s sync with %2$s (%3$s)} {sync %1$s na %2$s (%3$s)}
+::msgcat::mcset ig {%1$s sync: %2$s} {sync %1$s: %2$s}
 ::msgcat::mcset ig {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset ig {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Pịa Enter ịga, Esc imechi}
 ::msgcat::mcset ig {%1$s — revision r%2$s} {%1$s — nsụgharị r%2$s}
 ::msgcat::mcset ig {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset ig {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset ig {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset ig {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset ig {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: ahịrị %2$s ikpeazụ n'ime ahịrị %3$s nke Gateway ya na-edebe na ebe nchekwa, a na-ehichapụ nzuzo na node ahụ.}
 ::msgcat::mcset ig {%d MCP server(s) configured} {%d MCP server ahaziri}
 ::msgcat::mcset ig {%d entries} {%d ntinye}
+::msgcat::mcset ig {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {A ga-ede faịlụ %d nke ndọtị ahụ kpọmkwem dịka e nyochara ya. Ọ bụrụ na nke ọ bụla gbanwee kemgbe nhụle ahụ, a gaghị ede ihe ọ bụla. Ọ dịghị commit, push ma ọ bụ PR na-eme.}
 ::msgcat::mcset ig {%d handler(s) registered} {%d handler edebanyere}
 ::msgcat::mcset ig {%d identities · %d users} {%d njirimara · %d ndị ọrụ}
 ::msgcat::mcset ig {%d models — pick one from the list or type a name.} {%d model — họrọ otu site na ndepụta ma ọ bụ dee aha.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset ig {%d shown} {%d egosiri}
 ::msgcat::mcset ig {%s %s%%} {%s %s%%}
 ::msgcat::mcset ig {%s (%s)} {%s (%s)}
+::msgcat::mcset ig {%s (referral)} {%s (ịkpọta)}
+::msgcat::mcset ig {%s (stale)} {%s (ochie)}
 ::msgcat::mcset ig {%s (this session)} {%s (nnọkọ a)}
 ::msgcat::mcset ig {%s GB free of %s GB} {%s GB efu n'ime %s GB}
 ::msgcat::mcset ig {%s already exists — open it from the list} {%s adịlarị — mepee ya site na ndepụta}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset ig {%s comes from config.toml [acl] — edit there} {%s sitere na config.toml [acl] — dezie ya ebe ahụ}
 ::msgcat::mcset ig {%s config change(s) wait for you — /configsync} {mgbanwe nhazi %s na-echere gị — /configsync}
 ::msgcat::mcset ig {%s did not become healthy within 30s} {%s abịaghị adị mma n'ime 30s}
+::msgcat::mcset ig {%s done} {%s emechara}
 ::msgcat::mcset ig {%s failed: %s} {%s dara: %s}
 ::msgcat::mcset ig {%s is already split} {%s ekewarịla}
 ::msgcat::mcset ig {%s is the language in use — pick another one to swap with} {%s bụ asụsụ a na-eji ugbu a — họrọ asụsụ ọzọ maka ịgbanwe}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset ig {%s opens the command palette in %s.} {%s na-emeghe palette iwu na %s.}
 ::msgcat::mcset ig {%s session(s)} {%s nnọkọ}
 ::msgcat::mcset ig {%s skill(s):} {%s nkà (nkà):}
+::msgcat::mcset ig {%s standing grants} {%s ikike na-adịgide adịgụ}
 ::msgcat::mcset ig {%s takes no completable arguments} {%s anaghị anabata arụmụka enwere ike imecha}
 ::msgcat::mcset ig {%s takes on or off} {%s na-anabata on ma ọ bụ off}
 ::msgcat::mcset ig {%s —} {%s —}
+::msgcat::mcset ig {%s — changes data, asks to confirm} {%s — na-agbanwe data, na-ajụ maka nkwenye}
 ::msgcat::mcset ig {%s — deleted; History… can restore it} {%s — ehichapụla; Akụkọ… nwere ike iweghachi ya}
 ::msgcat::mcset ig {%s — new: type, then Save} {%s — ọhụrụ: dee, wee Chekwa}
 ::msgcat::mcset ig {%s — not attached; press Attach in the Instances tab} {%s — edobeghị; pịa Attach na taabụ Instances}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset ig {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {Agbanyela %{platform} n'enweghị ngalaba [acl]: ruo mgbe %{var} dị na .env kpọrọ onye nwere ike ịgwa bot okwu, onye ọ bụla ruru ya ka a na-ewere dị ka onye nwe, ya na ngwaọrụ niile}
 ::msgcat::mcset ig (%{route}) (%{route})
 ::msgcat::mcset ig {(CLI redraws automatically)} {(CLI na-esere onwe ya ọzọ)}
+::msgcat::mcset ig {(binary; not publishable)} {(binary; enweghị ike ibipụta ya)}
 ::msgcat::mcset ig {(clipboard empty or no clipboard tool)} {(clipboard efu ma ọ bụ enweghị ngwaọrụ clipboard)}
 ::msgcat::mcset ig (deleted) (ehichapụla)
 ::msgcat::mcset ig (empty) (efu)
 ::msgcat::mcset ig {(no sessions)} {(enweghị sessions)}
+::msgcat::mcset ig {(not a memsync peer of this gateway: config is not synced with it)} {(ọ bụghị ibe memsync nke Gateway a: a naghị emekọrịta nhazi ya na ya)}
 ::msgcat::mcset ig {(nothing to reload — read from disk per use)} {(ọ dịghị ihe a ga-ebugo ọzọ — a na-agụ ya site na diski oge ọ bụla)}
 ::msgcat::mcset ig {(retrying last prompt…)} {(na-anwaghachi prompt ikpeazụ…)}
 ::msgcat::mcset ig {(route did not resolve: %{e})} {(route achọpụtaghị: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset ig {/url needs a number from /urls} {/url chọrọ ọnụọgụ site na /urls}
 ::msgcat::mcset ig {/whois needs a nick} {/whois chọrọ nick}
 ::msgcat::mcset ig {; could not save the cleared return view: %s} {; enweghị ike ichekwa echiche ndọghachi e kpochapụrụ: %s}
+::msgcat::mcset ig {; shadows bundled} {; na-ekpuchi nke e buru ọnụ}
+::msgcat::mcset ig {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Nhọrọ config nwere ike ịgbanwe ntọala, nhọrọ vault na-ejikọ nzuzo; mgbanwe na ngalaba nchekwa ka na-echere onye nwe ya.}
 ::msgcat::mcset ig {A failing plugin may drop hooks mid-turn.} {Plugin na-ada ada nwere ike ịhapụ hooks n'etiti nnọkọ.}
 ::msgcat::mcset ig {A local server: no key is needed unless you set one up.} {Server mpaghara: achọghị key ọ bụla ọ gwụla ma i debanyere otu.}
+::msgcat::mcset ig {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {A na-ahazi mwepụta e bịnyere aka naanị mgbe preflight gasịrị. Ịmalitegharị/ịnyocha, ịga n'ihu na ịweghachi bụ omume dị iche iche. Usoro na-arụ nke ọma ga-akọwa nsụgharị koodu e nyochachara kpọmkwem.}
 ::msgcat::mcset ig {A value is stored for %s — leave this empty to keep it.} {E debere uru maka %s — hapụ nke a efu iji debe ya.}
 ::msgcat::mcset ig {ACL: ban mask} {ACL: machibido mask}
 ::msgcat::mcset ig {ACL: grant admin} {ACL: nye admin}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset ig {ACL: grant user} {ACL: nye user}
 ::msgcat::mcset ig {ACL: revoke} {ACL: wepụ ikike}
 ::msgcat::mcset ig {ACME account email} {Email akaụntụ ACME}
+::msgcat::mcset ig {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI assist na-arụ ọrụ n'ọkwa anọ: jụọ ajụjụ imepụta (achọghị faịlụ), gbanwee faịlụ a, gbanwee ọtụtụ faịlụ nke ndọtị a, ma ọ bụ kọwaa nchọpụta dị ugbu a. New extension nwekwara ike ịmepụta ndọtị dum site n'ebumnobi ya. A na-eziga arịrịọ ọ bụla na-enweghị ngwaọrụ, a na-ajụkwa ya mgbe ọ bu nzuzo edebanyere ma ọ bụ uru yiri njirimara nzuzo; a na-egosi mgbanwe dị ka diff, a na-edekwa ya naanị mgbe i tinyere ya. Buru ụzọ rịọ nhazi ndọtị; rịọ patch nke core naanị mgbe ị chọpụtachara API na-efu.}
+::msgcat::mcset ig {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {Enyemaka AI na-edozi naanị mgbasawanye nke ndị ọrụ, ma faịlụ a abụghị akụkụ nke otu. Ọtụtụ mgbanwe dabara na mgbasawanye (hook, ngwaọrụ, mgbanwe ọrụ ma ọ bụ driver onye na-eweta) nke na-adịgide mgbe emelitechara; patch core bụ maka ihe API mgbasawanye na-enweghị ike ịkọwa. Mepụta mgbasawanye ọhụrụ maka mgbanwe a kama? A na-egosi faịlụ ya tupu edee ihe ọ bụla.}
+::msgcat::mcset ig {AI assist…} {Enyemaka AI…}
+::msgcat::mcset ig {AI extension assistance} {Enyemaka AI maka mgbasawanye}
 ::msgcat::mcset ig {API calls} {Oku API}
+::msgcat::mcset ig {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {A na-enye credits API site na ịkpọta Anthropic naanị ma ọ bụrụ na ị zụta Max ma ọ bụ Ultra. Veles anaghị akwado iji ndenye aha ahụ dị ka nbanye ma ọ bụ nyocha API.}
 ::msgcat::mcset ig {API key (hidden)} {API key (ezoro ezo)}
 ::msgcat::mcset ig {API key env var name} {Aha env var nke API key}
+::msgcat::mcset ig {API reference} {Ntụaka API}
+::msgcat::mcset ig {Abandon untouched operation} {Hapụ ọrụ emetụghị aka}
 ::msgcat::mcset ig {Access control} {Nchịkwa nnweta}
 ::msgcat::mcset ig {Access control (ACL)} {Nchịkwa nnweta (ACL)}
 ::msgcat::mcset ig Add Tinye
 ::msgcat::mcset ig {Add MCP server} {Tinye MCP server}
 ::msgcat::mcset ig {Add instance} {Tinye instance}
 ::msgcat::mcset ig {Add server…} {Tinye server…}
+::msgcat::mcset ig {Adds selected extension sources. Review the branch diff and checks before merging.} {Na-agbakwunye faịlụ isi mmalite mgbasawanye ahọrọ. Tulee diff alaka na nyocha ndị ahụ tupu ijikọta ha.}
 ::msgcat::mcset ig Add… Tinye…
 ::msgcat::mcset ig {Agent & engine} {Onye nnọchite anya na injin}
 ::msgcat::mcset ig {Alias %s} {Alias %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset ig {Applies to} Na-emetụta
 ::msgcat::mcset ig Apply Mejuputa
 ::msgcat::mcset ig {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Apply na-agbanwe naanị nnọkọ NA-AGBA OZUGBO. Copy TOML na-enye gị blocks ị ga-edobe. Save globally na-etinye ha n'ime config.toml — naanị akụkụ failover ka a na-emetụ, ahịrị na nkọwa ọ bụla ọzọ na-anọgide, a na-edobekwa faịlụ ochie dị ka config.toml.bak.}
+::msgcat::mcset ig {Apply proposal…} {Tinye atụmatụ…}
+::msgcat::mcset ig {Apply received} {Tinye nke natara}
+::msgcat::mcset ig {Apply this AI proposal?} {Tinye atụmatụ AI a?}
+::msgcat::mcset ig {Apply this change set?} {Tinye usoro mgbanwe a?}
 ::msgcat::mcset ig {Apply to session} {Mejuputa na nnọkọ}
+::msgcat::mcset ig {Apply what this node received:} {Tinye ihe node a nwetara:}
 ::msgcat::mcset ig {Approval needed} {Ikwado mkpa}
 ::msgcat::mcset ig Apps Ngwa
 ::msgcat::mcset ig Archive Ngwugwu
 ::msgcat::mcset ig {Archive SHA-256} {SHA-256 nke ngwugwu}
+::msgcat::mcset ig Ask Jụọ
+::msgcat::mcset ig {Ask a design question} {Jụọ ajụjụ imepụta}
+::msgcat::mcset ig {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {Jụọ otu esi arụ ndọtị: kedu oke, kedu asụsụ, kedu API. A naghị ezipu koodu, ọ dịghịkwa ihe a pụrụ ide.}
 ::msgcat::mcset ig {Ask the agent to change it} {Rịọ onye nnọchite anya ka ọ gbanwee ya}
+::msgcat::mcset ig {Asking %s…} {Na-ajụ %s…}
 ::msgcat::mcset ig {Asking the provider for its models…} {Na-ajụ onye na-eweta ọrụ maka model ya…}
 ::msgcat::mcset ig Attach Đọ
 ::msgcat::mcset ig {Attach to the next message} {Tinye na ozi na-abịa}
+::msgcat::mcset ig {Author guide} {Nduzi onye edemede}
+::msgcat::mcset ig {Automatically discovered from the attached gateway's cluster registry.} {A na-achọpụta ya akpaka site na ndebanye aha cluster nke gateway ejikọtara.}
 ::msgcat::mcset ig Back Azụ
 ::msgcat::mcset ig {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {Azụ na-emechi ihe dị n'elu: menu, ndepụta session, window. Mgbe ọ dịghị ihe meghere, veles na-aga n'azụ ma na-aga n'ihu ịrụ ọrụ.}
 ::msgcat::mcset ig {Base URL} {Base URL}
+::msgcat::mcset ig {Base branch} {Alaka ntọala}
 ::msgcat::mcset ig {Bot token (hidden)} {Tokin bot (ezoro ezo)}
+::msgcat::mcset ig Branch Alaka
+::msgcat::mcset ig {Branch and commit prepared; nothing has been pushed} {E kwadooro alaka na commit; ọ nweghị ihe e mere push.}
+::msgcat::mcset ig {Branch pushed and verified on origin} {E mere push alaka ahụ ma nyochaa ya na origin}
 ::msgcat::mcset ig {Browse sessions} {Chọgharịa nnọkọ}
+::msgcat::mcset ig {Build manifest + preflight} {Manifest build + preflight}
+::msgcat::mcset ig {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Iwube: veles %1$s, nsụgharị %2$s (%3$s %4$s)}
 ::msgcat::mcset ig {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e njedebe ahịrị · C-b/C-f mkpụrụedemede · M-b/M-f okwu · C-k gbuo ruo EOL · C-y yank · M-w detuo · C-w gbuo mpaghara · C-space tọọ akara · C-/ megharịa}
 ::msgcat::mcset ig {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g kwụsị ihe niile · C-j ahịrị ọhụrụ · M-p/M-n akụkọ ihe · Tab mmezu}
+::msgcat::mcset ig {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: cores %1$s, ibu %2$s / %3$s / %4$s (%5$s%% nke cores)}
 ::msgcat::mcset ig Cancel Kagbuo
+::msgcat::mcset ig {Cancel task} {Kagbu ọrụ}
+::msgcat::mcset ig {Cancel task %1$s? This cannot be undone.} {Kagbu ọrụ %1$s? Enweghị ike ịmegharị nke a.}
+::msgcat::mcset ig {Cannot verify that %1$s is node %2$s: %3$s} {Enweghị ike inyocha na %1$s bụ node %2$s: %3$s}
 ::msgcat::mcset ig Capabilities Ikike
 ::msgcat::mcset ig {Change my app “%s” (%s): } {Gbanwee ngwa m “%s” (%s): }
+::msgcat::mcset ig {Change this extension's files} {Gbanwee faịlụ ndọtị a}
+::msgcat::mcset ig {Change this file} {Gbanwee faịlụ a}
 ::msgcat::mcset ig Change… Gbanwee…
 ::msgcat::mcset ig {Channels (e.g. #veles #dev)} {Ọwa (dịka #veles #dev)}
 ::msgcat::mcset ig Chat {Mkparịta ụka}
 ::msgcat::mcset ig {Chat — not attached; press Attach in the Instances tab} {Chat — edobeghị; pịa Attach na taabụ Instances}
 ::msgcat::mcset ig {Check (lsp)} {Lelee (lsp)}
+::msgcat::mcset ig {Check again} {Nyochaa ọzọ}
+::msgcat::mcset ig {Check files} {Nyochaa faịlụ}
 ::msgcat::mcset ig Checkpoints Checkpoints
 ::msgcat::mcset ig {Checkpoints (undo)} {Checkpoints (megharịa)}
+::msgcat::mcset ig {Checks and next steps} {Nyocha na nzọụkwụ ndị ọzọ}
+::msgcat::mcset ig {Checks run} {Nyocha rụrụ}
 ::msgcat::mcset ig {Choose BUNDLE-INFO.json in the managed install-sources directory} {Họrọ BUNDLE-INFO.json n'ime direktorị install-sources e nlekọtara}
 ::msgcat::mcset ig {Choose a failover script} {Họrọ edemede failover}
 ::msgcat::mcset ig {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {Họrọ modul ma ọ bụ plugin usoro iji nyocha. Nchọpụta na-agụ plugin.toml naanị; ịhọrọ ihe akpaghị aka na-arịọrịrị ihe e kenyere na manifest na nhọrọ. Agaghị ewube ihe site n'imepe nke a.}
+::msgcat::mcset ig {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {Họrọ aha, ebumnuche na asụsụ, wee lee faịlụ kpọmkwem ahụ anya. E de beghị ihe ọ bụla.}
 ::msgcat::mcset ig {Choose a user unit or a system service for the server profile. Neither starts a service.} {Họrọ ụdị ọrụ onye ọrụ ma ọ bụ ọrụ systeem maka profaịlụ Sava. Nke ọ bụla anaghị amalite ọrụ.}
 ::msgcat::mcset ig {Choose core bundle…} {Họrọ bundle core…}
 ::msgcat::mcset ig {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {Họrọ ụdị mwụnye. Profaịlụ ebe a na-eji installer e nyocha. Profaịlụ systeem na nke host container na-akwadebe arịrịọ e sonyere aka maka CLI handoff doro anya. NixOS na-eme naanị snippet modụlụ.}
+::msgcat::mcset ig {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {Họrọ oke kachasị warara: Tool na-agbakwunye ikike model nwere ike ịkpọ; Hook na-ekiri ma ọ bụ na-agbanwe omelu ndụ; Service ma ọ bụ ebe mgbaji na-ekpuchi mkpebi aha a kpọrọ; Provider driver na-agbakwunye ụzọ onye na-eweta ọrụ; patch Core kwesịrị ekwesị naanị mgbe API mgbasawanye ebipụtara na-enweghị ike igosipụta mgbanwe ahụ.}
 ::msgcat::mcset ig {Choose typed container-host options JSON} {Họrọ JSON nhọrọ container-host a kụrụ ụdị}
 ::msgcat::mcset ig {Choose typed container-host options…} {Họrọ nhọrọ container-host a kụrụ ụdị…}
 ::msgcat::mcset ig Clear Kpochapụ
 ::msgcat::mcset ig {Clear composer} {Kpochapụ composer}
 ::msgcat::mcset ig {Clear override} {Kpochapụ ihe nnọchi}
 ::msgcat::mcset ig {Click the picture where you would click on the page.} {Pịa foto ahụ n'ebe ị ga-esi pịa na ibe ahụ.}
+::msgcat::mcset ig {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {Detuo %1$s, mepụta %2$s, ma detuo naanị faịlụ %3$s e nyochara n'okpuru %4$s/<extension>/. A na-enyocha faịlụ ndị ahụ ma tinye ha na commit. Ọ dịghị push ma ọ bụ pull request ugbu a.}
 ::msgcat::mcset ig Close Mechi
 ::msgcat::mcset ig {Close (Esc)} {Mechi (Esc)}
 ::msgcat::mcset ig {Close the setup wizard? Nothing has been written yet.} {Mechie wizard nhazi? Ọ dịbeghị ihe e dere.}
 ::msgcat::mcset ig {Code actions} {Omume koodu}
+::msgcat::mcset ig Commit Commit
+::msgcat::mcset ig {Commit ready for review. Push is a separate action.} {Commit dị njikere maka ntulegharị. Push bụ omume dị iche.}
 ::msgcat::mcset ig {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Dejupụta ọkwa PDS niile, gụnyere image digest e ji nchekwu, tupu ịlele handoff.}
 ::msgcat::mcset ig {Complete every typed container-host field before previewing this profile.} {Mezue ubi container-host a kụrụ ụdị niile tupu ịlele profaịlụ a.}
 ::msgcat::mcset ig {Component configuration returned an invalid result; nothing was accepted as applied.} {Nhazi ihe akpaghị aka weghachiri nsonaazụ adịghị arụrụ arụ; a nabataghị ihe dịka etinyere ya.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset ig {Component options changed. Review the new preview before applying.} {Nhọrọ ihe akpaghị aka gbanweela. Lelekarịa nlele ọhụrụ tupu ịtinye.}
 ::msgcat::mcset ig Components {Ihe akpaghị aka}
 ::msgcat::mcset ig {Composer preview} {Composer preview}
+::msgcat::mcset ig Config Nhazi
+::msgcat::mcset ig {Config differs: %s} {Nhazi dị iche: %s}
+::msgcat::mcset ig {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Ndekọ nhazi: node ahụ nwere mgbanwe %1$s ruo %3$s, Gateway a ruo %2$s}
+::msgcat::mcset ig {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Ndekọ nhazi: Gateway a nwere mgbanwe %1$s ruo %2$s, node ahụ ruo %3$s}
+::msgcat::mcset ig {Config only on that node: %s} {Nhazi naanị na node ahụ: %s}
+::msgcat::mcset ig {Config only on this gateway: %s} {Nhazi naanị na Gateway a: %s}
 ::msgcat::mcset ig Configure Hazie
 ::msgcat::mcset ig {Configure %s} {Hazie %s}
+::msgcat::mcset ig {Configure translator} {Hazie ngwa ntụgharị}
+::msgcat::mcset ig {Configured desktop gateway} {Gateway desktọpụ ahaziri}
 ::msgcat::mcset ig Configure… Hazie…
 ::msgcat::mcset ig {Configuring %s} {Na-ahazi %s}
 ::msgcat::mcset ig {Confirm or discard the current signed review before starting another download.} {Kwado ma ọ bụ tụfuo nyocha e sonyere aka ugbu a tupu ịmalite nbudata ọzọ.}
 ::msgcat::mcset ig {Container host: typed host plan and privileged CLI handoff} {Host container: atụmatụ host a kụrụ ụdị na CLI handoff chọrọ ikike onye nchịkwa}
 ::msgcat::mcset ig {Context window} {Context window}
+::msgcat::mcset ig {Continue to next target} {Gaa n'ihu na ebumnuche ọzọ}
+::msgcat::mcset ig {Contribute extensions: %s} {Nyefee mgbasawanye: %s}
+::msgcat::mcset ig Contribute… {Nyere aka…}
+::msgcat::mcset ig {Contribution branch} {Alaka onyinye}
+::msgcat::mcset ig {Contribution destination} {Ebe onyinye na-aga}
 ::msgcat::mcset ig Copy Detuo
 ::msgcat::mcset ig {Copy TOML} {Detuo TOML}
+::msgcat::mcset ig {Copy a bundled extension into your user plugin directory before preparing a contribution.} {Detuo mgbasawanye e buru ọnụ n'ime ndekọ plugin onye ọrụ gị tupu ịkwadebe onyinye.}
 ::msgcat::mcset ig {Copy message} {Detuo ozi}
 ::msgcat::mcset ig {Copy name} {Detuo aha}
 ::msgcat::mcset ig {Copy nick} {Detuo nick}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset ig {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {Enweghị ike ịchọpụta ihe akpaghị aka. Usoro nhazi onye na-eweta ọrụ ka na-arụ; wube site na CLI na igwe e kwuru ma ọ dị mkpa.}
 ::msgcat::mcset ig {Could not join: %s} {Enweghị ike ịbanye: %s}
 ::msgcat::mcset ig {Could not list the models (%s) — type the model's name.} {Enweghị ike ịdepụta model (%s) — dee aha model ahụ.}
+::msgcat::mcset ig {Create a PR in} {Mepụta PR na}
+::msgcat::mcset ig {Create extension} {Mepụta mgbasawanye}
 ::msgcat::mcset ig {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Mepụta bot ahụ site na @BotFather, wee mado tokin ya n'okpuru: ọ na-aba n'igbe nchekwa ezoro ezo, ọ dịghị mgbe ọ na-aba na config.toml.}
+::msgcat::mcset ig {Create this extension?} {Mepụta mgbasawanye a?}
+::msgcat::mcset ig {Create this generated extension?} {Mepụta ndọtị emepụtara a?}
+::msgcat::mcset ig {Created and reloaded. Review and test the extension before publishing.} {E mepụtara ma bugharịa ya. Tulee ma nwalee mgbasawanye ahụ tupu ibipụta ya.}
+::msgcat::mcset ig {Created, but reload failed} {E mepụtara ya, ma ịbugharị dara}
 ::msgcat::mcset ig {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Na-emepụta %s/<name>/SKILL.md site na template ma meghee ya. Nkọwa frontmatter bụ nanị akụkụ na-eru na ndepụta prompt, ya mere mee ka ọ kwuo oge a ga-eji ị̀kà ahụ.}
 ::msgcat::mcset ig {Cron history} {Akụkọ Cron}
 ::msgcat::mcset ig {Cron jobs} {Ọrụ cron}
 ::msgcat::mcset ig {Curated — write the first owner entry} {Curated — dee ndekọ onye nwe mbụ}
 ::msgcat::mcset ig Cut Bee
 ::msgcat::mcset ig Decline Jụ
+::msgcat::mcset ig {Dedicated translator} {Onye na-asụgharị raara onwe ya nye}
 ::msgcat::mcset ig {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset ig Default {Nke e debere}
 ::msgcat::mcset ig {Default model} {Model nke e debere}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset ig {Delete user} {Hichapụ onye ọrụ}
 ::msgcat::mcset ig {Delete workspace?} {Hichapụ workspace?}
 ::msgcat::mcset ig Deop {Wepụ op}
+::msgcat::mcset ig {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Kọwaa mgbanwe ahụ. AI nwere ike ịgbanwe ma ọ bụ tinye ọtụtụ faịlụ nke ndọtị a. A na-egosi faịlụ ọ bụla dị ka diff, ọ dịghịkwa ihe a na-ede tupu i kwenye.}
+::msgcat::mcset ig {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Kọwaa mgbanwe ahụ. AI nwere ike ịtụ atụmatụ nnọchi, ma ọ nweghị ike ide ya tupu ị nyochaa ma kwado diff ahụ.}
+::msgcat::mcset ig {Describe the requested extension change first.} {Kọwaa mgbanwe mgbasawanye ị chọrọ mbụ.}
+::msgcat::mcset ig Description Nkọwa
 ::msgcat::mcset ig {Desktop: local core, modules and process plugins} {Desktọpụ: core nke ebe a, modụlụ na plugin usoro}
 ::msgcat::mcset ig Detach Wepụ
+::msgcat::mcset ig {Detach foreground} {Kewaa iwu dị n'ihu}
 ::msgcat::mcset ig Dev {Ntụgharị koodu (Dev)}
 ::msgcat::mcset ig {Dev pane (REPL + LSP)} {Pane Dev (REPL + LSP)}
 ::msgcat::mcset ig {Dev: arm / disarm live patching} {Dev: tinye / kwụsị ntinye ndụ}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset ig Devoice {Wepụ voice}
 ::msgcat::mcset ig {Discard review} {Tụfuo nyocha}
 ::msgcat::mcset ig {Discard your changes to %s?} {Tụfuo mgbanwe gị na %s?}
+::msgcat::mcset ig {Disk: %1$s free of %2$s at %3$s} {Diski: %1$s efu n'ime %2$s na %3$s}
 ::msgcat::mcset ig Done Emechaala
 ::msgcat::mcset ig {Done — config written} {Emechara — edeela config}
 ::msgcat::mcset ig {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Budata ma kwadobe manifest mbipute na ngwugwu host tupu iwube. A chọrọ ubi njirimara ise niile. Gateway na-echekwa ngwugwu echekwara nke onwe; nlele a a wụnyebeghị ihe.}
 ::msgcat::mcset ig {Downloading and verifying the signed release…} {Na-ebudata ma na-ekwadobe mbipute e sonyere aka…}
+::msgcat::mcset ig {Draft this as an extension?} {Mepụta nke a dị ka mgbasawanye?}
 ::msgcat::mcset ig {Drag to scroll; a quick swipe goes further.} {Dọrọ ka ịkpụgharịa; mpịcha ngwa ngwa na-aga n'ihu karị.}
+::msgcat::mcset ig {Drift check failed: %s} {Nyocha ndapụta dara: %s}
+::msgcat::mcset ig {Drift check: %s node(s) differ from this gateway.} {Nyocha ndapụta: node %s dị iche na Gateway a.}
+::msgcat::mcset ig {Drift: built from revision %1$s, this gateway from %2$s} {Ndapụta: ewuru ya site na nsụgharị %1$s, Gateway a site na %2$s}
+::msgcat::mcset ig {Drift: none — same version, revision and replicated config} {Ndapụta: ọ dịghị — otu ụdị, otu nsụgharị na nhazi eṅomiri}
+::msgcat::mcset ig {Drift: not compared — %s} {Ndapụta: atụnyeghị ya — %s}
+::msgcat::mcset ig {Drift: runs version %1$s, this gateway %2$s} {Ndapụta: na-agba ụdị %1$s, Gateway a %2$s}
+::msgcat::mcset ig Drift… Ndapụta…
 ::msgcat::mcset ig {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset ig {ESC %s is not bound} {ESC %s ejikọghị}
 ::msgcat::mcset ig {ESC- … (Meta prefix)} {ESC- … (Meta prefix)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset ig Edit… Dezie…
 ::msgcat::mcset ig {Enable / disable} {Gbanye / gbanyụọ}
 ::msgcat::mcset ig {Enable the Telegram adapter} {Gbalite adapter Telegram}
+::msgcat::mcset ig Endpoint {Ebe njedebe}
 ::msgcat::mcset ig Engine Injin
 ::msgcat::mcset ig Eval→gw Eval→gw
 ::msgcat::mcset ig {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {A na-edebanye mgbanwe ọ bụla na %s. Ịweghachi na-eweghachi ndekọ ahụ dum na commit ahụ — ma na-ese foto nke ọnọdụ dị ugbu a tupu ya, ya mere ọ bụghị ụzọ otu aka.}
 ::msgcat::mcset ig {Every plugin file goes back to that commit. The current state is committed first.} {Faịlụ plugin ọ bụla na-alaghachi na commit ahụ. Edeburu ọnọdụ dị ugbu a ụzọ.}
+::msgcat::mcset ig {Exact commit} {Commit kpọmkwem}
+::msgcat::mcset ig {Exact permission rule} {Iwu ikike kpọmkwem}
+::msgcat::mcset ig {Example: a hook} {Ọmụmaatụ: hook}
+::msgcat::mcset ig {Example: a provider driver} {Ihe atụ: driver onye na-eweta ọrụ}
+::msgcat::mcset ig {Example: a service override wrapping core} {Ọmụmaatụ: mgbaji service na-ekpuchi core}
+::msgcat::mcset ig {Example: a tool} {Ihe atụ: ngwaọrụ}
 ::msgcat::mcset ig {Existing shared container network} {Netwọkị container a kpara ụdọ dị adị}
+::msgcat::mcset ig Explain Kọwaa
+::msgcat::mcset ig {Explain the diagnostics} {Kọwaa nchọpụta ndị ahụ}
 ::msgcat::mcset ig Export… Bupụ…
+::msgcat::mcset ig {Extension API} {API mgbasawanye}
+::msgcat::mcset ig {Extension development} {Mmepe mgbasawanye}
+::msgcat::mcset ig {Extension guide} {Ntuzo mgbasawanye}
+::msgcat::mcset ig {Extension source} {Isi mmalite mgbasawanye}
 ::msgcat::mcset ig {Failover blueprint} {Atụmatụ Failover}
 ::msgcat::mcset ig {Failover blueprint (edit the route chain)} {Atụmatụ Failover (tinye usoro ụzọ)}
 ::msgcat::mcset ig {Failover hook script (what `script` mode runs)} {Edemede Failover hook (ihe `script` mode na-eme)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset ig {Find in transcript} {Chọta na mkparịtaụka}
 ::msgcat::mcset ig {Find in transcript…} {Chọta na mkparịtaụka…}
 ::msgcat::mcset ig {Find references} {Chọta ntụaka}
+::msgcat::mcset ig {Finish rollback} {Mechaa nlọghachi}
 ::msgcat::mcset ig {First run: no config.toml yet.} {Ọsọ mbụ: config.toml adịbeghị.}
+::msgcat::mcset ig {Fix the failed syntax checks before preparing a contribution.} {Dozie nyocha syntax ndị dara tupu ịkwadebe onyinye.}
+::msgcat::mcset ig {Fleet deployment} {Nkesa fleet}
+::msgcat::mcset ig {Fleet deployment runs from a desktop computer; it is not available on Android.} {A na-eme nkesa fleet site na kọmputa desktọpụ; ọ dịghị na Android.}
+::msgcat::mcset ig {Fleet deploy…} {Nkesa fleet…}
+::msgcat::mcset ig {Fleet drift} {Ndapụta fleet}
 ::msgcat::mcset ig {Fold / unfold} {Pịachie / mepee}
 ::msgcat::mcset ig {Forget declaration} {Chefuo nkwupụta}
+::msgcat::mcset ig {Forget node %s?} {Chefuo node %s?}
+::msgcat::mcset ig {Forget node…} {Chefuo node…}
+::msgcat::mcset ig {Forgetting %1$s failed: %2$s} {Ichefu %1$s dara: %2$s}
+::msgcat::mcset ig {Forgot node %s.} {Echefuru node %s.}
+::msgcat::mcset ig {Forgotten fleet-wide (refused until they heartbeat again): %s} {Echefuru ya n'ofe fleet (a na-ajụ ya ruo mgbe ha kụrụ heartbeat ọzọ): %s}
 ::msgcat::mcset ig Fork {Mee alaka}
 ::msgcat::mcset ig {Free space} {Ohere efu}
 ::msgcat::mcset ig {Full source commit SHA} {SHA nke commit isi zuru ezu}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset ig {Gateway image sha256 digest} {Digest sha256 nke image Gateway}
 ::msgcat::mcset ig {Gateway quadlet name} {Aha quadlet Gateway}
 ::msgcat::mcset ig {Gateway status} {Ọnọdụ Gateway}
+::msgcat::mcset ig {Generate with AI…} {Mepụta na AI…}
+::msgcat::mcset ig {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {%s mepụtara ya - o nweghị ihe edere. Nyochaa faịlụ ọ bụla, wee Mepụta ndọtị na-ede kpọmkwem ihe ndị a.}
 ::msgcat::mcset ig {Get a key at %s} {Nweta key na %s}
 ::msgcat::mcset ig {GitHub release URL} {URL mbipute GitHub}
+::msgcat::mcset ig {Give the extension a name and describe what it should do (the purpose), then generate.} {Nye ndọtị aha ma kọwaa ihe ọ ga-eme (ebumnobi ya), wee mepụta.}
 ::msgcat::mcset ig {Give up} Ịhapụ
 ::msgcat::mcset ig Go Gaa
 ::msgcat::mcset ig {Go to definition} {Gaa na nkọwa}
+::msgcat::mcset ig {Gossip failed: %s} {Gossip dara: %s}
+::msgcat::mcset ig {Gossip now} {Gossip ugbu a}
+::msgcat::mcset ig {Gossip with %1$s: %2$s} {Gossip na %1$s: %2$s}
+::msgcat::mcset ig {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {Gossip: %1$s n'ime ibe %2$s zara (%3$s).}
 ::msgcat::mcset ig Grant Nye
 ::msgcat::mcset ig {Grant access} {Nye nnweta}
+::msgcat::mcset ig {Granted at} {Enyere na}
 ::msgcat::mcset ig Grant… Nye…
 ::msgcat::mcset ig {Guards — what the harness stops, and where it stands now} {Guards — ihe harness na-egbochi, na ebe ọ dị ugbu a}
 ::msgcat::mcset ig {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handlers na-agba n'usoro egosiri; nke mbụ weghachitere uru na-adịghị efu na-emeri. Ịgbanyụ otu ọkụ na-ahapụ ya ma ọ naghị ewepụ aha ya, a na-edobekwa nhọrọ ahụ na config.toml ka plugin reload ghara ịlaghachi gbanwuo ya na nzuzo.}
+::msgcat::mcset ig Health Ahụike
+::msgcat::mcset ig {Health alerts (%s):} {Ọkwa ahụike (%s):}
+::msgcat::mcset ig Heartbeat {Ịkụ obi}
+::msgcat::mcset ig {Heartbeat age: %s s} {Oge kemgbe heartbeat: %s s}
 ::msgcat::mcset ig Help Enyemaka
 ::msgcat::mcset ig {Help & keys} {Enyemaka na igodo}
 ::msgcat::mcset ig {Hide right panes} {Zo pane ndị dị n'aka nri}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset ig {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {Jide, wee dọrọ tupu i welie: nhọrọ ahụ na-eso mkpịsị aka gị otu okwu n'otu oge, na-akpụgharị n'akụkụ elu ma ọ bụ ala.}
 ::msgcat::mcset ig Hooks Hooks
 ::msgcat::mcset ig {Hooks (what plugins run on)} {Hooks (ihe plugins na-agba)}
+::msgcat::mcset ig Host Igwe
 ::msgcat::mcset ig {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {Ogologo oge ijide na-ewe bụ igbu oge metụ-ma-jide nke Android, n'ime ntọala nnweta ya.}
 ::msgcat::mcset ig {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {E chekwara KEK na igodo ntụgharị PLC n'èzí; kwe ka TLS na activation handoff e nyochachara gaa n'ihu}
 ::msgcat::mcset ig {I-search backward: type to search, C-r for previous} {I-search azụ: dee ka ịchọ, C-r maka nke gara aga}
 ::msgcat::mcset ig {I-search: type to search, C-s for next} {I-search: dee ka ịchọ, C-s maka nke ọzọ}
+::msgcat::mcset ig {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {Nrụgide IO: %1$s%% / %2$s%% / %3$s%% nke oge ọrụ ụfọdụ chere (10 s / 1 min / 5 min)}
 ::msgcat::mcset ig IRC IRC
 ::msgcat::mcset ig {IRC buffers} {IRC buffers}
 ::msgcat::mcset ig {IRC composer} {IRC composer}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset ig {IRC split: %s} {Nkewa IRC: %s}
 ::msgcat::mcset ig {IRC transcript} {Ndekọ IRC}
 ::msgcat::mcset ig {IRC — nothing to show} {IRC — ọ dịghị ihe egosiri}
+::msgcat::mcset ig {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {Na-aga: ntụgharị %1$s %2$s, ọrụ ndabere %3$s %4$s}
 ::msgcat::mcset ig {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {Wube %s n'ụlọ ahịa ihe akpaghị aka e jikọtara ya? A gosiri manifest ya; nke a amaliteghị ọrụ.}
 ::msgcat::mcset ig {Install component} {Wube ihe akpaghị aka}
 ::msgcat::mcset ig {Install components…} {Wube ihe akpaghị aka…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset ig Instances Instances
 ::msgcat::mcset ig {It becomes the current content, as a new revision — so the restore can be undone too.} {Ọ ga-abụ ọdịnaya ugbu a, dị ka nsụgharị ọhụrụ — ya mere enwere ike ịkagbu iweghachi ahụ kwa.}
 ::msgcat::mcset ig {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Ọ na-aba n'igbe nchekwa ezoro ezo na igwe a. Onye nnọchite anya adịghị ahụ ya: ọ nwere ike iji ya naanị dị ka $%s n'iwu, ma ọ bụ zigara ya ndị nnabata enyere ikike.}
+::msgcat::mcset ig {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {A na-ewepụ ya na registry cluster n'ofe fleet: mgbanwe gossip na-esote na-agwa ibe 0.2.0 ọ bụla ka ọ hapụ ya kwa, ọ dịghịkwa onye n'ime ha na-ejikọta ya ọzọ. Ibe tọrọ 0.2.0 n'afọ na-aga n'ihu na-edepụta ya. Ọ bụrụ na igwe ahụ lọtaghachi ma kụọ heartbeat, a debanyere ya ọzọ. A na-emetụghị ibe sync na instances echekwara.}
 ::msgcat::mcset ig {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Ọ na-apụ na ebe nchekwa ugbu a. Akụkọ ya na-edobe nsụgharị ọ bụla, Akụkọ… nwekwara ike iweghachi ya.}
 ::msgcat::mcset ig Join Banye
 ::msgcat::mcset ig {Join a pool} {Banye n'otu igwe}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset ig {Language (i18n)} {Asụsụ (i18n)}
 ::msgcat::mcset ig Language… Asụsụ…
 ::msgcat::mcset ig {Last active} {Ọrụ ikpeazụ}
+::msgcat::mcset ig {Last probe: %1$s — %2$s} {Nnyocha ikpeazụ: %1$s — %2$s}
 ::msgcat::mcset ig {Leave %s?} {Pụọ na %s?}
 ::msgcat::mcset ig Leave… Pụọ…
 ::msgcat::mcset ig {Legacy open — no [acl] section} {Legacy mepere emepe — enweghị akụkụ [acl]}
 ::msgcat::mcset ig {Let %s:} {Kwe ka %s:}
 ::msgcat::mcset ig {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {Mkpụrụedemede, ọnụọgụ, - na _. Ọ na-emepụta plugin.toml na plugin.tcl nke na-edebanye aha post_llm_call hook, ma meghee ya na pane Dev.}
+::msgcat::mcset ig Level Ọkwa
 ::msgcat::mcset ig {Lift lockdown} {Wepụ mkpọchi}
+::msgcat::mcset ig Lines Ahịrị
 ::msgcat::mcset ig {List the provider's models} {Depụta model nke onye na-eweta ọrụ}
+::msgcat::mcset ig Load Ibu
 ::msgcat::mcset ig {Load more} {Bulite ọzọ}
 ::msgcat::mcset ig {Loading discovered components…} {Na-ebubo ihe akpaghị aka achọpụtara…}
 ::msgcat::mcset ig {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {E lelekarịala ngwugwu ebe a. Họrọ Wube ihe akpaghị aka ahọrọ iji kwado iwube; ewubeghị ihe.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset ig {Lock down} Kpọchie
 ::msgcat::mcset ig Log Edetu
 ::msgcat::mcset ig {Log (engine + status)} {Edetu (engine + ọnọdụ)}
+::msgcat::mcset ig {Log of %s} {Ndekọ nke %s}
+::msgcat::mcset ig Logs… Ndekọ…
 ::msgcat::mcset ig {M-g- (g: goto line)} {M-g- (g: gaa na ahịrị)}
 ::msgcat::mcset ig {M-p/M-n history · Tab complete} {M-p/M-n akụkọ ihe mere eme · Tab mezue}
 ::msgcat::mcset ig {MCP server list} {Ndepụta MCP server}
 ::msgcat::mcset ig {MCP servers (from config.toml)} {MCP servers (site na config.toml)}
 ::msgcat::mcset ig {Make default} {Mee ka ọ bụrụ nke e debere}
 ::msgcat::mcset ig {Make default (config.toml)} {Mee ndabara (config.toml)}
+::msgcat::mcset ig {Manage extensions} {Jikwaa mgbasawanye}
 ::msgcat::mcset ig {Manifest SHA-256} {SHA-256 nke manifest}
 ::msgcat::mcset ig {Mark read} {Kaa akara dị ka agụọla}
 ::msgcat::mcset ig {Mechanisms (what the engine does on its own)} {Usoro (ihe engine na-eme n'onwe ya)}
 ::msgcat::mcset ig {Mechanisms — what the engine does on its own, and how to stop it} {Usoro — ihe engine na-eme n'onwe ya, na otu esi akwụsị ya}
 ::msgcat::mcset ig Memory {Ebe nchekwa}
 ::msgcat::mcset ig {Memory history} {Akụkọ ebe nchekwa}
+::msgcat::mcset ig {Memory: %1$s available of %2$s (%3$s%% used)} {Ebe nchekwa: %1$s dị n'ime %2$s (%3$s%% ejiri)}
+::msgcat::mcset ig {Merge the received %s into this node?} {Jikọọ %s enwetara na node a?}
 ::msgcat::mcset ig Messages Ozi
+::msgcat::mcset ig Metrics Metrik
+::msgcat::mcset ig {Metrics (asked %s):} {Metrik (ajụrụ %s):}
+::msgcat::mcset ig {Metrics of %1$s failed: %2$s} {Metrik nke %1$s dara: %2$s}
+::msgcat::mcset ig {Metrics of %s received.} {Anatala metrik nke %s.}
+::msgcat::mcset ig {Metrics: not asked yet — use Metrics.} {Metrik: ajụbeghị ya — jiri Metrik.}
 ::msgcat::mcset ig Model Model
 ::msgcat::mcset ig {Model for this session} {Model maka nnọkọ a}
 ::msgcat::mcset ig {Models & settings} {Models & ntọala}
+::msgcat::mcset ig Monitors {Ndị nlele}
+::msgcat::mcset ig Name Aha
+::msgcat::mcset ig {Need an account? Optional sign-up links (open in your browser):} {Chọrọ akaụntụ? Njikọ ịdebanye aha nhọrọ (emepe n'ọwa gị):}
 ::msgcat::mcset ig Network Netwọk
 ::msgcat::mcset ig {New alias} {Alias ọhụrụ}
+::msgcat::mcset ig {New branch name} {Aha alaka ọhụrụ}
 ::msgcat::mcset ig {New cron job} {Ọrụ cron ọhụrụ}
+::msgcat::mcset ig {New extension} {Mgbasawanye ọhụrụ}
 ::msgcat::mcset ig {New memory file} {Faịlụ ebe nchekwa ọhụrụ}
 ::msgcat::mcset ig {New plugin} {Plugin ọhụrụ}
 ::msgcat::mcset ig {New session} {Nzọukọ ọhụrụ}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset ig Next Ọzọ
 ::msgcat::mcset ig Nickname {Aha otutu}
 ::msgcat::mcset ig {NixOS: emit a module snippet; do not edit host declarations} {NixOS: mee snippet modụlụ; agaghị edezi okwu host}
+::msgcat::mcset ig {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Enweghị ebumnuche omelu ndụ SSH a haziri maka node a. Tinye instance n'onwe gị iji deploi ma ọ bụ malitegharịa ya.}
+::msgcat::mcset ig {No additional push happens.} {A naghị eme push ọzọ.}
 ::msgcat::mcset ig {No apps yet. Ask the agent to make one: “make me an app that…”} {Enweghị ngwa ọ bụla ugbu a. Rịọ onye nnọchite anya ka o mee otu: “meere m ngwa nke…”}
 ::msgcat::mcset ig {No code in the picture. Hold the phone closer, straight on, and scan again.} {Enweghị koodu na foto ahụ. Jide ekwentị nso, kwụ ọtọ, ma nyochaa ọzọ.}
 ::msgcat::mcset ig {No configuration snapshot will be restored.} {A ga-eweghachịghị foto nhazi ọ bụla.}
+::msgcat::mcset ig {No configured sync peer for this node.} {Ọ dịghị peer sync ahaziri maka node a.}
+::msgcat::mcset ig {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Enweghị ngwa ntụgharị pụrụ iche ahaziri. Jiri Hazie ngwa ntụgharị họrọ onye na-eweta ọrụ, model na asụsụ ọ ga-atụgharị n'ime ya.}
+::msgcat::mcset ig {No deployment started.} {Ọ dịghị nkesa malitere.}
+::msgcat::mcset ig {No diagnostics reported by the current LSP document.} {Akwụkwọ LSP ugbu a akọwaghị diagnostics ọ bụla.}
+::msgcat::mcset ig {No explicitly configured desktop gateway is bound to this node.} {Enweghị gateway desktọpụ ahaziri n'ụzọ doro anya ejikọrọ na node a.}
+::msgcat::mcset ig {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {Enweghị gateway ahaziri n'ụzọ doro anya ejikọrọ na node a. Tinye gateway ahụ mbụ; anaghị eji endpoint registry ya dị ka URL desktọpụ.}
+::msgcat::mcset ig {No file is open. Ask a design question, or open an extension file for help with its code.} {Ọ dịghị faịlụ mepere emepe. Jụọ ajụjụ imepụta, ma ọ bụ mepee faịlụ ndọtị maka enyemaka na koodu ya.}
+::msgcat::mcset ig {No files have been written. Review the exact manifest and source, then confirm creation.} {E de beghị faịlụ ọ bụla. Tulee manifest na isi mmalite kpọmkwem, wee kwado ịmepụta ya.}
 ::msgcat::mcset ig {No modules or process plugins were discovered. The provider setup steps can still continue.} {A chọpụtaghị modul ma ọ bụ plugin usoro. Usoro nhazi onye na-eweta ọrụ nwere ike ịga n'ihu.}
+::msgcat::mcset ig {No other registered node to compare with.} {Ọ dịghị node ọzọ edebanyere iji tụnyere ya.}
 ::msgcat::mcset ig {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {Profaịlụ ọ bụla amaliteghị ọrụ ma ọ bụ arụghị script chọrọ ikike onye nchịkwa site na wizard a. Lelekarịa atụmatụ na handoff ọ bụla tupu ịgba ya.}
+::msgcat::mcset ig {No proposal has been requested. Nothing will be written automatically.} {A rịọbeghị atụmatụ ọ bụla. A gaghị ede ihe ọ bụla na-akpaghị aka.}
+::msgcat::mcset ig {No proposal. Nothing was written.} {Ọ dịghị atụmatụ. O nweghị ihe edere.}
 ::msgcat::mcset ig {No routes configured.} {Enweghị routes ahaziri.}
 ::msgcat::mcset ig {No session selected — pick one in the sidebar or start a new one} {Enweghị nnọkọ ahọrọ — họrọ otu na sidebar ma ọ bụ malite ọhụrụ}
 ::msgcat::mcset ig {No swap target yet: pick a language and press “Set as swap target”.} {Enweghị asụsụ ịgbanwe ka: họrọ asụsụ wee pịa “Mee asụsụ ịgbanwe”.}
 ::msgcat::mcset ig {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {Enweghị akụkụ {[}acl{]} na config.toml: onye ọ bụla zitere nke ruru gateway ka a na-ewere dị ka onye nwe, omume otu onye ọrụ tupu ACL. Inye na iwepụ ikike ka na-arụ ọrụ ma na-amalite ịdị irè ozugbo {[}acl{]} dị.}
+::msgcat::mcset ig {Node id} {Akara node}
+::msgcat::mcset ig {Non-evaluating syntax checks} {Nyocha syntax na-adịghị agba koodu}
+::msgcat::mcset ig {Not available: %s} {Adịghị: %s}
+::msgcat::mcset ig Note Ndetu
 ::msgcat::mcset ig {Note for the agent (optional):} {Ndetu maka onye nnọchite anya (nhọrọ):}
+::msgcat::mcset ig {Nothing selected.} {Ọ dịghị ihe ahọpụtara.}
 ::msgcat::mcset ig {Nothing typed yet.} {Ọ dịbeghị ihe e dere.}
+::msgcat::mcset ig {Nothing was generated or written.} {O nweghị ihe emepụtara ma ọ bụ edere.}
+::msgcat::mcset ig {Nothing was prepared: the chosen repository already has these paths.} {Ọ dịghị ihe akwadoro: repository ahọpụtara nwere ụzọ ndị a na-enwe.}
 ::msgcat::mcset ig Notifications Ọkwa
 ::msgcat::mcset ig OK OK
 ::msgcat::mcset ig Off Gbanyụọ
 ::msgcat::mcset ig On Gbanye
+::msgcat::mcset ig {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {Naanị buffer mgbasawanye e tụlere ka a ga-anọchi. Faịlụ ahụ ka nwere nchebe megide mgbanwe e mere mgbe nlele anya a gasịrị. A naghị eme commit, push ma ọ bụ PR.}
+::msgcat::mcset ig {Only this new branch is committed. Your ambient git identity is used.} {Naanị alaka ọhụrụ a ka e mere commit. A na-eji njirimara git gị dị ugbu a.}
 ::msgcat::mcset ig Op {Nye op}
 ::msgcat::mcset ig Open Meghee
+::msgcat::mcset ig {Open PR…} {Mepee PR…}
 ::msgcat::mcset ig {Open a window} {Meghee window}
 ::msgcat::mcset ig {Open in Dev} {Meghee na Dev}
 ::msgcat::mcset ig {Open in browser} {Meghee na browser}
 ::msgcat::mcset ig {Open plugin} {Meghee plugin}
 ::msgcat::mcset ig {Open terminal} {Meghee terminal}
+::msgcat::mcset ig {Open this pull request?} {Mepee pull request a?}
 ::msgcat::mcset ig {Open veles in Android's settings} {Mepee veles na ntọala Android}
 ::msgcat::mcset ig {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {Nhọrọ: netwọk IRC ị ga-abanye. Depụta channel iche site na oghere ma ọ bụ mkpụrụokwu nkewa; IRC_CHANNELS dị na .env, mgbe edobere ya, na-edochi ndepụta a.}
 ::msgcat::mcset ig {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {Nhọrọ sitere na manifest ihe akpaghị aka ahọrọ. Ubi na-ekike nzuzo nọgidere na usoro nhazi/igbe nchekwa. Ubi efu na-ahapụ nhọrọ ahụ agbanweghị.}
 ::msgcat::mcset ig {Or paste a ticket signed on another device} {Ma ọ bụ raputa tiketi e binyere aka na ya na ngwaọrụ ọzọ}
 ::msgcat::mcset ig {Or type an answer:} {Ma ọ bụ dee azịza:}
+::msgcat::mcset ig Origin Origin
 ::msgcat::mcset ig Other… Ọzọ…
 ::msgcat::mcset ig Outline Ndepụta
+::msgcat::mcset ig Output Ndapụta
 ::msgcat::mcset ig {Override for THIS session (leave blank to inherit the default)} {Ihe nnọchi maka NNỌKỌ A (hapụ oghere ka ị nweta nke e debere)}
 ::msgcat::mcset ig {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {Njirimara onye nwe (telegram:123456, irc:account, ma ọ bụ mask nick!user@host)}
 ::msgcat::mcset ig {PDS and handle domain} {PDS na handle domain}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset ig {Pause scheduler} {Kwụsị onye nhazi}
 ::msgcat::mcset ig {Peek (C-c C-p)} {Peek (C-c C-p)}
 ::msgcat::mcset ig {Peek definition} {Lee nkọwa}
+::msgcat::mcset ig {Permission grants} {Ikike enyere}
+::msgcat::mcset ig {Permission grants…} {Ikike enyere…}
 ::msgcat::mcset ig Phone Ekwentị
 ::msgcat::mcset ig {Phone: permissions, battery, storage} {Ekwentị: ikike, batrị, nchekwa}
 ::msgcat::mcset ig {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Ekwentị %s mere na-akwụsịkwa ngwa n'onwe ha. Na ntọala ngwa veles, kwe ka ọ malite n'onwe ya ma rụọ ọrụ n'azụ.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset ig Port Port
 ::msgcat::mcset ig {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {Prefix chords (C-x, M-o) na-egosi which-key popup mgbe ha nwetara ya.}
 ::msgcat::mcset ig {Prepare an own vlpds PDS through the signed CLI handoff} {Mee PDS nke gị site na vlpds site na handoff CLI e kwenyere}
+::msgcat::mcset ig {Prepare branch…} {Kwadebe alaka…}
+::msgcat::mcset ig {Prepare this branch and commit?} {Kwadebe alaka a na commit?}
 ::msgcat::mcset ig Preview Nlele
+::msgcat::mcset ig {Preview change set} {Lelee usoro mgbanwe}
+::msgcat::mcset ig {Preview files} {Lee faịlụ anya}
 ::msgcat::mcset ig {Preview here} {Nlele ebe a}
 ::msgcat::mcset ig {Preview pane} {Pane nlele}
+::msgcat::mcset ig {Preview proposal} {Lee atụmatụ anya}
+::msgcat::mcset ig {Preview the changed name or language before creating it.} {Lee aha ma ọ bụ asụsụ gbanwere anya tupu ịmepụta ya.}
+::msgcat::mcset ig Probe Nyochaa
+::msgcat::mcset ig {Probe of %1$s failed: %2$s} {Nnyocha %1$s dara: %2$s}
 ::msgcat::mcset ig {Profile result} {Nsonaazụ profaịlụ}
 ::msgcat::mcset ig {Promote into config.toml} {Bulite n'ime config.toml}
 ::msgcat::mcset ig Promote… Bulite…
 ::msgcat::mcset ig Provider {Onye na-enye}
+::msgcat::mcset ig {Provider driver (plugin wire only)} {Ọkwọ onye na-enye (plugin wire naanị)}
 ::msgcat::mcset ig {Provider entry name} {Aha ndekọ provider}
 ::msgcat::mcset ig {Provider for this session} {Provider maka nnọkọ a}
 ::msgcat::mcset ig Providers Providers
 ::msgcat::mcset ig {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {Providers bụ ndepụta nke tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Gụọ site n'usoro egosiri n'okpuru.}
 ::msgcat::mcset ig {Public HTTPS URL} {URL HTTPS ọha}
+::msgcat::mcset ig {Pull request base} {Ntọala pull request}
+::msgcat::mcset ig {Pull request created} {E mepụtara pull request}
+::msgcat::mcset ig {Pull request description} {Nkọwa pull request}
+::msgcat::mcset ig {Pull request opened.} {E meghere pull request.}
+::msgcat::mcset ig {Pull request repository} {Repository pull request}
+::msgcat::mcset ig {Pull request title} {Aha pull request}
 ::msgcat::mcset ig {Purge + delete files} {Sachapụ + hichapụ faịlụ}
 ::msgcat::mcset ig {Purge container} {Sachapụ container}
+::msgcat::mcset ig Purpose Ebumnuche
+::msgcat::mcset ig Push Push
+::msgcat::mcset ig {Push branch…} {Mee push alaka…}
+::msgcat::mcset ig {Push complete. No pull request has been opened.} {Push emechara. E mepebeghị pull request ọ bụla.}
+::msgcat::mcset ig {Push this branch?} {Mee push alaka a?}
+::msgcat::mcset ig {Push to %s:} {Kwanye na %s:}
 ::msgcat::mcset ig Question Ajụjụ
 ::msgcat::mcset ig Questions Ajụjụ
 ::msgcat::mcset ig Quit Pụọ
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset ig {Reading notifications, for triggers} {Ịgụ ọkwa, maka ihe na-akpalite}
 ::msgcat::mcset ig Reasoning Uche
 ::msgcat::mcset ig {Reasoning effort} {Mgbali echiche}
+::msgcat::mcset ig {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {Enwetara, na-eche itinye: ndobe %1$s · ebe nchekwa %2$s · nhazi %3$s · igbe nchekwa %4$s}
+::msgcat::mcset ig {Recommended checks} {Nyocha akwadoro}
 ::msgcat::mcset ig {Refetch this transcript from the store} {Wetagharịa okwu a site na ụlọ ahịa}
 ::msgcat::mcset ig Refresh Megharịa
 ::msgcat::mcset ig {Refresh preview} {Emelite nlele}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset ig {Rename symbol} {Degharịa aha akara}
 ::msgcat::mcset ig Rename… {Degharịa aha…}
 ::msgcat::mcset ig Rendered Emepụtara
+::msgcat::mcset ig {Replace existing repository files?} {Dochie faịlụ repository dị adị?}
+::msgcat::mcset ig {Replace them in the new branch? Nothing else in the repository changes.} {Dochie ha na alaka ọhụrụ ahụ? Ọ dịghị ihe ọzọ na repository na-agbanwe.}
 ::msgcat::mcset ig Repository Repository
 ::msgcat::mcset ig {Repository (owner/name)} {Repository (onye nwe/aha)}
+::msgcat::mcset ig {Repository directory} {Ndekọ repository}
+::msgcat::mcset ig {Repository paths} {Ụzọ repository}
+::msgcat::mcset ig {Request a new preview before trying again.} {Rịọ nlele anya ọhụrụ tupu ịnwaghachi.}
 ::msgcat::mcset ig {Reset to default} {Laghachi na nke mbụ}
 ::msgcat::mcset ig {Reset to template} {Weghachite na template}
 ::msgcat::mcset ig Restart Malitegharịa
+::msgcat::mcset ig {Restart + verify canary} {Malitegharịa + nyochaa canary}
 ::msgcat::mcset ig {Restore hidden windows} {Weghachi windo ezoro nzọ}
 ::msgcat::mcset ig {Restore plugins to %s?} {Weghachite plugins na %s?}
 ::msgcat::mcset ig {Restore revision r%1$s of %2$s?} {Weghachi nsụgharị r%1$s nke %2$s?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset ig {Restore this commit} {Weghachite commit a}
 ::msgcat::mcset ig {Restore this revision} {Weghachi nsụgharị a}
 ::msgcat::mcset ig {Resume scheduler} {Gaa n'ihu onye nhazi}
+::msgcat::mcset ig {Resume unfinished operation} {Gaa n'ihu ọrụ akwụsịbeghị}
 ::msgcat::mcset ig Revert Tụgharịa
 ::msgcat::mcset ig {Revert %s to HEAD? Uncommitted changes in this file are lost.} {Revert %s na HEAD? Mgbanwe ndị echekwabeghị na faịlụ a aga efu.}
 ::msgcat::mcset ig Revert… Tụgharịa…
 ::msgcat::mcset ig Review Nyocha
 ::msgcat::mcset ig {Review (git) pane} {Pane nyocha (git)}
+::msgcat::mcset ig {Review deployment} {Nyochaa nkesa}
+::msgcat::mcset ig {Review extension contribution} {Tulee onyinye mgbasawanye}
 ::msgcat::mcset ig {Review managed local bundle…} {Lelekarịa ngwugwu ebe a e nlekọtara…}
 ::msgcat::mcset ig {Review rollback} {Lelekarịa ndọghachi azụ}
+::msgcat::mcset ig {Review selected files} {Tulee faịlụ ahọrọ}
 ::msgcat::mcset ig {Review the component options on the summary screen before applying.} {Lelekarịa nhọrọ ihe akpaghị aka na ihuenyo nchikota tupu ịtinye.}
 ::msgcat::mcset ig {Review the component preview before applying. No component configuration has been written.} {Lelekarịa nlele ihe akpaghị aka tupu ịtinye. A debeeghị nhazi ihe akpaghị aka.}
+::msgcat::mcset ig {Review the selected files and remove credential findings before preparing.} {Tulee faịlụ ahọrọ ma wepụ njirimara nzuzo a chọpụtara tupu ịkwadebe.}
 ::msgcat::mcset ig {Reviewed core bundle in the managed install-sources directory} {Bundle core e nyocha n'ime direktọrị install-sources a na-achịkwa}
+::msgcat::mcset ig {Reviewed fleet deployment} {Nkesa fleet enyochara}
 ::msgcat::mcset ig {Reviewed local bundle} {Ngwugwu ebe a a lelekarịa}
 ::msgcat::mcset ig {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {E wubeela ngwugwu ebe a a lelekarịa. A kwaghị ya nkwadobe nbudata e sonyeere ọnụ. A chọrọ imalitegharịa tupu eji core ọhụrụ ahụ.}
 ::msgcat::mcset ig Revision Nsụgharị
 ::msgcat::mcset ig Revoke {Wepụ ikike}
+::msgcat::mcset ig {Revoke selected} {Wepụ nke ahọpụtara}
 ::msgcat::mcset ig Roles Ọrụ
 ::msgcat::mcset ig {Roll back %1$s from %2$s to %3$s?} {Weghachi azụ %1$s site na %2$s gaa na %3$s?}
+::msgcat::mcset ig {Roll back selected target} {Weghachi ebumnuche ahọpụtara}
 ::msgcat::mcset ig {Rollback completed. Reload the component or restart as requested by the report.} {Ndọghachi azụ emechara. Bugharịa ihe akpaghị aka ma ọ bụ malitegharịa dị ka akụkọ ahụ si rịọ.}
 ::msgcat::mcset ig {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {E lelekarịala ndọghachi azụ. Họrọ Wube ihe akpaghị aka ahọrọ iji kwado iweghachi; eweghachịghị ihe.}
 ::msgcat::mcset ig Run Gbaa
 ::msgcat::mcset ig {Run the wizard again} {Gbaa wizard ọzọ}
 ::msgcat::mcset ig {Running in the background} {Ịrụ ọrụ n'azụ}
-::msgcat::mcset ig {Running tasks} {Ọrụ na-agba}
-::msgcat::mcset ig {Running tasks (subagents, shells, monitors)} {Ọrụ na-agba ọsọ (subagents, shells, monitors)}
 ::msgcat::mcset ig {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {Grants na ndị ọrụ runtime bi na store, ma ịtụgharị store na-ewepụ ha. Promote na-agbakwụnye ndị store kpebiri na config.toml — a na-edobe nkọwa na usoro igodo nke faịlụ, e dee backup n'akụkụ ya, a na-ewepụ mkpụrụ store — ọ na-ajụ karịa ịkọ nkọ ebe faịlụ enweelarị echiche.}
 ::msgcat::mcset ig {S3 HTTPS endpoint} {S3 HTTPS endpoint}
 ::msgcat::mcset ig {S3 bucket} {S3 bucket}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset ig {Save as default} {Chekwa ka ọ bụrụ nke e debere}
 ::msgcat::mcset ig {Save attachment as} {Chekwaa nbikọ dị ka}
 ::msgcat::mcset ig {Save globally} {Chekwa ebe niile}
+::msgcat::mcset ig {Save or revert the open buffer before applying a change set.} {Chekwa ma ọ bụ weghachi buffer mepere emepe tupu itinye usoro mgbanwe.}
 ::msgcat::mcset ig Scan Nyochaa
 ::msgcat::mcset ig {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {Nyochaa koodu veles site na igwe kpọrọ ekwentị a. Ọ bụrụ na o gosiri koodu WireGuard mbụ, buru ụzọ nyochaa nke ahụ site na ngwa WireGuard.}
 ::msgcat::mcset ig {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {Schedule: oge dịpụrụ iche ("30m", "every 2h"), usoro cron ("0 9 * * 1"), ma ọ bụ ISO timestamp maka otu ugboro. Ahịrị dị n'elu na-egosi ihe engine na-agụ ya dị ka ya. Deliver: "local" na-edobe mmepụta na log — nanị ezi ntọala site na desktop, nke na-enweghị ikpo okwu chat n'azụ ya — ma ọ bụ "platform:chat_id". Wake session: hapụ oghere ka ọ gbaa na nnọkọ ọhụrụ; dee session id (ma ọ bụ prefix pụrụ iche) iji weghachite nnọkọ ahụ na akụkọ ya zuru ezu — nnọkọ ji ọrụ n'aka na-anara prompt na njedebe oge ọzọ.}
+::msgcat::mcset ig Scope Oke
 ::msgcat::mcset ig {Scroll to end} {Pịgharịa ruo njedebe}
 ::msgcat::mcset ig {Search commands and sessions…} {Chọọ iwu na nnọkọ…}
 ::msgcat::mcset ig {Search message text} {Chọọ n'ederede ozi}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset ig Section Ngalaba
 ::msgcat::mcset ig {Select a component first. No component options will be changed if you skip this step.} {Họrọ ihe akpaghị aka nke mbụ. Agaghị agbanwe nhọrọ ihe akpaghị aka ma ị gafe nke a.}
 ::msgcat::mcset ig {Select all} {Họrọ ihe niile}
+::msgcat::mcset ig {Select all extensions} {Họrọ mgbasawanye niile}
+::msgcat::mcset ig {Select at least one source file.} {Họrọ opekata mpe otu faịlụ koodu.}
+::msgcat::mcset ig {Select none} {Họrọ ọ dịghị}
+::msgcat::mcset ig {Select text to translate first.} {Họrọ ederede ịsụgharị tupu.}
+::msgcat::mcset ig {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {Họrọ mgbasawanye na faịlụ ị ga-enyefe. Ha na-abanye n'otu alaka na otu pull request, mgbasawanye nke ọ bụla n'ime ndekọ nke ya. Nyochaa, gbaa checks na-anaghị atụle ihe, wee kwado alaka dị iche na commit. Ịkwanye na imepụta pull request bụ omume nkwenye dị iche iche.}
 ::msgcat::mcset ig Send Ziga
+::msgcat::mcset ig {Send %s to the peer?} {Zitere peer %s?}
 ::msgcat::mcset ig {Send a %d-line message to the channel?} {Ziga ozi nwere ahịrị %d na ọwa?}
 ::msgcat::mcset ig {Send raw line to the server? (%s)} {Ziga ahịrị raw na sava? (%s)}
 ::msgcat::mcset ig {Server (empty = no IRC)} {Sava (efu = enweghị IRC)}
 ::msgcat::mcset ig {Server: gateway configuration and a reviewed user unit} {Sava: nhazi Gateway na unit onye ọrụ e nyocha}
 ::msgcat::mcset ig {Server: install a user unit and prepare the separate linger handoff} {Sava: wụnye unit onye ọrụ ma kwadebe handoff linger pụrụ iche}
 ::msgcat::mcset ig {Server: use a system service and prepare a privileged CLI request} {Sava: jiri ọrụ sistemụ ma kwadebe arịrịọ CLI chọrọ ikike onye nchịkwa}
+::msgcat::mcset ig Session Nnọkọ
 ::msgcat::mcset ig {Session id} {ID session}
 ::msgcat::mcset ig {Session id…} {ID session…}
 ::msgcat::mcset ig Sessions Nnọkọ
 ::msgcat::mcset ig {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Sessions dị ugbu a e nyere alias a na-ejigide ụzọ ha si dozie; ndị ọhụrụ agaghị achọta aha ahụ.}
+::msgcat::mcset ig {Sessions served} {Nnọkọ ndị a rụrụ ọrụ}
 ::msgcat::mcset ig Set Tọọ
 ::msgcat::mcset ig {Set [model] provider/default in config.toml.} {Tọọ [model] provider/default na config.toml.}
 ::msgcat::mcset ig {Set as swap target} {Mee asụsụ ịgbanwe}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset ig {Setup — summary} {Nhazi — nchịkọta}
 ::msgcat::mcset ig {Setup — welcome} {Nhazi — nnabata}
 ::msgcat::mcset ig {Shared container network} {Netwọkị container a kpara ụdọ}
+::msgcat::mcset ig Shells {Okpokoro iwu}
+::msgcat::mcset ig {Shells and monitors} {Okpokoro iwu na ndị nlele}
+::msgcat::mcset ig {Shells and monitors (subagents, shells, monitors)} {Okpokoro iwu na ndị nlele (ndị nnọchite anya nta, okpokoro iwu, ndị nlele)}
 ::msgcat::mcset ig {Show diff} {Gosi ndịiche}
 ::msgcat::mcset ig {Show every key} {Gosi igbe igodo niile}
 ::msgcat::mcset ig Sign {Binye aka}
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset ig Solved {Edoziziri ya}
 ::msgcat::mcset ig Source Isi
 ::msgcat::mcset ig {Source commit} {Commit isi}
+::msgcat::mcset ig {Source text} {Ederede isi mmalite}
 ::msgcat::mcset ig {Source→app (C-c C-c)} {Isi→app (C-c C-c)}
 ::msgcat::mcset ig Stage Ọkwa
+::msgcat::mcset ig {Stage canary} {Kwado canary}
+::msgcat::mcset ig Stale {Adịghị ọhụrụ}
+::msgcat::mcset ig {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {Ikike na-adịgide adịgụ na-enye ohere oku ngwaọrụ ọzọ na-enweghị ajụjụ ọzọ. Ikike nnọkọ bụ nke nnọkọ dị ndụ na-ejide n'ihu ọ bụla (desktop, Telegram, IRC, …); ikike zuru ụwa ọnụ na-adịgide; a na-agụ ntinye allowlist [approvals] sitere na config.toml naanị. Ịwepụ otu anaghị agbanwe ikike ndị ọzọ.}
 ::msgcat::mcset ig Start Malite
+::msgcat::mcset ig {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {Malite na mgbasawanye dị na ndekọ plugin onye ọrụ gị. Ọ na-anọgide mgbe mmelite gasịrị, o dịghịkwa mkpa ịwugharị gateway. Mgbasawanye ọhụrụ na-egosi nlele anya nke manifest na koodu isi mmalite kpọmkwem tupu ede ha. Họrọ asụsụ na ụdị API akwadoro, tulee faịlụ ndị ahụ, wee nwalee mgbasawanye ahụ n'ọnọdụ dị iche.}
 ::msgcat::mcset ig {Start with the phone} {Ịmalite ya na ekwentị}
+::msgcat::mcset ig {Static IP} {IP kwụ ọtọ}
 ::msgcat::mcset ig Status Ọnọdụ
 ::msgcat::mcset ig Steer Duhie
 ::msgcat::mcset ig {Step %1$d of %2$d} {Nzọụkwụ %1$d nke %2$d}
 ::msgcat::mcset ig {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {A ka ga-edozi: %s — dee /secret set NAME ebe a, ma ọ bụ mee veles secret set NAME na igwe gateway.}
 ::msgcat::mcset ig Stop Kwụsị
 ::msgcat::mcset ig {Storage root} {Root nchekwa}
+::msgcat::mcset ig Store Ndobe
 ::msgcat::mcset ig {Store a secret: %s} {Debe nzuzo: %s}
 ::msgcat::mcset ig {Store it} {Debe ya}
+::msgcat::mcset ig {Store replica} {Replica nchekwa}
 ::msgcat::mcset ig Subagents Subagents
 ::msgcat::mcset ig {Subagents (/agents)} {Subagents (/agents)}
 ::msgcat::mcset ig Summary Nchịkọta
+::msgcat::mcset ig Surface Ihu
 ::msgcat::mcset ig {Swap ⇄} {Gbanwee ⇄}
+::msgcat::mcset ig {Sync cancelled.} {Akagburu sync.}
+::msgcat::mcset ig {Sync complete.} {Nkwụgharị emechara.}
+::msgcat::mcset ig {Sync now} {Nkwụgharị ugbu a}
 ::msgcat::mcset ig {TOML copied — paste it into config.toml} {E depụtaghachiri TOML — tinye ya na config.toml}
 ::msgcat::mcset ig Tag Tag
 ::msgcat::mcset ig {Tap a link to open it, or a block's header to open or close the block.} {Pịa njikọ ka imepe ya, ma ọ bụ isiokwu nke blọk ka imepe ma ọ bụ mechie blọk ahụ.}
 ::msgcat::mcset ig {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {Pịa igbe dị n'okpuru ka ịpị ihe. Ziga na-eziga, Kwụsị na-akwụsị ntụgharị ahụ, Wepụ na-ebuga iwu na-arụ ọrụ n'azụ.}
 ::msgcat::mcset ig {Tap the text to clear the selection.} {Pịa ederede ahụ ka ikpochapụ nhọrọ ahụ.}
+::msgcat::mcset ig {Target language:} {Asụsụ a chọrọ:}
+::msgcat::mcset ig {Target node IDs (canary first, comma separated)} {Njirimara node ebumnuche (canary mbụ, kewapụrụ na kọma)}
 ::msgcat::mcset ig {Task list} {Ndepụta ọrụ}
 ::msgcat::mcset ig {Task list (right pane)} {Ndepụta ọrụ (pane nri)}
 ::msgcat::mcset ig Tasks Ọrụ
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset ig {That is not a ticket.} {Nke ahụ abụghị tiketi.}
 ::msgcat::mcset ig {That is not a veles pool code.} {Nke ahụ abụghị koodu otu veles.}
 ::msgcat::mcset ig {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {Nke ahụ bụ koodu WireGuard: nyochaa ya site na ngwa WireGuard. Koodu veles bụ nke abụọ.}
+::msgcat::mcset ig {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {A ga-ede faịlụ %d e nyochara n'ime ndekọ ọhụrụ n'ime ndekọ plugin onye ọrụ gị, veles ga-anwakwa ibute ndọtị ahụ. Ọ bụrụ na ndekọ nke aha ahụ apụtala kemgbe nhụle ahụ, a gaghị ede ihe ọ bụla. Ibipụta esoghị na omume a.}
 ::msgcat::mcset ig {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {REPL nke Dev pane na-arụ ọrụ na ngwa LIVE — UI bụ lisp nke ya.}
 ::msgcat::mcset ig {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {E wepụrụ tebụl [mcp_servers.<name>] na config.toml. A na-edobe faịlụ mbụ dị ka config.toml.bak.}
 ::msgcat::mcset ig {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {Ndepụta nkwere adapter (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) bụ oke ntụkwasị obi, a na-ewerekwa onye ọ bụla enyere ohere dị ka onye nwe. Nke a bụ ọnọdụ tupu ACL.}
 ::msgcat::mcset ig {The agent asks for a secret: %s} {Onye nnọchite anya na-arịọ nzuzo: %s}
+::msgcat::mcset ig {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {A ga-eji alaka ekwenyelarị kwanye dị ka isi PR. A na-akpọ alaka dị na fork gị owner:branch na-akpaghị aka.}
+::msgcat::mcset ig {The author asks} {Onye dere ya na-ajụ}
+::msgcat::mcset ig {The buffer changed. Request a new proposal before applying.} {Buffer ahụ agbanweela. Rịọ atụmatụ ọhụrụ tupu itinye ya.}
 ::msgcat::mcset ig {The bundle operation returned an invalid result. Verify the installation before retrying.} {Ọrụ ngwugwu ahụ weghachiri nsonaazụ adịghị arụrụ arụ. Kwadobe iwube tupu ịnwa ọzọ.}
 ::msgcat::mcset ig {The bundle preview was malformed; nothing was installed.} {Nlele ngwugwu ahụ na-adịghị ụdọ; ewubeghị ihe.}
 ::msgcat::mcset ig {The camera did not open; paste the code instead.} {Igwefoto emepeghị; kama nke ahụ, mado koodu ahụ.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset ig {The component manifest is still loading. Wait for it or choose another component.} {Manifest ihe akpaghị aka ka na-ebubo. Chere ya ma ọ bụ họrọ ihe akpaghị aka ọzọ.}
 ::msgcat::mcset ig {The component preview is not ready yet. Refresh it and review the result before applying.} {Nlele ihe akpaghị aka adịbeghị. Emelite ya wee lelekarịa nsonaazụ tupu ịtinye.}
 ::msgcat::mcset ig {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {Nlele ihe akpaghị aka ka na-ebubo. Chere azịza tupu ilele mgbanwe ndị jikọtara.}
+::msgcat::mcset ig {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {A na-eziga nchọpụta dị ugbu a (site na language server ma ọ bụ Nyocha) tinyere faịlụ a. Ị nwere ike itinye ajụjụ. Azịza ahụ bụ ederede naanị; ọ dịghị ihe a pụrụ ide.}
 ::msgcat::mcset ig {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {A na-ewepụ ndekọ a na ihe niile dị n'ime ya. Nke a enweghị nkaghachi — gbanyụọ ya kama ma ọ bụrụ na ị chọrọ naanị ka ọ pụọ na ntụziaka.}
 ::msgcat::mcset ig {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {E wepụrụ ndekọ ahụ. Nchekwa plugin bụ git repository, a na-edebekwa snapshot tupu ya, ya mere History… nwere ike ịkpọghachi ya.}
+::msgcat::mcset ig {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Editor na-emepe faịlụ Gateway, tinyere instances dị n'ebe dị anya, ma na-agba language server maka asụsụ faịlụ ahụ na Gateway: tcl-lsp, typescript-language-server (TypeScript na JavaScript), rust-analyzer (crate ma ọ bụ module plugin Rust), clangd (C), racket-langserver na server Common Lisp. Hover, ịga na nkọwa, imecha na nchọpụta dị ndụ na-arụ ọrụ maka asụsụ ọ bụla Gateway nwere server maka ya; mgbe ọ nweghị nke ọ bụla, editor na-akọ mmemme a ga-arụnye ebe ahụ ma na-edobe syntax highlighting. Nyocha na-agba checker kwekọrọ na Gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, ma ọ bụ readers Racket na Lisp. Chekwa, bugharịa ya na Manage extensions, ma nwalee ndọtị ahụ na-enweghị ibipụta ọnọdụ mpaghara.}
 ::msgcat::mcset ig {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Handoff mbụ na-ahazi nzuzo, image e ji nchekwu na faịlụ runtime mana ọ na-amaliteghị PDS. Mee ndabere KEK na PLC rotation key n'offline, wee mee arịrịọ ọhụrụ e nyocha ya na nkwenye ndabere iji hazie HTTP-01 TLS na arụmọrụ. Akwụkwọ DNS aghaghị ịtụle ozugbo n'host a; veles anaghị eme proxy CDN ma ọ bụ mgbanwe DNS.}
+::msgcat::mcset ig {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Fọm ahụ gbanweela kemgbe e mepụtara ndọtị ahụ. Mepụta ọzọ, ma ọ bụ lelee scaffold dị mfe.}
 ::msgcat::mcset ig {The gateway itself is untouched.} {Aka emetụghị gateway onwe ya.}
 ::msgcat::mcset ig {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Gateway ebugharịala nhazi ahụ, ya mere nnọkọ ọhụrụ na-eji ya ugbu a, key e debere n'igbe nchekwa ka arịrịọ na-esote ga-eji. Telegram na IRC ga-amalite mgbe a malitegharịrị gateway ọzọ: veles gateway restart.}
 ::msgcat::mcset ig {The installed component no longer matches the selected manifest. Review the component list again.} {Ihe akpaghị aka e wubere adịghịzi akaraka manifest ahọrọ. Lelekarịa ndepụta ihe akpaghị aka ọzọ.}
 ::msgcat::mcset ig {The installer preview has no verification signatures; apply is disabled.} {Nlele onye na-ewube nweghị aha aka nka nkwenye; a gbanyụrụ tinye.}
 ::msgcat::mcset ig {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {A na-ewepụ ọrụ ahụ na akụkọ ọ na-agba. Nke a enweghị nkaghachi — kwụsịtụ ya kama ọ bụrụ na ị chọrọ naanị ka ọ kwụsị.}
+::msgcat::mcset ig {The log could not be read: %s} {Enweghị ike ịgụ ndekọ ahụ: %s}
 ::msgcat::mcset ig {The manifest belongs to another component; its reply was discarded.} {Manifest ahụ bụ nke ihe akpaghị aka ọzọ; a tụfuru azịza ya.}
 ::msgcat::mcset ig {The profile changed. Review the fresh plan before applying it.} {Profaịlụ agbanweela. Lelekarịa atụmatụ ọhụrụ tupu ịtinye ya.}
 ::msgcat::mcset ig {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {Repository ahụ chọrọ SKILL.md n'isi ya ma ọ bụ n'ime otu ụdị. Ọ ga-abanye na %s.}
 ::msgcat::mcset ig {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {Mgbọrọgwụ repository ga-enwerịrị plugin.toml. A na-eṅomi ya na %s n'okpuru aha manifest ahụ.}
+::msgcat::mcset ig {The reviewed change set was applied (%d files). Review and test it before publishing.} {Etinyela usoro mgbanwe e nyochara (%d faịlụ). Nyochaa ma nwalee ya tupu ibipụta.}
 ::msgcat::mcset ig {The reviewed configuration snapshot will also be restored.} {A ga-eweghachịkwa foto nhazi e lelekarịa ahụ.}
+::msgcat::mcset ig {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {A ga-ede faịlụ e tụlere na ndekọ plugin onye ọrụ gị. Veles na-echekwa snapshot mgbake mpaghara ma na-anwa ịbugharị mgbasawanye ahụ; ibipụta abụghị akụkụ nke omume a.}
+::msgcat::mcset ig {The reviewed proposal was applied locally. Review and test it before publishing.} {E tinyela atụmatụ e tụlere n'ụzọ mpaghara. Tulee ma nwalee ya tupu ibipụta ya.}
 ::msgcat::mcset ig {The rollback preview was malformed or named another component; nothing was restored.} {Nlele ndọghachi azụ ahụ na-adịghị ụdọ ma ọ bụ kpọrọ aha ihe akpaghị aka ọzọ; eweghachịghị ihe.}
 ::msgcat::mcset ig {The rollback returned an invalid result. Verify the installation before retrying.} {Ndọghachi azụ ahụ weghachiri nsonaazụ adịghị arụrụ arụ. Kwadobe iwube tupu ịnwa ọzọ.}
 ::msgcat::mcset ig {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {Ụzọ nnọkọ ọhụrụ na-amalite na ya. /model na overlay models na-agbanwe ya mgbe e mesịrị, maka nnọkọ ma ọ bụ dị ka ndabara ọhụrụ.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset ig {The signed download discard returned an invalid response; no installation was requested.} {Ịtụfuo nbudata e sonyere aka weghachiri azịza adịghị arụrụ arụ; a rịọghị iwube.}
 ::msgcat::mcset ig {The signed installation returned an invalid result. Verify the installation before retrying.} {Iwube e sonyere aka weghachiri nsonaazụ adịghị arụrụ arụ. Kwadobe iwube tupu ịnwa ọzọ.}
 ::msgcat::mcset ig {The signed release preview was malformed; nothing was installed.} {Nlele mbipute e sonyere aka na-adịghị ụdọ; a wụnyebeghị ihe.}
+::msgcat::mcset ig {The source buffer changed. Request a new proposal before applying.} {Buffer isi mmalite agbanweela. Rịọ atụmatụ ọhụrụ tupu itinye ya.}
 ::msgcat::mcset ig {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Store na-ala azụ otu revision. Nkaghachi ahụ bụ onwe ya revision, ya mere enwere ike ịkaghachi ya.}
+::msgcat::mcset ig {The translator returned no text.} {Onye na-asụgharị enyeghị ederede ọ bụla.}
 ::msgcat::mcset ig {The verification reply was malformed; no integrity result was accepted.} {Azịza nkwadobe ahụ na-adịghị ụdọ; a nabataghị nsonaazụ nchekwa ọ bụla.}
 ::msgcat::mcset ig Themes Temi
+::msgcat::mcset ig {These paths already exist in the chosen repository:} {Ụzọ ndị a adịlarị na repository ahọpụtara:}
 ::msgcat::mcset ig {They have not been saved.} {Echekwabeghị ha.}
+::msgcat::mcset ig {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {Buffer a enweghị nchọpụta ịkọwa. Gbaa Nyocha, ma ọ bụ chere language server.}
 ::msgcat::mcset ig {This challenge is over.} {Ihe ịma aka a agwụla.}
 ::msgcat::mcset ig {This code has expired. Ask for a new one.} {Oge koodu a agwụla. Rịọ maka nke ọhụrụ.}
 ::msgcat::mcset ig {This does not start a service or claim signed-download verification.} {Nke a anaghị amalite ọrụ ọ bụla ma ọ bụ kwuo na e kwadobeela nbudata e sonyeere ọnụ.}
 ::msgcat::mcset ig {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Gateway a anaghị anabata uru nzuzo site n'igwe a: tinye ya n'ebe ahụ site na veles secret set %s, ma ọ bụ tinye netwọk a na [vault] trusted_networks ya}
 ::msgcat::mcset ig {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Nke a bụ kpọmkwem ihe a ga-ede — bytes nke engine onwe ya, ewepụtara ozugbo. Ọ dịghị ihe emetụla diski ka.}
+::msgcat::mcset ig {This node is not a configured sync peer for any kind.} {Node a abụghị peer sync ahaziri maka ụdị ọ bụla.}
+::msgcat::mcset ig {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Plugin a e buru ọnụ ma ọ bụ na-agụ naanị. Wepụ nke onye ọrụ nke nwere aha otu ahụ iji were nke e buru ọnụ n'ime ya.}
+::msgcat::mcset ig {This publishes the commit; no pull request is created yet.} {Nke a na-ebipụta commit ahụ; e mepụtabeghị pull request.}
 ::msgcat::mcset ig {This review expires after %s seconds. Closing or cancelling discards its private staging.} {Nyocha a ga-agwụ mgbe sekọnd %s gachara. Ịmechi ma ọ bụ ịkagbu na-atụfuo ihe echekwara nke ya nke onwe.}
 ::msgcat::mcset ig {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {Wizard a na-ede config.toml, ọ na-etinyekwa keys ị nyere ya n'igbe nchekwa ezoro ezo. Enwere ike ịwụfe nzọụkwụ ọ bụla: nzọụkwụ a wụfere adịghị na nhazi ọhụrụ, a na-ahapụkwa ya otu ọ dị na nke dị adị. A na-edezi config.toml dị adị n'ebe ọ nọ — naanị akụkụ ndị ị zara na-agbanwe, ihe ọ bụla ọzọ dị n'ime ya, gụnyere nkọwa, na-anọgide.}
 ::msgcat::mcset ig {Ticket needed} {Tiketi dị mkpa}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset ig {Topic for %s} {Isiokwu maka %s}
 ::msgcat::mcset ig {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {Metụ ma jide session, ma ọ bụ ihe ọ bụla ọzọ nwere menu, ka imepe menu ahụ. Mpịakọ n'èzí ya, ma ọ bụ Azụ, na-emechi ya.}
 ::msgcat::mcset ig {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {Metụ ma jide okwu ka ịhọrọ ya. Mgbe i weliri mkpịsị aka gị, menu ya na-emepe, ya na Detuo n'elu.}
+::msgcat::mcset ig Translate Sụgharịa
+::msgcat::mcset ig {Translate selection} {Sụgharịa nhọrọ}
+::msgcat::mcset ig Translating… Na-asụgharị…
+::msgcat::mcset ig {Translation cancelled.} {E kagburu ntụgharị.}
+::msgcat::mcset ig {Translation copied.} {Nsụgharị e detuola.}
+::msgcat::mcset ig {Translation failed} {Nsụgharị adaala}
+::msgcat::mcset ig {Translation result} {Nsonaazụ ntụgharị}
+::msgcat::mcset ig {Translator configuration unavailable} {Nhazi ngwa ntụgharị adịghị}
 ::msgcat::mcset ig {Trigger history} {Akụkọ ihe kpalitere}
 ::msgcat::mcset ig Triggers {Ihe na-akpalite}
 ::msgcat::mcset ig {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {Triggers na-emeghachi omume na ihe ndị mere na ọwa na-enweghị turn. slopdrop na-ebugara bridge ihe omume ahụ ma na-ebuteghachi azịza ya; vision na-akọwa URL onyonyo n'ime oge nchere na oke kwa elekere. Ahịrị ahụ na-agba naanị ebe ma mgbanwe [triggers] config na mask ewepụtara kwere ya — #coven anaghị ebuga ihe ọ bụla n'okpuru njikọ slopdrop dị ndụ.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset ig {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Ruo mgbe IRC_ALLOWED_USERS dị na .env kpọrọ akaụntụ gị, onye ọ bụla nọ na netwọk nwere ike ịgwa bot okwu — ma ọ bụrụ na enweghị ngalaba [acl], dị ka onye nwe, ya na ngwaọrụ niile.}
 ::msgcat::mcset ig {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Ruo mgbe TELEGRAM_ALLOWED_USERS dị na .env kpọrọ ID onye ọrụ gị, onye ọ bụla chọtara bot nwere ike ịgwa ya okwu — ma ọ bụrụ na enweghị ngalaba [acl], dị ka onye nwe, ya na ngwaọrụ niile.}
 ::msgcat::mcset ig Untitled {Ndị na-enweghị aha}
+::msgcat::mcset ig {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Ịnyefe upstream bụ omume ibipụta doro anya, ọ bụghị nbudata akpaghị aka. Na Manage extensions, Nyefee na-edepụta mgbasawanye ọrụ niile: họrọ mgbasawanye na faịlụ, lelee diff na nyocha nzuzo, gbaa checks, wee mepụta otu alaka na otu PR (na veles site na ndabara) na njirimara git ị họpụtara. Mgbe ọ bụla, mgbasawanye na-aga n'okpuru ndekọ nke ya na repository, a na-edochi faịlụ dị adị ebe ahụ naanị mgbe nkwenye dị iche gasịrị. Ọ dịghị mgbe ị ga-ebipụta node.toml, njirimara mpaghara, tokin, njedebe nzuzo ma ọ bụ ọnọdụ plugin na-enweghị mmekọ. Snapshot mgbake mpaghara abụghị commit upstream ma ọ bụ PR.}
+::msgcat::mcset ig {Upstream repository or fork URL} {URL repository upstream ma ọ bụ fork}
+::msgcat::mcset ig {Uptime class} {Ụdị oge ọrụ}
+::msgcat::mcset ig {Uptime: host %1$s, gateway %2$s} {Oge ọrụ: host %1$s, Gateway %2$s}
 ::msgcat::mcset ig Usage Ojiji
 ::msgcat::mcset ig {Usage & Quota} {Ojiji & Quota}
 ::msgcat::mcset ig {Use TLS} {Jiri TLS}
 ::msgcat::mcset ig {Use now} {Jiri ugbu a}
+::msgcat::mcset ig {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {Jiri bọtịnụ Nduzi onye edemede na Ntụaka API maka nkwekọrịta ndị bụ isi. Overlay Plugins na-edepụta hooks ndị na-arụ ọrụ; ọrụ na ebe nnọchi sitere na registry nke gateway, ọ bụghị na ndepụta e detụrụ n'ime nduzi a.}
 ::msgcat::mcset ig {Use this ticket} {Jiri tiketi a}
+::msgcat::mcset ig {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {Jiri fork gị (https://github.com/<you>/veles.git ma ọ bụ git@github.com:<you>/veles.git) ọ gwụla ma ị nwere ike ịkwanye na veles n'onwe ya. A na-edetu repository ahọpụtara n'ime worktree dị iche. Ọ dịghị ihe a na-akwanye.}
 ::msgcat::mcset ig {Users — one role across networks and platforms} {Ndị ọrụ — otu ọrụ n'ofe netwọk na ikpo okwu}
 ::msgcat::mcset ig {Using the phone, for the agent} {Iji ekwentị, maka onye ọrụ}
 ::msgcat::mcset ig {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Ọ na-abụkarị otu ihe ahụ dị ka aha ndekọ provider. Hapụ ha abụọ efu na nhọrọ Mafuo — ụzọ a na-edozibeghị nke ọma anaghị arụ ọrụ.}
 ::msgcat::mcset ig {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Ụkpụrụ bụ TOML: eriri edepụtara, ọnụọgụ, ma ọ bụ ndepụta. A na-edebe ya na [mcp_servers.<name>] — a naghị emetụ ihe ị dere na ngalaba ndị ọzọ niile.}
+::msgcat::mcset ig Vault {Igbe nchekwa}
 ::msgcat::mcset ig {Verified signed bundle installed. Restart the gateway before using the new core.} {E wụnyela ngwugwu e sonyere aka e kwadobela. Malitegharịa gateway tupu eji core ọhụrụ ahụ.}
 ::msgcat::mcset ig {Verified signed release — not installed yet} {Mbipute e sonyere aka e kwadobela — e wubebeghị ya}
 ::msgcat::mcset ig {Verify and review release…} {Kwadobe ma lelekarịa mbipute…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset ig {Verify signed release} {Kwadobe mbipute e sonyere aka}
 ::msgcat::mcset ig {Verify signed release…} {Na-ekwadobe mbipute e sonyere aka…}
 ::msgcat::mcset ig Version Ụdị
+::msgcat::mcset ig {Version %1$s: %2$s} {Ụdị %1$s: %2$s}
+::msgcat::mcset ig {Version drift in the registry: %s} {Ndapụta ụdị na registry: %s}
 ::msgcat::mcset ig View Nlele
 ::msgcat::mcset ig {View markdown source} {Lee isi mmalite markdown}
 ::msgcat::mcset ig {View source / rendered} {Isi / emepụtara}
 ::msgcat::mcset ig Voice {Nye voice}
+::msgcat::mcset ig {Waiting for the model…} {Na-eche model…}
+::msgcat::mcset ig {Waiting for the model… Nothing has been written.} {Na-eche model… O nweghị ihe edere.}
 ::msgcat::mcset ig {Welcome to veles} {Nnọọ na veles}
 ::msgcat::mcset ig {What the agent can do here} {Ihe onye nnọchite anya ahụ nwere ike ime ebe a}
 ::msgcat::mcset ig {What veles may do on this phone. Each button opens the Android setting that changes it.} {Ihe veles nwere ike ime na ekwentị a. Bọtịnụ ọ bụla na-emeghe ntọala Android nke na-agbanwe ya.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset ig {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {Mgbe veles nọ n'azụ, ajụjụ onye nnọchite anya ma ọ bụ ntụgharị gwụchara na-aghọ ọkwa; pịa ya ka imepe session ahụ.}
 ::msgcat::mcset ig {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {Onye nwere ike ịgwa bot okwu. Nhọrọ a na-ekpebi ma config.toml nwere akụkụ [acl] ma ọlị — nke ahụ na-atụgharị ọnọdụ ahụ dum.}
 ::msgcat::mcset ig Whois Whois
-::msgcat::mcset ig {Wire protocol (chat_completions or responses)} {Wire protocol (chat_completions ma ọ bụ responses)}
+::msgcat::mcset ig {Wire protocol (chat_completions, responses or plugin)} {Usoro wire (chat_completions, responses ma ọ bụ plugin)}
 ::msgcat::mcset ig {With a keyboard attached, every key works as on a laptop.} {Mgbe ejikọrọ keyboard, igodo ọ bụla na-arụ ọrụ dị ka na laptọọpụ.}
 ::msgcat::mcset ig {Workflow SHA} {SHA nke workflow}
+::msgcat::mcset ig {Workflow commit} {Commit workflow}
+::msgcat::mcset ig Worktree Worktree
 ::msgcat::mcset ig {Write it} {Dee ya}
+::msgcat::mcset ig {Write the design question first.} {Dee ajụjụ imepụta nke mbụ.}
 ::msgcat::mcset ig {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Ọ naghị ede provider ọ bụla. Gateway agaghị ebugharị turn ruo mgbe ndekọ [[custom_providers]] na njikọ [model] dị.}
 ::msgcat::mcset ig {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Ide igodo [acl] Ọ BỤLA na-atụgharị gateway a gaa n'ọnọdụ curated: ọrụ ndabara na-aghọ guest (fail-closed) na ndepụta nkwado abụghịzi oke. Họrọ nke a naanị ma ọ bụrụ na i nwere njirimara onye nwe ị tụkwasịrị obi.}
 ::msgcat::mcset ig {[model] provider} {[model] provider}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset ig {also list hooks with no handler} {depụtakwa hooks ndị na-enweghị handler}
 ::msgcat::mcset ig {also write grants that still have an expiry} {deekwa grants ndị ka nwere expiry}
 ::msgcat::mcset ig {also write runtime users} {deekwa ndị ọrụ runtime}
+::msgcat::mcset ig {an allowlist entry is removed by editing config.toml} {a na-ewepụ ntinye allowlist site n'idezi config.toml}
 ::msgcat::mcset ig {an allowlist is in force: a plugin not on it stays off} {allowlist dị n'ike: plugin nke na-anọghị na ya anọgide na-agbanyụ}
 ::msgcat::mcset ig {answer failed: %s} {nzaghachi dara: %s}
+::msgcat::mcset ig {answer only, nothing to apply} {azịza naanị, ọ dịghị ihe a ga-etinye}
 ::msgcat::mcset ig {append these rules to config.toml} {gbakwunye iwu ndị a na config.toml}
 ::msgcat::mcset ig {apply failed: %s} {ịtinye n'ọrụ dara: %s}
 ::msgcat::mcset ig {apply to:} {tinye na:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset ig {ask the agent} {jụọ onye nnọchite anya}
 ::msgcat::mcset ig {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset ig {asked by: %s} {Onye jụrụ: %s}
+::msgcat::mcset ig {asking %s for its metrics…} {na-ajụ %s maka metrik ya…}
 ::msgcat::mcset ig {attach a file} {Tinye faịlụ}
 ::msgcat::mcset ig {attach an image or file} {tinye foto ma ọ bụ faịlụ}
 ::msgcat::mcset ig {attach failed: %1$s} {ịgbakwunye dara: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset ig {attached %1$s (%2$s pending)} {ejikọrọ %1$s (%2$s na-eche)}
 ::msgcat::mcset ig {attached to %s} {ejikọrọ na %s}
 ::msgcat::mcset ig {attached to child session %1$s} {ejikọrọ na nwa session %1$s}
+::msgcat::mcset ig automatic {akpaghị aka}
 ::msgcat::mcset ig {aux model} {aux model}
 ::msgcat::mcset ig {aux provider} {aux provider}
+::msgcat::mcset ig available dị
 ::msgcat::mcset ig {available components} {ihe akpaghị aka dị}
 ::msgcat::mcset ig {back up N user turns} {laghachi azụ oge onye ọrụ N}
 ::msgcat::mcset ig {backed up the previous config to %s} {Echekwara config gara aga na %s}
 ::msgcat::mcset ig {background shells; /shells output|kill <id>} {shells n'azụ; /shells output|kill <id>}
+::msgcat::mcset ig {backing off: %1$s failure(s), next automatic try in %2$s s} {na-alaghachi azụ: ọdịda %1$s, nnwale akpaghị aka ọzọ n'ime %2$s s}
 ::msgcat::mcset ig {bad host for %1$s: %2$s} {host adịghị mma maka %1$s: %2$s}
 ::msgcat::mcset ig {bad unit for %1$s: %2$s} {unit adịghị mma maka %1$s: %2$s}
 ::msgcat::mcset ig {bare display off} {ngosipụta bare agbanyụrị}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset ig {browse the filesystem} {chọgharịa sistemụ faịlụ}
 ::msgcat::mcset ig {browse the repo's files} {nyochaa faịlụ repo}
 ::msgcat::mcset ig {builtin (%s):} {arụnyere (%s):}
+::msgcat::mcset ig bundled {e buru ọnụ}
+::msgcat::mcset ig {bundled, read-only} {e buru ọnụ, na-agụ naanị}
 ::msgcat::mcset ig by {site n'aka}
 ::msgcat::mcset ig {by plan — all sessions} {site na atụmatụ — session niile}
 ::msgcat::mcset ig {by plan — this session} {site na atụmatụ — session a}
 ::msgcat::mcset ig {by tool} {site na ngwaọrụ}
 ::msgcat::mcset ig {cancel failed: %1$s} {Ịkagbu dara: %1$s}
 ::msgcat::mcset ig {cancel the running turn} {Kagbuo ntụgharị na-agba}
+::msgcat::mcset ig {cancel the selected task} {kagbu ọrụ a họrọ}
 ::msgcat::mcset ig {cancelled task %1$s} {Kagburu ọrụ %1$s}
 ::msgcat::mcset ig {cannot list scripts (gateway offline?)} {Enweghị ike ịdepụta scripts (gateway adịghị arụ ọrụ?)}
 ::msgcat::mcset ig {cannot reach the gateway: %s} {Enweghị ike iru gateway: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset ig commit commit
 ::msgcat::mcset ig {compacting %s messages in the background — the transcript reloads when it finishes} {na-akpakọ ozi %s n'azụ — transcript ga-ebupụta mgbe ọ chara}
 ::msgcat::mcset ig compacting… {na-eme compact…}
+::msgcat::mcset ig {comparing the nodes' versions and config…} {na-atụnyere ụdị na nhazi nke nodes…}
 ::msgcat::mcset ig {completion tokens} {tokens mmecha}
 ::msgcat::mcset ig {component options and declared actions} {nhọrọ ihe akpaghị aka na omume e kwupụtara}
 ::msgcat::mcset ig composer {onye nhazi}
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset ig {could not open %s} {Enweghị ike imeghe %s}
 ::msgcat::mcset ig {could not open %s (no working browser opener)} {Enweghị ike imeghe %s (enweghị browser opener na-arụ ọrụ)}
 ::msgcat::mcset ig {could not open %{url}: %{e}} {Enweghị ike imeghe %{url}: %{e}}
+::msgcat::mcset ig {could not open the optional referral link: %s} {enweghị ike imepe njikọ ịkpọta nhọrọ: %s}
 ::msgcat::mcset ig {could not read %s: %s} {enweghị ike ịgụ %s: %s}
 ::msgcat::mcset ig {could not read the current route} {Enweghị ike ịgụ ụzọ dị ugbu a}
 ::msgcat::mcset ig {could not save this session's language: %{e}} {enweghị ike ịchekwa asụsụ session a: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset ig {ctxmenu: no widget %s (attached too early?)} {ctxmenu: enweghị widget %s (ejikọrọ ya tupu oge eruo?)}
 ::msgcat::mcset ig {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {a họrọ nnweta curated n'enweghị njirimara onye nwe, ya mere [acl] ka na-arụghị ọrụ — nye otu, dị ka telegram:123456 ma ọ bụ irc:account, iji gbanye ya}
 ::msgcat::mcset ig {current theme: %{name} · /theme <name>} {Isiokwu ugbu a: %{name} · /theme <name>}
+::msgcat::mcset ig {cursor %1$s of %2$s (%3$s behind)} {cursor %1$s n'ime %2$s (%3$s n'azụ)}
 ::msgcat::mcset ig {custom command /%s…} {iwu pụrụ iche /%s…}
 ::msgcat::mcset ig {custom commands (.veles/commands/) and config aliases} {iwu ahaziri (.veles/commands/) na aha ọzọ nke nhazi}
 ::msgcat::mcset ig {cycle ends} {okirikiri na-agwụ}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset ig doctor_resident {na-anọ n'ime ngwa mkpali ọ bụla: %{shown} n'ime mkpụrụedemede %{total} (~tokens %{tokens}) — ndị fọdụrụ na-ebugo mgbe achọrọ ya site na: memory action=read path=%{path}}
 ::msgcat::mcset ig doctor_title {nyocha ebe nchekwa}
 ::msgcat::mcset ig doctor_total {ngụkọta: mkpụrụedemede %{chars} n'ime faịlụ %{files} (~tokens %{tokens})}
+::msgcat::mcset ig {documentation is not in this source checkout: %s} {akwụkwọ nkọwa adịghị n'ime checkout isi mmalite a: %s}
 ::msgcat::mcset ig done emeela
 ::msgcat::mcset ig {done · %1$s/%2$s} {emeela · %1$s/%2$s}
 ::msgcat::mcset ig {done, but the model returned no text} {Emeela, mana model ewepụtaghị ederede ọ bụla}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset ig {evaluate Tcl and answer with the result — no model turn} {gbaa Tcl wee jiri nsonaazụ zaa — enweghị oge model}
 ::msgcat::mcset ig everyone {Onye ọ bụla}
 ::msgcat::mcset ig everywhere {Ebe ọ bụla}
+::msgcat::mcset ig {exchanging registry gossip…} {na-emekọrịta gossip registry…}
 ::msgcat::mcset ig exit pụọ
 ::msgcat::mcset ig {exit veles-desktop} {pụọ na veles-desktop}
 ::msgcat::mcset ig {export failed: %s} {mbufa dabara adaba: %s}
 ::msgcat::mcset ig {export session} {bupụ session}
 ::msgcat::mcset ig {exported to %s} {ebupụrụ na %s}
+::msgcat::mcset ig {extension architecture, examples and LSP help} {nhazi mgbasawanye, ọmụmaatụ na enyemaka LSP}
+::msgcat::mcset ig {extension development guide} {ntuzo mmepe mgbasawanye}
+::msgcat::mcset ig failed dara
 ::msgcat::mcset ig {failed to load history: %s} {ibudata akụkọ ihe mere eme adabaghị: %s}
 ::msgcat::mcset ig {failed to paint cached history: %s} {ise akụkọ echekwara adabaghị: %s}
 ::msgcat::mcset ig {failed to paint replayed history: %s} {ise akụkọ a na-agharịgharị adabaghị: %s}
 ::msgcat::mcset ig {failed: %s} {Dara: %s}
+::msgcat::mcset ig {failing — heartbeating, but a sync push or the last probe failed} {na-ada — heartbeat na-aga, mana push sync ma ọ bụ nnyocha ikpeazụ dara}
 ::msgcat::mcset ig {failover blueprint: cannot reach the gateway} {Atụmatụ failover: enweghị ike iru gateway}
 ::msgcat::mcset ig {failover graph unavailable: %1$s} {grafụ failover adịghị: %1$s}
 ::msgcat::mcset ig {failover script: cannot reach the gateway} {Script failover: enweghị ike iru gateway}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset ig {fire the Tcl hook} {kụọ Tcl hook}
 ::msgcat::mcset ig {fires for %s:} {na-agbapụ maka %s:}
 ::msgcat::mcset ig {fires per hour} {na-agbapụ kwa awa}
+::msgcat::mcset ig {fleet drift} {ndapụta fleet}
 ::msgcat::mcset ig {focus composer} {leba anya na composer}
 ::msgcat::mcset ig {focus failed: %{e}} {ilekwasị anya dara: %{e}}
 ::msgcat::mcset ig {focus next region} {leba anya na mpaghara ọzọ}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset ig {four splits is the maximum} {Nkewa anọ bụ ọkacha}
 ::msgcat::mcset ig {fresh session} {session ọhụrụ}
 ::msgcat::mcset ig {fresh session (Ctrl-N too)} {session ọhụrụ (Ctrl-N kwa)}
+::msgcat::mcset ig {fresh — heartbeating, sync passing} {ọhụrụ — heartbeat na-aga, sync na-agafe}
+::msgcat::mcset ig from {site na}
 ::msgcat::mcset ig {from node %{node}} {site na node %{node}}
 ::msgcat::mcset ig {gateway     v%1$s · up %2$s} {gateway     v%1$s · arụọla %2$s}
 ::msgcat::mcset ig {gateway unreachable — is `veles gateway run` up?} {Enweghị ike iru gateway — `veles gateway run` ọ na-arụ?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset ig {in %s} {N'ime %s}
 ::msgcat::mcset ig {insert the next key literally (^B bold, ^C colour, ^O reset)} {Tinye igodo ọzọ dịka ọ dị (^B bold, ^C agba, ^O reset)}
 ::msgcat::mcset ig {inserted %s} {Tinyere %s}
+::msgcat::mcset ig {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {lelee cluster; kpọmkwem push/tinye store, ebe nchekwa, nhazi ma ọ bụ sync vault; chefuo node ochie n'ofe fleet; gụọ ọdụ ndekọ ma ọ bụ metrik node; tụnyere ụdị na nhazi; gossip ugbu a}
 ::msgcat::mcset ig {inspector — app internals · core state · gw plugins} {Onye nyocha — ihe dị n'ime ngwa · ọnọdụ isi · gw plugins}
 ::msgcat::mcset ig {install a plugin from a git URL} {Wụnye plugin site na URL git}
 ::msgcat::mcset ig {install a skill from a git URL} {Wụnye nka site na URL git}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset ig instance instance
 ::msgcat::mcset ig {instance controls} {Njikwa instance}
 ::msgcat::mcset ig {instance detail} {Nkọwa instance}
+::msgcat::mcset ig {instance names may not start with "cluster:" or "g:": %s} {aha instance enweghị ike ibido na "cluster:" ma ọ bụ "g:": %s}
 ::msgcat::mcset ig {instance needs a name} {Instance chọrọ aha}
 ::msgcat::mcset ig {instance unreachable} {Enweghị ike iru instance}
 ::msgcat::mcset ig instances instances
 ::msgcat::mcset ig interrupting… Na-akwụsị…
+::msgcat::mcset ig into n'ime
 ::msgcat::mcset ig {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset ig {irc: %s} {irc: %s}
 ::msgcat::mcset ig {irc: %s failed — %s} {irc: %s dara — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset ig {language list} {Ndepụta asụsụ}
 ::msgcat::mcset ig {language picker (the swap for THIS window)} {onye nhọrọ asụsụ (mgbanwe nke WINDOW a)}
 ::msgcat::mcset ig {language saved: %s} {Echekwara asụsụ: %s}
+::msgcat::mcset ig {language server} {language server}
+::msgcat::mcset ig {language server: event stream unavailable: %s} {language server: enweghị ike inweta event stream: %s}
+::msgcat::mcset ig {language server: not started on the gateway — %s} {language server: amaliteghị ya na Gateway — %s}
+::msgcat::mcset ig {language server: the gateway would not start one: %s} {language server: Gateway achọghị ịmalite otu: %s}
 ::msgcat::mcset ig {language swapped: %1$s ⇄ %2$s} {Gbanwere asụsụ: %1$s ⇄ %2$s}
 ::msgcat::mcset ig {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {Asụsụ → %1$s (bụbu %2$s) · naanị windo na-agba — Save as default na-ede config.toml}
 ::msgcat::mcset ig {language: %s} {asụsụ: %s}
 ::msgcat::mcset ig {last error} {nhọrọ njehie ikpeazụ}
+::msgcat::mcset ig {last pass %1$s at %2$s: %3$s} {ngafe ikpeazụ %1$s na %2$s: %3$s}
 ::msgcat::mcset ig {last reply copied (%s chars)} {E ṅomiri azịza ikpeazụ (%s mkpụrụedemede)}
 ::msgcat::mcset ig {layout not saved: %s} {Nhazi echekwaghị: %s}
 ::msgcat::mcset ig {leave (cancels a running turn first)} {pụọ (na-akagbu oge na-aga n'ihu mbụ)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset ig {list sessions} {depụta sessions}
 ::msgcat::mcset ig {list skills} {depụta nka}
 ::msgcat::mcset ig {list tools} {depụta ngwá ọrụ}
+::msgcat::mcset ig {listed here only; [notify] fleet_alerts is off} {egosiri ebe a naanị; [notify] fleet_alerts agbanyụrụ}
 ::msgcat::mcset ig {live patching ARMED} {live patching AGBANYERE}
 ::msgcat::mcset ig {live patching ARMED — an agent can now redefine procs in this window} {live patching AGBANYERE — agent nwere ike imegharịa procs na windo a ugbu a}
 ::msgcat::mcset ig {live patching disarmed} {live patching agbanyụrụ}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset ig {log pane shown} {Egosiri pane ndekọ}
 ::msgcat::mcset ig {log: %s} {Ndekọ: %s}
 ::msgcat::mcset ig {make media: image/video/audio, route = comfyui or provider[/model]} {mepụta mgbasa ozi: image/video/audio, ụzọ = comfyui ma ọ bụ provider[/model]}
+::msgcat::mcset ig {managed via %s} {a na-ejikwa ya site na %s}
+::msgcat::mcset ig {manual only} {naanị aka}
 ::msgcat::mcset ig {mark set} {Edobe akara}
 ::msgcat::mcset ig {mark whole buffer (emacs select-all)} {akara buffer dum (emacs select-all)}
 ::msgcat::mcset ig {markdown preview of the composer} {Nlele markdown nke ebe ede ozi}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset ig model model
 ::msgcat::mcset ig {model aliases} {Mkpọaha model}
 ::msgcat::mcset ig {monitor %1$s fired} {monitor %1$s gbara}
-::msgcat::mcset ig monitors monitors
 ::msgcat::mcset ig monitors_header monitors:
 ::msgcat::mcset ig monitors_none {(Enweghị monitors — model na-amalite ndị a site na monitor tool)}
 ::msgcat::mcset ig {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {kwaga nzukoro (na osisi ya niile) na ọdụ pool ọzọ na mgbanwe oge; mechaa/kagbuo nyefe nkwụsịtụ; jụọ onye nwe nzukoro (admin)}
 ::msgcat::mcset ig {move the running foreground command to the background} {bugaa iwu na-agba ọsọ n'ihu gaa n'azụ}
 ::msgcat::mcset ig {move the running foreground command to the background (keeps running)} {Buga iwu na-agba n'ihu gaa n'azụ (ọ ka na-agba)}
+::msgcat::mcset ig {move this session's running foreground command to a background shell; keeps running} {Kwaga iwu na-arụ ọrụ n'ihu nke nnọkọ a gaa na shell n'azụ; ọ ga-anọgide na-arụ ọrụ}
 ::msgcat::mcset ig {moving around} ịgagharị
 ::msgcat::mcset ig name Aha
 ::msgcat::mcset ig {name a key first} {Kpọọ igodo aha tupu}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset ig {neon impressionism} {neon impressionism}
 ::msgcat::mcset ig {network (optional — e.g. libera; empty = any)} {Netwọk (nhọrọ — dịka libera; efu = ọ bụla)}
 ::msgcat::mcset ig {network to scope the grant to} {Netwọk iji kechie onyinye ahụ}
+::msgcat::mcset ig new ọhụrụ
 ::msgcat::mcset ig {new buffer} {Buffer ọhụrụ}
 ::msgcat::mcset ig {new entry — replace this text, then Save} {Ntinye ọhụrụ — dochie ederede a, wee Save}
 ::msgcat::mcset ig {new name for %s} {Aha ọhụrụ maka %s}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset ig {no IRC buffer selected} {Enweghị buffer IRC ahọpụtara}
 ::msgcat::mcset ig {no MCP servers configured — Add server… writes one into config.toml} {Enweghị sava MCP ahaziri — Add server… na-edetu otu n'ime config.toml}
 ::msgcat::mcset ig {no URLs in this buffer} {Enweghị URL na buffer a}
+::msgcat::mcset ig {no [a2a_agents] entry — this peer cannot be dialed} {enweghị ntinye [a2a_agents] — enweghị ike ịkpọ peer a}
 ::msgcat::mcset ig {no alias /%s} {Enweghị alias /%s}
 ::msgcat::mcset ig {no background refresh} {Enweghị mmelite ndabere}
 ::msgcat::mcset ig {no buffer %s} {Enweghị buffer %s}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset ig {no code block in the last reply} {Enweghị ngọngọ koodu na azịza ikpeazụ}
 ::msgcat::mcset ig {no cron jobs} {Enweghị ọrụ cron}
 ::msgcat::mcset ig {no cron jobs — New… creates one} {Enweghị ọrụ cron — New… na-eke otu}
+::msgcat::mcset ig {no exchange yet} {enwebeghị mgbanwe}
 ::msgcat::mcset ig {no file — pick a guts file or type a path} {Enweghị faịlụ — họrọ faịlụ guts ma ọ bụ dee ụzọ}
 ::msgcat::mcset ig {no handler} {Enweghị onye njikwa}
+::msgcat::mcset ig {no heartbeat for %{mins} min} {enweghị heartbeat ruo %{mins} min}
+::msgcat::mcset ig {no heartbeat within the threshold} {enweghị heartbeat n'ime oke ahụ}
 ::msgcat::mcset ig {no history yet} {Enweghị akụkọ}
 ::msgcat::mcset ig {no host configured for this instance} {Enweghị host ahaziri maka instance a}
 ::msgcat::mcset ig {no instance selected} {Enweghị instance ahọpụtara}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset ig {no program to open URLs} {Enweghị mmemme maka imepe URL}
 ::msgcat::mcset ig {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {ahazibeghị onye na-enye ọ bụla — tinye ndenye [[custom_providers]] ma tọọ ụzọ [model] tupu ị gbaa otu nkeji}
 ::msgcat::mcset ig {no reading yet — press Refresh} {Enwebeghị ọgụgụ — pịa Refresh}
-::msgcat::mcset ig {no running tasks} {Enweghị ọrụ na-agba}
 ::msgcat::mcset ig {no sample available} {Enweghị ihe nlele}
 ::msgcat::mcset ig {no search bar on this surface} {Enweghị ogwe ọchụchọ na elu a}
 ::msgcat::mcset ig {no session matching %s} {ọ nweghị nnọkọ dabara %s}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset ig {no session open — switch the scope to the default, or open a session} {Enweghị nnọkọ meghere — gbanwee scope gaa na ndabara, ma ọ bụ mepee nnọkọ}
 ::msgcat::mcset ig {no session open — the catalogue needs one; the default scope still works from config.toml} {Enweghị nnọkọ meghere — katalọgụ chọrọ otu; scope ndabara ka na-arụ ọrụ site na config.toml}
 ::msgcat::mcset ig {no setting %s — try filter or bare} {Enweghị setting %s — nwaa filter ma ọ bụ bare}
+::msgcat::mcset ig {no shells or monitors to show} {enweghị okpokoro iwu ma ọ bụ ndị nlele iji gosi}
 ::msgcat::mcset ig {no skills found} {enweghị skills ahụrụ}
 ::msgcat::mcset ig {no such URL — /urls lists them} {Enweghị URL dị otú a — /urls na-edepụta ha}
 ::msgcat::mcset ig {no such file: %s} {Enweghị faịlụ dị otú a: %s}
 ::msgcat::mcset ig {no swap target yet — set one with /locale secondary <id>} {enweghị asụsụ ịgbanwe ka — hazie ya site na /locale secondary <id>}
+::msgcat::mcset ig {no task selected} {enweghị ọrụ a họrọ}
 ::msgcat::mcset ig {no triggers} {Enweghị mkpali}
 ::msgcat::mcset ig {no triggers — New… creates one} {Enweghị mkpali — New… na-eke otu}
 ::msgcat::mcset ig {no upstream reading for %s} {Enweghị ọgụgụ upstream maka %s}
 ::msgcat::mcset ig {no word match} {Enweghị okwu dabara}
 ::msgcat::mcset ig {no xdg-open — path copied instead} {Enweghị xdg-open — e ṅomiri ụzọ kama}
+::msgcat::mcset ig {node log} {ndekọ node}
 ::msgcat::mcset ig {none loaded} {Ọ dịghị nke ebutere}
 ::msgcat::mcset ig {none recorded} {ọ dịghị onye dekọrọ}
+::msgcat::mcset ig {none since this gateway started} {ọ dịghị kemgbe Gateway a malitere}
 ::msgcat::mcset ig {none yet} {ọ nweghị ka}
 ::msgcat::mcset ig {normie is pure Ctrl — no emacs prefix chords.} {normie bụ Ctrl ọcha — enweghị emacs prefix chords.}
 ::msgcat::mcset ig {normie: select all · emacs: start of line} {normie: select all · emacs: mmalite ahịrị}
 ::msgcat::mcset ig {not a channel} {Ọ bụghị channel}
 ::msgcat::mcset ig {not a key = value line: %s} {Ọ bụghị ahịrị igodo = uru: %s}
+::msgcat::mcset ig {not a node in the attached gateway's cluster registry: %s} {ọ́ bụghị node na ndekọ cluster nke gateway ejikọrọ: %s}
 ::msgcat::mcset ig {not a number} {ọ bụghị ọnụọgụ}
 ::msgcat::mcset ig {not a valid http(s) url: %s} {Ọ bụghị url http(s) ziri ezi: %s}
 ::msgcat::mcset ig {not a valid ssh host: %s} {Ọ bụghị host ssh ziri ezi: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset ig {not attached to a gateway} {Ejikọghị na gateway}
 ::msgcat::mcset ig {not configured} Ahazibeghị
 ::msgcat::mcset ig {not ignoring %s} {Anaghị eleghara %s anya}
+::msgcat::mcset ig {not installed} {a wụnye beghị}
 ::msgcat::mcset ig {not reported} Akọpụtaghị
 ::msgcat::mcset ig {not running} {Anaghị agba}
 ::msgcat::mcset ig {not set in config.toml — the built-in default applies. %s} {Edebeghị ya na config.toml — ndabara dị n'ime ka na-arụ ọrụ. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset ig off Gbanyụrụ
 ::msgcat::mcset ig {off (the default)} {Gbanyụrụ (ndabara)}
 ::msgcat::mcset ig offline {anọghị n'ịntanetị}
+::msgcat::mcset ig ok {dị mma}
 ::msgcat::mcset ig on Gbanyere
 ::msgcat::mcset ig {on (the default)} {Gbanyere (ndabara)}
 ::msgcat::mcset ig {on failure} {Mgbe ọ dara}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset ig {open links} {mepee njikọ}
 ::msgcat::mcset ig {open the engine log} {mee log engine}
 ::msgcat::mcset ig {open the joined session before /leave (on %s)} {mepee nnọkọ e jikọrọ tupu /leave (na %s)}
+::msgcat::mcset ig {open the selected child session} {mepee nnọkọ nwa a họrọ}
 ::msgcat::mcset ig {open the selected skill in the Dev editor} {Mepee nka ahọpụtara na edito Dev}
 ::msgcat::mcset ig {open the setup wizard (re-runnable; edits config.toml in place)} {mepee wizard nhazi (enwere ike ịgba ya ọzọ; na-edezi config.toml n'ebe ọ nọ)}
 ::msgcat::mcset ig {open the share sheet} {mepee mpempe nkesa}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset ig {override cleared — the default applies} {Ehichapụrụ override — ndabara ka na-arụ ọrụ}
 ::msgcat::mcset ig {override failed: %s} {Override dara: %s}
 ::msgcat::mcset ig {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {ACL enweghị ike idakọ njirimara onye nwe %{id} — jiri telegram:<ID ọnụọgụ>, irc:<akaụntụ services>, ma ọ bụ mask nick!user@host}
+::msgcat::mcset ig owner/repository {onye nwe/repository}
 ::msgcat::mcset ig {owners: %s} {Ndị nwe: %s}
 ::msgcat::mcset ig {pair a desktop with this agent} {jikọọ desktop na onye nnọchite a}
 ::msgcat::mcset ig {partly failed: %s} {Dara n'ụfọdụ: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset ig plugin plugin
 ::msgcat::mcset ig {plugin directory git history} {akụkọ git nke ndekọ plugin}
 ::msgcat::mcset ig {plugin list} {ndepụta plugin}
+::msgcat::mcset ig {plugin provider driver} {ọkwọ onye na-enye plugin}
 ::msgcat::mcset ig {plugins reloaded on %s} {ebugoro plugin ọzọ na %s}
 ::msgcat::mcset ig {pop %s out into its own window} {Wepụta %s n'ime windo nke ya}
 ::msgcat::mcset ig {pop the buffer out into its own window} {wepụ buffer n'ime window nke ya}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset ig {prefix: window & dock commands} {prefix: iwu window & dock}
 ::msgcat::mcset ig {press Attach in the Instances tab} {pịa Attach na tab Instances}
 ::msgcat::mcset ig preview {nlegharị anya}
+::msgcat::mcset ig {preview an AI extension change and explicitly apply its diff} {lee mgbanwe mgbasawanye AI anya wee tinye diff ya n'ụzọ doro anya}
 ::msgcat::mcset ig {preview failed: %s} {nlegharị anya dara: %s}
 ::msgcat::mcset ig {previous buffer} {buffer gara aga}
 ::msgcat::mcset ig {previous command was not a yank} {iwu gara aga abụghị yank}
 ::msgcat::mcset ig {previous match} {mkpokọta gara aga}
 ::msgcat::mcset ig {previous session} {session gara aga}
+::msgcat::mcset ig {probing %s…} {na-enyocha %s…}
 ::msgcat::mcset ig {proc body} {proc body}
 ::msgcat::mcset ig {profile unavailable: %s} {profile adị: %s}
 ::msgcat::mcset ig profiles: profiles:
 ::msgcat::mcset ig prompt {ngwa mkpali}
 ::msgcat::mcset ig {prompt breakdown} {nkọwa ngwa mkpali}
 ::msgcat::mcset ig {prompt tokens} {prompt tokens}
+::msgcat::mcset ig {proposal only, not applied} {atụmatụ naanị, etinyebeghị ya}
 ::msgcat::mcset ig provider provider
 ::msgcat::mcset ig {provider / model} {provider / model}
 ::msgcat::mcset ig {provider base URL} {base URL provider}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset ig {re-sync the slopdrop state mirror} {Mekọọ enyo ọnọdụ slopdrop ọzọ}
 ::msgcat::mcset ig {read and set the clipboard} {gụọ ma tọọ klipbọọdụ}
 ::msgcat::mcset ig {read text aloud} {gụọ ederede n'olu dara ụda}
+::msgcat::mcset ig {read-only: [approvals] allowlist} {na-agụ naanị: allowlist [approvals]}
 ::msgcat::mcset ig {read-only: this session lives on %1$s (as read at %2$s)} {naanị ịgụ: session a dị na %1$s (dịka a gụrụ ya na %2$s)}
 ::msgcat::mcset ig {read-only: this skill comes from the %s library} {naanị ịgụ: nkà a sitere n'ọba %s}
 ::msgcat::mcset ig reasoning echiche
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset ig {refused to open %s (only http, https, mailto)} {jụrụ imeghe %s (naanị http, https, mailto)}
 ::msgcat::mcset ig {refused: %s} {jụrụ: %s}
 ::msgcat::mcset ig {region copied} {ederela mpaghara}
+::msgcat::mcset ig registered {edebanyere aha}
 ::msgcat::mcset ig {registry not saved: %s} {edebekwaghị ndekọ aha: %s}
 ::msgcat::mcset ig {reload on %1$s failed: %2$s} {ibugharị na %1$s dara: %2$s}
 ::msgcat::mcset ig {reload the mechanisms} {megharịa usoro ndị ahụ}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset ig {resume a session (prefix ok)} {gaa n'ihu na session (mbido ezuola)}
 ::msgcat::mcset ig {retry failed: %s} {mgbalị rịchaghị: %s}
 ::msgcat::mcset ig {retrying last prompt…} {na-anwaghachi mkpali ikpeazụ…}
+::msgcat::mcset ig {review files for an explicit upstream contribution} {tulee faịlụ maka onyinye upstream doro anya}
+::msgcat::mcset ig {review standing global and session tool permissions} {nyochaa ikike ngwaọrụ zuru ụwa ọnụ na nke nnọkọ na-adịgide adịgụ}
 ::msgcat::mcset ig revision nsụgharị
 ::msgcat::mcset ig {revision history} {akụkọ nsụgharị}
+::msgcat::mcset ig {revoke refused} {ajụrụ iwepụ}
 ::msgcat::mcset ig {revoke the selected identity's grant} {kagbuo ikike njirimara ahọpụtara}
 ::msgcat::mcset ig role ọrụ
 ::msgcat::mcset ig {role to grant} {ọrụ a ga-enye}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset ig {saved to %s} {echekwala na %s}
 ::msgcat::mcset ig saved. echekwala.
 ::msgcat::mcset ig {scaffold a new plugin} {kpụọ plugin ọhụrụ}
+::msgcat::mcset ig {scaffold a user plugin and open it in this editor} {mepụta plugin onye ọrụ ma meghe ya na edita a}
 ::msgcat::mcset ig {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {ọrụ ahaziri ahazi; /crons add "<sched>" [session=<id>] <prompt> (aha ọzọ /cron)}
 ::msgcat::mcset ig scope ókè
 ::msgcat::mcset ig script edemede
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset ig {select %s first} {họrọ %s tupu}
 ::msgcat::mcset ig {select a checkpoint first} {họrọ checkpoint tupu}
 ::msgcat::mcset ig {select a file, or New… to create one} {họrọ faịlụ, ma ọ bụ Ọhụrụ… iji mepụta otu}
+::msgcat::mcset ig {select a grant first} {buru ụzọ họrọ ikike}
 ::msgcat::mcset ig {select a handler first} {họrọ handler tupu}
 ::msgcat::mcset ig {select a member first} {họrọ otu onye tupu}
 ::msgcat::mcset ig {select a route} {họrọ ụzọ}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset ig {select an assignment first} {họrọ ọrụ e kenye tupu}
 ::msgcat::mcset ig {select an entry first} {họrọ ndenye tupu}
 ::msgcat::mcset ig {select an identity first} {họrọ njirimara tupu}
+::msgcat::mcset ig {selected task details and shell output} {nkọwa ọrụ a họrọ na ndapụta okpokoro iwu}
 ::msgcat::mcset ig {selected: %s} {ahọpụtala: %s}
 ::msgcat::mcset ig {send clipboard as prompt} {ziga clipboard dị ka ngwa mkpali}
 ::msgcat::mcset ig {send failed: %s} {izipu rịchaghị: %s}
 ::msgcat::mcset ig {send the message; while a turn runs, queue it as steering} {Ziga ozi ahụ; mgbe ntụgharị na-agba, dobe ya dị ka steering}
+::msgcat::mcset ig sent ezipụrụ
+::msgcat::mcset ig {sent to the owner's home chat} {ezipụrụ na chat ụlọ nke onye nwe}
 ::msgcat::mcset ig server sava
 ::msgcat::mcset ig {server buffers merged} {jikọtala ebe nchekwa sava}
 ::msgcat::mcset ig {server buffers separate} {ebe nchekwa sava dị iche}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset ig {settings, one key = value per line} {ntọala, otu key = value kwa ahịrị}
 ::msgcat::mcset ig {setup_done marker NOT saved: %s} {Akara setup_done edebeghị: %s}
 ::msgcat::mcset ig {shell %1$s finished} {shell %1$s gwụchala}
-::msgcat::mcset ig shells shells
+::msgcat::mcset ig {shells, monitors and subagents} {okpokoro iwu, ndị nlele na ndị nnọchite anya nta}
 ::msgcat::mcset ig shells_header {shells ndabere:}
 ::msgcat::mcset ig shells_none {(Enweghị shells ndabere — /background <cmd> na-amalite otu)}
 ::msgcat::mcset ig {show current configuration} {gosi ntọala ugbu a}
 ::msgcat::mcset ig {show every key in this mode} {gosi igodo ọ bụla na ọnọdụ a}
 ::msgcat::mcset ig {show or hide the session list} {gosi ma ọ bụ zoo ndepụta session}
 ::msgcat::mcset ig {show or switch model (alias | model@provider | custom:<prov>)} {gosi ma ọ bụ gbanwee model (alias | model@provider | custom:<prov>)}
+::msgcat::mcset ig {show selected shell output} {gosi ndapụta okpokoro iwu a họrọ}
 ::msgcat::mcset ig {show short messages} {gosi ozi mkpirikpi}
 ::msgcat::mcset ig {show the model's reasoning blocks (same as /reasoning)} {Gosi ngalaba ịtụgharị uche nke model (otu dịka /reasoning)}
 ::msgcat::mcset ig {show unclaimed} {gosi ndị a na-azọrọghị}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset ig spend mefu
 ::msgcat::mcset ig {split: %s} {gbawara: %s}
 ::msgcat::mcset ig {ssh to %1$s failed: %2$s} {ssh na %1$s dara: %2$s}
+::msgcat::mcset ig {stale — no heartbeat within the threshold} {ochie — enweghị heartbeat n'ime oke ahụ}
+::msgcat::mcset ig {standing global and session permission grants} {ikike ngwaọrụ zuru ụwa ọnụ na nke nnọkọ na-adịgide adịgụ}
 ::msgcat::mcset ig state ọnọdụ
 ::msgcat::mcset ig {state       never reached} {ọnọdụ       a ruteghị}
 ::msgcat::mcset ig {state       reachable} {ọnọdụ       a pụrụ iru}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset ig {stored in the encrypted vault (%1$s): %2$s} {edebere n'igbe nchekwa ezoro ezo (%1$s): %2$s}
 ::msgcat::mcset ig {stream handler: %s} {stream handler: %s}
 ::msgcat::mcset ig {subagent %1$s finished} {subagent %1$s gwụchala}
-::msgcat::mcset ig subagents subagents
 ::msgcat::mcset ig subagents_header {subagents na-agba:}
 ::msgcat::mcset ig subagents_none {(Enweghị subagents na-agba — /btw <prompt> na-amalite otu, ma ọ bụ model na-eji delegate_task)}
 ::msgcat::mcset ig {suspend failed: %{e}} {ịkwụsịtụ dara: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset ig {switch the selected skill off} {gbanyụọ nkà ahọpụtara}
 ::msgcat::mcset ig {switch the selected skill on} {gbanwee nkà ahọpụtara}
 ::msgcat::mcset ig {switch to the %s tab} {gaa na tab %s}
+::msgcat::mcset ig {sync requested: %s} {arịọrọ sync: %s}
 ::msgcat::mcset ig {tab 1} {tab 1}
 ::msgcat::mcset ig {tab 2} {tab 2}
 ::msgcat::mcset ig {tab 3} {tab 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset ig tasks_none {(enweghị ọrụ na-agba ọsọ)}
 ::msgcat::mcset ig tasks_not_found {enweghị ọrụ dị otu a: %{id}}
 ::msgcat::mcset ig tasks_not_running {ọrụ %{id} agwụla}
-::msgcat::mcset ig {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset ig {tcl-lsp: event stream unavailable: %s} {tcl-lsp: event stream adịghị: %s}
-::msgcat::mcset ig {tcl-lsp: gateway would not start it: %s} {tcl-lsp: gateway agaghị ebido ya: %s}
-::msgcat::mcset ig {tcl-lsp: not started on the gateway — %s} {tcl-lsp: ebidobeghị na gateway — %s}
 ::msgcat::mcset ig {that buffer is not split} {ebe nchekwa ahụ agbawaghị}
 ::msgcat::mcset ig {the %s plan} {atụmatụ %s}
 ::msgcat::mcset ig {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {oghere API key na-anabata AHA nke env var (dị ka %{example}), ọ bụghị key ahụ n'onwe ya — key ahụ na-aba n'ime oghere ezoro ezo}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset ig {the gateway answered without a report} {gateway zara na-enweghị akụkọ}
 ::msgcat::mcset ig {the model/provider pair is incomplete — the gateway will not route until both are present} {ụzọ model/onye na-enye ezughị — gateway agaghị eduzi ruo mgbe ha abụọ dị}
 ::msgcat::mcset ig {the options changed, so that is a fresh preview — press “Write it” again to write it} {nhọrọ agbanweela, ya mere nke a bụ nlegharị anya ọhụrụ — pịa “Write it” ọzọ ka edee ya}
+::msgcat::mcset ig {the peer has not been sent this vault yet} {e zigabeghị peer igbe nchekwa a}
+::msgcat::mcset ig {the peer holds this vault} {peer nwere igbe nchekwa a}
 ::msgcat::mcset ig {the primary route is \[model\] provider/default — change it there, not here} {ụzọ bụ isi bụ \[model\] provider/default — gbanwee ya ebe ahụ, ọ bụghị ebe a}
 ::msgcat::mcset ig {the provider/model route this session sends to} {Ụzọ provider/model nke nnọkọ a na-ezigara}
 ::msgcat::mcset ig {the same, on the privileged path (owner only)} {otu ihe ahụ, site n'ụzọ ikike pụrụ iche (naanị owner)}
 ::msgcat::mcset ig {the selected entry (edit, then Save)} {ndenye ahọpụtara (dezigharịa, wee Save)}
+::msgcat::mcset ig {the server stopped: %s} {server ahụ kwụsịrị: %s}
 ::msgcat::mcset ig {the synthwave splash} {ihuenyo mmalite synthwave}
 ::msgcat::mcset ig {the text after the name was NOT sent anywhere — type the value into the masked field} {E ZIGHỊ ederede dị n'azụ aha ahụ ebe ọ bụla — dee uru ahụ n'ogige ezoro ezo}
 ::msgcat::mcset ig {the transcript} {transcript ahụ}
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset ig thinking… na-eche…
 ::msgcat::mcset ig {thinking… (%s)} {na-eche… (%s)}
 ::msgcat::mcset ig {this file's revisions, their diffs, and restore} {nsụgharị faịlụ a, ndịiche ha, na iweghachi}
+::msgcat::mcset ig {this gateway} {gateway a}
 ::msgcat::mcset ig {this gateway has no Tcl interpreter} {gateway a enweghị onye ntụgharị Tcl}
 ::msgcat::mcset ig {this list} {ndepụta a}
+::msgcat::mcset ig {this node has no vault} {node a enweghị igbe nchekwa}
 ::msgcat::mcset ig {this route} {ụzọ a}
 ::msgcat::mcset ig {this session} {session a}
 ::msgcat::mcset ig {this session follows the default language again (%{def})} {session a na-agbaso asụsụ e debere ọzọ (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset ig {transcript finalization failed: %s} {Ịmecha ederede dara: %s}
 ::msgcat::mcset ig {transcript refetched} {egharịala transcript ọzọ}
 ::msgcat::mcset ig {transcript — arrows to read, %s for composer} {transcript — akụ dị ka ịgụ, %s maka composer}
+::msgcat::mcset ig {translate text with the dedicated translation model, without an agent turn} {sụgharịa ederede na model nsụgharị ahapụtara, na-enweghị ntụgharị agent}
+::msgcat::mcset ig {translation result} {nsonaazụ nsụgharị}
 ::msgcat::mcset ig {trigger %1$s %2$sd} {kpali %1$s %2$sd}
 ::msgcat::mcset ig {trigger created} {emepụtala trigger}
 ::msgcat::mcset ig {trigger updated} {emelitela trigger}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset ig {usage: /steer <instruction>} {usage: /steer <instruction>}
 ::msgcat::mcset ig used ejirila
 ::msgcat::mcset ig user {onye ọrụ}
+::msgcat::mcset ig {user copy} {nke onye ọrụ}
 ::msgcat::mcset ig {user identities, one per line} {njirimara onye ọrụ, otu kwa ahịrị}
 ::msgcat::mcset ig {user name} {aha onye ọrụ}
 ::msgcat::mcset ig {user profile} {profaịlụ onye ọrụ}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset ig {value (TOML: 5, true, "text", ["a","b"])} {value (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset ig veles veles
 ::msgcat::mcset ig {veles editor} {onye nchịkọta veles}
+::msgcat::mcset ig {veles fleet: node %{node} is failing — %{detail}} {veles fleet: node %{node} na-ada — %{detail}}
+::msgcat::mcset ig {veles fleet: node %{node} is stale — %{detail}} {veles fleet: node %{node} dị ochie — %{detail}}
+::msgcat::mcset ig {veles fleet: node %{node} recovered (it was %{was})} {veles fleet: node %{node} gbakere (ọ bụ %{was})}
 ::msgcat::mcset ig {veles · keyboard help (bindings: %s)} {veles · enyemaka keyboard (bindings: %s)}
 ::msgcat::mcset ig {veles · touch help} {veles · enyemaka mmetụ}
 ::msgcat::mcset ig {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset ig widgets widgets
 ::msgcat::mcset ig {will be stored in the encrypted vault} {a ga-edebe ya n'igbe nchekwa ezoro ezo}
 ::msgcat::mcset ig {wire protocol} {wire protocol}
+::msgcat::mcset ig {without force to} {na-enweghị force na}
 ::msgcat::mcset ig {wizard language} {asụsụ wizard}
 ::msgcat::mcset ig {wizard language: %s} {asụsụ wizard: %s}
 ::msgcat::mcset ig {write failed: %s} {ide ihe dara: %s}
 ::msgcat::mcset ig {write grants that still expire (the expiry is dropped — a config line cannot expire)} {dee ikike ndị ka na-agwụ (a na-ewepụ oge ngwụcha — ahịrị config enweghị ike ịgwu)}
 ::msgcat::mcset ig {write the entries back} {dee ndenye ndị ahụ azụ}
 ::msgcat::mcset ig {write the store's runtime rules into config.toml} {dee iwu ịgba ọsọ nke ụlọ nchekwa n'ime config.toml}
+::msgcat::mcset ig {write the whole extension from its purpose, as a reviewed preview} {dee ndọtị dum site n'ebumnobi ya, dị ka nhụle e nyochara}
 ::msgcat::mcset ig {write these values into config.toml as the defaults} {dee ụkpụrụ ndị a n'ime config.toml dị ka ndị kpụ ọkụ n'ọnụ}
 ::msgcat::mcset ig writing {ide ihe}
 ::msgcat::mcset ig {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {ide onye nwe [acl] mbụ na-atụgharị gateway a gaa n'ọnọdụ CURATED: ọrụ ndabara na-aghọ guest (fail-closed) na ndepụta nkwado nke adapter abụghịzi oke ntụkwasị obi}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset ig {▲ VELES — neon impressionism} {▲ VELES — neon impressionism}
 ::msgcat::mcset ig {▲ earlier} {▲ nke gara aga}
 ::msgcat::mcset ig {▼ later} {▼ nke na-abịa}
+::msgcat::mcset ig {▾ Cluster registry} {▾ Ndebanye aha cluster}
 ::msgcat::mcset ig {▾ new output — follow} {▾ mmepụta ọhụrụ — soro}
 ::msgcat::mcset ig {○ unattached} {○ enweghị njikọ}
 ::msgcat::mcset ig {● %1$s — %2$s} {● %1$s — %2$s}

@@ -66,6 +66,8 @@ proc ::vacl::build {w} {
     ttk::button $w.bar.user_del -text [::vi18n::mc {Delete user}] \
         -command [list ::vacl::user_delete_selected $w]
     ttk::separator $w.bar.sep2 -orient vertical
+    ttk::button $w.bar.grants -text [::vi18n::mc {Permission grants…}] \
+        -command [list ::voverlay::open grants]
     ttk::button $w.bar.refresh -text [::vi18n::mc {Refresh}] \
         -command [list ::vacl::load $w]
     ttk::button $w.bar.lock -text [::vi18n::mc {Lock down}] \
@@ -75,7 +77,7 @@ proc ::vacl::build {w} {
     pack $w.bar.sep1 -side left -fill y -padx 6 -pady 2
     pack $w.bar.user_new $w.bar.user_edit $w.bar.user_del -side left -padx {0 6}
     pack $w.bar.sep2 -side left -fill y -padx 6 -pady 2
-    pack $w.bar.refresh $w.bar.lock -side left -padx {0 6}
+    pack $w.bar.grants $w.bar.refresh $w.bar.lock -side left -padx {0 6}
     pack $w.bar.status -side right -fill x -expand 1 -padx 8
 
     # ── the emergency brake ──
@@ -153,11 +155,12 @@ proc ::vacl::build {w} {
     ::va11y::name $w.bar.user_new [::vi18n::mc {create a cross-network user}]
     ::va11y::name $w.bar.user_edit [::vi18n::mc {edit the selected user}]
     ::va11y::name $w.bar.user_del [::vi18n::mc {delete the selected user}]
+    ::va11y::name $w.bar.grants [::vi18n::mc {review standing global and session tool permissions}]
     ::va11y::name $w.bar.refresh [::vi18n::mc {refresh identities}]
     ::va11y::name $w.bar.lock [::vi18n::mc {refuse every connector until lifted}]
     ::va11y::name $w.lock.act [::vi18n::mc {lift the lockdown (only a local frontend can)}]
     ::va11y::tab_order [list $w.bar.grant $w.bar.revoke $w.bar.promote \
-        $w.bar.user_new $w.bar.user_edit $w.bar.user_del $w.bar.refresh \
+        $w.bar.user_new $w.bar.user_edit $w.bar.user_del $w.bar.grants $w.bar.refresh \
         $w.bar.lock $w.lock.act $w.split.list.t $w.split.list.u $w.split.help]
 
     load $w

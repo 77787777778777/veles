@@ -177,6 +177,24 @@ where
             .map(|(_, e)| f(&e.value))
     }
 
+    /// Read the value `key` resolves to when the name and plugin match.
+    /// This is a selection, not a new registration: the ordinary lookup's
+    /// last-writer-wins behavior remains unchanged for unqualified names.
+    pub fn with_matching<R>(
+        &self,
+        key: &K,
+        matches: impl Fn(&T) -> bool,
+        f: impl FnOnce(&T) -> R,
+    ) -> Option<R> {
+        let v = self.read();
+        v.iter()
+            .rev()
+            .filter(|(k, _)| k == key)
+            .map(|(_, e)| &e.value)
+            .find(|value| matches(value))
+            .map(f)
+    }
+
     /// The owner of the registration `key` resolves to.
     pub fn owner_of(&self, key: &K) -> Option<Option<&'static str>> {
         let v = self.read();

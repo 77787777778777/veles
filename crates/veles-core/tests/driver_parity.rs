@@ -31,7 +31,7 @@
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 use veles_core::providers::{
-    CacheMode, ChatMessage, ChatRequest, PluginRoute, RouteClient, ToolMeta,
+    CacheMode, ChatMessage, ChatRequest, PluginRoute, RouteClient, ThreadRequest, ToolMeta,
 };
 
 /// The cdylib's file name on this platform: `libveles_plugin_anthropic_so.so`
@@ -55,6 +55,7 @@ const ANTHROPIC_RESPONSE: &str = r#"{
   "type": "message",
   "role": "assistant",
   "model": "claude-x",
+  "stop_reason": "end_turn",
   "content": [
     { "type": "thinking", "thinking": "weighing it up" },
     { "type": "text", "text": "Here is the answer." },
@@ -343,6 +344,7 @@ fn request(model: &str) -> ChatRequest {
         replay_reasoning: false,
         cache_mode: CacheMode::Off,
         extra_body: None,
+        thread: None,
     }
 }
 
@@ -536,14 +538,15 @@ async fn both_drivers() {
             let tcl_driver = veles_core::providers::driver("anthropic-messages")
                 .expect("the Tcl plugin registered `anthropic-messages`");
             assert!(
-                tcl_driver.plugin.starts_with("tcl:"),
-                "and it must be attributed to Tcl, got {}",
+                tcl_driver.plugin == "tcl:tcl-anthropic-driver",
+                "the dev override must preserve the plugin owner, got {}",
                 tcl_driver.plugin
             );
             veles_core::providers::register_driver(veles_core::providers::ProviderDriver {
                 name: "anthropic-tcl".into(),
                 plugin: tcl_driver.plugin.clone(),
                 call: tcl_driver.call.clone(),
+                provenance: tcl_driver.provenance.clone(),
             })
             .expect("alias the tcl driver");
 
@@ -560,6 +563,7 @@ async fn both_drivers() {
                 name: "anthropic-rust".into(),
                 plugin: so_driver.plugin.clone(),
                 call: so_driver.call.clone(),
+                provenance: so_driver.provenance.clone(),
             })
             .expect("alias the rust driver");
         })
@@ -570,6 +574,10 @@ async fn both_drivers() {
 /// of each. Parity is the point of the file; a feature test that exercised
 /// only one implementation would let them drift silently.
 const BOTH: &[&str] = &["anthropic-tcl", "anthropic-rust"];
+const NATIVE: &[&str] = &[
+    "tcl:tcl-anthropic-driver:anthropic-messages",
+    "so:anthropic-so:anthropic-messages",
+];
 
 /// Send `req` through one driver against one endpoint, with the endpoint
 /// knobs set. Returns the completion, or the error — callers decide which
@@ -596,6 +604,106 @@ fn default_route() -> veles_core::providers::PluginRoute {
     veles_core::providers::PluginRoute::default()
 }
 
+/// The Message Threads beta changes the request, not the conversation
+/// store. A create carries the full local context; a continue carries only
+/// the suffix and never repeats system, tools or old cache breakpoints.
+#[tokio::test]
+async fn message_threads_create_and_continue_have_the_documented_wire_shape() {
+    both_drivers().await;
+    let (url, seen) = fixture_server(ANTHROPIC_RESPONSE).await;
+    let mut create = request("claude-x");
+    create.cache_mode = CacheMode::Explicit;
+    create.thread = Some(ThreadRequest {
+        previous_message_id: None,
+    });
+    let mut cont = create.clone();
+    cont.messages = vec![ChatMessage::user("only this is new")];
+    cont.thread = Some(ThreadRequest {
+        previous_message_id: Some("msg_01".into()),
+    });
+    let native: Vec<String> = NATIVE
+        .iter()
+        .map(|name| (*name).to_string())
+        .filter(|name| veles_core::providers::driver(name).is_some())
+        .collect();
+    assert_eq!(
+        native.len(),
+        NATIVE.len(),
+        "both native drivers must be registered"
+    );
+    for d in &native {
+        let c = drive_with(d, &url, default_route(), create.clone())
+            .await
+            .unwrap_or_else(|e| panic!("{d}: create: {e}"));
+        assert_eq!(c.response_id.as_deref(), Some("msg_01"), "{d}");
+        assert_eq!(c.native_stop_reason.as_deref(), Some("end_turn"), "{d}");
+        assert!(c.response_complete, "{d}");
+        assert_eq!(c.fallback_message, None, "{d}: no fallback occurred");
+        drive_with(d, &url, default_route(), cont.clone())
+            .await
+            .unwrap_or_else(|e| panic!("{d}: continue: {e}"));
+    }
+    let requests = seen.lock().unwrap().clone();
+    let posts = posts_of(&requests);
+    let drivers = native;
+    assert_eq!(
+        posts.len(),
+        2 * drivers.len(),
+        "drivers={drivers:?}; registered={:?}; posts={posts:?}",
+        veles_core::providers::drivers()
+            .iter()
+            .map(veles_core::providers::ProviderDriver::qualified_name)
+            .collect::<Vec<_>>()
+    );
+    for (i, pair) in posts.as_chunks::<2>().0.iter().enumerate() {
+        let d = &drivers[i];
+        assert_eq!(
+            pair[0]["thread"],
+            serde_json::json!({"type": "create"}),
+            "{d}: captured create body: {}",
+            pair[0]
+        );
+        assert_eq!(
+            pair[1]["thread"],
+            serde_json::json!({
+                "type": "continue", "previous_message_id": "msg_01"
+            }),
+            "{d}"
+        );
+        assert!(pair[0].get("system").is_some(), "{d}: create keeps system");
+        assert!(pair[0].get("tools").is_some(), "{d}: create keeps tools");
+        assert!(
+            pair[1].get("system").is_none(),
+            "{d}: no system on continue"
+        );
+        assert!(pair[1].get("tools").is_none(), "{d}: no tools on continue");
+        assert_eq!(pair[1]["messages"].as_array().map(Vec::len), Some(1), "{d}");
+        // A thread does not cache for you: without a breakpoint on the new
+        // turn every continue pays full input price for the whole stored
+        // conversation. Exactly one, on the last block of the suffix; the
+        // create's system and tools breakpoints count again (limit 4).
+        assert_eq!(cache_controls(&pair[1]), 1, "{d}: {}", pair[1]);
+        let content = &pair[1]["messages"][0]["content"];
+        let last = content
+            .as_array()
+            .and_then(|blocks| blocks.last())
+            .unwrap_or(content);
+        assert!(
+            last.get("cache_control").is_some(),
+            "{d}: the breakpoint sits on the last new block: {}",
+            pair[1]
+        );
+        assert!(cache_controls(&pair[0]) <= 4, "{d}: {}", pair[0]);
+    }
+    for raw in requests.iter().filter(|r| r.starts_with("POST ")) {
+        assert!(
+            raw.to_ascii_lowercase()
+                .contains("anthropic-beta: message-threads-2026-08-12"),
+            "missing beta header: {raw}"
+        );
+    }
+}
+
 #[tokio::test]
 async fn the_same_driver_in_tcl_and_in_rust_agree_exactly() {
     both_drivers().await;
@@ -603,8 +711,8 @@ async fn the_same_driver_in_tcl_and_in_rust_agree_exactly() {
     // One fixture, two requests.
     let (url, seen) = fixture_server(ANTHROPIC_RESPONSE).await;
 
-    let from_tcl = drive("anthropic-tcl", &url, "claude-x").await;
-    let from_rust = drive("anthropic-rust", &url, "claude-x").await;
+    let from_tcl = drive(BOTH[0], &url, "claude-x").await;
+    let from_rust = drive(BOTH[1], &url, "claude-x").await;
 
     // ── THE assertion ────────────────────────────────────────────────
     assert_eq!(
@@ -710,6 +818,7 @@ fn request_with_image(model: &str) -> ChatRequest {
         replay_reasoning: false,
         cache_mode: CacheMode::Off,
         extra_body: None,
+        thread: None,
     }
 }
 
@@ -823,6 +932,7 @@ async fn plain_text_starting_with_a_bracket_reaches_the_endpoint_intact() {
         replay_reasoning: false,
         cache_mode: CacheMode::Off,
         extra_body: None,
+        thread: None,
     };
 
     for d in &drivers {
@@ -1549,7 +1659,7 @@ async fn a_non_streaming_call_gets_the_time_the_engine_gives_it() {
 /// assembling them is the part of streaming that a naive implementation gets
 /// wrong by parsing each fragment as it arrives.
 const SSE_STREAM: &str = r#"event: message_start
-data: {"type":"message_start","message":{"usage":{"input_tokens":101,"output_tokens":1,"cache_creation_input_tokens":5,"cache_read_input_tokens":90}}}
+data: {"type":"message_start","message":{"id":"msg_01","usage":{"input_tokens":101,"output_tokens":1,"cache_creation_input_tokens":5,"cache_read_input_tokens":90}}}
 
 event: content_block_start
 data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}
@@ -1654,10 +1764,144 @@ async fn a_streamed_answer_matches_the_same_answer_unstreamed() {
             Some(7),
             "{d}: thinking tokens must survive the stream, not be billed as answer output"
         );
+        assert_eq!(c.response_id.as_deref(), Some("msg_01"), "{d}");
+        assert_eq!(c.native_stop_reason.as_deref(), Some("tool_use"), "{d}");
+        assert!(
+            c.response_complete,
+            "{d}: message_stop completes the response"
+        );
     }
 }
 
-/// Text arrives as deltas WHILE the stream runs, which is the entire point of
+/// A native response with no fallback is storable: an empty fallback
+/// marker is absent metadata, not a fallback model response.
+#[tokio::test]
+async fn a_complete_stream_without_fallback_can_advance_a_thread_cursor() {
+    both_drivers().await;
+    let stream = SSE_STREAM.replace("tool_use", "end_turn");
+    let leaked: &'static str = Box::leak(stream.into_boxed_str());
+    let (url, _seen) = route_server(CATALOG_MODERN, leaked, true, 200).await;
+    for d in available_drivers() {
+        let mut req = request("claude-x");
+        req.stream = true;
+        let c = drive_with(d, &url, default_route(), req)
+            .await
+            .unwrap_or_else(|e| panic!("{d}: completed fixture: {e}"));
+        assert_eq!(c.response_id.as_deref(), Some("msg_01"), "{d}");
+        assert_eq!(c.native_stop_reason.as_deref(), Some("end_turn"), "{d}");
+        assert!(c.response_complete, "{d}");
+        assert_eq!(c.fallback_message, None, "{d}: empty is not a fallback");
+    }
+}
+
+/// The documented server-side fallback marker: an ENTRY in
+/// `usage.iterations` whose `type` is `fallback_message`, carrying the model
+/// that served the turn (refusals-and-fallback docs). The API does not store
+/// such a turn, so it must never become a thread cursor.
+const FALLBACK_ITERATIONS: &str = r#""iterations":[{"type":"message","model":"claude-x","input_tokens":535,"output_tokens":0},{"type":"fallback_message","model":"claude-opus-4-8","input_tokens":101,"output_tokens":42}]"#;
+
+#[tokio::test]
+async fn a_fallback_model_response_is_detected_streamed_and_unstreamed() {
+    both_drivers().await;
+    let body = ANTHROPIC_RESPONSE.replace(
+        r#""usage": {"#,
+        &format!(r#""usage": {{ {FALLBACK_ITERATIONS},"#),
+    );
+    let body: &'static str = Box::leak(body.into_boxed_str());
+    let stream = SSE_STREAM.replace(
+        r#""usage":{"output_tokens":42,"#,
+        &format!(r#""usage":{{{FALLBACK_ITERATIONS},"output_tokens":42,"#),
+    );
+    assert_ne!(stream, SSE_STREAM, "the fixture edit must apply");
+    let stream: &'static str = Box::leak(stream.into_boxed_str());
+    let (json_url, _seen) = fixture_server(body).await;
+    let (sse_url, _seen) = route_server(CATALOG_MODERN, stream, true, 200).await;
+    for d in available_drivers() {
+        let c = drive_with(d, &json_url, default_route(), request("claude-x"))
+            .await
+            .unwrap_or_else(|e| panic!("{d}: unstreamed: {e}"));
+        assert_eq!(
+            c.fallback_message.as_deref(),
+            Some("claude-opus-4-8"),
+            "{d}: unstreamed fallback entry"
+        );
+        let mut req = request("claude-x");
+        req.stream = true;
+        let c = drive_with(d, &sse_url, default_route(), req)
+            .await
+            .unwrap_or_else(|e| panic!("{d}: streamed: {e}"));
+        assert_eq!(
+            c.fallback_message.as_deref(),
+            Some("claude-opus-4-8"),
+            "{d}: streamed fallback entry (final message_delta)"
+        );
+    }
+}
+
+/// Thread errors are identified by `error.details.error_code`, not by the
+/// type (`invalid_request_error` / `not_found_error`) or the prose. A driver
+/// that drops the code makes a 400 such as `thread_fingerprint_mismatch`
+/// unrecognizable to the engine's replay classifier, and the turn fails.
+#[tokio::test]
+async fn a_thread_error_code_survives_the_driver() {
+    both_drivers().await;
+    let envelope = r#"{"type":"error","error":{"type":"invalid_request_error","message":"thread: a maximum of 4 blocks with cache_control may be provided when `thread` is set. Found 5.","details":{"error_code":"thread_unsupported_request","unsupported":["cache_control"]}},"request_id":"req_1"}"#;
+    let (url, _seen) = route_server(CATALOG_MODERN, envelope, false, 400).await;
+    let (sse_url, _seen) = route_server(CATALOG_MODERN, envelope, true, 400).await;
+    for d in available_drivers() {
+        for (stream, url) in [(false, &url), (true, &sse_url)] {
+            let mut req = request("claude-modern");
+            req.stream = stream;
+            let err = drive_with(d, url, default_route(), req)
+                .await
+                .expect_err("a 400 is an error");
+            let msg = err.to_string();
+            assert!(
+                matches!(
+                    err,
+                    veles_core::providers::ProviderError::Client { status: 400, .. }
+                ),
+                "{d} stream={stream}: {err:?}"
+            );
+            assert!(
+                msg.contains("invalid_request_error"),
+                "{d} stream={stream}: {msg}"
+            );
+            assert!(msg.contains("Found 5."), "{d} stream={stream}: {msg}");
+            assert!(
+                msg.contains("thread_unsupported_request"),
+                "{d} stream={stream}: the error code is lost: {msg}"
+            );
+            assert!(
+                msg.contains("unsupported: cache_control"),
+                "{d} stream={stream}: {msg}"
+            );
+        }
+    }
+}
+
+/// An id received at message_start is not enough to continue: without the
+/// final message_stop, the server may not have stored the interrupted turn.
+#[tokio::test]
+async fn a_stream_without_message_stop_cannot_advance_a_thread_cursor() {
+    both_drivers().await;
+    let truncated = SSE_STREAM
+        .split("event: message_stop")
+        .next()
+        .expect("stream before message_stop")
+        .to_string();
+    let leaked: &'static str = Box::leak(truncated.into_boxed_str());
+    let (url, _seen) = route_server(CATALOG_MODERN, leaked, true, 200).await;
+    for d in available_drivers() {
+        let mut req = request("claude-x");
+        req.stream = true;
+        let c = drive_with(d, &url, default_route(), req)
+            .await
+            .unwrap_or_else(|e| panic!("{d}: truncated fixture: {e}"));
+        assert_eq!(c.response_id.as_deref(), Some("msg_01"), "{d}");
+        assert!(!c.response_complete, "{d}: no message_stop arrived");
+    }
+}
 /// streaming. A driver that buffered and emitted once at the end would pass
 /// every assertion above and still feel like the old behaviour.
 #[tokio::test]

@@ -51,6 +51,15 @@ step() {
 # change something, that is a finding, not a fixup to do silently.
 step "rustfmt"  cargo fmt --all --check
 step "clippy"   cargo clippy --workspace --all-features --all-targets -- -D warnings
+# The public export refuses a private identifier or a credential shape
+# (scripts/release/export-public.sh). Nothing ran it before a release, so
+# a fixture brought back an identifier 9858e234 had scrubbed and every
+# gate stayed green while the export would refuse. It checks the tree
+# about to be committed: `git stash create` makes a dangling commit of
+# the tracked and staged edits without touching the stash list or any
+# ref (HEAD when nothing is modified). Its scratch copy lives under the
+# gate's TMPDIR, removed with it.
+step "public export check" bash -c 'rev=$(git stash create 2>/dev/null); bash scripts/release/export-public.sh --check "${rev:-HEAD}"'
 # The binary as it ships: DEFAULT features. Every other step here turns
 # on --all-features, which compiles the `test-support` modules into the
 # library too, so code that calls one (crate::scratch) passed the whole
@@ -77,6 +86,7 @@ step "process plugin fixture" cargo build -p veles-plugin-echo
 # satisfy dependencies so `std` only shows up once". Its own (empty)
 # tests are nothing to lose.
 step "cargo test" env VELES_REQUIRE_PLUGIN_SO=1 cargo test --workspace --exclude veles-runtime --all-features
+step "browser extension" bash -c 'node --check browser-extension/background.js && node --check browser-extension/popup.js && node browser-extension/popup-test.cjs && node browser-extension/background-test.cjs'
 # The docs site agrees with the published extension API spec (its
 # sources live outside this repo, so no cargo test can read them; the
 # spec, changelog and docs/extending.md are held by tests/ext_api.rs in
@@ -213,7 +223,7 @@ step "android rebuild scope" bash scripts/android-rebuild-scope.sh
 # of the store). Opt-in needs an enforcer or it becomes opt-forgotten.
 printf '%-28s' "fileset covers test paths"
 escapes=$(grep -rhoE 'CARGO_MANIFEST_DIR"\)\)?[^;]*\.\./\.\./[A-Za-z0-9_./-]+|repo\.join\("[A-Za-z0-9_.-]+"\)' \
-              --include='*.rs' crates 2>/dev/null \
+              --include='*.rs' crates --glob '!examples/**' 2>/dev/null \
           | grep -oE '(\.\./\.\./|join\(")[A-Za-z0-9_.-]+' \
           | sed 's|.*/||; s|join("||' | sort -u)
 uncovered=""

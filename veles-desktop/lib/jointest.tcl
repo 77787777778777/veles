@@ -52,6 +52,7 @@ namespace eval ::_http {
     variable fail_save 0
     variable chat_answer ""
     variable get_answer ""
+    variable command_answer {{"handled": true, "text": "engine answered"}}
 }
 rename ::vinst::save ::vinst::save_fixture_real
 proc ::vinst::save {} {
@@ -66,6 +67,7 @@ proc ::vapi::post {path body args} {
         return {{"join": {"join_id": "j-e2e", "from_instance": "laptop", "from_session": "mine", "target_instance": "", "target_session": "alice"}}}
     }
     if {$path eq "/api/join/leave"} { return {{"ok": true}} }
+    if {$path eq "/api/command"} { return $::_http::command_answer }
     if {$path eq "/api/chat"} {
         if {$::_http::chat_answer ne ""} { return $::_http::chat_answer }
         return {{"started": true, "join": true}}
@@ -310,6 +312,63 @@ ok "busy joined /leave uses the target and restores the origin" {
     && $::vchat::busy == 0
     && [dict size [::vinst::remote_join]] == 0
 }
+
+# ── /shells and /monitors: bare opens the panel, arguments stay shared ─
+# The desktop claims only the BARE command (it opens the task panel).
+# `/shells kill 7`, `/shells output 7` and `/monitors cancel 2` are the
+# engine's shared grammar and must reach POST /api/command with the full
+# text. They silently did nothing once: the panel's switch arm ended
+# without a fall-through to `default`, the only arm that posts (TSG-2).
+# Here, back on our own session, through the real slash_command and the
+# real post_json above the recording POST stub.
+puts "\n/shells and /monitors keep their shared arguments"
+namespace eval ::vsidebar { proc selected_sid {} { return $::vchat::session } }
+foreach {line} {{/shells} {/monitors}} {
+    ::_http::reset
+    set ::voverlay::opened {}
+    ::vchat::slash_command $line
+    ok "bare $line opens the task panel and posts nothing" {
+        $::voverlay::opened eq "tasks" && [llength $::_http::calls] == 0
+    }
+}
+foreach {line} {{/shells kill 7} {/shells output 7} {/monitors cancel 2}} {
+    ::_http::reset
+    set ::voverlay::opened {}
+    set ::vchat::notes {}
+    ::vchat::slash_command $line
+    set _posted [lsearch -inline -index 1 $::_http::calls /api/command]
+    ok "$line reaches the engine's shared command with its full text" {
+        [llength $_posted] > 0
+        && [dict get [::json::json2dict [lindex $_posted 2]] command] eq $line
+        && [dict get [::json::json2dict [lindex $_posted 2]] session_id] eq "mine"
+        && $::voverlay::opened eq {}
+    }
+    ok "…and the engine's answer is shown" {
+        [string match "*engine answered*" [lindex $::vchat::notes end 1]]
+    }
+}
+# With no session open there is nothing to run them in: say so, never
+# nothing at all (the silence was the bug).
+rename ::vsidebar::selected_sid ::vsidebar::_selected_sid_real
+proc ::vsidebar::selected_sid {} { return "" }
+::_http::reset
+set ::vchat::notes {}
+::vchat::slash_command {/shells kill 7}
+ok "/shells kill 7 with no session open says so and posts nothing" {
+    [llength $::_http::calls] == 0
+    && [string match "*no session open*" [lindex $::vchat::notes end 1]]
+}
+rename ::vsidebar::selected_sid {}
+rename ::vsidebar::_selected_sid_real ::vsidebar::selected_sid
+# An engine that does not handle them (an older gateway) is not silence
+# either.
+set ::_http::command_answer {{"handled": false}}
+set ::vchat::notes {}
+::vchat::slash_command {/monitors cancel 2}
+ok "an unhandled /monitors cancel 2 says the command is unknown" {
+    [string match "*unknown command: /monitors*" [lindex $::vchat::notes end 1]]
+}
+set ::_http::command_answer {{"handled": true, "text": "engine answered"}}
 
 file delete -force $_home
 puts "jointest: $passed passed, $failed failed"

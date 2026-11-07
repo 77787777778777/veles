@@ -33,7 +33,7 @@ pub const PROTOCOL: u32 = 1;
 /// `0.x` until the first release (any change bumps the minor number),
 /// then semver: a new name is a minor bump, a removed or changed one a
 /// major bump.
-pub const EXT_API_VERSION: &str = "0.10";
+pub const EXT_API_VERSION: &str = "0.11";
 
 /// Method names, both directions.
 pub mod method {
@@ -705,6 +705,12 @@ pub struct TriggerEvent {
     /// The sender's role, when the adapter resolved one.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
+    /// The channel roster at the moment of the event, bare nicks.
+    /// `None` = no room (DM) or roster unavailable; `Some([])` = a real
+    /// channel with an empty roster. Slopdrop's `[names]` / `[name]`
+    /// procs read this through the bridge's `Context.members`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub members: Option<Vec<String>>,
 }
 
 /// `triggers.forward` params.

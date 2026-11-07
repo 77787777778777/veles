@@ -46,9 +46,9 @@ LAUNCH_GAP="${LAUNCH_GAP:-1}"        # seconds between launches (anti-burst)
 # Per-tier model + effort. z.ai has no deepseek, so its tier uses glm; the
 # short strings + mechanical verifier make a mid model + medium effort
 # plenty, and it conserves z.ai's rolling quota. ali tiers keep the proven
-# part-07 recipe (deepseek-v4-flash-0731 at high).
+# part-07 recipe (deepseek-v4.1-flash-1017 at high).
 ZAI_MODEL="${ZAI_MODEL:-glm-4.5-air}"
-ALI_MODEL="${ALI_MODEL:-deepseek-v4-flash-0731}"
+ALI_MODEL="${ALI_MODEL:-deepseek-v4.1-flash-1017}"
 PART=10
 NKEYS=$(grep -c . "$WORK/keys-part-$PART.txt" 2>/dev/null || echo 0)
 

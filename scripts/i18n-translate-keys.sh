@@ -15,18 +15,44 @@
 #                               (a batch has come back in the wrong one)
 # Then, by hand: i18n-tsv2msg.sh per locale, i18n-sync.sh, the suites.
 #
-# THE MODEL POOL (USER 2026-10-10; dated 1017 snapshot since 2026-10-23).
-# The ali personal plan's
-# deepseek-v4.1-flash-1017, qwen3.8-flash and deepseek-v4-flash-0731 share one
-# per-minute token allocation — three children at once already brushed
-# it in the docs round — so they are three lanes. The kimi coding plan's
-# cheapest SKU, kimi-for-coding-highspeed (the plan has no small model;
-# its 5-hour window is shared with the VPS), is two more. Locales are
+# THE MODEL (USER 2026-11-04: "use deepseek flash 4.1 1017 for
+# translations not k3.1-pro"). Every lane runs the ali personal plan's
+# deepseek-v4.1-flash-1017 by default. The pool used to mix in
+# qwen3.8-flash and kimi-for-coding-highspeed, so a round reported as
+# "DeepSeek" really came from three models (the 2026-11-04 grant keys:
+# 13 deepseek, 12 qwen, 21 kimi locale jobs), and one round was even
+# rerouted to k3.1-pro by hand. Other lanes are an explicit choice:
+#   I18N_POOL="ali-token-plan-personal deepseek-v4.1-flash-1017;kimi-coding-plan kimi-for-coding-highspeed"
+# (semicolon-separated "<provider> <model>" lanes). I18N_LANES sets how
+# many children run at once (default 2: three already brushed the
+# plan's per-minute token allocation in the docs round). Locales are
 # dealt round-robin to the lanes; a failed attempt moves to the next
-# model in the pool, after a quadratic backoff with jitter when it was a
-# 429 (the per-minute allocation, not the monthly quota).
+# lane, after a quadratic backoff with jitter when it was a 429 (the
+# per-minute allocation, not the monthly quota). Each OK line names the
+# model that produced it; report THOSE, not the default.
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+DEFAULT_LANE="ali-token-plan-personal deepseek-v4.1-flash-1017"
+POOL=()
+if [ -n "${I18N_POOL:-}" ]; then
+    IFS=';' read -r -a _lanes <<<"$I18N_POOL"
+    for _lane in "${_lanes[@]}"; do
+        _lane="$(echo "$_lane" | xargs)"
+        [ -n "$_lane" ] && POOL+=("$_lane")
+    done
+else
+    for ((_i = 0; _i < ${I18N_LANES:-2}; _i++)); do POOL+=("$DEFAULT_LANE"); done
+fi
+if [ "${#POOL[@]}" -eq 0 ]; then
+    echo "i18n-translate-keys: empty model pool (I18N_POOL/I18N_LANES)" >&2
+    exit 2
+fi
+# I18N_POOL_ONLY=1 prints the lanes and exits, before any argument or
+# work directory is touched (i18ntest.tcl pins the default this way).
+if [ "${I18N_POOL_ONLY:-0}" = 1 ]; then
+    printf '%s\n' "${POOL[@]}"
+    exit 0
+fi
 KEYS="${1:?usage: i18n-translate-keys.sh <keys-file> <topic> <context-file> [locale …]}"
 TOPIC="${2:?topic}"
 CONTEXT_FILE="${3:?context file}"
@@ -37,13 +63,6 @@ OUT="${I18N_WORK:-$HOME/i18n-work}/$(date +%F)"
 LOGS="$OUT/logs"
 mkdir -p "$OUT" "$LOGS"
 
-POOL=(
-    "ali-token-plan-personal deepseek-v4.1-flash-1017"
-    "ali-token-plan-personal qwen3.8-flash"
-    "ali-token-plan-personal deepseek-v4-flash-0731"
-    "kimi-coding-plan kimi-for-coding-highspeed"
-    "kimi-coding-plan kimi-for-coding-highspeed"
-)
 MAXTRY="${MAXTRY:-4}"
 GAP="${GAP:-4}"
 

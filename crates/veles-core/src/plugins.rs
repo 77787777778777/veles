@@ -94,6 +94,10 @@ pub struct PluginManifest {
     pub entry: String,
     #[serde(default)]
     pub description: String,
+    /// Optional release label. Content hashes, not this field, decide
+    /// whether a user copy and a bundled copy are the same source.
+    #[serde(default)]
+    pub version: Option<String>,
     /// The extension API version the plugin was written against
     /// (`api = "0.1"`), optional (PLAN-extension-api.md D1). A plugin that
     /// targets a newer API than this veles has is noted once ([`api_note`]).
@@ -158,6 +162,94 @@ fn note_api_once(m: &PluginManifest) {
 pub struct LoadedPlugin {
     pub manifest: PluginManifest,
     pub dir: PathBuf,
+    /// SHA-256 of source paths relative to the plugin root and their
+    /// bytes. Identical copies agree even on different machines.
+    pub digest: String,
+}
+
+/// A stable content identity for a discovered plugin. The manifest's
+/// optional version is descriptive; this hash distinguishes two copies
+/// that omitted it or forgot to update it.
+pub fn source_digest(dir: &Path) -> Option<String> {
+    use sha2::{Digest, Sha256};
+    fn visit(dir: &Path, files: &mut Vec<PathBuf>) -> Option<()> {
+        for entry in std::fs::read_dir(dir).ok()?.flatten() {
+            let path = entry.path();
+            if path.is_dir() {
+                if path.file_name().and_then(|n| n.to_str()) == Some(".git") {
+                    continue;
+                }
+                visit(&path, files)?;
+            } else if matches!(
+                path.extension().and_then(|e| e.to_str()),
+                Some("tcl" | "toml" | "so")
+            ) || crate::scripthost::SCRIPT_SOURCE_EXTS
+                .contains(&path.extension().and_then(|e| e.to_str()).unwrap_or(""))
+            {
+                files.push(path);
+            }
+        }
+        Some(())
+    }
+    let mut files = Vec::new();
+    visit(dir, &mut files)?;
+    files.sort();
+    let mut hasher = Sha256::new();
+    for file in files {
+        hasher.update(file.strip_prefix(dir).ok()?.to_string_lossy().as_bytes());
+        hasher.update([0]);
+        hasher.update(std::fs::read(file).ok()?);
+        hasher.update([0]);
+    }
+    Some(format!("{:x}", hasher.finalize()))
+}
+
+pub fn provenance(p: &LoadedPlugin) -> crate::lifecycle::PluginProvenance {
+    crate::lifecycle::PluginProvenance {
+        root: Some(p.dir.clone()),
+        version: p.manifest.version.clone(),
+        hash: Some(p.digest.clone()),
+    }
+}
+
+pub fn bundled_with_name(name: &str) -> Vec<LoadedPlugin> {
+    bundled_roots()
+        .iter()
+        .filter_map(|root| discover_all_in(root).ok())
+        .flatten()
+        .filter(|p| p.manifest.name == name)
+        .collect()
+}
+
+/// A user copy that hides a bundled copy. This is a shadow even when
+/// the bytes agree; only the hashes decide equality, never a version
+/// guess or a timestamp.
+pub fn shadowed_bundled(p: &LoadedPlugin) -> Option<LoadedPlugin> {
+    if is_bundled(p) {
+        return None;
+    }
+    bundled_with_name(&p.manifest.name).into_iter().next()
+}
+
+pub fn shadow_report(p: &LoadedPlugin) -> Option<String> {
+    let bundled = shadowed_bundled(p)?;
+    let relation = if p.digest == bundled.digest {
+        "identical content"
+    } else {
+        "different content (not an age claim)"
+    };
+    Some(format!(
+        "user plugin {} shadows bundled {}; user sha256={} bundled sha256={}; {}",
+        p.manifest.name,
+        bundled.dir.display(),
+        short_digest(&p.digest),
+        short_digest(&bundled.digest),
+        relation
+    ))
+}
+
+pub fn short_digest(digest: &str) -> &str {
+    &digest[..digest.len().min(12)]
 }
 
 /// Every plugin directory in `plugins_dir()` that has a manifest,
@@ -301,7 +393,12 @@ pub fn discover_all_in(root: &Path) -> Result<Vec<LoadedPlugin>> {
         match toml::from_str::<PluginManifest>(&raw) {
             Ok(manifest) => {
                 note_api_once(&manifest);
-                out.push(LoadedPlugin { manifest, dir })
+                let digest = source_digest(&dir).unwrap_or_default();
+                out.push(LoadedPlugin {
+                    manifest,
+                    dir,
+                    digest,
+                })
             }
             Err(e) => tracing::warn!("plugin {}: bad manifest: {e}", dir.display()),
         }
@@ -503,34 +600,107 @@ pub fn scaffold(name: &str, description: &str) -> Result<PathBuf> {
 /// TypeScript plugin the lang-js host runs — `racket`, a Racket module
 /// the lang-racket host runs, or `lisp`, a Common Lisp file the
 /// lang-lisp host loads (R9).
-pub fn scaffold_kind(name: &str, description: &str, kind: &str) -> Result<PathBuf> {
-    match kind {
-        "tcl" => scaffold_tcl(name, description),
-        "js" => scaffold_js(name, description),
-        "racket" => scaffold_racket(name, description),
-        "lisp" => scaffold_lisp(name, description),
-        other => anyhow::bail!("unknown plugin kind `{other}` (tcl, js, racket, lisp, overlay)"),
+pub struct ScaffoldFile {
+    pub name: String,
+    pub text: String,
+}
+
+/// Exact source and manifest for a proposed extension. This has no
+/// filesystem, git or live-reload side effects, so a preview cannot
+/// accidentally create or execute the plugin it is reviewing.
+pub fn scaffold_files(name: &str, description: &str, kind: &str) -> Result<Vec<ScaffoldFile>> {
+    let name = validate_name(name)?;
+    let desc = if description.trim().is_empty() {
+        "a new veles plugin".to_string()
+    } else {
+        description.trim().replace('"', "'")
+    };
+    let (entry_name, entry) = match kind {
+        "lisp" => ("plugin.lisp", scaffold_lisp_source(&name, &desc)),
+        "racket" => ("plugin.rkt", scaffold_racket_source(&name, &desc)),
+        "js" => ("plugin.ts", scaffold_js_source(&name, &desc)),
+        "tcl" => ("plugin.tcl", scaffold_tcl_source(&name, &desc)),
+        other => anyhow::bail!("unknown plugin kind `{other}` (tcl, js, racket, lisp)"),
+    };
+    let mut files = vec![
+        ScaffoldFile {
+            name: "plugin.toml".into(),
+            text: scaffold_manifest(&name, &desc, kind, entry_name),
+        },
+        ScaffoldFile {
+            name: entry_name.into(),
+            text: entry,
+        },
+    ];
+    if kind == "js" {
+        // The language server and tsc need to be told what the lang-js
+        // host provides: the `veles` global and ES-module evaluation
+        // (top-level await). Without these two files every scaffolded
+        // TypeScript extension opened in the Dev pane was a column of
+        // "Cannot find name 'veles'" (owner ask 287976.2, full LSP).
+        files.push(ScaffoldFile {
+            name: "tsconfig.json".into(),
+            text: TS_EXTENSION_TSCONFIG.into(),
+        });
+        files.push(ScaffoldFile {
+            name: "veles.d.ts".into(),
+            text: VELES_TS_DECLARATION.into(),
+        });
     }
+    Ok(files)
+}
+
+/// The lang-js host's API, typed (`plugins/veles.d.ts`): the scaffold's
+/// copy, the Dev pane's tsc Check and the contribution check all use it.
+pub const VELES_TS_DECLARATION: &str = include_str!("../../../plugins/veles.d.ts");
+
+/// A TypeScript extension's project settings: an ES module (the host
+/// evaluates the entry as one), the host's own globals only (no DOM, no
+/// Node), checked and never emitted.
+pub const TS_EXTENSION_TSCONFIG: &str = r#"{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "esnext",
+    "moduleDetection": "force",
+    "lib": ["es2022"],
+    "types": [],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["**/*.ts", "**/*.mts"]
+}
+"#;
+
+pub fn scaffold_kind(name: &str, description: &str, kind: &str) -> Result<PathBuf> {
+    let name = validate_name(name)?;
+    let files = scaffold_files(&name, description, kind)?;
+    let dir = plugins_dir().join(&name);
+    anyhow::ensure!(!dir.exists(), "{name} already exists");
+    std::fs::create_dir_all(&dir).with_context(|| format!("creating {}", dir.display()))?;
+    for file in files {
+        std::fs::write(dir.join(file.name), file.text)?;
+    }
+    snapshot(&format!("veles: scaffold plugin {name}"))?;
+    Ok(dir)
 }
 
 /// A Common Lisp plugin: a file the lang-lisp host loads into a package
 /// of its own that uses COMMON-LISP and VELES, registering one tool and
 /// one hook. Handlers run in threads of their own; NIL from a hook is
 /// "no opinion".
-fn scaffold_lisp(name: &str, description: &str) -> Result<PathBuf> {
-    let name = validate_name(name)?;
-    let dir = plugins_dir().join(&name);
-    anyhow::ensure!(!dir.exists(), "{name} already exists");
-    std::fs::create_dir_all(&dir).with_context(|| format!("creating {}", dir.display()))?;
-    let desc = if description.trim().is_empty() {
-        "a new veles plugin".to_string()
-    } else {
-        description.trim().replace('"', "'")
-    };
-    let manifest = format!(
-        "name = \"{name}\"\nkind = \"lisp\"\nentry = \"plugin.lisp\"\ndescription = \"{desc}\"\nprovides_hooks = [\"post_llm_call\"]\n"
-    );
-    std::fs::write(dir.join("plugin.toml"), manifest)?;
+pub fn extension_api_version() -> &'static str {
+    veles_types::plugin::EXT_API_VERSION
+}
+
+fn scaffold_manifest(name: &str, description: &str, kind: &str, entry: &str) -> String {
+    format!(
+        "name = \"{name}\"\nkind = \"{kind}\"\nentry = \"{entry}\"\napi = \"{}\"\ndescription = \"{description}\"\nprovides_hooks = [\"post_llm_call\"]\n",
+        veles_types::plugin::EXT_API_VERSION
+    )
+}
+
+fn scaffold_lisp_source(name: &str, desc: &str) -> String {
     let ident = name.replace('-', "_");
     let entry = format!(
         ";;;; {name} — {desc}\n\
@@ -553,29 +723,14 @@ fn scaffold_lisp(name: &str, description: &str) -> Result<PathBuf> {
          \x20   (declare (ignore args))\n\
          \x20   nil))\n"
     );
-    std::fs::write(dir.join("plugin.lisp"), entry)?;
-    snapshot(&format!("veles: scaffold plugin {name}"))?;
-    Ok(dir)
+    entry
 }
 
 /// A Racket plugin: a `#lang racket/base` module that requires the
 /// `veles` collection the lang-racket host provides, registering one
 /// tool and one hook. Handlers run as Racket threads under the plugin's
 /// own custodian; `(void)` from a hook is "no opinion".
-fn scaffold_racket(name: &str, description: &str) -> Result<PathBuf> {
-    let name = validate_name(name)?;
-    let dir = plugins_dir().join(&name);
-    anyhow::ensure!(!dir.exists(), "{name} already exists");
-    std::fs::create_dir_all(&dir).with_context(|| format!("creating {}", dir.display()))?;
-    let desc = if description.trim().is_empty() {
-        "a new veles plugin".to_string()
-    } else {
-        description.trim().replace('"', "'")
-    };
-    let manifest = format!(
-        "name = \"{name}\"\nkind = \"racket\"\nentry = \"plugin.rkt\"\ndescription = \"{desc}\"\nprovides_hooks = [\"post_llm_call\"]\n"
-    );
-    std::fs::write(dir.join("plugin.toml"), manifest)?;
+fn scaffold_racket_source(name: &str, desc: &str) -> String {
     let ident = name.replace('-', "_");
     let entry = format!(
         "#lang racket/base\n\
@@ -598,27 +753,12 @@ fn scaffold_racket(name: &str, description: &str) -> Result<PathBuf> {
          \x20   ;; Answer (void) for \"no opinion\", or a verdict hash.\n\
          \x20   (void)))\n"
     );
-    std::fs::write(dir.join("plugin.rkt"), entry)?;
-    snapshot(&format!("veles: scaffold plugin {name}"))?;
-    Ok(dir)
+    entry
 }
 
 /// A TypeScript plugin: the manifest names the lang-js host's kind, the
 /// entry registers one tool and one hook through the `veles` object.
-fn scaffold_js(name: &str, description: &str) -> Result<PathBuf> {
-    let name = validate_name(name)?;
-    let dir = plugins_dir().join(&name);
-    anyhow::ensure!(!dir.exists(), "{name} already exists");
-    std::fs::create_dir_all(&dir).with_context(|| format!("creating {}", dir.display()))?;
-    let desc = if description.trim().is_empty() {
-        "a new veles plugin".to_string()
-    } else {
-        description.trim().replace('"', "'")
-    };
-    let manifest = format!(
-        "name = \"{name}\"\nkind = \"js\"\nentry = \"plugin.ts\"\ndescription = \"{desc}\"\nprovides_hooks = [\"post_llm_call\"]\n"
-    );
-    std::fs::write(dir.join("plugin.toml"), manifest)?;
+fn scaffold_js_source(name: &str, desc: &str) -> String {
     let ident = name.replace('-', "_");
     let entry = format!(
         "// {name} — {desc}\n\
@@ -643,27 +783,10 @@ fn scaffold_js(name: &str, description: &str) -> Result<PathBuf> {
          \x20 return undefined;\n\
          }});\n"
     );
-    std::fs::write(dir.join("plugin.ts"), entry)?;
-    snapshot(&format!("veles: scaffold plugin {name}"))?;
-    Ok(dir)
+    entry
 }
 
-fn scaffold_tcl(name: &str, description: &str) -> Result<PathBuf> {
-    let name = validate_name(name)?;
-    let dir = plugins_dir().join(&name);
-    anyhow::ensure!(!dir.exists(), "{name} already exists");
-    std::fs::create_dir_all(&dir).with_context(|| format!("creating {}", dir.display()))?;
-
-    let desc = if description.trim().is_empty() {
-        "a new veles plugin".to_string()
-    } else {
-        description.trim().replace('"', "'")
-    };
-    let manifest = format!(
-        "name = \"{name}\"\nkind = \"tcl\"\nentry = \"plugin.tcl\"\ndescription = \"{desc}\"\nprovides_hooks = [\"post_llm_call\"]\n"
-    );
-    std::fs::write(dir.join("plugin.toml"), manifest)?;
-
+fn scaffold_tcl_source(name: &str, desc: &str) -> String {
     let proc_name = name.replace('-', "_");
     let entry = format!(
         "# {name} — {desc}\n\
@@ -677,17 +800,17 @@ fn scaffold_tcl(name: &str, description: &str) -> Result<PathBuf> {
          # returning nothing lets the next handler, and then the engine,\n\
          # carry on.\n\
          \n\
+         # The namespace must exist before a proc is defined in it.\n\
+         namespace eval ::{proc_name} {{}}\n\
+         \n\
          proc ::{proc_name}::handle {{}} {{\n\
          \x20   # set args $::veles::hook_args\n\
          \x20   return \"\"\n\
          }}\n\
          \n\
-         namespace eval ::{proc_name} {{}}\n\
          ::veles::hook post_llm_call ::{proc_name}::handle\n"
     );
-    std::fs::write(dir.join("plugin.tcl"), entry)?;
-    snapshot(&format!("veles: scaffold plugin {name}"))?;
-    Ok(dir)
+    entry
 }
 
 /// The files of a Rust OVERLAY module's own repository
@@ -1353,6 +1476,23 @@ mod tests {
         assert_eq!(named(&found), ["shipped"]);
         assert_eq!(found[0].dir, plugins_dir().join("shipped"));
         assert!(!is_bundled(&found[0]));
+        let same = shadow_report(&found[0]).expect("the covered bundled copy is visible");
+        assert!(same.contains("identical content"), "{same}");
+        assert!(!same.contains("older"), "{same}");
+
+        // Same declared version, different bytes: still a shadow, never
+        // a fabricated age comparison. Relative paths make identical
+        // copies on different roots agree in the first place.
+        std::fs::write(
+            plugins_dir().join("shipped/plugin.tcl"),
+            "# an operator's changed copy\n",
+        )
+        .expect("edit user copy");
+        let changed = discover_all().expect("rediscover");
+        let different = shadow_report(&changed[0]).expect("changed shadow");
+        assert!(different.contains("different content"), "{different}");
+        assert!(!different.contains("older"), "{different}");
+        assert_ne!(changed[0].digest, bundled_with_name("shipped")[0].digest);
     }
 
     /// `remove` touches the user's root only. A bundled plugin is
@@ -1463,6 +1603,71 @@ mod tests {
         }
     }
 
+    /// `plugins/veles.d.ts` is the type of `crates/veles-lang-js/src/
+    /// prelude.js`'s `veles` object. A binding added to the prelude and
+    /// not declared would be a red squiggle on working code in every
+    /// TypeScript extension.
+    #[test]
+    fn extension_api_declaration_names_every_prelude_binding() {
+        const PRELUDE: &str = include_str!("../../veles-lang-js/src/prelude.js");
+        let mut inside = false;
+        let mut names = Vec::new();
+        for line in PRELUDE.lines() {
+            if !inside {
+                inside = line.trim_start().starts_with("const veles = {");
+                continue;
+            }
+            if line.trim_start().starts_with("};") {
+                break;
+            }
+            let Some(body) = line.strip_prefix("    ") else {
+                continue;
+            };
+            if body.starts_with(' ') || body.starts_with("//") {
+                continue;
+            }
+            let name: String = body
+                .chars()
+                .take_while(|c| c.is_ascii_alphanumeric() || *c == '_')
+                .collect();
+            if !name.is_empty() {
+                names.push(name);
+            }
+        }
+        assert!(names.len() > 20, "the prelude parse found {names:?}");
+        for name in names {
+            assert!(
+                VELES_TS_DECLARATION.contains(&format!("\n  {name}(")),
+                "plugins/veles.d.ts does not declare veles.{name}"
+            );
+        }
+        let files = scaffold_files("ts-one", "", "js").unwrap();
+        let names: Vec<&str> = files.iter().map(|f| f.name.as_str()).collect();
+        assert_eq!(
+            names,
+            ["plugin.toml", "plugin.ts", "tsconfig.json", "veles.d.ts"]
+        );
+        assert!(files[2].text.contains("\"moduleDetection\": \"force\""));
+    }
+
+    #[test]
+    fn preview_is_exactly_the_scaffold_and_has_no_side_effects() {
+        let (_cfg, _data, _guard) = crate::testenv::scratch_xdg();
+        for kind in ["tcl", "js", "racket", "lisp"] {
+            let name = format!("preview-{kind}");
+            let preview = scaffold_files(&name, "inspect this", kind).unwrap();
+            assert!(!plugins_dir().join(&name).exists());
+            assert!(preview[0].text.contains("api = \"0.11\""));
+            let dir = scaffold_kind(&name, "inspect this", kind).unwrap();
+            for file in preview {
+                assert_eq!(
+                    std::fs::read_to_string(dir.join(&file.name)).unwrap(),
+                    file.text
+                );
+            }
+        }
+    }
+
     /// The scaffold is the template a new plugin author reads first, so
     /// it has to be a plugin the loader actually picks up — a stub that
     /// discovery skips teaches the wrong thing twice.
@@ -1477,6 +1682,10 @@ mod tests {
         assert_eq!(found[0].manifest.kind, "tcl");
         assert_eq!(found[0].manifest.entry, "plugin.tcl");
         assert_eq!(found[0].manifest.provides_hooks, ["post_llm_call"]);
+        assert_eq!(
+            found[0].manifest.api.as_deref(),
+            Some(veles_types::plugin::EXT_API_VERSION)
+        );
 
         // Twice is an error, not a silent overwrite of somebody's work.
         assert!(scaffold("fresh-one", "").is_err());

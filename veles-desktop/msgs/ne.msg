@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset ne {%1$s %2$s failed: %3$s} {%1$s %2$s असफल: %3$s}
 ::msgcat::mcset ne {%1$s %2$s over ssh…} {%1$s %2$s ssh मार्फत…}
 ::msgcat::mcset ne {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset ne {%1$s (%2$s waiting)} {%1$s (%2$s पर्खिरहेको)}
 ::msgcat::mcset ne {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  तर्क %3$s}
 ::msgcat::mcset ne {%1$s = %2$s here} {%1$s = %2$s यहाँ}
 ::msgcat::mcset ne {%1$s NOT saved: %2$s} {%1$s सुरक्षित भएन: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset ne {%1$s every cron job on %2$s?} {%1$s %2$s मा भएका सबै cron काम?}
 ::msgcat::mcset ne {%1$s failed: %2$s} {%1$s असफल: %2$s}
 ::msgcat::mcset ne {%1$s in / %2$s out / %3$s calls} {%1$s भित्र / %2$s बाहिर / %3$s कल}
+::msgcat::mcset ne {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s नोड %2$s हो, %3$s होइन। यसको नोड id Edit… मा ठीक गर्नुहोस्।}
 ::msgcat::mcset ne {%1$s is not a whole number} {%1$s पूर्ण सङ्ख्या होइन}
+::msgcat::mcset ne {%1$s is reachable (%2$s ms).} {%1$s पुग्न सकिन्छ (%2$s ms)।}
 ::msgcat::mcset ne {%1$s is set to something this box cannot edit (%2$s)} {%1$s यो मेसिनले सम्पादन गर्न नसक्ने मानमा सेट छ (%2$s)}
+::msgcat::mcset ne {%1$s is unreachable: %2$s} {%1$s पुग्न सकिँदैन: %2$s}
 ::msgcat::mcset ne {%1$s of %2$s characters} {%1$s / %2$s वर्ण}
 ::msgcat::mcset ne {%1$s of %2$s sessions} {%2$s मध्ये %1$s सेसन}
 ::msgcat::mcset ne {%1$s of %2$s skills reach the prompt} {%1$s / %2$s skill प्रम्प्टसम्म पुग्छ}
 ::msgcat::mcset ne {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s %2$s मा: %3$d ठीक, %4$d असफल}
+::msgcat::mcset ne {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s ले कुनै क्लस्टर नोड पहिचान रिपोर्ट गर्दैन, त्यसैले यसलाई %2$s का रूपमा प्रमाणित गर्न सकिँदैन।}
+::msgcat::mcset ne {%1$s sync failed: %2$s} {%1$s सिंक असफल: %2$s}
+::msgcat::mcset ne {%1$s sync with %2$s (%3$s)} {%1$s को %2$s सँग सिंक (%3$s)}
+::msgcat::mcset ne {%1$s sync: %2$s} {%1$s सिंक: %2$s}
 ::msgcat::mcset ne {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset ne {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · जान Enter, बन्द गर्न Esc}
 ::msgcat::mcset ne {%1$s — revision r%2$s} {%1$s — संशोधन r%2$s}
 ::msgcat::mcset ne {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset ne {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset ne {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset ne {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset ne {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: यसको गेटवेले मेमोरीमा राख्ने %3$s लाइनमध्ये अन्तिम %2$s, त्यो नोडमा गोप्य कुरा हटाइएको।}
 ::msgcat::mcset ne {%d MCP server(s) configured} {%d MCP server कन्फिग गरियो}
 ::msgcat::mcset ne {%d entries} {%d वटा प्रविष्टि}
+::msgcat::mcset ne {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {extension का %d फाइल समीक्षा गरिएकै रूपमा लेखिनेछन्। पूर्वावलोकनपछि तीमध्ये कुनै परिवर्तन भएको भए केही लेखिँदैन। कुनै commit, push वा PR हुँदैन।}
 ::msgcat::mcset ne {%d handler(s) registered} {%d handler दर्ता गरियो}
 ::msgcat::mcset ne {%d identities · %d users} {%d पहिचान · %d प्रयोगकर्ता}
 ::msgcat::mcset ne {%d models — pick one from the list or type a name.} {%d मोडेल — सूचीबाट एउटा छान्नुहोस् वा नाम टाइप गर्नुहोस्।}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset ne {%d shown} {%d देखाइयो}
 ::msgcat::mcset ne {%s %s%%} {%s %s%%}
 ::msgcat::mcset ne {%s (%s)} {%s (%s)}
+::msgcat::mcset ne {%s (referral)} {%s (रेफरल)}
+::msgcat::mcset ne {%s (stale)} {%s (पुरानो)}
 ::msgcat::mcset ne {%s (this session)} {%s (यो session)}
 ::msgcat::mcset ne {%s GB free of %s GB} {%s GB खाली, जम्मा %s GB}
 ::msgcat::mcset ne {%s already exists — open it from the list} {%s पहिले नै छ — सूचीबाट खोल्नुहोस्}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset ne {%s comes from config.toml [acl] — edit there} {%s config.toml को [acl] बाट आएको हो — त्यहाँ सम्पादन गर्नुहोस्}
 ::msgcat::mcset ne {%s config change(s) wait for you — /configsync} {%s कन्फिग परिवर्तन तपाईंलाई पर्खिरहेका छन् — /configsync}
 ::msgcat::mcset ne {%s did not become healthy within 30s} {%s ३० सेकेन्डभित्र healthy भएन}
+::msgcat::mcset ne {%s done} {%s सकियो}
 ::msgcat::mcset ne {%s failed: %s} {%s असफल: %s}
 ::msgcat::mcset ne {%s is already split} {%s पहिल्यै split छ}
 ::msgcat::mcset ne {%s is the language in use — pick another one to swap with} {%s अहिले प्रयोगमा रहेको भाषा हो — साट्नका लागि अर्को भाषा छान्नुहोस्}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset ne {%s opens the command palette in %s.} {%s ले %s मा कमान्ड प्यालेट खोल्छ।}
 ::msgcat::mcset ne {%s session(s)} {%s वटा session}
 ::msgcat::mcset ne {%s skill(s):} {%s स्किल(हरू):}
+::msgcat::mcset ne {%s standing grants} {%s स्थायी अनुमति}
 ::msgcat::mcset ne {%s takes no completable arguments} {%s लाई पूरा गर्न मिल्ने तर्क छैन}
 ::msgcat::mcset ne {%s takes on or off} {%s ले on वा off लिन्छ}
 ::msgcat::mcset ne {%s —} {%s —}
+::msgcat::mcset ne {%s — changes data, asks to confirm} {%s — डाटा परिवर्तन गर्छ, पुष्टि माग्छ}
 ::msgcat::mcset ne {%s — deleted; History… can restore it} {%s — मेटाइयो; इतिहास… ले यसलाई फर्काउन सक्छ}
 ::msgcat::mcset ne {%s — new: type, then Save} {%s — नयाँ: टाइप गर्नुहोस्, अनि सुरक्षित गर्नुहोस्}
 ::msgcat::mcset ne {%s — not attached; press Attach in the Instances tab} {%s — जोडिएको छैन; Instances ट्याबमा Attach थिच्नुहोस्}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset ne {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} [acl] खण्डबिना सक्रिय छ: .env मा %{var} ले बटसँग कसले कुरा गर्न पाउँछ भनेर नतोकेसम्म, त्यहाँ पुग्ने जो कोही पनि मालिक मानिन्छ, सबै उपकरणसहित}
 ::msgcat::mcset ne (%{route}) (%{route})
 ::msgcat::mcset ne {(CLI redraws automatically)} {(CLI आफैं पुनः कोर्छ)}
+::msgcat::mcset ne {(binary; not publishable)} {(बाइनरी; प्रकाशित गर्न मिल्दैन)}
 ::msgcat::mcset ne {(clipboard empty or no clipboard tool)} {(clipboard खाली छ वा clipboard उपकरण छैन)}
 ::msgcat::mcset ne (deleted) (मेटाइएको)
 ::msgcat::mcset ne (empty) (खाली)
 ::msgcat::mcset ne {(no sessions)} {(कुनै सेसन छैन)}
+::msgcat::mcset ne {(not a memsync peer of this gateway: config is not synced with it)} {(यो गेटवेको memsync सहकर्मी होइन: यससँग config सिंक हुँदैन)}
 ::msgcat::mcset ne {(nothing to reload — read from disk per use)} {(पुनः लोड गर्नुपर्ने केही छैन — हरेक प्रयोगमा डिस्कबाट पढिन्छ)}
 ::msgcat::mcset ne {(retrying last prompt…)} {(अन्तिम प्रम्प्ट पुन: प्रयास गर्दै…)}
 ::msgcat::mcset ne {(route did not resolve: %{e})} {(route समाधान भएन: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset ne {/url needs a number from /urls} {/url लाई /urls बाट एउटा सङ्ख्या चाहिन्छ}
 ::msgcat::mcset ne {/whois needs a nick} {/whois लाई nick चाहिन्छ}
 ::msgcat::mcset ne {; could not save the cleared return view: %s} {; खाली गरिएको फिर्ती दृश्य सुरक्षित गर्न सकिएन: %s}
+::msgcat::mcset ne {; shadows bundled} {; बन्डल गरिएकोलाई प्राथमिकता दिन्छ}
+::msgcat::mcset ne {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {कन्फिग प्रस्तावले सेटिङ बदल्न सक्छ र भल्ट प्रस्तावले गोप्य कुरा मर्ज गर्छ; सुरक्षा खण्डका परिवर्तन अझै मालिकको प्रतीक्षामा रहन्छन्।}
 ::msgcat::mcset ne {A failing plugin may drop hooks mid-turn.} {असफल हुने plugin ले बीचको turn मा hooks हटाउन सक्छ।}
 ::msgcat::mcset ne {A local server: no key is needed unless you set one up.} {स्थानीय सर्भर: तपाईंले आफैं सेट नगरेसम्म कुनै key चाहिँदैन।}
+::msgcat::mcset ne {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {हस्ताक्षर गरिएको रिलिज preflight पछि मात्र स्टेज गरिन्छ। पुन: सुरु/जाँच, निरन्तरता र रोलब्याक छुट्टाछुट्टै कार्य हुन्। स्वस्थ प्रक्रियाले समीक्षा गरिएको स्रोत संशोधन ठीक उही रिपोर्ट गर्नुपर्छ।}
 ::msgcat::mcset ne {A value is stored for %s — leave this empty to keep it.} {%s को लागि एउटा मान राखिएको छ — त्यसलाई राख्न यो खाली छोड्नुहोस्।}
 ::msgcat::mcset ne {ACL: ban mask} {ACL: मास्क प्रतिबन्ध गर्नुहोस्}
 ::msgcat::mcset ne {ACL: grant admin} {ACL: admin अनुमति दिनुहोस्}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset ne {ACL: grant user} {ACL: user अनुमति दिनुहोस्}
 ::msgcat::mcset ne {ACL: revoke} {ACL: फिर्ता लिनुहोस्}
 ::msgcat::mcset ne {ACME account email} {ACME खाता इमेल}
+::msgcat::mcset ne {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI assist चार स्तरमा काम गर्छ: डिजाइनसम्बन्धी प्रश्न सोध्ने (कुनै फाइल चाहिँदैन), यो फाइल परिवर्तन गर्ने, यो extension का धेरै फाइल परिवर्तन गर्ने, वा हालका diagnostics व्याख्या गर्ने। New extension ले यसको प्रयोजनबाट पूरै extension पनि उत्पन्न गर्न सक्छ। हरेक अनुरोध उपकरणबिना पठाइन्छ र दर्ता भएको गोप्य कुरा वा प्रमाणपत्रजस्तो मान बोकेको खण्डमा अस्वीकार गरिन्छ; परिवर्तनहरू diff का रूपमा देखाइन्छन् र तपाईंले लागू गरेपछि मात्र लेखिन्छन्। पहिले extension को डिजाइन माग्नुहोस्; हराइरहेको API पहिचान गरेपछि मात्र core patch अनुरोध गर्नुहोस्।}
+::msgcat::mcset ne {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI सहायताले प्रयोगकर्ता एक्सटेन्सन मात्र सम्पादन गर्छ, र यो फाइल कुनै एक्सटेन्सनको भाग होइन। धेरैजसो परिवर्तन अपग्रेडपछि पनि टिकिरहने एक्सटेन्सन (हुक, उपकरण, सेवा ओभरराइड वा प्रोभाइडर ड्राइभर) मा मिल्छन्; core patch एक्सटेन्सन API ले व्यक्त गर्न नसक्ने कुराका लागि हो। यस परिवर्तनका लागि नयाँ एक्सटेन्सन बनाउने हो? लेख्नुअघि यसका फाइलहरूको पूर्वावलोकन देखाइन्छ।}
+::msgcat::mcset ne {AI assist…} {AI सहायता…}
+::msgcat::mcset ne {AI extension assistance} {AI एक्सटेन्सन सहायता}
 ::msgcat::mcset ne {API calls} {API कलहरू}
+::msgcat::mcset ne {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {Anthropic रेफरलका API क्रेडिट तपाईंले Max वा Ultra किनेमा मात्र दिइन्छ। Veles ले त्यो सदस्यता लगइन वा API प्रमाणीकरणका रूपमा प्रयोग गर्न समर्थन गर्दैन।}
 ::msgcat::mcset ne {API key (hidden)} {API key (लुकाइएको)}
 ::msgcat::mcset ne {API key env var name} {API key राख्ने env चरको नाम}
+::msgcat::mcset ne {API reference} {API सन्दर्भ}
+::msgcat::mcset ne {Abandon untouched operation} {अछोइएको कार्य त्याग्नुहोस्}
 ::msgcat::mcset ne {Access control} {पहुँच नियन्त्रण}
 ::msgcat::mcset ne {Access control (ACL)} {पहुँच नियन्त्रण (ACL)}
 ::msgcat::mcset ne Add थप्नुहोस्
 ::msgcat::mcset ne {Add MCP server} {MCP server थप्नुहोस्}
 ::msgcat::mcset ne {Add instance} {इन्स्ट्यान्स थप्नुहोस्}
 ::msgcat::mcset ne {Add server…} {server थप्नुहोस्…}
+::msgcat::mcset ne {Adds selected extension sources. Review the branch diff and checks before merging.} {चयन गरिएका एक्सटेन्सन स्रोतहरू थप्छ। मर्ज गर्नुअघि ब्रान्च डिफ र जाँचहरू समीक्षा गर्नुहोस्।}
 ::msgcat::mcset ne Add… थप्नुहोस्…
 ::msgcat::mcset ne {Agent & engine} {एजेन्ट र इन्जिन}
 ::msgcat::mcset ne {Alias %s} {उपनाम %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset ne {Applies to} {लागू हुने}
 ::msgcat::mcset ne Apply {लागू गर्नुहोस्}
 ::msgcat::mcset ne {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Apply ले चलिरहेको session मा मात्र परिवर्तन गर्छ। Copy TOML ले टाँस्ने ब्लकहरू दिन्छ। Save globally ले तिनलाई config.toml मा मिलाउँछ — failover खण्डहरू मात्र छोइन्छ, अरू हरेक लाइन र टिप्पणी यथावत् रहन्छ, र पुरानो फाइल config.toml.bak का रूपमा राखिन्छ।}
+::msgcat::mcset ne {Apply proposal…} {प्रस्ताव लागू गर्नुहोस्…}
+::msgcat::mcset ne {Apply received} {प्राप्त परिवर्तन लागू गर्नुहोस्}
+::msgcat::mcset ne {Apply this AI proposal?} {यो AI प्रस्ताव लागू गर्ने?}
+::msgcat::mcset ne {Apply this change set?} {यो परिवर्तन समूह लागू गर्ने?}
 ::msgcat::mcset ne {Apply to session} {session मा लागू गर्नुहोस्}
+::msgcat::mcset ne {Apply what this node received:} {यो नोडले प्राप्त गरेको कुरा लागू गर्नुहोस्:}
 ::msgcat::mcset ne {Approval needed} {स्वीकृति आवश्यक}
 ::msgcat::mcset ne Apps एपहरू
 ::msgcat::mcset ne Archive आर्काइभ
 ::msgcat::mcset ne {Archive SHA-256} {आर्काइभ SHA-256}
+::msgcat::mcset ne Ask सोध्नुहोस्
+::msgcat::mcset ne {Ask a design question} {डिजाइनसम्बन्धी प्रश्न सोध्नुहोस्}
+::msgcat::mcset ne {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {extension कसरी बनाउने सोध्नुहोस्: कुन सीमा, कुन भाषा, कुन API। कुनै स्रोत पठाइँदैन, र केही लेख्न सकिँदैन।}
 ::msgcat::mcset ne {Ask the agent to change it} {एजेन्टलाई यो बदल्न भन्नुहोस्}
+::msgcat::mcset ne {Asking %s…} {%s लाई सोधिँदै…}
 ::msgcat::mcset ne {Asking the provider for its models…} {प्रोभाइडरसँग यसका मोडेलहरू सोधिँदै…}
 ::msgcat::mcset ne Attach {संलग्न गर्नुहोस्}
 ::msgcat::mcset ne {Attach to the next message} {अर्को सन्देशमा जोड्नुहोस्}
+::msgcat::mcset ne {Author guide} {लेखक गाइड}
+::msgcat::mcset ne {Automatically discovered from the attached gateway's cluster registry.} {जोडिएको गेटवेको क्लस्टर रजिस्ट्रीबाट स्वचालित रूपमा पत्ता लगाइन्छ।}
 ::msgcat::mcset ne Back पछाडि
 ::msgcat::mcset ne {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {पछाडि ले माथि भएको बन्द गर्छ: मेनु, सेसन सूची, विन्डो। केही खुला नभए veles पृष्ठभूमिमा जान्छ र चलिरहन्छ।}
 ::msgcat::mcset ne {Base URL} {बेस URL}
+::msgcat::mcset ne {Base branch} {आधार ब्रान्च}
 ::msgcat::mcset ne {Bot token (hidden)} {बट टोकन (लुकाइएको)}
+::msgcat::mcset ne Branch ब्रान्च
+::msgcat::mcset ne {Branch and commit prepared; nothing has been pushed} {ब्रान्च र कमिट तयार भयो; केही पनि पुस गरिएको छैन}
+::msgcat::mcset ne {Branch pushed and verified on origin} {ब्रान्च पुस गरियो र ओरिजिनमा प्रमाणित गरियो}
 ::msgcat::mcset ne {Browse sessions} {सेसनहरू ब्राउज गर्नुहोस्}
+::msgcat::mcset ne {Build manifest + preflight} {बिल्ड manifest + preflight}
+::msgcat::mcset ne {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Build: veles %1$s, संशोधन %2$s (%3$s %4$s)}
 ::msgcat::mcset ne {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e लाइन छेउ · C-b/C-f क्यारेक्टर · M-b/M-f शब्द · C-k EOL सम्म काट्ने · C-y yank · M-w प्रतिलिपि · C-w क्षेत्र काट्ने · C-space mark सेट · C-/ undo}
 ::msgcat::mcset ne {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g सबै रोक्न · C-j नयाँ लाइन · M-p/M-n इतिहास · Tab पूरा गर्ने}
+::msgcat::mcset ne {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s कोर, लोड %2$s / %3$s / %4$s (कोरको %5$s%%)}
 ::msgcat::mcset ne Cancel {रद्द गर्नुहोस्}
+::msgcat::mcset ne {Cancel task} {कार्य रद्द गर्नुहोस्}
+::msgcat::mcset ne {Cancel task %1$s? This cannot be undone.} {कार्य %1$s रद्द गर्ने? यो फिर्ता गर्न सकिँदैन।}
+::msgcat::mcset ne {Cannot verify that %1$s is node %2$s: %3$s} {%1$s नोड %2$s हो भनी प्रमाणित गर्न सकिँदैन: %3$s}
 ::msgcat::mcset ne Capabilities क्षमताहरू
 ::msgcat::mcset ne {Change my app “%s” (%s): } {मेरो एप “%s” (%s) बदल: }
+::msgcat::mcset ne {Change this extension's files} {यो extension का फाइल परिवर्तन गर्नुहोस्}
+::msgcat::mcset ne {Change this file} {यो फाइल परिवर्तन गर्नुहोस्}
 ::msgcat::mcset ne Change… {परिवर्तन गर्नुहोस्…}
 ::msgcat::mcset ne {Channels (e.g. #veles #dev)} {च्यानलहरू (जस्तै #veles #dev)}
 ::msgcat::mcset ne Chat च्याट
 ::msgcat::mcset ne {Chat — not attached; press Attach in the Instances tab} {Chat — जोडिएको छैन; Instances ट्याबमा Attach थिच्नुहोस्}
 ::msgcat::mcset ne {Check (lsp)} {जाँच (lsp)}
+::msgcat::mcset ne {Check again} {फेरि जाँच्नुहोस्}
+::msgcat::mcset ne {Check files} {फाइलहरू जाँच्नुहोस्}
 ::msgcat::mcset ne Checkpoints चेकपोइन्टहरू
 ::msgcat::mcset ne {Checkpoints (undo)} {चेकपोइन्टहरू (undo)}
+::msgcat::mcset ne {Checks and next steps} {जाँचहरू र अर्का चरणहरू}
+::msgcat::mcset ne {Checks run} {जाँचहरू चलाइयो}
 ::msgcat::mcset ne {Choose BUNDLE-INFO.json in the managed install-sources directory} {व्यवस्थित install-sources डाइरेक्टरीमा BUNDLE-INFO.json छान्नुहोस्}
 ::msgcat::mcset ne {Choose a failover script} {फेलओभर स्क्रिप्ट छान्नुहोस्}
 ::msgcat::mcset ne {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {जाँच्नको लागि एउटा मोड्युल वा प्रोसेस प्लगइन छान्नुहोस्। डिस्कभरीले plugin.toml मात्र पढ्छ; कम्पोनेन्ट छान्दा त्यसको घोषित म्यानिफेस्ट र विकल्पहरू अनुरोध गरिन्छ। यो चरण खोल्दा केही पनि स्थापना हुँदैन।}
+::msgcat::mcset ne {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {नाम, उद्देश्य र भाषा छान्नुहोस्, अनि वास्तविक फाइलहरूको पूर्वावलोकन गर्नुहोस्। केही पनि लेखिएको छैन।}
 ::msgcat::mcset ne {Choose a user unit or a system service for the server profile. Neither starts a service.} {सर्भर प्रोफाइलका लागि प्रयोगकर्ता युनिट वा प्रणाली सेवा छान्नुहोस्। कुनै पनि सेवा सुरु गर्दैन।}
 ::msgcat::mcset ne {Choose core bundle…} {core bundle छान्नुहोस्…}
 ::msgcat::mcset ne {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {इन्स्टलेसनको स्वरूप छान्नुहोस्। स्थानीय प्रोफाइलहरूले समीक्षा गरिएको इन्स्टलर प्रयोग गर्छन्। सिस्टम र कन्टेनर प्रोफाइलहरूले स्पष्ट CLI ह्यान्डअफका लागि हस्ताक्षर गरिएको अनुरोध तयार गर्छन्। NixOS ले मोड्युल स्निपेट मात्र निकाल्छ।}
+::msgcat::mcset ne {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {सबैभन्दा साँघुरो सीमा छान्नुहोस्: Tool ले मोडेलले बोलाउन सक्ने क्षमता थप्छ; Hook ले जीवनचक्र घटना हेर्छ वा परिमार्जन गर्छ; Service वा override point ले नाम दिइएको निर्णय ढाक्छ; Provider driver ले प्रोभाइडरको wire थप्छ; प्रकाशित extension API ले परिवर्तन व्यक्त गर्न नसकेको अवस्थामा मात्र Core patch उपयुक्त हुन्छ।}
 ::msgcat::mcset ne {Choose typed container-host options JSON} {टाइप गरिएको container-host विकल्प JSON छान्नुहोस्}
 ::msgcat::mcset ne {Choose typed container-host options…} {टाइप गरिएका container-host विकल्पहरू छान्नुहोस्…}
 ::msgcat::mcset ne Clear {खाली गर्नुहोस्}
 ::msgcat::mcset ne {Clear composer} {कम्पोजर खाली गर्नुहोस्}
 ::msgcat::mcset ne {Clear override} {override खाली गर्नुहोस्}
 ::msgcat::mcset ne {Click the picture where you would click on the page.} {पृष्ठमा जहाँ क्लिक गर्नुहुन्थ्यो, त्यहीँ तस्बिरमा क्लिक गर्नुहोस्।}
+::msgcat::mcset ne {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {%1$s क्लोन गर्नुहोस्, %2$s बनाउनुहोस्, र %3$s का समीक्षा गरिएका फाइल मात्र %4$s/<extension>/ मुनि प्रतिलिपि गर्नुहोस्। फाइलहरू जाँचिएर कमिट गरिन्छन्। अहिले कुनै push वा pull request हुँदैन।}
 ::msgcat::mcset ne Close {बन्द गर्नुहोस्}
 ::msgcat::mcset ne {Close (Esc)} {बन्द गर्नुहोस् (Esc)}
 ::msgcat::mcset ne {Close the setup wizard? Nothing has been written yet.} {सेटअप विजार्ड बन्द गर्ने हो? अहिलेसम्म केही लेखिएको छैन।}
 ::msgcat::mcset ne {Code actions} {कोड एक्सनहरू}
+::msgcat::mcset ne Commit कमिट
+::msgcat::mcset ne {Commit ready for review. Push is a separate action.} {कमिट समीक्षाका लागि तयार छ। पुस छुट्टै कार्य हो।}
 ::msgcat::mcset ne {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {ह्यान्डअफको पूर्वावलोकन गर्नुअघि पिन गरिएको इमेज digest सहित सबै PDS फाँट भर्नुहोस्।}
 ::msgcat::mcset ne {Complete every typed container-host field before previewing this profile.} {यो प्रोफाइलको पूर्वावलोकन गर्नुअघि टाइप गरिएको कन्टेनर-होस्टको हरेक फिल्ड भर्नुहोस्।}
 ::msgcat::mcset ne {Component configuration returned an invalid result; nothing was accepted as applied.} {कम्पोनेन्ट कन्फिगरेसनले अमान्य नतिजा फर्कायो; लागू भएको रूपमा केही पनि स्वीकार गरिएन।}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset ne {Component options changed. Review the new preview before applying.} {कम्पोनेन्ट विकल्पहरू बदलिए। लागू गर्नुअघि नयाँ प्रिभ्यू समीक्षा गर्नुहोस्।}
 ::msgcat::mcset ne Components कम्पोनेन्टहरू
 ::msgcat::mcset ne {Composer preview} {कम्पोजर प्रिभ्यू}
+::msgcat::mcset ne Config कन्फिग
+::msgcat::mcset ne {Config differs: %s} {Config फरक छ: %s}
+::msgcat::mcset ne {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Config लग: त्यो नोडसँग %1$s का परिवर्तन %3$s सम्म छन्, यो गेटवेसँग %2$s सम्म}
+::msgcat::mcset ne {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Config लग: यो गेटवेसँग %1$s का परिवर्तन %2$s सम्म छन्, त्यो नोडसँग %3$s सम्म}
+::msgcat::mcset ne {Config only on that node: %s} {त्यो नोडमा मात्र config: %s}
+::msgcat::mcset ne {Config only on this gateway: %s} {यो गेटवेमा मात्र config: %s}
 ::msgcat::mcset ne Configure {कन्फिग गर्नुहोस्}
 ::msgcat::mcset ne {Configure %s} {%s कन्फिग गर्नुहोस्}
+::msgcat::mcset ne {Configure translator} {अनुवादक कन्फिगर गर्नुहोस्}
+::msgcat::mcset ne {Configured desktop gateway} {कन्फिगर गरिएको डेस्कटप गेटवे}
 ::msgcat::mcset ne Configure… {कन्फिग गर्नुहोस्…}
 ::msgcat::mcset ne {Configuring %s} {%s कन्फिगर गरिँदै}
 ::msgcat::mcset ne {Confirm or discard the current signed review before starting another download.} {अर्को डाउनलोड सुरु गर्नुअघि हालको हस्ताक्षरित समीक्षा पुष्टि वा त्याग गर्नुहोस्।}
 ::msgcat::mcset ne {Container host: typed host plan and privileged CLI handoff} {कन्टेनर होस्ट: टाइप गरिएको होस्ट प्लान र प्रशासकीय अधिकारसहितको CLI ह्यान्डअफ}
 ::msgcat::mcset ne {Context window} {सन्दर्भ विन्डो}
+::msgcat::mcset ne {Continue to next target} {अर्को लक्ष्यमा जारी राख्नुहोस्}
+::msgcat::mcset ne {Contribute extensions: %s} {एक्सटेन्सन योगदान गर्नुहोस्: %s}
+::msgcat::mcset ne Contribute… {योगदान गर्नुहोस्…}
+::msgcat::mcset ne {Contribution branch} {योगदान ब्रान्च}
+::msgcat::mcset ne {Contribution destination} {योगदान गन्तव्य}
 ::msgcat::mcset ne Copy {प्रतिलिपि गर्नुहोस्}
 ::msgcat::mcset ne {Copy TOML} {TOML प्रतिलिपि गर्नुहोस्}
+::msgcat::mcset ne {Copy a bundled extension into your user plugin directory before preparing a contribution.} {योगदान तयार गर्नुअघि बन्डल गरिएको एक्सटेन्सन आफ्नो प्रयोगकर्ता प्लगइन डाइरेक्टरीमा प्रतिलिपि गर्नुहोस्।}
 ::msgcat::mcset ne {Copy message} {सन्देश प्रतिलिपि गर्नुहोस्}
 ::msgcat::mcset ne {Copy name} {नाम प्रतिलिपि गर्नुहोस्}
 ::msgcat::mcset ne {Copy nick} {निक प्रतिलिपि गर्नुहोस्}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset ne {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {कम्पोनेन्टहरू फेला पार्न सकिएन। प्रोभाइडर सेटअपका चरणहरू अझै काम गर्छन्; आवश्यक भएमा लक्ष्य मेसिनमा CLI मार्फत स्थापना गर्नुहोस्।}
 ::msgcat::mcset ne {Could not join: %s} {सामेल हुन सकिएन: %s}
 ::msgcat::mcset ne {Could not list the models (%s) — type the model's name.} {मोडेलहरूको सूची बनाउन सकिएन (%s) — मोडेलको नाम टाइप गर्नुहोस्।}
+::msgcat::mcset ne {Create a PR in} {मा PR बनाउनुहोस्}
+::msgcat::mcset ne {Create extension} {एक्सटेन्सन सिर्जना गर्नुहोस्}
 ::msgcat::mcset ne {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {@BotFather बाट बट बनाउनुहोस्, अनि त्यसको टोकन तल टाँस्नुहोस्: यो इन्क्रिप्ट गरिएको तिजोरीमा जान्छ, कहिल्यै config.toml मा होइन।}
+::msgcat::mcset ne {Create this extension?} {यो एक्सटेन्सन सिर्जना गर्ने?}
+::msgcat::mcset ne {Create this generated extension?} {यो उत्पन्न गरिएको extension बनाउने?}
+::msgcat::mcset ne {Created and reloaded. Review and test the extension before publishing.} {सिर्जना भयो र पुनः लोड गरियो। प्रकाशित गर्नुअघि एक्सटेन्सन समीक्षा र परीक्षण गर्नुहोस्।}
+::msgcat::mcset ne {Created, but reload failed} {सिर्जना भयो, तर पुनः लोड असफल भयो}
 ::msgcat::mcset ne {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {टेम्प्लेटबाट %s/<name>/SKILL.md सिर्जना गरी खोल्छ। frontmatter को विवरण मात्र prompt अनुक्रमणिकासम्म पुग्छ, त्यसैले यसले skill कहिले प्रयोग गर्ने भनी बताउनुहोस्।}
 ::msgcat::mcset ne {Cron history} {Cron इतिहास}
 ::msgcat::mcset ne {Cron jobs} {Cron कामहरू}
 ::msgcat::mcset ne {Curated — write the first owner entry} {क्युरेटेड — पहिलो मालिक प्रविष्टि लेख्नुहोस्}
 ::msgcat::mcset ne Cut काट्नुहोस्
 ::msgcat::mcset ne Decline {अस्वीकार गर्नुहोस्}
+::msgcat::mcset ne {Dedicated translator} {समर्पित अनुवादक}
 ::msgcat::mcset ne {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset ne Default पूर्वनिर्धारित
 ::msgcat::mcset ne {Default model} {पूर्वनिर्धारित model}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset ne {Delete user} {प्रयोगकर्ता मेटाउनुहोस्}
 ::msgcat::mcset ne {Delete workspace?} {workspace मेटाउने हो?}
 ::msgcat::mcset ne Deop {अप हटाउनुहोस्}
+::msgcat::mcset ne {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {परिवर्तन वर्णन गर्नुहोस्। AI ले यो extension का धेरै फाइल परिवर्तन वा थप गर्न सक्छ। हरेक फाइल diff का रूपमा देखाइन्छ, र तपाईंले पुष्टि गर्नुअघि केही लेखिँदैन।}
+::msgcat::mcset ne {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {परिवर्तन वर्णन गर्नुहोस्। AI ले प्रतिस्थापन प्रस्ताव गर्न सक्छ, तर तपाईंले डिफ जाँचेर पुष्टि नगरेसम्म त्यसलाई लेख्न सक्दैन।}
+::msgcat::mcset ne {Describe the requested extension change first.} {पहिले चाहिएको एक्सटेन्सन परिवर्तन वर्णन गर्नुहोस्।}
+::msgcat::mcset ne Description विवरण
 ::msgcat::mcset ne {Desktop: local core, modules and process plugins} {डेस्कटप: स्थानीय core, मोड्युल र प्रोसेस pluginहरू}
 ::msgcat::mcset ne Detach {अलग गर्नुहोस्}
+::msgcat::mcset ne {Detach foreground} {फोरग्राउन्ड डिट्याच गर्नुहोस्}
 ::msgcat::mcset ne Dev डेभ
 ::msgcat::mcset ne {Dev pane (REPL + LSP)} {डेभ प्यान (REPL + LSP)}
 ::msgcat::mcset ne {Dev: arm / disarm live patching} {डेभ: लाइभ प्याचिङ सक्रिय/निष्क्रिय गर्नुहोस्}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset ne Devoice {भ्वाइस हटाउनुहोस्}
 ::msgcat::mcset ne {Discard review} {समीक्षा त्याग्नुहोस्}
 ::msgcat::mcset ne {Discard your changes to %s?} {%s मा गरिएका तपाईंका परिवर्तनहरू त्याग्ने?}
+::msgcat::mcset ne {Disk: %1$s free of %2$s at %3$s} {डिस्क: %3$s मा %2$s मध्ये %1$s खाली}
 ::msgcat::mcset ne Done सकियो
 ::msgcat::mcset ne {Done — config written} {सकियो — config लेखियो}
 ::msgcat::mcset ne {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {स्थापना गर्नुअघि रिलिज म्यानिफेस्ट र होस्ट आर्काइभ डाउनलोड गरी प्रमाणित गर्नुहोस्। पाँचै पहिचान फाँटहरू आवश्यक छन्। गेटवेले निजी स्टेज गरिएको आर्काइभ राख्छ; यो पूर्वावलोकनले केही पनि स्थापना गर्दैन।}
 ::msgcat::mcset ne {Downloading and verifying the signed release…} {हस्ताक्षरित रिलिज डाउनलोड र प्रमाणित गर्दै…}
+::msgcat::mcset ne {Draft this as an extension?} {यसलाई एक्सटेन्सनका रूपमा मस्यौदा गर्ने हो?}
 ::msgcat::mcset ne {Drag to scroll; a quick swipe goes further.} {स्क्रोल गर्न तान्नुहोस्; छिटो स्वाइपले अझ टाढा लैजान्छ।}
+::msgcat::mcset ne {Drift check failed: %s} {ड्रिफ्ट जाँच असफल: %s}
+::msgcat::mcset ne {Drift check: %s node(s) differ from this gateway.} {ड्रिफ्ट जाँच: %s नोड यो गेटवेभन्दा फरक छन्।}
+::msgcat::mcset ne {Drift: built from revision %1$s, this gateway from %2$s} {ड्रिफ्ट: संशोधन %1$s बाट बनेको, यो गेटवे %2$s बाट}
+::msgcat::mcset ne {Drift: none — same version, revision and replicated config} {ड्रिफ्ट: कुनै छैन — एउटै संस्करण, संशोधन र प्रतिलिपि config}
+::msgcat::mcset ne {Drift: not compared — %s} {ड्रिफ्ट: तुलना गरिएन — %s}
+::msgcat::mcset ne {Drift: runs version %1$s, this gateway %2$s} {ड्रिफ्ट: संस्करण %1$s चलाइरहेको, यो गेटवे %2$s}
+::msgcat::mcset ne Drift… ड्रिफ्ट…
 ::msgcat::mcset ne {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset ne {ESC %s is not bound} {ESC %s बाँधिएको छैन}
 ::msgcat::mcset ne {ESC- … (Meta prefix)} {ESC- … (Meta उपसर्ग)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset ne Edit… {सम्पादन गर्नुहोस्…}
 ::msgcat::mcset ne {Enable / disable} {सक्षम / असक्षम गर्नुहोस्}
 ::msgcat::mcset ne {Enable the Telegram adapter} {Telegram एडाप्टर सक्रिय गर्नुहोस्}
+::msgcat::mcset ne Endpoint एन्डपोइन्ट
 ::msgcat::mcset ne Engine इन्जिन
 ::msgcat::mcset ne Eval→gw Eval→gw
 ::msgcat::mcset ne {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {%s मा भएको हरेक परिवर्तन commit हुन्छ। पुनर्स्थापना गर्दा पूरै डाइरेक्टरी त्यो commit मा फर्किन्छ — र पहिले हालको अवस्थाको स्न्यापसट लिइन्छ, त्यसैले यो एकतर्फी ढोका होइन।}
 ::msgcat::mcset ne {Every plugin file goes back to that commit. The current state is committed first.} {हरेक plugin फाइल त्यो commit मा फर्किन्छ। हालको अवस्था पहिले commit गरिन्छ।}
+::msgcat::mcset ne {Exact commit} {ठ्याक्कै कमिट}
+::msgcat::mcset ne {Exact permission rule} {ठ्याक्कै अनुमति नियम}
+::msgcat::mcset ne {Example: a hook} {उदाहरण: एउटा hook}
+::msgcat::mcset ne {Example: a provider driver} {उदाहरण: प्रोभाइडर ड्राइभर}
+::msgcat::mcset ne {Example: a service override wrapping core} {उदाहरण: core लाई ढाक्ने service override}
+::msgcat::mcset ne {Example: a tool} {उदाहरण: उपकरण}
 ::msgcat::mcset ne {Existing shared container network} {अवस्थित साझा कन्टेनर नेटवर्क}
+::msgcat::mcset ne Explain {व्याख्या गर्नुहोस्}
+::msgcat::mcset ne {Explain the diagnostics} {diagnostics व्याख्या गर्नुहोस्}
 ::msgcat::mcset ne Export… {निर्यात गर्नुहोस्…}
+::msgcat::mcset ne {Extension API} {एक्सटेन्सन API}
+::msgcat::mcset ne {Extension development} {एक्सटेन्सन विकास}
+::msgcat::mcset ne {Extension guide} {एक्सटेन्सन मार्गदर्शक}
+::msgcat::mcset ne {Extension source} {एक्सटेन्सन स्रोत}
 ::msgcat::mcset ne {Failover blueprint} {फेलओभर ब्लुप्रिन्ट}
 ::msgcat::mcset ne {Failover blueprint (edit the route chain)} {फेलओभर ब्लुप्रिन्ट (रुट चेन सम्पादन गर्नुहोस्)}
 ::msgcat::mcset ne {Failover hook script (what `script` mode runs)} {फेलओभर हुक स्क्रिप्ट (`script` मोडले चलाउने)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset ne {Find in transcript} {ट्रान्स्क्रिप्टमा खोज्नुहोस्}
 ::msgcat::mcset ne {Find in transcript…} {ट्रान्स्क्रिप्टमा खोज्नुहोस्…}
 ::msgcat::mcset ne {Find references} {सन्दर्भहरू खोज्नुहोस्}
+::msgcat::mcset ne {Finish rollback} {रोलब्याक सक्नुहोस्}
 ::msgcat::mcset ne {First run: no config.toml yet.} {पहिलो चोटि चलेको: अहिलेसम्म config.toml छैन।}
+::msgcat::mcset ne {Fix the failed syntax checks before preparing a contribution.} {योगदान तयार गर्नुअघि असफल भएका सिन्ट्याक्स जाँचहरू सच्याउनुहोस्।}
+::msgcat::mcset ne {Fleet deployment} {फ्लीट डिप्लोयमेन्ट}
+::msgcat::mcset ne {Fleet deployment runs from a desktop computer; it is not available on Android.} {फ्लीट डिप्लोयमेन्ट डेस्कटप कम्प्युटरबाट चल्छ; यो Android मा उपलब्ध छैन।}
+::msgcat::mcset ne {Fleet deploy…} {फ्लीट डिप्लोय…}
+::msgcat::mcset ne {Fleet drift} {फ्लीट ड्रिफ्ट}
 ::msgcat::mcset ne {Fold / unfold} {फोल्ड / अनफोल्ड}
 ::msgcat::mcset ne {Forget declaration} {घोषणा बिर्सनुहोस्}
+::msgcat::mcset ne {Forget node %s?} {नोड %s बिर्सने हो?}
+::msgcat::mcset ne {Forget node…} {नोड बिर्सनुहोस्…}
+::msgcat::mcset ne {Forgetting %1$s failed: %2$s} {%1$s बिर्साउन असफल: %2$s}
+::msgcat::mcset ne {Forgot node %s.} {नोड %s बिर्सियो।}
+::msgcat::mcset ne {Forgotten fleet-wide (refused until they heartbeat again): %s} {फ्लीटभरि बिर्साइयो (फेरि heartbeat नगरेसम्म अस्वीकार): %s}
 ::msgcat::mcset ne Fork {शाखा बनाउनुहोस्}
 ::msgcat::mcset ne {Free space} {खाली ठाउँ}
 ::msgcat::mcset ne {Full source commit SHA} {पूरा स्रोत कमिट SHA}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset ne {Gateway image sha256 digest} {Gateway इमेजको sha256 डाइजेस्ट}
 ::msgcat::mcset ne {Gateway quadlet name} {Gateway quadlet नाम}
 ::msgcat::mcset ne {Gateway status} {गेटवे स्थिति}
+::msgcat::mcset ne {Generate with AI…} {AI सँग उत्पन्न गर्नुहोस्…}
+::msgcat::mcset ne {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {%s ले उत्पन्न गर्यो - केही लेखिएको छैन। हरेक फाइल समीक्षा गर्नुहोस्, अनि Create extension ले ठ्याक्कै यिनै लेख्छ।}
 ::msgcat::mcset ne {Get a key at %s} {%s मा key लिनुहोस्}
 ::msgcat::mcset ne {GitHub release URL} {GitHub रिलिज URL}
+::msgcat::mcset ne {Give the extension a name and describe what it should do (the purpose), then generate.} {extension लाई एउटा नाम दिनुहोस् र यसले के गर्नुपर्छ (प्रयोजन) वर्णन गर्नुहोस्, अनि उत्पन्न गर्नुहोस्।}
 ::msgcat::mcset ne {Give up} छोड्नुहोस्
 ::msgcat::mcset ne Go जानुहोस्
 ::msgcat::mcset ne {Go to definition} {परिभाषामा जानुहोस्}
+::msgcat::mcset ne {Gossip failed: %s} {गसिप असफल: %s}
+::msgcat::mcset ne {Gossip now} {अहिले गसिप गर्नुहोस्}
+::msgcat::mcset ne {Gossip with %1$s: %2$s} {%1$s सँग गसिप: %2$s}
+::msgcat::mcset ne {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {गसिप: %2$s सहकर्मीमध्ये %1$s ले जवाफ दिए (%3$s)।}
 ::msgcat::mcset ne Grant {अनुमति दिनुहोस्}
 ::msgcat::mcset ne {Grant access} {पहुँच दिनुहोस्}
+::msgcat::mcset ne {Granted at} {दिइएको समय}
 ::msgcat::mcset ne Grant… {अनुमति दिनुहोस्…}
 ::msgcat::mcset ne {Guards — what the harness stops, and where it stands now} {Guards — harness ले के रोक्छ, र अहिले कहाँ छ}
 ::msgcat::mcset ne {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handlers देखाइएको क्रममा चल्छन्; गैर-खाली मान फर्काउने पहिलोले जित्छ। एउटा बन्द गर्दा त्यो unregister नगरी छोडिन्छ, र छनोट config.toml मा राखिन्छ ताकि plugin reload ले यसलाई चुपचाप फेरि चालू गर्न नसकोस्।}
+::msgcat::mcset ne Health स्वास्थ्य
+::msgcat::mcset ne {Health alerts (%s):} {स्वास्थ्य सूचना (%s):}
+::msgcat::mcset ne Heartbeat हार्टबिट
+::msgcat::mcset ne {Heartbeat age: %s s} {हार्टबिट उमेर: %s सेकेन्ड}
 ::msgcat::mcset ne Help मद्दत
 ::msgcat::mcset ne {Help & keys} {मद्दत र कुञ्जीहरू}
 ::msgcat::mcset ne {Hide right panes} {दायाँ प्यानहरू लुकाउनुहोस्}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset ne {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {थिचिराख्नुहोस्, अनि औँला उठाउनुअघि तान्नुहोस्: चयन शब्द-शब्द गर्दै तपाईंको औँलालाई पछ्याउँछ, माथिल्लो वा तल्लो किनारमा स्क्रोल गर्दै।}
 ::msgcat::mcset ne Hooks Hooks
 ::msgcat::mcset ne {Hooks (what plugins run on)} {हुकहरू (प्लगइनहरूले केमा चलाउँछन्)}
+::msgcat::mcset ne Host होस्ट
 ::msgcat::mcset ne {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {थिचिराख्न कति समय लाग्छ भन्ने Android को छोएर थिचिराख्ने ढिलाइले तय गर्छ, यसको पहुँच सेटिङहरूमा।}
 ::msgcat::mcset ne {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {मैले KEK र PLC रोटेसन कुञ्जी अफलाइन ब्याकअप गरें; समीक्षा गरिएको TLS र सक्रियण ह्यान्डअफलाई अनुमति दिनुहोस्}
 ::msgcat::mcset ne {I-search backward: type to search, C-r for previous} {I-search पछाडि: खोज्न टाइप गर्नुहोस्, अघिल्लोका लागि C-r}
 ::msgcat::mcset ne {I-search: type to search, C-s for next} {I-search: खोज्न टाइप गर्नुहोस्, अर्कोका लागि C-s}
+::msgcat::mcset ne {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {IO दबाब: %1$s%% / %2$s%% / %3$s%% समय कुनै काम पर्खियो (10 से / 1 मिनेट / 5 मिनेट)}
 ::msgcat::mcset ne IRC IRC
 ::msgcat::mcset ne {IRC buffers} {IRC buffers}
 ::msgcat::mcset ne {IRC composer} {IRC composer}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset ne {IRC split: %s} {IRC split: %s}
 ::msgcat::mcset ne {IRC transcript} {IRC कुराकानी}
 ::msgcat::mcset ne {IRC — nothing to show} {IRC — देखाउन केही छैन}
+::msgcat::mcset ne {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {चालू: %1$s turn %2$s, %3$s background काम %4$s}
 ::msgcat::mcset ne {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {%s लाई व्यवस्थापित कम्पोनेन्ट स्टोरमा स्थापना गर्ने हो? यसको म्यानिफेस्ट देखाइएको छ; यसले कुनै सेवा सुरु गर्दैन।}
 ::msgcat::mcset ne {Install component} {कम्पोनेन्ट स्थापना गर्नुहोस्}
 ::msgcat::mcset ne {Install components…} {कम्पोनेन्टहरू स्थापना गर्नुहोस्…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset ne Instances इन्स्ट्यान्सहरू
 ::msgcat::mcset ne {It becomes the current content, as a new revision — so the restore can be undone too.} {यो नयाँ संशोधनको रूपमा हालको सामग्री बन्छ — त्यसैले पुनर्स्थापना पनि फिर्ता लिन सकिन्छ।}
 ::msgcat::mcset ne {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {यो यो मेसिनको इन्क्रिप्ट गरिएको तिजोरीमा जान्छ। एजेन्टले यसलाई कहिल्यै देख्दैन: उसले यसलाई आदेशहरूमा $%s का रूपमा मात्र प्रयोग गर्न सक्छ, वा अनुमति दिइएका होस्टहरूमा पठाउन सक्छ।}
+::msgcat::mcset ne {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {यो क्लस्टर रजिस्ट्रीबाट फ्लीटभरि हटाइन्छ: अर्को गसिप साटासाटले हरेक 0.2.0 सहकर्मीलाई पनि यसलाई हटाउन भन्छ, र तीमध्ये कसैले पनि यसलाई फेरि मर्ज गर्दैन। 0.2.0 भन्दा पुरानो सहकर्मीले भने यसलाई सूचीमा राखिरहन्छ। मेसिन फेरि आएर heartbeat गर्न थालेमा यो फेरि दर्ता हुन्छ। सिंक सहकर्मी र सुरक्षित गरिएका instances अछुत रहन्छन्।}
 ::msgcat::mcset ne {It leaves memory now. Its history keeps every revision, and History… can restore it.} {यो अब मेमोरीबाट हट्छ। यसको इतिहासले हरेक संशोधन राख्छ, र इतिहास… ले यसलाई फर्काउन सक्छ।}
 ::msgcat::mcset ne Join {सामेल हुनुहोस्}
 ::msgcat::mcset ne {Join a pool} {मेसिनहरूको समूहमा सामेल हुनुहोस्}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset ne {Language (i18n)} {भाषा (i18n)}
 ::msgcat::mcset ne Language… भाषा…
 ::msgcat::mcset ne {Last active} {अन्तिम सक्रिय}
+::msgcat::mcset ne {Last probe: %1$s — %2$s} {अन्तिम प्रोब: %1$s — %2$s}
 ::msgcat::mcset ne {Leave %s?} {%s छोड्ने हो?}
 ::msgcat::mcset ne Leave… छोड्नुहोस्…
 ::msgcat::mcset ne {Legacy open — no [acl] section} {लेगेसी खुला — [acl] सेक्सन छैन}
 ::msgcat::mcset ne {Let %s:} {%s लाई यी गर्न दिनुहोस्:}
 ::msgcat::mcset ne {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {अक्षर, अङ्क, - र _। post_llm_call hook दर्ता गर्ने plugin.toml र plugin.tcl सिर्जना गरी Dev पेनमा खोल्छ।}
+::msgcat::mcset ne Level स्तर
 ::msgcat::mcset ne {Lift lockdown} {लकडाउन हटाउनुहोस्}
+::msgcat::mcset ne Lines लाइन
 ::msgcat::mcset ne {List the provider's models} {प्रोभाइडरका मोडेलहरूको सूची देखाउनुहोस्}
+::msgcat::mcset ne Load लोड
 ::msgcat::mcset ne {Load more} {थप लोड गर्नुहोस्}
 ::msgcat::mcset ne {Loading discovered components…} {फेला परेका कम्पोनेन्टहरू लोड गर्दै…}
 ::msgcat::mcset ne {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {स्थानीय बन्डल समीक्षा गरियो। इन्स्टलेसन पुष्टि गर्न Install selected component छान्नुहोस्; केही पनि इन्स्टल गरिएको छैन।}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset ne {Lock down} {लकडाउन गर्नुहोस्}
 ::msgcat::mcset ne Log लग
 ::msgcat::mcset ne {Log (engine + status)} {लग (इन्जिन + स्थिति)}
+::msgcat::mcset ne {Log of %s} {%s को लग}
+::msgcat::mcset ne Logs… लगहरू…
 ::msgcat::mcset ne {M-g- (g: goto line)} {M-g- (g: लाइनमा जानुहोस्)}
 ::msgcat::mcset ne {M-p/M-n history · Tab complete} {M-p/M-n इतिहास · Tab ले पूरा गर्ने}
 ::msgcat::mcset ne {MCP server list} {MCP server सूची}
 ::msgcat::mcset ne {MCP servers (from config.toml)} {MCP servers (config.toml बाट)}
 ::msgcat::mcset ne {Make default} {पूर्वनिर्धारित बनाउनुहोस्}
 ::msgcat::mcset ne {Make default (config.toml)} {डिफल्ट बनाउनुहोस् (config.toml)}
+::msgcat::mcset ne {Manage extensions} {एक्सटेन्सन व्यवस्थापन}
 ::msgcat::mcset ne {Manifest SHA-256} {म्यानिफेस्ट SHA-256}
 ::msgcat::mcset ne {Mark read} {पढिएको चिन्ह लगाउनुहोस्}
 ::msgcat::mcset ne {Mechanisms (what the engine does on its own)} {संयन्त्रहरू (इन्जिनले आफैले के गर्छ)}
 ::msgcat::mcset ne {Mechanisms — what the engine does on its own, and how to stop it} {Mechanisms — engine ले आफैँ के गर्छ, र कसरी रोक्ने}
 ::msgcat::mcset ne Memory मेमोरी
 ::msgcat::mcset ne {Memory history} {मेमोरी इतिहास}
+::msgcat::mcset ne {Memory: %1$s available of %2$s (%3$s%% used)} {मेमोरी: %2$s मध्ये %1$s उपलब्ध (%3$s%% प्रयोग भयो)}
+::msgcat::mcset ne {Merge the received %s into this node?} {प्राप्त %s यो नोडमा मर्ज गर्ने हो?}
 ::msgcat::mcset ne Messages सन्देशहरू
+::msgcat::mcset ne Metrics मेट्रिक्स
+::msgcat::mcset ne {Metrics (asked %s):} {मेट्रिक्स (%s लाई सोधियो):}
+::msgcat::mcset ne {Metrics of %1$s failed: %2$s} {%1$s का मेट्रिक्स असफल: %2$s}
+::msgcat::mcset ne {Metrics of %s received.} {%s का मेट्रिक्स प्राप्त भए।}
+::msgcat::mcset ne {Metrics: not asked yet — use Metrics.} {मेट्रिक्स: अझै सोधिएको छैन — Metrics प्रयोग गर्नुहोस्।}
 ::msgcat::mcset ne Model मोडेल
 ::msgcat::mcset ne {Model for this session} {यस session का लागि model}
 ::msgcat::mcset ne {Models & settings} {Models र settings}
+::msgcat::mcset ne Monitors मोनिटरहरू
+::msgcat::mcset ne Name नाम
+::msgcat::mcset ne {Need an account? Optional sign-up links (open in your browser):} {खाता चाहिन्छ? वैकल्पिक दर्ता लिंकहरू (तपाईंको ब्राउजरमा खोलिन्छ):}
 ::msgcat::mcset ne Network नेटवर्क
 ::msgcat::mcset ne {New alias} {नयाँ उपनाम}
+::msgcat::mcset ne {New branch name} {नयाँ ब्रान्चको नाम}
 ::msgcat::mcset ne {New cron job} {नयाँ cron काम}
+::msgcat::mcset ne {New extension} {नयाँ एक्सटेन्सन}
 ::msgcat::mcset ne {New memory file} {नयाँ मेमोरी फाइल}
 ::msgcat::mcset ne {New plugin} {नयाँ plugin}
 ::msgcat::mcset ne {New session} {नयाँ सेसन}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset ne Next अगाडि
 ::msgcat::mcset ne Nickname उपनाम
 ::msgcat::mcset ne {NixOS: emit a module snippet; do not edit host declarations} {NixOS: एउटा मोड्युल स्निपेट उत्पन्न गर्नुहोस्; होस्ट घोषणाहरू सम्पादन नगर्नुहोस्}
+::msgcat::mcset ne {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {यो नोडका लागि कुनै SSH जीवनचक्र लक्ष्य कन्फिगर गरिएको छैन। डिप्लोय वा पुनः सुरु गर्न इन्स्ट्यान्स स्पष्ट रूपमा थप्नुहोस्।}
+::msgcat::mcset ne {No additional push happens.} {अतिरिक्त पुस हुँदैन।}
 ::msgcat::mcset ne {No apps yet. Ask the agent to make one: “make me an app that…”} {अहिलेसम्म कुनै एप छैन। एजेन्टलाई एउटा बनाउन भन्नुहोस्: “मेरो लागि यस्तो एप बनाऊ जसले…”}
 ::msgcat::mcset ne {No code in the picture. Hold the phone closer, straight on, and scan again.} {तस्बिरमा कुनै कोड छैन। फोन नजिक, सिधा समातेर फेरि स्क्यान गर्नुहोस्।}
 ::msgcat::mcset ne {No configuration snapshot will be restored.} {कुनै कन्फिगरेसन स्न्यापसट पुनर्स्थापित गरिने छैन।}
+::msgcat::mcset ne {No configured sync peer for this node.} {यो नोडका लागि कुनै सिंक पियर कन्फिग गरिएको छैन।}
+::msgcat::mcset ne {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {कुनै समर्पित अनुवादक कन्फिगर गरिएको छैन। यसको प्रोभाइडर, मोडेल र लक्ष्य भाषा छान्न अनुवादक कन्फिगर गर्नुहोस् प्रयोग गर्नुहोस्।}
+::msgcat::mcset ne {No deployment started.} {कुनै डिप्लोयमेन्ट सुरु भएन।}
+::msgcat::mcset ne {No diagnostics reported by the current LSP document.} {हालको LSP डकुमेन्टले कुनै डायग्नोस्टिक्स रिपोर्ट गरेको छैन।}
+::msgcat::mcset ne {No explicitly configured desktop gateway is bound to this node.} {यो नोडसँग स्पष्ट रूपमा कन्फिगर गरिएको डेस्कटप गेटवे बाँधिएको छैन।}
+::msgcat::mcset ne {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {यो नोडसँग स्पष्ट रूपमा कन्फिगर गरिएको गेटवे बाँधिएको छैन। पहिले गेटवे थप्नुहोस्; यसको रजिस्ट्री एन्डपोइन्ट डेस्कटप URL को रूपमा प्रयोग हुँदैन।}
+::msgcat::mcset ne {No file is open. Ask a design question, or open an extension file for help with its code.} {कुनै फाइल खुला छैन। डिजाइनसम्बन्धी प्रश्न सोध्नुहोस्, वा यसको कोडमा सहयोगका लागि extension फाइल खोल्नुहोस्।}
+::msgcat::mcset ne {No files have been written. Review the exact manifest and source, then confirm creation.} {कुनै फाइल लेखिएको छैन। वास्तविक म्यानिफेस्ट र स्रोत समीक्षा गर्नुहोस्, अनि सिर्जना पुष्टि गर्नुहोस्।}
 ::msgcat::mcset ne {No modules or process plugins were discovered. The provider setup steps can still continue.} {कुनै मोड्युल वा प्रोसेस प्लगइन फेला परेनन्। प्रोभाइडर सेटअपका चरणहरू अझै अगाडि बढ्न सक्छन्।}
+::msgcat::mcset ne {No other registered node to compare with.} {तुलना गर्न अर्को दर्ता भएको नोड छैन।}
 ::msgcat::mcset ne {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {यो विजार्डबाट कुनै पनि प्रोफाइलले सेवा सुरु गर्दैन वा प्रशासकीय अधिकार चाहिने स्क्रिप्ट चलाउँदैन। चलाउनुअघि प्लान र कुनै पनि ह्यान्डअफको समीक्षा गर्नुहोस्।}
+::msgcat::mcset ne {No proposal has been requested. Nothing will be written automatically.} {कुनै प्रस्ताव अनुरोध गरिएको छैन। केही पनि स्वतः लेखिने छैन।}
+::msgcat::mcset ne {No proposal. Nothing was written.} {कुनै प्रस्ताव छैन। केही लेखिएको छैन।}
 ::msgcat::mcset ne {No routes configured.} {कुनै route कन्फिग गरिएको छैन।}
 ::msgcat::mcset ne {No session selected — pick one in the sidebar or start a new one} {कुनै session चयन गरिएको छैन — sidebar बाट एउटा रोज्नुहोस् वा नयाँ सुरु गर्नुहोस्}
 ::msgcat::mcset ne {No swap target yet: pick a language and press “Set as swap target”.} {अझै साट्ने भाषा छैन: भाषा छान्नुहोस् र “साट्ने भाषा बनाउनुहोस्” थिच्नुहोस्।}
 ::msgcat::mcset ne {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {config.toml मा {[}acl{]} खण्ड छैन: gateway सम्म पुग्ने हरेक पठाउनेलाई मालिक मानिन्छ — pre-ACL को एकल-प्रयोगकर्ता व्यवहार। अनुमति दिने र फिर्ता लिने अझै काम गर्छ र {[}acl{]} अस्तित्वमा आउनासाथ लागू हुन्छ।}
+::msgcat::mcset ne {Node id} {नोड आईडी}
+::msgcat::mcset ne {Non-evaluating syntax checks} {कार्यान्वयन नगर्ने सिन्ट्याक्स जाँचहरू}
+::msgcat::mcset ne {Not available: %s} {उपलब्ध छैन: %s}
+::msgcat::mcset ne Note टिप्पणी
 ::msgcat::mcset ne {Note for the agent (optional):} {एजेन्टका लागि टिपोट (ऐच्छिक):}
+::msgcat::mcset ne {Nothing selected.} {केही छानिएको छैन।}
 ::msgcat::mcset ne {Nothing typed yet.} {अहिलेसम्म केही टाइप गरिएको छैन।}
+::msgcat::mcset ne {Nothing was generated or written.} {केही उत्पन्न वा लेखिएको छैन।}
+::msgcat::mcset ne {Nothing was prepared: the chosen repository already has these paths.} {केही तयार भएन: छानिएको रिपोजिटरीमा यी पथहरू पहिले नै छन्।}
 ::msgcat::mcset ne Notifications सूचनाहरू
 ::msgcat::mcset ne OK {ठीक छ}
 ::msgcat::mcset ne Off बन्द
 ::msgcat::mcset ne On चालू
+::msgcat::mcset ne {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {समीक्षा गरिएको एक्सटेन्सन बफर मात्र प्रतिस्थापन हुनेछ। यो पूर्वावलोकनपछि गरिएका परिवर्तनहरूबाट फाइल अझै सुरक्षित छ। कुनै कमिट, पुस वा PR हुँदैन।}
+::msgcat::mcset ne {Only this new branch is committed. Your ambient git identity is used.} {यो नयाँ ब्रान्च मात्र कमिट गरिन्छ। तपाईंको परिवेशको git पहिचान प्रयोग गरिन्छ।}
 ::msgcat::mcset ne Op {अप दिनुहोस्}
 ::msgcat::mcset ne Open खोल्नुहोस्
+::msgcat::mcset ne {Open PR…} {PR खोल्नुहोस्…}
 ::msgcat::mcset ne {Open a window} {सञ्झ्याल खोल्नुहोस्}
 ::msgcat::mcset ne {Open in Dev} {Dev मा खोल्नुहोस्}
 ::msgcat::mcset ne {Open in browser} {ब्राउजरमा खोल्नुहोस्}
 ::msgcat::mcset ne {Open plugin} {plugin खोल्नुहोस्}
 ::msgcat::mcset ne {Open terminal} {टर्मिनल खोल्नुहोस्}
+::msgcat::mcset ne {Open this pull request?} {यो पुल अनुरोध खोल्ने?}
 ::msgcat::mcset ne {Open veles in Android's settings} {Android सेटिङहरूमा veles खोल्नुहोस्}
 ::msgcat::mcset ne {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {वैकल्पिक: जोडिने IRC नेटवर्क। च्यानलहरू खाली ठाउँ वा कमाले छुट्याएर लेख्नुहोस्; .env मा IRC_CHANNELS सेट भए यसले यो सूची प्रतिस्थापन गर्छ।}
 ::msgcat::mcset ne {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {विकल्पहरू छानिएको कम्पोनेन्टको म्यानिफेस्टबाट आउँछन्। गोप्य देखिने फिल्डहरू सेटअप/तिजोरी प्रवाहमै रहन्छन्। खाली फिल्डहरूले त्यो विकल्प यथावत् राख्छन्।}
 ::msgcat::mcset ne {Or paste a ticket signed on another device} {वा अर्को यन्त्रमा साइन गरिएको टिकट टाँस्नुहोस्}
 ::msgcat::mcset ne {Or type an answer:} {वा उत्तर टाइप गर्नुहोस्:}
+::msgcat::mcset ne Origin ओरिजिन
 ::msgcat::mcset ne Other… अन्य…
 ::msgcat::mcset ne Outline रूपरेखा
+::msgcat::mcset ne Output आउटपुट
 ::msgcat::mcset ne {Override for THIS session (leave blank to inherit the default)} {यस session का लागि override (पूर्वनिर्धारित प्राप्त गर्न खाली छोड्नुहोस्)}
 ::msgcat::mcset ne {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {मालिकको पहिचान (telegram:123456, irc:account, वा nick!user@host मास्क)}
 ::msgcat::mcset ne {PDS and handle domain} {PDS र handle डोमेन}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset ne {Pause scheduler} {शेड्युलर पज गर्नुहोस्}
 ::msgcat::mcset ne {Peek (C-c C-p)} {झलक (C-c C-p)}
 ::msgcat::mcset ne {Peek definition} {परिभाषा हेर्नुहोस्}
+::msgcat::mcset ne {Permission grants} {स्वीकृत अनुमतिहरू}
+::msgcat::mcset ne {Permission grants…} {स्वीकृत अनुमतिहरू…}
 ::msgcat::mcset ne Phone फोन
 ::msgcat::mcset ne {Phone: permissions, battery, storage} {फोन: अनुमतिहरू, ब्याट्री, भण्डारण}
 ::msgcat::mcset ne {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {%s ले बनाएका फोनहरूले आफैँ पनि एपहरू बन्द गर्छन्। veles को एप सेटिङहरूमा यसलाई आफैँ सुरु हुन र पृष्ठभूमिमा चल्न दिनुहोस्।}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset ne Port पोर्ट
 ::msgcat::mcset ne {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {प्रिफिक्स कर्डहरू (C-x, M-o) सक्रिय हुनेबित्तिकै which-key पपअप देखिन्छ।}
 ::msgcat::mcset ne {Prepare an own vlpds PDS through the signed CLI handoff} {हस्ताक्षरित CLI ह्यान्डअफमार्फत आफ्नै vlpds PDS तयार गर्नुहोस्}
+::msgcat::mcset ne {Prepare branch…} {ब्रान्च तयार गर्नुहोस्…}
+::msgcat::mcset ne {Prepare this branch and commit?} {यो ब्रान्च र कमिट तयार गर्ने?}
 ::msgcat::mcset ne Preview पूर्वावलोकन
+::msgcat::mcset ne {Preview change set} {परिवर्तन समूह पूर्वावलोकन}
+::msgcat::mcset ne {Preview files} {फाइलहरू पूर्वावलोकन गर्नुहोस्}
 ::msgcat::mcset ne {Preview here} {यहाँ पूर्वावलोकन}
 ::msgcat::mcset ne {Preview pane} {प्रिभ्यू पेन}
+::msgcat::mcset ne {Preview proposal} {प्रस्ताव पूर्वावलोकन गर्नुहोस्}
+::msgcat::mcset ne {Preview the changed name or language before creating it.} {सिर्जना गर्नुअघि परिवर्तन गरिएको नाम वा भाषा पूर्वावलोकन गर्नुहोस्।}
+::msgcat::mcset ne Probe प्रोब
+::msgcat::mcset ne {Probe of %1$s failed: %2$s} {%1$s को प्रोब असफल: %2$s}
 ::msgcat::mcset ne {Profile result} {प्रोफाइल नतिजा}
 ::msgcat::mcset ne {Promote into config.toml} {config.toml मा promote गर्नुहोस्}
 ::msgcat::mcset ne Promote… {promote गर्नुहोस्…}
 ::msgcat::mcset ne Provider प्रोभाइडर
+::msgcat::mcset ne {Provider driver (plugin wire only)} {प्रोभाइडर ड्राइभर (plugin wire मा मात्र)}
 ::msgcat::mcset ne {Provider entry name} {प्रोभाइडर प्रविष्टि नाम}
 ::msgcat::mcset ne {Provider for this session} {यस session का लागि provider}
 ::msgcat::mcset ne Providers Providers
 ::msgcat::mcset ne {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {Providers भनेको तालिकाहरूको सूची हो: custom_providers.0.base_url, .0.api_mode, .0.key_env … तल देखाइएको क्रमबाट अनुक्रमणिका गर्नुहोस्।}
 ::msgcat::mcset ne {Public HTTPS URL} {सार्वजनिक HTTPS URL}
+::msgcat::mcset ne {Pull request base} {पुल अनुरोधको आधार}
+::msgcat::mcset ne {Pull request created} {पुल अनुरोध सिर्जना भयो}
+::msgcat::mcset ne {Pull request description} {पुल अनुरोधको विवरण}
+::msgcat::mcset ne {Pull request opened.} {पुल अनुरोध खोलियो।}
+::msgcat::mcset ne {Pull request repository} {पुल अनुरोध रिपोजिटरी}
+::msgcat::mcset ne {Pull request title} {पुल अनुरोधको शीर्षक}
 ::msgcat::mcset ne {Purge + delete files} {पर्ज + फाइलहरू मेटाउनुहोस्}
 ::msgcat::mcset ne {Purge container} {कन्टेनर पर्ज गर्नुहोस्}
+::msgcat::mcset ne Purpose उद्देश्य
+::msgcat::mcset ne Push पुस
+::msgcat::mcset ne {Push branch…} {ब्रान्च पुस गर्नुहोस्…}
+::msgcat::mcset ne {Push complete. No pull request has been opened.} {पुस पूरा भयो। कुनै पुल अनुरोध खोलिएको छैन।}
+::msgcat::mcset ne {Push this branch?} {यो ब्रान्च पुस गर्ने?}
+::msgcat::mcset ne {Push to %s:} {%s मा पुश गर्नुहोस्:}
 ::msgcat::mcset ne Question प्रश्न
 ::msgcat::mcset ne Questions प्रश्नहरू
 ::msgcat::mcset ne Quit {बन्द गर्नुहोस्}
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset ne {Reading notifications, for triggers} {सूचनाहरू पढ्ने, ट्रिगरहरूका लागि}
 ::msgcat::mcset ne Reasoning रिजनिङ
 ::msgcat::mcset ne {Reasoning effort} {तर्क प्रयास}
+::msgcat::mcset ne {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {प्राप्त भयो, लागू हुन बाँकी: स्टोर %1$s · मेमोरी %2$s · कन्फिग %3$s · भल्ट %4$s}
+::msgcat::mcset ne {Recommended checks} {सिफारिस गरिएका जाँचहरू}
 ::msgcat::mcset ne {Refetch this transcript from the store} {यो ट्रान्स्क्रिप्ट स्टोरबाट पुनः ल्याउनुहोस्}
 ::msgcat::mcset ne Refresh {ताजा गर्नुहोस्}
 ::msgcat::mcset ne {Refresh preview} {प्रिभ्यु ताजा गर्नुहोस्}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset ne {Rename symbol} {चिन्हको नाम बदल्नुहोस्}
 ::msgcat::mcset ne Rename… {नाम बदल्नुहोस्…}
 ::msgcat::mcset ne Rendered {रेन्डर भयो}
+::msgcat::mcset ne {Replace existing repository files?} {रिपोजिटरीका विद्यमान फाइलहरू प्रतिस्थापन गर्ने हो?}
+::msgcat::mcset ne {Replace them in the new branch? Nothing else in the repository changes.} {नयाँ ब्रान्चमा ती प्रतिस्थापन गर्ने हो? रिपोजिटरीमा अरू केही बदलिँदैन।}
 ::msgcat::mcset ne Repository रिपोजिटरी
 ::msgcat::mcset ne {Repository (owner/name)} {रिपोजिटरी (मालिक/नाम)}
+::msgcat::mcset ne {Repository directory} {रिपोजिटरी डाइरेक्टरी}
+::msgcat::mcset ne {Repository paths} {रिपोजिटरी पथहरू}
+::msgcat::mcset ne {Request a new preview before trying again.} {फेरि प्रयास गर्नुअघि नयाँ पूर्वावलोकन अनुरोध गर्नुहोस्।}
 ::msgcat::mcset ne {Reset to default} {पूर्वनिर्धारितमा फर्काउनुहोस्}
 ::msgcat::mcset ne {Reset to template} {टेम्प्लेटमा रिसेट गर्नुहोस्}
 ::msgcat::mcset ne Restart {पुनः सुरु गर्नुहोस्}
+::msgcat::mcset ne {Restart + verify canary} {canary पुनः सुरु + जाँच}
 ::msgcat::mcset ne {Restore hidden windows} {लुकाइएका विन्डोहरू पुनर्स्थापित गर्नुहोस्}
 ::msgcat::mcset ne {Restore plugins to %s?} {plugins लाई %s मा पुनर्स्थापना गर्ने हो?}
 ::msgcat::mcset ne {Restore revision r%1$s of %2$s?} {%2$s को संशोधन r%1$s पुनर्स्थापना गर्ने?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset ne {Restore this commit} {यो commit पुनर्स्थापना गर्नुहोस्}
 ::msgcat::mcset ne {Restore this revision} {यो संशोधन पुनर्स्थापना गर्नुहोस्}
 ::msgcat::mcset ne {Resume scheduler} {शेड्युलर पुनः सुरु गर्नुहोस्}
+::msgcat::mcset ne {Resume unfinished operation} {अधुरो कार्य पुनः सुरु गर्नुहोस्}
 ::msgcat::mcset ne Revert {फिर्ता गर्नुहोस्}
 ::msgcat::mcset ne {Revert %s to HEAD? Uncommitted changes in this file are lost.} {%s लाई HEAD मा फर्काउने? यो फाइलका कमिट नगरिएका परिवर्तनहरू हराउनेछन्।}
 ::msgcat::mcset ne Revert… {फिर्ता गर्नुहोस्…}
 ::msgcat::mcset ne Review रिभ्यू
 ::msgcat::mcset ne {Review (git) pane} {रिभ्यू (git) पेन}
+::msgcat::mcset ne {Review deployment} {डिप्लोयमेन्ट समीक्षा}
+::msgcat::mcset ne {Review extension contribution} {एक्सटेन्सन योगदान समीक्षा गर्नुहोस्}
 ::msgcat::mcset ne {Review managed local bundle…} {व्यवस्थित स्थानीय बन्डल समीक्षा गर्नुहोस्…}
 ::msgcat::mcset ne {Review rollback} {रोलब्याक समीक्षा गर्नुहोस्}
+::msgcat::mcset ne {Review selected files} {चयन गरिएका फाइलहरू समीक्षा गर्नुहोस्}
 ::msgcat::mcset ne {Review the component options on the summary screen before applying.} {लागू गर्नुअघि सारांश स्क्रिनमा कम्पोनेन्ट विकल्पहरू समीक्षा गर्नुहोस्।}
 ::msgcat::mcset ne {Review the component preview before applying. No component configuration has been written.} {लागू गर्नुअघि कम्पोनेन्ट प्रिभ्यू समीक्षा गर्नुहोस्। कुनै कम्पोनेन्ट कन्फिगरेसन लेखिएको छैन।}
+::msgcat::mcset ne {Review the selected files and remove credential findings before preparing.} {तयार गर्नुअघि चयन गरिएका फाइलहरू समीक्षा गर्नुहोस् र भेटिएका क्रेडेन्सियलहरू हटाउनुहोस्।}
 ::msgcat::mcset ne {Reviewed core bundle in the managed install-sources directory} {व्यवस्थापित install-sources डाइरेक्टरीमा रहेको समीक्षा गरिएको core bundle}
+::msgcat::mcset ne {Reviewed fleet deployment} {समीक्षा गरिएको फ्लीट डिप्लोयमेन्ट}
 ::msgcat::mcset ne {Reviewed local bundle} {समीक्षा गरिएको स्थानीय बन्डल}
 ::msgcat::mcset ne {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {समीक्षा गरिएको स्थानीय बन्डल इन्स्टल भयो। यो signed-download बाट प्रमाणित भएको होइन। नयाँ core प्रयोग गर्नुअघि पुनः सुरु गर्नुपर्छ।}
 ::msgcat::mcset ne Revision संशोधन
 ::msgcat::mcset ne Revoke {फिर्ता लिनुहोस्}
+::msgcat::mcset ne {Revoke selected} {छानिएको फिर्ता लिनुहोस्}
 ::msgcat::mcset ne Roles भूमिकाहरू
 ::msgcat::mcset ne {Roll back %1$s from %2$s to %3$s?} {%1$s लाई %2$s बाट %3$s मा फर्काउने?}
+::msgcat::mcset ne {Roll back selected target} {छानिएको लक्ष्य रोल ब्याक गर्नुहोस्}
 ::msgcat::mcset ne {Rollback completed. Reload the component or restart as requested by the report.} {रोलब्याक सम्पन्न भयो। रिपोर्टले भनेअनुसार कम्पोनेन्ट पुनः लोड गर्नुहोस् वा पुनः सुरु गर्नुहोस्।}
 ::msgcat::mcset ne {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {रोलब्याक समीक्षा गरियो। पुनर्स्थापना पुष्टि गर्न Install selected component छान्नुहोस्; केही पनि पुनर्स्थापित भएको छैन।}
 ::msgcat::mcset ne Run चलाउनुहोस्
 ::msgcat::mcset ne {Run the wizard again} {विजार्ड फेरि चलाउनुहोस्}
 ::msgcat::mcset ne {Running in the background} {पृष्ठभूमिमा चल्ने}
-::msgcat::mcset ne {Running tasks} {चलिरहेका कार्यहरू}
-::msgcat::mcset ne {Running tasks (subagents, shells, monitors)} {चलिरहेका कार्यहरू (सबएजेन्ट, शेल, मोनिटरहरू)}
 ::msgcat::mcset ne {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {Runtime का अनुमति र प्रयोगकर्ताहरू store मा रहन्छन्, र store रिसेटले तिनलाई मेटाउँछ। Promote ले store ले चुनेकाहरूलाई config.toml मा थप्छ — फाइलका टिप्पणी र कुञ्जी क्रम यथावत्, छेउमा ब्याकअप लेखिन्छ, store प्रतिलिपिहरू हटाइन्छ — र फाइलमा पहिल्यै राय भएको ठाउँमा अनुमान गर्नुभन्दा अस्वीकार गर्छ।}
 ::msgcat::mcset ne {S3 HTTPS endpoint} {S3 HTTPS एन्डपोइन्ट}
 ::msgcat::mcset ne {S3 bucket} {S3 बकेट}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset ne {Save as default} {पूर्वनिर्धारितका रूपमा सुरक्षित गर्नुहोस्}
 ::msgcat::mcset ne {Save attachment as} {अट्याचमेन्ट सेभ गर्नुहोस्}
 ::msgcat::mcset ne {Save globally} {विश्वव्यापी रूपमा सुरक्षित गर्नुहोस्}
+::msgcat::mcset ne {Save or revert the open buffer before applying a change set.} {परिवर्तन समूह लागू गर्नुअघि खुला buffer सुरक्षित वा फर्काउनुहोस्।}
 ::msgcat::mcset ne Scan {स्क्यान गर्नुहोस्}
 ::msgcat::mcset ne {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {यो फोनलाई निम्तो दिने मेसिनको veles कोड स्क्यान गर्नुहोस्। यदि त्यसले पहिले WireGuard कोड देखायो भने, यसअघि त्यो WireGuard एपले स्क्यान गर्नुहोस्।}
 ::msgcat::mcset ne {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {तालिका: एक अन्तराल ("30m", "every 2h"), एउटा cron ढाँचा ("0 9 * * 1"), वा एक-पटकका लागि ISO समय-छाप। माथिको लाइनले engine ले यसलाई कसरी पढ्छ भनी देखाउँछ। Deliver: "local" ले आउटपुट लगमा राख्छ — पछाडि कुनै chat प्लेटफर्म नभएको desktop का लागि यही एक मात्र इमान्दार पूर्वनिर्धारण हो — वा "platform:chat_id"। Wake session: ताजा session मा चलाउन खाली छोड्नुहोस्; त्यो session लाई पूरै इतिहाससहित पुन: सुरु गर्न session id (वा अद्वितीय उपसर्ग) दिनुहोस् — व्यस्त session ले प्रम्प्ट आफ्नो अर्को turn सीमामा लिन्छ।}
+::msgcat::mcset ne Scope दायरा
 ::msgcat::mcset ne {Scroll to end} {अन्त्यसम्म स्क्रोल गर्नुहोस्}
 ::msgcat::mcset ne {Search commands and sessions…} {कमाण्ड र सेसनहरू खोज्नुहोस्…}
 ::msgcat::mcset ne {Search message text} {सन्देशको पाठ खोज्नुहोस्}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset ne Section खण्ड
 ::msgcat::mcset ne {Select a component first. No component options will be changed if you skip this step.} {पहिले एउटा कम्पोनेन्ट छान्नुहोस्। यो चरण छोड्दा कुनै कम्पोनेन्ट विकल्प बदलिने छैन।}
 ::msgcat::mcset ne {Select all} {सबै चयन गर्नुहोस्}
+::msgcat::mcset ne {Select all extensions} {सबै एक्सटेन्सन छान्नुहोस्}
+::msgcat::mcset ne {Select at least one source file.} {कम्तीमा एउटा स्रोत फाइल चयन गर्नुहोस्।}
+::msgcat::mcset ne {Select none} {कुनै पनि नछान्नुहोस्}
+::msgcat::mcset ne {Select text to translate first.} {अनुवाद गर्न पहिले पाठ छान्नुहोस्।}
+::msgcat::mcset ne {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {योगदान गर्न एक्सटेन्सन र फाइलहरू छान्नुहोस्। ती एउटै ब्रान्च र एउटै pull request मा जान्छन्, हरेक एक्सटेन्सन आफ्नै डाइरेक्टरीमा। समीक्षा गर्नुहोस्, मूल्याङ्कन नगर्ने जाँचहरू चलाउनुहोस्, अनि छुट्टै ब्रान्च तयार गरी कमिट गर्नुहोस्। पुश गर्ने र pull request बनाउने छुट्टाछुट्टै पुष्टि गरिने कार्य हुन्।}
 ::msgcat::mcset ne Send पठाउनुहोस्
+::msgcat::mcset ne {Send %s to the peer?} {%s पियरलाई पठाउने हो?}
 ::msgcat::mcset ne {Send a %d-line message to the channel?} {च्यानलमा %d-लाइनको सन्देश पठाउने?}
 ::msgcat::mcset ne {Send raw line to the server? (%s)} {सर्भरमा कच्चा लाइन पठाउने? (%s)}
 ::msgcat::mcset ne {Server (empty = no IRC)} {सर्भर (खाली = IRC छैन)}
 ::msgcat::mcset ne {Server: gateway configuration and a reviewed user unit} {सर्भर: gateway कन्फिगरेसन र समीक्षा गरिएको user unit}
 ::msgcat::mcset ne {Server: install a user unit and prepare the separate linger handoff} {सर्भर: एउटा user unit इन्स्टल गर्नुहोस् र छुट्टै linger ह्यान्डअफ तयार गर्नुहोस्}
 ::msgcat::mcset ne {Server: use a system service and prepare a privileged CLI request} {सर्भर: system service प्रयोग गर्नुहोस् र प्रशासकीय अधिकार चाहिने CLI अनुरोध तयार गर्नुहोस्}
+::msgcat::mcset ne Session सेसन
 ::msgcat::mcset ne {Session id} {सेसन आईडी}
 ::msgcat::mcset ne {Session id…} {सेसन आईडी…}
 ::msgcat::mcset ne Sessions सेसनहरू
 ::msgcat::mcset ne {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {यस एलियासमा हाल ओभरराइड गरिएका सेसनहरूले निर्धारित रुट कायम राख्छन्; नयाँ ओभरराइडहरूले त्यो नाम भेट्टाउने छैनन्।}
+::msgcat::mcset ne {Sessions served} {सेवा दिइएका सेसन}
 ::msgcat::mcset ne Set {सेट गर्नुहोस्}
 ::msgcat::mcset ne {Set [model] provider/default in config.toml.} {config.toml मा [model] provider/default सेट गर्नुहोस्।}
 ::msgcat::mcset ne {Set as swap target} {साट्ने भाषा बनाउनुहोस्}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset ne {Setup — summary} {सेटअप — सारांश}
 ::msgcat::mcset ne {Setup — welcome} {सेटअप — स्वागत}
 ::msgcat::mcset ne {Shared container network} {साझा कन्टेनर नेटवर्क}
+::msgcat::mcset ne Shells शेलहरू
+::msgcat::mcset ne {Shells and monitors} {शेलहरू र मोनिटरहरू}
+::msgcat::mcset ne {Shells and monitors (subagents, shells, monitors)} {शेलहरू र मोनिटरहरू (सबएजेन्टहरू, शेलहरू, मोनिटरहरू)}
 ::msgcat::mcset ne {Show diff} {भिन्नता देखाउनुहोस्}
 ::msgcat::mcset ne {Show every key} {सबै कुञ्जीहरू देखाउनुहोस्}
 ::msgcat::mcset ne Sign {साइन गर्नुहोस्}
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset ne Solved {समाधान भयो}
 ::msgcat::mcset ne Source स्रोत
 ::msgcat::mcset ne {Source commit} {स्रोत कमिट}
+::msgcat::mcset ne {Source text} {स्रोत पाठ}
 ::msgcat::mcset ne {Source→app (C-c C-c)} {स्रोत→app (C-c C-c)}
 ::msgcat::mcset ne Stage स्टेज
+::msgcat::mcset ne {Stage canary} {canary स्टेज गर्नुहोस्}
+::msgcat::mcset ne Stale पुरानो
+::msgcat::mcset ne {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {स्थायी अनुमतिले पछिका उपकरण कलहरू फेरि नसोधी चल्न दिन्छन्। सेसन अनुमति हरेक सतह (डेस्कटप, Telegram, IRC, …) का चालू सेसनहरूले राख्छन्; ग्लोबल अनुमति कायम रहन्छन्; config.toml का [approvals] allowlist प्रविष्टि पढ्न-मात्र देखाइन्छन्। एउटा फिर्ता लिँदा अरू अनुमति कहिल्यै बदलिँदैनन्।}
 ::msgcat::mcset ne Start {सुरु गर्नुहोस्}
+::msgcat::mcset ne {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {आफ्नो प्रयोगकर्ता प्लगइन डाइरेक्टरीमा रहेको एक्सटेन्सनबाट सुरु गर्नुहोस्। यो अपग्रेडपछि पनि रहन्छ र गेटवे पुनः निर्माण चाहिँदैन। नयाँ एक्सटेन्सनले लेख्नुअघि वास्तविक म्यानिफेस्ट र स्रोतको पूर्वावलोकन देखाउँछ। समर्थित भाषा र API संस्करण छान्नुहोस्, फाइलहरू समीक्षा गर्नुहोस्, अनि एक्सटेन्सनलाई अलग गरी परीक्षण गर्नुहोस्।}
 ::msgcat::mcset ne {Start with the phone} {फोनसँगै सुरु हुने}
+::msgcat::mcset ne {Static IP} {स्थिर IP}
 ::msgcat::mcset ne Status स्थिति
 ::msgcat::mcset ne Steer स्टियर
 ::msgcat::mcset ne {Step %1$d of %2$d} {चरण %1$d / %2$d}
 ::msgcat::mcset ne {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {अझै सेट गर्न बाँकी: %s — यहाँ /secret set NAME टाइप गर्नुहोस्, वा गेटवेको मेसिनमा veles secret set NAME चलाउनुहोस्।}
 ::msgcat::mcset ne Stop रोक्नुहोस्
 ::msgcat::mcset ne {Storage root} {स्टोरेज रूट}
+::msgcat::mcset ne Store स्टोर
 ::msgcat::mcset ne {Store a secret: %s} {गोप्य कुरा राख्नुहोस्: %s}
 ::msgcat::mcset ne {Store it} राख्नुहोस्
+::msgcat::mcset ne {Store replica} {स्टोर रेप्लिका}
 ::msgcat::mcset ne Subagents सबएजेन्टहरू
 ::msgcat::mcset ne {Subagents (/agents)} {सबएजेन्टहरू (/agents)}
 ::msgcat::mcset ne Summary सारांश
+::msgcat::mcset ne Surface सतह
 ::msgcat::mcset ne {Swap ⇄} {साट्नुहोस् ⇄}
+::msgcat::mcset ne {Sync cancelled.} {सिंक रद्द गरियो।}
+::msgcat::mcset ne {Sync complete.} {सिंक पूरा भयो।}
+::msgcat::mcset ne {Sync now} {अहिले सिंक गर्नुहोस्}
 ::msgcat::mcset ne {TOML copied — paste it into config.toml} {TOML प्रतिलिपि गरियो — config.toml मा टाँस्नुहोस्}
 ::msgcat::mcset ne Tag ट्याग
 ::msgcat::mcset ne {Tap a link to open it, or a block's header to open or close the block.} {लिङ्क खोल्न त्यसमा ट्याप गर्नुहोस्, वा ब्लक खोल्न वा बन्द गर्न त्यसको शीर्षकमा ट्याप गर्नुहोस्।}
 ::msgcat::mcset ne {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {टाइप गर्न तलको बाकसमा ट्याप गर्नुहोस्। पठाउनुहोस् ले पठाउँछ, रोक्नुहोस् ले टर्न सक्छ, र अलग गर्नुहोस् ले चलिरहेको कमाण्डलाई पृष्ठभूमिमा सार्छ।}
 ::msgcat::mcset ne {Tap the text to clear the selection.} {चयन हटाउन पाठमा ट्याप गर्नुहोस्।}
+::msgcat::mcset ne {Target language:} {लक्षित भाषा:}
+::msgcat::mcset ne {Target node IDs (canary first, comma separated)} {लक्ष्य नोड ID (canary पहिले, कमाले छुट्याएर)}
 ::msgcat::mcset ne {Task list} {कार्य सूची}
 ::msgcat::mcset ne {Task list (right pane)} {कार्य सूची (दायाँ पेन)}
 ::msgcat::mcset ne Tasks कार्यहरू
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset ne {That is not a ticket.} {यो टिकट होइन।}
 ::msgcat::mcset ne {That is not a veles pool code.} {त्यो veles समूहको कोड होइन।}
 ::msgcat::mcset ne {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {त्यो WireGuard कोड हो: यसलाई WireGuard एपले स्क्यान गर्नुहोस्। veles कोड दोस्रो हो।}
+::msgcat::mcset ne {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {समीक्षा गरिएका %d फाइल तपाईंको प्रयोगकर्ता plugin डाइरेक्टरीभित्र नयाँ डाइरेक्टरीमा लेखिनेछन्, र veles ले extension लोड गर्ने प्रयास गर्छ। पूर्वावलोकनपछि त्यही नामको डाइरेक्टरी देखा परेको भए केही लेखिँदैन। प्रकाशन यो कार्यको भाग होइन।}
 ::msgcat::mcset ne {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {Dev पेनको REPL ले LIVE एपमा मूल्याङ्कन गर्छ — UI आफै lisp हो।}
 ::msgcat::mcset ne {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {[mcp_servers.<name>] तालिका config.toml बाट मेटिन्छ। अघिल्लो फाइल config.toml.bak को रूपमा राखिन्छ।}
 ::msgcat::mcset ne {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {एडाप्टरको अनुमति-सूचीहरू (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) नै विश्वासको सीमा हुन्, र अनुमति पाएका हरेक पठाउनेलाई मालिक मानिन्छ। यो ACL-पूर्वको अवस्था हो।}
 ::msgcat::mcset ne {The agent asks for a secret: %s} {एजेन्टले एउटा गोप्य कुरा माग्दैछ: %s}
+::msgcat::mcset ne {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {पहिले नै पुश गरिएको ब्रान्च PR को head का रूपमा प्रयोग हुनेछ। तपाईंको फोर्कको ब्रान्च स्वतः owner:branch नामले रहन्छ।}
+::msgcat::mcset ne {The author asks} {लेखक सोध्छन्}
+::msgcat::mcset ne {The buffer changed. Request a new proposal before applying.} {बफर परिवर्तन भयो। लागू गर्नुअघि नयाँ प्रस्ताव अनुरोध गर्नुहोस्।}
 ::msgcat::mcset ne {The bundle operation returned an invalid result. Verify the installation before retrying.} {बन्डल अपरेसनले अमान्य नतिजा फर्कायो। फेरि प्रयास गर्नुअघि इन्स्टलेसन प्रमाणित गर्नुहोस्।}
 ::msgcat::mcset ne {The bundle preview was malformed; nothing was installed.} {बन्डल प्रिभ्यू विकृत थियो; केही पनि इन्स्टल गरिएन।}
 ::msgcat::mcset ne {The camera did not open; paste the code instead.} {क्यामेरा खुलेन; बरु कोड टाँस्नुहोस्।}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset ne {The component manifest is still loading. Wait for it or choose another component.} {कम्पोनेन्टको म्यानिफेस्ट अझै लोड हुँदैछ। पर्खनुहोस् वा अर्को कम्पोनेन्ट छान्नुहोस्।}
 ::msgcat::mcset ne {The component preview is not ready yet. Refresh it and review the result before applying.} {कम्पोनेन्ट प्रिभ्यू अझै तयार छैन। यसलाई ताजा गरी नतिजा समीक्षा गरेपछि लागू गर्नुहोस्।}
 ::msgcat::mcset ne {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {कम्पोनेन्ट प्रिभ्यू अझै लोड हुँदैछ। संयुक्त परिवर्तनहरू समीक्षा गर्नुअघि जवाफ पर्खनुहोस्।}
+::msgcat::mcset ne {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {यो फाइलसँगै हालका diagnostics (language server वा Check बाट) पठाइन्छन्। चाहेमा प्रश्न थप्नुहोस्। जवाफ पाठ मात्र हो; केही लेख्न सकिँदैन।}
 ::msgcat::mcset ne {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {डाइरेक्टरी र यसभित्रका सबै कुरा हटाइन्छ। यो पूर्ववत गर्न सकिँदैन — प्रम्प्टबाट मात्र हटाउन चाहनुहुन्छ भने यसलाई बन्द गर्नुहोस्।}
 ::msgcat::mcset ne {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {डाइरेक्टरी मेटिन्छ। प्लगइन फोल्डर git रिपोजिटरी हो र पहिले स्न्यापसट कमिट गरिन्छ, त्यसैले History… ले यसलाई फिर्ता ल्याउन सक्छ।}
+::msgcat::mcset ne {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {सम्पादकले रिमोट instances सहित गेटवेका फाइलहरू खोल्छ, र फाइलको भाषाका लागि गेटवेमै language server चलाउँछ: tcl-lsp, typescript-language-server (TypeScript र JavaScript), rust-analyzer (Rust plugin crate वा module), clangd (C), racket-langserver र एउटा Common Lisp सर्भर। गेटवेसँग सर्भर भएको हरेक भाषाका लागि hover, परिभाषामा जाने, completion र लाइभ diagnostics काम गर्छन्; नभएको खण्डमा सम्पादकले त्यहाँ कुन प्रोग्राम स्थापना गर्नुपर्ने बताउँछ र syntax highlighting कायम राख्छ। Check ले गेटवेमै मिल्ने checker चलाउँछ: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, वा Racket र Lisp readers. स्थानीय अवस्था प्रकाशित नगरी सुरक्षित गर्नुहोस्, Manage extensions मा पुनः लोड गर्नुहोस्, र extension परीक्षण गर्नुहोस्।}
 ::msgcat::mcset ne {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {पहिलो ह्यान्डअफले गोप्य कुराहरू, पिन गरिएको इमेज र runtime फाइलहरू तयार गर्छ, तर PDS सुरु गर्दैन। KEK र PLC रोटेसन key अफलाइन ब्याकअप गर्नुहोस्, त्यसपछि ब्याकअप स्वीकृतिसहित नयाँ समीक्षा गरिएको अनुरोध गरेर HTTP-01 TLS र सक्रियता सेटअप गर्नुहोस्। DNS रेकर्डहरू सिधै यही होस्टमा देखाउनुपर्छ; veles ले कुनै CDN प्रोक्सी वा DNS परिवर्तन गर्दैन।}
+::msgcat::mcset ne {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {extension उत्पन्न भएपछि फारम परिवर्तन भयो। फेरि उत्पन्न गर्नुहोस्, वा सादा scaffold पूर्वावलोकन गर्नुहोस्।}
 ::msgcat::mcset ne {The gateway itself is untouched.} {गेटवे आफैं अछुतो रहन्छ।}
 ::msgcat::mcset ne {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {गेटवेले कन्फिग फेरि लोड गर्‍यो, त्यसैले नयाँ सत्रहरूले अहिलेदेखि यो प्रयोग गर्छन्, र तिजोरीमा राखिएको key अर्को अनुरोधमा प्रयोग हुन्छ। Telegram र IRC गेटवेको अर्को पुनःसुरुमा सुरु हुन्छन्: veles gateway restart।}
 ::msgcat::mcset ne {The installed component no longer matches the selected manifest. Review the component list again.} {स्थापित कम्पोनेन्ट छानिएको म्यानिफेस्टसँग अब मिल्दैन। कम्पोनेन्ट सूची फेरि समीक्षा गर्नुहोस्।}
 ::msgcat::mcset ne {The installer preview has no verification signatures; apply is disabled.} {इन्स्टलर प्रिभ्यूमा प्रमाणीकरण हस्ताक्षरहरू छैनन्; लागू गर्ने बन्द छ।}
 ::msgcat::mcset ne {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {कार्य र यसको चलाइएको इतिहास हटाइन्छ। यो पूर्ववत गर्न सकिँदैन — रोक्न मात्र चाहनुहुन्छ भने यसलाई पज गर्नुहोस्।}
+::msgcat::mcset ne {The log could not be read: %s} {लग पढ्न सकिएन: %s}
 ::msgcat::mcset ne {The manifest belongs to another component; its reply was discarded.} {यो म्यानिफेस्ट अर्को कम्पोनेन्टको हो; यसको जवाफ बेवास्ता गरियो।}
 ::msgcat::mcset ne {The profile changed. Review the fresh plan before applying it.} {प्रोफाइल परिवर्तन भयो। लागू गर्नुअघि नयाँ प्लानको समीक्षा गर्नुहोस्।}
 ::msgcat::mcset ne {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {रिपोजिटरीको जरामा वा एक श्रेणी गहिराइमा SKILL.md चाहिन्छ। यो %s मा पुग्छ।}
 ::msgcat::mcset ne {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {रिपोजिटरीको जरामा plugin.toml हुनुपर्छ। यो म्यानिफेस्टको नाममा %s मा क्लोन गरिन्छ।}
+::msgcat::mcset ne {The reviewed change set was applied (%d files). Review and test it before publishing.} {समीक्षा गरिएको परिवर्तन समूह लागू भयो (%d फाइल)। प्रकाशित गर्नुअघि यसको समीक्षा र परीक्षण गर्नुहोस्।}
 ::msgcat::mcset ne {The reviewed configuration snapshot will also be restored.} {समीक्षा गरिएको कन्फिगरेसन स्न्यापसट पनि पुनर्स्थापित गरिनेछ।}
+::msgcat::mcset ne {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {समीक्षा गरिएका फाइलहरू तपाईंको प्रयोगकर्ता प्लगइन डाइरेक्टरीमा लेखिनेछन्। Veles ले स्थानीय रिकभरी स्न्यापसट सुरक्षित गर्छ र एक्सटेन्सन पुनः लोड गर्ने प्रयास गर्छ; प्रकाशन यो कार्यको भाग होइन।}
+::msgcat::mcset ne {The reviewed proposal was applied locally. Review and test it before publishing.} {समीक्षा गरिएको प्रस्ताव स्थानीय रूपमा लागू गरियो। प्रकाशित गर्नुअघि यसलाई समीक्षा र परीक्षण गर्नुहोस्।}
 ::msgcat::mcset ne {The rollback preview was malformed or named another component; nothing was restored.} {रोलब्याक प्रिभ्यू विकृत थियो वा अर्कै कम्पोनेन्टको नाम दिएको थियो; केही पनि पुनर्स्थापित गरिएन।}
 ::msgcat::mcset ne {The rollback returned an invalid result. Verify the installation before retrying.} {रोलब्याकले अमान्य नतिजा फर्कायो। फेरि प्रयास गर्नुअघि इन्स्टलेसन प्रमाणित गर्नुहोस्।}
 ::msgcat::mcset ne {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {नयाँ सत्रहरू यही रुटबाट सुरु हुन्छन्। /model र मोडेल ओभरलेले यसलाई पछि बदल्छन् — प्रति सत्र वा नयाँ डिफल्टको रूपमा।}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset ne {The signed download discard returned an invalid response; no installation was requested.} {हस्ताक्षरित डाउनलोड त्याग्ने कार्यले अमान्य प्रतिक्रिया फर्कायो; कुनै स्थापना अनुरोध गरिएको थिएन।}
 ::msgcat::mcset ne {The signed installation returned an invalid result. Verify the installation before retrying.} {हस्ताक्षरित स्थापनाले अमान्य नतिजा फर्कायो। पुन: प्रयास गर्नुअघि स्थापना प्रमाणित गर्नुहोस्।}
 ::msgcat::mcset ne {The signed release preview was malformed; nothing was installed.} {हस्ताक्षरित रिलिज पूर्वावलोकन विकृत थियो; केही पनि स्थापना भएको छैन।}
+::msgcat::mcset ne {The source buffer changed. Request a new proposal before applying.} {स्रोत बफर परिवर्तन भयो। लागू गर्नुअघि नयाँ प्रस्ताव अनुरोध गर्नुहोस्।}
 ::msgcat::mcset ne {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {स्टोर एक संशोधन पछाडि जान्छ। रोलब्याक आफैं पनि एउटा संशोधन हो, त्यसैले यसलाई फेरि पूर्ववत गर्न सकिन्छ।}
+::msgcat::mcset ne {The translator returned no text.} {अनुवादकले कुनै पाठ फर्काएन।}
 ::msgcat::mcset ne {The verification reply was malformed; no integrity result was accepted.} {प्रमाणीकरणको जवाफ विकृत थियो; कुनै इन्टेग्रिटी नतिजा स्वीकार गरिएन।}
 ::msgcat::mcset ne Themes थिमहरू
+::msgcat::mcset ne {These paths already exist in the chosen repository:} {यी पथहरू छानिएको रिपोजिटरीमा पहिले नै छन्:}
 ::msgcat::mcset ne {They have not been saved.} {ती सुरक्षित गरिएका छैनन्।}
+::msgcat::mcset ne {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {यो buffer मा व्याख्या गर्ने diagnostics छैनन्। Check चलाउनुहोस्, वा language server पर्खनुहोस्।}
 ::msgcat::mcset ne {This challenge is over.} {यो चुनौती सकियो।}
 ::msgcat::mcset ne {This code has expired. Ask for a new one.} {यो कोडको म्याद सकियो। नयाँ माग्नुहोस्।}
 ::msgcat::mcset ne {This does not start a service or claim signed-download verification.} {यसले कुनै सेवा सुरु गर्दैन वा signed-download प्रमाणीकरणको दाबी गर्दैन।}
 ::msgcat::mcset ne {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {यो गेटवेले यो मेसिनबाट गोप्य मान लिँदैन: त्यहीँ veles secret set %s बाट हाल्नुहोस्, वा यो नेटवर्कलाई यसको [vault] trusted_networks मा थप्नुहोस्}
 ::msgcat::mcset ne {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {यो ठ्याक्कै के लेखिनेछ हो — इन्जिनका आफ्नै बाइटहरू, लाइभ ल्याइएको। डिस्कलाई अहिलेसम्म केहीले छोएको छैन।}
+::msgcat::mcset ne {This node is not a configured sync peer for any kind.} {यो नोड कुनै पनि प्रकारका लागि कन्फिग गरिएको सिंक पियर होइन।}
+::msgcat::mcset ne {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {यो plugin बन्डल गरिएको र पढ्न-मात्र छ। बन्डल गरिएको प्रतिलिपि प्रयोग गर्न उही नामको प्रयोगकर्ता प्रतिलिपि हटाउनुहोस्।}
+::msgcat::mcset ne {This publishes the commit; no pull request is created yet.} {यसले कमिट प्रकाशित गर्छ; अहिलेसम्म कुनै पुल अनुरोध सिर्जना हुँदैन।}
 ::msgcat::mcset ne {This review expires after %s seconds. Closing or cancelling discards its private staging.} {यो समीक्षा %s सेकेन्डपछि अवधि सकिन्छ। बन्द गर्दा वा रद्द गर्दा यसको निजी स्टेजिङ हट्छ।}
 ::msgcat::mcset ne {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {यो विजार्डले config.toml लेख्छ, र तपाईंले दिएका keys इन्क्रिप्ट गरिएको तिजोरीमा राख्छ। हरेक चरण छोड्न सकिन्छ: छोडिएको चरण नयाँ कन्फिगमा समावेश हुँदैन, र भइरहेको कन्फिगमा जस्ताको तस्तै रहन्छ। भइरहेको config.toml ठाउँमै सम्पादन गरिन्छ — तपाईंले जवाफ दिएका खण्डहरू मात्र बदलिन्छन्, र बाँकी सबै, टिप्पणीहरूसमेत, रहन्छ।}
 ::msgcat::mcset ne {Ticket needed} {टिकट आवश्यक छ}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset ne {Topic for %s} {%s का लागि विषय}
 ::msgcat::mcset ne {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {मेनु खोल्न सेसन, वा मेनु भएको अरू कुनै कुरालाई छोएर थिचिराख्नुहोस्। त्यसको बाहिर ट्याप, वा पछाडि, ले त्यसलाई बन्द गर्छ।}
 ::msgcat::mcset ne {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {शब्द छान्न त्यसलाई छोएर थिचिराख्नुहोस्। औँला उठाउँदा त्यसको मेनु खुल्छ, सबैभन्दा माथि प्रतिलिपि गर्नुहोस् सहित।}
+::msgcat::mcset ne Translate {अनुवाद गर्नुहोस्}
+::msgcat::mcset ne {Translate selection} {छानिएको अनुवाद गर्नुहोस्}
+::msgcat::mcset ne Translating… {अनुवाद हुँदै…}
+::msgcat::mcset ne {Translation cancelled.} {अनुवाद रद्द गरियो।}
+::msgcat::mcset ne {Translation copied.} {अनुवाद प्रतिलिपि भयो।}
+::msgcat::mcset ne {Translation failed} {अनुवाद असफल}
+::msgcat::mcset ne {Translation result} {अनुवादको नतिजा}
+::msgcat::mcset ne {Translator configuration unavailable} {अनुवादक कन्फिगरेसन उपलब्ध छैन}
 ::msgcat::mcset ne {Trigger history} {ट्रिगर इतिहास}
 ::msgcat::mcset ne Triggers ट्रिगरहरू
 ::msgcat::mcset ne {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {ट्रिगरहरूले टर्न बिना नै च्यानल घटनाहरूमा प्रतिक्रिया दिन्छन्। slopdrop ले घटनालाई ब्रिजमा पठाउँछ र जवाफ फिर्ता गर्छ; vision ले कूलडाउन र घण्टाको सीमाभित्र छवि URL वर्णन गर्छ। [triggers] कन्फिग स्विच र व्युत्पन्न मास्क दुवैले अनुमति दिएको ठाउँमा मात्र पङ्क्ति सक्रिय हुन्छ — चालू slopdrop बाइन्डिङमा #coven ले केही पनि पठाउँदैन।}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset ne {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {.env मा IRC_ALLOWED_USERS ले तपाईंको खाता नतोकेसम्म, नेटवर्कमा जो कोहीले बटसँग कुरा गर्न सक्छ — र [acl] खण्ड नभए मालिकको रूपमा, सबै उपकरणसहित।}
 ::msgcat::mcset ne {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {.env मा TELEGRAM_ALLOWED_USERS ले तपाईंको प्रयोगकर्ता आईडी नतोकेसम्म, बट भेट्टाउने जो कोहीले त्यससँग कुरा गर्न सक्छ — र [acl] खण्ड नभए मालिकको रूपमा, सबै उपकरणसहित।}
 ::msgcat::mcset ne Untitled {शीर्षक नभएका}
+::msgcat::mcset ne {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {अपस्ट्रिम योगदान स्पष्ट प्रकाशन कार्य हो, स्वचालित अपलोड होइन। Manage extensions मा Contribute ले हरेक प्रयोगकर्ता एक्सटेन्सन सूचीबद्ध गर्छ: एक्सटेन्सन र फाइलहरू छान्नुहोस्, diff र गोप्य-कुरा स्क्यान जाँच्नुहोस्, जाँचहरू चलाउनुहोस्, अनि तपाईंको छानिएको git पहिचानसँग एउटै ब्रान्च र एउटै PR (पूर्वनिर्धारित रूपमा veles मा) बनाउनुहोस्। हरेक एक्सटेन्सन रिपोजिटरीमा आफ्नै डाइरेक्टरीमुनि जान्छ, र त्यहाँ भएको विद्यमान फाइल छुट्टै पुष्टिपछि मात्र प्रतिस्थापन हुन्छ। node.toml, स्थानीय प्रमाण-पत्र, टोकन, निजी endpoint वा असम्बन्धित plugin अवस्था कहिल्यै प्रकाशित नगर्नुहोस्। स्थानीय रिकभरी स्न्यापसट अपस्ट्रिम कमिट वा PR होइनन्।}
+::msgcat::mcset ne {Upstream repository or fork URL} {अपस्ट्रिम रिपोजिटरी वा फोर्क URL}
+::msgcat::mcset ne {Uptime class} {अपटाइम वर्ग}
+::msgcat::mcset ne {Uptime: host %1$s, gateway %2$s} {अपटाइम: होस्ट %1$s, गेटवे %2$s}
 ::msgcat::mcset ne Usage प्रयोग
 ::msgcat::mcset ne {Usage & Quota} {प्रयोग र कोटा}
 ::msgcat::mcset ne {Use TLS} {TLS प्रयोग गर्नुहोस्}
 ::msgcat::mcset ne {Use now} {अहिले प्रयोग गर्नुहोस्}
+::msgcat::mcset ne {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {वास्तविक सम्झौताहरूका लागि लेखक गाइड र API सन्दर्भ बटनहरू प्रयोग गर्नुहोस्। प्लगइन ओभरलेले लाइभ हुकहरूको सूची देखाउँछ; सेवा र ओभरराइड बिन्दुहरू गेटवेको आफ्नै रजिस्ट्रीबाट आउँछन्, यो गाइडमा प्रतिलिपि गरिएको सूचीबाट होइन।}
 ::msgcat::mcset ne {Use this ticket} {यो टिकट प्रयोग गर्नुहोस्}
+::msgcat::mcset ne {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {तपाईंले veles मै पुश गर्न सक्नुहुन्न भने आफ्नो फोर्क (https://github.com/<you>/veles.git वा git@github.com:<you>/veles.git) प्रयोग गर्नुहोस्। छानिएको रिपोजिटरी छुट्टै worktree मा क्लोन गरिन्छ। केही पनि पुश गरिँदैन।}
 ::msgcat::mcset ne {Users — one role across networks and platforms} {प्रयोगकर्ताहरू — सबै नेटवर्क र प्लेटफर्ममा एउटै भूमिका}
 ::msgcat::mcset ne {Using the phone, for the agent} {फोन चलाउने, एजेन्टका लागि}
 ::msgcat::mcset ne {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {प्रायः प्रोभाइडर प्रविष्टि नामकै जस्तो हुन्छ। Skip छनौटमा दुवै खाली छोड्नुहोस् — आधा भरिएको जोडीले रुट गर्दैन।}
 ::msgcat::mcset ne {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {मानहरू TOML हुन्: उद्धृत स्ट्रिङ, सङ्ख्या वा सूची। ती [mcp_servers.<name>] मा लेखिन्छन् — तपाईंका टिप्पणीहरू र अरू सबै खण्ड अछुतो रहन्छन्।}
+::msgcat::mcset ne Vault भल्ट
 ::msgcat::mcset ne {Verified signed bundle installed. Restart the gateway before using the new core.} {प्रमाणित हस्ताक्षरित बन्डल स्थापना भयो। नयाँ कोर प्रयोग गर्नुअघि गेटवे पुन: सुरु गर्नुहोस्।}
 ::msgcat::mcset ne {Verified signed release — not installed yet} {प्रमाणित हस्ताक्षरित रिलिज — अझै स्थापना भएको छैन}
 ::msgcat::mcset ne {Verify and review release…} {रिलिज प्रमाणित र समीक्षा गर्नुहोस्…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset ne {Verify signed release} {हस्ताक्षरित रिलिज प्रमाणित गर्नुहोस्}
 ::msgcat::mcset ne {Verify signed release…} {हस्ताक्षरित रिलिज प्रमाणित गर्दै…}
 ::msgcat::mcset ne Version संस्करण
+::msgcat::mcset ne {Version %1$s: %2$s} {संस्करण %1$s: %2$s}
+::msgcat::mcset ne {Version drift in the registry: %s} {रजिस्ट्रीमा संस्करण ड्रिफ्ट: %s}
 ::msgcat::mcset ne View दृश्य
 ::msgcat::mcset ne {View markdown source} {मार्कडाउन स्रोत हेर्नुहोस्}
 ::msgcat::mcset ne {View source / rendered} {स्रोत / रेन्डर गरिएको}
 ::msgcat::mcset ne Voice {भ्वाइस दिनुहोस्}
+::msgcat::mcset ne {Waiting for the model…} {मोडेलको प्रतीक्षामा…}
+::msgcat::mcset ne {Waiting for the model… Nothing has been written.} {मोडेलको प्रतीक्षामा… केही लेखिएको छैन।}
 ::msgcat::mcset ne {Welcome to veles} {veles मा स्वागत छ}
 ::msgcat::mcset ne {What the agent can do here} {एजेन्टले यहाँ के गर्न सक्छ}
 ::msgcat::mcset ne {What veles may do on this phone. Each button opens the Android setting that changes it.} {यो फोनमा veles ले के गर्न पाउँछ। हरेक बटनले त्यसलाई बदल्ने Android सेटिङ खोल्छ।}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset ne {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {veles पृष्ठभूमिमा हुँदा एजेन्टको प्रश्न वा सकिएको टर्न सूचना बन्छ; सेसन खोल्न त्यसमा ट्याप गर्नुहोस्।}
 ::msgcat::mcset ne {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {बटसँग कसले कुरा गर्न पाउने। यो छनौटले config.toml मा [acl] सेक्सन हुने नहुने तय गर्छ — र त्यसले सम्पूर्ण अवस्था उल्ट्याउँछ।}
 ::msgcat::mcset ne Whois Whois
-::msgcat::mcset ne {Wire protocol (chat_completions or responses)} {वायर प्रोटोकल (chat_completions वा responses)}
+::msgcat::mcset ne {Wire protocol (chat_completions, responses or plugin)} {Wire प्रोटोकल (chat_completions, responses वा plugin)}
 ::msgcat::mcset ne {With a keyboard attached, every key works as on a laptop.} {किबोर्ड जोडिएको बेला हरेक कुञ्जी ल्यापटपमा जस्तै काम गर्छ।}
 ::msgcat::mcset ne {Workflow SHA} {वर्कफ्लो SHA}
+::msgcat::mcset ne {Workflow commit} {वर्कफ्लो कमिट}
+::msgcat::mcset ne Worktree वर्कट्री
 ::msgcat::mcset ne {Write it} लेख्नुहोस्
+::msgcat::mcset ne {Write the design question first.} {पहिले डिजाइनसम्बन्धी प्रश्न लेख्नुहोस्।}
 ::msgcat::mcset ne {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {कुनै प्रोभाइडर लेख्दैन। [[custom_providers]] प्रविष्टि र [model] जोडी दुवै नभएसम्म गेटवेले कुनै टर्न रुट गर्दैन।}
 ::msgcat::mcset ne {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {कुनै पनि [acl] कुञ्जी लेख्दा यो गेटवे क्युरेटेड मोडमा जान्छ: पूर्वनिर्धारित भूमिका guest (fail-closed) हुन्छ र अनुमति सूचीहरू सीमा रहँदैनन्। विश्वासिलो मालिक पहिचान भए मात्र यो छान्नुहोस्।}
 ::msgcat::mcset ne {[model] provider} {[model] प्रोभाइडर}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset ne {also list hooks with no handler} {ह्यान्डलर नभएका हुकहरू पनि सूचीबद्ध गर्नुहोस्}
 ::msgcat::mcset ne {also write grants that still have an expiry} {अझै म्याद बाँकी रहेका अनुमतिहरू पनि लेख्नुहोस्}
 ::msgcat::mcset ne {also write runtime users} {रनटाइम प्रयोगकर्ताहरू पनि लेख्नुहोस्}
+::msgcat::mcset ne {an allowlist entry is removed by editing config.toml} {allowlist प्रविष्टि config.toml सम्पादन गरेर हटाइन्छ}
 ::msgcat::mcset ne {an allowlist is in force: a plugin not on it stays off} {अनुमति-सूची लागू छ: सूचीमा नभएको प्लगइन बन्द नै रहन्छ}
 ::msgcat::mcset ne {answer failed: %s} {उत्तर असफल: %s}
+::msgcat::mcset ne {answer only, nothing to apply} {जवाफ मात्र, लागू गर्ने केही छैन}
 ::msgcat::mcset ne {append these rules to config.toml} {यी नियमहरू config.toml मा थप्नुहोस्}
 ::msgcat::mcset ne {apply failed: %s} {लागू गर्न असफल: %s}
 ::msgcat::mcset ne {apply to:} {लागू गर्ने:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset ne {ask the agent} {एजेन्टलाई सोध्ने}
 ::msgcat::mcset ne {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset ne {asked by: %s} {सोध्ने: %s}
+::msgcat::mcset ne {asking %s for its metrics…} {%s सँग यसका मेट्रिक्स सोधिँदै…}
 ::msgcat::mcset ne {attach a file} {फाइल जोड्नुहोस्}
 ::msgcat::mcset ne {attach an image or file} {तस्बिर वा फाइल जोड्नुहोस्}
 ::msgcat::mcset ne {attach failed: %1$s} {जोड्न असफल: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset ne {attached %1$s (%2$s pending)} {संलग्न गरियो %1$s (%2$s पर्खाइमा)}
 ::msgcat::mcset ne {attached to %s} {%s मा संलग्न}
 ::msgcat::mcset ne {attached to child session %1$s} {बाल सेसन %1$s मा संलग्न}
+::msgcat::mcset ne automatic स्वचालित
 ::msgcat::mcset ne {aux model} {सहायक मोडेल}
 ::msgcat::mcset ne {aux provider} {सहायक प्रोभाइडर}
+::msgcat::mcset ne available उपलब्ध
 ::msgcat::mcset ne {available components} {उपलब्ध कम्पोनेन्टहरू}
 ::msgcat::mcset ne {back up N user turns} {प्रयोगकर्ताका N टर्न पछाडि जानुहोस्}
 ::msgcat::mcset ne {backed up the previous config to %s} {अघिल्लो config %s मा ब्याकअप गरियो}
 ::msgcat::mcset ne {background shells; /shells output|kill <id>} {पृष्ठभूमि शेलहरू; /shells output|kill <id>}
+::msgcat::mcset ne {backing off: %1$s failure(s), next automatic try in %2$s s} {पछि हट्दै: %1$s असफलता, अर्को स्वचालित प्रयास %2$s सेकेन्डमा}
 ::msgcat::mcset ne {bad host for %1$s: %2$s} {%1$s का लागि गलत होस्ट: %2$s}
 ::msgcat::mcset ne {bad unit for %1$s: %2$s} {%1$s का लागि गलत युनिट: %2$s}
 ::msgcat::mcset ne {bare display off} {सादा प्रदर्शन बन्द}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset ne {browse the filesystem} {फाइल प्रणाली हेर्नुहोस्}
 ::msgcat::mcset ne {browse the repo's files} {रिपोका फाइलहरू ब्राउज गर्नुहोस्}
 ::msgcat::mcset ne {builtin (%s):} {बिल्ट-इन (%s):}
+::msgcat::mcset ne bundled {बन्डल गरिएको}
+::msgcat::mcset ne {bundled, read-only} {बन्डल गरिएको, पढ्न-मात्र}
 ::msgcat::mcset ne by द्वारा
 ::msgcat::mcset ne {by plan — all sessions} {योजना अनुसार — सबै सेसनहरू}
 ::msgcat::mcset ne {by plan — this session} {योजना अनुसार — यो सेसन}
 ::msgcat::mcset ne {by tool} {उपकरण अनुसार}
 ::msgcat::mcset ne {cancel failed: %1$s} {रद्द गर्न असफल: %1$s}
 ::msgcat::mcset ne {cancel the running turn} {चलिरहेको टर्न रद्द गर्नुहोस्}
+::msgcat::mcset ne {cancel the selected task} {छानिएको कार्य रद्द गर्नुहोस्}
 ::msgcat::mcset ne {cancelled task %1$s} {कार्य %1$s रद्द गरियो}
 ::msgcat::mcset ne {cannot list scripts (gateway offline?)} {स्क्रिप्टहरू सूचीबद्ध गर्न सकिएन (गेटवे अफलाइन?)}
 ::msgcat::mcset ne {cannot reach the gateway: %s} {गेटवेमा पुग्न सकिएन: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset ne commit कमिट
 ::msgcat::mcset ne {compacting %s messages in the background — the transcript reloads when it finishes} {पृष्ठभूमिमा %s सन्देशहरू कम्प्याक्ट गर्दै — समाप्त भएपछि ट्रान्स्क्रिप्ट पुनः लोड हुन्छ}
 ::msgcat::mcset ne compacting… {कम्प्याक्ट गर्दै…}
+::msgcat::mcset ne {comparing the nodes' versions and config…} {नोडहरूका संस्करण र config तुलना गर्दै…}
 ::msgcat::mcset ne {completion tokens} {कम्प्लिसन टोकनहरू}
 ::msgcat::mcset ne {component options and declared actions} {कम्पोनेन्ट विकल्पहरू र घोषित कार्यहरू}
 ::msgcat::mcset ne composer कम्पोजर
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset ne {could not open %s} {%s खोल्न सकिएन}
 ::msgcat::mcset ne {could not open %s (no working browser opener)} {%s खोल्न सकिएन (काम गर्ने ब्राउजर खोल्ने उपलब्ध छैन)}
 ::msgcat::mcset ne {could not open %{url}: %{e}} {खोल्न सकिएन %{url}: %{e}}
+::msgcat::mcset ne {could not open the optional referral link: %s} {वैकल्पिक रेफरल लिंक खोल्न सकिएन: %s}
 ::msgcat::mcset ne {could not read %s: %s} {%s पढ्न सकिएन: %s}
 ::msgcat::mcset ne {could not read the current route} {हालको रुट पढ्न सकिएन}
 ::msgcat::mcset ne {could not save this session's language: %{e}} {यो सेसनको भाषा सुरक्षित गर्न सकिएन: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset ne {ctxmenu: no widget %s (attached too early?)} {ctxmenu: विजेट %s छैन (धेरै चाँडो संलग्न गरियो?)}
 ::msgcat::mcset ne {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {क्युरेटेड पहुँच छानियो तर मालिकको पहिचान दिइएन, त्यसैले [acl] निष्क्रिय रहन्छ — यसलाई सक्रिय गर्न telegram:123456 वा irc:account जस्तो पहिचान दिनुहोस्}
 ::msgcat::mcset ne {current theme: %{name} · /theme <name>} {हालको थिम: %{name} · /theme <name>}
+::msgcat::mcset ne {cursor %1$s of %2$s (%3$s behind)} {कर्सर %1$s / %2$s (%3$s पछि)}
 ::msgcat::mcset ne {custom command /%s…} {अनुकूल कमाण्ड /%s…}
 ::msgcat::mcset ne {custom commands (.veles/commands/) and config aliases} {आफ्नै कमान्डहरू (.veles/commands/) र कन्फिगका उपनामहरू}
 ::msgcat::mcset ne {cycle ends} {चक्र समाप्त हुन्छ}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset ne doctor_resident {हरेक प्रम्प्टमा स्थायी: %{total} मध्ये %{shown} अक्षर (~%{tokens} टोकन) — बाँकी आवश्यक पर्दा यसबाट लोड हुन्छ: memory action=read path=%{path}}
 ::msgcat::mcset ne doctor_title {मेमोरी जाँच}
 ::msgcat::mcset ne doctor_total {जम्मा: %{files} फाइलमा %{chars} अक्षर (~%{tokens} टोकन)}
+::msgcat::mcset ne {documentation is not in this source checkout: %s} {यो स्रोत चेकआउटमा कागजात छैन: %s}
 ::msgcat::mcset ne done सम्पन्न
 ::msgcat::mcset ne {done · %1$s/%2$s} {सम्पन्न · %1$s/%2$s}
 ::msgcat::mcset ne {done, but the model returned no text} {सम्पन्न, तर मोडेलले कुनै पाठ फर्काएन}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset ne {evaluate Tcl and answer with the result — no model turn} {Tcl चलाउनुहोस् र नतिजाले जवाफ दिनुहोस् — मोडेलको टर्न बिना}
 ::msgcat::mcset ne everyone सबै
 ::msgcat::mcset ne everywhere जताततै
+::msgcat::mcset ne {exchanging registry gossip…} {रजिस्ट्री गसिप साटासाट गर्दै…}
 ::msgcat::mcset ne exit {बाहिर निस्कनुहोस्}
 ::msgcat::mcset ne {exit veles-desktop} {veles-desktop बाट निस्कनुहोस्}
 ::msgcat::mcset ne {export failed: %s} {निर्यात असफल भयो: %s}
 ::msgcat::mcset ne {export session} {सेसन निर्यात गर्नुहोस्}
 ::msgcat::mcset ne {exported to %s} {%s मा निर्यात भयो}
+::msgcat::mcset ne {extension architecture, examples and LSP help} {एक्सटेन्सन संरचना, उदाहरण र LSP सहायता}
+::msgcat::mcset ne {extension development guide} {एक्सटेन्सन विकास मार्गदर्शक}
+::msgcat::mcset ne failed असफल
 ::msgcat::mcset ne {failed to load history: %s} {इतिहास लोड गर्न असफल: %s}
 ::msgcat::mcset ne {failed to paint cached history: %s} {क्यास गरिएको इतिहास पेन्ट गर्न असफल भयो: %s}
 ::msgcat::mcset ne {failed to paint replayed history: %s} {रिप्ले गरिएको इतिहास देखाउन असफल: %s}
 ::msgcat::mcset ne {failed: %s} {असफल: %s}
+::msgcat::mcset ne {failing — heartbeating, but a sync push or the last probe failed} {खराब — हार्टबिट आइरहेको छ, तर सिंक पुश वा अन्तिम प्रोब असफल भयो}
 ::msgcat::mcset ne {failover blueprint: cannot reach the gateway} {फेलओभर ब्लुप्रिन्ट: गेटवेमा पुग्न सकिएन}
 ::msgcat::mcset ne {failover graph unavailable: %1$s} {फेलओभर ग्राफ उपलब्ध छैन: %1$s}
 ::msgcat::mcset ne {failover script: cannot reach the gateway} {फेलओभर स्क्रिप्ट: गेटवेमा पुग्न सकिएन}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset ne {fire the Tcl hook} {Tcl हुक चलाउनुहोस्}
 ::msgcat::mcset ne {fires for %s:} {%s का लागि चल्छ:}
 ::msgcat::mcset ne {fires per hour} {प्रति घण्टा चल्छ}
+::msgcat::mcset ne {fleet drift} {फ्लीट ड्रिफ्ट}
 ::msgcat::mcset ne {focus composer} {कम्पोजरमा फोकस गर्नुहोस्}
 ::msgcat::mcset ne {focus failed: %{e}} {फोकस असफल: %{e}}
 ::msgcat::mcset ne {focus next region} {अर्को क्षेत्रमा फोकस गर्नुहोस्}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset ne {four splits is the maximum} {बढीमा चार विभाजन}
 ::msgcat::mcset ne {fresh session} {नयाँ सेसन}
 ::msgcat::mcset ne {fresh session (Ctrl-N too)} {नयाँ सेसन (Ctrl-N पनि)}
+::msgcat::mcset ne {fresh — heartbeating, sync passing} {ताजा — हार्टबिट आइरहेको, सिंक ठीक}
+::msgcat::mcset ne from बाट
 ::msgcat::mcset ne {from node %{node}} {नोड %{node} बाट}
 ::msgcat::mcset ne {gateway     v%1$s · up %2$s} {गेटवे     v%1$s · चालू %2$s}
 ::msgcat::mcset ne {gateway unreachable — is `veles gateway run` up?} {गेटवे पुग्न सकिएन — के `veles gateway run` चालू छ?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset ne {in %s} {%s मा}
 ::msgcat::mcset ne {insert the next key literally (^B bold, ^C colour, ^O reset)} {अर्को कुञ्जी सिधै घुसाउनुहोस् (^B बोल्ड, ^C रङ, ^O रिसेट)}
 ::msgcat::mcset ne {inserted %s} {%s घुसाइयो}
+::msgcat::mcset ne {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {क्लस्टर निरीक्षण; स्पष्ट रूपमा store, memory, config वा vault सिंक push/लागू; पुरानो नोड फ्लीटभरि बिर्साउने; नोडको लग टेल वा मेट्रिक्स पढ्ने; संस्करण र config तुलना; अहिले गसिप}
 ::msgcat::mcset ne {inspector — app internals · core state · gw plugins} {इन्स्पेक्टर — एप आन्तरिक · कोर अवस्था · gw प्लगइनहरू}
 ::msgcat::mcset ne {install a plugin from a git URL} {git URL बाट प्लगइन स्थापना गर्नुहोस्}
 ::msgcat::mcset ne {install a skill from a git URL} {git URL बाट सीप स्थापना गर्नुहोस्}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset ne instance इन्स्ट्यान्स
 ::msgcat::mcset ne {instance controls} {इन्स्ट्यान्स नियन्त्रणहरू}
 ::msgcat::mcset ne {instance detail} {इन्स्ट्यान्स विवरण}
+::msgcat::mcset ne {instance names may not start with "cluster:" or "g:": %s} {इन्स्टेन्स नाम "cluster:" वा "g:" बाट सुरु हुन सक्दैन: %s}
 ::msgcat::mcset ne {instance needs a name} {इन्स्ट्यान्सलाई नाम चाहिन्छ}
 ::msgcat::mcset ne {instance unreachable} {इन्स्ट्यान्स पुग्न सकिएन}
 ::msgcat::mcset ne instances इन्स्ट्यान्सहरू
 ::msgcat::mcset ne interrupting… {अवरुद्ध गर्दै…}
+::msgcat::mcset ne into मा
 ::msgcat::mcset ne {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset ne {irc: %s} {irc: %s}
 ::msgcat::mcset ne {irc: %s failed — %s} {irc: %s असफल — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset ne {language list} {भाषा सूची}
 ::msgcat::mcset ne {language picker (the swap for THIS window)} {भाषा छनोटकर्ता (यो विन्डोका लागि साट्ने)}
 ::msgcat::mcset ne {language saved: %s} {भाषा सुरक्षित भयो: %s}
+::msgcat::mcset ne {language server} {language server}
+::msgcat::mcset ne {language server: event stream unavailable: %s} {language server: घटना स्ट्रिम उपलब्ध छैन: %s}
+::msgcat::mcset ne {language server: not started on the gateway — %s} {language server: गेटवेमा सुरु भएको छैन — %s}
+::msgcat::mcset ne {language server: the gateway would not start one: %s} {language server: गेटवेले एउटा सुरु गर्न सकेन: %s}
 ::msgcat::mcset ne {language swapped: %1$s ⇄ %2$s} {भाषा साटियो: %1$s ⇄ %2$s}
 ::msgcat::mcset ne {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {भाषा → %1$s (पहिले %2$s) · चालु विन्डो मात्र — पूर्वनिर्धारितको रूपमा सुरक्षित गर्दा config.toml लेख्छ}
 ::msgcat::mcset ne {language: %s} {भाषा: %s}
 ::msgcat::mcset ne {last error} {अन्तिम त्रुटि}
+::msgcat::mcset ne {last pass %1$s at %2$s: %3$s} {अन्तिम पास %1$s, %2$s मा: %3$s}
 ::msgcat::mcset ne {last reply copied (%s chars)} {अन्तिम जवाफ प्रतिलिपि गरियो (%s वर्ण)}
 ::msgcat::mcset ne {layout not saved: %s} {लेआउट सुरक्षित भएन: %s}
 ::msgcat::mcset ne {leave (cancels a running turn first)} {बाहिरिनुहोस् (पहिले चलिरहेको टर्न रद्द गर्छ)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset ne {list sessions} {सेसनहरूको सूची}
 ::msgcat::mcset ne {list skills} {स्किलहरूको सूची}
 ::msgcat::mcset ne {list tools} {टुलहरूको सूची}
+::msgcat::mcset ne {listed here only; [notify] fleet_alerts is off} {यहाँ मात्र सूचीबद्ध; [notify] fleet_alerts बन्द छ}
 ::msgcat::mcset ne {live patching ARMED} {लाइभ प्याचिङ सक्रिय}
 ::msgcat::mcset ne {live patching ARMED — an agent can now redefine procs in this window} {लाइभ प्याचिङ सक्रिय — एजेन्टले अब यो विन्डोमा proc पुनः परिभाषित गर्न सक्छ}
 ::msgcat::mcset ne {live patching disarmed} {लाइभ प्याचिङ निष्क्रिय गरियो}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset ne {log pane shown} {लग पेन देखाइयो}
 ::msgcat::mcset ne {log: %s} {लग: %s}
 ::msgcat::mcset ne {make media: image/video/audio, route = comfyui or provider[/model]} {मिडिया बनाउनुहोस्: image/video/audio, रुट = comfyui वा provider[/model]}
+::msgcat::mcset ne {managed via %s} {%s मार्फत व्यवस्थित}
+::msgcat::mcset ne {manual only} {म्यानुअल मात्र}
 ::msgcat::mcset ne {mark set} {मार्क सेट गरियो}
 ::msgcat::mcset ne {mark whole buffer (emacs select-all)} {पूरा बफ मार्क गर्नुहोस् (emacs select-all)}
 ::msgcat::mcset ne {markdown preview of the composer} {कम्पोजरको मार्कडाउन पूर्वावलोकन}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset ne model मोडेल
 ::msgcat::mcset ne {model aliases} {मोडेल उपनामहरू}
 ::msgcat::mcset ne {monitor %1$s fired} {मनिटर %1$s ट्रिगर भयो}
-::msgcat::mcset ne monitors मनिटरहरू
 ::msgcat::mcset ne monitors_header मनिटरहरू:
 ::msgcat::mcset ne monitors_none {(कुनै मनिटर छैनन् — मोडेलले यिनलाई monitor उपकरणले सुरु गर्छ)}
 ::msgcat::mcset ne {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {सेसन (र त्यसको सबट्री) टर्न सीमामा अर्को पूल नोडमा सार्नुहोस्; पार्क गरिएको ह्यान्डअफ पूरा/रद्द गर्नुहोस्; कुन सेसन कसको हो भनेर सोध्नुहोस् (एडमिन)}
 ::msgcat::mcset ne {move the running foreground command to the background} {चलिरहेको अग्रभूमि कमान्ड पृष्ठभूमिमा सार्नुहोस्}
 ::msgcat::mcset ne {move the running foreground command to the background (keeps running)} {चलिरहेको फोरग्राउन्ड कमाण्ड ब्याकग्राउन्डमा सार्नुहोस् (चलिरहन्छ)}
+::msgcat::mcset ne {move this session's running foreground command to a background shell; keeps running} {यो सेसनको चलिरहेको फोरग्राउन्ड कमाण्ड ब्याकग्राउन्ड शेलमा सार्नुहोस्; चलिरहन्छ}
 ::msgcat::mcset ne {moving around} {यताउता जाने}
 ::msgcat::mcset ne name नाम
 ::msgcat::mcset ne {name a key first} {पहिले कुञ्जीको नाम दिनुहोस्}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset ne {neon impressionism} {नियोन प्रभाववाद}
 ::msgcat::mcset ne {network (optional — e.g. libera; empty = any)} {नेटवर्क (वैकल्पिक — जस्तै libera; खाली = कुनै पनि)}
 ::msgcat::mcset ne {network to scope the grant to} {अनुदान सीमित गर्ने नेटवर्क}
+::msgcat::mcset ne new नयाँ
 ::msgcat::mcset ne {new buffer} {नयाँ बफर}
 ::msgcat::mcset ne {new entry — replace this text, then Save} {नयाँ प्रविष्टि — यो पाठ बदल्नुहोस्, अनि सुरक्षित गर्नुहोस्}
 ::msgcat::mcset ne {new name for %s} {%s को नयाँ नाम}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset ne {no IRC buffer selected} {कुनै IRC बफर चुनिएको छैन}
 ::msgcat::mcset ne {no MCP servers configured — Add server… writes one into config.toml} {कुनै MCP सर्भर कन्फिगर छैन — सर्भर थप्नुहोस्… ले config.toml मा एउटा लेख्छ}
 ::msgcat::mcset ne {no URLs in this buffer} {यो बफरमा कुनै URL छैन}
+::msgcat::mcset ne {no [a2a_agents] entry — this peer cannot be dialed} {[a2a_agents] प्रविष्टि छैन — यो पियरमा डायल गर्न सकिँदैन}
 ::msgcat::mcset ne {no alias /%s} {उपनाम /%s छैन}
 ::msgcat::mcset ne {no background refresh} {पृष्ठभूमि रिफ्रेस छैन}
 ::msgcat::mcset ne {no buffer %s} {बफर %s छैन}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset ne {no code block in the last reply} {अन्तिम जवाफमा कुनै कोड ब्लक छैन}
 ::msgcat::mcset ne {no cron jobs} {कुनै cron कार्य छैन}
 ::msgcat::mcset ne {no cron jobs — New… creates one} {कुनै cron कार्य छैन — नयाँ… ले एउटा बनाउँछ}
+::msgcat::mcset ne {no exchange yet} {अझै कुनै साटासाट भएको छैन}
 ::msgcat::mcset ne {no file — pick a guts file or type a path} {कुनै फाइल छैन — guts फाइल छान्नुहोस् वा पाथ टाइप गर्नुहोस्}
 ::msgcat::mcset ne {no handler} {कुनै ह्यान्डलर छैन}
+::msgcat::mcset ne {no heartbeat for %{mins} min} {%{mins} मिनेटदेखि heartbeat छैन}
+::msgcat::mcset ne {no heartbeat within the threshold} {थ्रेसहोल्डभित्र heartbeat भएन}
 ::msgcat::mcset ne {no history yet} {अहिलेसम्म कुनै इतिहास छैन}
 ::msgcat::mcset ne {no host configured for this instance} {यो इन्स्ट्यान्सका लागि कुनै होस्ट कन्फिगर छैन}
 ::msgcat::mcset ne {no instance selected} {कुनै इन्स्ट्यान्स चुनिएको छैन}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset ne {no program to open URLs} {URL खोल्ने कुनै प्रोग्राम छैन}
 ::msgcat::mcset ne {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {कुनै प्रोभाइडर कन्फिगर गरिएको छैन — टर्न चलाउनुअघि [[custom_providers]] प्रविष्टि थप्नुहोस् र [model] जोडी सेट गर्नुहोस्}
 ::msgcat::mcset ne {no reading yet — press Refresh} {अहिलेसम्म कुनै पठन छैन — रिफ्रेस थिच्नुहोस्}
-::msgcat::mcset ne {no running tasks} {कुनै चालु कार्य छैन}
 ::msgcat::mcset ne {no sample available} {कुनै नमुना उपलब्ध छैन}
 ::msgcat::mcset ne {no search bar on this surface} {यो सतहमा कुनै खोज पट्टी छैन}
 ::msgcat::mcset ne {no session matching %s} {%s सँग मिल्ने कुनै सेसन छैन}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset ne {no session open — switch the scope to the default, or open a session} {कुनै सत्र खुला छैन — स्कोप पूर्वनिर्धारितमा बदल्नुहोस्, वा सत्र खोल्नुहोस्}
 ::msgcat::mcset ne {no session open — the catalogue needs one; the default scope still works from config.toml} {कुनै सत्र खुला छैन — क्याटलगलाई चाहिन्छ; पूर्वनिर्धारित स्कोप config.toml बाट अझै काम गर्छ}
 ::msgcat::mcset ne {no setting %s — try filter or bare} {सेटिङ %s छैन — filter वा bare प्रयास गर्नुहोस्}
+::msgcat::mcset ne {no shells or monitors to show} {देखाउन कुनै शेल वा मोनिटर छैन}
 ::msgcat::mcset ne {no skills found} {कुनै स्किल भेटिएन}
 ::msgcat::mcset ne {no such URL — /urls lists them} {यस्तो URL छैन — /urls ले ती देखाउँछ}
 ::msgcat::mcset ne {no such file: %s} {यस्तो फाइल छैन: %s}
 ::msgcat::mcset ne {no swap target yet — set one with /locale secondary <id>} {अझै साट्ने भाषा छैन — /locale secondary <id> ले सेट गर्नुहोस्}
+::msgcat::mcset ne {no task selected} {कुनै कार्य छानिएको छैन}
 ::msgcat::mcset ne {no triggers} {कुनै ट्रिगर छैन}
 ::msgcat::mcset ne {no triggers — New… creates one} {कुनै ट्रिगर छैन — नयाँ… ले एउटा बनाउँछ}
 ::msgcat::mcset ne {no upstream reading for %s} {%s का लागि कुनै अपस्ट्रिम पठन छैन}
 ::msgcat::mcset ne {no word match} {कुनै शब्द मिलेन}
 ::msgcat::mcset ne {no xdg-open — path copied instead} {xdg-open छैन — सट्टा पाथ प्रतिलिपि गरियो}
+::msgcat::mcset ne {node log} {नोड लग}
 ::msgcat::mcset ne {none loaded} {केही लोड भएन}
 ::msgcat::mcset ne {none recorded} {कुनै रेकर्ड भएन}
+::msgcat::mcset ne {none since this gateway started} {यो गेटवे सुरु भएदेखि कुनै छैन}
 ::msgcat::mcset ne {none yet} {अझै छैन}
 ::msgcat::mcset ne {normie is pure Ctrl — no emacs prefix chords.} {normie पूर्ण रूपमा Ctrl मात्र — emacs प्रिफिक्स कर्डहरू छैनन्।}
 ::msgcat::mcset ne {normie: select all · emacs: start of line} {normie: सबै छान्नुहोस् · emacs: लाइनको सुरु}
 ::msgcat::mcset ne {not a channel} {च्यानल होइन}
 ::msgcat::mcset ne {not a key = value line: %s} {key = value पङ्क्ति होइन: %s}
+::msgcat::mcset ne {not a node in the attached gateway's cluster registry: %s} {जोडिएको गेटवेको क्लस्टर रजिस्ट्रीमा नोड होइन: %s}
 ::msgcat::mcset ne {not a number} {संख्या होइन}
 ::msgcat::mcset ne {not a valid http(s) url: %s} {मान्य http(s) url होइन: %s}
 ::msgcat::mcset ne {not a valid ssh host: %s} {मान्य ssh होस्ट होइन: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset ne {not attached to a gateway} {गेटवेसँग जोडिएको छैन}
 ::msgcat::mcset ne {not configured} {कन्फिगर गरिएको छैन}
 ::msgcat::mcset ne {not ignoring %s} {%s लाई बेवास्ता गरिँदैन}
+::msgcat::mcset ne {not installed} {स्थापना गरिएको छैन}
 ::msgcat::mcset ne {not reported} {रिपोर्ट गरिएको छैन}
 ::msgcat::mcset ne {not running} {चालू छैन}
 ::msgcat::mcset ne {not set in config.toml — the built-in default applies. %s} {config.toml मा सेट गरिएको छैन — अन्तर्निहित पूर्वनिर्धारित लागू हुन्छ। %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset ne off बन्द
 ::msgcat::mcset ne {off (the default)} {बन्द (पूर्वनिर्धारित)}
 ::msgcat::mcset ne offline अफलाइन
+::msgcat::mcset ne ok ठीक
 ::msgcat::mcset ne on अन
 ::msgcat::mcset ne {on (the default)} {अन (पूर्वनिर्धारित)}
 ::msgcat::mcset ne {on failure} असफलतामा
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset ne {open links} {लिङ्क खोल्ने}
 ::msgcat::mcset ne {open the engine log} {इन्जिन लग खोल्नुहोस्}
 ::msgcat::mcset ne {open the joined session before /leave (on %s)} {/leave गर्नुअघि जोडिएको सेसन खोल्नुहोस् (%s मा)}
+::msgcat::mcset ne {open the selected child session} {छानिएको child सेसन खोल्नुहोस्}
 ::msgcat::mcset ne {open the selected skill in the Dev editor} {चुनिएको सीप Dev सम्पादकमा खोल्नुहोस्}
 ::msgcat::mcset ne {open the setup wizard (re-runnable; edits config.toml in place)} {सेटअप विजार्ड खोल्नुहोस् (फेरि चलाउन सकिन्छ; config.toml ठाउँमै सम्पादन गर्छ)}
 ::msgcat::mcset ne {open the share sheet} {सेयर पाना खोल्ने}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset ne {override cleared — the default applies} {ओभरराइड खारेज भयो — पूर्वनिर्धारित लागू हुन्छ}
 ::msgcat::mcset ne {override failed: %s} {ओभरराइड असफल: %s}
 ::msgcat::mcset ne {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {मालिकको पहिचान %{id} लाई ACL ले मिलाउन सक्दैन — telegram:<संख्यात्मक आईडी>, irc:<services खाता>, वा nick!user@host मास्क प्रयोग गर्नुहोस्}
+::msgcat::mcset ne owner/repository मालिक/रिपोजिटरी
 ::msgcat::mcset ne {owners: %s} {मालिकहरू: %s}
 ::msgcat::mcset ne {pair a desktop with this agent} {यो एजेन्टसँग डेस्कटप जोड्नुहोस्}
 ::msgcat::mcset ne {partly failed: %s} {आंशिक असफल: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset ne plugin प्लगइन
 ::msgcat::mcset ne {plugin directory git history} {प्लगइन डाइरेक्टरी git इतिहास}
 ::msgcat::mcset ne {plugin list} {प्लगइन सूची}
+::msgcat::mcset ne {plugin provider driver} {plugin प्रोभाइडर ड्राइभर}
 ::msgcat::mcset ne {plugins reloaded on %s} {%s मा प्लगइनहरू पुनः लोड भए}
 ::msgcat::mcset ne {pop %s out into its own window} {%s लाई आफ्नै विन्डोमा निकाल्नुहोस्}
 ::msgcat::mcset ne {pop the buffer out into its own window} {बफरलाई छुट्टै विन्डोमा निकाल्नुहोस्}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset ne {prefix: window & dock commands} {प्रिफिक्स: विन्डो र डक कमान्डहरू}
 ::msgcat::mcset ne {press Attach in the Instances tab} {इन्स्ट्यान्सहरू ट्याबमा संलग्न थिच्नुहोस्}
 ::msgcat::mcset ne preview पूर्वावलोकन
+::msgcat::mcset ne {preview an AI extension change and explicitly apply its diff} {AI एक्सटेन्सन परिवर्तनको पूर्वावलोकन गर्नुहोस् र यसको डिफ स्पष्ट रूपमा लागू गर्नुहोस्}
 ::msgcat::mcset ne {preview failed: %s} {पूर्वावलोकन असफल: %s}
 ::msgcat::mcset ne {previous buffer} {अघिल्लो बफर}
 ::msgcat::mcset ne {previous command was not a yank} {अघिल्लो आदेश yank थिएन}
 ::msgcat::mcset ne {previous match} {अघिल्लो मिलान}
 ::msgcat::mcset ne {previous session} {अघिल्लो सेसन}
+::msgcat::mcset ne {probing %s…} {%s प्रोब गर्दै…}
 ::msgcat::mcset ne {proc body} {proc बडी}
 ::msgcat::mcset ne {profile unavailable: %s} {प्रोफाइल उपलब्ध छैन: %s}
 ::msgcat::mcset ne profiles: प्रोफाइलहरू:
 ::msgcat::mcset ne prompt प्रम्प्ट
 ::msgcat::mcset ne {prompt breakdown} {प्रम्प्टको विवरण}
 ::msgcat::mcset ne {prompt tokens} {प्रम्प्ट टोकनहरू}
+::msgcat::mcset ne {proposal only, not applied} {प्रस्ताव मात्र, लागू गरिएको छैन}
 ::msgcat::mcset ne provider प्रोभाइडर
 ::msgcat::mcset ne {provider / model} {प्रोभाइडर / मोडेल}
 ::msgcat::mcset ne {provider base URL} {प्रोभाइडरको बेस URL}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset ne {re-sync the slopdrop state mirror} {slopdrop स्थिति मिरर पुन:सिङ्क गर्नुहोस्}
 ::msgcat::mcset ne {read and set the clipboard} {क्लिपबोर्ड पढ्ने र सेट गर्ने}
 ::msgcat::mcset ne {read text aloud} {पाठ ठूलो स्वरमा पढ्ने}
+::msgcat::mcset ne {read-only: [approvals] allowlist} {पढ्न-मात्र: [approvals] allowlist}
 ::msgcat::mcset ne {read-only: this session lives on %1$s (as read at %2$s)} {पढ्न-मात्र: यो सेसन %1$s मा छ (%2$s मा पढिएअनुसार)}
 ::msgcat::mcset ne {read-only: this skill comes from the %s library} {पढ्न-मात्र: यो स्किल %s लाइब्रेरीबाट आएको हो}
 ::msgcat::mcset ne reasoning तर्क
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset ne {refused to open %s (only http, https, mailto)} {%s खोल्न अस्वीकार गरियो (केवल http, https, mailto)}
 ::msgcat::mcset ne {refused: %s} {अस्वीकार: %s}
 ::msgcat::mcset ne {region copied} {क्षेत्र प्रतिलिपि गरियो}
+::msgcat::mcset ne registered {दर्ता भएको}
 ::msgcat::mcset ne {registry not saved: %s} {रेजिस्ट्री बचत भएन: %s}
 ::msgcat::mcset ne {reload on %1$s failed: %2$s} {%1$s मा पुनः लोड असफल: %2$s}
 ::msgcat::mcset ne {reload the mechanisms} {संयन्त्रहरू पुनः लोड गर्नुहोस्}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset ne {resume a session (prefix ok)} {सेसन पुनः सुरु गर्नुहोस् (उपसर्ग पुग्छ)}
 ::msgcat::mcset ne {retry failed: %s} {पुनः प्रयास असफल: %s}
 ::msgcat::mcset ne {retrying last prompt…} {अन्तिम प्रम्प्ट पुनः प्रयास गर्दै…}
+::msgcat::mcset ne {review files for an explicit upstream contribution} {स्पष्ट अपस्ट्रिम योगदानका लागि फाइलहरू समीक्षा गर्नुहोस्}
+::msgcat::mcset ne {review standing global and session tool permissions} {स्थायी ग्लोबल र सेसन उपकरण अनुमति समीक्षा गर्नुहोस्}
 ::msgcat::mcset ne revision संशोधन
 ::msgcat::mcset ne {revision history} {संशोधन इतिहास}
+::msgcat::mcset ne {revoke refused} {फिर्ता लिन अस्वीकार गरियो}
 ::msgcat::mcset ne {revoke the selected identity's grant} {चयन गरिएको पहिचानको अनुदान रद्द गर्नुहोस्}
 ::msgcat::mcset ne role भूमिका
 ::msgcat::mcset ne {role to grant} {अनुदान गर्ने भूमिका}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset ne {saved to %s} {%s मा बचत भयो}
 ::msgcat::mcset ne saved. {बचत भयो।}
 ::msgcat::mcset ne {scaffold a new plugin} {नयाँ प्लगइन scaffold गर्नुहोस्}
+::msgcat::mcset ne {scaffold a user plugin and open it in this editor} {प्रयोगकर्ता plugin को scaffold बनाएर यो एडिटरमा खोल्नुहोस्}
 ::msgcat::mcset ne {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {तालिकाबद्ध कामहरू; /crons add "<sched>" [session=<id>] <prompt> (उपनाम /cron)}
 ::msgcat::mcset ne scope दायरा
 ::msgcat::mcset ne script स्क्रिप्ट
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset ne {select %s first} {पहिले %s छान्नुहोस्}
 ::msgcat::mcset ne {select a checkpoint first} {पहिले चेकपोइन्ट छान्नुहोस्}
 ::msgcat::mcset ne {select a file, or New… to create one} {फाइल छान्नुहोस्, वा बनाउन नयाँ…}
+::msgcat::mcset ne {select a grant first} {पहिले एउटा अनुमति छान्नुहोस्}
 ::msgcat::mcset ne {select a handler first} {पहिले ह्यान्डलर छान्नुहोस्}
 ::msgcat::mcset ne {select a member first} {पहिले सदस्य छान्नुहोस्}
 ::msgcat::mcset ne {select a route} {रुट छान्नुहोस्}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset ne {select an assignment first} {पहिले नियुक्ति छान्नुहोस्}
 ::msgcat::mcset ne {select an entry first} {पहिले प्रविष्टि छान्नुहोस्}
 ::msgcat::mcset ne {select an identity first} {पहिले पहिचान छान्नुहोस्}
+::msgcat::mcset ne {selected task details and shell output} {छानिएको कार्यको विवरण र शेल आउटपुट}
 ::msgcat::mcset ne {selected: %s} {चयन: %s}
 ::msgcat::mcset ne {send clipboard as prompt} {क्लिपबोर्डलाई प्रम्प्टका रूपमा पठाउनुहोस्}
 ::msgcat::mcset ne {send failed: %s} {पठाउन असफल: %s}
 ::msgcat::mcset ne {send the message; while a turn runs, queue it as steering} {सन्देश पठाउनुहोस्; टर्न चलिरहेको बेला स्टेयरिङको रूपमा क्यु गर्नुहोस्}
+::msgcat::mcset ne sent पठाइयो
+::msgcat::mcset ne {sent to the owner's home chat} {मालिकको home chat मा पठाइयो}
 ::msgcat::mcset ne server सर्भर
 ::msgcat::mcset ne {server buffers merged} {सर्भर बफरहरू मर्ज भए}
 ::msgcat::mcset ne {server buffers separate} {सर्भर बफरहरू छुट्टाछुट्टै}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset ne {settings, one key = value per line} {सेटिङहरू, प्रति लाइन एउटा key = value}
 ::msgcat::mcset ne {setup_done marker NOT saved: %s} {setup_done मार्कर सुरक्षित भएन: %s}
 ::msgcat::mcset ne {shell %1$s finished} {शेल %1$s समाप्त भयो}
-::msgcat::mcset ne shells शेलहरू
+::msgcat::mcset ne {shells, monitors and subagents} {शेलहरू, मोनिटरहरू र सबएजेन्टहरू}
 ::msgcat::mcset ne shells_header {पृष्ठभूमि शेलहरू:}
 ::msgcat::mcset ne shells_none {(कुनै पृष्ठभूमि शेल छैनन् — /background <cmd> ले एउटा सुरु गर्छ)}
 ::msgcat::mcset ne {show current configuration} {हालको कन्फिगरेसन देखाउनुहोस्}
 ::msgcat::mcset ne {show every key in this mode} {यो मोडका सबै कुञ्जीहरू देखाउनुहोस्}
 ::msgcat::mcset ne {show or hide the session list} {सेसन सूची देखाउनुहोस् वा लुकाउनुहोस्}
 ::msgcat::mcset ne {show or switch model (alias | model@provider | custom:<prov>)} {मोडेल देखाउनुहोस् वा बदल्नुहोस् (alias | model@provider | custom:<prov>)}
+::msgcat::mcset ne {show selected shell output} {छानिएको शेलको आउटपुट देखाउनुहोस्}
 ::msgcat::mcset ne {show short messages} {छोटा सन्देश देखाउने}
 ::msgcat::mcset ne {show the model's reasoning blocks (same as /reasoning)} {मोडेलको रिजनिङ ब्लकहरू देखाउनुहोस् (/reasoning जस्तै)}
 ::msgcat::mcset ne {show unclaimed} {दाबी नगरिएका देखाउनुहोस्}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset ne spend खर्च
 ::msgcat::mcset ne {split: %s} {विभाजन: %s}
 ::msgcat::mcset ne {ssh to %1$s failed: %2$s} {%1$s मा ssh असफल: %2$s}
+::msgcat::mcset ne {stale — no heartbeat within the threshold} {बासी — सीमाभित्र कुनै हार्टबिट आएन}
+::msgcat::mcset ne {standing global and session permission grants} {स्थायी ग्लोबल र सेसन अनुमतिहरू}
 ::msgcat::mcset ne state अवस्था
 ::msgcat::mcset ne {state       never reached} {अवस्था       कहिल्यै पुगिएन}
 ::msgcat::mcset ne {state       reachable} {अवस्था       पहुँचयोग्य}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset ne {stored in the encrypted vault (%1$s): %2$s} {इन्क्रिप्ट गरिएको तिजोरीमा राखियो (%1$s): %2$s}
 ::msgcat::mcset ne {stream handler: %s} {स्ट्रिम ह्यान्डलर: %s}
 ::msgcat::mcset ne {subagent %1$s finished} {सबएजेन्ट %1$s समाप्त भयो}
-::msgcat::mcset ne subagents सबएजेन्टहरू
 ::msgcat::mcset ne subagents_header {चलिरहेका सबएजेन्टहरू:}
 ::msgcat::mcset ne subagents_none {(कुनै चालु सबएजेन्ट छैनन् — /btw <prompt> ले एउटा सुरु गर्छ, वा मोडेलले delegate_task प्रयोग गर्छ)}
 ::msgcat::mcset ne {suspend failed: %{e}} {सस्पेन्ड असफल: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset ne {switch the selected skill off} {चयन गरिएको स्किल बन्द गर्नुहोस्}
 ::msgcat::mcset ne {switch the selected skill on} {चयन गरिएको स्किल अन गर्नुहोस्}
 ::msgcat::mcset ne {switch to the %s tab} {%s ट्याबमा स्विच गर्नुहोस्}
+::msgcat::mcset ne {sync requested: %s} {सिंक अनुरोध गरियो: %s}
 ::msgcat::mcset ne {tab 1} {ट्याब 1}
 ::msgcat::mcset ne {tab 2} {ट्याब 2}
 ::msgcat::mcset ne {tab 3} {ट्याब 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset ne tasks_none {(चलिरहेका कार्य छैनन्)}
 ::msgcat::mcset ne tasks_not_found {यस्तो कार्य छैन: %{id}}
 ::msgcat::mcset ne tasks_not_running {कार्य %{id} पहिले नै सकिएको छ}
-::msgcat::mcset ne {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset ne {tcl-lsp: event stream unavailable: %s} {tcl-lsp: इभेन्ट स्ट्रिम उपलब्ध छैन: %s}
-::msgcat::mcset ne {tcl-lsp: gateway would not start it: %s} {tcl-lsp: गेटवेले यो सुरु गरेन: %s}
-::msgcat::mcset ne {tcl-lsp: not started on the gateway — %s} {tcl-lsp: गेटवेमा सुरु भएको छैन — %s}
 ::msgcat::mcset ne {that buffer is not split} {त्यो बफर विभाजित छैन}
 ::msgcat::mcset ne {the %s plan} {%s योजना}
 ::msgcat::mcset ne {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {API key फिल्डले env चरको नाम (जस्तै %{example}) लिन्छ, key आफैं होइन — key लुकाइएको फिल्डमा जान्छ}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset ne {the gateway answered without a report} {गेटवेले रिपोर्टबिना जवाफ दियो}
 ::msgcat::mcset ne {the model/provider pair is incomplete — the gateway will not route until both are present} {मोडेल/प्रोभाइडर जोडी अपूर्ण छ — दुवै नभएसम्म गेटवेले रुट गर्दैन}
 ::msgcat::mcset ne {the options changed, so that is a fresh preview — press “Write it” again to write it} {विकल्प बदलिए, त्यसैले यो ताजा पूर्वावलोकन हो — लेख्न फेरि “लेख्नुहोस्” थिच्नुहोस्}
+::msgcat::mcset ne {the peer has not been sent this vault yet} {यो भल्ट पियरलाई अझै पठाइएको छैन}
+::msgcat::mcset ne {the peer holds this vault} {पियरसँग यो भल्ट छ}
 ::msgcat::mcset ne {the primary route is \[model\] provider/default — change it there, not here} {मुख्य रुट \[model\] provider/default हो — यहाँ होइन, त्यहाँ बदल्नुहोस्}
 ::msgcat::mcset ne {the provider/model route this session sends to} {यो सत्रले पठाउने प्रोभाइडर/मोडेल मार्ग}
 ::msgcat::mcset ne {the same, on the privileged path (owner only)} {उही, विशेषाधिकार मार्गबाट (owner मात्र)}
 ::msgcat::mcset ne {the selected entry (edit, then Save)} {चयन गरिएको प्रविष्टि (सम्पादन, अनि बचत)}
+::msgcat::mcset ne {the server stopped: %s} {सर्भर रोकियो: %s}
 ::msgcat::mcset ne {the synthwave splash} {synthwave स्वागत स्क्रिन}
 ::msgcat::mcset ne {the text after the name was NOT sent anywhere — type the value into the masked field} {नामपछिको पाठ कतै पठाइएन — मान लुकाइएको फिल्डमा टाइप गर्नुहोस्}
 ::msgcat::mcset ne {the transcript} ट्रान्स्क्रिप्ट
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset ne thinking… सोच्दै…
 ::msgcat::mcset ne {thinking… (%s)} {सोच्दै… (%s)}
 ::msgcat::mcset ne {this file's revisions, their diffs, and restore} {यो फाइलका संशोधनहरू, तिनका भिन्नताहरू, र पुनर्स्थापना}
+::msgcat::mcset ne {this gateway} {यो गेटवे}
 ::msgcat::mcset ne {this gateway has no Tcl interpreter} {यस गेटवेमा Tcl इन्टरप्रिटर छैन}
 ::msgcat::mcset ne {this list} {यो सूची}
+::msgcat::mcset ne {this node has no vault} {यो नोडसँग कुनै भल्ट छैन}
 ::msgcat::mcset ne {this route} {यो रुट}
 ::msgcat::mcset ne {this session} {यो सेसन}
 ::msgcat::mcset ne {this session follows the default language again (%{def})} {यो सेसन फेरि पूर्वनिर्धारित भाषा पछ्याउँछ (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset ne {transcript finalization failed: %s} {प्रतिलेख टुंग्याउन असफल: %s}
 ::msgcat::mcset ne {transcript refetched} {ट्रान्सक्रिप्ट पुनः तानियो}
 ::msgcat::mcset ne {transcript — arrows to read, %s for composer} {ट्रान्सक्रिप्ट — पढ्न तीरहरू, कम्पोजरका लागि %s}
+::msgcat::mcset ne {translate text with the dedicated translation model, without an agent turn} {समर्पित अनुवाद मोडेलले पाठ अनुवाद गर्नुहोस्, एजेन्ट टर्नबिना}
+::msgcat::mcset ne {translation result} {अनुवाद नतिजा}
 ::msgcat::mcset ne {trigger %1$s %2$sd} {%1$s ट्रिगर गरियो %2$sd}
 ::msgcat::mcset ne {trigger created} {ट्रिगर सिर्जना भयो}
 ::msgcat::mcset ne {trigger updated} {ट्रिगर अद्यावधिक भयो}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset ne {usage: /steer <instruction>} {प्रयोग: /steer <instruction>}
 ::msgcat::mcset ne used प्रयोग
 ::msgcat::mcset ne user प्रयोगकर्ता
+::msgcat::mcset ne {user copy} {प्रयोगकर्ता प्रतिलिपि}
 ::msgcat::mcset ne {user identities, one per line} {प्रयोगकर्ता पहिचानहरू, प्रति लाइन एउटा}
 ::msgcat::mcset ne {user name} {प्रयोगकर्ता नाम}
 ::msgcat::mcset ne {user profile} {प्रयोगकर्ता प्रोफाइल}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset ne {value (TOML: 5, true, "text", ["a","b"])} {मान (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset ne veles veles
 ::msgcat::mcset ne {veles editor} {veles सम्पादक}
+::msgcat::mcset ne {veles fleet: node %{node} is failing — %{detail}} {veles फ्लीट: नोड %{node} असफल हुँदैछ — %{detail}}
+::msgcat::mcset ne {veles fleet: node %{node} is stale — %{detail}} {veles फ्लीट: नोड %{node} पुरानो छ — %{detail}}
+::msgcat::mcset ne {veles fleet: node %{node} recovered (it was %{was})} {veles फ्लीट: नोड %{node} पुनः स्वस्थ भयो (पहिले %{was} थियो)}
 ::msgcat::mcset ne {veles · keyboard help (bindings: %s)} {veles · किबोर्ड सहायता (बाइन्डिङहरू: %s)}
 ::msgcat::mcset ne {veles · touch help} {veles · स्पर्श मद्दत}
 ::msgcat::mcset ne {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset ne widgets विजेटहरू
 ::msgcat::mcset ne {will be stored in the encrypted vault} {इन्क्रिप्ट गरिएको तिजोरीमा राखिनेछ}
 ::msgcat::mcset ne {wire protocol} {वायर प्रोटोकल}
+::msgcat::mcset ne {without force to} {बल प्रयोग नगरी यसमा}
 ::msgcat::mcset ne {wizard language} {विजार्डको भाषा}
 ::msgcat::mcset ne {wizard language: %s} {विजार्डको भाषा: %s}
 ::msgcat::mcset ne {write failed: %s} {लेख्न असफल: %s}
 ::msgcat::mcset ne {write grants that still expire (the expiry is dropped — a config line cannot expire)} {अझै म्याद सकिने अनुदानहरू लेख्नुहोस् (म्याद हटाइन्छ — कन्फिग लाइनको म्याद सकिँदैन)}
 ::msgcat::mcset ne {write the entries back} {प्रविष्टिहरू फिर्ता लेख्नुहोस्}
 ::msgcat::mcset ne {write the store's runtime rules into config.toml} {स्टोरका रनटाइम नियमहरू config.toml मा लेख्नुहोस्}
+::msgcat::mcset ne {write the whole extension from its purpose, as a reviewed preview} {यसको प्रयोजनबाट पूरै extension समीक्षा गरिएको पूर्वावलोकनका रूपमा लेख्नुहोस्}
 ::msgcat::mcset ne {write these values into config.toml as the defaults} {यी मानहरू पूर्वनिर्धारितका रूपमा config.toml मा लेख्नुहोस्}
 ::msgcat::mcset ne writing लेखन
 ::msgcat::mcset ne {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {पहिलो [acl] मालिक लेख्दा यो गेटवे क्युरेटेड मोडमा जान्छ: पूर्वनिर्धारित भूमिका guest (fail-closed) हुन्छ र एडप्टरको अनुमति सूची विश्वासको सीमा रहँदैन}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset ne {▲ VELES — neon impressionism} {▲ VELES — नियन इम्प्रेसनिजम}
 ::msgcat::mcset ne {▲ earlier} {▲ पहिलेका}
 ::msgcat::mcset ne {▼ later} {▼ पछिका}
+::msgcat::mcset ne {▾ Cluster registry} {▾ क्लस्टर रजिस्ट्री}
 ::msgcat::mcset ne {▾ new output — follow} {▾ नयाँ आउटपुट — पछ्याउनुहोस्}
 ::msgcat::mcset ne {○ unattached} {○ संलग्न नभएको}
 ::msgcat::mcset ne {● %1$s — %2$s} {● %1$s — %2$s}

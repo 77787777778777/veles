@@ -244,7 +244,12 @@ entry = "plugin.ts"            # or plugin.js / plugin.mjs
 description = "..."
 ```
 
-`veles plugins new <name> --kind js` scaffolds one. The lifecycle is
+`veles plugins new <name> --kind js` scaffolds one, with a
+`tsconfig.json` (an ES module, the host's globals only, no DOM or Node)
+and `veles.d.ts`, the typed `veles` object (`plugins/veles.d.ts` in this
+repository, kept in step with the host's prelude by a test), so a
+language server and `tsc` know the API; neither file is loaded by veles.
+The lifecycle is
 the Tcl tier's: the plugin is loaded when the host starts, re-loaded
 in a FRESH context when a file under the plugins directory changes or
 on `veles plugins reload <name>`, and `veles plugins unload <name>`
@@ -1083,6 +1088,70 @@ An unknown `auth_style` is refused at config load rather than silently
 defaulted, because the failure it prevents reads as a rejected API key: the
 driver would authenticate with the wrong header and the operator would go
 rotate a credential that was fine.
+
+### Anthropic Message Threads (opt-in beta)
+
+`message_threads = true` on the provider entry enables the
+`message-threads-2026-08-12` beta on the bundled native `anthropic-messages`
+driver (the bare name, `tcl:tcl-anthropic-driver:anthropic-messages` or
+`so:anthropic-so:anthropic-messages`). That per-route flag is an explicit
+choice for the route's host. `VELES_ANTHROPIC_MESSAGE_THREADS=1`, meant for
+an isolated test process, reaches only routes on the Claude API itself
+(`https://api.anthropic.com`, or no `base_url`): an Anthropic-compatible
+proxy that ignored the unknown `thread` field would still return an id, and
+the next request would then go out without its system prompt, tools or
+history. The environment values `0` and `false` are off.
+
+The first request is a `thread: {type: "create"}` with the full local
+history. A subsequent request continues the returned message id with only
+the messages AFTER the reply that id stored (the new user turn or tool
+results); it never resends that reply, and does not repeat `system` or
+`tools`. In explicit cache mode a continue carries exactly one cache
+breakpoint, on its last new message, so each turn reads the stored
+conversation from the prompt cache and writes the new turn to it; the
+create's `system` and `tools` breakpoints count again, keeping a continue at
+three of the four the API allows.
+
+veles' store, not the provider thread, remains authoritative. A response
+id is consumed at most once per session. An edit, a local rewrite of the
+stored reply, compaction, changed fixed request fields, or a retry or
+failover starts a new create from local history. A dropped stream or a
+thread-specific error (`thread_not_found`, `thread_already_continued`,
+`thread_continue_in_flight`, `thread_fingerprint_mismatch`,
+`thread_unsupported_request`, which both drivers now pass on from
+`error.details.error_code`) replays the local history once, then makes one
+unthreaded attempt with a visible engine note. The rest of that call goes
+unthreaded and the cursor is dropped, so the next call starts a new create.
+Refusals, length-limited responses, paused turns
+(`pause_turn`), fallback-model responses (a `fallback_message` entry in
+`usage.iterations`), and streams without `message_stop` do not become
+continuation points.
+
+Threads are not prompt caching or server-side compaction. They are not ZDR
+or HIPAA eligible. This is a beta and is disabled by default; the provider
+must support the beta. No live performance result is implied by the wire
+fixtures. The current Anthropic usage does not combine threads with context
+editing, Message Batches, or token counting.
+
+Live validation on 2026-11-03 used isolated synthetic sessions against the
+Claude API on both bundled drivers. Every continuation failed and the local
+full-history replay completed the turn. Those continues began with the
+previous reply, which the API already stores and documents as an error; the
+engine now sends only what follows it. No live run has yet confirmed a
+successful continuation, so nothing here claims a TTFT improvement.
+The opt-in measurement example requires `--live` and uses a fresh temporary
+configuration and store:
+
+```sh
+ANTHROPIC_API_KEY=... direnv exec . cargo run -p veles-core \
+  --example message_threads_live -- --live --rounds=6
+# Add --native-so to compare the out-of-tree native driver (build it first).
+```
+
+It prints locally projected request-body sizes, first-delta and total timing,
+and whether a response cursor was retained. Request sizes are not packet
+captures; replay notes are part of the result. No operator configuration is
+changed by the example.
 
 **Two worked examples, deliberately the same driver twice:**
 

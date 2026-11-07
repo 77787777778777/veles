@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset sn {%1$s %2$s failed: %3$s} {%1$s %2$s chakundikana: %3$s}
 ::msgcat::mcset sn {%1$s %2$s over ssh…} {%1$s %2$s kuburikidza ssh…}
 ::msgcat::mcset sn {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset sn {%1$s (%2$s waiting)} {%1$s (%2$s yakamirira)}
 ::msgcat::mcset sn {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  kufunga %3$s}
 ::msgcat::mcset sn {%1$s = %2$s here} {%1$s = %2$s pano}
 ::msgcat::mcset sn {%1$s NOT saved: %2$s} {%1$s HACHINA kuchengetwa: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset sn {%1$s every cron job on %2$s?} {%1$s mabasa ese ecron pa%2$s?}
 ::msgcat::mcset sn {%1$s failed: %2$s} {%1$s chakundikana: %2$s}
 ::msgcat::mcset sn {%1$s in / %2$s out / %3$s calls} {%1$s in / %2$s out / %3$s mafoni}
+::msgcat::mcset sn {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s ndiye node %2$s, kwete %3$s. Gadzirisa node id yayo mu Edit….}
 ::msgcat::mcset sn {%1$s is not a whole number} {%1$s haisi nhamba yose}
+::msgcat::mcset sn {%1$s is reachable (%2$s ms).} {%1$s inosvikika (%2$s ms).}
 ::msgcat::mcset sn {%1$s is set to something this box cannot edit (%2$s)} {%1$s yakaiswa kune chimwe chinhu iyi box isingakwanisi kugadzirisa (%2$s)}
+::msgcat::mcset sn {%1$s is unreachable: %2$s} {%1$s haisvikike: %2$s}
 ::msgcat::mcset sn {%1$s of %2$s characters} {%1$s ye %2$s mavara}
 ::msgcat::mcset sn {%1$s of %2$s sessions} {%1$s pa%2$s masesheni}
 ::msgcat::mcset sn {%1$s of %2$s skills reach the prompt} {%1$s ye %2$s hunyanzvi hunoenda kuprompt}
 ::msgcat::mcset sn {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s pa%2$s: %3$d ok, %4$d zvakundikana}
+::msgcat::mcset sn {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s haitauri kuzivikanwa kwakaita node ye cluster, saka haigone kusimbiswa se %2$s.}
+::msgcat::mcset sn {%1$s sync failed: %2$s} {Sync ya %1$s yakundikana: %2$s}
+::msgcat::mcset sn {%1$s sync with %2$s (%3$s)} {Sync ya %1$s na %2$s (%3$s)}
+::msgcat::mcset sn {%1$s sync: %2$s} {Sync ya %1$s: %2$s}
 ::msgcat::mcset sn {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset sn {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter kusvetuka, Esc kuvhara}
 ::msgcat::mcset sn {%1$s — revision r%2$s} {%1$s — revision r%2$s}
 ::msgcat::mcset sn {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset sn {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset sn {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset sn {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset sn {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: %2$s yekupedzisira pamitsara %3$s iyo gateway yayo inochengeta mundangariro, zvakavanzika zvakabviswa panode iyo.}
 ::msgcat::mcset sn {%d MCP server(s) configured} {sevha %d dzeMCP dzakagadzirirwa}
 ::msgcat::mcset sn {%d entries} {%d zvinyorwa}
+::msgcat::mcset sn {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {Mafaira %d eextension achanyorwa sezvakaongororwa chaiwo. Kana rimwe rawo rachinja kubva pakuona kwekutanga, hapana chichanyorwa. Hapana commit, push kana PR inoitika.}
 ::msgcat::mcset sn {%d handler(s) registered} {%d handlers akanyoreswa}
 ::msgcat::mcset sn {%d identities · %d users} {%d mazita · %d vashandisi}
 ::msgcat::mcset sn {%d models — pick one from the list or type a name.} {%d mamodheru — sarudza imwe kubva pane runyorwa kana nyora zita.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset sn {%d shown} {%d zvakaratidzwa}
 ::msgcat::mcset sn {%s %s%%} {%s %s%%}
 ::msgcat::mcset sn {%s (%s)} {%s (%s)}
+::msgcat::mcset sn {%s (referral)} {%s (kurefera)}
+::msgcat::mcset sn {%s (stale)} {%s (yakapera nguva)}
 ::msgcat::mcset sn {%s (this session)} {%s (iyi session)}
 ::msgcat::mcset sn {%s GB free of %s GB} {%s GB isina chinhu pa%s GB}
 ::msgcat::mcset sn {%s already exists — open it from the list} {%s yatovepo — ivhure kubva pane runyorwa}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset sn {%s comes from config.toml [acl] — edit there} {%s inobva config.toml [acl] — gadzirisa ipapo}
 ::msgcat::mcset sn {%s config change(s) wait for you — /configsync} {shanduko dzemasetingi %s dzakakumirira — /configsync}
 ::msgcat::mcset sn {%s did not become healthy within 30s} {%s haana kunge ane utano mukati mema30s}
+::msgcat::mcset sn {%s done} {%s waita}
 ::msgcat::mcset sn {%s failed: %s} {%s yakundikana: %s}
 ::msgcat::mcset sn {%s is already split} {%s yakato patsana}
 ::msgcat::mcset sn {%s is the language in use — pick another one to swap with} {%s ndiwo mutauro uri kushandiswa — sarudza mumwe kuti uchinjane nawo}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset sn {%s opens the command palette in %s.} {%s inovhura command palette mune %s.}
 ::msgcat::mcset sn {%s session(s)} {%s sessions}
 ::msgcat::mcset sn {%s skill(s):} {%s skill(s):}
+::msgcat::mcset sn {%s standing grants} {Zvibvumiro zvekusingaperi %s}
 ::msgcat::mcset sn {%s takes no completable arguments} {%s haatore maargument anokwanisa kupedzwa}
 ::msgcat::mcset sn {%s takes on or off} {%s inotora on kana off}
 ::msgcat::mcset sn {%s —} {%s —}
+::msgcat::mcset sn {%s — changes data, asks to confirm} {%s — inochinja data, inokumbira simbiso}
 ::msgcat::mcset sn {%s — deleted; History… can restore it} {%s — yadzimwa; Nhoroondo… inogona kuidzorera}
 ::msgcat::mcset sn {%s — new: type, then Save} {%s — itsva: nyora, wozo Chengeta}
 ::msgcat::mcset sn {%s — not attached; press Attach in the Instances tab} {%s — haina kubatwa; tinya Attach muInstances tab}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset sn {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} yakavhurwa pasina chikamu che [acl]: kusvikira %{var} mu .env yataura kuti ndiani anogona kutaura nebot, chero munhu anosvika kwairi anotorwa semuridzi, aine maturusi ese}
 ::msgcat::mcset sn (%{route}) (%{route})
 ::msgcat::mcset sn {(CLI redraws automatically)} {(CLI inozvidhirowa zvakare yega)}
+::msgcat::mcset sn {(binary; not publishable)} {(binary; haigone kuburitswa)}
 ::msgcat::mcset sn {(clipboard empty or no clipboard tool)} {(clipboard haina chinhu kana hapana clipboard tool)}
 ::msgcat::mcset sn (deleted) (yadzimwa)
 ::msgcat::mcset sn (empty) (hapana)
 ::msgcat::mcset sn {(no sessions)} {(hapana ma-session)}
+::msgcat::mcset sn {(not a memsync peer of this gateway: config is not synced with it)} {(haizi memsync peer yegateway iyi: config haisync-ane nayo)}
 ::msgcat::mcset sn {(nothing to reload — read from disk per use)} {(hapana chekuisazve — zvinoverengwa kubva pa disk nguva dzose dzinoshandiswa)}
 ::msgcat::mcset sn {(retrying last prompt…)} {(kuedza zvakare prompt yekupedzisira…)}
 ::msgcat::mcset sn {(route did not resolve: %{e})} {(route haina kugadziriswa: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset sn {/url needs a number from /urls} {/url inoda nhamba kubva /urls}
 ::msgcat::mcset sn {/whois needs a nick} {/whois inoda nick}
 ::msgcat::mcset sn {; could not save the cleared return view: %s} {; hazvina kukwanisika kuchengeta maonero ekudzoka akabviswa: %s}
+::msgcat::mcset sn {; shadows bundled} {; inovhundutsa yakawanikwa}
+::msgcat::mcset sn {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Chikumbiro che config chinogona kuchinja masetingi uye chikumbiro che vault chinobatanidza zvakavanzika; shanduko dzechikamu chekuchengetedza dzichiri kumirira muridzi.}
 ::msgcat::mcset sn {A failing plugin may drop hooks mid-turn.} {Plugin inokundikana inogona kudonhedza hooks pakati pe turn.}
 ::msgcat::mcset sn {A local server: no key is needed unless you set one up.} {Sevha yepano: hapana kiyi inodiwa kunze kwekunge wagadzira imwe.}
+::msgcat::mcset sn {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Release yakasainwa inoiswa chete mushure mepreflight. Kutangidza patsva/kusimbisa, kuenderera mberi nokudzorera zvinhu zviri kumashure izvi zviitiko zvakasiyana. Process ine utano inofanira kuzivisa revision chaiyo yesosi yakaongororwa.}
 ::msgcat::mcset sn {A value is stored for %s — leave this empty to keep it.} {Pane kukosha kwakachengetwa kwe%s — siya izvi zvisina chinhu kuti kurambe kuripo.}
 ::msgcat::mcset sn {ACL: ban mask} {ACL: rambidza mask}
 ::msgcat::mcset sn {ACL: grant admin} {ACL: pa admin}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset sn {ACL: grant user} {ACL: pa user}
 ::msgcat::mcset sn {ACL: revoke} {ACL: bvisa}
 ::msgcat::mcset sn {ACME account email} {Email ye ACME}
+::msgcat::mcset sn {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI assist inoshanda pamazinga mana: bvunza mubvunzo wedhizaini (hapana faira rinodiwa), chinja faira iri, chinja mafaira akati wandei eextension iyi, kana kutsanangura diagnostics iripo. New extension inogonawo kugadzira extension yose kubva pachinangwa chayo. Chikumbiro chega chega chinotumirwa pasina maturusi uye chinorambwa kana chatakura chakavanzika chakanyoreswa kana kukosha kwakaita secredential; shanduko dzinoratidzwa semadiff uye dzinonyorwa chete kana iwe uchidzishandisa. Tanga wakumbira dhizaini yeextension; kumbira core patch chete mushure mekuziva API isipo.}
+::msgcat::mcset sn {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {Rubatsiro rweAI runoshandura zvinowedzerwa zvemushandisi chete, uye faira iri harisi chikamu chazvo. Shanduko zhinji dzinokwana muchikamu chekuwedzera (hook, chishandiso, kutsiva kwesevhisi kana mutyairi wemupi) chinorarama mushure mekuvandudzwa; patch yepakati ndeyezvinhu API yekuwedzera isingagoni kutaura. Gadzira chikamu chitsva chekuwedzera cheshanduko iyi pane kudaro? Mafaira acho anotariswa usati wanyorwa chero chinhu.}
+::msgcat::mcset sn {AI assist…} {Rubatsiro rweAI…}
+::msgcat::mcset sn {AI extension assistance} {Rubatsiro rweAI pakuwedzera}
 ::msgcat::mcset sn {API calls} {Mikando ye API}
+::msgcat::mcset sn {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {Zvikwereti zve API zvinobva kureferensi ye Anthropic zvinopihwa chete kana ukatenga Max kana Ultra. Veles haitsigire kushandisa iyo subscription sekupinda kana kusimbisa API.}
 ::msgcat::mcset sn {API key (hidden)} {Kiyi yeAPI (yakavanzwa)}
 ::msgcat::mcset sn {API key env var name} {Zita re env var ye API key}
+::msgcat::mcset sn {API reference} {Rechokwadi reAPI}
+::msgcat::mcset sn {Abandon untouched operation} {Rasa mashandiro asina kubatwa}
 ::msgcat::mcset sn {Access control} {Kutonga kwekuwana}
 ::msgcat::mcset sn {Access control (ACL)} {Kutonga kwekuwana (ACL)}
 ::msgcat::mcset sn Add Wedzera
 ::msgcat::mcset sn {Add MCP server} {Wedzera sevha yeMCP}
 ::msgcat::mcset sn {Add instance} {Wedzera instance}
 ::msgcat::mcset sn {Add server…} {Wedzera sevha…}
+::msgcat::mcset sn {Adds selected extension sources. Review the branch diff and checks before merging.} {Inowedzera masosi ekuwedzera akasarudzwa. Ongorora diff yebranch nemabvunzo usati wabatanidza.}
 ::msgcat::mcset sn Add… Wedzera…
 ::msgcat::mcset sn {Agent & engine} {Mumiriri neinjini}
 ::msgcat::mcset sn {Alias %s} {Alias %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset sn {Applies to} {Inoshanda ku}
 ::msgcat::mcset sn Apply Shandisa
 ::msgcat::mcset sn {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Shandisa inochinja session INOMHANYA chete. Copy TOML inokupa mablocks ekunamira. Save globally inosona iwo muconfig.toml — zvikamu zvefailover chete zvinobatwa, mamwe mitsara nemacomment zvinosara, uye faira rekare rinochengetwa se config.toml.bak.}
+::msgcat::mcset sn {Apply proposal…} {Shandisa chikurukuru…}
+::msgcat::mcset sn {Apply received} {Shandisa zvakagamuchirwa}
+::msgcat::mcset sn {Apply this AI proposal?} {Shandisa chikurukuru ichi cheAI?}
+::msgcat::mcset sn {Apply this change set?} {Shandisa set yeshanduko iyi?}
 ::msgcat::mcset sn {Apply to session} {Shandisa ku session}
+::msgcat::mcset sn {Apply what this node received:} {Shandisa zvakagamuchirwa nenode iyi:}
 ::msgcat::mcset sn {Approval needed} {Kubvumidza kunodikanwa}
 ::msgcat::mcset sn Apps Maapp
 ::msgcat::mcset sn Archive Chachengetwa
 ::msgcat::mcset sn {Archive SHA-256} {SHA-256 yechachengetwa}
+::msgcat::mcset sn Ask Bvunza
+::msgcat::mcset sn {Ask a design question} {Bvunza mubvunzo wedhizaini}
+::msgcat::mcset sn {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {Bvunza kuti ungavaka sei extension: ndeipi boundary, ndeupi mutauro, ndeipi API. Hapana source inotumirwa, uye hapana chinogona kunyorwa.}
 ::msgcat::mcset sn {Ask the agent to change it} {Kumbira mumiririri kuti aishandure}
+::msgcat::mcset sn {Asking %s…} {Kubvunza %s…}
 ::msgcat::mcset sn {Asking the provider for its models…} {Kubvunza mupi kuti kupe mamodheru awo…}
 ::msgcat::mcset sn Attach Kambatidza
 ::msgcat::mcset sn {Attach to the next message} {Batanidza kune meseji inotevera}
+::msgcat::mcset sn {Author guide} {Mutungamiri wemunyori}
+::msgcat::mcset sn {Automatically discovered from the attached gateway's cluster registry.} {Zvakawanikwa zvega kubva kucluster registry yegateway yakabatwa.}
 ::msgcat::mcset sn Back Dzokera
 ::msgcat::mcset sn {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {Shure inovhara chiri pamusoro: menyu, runyoro rwemasession, hwindo. Kana pasina chakavhurwa, veles inoenda kumashure ichiramba ichishanda.}
 ::msgcat::mcset sn {Base URL} {Base URL}
+::msgcat::mcset sn {Base branch} {Branch yekutanga}
 ::msgcat::mcset sn {Bot token (hidden)} {Token yebot (yakavanzwa)}
+::msgcat::mcset sn Branch Branch
+::msgcat::mcset sn {Branch and commit prepared; nothing has been pushed} {Branch necommit zvagadzirirwa; hapana chakapushwa}
+::msgcat::mcset sn {Branch pushed and verified on origin} {Branch yapushwa uye yasimbiswa paorigin}
 ::msgcat::mcset sn {Browse sessions} {Tarisa masesheni}
+::msgcat::mcset sn {Build manifest + preflight} {Gadzira manifest + preflight}
+::msgcat::mcset sn {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Kuvaka: veles %1$s, revision %2$s (%3$s %4$s)}
 ::msgcat::mcset sn {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e magumo emutsetse · C-b/C-f char · M-b/M-f shoko · C-k uraya kusvika EOL · C-y yank · M-w kopira · C-w uraya dunhu · C-space isa mark · C-/ undo}
 ::msgcat::mcset sn {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g inomisa zvese · C-j newline · M-p/M-n nhoroondo · Tab yedzadzisa}
+::msgcat::mcset sn {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: cores %1$s, mutoro %2$s / %3$s / %4$s (%5$s%% yemacores)}
 ::msgcat::mcset sn Cancel Kanzura
+::msgcat::mcset sn {Cancel task} {Kanzura basa}
+::msgcat::mcset sn {Cancel task %1$s? This cannot be undone.} {Kanzura basa %1$s? Hazvingadzorerwi.}
+::msgcat::mcset sn {Cannot verify that %1$s is node %2$s: %3$s} {Hazvigone kusimbisa kuti %1$s ndiye node %2$s: %3$s}
 ::msgcat::mcset sn Capabilities Zvinogona
 ::msgcat::mcset sn {Change my app “%s” (%s): } {Shandura app yangu “%s” (%s): }
+::msgcat::mcset sn {Change this extension's files} {Chinja mafaira eextension iyi}
+::msgcat::mcset sn {Change this file} {Chinja faira iri}
 ::msgcat::mcset sn Change… Chinja…
 ::msgcat::mcset sn {Channels (e.g. #veles #dev)} {Channels (semuenzaniso #veles #dev)}
 ::msgcat::mcset sn Chat Hurukuro
 ::msgcat::mcset sn {Chat — not attached; press Attach in the Instances tab} {Chat — haina kubatwa; tinya Attach muInstances tab}
 ::msgcat::mcset sn {Check (lsp)} {Ongorora (lsp)}
+::msgcat::mcset sn {Check again} {Tarisa zvakare}
+::msgcat::mcset sn {Check files} {Ongorora mafaira}
 ::msgcat::mcset sn Checkpoints {Nzvimbo dzekudzokera}
 ::msgcat::mcset sn {Checkpoints (undo)} {Nzvimbo dzekudzokera (undo)}
+::msgcat::mcset sn {Checks and next steps} {Mabvunzo nematanho anotevera}
+::msgcat::mcset sn {Checks run} {Mabvunzo akaitwa}
 ::msgcat::mcset sn {Choose BUNDLE-INFO.json in the managed install-sources directory} {Sarudza BUNDLE-INFO.json mufolda rine install-sources rinotongwa}
 ::msgcat::mcset sn {Choose a failover script} {Sarudza failover script}
 ::msgcat::mcset sn {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {Sarudza module kana process plugin yekutarisa. Discovery inoverenga plugin.toml chete; kusarudza component kunokumbira manifest nemasarudzi azvo akaziviswa. Hapana chinodzoyalwa nokuvhura nhanho iyi.}
+::msgcat::mcset sn {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {Sarudza zita, chinangwa nemutauro, wozotarisa mafaira chaiwo. Hapana chakanyorwa.}
 ::msgcat::mcset sn {Choose a user unit or a system service for the server profile. Neither starts a service.} {Sarudza unit yemushandisi kana sevha yesystem yepofaire yesevha. Hakuna kana imwe inotanga sevha.}
 ::msgcat::mcset sn {Choose core bundle…} {Sarudza core bundle…}
 ::msgcat::mcset sn {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {Sarudza muviri wekuisa. Mapofaire emuno anoshandisa installer yakarebhekhwa. Mepofaire yesystem necontainer anogadzirira chikumbiro chakasaina cheCLI handoff inoyerera. NixOS inoburitsa chete chikamu chemodhu.}
+::msgcat::mcset sn {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {Sarudza muganhu diki pazvese: Tool inowedzera kugona kunomhanikwa nemamodheru; Hook inoteerera kana kugadzirisa chiitiko chehupenyu; Service kana override point inokomberedza danho rakapiwa zita; Provider driver inowedzera tambo yemupi; patch yeCore inokodzera chete kana API yezvekuwedzera yakaburitswa isingakwanisi kutaura shanduko iyi.}
 ::msgcat::mcset sn {Choose typed container-host options JSON} {Sarudza JSON yesarudzo dzecontainer-host dzakanyorwa}
 ::msgcat::mcset sn {Choose typed container-host options…} {Sarudza sarudzo dzecontainer-host dzakanyorwa…}
 ::msgcat::mcset sn Clear Bvisa
 ::msgcat::mcset sn {Clear composer} {Chenesa composer}
 ::msgcat::mcset sn {Clear override} {Bvisa override}
 ::msgcat::mcset sn {Click the picture where you would click on the page.} {Dzvanya pamufananidzo panzvimbo yaungadzvanya papeji.}
+::msgcat::mcset sn {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {Kopa %1$s, gadzira %2$s, uye kopa mafaira akaongororwa chete e %3$s pasi pe %4$s/<extension>/. Mafaira anotariswa uye anoiswa mu commit. Hapana push kana pull request inoitika izvozvi.}
 ::msgcat::mcset sn Close Vhara
 ::msgcat::mcset sn {Close (Esc)} {Vhara (Esc)}
 ::msgcat::mcset sn {Close the setup wizard? Nothing has been written yet.} {Vhara wizard yekugadzirisa? Hapana chachanyorwa kusvika zvino.}
 ::msgcat::mcset sn {Code actions} {Mabasa ekodhi}
+::msgcat::mcset sn Commit Commit
+::msgcat::mcset sn {Commit ready for review. Push is a separate action.} {Commit yakagadzirira kuongororwa. Push iri basa rimwe.}
 ::msgcat::mcset sn {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Zadzisa minda yose ye PDS, kusangano nedigest yechiratidzo chakabatidzwa, usati waona handoff.}
 ::msgcat::mcset sn {Complete every typed container-host field before previewing this profile.} {Pedzisa munda wose wakanyorwa wecontainer-host usati waona pofaire iyi.}
 ::msgcat::mcset sn {Component configuration returned an invalid result; nothing was accepted as applied.} {Config yecomponent yakadzosha mhedziso isina kunaka; hapana chinhu chakabvumirwa sechakashandiswa.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset sn {Component options changed. Review the new preview before applying.} {Masarudzi ecomponent akachinja. Ongorora preview itsva usati waishandisa.}
 ::msgcat::mcset sn Components Zvikamu
 ::msgcat::mcset sn {Composer preview} {Mutariri weComposer}
+::msgcat::mcset sn Config Config
+::msgcat::mcset sn {Config differs: %s} {Config inosiyana: %s}
+::msgcat::mcset sn {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Config log: node iyo ine shanduko dza%1$s kusvika %3$s, gateway iyi kusvika %2$s}
+::msgcat::mcset sn {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Config log: gateway iyi ine shanduko dza%1$s kusvika %2$s, node iyo kusvika %3$s}
+::msgcat::mcset sn {Config only on that node: %s} {Config iri panode iyo chete: %s}
+::msgcat::mcset sn {Config only on this gateway: %s} {Config iri pagateway iyi chete: %s}
 ::msgcat::mcset sn Configure Gadzirira
 ::msgcat::mcset sn {Configure %s} {Gadzirira %s}
+::msgcat::mcset sn {Configure translator} {Gadzirisa mududziri}
+::msgcat::mcset sn {Configured desktop gateway} {Gateway yedesktop yakagadzirirwa}
 ::msgcat::mcset sn Configure… Gadzirira…
 ::msgcat::mcset sn {Configuring %s} {Kuumba %s}
 ::msgcat::mcset sn {Confirm or discard the current signed review before starting another download.} {Simbisa kana ubvise ongororo yechiburitswa chakasayini yazvino usati watanga imwe daunirodi.}
 ::msgcat::mcset sn {Container host: typed host plan and privileged CLI handoff} {Container host: purani yemubatanidzwi yakanyorwa uye kuparadzira kweCLI kunoda kodzero dzeadmin}
 ::msgcat::mcset sn {Context window} {Hwindo remukati}
+::msgcat::mcset sn {Continue to next target} {Enderera kuchinangwa chinotevera}
+::msgcat::mcset sn {Contribute extensions: %s} {Tumira zvinowedzerwa kumusoro: %s}
+::msgcat::mcset sn Contribute… Batsira…
+::msgcat::mcset sn {Contribution branch} {Branch yekubatsira}
+::msgcat::mcset sn {Contribution destination} {Kuenda kwekubatsira}
 ::msgcat::mcset sn Copy Kopa
 ::msgcat::mcset sn {Copy TOML} {Kopa TOML}
+::msgcat::mcset sn {Copy a bundled extension into your user plugin directory before preparing a contribution.} {Kopa chinowedzera chakabatanidzwa muuser plugin directory yako usati wagadzirira kubatsira.}
 ::msgcat::mcset sn {Copy message} {Kopa meseji}
 ::msgcat::mcset sn {Copy name} {Kopa zita}
 ::msgcat::mcset sn {Copy nick} {Kopa nick}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset sn {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {Hazvina kukwanisa kuona zvikamu. Masarudzi eprovider acho achiri kushanda; isa kuburikidza neCLI pamushina wakanangwa kana zvichidiwa.}
 ::msgcat::mcset sn {Could not join: %s} {Hazvina kugoneka kujoinha: %s}
 ::msgcat::mcset sn {Could not list the models (%s) — type the model's name.} {Hazvina kukwanisika kunyora runyorwa rwemamodheru (%s) — nyora zita remodheru.}
+::msgcat::mcset sn {Create a PR in} {Gadzira PR mu}
+::msgcat::mcset sn {Create extension} {Gadzira chinowedzera}
 ::msgcat::mcset sn {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Gadzira bot ne@BotFather, wobva wanamira token yayo pazasi: inopinda mudura rakavharidzirwa, haimbopindi mu config.toml.}
+::msgcat::mcset sn {Create this extension?} {Gadzira chinowedzera ichi?}
+::msgcat::mcset sn {Create this generated extension?} {Gadzira extension iyi yakagadzirwa?}
+::msgcat::mcset sn {Created and reloaded. Review and test the extension before publishing.} {Chagadzirwa uye chatakurwa zvakare. Ongorora uye edza chinowedzera usati chaparidzwa.}
+::msgcat::mcset sn {Created, but reload failed} {Chagadzirwa, asi kutakura zvakare kwakundikana}
 ::msgcat::mcset sn {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Inogadzira %s/<name>/SKILL.md kubva template uye inouvhura. Iyo frontmatter description ndiyo yega chikamu chinosvika kuprompt index, saka iite itaure WHEN yekushandisa hunyanzvi.}
 ::msgcat::mcset sn {Cron history} {Nhoroondo yeCron}
 ::msgcat::mcset sn {Cron jobs} {Mabasa ecron}
 ::msgcat::mcset sn {Curated — write the first owner entry} {Curated — nyora nhauro yekutanga yemuridzi}
 ::msgcat::mcset sn Cut Cheka
 ::msgcat::mcset sn Decline Ramba
+::msgcat::mcset sn {Dedicated translator} {Mududziri akatsaurwa}
 ::msgcat::mcset sn {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset sn Default Yakajairwa
 ::msgcat::mcset sn {Default model} {Model yakajairwa}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset sn {Delete user} {Dzima mushandisi}
 ::msgcat::mcset sn {Delete workspace?} {Dzima workspace?}
 ::msgcat::mcset sn Deop {Bvisa op}
+::msgcat::mcset sn {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Tsanangura shanduko. AI inogona kuchinja kana kuwedzera mafaira akati wandei eextension iyi. Faira rega rega rinoratidzwa sediff, uye hapana chinonyorwa usati wasimbisa.}
+::msgcat::mcset sn {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Tsanangura shanduko. AI inogona kukurudzira kutsiva, asi haigone kunyora usati waongorora uye wasimbisa diff.}
+::msgcat::mcset sn {Describe the requested extension change first.} {Tsanangura shanduko yechinowedzera inodiwa pakutanga.}
+::msgcat::mcset sn Description Tsanangudzo
 ::msgcat::mcset sn {Desktop: local core, modules and process plugins} {Desktop: core yemuno, modules uye plugins dzeprocess}
 ::msgcat::mcset sn Detach Bvisa
+::msgcat::mcset sn {Detach foreground} {Bvisa chiri mberi}
 ::msgcat::mcset sn Dev Dev
 ::msgcat::mcset sn {Dev pane (REPL + LSP)} {Dev pane (REPL + LSP)}
 ::msgcat::mcset sn {Dev: arm / disarm live patching} {Dev: isa / bvisa live patching}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset sn Devoice {Bvisa voice}
 ::msgcat::mcset sn {Discard review} {Bvisa ongororo}
 ::msgcat::mcset sn {Discard your changes to %s?} {Rasa shanduko dzako pa%s?}
+::msgcat::mcset sn {Disk: %1$s free of %2$s at %3$s} {Disk: %1$s yakasununguka pa%2$s pa%3$s}
 ::msgcat::mcset sn Done Zvapera
 ::msgcat::mcset sn {Done — config written} {Zvaita — config yanyorwa}
 ::msgcat::mcset sn {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Dauniroda uye usimbise manifesiti yechiburitswa nechachengetwa chemudunhu usati waisa. Minda yese mashanu yeidentity zvinodiwa. Gateway inochengeta chachengetwa chakavanzika chakagadzirira; hapana chakaiswa neongororo iyi.}
 ::msgcat::mcset sn {Downloading and verifying the signed release…} {Kudauniroda uye kusimbisa chiburitswa chakasayini…}
+::msgcat::mcset sn {Draft this as an extension?} {Nyora izvi sechikamu chekuwedzera?}
 ::msgcat::mcset sn {Drag to scroll; a quick swipe goes further.} {Kweva kuti utenderedze; kukwesha nekukurumidza kunoenda kure kupfuura.}
+::msgcat::mcset sn {Drift check failed: %s} {Kuongorora drift kwakundikana: %s}
+::msgcat::mcset sn {Drift check: %s node(s) differ from this gateway.} {Kuongorora drift: node %s dzinosiyana negateway iyi.}
+::msgcat::mcset sn {Drift: built from revision %1$s, this gateway from %2$s} {Drift: yakavakwa kubva revision %1$s, gateway iyi kubva %2$s}
+::msgcat::mcset sn {Drift: none — same version, revision and replicated config} {Drift: hapana — vhezheni imwe chete, revision neconfig yakakopwa}
+::msgcat::mcset sn {Drift: not compared — %s} {Drift: hazvina kuenzaniswa — %s}
+::msgcat::mcset sn {Drift: runs version %1$s, this gateway %2$s} {Drift: inomhanya vhezheni %1$s, gateway iyi %2$s}
+::msgcat::mcset sn Drift… Drift…
 ::msgcat::mcset sn {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset sn {ESC %s is not bound} {ESC %s haina kusungirirwa}
 ::msgcat::mcset sn {ESC- … (Meta prefix)} {ESC- … (Meta prefix)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset sn Edit… Gadzirisa…
 ::msgcat::mcset sn {Enable / disable} {Batidza / kudzima}
 ::msgcat::mcset sn {Enable the Telegram adapter} {Gonesa Telegram adapter}
+::msgcat::mcset sn Endpoint Endpoint
 ::msgcat::mcset sn Engine Injini
 ::msgcat::mcset sn Eval→gw Eval→gw
 ::msgcat::mcset sn {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Shanduko yega yega ku %s inoitwa commit. Restoring inodzosera dhairekitori rose kune iyo commit — uye inotora snapshot yemamiriro azvino kutanga, saka haisi gonhi rinoenda chete rumwe rutivi.}
 ::msgcat::mcset sn {Every plugin file goes back to that commit. The current state is committed first.} {Faira rega rega replugin rinodzokera kune iyo commit. Mamiriro azvino anoitwa commit kutanga.}
+::msgcat::mcset sn {Exact commit} {Commit chaiyo}
+::msgcat::mcset sn {Exact permission rule} {Mutemo chaiwo wemvumo}
+::msgcat::mcset sn {Example: a hook} {Muenzaniso: hook}
+::msgcat::mcset sn {Example: a provider driver} {Muenzaniso: driver yemupi}
+::msgcat::mcset sn {Example: a service override wrapping core} {Muenzaniso: override yeService inokomberedza core}
+::msgcat::mcset sn {Example: a tool} {Muenzaniso: chishandiso}
 ::msgcat::mcset sn {Existing shared container network} {Network yemacontainer yakagoverwa iripo}
+::msgcat::mcset sn Explain Tsanangura
+::msgcat::mcset sn {Explain the diagnostics} {Tsanangura diagnostics}
 ::msgcat::mcset sn Export… {Endesa kunze…}
+::msgcat::mcset sn {Extension API} {API yekuwedzera}
+::msgcat::mcset sn {Extension development} {Kukudziridza zvekuwedzera}
+::msgcat::mcset sn {Extension guide} {Gwara rezvekuwedzera}
+::msgcat::mcset sn {Extension source} {Sosi yekuwedzera}
 ::msgcat::mcset sn {Failover blueprint} {Failover blueprint}
 ::msgcat::mcset sn {Failover blueprint (edit the route chain)} {Failover blueprint (shandura nzira yekutevedzana)}
 ::msgcat::mcset sn {Failover hook script (what `script` mode runs)} {Failover hook script (izvo `script` mode inomhanya)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset sn {Find in transcript} {Tsvaga mutranscript}
 ::msgcat::mcset sn {Find in transcript…} {Tsvaga mutranscript…}
 ::msgcat::mcset sn {Find references} {Tsvaga references}
+::msgcat::mcset sn {Finish rollback} {Pedza kudzorera shure}
 ::msgcat::mcset sn {First run: no config.toml yet.} {Kumhanya kwekutanga: config.toml haisati yapo.}
+::msgcat::mcset sn {Fix the failed syntax checks before preparing a contribution.} {Gadzirisa mabvunzo esyntax akakundikana usati wagadzirira kubatsira.}
+::msgcat::mcset sn {Fleet deployment} {Kutumirwa kwefleet}
+::msgcat::mcset sn {Fleet deployment runs from a desktop computer; it is not available on Android.} {Kutumirwa kwefleet kunoitwa kubva pakombiyuta yedesktop; hachiwanikwi pa Android.}
+::msgcat::mcset sn {Fleet deploy…} {Kutumira fleet…}
+::msgcat::mcset sn {Fleet drift} {Drift yefleet}
 ::msgcat::mcset sn {Fold / unfold} {Peta / tambanudza}
 ::msgcat::mcset sn {Forget declaration} {Kanganwa chiziviso}
+::msgcat::mcset sn {Forget node %s?} {Kanganwa node %s?}
+::msgcat::mcset sn {Forget node…} {Kanganwa node…}
+::msgcat::mcset sn {Forgetting %1$s failed: %2$s} {Kukanganwa %1$s kwakundikana: %2$s}
+::msgcat::mcset sn {Forgot node %s.} {Node %s yakanganwika.}
+::msgcat::mcset sn {Forgotten fleet-wide (refused until they heartbeat again): %s} {Zvakanganwika mufleet yose (zvinorambwa kusvikira zvikatumira heartbeat zvakare): %s}
 ::msgcat::mcset sn Fork {Gadzira bazi}
 ::msgcat::mcset sn {Free space} {Nzvimbo isina chinhu}
 ::msgcat::mcset sn {Full source commit SHA} {SHA yekubatana kwetsvaka kose}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset sn {Gateway image sha256 digest} {Digest yemufananidzo wegateway sha256}
 ::msgcat::mcset sn {Gateway quadlet name} {Zita requadlet regateway}
 ::msgcat::mcset sn {Gateway status} {Gateway mamiriro}
+::msgcat::mcset sn {Generate with AI…} {Gadzira neAI…}
+::msgcat::mcset sn {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {Yakagadzirwa na%s - hapana chakanyorwa. Ongorora faira rega rega, wozo Gadzira extension inonyora izvi chaizvo.}
 ::msgcat::mcset sn {Get a key at %s} {Wana kiyi pa %s}
 ::msgcat::mcset sn {GitHub release URL} {URL yechiburitswa cheGitHub}
+::msgcat::mcset sn {Give the extension a name and describe what it should do (the purpose), then generate.} {Ipa extension zita uye tsanangura zvainofanira kuita (chinangwa), wozo gadzira.}
 ::msgcat::mcset sn {Give up} Siya
 ::msgcat::mcset sn Go Enda
 ::msgcat::mcset sn {Go to definition} {Enda kutsananguro}
+::msgcat::mcset sn {Gossip failed: %s} {Gossip yakundikana: %s}
+::msgcat::mcset sn {Gossip now} {Gossip izvozvi}
+::msgcat::mcset sn {Gossip with %1$s: %2$s} {Gossip na%1$s: %2$s}
+::msgcat::mcset sn {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {Gossip: %1$s pa%2$s peer dzakapindura (%3$s).}
 ::msgcat::mcset sn Grant Pa
 ::msgcat::mcset sn {Grant access} {Pa mukana}
+::msgcat::mcset sn {Granted at} {Zvakapihwa pa}
 ::msgcat::mcset sn Grant… Pa…
 ::msgcat::mcset sn {Guards — what the harness stops, and where it stands now} {Guards — zvainomisa harness, uye zvazvino}
 ::msgcat::mcset sn {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handlers anomhanya muranho unoratidzwa; wekutanga kudzosa value isina empty ndiye anokunda. Kuchidzima imwe kunoipepa pasina kuinyoresa, uye sarudzo inochengetwa mu config.toml kuitira kuti plugin reload isakwanise kuita kuti ibatidzwe zvakare chinyararire.}
+::msgcat::mcset sn Health Utano
+::msgcat::mcset sn {Health alerts (%s):} {Yambiro dzeutano (%s):}
+::msgcat::mcset sn Heartbeat {Kurova kweMoyo}
+::msgcat::mcset sn {Heartbeat age: %s s} {Nguva kubva pa heartbeat: %s s}
 ::msgcat::mcset sn Help Batsira
 ::msgcat::mcset sn {Help & keys} {Rubatsiro nemakiyi}
 ::msgcat::mcset sn {Hide right panes} {Vanza mapaneru ekurudyi}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset sn {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {Batirira, wobva wakweva usati wasimudza: sarudzo inotevera munwe wako shoko neshoko, ichitenderera pamucheto wepamusoro kana wepasi.}
 ::msgcat::mcset sn Hooks Hooks
 ::msgcat::mcset sn {Hooks (what plugins run on)} {Mahuki (izvo mapulagini anomhanya nazvo)}
+::msgcat::mcset sn Host Host
 ::msgcat::mcset sn {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {Kuti kubatirira kunotora nguva yakareba sei ndiko kunonoka kwekubata-uye-kubatirira kwaAndroid, mumasetting ayo ekuwanikwa.}
 ::msgcat::mcset sn {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {Ndakachengeta KEK ne PLC rotation key offline; tendera TLS ne activation handoff zvakatariswa}
 ::msgcat::mcset sn {I-search backward: type to search, C-r for previous} {I-search kumashure: nyora kutsvaga, C-r ye yapfuura}
 ::msgcat::mcset sn {I-search: type to search, C-s for next} {I-search: nyora kutsvaga, C-s ye inotevera}
+::msgcat::mcset sn {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {Kumanikidza kweIO: %1$s%% / %2$s%% / %3$s%% yenguva iyo rimwe basa rakamirira (10 s / 1 min / 5 min)}
 ::msgcat::mcset sn IRC IRC
 ::msgcat::mcset sn {IRC buffers} {IRC buffers}
 ::msgcat::mcset sn {IRC composer} {IRC composer}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset sn {IRC split: %s} {IRC patsana: %s}
 ::msgcat::mcset sn {IRC transcript} {IRC transcript}
 ::msgcat::mcset sn {IRC — nothing to show} {IRC — hapana zviratidzwa}
+::msgcat::mcset sn {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {Zviri kuitika: turn %1$s %2$s, mabasa ekumashure %3$s %4$s}
 ::msgcat::mcset sn {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {Isa %s mudura rinotarisirwa rezvikamu? Manifest yayo yaratidzwa; izvi hazvitangisi sevhisi.}
 ::msgcat::mcset sn {Install component} {Isa component}
 ::msgcat::mcset sn {Install components…} {Isa zvikamu…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset sn Instances Instances
 ::msgcat::mcset sn {It becomes the current content, as a new revision — so the restore can be undone too.} {Inova zviri mukati izvozvi, se revision itsva — saka kudzorera kunogonawo kudzoserwa.}
 ::msgcat::mcset sn {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Inopinda mudura rakavharidzirwa pamuchina uyu. Mumiririri haambozvioni: anogona chete kuzvishandisa se$%s mumirairo, kana kuzvitumira kuvagamuchiri vanobvumirwa.}
+::msgcat::mcset sn {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Inobviswa mudandaro yecluster mufleet yose: kuchinjana kwegossip kunotevera kunoudza peer yese ye0.2.0 kuti iibvisewo, uye hapana imwe inoidzosera. Peer iri kupfuura 0.2.0 inoramba ichiironga. Kana muchina ukadzoka ndokutumira heartbeat, inonyoreswa zvakare. Sync peers nemainstances akachengetwa hazvibatwi.}
 ::msgcat::mcset sn {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Iri kubva mu memory izvozvi. Nhoroondo yayo inochengeta revision imwe neimwe, uye Nhoroondo… inogona kuidzorera.}
 ::msgcat::mcset sn Join Joinha
 ::msgcat::mcset sn {Join a pool} {Joinha boka remichina}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset sn {Language (i18n)} {Mutauro (i18n)}
 ::msgcat::mcset sn Language… Mutauro…
 ::msgcat::mcset sn {Last active} {Pakupedzisira paishanda}
+::msgcat::mcset sn {Last probe: %1$s — %2$s} {Probe yekupedzisira: %1$s — %2$s}
 ::msgcat::mcset sn {Leave %s?} {Siya %s?}
 ::msgcat::mcset sn Leave… Siya…
 ::msgcat::mcset sn {Legacy open — no [acl] section} {Kuvhurwa kwekare — hapana chikamu che [acl]}
 ::msgcat::mcset sn {Let %s:} {Bvumira %s ku:}
 ::msgcat::mcset sn {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {Mavara, manhamba, - na _. Inogadzira plugin.toml uye plugin.tcl inonyoresa post_llm_call hook, yobva yaivhura muDev pane.}
+::msgcat::mcset sn Level Danho
 ::msgcat::mcset sn {Lift lockdown} {Susa lockdown}
+::msgcat::mcset sn Lines Mitsara
 ::msgcat::mcset sn {List the provider's models} {Nyora runyorwa rwemamodheru emupi}
+::msgcat::mcset sn Load Kutakurwa
 ::msgcat::mcset sn {Load more} {Takura zvimwe}
 ::msgcat::mcset sn {Loading discovered components…} {Kutakura zvikamu zvakawanikwa…}
 ::msgcat::mcset sn {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {Bundle yemuno yaongororwa. Sarudza Install selected component kuti ubvumidze kuisa; hapana chaiswa.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset sn {Lock down} {Vhara zvachose}
 ::msgcat::mcset sn Log Registro
 ::msgcat::mcset sn {Log (engine + status)} {Registro (injini + mamiriro)}
+::msgcat::mcset sn {Log of %s} {Log ya%s}
+::msgcat::mcset sn Logs… Malog…
 ::msgcat::mcset sn {M-g- (g: goto line)} {M-g- (g: enda kumutsara)}
 ::msgcat::mcset sn {M-p/M-n history · Tab complete} {M-p/M-n nhoroondo · Tab kupedzisa}
 ::msgcat::mcset sn {MCP server list} {Rondedzero yesevha dzeMCP}
 ::msgcat::mcset sn {MCP servers (from config.toml)} {Sevha dzeMCP (kubva config.toml)}
 ::msgcat::mcset sn {Make default} {Ita yakajairwa}
 ::msgcat::mcset sn {Make default (config.toml)} {Ita default (config.toml)}
+::msgcat::mcset sn {Manage extensions} {Tungamidza zvekuwedzera}
 ::msgcat::mcset sn {Manifest SHA-256} {SHA-256 yemanifesiti}
 ::msgcat::mcset sn {Mark read} {Maka seyakaverengwa}
 ::msgcat::mcset sn {Mechanisms (what the engine does on its own)} {Makanika (izvo injini inoita yega)}
 ::msgcat::mcset sn {Mechanisms — what the engine does on its own, and how to stop it} {Mechanisms — zvinoita engine yega, uye maitiro ekuzvimisa}
 ::msgcat::mcset sn Memory Memory
 ::msgcat::mcset sn {Memory history} {Memory nhoroondo}
+::msgcat::mcset sn {Memory: %1$s available of %2$s (%3$s%% used)} {Ndangariro: %1$s iripo pa%2$s (%3$s%% yashandiswa)}
+::msgcat::mcset sn {Merge the received %s into this node?} {Batanidza %s yakagamuchirwa mu node iyi?}
 ::msgcat::mcset sn Messages Meseji
+::msgcat::mcset sn Metrics Zviyero
+::msgcat::mcset sn {Metrics (asked %s):} {Zviyero (zvabvunzwa %s):}
+::msgcat::mcset sn {Metrics of %1$s failed: %2$s} {Zviyero zva%1$s zvakundikana: %2$s}
+::msgcat::mcset sn {Metrics of %s received.} {Zviyero zva%s zvagamuchirwa.}
+::msgcat::mcset sn {Metrics: not asked yet — use Metrics.} {Zviyero: hazvina kubvunzwa — shandisa Zviyero.}
 ::msgcat::mcset sn Model Model
 ::msgcat::mcset sn {Model for this session} {Model yeiyi session}
 ::msgcat::mcset sn {Models & settings} {Models & settings}
+::msgcat::mcset sn Monitors MaMonitor
+::msgcat::mcset sn Name Zita
+::msgcat::mcset sn {Need an account? Optional sign-up links (open in your browser):} {Unoda akawunti? Minyori yekusaina zvakasarudzika (dzinovhurwa mubhurawuza rako):}
 ::msgcat::mcset sn Network Netiweki
 ::msgcat::mcset sn {New alias} {Alias itsva}
+::msgcat::mcset sn {New branch name} {Zita itsva rebranch}
 ::msgcat::mcset sn {New cron job} {Job itsva recron}
+::msgcat::mcset sn {New extension} {Chinowedzera chitsva}
 ::msgcat::mcset sn {New memory file} {Faira itsva ye memory}
 ::msgcat::mcset sn {New plugin} {Plugin itsva}
 ::msgcat::mcset sn {New session} {Nharo itsva}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset sn Next Mberi
 ::msgcat::mcset sn Nickname Nickname
 ::msgcat::mcset sn {NixOS: emit a module snippet; do not edit host declarations} {NixOS: bvisa chidimbu chemodule; usashandure zvakasimbiswa zvehost}
+::msgcat::mcset sn {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Hapana chinangwa chehupenyu cheSSH chakagadzirirwa node ino. Wedzera instance pachena kuti uiburitse kana kuitangidza patsva.}
+::msgcat::mcset sn {No additional push happens.} {Hapana push inowedzerwa inoitika.}
 ::msgcat::mcset sn {No apps yet. Ask the agent to make one: “make me an app that…”} {Hapana maapp parizvino. Kumbira mumiririri kuti aite imwe: “ndigadzirire app inoita…”}
 ::msgcat::mcset sn {No code in the picture. Hold the phone closer, straight on, and scan again.} {Hapana kodhi mumufananidzo. Swedza runhare pedyo, rwakatwasuka, woskena zvakare.}
 ::msgcat::mcset sn {No configuration snapshot will be restored.} {Hapana config snapshot ichadzorerwa.}
+::msgcat::mcset sn {No configured sync peer for this node.} {Hapana sync peer yakagadzirirwa node iyi.}
+::msgcat::mcset sn {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Hapana mududziri wakagadzirirwa. Shandisa Gadzirisa mududziri kusarudza mupi, modheru nemutauro unodiwa.}
+::msgcat::mcset sn {No deployment started.} {Hapana kutumirwa kwakatangwa.}
+::msgcat::mcset sn {No diagnostics reported by the current LSP document.} {Hapana diagnostics dzakaparidzwa negwaro reLSP razvino.}
+::msgcat::mcset sn {No explicitly configured desktop gateway is bound to this node.} {Hapana gateway yedesktop yakagadzirirwa zvakajeka yakabatwa node ino.}
+::msgcat::mcset sn {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {Hapana gateway yakagadzirirwa zvakajeka yakabatwa node ino. Wedzera gateway pakutanga; registry endpoint yayo haishandiswi sedesktop URL.}
+::msgcat::mcset sn {No file is open. Ask a design question, or open an extension file for help with its code.} {Hapana faira rakavhurwa. Bvunza mubvunzo wedhizaini, kana vhura faira reextension kuti ubatsirwe nekodhi yaro.}
+::msgcat::mcset sn {No files have been written. Review the exact manifest and source, then confirm creation.} {Hapana mafaira akanyorwa. Ongorora manifest nesosi chaiwo, wozosimbisa kugadzira.}
 ::msgcat::mcset sn {No modules or process plugins were discovered. The provider setup steps can still continue.} {Hapana mamodule kana process plugins akawanikwa. Masarudzi eprovider achiri kugona kuenderera mberi.}
+::msgcat::mcset sn {No other registered node to compare with.} {Hapana imwe node yakanyoreswa yekuenzanisa nayo.}
 ::msgcat::mcset sn {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {Hapana pofaire inotanga sevha kana kuita script inoda kodzero dzemudyari kubva pawai wizard iyi. Ongorora plan uye handoff ipi zvayo usati waita.}
+::msgcat::mcset sn {No proposal has been requested. Nothing will be written automatically.} {Hapana chikurukuru chakakumbirwa. Hapana chichanyorwa otomatiki.}
+::msgcat::mcset sn {No proposal. Nothing was written.} {Hapana chikumbiro. Hapana chakanyorwa.}
 ::msgcat::mcset sn {No routes configured.} {Hapana routes dzakagadzirirwa.}
 ::msgcat::mcset sn {No session selected — pick one in the sidebar or start a new one} {Hapana session yakasarudzwa — sarudza imwe mustubhi kana tanga imwe itsva}
 ::msgcat::mcset sn {No swap target yet: pick a language and press “Set as swap target”.} {Hapana mutauro wekuchinjana parizvino: sarudza mutauro wobva wadzvanya “Ita mutauro wekuchinjana”.}
 ::msgcat::mcset sn {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {Hapana chikamu che{[}acl{]} mu config.toml: munhu wese anotumira anosvika kugateway anotorwa se owner, maitiro ekare e single-user. Granting uye revoking zvinoshanda uye zvinotanga kushanda pakangove kune {[}acl{]}.}
+::msgcat::mcset sn {Node id} {ID yeNode}
+::msgcat::mcset sn {Non-evaluating syntax checks} {Mabvunzo esyntax asingaite}
+::msgcat::mcset sn {Not available: %s} {Hazviwanikwe: %s}
+::msgcat::mcset sn Note Cherechedzo
 ::msgcat::mcset sn {Note for the agent (optional):} {Tsanangudzo yemumiririri (kusarudza):}
+::msgcat::mcset sn {Nothing selected.} {Hapana chakasarudzwa.}
 ::msgcat::mcset sn {Nothing typed yet.} {Hapana chanyorwa parizvino.}
+::msgcat::mcset sn {Nothing was generated or written.} {Hapana chakagadzirwa kana kunyorwa.}
+::msgcat::mcset sn {Nothing was prepared: the chosen repository already has these paths.} {Hapana chakagadzirwa: repository yakasarudzwa yatove nenzira idzi.}
 ::msgcat::mcset sn Notifications Zviziviso
 ::msgcat::mcset sn OK OK
 ::msgcat::mcset sn Off Kudzima
 ::msgcat::mcset sn On Batidza
+::msgcat::mcset sn {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {Buffer yekuwedzera yakongororwa chete ndiyo ichatsiviwa. Faira rine chekuchengetedza shanduko dzakaitwa mushure mekuongorora uku. Hapana commit, push kana PR inoitika.}
+::msgcat::mcset sn {Only this new branch is committed. Your ambient git identity is used.} {Branch itsva ino chete ndiyo ino-commitwa. Git identity yako iripo ndiyo inoshandiswa.}
 ::msgcat::mcset sn Op {Pa op}
 ::msgcat::mcset sn Open Vhura
+::msgcat::mcset sn {Open PR…} {Vhura PR…}
 ::msgcat::mcset sn {Open a window} {Vhura hwindo}
 ::msgcat::mcset sn {Open in Dev} {Vhura muDev}
 ::msgcat::mcset sn {Open in browser} {Vhura mubrowser}
 ::msgcat::mcset sn {Open plugin} {Vhura plugin}
 ::msgcat::mcset sn {Open terminal} {Vhura terminal}
+::msgcat::mcset sn {Open this pull request?} {Vhura pull request ino?}
 ::msgcat::mcset sn {Open veles in Android's settings} {Vhura veles mumarongero eAndroid}
 ::msgcat::mcset sn {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {Zviri pakusarudzika: network yeIRC yekupinda. Nyora machannel akaparadzaniswa nemipata kana makoma; IRC_CHANNELS mu .env, kana yakaiswa, inotsiva runyorwa urwu.}
 ::msgcat::mcset sn {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {Masarudzi anobva kumanifest yecomponent yakasarudzwa. Minda inoita seyakavanzika inogara mu setup/vault flow. Minda isina chinhu inosiya iro sarudzo risina kuchinjwa.}
 ::msgcat::mcset sn {Or paste a ticket signed on another device} {Kana ukanamata tikiti yakasainwa muchina rimwe}
 ::msgcat::mcset sn {Or type an answer:} {Kana nyora mhinduro:}
+::msgcat::mcset sn Origin Origin
 ::msgcat::mcset sn Other… Zvimwe…
 ::msgcat::mcset sn Outline Chimiro
+::msgcat::mcset sn Output Mibayiro
 ::msgcat::mcset sn {Override for THIS session (leave blank to inherit the default)} {Override yeSESSION INO (siya isina chinhu kuti utore yakajairwa)}
 ::msgcat::mcset sn {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {Chiziviso chemuridzi (telegram:123456, irc:account, kana mask ye nick!user@host)}
 ::msgcat::mcset sn {PDS and handle domain} {Domain dzePDS nehandle}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset sn {Pause scheduler} {Misa scheduler}
 ::msgcat::mcset sn {Peek (C-c C-p)} {Vhura-nyoro (C-c C-p)}
 ::msgcat::mcset sn {Peek definition} {Tarisa tsananguro}
+::msgcat::mcset sn {Permission grants} {Mvumo dzakapihwa}
+::msgcat::mcset sn {Permission grants…} {Mvumo dzakapihwa…}
 ::msgcat::mcset sn Phone Runhare
 ::msgcat::mcset sn {Phone: permissions, battery, storage} {Runhare: mvumo, bhatiri, pekuchengetera}
 ::msgcat::mcset sn {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Marunhare akagadzirwa na%s anomisawo maapp ega. Mumarongero eapp yeveles, ibvumire kuti izvitange yega uye ishande kumashure.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset sn Port Port
 ::msgcat::mcset sn {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {Prefix chords (C-x, M-o) dzinoratidza which-key popup panei panguva yavanombova vanoiswa.}
 ::msgcat::mcset sn {Prepare an own vlpds PDS through the signed CLI handoff} {Gadzirira vlpds PDS yako kuburikidza nehandoff yeCLI yakatiratidzwa}
+::msgcat::mcset sn {Prepare branch…} {Gadzirisa branch…}
+::msgcat::mcset sn {Prepare this branch and commit?} {Gadzirisa branch ino necommit?}
 ::msgcat::mcset sn Preview Tarisiso
+::msgcat::mcset sn {Preview change set} {Ona set yeshanduko}
+::msgcat::mcset sn {Preview files} {Tarisa mafaira}
 ::msgcat::mcset sn {Preview here} {Tarisiso pano}
 ::msgcat::mcset sn {Preview pane} {Paneru yePreview}
+::msgcat::mcset sn {Preview proposal} {Tarisa chikurukuru}
+::msgcat::mcset sn {Preview the changed name or language before creating it.} {Tarisa zita kana mutauro wakachinjwa usati wachigadzira.}
+::msgcat::mcset sn Probe Probe
+::msgcat::mcset sn {Probe of %1$s failed: %2$s} {Probe ye %1$s yakundikana: %2$s}
 ::msgcat::mcset sn {Profile result} {Mhedzisiro yefomu}
 ::msgcat::mcset sn {Promote into config.toml} {Simudzira mu config.toml}
 ::msgcat::mcset sn Promote… Simudzira…
 ::msgcat::mcset sn Provider Mupi
+::msgcat::mcset sn {Provider driver (plugin wire only)} {Driver yemupi (wire yeplugin chete)}
 ::msgcat::mcset sn {Provider entry name} {Zita renhauro ye provider}
 ::msgcat::mcset sn {Provider for this session} {Provider yeiyi session}
 ::msgcat::mcset sn Providers Providers
 ::msgcat::mcset sn {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {Providers irondedzero yematafura: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index kubva muranho unoratidzwa pazasi.}
 ::msgcat::mcset sn {Public HTTPS URL} {URL yepamberi yeHTTPS}
+::msgcat::mcset sn {Pull request base} {Base yepull request}
+::msgcat::mcset sn {Pull request created} {Pull request yagadzirwa}
+::msgcat::mcset sn {Pull request description} {Tsanangudzo yepull request}
+::msgcat::mcset sn {Pull request opened.} {Pull request yavhurwa.}
+::msgcat::mcset sn {Pull request repository} {Repository yepull request}
+::msgcat::mcset sn {Pull request title} {Zita repull request}
 ::msgcat::mcset sn {Purge + delete files} {Chenesa + dzima mafaira}
 ::msgcat::mcset sn {Purge container} {Chenesa container}
+::msgcat::mcset sn Purpose Chinangwa
+::msgcat::mcset sn Push Push
+::msgcat::mcset sn {Push branch…} {Push branch…}
+::msgcat::mcset sn {Push complete. No pull request has been opened.} {Push yapera. Hapana pull request yavhurwa.}
+::msgcat::mcset sn {Push this branch?} {Push branch ino?}
+::msgcat::mcset sn {Push to %s:} {Push ku %s:}
 ::msgcat::mcset sn Question Mubvunzo
 ::msgcat::mcset sn Questions Mibvunzo
 ::msgcat::mcset sn Quit Buda
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset sn {Reading notifications, for triggers} {Kuverenga zviziviso, zvema Triggers}
 ::msgcat::mcset sn Reasoning Kufunga
 ::msgcat::mcset sn {Reasoning effort} {Kuedza kufunga}
+::msgcat::mcset sn {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {Zvagamuchirwa, zvakamirira kuiswa: store %1$s · memory %2$s · config %3$s · vault %4$s}
+::msgcat::mcset sn {Recommended checks} {Mabvunzo anokurudzirwa}
 ::msgcat::mcset sn {Refetch this transcript from the store} {Dhawunirodha zvakare iyi transcript kubva mustore}
 ::msgcat::mcset sn Refresh Vandudza
 ::msgcat::mcset sn {Refresh preview} {Dzokorodza tariso}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset sn {Rename symbol} {Tumidza chiratidzo zita idzva}
 ::msgcat::mcset sn Rename… {Tumidza zita idzva…}
 ::msgcat::mcset sn Rendered Yakagadzirwa
+::msgcat::mcset sn {Replace existing repository files?} {Tsiva mafaira aripo erepository?}
+::msgcat::mcset sn {Replace them in the new branch? Nothing else in the repository changes.} {Atsive mubhranchi itsva? Hapana chimwe chinoshanduka murepository.}
 ::msgcat::mcset sn Repository {Nzvimbo yekuchengetera}
 ::msgcat::mcset sn {Repository (owner/name)} {Nzvimbo yekuchengetera (muridzi/zita)}
+::msgcat::mcset sn {Repository directory} {Dhairekitori yerepository}
+::msgcat::mcset sn {Repository paths} {Nzira dzerepository}
+::msgcat::mcset sn {Request a new preview before trying again.} {Kumbira kuongorora kutsva usati waedza zvakare.}
 ::msgcat::mcset sn {Reset to default} {Dzosera kune zvakajairwa}
 ::msgcat::mcset sn {Reset to template} {Dzosera ku template}
 ::msgcat::mcset sn Restart Tangidzazve
+::msgcat::mcset sn {Restart + verify canary} {Tangidza patsva + simbisa canary}
 ::msgcat::mcset sn {Restore hidden windows} {Dzoridza madhidhirini akavanzika}
 ::msgcat::mcset sn {Restore plugins to %s?} {Dzosera plugins ku %s?}
 ::msgcat::mcset sn {Restore revision r%1$s of %2$s?} {Dzorera revision r%1$s ye%2$s?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset sn {Restore this commit} {Dzosera iyi commit}
 ::msgcat::mcset sn {Restore this revision} {Dzorera revision iyi}
 ::msgcat::mcset sn {Resume scheduler} {Tanga scheduler}
+::msgcat::mcset sn {Resume unfinished operation} {Enderera nezve mashandiro asina kupera}
 ::msgcat::mcset sn Revert {Dzosera kare}
 ::msgcat::mcset sn {Revert %s to HEAD? Uncommitted changes in this file are lost.} {Dzorera %s kuHEAD? Shanduko dzisina kuiswa mufaira iri dzinoparadzwa.}
 ::msgcat::mcset sn Revert… {Dzosera kare…}
 ::msgcat::mcset sn Review Ona
 ::msgcat::mcset sn {Review (git) pane} {Paneru yeReview (git)}
+::msgcat::mcset sn {Review deployment} {Ongorora kutumirwa}
+::msgcat::mcset sn {Review extension contribution} {Ongorora kubatsira kwekuwedzera}
 ::msgcat::mcset sn {Review managed local bundle…} {Ongorora bundle yemuno inotongwa…}
 ::msgcat::mcset sn {Review rollback} {Ongorora kudzorerazve}
+::msgcat::mcset sn {Review selected files} {Ongorora mafaira akasarudzwa}
 ::msgcat::mcset sn {Review the component options on the summary screen before applying.} {Ongorora masarudzi ecomponent pachikwangwani chepfupiso usati washanda.}
 ::msgcat::mcset sn {Review the component preview before applying. No component configuration has been written.} {Ongorora preview yecomponent usati washanda. Hapana config yecomponent yakanyorwa.}
+::msgcat::mcset sn {Review the selected files and remove credential findings before preparing.} {Ongorora mafaira akasarudzwa uye bvisa zvakawanikwa zvecredentials usati wagadzirira.}
 ::msgcat::mcset sn {Reviewed core bundle in the managed install-sources directory} {Core bundle yakatariswa mufolda inotungamirirwa yekuinstall-sources}
+::msgcat::mcset sn {Reviewed fleet deployment} {Kutumirwa kwefleet kwakaongororwa}
 ::msgcat::mcset sn {Reviewed local bundle} {Bundle yemuno yaongororwa}
 ::msgcat::mcset sn {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {Bundle yemuno yaongororwa yaiswa. Haisina kutsigirwa sechakaburitswa chakasayina. Kutanga patsva kunodiwa usati washandisa core itsva.}
 ::msgcat::mcset sn Revision Chiedza
 ::msgcat::mcset sn Revoke Bvisa
+::msgcat::mcset sn {Revoke selected} {Bvisa zvakasarudzwa}
 ::msgcat::mcset sn Roles Mabasa
 ::msgcat::mcset sn {Roll back %1$s from %2$s to %3$s?} {Dzora %1$s kubva pa%2$s ku%3$s?}
+::msgcat::mcset sn {Roll back selected target} {Dzosera shure chinangwa chakasarudzwa}
 ::msgcat::mcset sn {Rollback completed. Reload the component or restart as requested by the report.} {Kudzorerazva kwapedzwa. Itakure component zvakare kana utange patsva sezvazvakumbirwa nomushumo.}
 ::msgcat::mcset sn {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {Kudzorerazwa kwaongororwa. Sarudza Install selected component kuti ubvumidze kudzorerazve; hapana chadzorerwa.}
 ::msgcat::mcset sn Run Mhanyisa
 ::msgcat::mcset sn {Run the wizard again} {Mhanya wizard zvakare}
 ::msgcat::mcset sn {Running in the background} {Kushanda kumashure}
-::msgcat::mcset sn {Running tasks} {Mabasa ari kumhanya}
-::msgcat::mcset sn {Running tasks (subagents, shells, monitors)} {Zvabasa zvirikumhanya (subagents, shells, monitors)}
 ::msgcat::mcset sn {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {Runtime grants nevashandisi vanogara mu store, uye store reset inovatora. Promote inowedzera avo store inosarudza ku config.toml — macomment uye ranho remakiyi efaira zvinochengetwa, backup inonyorwa padivi, makopi e store anobviswa — uye inoramba pane kufungidzira uko faira rainofunga.}
 ::msgcat::mcset sn {S3 HTTPS endpoint} {Endpoint yeHTTPS yeS3}
 ::msgcat::mcset sn {S3 bucket} {Bucket yeS3}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset sn {Save as default} {Chengeta se yakajairwa}
 ::msgcat::mcset sn {Save attachment as} {Sevha attachment se}
 ::msgcat::mcset sn {Save globally} {Chengeta zvese}
+::msgcat::mcset sn {Save or revert the open buffer before applying a change set.} {Chengeta kana dzosera buffer yakavhurwa usati waishandisa set yeshanduko.}
 ::msgcat::mcset sn Scan Skena
 ::msgcat::mcset sn {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {Skena kodhi yeveles kubva pamuchina wakakoka runhare urwu. Kana wakatanga kuratidza kodhi yeWireGuard, tanga waiskena neapp yeWireGuard usati waita izvi.}
 ::msgcat::mcset sn {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {Schedule: interval ("30m", "every 2h"), cron pattern ("0 9 * * 1"), kana ISO timestamp ye one-off. Mutsara uri pamusoro unoratidza zvainoverengwa ne engine. Deliver: "local" inochengeta output mulog — yakajairwa ine chokwadi chete kubva desktop, iyo isina chat platform kumashure kwayo — kana "platform:chat_id". Wake session: siya isina chinhu kuti imhanye mu session itsva; isa session id (kana prefix yakasarudzika) kuti udzokere kune iyo session nenhoroondo yayo yose — session yakabatikana inotora prompt pamugumo we turn yayo inotevera.}
+::msgcat::mcset sn Scope Hudzamu
 ::msgcat::mcset sn {Scroll to end} {Kwira kusvika kumagumo}
 ::msgcat::mcset sn {Search commands and sessions…} {Tsvaga mirairo nemasesheni…}
 ::msgcat::mcset sn {Search message text} {Tsvaga muzvinyorwa zvemeseji}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset sn Section Chikamu
 ::msgcat::mcset sn {Select a component first. No component options will be changed if you skip this step.} {Sarudza component kutanga. Hapana masarudzi ecomponent achachinjwa kana ukarega nhanho iyi.}
 ::msgcat::mcset sn {Select all} {Sarudza zvese}
+::msgcat::mcset sn {Select all extensions} {Sarudza zvinowedzerwa zvese}
+::msgcat::mcset sn {Select at least one source file.} {Sarudza kanani faira rimwe resosi.}
+::msgcat::mcset sn {Select none} {Sarudza hapana}
+::msgcat::mcset sn {Select text to translate first.} {Sarudza chinyorwa chekududzira pakutanga.}
+::msgcat::mcset sn {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {Sarudza zvinowedzerwa nemafaira zvekutumira kumusoro. Zvinoenda mubhranchi rimwe chete nepull request imwe chete, chikamu chimwe nechimwe chine dhairekitori racho. Ongorora, mhanyisa cheki dzisingaongorori, wozogadzira bhranchi rakazvimirira uye commit. Push uye kugadzira pull request zviitiko zvakasiyana zvinoda simbiso.}
 ::msgcat::mcset sn Send Tumira
+::msgcat::mcset sn {Send %s to the peer?} {Tumira %s kune peer?}
 ::msgcat::mcset sn {Send a %d-line message to the channel?} {Tumira meseji yemitsara %d kuchannel here?}
 ::msgcat::mcset sn {Send raw line to the server? (%s)} {Tumira mutsara mbishi kuserver? (%s)}
 ::msgcat::mcset sn {Server (empty = no IRC)} {Sevha (isina chinhu = hapana IRC)}
 ::msgcat::mcset sn {Server: gateway configuration and a reviewed user unit} {Server: kugadzirwa kwegateway uye unit yemushandisi yakatariswa}
 ::msgcat::mcset sn {Server: install a user unit and prepare the separate linger handoff} {Server: isa unit yemushandisi uye gadzirira kuparadzira kwe linger kwakaparadzana}
 ::msgcat::mcset sn {Server: use a system service and prepare a privileged CLI request} {Server: shandisa sevha yehurongwa uye gadzirira kumbiro kweCLI kunoda kodzero dzeadmin}
+::msgcat::mcset sn Session Session
 ::msgcat::mcset sn {Session id} {Id yeseshoni}
 ::msgcat::mcset sn {Session id…} {Id yeseshoni…}
 ::msgcat::mcset sn Sessions Masesheni
 ::msgcat::mcset sn {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Seshoni dzakachinjirwa kualias iyi dzinoramba pane route yadzine; mitsva haichawani zita.}
+::msgcat::mcset sn {Sessions served} {Masesheni akaperekedzwa}
 ::msgcat::mcset sn Set Isa
 ::msgcat::mcset sn {Set [model] provider/default in config.toml.} {Isa [model] provider/default mu config.toml.}
 ::msgcat::mcset sn {Set as swap target} {Ita mutauro wekuchinjana}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset sn {Setup — summary} {Kugadzirisa — kupfupiso}
 ::msgcat::mcset sn {Setup — welcome} {Kugadzirisa — kukwazisa}
 ::msgcat::mcset sn {Shared container network} {Network yemacontainer yakagoverwa}
+::msgcat::mcset sn Shells MaShell
+::msgcat::mcset sn {Shells and monitors} {MaShell neMaMonitor}
+::msgcat::mcset sn {Shells and monitors (subagents, shells, monitors)} {MaShell neMaMonitor (subagents, mashell, mamonitor)}
 ::msgcat::mcset sn {Show diff} {Ratidza misiyano}
 ::msgcat::mcset sn {Show every key} {Ratidza makiyi ese}
 ::msgcat::mcset sn Sign Saina
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset sn Solved Zvagadziriswa
 ::msgcat::mcset sn Source Source
 ::msgcat::mcset sn {Source commit} {Kubatana kwetsvaka}
+::msgcat::mcset sn {Source text} {Chinyorwa chesosi}
 ::msgcat::mcset sn {Source→app (C-c C-c)} {Source→app (C-c C-c)}
 ::msgcat::mcset sn Stage Stage
+::msgcat::mcset sn {Stage canary} {Isa canary}
+::msgcat::mcset sn Stale {Yapfuura nguva}
+::msgcat::mcset sn {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {Zvibvumiro zvekusingaperi zvinobvumira mafoni ematurusi anotevera pasina kukumbira zvakare. Zvibvumiro zvesession zvinochengetwa nemasesheni aripo panzvimbo imwe neimwe (desktop, Telegram, IRC, …); zvibvumiro zveglobal zvinoramba zviripo; zvinyorwa zve [approvals] allowlist kubva config.toml zvinoratidzwa zvinoverengwa chete. Kubvisa chimwe hazvimboshanduri zvimwe zvibvumiro.}
 ::msgcat::mcset sn Start Tanga
+::msgcat::mcset sn {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {Tanga nechinowedzera muuser plugin directory yako. Chinogara upgrades uye hachidi gateway rebuild. Chinowedzera chitsva chinotarisa manifest nesosi chaiwo usati wanyora. Sarudza mutauro unobatsirwa neAPI version, ongorora mafaira, wozoedza chinowedzera choga.}
 ::msgcat::mcset sn {Start with the phone} {Kutanga pamwe chete nerunhare}
+::msgcat::mcset sn {Static IP} {IP yakagadzikana}
 ::msgcat::mcset sn Status Mamiriro
 ::msgcat::mcset sn Steer Tungamira
 ::msgcat::mcset sn {Step %1$d of %2$d} {Nhanho %1$d ye %2$d}
 ::msgcat::mcset sn {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {Zvichiri kuiswa: %s — nyora /secret set NAME pano, kana kumhanyisa veles secret set NAME pamuchina wegateway.}
 ::msgcat::mcset sn Stop Mira
 ::msgcat::mcset sn {Storage root} {Mudzi wokuchengetedza}
+::msgcat::mcset sn Store Store
 ::msgcat::mcset sn {Store a secret: %s} {Chengeta chakavanzika: %s}
 ::msgcat::mcset sn {Store it} Chichengete
+::msgcat::mcset sn {Store replica} {Kuteedzera kweStore}
 ::msgcat::mcset sn Subagents Subagents
 ::msgcat::mcset sn {Subagents (/agents)} {Subagents (/agents)}
 ::msgcat::mcset sn Summary Kupfupiso
+::msgcat::mcset sn Surface Nzvimbo
 ::msgcat::mcset sn {Swap ⇄} {Chinjanisa ⇄}
+::msgcat::mcset sn {Sync cancelled.} {Sync yakamiswa.}
+::msgcat::mcset sn {Sync complete.} {Sync yapera.}
+::msgcat::mcset sn {Sync now} {Sync izvozvi}
 ::msgcat::mcset sn {TOML copied — paste it into config.toml} {TOML rakakopiwa — namatira mu config.toml}
 ::msgcat::mcset sn Tag Tagi
 ::msgcat::mcset sn {Tap a link to open it, or a block's header to open or close the block.} {Baya chinongedzo kuti uchivhure, kana musoro webhuroko kuti uvhure kana kuvhara bhuroko racho.}
 ::msgcat::mcset sn {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {Baya bhokisi riri pazasi kuti utaipe. Tumira inotumira, Mira inopedza nguva, uye Bvisa inoendesa murairo uri kushanda kumashure.}
 ::msgcat::mcset sn {Tap the text to clear the selection.} {Baya mavara kuti ubvise sarudzo.}
+::msgcat::mcset sn {Target language:} {Mutauro unodikanwa:}
+::msgcat::mcset sn {Target node IDs (canary first, comma separated)} {ID dzenode dzechinangwa (canary kutanga, zvakapatsanurwa nekomo)}
 ::msgcat::mcset sn {Task list} {Rondedzero yebasa}
 ::msgcat::mcset sn {Task list (right pane)} {Rondedzero yebasa (paneru yekurudyi)}
 ::msgcat::mcset sn Tasks Zvabasa
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset sn {That is not a ticket.} {Iyi haisi tikiti.}
 ::msgcat::mcset sn {That is not a veles pool code.} {Iyo haisi kodhi yeboka reveles.}
 ::msgcat::mcset sn {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {Iyo ndiyo kodhi yeWireGuard: iskene neapp yeWireGuard. Kodhi yeveles ndeyechipiri.}
+::msgcat::mcset sn {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {Mafaira %d akaongororwa achanyorwa mudandaro idzva mudandaro yako yeplugin yemushandisi, uye veles inoedza kutakura extension. Kana dandaro rezita iroro rakaoneka kubva pakuona kwekutanga, hapana chichanyorwa. Kuburitsa hakusi chikamu chechiito ichi.}
 ::msgcat::mcset sn {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {Iyo REPL yeDev paneru inoongorora mune LIVE app — UI iyo yega lisp.}
 ::msgcat::mcset sn {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {Tafura ye[mcp_servers.<name>] yabviswa mu config.toml. Faira rekare rakachengetwa se config.toml.bak.}
 ::msgcat::mcset sn {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {Allowlists dzeadapter (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) ndidzo miganhu yekutenda, uye mumwe neumwe anotumira anobvumidzwa anoonekwa semuridzi. Uku ndiko kumira kwekare (pre-ACL).}
 ::msgcat::mcset sn {The agent asks for a secret: %s} {Mumiririri ari kukumbira chakavanzika: %s}
+::msgcat::mcset sn {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {Bhranchi yakatopushwa ichashandiswa se PR head. Bhranchi iri pafork yako inopihwa zita rokuti owner:branch zvoga.}
+::msgcat::mcset sn {The author asks} {Munyori anobvunza}
+::msgcat::mcset sn {The buffer changed. Request a new proposal before applying.} {Buffer yachinja. Kumbira chikurukuru chitsva usati washandisa.}
 ::msgcat::mcset sn {The bundle operation returned an invalid result. Verify the installation before retrying.} {Basa rebundle rakadzosha mhedziso isina kunaka. Tsigira kuisa usati wazama zvakare.}
 ::msgcat::mcset sn {The bundle preview was malformed; nothing was installed.} {Preview yebundle yakaipa; hapana chaiswa.}
 ::msgcat::mcset sn {The camera did not open; paste the code instead.} {Kamera haina kuvhurika; isa kodhi pachinzvimbo.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset sn {The component manifest is still loading. Wait for it or choose another component.} {Manifest yecomponent ichiri kuloda. Mirira kana usarudze imwe component.}
 ::msgcat::mcset sn {The component preview is not ready yet. Refresh it and review the result before applying.} {Preview yecomponent haisati yagadzirira. Iuvandudze mhiri uye uongorore mhedzisiro usati washanda.}
 ::msgcat::mcset sn {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {Preview yecomponent ichiri kuloda. Mirira mhinduro usati waongorora shanduko dzakasanganiswa.}
+::msgcat::mcset sn {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Diagnostics iripo (kubva kuserver yemutauro kana Check) inotumirwa nefaira iri. Unogona kuwedzera mubvunzo. Mhinduro inyaya chete; hapana chinogona kunyorwa.}
 ::msgcat::mcset sn {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Dhairekitori nezvese zviri mauri zvinobviswa. Hazvigone kudzoswa — dzima panzvimbo kana uchida kuti risave muprompt.}
 ::msgcat::mcset sn {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Dhairekitori radzima. Furawa replugin igit repo uye snapshot inoitiswa pakutanga, saka History… inokwanisa kuridzosa.}
+::msgcat::mcset sn {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Muedhita inovhura mafaira egateway, kusanganisira mainstances ekure, uye inomhanyisa server yemutauro wefaira pagateway: tcl-lsp, typescript-language-server (TypeScript neJavaScript), rust-analyzer (crate kana module yeplugin yeRust), clangd (C), racket-langserver neserver yeCommon Lisp. Hover, kuenda kutsanangudzo, kupedzisa uye diagnostics yepamoyo zvinoshanda pamutauro wese une server pagateway; kana usina, muedhita inotaura kuti ndeipi purogiramu yekuisa ipapo uye inoramba ichiratidza syntax. Check inomhanyisa checker inoenderana pagateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, kana ma-Racket neLisp readers. Chengeta, takura zvakare muManage extensions, uye edza extension usingaburitse mamiriro epano.}
 ::msgcat::mcset sn {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Handoff yokutanga inogadzirira zvisi, chiratidzo chakabatidzwa nefaira ekuramba ichishanda asi haitangi PDS. Chengetera KEK nePLC rotation key kunze kwelayini, ita chikumbiro chitsva chakaongororwa nechibvumirano chebackup kuti ugadzirise HTTP-01 TLS uye kuashanidzwa. Zvinyorwa zveDNS zvinofanira kutsanangura zvakasimba kune host iyi; hapana proxy yeCDN kana shanduko dzeDNS dzinotariswa neveles.}
+::msgcat::mcset sn {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Fomu yachinja kubva pakagadzirwa extension. Gadzira zvakare, kana ona scaffold isina chinhu.}
 ::msgcat::mcset sn {The gateway itself is untouched.} {Gateway pachayo haina kuchinjwa.}
 ::msgcat::mcset sn {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Gateway yatakura zvakare configuration, saka zvikamu zvitsva zvinoishandisa izvozvi, uye kiyi yakachengetwa mudura ichashandiswa nechikumbiro chinotevera. Telegram neIRC zvinotanga kana gateway yatangwazve inotevera: veles gateway restart.}
 ::msgcat::mcset sn {The installed component no longer matches the selected manifest. Review the component list again.} {Component yakaiswa haichaenderani nemanifest yakasarudzwa. Ongorora runyorwa rwezvikamu zvakare.}
 ::msgcat::mcset sn {The installer preview has no verification signatures; apply is disabled.} {Preview yeinstaller haina siginicha dzekusimbisa; apply yakadzimwa.}
 ::msgcat::mcset sn {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Job nehistory yarun zvinobviswa. Hazvigone kudzoswa — zvirira panzvimbo kana uchida kuti rimire chete.}
+::msgcat::mcset sn {The log could not be read: %s} {Log yakatadza kuverengwa: %s}
 ::msgcat::mcset sn {The manifest belongs to another component; its reply was discarded.} {Manifest ndeye imwe component; mhinduro yayo yakaraswa.}
 ::msgcat::mcset sn {The profile changed. Review the fresh plan before applying it.} {Pofaire yachinja. Ongorora plan itsva usati waita ishandiswe.}
 ::msgcat::mcset sn {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {Repo rinoda SKILL.md pamudzi waro kana mukati mechikamu chimwe. Inoiswa mu %s.}
 ::msgcat::mcset sn {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {Mudzi werepo unofanirwa kuve neplugin.toml. Inokopiwa mu %s muzita remanifest.}
+::msgcat::mcset sn {The reviewed change set was applied (%d files). Review and test it before publishing.} {Set yeshanduko yakaongororwa yashandiswa (mafaira %d). Iongorore uye uiedze usati waburitsa.}
 ::msgcat::mcset sn {The reviewed configuration snapshot will also be restored.} {Config snapshot yaongororwa ichadzorerwawo.}
+::msgcat::mcset sn {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {Mafaira akongororwa achanyorwa muuser plugin directory yako. Veles inochengeta local recovery snapshot uye inoedza kutakura zvakare chinowedzera; kuparidza hausi chikamu chebasa iri.}
+::msgcat::mcset sn {The reviewed proposal was applied locally. Review and test it before publishing.} {Chikurukuru chakongororwa chashandiswa pano. Ongorora uye chiedza usati chaparidza.}
 ::msgcat::mcset sn {The rollback preview was malformed or named another component; nothing was restored.} {Preview yekudzorerazve yakaipa kana yakatumidza imwe component; hapana chadzorerwa.}
 ::msgcat::mcset sn {The rollback returned an invalid result. Verify the installation before retrying.} {Kudzorerazve kwakadzosha mhedziso isina kunaka. Tsigira kuisa usati wazama zvakare.}
 ::msgcat::mcset sn {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {Nzira session itsva dzinotanga nayo. /model uye models overlay inoishandura gare gare, pese pese pa session kana seyitsva default.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset sn {The signed download discard returned an invalid response; no installation was requested.} {Kubvisa kwe daunirodi yakasayini kwakadzosa mhinduro isina kukwana; hakuna kuisa kwakumbirwa.}
 ::msgcat::mcset sn {The signed installation returned an invalid result. Verify the installation before retrying.} {Kuisa kwakasayini kwakadzosa mhedzisiro isina kukwana. Simbisa kuisa usati waedza zvakare.}
 ::msgcat::mcset sn {The signed release preview was malformed; nothing was installed.} {Ongororo yechiburitswa chakasayini yakaremara; hapana chakaiswa.}
+::msgcat::mcset sn {The source buffer changed. Request a new proposal before applying.} {Buffer yesosi yachinja. Kumbira chikurukuru chitsva usati washandisa.}
 ::msgcat::mcset sn {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Store inodzokera kumashure revision imwe. Rollback pacharo irevision, saka inogona kudzoswa zvakare.}
+::msgcat::mcset sn {The translator returned no text.} {Mududziri haana kupa chinyorwa.}
 ::msgcat::mcset sn {The verification reply was malformed; no integrity result was accepted.} {Mhinduro yekutsigira yaipa; hapana mhedziso yokugadzikana yakabvumirwa.}
 ::msgcat::mcset sn Themes Maitiro
+::msgcat::mcset sn {These paths already exist in the chosen repository:} {Nzira idzi dzatovepo murepository yakasarudzwa:}
 ::msgcat::mcset sn {They have not been saved.} {Hazvina kuchengetwa.}
+::msgcat::mcset sn {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {Buffer iyi haina diagnostics yekutsanangura. Mhanyisa Check, kana mirira server yemutauro.}
 ::msgcat::mcset sn {This challenge is over.} {Dambudziko iri rapera.}
 ::msgcat::mcset sn {This code has expired. Ask for a new one.} {Kodhi iyi yapera nguva. Kumbira imwe itsva.}
 ::msgcat::mcset sn {This does not start a service or claim signed-download verification.} {Izvi hazvina kutanga sevha kana kuzvibata sezvaitsigirwa sechakaburitswa chakasayina.}
 ::msgcat::mcset sn {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Gateway iyi haigamuchire kukosha kwakavanzika kubva pamuchina uyu: chiise ikoko ne veles secret set %s, kana kuisa network iyi mu[vault] trusted_networks yayo}
 ::msgcat::mcset sn {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Ichi ndicho chichanyorwa chaidzo — mabytes eenjini pachayo, akatorwa nguva iyi. Hapana chasati chabata disk.}
+::msgcat::mcset sn {This node is not a configured sync peer for any kind.} {Node iyi haisi sync peer yakagadzirirwa rudzi rwupi norwupi.}
+::msgcat::mcset sn {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Plugin iyi yakawanikwa pamwe chete uye inoverengwa chete. Bvisa kopi yemushandisi ine zita rimwe chete kuti ushandise kopi yakawanikwa pamwe chete.}
+::msgcat::mcset sn {This publishes the commit; no pull request is created yet.} {Izvi zvinoparidza commit; hapana pull request yakagadzirwa parizvino.}
 ::msgcat::mcset sn {This review expires after %s seconds. Closing or cancelling discards its private staging.} {Ongororo iyi inopera mushure memasekonzi %s. Kuvhara kana kukanzura kunobvisa zvakagadzirira zvayo zvakavanzika.}
 ::msgcat::mcset sn {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {Wizard iyi inonyora config.toml, uye inoisa makiyi aunoipa mudura rakavharidzirwa. Nhanho imwe neimwe inogona kusvetuka: nhanho yakasvetuka haiiswi mu configuration itsva, uye inosiiwa sezvayakaita mune iripo. config.toml iripo inogadziriswa ipapo payiri — zvikamu zvaunopindura chete ndizvo zvinoshanduka, uye zvimwe zvese zviri mairi, kusanganisira zvirevo, zvinoramba zviripo.}
 ::msgcat::mcset sn {Ticket needed} {Tikiti inodiwa}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset sn {Topic for %s} {Musoro we%s}
 ::msgcat::mcset sn {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {Bata uye ubatirire session, kana chimwe chinhu chine menyu, kuti uvhure menyu. Kubaya kunze kwayo, kana Shure, kunoivhara.}
 ::msgcat::mcset sn {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {Bata uye ubatirire shoko kuti urisarudze. Paunosimudza munwe wako, menyu yaro inovhurika, Kopa iri pamusoro.}
+::msgcat::mcset sn Translate Dudzura
+::msgcat::mcset sn {Translate selection} {Dudzura chasarurwa}
+::msgcat::mcset sn Translating… Kududzira…
+::msgcat::mcset sn {Translation cancelled.} {Kududzira kwakanzurwa.}
+::msgcat::mcset sn {Translation copied.} {Duduziro rakakopiwa.}
+::msgcat::mcset sn {Translation failed} {Kududzira kwakundikana}
+::msgcat::mcset sn {Translation result} {Mhedzisiro yekududzira}
+::msgcat::mcset sn {Translator configuration unavailable} {Kugadzirirwa kwemududziri hakupo}
 ::msgcat::mcset sn {Trigger history} {Nhoroondo yechinokonzeresa}
 ::msgcat::mcset sn Triggers Triggers
 ::msgcat::mcset sn {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {Triggers dzinopindura zviitiko zvechannel pasina turn. slopdrop inoendesa chiitiko kubridge ichidzosera mhinduro; vision inotsanangura image URL mukati mecooldown nehourly cap. Row inofira chete kana [triggers] switch yekonfig ne derived mask zvichibvumidza — #coven haipfuudzi chinhu pasi peslopdrop bindings dziripo.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset sn {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Kusvikira IRC_ALLOWED_USERS mu .env yataura account yako, chero munhu ari pa network anogona kutaura nebot — uye kana pasina chikamu che [acl], semuridzi, aine maturusi ese.}
 ::msgcat::mcset sn {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Kusvikira TELEGRAM_ALLOWED_USERS mu .env yataura user id yako, chero munhu anowana bot anogona kutaura nayo — uye kana pasina chikamu che [acl], semuridzi, aine maturusi ese.}
 ::msgcat::mcset sn Untitled {Asina mazita}
+::msgcat::mcset sn {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Kutumira kumusoro ibasa rekuburitsa rakajeka, kwete kuisa zvoga. Mu Manage extensions, Contribute inoronga zvinowedzerwa zvese zvemushandisi: sarudza zvinowedzerwa nemafaira, ongorora diff nekuongorora kwezvakavanzika, mhanyisa cheki, wozogadzira bhranchi rimwe chete ne PR imwe chete (ku veles nezvakajaira) neidentity yegit yawakasarudza. Chikamu chimwe nechimwe chinoenda pasi pedhairekitori racho murepository, uye faira riripo ipapo rinotsiviwa chete mushure mesimbiso yakasiyana. Usamboburitsa node.toml, macredential epano, matokeni, maendpoint akavanzika kana mamiriro eplugin asina hukama. Masnapshot ekudzoserwa epano haasi commit yekumusoro kana PR.}
+::msgcat::mcset sn {Upstream repository or fork URL} {URL yeupstream repository kana fork}
+::msgcat::mcset sn {Uptime class} {Danho rekushanda}
+::msgcat::mcset sn {Uptime: host %1$s, gateway %2$s} {Nguva yekumuka: host %1$s, gateway %2$s}
 ::msgcat::mcset sn Usage Kushandiswa
 ::msgcat::mcset sn {Usage & Quota} {Kushandiswa & Quota}
 ::msgcat::mcset sn {Use TLS} {Shandisa TLS}
 ::msgcat::mcset sn {Use now} {Shandisa izvozvi}
+::msgcat::mcset sn {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {Shandisa mabhatani eAuthor guide neAPI reference kuti uwane contracts chaiwo. Plugins overlay inoratidza live hooks; services neoverride points zvinobva mugateway registry yayo, kwete runyorwa rwakakopwa mumutungamiri uyu.}
 ::msgcat::mcset sn {Use this ticket} {Shandisa tikiti iyi}
+::msgcat::mcset sn {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {Shandisa fork yako (https://github.com/<you>/veles.git kana git@github.com:<you>/veles.git) kunze kwekunge uchigona kupusha ku veles pachayo. Repository yakasarudzwa inokopwa muworktree yakazvimirira. Hapana chinopushwa.}
 ::msgcat::mcset sn {Users — one role across networks and platforms} {Vashandisi — chinzvimbo chimwe pamanetwork nepaplatform}
 ::msgcat::mcset sn {Using the phone, for the agent} {Kushandisa runhare, kuna agent}
 ::msgcat::mcset sn {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Kazhinji zvakafanana nezita renhauro yeprovider. Neka zviviri zvose zvisina chinhu pausasarudza Rega — mubatanidzwa wemukati unosara haui route.}
 ::msgcat::mcset sn {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Zvikoshi ndezveTOML: strings dzine quotes, nhamba, kana lists. Zvinonyorwa mu [mcp_servers.<name>] — makomendi ako nemamwe masection ese anosara asina kubatwa.}
+::msgcat::mcset sn Vault Vault
 ::msgcat::mcset sn {Verified signed bundle installed. Restart the gateway before using the new core.} {Chakasungwa chakasayini chakasimbiswa chakaiswa. Tangidza gateway patsva usati washandisa core itsva.}
 ::msgcat::mcset sn {Verified signed release — not installed yet} {Chiburitswa chakasayini chakasimbiswa — chisati chaiswa}
 ::msgcat::mcset sn {Verify and review release…} {Simbisa uye ongorora chiburitswa…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset sn {Verify signed release} {Simbisa chiburitswa chakasayini}
 ::msgcat::mcset sn {Verify signed release…} {Simbisa chiburitswa chakasayini…}
 ::msgcat::mcset sn Version Vhesheni
+::msgcat::mcset sn {Version %1$s: %2$s} {Vhezheni %1$s: %2$s}
+::msgcat::mcset sn {Version drift in the registry: %s} {Drift yevhezheni mudandaro: %s}
 ::msgcat::mcset sn View Maonero
 ::msgcat::mcset sn {View markdown source} {Ona sosi ye markdown}
 ::msgcat::mcset sn {View source / rendered} {Source / yakagadzirwa}
 ::msgcat::mcset sn Voice {Pa voice}
+::msgcat::mcset sn {Waiting for the model…} {Kumirira modheru…}
+::msgcat::mcset sn {Waiting for the model… Nothing has been written.} {Kumirira modheru… Hapana chakanyorwa.}
 ::msgcat::mcset sn {Welcome to veles} {Wakwaziswa ku veles}
 ::msgcat::mcset sn {What the agent can do here} {Zvinogona kuitwa nemumiririri pano}
 ::msgcat::mcset sn {What veles may do on this phone. Each button opens the Android setting that changes it.} {Zvinogona kuitwa neveles parunhare urwu. Bhatani rimwe nerimwe rinovhura marongero eAndroid anozvichinja.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset sn {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {veles iri kumashure, mubvunzo wemumiriri kana nguva yapera zvinova ziviso; ibaye kuti uvhure session.}
 ::msgcat::mcset sn {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {Ndiani anogona kutaura nebot. Sarudzo iyi inoona kana config.toml ichatakura chikamu che [acl] here — uye izvi zvinoshandura zvachose maitiro ekudzivirira.}
 ::msgcat::mcset sn Whois Whois
-::msgcat::mcset sn {Wire protocol (chat_completions or responses)} {Wire protocol (chat_completions kana responses)}
+::msgcat::mcset sn {Wire protocol (chat_completions, responses or plugin)} {Protocol yewire (chat_completions, responses kana plugin)}
 ::msgcat::mcset sn {With a keyboard attached, every key works as on a laptop.} {Kana kiibhodhi yakabatanidzwa, kiyi yega yega inoshanda sepalaptop.}
 ::msgcat::mcset sn {Workflow SHA} {SHA yemamiriro emabasa}
+::msgcat::mcset sn {Workflow commit} {Commit yeworkflow}
+::msgcat::mcset sn Worktree Worktree
 ::msgcat::mcset sn {Write it} Nyora
+::msgcat::mcset sn {Write the design question first.} {Tanga wanyora mubvunzo wedhizaini.}
 ::msgcat::mcset sn {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Hainyori provider. Gateway haitungamiri turn kusvika paine entry ye [[custom_providers]] uye pairi ye [model] dzavapo.}
 ::msgcat::mcset sn {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Kunyora CHERO kiyi ye [acl] kunochinja gateway iyi kuenda ku curated mode: basa rakajairwa rinova guest (fail-closed) uye ma allowlist haachisiri muganhu. Sarudza izvi chete kana uine chiziviso chemuridzi chaunovimba nacho.}
 ::msgcat::mcset sn {[model] provider} {[model] provider}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset sn {also list hooks with no handler} {nyorazve hooks dzisina handler}
 ::msgcat::mcset sn {also write grants that still have an expiry} {nyorazve magrants achine expiry}
 ::msgcat::mcset sn {also write runtime users} {nyorazve runtime users}
+::msgcat::mcset sn {an allowlist entry is removed by editing config.toml} {chinyorwa che allowlist chinobviswa nekugadzirisa config.toml}
 ::msgcat::mcset sn {an allowlist is in force: a plugin not on it stays off} {allowlist iri kushanda: plugin isiri pai inoramba yakadzimwa}
 ::msgcat::mcset sn {answer failed: %s} {mhinduro yakatadza: %s}
+::msgcat::mcset sn {answer only, nothing to apply} {mhinduro chete, hapana chekushandisa}
 ::msgcat::mcset sn {append these rules to config.toml} {wedzera mitemo iyi ku config.toml}
 ::msgcat::mcset sn {apply failed: %s} {kushandisa kwakatadza: %s}
 ::msgcat::mcset sn {apply to:} {Shandisa kuna:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset sn {ask the agent} {kubvunza mumiririri}
 ::msgcat::mcset sn {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset sn {asked by: %s} {yakabvunzwa na: %s}
+::msgcat::mcset sn {asking %s for its metrics…} {kubvunza %s zviyero zvayo…}
 ::msgcat::mcset sn {attach a file} {sungirira faira}
 ::msgcat::mcset sn {attach an image or file} {batanidza mufananidzo kana faira}
 ::msgcat::mcset sn {attach failed: %1$s} {kubata kwakundikana: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset sn {attached %1$s (%2$s pending)} {batanidzwa %1$s (%2$s ichimirira)}
 ::msgcat::mcset sn {attached to %s} {batanidzwa ku%s}
 ::msgcat::mcset sn {attached to child session %1$s} {batanidzwa kuseshoni yemwana %1$s}
+::msgcat::mcset sn automatic zvoga
 ::msgcat::mcset sn {aux model} {muenzaniso we aux}
 ::msgcat::mcset sn {aux provider} {mupi we aux}
+::msgcat::mcset sn available ziripo
 ::msgcat::mcset sn {available components} {zvikamu zviripo}
 ::msgcat::mcset sn {back up N user turns} {dzokera shure ma-turn N emushandisi}
 ::msgcat::mcset sn {backed up the previous config to %s} {yachengetera config yapfuura ku %s}
 ::msgcat::mcset sn {background shells; /shells output|kill <id>} {mashell ekumashure; /shells output|kill <id>}
+::msgcat::mcset sn {backing off: %1$s failure(s), next automatic try in %2$s s} {kumira kwenguva: kukundikana %1$s, kuedza zvoga kunotevera mu %2$s s}
 ::msgcat::mcset sn {bad host for %1$s: %2$s} {host yakaipa ye%1$s: %2$s}
 ::msgcat::mcset sn {bad unit for %1$s: %2$s} {unit yakaipa ye%1$s: %2$s}
 ::msgcat::mcset sn {bare display off} {bare display yadzimwa}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset sn {browse the filesystem} {tarisa sisitimu yemafaira}
 ::msgcat::mcset sn {browse the repo's files} {tarisa mafaera ei repo}
 ::msgcat::mcset sn {builtin (%s):} {yakavakwa mukati (%s):}
+::msgcat::mcset sn bundled {yakawanikwa pamwe chete}
+::msgcat::mcset sn {bundled, read-only} {yakawanikwa pamwe chete, inoverengwa chete}
 ::msgcat::mcset sn by na
 ::msgcat::mcset sn {by plan — all sessions} {ne plan — seshoni dzose}
 ::msgcat::mcset sn {by plan — this session} {ne plan — seshoni ino}
 ::msgcat::mcset sn {by tool} netool
 ::msgcat::mcset sn {cancel failed: %1$s} {kukanzura kwakatadza: %1$s}
 ::msgcat::mcset sn {cancel the running turn} {kanzura turn iri kumhanya}
+::msgcat::mcset sn {cancel the selected task} {Kanzura basa rakasarudzwa}
 ::msgcat::mcset sn {cancelled task %1$s} {task %1$s yakanzurwa}
 ::msgcat::mcset sn {cannot list scripts (gateway offline?)} {haugoni kuratidza scripts (gateway yakadzimwa?)}
 ::msgcat::mcset sn {cannot reach the gateway: %s} {haikwanisi kusvika gateway: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset sn commit commit
 ::msgcat::mcset sn {compacting %s messages in the background — the transcript reloads when it finishes} {kudzikisa %s nzvnye dziri kumashure — transcript inodzoreredza kana yapera}
 ::msgcat::mcset sn compacting… kupfupisa…
+::msgcat::mcset sn {comparing the nodes' versions and config…} {kuenzanisa vhezheni neconfig yemanode…}
 ::msgcat::mcset sn {completion tokens} {tokens dzekupedzisa}
 ::msgcat::mcset sn {component options and declared actions} {masarudzi ecomponent nezviito zvakaziviswa}
 ::msgcat::mcset sn composer mutambi
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset sn {could not open %s} {haikwanisi kuvhura %s}
 ::msgcat::mcset sn {could not open %s (no working browser opener)} {haikwanisi kuvhura %s (hapana browser opener inoshanda)}
 ::msgcat::mcset sn {could not open %{url}: %{e}} {haikwanisi kuvhura %{url}: %{e}}
+::msgcat::mcset sn {could not open the optional referral link: %s} {Chibatanidzo chekurefera chisingabatsiri chakatadza kuvhurwa: %s}
 ::msgcat::mcset sn {could not read %s: %s} {hazvina kugoneka kuverenga %s: %s}
 ::msgcat::mcset sn {could not read the current route} {haikwanisi kuverenga route yazvino}
 ::msgcat::mcset sn {could not save this session's language: %{e}} {hazvina kukwanisika kuchengeta mutauro wesession iyi: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset sn {ctxmenu: no widget %s (attached too early?)} {ctxmenu: hapana widget %s (yabatanidzwa pachine nguva?)}
 ::msgcat::mcset sn {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {kupinda kwe curated kwasarudzwa pasina chiziviso chemuridzi, saka [acl] inoramba isingashandi — ipa chimwe, se telegram:123456 kana irc:account, kuti uchivhure}
 ::msgcat::mcset sn {current theme: %{name} · /theme <name>} {theme yazvino: %{name} · /theme <name>}
+::msgcat::mcset sn {cursor %1$s of %2$s (%3$s behind)} {cursor %1$s pa %2$s (%3$s kumashure)}
 ::msgcat::mcset sn {custom command /%s…} {custom command /%s…}
 ::msgcat::mcset sn {custom commands (.veles/commands/) and config aliases} {mirayiro yako (.veles/commands/) nemamwe mazita ezvirongwa}
 ::msgcat::mcset sn {cycle ends} {kutenderera kunopera}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset sn doctor_resident {zvinogara mumurayiro wega wega: %{shown} pamavara %{total} (~tokens %{tokens}) — zvasara zvinoiswa kana zvichidiwa ne: memory action=read path=%{path}}
 ::msgcat::mcset sn doctor_title {kuongorora ndangariro}
 ::msgcat::mcset sn doctor_total {pamwe chete: mavara %{chars} mumafaira %{files} (~tokens %{tokens})}
+::msgcat::mcset sn {documentation is not in this source checkout: %s} {documentation haisi musource checkout ino: %s}
 ::msgcat::mcset sn done zvapera
 ::msgcat::mcset sn {done · %1$s/%2$s} {zvapera · %1$s/%2$s}
 ::msgcat::mcset sn {done, but the model returned no text} {zvapera, asi model haina kudzosa text}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset sn {evaluate Tcl and answer with the result — no model turn} {ongorora Tcl wopindura nemhedzisiro — pasina turn ye model}
 ::msgcat::mcset sn everyone {vanhu vose}
 ::msgcat::mcset sn everywhere {kwese kwese}
+::msgcat::mcset sn {exchanging registry gossip…} {kuchinjana gossip yedandaro…}
 ::msgcat::mcset sn exit buda
 ::msgcat::mcset sn {exit veles-desktop} {buda veles-desktop}
 ::msgcat::mcset sn {export failed: %s} {kunze kwapindura: %s}
 ::msgcat::mcset sn {export session} {endesa session kunze}
 ::msgcat::mcset sn {exported to %s} {kunze kwakatumirwa ku %s}
+::msgcat::mcset sn {extension architecture, examples and LSP help} {Marongero ezvekuwedzera, mienzaniso nebatsiro reLSP}
+::msgcat::mcset sn {extension development guide} {Gwara rekukudziridza zvekuwedzera}
+::msgcat::mcset sn failed yakundikana
 ::msgcat::mcset sn {failed to load history: %s} {kuremerwa kwehistory kwakundikana: %s}
 ::msgcat::mcset sn {failed to paint cached history: %s} {kupa thumbnail yechinyakare kwakundikana: %s}
 ::msgcat::mcset sn {failed to paint replayed history: %s} {kupa thumbnail yechinyakare inodzokororwa kwakundikana: %s}
 ::msgcat::mcset sn {failed: %s} {yatadza: %s}
+::msgcat::mcset sn {failing — heartbeating, but a sync push or the last probe failed} {iri kukundikana — heartbeat iri kufamba, asi sync push kana probe yekupedzisira yakundikana}
 ::msgcat::mcset sn {failover blueprint: cannot reach the gateway} {failover blueprint: haigoni kusvika kugateway}
 ::msgcat::mcset sn {failover graph unavailable: %1$s} {graph yekutsiva haiko: %1$s}
 ::msgcat::mcset sn {failover script: cannot reach the gateway} {failover script: haigoni kusvika kugateway}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset sn {fire the Tcl hook} {vhura iyo Tcl hook}
 ::msgcat::mcset sn {fires for %s:} {inobuda pa%s:}
 ::msgcat::mcset sn {fires per hour} {inobuda paawa imwe chete}
+::msgcat::mcset sn {fleet drift} {drift yefleet}
 ::msgcat::mcset sn {focus composer} {tarisa composer}
 ::msgcat::mcset sn {focus failed: %{e}} {fokasi yakundikana: %{e}}
 ::msgcat::mcset sn {focus next region} {tarisa dunhu riripoberi}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset sn {four splits is the maximum} {zvikamu zvina ndiwo muganhu}
 ::msgcat::mcset sn {fresh session} {session itsva}
 ::msgcat::mcset sn {fresh session (Ctrl-N too)} {session itsva (Ctrl-N zvakare)}
+::msgcat::mcset sn {fresh — heartbeating, sync passing} {itsva — heartbeat iri kufamba, sync ichipfuura}
+::msgcat::mcset sn from kubva
 ::msgcat::mcset sn {from node %{node}} {kubva ku node %{node}}
 ::msgcat::mcset sn {gateway     v%1$s · up %2$s} {gateway     v%1$s · up %2$s}
 ::msgcat::mcset sn {gateway unreachable — is `veles gateway run` up?} {gateway haisvikiki — `veles gateway run` iri kumhanya here?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset sn {in %s} mu%s
 ::msgcat::mcset sn {insert the next key literally (^B bold, ^C colour, ^O reset)} {isa kiyi inotevera zvakananga (^B bold, ^C ruvara, ^O reset)}
 ::msgcat::mcset sn {inserted %s} {%s yakaiswa}
+::msgcat::mcset sn {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {ongorora cluster; kusundira/kushandisa zvakajeka store, memory, config kana vault sync; kanganwa node yakapera nguva mufleet yose; verenga muswe welog kana zviyero zvenode; enzanisa vhezheni neconfig; gossip izvozvi}
 ::msgcat::mcset sn {inspector — app internals · core state · gw plugins} {inspector — zvemukati meapp · core state · gw plugins}
 ::msgcat::mcset sn {install a plugin from a git URL} {Isa plugin kubva kugit URL}
 ::msgcat::mcset sn {install a skill from a git URL} {Isa skill kubva kugit URL}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset sn instance instance
 ::msgcat::mcset sn {instance controls} {zvidzoreso zveinstance}
 ::msgcat::mcset sn {instance detail} {Ruzivo rweinstance}
+::msgcat::mcset sn {instance names may not start with "cluster:" or "g:": %s} {mazita einstance haagoni kutanga na "cluster:" kana "g:": %s}
 ::msgcat::mcset sn {instance needs a name} {Instance inoda zita}
 ::msgcat::mcset sn {instance unreachable} {instance haisvikiki}
 ::msgcat::mcset sn instances instances
 ::msgcat::mcset sn interrupting… Kupindira…
+::msgcat::mcset sn into mu
 ::msgcat::mcset sn {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset sn {irc: %s} {irc: %s}
 ::msgcat::mcset sn {irc: %s failed — %s} {irc: %s yatadza — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset sn {language list} {rondedzero yemitauro}
 ::msgcat::mcset sn {language picker (the swap for THIS window)} {musarudzi wezvitarisiro (kuchinja kwehwindo IRI)}
 ::msgcat::mcset sn {language saved: %s} {mutauro wasevwa: %s}
+::msgcat::mcset sn {language server} {server yemutauro}
+::msgcat::mcset sn {language server: event stream unavailable: %s} {server yemutauro: nhepfenyuro yezviitiko haiwanikwe: %s}
+::msgcat::mcset sn {language server: not started on the gateway — %s} {server yemutauro: haina kutangwa pagateway — %s}
+::msgcat::mcset sn {language server: the gateway would not start one: %s} {server yemutauro: gateway haina kutanga imwe: %s}
 ::msgcat::mcset sn {language swapped: %1$s ⇄ %2$s} {mutauro wachinjana: %1$s ⇄ %2$s}
 ::msgcat::mcset sn {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {mutauro → %1$s (waiva %2$s) · hwindo rino chete — Sevha sechakajairwa chinonyora config.toml}
 ::msgcat::mcset sn {language: %s} {mutauro: %s}
 ::msgcat::mcset sn {last error} {kukanganisa kwekupedzisira}
+::msgcat::mcset sn {last pass %1$s at %2$s: %3$s} {kupfuura kwekupedzisira %1$s pa %2$s: %3$s}
 ::msgcat::mcset sn {last reply copied (%s chars)} {Mhinduro yekupedzisira yakopiswa (%s mavara)}
 ::msgcat::mcset sn {layout not saved: %s} {layout haisina kusevwa: %s}
 ::msgcat::mcset sn {leave (cancels a running turn first)} {buda (inotanga yanzura turn iri kumhanya)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset sn {list sessions} {nyora ma-session}
 ::msgcat::mcset sn {list skills} {nyora hunyanzvi}
 ::msgcat::mcset sn {list tools} {nyora maturusi}
+::msgcat::mcset sn {listed here only; [notify] fleet_alerts is off} {zvakanyorwa pano chete; [notify] fleet_alerts yakadzimwa}
 ::msgcat::mcset sn {live patching ARMED} {live patching ARMED}
 ::msgcat::mcset sn {live patching ARMED — an agent can now redefine procs in this window} {live patching ARMED — agent anogona ikozvino kutsanangura zvakare procs muhwindo rino}
 ::msgcat::mcset sn {live patching disarmed} {live patching yakadzimwa}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset sn {log pane shown} {Log pane yaratidzwa}
 ::msgcat::mcset sn {log: %s} {log: %s}
 ::msgcat::mcset sn {make media: image/video/audio, route = comfyui or provider[/model]} {gadzira midhiya: image/video/audio, nzira = comfyui kana provider[/model]}
+::msgcat::mcset sn {managed via %s} {inodzorwa ne %s}
+::msgcat::mcset sn {manual only} {nemaoko chete}
 ::msgcat::mcset sn {mark set} {mark yakaiswa}
 ::msgcat::mcset sn {mark whole buffer (emacs select-all)} {taridza buffer yese (emacs select-all)}
 ::msgcat::mcset sn {markdown preview of the composer} {markdown preview yecomposer}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset sn model model
 ::msgcat::mcset sn {model aliases} {model aliases}
 ::msgcat::mcset sn {monitor %1$s fired} {monitor %1$s yatanga}
-::msgcat::mcset sn monitors monitors
 ::msgcat::mcset sn monitors_header {Monitors ari kumhanya:}
 ::msgcat::mcset sn monitors_none {(hapana monitors — model inotanga aya ne monitor tool)}
 ::msgcat::mcset sn {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {fambisa chikamu (nezvinayo zvese zviri pasi paro) kune imwe pool node panguva yekutendeuka; wedzera/kanzura handoff yakamirira; bvunza ani ane chikamu (admin)}
 ::msgcat::mcset sn {move the running foreground command to the background} {endesa murayiro wepamberi uri kumhanya kumashure}
 ::msgcat::mcset sn {move the running foreground command to the background (keeps running)} {tamisa command iri kumhanya pamberi kuenda kumashure (inoramba ichimhanya)}
+::msgcat::mcset sn {move this session's running foreground command to a background shell; keeps running} {Murairo weiyi session uri kumhanya mberi unotamiswa ku shell yekumashure; unoramba uchimhanya}
 ::msgcat::mcset sn {moving around} kufamba-famba
 ::msgcat::mcset sn name zita
 ::msgcat::mcset sn {name a key first} {Ipa kiyi zita kutanga}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset sn {neon impressionism} {neon impressionism}
 ::msgcat::mcset sn {network (optional — e.g. libera; empty = any)} {network (haichina kufanirwa — semuenzaniso libera; isina chinhu = ipi neipi)}
 ::msgcat::mcset sn {network to scope the grant to} {network yokusunga grant}
+::msgcat::mcset sn new itsva
 ::msgcat::mcset sn {new buffer} {bhafa idzva}
 ::msgcat::mcset sn {new entry — replace this text, then Save} {Chinyorwa chitsva — tsiva mashoko aya, wobva Sevha}
 ::msgcat::mcset sn {new name for %s} {Zita idzva ra%s}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset sn {no IRC buffer selected} {Hapana IRC buffer yakasarudzwa}
 ::msgcat::mcset sn {no MCP servers configured — Add server… writes one into config.toml} {Hapana MCP servers akarongwa — Wedzera server… inonyora imwe muconfig.toml}
 ::msgcat::mcset sn {no URLs in this buffer} {Hapana URLs mubuffer ino}
+::msgcat::mcset sn {no [a2a_agents] entry — this peer cannot be dialed} {hapana chinyorwa che [a2a_agents] — peer iyi haigone kufonerwa}
 ::msgcat::mcset sn {no alias /%s} {Hapana alias /%s}
 ::msgcat::mcset sn {no background refresh} {Hapana refresh yekumashure}
 ::msgcat::mcset sn {no buffer %s} {Hapana buffer %s}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset sn {no code block in the last reply} {Hapana code block mumhinduro yokupedzisira}
 ::msgcat::mcset sn {no cron jobs} {Hapana mabasa ecron}
 ::msgcat::mcset sn {no cron jobs — New… creates one} {Hapana mabasa ecron — Itsva… inogadzira rimwe}
+::msgcat::mcset sn {no exchange yet} {hapana kuchinjana kusati kwaitika}
 ::msgcat::mcset sn {no file — pick a guts file or type a path} {Hapana file — sarudza guts file kana kunyora nzira}
 ::msgcat::mcset sn {no handler} {Hapana handler}
+::msgcat::mcset sn {no heartbeat for %{mins} min} {hapana heartbeat kwemaminitsi %{mins}}
+::msgcat::mcset sn {no heartbeat within the threshold} {hapana heartbeat mukati memuganho}
 ::msgcat::mcset sn {no history yet} {Nhoroondo haisati yavapo}
 ::msgcat::mcset sn {no host configured for this instance} {Hapana host yakarongwa yeinstance ino}
 ::msgcat::mcset sn {no instance selected} {Hapana instance yakasarudzwa}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset sn {no program to open URLs} {Hapana program yokuvhura URLs}
 ::msgcat::mcset sn {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {hapana mupi wesevhisi akagadziriswa — wedzera chinyorwa che [[custom_providers]] uye isa vaviri ve [model] usati wamhanya turn}
 ::msgcat::mcset sn {no reading yet — press Refresh} {Hapana reading — dzvanya Vandudza}
-::msgcat::mcset sn {no running tasks} {Hapana tasks ari kumhanya}
 ::msgcat::mcset sn {no sample available} {Hapana sample iripo}
 ::msgcat::mcset sn {no search bar on this surface} {Hapana search bar pasurface iyi}
 ::msgcat::mcset sn {no session matching %s} {hapana sesheni inoenderana ne%s}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset sn {no session open — switch the scope to the default, or open a session} {Hapana session yakavhurika — chinja scope kune chakajairwa, kana vhura session}
 ::msgcat::mcset sn {no session open — the catalogue needs one; the default scope still works from config.toml} {Hapana session yakavhurika — catalogue inoda imwe; default scope ichiri kushanda kubva muconfig.toml}
 ::msgcat::mcset sn {no setting %s — try filter or bare} {Hapana setting %s — edza filter kana isina chinhu}
+::msgcat::mcset sn {no shells or monitors to show} {Hakuna maShell kana maMonitor achiratidzwa}
 ::msgcat::mcset sn {no skills found} {hapana skills dzawanikwa}
 ::msgcat::mcset sn {no such URL — /urls lists them} {Hapana URL yakadaro — /urls inoratidza dzose}
 ::msgcat::mcset sn {no such file: %s} {Hapana file rakadaro: %s}
 ::msgcat::mcset sn {no swap target yet — set one with /locale secondary <id>} {hapana mutauro wekuchinjana parizvino — uise ne /locale secondary <id>}
+::msgcat::mcset sn {no task selected} {Hakuna basa rakasarudzwa}
 ::msgcat::mcset sn {no triggers} {Hapana triggers}
 ::msgcat::mcset sn {no triggers — New… creates one} {Hapana triggers — Itsva… inogadzira rimwe}
 ::msgcat::mcset sn {no upstream reading for %s} {Hapana upstream reading ye%s}
 ::msgcat::mcset sn {no word match} {Hapana shoko rinowirirana}
 ::msgcat::mcset sn {no xdg-open — path copied instead} {Hapana xdg-open — nzira yakopiswa pachinzvimbo}
+::msgcat::mcset sn {node log} {log yanode}
 ::msgcat::mcset sn {none loaded} {Hapana chakarodhwa}
 ::msgcat::mcset sn {none recorded} {hapana chakanyorwa}
+::msgcat::mcset sn {none since this gateway started} {hapana kubva pakatanga gateway iyi}
 ::msgcat::mcset sn {none yet} {hapana parizvino}
 ::msgcat::mcset sn {normie is pure Ctrl — no emacs prefix chords.} {normie yakachena Ctrl chete — hapana emacs prefix chords.}
 ::msgcat::mcset sn {normie: select all · emacs: start of line} {normie: sarudza zvose · emacs: kutanga kwemutsetse}
 ::msgcat::mcset sn {not a channel} {Haisi channel}
 ::msgcat::mcset sn {not a key = value line: %s} {Haisi mutsara wekiyi = kukosha: %s}
+::msgcat::mcset sn {not a node in the attached gateway's cluster registry: %s} {haizi node uri muregistry ye cluster yegateway yakabatanidzwa: %s}
 ::msgcat::mcset sn {not a number} {haisi nhamba}
 ::msgcat::mcset sn {not a valid http(s) url: %s} {Haisi url yakarurama yehttp(s): %s}
 ::msgcat::mcset sn {not a valid ssh host: %s} {Haisi ssh host yakarurama: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset sn {not attached to a gateway} {Haisina kubatanidzwa kugateway}
 ::msgcat::mcset sn {not configured} {Haina kurongwa}
 ::msgcat::mcset sn {not ignoring %s} {Haichisiri kufuratira %s}
+::msgcat::mcset sn {not installed} {hazvina kuiswa}
 ::msgcat::mcset sn {not reported} {Haina kutaurwa}
 ::msgcat::mcset sn {not running} {Haisi kumhanya}
 ::msgcat::mcset sn {not set in config.toml — the built-in default applies. %s} {Haisina kuiswa muconfig.toml — default yemukati inoshanda. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset sn off off
 ::msgcat::mcset sn {off (the default)} {off (chakajairwa)}
 ::msgcat::mcset sn offline {hapana netiweki}
+::msgcat::mcset sn ok ok
 ::msgcat::mcset sn on on
 ::msgcat::mcset sn {on (the default)} {on (chakajairwa)}
 ::msgcat::mcset sn {on failure} {Kana yatadza}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset sn {open links} {kuvhura malink}
 ::msgcat::mcset sn {open the engine log} {vhura engine log}
 ::msgcat::mcset sn {open the joined session before /leave (on %s)} {vhura session yawakapinda usati waita /leave (pa%s)}
+::msgcat::mcset sn {open the selected child session} {Vhura session yomwana yakasarudzwa}
 ::msgcat::mcset sn {open the selected skill in the Dev editor} {Vhura skill yakasarudzwa muDev editor}
 ::msgcat::mcset sn {open the setup wizard (re-runnable; edits config.toml in place)} {vhura wizard yekugadzirisa (inogona kumhanyiswa zvakare; inogadzirisa config.toml panzvimbo payo)}
 ::msgcat::mcset sn {open the share sheet} {kuvhura peji rekugovera}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset sn {override cleared — the default applies} {Override yabviswa — chakajairwa chinoshanda}
 ::msgcat::mcset sn {override failed: %s} {Override yatadza: %s}
 ::msgcat::mcset sn {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {ACL haigone kuenzanisa chiziviso chemuridzi %{id} — shandisa telegram:<id yenhamba>, irc:<account ye services>, kana mask ye nick!user@host}
+::msgcat::mcset sn owner/repository muridzi/repository
 ::msgcat::mcset sn {owners: %s} {Varidzi: %s}
 ::msgcat::mcset sn {pair a desktop with this agent} {batanidza desktop ne agent iyi}
 ::msgcat::mcset sn {partly failed: %s} {Yatadza muchidimbu: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset sn plugin plugin
 ::msgcat::mcset sn {plugin directory git history} {nhoroondo yegit yeplugin directory}
 ::msgcat::mcset sn {plugin list} {runyoro rwemaplugin}
+::msgcat::mcset sn {plugin provider driver} {driver yemupi weplugin}
 ::msgcat::mcset sn {plugins reloaded on %s} {maplugin akatorwa patsva pa %s}
 ::msgcat::mcset sn {pop %s out into its own window} {budisa %s muwindo rawo}
 ::msgcat::mcset sn {pop the buffer out into its own window} {buritsa buffer muhwindo rayo}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset sn {prefix: window & dock commands} {prefix: mirairo yemawindow & dock}
 ::msgcat::mcset sn {press Attach in the Instances tab} {Dzvanya Attach pa Instances tab}
 ::msgcat::mcset sn preview tarisa
+::msgcat::mcset sn {preview an AI extension change and explicitly apply its diff} {ongorora shanduko yeAI yekuwedzera uye shandisa diff yayo zvakajeka}
 ::msgcat::mcset sn {preview failed: %s} {kutarisa kwatadza: %s}
 ::msgcat::mcset sn {previous buffer} {buffer yapfuura}
 ::msgcat::mcset sn {previous command was not a yank} {murairo wapfuura wakanga usiri yank}
 ::msgcat::mcset sn {previous match} {match yapfuura}
 ::msgcat::mcset sn {previous session} {chikamu chapfuura}
+::msgcat::mcset sn {probing %s…} {kuproba %s…}
 ::msgcat::mcset sn {proc body} {proc body}
 ::msgcat::mcset sn {profile unavailable: %s} {profile hairipo: %s}
 ::msgcat::mcset sn profiles: profiles:
 ::msgcat::mcset sn prompt murayiro
 ::msgcat::mcset sn {prompt breakdown} {kupatsanurwa kwemurayiro}
 ::msgcat::mcset sn {prompt tokens} {prompt tokens}
+::msgcat::mcset sn {proposal only, not applied} {chikurukuru chete, hachina kushandiswa}
 ::msgcat::mcset sn provider mupi
 ::msgcat::mcset sn {provider / model} {mupi / model}
 ::msgcat::mcset sn {provider base URL} {base URL ye provider}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset sn {re-sync the slopdrop state mirror} {yananisa zvakare slopdrop state mirror}
 ::msgcat::mcset sn {read and set the clipboard} {kuverenga nekugadza clipboard}
 ::msgcat::mcset sn {read text aloud} {kuverenga zvinyorwa zvinonzwika}
+::msgcat::mcset sn {read-only: [approvals] allowlist} {zvinoverengwa chete: [approvals] allowlist}
 ::msgcat::mcset sn {read-only: this session lives on %1$s (as read at %2$s)} {inongoverengwa: session iyi iri pa%1$s (sezvayakaverengwa na%2$s)}
 ::msgcat::mcset sn {read-only: this skill comes from the %s library} {inongoverengwa: skill iyi inobva kulibrary %s}
 ::msgcat::mcset sn reasoning kufunga
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset sn {refused to open %s (only http, https, mailto)} {rakaramba kuvhura %s (http, https, mailto chete)}
 ::msgcat::mcset sn {refused: %s} {rakarambwa: %s}
 ::msgcat::mcset sn {region copied} {nharaunda yakakopiwa}
+::msgcat::mcset sn registered yakanyoreswa
 ::msgcat::mcset sn {registry not saved: %s} {registry haina kuchengetwa: %s}
 ::msgcat::mcset sn {reload on %1$s failed: %2$s} {kutora patsva pa%1$s kwatadza: %2$s}
 ::msgcat::mcset sn {reload the mechanisms} {tora mechanisms patsva}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset sn {resume a session (prefix ok)} {enderera ne session (chivakashure chinokwana)}
 ::msgcat::mcset sn {retry failed: %s} {kuedza takundwa: %s}
 ::msgcat::mcset sn {retrying last prompt…} {kuedzazve murayiro wekupedzisira…}
+::msgcat::mcset sn {review files for an explicit upstream contribution} {ongorora mafaira ekubatsira upstream zvakajeka}
+::msgcat::mcset sn {review standing global and session tool permissions} {ongorora mvumo dzematurusi dzeglobal nesession dzekusingaperi}
 ::msgcat::mcset sn revision revision
 ::msgcat::mcset sn {revision history} {nhoroondo yemarevision}
+::msgcat::mcset sn {revoke refused} {kubvisa kwakarambwa}
 ::msgcat::mcset sn {revoke the selected identity's grant} {dzima grant yeidentity yasarudzwa}
 ::msgcat::mcset sn role chinzvimbo
 ::msgcat::mcset sn {role to grant} {chinzvimbo chekupa}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset sn {saved to %s} {yakachengetwa ku %s}
 ::msgcat::mcset sn saved. Zvakachengetwa.
 ::msgcat::mcset sn {scaffold a new plugin} {gadzira plugin nyowani}
+::msgcat::mcset sn {scaffold a user plugin and open it in this editor} {Vumbura plugin yemushandisi uivhure mune ino editor}
 ::msgcat::mcset sn {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {mabasa akarongwa; /crons add "<sched>" [session=<id>] <prompt> (rimwe zita /cron)}
 ::msgcat::mcset sn scope nzvimbo
 ::msgcat::mcset sn script script
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset sn {select %s first} {sarudza %s kutanga}
 ::msgcat::mcset sn {select a checkpoint first} {sarudza checkpoint kutanga}
 ::msgcat::mcset sn {select a file, or New… to create one} {sarudza faira, kana Itsva… kuti ugadzire rimwe}
+::msgcat::mcset sn {select a grant first} {tanga wasarudza chibvumiro}
 ::msgcat::mcset sn {select a handler first} {sarudza handler kutanga}
 ::msgcat::mcset sn {select a member first} {sarudza member kutanga}
 ::msgcat::mcset sn {select a route} {sarudza route}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset sn {select an assignment first} {sarudza assignment kutanga}
 ::msgcat::mcset sn {select an entry first} {sarudza entry kutanga}
 ::msgcat::mcset sn {select an identity first} {sarudza identity kutanga}
+::msgcat::mcset sn {selected task details and shell output} {Mienzaniso yebasa rakasarudzwa nemibayiro yemaShell}
 ::msgcat::mcset sn {selected: %s} {yasarudzwa: %s}
 ::msgcat::mcset sn {send clipboard as prompt} {tumira clipboard semurayiro}
 ::msgcat::mcset sn {send failed: %s} {kutumira takundwa: %s}
 ::msgcat::mcset sn {send the message; while a turn runs, queue it as steering} {tumira mharidzo; kana turn ichimhanya, iisa muqueue se steering}
+::msgcat::mcset sn sent zvatumirwa
+::msgcat::mcset sn {sent to the owner's home chat} {zvatumirwa kuchat yekumba yemuridzi}
 ::msgcat::mcset sn server server
 ::msgcat::mcset sn {server buffers merged} {server buffers akasanganiswa}
 ::msgcat::mcset sn {server buffers separate} {server buffers akapatsanurwa}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset sn {settings, one key = value per line} {marongero, key imwe = value pamutsetse}
 ::msgcat::mcset sn {setup_done marker NOT saved: %s} {chiratidzo che setup_done HACHENGETEDZWI: %s}
 ::msgcat::mcset sn {shell %1$s finished} {shell %1$s yapera}
-::msgcat::mcset sn shells mashell
+::msgcat::mcset sn {shells, monitors and subagents} {mashell, mamonitor ne subagents}
 ::msgcat::mcset sn shells_header {Mashell ari kumhanya:}
 ::msgcat::mcset sn shells_none {(hapana mashell ekumashure — /background <cmd> inotanga imwe)}
 ::msgcat::mcset sn {show current configuration} {ratidza marongero apfuura}
 ::msgcat::mcset sn {show every key in this mode} {ratidza makiyi ese mune iyi mode}
 ::msgcat::mcset sn {show or hide the session list} {ratidza kana kuviga runyoro rwemasession}
 ::msgcat::mcset sn {show or switch model (alias | model@provider | custom:<prov>)} {ratidza kana chinja model (alias | model@provider | custom:<prov>)}
+::msgcat::mcset sn {show selected shell output} {Ratidza mibayiro yemaShell yakasarudzwa}
 ::msgcat::mcset sn {show short messages} {kuratidza mameseji mapfupi}
 ::msgcat::mcset sn {show the model's reasoning blocks (same as /reasoning)} {ratidza reasoning blocks dzemodel (zvakafanana ne /reasoning)}
 ::msgcat::mcset sn {show unclaimed} {ratidza zvisina kutorwa}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset sn spend zvakashandiswa
 ::msgcat::mcset sn {split: %s} {split: %s}
 ::msgcat::mcset sn {ssh to %1$s failed: %2$s} {ssh ku %1$s kwatadza: %2$s}
+::msgcat::mcset sn {stale — no heartbeat within the threshold} {yakaora — hapana heartbeat mukati memuganhu}
+::msgcat::mcset sn {standing global and session permission grants} {zvibvumiro zvemvumo zveglobal nesession zvekusingaperi}
 ::msgcat::mcset sn state chimiro
 ::msgcat::mcset sn {state       never reached} {chimiro       hachina kumbosvikwa}
 ::msgcat::mcset sn {state       reachable} {chimiro       chinosvikika}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset sn {stored in the encrypted vault (%1$s): %2$s} {zvachengetwa mudura rakavharidzirwa (%1$s): %2$s}
 ::msgcat::mcset sn {stream handler: %s} {stream handler: %s}
 ::msgcat::mcset sn {subagent %1$s finished} {subagent %1$s yapera}
-::msgcat::mcset sn subagents subagents
 ::msgcat::mcset sn subagents_header {Subagents ari kumhanya:}
 ::msgcat::mcset sn subagents_none {(hapana subagents ari kumhanya — /btw <prompt> inotanga imwe, kana model inoshandisa delegate_task)}
 ::msgcat::mcset sn {suspend failed: %{e}} {kumbomira kwatadza: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset sn {switch the selected skill off} {dzima skill yasarudzwa}
 ::msgcat::mcset sn {switch the selected skill on} {bvumira skill yasarudzwa}
 ::msgcat::mcset sn {switch to the %s tab} {chinjira ku %s tab}
+::msgcat::mcset sn {sync requested: %s} {sync yakumbirwa: %s}
 ::msgcat::mcset sn {tab 1} {tab 1}
 ::msgcat::mcset sn {tab 2} {tab 2}
 ::msgcat::mcset sn {tab 3} {tab 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset sn tasks_none {(hapana mabasa ari kumhanya)}
 ::msgcat::mcset sn tasks_not_found {hapana basa rakadaro: %{id}}
 ::msgcat::mcset sn tasks_not_running {basa %{id} ratopera}
-::msgcat::mcset sn {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset sn {tcl-lsp: event stream unavailable: %s} {tcl-lsp: event stream haipo: %s}
-::msgcat::mcset sn {tcl-lsp: gateway would not start it: %s} {tcl-lsp: gateway yakaramba kuitanga: %s}
-::msgcat::mcset sn {tcl-lsp: not started on the gateway — %s} {tcl-lsp: haina kutanga pagateway — %s}
 ::msgcat::mcset sn {that buffer is not split} {buffer iyo haisati yapatsanurwa}
 ::msgcat::mcset sn {the %s plan} {hurongwa hwe%s}
 ::msgcat::mcset sn {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {munda wekiyi yeAPI unotora ZITA re env var (rakaita %{example}), kwete kiyi pachayo — kiyi inoenda kumunda wakavanzwa}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset sn {the gateway answered without a report} {gateway yakapindura isina chirevo}
 ::msgcat::mcset sn {the model/provider pair is incomplete — the gateway will not route until both are present} {vaviri ve model/mupi wesevhisi havana kukwana — gateway haizoendesi kusvikira zvese zviripo}
 ::msgcat::mcset sn {the options changed, so that is a fresh preview — press “Write it” again to write it} {zvirongwa zvachinja, saka preview itsva iyi — dzvanya “Nyora” zvakare kuti uinyore}
+::msgcat::mcset sn {the peer has not been sent this vault yet} {peer haisati yatumirwa vault iyi}
+::msgcat::mcset sn {the peer holds this vault} {peer inobata vault iyi}
 ::msgcat::mcset sn {the primary route is \[model\] provider/default — change it there, not here} {route huru ndiyo \[model\] mupi/default — chinja ipapo, kwete pano}
 ::msgcat::mcset sn {the provider/model route this session sends to} {nzira yeprovider/model iyo session iyi inotumira kwairi}
 ::msgcat::mcset sn {the same, on the privileged path (owner only)} {zvakafanana, kuburikidza nenzira ine kodzero (owner chete)}
 ::msgcat::mcset sn {the selected entry (edit, then Save)} {entry yasarudzwa (gadzirisa, wozochengeta)}
+::msgcat::mcset sn {the server stopped: %s} {server yakamira: %s}
 ::msgcat::mcset sn {the synthwave splash} {skrini yekutanga ye synthwave}
 ::msgcat::mcset sn {the text after the name was NOT sent anywhere — type the value into the masked field} {mashoko ari mushure mezita HAANA kutumirwa kwese kwese — nyora kukosha munzvimbo yakavanzwa}
 ::msgcat::mcset sn {the transcript} transcript
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset sn thinking… kufunga…
 ::msgcat::mcset sn {thinking… (%s)} {kufunga… (%s)}
 ::msgcat::mcset sn {this file's revisions, their diffs, and restore} {ma revision efaira iri, misiyano yawo, uye kudzorera}
+::msgcat::mcset sn {this gateway} {gateway iyi}
 ::msgcat::mcset sn {this gateway has no Tcl interpreter} {gateway iyi haina Tcl interpreter}
 ::msgcat::mcset sn {this list} {runyorwa uyu}
+::msgcat::mcset sn {this node has no vault} {node iyi haina vault}
 ::msgcat::mcset sn {this route} {route iyi}
 ::msgcat::mcset sn {this session} {session iyi}
 ::msgcat::mcset sn {this session follows the default language again (%{def})} {session iyi yave kuteverazve mutauro wakajairwa (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset sn {transcript finalization failed: %s} {kupedzisira kwachinyorwa kwakundikana: %s}
 ::msgcat::mcset sn {transcript refetched} {transcript yatorwa patsva}
 ::msgcat::mcset sn {transcript — arrows to read, %s for composer} {transcript — miseve kuti uverenge, %s kune composer}
+::msgcat::mcset sn {translate text with the dedicated translation model, without an agent turn} {shandura chinyorwa nemodheru yekushandura yakatsaurirwa, pasina turn yeagent}
+::msgcat::mcset sn {translation result} {Chibuda chekududzirwa}
 ::msgcat::mcset sn {trigger %1$s %2$sd} {trigger %1$s %2$sd}
 ::msgcat::mcset sn {trigger created} {trigger yagadzirwa}
 ::msgcat::mcset sn {trigger updated} {trigger yavandudzwa}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset sn {usage: /steer <instruction>} {mushandisiro: /steer <instruction>}
 ::msgcat::mcset sn used zvakashandiswa
 ::msgcat::mcset sn user mushandisi
+::msgcat::mcset sn {user copy} {kopi yemushandisi}
 ::msgcat::mcset sn {user identities, one per line} {identities dzemushandisi, imwe pamutsetse}
 ::msgcat::mcset sn {user name} {zita remushandisi}
 ::msgcat::mcset sn {user profile} {purofaira yemushandisi}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset sn {value (TOML: 5, true, "text", ["a","b"])} {value (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset sn veles veles
 ::msgcat::mcset sn {veles editor} {mupepeti veles}
+::msgcat::mcset sn {veles fleet: node %{node} is failing — %{detail}} {veles fleet: node %{node} iri kukundikana — %{detail}}
+::msgcat::mcset sn {veles fleet: node %{node} is stale — %{detail}} {veles fleet: node %{node} yakapera nguva — %{detail}}
+::msgcat::mcset sn {veles fleet: node %{node} recovered (it was %{was})} {veles fleet: node %{node} yapora (yakanga iri %{was})}
 ::msgcat::mcset sn {veles · keyboard help (bindings: %s)} {veles · rubatsiro rwekhibhodi (bindings: %s)}
 ::msgcat::mcset sn {veles · touch help} {veles · rubatsiro rwekubata}
 ::msgcat::mcset sn {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset sn widgets midziyo
 ::msgcat::mcset sn {will be stored in the encrypted vault} {zvichachengetwa mudura rakavharidzirwa}
 ::msgcat::mcset sn {wire protocol} {wire protocol}
+::msgcat::mcset sn {without force to} {without force ku}
 ::msgcat::mcset sn {wizard language} {mutauro we wizard}
 ::msgcat::mcset sn {wizard language: %s} {mutauro we wizard: %s}
 ::msgcat::mcset sn {write failed: %s} {kunyora kwatadza: %s}
 ::msgcat::mcset sn {write grants that still expire (the expiry is dropped — a config line cannot expire)} {nyora grants dzichiri kupera (expiry inobviswa — mutsetse weconfig hauperi)}
 ::msgcat::mcset sn {write the entries back} {nyorazve entries}
 ::msgcat::mcset sn {write the store's runtime rules into config.toml} {nyora mitemo yeruntime yestore mu config.toml}
+::msgcat::mcset sn {write the whole extension from its purpose, as a reviewed preview} {nyora extension yose kubva pachinangwa chayo, semuonekero wakaongororwa}
 ::msgcat::mcset sn {write these values into config.toml as the defaults} {nyora values idzi mu config.toml sedefault}
 ::msgcat::mcset sn writing kunyora
 ::msgcat::mcset sn {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {kunyora muridzi wekutanga we [acl] kunochinja gateway iyi kuenda ku CURATED mode: basa rakajairwa rinova guest (fail-closed) uye allowlist ye adapter haichisiri muganhu wekuvimba}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset sn {▲ VELES — neon impressionism} {▲ VELES — neon impressionism}
 ::msgcat::mcset sn {▲ earlier} {▲ zvapfuura}
 ::msgcat::mcset sn {▼ later} {▼ zvinozotevera}
+::msgcat::mcset sn {▾ Cluster registry} {▾ Cluster registry}
 ::msgcat::mcset sn {▾ new output — follow} {▾ output itsva — tevera}
 ::msgcat::mcset sn {○ unattached} {○ haina kubatanidzwa}
 ::msgcat::mcset sn {● %1$s — %2$s} {● %1$s — %2$s}

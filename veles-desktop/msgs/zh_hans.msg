@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {%1$s %2$s failed: %3$s} {%1$s %2$s 失败：%3$s}
 ::msgcat::mcset zh_hans {%1$s %2$s over ssh…} {%1$s %2$s 经 ssh…}
 ::msgcat::mcset zh_hans {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset zh_hans {%1$s (%2$s waiting)} {%1$s（%2$s 等待中）}
 ::msgcat::mcset zh_hans {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  推理 %3$s}
 ::msgcat::mcset zh_hans {%1$s = %2$s here} {%1$s = %2$s 此处}
 ::msgcat::mcset zh_hans {%1$s NOT saved: %2$s} {%1$s 未保存：%2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset zh_hans {%1$s every cron job on %2$s?} {%1$s %2$s 上的所有 cron 任务？}
 ::msgcat::mcset zh_hans {%1$s failed: %2$s} {%1$s 失败：%2$s}
 ::msgcat::mcset zh_hans {%1$s in / %2$s out / %3$s calls} {%1$s 入 / %2$s 出 / %3$s 次调用}
+::msgcat::mcset zh_hans {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s 是节点 %2$s，而不是 %3$s。请在「编辑…」中修正它的节点 id。}
 ::msgcat::mcset zh_hans {%1$s is not a whole number} {%1$s 不是整数}
+::msgcat::mcset zh_hans {%1$s is reachable (%2$s ms).} {%1$s 可访问（%2$s 毫秒）。}
 ::msgcat::mcset zh_hans {%1$s is set to something this box cannot edit (%2$s)} {%1$s 被设置为这台机器无法编辑的值（%2$s）}
+::msgcat::mcset zh_hans {%1$s is unreachable: %2$s} {%1$s 无法访问：%2$s}
 ::msgcat::mcset zh_hans {%1$s of %2$s characters} {%1$s / %2$s 个字符}
 ::msgcat::mcset zh_hans {%1$s of %2$s sessions} {%2$s 个会话中的 %1$s 个}
 ::msgcat::mcset zh_hans {%1$s of %2$s skills reach the prompt} {%1$s / %2$s 个技能进入提示}
 ::msgcat::mcset zh_hans {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s 于 %2$s：%3$d 个通过，%4$d 个失败}
+::msgcat::mcset zh_hans {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s 未报告集群节点身份，因此无法验证它是 %2$s。}
+::msgcat::mcset zh_hans {%1$s sync failed: %2$s} {%1$s 同步失败：%2$s}
+::msgcat::mcset zh_hans {%1$s sync with %2$s (%3$s)} {%1$s 与 %2$s 同步（%3$s）}
+::msgcat::mcset zh_hans {%1$s sync: %2$s} {%1$s 同步：%2$s}
 ::msgcat::mcset zh_hans {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset zh_hans {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter 跳转，Esc 关闭}
 ::msgcat::mcset zh_hans {%1$s — revision r%2$s} {%1$s — 修订 r%2$s}
 ::msgcat::mcset zh_hans {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset zh_hans {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset zh_hans {%1$s: %2$s} {%1$s：%2$s}
+::msgcat::mcset zh_hans {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s：%2$s → %3$s %4$s（%5$s）}
+::msgcat::mcset zh_hans {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s：其网关在内存中保留 %3$s 行中的最后 %2$s，密钥已在该节点上脱敏。}
 ::msgcat::mcset zh_hans {%d MCP server(s) configured} {已配置 %d 个 MCP 服务器}
 ::msgcat::mcset zh_hans {%d entries} {%d 项}
+::msgcat::mcset zh_hans {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {该扩展的 %d 个文件将完全按审阅内容写入。若其中任何文件在预览后发生更改，则不会写入任何内容。不会进行提交、推送或创建 PR。}
 ::msgcat::mcset zh_hans {%d handler(s) registered} {已注册 %d 个处理程序}
 ::msgcat::mcset zh_hans {%d identities · %d users} {%d 个身份 · %d 个用户}
 ::msgcat::mcset zh_hans {%d models — pick one from the list or type a name.} {%d 个模型 — 请从列表中选择一个，或输入名称。}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset zh_hans {%d shown} {显示 %d 条}
 ::msgcat::mcset zh_hans {%s %s%%} {%s %s%%}
 ::msgcat::mcset zh_hans {%s (%s)} {%s (%s)}
+::msgcat::mcset zh_hans {%s (referral)} %s（推荐）
+::msgcat::mcset zh_hans {%s (stale)} %s（陈旧）
 ::msgcat::mcset zh_hans {%s (this session)} %s（本会话）
 ::msgcat::mcset zh_hans {%s GB free of %s GB} {可用 %s GB，共 %s GB}
 ::msgcat::mcset zh_hans {%s already exists — open it from the list} {%s 已存在 — 请从列表中打开}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {%s comes from config.toml [acl] — edit there} {%s 来自 config.toml 的 [acl] — 请到那里编辑}
 ::msgcat::mcset zh_hans {%s config change(s) wait for you — /configsync} {%s 项配置更改等待你处理 — /configsync}
 ::msgcat::mcset zh_hans {%s did not become healthy within 30s} {%s 未在 30 秒内恢复健康}
+::msgcat::mcset zh_hans {%s done} {%s 完成}
 ::msgcat::mcset zh_hans {%s failed: %s} {%s 失败：%s}
 ::msgcat::mcset zh_hans {%s is already split} {%s 已拆分}
 ::msgcat::mcset zh_hans {%s is the language in use — pick another one to swap with} {%s 是当前使用的语言 — 请另选一种作为切换目标}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset zh_hans {%s opens the command palette in %s.} {%s 在 %s 中打开命令面板。}
 ::msgcat::mcset zh_hans {%s session(s)} {%s 个会话}
 ::msgcat::mcset zh_hans {%s skill(s):} {%s 个技能：}
+::msgcat::mcset zh_hans {%s standing grants} {%s 项长期授权}
 ::msgcat::mcset zh_hans {%s takes no completable arguments} {%s 不接受可补全的参数}
 ::msgcat::mcset zh_hans {%s takes on or off} {%s 只接受 on 或 off}
 ::msgcat::mcset zh_hans {%s —} {%s —}
+::msgcat::mcset zh_hans {%s — changes data, asks to confirm} {%s — 会更改数据，需要确认}
 ::msgcat::mcset zh_hans {%s — deleted; History… can restore it} {%s — 已删除；历史… 可以恢复它}
 ::msgcat::mcset zh_hans {%s — new: type, then Save} {%s — 新建：输入内容，然后保存}
 ::msgcat::mcset zh_hans {%s — not attached; press Attach in the Instances tab} {%s — 未附加；请在「实例」选项卡中按「附加」}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset zh_hans {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} 已启用但没有 [acl] 段：在 .env 中的 %{var} 指定谁可以与机器人对话之前，任何能联系到它的人都会被当作所有者，拥有全部工具}
 ::msgcat::mcset zh_hans (%{route}) (%{route})
 ::msgcat::mcset zh_hans {(CLI redraws automatically)} {（CLI 会自动重绘）}
+::msgcat::mcset zh_hans {(binary; not publishable)} （二进制文件；无法发布）
 ::msgcat::mcset zh_hans {(clipboard empty or no clipboard tool)} （剪贴板为空或没有剪贴板工具）
 ::msgcat::mcset zh_hans (deleted) （已删除）
 ::msgcat::mcset zh_hans (empty) （空）
 ::msgcat::mcset zh_hans {(no sessions)} （没有会话）
+::msgcat::mcset zh_hans {(not a memsync peer of this gateway: config is not synced with it)} {（不是此网关的 memsync 对等节点：配置不会与它同步）}
 ::msgcat::mcset zh_hans {(nothing to reload — read from disk per use)} {（无需重新加载 — 每次使用时从磁盘读取）}
 ::msgcat::mcset zh_hans {(retrying last prompt…)} （正在重试上一条提示…）
 ::msgcat::mcset zh_hans {(route did not resolve: %{e})} {（route 无法解析：%{e}）}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset zh_hans {/url needs a number from /urls} {/url 需要 /urls 中的编号}
 ::msgcat::mcset zh_hans {/whois needs a nick} {/whois 需要一个昵称}
 ::msgcat::mcset zh_hans {; could not save the cleared return view: %s} ；无法保存已清除的返回视图：%s
+::msgcat::mcset zh_hans {; shadows bundled} ；覆盖随附版
+::msgcat::mcset zh_hans {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} 配置提议可以更改设置，保险库提议会合并密钥；涉及安全段的改动仍需等待所有者确认。
 ::msgcat::mcset zh_hans {A failing plugin may drop hooks mid-turn.} {出错的插件可能会在回合中途丢弃 hooks。}
 ::msgcat::mcset zh_hans {A local server: no key is needed unless you set one up.} 本地服务器：除非你自行设置，否则无需密钥。
+::msgcat::mcset zh_hans {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} 已签名的发布仅在预检通过后才会暂存。重启/验证、继续推进与回滚是彼此独立的操作。健康的进程必须报告与审阅内容完全一致的源码修订。
 ::msgcat::mcset zh_hans {A value is stored for %s — leave this empty to keep it.} {%s 已存有值——留空即可保留。}
 ::msgcat::mcset zh_hans {ACL: ban mask} ACL：封禁掩码
 ::msgcat::mcset zh_hans {ACL: grant admin} {ACL：授予 admin}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset zh_hans {ACL: grant user} {ACL：授予 user}
 ::msgcat::mcset zh_hans {ACL: revoke} ACL：撤销
 ::msgcat::mcset zh_hans {ACME account email} {ACME 账户邮箱}
+::msgcat::mcset zh_hans {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI 辅助分为四个层级：提出设计问题（无需文件）、更改此文件、更改此扩展的多个文件，或解释当前诊断。「新建扩展」还可根据用途生成整个扩展。每个请求都以无工具方式发送，若其中含有已登记的密钥或形似凭据的值则会被拒绝；更改会以差异形式展示，只有在你应用后才会写入。请先请求扩展设计；只有在确定缺失的 API 之后，才请求核心补丁。}
+::msgcat::mcset zh_hans {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI 辅助只编辑用户扩展，而此文件不属于任何扩展。大多数改动都适合放在扩展中（钩子、工具、服务覆盖或提供商驱动），升级后依然保留；核心补丁只用于扩展 API 无法表达的情况。是否改为为此改动新建一个扩展？在写入任何内容之前会先预览它的文件。}
+::msgcat::mcset zh_hans {AI assist…} {AI 辅助…}
+::msgcat::mcset zh_hans {AI extension assistance} {AI 扩展辅助}
 ::msgcat::mcset zh_hans {API calls} {API 调用}
+::msgcat::mcset zh_hans {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {通过 Anthropic 推荐获得的 API 额度仅在你购买 Max 或 Ultra 时才会发放。Veles 不支持将该订阅用作登录或 API 认证。}
 ::msgcat::mcset zh_hans {API key (hidden)} {API 密钥（隐藏）}
 ::msgcat::mcset zh_hans {API key env var name} {API 密钥环境变量名}
+::msgcat::mcset zh_hans {API reference} {API 参考}
+::msgcat::mcset zh_hans {Abandon untouched operation} 放弃未改动的操作
 ::msgcat::mcset zh_hans {Access control} 访问控制
 ::msgcat::mcset zh_hans {Access control (ACL)} 访问控制（ACL）
 ::msgcat::mcset zh_hans Add 添加
 ::msgcat::mcset zh_hans {Add MCP server} {添加 MCP 服务器}
 ::msgcat::mcset zh_hans {Add instance} 添加实例
 ::msgcat::mcset zh_hans {Add server…} 添加服务器…
+::msgcat::mcset zh_hans {Adds selected extension sources. Review the branch diff and checks before merging.} 添加所选扩展源文件。合并前请审阅分支差异和检查结果。
 ::msgcat::mcset zh_hans Add… 添加…
 ::msgcat::mcset zh_hans {Agent & engine} 智能体与引擎
 ::msgcat::mcset zh_hans {Alias %s} {别名 %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset zh_hans {Applies to} 应用于
 ::msgcat::mcset zh_hans Apply 应用
 ::msgcat::mcset zh_hans {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {「应用」只更改运行中的会话。「复制 TOML」给你可粘贴的配置块。「全局保存」将它们拼接到 config.toml — 只改动 failover 部分，其余每行和注释保持不变，旧文件保留为 config.toml.bak。}
+::msgcat::mcset zh_hans {Apply proposal…} 应用提案…
+::msgcat::mcset zh_hans {Apply received} 应用已接收项
+::msgcat::mcset zh_hans {Apply this AI proposal?} {应用此 AI 提案？}
+::msgcat::mcset zh_hans {Apply this change set?} 应用此更改集？
 ::msgcat::mcset zh_hans {Apply to session} 应用到会话
+::msgcat::mcset zh_hans {Apply what this node received:} 应用此节点接收到的内容：
 ::msgcat::mcset zh_hans {Approval needed} 需要批准
 ::msgcat::mcset zh_hans Apps 应用
 ::msgcat::mcset zh_hans Archive 归档包
 ::msgcat::mcset zh_hans {Archive SHA-256} {归档包 SHA-256}
+::msgcat::mcset zh_hans Ask 询问
+::msgcat::mcset zh_hans {Ask a design question} 提出设计问题
+::msgcat::mcset zh_hans {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {询问如何构建扩展：使用哪个边界、哪种语言、哪个 API。不会发送任何源码，也无法写入任何内容。}
 ::msgcat::mcset zh_hans {Ask the agent to change it} 请智能体修改它
+::msgcat::mcset zh_hans {Asking %s…} {正在询问 %s…}
 ::msgcat::mcset zh_hans {Asking the provider for its models…} 正在向提供商获取模型列表…
 ::msgcat::mcset zh_hans Attach 附加
 ::msgcat::mcset zh_hans {Attach to the next message} 附加到下一条消息
+::msgcat::mcset zh_hans {Author guide} 作者指南
+::msgcat::mcset zh_hans {Automatically discovered from the attached gateway's cluster registry.} 从已附加网关的集群注册表中自动发现。
 ::msgcat::mcset zh_hans Back 上一步
 ::msgcat::mcset zh_hans {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} 返回会关闭最上层的东西：菜单、会话列表、窗口。什么都没打开时，veles会转到后台继续运行。
 ::msgcat::mcset zh_hans {Base URL} {Base URL}
+::msgcat::mcset zh_hans {Base branch} 基础分支
 ::msgcat::mcset zh_hans {Bot token (hidden)} 机器人令牌（隐藏）
+::msgcat::mcset zh_hans Branch 分支
+::msgcat::mcset zh_hans {Branch and commit prepared; nothing has been pushed} 已准备分支和提交；尚未推送任何内容
+::msgcat::mcset zh_hans {Branch pushed and verified on origin} {分支已推送并在 origin 上验证}
 ::msgcat::mcset zh_hans {Browse sessions} 浏览会话
+::msgcat::mcset zh_hans {Build manifest + preflight} {构建清单 + 预检}
+::msgcat::mcset zh_hans {Build: veles %1$s, revision %2$s (%3$s %4$s)} {构建：veles %1$s，修订 %2$s（%3$s %4$s）}
 ::msgcat::mcset zh_hans {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e 行首行尾 · C-b/C-f 字符 · M-b/M-f 单词 · C-k 删至行尾 · C-y 粘贴 · M-w 复制 · C-w 删除区域 · C-space 设标记 · C-/ 撤销}
 ::msgcat::mcset zh_hans {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g 中止所有操作 · C-j 换行 · M-p/M-n 历史 · Tab 补全}
+::msgcat::mcset zh_hans {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU：%1$s 个核心，负载 %2$s / %3$s / %4$s（核心的 %5$s%%）}
 ::msgcat::mcset zh_hans Cancel 取消
+::msgcat::mcset zh_hans {Cancel task} 取消任务
+::msgcat::mcset zh_hans {Cancel task %1$s? This cannot be undone.} {取消任务 %1$s？此操作无法撤销。}
+::msgcat::mcset zh_hans {Cannot verify that %1$s is node %2$s: %3$s} {无法验证 %1$s 是节点 %2$s：%3$s}
 ::msgcat::mcset zh_hans Capabilities 能力
 ::msgcat::mcset zh_hans {Change my app “%s” (%s): } {修改我的应用“%s”（%s）： }
+::msgcat::mcset zh_hans {Change this extension's files} 更改此扩展的文件
+::msgcat::mcset zh_hans {Change this file} 更改此文件
 ::msgcat::mcset zh_hans Change… 更改…
 ::msgcat::mcset zh_hans {Channels (e.g. #veles #dev)} {频道（如 #veles #dev）}
 ::msgcat::mcset zh_hans Chat 聊天
 ::msgcat::mcset zh_hans {Chat — not attached; press Attach in the Instances tab} {聊天 — 未附加；请在「实例」选项卡中按「附加」}
 ::msgcat::mcset zh_hans {Check (lsp)} 检查（lsp）
+::msgcat::mcset zh_hans {Check again} 再次检查
+::msgcat::mcset zh_hans {Check files} 检查文件
 ::msgcat::mcset zh_hans Checkpoints 检查点
 ::msgcat::mcset zh_hans {Checkpoints (undo)} 检查点（撤销）
+::msgcat::mcset zh_hans {Checks and next steps} 检查与后续步骤
+::msgcat::mcset zh_hans {Checks run} 运行检查
 ::msgcat::mcset zh_hans {Choose BUNDLE-INFO.json in the managed install-sources directory} {在受管理的 install-sources 目录中选择 BUNDLE-INFO.json}
 ::msgcat::mcset zh_hans {Choose a failover script} 选择故障转移脚本
 ::msgcat::mcset zh_hans {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {选择一个模块或进程插件以查看。发现过程只读取 plugin.toml；选择组件会请求其声明的清单和选项。打开此步骤不会安装任何内容。}
+::msgcat::mcset zh_hans {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} 选择名称、用途和语言，然后预览将生成的具体文件。尚未写入任何内容。
 ::msgcat::mcset zh_hans {Choose a user unit or a system service for the server profile. Neither starts a service.} 为服务器配置文件选择用户单元或系统服务。两者都不会启动服务。
 ::msgcat::mcset zh_hans {Choose core bundle…} 选择核心包…
 ::msgcat::mcset zh_hans {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {选择安装形态。本地配置文件使用已审核的安装程序。系统和容器配置文件会准备一份用于显式 CLI 交接的签名请求。NixOS 仅输出一个模块片段。}
+::msgcat::mcset zh_hans {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {选择最窄的边界：Tool 增加模型可调用能力；Hook 观察或修改生命周期事件；Service 或覆盖点包装一个命名决策；Provider 驱动增加提供商连接；仅当已发布的扩展 API 无法表达该变更时才使用核心补丁。}
 ::msgcat::mcset zh_hans {Choose typed container-host options JSON} {选择类型化容器主机选项 JSON}
 ::msgcat::mcset zh_hans {Choose typed container-host options…} 选择类型化容器主机选项…
 ::msgcat::mcset zh_hans Clear 清除
 ::msgcat::mcset zh_hans {Clear composer} 清空输入框
 ::msgcat::mcset zh_hans {Clear override} 清除覆盖
 ::msgcat::mcset zh_hans {Click the picture where you would click on the page.} 请像在网页上一样点击图片上的相应位置。
+::msgcat::mcset zh_hans {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {克隆 %1$s，创建 %2$s，并只把 %3$s 中已审阅的文件复制到 %4$s/<extension>/ 下。这些文件会被检查并提交。此时不会推送，也不会创建拉取请求。}
 ::msgcat::mcset zh_hans Close 关闭
 ::msgcat::mcset zh_hans {Close (Esc)} 关闭（Esc）
 ::msgcat::mcset zh_hans {Close the setup wizard? Nothing has been written yet.} 关闭设置向导？还没有写入任何内容。
 ::msgcat::mcset zh_hans {Code actions} 代码操作
+::msgcat::mcset zh_hans Commit 提交
+::msgcat::mcset zh_hans {Commit ready for review. Push is a separate action.} 提交已准备好，等待审阅。推送是单独的操作。
 ::msgcat::mcset zh_hans {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {在预览 handoff 之前，先填写所有 PDS 字段，包括固定的镜像 digest。}
 ::msgcat::mcset zh_hans {Complete every typed container-host field before previewing this profile.} 在预览此配置文件之前，完成每个结构化容器主机字段。
 ::msgcat::mcset zh_hans {Component configuration returned an invalid result; nothing was accepted as applied.} 组件配置返回了无效结果；没有任何内容被接受为已应用。
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset zh_hans {Component options changed. Review the new preview before applying.} 组件选项已变更。应用前请先查看新预览。
 ::msgcat::mcset zh_hans Components 组件
 ::msgcat::mcset zh_hans {Composer preview} 输入框预览
+::msgcat::mcset zh_hans Config 配置
+::msgcat::mcset zh_hans {Config differs: %s} 配置不同：%s
+::msgcat::mcset zh_hans {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {配置日志：该节点已包含 %1$s 截至 %3$s 的更改，此网关截至 %2$s}
+::msgcat::mcset zh_hans {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {配置日志：此网关已包含 %1$s 截至 %2$s 的更改，该节点截至 %3$s}
+::msgcat::mcset zh_hans {Config only on that node: %s} 仅该节点有的配置：%s
+::msgcat::mcset zh_hans {Config only on this gateway: %s} 仅此网关有的配置：%s
 ::msgcat::mcset zh_hans Configure 配置
 ::msgcat::mcset zh_hans {Configure %s} {配置 %s}
+::msgcat::mcset zh_hans {Configure translator} 配置翻译器
+::msgcat::mcset zh_hans {Configured desktop gateway} 已配置的桌面网关
 ::msgcat::mcset zh_hans Configure… 配置…
 ::msgcat::mcset zh_hans {Configuring %s} {正在配置 %s}
 ::msgcat::mcset zh_hans {Confirm or discard the current signed review before starting another download.} 在启动另一项下载前，确认或丢弃当前已签名审核。
 ::msgcat::mcset zh_hans {Container host: typed host plan and privileged CLI handoff} {容器主机：类型化主机方案与需要管理员权限的 CLI 交接}
 ::msgcat::mcset zh_hans {Context window} 上下文窗口
+::msgcat::mcset zh_hans {Continue to next target} 继续到下一目标
+::msgcat::mcset zh_hans {Contribute extensions: %s} 贡献扩展：%s
+::msgcat::mcset zh_hans Contribute… 贡献…
+::msgcat::mcset zh_hans {Contribution branch} 贡献分支
+::msgcat::mcset zh_hans {Contribution destination} 贡献目标
 ::msgcat::mcset zh_hans Copy 复制
 ::msgcat::mcset zh_hans {Copy TOML} {复制 TOML}
+::msgcat::mcset zh_hans {Copy a bundled extension into your user plugin directory before preparing a contribution.} 准备贡献前，请先将随附扩展复制到你的用户插件目录。
 ::msgcat::mcset zh_hans {Copy message} 复制消息
 ::msgcat::mcset zh_hans {Copy name} 复制名称
 ::msgcat::mcset zh_hans {Copy nick} 复制昵称
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset zh_hans {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {无法发现组件。提供商设置步骤仍可用；如需安装，请在目标机器上通过 CLI 进行。}
 ::msgcat::mcset zh_hans {Could not join: %s} 无法加入：%s
 ::msgcat::mcset zh_hans {Could not list the models (%s) — type the model's name.} {无法列出模型（%s）— 请直接输入模型名称。}
+::msgcat::mcset zh_hans {Create a PR in} {在其中创建 PR}
+::msgcat::mcset zh_hans {Create extension} 创建扩展
 ::msgcat::mcset zh_hans {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {先用 @BotFather 创建机器人，然后把它的令牌粘贴到下面：令牌会进入加密保险库，绝不会写进 config.toml。}
+::msgcat::mcset zh_hans {Create this extension?} 创建此扩展？
+::msgcat::mcset zh_hans {Create this generated extension?} 创建此生成的扩展？
+::msgcat::mcset zh_hans {Created and reloaded. Review and test the extension before publishing.} 已创建并重新加载。发布前请检查并测试扩展。
+::msgcat::mcset zh_hans {Created, but reload failed} 已创建，但重新加载失败
 ::msgcat::mcset zh_hans {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {从模板创建 %s/<name>/SKILL.md 并打开它。frontmatter 中的 description 是唯一进入提示索引的部分，所以要写明「何时使用该技能」。}
 ::msgcat::mcset zh_hans {Cron history} 定时任务历史
 ::msgcat::mcset zh_hans {Cron jobs} {Cron 任务}
 ::msgcat::mcset zh_hans {Curated — write the first owner entry} {受控模式——写入第一个 owner 条目}
 ::msgcat::mcset zh_hans Cut 剪切
 ::msgcat::mcset zh_hans Decline 拒绝
+::msgcat::mcset zh_hans {Dedicated translator} 专用翻译模型
 ::msgcat::mcset zh_hans {Def (M-.)} 定义（M-.）
 ::msgcat::mcset zh_hans Default 默认
 ::msgcat::mcset zh_hans {Default model} 默认模型
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset zh_hans {Delete user} 删除用户
 ::msgcat::mcset zh_hans {Delete workspace?} 删除工作区？
 ::msgcat::mcset zh_hans Deop 撤销频道管理员
+::msgcat::mcset zh_hans {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {描述更改内容。AI 可以更改或添加此扩展的多个文件。每个文件都会以差异形式展示，在你确认之前不会写入任何内容。}
+::msgcat::mcset zh_hans {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {描述更改。AI 可能会提出替换内容，但在你检查并确认差异之前，它无法写入。}
+::msgcat::mcset zh_hans {Describe the requested extension change first.} 请先描述所需的扩展更改。
+::msgcat::mcset zh_hans Description 描述
 ::msgcat::mcset zh_hans {Desktop: local core, modules and process plugins} 桌面：本地核心、模块与进程插件
 ::msgcat::mcset zh_hans Detach 分离
+::msgcat::mcset zh_hans {Detach foreground} 移至后台
 ::msgcat::mcset zh_hans Dev 开发
 ::msgcat::mcset zh_hans {Dev pane (REPL + LSP)} {开发面板（REPL + LSP）}
 ::msgcat::mcset zh_hans {Dev: arm / disarm live patching} 开发：启用/停用实时补丁
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset zh_hans Devoice 撤销发言权
 ::msgcat::mcset zh_hans {Discard review} 丢弃审核
 ::msgcat::mcset zh_hans {Discard your changes to %s?} {放弃你对 %s 的修改？}
+::msgcat::mcset zh_hans {Disk: %1$s free of %2$s at %3$s} {磁盘：位于 %3$s 的 %2$s 中可用 %1$s}
 ::msgcat::mcset zh_hans Done 完成
 ::msgcat::mcset zh_hans {Done — config written} 完成——配置已写入
 ::msgcat::mcset zh_hans {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} 安装前，请先下载并验证发布清单与主机归档包。所有五个身份字段均为必填项。网关会保留私有的暂存归档包；此预览不会安装任何内容。
 ::msgcat::mcset zh_hans {Downloading and verifying the signed release…} 正在下载并验证已签名发布…
+::msgcat::mcset zh_hans {Draft this as an extension?} 将此内容草拟为扩展？
 ::msgcat::mcset zh_hans {Drag to scroll; a quick swipe goes further.} 拖动即可滚动；快速滑动会滚得更远。
+::msgcat::mcset zh_hans {Drift check failed: %s} 漂移检查失败：%s
+::msgcat::mcset zh_hans {Drift check: %s node(s) differ from this gateway.} {漂移检查：%s 个节点与此网关不同。}
+::msgcat::mcset zh_hans {Drift: built from revision %1$s, this gateway from %2$s} {漂移：构建自修订 %1$s，此网关构建自 %2$s}
+::msgcat::mcset zh_hans {Drift: none — same version, revision and replicated config} {漂移：无 — 版本、修订与复制的配置均相同}
+::msgcat::mcset zh_hans {Drift: not compared — %s} {漂移：未比较 — %s}
+::msgcat::mcset zh_hans {Drift: runs version %1$s, this gateway %2$s} {漂移：运行版本 %1$s，此网关 %2$s}
+::msgcat::mcset zh_hans Drift… 漂移…
 ::msgcat::mcset zh_hans {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset zh_hans {ESC %s is not bound} {ESC %s 未绑定}
 ::msgcat::mcset zh_hans {ESC- … (Meta prefix)} {ESC- …（Meta 前缀）}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset zh_hans Edit… 编辑…
 ::msgcat::mcset zh_hans {Enable / disable} {启用 / 禁用}
 ::msgcat::mcset zh_hans {Enable the Telegram adapter} {启用 Telegram 适配器}
+::msgcat::mcset zh_hans Endpoint 端点
 ::msgcat::mcset zh_hans Engine 引擎
 ::msgcat::mcset zh_hans Eval→gw Eval→gw
 ::msgcat::mcset zh_hans {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {对 %s 的每次更改都会被提交。恢复会将整个目录回滚到该提交 — 而且会先快照当前状态，所以不是单向门。}
 ::msgcat::mcset zh_hans {Every plugin file goes back to that commit. The current state is committed first.} 所有插件文件都会回到该提交。当前状态会先被提交。
+::msgcat::mcset zh_hans {Exact commit} 确切提交
+::msgcat::mcset zh_hans {Exact permission rule} 确切的权限规则
+::msgcat::mcset zh_hans {Example: a hook} 示例：hook
+::msgcat::mcset zh_hans {Example: a provider driver} 示例：提供商驱动程序
+::msgcat::mcset zh_hans {Example: a service override wrapping core} {示例：包装核心的 service 覆盖}
+::msgcat::mcset zh_hans {Example: a tool} 示例：工具
 ::msgcat::mcset zh_hans {Existing shared container network} 现有共享容器网络
+::msgcat::mcset zh_hans Explain 解释
+::msgcat::mcset zh_hans {Explain the diagnostics} 解释诊断信息
 ::msgcat::mcset zh_hans Export… 导出…
+::msgcat::mcset zh_hans {Extension API} {扩展 API}
+::msgcat::mcset zh_hans {Extension development} 扩展开发
+::msgcat::mcset zh_hans {Extension guide} 扩展指南
+::msgcat::mcset zh_hans {Extension source} 扩展源文件
 ::msgcat::mcset zh_hans {Failover blueprint} 故障转移蓝图
 ::msgcat::mcset zh_hans {Failover blueprint (edit the route chain)} 故障转移蓝图（编辑路由链）
 ::msgcat::mcset zh_hans {Failover hook script (what `script` mode runs)} {故障转移钩子脚本（`script` 模式运行的内容）}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset zh_hans {Find in transcript} 在会话记录中查找
 ::msgcat::mcset zh_hans {Find in transcript…} 在会话记录中查找…
 ::msgcat::mcset zh_hans {Find references} 查找引用
+::msgcat::mcset zh_hans {Finish rollback} 完成回滚
 ::msgcat::mcset zh_hans {First run: no config.toml yet.} {首次运行：还没有 config.toml。}
+::msgcat::mcset zh_hans {Fix the failed syntax checks before preparing a contribution.} 准备贡献前，请修复未通过的语法检查。
+::msgcat::mcset zh_hans {Fleet deployment} 舰队部署
+::msgcat::mcset zh_hans {Fleet deployment runs from a desktop computer; it is not available on Android.} {舰队部署需在桌面计算机上运行；Android 上不可用。}
+::msgcat::mcset zh_hans {Fleet deploy…} 舰队部署…
+::msgcat::mcset zh_hans {Fleet drift} 机群漂移
 ::msgcat::mcset zh_hans {Fold / unfold} {折叠 / 展开}
 ::msgcat::mcset zh_hans {Forget declaration} 忘记声明
+::msgcat::mcset zh_hans {Forget node %s?} {忘记节点 %s？}
+::msgcat::mcset zh_hans {Forget node…} 忘记节点…
+::msgcat::mcset zh_hans {Forgetting %1$s failed: %2$s} {忘记 %1$s 失败：%2$s}
+::msgcat::mcset zh_hans {Forgot node %s.} {已忘记节点 %s。}
+::msgcat::mcset zh_hans {Forgotten fleet-wide (refused until they heartbeat again): %s} 已在机群范围内遗忘（在它们再次发送心跳前会被拒绝）：%s
 ::msgcat::mcset zh_hans Fork 分支
 ::msgcat::mcset zh_hans {Free space} 可用空间
 ::msgcat::mcset zh_hans {Full source commit SHA} {完整源提交 SHA}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset zh_hans {Gateway image sha256 digest} {网关镜像 sha256 摘要}
 ::msgcat::mcset zh_hans {Gateway quadlet name} {网关 quadlet 名称}
 ::msgcat::mcset zh_hans {Gateway status} 网关状态
+::msgcat::mcset zh_hans {Generate with AI…} {用 AI 生成…}
+::msgcat::mcset zh_hans {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {由 %s 生成 — 尚未写入任何内容。请审阅每个文件，然后「创建扩展」会原样写入这些内容。}
 ::msgcat::mcset zh_hans {Get a key at %s} {在 %s 获取密钥}
 ::msgcat::mcset zh_hans {GitHub release URL} {GitHub 发布 URL}
+::msgcat::mcset zh_hans {Give the extension a name and describe what it should do (the purpose), then generate.} 为扩展命名并描述它应做什么（用途），然后生成。
 ::msgcat::mcset zh_hans {Give up} 放弃
 ::msgcat::mcset zh_hans Go 执行
 ::msgcat::mcset zh_hans {Go to definition} 转到定义
+::msgcat::mcset zh_hans {Gossip failed: %s} {Gossip 失败：%s}
+::msgcat::mcset zh_hans {Gossip now} {立即 Gossip}
+::msgcat::mcset zh_hans {Gossip with %1$s: %2$s} {与 %1$s 进行 Gossip：%2$s}
+::msgcat::mcset zh_hans {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {Gossip：%2$s 个对等节点中有 %1$s 个已应答（%3$s）。}
 ::msgcat::mcset zh_hans Grant 授予
 ::msgcat::mcset zh_hans {Grant access} 授予访问权限
+::msgcat::mcset zh_hans {Granted at} 授予时间
 ::msgcat::mcset zh_hans Grant… 授予…
 ::msgcat::mcset zh_hans {Guards — what the harness stops, and where it stands now} {Guards — harness 会拦截什么，以及现在的情况}
 ::msgcat::mcset zh_hans {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {处理程序按显示顺序运行，第一个返回非空值的生效。关闭某个处理程序会跳过它但不注销，选择保存在 config.toml 中，插件重载不会悄悄把它重新打开。}
+::msgcat::mcset zh_hans Health 健康
+::msgcat::mcset zh_hans {Health alerts (%s):} 健康告警（%s）：
+::msgcat::mcset zh_hans Heartbeat 心跳
+::msgcat::mcset zh_hans {Heartbeat age: %s s} {心跳距今：%s 秒}
 ::msgcat::mcset zh_hans Help 帮助
 ::msgcat::mcset zh_hans {Help & keys} 帮助与按键
 ::msgcat::mcset zh_hans {Hide right panes} 隐藏右侧面板
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset zh_hans {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} 长按后在抬起手指前拖动：选区会逐词跟随手指，到顶部或底部边缘时自动滚动。
 ::msgcat::mcset zh_hans Hooks Hooks
 ::msgcat::mcset zh_hans {Hooks (what plugins run on)} 钩子（插件运行的对象）
+::msgcat::mcset zh_hans Host 主机
 ::msgcat::mcset zh_hans {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} 长按所需的时间由Android无障碍设置中的“触摸和按住延迟”决定。
 ::msgcat::mcset zh_hans {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {我已离线备份 KEK 和 PLC 轮换密钥；允许已审核的 TLS 和激活交接}
 ::msgcat::mcset zh_hans {I-search backward: type to search, C-r for previous} {反向 I-search：输入搜索，C-r 上一个}
 ::msgcat::mcset zh_hans {I-search: type to search, C-s for next} {I-search：输入搜索，C-s 下一个}
+::msgcat::mcset zh_hans {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {IO 压力：有任务处于等待的时间占比 %1$s%% / %2$s%% / %3$s%%（10 秒 / 1 分钟 / 5 分钟）}
 ::msgcat::mcset zh_hans IRC IRC
 ::msgcat::mcset zh_hans {IRC buffers} {IRC 缓冲区}
 ::msgcat::mcset zh_hans {IRC composer} {IRC 输入框}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {IRC split: %s} {IRC 分屏：%s}
 ::msgcat::mcset zh_hans {IRC transcript} {IRC 会话记录}
 ::msgcat::mcset zh_hans {IRC — nothing to show} {IRC — 暂无内容}
+::msgcat::mcset zh_hans {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {进行中：%1$s 个回合 %2$s，%3$s 个后台任务 %4$s}
 ::msgcat::mcset zh_hans {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {将 %s 安装到受管理的组件存储中？其清单已显示；这不会启动服务。}
 ::msgcat::mcset zh_hans {Install component} 安装组件
 ::msgcat::mcset zh_hans {Install components…} 安装组件…
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset zh_hans Instances 实例
 ::msgcat::mcset zh_hans {It becomes the current content, as a new revision — so the restore can be undone too.} {它会作为新的修订成为当前内容 — 因此恢复操作本身也可以撤销。}
 ::msgcat::mcset zh_hans {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {它会进入本机的加密保险库。智能体永远看不到它：只能在命令中以 $%s 使用它，或把它发送到允许的主机。}
+::msgcat::mcset zh_hans {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {该节点已在机群范围内从集群注册表中移除：下一次 Gossip 交换会通知每个 0.2.0 对等节点也将它剔除，且它们都不会再把它合并回来。早于 0.2.0 的对等节点仍会列出它。如果该机器重新上线并发送心跳，它会重新注册。同步对等节点与已保存的实例不受影响。}
 ::msgcat::mcset zh_hans {It leaves memory now. Its history keeps every revision, and History… can restore it.} {它现在会离开记忆。它的历史保留每一个修订，历史… 可以恢复它。}
 ::msgcat::mcset zh_hans Join 加入
 ::msgcat::mcset zh_hans {Join a pool} 加入机器组
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset zh_hans {Language (i18n)} {语言 (i18n)}
 ::msgcat::mcset zh_hans Language… 语言…
 ::msgcat::mcset zh_hans {Last active} 最近活动
+::msgcat::mcset zh_hans {Last probe: %1$s — %2$s} {上次探测：%1$s — %2$s}
 ::msgcat::mcset zh_hans {Leave %s?} {离开 %s？}
 ::msgcat::mcset zh_hans Leave… 离开…
 ::msgcat::mcset zh_hans {Legacy open — no [acl] section} {传统开放模式——不写 [acl] 段}
 ::msgcat::mcset zh_hans {Let %s:} {允许 %s：}
 ::msgcat::mcset zh_hans {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {由字母、数字、- 和 _ 组成。会创建 plugin.toml 和 plugin.tcl（后者注册一个 post_llm_call hook），然后在 Dev 窗格中打开它。}
+::msgcat::mcset zh_hans Level 级别
 ::msgcat::mcset zh_hans {Lift lockdown} 解除锁定
+::msgcat::mcset zh_hans Lines 行数
 ::msgcat::mcset zh_hans {List the provider's models} 列出该提供商的模型
+::msgcat::mcset zh_hans Load 负载
 ::msgcat::mcset zh_hans {Load more} 加载更多
 ::msgcat::mcset zh_hans {Loading discovered components…} 正在加载已发现的组件…
 ::msgcat::mcset zh_hans {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} 本地包已审核。选择「安装所选组件」以确认安装；目前尚未安装任何内容。
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset zh_hans {Lock down} 锁定
 ::msgcat::mcset zh_hans Log 日志
 ::msgcat::mcset zh_hans {Log (engine + status)} {日志（引擎 + 状态）}
+::msgcat::mcset zh_hans {Log of %s} {%s 的日志}
+::msgcat::mcset zh_hans Logs… 日志…
 ::msgcat::mcset zh_hans {M-g- (g: goto line)} M-g-（g：跳转到行）
 ::msgcat::mcset zh_hans {M-p/M-n history · Tab complete} {M-p/M-n 历史记录 · Tab 补全}
 ::msgcat::mcset zh_hans {MCP server list} {MCP 服务器列表}
 ::msgcat::mcset zh_hans {MCP servers (from config.toml)} {MCP 服务器（来自 config.toml）}
 ::msgcat::mcset zh_hans {Make default} 设为默认
 ::msgcat::mcset zh_hans {Make default (config.toml)} 设为默认（config.toml）
+::msgcat::mcset zh_hans {Manage extensions} 管理扩展
 ::msgcat::mcset zh_hans {Manifest SHA-256} {清单 SHA-256}
 ::msgcat::mcset zh_hans {Mark read} 标为已读
 ::msgcat::mcset zh_hans {Mechanisms (what the engine does on its own)} 机制（引擎自行执行的操作）
 ::msgcat::mcset zh_hans {Mechanisms — what the engine does on its own, and how to stop it} {Mechanisms — 引擎自动做什么，以及如何停掉它}
 ::msgcat::mcset zh_hans Memory 记忆
 ::msgcat::mcset zh_hans {Memory history} 记忆历史
+::msgcat::mcset zh_hans {Memory: %1$s available of %2$s (%3$s%% used)} {内存：%2$s 中可用 %1$s（已用 %3$s%%）}
+::msgcat::mcset zh_hans {Merge the received %s into this node?} {将接收到的 %s 合并到此节点？}
 ::msgcat::mcset zh_hans Messages 消息数
+::msgcat::mcset zh_hans Metrics 指标
+::msgcat::mcset zh_hans {Metrics (asked %s):} {指标（于 %s 请求）：}
+::msgcat::mcset zh_hans {Metrics of %1$s failed: %2$s} {获取 %1$s 的指标失败：%2$s}
+::msgcat::mcset zh_hans {Metrics of %s received.} {已收到 %s 的指标。}
+::msgcat::mcset zh_hans {Metrics: not asked yet — use Metrics.} {指标：尚未请求 — 请使用「指标」。}
 ::msgcat::mcset zh_hans Model 模型
 ::msgcat::mcset zh_hans {Model for this session} 本会话的模型
 ::msgcat::mcset zh_hans {Models & settings} 模型与设置
+::msgcat::mcset zh_hans Monitors 监视器
+::msgcat::mcset zh_hans Name 名称
+::msgcat::mcset zh_hans {Need an account? Optional sign-up links (open in your browser):} 需要账户？可选注册链接（将在浏览器中打开）：
 ::msgcat::mcset zh_hans Network 网络
 ::msgcat::mcset zh_hans {New alias} 新建别名
+::msgcat::mcset zh_hans {New branch name} 新分支名称
 ::msgcat::mcset zh_hans {New cron job} {新建 cron 任务}
+::msgcat::mcset zh_hans {New extension} 新建扩展
 ::msgcat::mcset zh_hans {New memory file} 新建记忆文件
 ::msgcat::mcset zh_hans {New plugin} 新建插件
 ::msgcat::mcset zh_hans {New session} 新建会话
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset zh_hans Next 下一步
 ::msgcat::mcset zh_hans Nickname 昵称
 ::msgcat::mcset zh_hans {NixOS: emit a module snippet; do not edit host declarations} NixOS：生成模块片段；不要编辑主机声明
+::msgcat::mcset zh_hans {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {此节点未配置 SSH 生命周期目标。请显式添加实例以部署或重启它。}
+::msgcat::mcset zh_hans {No additional push happens.} 不会进行额外推送。
 ::msgcat::mcset zh_hans {No apps yet. Ask the agent to make one: “make me an app that…”} 还没有应用。请智能体做一个：“帮我做一个……的应用”
 ::msgcat::mcset zh_hans {No code in the picture. Hold the phone closer, straight on, and scan again.} 图片中没有二维码。请把手机靠近、拿正，然后重新扫描。
 ::msgcat::mcset zh_hans {No configuration snapshot will be restored.} 不会恢复任何配置快照。
+::msgcat::mcset zh_hans {No configured sync peer for this node.} 此节点没有配置同步对等节点。
+::msgcat::mcset zh_hans {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} 未配置专用翻译器。请使用「配置翻译器」选择其提供商、模型和目标语言。
+::msgcat::mcset zh_hans {No deployment started.} 未启动部署。
+::msgcat::mcset zh_hans {No diagnostics reported by the current LSP document.} {当前 LSP 文档未报告诊断信息。}
+::msgcat::mcset zh_hans {No explicitly configured desktop gateway is bound to this node.} 此节点未绑定明确配置的桌面网关。
+::msgcat::mcset zh_hans {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {此节点未绑定明确配置的网关。请先添加网关；其注册表端点不会用作桌面 URL。}
+::msgcat::mcset zh_hans {No file is open. Ask a design question, or open an extension file for help with its code.} 没有打开的文件。请提出设计问题，或打开扩展文件以获取其代码方面的帮助。
+::msgcat::mcset zh_hans {No files have been written. Review the exact manifest and source, then confirm creation.} 尚未写入任何文件。请检查具体的清单和源文件，然后确认创建。
 ::msgcat::mcset zh_hans {No modules or process plugins were discovered. The provider setup steps can still continue.} 未发现模块或进程插件。提供商设置步骤仍可继续。
+::msgcat::mcset zh_hans {No other registered node to compare with.} 没有其他已注册节点可供比较。
 ::msgcat::mcset zh_hans {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} 没有任何配置文件会从此向导中启动服务或执行需要管理员权限的脚本。运行前请查看计划与所有交接。
+::msgcat::mcset zh_hans {No proposal has been requested. Nothing will be written automatically.} 尚未请求提案。不会自动写入任何内容。
+::msgcat::mcset zh_hans {No proposal. Nothing was written.} 没有提议。未写入任何内容。
 ::msgcat::mcset zh_hans {No routes configured.} {未配置任何 route。}
 ::msgcat::mcset zh_hans {No session selected — pick one in the sidebar or start a new one} {未选择会话 — 在侧边栏选一个，或新建一个}
 ::msgcat::mcset zh_hans {No swap target yet: pick a language and press “Set as swap target”.} 还没有切换目标：选择一种语言，然后按“设为切换目标”。
 ::msgcat::mcset zh_hans {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {config.toml 中没有 {[}acl{]} 部分：每个到达网关的发送者都被当作 owner 处理，即 ACL 之前的单用户行为。授予和撤销仍然有效，并在 {[}acl{]} 存在的那一刻生效。}
+::msgcat::mcset zh_hans {Node id} {节点 ID}
+::msgcat::mcset zh_hans {Non-evaluating syntax checks} 不执行代码的语法检查
+::msgcat::mcset zh_hans {Not available: %s} 不可用：%s
+::msgcat::mcset zh_hans Note 备注
 ::msgcat::mcset zh_hans {Note for the agent (optional):} 给智能体的备注（可选）：
+::msgcat::mcset zh_hans {Nothing selected.} 未选择任何内容。
 ::msgcat::mcset zh_hans {Nothing typed yet.} 还没有输入任何内容。
+::msgcat::mcset zh_hans {Nothing was generated or written.} 未生成或写入任何内容。
+::msgcat::mcset zh_hans {Nothing was prepared: the chosen repository already has these paths.} 未准备任何内容：所选仓库中已存在这些路径。
 ::msgcat::mcset zh_hans Notifications 通知
 ::msgcat::mcset zh_hans OK 确定
 ::msgcat::mcset zh_hans Off 关
 ::msgcat::mcset zh_hans On 开
+::msgcat::mcset zh_hans {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {仅会替换已审阅的扩展缓冲区。如果文件在此预览后发生更改，仍会阻止应用。不会提交、推送或创建 PR。}
+::msgcat::mcset zh_hans {Only this new branch is committed. Your ambient git identity is used.} {只会提交到这个新分支。将使用你当前的 Git 身份。}
 ::msgcat::mcset zh_hans Op 设为频道管理员
 ::msgcat::mcset zh_hans Open 打开
+::msgcat::mcset zh_hans {Open PR…} {创建 PR…}
 ::msgcat::mcset zh_hans {Open a window} 打开窗口
 ::msgcat::mcset zh_hans {Open in Dev} {在 Dev 中打开}
 ::msgcat::mcset zh_hans {Open in browser} 在浏览器中打开
 ::msgcat::mcset zh_hans {Open plugin} 打开插件
 ::msgcat::mcset zh_hans {Open terminal} 打开终端
+::msgcat::mcset zh_hans {Open this pull request?} {创建此 PR？}
 ::msgcat::mcset zh_hans {Open veles in Android's settings} {在 Android 设置中打开 veles}
 ::msgcat::mcset zh_hans {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {可选：要加入的 IRC 网络。频道之间用空格或逗号分隔；.env 中的 IRC_CHANNELS 若已设置，将取代此列表。}
 ::msgcat::mcset zh_hans {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} 选项来自所选组件的清单。看似密钥的字段保留在设置/保险库流程中。留空字段则保持该选项不变。
 ::msgcat::mcset zh_hans {Or paste a ticket signed on another device} 或粘贴在其他设备上签署的票据
 ::msgcat::mcset zh_hans {Or type an answer:} 或输入答案：
+::msgcat::mcset zh_hans Origin 远程源（origin）
 ::msgcat::mcset zh_hans Other… 其他…
 ::msgcat::mcset zh_hans Outline 大纲
+::msgcat::mcset zh_hans Output 输出
 ::msgcat::mcset zh_hans {Override for THIS session (leave blank to inherit the default)} 覆盖本会话（留空则继承默认值）
 ::msgcat::mcset zh_hans {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {所有者身份（telegram:123456、irc:account 或 nick!user@host 掩码）}
 ::msgcat::mcset zh_hans {PDS and handle domain} {PDS 与 handle 域名}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset zh_hans {Pause scheduler} 暂停调度器
 ::msgcat::mcset zh_hans {Peek (C-c C-p)} {速览（C-c C-p）}
 ::msgcat::mcset zh_hans {Peek definition} 预览定义
+::msgcat::mcset zh_hans {Permission grants} 权限授权
+::msgcat::mcset zh_hans {Permission grants…} 权限授权…
 ::msgcat::mcset zh_hans Phone 手机
 ::msgcat::mcset zh_hans {Phone: permissions, battery, storage} 手机：权限、电池、存储
 ::msgcat::mcset zh_hans {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {%s 生产的手机也会自行停止应用。请在 veles 的应用设置中允许它自启动并在后台运行。}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset zh_hans Port 端口
 ::msgcat::mcset zh_hans {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {前缀组合键 (C-x, M-o) 激活的瞬间会显示 which-key 弹窗。}
 ::msgcat::mcset zh_hans {Prepare an own vlpds PDS through the signed CLI handoff} {通过已签名的 CLI handoff 准备自己的 vlpds PDS}
+::msgcat::mcset zh_hans {Prepare branch…} 准备分支…
+::msgcat::mcset zh_hans {Prepare this branch and commit?} 准备此分支并创建提交？
 ::msgcat::mcset zh_hans Preview 预览
+::msgcat::mcset zh_hans {Preview change set} 预览更改集
+::msgcat::mcset zh_hans {Preview files} 预览文件
 ::msgcat::mcset zh_hans {Preview here} 在此预览
 ::msgcat::mcset zh_hans {Preview pane} 预览面板
+::msgcat::mcset zh_hans {Preview proposal} 预览提案
+::msgcat::mcset zh_hans {Preview the changed name or language before creating it.} 创建前，请预览名称或语言的更改。
+::msgcat::mcset zh_hans Probe 探测
+::msgcat::mcset zh_hans {Probe of %1$s failed: %2$s} {%1$s 的探测失败：%2$s}
 ::msgcat::mcset zh_hans {Profile result} 配置方案结果
 ::msgcat::mcset zh_hans {Promote into config.toml} {提升到 config.toml}
 ::msgcat::mcset zh_hans Promote… 提升…
 ::msgcat::mcset zh_hans Provider 提供商
+::msgcat::mcset zh_hans {Provider driver (plugin wire only)} 提供商驱动（仅插件线路协议）
 ::msgcat::mcset zh_hans {Provider entry name} {provider 条目名}
 ::msgcat::mcset zh_hans {Provider for this session} 本会话的提供商
 ::msgcat::mcset zh_hans Providers 提供商
 ::msgcat::mcset zh_hans {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {提供商是一组配置表：custom_providers.0.base_url、.0.api_mode、.0.key_env … 按照下方显示的顺序索引。}
 ::msgcat::mcset zh_hans {Public HTTPS URL} {公共 HTTPS URL}
+::msgcat::mcset zh_hans {Pull request base} {PR 目标分支}
+::msgcat::mcset zh_hans {Pull request created} {已创建 PR}
+::msgcat::mcset zh_hans {Pull request description} {PR 描述}
+::msgcat::mcset zh_hans {Pull request opened.} {PR 已创建。}
+::msgcat::mcset zh_hans {Pull request repository} {PR 仓库}
+::msgcat::mcset zh_hans {Pull request title} {PR 标题}
 ::msgcat::mcset zh_hans {Purge + delete files} {清除 + 删除文件}
 ::msgcat::mcset zh_hans {Purge container} 清除容器
+::msgcat::mcset zh_hans Purpose 用途
+::msgcat::mcset zh_hans Push 推送
+::msgcat::mcset zh_hans {Push branch…} 推送分支…
+::msgcat::mcset zh_hans {Push complete. No pull request has been opened.} {推送完成。尚未创建 PR。}
+::msgcat::mcset zh_hans {Push this branch?} 推送此分支？
+::msgcat::mcset zh_hans {Push to %s:} {推送到 %s：}
 ::msgcat::mcset zh_hans Question 问题
 ::msgcat::mcset zh_hans Questions 问题
 ::msgcat::mcset zh_hans Quit 退出
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset zh_hans {Reading notifications, for triggers} 读取通知（用于触发器）
 ::msgcat::mcset zh_hans Reasoning 推理
 ::msgcat::mcset zh_hans {Reasoning effort} 推理强度
+::msgcat::mcset zh_hans {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {已接收，等待应用：存储 %1$s · 记忆 %2$s · 配置 %3$s · 保险库 %4$s}
+::msgcat::mcset zh_hans {Recommended checks} 建议的检查
 ::msgcat::mcset zh_hans {Refetch this transcript from the store} 从存储中重新获取此对话记录
 ::msgcat::mcset zh_hans Refresh 刷新
 ::msgcat::mcset zh_hans {Refresh preview} 刷新预览
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset zh_hans {Rename symbol} 重命名符号
 ::msgcat::mcset zh_hans Rename… 重命名…
 ::msgcat::mcset zh_hans Rendered 已渲染
+::msgcat::mcset zh_hans {Replace existing repository files?} 替换仓库中已有的文件？
+::msgcat::mcset zh_hans {Replace them in the new branch? Nothing else in the repository changes.} 在新分支中替换它们？仓库中的其他内容不会改变。
 ::msgcat::mcset zh_hans Repository 仓库
 ::msgcat::mcset zh_hans {Repository (owner/name)} 仓库（所有者/名称）
+::msgcat::mcset zh_hans {Repository directory} 仓库目录
+::msgcat::mcset zh_hans {Repository paths} 仓库路径
+::msgcat::mcset zh_hans {Request a new preview before trying again.} 重试前请请求新的预览。
 ::msgcat::mcset zh_hans {Reset to default} 恢复默认值
 ::msgcat::mcset zh_hans {Reset to template} 重置为模板
 ::msgcat::mcset zh_hans Restart 重启
+::msgcat::mcset zh_hans {Restart + verify canary} {重启 + 验证金丝雀}
 ::msgcat::mcset zh_hans {Restore hidden windows} 恢复隐藏的窗口
 ::msgcat::mcset zh_hans {Restore plugins to %s?} {将插件恢复到 %s？}
 ::msgcat::mcset zh_hans {Restore revision r%1$s of %2$s?} {恢复 %2$s 的修订 r%1$s？}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset zh_hans {Restore this commit} 恢复此提交
 ::msgcat::mcset zh_hans {Restore this revision} 恢复此修订
 ::msgcat::mcset zh_hans {Resume scheduler} 恢复调度器
+::msgcat::mcset zh_hans {Resume unfinished operation} 恢复未完成的操作
 ::msgcat::mcset zh_hans Revert 还原
 ::msgcat::mcset zh_hans {Revert %s to HEAD? Uncommitted changes in this file are lost.} {将 %s 还原到 HEAD？该文件中未提交的更改将丢失。}
 ::msgcat::mcset zh_hans Revert… 还原…
 ::msgcat::mcset zh_hans Review 审查
 ::msgcat::mcset zh_hans {Review (git) pane} {审查 (git) 面板}
+::msgcat::mcset zh_hans {Review deployment} 审阅部署
+::msgcat::mcset zh_hans {Review extension contribution} 审阅扩展贡献
 ::msgcat::mcset zh_hans {Review managed local bundle…} 审核受管理的本地包…
 ::msgcat::mcset zh_hans {Review rollback} 审核回滚
+::msgcat::mcset zh_hans {Review selected files} 审阅所选文件
 ::msgcat::mcset zh_hans {Review the component options on the summary screen before applying.} 在摘要屏幕上查看组件选项，然后再应用。
 ::msgcat::mcset zh_hans {Review the component preview before applying. No component configuration has been written.} 应用前先查看组件预览。尚未写入任何组件配置。
+::msgcat::mcset zh_hans {Review the selected files and remove credential findings before preparing.} 准备前，请审阅所选文件并移除检测到的凭据。
 ::msgcat::mcset zh_hans {Reviewed core bundle in the managed install-sources directory} 位于受管安装源目录中的已审核核心包
+::msgcat::mcset zh_hans {Reviewed fleet deployment} 已审阅的舰队部署
 ::msgcat::mcset zh_hans {Reviewed local bundle} 已审核的本地包
 ::msgcat::mcset zh_hans {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} 已安装已审核的本地包。它未经过签名下载验证。在使用新核心之前需要重启。
 ::msgcat::mcset zh_hans Revision 修订
 ::msgcat::mcset zh_hans Revoke 撤销
+::msgcat::mcset zh_hans {Revoke selected} 撤销所选
 ::msgcat::mcset zh_hans Roles 角色
 ::msgcat::mcset zh_hans {Roll back %1$s from %2$s to %3$s?} {将 %1$s 从 %2$s 回滚到 %3$s？}
+::msgcat::mcset zh_hans {Roll back selected target} 回滚所选目标
 ::msgcat::mcset zh_hans {Rollback completed. Reload the component or restart as requested by the report.} 回滚完成。请按报告要求重新加载组件或重启。
 ::msgcat::mcset zh_hans {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} 回滚已审核。选择「安装所选组件」以确认恢复；目前尚未恢复任何内容。
 ::msgcat::mcset zh_hans Run 运行
 ::msgcat::mcset zh_hans {Run the wizard again} 再次运行向导
 ::msgcat::mcset zh_hans {Running in the background} 后台运行
-::msgcat::mcset zh_hans {Running tasks} 运行中的任务
-::msgcat::mcset zh_hans {Running tasks (subagents, shells, monitors)} 运行中的任务（子代理、shell、监视器）
 ::msgcat::mcset zh_hans {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {运行时授予和用户存放在 store 中，重置 store 会清除它们。「提升」会将 store 决定保留的条目追加到 config.toml — 保留文件的注释和键顺序，在旁边写入备份，丢弃 store 中的副本 — 如果文件中已有相关设置，则拒绝而不是猜测。}
 ::msgcat::mcset zh_hans {S3 HTTPS endpoint} {S3 HTTPS 端点}
 ::msgcat::mcset zh_hans {S3 bucket} {S3 存储桶}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset zh_hans {Save as default} 另存为默认
 ::msgcat::mcset zh_hans {Save attachment as} 附件另存为
 ::msgcat::mcset zh_hans {Save globally} 全局保存
+::msgcat::mcset zh_hans {Save or revert the open buffer before applying a change set.} 应用更改集前，请先保存或还原打开的缓冲区。
 ::msgcat::mcset zh_hans Scan 扫描
 ::msgcat::mcset zh_hans {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {扫描邀请这部手机的机器上的 veles 二维码。如果它先显示了 WireGuard 二维码，请先用 WireGuard 应用扫描那个。}
 ::msgcat::mcset zh_hans {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {计划：间隔（"30m"、"every 2h"）、cron 模式（"0 9 * * 1"）或一次性任务的 ISO 时间戳。上面一行显示引擎如何解析它。投递："local" 将输出保留在日志中 — 桌面端背后没有聊天平台，这是唯一诚实的默认值 — 或 "platform:chat_id"。唤醒会话：留空则在全新会话中运行；填入会话 id（或唯一前缀）则以完整历史恢复该会话 — 若会话正忙，提示会在其下一个回合边界送达。}
+::msgcat::mcset zh_hans Scope 范围
 ::msgcat::mcset zh_hans {Scroll to end} 滚动到底部
 ::msgcat::mcset zh_hans {Search commands and sessions…} 搜索命令和会话…
 ::msgcat::mcset zh_hans {Search message text} 搜索消息正文
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset zh_hans Section 分区
 ::msgcat::mcset zh_hans {Select a component first. No component options will be changed if you skip this step.} 请先选择一个组件。如果跳过此步骤，不会更改任何组件选项。
 ::msgcat::mcset zh_hans {Select all} 全选
+::msgcat::mcset zh_hans {Select all extensions} 全选扩展
+::msgcat::mcset zh_hans {Select at least one source file.} 请至少选择一个源文件。
+::msgcat::mcset zh_hans {Select none} 全不选
+::msgcat::mcset zh_hans {Select text to translate first.} 请先选择要翻译的文本。
+::msgcat::mcset zh_hans {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} 选择要贡献的扩展和文件。它们会进入同一个分支和同一个拉取请求，每个扩展位于各自的目录中。先审阅，运行非求值性检查，然后准备一个隔离分支并提交。推送和创建拉取请求是各自独立的确认操作。
 ::msgcat::mcset zh_hans Send 发送
+::msgcat::mcset zh_hans {Send %s to the peer?} {将 %s 发送给对等节点？}
 ::msgcat::mcset zh_hans {Send a %d-line message to the channel?} {向频道发送 %d 行的消息？}
 ::msgcat::mcset zh_hans {Send raw line to the server? (%s)} 向服务器发送原始行？(%s)
 ::msgcat::mcset zh_hans {Server (empty = no IRC)} {服务器（留空 = 不用 IRC）}
 ::msgcat::mcset zh_hans {Server: gateway configuration and a reviewed user unit} 服务器：网关配置与已审核的用户单元
 ::msgcat::mcset zh_hans {Server: install a user unit and prepare the separate linger handoff} {服务器：安装用户单元并准备独立的 linger 交接}
 ::msgcat::mcset zh_hans {Server: use a system service and prepare a privileged CLI request} {服务器：使用系统服务并准备需要管理员权限的 CLI 请求}
+::msgcat::mcset zh_hans Session 会话
 ::msgcat::mcset zh_hans {Session id} {会话 ID}
 ::msgcat::mcset zh_hans {Session id…} {会话 ID…}
 ::msgcat::mcset zh_hans Sessions 会话
 ::msgcat::mcset zh_hans {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} 当前覆盖到此别名的会话保留其已解析的路由；新的覆盖将找不到该名称。
+::msgcat::mcset zh_hans {Sessions served} 已服务会话
 ::msgcat::mcset zh_hans Set 设置
 ::msgcat::mcset zh_hans {Set [model] provider/default in config.toml.} {在 config.toml 中设置 [model] 的 provider/default。}
 ::msgcat::mcset zh_hans {Set as swap target} 设为切换目标
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset zh_hans {Setup — summary} {设置 — 摘要}
 ::msgcat::mcset zh_hans {Setup — welcome} {设置 — 欢迎}
 ::msgcat::mcset zh_hans {Shared container network} 共享容器网络
+::msgcat::mcset zh_hans Shells 命令外壳
+::msgcat::mcset zh_hans {Shells and monitors} 命令外壳和监视器
+::msgcat::mcset zh_hans {Shells and monitors (subagents, shells, monitors)} 命令外壳和监视器（子智能体、命令外壳、监视器）
 ::msgcat::mcset zh_hans {Show diff} 显示差异
 ::msgcat::mcset zh_hans {Show every key} 显示所有按键
 ::msgcat::mcset zh_hans Sign 签署
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset zh_hans Solved 已解决
 ::msgcat::mcset zh_hans Source 源
 ::msgcat::mcset zh_hans {Source commit} 源提交
+::msgcat::mcset zh_hans {Source text} 原文
 ::msgcat::mcset zh_hans {Source→app (C-c C-c)} {源→应用 (C-c C-c)}
 ::msgcat::mcset zh_hans Stage 暂存
+::msgcat::mcset zh_hans {Stage canary} 暂存金丝雀
+::msgcat::mcset zh_hans Stale 已过期
+::msgcat::mcset zh_hans {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {长期权限允许后续工具调用无需再次询问。会话级授权由各界面（桌面、Telegram、IRC 等）上的活动会话持有；全局授权会持久保存；来自 config.toml 的 [approvals] 允许列表条目以只读方式列出。撤销其中一项不会影响其他授权。}
 ::msgcat::mcset zh_hans Start 启动
+::msgcat::mcset zh_hans {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {请从用户插件目录中的扩展开始。它会在升级后保留，无需重新构建网关。「创建扩展」会在写入前预览具体的清单和源文件。选择受支持的语言和 API 版本，检查文件，然后在隔离环境中测试扩展。}
 ::msgcat::mcset zh_hans {Start with the phone} 随手机启动
+::msgcat::mcset zh_hans {Static IP} {静态 IP}
 ::msgcat::mcset zh_hans Status 状态
 ::msgcat::mcset zh_hans Steer 引导
 ::msgcat::mcset zh_hans {Step %1$d of %2$d} {第 %1$d 步，共 %2$d 步}
 ::msgcat::mcset zh_hans {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {尚待设置：%s——在这里输入 /secret set NAME，或在网关所在机器上运行 veles secret set NAME。}
 ::msgcat::mcset zh_hans Stop 停止
 ::msgcat::mcset zh_hans {Storage root} 存储根目录
+::msgcat::mcset zh_hans Store 存储
 ::msgcat::mcset zh_hans {Store a secret: %s} 保存密钥：%s
 ::msgcat::mcset zh_hans {Store it} 保存
+::msgcat::mcset zh_hans {Store replica} 存储副本
 ::msgcat::mcset zh_hans Subagents 子代理
 ::msgcat::mcset zh_hans {Subagents (/agents)} {子代理 (/agents)}
 ::msgcat::mcset zh_hans Summary 摘要
+::msgcat::mcset zh_hans Surface 界面
 ::msgcat::mcset zh_hans {Swap ⇄} {交换 ⇄}
+::msgcat::mcset zh_hans {Sync cancelled.} 同步已取消。
+::msgcat::mcset zh_hans {Sync complete.} 同步完成。
+::msgcat::mcset zh_hans {Sync now} 立即同步
 ::msgcat::mcset zh_hans {TOML copied — paste it into config.toml} {TOML 已复制 — 粘贴到 config.toml}
 ::msgcat::mcset zh_hans Tag 标签
 ::msgcat::mcset zh_hans {Tap a link to open it, or a block's header to open or close the block.} 点按链接即可打开；点按区块的标题即可展开或收起该区块。
 ::msgcat::mcset zh_hans {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} 点按底部的输入框即可输入。“发送”用于发送，“停止”结束本轮，“分离”把正在运行的命令移到后台。
 ::msgcat::mcset zh_hans {Tap the text to clear the selection.} 点按文本即可取消选中。
+::msgcat::mcset zh_hans {Target language:} 目标语言：
+::msgcat::mcset zh_hans {Target node IDs (canary first, comma separated)} {目标节点 ID（金丝雀在前，逗号分隔）}
 ::msgcat::mcset zh_hans {Task list} 任务列表
 ::msgcat::mcset zh_hans {Task list (right pane)} 任务列表（右侧面板）
 ::msgcat::mcset zh_hans Tasks 任务
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset zh_hans {That is not a ticket.} 这不是有效的票据。
 ::msgcat::mcset zh_hans {That is not a veles pool code.} {这不是 veles 机器组的二维码。}
 ::msgcat::mcset zh_hans {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {这是 WireGuard 二维码：请用 WireGuard 应用扫描。veles 二维码是第二个。}
+::msgcat::mcset zh_hans {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {这 %d 个已审阅的文件将写入你的用户插件目录中的新目录，veles 会尝试加载该扩展。若自预览以来出现了同名目录，则不会写入任何内容。此操作不包含发布。}
 ::msgcat::mcset zh_hans {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {开发面板的 REPL 在实时应用中求值 —— UI 本身就是一个 lisp。}
 ::msgcat::mcset zh_hans {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {[mcp_servers.<name>] 表已从 config.toml 中删除。原文件保留为 config.toml.bak。}
 ::msgcat::mcset zh_hans {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {适配器白名单（IRC_ALLOWED_USERS、TELEGRAM_ALLOWED_USERS）就是信任边界，所有被允许的发送者都视为 owner。这是引入 ACL 之前的姿态。}
 ::msgcat::mcset zh_hans {The agent asks for a secret: %s} 智能体请求一个密钥：%s
+::msgcat::mcset zh_hans {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {已推送的分支将作为 PR 的 head 使用。你 fork 上的分支会自动命名为 owner:branch。}
+::msgcat::mcset zh_hans {The author asks} 作者询问
+::msgcat::mcset zh_hans {The buffer changed. Request a new proposal before applying.} 缓冲区已更改。应用前请请求新的提案。
 ::msgcat::mcset zh_hans {The bundle operation returned an invalid result. Verify the installation before retrying.} 包操作返回了无效结果。请在重试前验证安装。
 ::msgcat::mcset zh_hans {The bundle preview was malformed; nothing was installed.} 包预览格式错误；未安装任何内容。
 ::msgcat::mcset zh_hans {The camera did not open; paste the code instead.} 相机无法打开；请改为粘贴代码。
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset zh_hans {The component manifest is still loading. Wait for it or choose another component.} 组件清单仍在加载。请等待或选择另一个组件。
 ::msgcat::mcset zh_hans {The component preview is not ready yet. Refresh it and review the result before applying.} 组件预览尚未就绪。请先刷新并查看结果，然后再应用。
 ::msgcat::mcset zh_hans {The component preview is still loading. Wait for the reply before reviewing the combined changes.} 组件预览仍在加载。请在查看合并后的变更前等待响应。
+::msgcat::mcset zh_hans {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} 当前诊断（来自语言服务器或「检查」）会随此文件一起发送。可选择添加一个问题。回答仅为文本；无法写入任何内容。
 ::msgcat::mcset zh_hans {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {目录及其中的所有内容都将被删除。此操作不可撤销 — 如果只想让它从提示中消失，请改为将其关闭。}
 ::msgcat::mcset zh_hans {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {目录将被删除。插件文件夹是一个 git 仓库，会先提交快照，因此 History… 可以将其恢复。}
+::msgcat::mcset zh_hans {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {编辑器可打开网关文件（包括远程实例），并在网关上运行该文件语言对应的语言服务器：tcl-lsp、typescript-language-server（TypeScript 与 JavaScript）、rust-analyzer（Rust 插件 crate 或模块）、clangd（C）、racket-langserver 以及 Common Lisp 服务器。只要网关有对应的服务器，悬停提示、跳转到定义、补全和实时诊断对每种语言都可用；若没有，编辑器会提示需要在那边安装哪个程序，并保留语法高亮。「检查」会在网关上运行相应的检查器：tcl-lsp、tsc --noEmit、node --check、cargo check、clang -fsyntax-only，或 Racket 与 Lisp 的读取器。保存、在「管理扩展」中重新加载，以及测试扩展都不会发布本地状态。}
 ::msgcat::mcset zh_hans {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {第一次 handoff 会准备密钥、固定镜像和运行时文件，但不会启动 PDS。请离线备份 KEK 和 PLC 轮换密钥，然后提交一份经过重新审查并附带备份确认的请求，以设置 HTTP-01 TLS 并激活 PDS。DNS 记录必须直接指向本主机；veles 不会配置 CDN 代理或修改 DNS。}
+::msgcat::mcset zh_hans {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} 表单在扩展生成后发生了更改。请重新生成，或预览纯脚手架。
 ::msgcat::mcset zh_hans {The gateway itself is untouched.} 网关本身不受影响。
 ::msgcat::mcset zh_hans {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {网关已重新加载配置，新会话会立即使用它，存入保险库的密钥会被下一个请求使用。Telegram 和 IRC 将在网关下次重启时启动：veles gateway restart。}
 ::msgcat::mcset zh_hans {The installed component no longer matches the selected manifest. Review the component list again.} 已安装的组件与所选清单不再匹配。请重新查看组件列表。
 ::msgcat::mcset zh_hans {The installer preview has no verification signatures; apply is disabled.} 安装程序预览没有验证签名；应用已禁用。
 ::msgcat::mcset zh_hans {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {任务及其运行历史将被删除。此操作不可撤销 — 如果只想让它停止，请改为暂停。}
+::msgcat::mcset zh_hans {The log could not be read: %s} 无法读取日志：%s
 ::msgcat::mcset zh_hans {The manifest belongs to another component; its reply was discarded.} 该清单属于另一个组件；其响应已被丢弃。
 ::msgcat::mcset zh_hans {The profile changed. Review the fresh plan before applying it.} 配置文件已更改。在应用之前，请先查看最新计划。
 ::msgcat::mcset zh_hans {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {仓库需要在根目录或一级分类下包含 SKILL.md。它将存放于 %s。}
 ::msgcat::mcset zh_hans {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {仓库根目录必须包含 plugin.toml。它将按清单名称克隆到 %s。}
+::msgcat::mcset zh_hans {The reviewed change set was applied (%d files). Review and test it before publishing.} {已应用审阅过的更改集（%d 个文件）。发布前请先审阅并测试。}
 ::msgcat::mcset zh_hans {The reviewed configuration snapshot will also be restored.} 已审核的配置快照也将被恢复。
+::msgcat::mcset zh_hans {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {已审阅的文件将写入你的用户插件目录。Veles 会保存本地恢复快照并尝试重新加载扩展；此操作不包括发布。}
+::msgcat::mcset zh_hans {The reviewed proposal was applied locally. Review and test it before publishing.} 已审阅的提案已在本地应用。发布前请检查并测试。
 ::msgcat::mcset zh_hans {The rollback preview was malformed or named another component; nothing was restored.} 回滚预览格式错误或命名了另一个组件；未恢复任何内容。
 ::msgcat::mcset zh_hans {The rollback returned an invalid result. Verify the installation before retrying.} 回滚返回了无效结果。请在重试前验证安装。
 ::msgcat::mcset zh_hans {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {新会话默认使用的路线。之后可以用 /model 和模型面板修改，按会话改或设为新的默认。}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset zh_hans {The signed download discard returned an invalid response; no installation was requested.} 已签名下载的丢弃操作返回无效响应；未请求安装。
 ::msgcat::mcset zh_hans {The signed installation returned an invalid result. Verify the installation before retrying.} 已签名安装返回无效结果。请在重试前验证安装状态。
 ::msgcat::mcset zh_hans {The signed release preview was malformed; nothing was installed.} 已签名发布预览格式错误；未安装任何内容。
+::msgcat::mcset zh_hans {The source buffer changed. Request a new proposal before applying.} 源缓冲区已更改。应用前请请求新的提案。
 ::msgcat::mcset zh_hans {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} 存储回退一个修订。回滚本身也是一个修订，因此可以继续撤销。
+::msgcat::mcset zh_hans {The translator returned no text.} 翻译器未返回文本。
 ::msgcat::mcset zh_hans {The verification reply was malformed; no integrity result was accepted.} 验证响应格式错误；未接受任何完整性结果。
 ::msgcat::mcset zh_hans Themes 主题
+::msgcat::mcset zh_hans {These paths already exist in the chosen repository:} 所选仓库中已存在这些路径：
 ::msgcat::mcset zh_hans {They have not been saved.} 它们尚未保存。
+::msgcat::mcset zh_hans {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} 此缓冲区没有可解释的诊断信息。请运行「检查」，或等待语言服务器。
 ::msgcat::mcset zh_hans {This challenge is over.} 此验证已结束。
 ::msgcat::mcset zh_hans {This code has expired. Ask for a new one.} 此二维码已过期。请索取新的。
 ::msgcat::mcset zh_hans {This does not start a service or claim signed-download verification.} 这不会启动服务，也不声称经过签名下载验证。
 ::msgcat::mcset zh_hans {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {此网关不接受来自这台机器的密钥值：请在网关所在机器上用 veles secret set %s 输入，或把这个网络加入它的 [vault] trusted_networks}
 ::msgcat::mcset zh_hans {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} 这就是将要写入的内容——引擎自己生成的字节，实时取来的。还没有碰过磁盘。
+::msgcat::mcset zh_hans {This node is not a configured sync peer for any kind.} 此节点未配置为任何类型的同步对等节点。
+::msgcat::mcset zh_hans {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} 此插件为随附只读版本。删除同名的用户副本即可改用随附版本。
+::msgcat::mcset zh_hans {This publishes the commit; no pull request is created yet.} {这会发布该提交；尚未创建 PR。}
 ::msgcat::mcset zh_hans {This review expires after %s seconds. Closing or cancelling discards its private staging.} {此审核将在 %s 秒后过期。关闭或取消都会丢弃其私有暂存。}
 ::msgcat::mcset zh_hans {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {此向导会写入 config.toml，并把你提供的密钥放进加密保险库。每一步都可以跳过：跳过的步骤不会写入新配置，在已有配置中则保持原样。已有的 config.toml 会就地编辑——只有你回答的部分会改变，其余内容（包括注释）都会保留。}
 ::msgcat::mcset zh_hans {Ticket needed} 需要票据
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset zh_hans {Topic for %s} {%s 的主题}
 ::msgcat::mcset zh_hans {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} 长按会话或任何带菜单的东西即可打开菜单。点按菜单外部或按返回即可关闭。
 ::msgcat::mcset zh_hans {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} 长按一个词即可选中它。抬起手指时会打开它的菜单，最上面是“复制”。
+::msgcat::mcset zh_hans Translate 翻译
+::msgcat::mcset zh_hans {Translate selection} 翻译所选
+::msgcat::mcset zh_hans Translating… 翻译中…
+::msgcat::mcset zh_hans {Translation cancelled.} 翻译已取消。
+::msgcat::mcset zh_hans {Translation copied.} 翻译已复制。
+::msgcat::mcset zh_hans {Translation failed} 翻译失败
+::msgcat::mcset zh_hans {Translation result} 翻译结果
+::msgcat::mcset zh_hans {Translator configuration unavailable} 翻译器配置不可用
 ::msgcat::mcset zh_hans {Trigger history} 触发器历史
 ::msgcat::mcset zh_hans Triggers 触发器
 ::msgcat::mcset zh_hans {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {触发器无需一轮对话即可响应频道事件。slopdrop 将事件转发给桥接器并转达回复；vision 在冷却期和每小时上限内描述图片 URL。该行仅在 [triggers] 配置开关与派生掩码都允许时才触发 — 在当前生效的 slopdrop 绑定下，#coven 不转发任何内容。}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset zh_hans {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {在 .env 中的 IRC_ALLOWED_USERS 写上你的账号之前，网络上的任何人都能与机器人对话——没有 [acl] 段时以所有者身份，拥有全部工具。}
 ::msgcat::mcset zh_hans {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {在 .env 中的 TELEGRAM_ALLOWED_USERS 写上你的用户 ID 之前，任何找到机器人的人都能与它对话——没有 [acl] 段时以所有者身份，拥有全部工具。}
 ::msgcat::mcset zh_hans Untitled 无标题
+::msgcat::mcset zh_hans {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {向上游贡献是明确的发布操作，不是自动上传。在「管理扩展」中，「贡献」会列出所有用户扩展：选择扩展和文件，检查 diff 与密钥扫描结果，运行检查，然后用你选定的 git 身份创建一个分支和一个 PR（默认发往 veles）。每个扩展位于仓库中各自的目录下，其中已存在的文件只有在另行确认后才会被替换。绝不要发布 node.toml、本地凭据、令牌、私有端点或无关的插件状态。本地恢复快照不是上游提交，也不是 PR。}
+::msgcat::mcset zh_hans {Upstream repository or fork URL} {上游仓库或派生仓库 URL}
+::msgcat::mcset zh_hans {Uptime class} 运行时长等级
+::msgcat::mcset zh_hans {Uptime: host %1$s, gateway %2$s} {运行时长：主机 %1$s，网关 %2$s}
 ::msgcat::mcset zh_hans Usage 用量
 ::msgcat::mcset zh_hans {Usage & Quota} 用量与配额
 ::msgcat::mcset zh_hans {Use TLS} {使用 TLS}
 ::msgcat::mcset zh_hans {Use now} 立即使用
+::msgcat::mcset zh_hans {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {请使用「作者指南」和「API 参考」按钮查看实际接口约定。「插件」浮层会列出实时钩子；服务和覆盖点来自网关自身的注册表，而不是本指南中复制的列表。}
 ::msgcat::mcset zh_hans {Use this ticket} 使用此票据
+::msgcat::mcset zh_hans {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {除非你能直接推送到 veles 本身，否则请使用你的 fork（https://github.com/<you>/veles.git 或 git@github.com:<you>/veles.git）。所选仓库会被克隆到一个隔离的工作树中。不会推送任何内容。}
 ::msgcat::mcset zh_hans {Users — one role across networks and platforms} {用户 — 跨网络与平台的单一角色}
 ::msgcat::mcset zh_hans {Using the phone, for the agent} 操作手机（供代理使用）
 ::msgcat::mcset zh_hans {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {通常和 provider 条目名相同。选跳过时两项都留空——只填一半是无法路由的。}
 ::msgcat::mcset zh_hans {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {值为 TOML：带引号的字符串、数字或列表。将写入 [mcp_servers.<name>] — 你的注释和其他所有部分保持不变。}
+::msgcat::mcset zh_hans Vault 保险库
 ::msgcat::mcset zh_hans {Verified signed bundle installed. Restart the gateway before using the new core.} 已验证的已签名包已安装。使用新核心前请重启网关。
 ::msgcat::mcset zh_hans {Verified signed release — not installed yet} {已验证已签名发布 — 尚未安装}
 ::msgcat::mcset zh_hans {Verify and review release…} 验证并审核发布…
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset zh_hans {Verify signed release} 验证已签名发布
 ::msgcat::mcset zh_hans {Verify signed release…} 验证已签名发布…
 ::msgcat::mcset zh_hans Version 版本
+::msgcat::mcset zh_hans {Version %1$s: %2$s} {版本 %1$s：%2$s}
+::msgcat::mcset zh_hans {Version drift in the registry: %s} 注册表中的版本漂移：%s
 ::msgcat::mcset zh_hans View 视图
 ::msgcat::mcset zh_hans {View markdown source} {查看 Markdown 源码}
 ::msgcat::mcset zh_hans {View source / rendered} {源码 / 渲染视图}
 ::msgcat::mcset zh_hans Voice 给予发言权
+::msgcat::mcset zh_hans {Waiting for the model…} 正在等待模型…
+::msgcat::mcset zh_hans {Waiting for the model… Nothing has been written.} {正在等待模型… 尚未写入任何内容。}
 ::msgcat::mcset zh_hans {Welcome to veles} {欢迎使用 veles}
 ::msgcat::mcset zh_hans {What the agent can do here} 智能体在这里能做什么
 ::msgcat::mcset zh_hans {What veles may do on this phone. Each button opens the Android setting that changes it.} {veles 在这部手机上可以做什么。每个按钮都会打开更改该项的 Android 设置。}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset zh_hans {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} veles在后台时，代理的提问或已完成的一轮会以通知形式出现；点按即可打开该会话。
 ::msgcat::mcset zh_hans {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {谁可以和机器人对话。这个选择决定了 config.toml 里到底有没有 [acl] 段——而这会翻转整个安全姿态。}
 ::msgcat::mcset zh_hans Whois Whois
-::msgcat::mcset zh_hans {Wire protocol (chat_completions or responses)} {线路协议（chat_completions 或 responses）}
+::msgcat::mcset zh_hans {Wire protocol (chat_completions, responses or plugin)} {线路协议（chat_completions、responses 或 plugin）}
 ::msgcat::mcset zh_hans {With a keyboard attached, every key works as on a laptop.} 连接键盘后，每个按键的作用都与在笔记本电脑上相同。
 ::msgcat::mcset zh_hans {Workflow SHA} {工作流 SHA}
+::msgcat::mcset zh_hans {Workflow commit} 工作流提交
+::msgcat::mcset zh_hans Worktree 工作树
 ::msgcat::mcset zh_hans {Write it} 写入
+::msgcat::mcset zh_hans {Write the design question first.} 请先写下设计问题。
 ::msgcat::mcset zh_hans {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {不写入任何 provider。在 [[custom_providers]] 条目和 [model] 配对齐之前，网关不会路由任何一轮对话。}
 ::msgcat::mcset zh_hans {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {写入任何 [acl] 键都会把此网关切换到受控模式：默认角色变为 guest（fail-closed），允许列表不再是边界。只有在拥有可信的所有者身份时才选择此项。}
 ::msgcat::mcset zh_hans {[model] provider} {[model] provider}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset zh_hans {also list hooks with no handler} 也列出无处理器的钩子
 ::msgcat::mcset zh_hans {also write grants that still have an expiry} 也写入仍带有效期的授权
 ::msgcat::mcset zh_hans {also write runtime users} 也写入运行时用户
+::msgcat::mcset zh_hans {an allowlist entry is removed by editing config.toml} {允许列表条目需通过编辑 config.toml 移除}
 ::msgcat::mcset zh_hans {an allowlist is in force: a plugin not on it stays off} 白名单已生效：不在白名单上的插件保持关闭
 ::msgcat::mcset zh_hans {answer failed: %s} {回复失败: %s}
+::msgcat::mcset zh_hans {answer only, nothing to apply} 仅回答，无可应用的内容
 ::msgcat::mcset zh_hans {append these rules to config.toml} {将这些规则追加到 config.toml}
 ::msgcat::mcset zh_hans {apply failed: %s} {应用失败: %s}
 ::msgcat::mcset zh_hans {apply to:} 应用于：
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {ask the agent} 询问智能体
 ::msgcat::mcset zh_hans {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset zh_hans {asked by: %s} 提问方：%s
+::msgcat::mcset zh_hans {asking %s for its metrics…} {正在向 %s 请求指标…}
 ::msgcat::mcset zh_hans {attach a file} 附加文件
 ::msgcat::mcset zh_hans {attach an image or file} 附加图片或文件
 ::msgcat::mcset zh_hans {attach failed: %1$s} {附加失败：%1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset zh_hans {attached %1$s (%2$s pending)} {已附加 %1$s (%2$s 待处理)}
 ::msgcat::mcset zh_hans {attached to %s} {已附加到 %s}
 ::msgcat::mcset zh_hans {attached to child session %1$s} {已附加到子会话 %1$s}
+::msgcat::mcset zh_hans automatic 自动
 ::msgcat::mcset zh_hans {aux model} 辅助模型
 ::msgcat::mcset zh_hans {aux provider} 辅助提供商
+::msgcat::mcset zh_hans available 可用
 ::msgcat::mcset zh_hans {available components} 可用组件
 ::msgcat::mcset zh_hans {back up N user turns} {回退 N 个用户回合}
 ::msgcat::mcset zh_hans {backed up the previous config to %s} {已把原配置备份到 %s}
 ::msgcat::mcset zh_hans {background shells; /shells output|kill <id>} {后台 shell；/shells output|kill <id>}
+::msgcat::mcset zh_hans {backing off: %1$s failure(s), next automatic try in %2$s s} {退避中：%1$s 次失败，下次自动尝试在 %2$s 秒后}
 ::msgcat::mcset zh_hans {bad host for %1$s: %2$s} {%1$s 的主机无效: %2$s}
 ::msgcat::mcset zh_hans {bad unit for %1$s: %2$s} {%1$s 的单元无效: %2$s}
 ::msgcat::mcset zh_hans {bare display off} 纯显示关闭
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset zh_hans {browse the filesystem} 浏览文件系统
 ::msgcat::mcset zh_hans {browse the repo's files} 浏览仓库文件
 ::msgcat::mcset zh_hans {builtin (%s):} 内置（%s）：
+::msgcat::mcset zh_hans bundled 随附版
+::msgcat::mcset zh_hans {bundled, read-only} 随附版，只读
 ::msgcat::mcset zh_hans by 来源
 ::msgcat::mcset zh_hans {by plan — all sessions} {按计划 — 所有会话}
 ::msgcat::mcset zh_hans {by plan — this session} {按计划 — 本会话}
 ::msgcat::mcset zh_hans {by tool} 按工具
 ::msgcat::mcset zh_hans {cancel failed: %1$s} {取消失败: %1$s}
 ::msgcat::mcset zh_hans {cancel the running turn} 取消运行中的回合
+::msgcat::mcset zh_hans {cancel the selected task} 取消所选任务
 ::msgcat::mcset zh_hans {cancelled task %1$s} {已取消任务 %1$s}
 ::msgcat::mcset zh_hans {cannot list scripts (gateway offline?)} {无法列出脚本 (网关离线？)}
 ::msgcat::mcset zh_hans {cannot reach the gateway: %s} 无法连接网关：%s
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset zh_hans commit 提交
 ::msgcat::mcset zh_hans {compacting %s messages in the background — the transcript reloads when it finishes} {正在后台压缩 %s 条消息——完成后会重新加载会话记录}
 ::msgcat::mcset zh_hans compacting… 正在压缩…
+::msgcat::mcset zh_hans {comparing the nodes' versions and config…} 正在比较各节点的版本与配置…
 ::msgcat::mcset zh_hans {completion tokens} {补全 tokens}
 ::msgcat::mcset zh_hans {component options and declared actions} 组件选项和声明的操作
 ::msgcat::mcset zh_hans composer 输入框
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {could not open %s} {无法打开 %s}
 ::msgcat::mcset zh_hans {could not open %s (no working browser opener)} {无法打开 %s (没有可用的浏览器启动器)}
 ::msgcat::mcset zh_hans {could not open %{url}: %{e}} {无法打开 %{url}: %{e}}
+::msgcat::mcset zh_hans {could not open the optional referral link: %s} 无法打开可选推荐链接：%s
 ::msgcat::mcset zh_hans {could not read %s: %s} {无法读取 %s：%s}
 ::msgcat::mcset zh_hans {could not read the current route} 无法读取当前路由
 ::msgcat::mcset zh_hans {could not save this session's language: %{e}} 无法保存本会话的语言：%{e}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {ctxmenu: no widget %s (attached too early?)} {ctxmenu: 没有控件 %s (附加过早？)}
 ::msgcat::mcset zh_hans {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {选择了受控访问但没有所有者身份，因此 [acl] 保持未启用——填写一个（例如 telegram:123456 或 irc:account）即可启用}
 ::msgcat::mcset zh_hans {current theme: %{name} · /theme <name>} {当前主题：%{name} · /theme <name>}
+::msgcat::mcset zh_hans {cursor %1$s of %2$s (%3$s behind)} {游标 %1$s / %2$s（落后 %3$s）}
 ::msgcat::mcset zh_hans {custom command /%s…} {自定义命令 /%s…}
 ::msgcat::mcset zh_hans {custom commands (.veles/commands/) and config aliases} 自定义命令（.veles/commands/）和配置中的别名
 ::msgcat::mcset zh_hans {cycle ends} 周期结束
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset zh_hans doctor_resident {每次提示常驻：%{shown} / %{total} 字符（约 %{tokens} tokens）— 其余按需加载：memory action=read path=%{path}}
 ::msgcat::mcset zh_hans doctor_title 记忆诊断
 ::msgcat::mcset zh_hans doctor_total {总计：%{chars} 字符，%{files} 个文件（约 %{tokens} tokens）}
+::msgcat::mcset zh_hans {documentation is not in this source checkout: %s} 此源代码检出中不包含文档：%s
 ::msgcat::mcset zh_hans done 完成
 ::msgcat::mcset zh_hans {done · %1$s/%2$s} {完成 · %1$s/%2$s}
 ::msgcat::mcset zh_hans {done, but the model returned no text} 已完成，但模型没有返回文本
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset zh_hans {evaluate Tcl and answer with the result — no model turn} {执行 Tcl 并以结果作答 — 不调用模型}
 ::msgcat::mcset zh_hans everyone 所有人
 ::msgcat::mcset zh_hans everywhere 所有网络
+::msgcat::mcset zh_hans {exchanging registry gossip…} {正在交换注册表 Gossip…}
 ::msgcat::mcset zh_hans exit 退出
 ::msgcat::mcset zh_hans {exit veles-desktop} {退出 veles-desktop}
 ::msgcat::mcset zh_hans {export failed: %s} 导出失败：%s
 ::msgcat::mcset zh_hans {export session} 导出会话
 ::msgcat::mcset zh_hans {exported to %s} {已导出到 %s}
+::msgcat::mcset zh_hans {extension architecture, examples and LSP help} {扩展架构、示例和 LSP 帮助}
+::msgcat::mcset zh_hans {extension development guide} 扩展开发指南
+::msgcat::mcset zh_hans failed 失败
 ::msgcat::mcset zh_hans {failed to load history: %s} 加载历史失败：%s
 ::msgcat::mcset zh_hans {failed to paint cached history: %s} 渲染缓存历史失败：%s
 ::msgcat::mcset zh_hans {failed to paint replayed history: %s} 渲染重放历史失败：%s
 ::msgcat::mcset zh_hans {failed: %s} 失败：%s
+::msgcat::mcset zh_hans {failing — heartbeating, but a sync push or the last probe failed} {异常 — 心跳正常，但同步推送或上次探测失败}
 ::msgcat::mcset zh_hans {failover blueprint: cannot reach the gateway} {failover 蓝图：无法连接网关}
 ::msgcat::mcset zh_hans {failover graph unavailable: %1$s} {故障转移图不可用：%1$s}
 ::msgcat::mcset zh_hans {failover script: cannot reach the gateway} {failover 脚本：无法连接网关}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {fire the Tcl hook} {触发 Tcl 钩子}
 ::msgcat::mcset zh_hans {fires for %s:} {在 %s 时触发：}
 ::msgcat::mcset zh_hans {fires per hour} 每小时触发
+::msgcat::mcset zh_hans {fleet drift} 机群漂移
 ::msgcat::mcset zh_hans {focus composer} 聚焦编辑器
 ::msgcat::mcset zh_hans {focus failed: %{e}} 聚焦失败：%{e}
 ::msgcat::mcset zh_hans {focus next region} 聚焦下一个区域
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset zh_hans {four splits is the maximum} 最多四个分屏
 ::msgcat::mcset zh_hans {fresh session} 新会话
 ::msgcat::mcset zh_hans {fresh session (Ctrl-N too)} {新会话（也可按 Ctrl-N）}
+::msgcat::mcset zh_hans {fresh — heartbeating, sync passing} {正常 — 心跳正常，同步通过}
+::msgcat::mcset zh_hans from 从
 ::msgcat::mcset zh_hans {from node %{node}} {来自节点 %{node}}
 ::msgcat::mcset zh_hans {gateway     v%1$s · up %2$s} {网关     v%1$s · 已运行 %2$s}
 ::msgcat::mcset zh_hans {gateway unreachable — is `veles gateway run` up?} {网关无法访问 — `veles gateway run` 在运行吗？}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {in %s} {%s 后}
 ::msgcat::mcset zh_hans {insert the next key literally (^B bold, ^C colour, ^O reset)} {字面插入下一个按键（^B 粗体、^C 颜色、^O 重置）}
 ::msgcat::mcset zh_hans {inserted %s} {已插入 %s}
+::msgcat::mcset zh_hans {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {检查集群；显式推送/应用存储、记忆、配置或保险库同步；在机群范围内遗忘陈旧节点；读取节点的日志尾部或指标；比较版本与配置；立即 Gossip}
 ::msgcat::mcset zh_hans {inspector — app internals · core state · gw plugins} {检查器 — 应用内部 · 核心状态 · gw 插件}
 ::msgcat::mcset zh_hans {install a plugin from a git URL} {从 Git URL 安装插件}
 ::msgcat::mcset zh_hans {install a skill from a git URL} {从 Git URL 安装技能}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset zh_hans instance 实例
 ::msgcat::mcset zh_hans {instance controls} 实例控制
 ::msgcat::mcset zh_hans {instance detail} 实例详情
+::msgcat::mcset zh_hans {instance names may not start with "cluster:" or "g:": %s} {实例名称不能以 "cluster:" 或 "g:" 开头：%s}
 ::msgcat::mcset zh_hans {instance needs a name} 实例需要名称
 ::msgcat::mcset zh_hans {instance unreachable} 实例无法访问
 ::msgcat::mcset zh_hans instances 实例
 ::msgcat::mcset zh_hans interrupting… 正在中断…
+::msgcat::mcset zh_hans into 到
 ::msgcat::mcset zh_hans {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset zh_hans {irc: %s} irc：%s
 ::msgcat::mcset zh_hans {irc: %s failed — %s} {irc：%s 失败 — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset zh_hans {language list} 语言列表
 ::msgcat::mcset zh_hans {language picker (the swap for THIS window)} 语言选择器（仅切换本窗口）
 ::msgcat::mcset zh_hans {language saved: %s} 语言已保存：%s
+::msgcat::mcset zh_hans {language server} 语言服务器
+::msgcat::mcset zh_hans {language server: event stream unavailable: %s} 语言服务器：事件流不可用：%s
+::msgcat::mcset zh_hans {language server: not started on the gateway — %s} {语言服务器：未在网关上启动 — %s}
+::msgcat::mcset zh_hans {language server: the gateway would not start one: %s} 语言服务器：网关未能启动它：%s
 ::msgcat::mcset zh_hans {language swapped: %1$s ⇄ %2$s} {语言已互换：%1$s ⇄ %2$s}
 ::msgcat::mcset zh_hans {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {语言 → %1$s（原为 %2$s）· 仅当前窗口 — “保存为默认”会写入 config.toml}
 ::msgcat::mcset zh_hans {language: %s} 语言：%s
 ::msgcat::mcset zh_hans {last error} 上次错误
+::msgcat::mcset zh_hans {last pass %1$s at %2$s: %3$s} {上次完成 %1$s 于 %2$s：%3$s}
 ::msgcat::mcset zh_hans {last reply copied (%s chars)} {已复制最后一条回复（共 %s 个字符）}
 ::msgcat::mcset zh_hans {layout not saved: %s} 布局未保存：%s
 ::msgcat::mcset zh_hans {leave (cancels a running turn first)} 离开（先取消运行中的回合）
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {list sessions} 列出会话
 ::msgcat::mcset zh_hans {list skills} 列出技能
 ::msgcat::mcset zh_hans {list tools} 列出工具
+::msgcat::mcset zh_hans {listed here only; [notify] fleet_alerts is off} {仅在此列出；[notify] fleet_alerts 已关闭}
 ::msgcat::mcset zh_hans {live patching ARMED} 实时补丁已启用
 ::msgcat::mcset zh_hans {live patching ARMED — an agent can now redefine procs in this window} {实时补丁已启用 — 代理现在可以在本窗口重新定义 proc}
 ::msgcat::mcset zh_hans {live patching disarmed} 实时补丁已停用
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset zh_hans {log pane shown} 日志面板已显示
 ::msgcat::mcset zh_hans {log: %s} 日志：%s
 ::msgcat::mcset zh_hans {make media: image/video/audio, route = comfyui or provider[/model]} {生成媒体：image/video/audio，路由 = comfyui 或 provider[/model]}
+::msgcat::mcset zh_hans {managed via %s} {通过 %s 管理}
+::msgcat::mcset zh_hans {manual only} 仅手动
 ::msgcat::mcset zh_hans {mark set} 已设标记
 ::msgcat::mcset zh_hans {mark whole buffer (emacs select-all)} {标记整个缓冲区（emacs 全选）}
 ::msgcat::mcset zh_hans {markdown preview of the composer} {输入框的 Markdown 预览}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset zh_hans model 模型
 ::msgcat::mcset zh_hans {model aliases} 模型别名
 ::msgcat::mcset zh_hans {monitor %1$s fired} {监视器 %1$s 已触发}
-::msgcat::mcset zh_hans monitors 监视器
 ::msgcat::mcset zh_hans monitors_header 监视器：
 ::msgcat::mcset zh_hans monitors_none {（没有监视器 — 模型通过 monitor tool 启动它们）}
 ::msgcat::mcset zh_hans {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} 在回合边界将一个会话(及其子树)移动到另一个池节点；完成/撤销已停驻的交接；询问会话归属（管理员）
 ::msgcat::mcset zh_hans {move the running foreground command to the background} 把正在运行的前台命令移到后台
 ::msgcat::mcset zh_hans {move the running foreground command to the background (keeps running)} 将运行中的前台命令移到后台（继续运行）
+::msgcat::mcset zh_hans {move this session's running foreground command to a background shell; keeps running} {将本会话正在运行的前台命令移至后台 shell 并继续运行}
 ::msgcat::mcset zh_hans {moving around} 浏览
 ::msgcat::mcset zh_hans name 名称
 ::msgcat::mcset zh_hans {name a key first} 请先给键命名
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {neon impressionism} 霓虹印象主义
 ::msgcat::mcset zh_hans {network (optional — e.g. libera; empty = any)} {网络（可选 — 如 libera；留空 = 任意）}
 ::msgcat::mcset zh_hans {network to scope the grant to} 将授权限定到该网络
+::msgcat::mcset zh_hans new 新建
 ::msgcat::mcset zh_hans {new buffer} 新建缓冲区
 ::msgcat::mcset zh_hans {new entry — replace this text, then Save} {新条目 — 替换此文本，然后保存}
 ::msgcat::mcset zh_hans {new name for %s} {%s 的新名称}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {no IRC buffer selected} {未选择 IRC 缓冲区}
 ::msgcat::mcset zh_hans {no MCP servers configured — Add server… writes one into config.toml} {未配置 MCP 服务器 — “添加服务器…”会向 config.toml 写入一个}
 ::msgcat::mcset zh_hans {no URLs in this buffer} {此缓冲区中没有 URL}
+::msgcat::mcset zh_hans {no [a2a_agents] entry — this peer cannot be dialed} {没有 [a2a_agents] 条目 — 无法呼叫此对等节点}
 ::msgcat::mcset zh_hans {no alias /%s} {无别名 /%s}
 ::msgcat::mcset zh_hans {no background refresh} 无后台刷新
 ::msgcat::mcset zh_hans {no buffer %s} {无缓冲区 %s}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset zh_hans {no code block in the last reply} 最后一条回复中没有代码块
 ::msgcat::mcset zh_hans {no cron jobs} {没有 cron 任务}
 ::msgcat::mcset zh_hans {no cron jobs — New… creates one} {没有 cron 任务 — “新建…”即可创建}
+::msgcat::mcset zh_hans {no exchange yet} 尚未交换
 ::msgcat::mcset zh_hans {no file — pick a guts file or type a path} {没有文件 — 选一个内部文件，或直接输入路径}
 ::msgcat::mcset zh_hans {no handler} 无处理器
+::msgcat::mcset zh_hans {no heartbeat for %{mins} min} {已 %{mins} 分钟无心跳}
+::msgcat::mcset zh_hans {no heartbeat within the threshold} 在阈值时间内无心跳
 ::msgcat::mcset zh_hans {no history yet} 暂无历史
 ::msgcat::mcset zh_hans {no host configured for this instance} 此实例未配置主机
 ::msgcat::mcset zh_hans {no instance selected} 未选择实例
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset zh_hans {no program to open URLs} {没有可打开 URL 的程序}
 ::msgcat::mcset zh_hans {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {尚未配置提供商——运行一轮对话前，请添加 [[custom_providers]] 条目并设置 [model] 组合}
 ::msgcat::mcset zh_hans {no reading yet — press Refresh} {尚无读数 — 请按刷新}
-::msgcat::mcset zh_hans {no running tasks} 没有正在运行的任务
 ::msgcat::mcset zh_hans {no sample available} 没有可用示例
 ::msgcat::mcset zh_hans {no search bar on this surface} 此界面没有搜索栏
 ::msgcat::mcset zh_hans {no session matching %s} {没有与 %s 匹配的会话}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset zh_hans {no session open — switch the scope to the default, or open a session} {未打开会话 — 将作用域切换为默认，或打开一个会话}
 ::msgcat::mcset zh_hans {no session open — the catalogue needs one; the default scope still works from config.toml} {未打开会话 — 目录需要会话；默认作用域仍可从 config.toml 生效}
 ::msgcat::mcset zh_hans {no setting %s — try filter or bare} {没有设置 %s — 试试 filter 或直接名称}
+::msgcat::mcset zh_hans {no shells or monitors to show} 没有可显示的命令外壳或监视器
 ::msgcat::mcset zh_hans {no skills found} 未找到技能
 ::msgcat::mcset zh_hans {no such URL — /urls lists them} {没有此 URL — /urls 可列出它们}
 ::msgcat::mcset zh_hans {no such file: %s} 没有此文件：%s
 ::msgcat::mcset zh_hans {no swap target yet — set one with /locale secondary <id>} {还没有切换目标 — 用 /locale secondary <id> 设置}
+::msgcat::mcset zh_hans {no task selected} 未选择任务
 ::msgcat::mcset zh_hans {no triggers} 没有触发器
 ::msgcat::mcset zh_hans {no triggers — New… creates one} {没有触发器 — “新建…”即可创建}
 ::msgcat::mcset zh_hans {no upstream reading for %s} {%s 暂无上游数据}
 ::msgcat::mcset zh_hans {no word match} 词不匹配
 ::msgcat::mcset zh_hans {no xdg-open — path copied instead} {无 xdg-open — 已改为复制路径}
+::msgcat::mcset zh_hans {node log} 节点日志
 ::msgcat::mcset zh_hans {none loaded} 未加载任何内容
 ::msgcat::mcset zh_hans {none recorded} 无记录
+::msgcat::mcset zh_hans {none since this gateway started} 自此网关启动以来没有
 ::msgcat::mcset zh_hans {none yet} 暂无
 ::msgcat::mcset zh_hans {normie is pure Ctrl — no emacs prefix chords.} {normie 是纯 Ctrl —— 没有 emacs 前缀和弦。}
 ::msgcat::mcset zh_hans {normie: select all · emacs: start of line} {normie：全选 · emacs：行首}
 ::msgcat::mcset zh_hans {not a channel} 不是频道
 ::msgcat::mcset zh_hans {not a key = value line: %s} {不是 键 = 值 行：%s}
+::msgcat::mcset zh_hans {not a node in the attached gateway's cluster registry: %s} 不是已附加网关的集群注册表中的节点：%s
 ::msgcat::mcset zh_hans {not a number} 不是数字
 ::msgcat::mcset zh_hans {not a valid http(s) url: %s} {不是有效的 http(s) 地址：%s}
 ::msgcat::mcset zh_hans {not a valid ssh host: %s} {不是有效的 ssh 主机：%s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {not attached to a gateway} 未连接到网关
 ::msgcat::mcset zh_hans {not configured} 未配置
 ::msgcat::mcset zh_hans {not ignoring %s} {未忽略 %s}
+::msgcat::mcset zh_hans {not installed} 未安装
 ::msgcat::mcset zh_hans {not reported} 未报告
 ::msgcat::mcset zh_hans {not running} 未运行
 ::msgcat::mcset zh_hans {not set in config.toml — the built-in default applies. %s} {未在 config.toml 中设置 — 应用内置默认值。%s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset zh_hans off 关
 ::msgcat::mcset zh_hans {off (the default)} 关（默认）
 ::msgcat::mcset zh_hans offline 离线
+::msgcat::mcset zh_hans ok 正常
 ::msgcat::mcset zh_hans on 开
 ::msgcat::mcset zh_hans {on (the default)} 开（默认）
 ::msgcat::mcset zh_hans {on failure} 失败时
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {open links} 打开链接
 ::msgcat::mcset zh_hans {open the engine log} 打开引擎日志
 ::msgcat::mcset zh_hans {open the joined session before /leave (on %s)} {请先打开加入的会话再 /leave（在 %s 上）}
+::msgcat::mcset zh_hans {open the selected child session} 打开所选子会话
 ::msgcat::mcset zh_hans {open the selected skill in the Dev editor} {在 Dev 编辑器中打开所选技能}
 ::msgcat::mcset zh_hans {open the setup wizard (re-runnable; edits config.toml in place)} {打开设置向导（可重复运行；就地编辑 config.toml）}
 ::msgcat::mcset zh_hans {open the share sheet} 打开分享面板
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {override cleared — the default applies} {已清除覆盖 — 采用默认值}
 ::msgcat::mcset zh_hans {override failed: %s} 覆盖失败：%s
 ::msgcat::mcset zh_hans {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {所有者身份 %{id} 无法被 ACL 匹配——请使用 telegram:<数字 ID>、irc:<services 账号> 或 nick!user@host 掩码}
+::msgcat::mcset zh_hans owner/repository 所有者/仓库
 ::msgcat::mcset zh_hans {owners: %s} 所有者：%s
 ::msgcat::mcset zh_hans {pair a desktop with this agent} 将桌面端与此智能体配对
 ::msgcat::mcset zh_hans {partly failed: %s} 部分失败：%s
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset zh_hans plugin 插件
 ::msgcat::mcset zh_hans {plugin directory git history} {插件目录的 git 历史}
 ::msgcat::mcset zh_hans {plugin list} 插件列表
+::msgcat::mcset zh_hans {plugin provider driver} 插件提供商驱动
 ::msgcat::mcset zh_hans {plugins reloaded on %s} {%s 上的插件已重新加载}
 ::msgcat::mcset zh_hans {pop %s out into its own window} {将 %s 弹出为独立窗口}
 ::msgcat::mcset zh_hans {pop the buffer out into its own window} 将缓冲区弹出到独立窗口
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset zh_hans {prefix: window & dock commands} 前缀：窗口与停靠命令
 ::msgcat::mcset zh_hans {press Attach in the Instances tab} 在“实例”标签页中点击“附加”
 ::msgcat::mcset zh_hans preview 预览
+::msgcat::mcset zh_hans {preview an AI extension change and explicitly apply its diff} {预览 AI 对扩展的更改，并显式应用其差异}
 ::msgcat::mcset zh_hans {preview failed: %s} {预览失败: %s}
 ::msgcat::mcset zh_hans {previous buffer} 上一个缓冲区
 ::msgcat::mcset zh_hans {previous command was not a yank} {上一条命令不是 yank}
 ::msgcat::mcset zh_hans {previous match} 上一个匹配
 ::msgcat::mcset zh_hans {previous session} 上一个会话
+::msgcat::mcset zh_hans {probing %s…} {正在探测 %s…}
 ::msgcat::mcset zh_hans {proc body} {proc 正文}
 ::msgcat::mcset zh_hans {profile unavailable: %s} 配置档不可用：%s
 ::msgcat::mcset zh_hans profiles: 配置档：
 ::msgcat::mcset zh_hans prompt 提示词
 ::msgcat::mcset zh_hans {prompt breakdown} 提示词构成
 ::msgcat::mcset zh_hans {prompt tokens} {提示词 token}
+::msgcat::mcset zh_hans {proposal only, not applied} 仅生成提案，尚未应用
 ::msgcat::mcset zh_hans provider 提供方
 ::msgcat::mcset zh_hans {provider / model} {提供方 / 模型}
 ::msgcat::mcset zh_hans {provider base URL} {provider base URL}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {re-sync the slopdrop state mirror} {重新同步 slopdrop 状态镜像}
 ::msgcat::mcset zh_hans {read and set the clipboard} 读取和设置剪贴板
 ::msgcat::mcset zh_hans {read text aloud} 朗读文字
+::msgcat::mcset zh_hans {read-only: [approvals] allowlist} {只读：[approvals] 允许列表}
 ::msgcat::mcset zh_hans {read-only: this session lives on %1$s (as read at %2$s)} {只读：此会话位于 %1$s（读取于 %2$s）}
 ::msgcat::mcset zh_hans {read-only: this skill comes from the %s library} {只读：此技能来自 %s 库}
 ::msgcat::mcset zh_hans reasoning 推理
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {refused to open %s (only http, https, mailto)} {拒绝打开 %s (仅支持 http、https、mailto)}
 ::msgcat::mcset zh_hans {refused: %s} {已拒绝: %s}
 ::msgcat::mcset zh_hans {region copied} 已复制选区
+::msgcat::mcset zh_hans registered 已注册
 ::msgcat::mcset zh_hans {registry not saved: %s} {注册表未保存: %s}
 ::msgcat::mcset zh_hans {reload on %1$s failed: %2$s} {在 %1$s 上重载失败: %2$s}
 ::msgcat::mcset zh_hans {reload the mechanisms} 重新加载机制
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset zh_hans {resume a session (prefix ok)} 恢复会话（可用前缀）
 ::msgcat::mcset zh_hans {retry failed: %s} 重试失败：%s
 ::msgcat::mcset zh_hans {retrying last prompt…} 正在重试上一条提示…
+::msgcat::mcset zh_hans {review files for an explicit upstream contribution} 审阅文件，显式向上游提交贡献
+::msgcat::mcset zh_hans {review standing global and session tool permissions} 审阅长期全局与会话工具权限
 ::msgcat::mcset zh_hans revision 修订
 ::msgcat::mcset zh_hans {revision history} 修订历史
+::msgcat::mcset zh_hans {revoke refused} 撤销被拒绝
 ::msgcat::mcset zh_hans {revoke the selected identity's grant} 撤销所选身份的授权
 ::msgcat::mcset zh_hans role 角色
 ::msgcat::mcset zh_hans {role to grant} 要授予的角色
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {saved to %s} {已保存到 %s}
 ::msgcat::mcset zh_hans saved. 已保存。
 ::msgcat::mcset zh_hans {scaffold a new plugin} 生成新插件骨架
+::msgcat::mcset zh_hans {scaffold a user plugin and open it in this editor} 搭建用户插件并在此编辑器中打开
 ::msgcat::mcset zh_hans {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {定时任务；/crons add "<sched>" [session=<id>] <prompt>（别名 /cron）}
 ::msgcat::mcset zh_hans scope 作用域
 ::msgcat::mcset zh_hans script 脚本
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {select %s first} {请先选择 %s}
 ::msgcat::mcset zh_hans {select a checkpoint first} 请先选择检查点
 ::msgcat::mcset zh_hans {select a file, or New… to create one} {选择一个文件，或用新建… 创建一个}
+::msgcat::mcset zh_hans {select a grant first} 请先选择一项授权
 ::msgcat::mcset zh_hans {select a handler first} 请先选择处理器
 ::msgcat::mcset zh_hans {select a member first} 请先选择成员
 ::msgcat::mcset zh_hans {select a route} 选择一条路由
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset zh_hans {select an assignment first} 请先选择分配
 ::msgcat::mcset zh_hans {select an entry first} 请先选择条目
 ::msgcat::mcset zh_hans {select an identity first} 请先选择身份
+::msgcat::mcset zh_hans {selected task details and shell output} 所选任务详情和命令外壳输出
 ::msgcat::mcset zh_hans {selected: %s} {已选择: %s}
 ::msgcat::mcset zh_hans {send clipboard as prompt} 把剪贴板作为提示发送
 ::msgcat::mcset zh_hans {send failed: %s} 发送失败：%s
 ::msgcat::mcset zh_hans {send the message; while a turn runs, queue it as steering} 发送消息；回合运行时排队为转向指令
+::msgcat::mcset zh_hans sent 已发送
+::msgcat::mcset zh_hans {sent to the owner's home chat} 已发送到所有者的主聊天
 ::msgcat::mcset zh_hans server 服务器
 ::msgcat::mcset zh_hans {server buffers merged} 服务器缓冲区已合并
 ::msgcat::mcset zh_hans {server buffers separate} 服务器缓冲区独立
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset zh_hans {settings, one key = value per line} {设置，每行一个 key = value}
 ::msgcat::mcset zh_hans {setup_done marker NOT saved: %s} {setup_done 标记未保存：%s}
 ::msgcat::mcset zh_hans {shell %1$s finished} {shell %1$s 已完成}
-::msgcat::mcset zh_hans shells shell
+::msgcat::mcset zh_hans {shells, monitors and subagents} 命令外壳、监视器和子智能体
 ::msgcat::mcset zh_hans shells_header {后台 shell：}
 ::msgcat::mcset zh_hans shells_none {（没有后台 shell — /background <cmd> 启动一个）}
 ::msgcat::mcset zh_hans {show current configuration} 显示当前配置
 ::msgcat::mcset zh_hans {show every key in this mode} 显示此模式下的所有按键
 ::msgcat::mcset zh_hans {show or hide the session list} 显示或隐藏会话列表
 ::msgcat::mcset zh_hans {show or switch model (alias | model@provider | custom:<prov>)} {查看或切换模型（alias | model@provider | custom:<prov>）}
+::msgcat::mcset zh_hans {show selected shell output} 显示所选命令外壳输出
 ::msgcat::mcset zh_hans {show short messages} 显示简短消息
 ::msgcat::mcset zh_hans {show the model's reasoning blocks (same as /reasoning)} {显示模型的推理块（同 /reasoning）}
 ::msgcat::mcset zh_hans {show unclaimed} 显示未认领
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset zh_hans spend 消耗
 ::msgcat::mcset zh_hans {split: %s} {拆分: %s}
 ::msgcat::mcset zh_hans {ssh to %1$s failed: %2$s} {ssh 到 %1$s 失败: %2$s}
+::msgcat::mcset zh_hans {stale — no heartbeat within the threshold} {陈旧 — 在阈值内没有心跳}
+::msgcat::mcset zh_hans {standing global and session permission grants} 长期全局与会话权限授权
 ::msgcat::mcset zh_hans state 状态
 ::msgcat::mcset zh_hans {state       never reached} {状态       从未到达}
 ::msgcat::mcset zh_hans {state       reachable} {状态       可访问}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset zh_hans {stored in the encrypted vault (%1$s): %2$s} {已存入加密保险库（%1$s）：%2$s}
 ::msgcat::mcset zh_hans {stream handler: %s} {流处理器: %s}
 ::msgcat::mcset zh_hans {subagent %1$s finished} {子智能体 %1$s 已完成}
-::msgcat::mcset zh_hans subagents 子智能体
 ::msgcat::mcset zh_hans subagents_header 正在运行的子智能体：
 ::msgcat::mcset zh_hans subagents_none {（没有正在运行的子智能体 — /btw <prompt> 启动一个，或由模型使用 delegate_task）}
 ::msgcat::mcset zh_hans {suspend failed: %{e}} {挂起失败: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {switch the selected skill off} 停用选中的技能
 ::msgcat::mcset zh_hans {switch the selected skill on} 启用选中的技能
 ::msgcat::mcset zh_hans {switch to the %s tab} {切换到 %s 标签页}
+::msgcat::mcset zh_hans {sync requested: %s} 已请求同步：%s
 ::msgcat::mcset zh_hans {tab 1} {标签页 1}
 ::msgcat::mcset zh_hans {tab 2} {标签页 2}
 ::msgcat::mcset zh_hans {tab 3} {标签页 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset zh_hans tasks_none （没有运行中的任务）
 ::msgcat::mcset zh_hans tasks_not_found 没有此任务：%{id}
 ::msgcat::mcset zh_hans tasks_not_running {任务 %{id} 已经结束}
-::msgcat::mcset zh_hans {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset zh_hans {tcl-lsp: event stream unavailable: %s} {tcl-lsp: 事件流不可用: %s}
-::msgcat::mcset zh_hans {tcl-lsp: gateway would not start it: %s} {tcl-lsp: 网关拒绝启动它: %s}
-::msgcat::mcset zh_hans {tcl-lsp: not started on the gateway — %s} {tcl-lsp: 未在网关上启动 — %s}
 ::msgcat::mcset zh_hans {that buffer is not split} 该缓冲区未拆分
 ::msgcat::mcset zh_hans {the %s plan} {%s 计划}
 ::msgcat::mcset zh_hans {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {API 密钥字段填写的是环境变量的名称（例如 %{example}），而不是密钥本身 — 密钥请填入隐藏字段}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset zh_hans {the gateway answered without a report} 网关响应中没有报告
 ::msgcat::mcset zh_hans {the model/provider pair is incomplete — the gateway will not route until both are present} 模型/提供商组合不完整——两者都填写之前网关不会路由
 ::msgcat::mcset zh_hans {the options changed, so that is a fresh preview — press “Write it” again to write it} {选项已变更，这是新的预览 — 再次按“写入”以写入}
+::msgcat::mcset zh_hans {the peer has not been sent this vault yet} 尚未将此保险库发送给对等节点
+::msgcat::mcset zh_hans {the peer holds this vault} 对等节点持有此保险库
 ::msgcat::mcset zh_hans {the primary route is \[model\] provider/default — change it there, not here} {主路由在 \[model\] provider/default 中设置 — 请在那里修改，别在这里}
 ::msgcat::mcset zh_hans {the provider/model route this session sends to} {本会话发送所用的 provider/model 路由}
 ::msgcat::mcset zh_hans {the same, on the privileged path (owner only)} {同上，走特权路径（仅 owner）}
 ::msgcat::mcset zh_hans {the selected entry (edit, then Save)} {选中的条目 (编辑后保存)}
+::msgcat::mcset zh_hans {the server stopped: %s} 服务器已停止：%s
 ::msgcat::mcset zh_hans {the synthwave splash} {synthwave 启动画面}
 ::msgcat::mcset zh_hans {the text after the name was NOT sent anywhere — type the value into the masked field} 名称后面的文字没有发送到任何地方——请把值输入到遮挡的输入框中
 ::msgcat::mcset zh_hans {the transcript} 会话记录
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset zh_hans thinking… 思考中…
 ::msgcat::mcset zh_hans {thinking… (%s)} {思考中… (%s)}
 ::msgcat::mcset zh_hans {this file's revisions, their diffs, and restore} 此文件的修订、差异和恢复
+::msgcat::mcset zh_hans {this gateway} 此网关
 ::msgcat::mcset zh_hans {this gateway has no Tcl interpreter} {此网关没有 Tcl 解释器}
 ::msgcat::mcset zh_hans {this list} 此列表
+::msgcat::mcset zh_hans {this node has no vault} 此节点没有保险库
 ::msgcat::mcset zh_hans {this route} 此路由
 ::msgcat::mcset zh_hans {this session} 本会话
 ::msgcat::mcset zh_hans {this session follows the default language again (%{def})} 本会话重新使用默认语言（%{def}）
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset zh_hans {transcript finalization failed: %s} 转录完成失败：%s
 ::msgcat::mcset zh_hans {transcript refetched} 对话记录已重新获取
 ::msgcat::mcset zh_hans {transcript — arrows to read, %s for composer} {对话记录 — 方向键阅读，%s 输入}
+::msgcat::mcset zh_hans {translate text with the dedicated translation model, without an agent turn} {使用专用翻译模型翻译文本，不占用 agent 回合}
+::msgcat::mcset zh_hans {translation result} 翻译结果
 ::msgcat::mcset zh_hans {trigger %1$s %2$sd} {触发器 %1$s：%2$s}
 ::msgcat::mcset zh_hans {trigger created} 触发器已创建
 ::msgcat::mcset zh_hans {trigger updated} 触发器已更新
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {usage: /steer <instruction>} {用法: /steer <instruction>}
 ::msgcat::mcset zh_hans used 已用
 ::msgcat::mcset zh_hans user 用户
+::msgcat::mcset zh_hans {user copy} 用户副本
 ::msgcat::mcset zh_hans {user identities, one per line} 用户身份，每行一个
 ::msgcat::mcset zh_hans {user name} 用户名
 ::msgcat::mcset zh_hans {user profile} 用户资料
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset zh_hans {value (TOML: 5, true, "text", ["a","b"])} {值 (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset zh_hans veles veles
 ::msgcat::mcset zh_hans {veles editor} {veles 编辑器}
+::msgcat::mcset zh_hans {veles fleet: node %{node} is failing — %{detail}} {veles 机群：节点 %{node} 出现故障 — %{detail}}
+::msgcat::mcset zh_hans {veles fleet: node %{node} is stale — %{detail}} {veles 机群：节点 %{node} 已陈旧 — %{detail}}
+::msgcat::mcset zh_hans {veles fleet: node %{node} recovered (it was %{was})} {veles 机群：节点 %{node} 已恢复（之前为 %{was}）}
 ::msgcat::mcset zh_hans {veles · keyboard help (bindings: %s)} {veles · 键盘帮助 (键位: %s)}
 ::msgcat::mcset zh_hans {veles · touch help} {veles · 触控帮助}
 ::msgcat::mcset zh_hans {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset zh_hans widgets 小组件
 ::msgcat::mcset zh_hans {will be stored in the encrypted vault} 将存入加密保险库
 ::msgcat::mcset zh_hans {wire protocol} 线路协议
+::msgcat::mcset zh_hans {without force to} 非强制推送到
 ::msgcat::mcset zh_hans {wizard language} 向导语言
 ::msgcat::mcset zh_hans {wizard language: %s} 向导语言：%s
 ::msgcat::mcset zh_hans {write failed: %s} {写入失败: %s}
 ::msgcat::mcset zh_hans {write grants that still expire (the expiry is dropped — a config line cannot expire)} {写入仍有过期时间的授权 (过期时间会被丢弃 — 配置行无法过期)}
 ::msgcat::mcset zh_hans {write the entries back} 将条目写回
 ::msgcat::mcset zh_hans {write the store's runtime rules into config.toml} {将存储的运行时规则写入 config.toml}
+::msgcat::mcset zh_hans {write the whole extension from its purpose, as a reviewed preview} 根据用途生成整个扩展，并以审阅预览的形式呈现
 ::msgcat::mcset zh_hans {write these values into config.toml as the defaults} {将这些值作为默认值写入 config.toml}
 ::msgcat::mcset zh_hans writing 输入
 ::msgcat::mcset zh_hans {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {写入第一个 [acl] 所有者会把此网关切换到受控模式：默认角色变为 guest（fail-closed），适配器允许列表不再是信任边界}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset zh_hans {▲ VELES — neon impressionism} {▲ VELES — 霓虹印象派}
 ::msgcat::mcset zh_hans {▲ earlier} {▲ 更早}
 ::msgcat::mcset zh_hans {▼ later} {▼ 更晚}
+::msgcat::mcset zh_hans {▾ Cluster registry} {▾ 集群注册表}
 ::msgcat::mcset zh_hans {▾ new output — follow} {▾ 新输出 — 跟随}
 ::msgcat::mcset zh_hans {○ unattached} {○ 未附加}
 ::msgcat::mcset zh_hans {● %1$s — %2$s} {● %1$s — %2$s}

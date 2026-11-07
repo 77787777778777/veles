@@ -81,8 +81,19 @@ while {[gets $fh line] >= 0} {
     incr n
     set parts [split $line "\t"]
     set tr [lindex $parts 1]
+    # printf fields and explicitly retained technical vocabulary carry no
+    # translatable letters. Check what remains, not the placeholders or
+    # names that a native UI translation deliberately keeps in Latin.
+    set letters [regsub -all {%[0-9]+\$[-0-9.]*[sdxfc]|%[-0-9.]*[sdxfc]} $tr {}]
+    foreach term {
+        veles Tcl Rust Tk Tkinter JavaScript TypeScript Node.js
+        {language server} LSP MCP A2A API CLI TUI GUI JSON TOML YAML
+        SQLite IRC Telegram Bluesky GitHub NixOS XDG
+    } {
+        set letters [string map [list $term {}] $letters]
+    }
     set seen {}
-    foreach ch [split $tr ""] {
+    foreach ch [split $letters ""] {
         set s [script_of [scan $ch %c]]
         if {$s ne "" && $s ni $seen} { lappend seen $s }
     }
@@ -92,7 +103,7 @@ while {[gets $fh line] >= 0} {
     }
     set has_own [expr {$own eq {latin}}]
     foreach s $own { if {$s in $seen} { set has_own 1 } }
-    if {[llength $foreign] || !$has_own} {
+    if {[llength $foreign] || ([string trim $letters " \t\r\n:;,.!?()[]{}→←：（）【】、。！？；"] ne "" && !$has_own)} {
         puts "$loc: [lindex $parts 0] → $tr  (scripts: $seen; expected: $own)"
         incr bad
     }

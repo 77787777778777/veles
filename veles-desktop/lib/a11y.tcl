@@ -47,6 +47,19 @@ namespace eval ::va11y {
     ;# Paths registered as keep-out zones (see above). Dead and unmapped
     ;# ones are filtered at query time, so a rebuild need not unregister.
     variable keepouts {}
+    ;# Widgets that already carry the hover/focus tooltip bindings.
+    ;# ::va11y::name is called on the same widget on every status-bar poll
+    ;# (every 15 s), and the {+…} append syntax in bind() adds ANOTHER copy
+    ;# of the handler each time. After 11 hours that was 5 418 duplicate
+    ;# _show_tip calls on .statusbar.quota alone — a single <Enter> event
+    ;# fired thousands of tooltip create/destroy cycles and froze the UI.
+    variable bound
+    array set bound {}
+    ;# The object identity behind each path in `bound`. Tk reuses widget
+    ;# paths after destroy/rebuild, so a path-only "already bound" flag
+    ;# would leave the new widget with no tooltip at all.
+    variable bound_widget
+    array set bound_widget {}
 }
 
 # Read + apply font scaling. Call once at boot, before widgets.
@@ -76,8 +89,24 @@ proc ::va11y::init {} {
 # Safe to call on any widget path; no-ops when the widget doesn't exist.
 proc ::va11y::name {w desc} {
     variable names
+    variable bound
+    variable bound_widget
     if {![winfo exists $w]} { return }
     set names($w) $desc
+    # Bind hover/focus tooltip handlers ONCE per widget OBJECT. The {+…}
+    # append syntax adds another copy on every call; without this guard a
+    # status-bar poll every 15 s accumulated 5 418 duplicate _show_tip
+    # calls on .statusbar.quota after 11 hours, and a single <Enter> event
+    # ran thousands of tooltip create/destroy cycles. Comparing winfo id
+    # also lets a destroyed widget's path be reused without losing its
+    # bindings on the new object.
+    set id [winfo id $w]
+    if {[info exists bound($w)] && $bound($w) && [info exists bound_widget($w)]
+        && $bound_widget($w) eq $id} {
+        return
+    }
+    set bound($w) 1
+    set bound_widget($w) $id
     # Tooltip on hover — APPENDED to whatever is already bound, so a
     # caller's own Enter binding (the statusbar's hand cursor) is not
     # replaced by ours. `bind` REPLACES; this is the only way two

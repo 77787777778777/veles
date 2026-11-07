@@ -85,7 +85,51 @@ command sandbox works on this machine.
 - **Scheduling**: cron jobs, channel triggers, and monitors that wake a
   session when a condition holds.
 - **Delegation**: subagents in their own sessions, across a pool of
-  machines if you have more than one.
+  machines if you have more than one. The `sessions` tool lists and mails
+  other live sessions; `nodes` shows compute names, capabilities, load
+  and which nodes this one can actually reach before you choose a
+  placement. `delegate_task backend='any'` counts the children it has
+  already placed on each node until they finish, so a batch or a run of
+  background children spreads over the pool instead of piling onto one
+  machine (CPU load only: disk IO is not measured).
+- **Joining and exporting**: `/join a` finds the live conversation for `a`
+  without requiring its session id. Joining needs the `session-join`
+  capability: the owner has it, and anyone else only by a grant. A
+  grantee can join only another person's session in the channel they are
+  typing in (never a DM), and their lines there run with the lower of
+  their rights and that session's. `/export [md|json]` (desktop, TUI and
+  chat) writes the whole transcript, tool calls and results included, as
+  a new file (mode 0600 on unix) under the data directory's `exports/`,
+  outside the media directory a guest's attachments may name. On a chat
+  connector the file stays on the gateway host.
+- **Restart recovery**: a desktop turn cut off by a gateway stop, crash
+  or reboot continues from its saved history when the gateway comes back
+  (Linux and Android; built for Windows but not yet verified there; off
+  on macOS, which lacks the process identity it relies on). A tool action whose result was not
+  saved is never repeated; the turn stops for your review instead. If
+  the provider is not reachable yet, it retries for a few minutes and
+  again on the next start, then asks for review. Connector, A2A,
+  session-mail, cron, subagent, TUI and trigger turns are not resumed.
+- **Permission review**: the desktop ACL window's **Permission grants…**
+  panel lists global grants, the session grants of every live session
+  (desktop, Telegram, IRC and other chats, each labelled by surface) and
+  the `[approvals] allowlist` entries from config.toml (read-only; edit
+  the file to remove one). It revokes an exact selected grant.
+- **Multi-hazard approvals**: a call that trips several rules (say a
+  recursive delete and `curl | sh`) asks once, with every permission
+  class checked; uncheck the ones you do not want remembered. On a typed
+  surface (IRC, Telegram text, `veles chat`) a single reply such as `2`
+  or `deny` answers the scope and keeps every class checked; `2; <keys>`
+  narrows it. A later call is cleared only when ONE source (this
+  session's grants, the global grants, or the allowlist) covers every
+  class it trips; a call half-covered by each asks again. With several
+  classes, an allowlist entry must be the exact `tool:rule` key; a glob
+  only clears a call that trips a single rule.
+- **Browser tab bridge** (Linux): a small Chrome/Firefox extension lets you
+  hand one of your own tabs to the agent. It reads the page and clicks or
+  fills by reference, never returns password or one-time-code values, and
+  runs no arbitrary JavaScript and reads no cookies or storage. See
+  [browser-extension/README.md](browser-extension/README.md).
 - **Undo**: every file edit is checkpointed before it lands.
 - **Approvals**: risky calls are screened and can be answered from any
   surface: terminal, desktop, Telegram or IRC.
@@ -105,6 +149,17 @@ cargo build --release
 bash scripts/check.sh            # fast incremental checks
 nix flake check                  # the full gate: tests, clippy, rustfmt, Tk suites
 ```
+
+To fully rebuild the development gateway on the laptop, build all workspace
+crates together, excluding the separately built Android runtime:
+
+```sh
+cargo build --workspace --exclude veles-runtime
+```
+
+This keeps `target/debug/veles` and the shared libraries it loads on the same
+build. Building only `veles-cli --bin veles` can leave a new binary against
+older shared libraries, causing symbol lookup failures on gateway startup.
 
 Without Nix, `scripts/install/install.sh --from-source` installs the
 build dependencies for Debian, Ubuntu, Arch, Gentoo or FreeBSD and builds

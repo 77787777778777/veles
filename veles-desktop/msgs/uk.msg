@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset uk {%1$s %2$s failed: %3$s} {%1$s %2$s не вдалося: %3$s}
 ::msgcat::mcset uk {%1$s %2$s over ssh…} {%1$s %2$s через ssh…}
 ::msgcat::mcset uk {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset uk {%1$s (%2$s waiting)} {%1$s (%2$s в очікуванні)}
 ::msgcat::mcset uk {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  мислення %3$s}
 ::msgcat::mcset uk {%1$s = %2$s here} {%1$s = %2$s тут}
 ::msgcat::mcset uk {%1$s NOT saved: %2$s} {%1$s НЕ збережено: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset uk {%1$s every cron job on %2$s?} {%1$s усі cron-завдання на %2$s?}
 ::msgcat::mcset uk {%1$s failed: %2$s} {%1$s не вдалося: %2$s}
 ::msgcat::mcset uk {%1$s in / %2$s out / %3$s calls} {%1$s на вхід / %2$s на вихід / %3$s викликів}
+::msgcat::mcset uk {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s — це вузол %2$s, а не %3$s. Виправте його ідентифікатор вузла в «Редагувати…».}
 ::msgcat::mcset uk {%1$s is not a whole number} {%1$s — не ціле число}
+::msgcat::mcset uk {%1$s is reachable (%2$s ms).} {%1$s доступний (%2$s мс).}
 ::msgcat::mcset uk {%1$s is set to something this box cannot edit (%2$s)} {%1$s задано значенням, яке ця машина не може редагувати (%2$s)}
+::msgcat::mcset uk {%1$s is unreachable: %2$s} {%1$s недоступний: %2$s}
 ::msgcat::mcset uk {%1$s of %2$s characters} {%1$s із %2$s символів}
 ::msgcat::mcset uk {%1$s of %2$s sessions} {%1$s із %2$s сесій}
 ::msgcat::mcset uk {%1$s of %2$s skills reach the prompt} {%1$s із %2$s навичок потрапляють у промпт}
 ::msgcat::mcset uk {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s на %2$s: %3$d ок, %4$d не вдалося}
+::msgcat::mcset uk {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s не повідомляє ідентичність вузла кластера, тому його неможливо перевірити як %2$s.}
+::msgcat::mcset uk {%1$s sync failed: %2$s} {Синхронізація %1$s не вдалася: %2$s}
+::msgcat::mcset uk {%1$s sync with %2$s (%3$s)} {Синхронізація %1$s з %2$s (%3$s)}
+::msgcat::mcset uk {%1$s sync: %2$s} {Синхронізація %1$s: %2$s}
 ::msgcat::mcset uk {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset uk {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter — перейти, Esc — закрити}
 ::msgcat::mcset uk {%1$s — revision r%2$s} {%1$s — ревізія r%2$s}
 ::msgcat::mcset uk {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset uk {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset uk {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset uk {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset uk {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: останні %2$s із %3$s рядків, які його шлюз тримає в пам'яті; секрети на тому вузлі вилучено.}
 ::msgcat::mcset uk {%d MCP server(s) configured} {%d MCP-серверів налаштовано}
 ::msgcat::mcset uk {%d entries} {%d записів}
+::msgcat::mcset uk {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {%d файлів розширення буде записано точно в переглянутому вигляді. Якщо якийсь із них змінився після попереднього перегляду, не записується нічого. Коміт, push або PR не відбуваються.}
 ::msgcat::mcset uk {%d handler(s) registered} {%d обробників зареєстровано}
 ::msgcat::mcset uk {%d identities · %d users} {%d ідентичностей · %d користувачів}
 ::msgcat::mcset uk {%d models — pick one from the list or type a name.} {%d моделей — виберіть одну зі списку або введіть назву.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset uk {%d shown} {показано %d}
 ::msgcat::mcset uk {%s %s%%} {%s %s%%}
 ::msgcat::mcset uk {%s (%s)} {%s (%s)}
+::msgcat::mcset uk {%s (referral)} {%s (реферальне посилання)}
+::msgcat::mcset uk {%s (stale)} {%s (застарілий)}
 ::msgcat::mcset uk {%s (this session)} {%s (ця сесія)}
 ::msgcat::mcset uk {%s GB free of %s GB} {вільно %s ГБ із %s ГБ}
 ::msgcat::mcset uk {%s already exists — open it from the list} {%s уже існує — відкрийте його зі списку}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset uk {%s comes from config.toml [acl] — edit there} {%s береться з config.toml [acl] — редагуйте там}
 ::msgcat::mcset uk {%s config change(s) wait for you — /configsync} {змін конфігурації чекають на вас: %s — /configsync}
 ::msgcat::mcset uk {%s did not become healthy within 30s} {%s не став справним протягом 30 с}
+::msgcat::mcset uk {%s done} {%s готово}
 ::msgcat::mcset uk {%s failed: %s} {%s не вдалося: %s}
 ::msgcat::mcset uk {%s is already split} {%s уже розділено}
 ::msgcat::mcset uk {%s is the language in use — pick another one to swap with} {%s — мова, що зараз використовується; виберіть іншу для перемикання}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset uk {%s opens the command palette in %s.} {%s відкриває палітру команд у %s.}
 ::msgcat::mcset uk {%s session(s)} {%s сесій}
 ::msgcat::mcset uk {%s skill(s):} {Скіл-и %s:}
+::msgcat::mcset uk {%s standing grants} {%s постійних дозволів}
 ::msgcat::mcset uk {%s takes no completable arguments} {%s не приймає аргументів з автодоповненням}
 ::msgcat::mcset uk {%s takes on or off} {%s приймає on або off}
 ::msgcat::mcset uk {%s —} {%s —}
+::msgcat::mcset uk {%s — changes data, asks to confirm} {%s — змінює дані, вимагає підтвердження}
 ::msgcat::mcset uk {%s — deleted; History… can restore it} {%s — видалено; Історія… може його відновити}
 ::msgcat::mcset uk {%s — new: type, then Save} {%s — новий: введіть текст, потім Зберегти}
 ::msgcat::mcset uk {%s — not attached; press Attach in the Instances tab} {%s — не приєднано; натисніть «Приєднати» у вкладці «Екземпляри»}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset uk {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} увімкнено без розділу [acl]: доки %{var} у .env не вкаже, хто може писати ботові, будь-хто, хто до нього дістанеться, вважається власником — з усіма інструментами}
 ::msgcat::mcset uk (%{route}) (%{route})
 ::msgcat::mcset uk {(CLI redraws automatically)} {(CLI перемальовується автоматично)}
+::msgcat::mcset uk {(binary; not publishable)} {(двійковий; не для публікації)}
 ::msgcat::mcset uk {(clipboard empty or no clipboard tool)} {(буфер обміну порожній або немає відповідного інструмента)}
 ::msgcat::mcset uk (deleted) (видалено)
 ::msgcat::mcset uk (empty) (порожньо)
 ::msgcat::mcset uk {(no sessions)} {(немає сесій)}
+::msgcat::mcset uk {(not a memsync peer of this gateway: config is not synced with it)} {(не є memsync-піром цього шлюзу: конфігурація з ним не синхронізується)}
 ::msgcat::mcset uk {(nothing to reload — read from disk per use)} {(нема чого перезавантажувати — читається з диска при кожному використанні)}
 ::msgcat::mcset uk {(retrying last prompt…)} {(повторюю останній запит…)}
 ::msgcat::mcset uk {(route did not resolve: %{e})} {(маршрут не визначено: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset uk {/url needs a number from /urls} {/url потребує номер із /urls}
 ::msgcat::mcset uk {/whois needs a nick} {/whois потребує нік}
 ::msgcat::mcset uk {; could not save the cleared return view: %s} {; не вдалося зберегти очищений стан повернення: %s}
+::msgcat::mcset uk {; shadows bundled} {; затінює вбудований}
+::msgcat::mcset uk {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Пропозиція конфігурації може змінити налаштування, а пропозиція сховища зливає секрети; зміни в розділі безпеки все одно чекають на власника.}
 ::msgcat::mcset uk {A failing plugin may drop hooks mid-turn.} {Плагін, що падає, може загубити хуки посеред ходу.}
 ::msgcat::mcset uk {A local server: no key is needed unless you set one up.} {Локальний сервер: ключ не потрібен, якщо ви його не налаштували.}
+::msgcat::mcset uk {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Підписаний реліз розміщується лише після попередньої перевірки (preflight). Перезапуск/перевірка, продовження та відкат — окремі дії. Справний процес має повідомляти точну перевірену ревізію вихідного коду.}
 ::msgcat::mcset uk {A value is stored for %s — leave this empty to keep it.} {Для %s вже збережено значення — залиште поле порожнім, щоб його зберегти.}
 ::msgcat::mcset uk {ACL: ban mask} {ACL: заборонити маску}
 ::msgcat::mcset uk {ACL: grant admin} {ACL: надати admin}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset uk {ACL: grant user} {ACL: надати user}
 ::msgcat::mcset uk {ACL: revoke} {ACL: відкликати}
 ::msgcat::mcset uk {ACME account email} {Email облікового запису ACME}
+::msgcat::mcset uk {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI assist працює на чотирьох рівнях: поставити питання про дизайн (файл не потрібен), змінити цей файл, змінити кілька файлів цього розширення або пояснити поточну діагностику. «Нове розширення» також може згенерувати ціле розширення з його призначення. Кожен запит надсилається без інструментів і відхиляється, якщо містить зареєстрований секрет або значення, схоже на облікові дані; зміни показуються як diff і записуються лише коли ви їх застосуєте. Спершу попросіть дизайн розширення; правку ядра запитуйте лише після того, як визначите відсутній API.}
+::msgcat::mcset uk {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI-допомога редагує лише користувацькі розширення, а цей файл не належить до жодного з них. Більшість змін уміщується в розширення (хук, інструмент, перевизначення сервісу або драйвер провайдера), яке переживає оновлення; патч ядра — для того, чого не виражає API розширень. Створити для цієї зміни нове розширення? Його файли буде показано до того, як щось запишеться.}
+::msgcat::mcset uk {AI assist…} AI-допомога…
+::msgcat::mcset uk {AI extension assistance} {AI-допомога з розширеннями}
 ::msgcat::mcset uk {API calls} {Виклики API}
+::msgcat::mcset uk {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {API-кредити за реферальним посиланням Anthropic надаються лише якщо ви купуєте Max або Ultra. Veles не підтримує використання цієї підписки для входу або як автентифікації API.}
 ::msgcat::mcset uk {API key (hidden)} {API-ключ (прихований)}
 ::msgcat::mcset uk {API key env var name} {Назва змінної середовища з API-ключем}
+::msgcat::mcset uk {API reference} {Довідник API}
+::msgcat::mcset uk {Abandon untouched operation} {Покинути незмінену операцію}
 ::msgcat::mcset uk {Access control} {Контроль доступу}
 ::msgcat::mcset uk {Access control (ACL)} {Контроль доступу (ACL)}
 ::msgcat::mcset uk Add Додати
 ::msgcat::mcset uk {Add MCP server} {Додати MCP-сервер}
 ::msgcat::mcset uk {Add instance} {Додати екземпляр}
 ::msgcat::mcset uk {Add server…} {Додати сервер…}
+::msgcat::mcset uk {Adds selected extension sources. Review the branch diff and checks before merging.} {Додає вибрані джерела розширення. Перегляньте diff гілки та перевірки перед злиттям.}
 ::msgcat::mcset uk Add… Додати…
 ::msgcat::mcset uk {Agent & engine} {Агент і рушій}
 ::msgcat::mcset uk {Alias %s} {Аліас %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset uk {Applies to} {Застосовується до}
 ::msgcat::mcset uk Apply Застосувати
 ::msgcat::mcset uk {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {«Застосувати» змінює лише ПОТОЧНУ сесію. «Копіювати TOML» дає блоки для вставки. «Зберегти глобально» вплітає їх у config.toml — зачіпаються лише секції failover, усі інші рядки й коментарі лишаються недоторканими, а старий файл зберігається як config.toml.bak.}
+::msgcat::mcset uk {Apply proposal…} {Застосувати пропозицію…}
+::msgcat::mcset uk {Apply received} {Застосувати отримане}
+::msgcat::mcset uk {Apply this AI proposal?} {Застосувати цю пропозицію AI?}
+::msgcat::mcset uk {Apply this change set?} {Застосувати цей набір змін?}
 ::msgcat::mcset uk {Apply to session} {Застосувати до сесії}
+::msgcat::mcset uk {Apply what this node received:} {Застосувати те, що отримав цей вузол:}
 ::msgcat::mcset uk {Approval needed} {Потрібне схвалення}
 ::msgcat::mcset uk Apps Застосунки
 ::msgcat::mcset uk Archive Архів
 ::msgcat::mcset uk {Archive SHA-256} {SHA-256 архіву}
+::msgcat::mcset uk Ask Запитати
+::msgcat::mcset uk {Ask a design question} {Поставити питання про дизайн}
+::msgcat::mcset uk {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {Запитайте, як побудувати розширення: яка межа, яка мова, який API. Джерельний код не надсилається, і нічого не може бути записано.}
 ::msgcat::mcset uk {Ask the agent to change it} {Попросити агента змінити}
+::msgcat::mcset uk {Asking %s…} {Запитую %s…}
 ::msgcat::mcset uk {Asking the provider for its models…} {Запитуємо в провайдера його моделі…}
 ::msgcat::mcset uk Attach Приєднати
 ::msgcat::mcset uk {Attach to the next message} {Долучити до наступного повідомлення}
+::msgcat::mcset uk {Author guide} {Довідник автора}
+::msgcat::mcset uk {Automatically discovered from the attached gateway's cluster registry.} {Виявлено автоматично з реєстру кластера приєднаного шлюзу.}
 ::msgcat::mcset uk Back Назад
 ::msgcat::mcset uk {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {«Назад» закриває те, що зверху: меню, список сесій, вікно. Якщо нічого не відкрито, veles іде у фон і далі працює.}
 ::msgcat::mcset uk {Base URL} {Base URL}
+::msgcat::mcset uk {Base branch} {Базова гілка}
 ::msgcat::mcset uk {Bot token (hidden)} {Токен бота (прихований)}
+::msgcat::mcset uk Branch Гілка
+::msgcat::mcset uk {Branch and commit prepared; nothing has been pushed} {Гілку й коміт підготовлено; нічого не запушено}
+::msgcat::mcset uk {Branch pushed and verified on origin} {Гілку запушено й перевірено на origin}
 ::msgcat::mcset uk {Browse sessions} {Огляд сесій}
+::msgcat::mcset uk {Build manifest + preflight} {Маніфест збірки + попередня перевірка}
+::msgcat::mcset uk {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Збірка: veles %1$s, ревізія %2$s (%3$s %4$s)}
 ::msgcat::mcset uk {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e кінець рядка · C-b/C-f символ · M-b/M-f слово · C-k видалити до кінця · C-y вставити · M-w копіювати · C-w видалити область · C-space позначка · C-/ скасувати}
 ::msgcat::mcset uk {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g перериває все · C-j новий рядок · M-p/M-n історія · Tab автодоповнення}
+::msgcat::mcset uk {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s ядер, навантаження %2$s / %3$s / %4$s (%5$s%% ядер)}
 ::msgcat::mcset uk Cancel Скасувати
+::msgcat::mcset uk {Cancel task} {Скасувати завдання}
+::msgcat::mcset uk {Cancel task %1$s? This cannot be undone.} {Скасувати завдання %1$s? Це неможливо скасувати.}
+::msgcat::mcset uk {Cannot verify that %1$s is node %2$s: %3$s} {Не вдається перевірити, що %1$s — це вузол %2$s: %3$s}
 ::msgcat::mcset uk Capabilities Можливості
 ::msgcat::mcset uk {Change my app “%s” (%s): } {Зміни мій застосунок «%s» (%s): }
+::msgcat::mcset uk {Change this extension's files} {Змінити файли цього розширення}
+::msgcat::mcset uk {Change this file} {Змінити цей файл}
 ::msgcat::mcset uk Change… Змінити…
 ::msgcat::mcset uk {Channels (e.g. #veles #dev)} {Канали (напр. #veles #dev)}
 ::msgcat::mcset uk Chat Чат
 ::msgcat::mcset uk {Chat — not attached; press Attach in the Instances tab} {Чат — не приєднано; натисніть «Приєднати» у вкладці «Екземпляри»}
 ::msgcat::mcset uk {Check (lsp)} {Перевірити (lsp)}
+::msgcat::mcset uk {Check again} {Перевірити ще раз}
+::msgcat::mcset uk {Check files} {Перевірити файли}
 ::msgcat::mcset uk Checkpoints {Контрольні точки}
 ::msgcat::mcset uk {Checkpoints (undo)} {Контрольні точки (скасування)}
+::msgcat::mcset uk {Checks and next steps} {Перевірки та наступні кроки}
+::msgcat::mcset uk {Checks run} {Перевірки виконано}
 ::msgcat::mcset uk {Choose BUNDLE-INFO.json in the managed install-sources directory} {Виберіть BUNDLE-INFO.json у керованому каталозі install-sources}
 ::msgcat::mcset uk {Choose a failover script} {Виберіть скрипт відмовостійкості}
 ::msgcat::mcset uk {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {Оберіть модуль або процесний плагін для огляду. Пошук лише читає plugin.toml; вибір компонента запитує його заявлений маніфест і параметри. Відкриття цього кроку нічого не встановлює.}
+::msgcat::mcset uk {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {Виберіть назву, призначення й мову, потім перегляньте точні файли. Нічого не записано.}
 ::msgcat::mcset uk {Choose a user unit or a system service for the server profile. Neither starts a service.} {Оберіть юніт користувача або системну службу для профілю сервера. Жоден варіант не запускає службу.}
 ::msgcat::mcset uk {Choose core bundle…} {Обрати пакет ядра…}
 ::msgcat::mcset uk {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {Оберіть форму встановлення. Локальні профілі використовують перевірений інсталятор. Системні та контейнерні профілі готують підписаний запит для явної передачі CLI. NixOS видає лише фрагмент модуля.}
+::msgcat::mcset uk {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {Оберіть найвужчу межу: інструмент додає можливість, яку можна викликати з моделі; хук спостерігає або змінює подію життєвого циклу; сервіс чи точка перевизначення обгортає іменоване рішення; драйвер провайдера додає з'єднання провайдера; патч ядра доречний лише тоді, коли опубліковане API розширень не може виразити зміну.}
 ::msgcat::mcset uk {Choose typed container-host options JSON} {Обрати JSON типізованих параметрів container-host}
 ::msgcat::mcset uk {Choose typed container-host options…} {Обрати типізовані параметри container-host…}
 ::msgcat::mcset uk Clear Очистити
 ::msgcat::mcset uk {Clear composer} {Очистити редактор}
 ::msgcat::mcset uk {Clear override} {Очистити перевизначення}
 ::msgcat::mcset uk {Click the picture where you would click on the page.} {Клацніть на зображенні там, де клацнули б на сторінці.}
+::msgcat::mcset uk {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {Клонувати %1$s, створити %2$s і скопіювати лише перевірені файли %3$s у %4$s/<extension>/. Файли перевіряються й потрапляють у коміт. Надсилання й pull request зараз не виконуються.}
 ::msgcat::mcset uk Close Закрити
 ::msgcat::mcset uk {Close (Esc)} {Закрити (Esc)}
 ::msgcat::mcset uk {Close the setup wizard? Nothing has been written yet.} {Закрити майстер налаштування? Ще нічого не записано.}
 ::msgcat::mcset uk {Code actions} {Дії з кодом}
+::msgcat::mcset uk Commit Коміт
+::msgcat::mcset uk {Commit ready for review. Push is a separate action.} {Коміт готовий до перегляду. Запушування — окрема дія.}
 ::msgcat::mcset uk {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Заповніть усі поля PDS, включно з прикріпленим дайджестом образу, перш ніж переглядати handoff.}
 ::msgcat::mcset uk {Complete every typed container-host field before previewing this profile.} {Заповніть усі типізовані поля container-host перед попереднім переглядом цього профілю.}
 ::msgcat::mcset uk {Component configuration returned an invalid result; nothing was accepted as applied.} {Конфігурація компонента повернула недійсний результат; нічого не було прийнято як застосоване.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset uk {Component options changed. Review the new preview before applying.} {Параметри компонента змінено. Перегляньте новий попередній перегляд перед застосуванням.}
 ::msgcat::mcset uk Components Компоненти
 ::msgcat::mcset uk {Composer preview} {Перегляд редактора}
+::msgcat::mcset uk Config Конфігурація
+::msgcat::mcset uk {Config differs: %s} {Конфігурація відрізняється: %s}
+::msgcat::mcset uk {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Журнал конфігурації: той вузол має зміни %1$s до %3$s, цей шлюз — до %2$s}
+::msgcat::mcset uk {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Журнал конфігурації: цей шлюз має зміни %1$s до %2$s, той вузол — до %3$s}
+::msgcat::mcset uk {Config only on that node: %s} {Конфігурація лише на тому вузлі: %s}
+::msgcat::mcset uk {Config only on this gateway: %s} {Конфігурація лише на цьому шлюзі: %s}
 ::msgcat::mcset uk Configure Налаштувати
 ::msgcat::mcset uk {Configure %s} {Налаштувати %s}
+::msgcat::mcset uk {Configure translator} {Налаштувати перекладач}
+::msgcat::mcset uk {Configured desktop gateway} {Налаштований десктопний шлюз}
 ::msgcat::mcset uk Configure… Налаштувати…
 ::msgcat::mcset uk {Configuring %s} {Налаштування %s}
 ::msgcat::mcset uk {Confirm or discard the current signed review before starting another download.} {Підтвердьте або скасуйте поточне перевірене перегляд перед початком нового завантаження.}
 ::msgcat::mcset uk {Container host: typed host plan and privileged CLI handoff} {Container host: типізований план хоста та передача CLI з правами адміністратора}
 ::msgcat::mcset uk {Context window} {Вікно контексту}
+::msgcat::mcset uk {Continue to next target} {Перейти до наступної цілі}
+::msgcat::mcset uk {Contribute extensions: %s} {Надіслати розширення: %s}
+::msgcat::mcset uk Contribute… {Зробити внесок…}
+::msgcat::mcset uk {Contribution branch} {Гілка внеску}
+::msgcat::mcset uk {Contribution destination} {Призначення внеску}
 ::msgcat::mcset uk Copy Копіювати
 ::msgcat::mcset uk {Copy TOML} {Копіювати TOML}
+::msgcat::mcset uk {Copy a bundled extension into your user plugin directory before preparing a contribution.} {Скопіюйте вбудоване розширення у вашу теку плагінів користувача, перш ніж готувати внесок.}
 ::msgcat::mcset uk {Copy message} {Копіювати повідомлення}
 ::msgcat::mcset uk {Copy name} {Копіювати назву}
 ::msgcat::mcset uk {Copy nick} {Копіювати нік}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset uk {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {Не вдалося знайти компоненти. Кроки налаштування провайдера все ще працюють; за потреби встановіть через CLI на цільовій машині.}
 ::msgcat::mcset uk {Could not join: %s} {Не вдалося приєднатися: %s}
 ::msgcat::mcset uk {Could not list the models (%s) — type the model's name.} {Не вдалося отримати список моделей (%s) — введіть назву моделі.}
+::msgcat::mcset uk {Create a PR in} {Створити PR у}
+::msgcat::mcset uk {Create extension} {Створити розширення}
 ::msgcat::mcset uk {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Створіть бота через @BotFather і вставте його токен нижче: він потрапить до зашифрованого сховища, а не до config.toml.}
+::msgcat::mcset uk {Create this extension?} {Створити це розширення?}
+::msgcat::mcset uk {Create this generated extension?} {Створити це згенероване розширення?}
+::msgcat::mcset uk {Created and reloaded. Review and test the extension before publishing.} {Створено й перезавантажено. Перегляньте та протестуйте розширення перед публікацією.}
+::msgcat::mcset uk {Created, but reload failed} {Створено, але перезавантаження не вдалося}
 ::msgcat::mcset uk {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Створює %s/<name>/SKILL.md із шаблону та відкриває його. До індексу промпту потрапляє лише опис із frontmatter, тож він має казати, КОЛИ варто використовувати навичку.}
 ::msgcat::mcset uk {Cron history} {Історія Cron}
 ::msgcat::mcset uk {Cron jobs} Cron-завдання
 ::msgcat::mcset uk {Curated — write the first owner entry} {Керований — записати перший запис власника}
 ::msgcat::mcset uk Cut Вирізати
 ::msgcat::mcset uk Decline Відхилити
+::msgcat::mcset uk {Dedicated translator} {Виділений перекладач}
 ::msgcat::mcset uk {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset uk Default {За замовчуванням}
 ::msgcat::mcset uk {Default model} {Модель за замовчуванням}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset uk {Delete user} {Видалити користувача}
 ::msgcat::mcset uk {Delete workspace?} {Видалити робочий простір?}
 ::msgcat::mcset uk Deop {Зняти op}
+::msgcat::mcset uk {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Опишіть зміну. ШІ може змінити або додати кілька файлів цього розширення. Кожен файл показується як diff, і нічого не записується до вашого підтвердження.}
+::msgcat::mcset uk {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Опишіть зміну. AI може запропонувати заміну, але не може записати її, доки ви не переглянете й не підтвердите diff.}
+::msgcat::mcset uk {Describe the requested extension change first.} {Спершу опишіть бажану зміну розширення.}
+::msgcat::mcset uk Description Опис
 ::msgcat::mcset uk {Desktop: local core, modules and process plugins} {Desktop: локальне ядро, модулі та процесні плагіни}
 ::msgcat::mcset uk Detach Від'єднати
+::msgcat::mcset uk {Detach foreground} {Перемістити на задній план}
 ::msgcat::mcset uk Dev Розробка
 ::msgcat::mcset uk {Dev pane (REPL + LSP)} {Панель розробки (REPL + LSP)}
 ::msgcat::mcset uk {Dev: arm / disarm live patching} {Розробка: увімкнути / вимкнути живе патчення}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset uk Devoice {Зняти voice}
 ::msgcat::mcset uk {Discard review} {Скасувати перегляд}
 ::msgcat::mcset uk {Discard your changes to %s?} {Відкинути ваші зміни в %s?}
+::msgcat::mcset uk {Disk: %1$s free of %2$s at %3$s} {Диск: вільно %1$s із %2$s у %3$s}
 ::msgcat::mcset uk Done Готово
 ::msgcat::mcset uk {Done — config written} {Готово — конфіг записано}
 ::msgcat::mcset uk {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Завантажте та перевірте маніфест випуску й архів хоста перед встановленням. Усі п’ять полів ідентичності обов’язкові. Шлюз зберігає приватний проміжний архів; цей перегляд нічого не встановлює.}
 ::msgcat::mcset uk {Downloading and verifying the signed release…} {Завантаження та перевірка підписаного випуску…}
+::msgcat::mcset uk {Draft this as an extension?} {Оформити це як розширення?}
 ::msgcat::mcset uk {Drag to scroll; a quick swipe goes further.} {Перетягніть, щоб прокрутити; швидкий змах прокручує далі.}
+::msgcat::mcset uk {Drift check failed: %s} {Перевірка розбіжностей не вдалася: %s}
+::msgcat::mcset uk {Drift check: %s node(s) differ from this gateway.} {Перевірка розбіжностей: %s вузлів відрізняються від цього шлюзу.}
+::msgcat::mcset uk {Drift: built from revision %1$s, this gateway from %2$s} {Розбіжність: зібрано з ревізії %1$s, цей шлюз — з %2$s}
+::msgcat::mcset uk {Drift: none — same version, revision and replicated config} {Розбіжностей немає — однакова версія, ревізія та реплікована конфігурація}
+::msgcat::mcset uk {Drift: not compared — %s} {Розбіжність: не порівнювано — %s}
+::msgcat::mcset uk {Drift: runs version %1$s, this gateway %2$s} {Розбіжність: працює версія %1$s, цей шлюз — %2$s}
+::msgcat::mcset uk Drift… Розбіжність…
 ::msgcat::mcset uk {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset uk {ESC %s is not bound} {ESC %s не прив'язано}
 ::msgcat::mcset uk {ESC- … (Meta prefix)} {ESC- … (Meta-префікс)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset uk Edit… Редагувати…
 ::msgcat::mcset uk {Enable / disable} {Увімкнути / вимкнути}
 ::msgcat::mcset uk {Enable the Telegram adapter} {Увімкнути адаптер Telegram}
+::msgcat::mcset uk Endpoint {Кінцева точка}
 ::msgcat::mcset uk Engine Рушій
 ::msgcat::mcset uk Eval→gw Eval→gw
 ::msgcat::mcset uk {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Кожна зміна в %s фіксується в коміті. Відновлення повертає весь каталог до того коміта — спершу зберігається знімок поточного стану, тож це не безповоротна дія.}
 ::msgcat::mcset uk {Every plugin file goes back to that commit. The current state is committed first.} {Усі файли плагінів повернуться до того коміта. Поточний стан спершу комітиться.}
+::msgcat::mcset uk {Exact commit} {Точний коміт}
+::msgcat::mcset uk {Exact permission rule} {Точне правило дозволу}
+::msgcat::mcset uk {Example: a hook} {Приклад: хук}
+::msgcat::mcset uk {Example: a provider driver} {Приклад: драйвер провайдера}
+::msgcat::mcset uk {Example: a service override wrapping core} {Приклад: сервіс-перевизначення, що обгортає ядро}
+::msgcat::mcset uk {Example: a tool} {Приклад: інструмент}
 ::msgcat::mcset uk {Existing shared container network} {Наявна спільна мережа контейнерів}
+::msgcat::mcset uk Explain Пояснити
+::msgcat::mcset uk {Explain the diagnostics} {Пояснити діагностику}
 ::msgcat::mcset uk Export… Експортувати…
+::msgcat::mcset uk {Extension API} {API розширень}
+::msgcat::mcset uk {Extension development} {Розробка розширень}
+::msgcat::mcset uk {Extension guide} {Посібник із розширень}
+::msgcat::mcset uk {Extension source} {Джерело розширення}
 ::msgcat::mcset uk {Failover blueprint} {Схема відмовостійкості}
 ::msgcat::mcset uk {Failover blueprint (edit the route chain)} {Схема відмовостійкості (редагувати ланцюжок маршрутів)}
 ::msgcat::mcset uk {Failover hook script (what `script` mode runs)} {Скрипт гаку відмовостійкості (що запускає режим `script`)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset uk {Find in transcript} {Пошук у транскрипті}
 ::msgcat::mcset uk {Find in transcript…} {Пошук у транскрипті…}
 ::msgcat::mcset uk {Find references} {Знайти посилання}
+::msgcat::mcset uk {Finish rollback} {Завершити відкат}
 ::msgcat::mcset uk {First run: no config.toml yet.} {Перший запуск: config.toml ще немає.}
+::msgcat::mcset uk {Fix the failed syntax checks before preparing a contribution.} {Виправте невдалі перевірки синтаксису, перш ніж готувати внесок.}
+::msgcat::mcset uk {Fleet deployment} {Розгортання флоту}
+::msgcat::mcset uk {Fleet deployment runs from a desktop computer; it is not available on Android.} {Розгортання флоту виконується з настільного комп'ютера; на Android воно недоступне.}
+::msgcat::mcset uk {Fleet deploy…} {Розгорнути флот…}
+::msgcat::mcset uk {Fleet drift} {Розбіжності флоту}
 ::msgcat::mcset uk {Fold / unfold} {Згорнути / розгорнути}
 ::msgcat::mcset uk {Forget declaration} {Забути оголошення}
+::msgcat::mcset uk {Forget node %s?} {Забути вузол %s?}
+::msgcat::mcset uk {Forget node…} {Забути вузол…}
+::msgcat::mcset uk {Forgetting %1$s failed: %2$s} {Не вдалося забути %1$s: %2$s}
+::msgcat::mcset uk {Forgot node %s.} {Вузол %s забуто.}
+::msgcat::mcset uk {Forgotten fleet-wide (refused until they heartbeat again): %s} {Забуто в межах усього флоту (відхилятиметься, доки вони знову не надішлють heartbeat): %s}
 ::msgcat::mcset uk Fork Відгалузити
 ::msgcat::mcset uk {Free space} {Вільне місце}
 ::msgcat::mcset uk {Full source commit SHA} {Повний SHA коміту джерела}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset uk {Gateway image sha256 digest} {Дайджест образу шлюзу sha256}
 ::msgcat::mcset uk {Gateway quadlet name} {Назва quadlet шлюзу}
 ::msgcat::mcset uk {Gateway status} {Статус шлюзу}
+::msgcat::mcset uk {Generate with AI…} {Згенерувати за допомогою ШІ…}
+::msgcat::mcset uk {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {Згенеровано %s — нічого не записано. Перегляньте кожен файл, потім «Створити розширення» запише саме ці файли.}
 ::msgcat::mcset uk {Get a key at %s} {Отримати ключ на %s}
 ::msgcat::mcset uk {GitHub release URL} {URL випуску GitHub}
+::msgcat::mcset uk {Give the extension a name and describe what it should do (the purpose), then generate.} {Дайте розширенню назву й опишіть, що воно має робити (призначення), потім згенеруйте.}
 ::msgcat::mcset uk {Give up} Здатися
 ::msgcat::mcset uk Go Виконати
 ::msgcat::mcset uk {Go to definition} {Перейти до визначення}
+::msgcat::mcset uk {Gossip failed: %s} {Обмін gossip не вдався: %s}
+::msgcat::mcset uk {Gossip now} {Gossip зараз}
+::msgcat::mcset uk {Gossip with %1$s: %2$s} {Gossip з %1$s: %2$s}
+::msgcat::mcset uk {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {Gossip: відповіли %1$s із %2$s пірів (%3$s).}
 ::msgcat::mcset uk Grant Надати
 ::msgcat::mcset uk {Grant access} {Надати доступ}
+::msgcat::mcset uk {Granted at} Надано
 ::msgcat::mcset uk Grant… Надати…
 ::msgcat::mcset uk {Guards — what the harness stops, and where it stands now} {Обмежувачі — що harness зупиняє і де він зараз}
 ::msgcat::mcset uk {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Обробники виконуються у показаному порядку; перемагає перший, хто поверне непорожнє значення. Якщо вимкнути обробник, він пропускається без дереєстрації, а вибір зберігається у config.toml, тож перезавантаження плагіна не ввімкне його тихцем.}
+::msgcat::mcset uk Health Стан
+::msgcat::mcset uk {Health alerts (%s):} {Оповіщення про стан (%s):}
+::msgcat::mcset uk Heartbeat Пульс
+::msgcat::mcset uk {Heartbeat age: %s s} {Давність останнього сигналу: %s с}
 ::msgcat::mcset uk Help Довідка
 ::msgcat::mcset uk {Help & keys} {Довідка та клавіші}
 ::msgcat::mcset uk {Hide right panes} {Сховати праві панелі}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset uk {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {Утримуйте, а потім ведіть палець, не відриваючи: виділення йде за пальцем слово за словом і прокручується біля верхнього чи нижнього краю.}
 ::msgcat::mcset uk Hooks Хуки
 ::msgcat::mcset uk {Hooks (what plugins run on)} {Гаки (на що реагують плагіни)}
+::msgcat::mcset uk Host Хост
 ::msgcat::mcset uk {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {Тривалість утримання задає налаштування Android «Затримка натискання й утримання» у спеціальних можливостях.}
 ::msgcat::mcset uk {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {Зроблено резервну копію KEK та ключа ротації PLC офлайн; дозволити перевірену передачу TLS та активації}
 ::msgcat::mcset uk {I-search backward: type to search, C-r for previous} {I-search назад: друкуйте для пошуку, C-r — попередній}
 ::msgcat::mcset uk {I-search: type to search, C-s for next} {I-search: друкуйте для пошуку, C-s — наступний}
+::msgcat::mcset uk {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {Тиск вводу-виводу: %1$s%% / %2$s%% / %3$s%% часу якесь завдання чекало (10 с / 1 хв / 5 хв)}
 ::msgcat::mcset uk IRC IRC
 ::msgcat::mcset uk {IRC buffers} {Буфери IRC}
 ::msgcat::mcset uk {IRC composer} {Поле вводу IRC}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset uk {IRC split: %s} {Сплит IRC: %s}
 ::msgcat::mcset uk {IRC transcript} {Транскрипт IRC}
 ::msgcat::mcset uk {IRC — nothing to show} {IRC — немає чого показати}
+::msgcat::mcset uk {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {У роботі: %1$s ходів %2$s, %3$s фонових завдань %4$s}
 ::msgcat::mcset uk {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {Встановити %s у кероване сховище компонентів? Його маніфест показано; це не запускає службу.}
 ::msgcat::mcset uk {Install component} {Встановити компонент}
 ::msgcat::mcset uk {Install components…} {Встановити компоненти…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset uk Instances Екземпляри
 ::msgcat::mcset uk {It becomes the current content, as a new revision — so the restore can be undone too.} {Він стане поточним вмістом як нова ревізія — тож і відновлення можна скасувати.}
 ::msgcat::mcset uk {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Він потрапить до зашифрованого сховища на цій машині. Агент ніколи його не бачить: він може лише використовувати його як $%s у командах або надсилати на дозволені хости.}
+::msgcat::mcset uk {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Його вилучено з реєстру кластера в межах усього флоту: наступний обмін gossip скаже кожному піру 0.2.0 також його відкинути, і жоден із них не зіллє його назад. Пір, старіший за 0.2.0, і далі його показує. Якщо машина повернеться й надішле heartbeat, його буде зареєстровано знову. Піри синхронізації та збережені екземпляри не змінюються.}
 ::msgcat::mcset uk {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Зараз він залишає пам'ять. Історія зберігає кожну ревізію, і Історія… може його відновити.}
 ::msgcat::mcset uk Join Приєднатися
 ::msgcat::mcset uk {Join a pool} {Приєднатися до групи машин}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset uk {Language (i18n)} {Мова (i18n)}
 ::msgcat::mcset uk Language… Мова…
 ::msgcat::mcset uk {Last active} {Остання активність}
+::msgcat::mcset uk {Last probe: %1$s — %2$s} {Остання перевірка: %1$s — %2$s}
 ::msgcat::mcset uk {Leave %s?} {Покинути %s?}
 ::msgcat::mcset uk Leave… Покинути…
 ::msgcat::mcset uk {Legacy open — no [acl] section} {Старий відкритий — без секції [acl]}
 ::msgcat::mcset uk {Let %s:} {Дозволити застосунку %s:}
 ::msgcat::mcset uk {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {Літери, цифри, - та _. Створює plugin.toml і plugin.tcl, які реєструють хук post_llm_call, після чого відкриває їх у панелі Dev.}
+::msgcat::mcset uk Level Рівень
 ::msgcat::mcset uk {Lift lockdown} {Зняти блокування}
+::msgcat::mcset uk Lines Рядки
 ::msgcat::mcset uk {List the provider's models} {Показати моделі провайдера}
+::msgcat::mcset uk Load Навантаження
 ::msgcat::mcset uk {Load more} {Завантажити ще}
 ::msgcat::mcset uk {Loading discovered components…} {Завантаження знайдених компонентів…}
 ::msgcat::mcset uk {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {Локальний пакунок перевірено. Виберіть «Встановити вибраний компонент», щоб підтвердити встановлення; нічого ще не встановлено.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset uk {Lock down} Заблокувати
 ::msgcat::mcset uk Log Журнал
 ::msgcat::mcset uk {Log (engine + status)} {Журнал (рушій + статус)}
+::msgcat::mcset uk {Log of %s} {Журнал %s}
+::msgcat::mcset uk Logs… Журнали…
 ::msgcat::mcset uk {M-g- (g: goto line)} {M-g- (g: перейти до рядка)}
 ::msgcat::mcset uk {M-p/M-n history · Tab complete} {M-p/M-n історія · Tab автодоповнення}
 ::msgcat::mcset uk {MCP server list} {Список MCP-серверів}
 ::msgcat::mcset uk {MCP servers (from config.toml)} {MCP-сервери (з config.toml)}
 ::msgcat::mcset uk {Make default} {Зробити типовою}
 ::msgcat::mcset uk {Make default (config.toml)} {Зробити типовим (config.toml)}
+::msgcat::mcset uk {Manage extensions} {Керування розширеннями}
 ::msgcat::mcset uk {Manifest SHA-256} {SHA-256 маніфесту}
 ::msgcat::mcset uk {Mark read} {Позначити прочитаним}
 ::msgcat::mcset uk {Mechanisms (what the engine does on its own)} {Механізми (що рушій робить самостійно)}
 ::msgcat::mcset uk {Mechanisms — what the engine does on its own, and how to stop it} {Механізми — що рушій робить сам і як це зупинити}
 ::msgcat::mcset uk Memory Пам'ять
 ::msgcat::mcset uk {Memory history} {Історія пам'яті}
+::msgcat::mcset uk {Memory: %1$s available of %2$s (%3$s%% used)} {Пам'ять: доступно %1$s із %2$s (використано %3$s%%)}
+::msgcat::mcset uk {Merge the received %s into this node?} {Злити отримане %s у цей вузол?}
 ::msgcat::mcset uk Messages Повідомлення
+::msgcat::mcset uk Metrics Метрики
+::msgcat::mcset uk {Metrics (asked %s):} {Метрики (запитано %s):}
+::msgcat::mcset uk {Metrics of %1$s failed: %2$s} {Метрики %1$s не вдалися: %2$s}
+::msgcat::mcset uk {Metrics of %s received.} {Метрики %s отримано.}
+::msgcat::mcset uk {Metrics: not asked yet — use Metrics.} {Метрики: ще не запитувано — натисніть «Метрики».}
 ::msgcat::mcset uk Model Модель
 ::msgcat::mcset uk {Model for this session} {Модель для цієї сесії}
 ::msgcat::mcset uk {Models & settings} {Моделі та налаштування}
+::msgcat::mcset uk Monitors Монітори
+::msgcat::mcset uk Name Назва
+::msgcat::mcset uk {Need an account? Optional sign-up links (open in your browser):} {Потрібен обліковий запис? Необов’язкові посилання для реєстрації (відкриються у браузері):}
 ::msgcat::mcset uk Network Мережа
 ::msgcat::mcset uk {New alias} {Новий аліас}
+::msgcat::mcset uk {New branch name} {Назва нової гілки}
 ::msgcat::mcset uk {New cron job} {Нове cron-завдання}
+::msgcat::mcset uk {New extension} {Нове розширення}
 ::msgcat::mcset uk {New memory file} {Новий файл пам'яті}
 ::msgcat::mcset uk {New plugin} {Новий плагін}
 ::msgcat::mcset uk {New session} {Нова сесія}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset uk Next Далі
 ::msgcat::mcset uk Nickname Нік
 ::msgcat::mcset uk {NixOS: emit a module snippet; do not edit host declarations} {NixOS: видати фрагмент модуля; не редагувати декларації хоста}
+::msgcat::mcset uk {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Для цього вузла не налаштовано ціль життєвого циклу SSH. Додайте екземпляр явно, щоб розгорнути або перезапустити його.}
+::msgcat::mcset uk {No additional push happens.} {Додаткового запушування не буде.}
 ::msgcat::mcset uk {No apps yet. Ask the agent to make one: “make me an app that…”} {Застосунків поки немає. Попросіть агента зробити один: «зроби мені застосунок, який…»}
 ::msgcat::mcset uk {No code in the picture. Hold the phone closer, straight on, and scan again.} {На знімку немає коду. Піднесіть телефон ближче, тримайте рівно й відскануйте знову.}
 ::msgcat::mcset uk {No configuration snapshot will be restored.} {Знімок конфігурації не буде відновлено.}
+::msgcat::mcset uk {No configured sync peer for this node.} {Для цього вузла не налаштовано партнера синхронізації.}
+::msgcat::mcset uk {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Окремий перекладач не налаштований. Скористайтеся «Налаштувати перекладач», щоб вибрати провайдера, модель і цільову мову.}
+::msgcat::mcset uk {No deployment started.} {Розгортання не розпочато.}
+::msgcat::mcset uk {No diagnostics reported by the current LSP document.} {Від поточного документа LSP діагностики не надходило.}
+::msgcat::mcset uk {No explicitly configured desktop gateway is bound to this node.} {До цього вузла не прив'язано жодного явно налаштованого десктопного шлюзу.}
+::msgcat::mcset uk {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {До цього вузла не прив'язано жодного явно налаштованого шлюзу. Спершу додайте шлюз; адреса його реєстру не використовується як URL десктопа.}
+::msgcat::mcset uk {No file is open. Ask a design question, or open an extension file for help with its code.} {Жоден файл не відкрито. Поставте питання про дизайн або відкрийте файл розширення, щоб отримати допомогу з його кодом.}
+::msgcat::mcset uk {No files have been written. Review the exact manifest and source, then confirm creation.} {Жодного файлу не записано. Перегляньте точний маніфест і джерело, потім підтвердьте створення.}
 ::msgcat::mcset uk {No modules or process plugins were discovered. The provider setup steps can still continue.} {Не знайдено модулів чи процесних плагінів. Кроки налаштування провайдера можна продовжити.}
+::msgcat::mcset uk {No other registered node to compare with.} {Немає іншого зареєстрованого вузла для порівняння.}
 ::msgcat::mcset uk {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {Жоден профіль не запускає службу та не виконує скрипт, що потребує прав адміністратора, із цього майстра. Перегляньте план і будь-яку передачу перед запуском.}
+::msgcat::mcset uk {No proposal has been requested. Nothing will be written automatically.} {Пропозицію не запитано. Нічого не буде записано автоматично.}
+::msgcat::mcset uk {No proposal. Nothing was written.} {Немає пропозиції. Нічого не записано.}
 ::msgcat::mcset uk {No routes configured.} {Жодного маршруту не налаштовано.}
 ::msgcat::mcset uk {No session selected — pick one in the sidebar or start a new one} {Сесію не вибрано — оберіть її в бічній панелі або почніть нову}
 ::msgcat::mcset uk {No swap target yet: pick a language and press “Set as swap target”.} {Цілі перемикання ще немає: виберіть мову й натисніть «Зробити ціллю перемикання».}
 ::msgcat::mcset uk {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {У config.toml немає секції {[}acl{]}: кожен відправник, що дістається до шлюзу, вважається власником — поведінка одного користувача до появи ACL. Надання та відкликання доступу працює й набуває чинності, щойно з'являється {[}acl{]}.}
+::msgcat::mcset uk {Node id} {ID вузла}
+::msgcat::mcset uk {Non-evaluating syntax checks} {Перевірки синтаксису без виконання коду}
+::msgcat::mcset uk {Not available: %s} {Недоступно: %s}
+::msgcat::mcset uk Note Примітка
 ::msgcat::mcset uk {Note for the agent (optional):} {Примітка для агента (необов'язково):}
+::msgcat::mcset uk {Nothing selected.} {Нічого не вибрано.}
 ::msgcat::mcset uk {Nothing typed yet.} {Ще нічого не введено.}
+::msgcat::mcset uk {Nothing was generated or written.} {Нічого не згенеровано й не записано.}
+::msgcat::mcset uk {Nothing was prepared: the chosen repository already has these paths.} {Нічого не підготовлено: у вибраному репозиторії вже є ці шляхи.}
 ::msgcat::mcset uk Notifications Сповіщення
 ::msgcat::mcset uk OK OK
 ::msgcat::mcset uk Off Вимкнено
 ::msgcat::mcset uk On Увімкнено
+::msgcat::mcset uk {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {Замінено буде лише переглянутий буфер розширення. Файл усе ще захищений від змін, зроблених після цього перегляду. Коміт, запушування чи PR не відбуваються.}
+::msgcat::mcset uk {Only this new branch is committed. Your ambient git identity is used.} {Комітиться лише ця нова гілка. Використовується ваша поточна git-ідентичність.}
 ::msgcat::mcset uk Op {Дати op}
 ::msgcat::mcset uk Open Відкрити
+::msgcat::mcset uk {Open PR…} {Відкрити PR…}
 ::msgcat::mcset uk {Open a window} {Відкрити вікно}
 ::msgcat::mcset uk {Open in Dev} {Відкрити в Dev}
 ::msgcat::mcset uk {Open in browser} {Відкрити в браузері}
 ::msgcat::mcset uk {Open plugin} {Відкрити плагін}
 ::msgcat::mcset uk {Open terminal} {Відкрити термінал}
+::msgcat::mcset uk {Open this pull request?} {Відкрити цей запит на злиття?}
 ::msgcat::mcset uk {Open veles in Android's settings} {Відкрити veles у налаштуваннях Android}
 ::msgcat::mcset uk {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {Необов'язково: IRC-мережа для приєднання. Канали вказуйте через пробіли або коми; IRC_CHANNELS у .env, якщо задано, замінює цей список.}
 ::msgcat::mcset uk {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {Параметри беруться з маніфесту вибраного компонента. Поля, що виглядають як секрети, лишаються у потоці налаштування/сховища. Порожні поля залишають відповідний параметр без змін.}
 ::msgcat::mcset uk {Or paste a ticket signed on another device} {Або вставте квиток, підписаний на іншому пристрої}
 ::msgcat::mcset uk {Or type an answer:} {Або введіть відповідь:}
+::msgcat::mcset uk Origin Джерело
 ::msgcat::mcset uk Other… Інше…
 ::msgcat::mcset uk Outline Структура
+::msgcat::mcset uk Output Вивід
 ::msgcat::mcset uk {Override for THIS session (leave blank to inherit the default)} {Перевизначення для ЦІЄЇ сесії (лишіть порожнім, щоб успадкувати типове)}
 ::msgcat::mcset uk {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {Ідентичність власника (telegram:123456, irc:account або маска nick!user@host)}
 ::msgcat::mcset uk {PDS and handle domain} {PDS і домен handle}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset uk {Pause scheduler} {Призупинити планувальник}
 ::msgcat::mcset uk {Peek (C-c C-p)} {Проглянути (C-c C-p)}
 ::msgcat::mcset uk {Peek definition} {Переглянути визначення}
+::msgcat::mcset uk {Permission grants} Дозволи
+::msgcat::mcset uk {Permission grants…} Дозволи…
 ::msgcat::mcset uk Phone Телефон
 ::msgcat::mcset uk {Phone: permissions, battery, storage} {Телефон: дозволи, батарея, пам'ять}
 ::msgcat::mcset uk {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Телефони %s і самі зупиняють застосунки. У налаштуваннях застосунку veles дозвольте йому запускатися самостійно й працювати у фоні.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset uk Port Порт
 ::msgcat::mcset uk {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {Префіксні комбінації (C-x, M-o) показують спливне вікно which-key одразу після активації.}
 ::msgcat::mcset uk {Prepare an own vlpds PDS through the signed CLI handoff} {Підготувати власний PDS vlpds через підписаний CLI handoff}
+::msgcat::mcset uk {Prepare branch…} {Підготувати гілку…}
+::msgcat::mcset uk {Prepare this branch and commit?} {Підготувати цю гілку й коміт?}
 ::msgcat::mcset uk Preview Перегляд
+::msgcat::mcset uk {Preview change set} {Попередній перегляд набору змін}
+::msgcat::mcset uk {Preview files} {Переглянути файли}
 ::msgcat::mcset uk {Preview here} {Перегляд тут}
 ::msgcat::mcset uk {Preview pane} {Панель перегляду}
+::msgcat::mcset uk {Preview proposal} {Переглянути пропозицію}
+::msgcat::mcset uk {Preview the changed name or language before creating it.} {Перегляньте змінену назву чи мову, перш ніж створювати.}
+::msgcat::mcset uk Probe Перевірити
+::msgcat::mcset uk {Probe of %1$s failed: %2$s} {Перевірка %1$s не вдалася: %2$s}
 ::msgcat::mcset uk {Profile result} {Результат профілю}
 ::msgcat::mcset uk {Promote into config.toml} {Перенести в config.toml}
 ::msgcat::mcset uk Promote… Перенести…
 ::msgcat::mcset uk Provider Провайдер
+::msgcat::mcset uk {Provider driver (plugin wire only)} {Драйвер провайдера (лише для plugin wire)}
 ::msgcat::mcset uk {Provider entry name} {Назва запису провайдера}
 ::msgcat::mcset uk {Provider for this session} {Провайдер для цієї сесії}
 ::msgcat::mcset uk Providers Провайдери
 ::msgcat::mcset uk {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {Провайдери — це список таблиць: custom_providers.0.base_url, .0.api_mode, .0.key_env … Індексуйте за порядком, показаним нижче.}
 ::msgcat::mcset uk {Public HTTPS URL} {Публічна HTTPS-URL}
+::msgcat::mcset uk {Pull request base} {Базова гілка PR}
+::msgcat::mcset uk {Pull request created} {Запит на злиття створено}
+::msgcat::mcset uk {Pull request description} {Опис запиту на злиття}
+::msgcat::mcset uk {Pull request opened.} {Запит на злиття відкрито.}
+::msgcat::mcset uk {Pull request repository} {Репозиторій запиту на злиття}
+::msgcat::mcset uk {Pull request title} {Заголовок запиту на злиття}
 ::msgcat::mcset uk {Purge + delete files} {Очистити + видалити файли}
 ::msgcat::mcset uk {Purge container} {Очистити контейнер}
+::msgcat::mcset uk Purpose Призначення
+::msgcat::mcset uk Push Запушити
+::msgcat::mcset uk {Push branch…} {Запушити гілку…}
+::msgcat::mcset uk {Push complete. No pull request has been opened.} {Запушування завершено. Запит на злиття не відкрито.}
+::msgcat::mcset uk {Push this branch?} {Запушити цю гілку?}
+::msgcat::mcset uk {Push to %s:} {Надіслати на %s:}
 ::msgcat::mcset uk Question Питання
 ::msgcat::mcset uk Questions Питання
 ::msgcat::mcset uk Quit Вийти
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset uk {Reading notifications, for triggers} {Читання сповіщень для тригерів}
 ::msgcat::mcset uk Reasoning Міркування
 ::msgcat::mcset uk {Reasoning effort} {Рівень міркувань}
+::msgcat::mcset uk {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {Отримано, чекає застосування: дані %1$s · пам'ять %2$s · конфігурація %3$s · сховище %4$s}
+::msgcat::mcset uk {Recommended checks} {Рекомендовані перевірки}
 ::msgcat::mcset uk {Refetch this transcript from the store} {Повторно завантажити цю розмову зі сховища}
 ::msgcat::mcset uk Refresh Оновити
 ::msgcat::mcset uk {Refresh preview} {Оновити прев'ю}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset uk {Rename symbol} {Перейменувати символ}
 ::msgcat::mcset uk Rename… Перейменувати…
 ::msgcat::mcset uk Rendered Відображено
+::msgcat::mcset uk {Replace existing repository files?} {Замінити наявні файли репозиторію?}
+::msgcat::mcset uk {Replace them in the new branch? Nothing else in the repository changes.} {Замінити їх у новій гілці? Більше в репозиторії нічого не змінюється.}
 ::msgcat::mcset uk Repository Репозиторій
 ::msgcat::mcset uk {Repository (owner/name)} {Репозиторій (власник/назва)}
+::msgcat::mcset uk {Repository directory} {Каталог репозиторію}
+::msgcat::mcset uk {Repository paths} {Шляхи в репозиторії}
+::msgcat::mcset uk {Request a new preview before trying again.} {Запросіть новий перегляд, перш ніж пробувати знову.}
 ::msgcat::mcset uk {Reset to default} {Скинути до типового}
 ::msgcat::mcset uk {Reset to template} {Скинути до шаблону}
 ::msgcat::mcset uk Restart Перезапустити
+::msgcat::mcset uk {Restart + verify canary} {Перезапустити + перевірити канарку}
 ::msgcat::mcset uk {Restore hidden windows} {Відновити приховані вікна}
 ::msgcat::mcset uk {Restore plugins to %s?} {Відновити плагіни до %s?}
 ::msgcat::mcset uk {Restore revision r%1$s of %2$s?} {Відновити ревізію r%1$s файлу %2$s?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset uk {Restore this commit} {Відновити цей коміт}
 ::msgcat::mcset uk {Restore this revision} {Відновити цю ревізію}
 ::msgcat::mcset uk {Resume scheduler} {Відновити планувальник}
+::msgcat::mcset uk {Resume unfinished operation} {Продовжити незавершену операцію}
 ::msgcat::mcset uk Revert Відкотити
 ::msgcat::mcset uk {Revert %s to HEAD? Uncommitted changes in this file are lost.} {Відкинути %s до HEAD? Незбережені зміни в цьому файлі буде втрачено.}
 ::msgcat::mcset uk Revert… Відкотити…
 ::msgcat::mcset uk Review Огляд
 ::msgcat::mcset uk {Review (git) pane} {Панель Огляд (git)}
+::msgcat::mcset uk {Review deployment} {Переглянути розгортання}
+::msgcat::mcset uk {Review extension contribution} {Переглянути внесок розширення}
 ::msgcat::mcset uk {Review managed local bundle…} {Перевірити керований локальний пакунок…}
 ::msgcat::mcset uk {Review rollback} {Перевірити відкат}
+::msgcat::mcset uk {Review selected files} {Переглянути вибрані файли}
 ::msgcat::mcset uk {Review the component options on the summary screen before applying.} {Перегляньте параметри компонента на екрані підсумку перед застосуванням.}
 ::msgcat::mcset uk {Review the component preview before applying. No component configuration has been written.} {Перегляньте попередній перегляд компонента перед застосуванням. Конфігурацію компонента ще не записано.}
+::msgcat::mcset uk {Review the selected files and remove credential findings before preparing.} {Перегляньте вибрані файли й приберіть знайдені облікові дані, перш ніж готувати.}
 ::msgcat::mcset uk {Reviewed core bundle in the managed install-sources directory} {Перевірений пакет ядра в керованому каталозі install-sources}
+::msgcat::mcset uk {Reviewed fleet deployment} {Перевірене розгортання флоту}
 ::msgcat::mcset uk {Reviewed local bundle} {Перевірений локальний пакунок}
 ::msgcat::mcset uk {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {Перевірений локальний пакунок встановлено. Він не пройшов перевірку підписаного завантаження. Потрібен перезапуск, перш ніж використовувати нове ядро.}
 ::msgcat::mcset uk Revision Ревізія
 ::msgcat::mcset uk Revoke Відкликати
+::msgcat::mcset uk {Revoke selected} {Відкликати вибрані}
 ::msgcat::mcset uk Roles Ролі
 ::msgcat::mcset uk {Roll back %1$s from %2$s to %3$s?} {Відкотити %1$s з %2$s до %3$s?}
+::msgcat::mcset uk {Roll back selected target} {Відкотити вибрану ціль}
 ::msgcat::mcset uk {Rollback completed. Reload the component or restart as requested by the report.} {Відкат завершено. Перезавантажте компонент або перезапустіть програму, як зазначено у звіті.}
 ::msgcat::mcset uk {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {Відкат перевірено. Виберіть «Встановити вибраний компонент», щоб підтвердити відновлення; нічого ще не відновлено.}
 ::msgcat::mcset uk Run Запустити
 ::msgcat::mcset uk {Run the wizard again} {Запустити майстер ще раз}
 ::msgcat::mcset uk {Running in the background} {Робота у фоні}
-::msgcat::mcset uk {Running tasks} {Активні завдання}
-::msgcat::mcset uk {Running tasks (subagents, shells, monitors)} {Запущені задачі (субагенти, shells, монітори)}
 ::msgcat::mcset uk {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {Права та користувачі, надані під час роботи, живуть у сховищі, і скидання сховища їх забирає. «Перенести» додає до config.toml ті, що обрало сховище: коментарі та порядок ключів файлу зберігаються, поруч пишеться резервна копія, копії зі сховища видаляються. Дія відмовляється, а не вгадує, там, де файл уже має свою думку.}
 ::msgcat::mcset uk {S3 HTTPS endpoint} {S3 HTTPS-ендпоінт}
 ::msgcat::mcset uk {S3 bucket} S3-бакет
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset uk {Save as default} {Зберегти як типове}
 ::msgcat::mcset uk {Save attachment as} {Зберегти вкладення як}
 ::msgcat::mcset uk {Save globally} {Зберегти глобально}
+::msgcat::mcset uk {Save or revert the open buffer before applying a change set.} {Збережіть або поверніть до вихідного стану відкритий буфер, перш ніж застосовувати набір змін.}
 ::msgcat::mcset uk Scan Сканувати
 ::msgcat::mcset uk {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {Відскануйте код veles з машини, яка запросила цей телефон. Якщо вона спершу показала код WireGuard, раніше відскануйте його в застосунку WireGuard.}
 ::msgcat::mcset uk {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {Розклад: інтервал («30m», «every 2h»), cron-вираз («0 9 * * 1») або ISO-мітка часу для разового запуску. Рядок вище показує, як це читає рушій. Доставка: «local» лишає вивід у журналі — єдиний чесний типовий варіант для робочого столу, за яким немає чат-платформи — або «platform:chat_id». Пробудження сесії: лишіть порожнім, щоб запустити свіжу сесію; задайте id сесії (або унікальний префікс), щоб продовжити її з повною історією — зайнята сесія прийме запит на межі наступного ходу.}
+::msgcat::mcset uk Scope Область
 ::msgcat::mcset uk {Scroll to end} {Прокрутити до кінця}
 ::msgcat::mcset uk {Search commands and sessions…} {Пошук команд і сесій…}
 ::msgcat::mcset uk {Search message text} {Шукати в тексті повідомлень}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset uk Section Розділ
 ::msgcat::mcset uk {Select a component first. No component options will be changed if you skip this step.} {Спочатку оберіть компонент. Якщо пропустите цей крок, параметри компонента не зміняться.}
 ::msgcat::mcset uk {Select all} {Виділити все}
+::msgcat::mcset uk {Select all extensions} {Вибрати всі розширення}
+::msgcat::mcset uk {Select at least one source file.} {Виберіть принаймні один файл джерела.}
+::msgcat::mcset uk {Select none} {Зняти вибір}
+::msgcat::mcset uk {Select text to translate first.} {Спочатку виберіть текст для перекладу.}
+::msgcat::mcset uk {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {Виберіть розширення та файли для надсилання. Вони потраплять в одну гілку й один pull request, кожне розширення — у власний каталог. Перегляньте, запустіть перевірки без оцінювання, потім підготуйте ізольовану гілку й коміт. Надсилання та створення pull request — окремі дії з підтвердженням.}
 ::msgcat::mcset uk Send Надіслати
+::msgcat::mcset uk {Send %s to the peer?} {Надіслати %s партнеру?}
 ::msgcat::mcset uk {Send a %d-line message to the channel?} {Надіслати каналу повідомлення на %d рядків?}
 ::msgcat::mcset uk {Send raw line to the server? (%s)} {Надіслати сирий рядок на сервер? (%s)}
 ::msgcat::mcset uk {Server (empty = no IRC)} {Сервер (порожньо = без IRC)}
 ::msgcat::mcset uk {Server: gateway configuration and a reviewed user unit} {Server: конфігурація шлюзу та перевірений користувацький юніт}
 ::msgcat::mcset uk {Server: install a user unit and prepare the separate linger handoff} {Server: встановити користувацький юніт та підготувати окрему передачу linger}
 ::msgcat::mcset uk {Server: use a system service and prepare a privileged CLI request} {Server: використати системну службу та підготувати запит CLI з правами адміністратора}
+::msgcat::mcset uk Session Сесія
 ::msgcat::mcset uk {Session id} {ID сесії}
 ::msgcat::mcset uk {Session id…} {ID сесії…}
 ::msgcat::mcset uk Sessions Сесії
 ::msgcat::mcset uk {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Сесії, уже переведені на цей аліас, зберігають обраний маршрут; нові перевизначення це імʼя не знайдуть.}
+::msgcat::mcset uk {Sessions served} {Обслуговані сесії}
 ::msgcat::mcset uk Set Встановити
 ::msgcat::mcset uk {Set [model] provider/default in config.toml.} {Встановити провайдера/типову модель для [model] у config.toml.}
 ::msgcat::mcset uk {Set as swap target} {Зробити ціллю перемикання}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset uk {Setup — summary} {Налаштування — підсумок}
 ::msgcat::mcset uk {Setup — welcome} {Налаштування — вітання}
 ::msgcat::mcset uk {Shared container network} {Спільна мережа контейнерів}
+::msgcat::mcset uk Shells Оболонки
+::msgcat::mcset uk {Shells and monitors} {Оболонки та монітори}
+::msgcat::mcset uk {Shells and monitors (subagents, shells, monitors)} {Оболонки та монітори (субагенти, оболонки, монітори)}
 ::msgcat::mcset uk {Show diff} {Показати diff}
 ::msgcat::mcset uk {Show every key} {Показати всі клавіші}
 ::msgcat::mcset uk Sign Підписати
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset uk Solved Вирішено
 ::msgcat::mcset uk Source Джерело
 ::msgcat::mcset uk {Source commit} {Коміт джерела}
+::msgcat::mcset uk {Source text} {Вихідний текст}
 ::msgcat::mcset uk {Source→app (C-c C-c)} {Джерело→застосунок (C-c C-c)}
 ::msgcat::mcset uk Stage {В індекс}
+::msgcat::mcset uk {Stage canary} {Підготувати канарку}
+::msgcat::mcset uk Stale Застарілий
+::msgcat::mcset uk {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {Постійні дозволи дають змогу виконувати подальші виклики інструментів без нового запиту. Дозволи сесії належать активним сесіям на кожній поверхні (desktop, Telegram, IRC, …); глобальні дозволи зберігаються; записи allowlist із [approvals] у config.toml показано лише для читання. Відкликання одного ніколи не змінює інших дозволів.}
 ::msgcat::mcset uk Start Запустити
+::msgcat::mcset uk {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {Почніть із розширення у вашій теці плагінів користувача. Воно переживає оновлення й не потребує перезбирання шлюзу. «Нове розширення» показує точний маніфест і джерело перед записом. Виберіть підтримувану мову й версію API, перегляньте файли, потім протестуйте розширення окремо.}
 ::msgcat::mcset uk {Start with the phone} {Запуск разом із телефоном}
+::msgcat::mcset uk {Static IP} {Статична IP}
 ::msgcat::mcset uk Status Статус
 ::msgcat::mcset uk Steer Скоригувати
 ::msgcat::mcset uk {Step %1$d of %2$d} {Крок %1$d з %2$d}
 ::msgcat::mcset uk {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {Ще задати: %s — введіть тут /secret set NAME або виконайте veles secret set NAME на машині шлюзу.}
 ::msgcat::mcset uk Stop Зупинити
 ::msgcat::mcset uk {Storage root} {Корінь сховища}
+::msgcat::mcset uk Store Дані
 ::msgcat::mcset uk {Store a secret: %s} {Зберегти секрет: %s}
 ::msgcat::mcset uk {Store it} Зберегти
+::msgcat::mcset uk {Store replica} {Репліка сховища}
 ::msgcat::mcset uk Subagents Субагенти
 ::msgcat::mcset uk {Subagents (/agents)} {Субагенти (/agents)}
 ::msgcat::mcset uk Summary Підсумок
+::msgcat::mcset uk Surface Поверхня
 ::msgcat::mcset uk {Swap ⇄} {Поміняти ⇄}
+::msgcat::mcset uk {Sync cancelled.} {Синхронізацію скасовано.}
+::msgcat::mcset uk {Sync complete.} {Синхронізацію завершено.}
+::msgcat::mcset uk {Sync now} {Синхронізувати зараз}
 ::msgcat::mcset uk {TOML copied — paste it into config.toml} {TOML скопійовано — вставте його у config.toml}
 ::msgcat::mcset uk Tag Тег
 ::msgcat::mcset uk {Tap a link to open it, or a block's header to open or close the block.} {Торкніться посилання, щоб відкрити його, або заголовка блоку, щоб розгорнути чи згорнути блок.}
 ::msgcat::mcset uk {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {Торкніться поля внизу, щоб друкувати. «Надіслати» надсилає, «Зупинити» завершує хід, а «Від'єднати» переводить команду, що виконується, у фон.}
 ::msgcat::mcset uk {Tap the text to clear the selection.} {Торкніться тексту, щоб зняти виділення.}
+::msgcat::mcset uk {Target language:} {Цільова мова:}
+::msgcat::mcset uk {Target node IDs (canary first, comma separated)} {Ідентифікатори цільових вузлів (канарка першою, через кому)}
 ::msgcat::mcset uk {Task list} {Список задач}
 ::msgcat::mcset uk {Task list (right pane)} {Список задач (права панель)}
 ::msgcat::mcset uk Tasks Задачі
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset uk {That is not a ticket.} {Це не квиток.}
 ::msgcat::mcset uk {That is not a veles pool code.} {Це не код групи veles.}
 ::msgcat::mcset uk {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {Це код WireGuard: відскануйте його в застосунку WireGuard. Код veles — другий.}
+::msgcat::mcset uk {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {%d переглянутих файлів буде записано в новий каталог у вашому каталозі плагінів користувача, і veles спробує завантажити розширення. Якщо каталог із такою назвою з'явився після попереднього перегляду, нічого не записується. Публікація не є частиною цієї дії.}
 ::msgcat::mcset uk {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {REPL панелі Dev виконується в ЖИВОМУ застосунку — UI є власним ліспом.}
 ::msgcat::mcset uk {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {Таблицю [mcp_servers.<name>] видалено з config.toml. Попередній файл збережено як config.toml.bak.}
 ::msgcat::mcset uk {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {Білі списки адаптерів (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) — це межа довіри, і кожен дозволений відправник вважається власником. Це поза-ACL-позіція.}
 ::msgcat::mcset uk {The agent asks for a secret: %s} {Агент просить секрет: %s}
+::msgcat::mcset uk {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {Уже надіслану гілку буде використано як головну гілку PR. Гілку у вашому форку автоматично названо owner:branch.}
+::msgcat::mcset uk {The author asks} {Автор запитує}
+::msgcat::mcset uk {The buffer changed. Request a new proposal before applying.} {Буфер змінився. Запросіть нову пропозицію, перш ніж застосовувати.}
 ::msgcat::mcset uk {The bundle operation returned an invalid result. Verify the installation before retrying.} {Операція з пакунком повернула недійсний результат. Перевірте встановлення перед повторною спробою.}
 ::msgcat::mcset uk {The bundle preview was malformed; nothing was installed.} {Попередній перегляд пакунка був некоректним; нічого не встановлено.}
 ::msgcat::mcset uk {The camera did not open; paste the code instead.} {Камера не відкрилася; натомість вставте код.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset uk {The component manifest is still loading. Wait for it or choose another component.} {Маніфест компонента ще завантажується. Зачекайте або оберіть інший компонент.}
 ::msgcat::mcset uk {The component preview is not ready yet. Refresh it and review the result before applying.} {Попередній перегляд компонента ще не готовий. Оновіть його та перегляньте результат перед застосуванням.}
 ::msgcat::mcset uk {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {Попередній перегляд компонента ще завантажується. Зачекайте відповіді перед переглядом сукупних змін.}
+::msgcat::mcset uk {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Поточну діагностику (від мовного сервера або команди «Перевірити») надіслано разом із цим файлом. За бажанням додайте питання. Відповідь — лише текст; нічого не може бути записано.}
 ::msgcat::mcset uk {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Каталог і все в ньому буде видалено. Це не можна скасувати — якщо треба просто прибрати його з промпта, краще вимкнути.}
 ::msgcat::mcset uk {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Каталог буде видалено. Папка плагіна — це git-репозиторій, тож спершу фіксується знімок, і «Історія…» зможе його повернути.}
+::msgcat::mcset uk {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Редактор відкриває файли шлюзу, зокрема віддалених екземплярів, і запускає на шлюзі мовний сервер для мови цього файла: tcl-lsp, typescript-language-server (TypeScript і JavaScript), rust-analyzer (крейт або модуль плагіна Rust), clangd (C), racket-langserver і сервер Common Lisp. Наведення, перехід до визначення, автодоповнення й жива діагностика працюють для кожної мови, для якої на шлюзі є сервер; коли його немає, редактор підказує, яку програму встановити там, і зберігає підсвічування синтаксису. «Перевірити» запускає на шлюзі відповідний перевірювач: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only або читачі Racket і Lisp. Збережіть, перезавантажте в «Керуванні розширеннями» й перевірте розширення, не публікуючи локальний стан.}
 ::msgcat::mcset uk {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Перший handoff готує секрети, прикріплений образ і файли середовища виконання, але не запускає PDS. Зробіть офлайн-резервну копію KEK і ключа ротації PLC, потім створіть новий переглянутий запит із підтвердженням резервного копіювання, щоб налаштувати HTTP-01 TLS і активацію. Записи DNS мають вказувати безпосередньо на цей хост; veles не змінює CDN-проксі та DNS.}
+::msgcat::mcset uk {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Форма змінилася після того, як розширення було згенеровано. Згенеруйте знову або перегляньте простий каркас.}
 ::msgcat::mcset uk {The gateway itself is untouched.} {Сам шлюз не зачіпається.}
 ::msgcat::mcset uk {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Шлюз перечитав конфігурацію: нові сесії використовують її одразу, а ключ зі сховища буде використано наступним запитом. Telegram і IRC запустяться під час наступного перезапуску шлюзу: veles gateway restart.}
 ::msgcat::mcset uk {The installed component no longer matches the selected manifest. Review the component list again.} {Встановлений компонент більше не відповідає вибраному маніфесту. Перегляньте список компонентів ще раз.}
 ::msgcat::mcset uk {The installer preview has no verification signatures; apply is disabled.} {Попередній перегляд інсталятора не має підписів перевірки; застосування вимкнено.}
 ::msgcat::mcset uk {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Завдання та його історію запусків буде видалено. Це не можна скасувати — якщо треба просто зупинити, поставте його на паузу.}
+::msgcat::mcset uk {The log could not be read: %s} {Не вдалося прочитати журнал: %s}
 ::msgcat::mcset uk {The manifest belongs to another component; its reply was discarded.} {Маніфест належить іншому компоненту; його відповідь відкинуто.}
 ::msgcat::mcset uk {The profile changed. Review the fresh plan before applying it.} {Профіль змінився. Перегляньте оновлений план перед застосуванням.}
 ::msgcat::mcset uk {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {У репозиторії має бути SKILL.md у корені або на один рівень категорії нижче. Він опиниться в %s.}
 ::msgcat::mcset uk {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {У корені репозиторію має бути plugin.toml. Його буде клоновано в %s під іменем з маніфесту.}
+::msgcat::mcset uk {The reviewed change set was applied (%d files). Review and test it before publishing.} {Переглянутий набір змін застосовано (%d файлів). Перегляньте та перевірте його перед публікацією.}
 ::msgcat::mcset uk {The reviewed configuration snapshot will also be restored.} {Перевірений знімок конфігурації також буде відновлено.}
+::msgcat::mcset uk {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {Переглянуті файли буде записано у вашу теку плагінів користувача. Veles зберігає локальний знімок для відновлення й намагається перезавантажити розширення; публікація не входить до цієї дії.}
+::msgcat::mcset uk {The reviewed proposal was applied locally. Review and test it before publishing.} {Переглянуту пропозицію застосовано локально. Перегляньте й протестуйте її перед публікацією.}
 ::msgcat::mcset uk {The rollback preview was malformed or named another component; nothing was restored.} {Попередній перегляд відкату був некоректним або вказував інший компонент; нічого не відновлено.}
 ::msgcat::mcset uk {The rollback returned an invalid result. Verify the installation before retrying.} {Відкат повернув недійсний результат. Перевірте встановлення перед повторною спробою.}
 ::msgcat::mcset uk {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {Маршрут, з якого стартують нові сесії. /model і оверлей моделей змінюють його потім — для сесії або як новий типований.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset uk {The signed download discard returned an invalid response; no installation was requested.} {Скасування підписаного завантаження повернуло недійсну відповідь; встановлення не запитувалося.}
 ::msgcat::mcset uk {The signed installation returned an invalid result. Verify the installation before retrying.} {Підписане встановлення повернуло недійсний результат. Перевірте встановлення перед повторною спробою.}
 ::msgcat::mcset uk {The signed release preview was malformed; nothing was installed.} {Попередній перегляд підписаного випуску був неправильним; нічого не встановлено.}
+::msgcat::mcset uk {The source buffer changed. Request a new proposal before applying.} {Буфер джерела змінився. Запросіть нову пропозицію, перш ніж застосовувати.}
 ::msgcat::mcset uk {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Сховище повернеться на одну ревізію назад. Відкат сам є ревізією, тож його теж можна скасувати.}
+::msgcat::mcset uk {The translator returned no text.} {Перекладач не повернув тексту.}
 ::msgcat::mcset uk {The verification reply was malformed; no integrity result was accepted.} {Відповідь перевірки була некоректною; результат перевірки цілісності не прийнято.}
 ::msgcat::mcset uk Themes Теми
+::msgcat::mcset uk {These paths already exist in the chosen repository:} {Ці шляхи вже є у вибраному репозиторії:}
 ::msgcat::mcset uk {They have not been saved.} {Їх не збережено.}
+::msgcat::mcset uk {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {У цьому буфері немає діагностики для пояснення. Запустіть «Перевірити» або зачекайте на мовний сервер.}
 ::msgcat::mcset uk {This challenge is over.} {Це випробування завершено.}
 ::msgcat::mcset uk {This code has expired. Ask for a new one.} {Термін дії цього коду минув. Попросіть новий.}
 ::msgcat::mcset uk {This does not start a service or claim signed-download verification.} {Це не запускає службу й не заявляє про перевірку підписаного завантаження.}
 ::msgcat::mcset uk {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Цей шлюз не приймає секретні значення з цієї машини: введіть його там командою veles secret set %s або додайте цю мережу до його [vault] trusted_networks}
 ::msgcat::mcset uk {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Це рівно те, що буде записано — власні байти рушія, отримані наживо. На диск ще нічого не потрапило.}
+::msgcat::mcset uk {This node is not a configured sync peer for any kind.} {Цей вузол не є налаштованим партнером синхронізації для жодного типу даних.}
+::msgcat::mcset uk {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Цей плагін вбудований і лише для читання. Видаліть користувацьку копію з такою самою назвою, щоб натомість використовувати вбудовану.}
+::msgcat::mcset uk {This publishes the commit; no pull request is created yet.} {Це публікує коміт; запит на злиття поки не створюється.}
 ::msgcat::mcset uk {This review expires after %s seconds. Closing or cancelling discards its private staging.} {Цей перегляд спливає через %s секунд. Закриття або скасування видаляє його приватне проміжне сховище.}
 ::msgcat::mcset uk {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {Цей майстер записує config.toml, а ключі, які ви йому дасте, кладе до зашифрованого сховища. Будь-який крок можна пропустити: пропущений крок не потрапляє до нової конфігурації і залишається як є в наявній. Наявний config.toml редагується на місці — змінюються лише розділи, на які ви відповідаєте, а все інше, включно з коментарями, залишається.}
 ::msgcat::mcset uk {Ticket needed} {Потрібен квиток}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset uk {Topic for %s} {Тема для %s}
 ::msgcat::mcset uk {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {Торкніться сесії чи будь-чого іншого з меню й утримуйте, щоб відкрити меню. Дотик поза ним або «Назад» його закриває.}
 ::msgcat::mcset uk {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {Торкніться слова й утримуйте, щоб виділити його. Коли ви піднімете палець, відкриється його меню, угорі — Копіювати.}
+::msgcat::mcset uk Translate Перекласти
+::msgcat::mcset uk {Translate selection} {Перекласти вибране}
+::msgcat::mcset uk Translating… Переклад…
+::msgcat::mcset uk {Translation cancelled.} {Переклад скасовано.}
+::msgcat::mcset uk {Translation copied.} {Переклад скопійовано.}
+::msgcat::mcset uk {Translation failed} {Переклад не вдався}
+::msgcat::mcset uk {Translation result} {Результат перекладу}
+::msgcat::mcset uk {Translator configuration unavailable} {Налаштування перекладача недоступне}
 ::msgcat::mcset uk {Trigger history} {Історія тригерів}
 ::msgcat::mcset uk Triggers Тригери
 ::msgcat::mcset uk {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {Тригери реагують на події каналу без запуску ходу. slopdrop передає подію містку та пересилає відповідь; vision описує URL зображення в межах кулдауну та годинного ліміту. Рядок спрацьовує лише там, де дозволяють і перемикач [triggers] у конфігу, і похідна маска — за поточних slopdrop-привʼязок #coven нічого не пересилає.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset uk {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Доки IRC_ALLOWED_USERS у .env не називає ваш обліковий запис, з ботом може говорити будь-хто в мережі — а без розділу [acl] як власник, з усіма інструментами.}
 ::msgcat::mcset uk {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Доки TELEGRAM_ALLOWED_USERS у .env не називає ваш ID користувача, з ботом може говорити будь-хто, хто його знайде — а без розділу [acl] як власник, з усіма інструментами.}
 ::msgcat::mcset uk Untitled {Без заголовка}
+::msgcat::mcset uk {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Надсилання вгору — це явна дія публікації, а не автоматичне вивантаження. У «Керуванні розширеннями» пункт «Надіслати розширення» показує всі користувацькі розширення: виберіть розширення та файли, перегляньте diff і сканування на секрети, запустіть перевірки, потім створіть одну гілку й один PR (типово до veles) з вибраною вами ідентичністю git. Кожне розширення потрапляє у власний каталог репозиторію, і наявний там файл замінюється лише після окремого підтвердження. Ніколи не публікуйте node.toml, локальні облікові дані, токени, приватні кінцеві точки чи сторонній стан плагінів. Локальні знімки для відновлення не є комітом угору чи PR.}
+::msgcat::mcset uk {Upstream repository or fork URL} {URL репозиторію upstream або форку}
+::msgcat::mcset uk {Uptime class} {Клас доступності}
+::msgcat::mcset uk {Uptime: host %1$s, gateway %2$s} {Час роботи: хост %1$s, шлюз %2$s}
 ::msgcat::mcset uk Usage Використання
 ::msgcat::mcset uk {Usage & Quota} {Використання та квота}
 ::msgcat::mcset uk {Use TLS} {Використовувати TLS}
 ::msgcat::mcset uk {Use now} {Застосувати зараз}
+::msgcat::mcset uk {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {Для реальних контрактів скористайтеся кнопками «Довідник автора» та «Довідник API». Накладення «Плагіни» показує живі хуки; сервіси й точки перевизначення походять із власного реєстру шлюзу, а не зі скопійованого списку в цьому довіднику.}
 ::msgcat::mcset uk {Use this ticket} {Використати цей квиток}
+::msgcat::mcset uk {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {Використовуйте свій форк (https://github.com/<you>/veles.git або git@github.com:<you>/veles.git), якщо ви не можете надсилати безпосередньо до veles. Вибраний репозиторій клонується в ізольоване робоче дерево. Нічого не надсилається.}
 ::msgcat::mcset uk {Users — one role across networks and platforms} {Користувачі — одна роль у всіх мережах і на всіх платформах}
 ::msgcat::mcset uk {Using the phone, for the agent} {Керування телефоном для агента}
 ::msgcat::mcset uk {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Зазвичай збігається з назвою запису провайдера. При виборі «Пропустити» залиш обидва порожніми — наполовину задана пара не маршрутизує.}
 ::msgcat::mcset uk {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Значення — це TOML: рядки в лапках, числа або списки. Записується у [mcp_servers.<name>] — ваші коментарі та всі інші секції лишаються недоторканими.}
+::msgcat::mcset uk Vault Сховище
 ::msgcat::mcset uk {Verified signed bundle installed. Restart the gateway before using the new core.} {Перевірений підписаний пакунок встановлено. Перезапустіть шлюз перед використанням нового ядра.}
 ::msgcat::mcset uk {Verified signed release — not installed yet} {Перевірений підписаний випуск — ще не встановлено}
 ::msgcat::mcset uk {Verify and review release…} {Перевірити й переглянути випуск…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset uk {Verify signed release} {Перевірити підписаний випуск}
 ::msgcat::mcset uk {Verify signed release…} {Перевірка підписаного випуску…}
 ::msgcat::mcset uk Version Версія
+::msgcat::mcset uk {Version %1$s: %2$s} {Версія %1$s: %2$s}
+::msgcat::mcset uk {Version drift in the registry: %s} {Розбіжність версій у реєстрі: %s}
 ::msgcat::mcset uk View Вигляд
 ::msgcat::mcset uk {View markdown source} {Переглянути джерело markdown}
 ::msgcat::mcset uk {View source / rendered} {Джерело / відображено}
 ::msgcat::mcset uk Voice {Дати voice}
+::msgcat::mcset uk {Waiting for the model…} {Очікування моделі…}
+::msgcat::mcset uk {Waiting for the model… Nothing has been written.} {Очікування моделі… Нічого не записано.}
 ::msgcat::mcset uk {Welcome to veles} {Вітаємо в veles}
 ::msgcat::mcset uk {What the agent can do here} {Що агент може робити тут}
 ::msgcat::mcset uk {What veles may do on this phone. Each button opens the Android setting that changes it.} {Що veles може робити на цьому телефоні. Кожна кнопка відкриває налаштування Android, яке це змінює.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset uk {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {Поки veles у фоні, запитання агента чи завершений хід приходить сповіщенням; торкніться його, щоб відкрити сесію.}
 ::msgcat::mcset uk {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {Хто може спілкуватися з ботом. Цей вибір визначає, чи буде в config.toml взагалі секція [acl] — а це змінює всю позіцію.}
 ::msgcat::mcset uk Whois Whois
-::msgcat::mcset uk {Wire protocol (chat_completions or responses)} {Протокол обміну (chat_completions або responses)}
+::msgcat::mcset uk {Wire protocol (chat_completions, responses or plugin)} {Проводковий протокол (chat_completions, responses або plugin)}
 ::msgcat::mcset uk {With a keyboard attached, every key works as on a laptop.} {З підключеною клавіатурою кожна клавіша працює як на ноутбуці.}
 ::msgcat::mcset uk {Workflow SHA} {SHA робочого процесу}
+::msgcat::mcset uk {Workflow commit} {Коміт робочого процесу}
+::msgcat::mcset uk Worktree {Робоче дерево}
 ::msgcat::mcset uk {Write it} Записати
+::msgcat::mcset uk {Write the design question first.} {Спершу напишіть питання про дизайн.}
 ::msgcat::mcset uk {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Не записує провайдера. Шлюз не маршрутизуватиме хід, поки не з'явиться запис [[custom_providers]] і пара [model].}
 ::msgcat::mcset uk {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Запис БУДЬ-ЯКОГО ключа [acl] перемикає цей шлюз у керований режим: роль за замовчуванням стає guest (fail-closed), а списки дозволених перестають бути межею. Обирайте це лише з ідентичністю власника, якій довіряєте.}
 ::msgcat::mcset uk {[model] provider} {[model] провайдер}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset uk {also list hooks with no handler} {також показати хуки без обробника}
 ::msgcat::mcset uk {also write grants that still have an expiry} {також записати надання, у яких ще є термін дії}
 ::msgcat::mcset uk {also write runtime users} {також записати рантайм-користувачів}
+::msgcat::mcset uk {an allowlist entry is removed by editing config.toml} {запис allowlist видаляється редагуванням config.toml}
 ::msgcat::mcset uk {an allowlist is in force: a plugin not on it stays off} {діє список дозволених: плагін, якого в ньому немає, лишається вимкненим}
 ::msgcat::mcset uk {answer failed: %s} {не вдалося відповісти: %s}
+::msgcat::mcset uk {answer only, nothing to apply} {лише відповідь, нічого застосовувати}
 ::msgcat::mcset uk {append these rules to config.toml} {додати ці правила до config.toml}
 ::msgcat::mcset uk {apply failed: %s} {не вдалося застосувати: %s}
 ::msgcat::mcset uk {apply to:} {застосувати до:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset uk {ask the agent} {питати агента}
 ::msgcat::mcset uk {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset uk {asked by: %s} {запит від: %s}
+::msgcat::mcset uk {asking %s for its metrics…} {запитую метрики в %s…}
 ::msgcat::mcset uk {attach a file} {Прикріпити файл}
 ::msgcat::mcset uk {attach an image or file} {прикріпити зображення або файл}
 ::msgcat::mcset uk {attach failed: %1$s} {не вдалося приєднатися: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset uk {attached %1$s (%2$s pending)} {підʼєднано %1$s (очікує: %2$s)}
 ::msgcat::mcset uk {attached to %s} {підʼєднано до %s}
 ::msgcat::mcset uk {attached to child session %1$s} {підʼєднано до дочірньої сесії %1$s}
+::msgcat::mcset uk automatic автоматично
 ::msgcat::mcset uk {aux model} {допоміжна модель}
 ::msgcat::mcset uk {aux provider} {допоміжний провайдер}
+::msgcat::mcset uk available доступно
 ::msgcat::mcset uk {available components} {доступні компоненти}
 ::msgcat::mcset uk {back up N user turns} {відкотити N ходів користувача}
 ::msgcat::mcset uk {backed up the previous config to %s} {попередній конфіг скопійовано в %s}
 ::msgcat::mcset uk {background shells; /shells output|kill <id>} {фонові оболонки; /shells output|kill <id>}
+::msgcat::mcset uk {backing off: %1$s failure(s), next automatic try in %2$s s} {очікування: невдач — %1$s, наступна автоматична спроба через %2$s с}
 ::msgcat::mcset uk {bad host for %1$s: %2$s} {неприпустимий хост для %1$s: %2$s}
 ::msgcat::mcset uk {bad unit for %1$s: %2$s} {неприпустимий unit для %1$s: %2$s}
 ::msgcat::mcset uk {bare display off} {спрощений показ вимкнено}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset uk {browse the filesystem} {переглянути файлову систему}
 ::msgcat::mcset uk {browse the repo's files} {переглянути файли репозиторію}
 ::msgcat::mcset uk {builtin (%s):} {вбудований (%s):}
+::msgcat::mcset uk bundled вбудований
+::msgcat::mcset uk {bundled, read-only} {вбудований, лише для читання}
 ::msgcat::mcset uk by ким
 ::msgcat::mcset uk {by plan — all sessions} {за планом — усі сесії}
 ::msgcat::mcset uk {by plan — this session} {за планом — ця сесія}
 ::msgcat::mcset uk {by tool} {за інструментом}
 ::msgcat::mcset uk {cancel failed: %1$s} {не вдалося скасувати: %1$s}
 ::msgcat::mcset uk {cancel the running turn} {Скасувати поточний хід}
+::msgcat::mcset uk {cancel the selected task} {скасувати вибране завдання}
 ::msgcat::mcset uk {cancelled task %1$s} {завдання %1$s скасовано}
 ::msgcat::mcset uk {cannot list scripts (gateway offline?)} {не вдалося показати скрипти (шлюз офлайн?)}
 ::msgcat::mcset uk {cannot reach the gateway: %s} {не вдається достукатися до шлюзу: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset uk commit коміт
 ::msgcat::mcset uk {compacting %s messages in the background — the transcript reloads when it finishes} {стиснення %s повідомлень у фоні — транскрипт перезавантажиться після завершення}
 ::msgcat::mcset uk compacting… ущільнення…
+::msgcat::mcset uk {comparing the nodes' versions and config…} {порівнюю версії та конфігурацію вузлів…}
 ::msgcat::mcset uk {completion tokens} {токени завершення}
 ::msgcat::mcset uk {component options and declared actions} {параметри компонента та оголошені дії}
 ::msgcat::mcset uk composer редактор
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset uk {could not open %s} {не вдалося відкрити %s}
 ::msgcat::mcset uk {could not open %s (no working browser opener)} {не вдалося відкрити %s (немає робочого відкривача браузера)}
 ::msgcat::mcset uk {could not open %{url}: %{e}} {не вдалося відкрити %{url}: %{e}}
+::msgcat::mcset uk {could not open the optional referral link: %s} {не вдалося відкрити необов’язкове реферальне посилання: %s}
 ::msgcat::mcset uk {could not read %s: %s} {не вдалося прочитати %s: %s}
 ::msgcat::mcset uk {could not read the current route} {не вдалося прочитати поточний маршрут}
 ::msgcat::mcset uk {could not save this session's language: %{e}} {не вдалося зберегти мову цієї сесії: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset uk {ctxmenu: no widget %s (attached too early?)} {ctxmenu: немає віджету %s (підʼєднано надто рано?)}
 ::msgcat::mcset uk {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {обрано керований доступ без ідентичності власника, тож [acl] лишається неактивним — укажіть її, наприклад telegram:123456 або irc:account, щоб його ввімкнути}
 ::msgcat::mcset uk {current theme: %{name} · /theme <name>} {поточна тема: %{name} · /theme <name>}
+::msgcat::mcset uk {cursor %1$s of %2$s (%3$s behind)} {курсор %1$s з %2$s (відстає на %3$s)}
 ::msgcat::mcset uk {custom command /%s…} {власна команда /%s…}
 ::msgcat::mcset uk {custom commands (.veles/commands/) and config aliases} {власні команди (.veles/commands/) і аліаси з конфігу}
 ::msgcat::mcset uk {cycle ends} {кінець циклу}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset uk doctor_resident {постійно в кожному промпті: %{shown} з %{total} симв. (~%{tokens} токенів) — решта підвантажується за потреби: memory action=read path=%{path}}
 ::msgcat::mcset uk doctor_title {діагностика пам'яті}
 ::msgcat::mcset uk doctor_total {усього: %{chars} симв. у %{files} файлах (~%{tokens} токенів)}
+::msgcat::mcset uk {documentation is not in this source checkout: %s} {документації немає в цій копії джерел: %s}
 ::msgcat::mcset uk done готово
 ::msgcat::mcset uk {done · %1$s/%2$s} {готово · %1$s/%2$s}
 ::msgcat::mcset uk {done, but the model returned no text} {готово, але модель не повернула тексту}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset uk {evaluate Tcl and answer with the result — no model turn} {виконати Tcl і відповісти результатом — без ходу моделі}
 ::msgcat::mcset uk everyone усі
 ::msgcat::mcset uk everywhere усюди
+::msgcat::mcset uk {exchanging registry gossip…} {обмінююся gossip реєстру…}
 ::msgcat::mcset uk exit вихід
 ::msgcat::mcset uk {exit veles-desktop} {вийти з veles-desktop}
 ::msgcat::mcset uk {export failed: %s} {помилка експорту: %s}
 ::msgcat::mcset uk {export session} {експортувати сесію}
 ::msgcat::mcset uk {exported to %s} {експортовано до %s}
+::msgcat::mcset uk {extension architecture, examples and LSP help} {архітектура розширень, приклади та довідка LSP}
+::msgcat::mcset uk {extension development guide} {посібник із розробки розширень}
+::msgcat::mcset uk failed {не вдалося}
 ::msgcat::mcset uk {failed to load history: %s} {не вдалося завантажити історію: %s}
 ::msgcat::mcset uk {failed to paint cached history: %s} {не вдалося відрендерити кешовану історію: %s}
 ::msgcat::mcset uk {failed to paint replayed history: %s} {не вдалося відрендерити відтворену історію: %s}
 ::msgcat::mcset uk {failed: %s} {не вдалося: %s}
+::msgcat::mcset uk {failing — heartbeating, but a sync push or the last probe failed} {збій — сигнал іде, але надсилання синхронізації або остання перевірка не вдалися}
 ::msgcat::mcset uk {failover blueprint: cannot reach the gateway} {failover blueprint: немає зв'язку зі шлюзом}
 ::msgcat::mcset uk {failover graph unavailable: %1$s} {граф відмовостійкості недоступний: %1$s}
 ::msgcat::mcset uk {failover script: cannot reach the gateway} {failover script: немає зв'язку зі шлюзом}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset uk {fire the Tcl hook} {запустити Tcl-гачок}
 ::msgcat::mcset uk {fires for %s:} {спрацьовує для %s:}
 ::msgcat::mcset uk {fires per hour} {спрацьовує щогодини}
+::msgcat::mcset uk {fleet drift} {розбіжності флоту}
 ::msgcat::mcset uk {focus composer} {фокус на композиторі}
 ::msgcat::mcset uk {focus failed: %{e}} {не вдалося сфокусувати: %{e}}
 ::msgcat::mcset uk {focus next region} {фокус на наступній області}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset uk {four splits is the maximum} {чотири панелі — максимум}
 ::msgcat::mcset uk {fresh session} {нова сесія}
 ::msgcat::mcset uk {fresh session (Ctrl-N too)} {нова сесія (також Ctrl-N)}
+::msgcat::mcset uk {fresh — heartbeating, sync passing} {актуальний — сигнал іде, синхронізація проходить}
+::msgcat::mcset uk from з
 ::msgcat::mcset uk {from node %{node}} {з вузла %{node}}
 ::msgcat::mcset uk {gateway     v%1$s · up %2$s} {шлюз     v%1$s · працює %2$s}
 ::msgcat::mcset uk {gateway unreachable — is `veles gateway run` up?} {шлюз недосяжний — чи запущено `veles gateway run`?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset uk {in %s} {у %s}
 ::msgcat::mcset uk {insert the next key literally (^B bold, ^C colour, ^O reset)} {вставте наступну клавішу буквально (^B жирний, ^C колір, ^O скидання)}
 ::msgcat::mcset uk {inserted %s} {вставлено %s}
+::msgcat::mcset uk {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {оглянути кластер; явно надіслати/застосувати синхронізацію store, пам'яті, конфігурації або сховища; забути застарілий вузол у межах усього флоту; прочитати хвіст журналу або метрики вузла; порівняти версії й конфігурацію; gossip зараз}
 ::msgcat::mcset uk {inspector — app internals · core state · gw plugins} {інспектор — нутрощі застосунку · стан ядра · плагіни gw}
 ::msgcat::mcset uk {install a plugin from a git URL} {встановити плагін із git URL}
 ::msgcat::mcset uk {install a skill from a git URL} {встановити навичку із git URL}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset uk instance інстанс
 ::msgcat::mcset uk {instance controls} {керування інстансом}
 ::msgcat::mcset uk {instance detail} {деталі інстансу}
+::msgcat::mcset uk {instance names may not start with "cluster:" or "g:": %s} {назви екземплярів не можуть починатися з "cluster:" або "g:": %s}
 ::msgcat::mcset uk {instance needs a name} {інстансу потрібна назва}
 ::msgcat::mcset uk {instance unreachable} {інстанс недосяжний}
 ::msgcat::mcset uk instances інстанси
 ::msgcat::mcset uk interrupting… переривання…
+::msgcat::mcset uk into у
 ::msgcat::mcset uk {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset uk {irc: %s} {irc: %s}
 ::msgcat::mcset uk {irc: %s failed — %s} {irc: %s не вдалося — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset uk {language list} {список мов}
 ::msgcat::mcset uk {language picker (the swap for THIS window)} {вибір мови (заміна для ЦЬОГО вікна)}
 ::msgcat::mcset uk {language saved: %s} {мову збережено: %s}
+::msgcat::mcset uk {language server} {мовний сервер}
+::msgcat::mcset uk {language server: event stream unavailable: %s} {мовний сервер: потік подій недоступний: %s}
+::msgcat::mcset uk {language server: not started on the gateway — %s} {мовний сервер: не запущено на шлюзі — %s}
+::msgcat::mcset uk {language server: the gateway would not start one: %s} {мовний сервер: шлюз не став його запускати: %s}
 ::msgcat::mcset uk {language swapped: %1$s ⇄ %2$s} {мови обміняно місцями: %1$s ⇄ %2$s}
 ::msgcat::mcset uk {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {мова → %1$s (було %2$s) · тільки для поточного вікна — Зберегти як типову пише у config.toml}
 ::msgcat::mcset uk {language: %s} {мова: %s}
 ::msgcat::mcset uk {last error} {остання помилка}
+::msgcat::mcset uk {last pass %1$s at %2$s: %3$s} {останній прохід %1$s о %2$s: %3$s}
 ::msgcat::mcset uk {last reply copied (%s chars)} {останню відповідь скопійовано (%s символів)}
 ::msgcat::mcset uk {layout not saved: %s} {макет не збережено: %s}
 ::msgcat::mcset uk {leave (cancels a running turn first)} {вийти (спершу скасовує поточний хід)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset uk {list sessions} {список сесій}
 ::msgcat::mcset uk {list skills} {список скілів}
 ::msgcat::mcset uk {list tools} {список інструментів}
+::msgcat::mcset uk {listed here only; [notify] fleet_alerts is off} {показано лише тут; [notify] fleet_alerts вимкнено}
 ::msgcat::mcset uk {live patching ARMED} {живе патчення УВІМКНЕНО}
 ::msgcat::mcset uk {live patching ARMED — an agent can now redefine procs in this window} {живе патчення УВІМКНЕНО — агент тепер може перевизначати процедури у цьому вікні}
 ::msgcat::mcset uk {live patching disarmed} {живе патчення вимкнено}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset uk {log pane shown} {панель журналу показано}
 ::msgcat::mcset uk {log: %s} {журнал: %s}
 ::msgcat::mcset uk {make media: image/video/audio, route = comfyui or provider[/model]} {створити медіа: image/video/audio, маршрут = comfyui або provider[/model]}
+::msgcat::mcset uk {managed via %s} {керується через %s}
+::msgcat::mcset uk {manual only} {лише вручну}
 ::msgcat::mcset uk {mark set} {позначку встановлено}
 ::msgcat::mcset uk {mark whole buffer (emacs select-all)} {позначити весь буфер (emacs select-all)}
 ::msgcat::mcset uk {markdown preview of the composer} {попередній перегляд markdown у композиторі}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset uk model модель
 ::msgcat::mcset uk {model aliases} {аліаси моделей}
 ::msgcat::mcset uk {monitor %1$s fired} {монітор %1$s спрацював}
-::msgcat::mcset uk monitors монітори
 ::msgcat::mcset uk monitors_header Монітори:
 ::msgcat::mcset uk monitors_none {(немає моніторів — модель запускає їх через monitor tool)}
 ::msgcat::mcset uk {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {перемістити сесію (з її піддеревом) на інший вузол пулу на межі ходу; завершити/скасувати відкладену передачу; запитати, хто володіє сесією (admin)}
 ::msgcat::mcset uk {move the running foreground command to the background} {перевести поточну команду переднього плану у фон}
 ::msgcat::mcset uk {move the running foreground command to the background (keeps running)} {Перевести поточну команду у фон (продовжить виконуватися)}
+::msgcat::mcset uk {move this session's running foreground command to a background shell; keeps running} {перемістити поточну активну команду цієї сесії у фонову оболонку; продовжить виконуватися}
 ::msgcat::mcset uk {moving around} переміщення
 ::msgcat::mcset uk name назва
 ::msgcat::mcset uk {name a key first} {спершу назвіть ключ}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset uk {neon impressionism} {неоновий імпресіонізм}
 ::msgcat::mcset uk {network (optional — e.g. libera; empty = any)} {мережа (необов'язково — напр. libera; порожньо = будь-яка)}
 ::msgcat::mcset uk {network to scope the grant to} {мережа, на яку поширюється надання}
+::msgcat::mcset uk new новий
 ::msgcat::mcset uk {new buffer} {Новий буфер}
 ::msgcat::mcset uk {new entry — replace this text, then Save} {новий запис — замініть цей текст, потім Зберегти}
 ::msgcat::mcset uk {new name for %s} {нова назва для %s}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset uk {no IRC buffer selected} {IRC-буфер не вибрано}
 ::msgcat::mcset uk {no MCP servers configured — Add server… writes one into config.toml} {MCP-сервери не налаштовані — Додати сервер… створить запис у config.toml}
 ::msgcat::mcset uk {no URLs in this buffer} {у цьому буфері немає URL}
+::msgcat::mcset uk {no [a2a_agents] entry — this peer cannot be dialed} {немає запису [a2a_agents] — до цього партнера не вдасться підключитися}
 ::msgcat::mcset uk {no alias /%s} {немає аліасу /%s}
 ::msgcat::mcset uk {no background refresh} {фонового оновлення немає}
 ::msgcat::mcset uk {no buffer %s} {немає буфера %s}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset uk {no code block in the last reply} {в останній відповіді немає блоку коду}
 ::msgcat::mcset uk {no cron jobs} {немає cron-завдань}
 ::msgcat::mcset uk {no cron jobs — New… creates one} {немає cron-завдань — Створити… додасть одне}
+::msgcat::mcset uk {no exchange yet} {обміну ще не було}
 ::msgcat::mcset uk {no file — pick a guts file or type a path} {немає файлу — оберіть файл нутрощів або введіть шлях}
 ::msgcat::mcset uk {no handler} {немає обробника}
+::msgcat::mcset uk {no heartbeat for %{mins} min} {немає heartbeat %{mins} хв}
+::msgcat::mcset uk {no heartbeat within the threshold} {немає heartbeat у межах порогу}
 ::msgcat::mcset uk {no history yet} {історії ще немає}
 ::msgcat::mcset uk {no host configured for this instance} {для цього інстансу хост не налаштовано}
 ::msgcat::mcset uk {no instance selected} {інстанс не вибрано}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset uk {no program to open URLs} {немає програми для відкриття URL}
 ::msgcat::mcset uk {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {провайдера не налаштовано — додайте запис [[custom_providers]] і задайте пару [model], перш ніж запускати хід}
 ::msgcat::mcset uk {no reading yet — press Refresh} {ще нічого не прочитано — натисніть Оновити}
-::msgcat::mcset uk {no running tasks} {немає запущених завдань}
 ::msgcat::mcset uk {no sample available} {зразок недоступний}
 ::msgcat::mcset uk {no search bar on this surface} {на цьому інтерфейсі немає рядка пошуку}
 ::msgcat::mcset uk {no session matching %s} {немає сесії, що збігається з %s}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset uk {no session open — switch the scope to the default, or open a session} {немає відкритої сесії — перемкніть область на типову або відкрийте сесію}
 ::msgcat::mcset uk {no session open — the catalogue needs one; the default scope still works from config.toml} {немає відкритої сесії — каталогу потрібна одна; типова область усе одно працює з config.toml}
 ::msgcat::mcset uk {no setting %s — try filter or bare} {немає налаштування %s — спробуйте filter або bare}
+::msgcat::mcset uk {no shells or monitors to show} {немає оболонок чи моніторів для показу}
 ::msgcat::mcset uk {no skills found} {навичок не знайдено}
 ::msgcat::mcset uk {no such URL — /urls lists them} {немає такого URL — /urls покаже їх список}
 ::msgcat::mcset uk {no such file: %s} {немає такого файлу: %s}
 ::msgcat::mcset uk {no swap target yet — set one with /locale secondary <id>} {цілі перемикання ще немає — задайте її: /locale secondary <id>}
+::msgcat::mcset uk {no task selected} {завдання не вибрано}
 ::msgcat::mcset uk {no triggers} {немає тригерів}
 ::msgcat::mcset uk {no triggers — New… creates one} {немає тригерів — Створити… створить один}
 ::msgcat::mcset uk {no upstream reading for %s} {немає даних з апстріму для %s}
 ::msgcat::mcset uk {no word match} {немає збігу за словом}
 ::msgcat::mcset uk {no xdg-open — path copied instead} {немає xdg-open — натомість скопійовано шлях}
+::msgcat::mcset uk {node log} {журнал вузла}
 ::msgcat::mcset uk {none loaded} {жодного не завантажено}
 ::msgcat::mcset uk {none recorded} {нічого не зафіксовано}
+::msgcat::mcset uk {none since this gateway started} {немає з моменту запуску цього шлюзу}
 ::msgcat::mcset uk {none yet} {ще немає}
 ::msgcat::mcset uk {normie is pure Ctrl — no emacs prefix chords.} {normie — чистий Ctrl, без emacs-префіксних акордів.}
 ::msgcat::mcset uk {normie: select all · emacs: start of line} {normie: виділити все · emacs: початок рядка}
 ::msgcat::mcset uk {not a channel} {це не канал}
 ::msgcat::mcset uk {not a key = value line: %s} {це не рядок ключ = значення: %s}
+::msgcat::mcset uk {not a node in the attached gateway's cluster registry: %s} {не вузол у реєстрі кластера приєднаного шлюзу: %s}
 ::msgcat::mcset uk {not a number} {не число}
 ::msgcat::mcset uk {not a valid http(s) url: %s} {недійсна http(s) URL: %s}
 ::msgcat::mcset uk {not a valid ssh host: %s} {недійсний ssh-хост: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset uk {not attached to a gateway} {не приєднано до шлюзу}
 ::msgcat::mcset uk {not configured} {не налаштовано}
 ::msgcat::mcset uk {not ignoring %s} {не ігнорую %s}
+::msgcat::mcset uk {not installed} {не встановлено}
 ::msgcat::mcset uk {not reported} {не повідомлено}
 ::msgcat::mcset uk {not running} {не запущено}
 ::msgcat::mcset uk {not set in config.toml — the built-in default applies. %s} {не задано в config.toml — застосовується вбудоване значення за замовчуванням. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset uk off вимк
 ::msgcat::mcset uk {off (the default)} {вимк (за замовчуванням)}
 ::msgcat::mcset uk offline {немає мережі}
+::msgcat::mcset uk ok ок
 ::msgcat::mcset uk on увімк
 ::msgcat::mcset uk {on (the default)} {увімк (за замовчуванням)}
 ::msgcat::mcset uk {on failure} {при збої}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset uk {open links} {відкривати посилання}
 ::msgcat::mcset uk {open the engine log} {відкрити журнал рушія}
 ::msgcat::mcset uk {open the joined session before /leave (on %s)} {відкрийте приєднану сесію перед /leave (на %s)}
+::msgcat::mcset uk {open the selected child session} {відкрити вибрану дочірню сесію}
 ::msgcat::mcset uk {open the selected skill in the Dev editor} {відкрити вибрану навичку в редакторі Dev}
 ::msgcat::mcset uk {open the setup wizard (re-runnable; edits config.toml in place)} {відкрити майстер налаштування (можна запускати повторно; редагує config.toml на місці)}
 ::msgcat::mcset uk {open the share sheet} {відкривати меню «Поділитися»}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset uk {override cleared — the default applies} {перевизначення скасовано — діє типове значення}
 ::msgcat::mcset uk {override failed: %s} {перевизначення не вдалося: %s}
 ::msgcat::mcset uk {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {ідентичність власника %{id} ACL не зможе зіставити — використайте telegram:<числовий ID>, irc:<обліковий запис у services> або маску nick!user@host}
+::msgcat::mcset uk owner/repository власник/репозиторій
 ::msgcat::mcset uk {owners: %s} {власники: %s}
 ::msgcat::mcset uk {pair a desktop with this agent} {під'єднати робочий стіл до цього агента}
 ::msgcat::mcset uk {partly failed: %s} {частково не вдалося: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset uk plugin плагін
 ::msgcat::mcset uk {plugin directory git history} {історія git каталогу плагінів}
 ::msgcat::mcset uk {plugin list} {список плагінів}
+::msgcat::mcset uk {plugin provider driver} {драйвер провайдера плагіна}
 ::msgcat::mcset uk {plugins reloaded on %s} {плагіни перезавантажено на %s}
 ::msgcat::mcset uk {pop %s out into its own window} {Винести %s в окреме вікно}
 ::msgcat::mcset uk {pop the buffer out into its own window} {відкрити буфер в окремому вікні}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset uk {prefix: window & dock commands} {префікс: команди вікон і доків}
 ::msgcat::mcset uk {press Attach in the Instances tab} {тисніть «Приєднати» у вкладці «Екземпляри»}
 ::msgcat::mcset uk preview перегляд
+::msgcat::mcset uk {preview an AI extension change and explicitly apply its diff} {переглянути зміну розширення від AI і явно застосувати її diff}
 ::msgcat::mcset uk {preview failed: %s} {помилка перегляду: %s}
 ::msgcat::mcset uk {previous buffer} {попередній буфер}
 ::msgcat::mcset uk {previous command was not a yank} {попередня команда — не yank}
 ::msgcat::mcset uk {previous match} {попередній збіг}
 ::msgcat::mcset uk {previous session} {попередня сесія}
+::msgcat::mcset uk {probing %s…} {перевіряю %s…}
 ::msgcat::mcset uk {proc body} {тіло proc}
 ::msgcat::mcset uk {profile unavailable: %s} {профіль недоступний: %s}
 ::msgcat::mcset uk profiles: профілі:
 ::msgcat::mcset uk prompt промпт
 ::msgcat::mcset uk {prompt breakdown} {розбір промпту}
 ::msgcat::mcset uk {prompt tokens} {токени запиту}
+::msgcat::mcset uk {proposal only, not applied} {лише пропозиція, не застосовано}
 ::msgcat::mcset uk provider провайдер
 ::msgcat::mcset uk {provider / model} {провайдер / модель}
 ::msgcat::mcset uk {provider base URL} {base URL провайдера}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset uk {re-sync the slopdrop state mirror} {Пересинхронізувати дзеркало стану slopdrop}
 ::msgcat::mcset uk {read and set the clipboard} {читати й змінювати буфер обміну}
 ::msgcat::mcset uk {read text aloud} {читати текст уголос}
+::msgcat::mcset uk {read-only: [approvals] allowlist} {лише читання: allowlist у [approvals]}
 ::msgcat::mcset uk {read-only: this session lives on %1$s (as read at %2$s)} {лише читання: ця сесія живе на %1$s (стан на %2$s)}
 ::msgcat::mcset uk {read-only: this skill comes from the %s library} {лише читання: цей скіл із бібліотеки %s}
 ::msgcat::mcset uk reasoning міркування
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset uk {refused to open %s (only http, https, mailto)} {відмовлено відкривати %s (лише http, https, mailto)}
 ::msgcat::mcset uk {refused: %s} {відхилено: %s}
 ::msgcat::mcset uk {region copied} {область скопійовано}
+::msgcat::mcset uk registered зареєстровано
 ::msgcat::mcset uk {registry not saved: %s} {реєстр не збережено: %s}
 ::msgcat::mcset uk {reload on %1$s failed: %2$s} {не вдалося перезавантажити на %1$s: %2$s}
 ::msgcat::mcset uk {reload the mechanisms} {перезавантажити механізми}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset uk {resume a session (prefix ok)} {продовжити сесію (можна за префіксом)}
 ::msgcat::mcset uk {retry failed: %s} {повтор не вдався: %s}
 ::msgcat::mcset uk {retrying last prompt…} {повторюю останній промпт…}
+::msgcat::mcset uk {review files for an explicit upstream contribution} {переглянути файли для явного внеску upstream}
+::msgcat::mcset uk {review standing global and session tool permissions} {переглянути постійні глобальні дозволи та дозволи сесії для інструментів}
 ::msgcat::mcset uk revision ревізія
 ::msgcat::mcset uk {revision history} {історія ревізій}
+::msgcat::mcset uk {revoke refused} {відкликання відхилено}
 ::msgcat::mcset uk {revoke the selected identity's grant} {відкликати дозвіл вибраної ідентичності}
 ::msgcat::mcset uk role роль
 ::msgcat::mcset uk {role to grant} {роль для надання}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset uk {saved to %s} {збережено в %s}
 ::msgcat::mcset uk saved. збережено.
 ::msgcat::mcset uk {scaffold a new plugin} {створити каркас нового плагіна}
+::msgcat::mcset uk {scaffold a user plugin and open it in this editor} {згенерувати користувацький плагін і відкрити його в цьому редакторі}
 ::msgcat::mcset uk {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {заплановані завдання; /crons add "<sched>" [session=<id>] <prompt> (аліас /cron)}
 ::msgcat::mcset uk scope область
 ::msgcat::mcset uk script скрипт
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset uk {select %s first} {спершу виберіть %s}
 ::msgcat::mcset uk {select a checkpoint first} {спершу виберіть контрольну точку}
 ::msgcat::mcset uk {select a file, or New… to create one} {виберіть файл або Новий…, щоб створити}
+::msgcat::mcset uk {select a grant first} {спершу виберіть дозвіл}
 ::msgcat::mcset uk {select a handler first} {спершу виберіть обробник}
 ::msgcat::mcset uk {select a member first} {спершу виберіть учасника}
 ::msgcat::mcset uk {select a route} {виберіть маршрут}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset uk {select an assignment first} {спершу виберіть призначення}
 ::msgcat::mcset uk {select an entry first} {спершу виберіть запис}
 ::msgcat::mcset uk {select an identity first} {спершу виберіть ідентичність}
+::msgcat::mcset uk {selected task details and shell output} {деталі вибраного завдання та вивід оболонки}
 ::msgcat::mcset uk {selected: %s} {вибрано: %s}
 ::msgcat::mcset uk {send clipboard as prompt} {надіслати буфер обміну як промпт}
 ::msgcat::mcset uk {send failed: %s} {надсилання не вдалося: %s}
 ::msgcat::mcset uk {send the message; while a turn runs, queue it as steering} {Надіслати повідомлення; поки йде хід, воно встане в чергу як steer}
+::msgcat::mcset uk sent надіслано
+::msgcat::mcset uk {sent to the owner's home chat} {надіслано в домашній чат власника}
 ::msgcat::mcset uk server сервер
 ::msgcat::mcset uk {server buffers merged} {буфери сервера об'єднано}
 ::msgcat::mcset uk {server buffers separate} {буфери сервера окремо}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset uk {settings, one key = value per line} {налаштування: один ключ = значення на рядок}
 ::msgcat::mcset uk {setup_done marker NOT saved: %s} {маркер setup_done НЕ збережено: %s}
 ::msgcat::mcset uk {shell %1$s finished} {оболонка %1$s завершилась}
-::msgcat::mcset uk shells оболонки
+::msgcat::mcset uk {shells, monitors and subagents} {оболонки, монітори та субагенти}
 ::msgcat::mcset uk shells_header {Фонові оболонки:}
 ::msgcat::mcset uk shells_none {(немає фонових оболонок — /background <cmd> запускає одну)}
 ::msgcat::mcset uk {show current configuration} {показати поточну конфігурацію}
 ::msgcat::mcset uk {show every key in this mode} {показати всі клавіші в цьому режимі}
 ::msgcat::mcset uk {show or hide the session list} {показати або сховати список сесій}
 ::msgcat::mcset uk {show or switch model (alias | model@provider | custom:<prov>)} {показати або змінити модель (alias | model@provider | custom:<prov>)}
+::msgcat::mcset uk {show selected shell output} {показати вивід вибраної оболонки}
 ::msgcat::mcset uk {show short messages} {показувати короткі повідомлення}
 ::msgcat::mcset uk {show the model's reasoning blocks (same as /reasoning)} {Показувати блоки роздумів моделі (як /reasoning)}
 ::msgcat::mcset uk {show unclaimed} {показати неприсвоєні}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset uk spend витрати
 ::msgcat::mcset uk {split: %s} {розділено: %s}
 ::msgcat::mcset uk {ssh to %1$s failed: %2$s} {помилка ssh до %1$s: %2$s}
+::msgcat::mcset uk {stale — no heartbeat within the threshold} {застарілий — сигналу не було протягом порогу}
+::msgcat::mcset uk {standing global and session permission grants} {постійні глобальні дозволи та дозволи сесії}
 ::msgcat::mcset uk state стан
 ::msgcat::mcset uk {state       never reached} {стан        так і не досягнуто}
 ::msgcat::mcset uk {state       reachable} {стан        досяжний}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset uk {stored in the encrypted vault (%1$s): %2$s} {збережено в зашифрованому сховищі (%1$s): %2$s}
 ::msgcat::mcset uk {stream handler: %s} {обробник потоку: %s}
 ::msgcat::mcset uk {subagent %1$s finished} {підагент %1$s завершився}
-::msgcat::mcset uk subagents підагенти
 ::msgcat::mcset uk subagents_header {Активні підагенти:}
 ::msgcat::mcset uk subagents_none {(немає активних підагентів — /btw <prompt> запускає одного, або модель використовує delegate_task)}
 ::msgcat::mcset uk {suspend failed: %{e}} {не вдалося призупинити: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset uk {switch the selected skill off} {вимкнути вибраний скіл}
 ::msgcat::mcset uk {switch the selected skill on} {увімкнути вибраний скіл}
 ::msgcat::mcset uk {switch to the %s tab} {перейти на вкладку %s}
+::msgcat::mcset uk {sync requested: %s} {запитано синхронізацію: %s}
 ::msgcat::mcset uk {tab 1} {вкладка 1}
 ::msgcat::mcset uk {tab 2} {вкладка 2}
 ::msgcat::mcset uk {tab 3} {вкладка 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset uk tasks_none {(немає активних завдань)}
 ::msgcat::mcset uk tasks_not_found {немає такого завдання: %{id}}
 ::msgcat::mcset uk tasks_not_running {завдання %{id} уже завершено}
-::msgcat::mcset uk {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset uk {tcl-lsp: event stream unavailable: %s} {tcl-lsp: потік подій недоступний: %s}
-::msgcat::mcset uk {tcl-lsp: gateway would not start it: %s} {tcl-lsp: шлюз не запустив його: %s}
-::msgcat::mcset uk {tcl-lsp: not started on the gateway — %s} {tcl-lsp: не запущено на шлюзі — %s}
 ::msgcat::mcset uk {that buffer is not split} {цей буфер не розділено}
 ::msgcat::mcset uk {the %s plan} {план %s}
 ::msgcat::mcset uk {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {поле API-ключа приймає НАЗВУ змінної середовища (як-от %{example}), а не сам ключ — сам ключ вводять у приховане поле}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset uk {the gateway answered without a report} {шлюз відповів без звіту}
 ::msgcat::mcset uk {the model/provider pair is incomplete — the gateway will not route until both are present} {пара модель/провайдер неповна — шлюз не маршрутизуватиме, доки не задано обидві}
 ::msgcat::mcset uk {the options changed, so that is a fresh preview — press “Write it” again to write it} {параметри змінилися, тож це свіжий перегляд — тисніть «Записати» ще раз, щоб записати}
+::msgcat::mcset uk {the peer has not been sent this vault yet} {партнеру ще не надіслано це сховище}
+::msgcat::mcset uk {the peer holds this vault} {партнер має це сховище}
 ::msgcat::mcset uk {the primary route is \[model\] provider/default — change it there, not here} {основний маршрут — \[model\] provider/default — змінюйте його там, а не тут}
 ::msgcat::mcset uk {the provider/model route this session sends to} {Провайдер/модель, через які йде ця сесія}
 ::msgcat::mcset uk {the same, on the privileged path (owner only)} {те саме, привілейованим шляхом (лише owner)}
 ::msgcat::mcset uk {the selected entry (edit, then Save)} {вибраний запис (редагуйте, потім «Зберегти»)}
+::msgcat::mcset uk {the server stopped: %s} {сервер зупинився: %s}
 ::msgcat::mcset uk {the synthwave splash} {заставка в стилі synthwave}
 ::msgcat::mcset uk {the text after the name was NOT sent anywhere — type the value into the masked field} {текст після імені НІКУДИ не надіслано — введіть значення у приховане поле}
 ::msgcat::mcset uk {the transcript} транскрипт
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset uk thinking… думаю…
 ::msgcat::mcset uk {thinking… (%s)} {думаю… (%s)}
 ::msgcat::mcset uk {this file's revisions, their diffs, and restore} {ревізії цього файлу, їхні відмінності та відновлення}
+::msgcat::mcset uk {this gateway} {цей шлюз}
 ::msgcat::mcset uk {this gateway has no Tcl interpreter} {у цьому шлюзі немає інтерпретатора Tcl}
 ::msgcat::mcset uk {this list} {цей список}
+::msgcat::mcset uk {this node has no vault} {у цього вузла немає сховища}
 ::msgcat::mcset uk {this route} {цей маршрут}
 ::msgcat::mcset uk {this session} {ця сесія}
 ::msgcat::mcset uk {this session follows the default language again (%{def})} {ця сесія знову використовує типову мову (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset uk {transcript finalization failed: %s} {не вдалося завершити розшифровку: %s}
 ::msgcat::mcset uk {transcript refetched} {транскрипт перечитано}
 ::msgcat::mcset uk {transcript — arrows to read, %s for composer} {транскрипт — стрілки для читання, %s — для вводу}
+::msgcat::mcset uk {translate text with the dedicated translation model, without an agent turn} {перекласти текст спеціальною моделлю перекладу, без ходу агента}
+::msgcat::mcset uk {translation result} {результат перекладу}
 ::msgcat::mcset uk {trigger %1$s %2$sd} {тригер %1$s %2$sd}
 ::msgcat::mcset uk {trigger created} {тригер створено}
 ::msgcat::mcset uk {trigger updated} {тригер оновлено}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset uk {usage: /steer <instruction>} {використання: /steer <instruction>}
 ::msgcat::mcset uk used використано
 ::msgcat::mcset uk user користувач
+::msgcat::mcset uk {user copy} {користувацька копія}
 ::msgcat::mcset uk {user identities, one per line} {ідентичності користувача, по одній на рядок}
 ::msgcat::mcset uk {user name} {ім'я користувача}
 ::msgcat::mcset uk {user profile} {профіль користувача}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset uk {value (TOML: 5, true, "text", ["a","b"])} {значення (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset uk veles veles
 ::msgcat::mcset uk {veles editor} {редактор veles}
+::msgcat::mcset uk {veles fleet: node %{node} is failing — %{detail}} {veles fleet: вузол %{node} збоїть — %{detail}}
+::msgcat::mcset uk {veles fleet: node %{node} is stale — %{detail}} {veles fleet: вузол %{node} застарілий — %{detail}}
+::msgcat::mcset uk {veles fleet: node %{node} recovered (it was %{was})} {veles fleet: вузол %{node} відновився (був %{was})}
 ::msgcat::mcset uk {veles · keyboard help (bindings: %s)} {veles · довідка з клавіатури (клавіші: %s)}
 ::msgcat::mcset uk {veles · touch help} {veles · довідка з жестів}
 ::msgcat::mcset uk {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset uk widgets віджети
 ::msgcat::mcset uk {will be stored in the encrypted vault} {буде збережено в зашифрованому сховищі}
 ::msgcat::mcset uk {wire protocol} {протокол обміну}
+::msgcat::mcset uk {without force to} {без force до}
 ::msgcat::mcset uk {wizard language} {мова майстра}
 ::msgcat::mcset uk {wizard language: %s} {мова майстра: %s}
 ::msgcat::mcset uk {write failed: %s} {не вдалося записати: %s}
 ::msgcat::mcset uk {write grants that still expire (the expiry is dropped — a config line cannot expire)} {записати гранти, що все ще минають (термін дії прибирається — рядок конфіга минати не може)}
 ::msgcat::mcset uk {write the entries back} {записати записи назад}
 ::msgcat::mcset uk {write the store's runtime rules into config.toml} {записати робочі правила сховища в config.toml}
+::msgcat::mcset uk {write the whole extension from its purpose, as a reviewed preview} {написати ціле розширення за його призначенням як попередній перегляд для вичитки}
 ::msgcat::mcset uk {write these values into config.toml as the defaults} {записати ці значення в config.toml як типові}
 ::msgcat::mcset uk writing введення
 ::msgcat::mcset uk {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {перший власник у [acl] перемикає цей шлюз у КЕРОВАНИЙ режим: роль за замовчуванням стає guest (fail-closed), а список дозволених адаптера перестає бути межею довіри}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset uk {▲ VELES — neon impressionism} {▲ VELES — неоновий імпресіонізм}
 ::msgcat::mcset uk {▲ earlier} {▲ раніше}
 ::msgcat::mcset uk {▼ later} {▼ пізніше}
+::msgcat::mcset uk {▾ Cluster registry} {▾ Реєстр кластера}
 ::msgcat::mcset uk {▾ new output — follow} {▾ новий вивід — стежити}
 ::msgcat::mcset uk {○ unattached} {○ не приєднано}
 ::msgcat::mcset uk {● %1$s — %2$s} {● %1$s — %2$s}

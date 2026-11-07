@@ -65,6 +65,9 @@ namespace eval ::vapi {
         if {($path eq "/api/quota" || [string match "/api/quota*" $path]) && [info exists ::vapi::quota_payload]} {
             return $::vapi::quota_payload
         }
+        if {$path eq "/api/plugins" && [info exists ::vapi::plugins_payload]} {
+            return $::vapi::plugins_payload
+        }
         return $triggers
     }
     proc post {path body} {
@@ -95,6 +98,11 @@ namespace eval ::vapi {
         set parts {}
         foreach {k val} $v { lappend parts "\"$k\": [_json_value $val]" }
         return "{[join $parts {, }]}"
+    }
+    proc deletes {path} {
+        variable deletes
+        lappend deletes $path
+        return "{}"
     }
     proc get_json_async {path cmd {ms 0}} {
         if {[string match "/api/usage*" $path]} {
@@ -136,6 +144,9 @@ namespace eval ::vplace {
 }
 namespace eval ::vmanage {
     proc get {w path {ms 0}} {
+        if {$path eq "/api/plugins" && [info exists ::vapi::plugins_payload]} {
+            return $::vapi::plugins_payload
+        }
         if {$path eq "/api/config/get?path=mcp_servers"} {
             return [::json::json2dict "{\\"ok\\":true,\\"value\\":null}"]
         }
@@ -164,6 +175,11 @@ namespace eval ::vmanage {
     proc say {w msg {kind info}} { variable said; lappend said $msg }
     proc confirm {w title detail} { variable confirm_answer; return $confirm_answer }
     proc del {w path} { variable deleted; lappend deleted $path; return [dict create ok 1] }
+    proc selected {w tree {what "a row"}} {
+        set sel [$tree selection]
+        if {![llength $sel]} { return "" }
+        return [$tree item [lindex $sel 0] -values]
+    }
 }
 
 source [file join $_dir vtext.tcl]
@@ -291,7 +307,7 @@ ok "every event the engine names is offered" \
 ok "every match kind is offered" \
     {[.trigger_edit.f.match_kind cget -values] eq {always contains regex url imageurl bluesky}}
 ok "every action is offered" \
-    {[.trigger_edit.f.action cget -values] eq {slopdrop vision bluesky prompt command}}
+    {[.trigger_edit.f.action cget -values] eq {slopdrop vision bluesky prompt}}
 # The engine's Role::parse accepts guest|user|trusted|admin|owner. The
 # combobox offered four of the five: `admin` was missing, so this
 # surface could not express a floor the engine understands.
@@ -463,6 +479,42 @@ if {1} {
     rename ::vmanage::get {}
     rename ::vmanage::get_orig ::vmanage::get
 }
+
+puts "\nplugins: origin and shadow warnings are actionable"
+set ::vapi::plugins_payload [::json::json2dict {{
+    "plugins": [
+        {"name":"anthropic","kind":"tcl","description":"native wire","hooks":[],"entry":"plugin.tcl","dir":"/bundled/anthropic","path":"/bundled/anthropic/plugin.tcl","bundled":true,"enabled":true,"explicitly_disabled":false,"allowlisted":true,"sha256":"abc123"},
+        {"name":"old-copy","kind":"tcl","description":"user copy","hooks":[],"entry":"plugin.tcl","dir":"/user/old-copy","path":"/user/old-copy/plugin.tcl","bundled":false,"enabled":true,"explicitly_disabled":false,"allowlisted":true,"sha256":"def456","shadow":"user plugin old-copy shadows bundled /bundled/old-copy; different content (not an age claim)","shadow_bundled_root":"/bundled/old-copy","shadow_bundled_sha256":"fed654","shadow_same_content":false}
+    ],
+    "shadows":["user plugin old-copy shadows bundled /bundled/old-copy; different content (not an age claim)"],
+    "drivers":[],
+    "allowlist_active":false
+}}]
+set ::vapi::deletes {}
+catch { destroy .ov_plugins }
+::voverlay::_plugins .ov_plugins
+set plugin_tree .ov_plugins.split.list.t
+ok "a bundled row names its origin" \
+    {[lindex [$plugin_tree item anthropic -values] 3] eq "bundled"}
+ok "a shadowed user row names the covered bundled copy" \
+    {[string match "*shadows bundled*" [lindex [$plugin_tree item old-copy -values] 3]]}
+ok "the shadow warning is visible without selecting a row" \
+    {[string match "*old-copy*shadows bundled*" [join $::vmanage::said "\n"]]}
+$plugin_tree selection set old-copy
+::voverlay::_plugin_detail .ov_plugins
+ok "the detail view includes both the user and bundled source facts" \
+    {[string match "*sha256: def456*" [.ov_plugins.split.detail.t get 1.0 end]]
+    && [string match "*bundled/old-copy*" [.ov_plugins.split.detail.t get 1.0 end]]}
+set ::vmanage::said {}
+set ::vmanage::deleted {}
+::voverlay::_plugin_selected .ov_plugins
+$plugin_tree selection set anthropic
+ok "the bundled row is selected before removal" \
+    {[lindex [$plugin_tree selection] 0] eq "anthropic"}
+::voverlay::_plugin_remove .ov_plugins
+ok "bundled removal is refused locally, before any delete request" \
+    {[llength $::vmanage::deleted] == 0}
+catch { destroy .ov_plugins }
 
 puts "\ndefaults go through /defaults"
 # USER 2026-10-04: "Wtf is with the 500 different kinds of defaults?"

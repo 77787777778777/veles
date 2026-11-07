@@ -459,6 +459,15 @@ proc ::vapi::delete {path} {
         -timeout $timeout {*}[_auth_headers]]]
 }
 
+proc ::vapi::delete_json {path body_val} {
+    variable timeout
+    set tok [http::geturl [_url $path] -method DELETE -binary 1 \
+        -type application/json -query [_utf8_out [_json_value $body_val]] \
+        -timeout $timeout {*}[_auth_headers]]
+    set data [_finish $tok]
+    return [::json::json2dict $data]
+}
+
 # JSON string escaping.
 #
 # THE BUG THIS HAD, for four months: the first pair of the map read
@@ -690,13 +699,17 @@ proc ::vapi::post_json {path body_val} {
 # response. post_async's no-argument acknowledgement is unchanged.
 # Generation lets a caller reject a late reply for
 # a destroyed widget, a different component, or a changed answer set.
-proc ::vapi::post_json_async {path body on_err on_ok} {
+#
+# `ms` is for the long ones (a cargo check, a model call): the default
+# 10 s is a gateway round trip, not a compiler's or a model's.
+proc ::vapi::post_json_async {path body on_err on_ok {ms 0}} {
     variable timeout
+    if {$ms <= 0} { set ms $timeout }
     set conn [_conn]
     set ep [_epoch_now]
     set tok [http::geturl "[dict get $conn url]$path" -method POST \
         -type application/json -binary 1 -query [_utf8_out [_json_value $body]] \
-        -timeout $timeout \
+        -timeout $ms \
         -command [list ::vapi::_post_json_async_done $on_err $on_ok [dict get $conn url] $ep] \
         {*}[_conn_headers $conn]]
     return $tok

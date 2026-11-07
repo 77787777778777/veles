@@ -150,9 +150,27 @@ session can choose that path too (`/egress tor`), to see what other
 people see; by default it uses the owner's address.
 
 The owner can also join someone else's session as a second person in it
-(`/join`, owner-only; see docs/session-mail.md). A line the owner writes
-there runs with the owner's rights, and its questions are asked of the
-owner only. That person's own lines keep that person's rights.
+(`/join`; see docs/session-mail.md). A line the owner writes there runs
+with the owner's rights, and its questions are asked of the owner only.
+That person's own lines keep that person's rights.
+
+`/join` and `/leave` need the `session-join` capability. The owner holds
+it through `all`; nobody else holds it by default, and no role's default
+set includes it. Grant it like any capability (`/grant <who> session-join`,
+or `[acl.extra_caps]`). A grantee's join is narrower than the owner's:
+
+- they can join only another person's session in the channel they are
+  typing in, on the same network. DMs and other chats are not offered;
+- a line they write there runs with the LOWER of their rights and that
+  session's (as session mail does), never with the session's own rights
+  and never as the owner. The model is told who wrote it and that they
+  are not the owner;
+- questions from their lines are asked of them only;
+- if the grant is revoked while they are joined, the join ends at their
+  next line, and that line goes to their own session;
+- one person at a time joins a session. The owner's `/join` ends a
+  grantee's join to that session (they are told); a grantee cannot join
+  a session someone else has joined.
 
 ## `[acl]` reference
 

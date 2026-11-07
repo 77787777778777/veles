@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset as {%1$s %2$s failed: %3$s} {%1$s %2$s বিফল: %3$s}
 ::msgcat::mcset as {%1$s %2$s over ssh…} {%1$s %2$s sshযোগে…}
 ::msgcat::mcset as {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset as {%1$s (%2$s waiting)} {%1$s (%2$s অপেক্ষাৰত)}
 ::msgcat::mcset as {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  ৰিজনিং %3$s}
 ::msgcat::mcset as {%1$s = %2$s here} {%1$s = %2$s ইয়াত}
 ::msgcat::mcset as {%1$s NOT saved: %2$s} {%1$s সংৰক্ষিত নহ'ল: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset as {%1$s every cron job on %2$s?} {%1$s %2$s ৰ প্ৰতিটো ক্ৰন কাম?}
 ::msgcat::mcset as {%1$s failed: %2$s} {%1$s বিফল: %2$s}
 ::msgcat::mcset as {%1$s in / %2$s out / %3$s calls} {%1$s ইন / %2$s আউট / %3$s কল}
+::msgcat::mcset as {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s হ'ল ন'ড %2$s, %3$s নহয়। Edit… ত ইয়াৰ ন'ড আইডি ঠিক কৰক।}
 ::msgcat::mcset as {%1$s is not a whole number} {%1$s এটা পূৰ্ণ সংখ্যা নহয়}
+::msgcat::mcset as {%1$s is reachable (%2$s ms).} {%1$s লগত সংযোগ সম্ভৱ (%2$s মিছ)।}
 ::msgcat::mcset as {%1$s is set to something this box cannot edit (%2$s)} {%1$s এনে এটা মানত সেট আছে যিটো এই বক্সে এডিট কৰিব নোৱাৰে (%2$s)}
+::msgcat::mcset as {%1$s is unreachable: %2$s} {%1$s লৈ যাব পৰা নাই: %2$s}
 ::msgcat::mcset as {%1$s of %2$s characters} {%1$s (%2$s আখৰৰ ভিতৰত)}
 ::msgcat::mcset as {%1$s of %2$s sessions} {%2$s টা ছেছনৰ ভিতৰত %1$s টা}
 ::msgcat::mcset as {%1$s of %2$s skills reach the prompt} {%1$s (%2$s স্কিলৰ ভিতৰত) প্ৰম্পটলৈ পৌঁছয়}
 ::msgcat::mcset as {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s %2$s ত: %3$d টা ঠিক, %4$d টা বিফল}
+::msgcat::mcset as {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s এ কোনো ক্লাষ্টাৰ ন'ড পৰিচয় নিদিয়ে, গতিকে ইয়াক %2$s বুলি সত্যাপন কৰিব নোৱাৰি।}
+::msgcat::mcset as {%1$s sync failed: %2$s} {%1$s ছিংক বিফল: %2$s}
+::msgcat::mcset as {%1$s sync with %2$s (%3$s)} {%2$s ৰ সৈতে %1$s ছিংক (%3$s)}
+::msgcat::mcset as {%1$s sync: %2$s} {%1$s ছিংক: %2$s}
 ::msgcat::mcset as {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset as {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · যাবলৈ Enter, বন্ধ কৰিবলৈ Esc}
 ::msgcat::mcset as {%1$s — revision r%2$s} {%1$s — সংশোধন r%2$s}
 ::msgcat::mcset as {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset as {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset as {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset as {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset as {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: ইয়াৰ গেটৱেৱে মনত ৰখা %3$s শাৰীৰ ভিতৰৰ শেষ %2$s, সেই ন'ডত গোপন তথ্য ৰেডেক্ট কৰা হয়।}
 ::msgcat::mcset as {%d MCP server(s) configured} {%d টা MCP চাৰ্ভাৰ কনফিগাৰ হৈছে}
 ::msgcat::mcset as {%d entries} {%d টা এণ্ট্ৰি}
+::msgcat::mcset as {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {এক্সটেনশ্যনৰ %d টা ফাইল পৰ্যালোচনা কৰা অৱস্থাতেই লিখা হ'ব। পূৰ্বদৰ্শনৰ পিছত ইয়াৰ যিকোনো এটা সলনি হ'লে একো লিখা নহয়। কোনো কমিট, পুশ বা PR নহয়।}
 ::msgcat::mcset as {%d handler(s) registered} {%d টা হেণ্ডলাৰ ৰেজিষ্টাৰ হৈছে}
 ::msgcat::mcset as {%d identities · %d users} {%d টা আইডেণ্টিটি · %d জন ব্যৱহাৰকৰ্তা}
 ::msgcat::mcset as {%d models — pick one from the list or type a name.} {%d টা মডেল — তালিকাৰ পৰা এটা বাছক বা নাম লিখক।}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset as {%d shown} {%d টা দেখুওৱা হৈছে}
 ::msgcat::mcset as {%s %s%%} {%s %s%%}
 ::msgcat::mcset as {%s (%s)} {%s (%s)}
+::msgcat::mcset as {%s (referral)} {%s (ৰেফাৰেল)}
+::msgcat::mcset as {%s (stale)} {%s (পুৰণি)}
 ::msgcat::mcset as {%s (this session)} {%s (এই ছেচন)}
 ::msgcat::mcset as {%s GB free of %s GB} {%s GB খালী, মুঠ %s GB}
 ::msgcat::mcset as {%s already exists — open it from the list} {%s আগৰে পৰা আছে — তালিকাৰ পৰা খোলক}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset as {%s comes from config.toml [acl] — edit there} {%s config.toml [acl] ৰ পৰা আহিছে — তাতে এডিট কৰক}
 ::msgcat::mcset as {%s config change(s) wait for you — /configsync} {%s টা কনফিগ সলনি আপোনাৰ বাবে অপেক্ষাৰত — /configsync}
 ::msgcat::mcset as {%s did not become healthy within 30s} {%s 30 ছেকেণ্ডৰ ভিতৰত সুস্থ নহ'ল}
+::msgcat::mcset as {%s done} {%s সম্পন্ন}
 ::msgcat::mcset as {%s failed: %s} {%s ব্যৰ্থ হ'ল: %s}
 ::msgcat::mcset as {%s is already split} {%s ইতিমধ্যে স্প্লিট হৈ আছে}
 ::msgcat::mcset as {%s is the language in use — pick another one to swap with} {%s এতিয়া ব্যৱহৃত ভাষা — সলাওকৰ বাবে আন এটা ভাষা বাছক}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset as {%s opens the command palette in %s.} {%s এ %s ত কমান্ড পেলেট খোলে।}
 ::msgcat::mcset as {%s session(s)} {%s টা ছেচন}
 ::msgcat::mcset as {%s skill(s):} {%s টা স্কিল:}
+::msgcat::mcset as {%s standing grants} {%s স্থায়ী অনুমোদন}
 ::msgcat::mcset as {%s takes no completable arguments} {%s এ কমপ্লিটযোগ্য কোনো আৰ্গুমেন্ট নলয়}
 ::msgcat::mcset as {%s takes on or off} {%s এ on বা off লয়}
 ::msgcat::mcset as {%s —} {%s —}
+::msgcat::mcset as {%s — changes data, asks to confirm} {%s — ডেটা সলনি কৰে, নিশ্চিতকৰণ বিচাৰে}
 ::msgcat::mcset as {%s — deleted; History… can restore it} {%s — মচা হৈছে; ইতিহাস…-এ ইয়াক ঘূৰাই আনিব পাৰে}
 ::msgcat::mcset as {%s — new: type, then Save} {%s — নতুন: লিখক, তাৰ পিছত সেভ}
 ::msgcat::mcset as {%s — not attached; press Attach in the Instances tab} {%s — সংযুক্ত নহয়; Instances টেবত Attach চাপক}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset as {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} [acl] অংশ অবিহনে সক্ৰিয় হৈ আছে: .env ত %{var} এ বটৰ সৈতে কোনে কথা পাতিব পাৰে বুলি নিৰ্দিষ্ট নকৰালৈকে, ইয়াৰ ওচৰ পোৱা যিকোনো ব্যক্তিক মালিক বুলি ধৰা হয়, সকলো সঁজুলিৰে সৈতে}
 ::msgcat::mcset as (%{route}) (%{route})
 ::msgcat::mcset as {(CLI redraws automatically)} {(CLI নিজে পুনৰ আঁকে)}
+::msgcat::mcset as {(binary; not publishable)} {(বাইনেৰী; প্ৰকাশযোগ্য নহয়)}
 ::msgcat::mcset as {(clipboard empty or no clipboard tool)} {(ক্লিপবোৰ্ড খালী বা ক্লিপবোৰ্ড টুল নাই)}
 ::msgcat::mcset as (deleted) {(মচা হৈছে)}
 ::msgcat::mcset as (empty) (খালী)
 ::msgcat::mcset as {(no sessions)} {(কোনো ছেছন নাই)}
+::msgcat::mcset as {(not a memsync peer of this gateway: config is not synced with it)} {(এই গেটৱেৰ memsync পীয়াৰ নহয়: ইয়াৰ সৈতে কনফিগ ছিংক নহয়)}
 ::msgcat::mcset as {(nothing to reload — read from disk per use)} {(পুনৰ লোড কৰিবলগীয়া একো নাই — প্ৰতিবাৰ ব্যৱহাৰত ডিস্কৰ পৰা পঢ়া হয়)}
 ::msgcat::mcset as {(retrying last prompt…)} {(শেষ প্ৰম্পট পুনৰ চেষ্টা হৈছে…)}
 ::msgcat::mcset as {(route did not resolve: %{e})} {(ৰুট সমাধান নহ'ল: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset as {/url needs a number from /urls} {/url ৰ বাবে /urls ৰ পৰা এটা নম্বৰ লাগে}
 ::msgcat::mcset as {/whois needs a nick} {/whois ৰ বাবে এটা নিক লাগে}
 ::msgcat::mcset as {; could not save the cleared return view: %s} {; পৰিষ্কৃত ৰিটাৰ্ন দৃশ্য সংৰক্ষণ কৰিব নোৱাৰিলে: %s}
+::msgcat::mcset as {; shadows bundled} {; bundled-ক ছাঁ পেলায়}
+::msgcat::mcset as {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {এটা কনফিগ প্ৰস্তাৱে ছেটিংছ সলনি কৰিব পাৰে আৰু এটা ভল্ট প্ৰস্তাৱে গোপন তথ্য একত্ৰিত কৰে; সুৰক্ষা অংশৰ সলনিয়ে তথাপিও মালিকৰ বাবে অপেক্ষা কৰে।}
 ::msgcat::mcset as {A failing plugin may drop hooks mid-turn.} {বিফল হোৱা প্লাগইনে টাৰ্নৰ মাজত হুক ড্ৰপ কৰিব পাৰে।}
 ::msgcat::mcset as {A local server: no key is needed unless you set one up.} {এটা স্থানীয় চাৰ্ভাৰ: আপুনি এখন স্থাপন নকৰালৈকে কোনো keyৰ প্ৰয়োজন নাই।}
+::msgcat::mcset as {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {স্বাক্ষৰিত ৰিলিজ এটা কেৱল প্ৰিফ্লাইটৰ পিছতহে ষ্টেজ কৰা হয়। পুনৰ আৰম্ভ/সত্যাপন, অব্যাহত ৰখা আৰু ৰোলবেক পৃথক পৃথক কাৰ্য। সুস্থ প্ৰক্ৰিয়া এটাই পৰ্যালোচিত উৎসৰ সঠিক সংশোধনটোৰ বিৱৰণ দিব লাগিব।}
 ::msgcat::mcset as {A value is stored for %s — leave this empty to keep it.} {%sৰ বাবে এটা মান ৰখা আছে — সেইটো ৰাখিবলৈ ইয়াক খালী ৰাখক।}
 ::msgcat::mcset as {ACL: ban mask} {ACL: মাস্ক নিষিদ্ধ কৰক}
 ::msgcat::mcset as {ACL: grant admin} {ACL: admin অনুমতি দিয়ক}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset as {ACL: grant user} {ACL: user অনুমতি দিয়ক}
 ::msgcat::mcset as {ACL: revoke} {ACL: প্ৰত্যাহাৰ}
 ::msgcat::mcset as {ACME account email} {ACME একাউণ্ট ইমেইল}
+::msgcat::mcset as {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI সহায়ে চাৰিটা স্তৰত কাম কৰে: ডিজাইন সম্পৰ্কীয় প্ৰশ্ন সোধা (ফাইলৰ প্ৰয়োজন নাই), এই ফাইলটো সলনি কৰা, এই এক্সটেনশ্যনৰ কেইবাটাও ফাইল সলনি কৰা, বা বৰ্তমানৰ ডায়াগনষ্টিক্স বুজাই দিয়া। নতুন এক্সটেনশ্যনে ইয়াৰ উদ্দেশ্যৰ পৰা গোটেই এক্সটেনশ্যনটো সৃষ্টি কৰিবও পাৰে। প্ৰতিটো অনুৰোধ সঁজুলি অবিহনে পঠোৱা হয় আৰু ইয়াত ৰেজিষ্টাৰ কৰা গোপন তথ্য বা credential-ধৰ্মী মান থাকিলে তাক নাকচ কৰা হয়; সলনিবোৰ ডিফ হিচাপে দেখুওৱা হয় আৰু আপুনি প্ৰয়োগ কৰিলেহে লিখা হয়। প্ৰথমে এক্সটেনশ্যনৰ ডিজাইন বিচাৰক; অনুপস্থিত API চিনাক্ত কৰাৰ পিছতহে ক'ৰ পেটচ বিচাৰক।}
+::msgcat::mcset as {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI সহায়ে কেৱল ব্যৱহাৰকৰ্তাৰ এক্সটেনশ্যন সম্পাদনা কৰে, আৰু এই ফাইলটো কোনো এক্সটেনশ্যনৰ অংশ নহয়। বেছিভাগ সলনি এটা এক্সটেনশ্যনত (এটা হুক, টুল, ছাৰ্ভিছ অভাৰৰাইড বা প্ৰ'ভাইডাৰ ড্ৰাইভাৰ) খাপ খায় যি আপগ্ৰেডৰ পিছতো থাকে; এক্সটেনশ্যন API-এ প্ৰকাশ কৰিব নোৱাৰা কথাবোৰৰ বাবে কোৰ পেচ দিয়া হয়। এই সলনিটোৰ বাবে ইয়াৰ সলনি এটা নতুন এক্সটেনশ্যন বনাবনে? একো লিখাৰ আগতে ইয়াৰ ফাইলবোৰ পূৰ্বদৰ্শন কৰা হয়।}
+::msgcat::mcset as {AI assist…} {AI সহায়…}
+::msgcat::mcset as {AI extension assistance} {AI এক্সটেনশ্যন সহায়}
 ::msgcat::mcset as {API calls} {API কলসমূহ}
+::msgcat::mcset as {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {Anthropic ৰেফাৰেলৰ পৰা API ক্ৰেডিট কেৱল আপুনি Max বা Ultra কিনিলেহে দিয়া হয়। Veles-এ সেই ছাবস্ক্ৰিপশনক লগইন বা API প্ৰমাণীকৰণ হিচাপে ব্যৱহাৰ কৰাৰ সমৰ্থন নকৰে।}
 ::msgcat::mcset as {API key (hidden)} {API key (লুকুৱাই ৰখা)}
 ::msgcat::mcset as {API key env var name} {API চাবিৰ env ভেৰিয়েবলৰ নাম}
+::msgcat::mcset as {API reference} {API সন্দৰ্ভ}
+::msgcat::mcset as {Abandon untouched operation} {অস্পৰ্শিত কাৰ্য বাদ দিয়ক}
 ::msgcat::mcset as {Access control} {এক্সেছ নিয়ন্ত্ৰণ}
 ::msgcat::mcset as {Access control (ACL)} {এক্সেছ নিয়ন্ত্ৰণ (ACL)}
 ::msgcat::mcset as Add যোগ
 ::msgcat::mcset as {Add MCP server} {MCP চাৰ্ভাৰ যোগ}
 ::msgcat::mcset as {Add instance} {ইনষ্টেন্স যোগ}
 ::msgcat::mcset as {Add server…} {চাৰ্ভাৰ যোগ…}
+::msgcat::mcset as {Adds selected extension sources. Review the branch diff and checks before merging.} {নিৰ্বাচিত এক্সটেনশ্যন উৎসবোৰ যোগ কৰে। মাৰ্জ কৰাৰ আগতে শাখাৰ পাৰ্থক্য আৰু পৰীক্ষাবোৰ পৰ্যালোচনা কৰক।}
 ::msgcat::mcset as Add… যোগ…
 ::msgcat::mcset as {Agent & engine} {এজেণ্ট আৰু ইঞ্জিন}
 ::msgcat::mcset as {Alias %s} {এলিয়াছ %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset as {Applies to} {ক'ত প্ৰযোজ্য}
 ::msgcat::mcset as Apply প্ৰয়োগ
 ::msgcat::mcset as {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Apply: কেৱল RUNNING ছেচনটোহে সলনি হয়। Copy TOML: পেষ্ট কৰিবলৈ ব্লকবোৰ দিয়ে। Save globally: সেইবোৰ config.toml ত সোমাই দিয়ে — কেৱল failover ছেকচনবোৰহে স্পৰ্শ হয়, বাকী প্ৰতিটো লাইন আৰু কমেন্ট অক্ষত থাকে, আৰু পুৰণি ফাইলটো config.toml.bak হিচাপে ৰখা হয়।}
+::msgcat::mcset as {Apply proposal…} {প্ৰস্তাৱ প্ৰয়োগ কৰক…}
+::msgcat::mcset as {Apply received} {প্ৰাপ্ত ছিংক প্ৰয়োগ কৰক}
+::msgcat::mcset as {Apply this AI proposal?} {এই AI প্ৰস্তাৱটো প্ৰয়োগ কৰিবনে?}
+::msgcat::mcset as {Apply this change set?} {এই পৰিৱৰ্তন-সংহতিটো প্ৰয়োগ কৰিবনে?}
 ::msgcat::mcset as {Apply to session} {ছেচনত প্ৰয়োগ}
+::msgcat::mcset as {Apply what this node received:} {এই ন'ডে গ্ৰহণ কৰা কথাবোৰ প্ৰয়োগ কৰক:}
 ::msgcat::mcset as {Approval needed} {অনুমোদন লাগে}
 ::msgcat::mcset as Apps এপ
 ::msgcat::mcset as Archive আৰ্কাইভ
 ::msgcat::mcset as {Archive SHA-256} {আৰ্কাইভ SHA-256}
+::msgcat::mcset as Ask সোধক
+::msgcat::mcset as {Ask a design question} {ডিজাইন সম্পৰ্কীয় প্ৰশ্ন সোধক}
+::msgcat::mcset as {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {এক্সটেনশ্যন কেনেকৈ বনাব সেই বিষয়ে সোধক: কোনটো সীমা, কোনটো ভাষা, কোনটো API। কোনো উৎস পঠোৱা নহয়, আৰু একো লিখিবও নোৱাৰি।}
 ::msgcat::mcset as {Ask the agent to change it} {এজেণ্টক এইটো সলনি কৰিবলৈ কওক}
+::msgcat::mcset as {Asking %s…} {%s ক সোধা হৈছে…}
 ::msgcat::mcset as {Asking the provider for its models…} {প্ৰ'ভাইডাৰৰ পৰা ইয়াৰ মডেলবোৰ বিচাৰি আছে…}
 ::msgcat::mcset as Attach {সংযুক্ত কৰক}
 ::msgcat::mcset as {Attach to the next message} {পৰৱৰ্তী বাৰ্তাত সংযুক্ত কৰক}
+::msgcat::mcset as {Author guide} {লেখকৰ নিৰ্দেশিকা}
+::msgcat::mcset as {Automatically discovered from the attached gateway's cluster registry.} {সংযুক্ত গেটৱেয়ৰৰ ক্লাষ্টাৰ ৰেজিষ্ট্ৰীৰ পৰা স্বয়ংক্ৰিয়ভাৱে আৱিষ্কৃত।}
 ::msgcat::mcset as Back পিছলৈ
 ::msgcat::mcset as {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {পিছলৈ বুটামে ওপৰত থকাটো বন্ধ কৰে: এটা মেনু, ছেছন তালিকা, এটা খিৰিকী। একো খোলা নাথাকিলে veles পটভূমিলৈ যায় আৰু চলি থাকে।}
 ::msgcat::mcset as {Base URL} {Base URL}
+::msgcat::mcset as {Base branch} {ভিত্তি শাখা}
 ::msgcat::mcset as {Bot token (hidden)} {বট টোকেন (লুকুৱাই ৰখা)}
+::msgcat::mcset as Branch শাখা
+::msgcat::mcset as {Branch and commit prepared; nothing has been pushed} {শাখা আৰু কমিট সাজু হৈছে; একো পুশ কৰা হোৱা নাই}
+::msgcat::mcset as {Branch pushed and verified on origin} {শাখা অৰিজিনলৈ পুশ কৰি সত্যাপন কৰা হৈছে}
 ::msgcat::mcset as {Browse sessions} {ছেছনসমূহ চাওক}
+::msgcat::mcset as {Build manifest + preflight} {বিল্ড মেনিফেষ্ট + প্ৰিফ্লাইট}
+::msgcat::mcset as {Build: veles %1$s, revision %2$s (%3$s %4$s)} {বিল্ড: veles %1$s, সংশোধন %2$s (%3$s %4$s)}
 ::msgcat::mcset as {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e শাৰীৰ আৰম্ভ/শেষ · C-b/C-f আখৰ · M-b/M-f শব্দ · C-k শাৰীৰ শেষলৈ কাটে · C-y লগায় · M-w কপি কৰে · C-w অঞ্চল কাটে · C-space মাৰ্ক বহুৱায় · C-/ আনডু}
 ::msgcat::mcset as {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g সকলো বাতিল কৰে · C-j নতুন শাৰী · M-p/M-n ইতিহাস · Tab সম্পূৰণ কৰে}
+::msgcat::mcset as {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s টা ক'ৰ, ল'ড %2$s / %3$s / %4$s (ক'ৰবোৰৰ %5$s%%)}
 ::msgcat::mcset as Cancel বাতিল
+::msgcat::mcset as {Cancel task} {কাম বাতিল}
+::msgcat::mcset as {Cancel task %1$s? This cannot be undone.} {%1$s কামটো বাতিল কৰিবনে? ই পূৰ্বাৱস্থালৈ ঘূৰাব নোৱাৰি।}
+::msgcat::mcset as {Cannot verify that %1$s is node %2$s: %3$s} {সত্যাপন কৰিব নোৱাৰি যে %1$s হ'ল ন'ড %2$s: %3$s}
 ::msgcat::mcset as Capabilities ক্ষমতাসমূহ
 ::msgcat::mcset as {Change my app “%s” (%s): } {মোৰ এপ “%s” (%s) সলনি কৰক: }
+::msgcat::mcset as {Change this extension's files} {এই এক্সটেনশ্যনৰ ফাইলবোৰ সলনি কৰক}
+::msgcat::mcset as {Change this file} {এই ফাইলটো সলনি কৰক}
 ::msgcat::mcset as Change… সলনি…
 ::msgcat::mcset as {Channels (e.g. #veles #dev)} {চেনেল (যেনে #veles #dev)}
 ::msgcat::mcset as Chat চেট
 ::msgcat::mcset as {Chat — not attached; press Attach in the Instances tab} {Chat — সংযুক্ত নহয়; Instances টেবত Attach চাপক}
 ::msgcat::mcset as {Check (lsp)} {পৰীক্ষা (lsp)}
+::msgcat::mcset as {Check again} {পুনৰ পৰীক্ষা কৰক}
+::msgcat::mcset as {Check files} {ফাইল পৰীক্ষা কৰক}
 ::msgcat::mcset as Checkpoints চেকপইণ্টসমূহ
 ::msgcat::mcset as {Checkpoints (undo)} {চেকপইণ্টসমূহ (আনডু)}
+::msgcat::mcset as {Checks and next steps} {পৰীক্ষা আৰু পৰৱৰ্তী পদক্ষেপ}
+::msgcat::mcset as {Checks run} {পৰীক্ষা চলোৱা হৈছে}
 ::msgcat::mcset as {Choose BUNDLE-INFO.json in the managed install-sources directory} {ব্যৱস্থাপিত ইনষ্টল-ছ'ৰ্চ ডাইৰেক্টৰীত BUNDLE-INFO.json বাছক}
 ::msgcat::mcset as {Choose a failover script} {এটা ফেইলঅভাৰ স্ক্ৰিপ্ট বাছক}
 ::msgcat::mcset as {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {পৰিদৰ্শন কৰিবলৈ এটা মডিউল বা প্ৰক্ৰিয়া প্লাগইন বাছক। ডিস্কভাৰীয়ে কেৱল plugin.toml পঢ়ে; এটা কম্পোনেণ্ট বাছিলে তাৰ ঘোষিত মেনিফেষ্ট আৰু বিকল্পসমূহ অনুৰোধ কৰা হয়। এই পদক্ষেপ খুলিলে একো ইনষ্টল নহয়।}
+::msgcat::mcset as {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {এটা নাম, উদ্দেশ্য আৰু ভাষা বাছক, তাৰ পিছত সেই নিৰ্দিষ্ট ফাইলবোৰৰ পূৰ্বদৰ্শন কৰক। একো লিখা হোৱা নাই।}
 ::msgcat::mcset as {Choose a user unit or a system service for the server profile. Neither starts a service.} {চাৰ্ভাৰ প্ৰ'ফাইলৰ বাবে এটা ব্যৱহাৰকৰ্তা ইউনিট বা এটা চিষ্টেম সেৱা বাছক। দুইটোৰে কোনো সেৱা আৰম্ভ নকৰে।}
 ::msgcat::mcset as {Choose core bundle…} {ক'ৰ বাণ্ডল বাছক…}
 ::msgcat::mcset as {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {ইনষ্টলেশ্যনৰ আকাৰ বাছক। লোকেল প্ৰ'ফাইলবোৰে পৰ্যালোচিত ইনষ্টলাৰ ব্যৱহাৰ কৰে। চিষ্টেম আৰু কন্টেইনাৰ প্ৰ'ফাইলবোৰে সুস্পষ্ট CLI হেণ্ডঅফৰ বাবে এটা স্বাক্ষৰিত অনুৰোধ প্ৰস্তুত কৰে। NixOS-এ কেৱল এটা মডিউল স্নিপেট নিৰ্গত কৰে।}
+::msgcat::mcset as {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {সৰুতম সীমা বাছক: এটা টুলে মডেল-আহ্বানযোগ্য ক্ষমতা যোগ কৰে; এটা হুকে এটা লাইফচাইকেল ঘটনা পৰ্যৱেক্ষণ বা সংশোধন কৰে; এটা সাৰ্ভিছ বা অ'ভেৰাইড পইণ্টে এটা নামযুক্ত সিদ্ধান্ত মেৰিয়াই ৰাখে; এটা প্ৰ'ভাইডাৰ ড্ৰাইভাৰে প্ৰ'ভাইডাৰ ৱায়াৰ যোগ কৰে; কোৰ পেচ কেৱল তেতিয়াহে উপযুক্ত যেতিয়া প্ৰকাশিত এক্সটেনশ্যন API-এ সলনিটো প্ৰকাশ কৰিব নোৱাৰে।}
 ::msgcat::mcset as {Choose typed container-host options JSON} {টাইপযুক্ত কণ্টেইনাৰ-হ'ষ্ট বিকল্প JSON বাছক}
 ::msgcat::mcset as {Choose typed container-host options…} {টাইপযুক্ত কণ্টেইনাৰ-হ'ষ্ট বিকল্প বাছক…}
 ::msgcat::mcset as Clear পৰিষ্কাৰ
 ::msgcat::mcset as {Clear composer} {কম্পোজাৰ পৰিষ্কাৰ কৰক}
 ::msgcat::mcset as {Clear override} {অভাৰৰাইড পৰিষ্কাৰ}
 ::msgcat::mcset as {Click the picture where you would click on the page.} {পৃষ্ঠাখনত য'ত ক্লিক কৰিলেহেঁতেন, ছবিখনত সেই ঠাইত ক্লিক কৰক।}
+::msgcat::mcset as {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {%1$s ক্লোন কৰক, %2$s সৃষ্টি কৰক, আৰু %3$s ৰ কেৱল পৰ্যালোচিত ফাইলবোৰ %4$s/<extension>/ ৰ তলত কপি কৰক। ফাইলবোৰ পৰীক্ষা কৰি কমিট কৰা হয়। এতিয়া কোনো পুশ বা পুল ৰিকুৱেষ্ট নহয়।}
 ::msgcat::mcset as Close বন্ধ
 ::msgcat::mcset as {Close (Esc)} {বন্ধ (Esc)}
 ::msgcat::mcset as {Close the setup wizard? Nothing has been written yet.} {ছেটআপ উইজাৰ্ড বন্ধ কৰিবনে? এতিয়ালৈ একো লিখা হোৱা নাই।}
 ::msgcat::mcset as {Code actions} {ক'ড একচনসমূহ}
+::msgcat::mcset as Commit কমিট
+::msgcat::mcset as {Commit ready for review. Push is a separate action.} {কমিট পৰ্যালোচনাৰ বাবে সাজু। পুশ এটা পৃথক কাৰ্য।}
 ::msgcat::mcset as {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {হেণ্ডঅফ পূৰ্বদৰ্শনৰ আগতে পিন কৰা ইমেজ ডাইজেষ্টকে ধৰি প্ৰতিটো PDS ফিল্ড সম্পূৰ্ণ কৰক।}
 ::msgcat::mcset as {Complete every typed container-host field before previewing this profile.} {এই প্ৰ'ফাইল প্ৰিভিউ কৰাৰ আগে typed container-host চিহ্নিত প্ৰতিটো ক্ষেত্ৰ পূৰণ কৰক।}
 ::msgcat::mcset as {Component configuration returned an invalid result; nothing was accepted as applied.} {কম্পোনেন্ট কনফিগাৰেচনে এটা অবৈধ ফলাফল ঘূৰাই দিলে; প্ৰয়োগ হৈছিল বুলি একো গ্ৰহণ কৰা নহ'ল।}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset as {Component options changed. Review the new preview before applying.} {কম্পোনেণ্টৰ বিকল্পসমূহ সলনি হৈছে। প্ৰয়োগ কৰাৰ আগে নতুন পূৰ্বদৰ্শন পৰ্যালোচনা কৰক।}
 ::msgcat::mcset as Components কম্পোনেণ্টসমূহ
 ::msgcat::mcset as {Composer preview} {কম্পোজাৰ প্ৰিভিউ}
+::msgcat::mcset as Config কনফিগ
+::msgcat::mcset as {Config differs: %s} {কনফিগ বেলেগ: %s}
+::msgcat::mcset as {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {কনফিগ লগ: সেই ন'ডত %1$s ৰ সলনিবোৰ %3$s লৈকে আছে, এই গেটৱেত %2$s লৈকে}
+::msgcat::mcset as {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {কনফিগ লগ: এই গেটৱেত %1$s ৰ সলনিবোৰ %2$s লৈকে আছে, সেই ন'ডত %3$s লৈকে}
+::msgcat::mcset as {Config only on that node: %s} {কেৱল সেই ন'ডত থকা কনফিগ: %s}
+::msgcat::mcset as {Config only on this gateway: %s} {কেৱল এই গেটৱেত থকা কনফিগ: %s}
 ::msgcat::mcset as Configure কনফিগাৰ
 ::msgcat::mcset as {Configure %s} {%s কনফিগাৰ}
+::msgcat::mcset as {Configure translator} {অনুবাদক কনফিগাৰ কৰক}
+::msgcat::mcset as {Configured desktop gateway} {কনফিগাৰ কৰা ডেস্কটপ গেটৱে}
 ::msgcat::mcset as Configure… কনফিগাৰ…
 ::msgcat::mcset as {Configuring %s} {%s কনফিগাৰ কৰা হৈছে}
 ::msgcat::mcset as {Confirm or discard the current signed review before starting another download.} {আন এটা ডাউনলোড আৰম্ভ কৰাৰ আগে বৰ্তমান হস্তাক্ষৰিত পৰ্যালোচনা নিশ্চিত বা বাতিল কৰক।}
 ::msgcat::mcset as {Container host: typed host plan and privileged CLI handoff} {কণ্টেইনাৰ-হ'ষ্ট: টাইপযুক্ত হ'ষ্ট পৰিকল্পনা আৰু অধিকাৰযুক্ত CLI হেণ্ডঅফ}
 ::msgcat::mcset as {Context window} {কনটেক্সট উইণ্ড'}
+::msgcat::mcset as {Continue to next target} {পৰৱৰ্তী লক্ষ্যলৈ আগবাঢ়ক}
+::msgcat::mcset as {Contribute extensions: %s} {এক্সটেনশ্যন অৰিহণা দিয়ক: %s}
+::msgcat::mcset as Contribute… {অৱদান দিয়ক…}
+::msgcat::mcset as {Contribution branch} {অৱদানৰ শাখা}
+::msgcat::mcset as {Contribution destination} {অৱদানৰ গন্তব্য}
 ::msgcat::mcset as Copy কপি
 ::msgcat::mcset as {Copy TOML} {TOML কপি}
+::msgcat::mcset as {Copy a bundled extension into your user plugin directory before preparing a contribution.} {অৱদান সাজু কৰাৰ আগতে বাণ্ডিল কৰা এক্সটেনশ্যনটো আপোনাৰ ব্যৱহাৰকৰ্তাৰ প্লাগইন ডিৰেক্টৰিলৈ কপি কৰক।}
 ::msgcat::mcset as {Copy message} {বাৰ্তা কপি কৰক}
 ::msgcat::mcset as {Copy name} {নাম কপি কৰক}
 ::msgcat::mcset as {Copy nick} {নিক কপি কৰক}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset as {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {কম্পোনেণ্ট বিচাৰি উলিয়াব নোৱাৰিলে। প্ৰ'ভাইডাৰ ছেটআপৰ পদক্ষেপসমূহ এতিয়াও কাম কৰে; প্ৰয়োজন হলে লক্ষ্য মেচিনত CLI যোগে ইনষ্টল কৰক।}
 ::msgcat::mcset as {Could not join: %s} {যোগ দিব পৰা নগ'ল: %s}
 ::msgcat::mcset as {Could not list the models (%s) — type the model's name.} {মডেলবোৰ তালিকাবদ্ধ কৰিব নোৱাৰি (%s) — মডেলৰ নাম লিখক।}
+::msgcat::mcset as {Create a PR in} {ইয়াত PR সৃষ্টি কৰক}
+::msgcat::mcset as {Create extension} {এক্সটেনশ্যন সৃষ্টি কৰক}
 ::msgcat::mcset as {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {@BotFatherৰে বট সৃষ্টি কৰক, তাৰ পিছত ইয়াৰ টোকেন তলত পেষ্ট কৰক: ই এনক্ৰিপ্ট কৰা ভল্টলৈ যায়, কেতিয়াও config.tomlলৈ নহয়।}
+::msgcat::mcset as {Create this extension?} {এই এক্সটেনশ্যনটো সৃষ্টি কৰিবনে?}
+::msgcat::mcset as {Create this generated extension?} {সৃষ্টি কৰা এই এক্সটেনশ্যনটো বনাবনে?}
+::msgcat::mcset as {Created and reloaded. Review and test the extension before publishing.} {সৃষ্টি কৰি পুনৰ লোড কৰা হৈছে। প্ৰকাশৰ আগতে এক্সটেনশ্যনটো পৰ্যালোচনা আৰু পৰীক্ষা কৰক।}
+::msgcat::mcset as {Created, but reload failed} {সৃষ্টি হৈছে, কিন্তু পুনৰ লোড বিফল হৈছে}
 ::msgcat::mcset as {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {এটা টেমপ্লেটৰ পৰা %s/<name>/SKILL.md সৃষ্টি কৰি খোলে। প্ৰম্পট ইনডেক্সলৈ কেৱল frontmatter ৰ description অংশটোহে যায়, গতিকে তাত স্কিলটো কেতিয়া ব্যৱহাৰ কৰিব লাগে সেয়া লিখক।}
 ::msgcat::mcset as {Cron history} {Cron ইতিহাস}
 ::msgcat::mcset as {Cron jobs} {ক্ৰন কাম}
 ::msgcat::mcset as {Curated — write the first owner entry} {Curated — প্ৰথম owner এণ্ট্ৰিটো লিখক}
 ::msgcat::mcset as Cut কাটক
 ::msgcat::mcset as Decline {অস্বীকাৰ কৰক}
+::msgcat::mcset as {Dedicated translator} {পৃথক অনুবাদক}
 ::msgcat::mcset as {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset as Default ডিফল্ট
 ::msgcat::mcset as {Default model} {ডিফল্ট মডেল}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset as {Delete user} {ব্যৱহাৰকৰ্তা মচক}
 ::msgcat::mcset as {Delete workspace?} {ৱৰ্কস্পেচটো মচিবনে?}
 ::msgcat::mcset as Deop {অপ আঁতৰাওক}
+::msgcat::mcset as {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {সলনিটো বৰ্ণনা কৰক। AI-এ এই এক্সটেনশ্যনৰ কেইবাটাও ফাইল সলনি বা যোগ কৰিব পাৰে। প্ৰতিটো ফাইল ডিফ হিচাপে দেখুওৱা হয়, আৰু আপুনি নিশ্চিত নকৰালৈকে একো লিখা নহয়।}
+::msgcat::mcset as {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {পৰিবৰ্তনটো বৰ্ণনা কৰক। AI-এ প্ৰতিস্থাপনৰ প্ৰস্তাৱ দিব পাৰে, কিন্তু আপুনি পাৰ্থক্যটো পৰীক্ষা কৰি নিশ্চিত নকৰালৈকে সেয়া লিখিব নোৱাৰে।}
+::msgcat::mcset as {Describe the requested extension change first.} {প্ৰথমে বিচৰা এক্সটেনশ্যন পৰিবৰ্তনটো বৰ্ণনা কৰক।}
+::msgcat::mcset as Description বৰ্ণনা
 ::msgcat::mcset as {Desktop: local core, modules and process plugins} {ডেস্কটপ: স্থানীয় ক'ৰ, মডিউল আৰু প্ৰক্ৰিয়া প্লাগইন}
 ::msgcat::mcset as Detach বিচ্ছিন্ন
+::msgcat::mcset as {Detach foreground} {ফৰগ্ৰাউণ্ড বিচ্ছিন্ন কৰক}
 ::msgcat::mcset as Dev Dev
 ::msgcat::mcset as {Dev pane (REPL + LSP)} {Dev পেন (REPL + LSP)}
 ::msgcat::mcset as {Dev: arm / disarm live patching} {Dev: লাইভ পেচিং সজ্জিত / অসজ্জিত কৰক}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset as Devoice {ভইচ আঁতৰাওক}
 ::msgcat::mcset as {Discard review} {পৰ্যালোচনা বাতিল কৰক}
 ::msgcat::mcset as {Discard your changes to %s?} {%s-ত কৰা আপোনাৰ সলনিবোৰ বাতিল কৰিব নেকি?}
+::msgcat::mcset as {Disk: %1$s free of %2$s at %3$s} {ডিস্ক: %3$s ত %2$s ৰ ভিতৰত %1$s খালী}
 ::msgcat::mcset as Done হ'ল
 ::msgcat::mcset as {Done — config written} {সম্পন্ন — config লিখা হৈছে}
 ::msgcat::mcset as {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {ইনষ্টল কৰাৰ আগে ৰিলিজ মেনিফেষ্ট আৰু হোষ্ট আৰ্কাইভ ডাউনলোড আৰু সত্যাপন কৰক। সকলো পাঁচটা আইডেণ্টিটি ক্ষেত্ৰৰ প্ৰয়োজন। গেটৱেয়ে ব্যক্তিগত স্টেজড আৰ্কাইভ ৰাখে; এই পূৰ্বদৰ্শনে একো ইনষ্টল কৰা নাই।}
 ::msgcat::mcset as {Downloading and verifying the signed release…} {হস্তাক্ষৰিত ৰিলিজ ডাউনলোড আৰু সত্যাপন কৰা হৈছে…}
+::msgcat::mcset as {Draft this as an extension?} {এইটো এটা এক্সটেনশ্যন হিচাপে খচৰা কৰিবনে?}
 ::msgcat::mcset as {Drag to scroll; a quick swipe goes further.} {স্ক্ৰ'ল কৰিবলৈ টানক; খৰতকীয়া ছোৱাইপে আৰু আগলৈ নিয়ে।}
+::msgcat::mcset as {Drift check failed: %s} {ড্রিফ্ট পৰীক্ষা বিফল: %s}
+::msgcat::mcset as {Drift check: %s node(s) differ from this gateway.} {ড্রিফ্ট পৰীক্ষা: %s টা ন'ড এই গেটৱেৰ পৰা বেলেগ।}
+::msgcat::mcset as {Drift: built from revision %1$s, this gateway from %2$s} {ড্রিফ্ট: সংশোধন %1$s ৰ পৰা বিল্ড হৈছে, এই গেটৱে %2$s ৰ পৰা}
+::msgcat::mcset as {Drift: none — same version, revision and replicated config} {ড্রিফ্ট: নাই — একেই সংস্কৰণ, সংশোধন আৰু প্ৰতিলিপি কৰা কনফিগ}
+::msgcat::mcset as {Drift: not compared — %s} {ড্রিফ্ট: তুলনা কৰা হোৱা নাই — %s}
+::msgcat::mcset as {Drift: runs version %1$s, this gateway %2$s} {ড্রিফ্ট: সংস্কৰণ %1$s চলাইছে, এই গেটৱে %2$s}
+::msgcat::mcset as Drift… ড্রিফ্ট…
 ::msgcat::mcset as {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset as {ESC %s is not bound} {ESC %s বাইণ্ড হোৱা নাই}
 ::msgcat::mcset as {ESC- … (Meta prefix)} {ESC- … (Meta উপসৰ্গ)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset as Edit… এডিট…
 ::msgcat::mcset as {Enable / disable} {সক্ৰিয় / নিষ্ক্ৰিয়}
 ::msgcat::mcset as {Enable the Telegram adapter} {Telegram এডাপ্টাৰ সক্ৰিয় কৰক}
+::msgcat::mcset as Endpoint এণ্ডপইণ্ট
 ::msgcat::mcset as Engine ইঞ্জিন
 ::msgcat::mcset as Eval→gw Eval→gw
 ::msgcat::mcset as {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {%s ৰ প্ৰতিটো পৰিৱৰ্তন কমিট হয়। Restoring চাপিলে গোটেই ডাইৰেক্টৰীটো সেই কমিটলৈ ঘূৰি যায় — পূৰ্বে বৰ্তমান অৱস্থাটোৰ স্নেপশ্বট লোৱা হয়, গতিকে ই একে-ফালৰ দুৱাৰ নহয়।}
 ::msgcat::mcset as {Every plugin file goes back to that commit. The current state is committed first.} {প্ৰতিটো প্লাগইন ফাইল সেই কমিটলৈ উভতি যায়। প্ৰথমে বৰ্তমান অৱস্থাটো কমিট হয়।}
+::msgcat::mcset as {Exact commit} {সঠিক কমিট}
+::msgcat::mcset as {Exact permission rule} {সঠিক অনুমতি নিয়ম}
+::msgcat::mcset as {Example: a hook} {উদাহৰণ: এটা হুক}
+::msgcat::mcset as {Example: a provider driver} {উদাহৰণ: এটা প্ৰ'ভাইডাৰ ড্ৰাইভাৰ}
+::msgcat::mcset as {Example: a service override wrapping core} {উদাহৰণ: কোৰ মেৰিয়াই ৰখা এটা সাৰ্ভিছ অ'ভেৰাইড}
+::msgcat::mcset as {Example: a tool} {উদাহৰণ: এটা সঁজুলি}
 ::msgcat::mcset as {Existing shared container network} {বৰ্তমানৰ shared কণ্টেইনাৰ নেটৱৰ্ক}
+::msgcat::mcset as Explain বুজাওক
+::msgcat::mcset as {Explain the diagnostics} {ডায়াগনষ্টিক্সবোৰ বুজাই দিয়ক}
 ::msgcat::mcset as Export… {ৰপ্তানি কৰক…}
+::msgcat::mcset as {Extension API} {এক্সটেনশ্যন API}
+::msgcat::mcset as {Extension development} {এক্সটেনশ্যন উন্নয়ন}
+::msgcat::mcset as {Extension guide} {এক্সটেনশ্যন গাইড}
+::msgcat::mcset as {Extension source} {এক্সটেনশ্যন উৎস}
 ::msgcat::mcset as {Failover blueprint} {ফেইলঅভাৰ ব্লুপ্ৰিণ্ট}
 ::msgcat::mcset as {Failover blueprint (edit the route chain)} {ফেইলঅ'ভাৰ ব্লুপ্ৰিণ্ট (ৰুট শৃংখল সম্পাদনা কৰক)}
 ::msgcat::mcset as {Failover hook script (what `script` mode runs)} {ফেইলঅ'ভাৰ হুক স্ক্ৰিপ্ট (`script` ম'ডে কি চলায়)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset as {Find in transcript} {ট্ৰান্সক্ৰিপ্টত বিচাৰক}
 ::msgcat::mcset as {Find in transcript…} {ট্ৰান্সক্ৰিপ্টত বিচাৰক…}
 ::msgcat::mcset as {Find references} {উল্লেখসমূহ বিচাৰক}
+::msgcat::mcset as {Finish rollback} {ৰোলবেক সম্পূৰ্ণ কৰক}
 ::msgcat::mcset as {First run: no config.toml yet.} {প্ৰথম ৰান: এতিয়াও config.toml নাই।}
+::msgcat::mcset as {Fix the failed syntax checks before preparing a contribution.} {অৱদান সাজু কৰাৰ আগতে বিফল চিনটেক্স পৰীক্ষাবোৰ শুধৰাওক।}
+::msgcat::mcset as {Fleet deployment} {ফ্লীট মোতায়েন}
+::msgcat::mcset as {Fleet deployment runs from a desktop computer; it is not available on Android.} {ফ্লীট মোতায়েন ডেস্কটপ কম্পিউটাৰৰ পৰা চলে; Android ত ই উপলব্ধ নহয়।}
+::msgcat::mcset as {Fleet deploy…} {ফ্লীট মোতায়েন…}
+::msgcat::mcset as {Fleet drift} {ফ্লীট ড্রিফ্ট}
 ::msgcat::mcset as {Fold / unfold} {ভাঁজ / ভাঁজ খোলক}
 ::msgcat::mcset as {Forget declaration} {ঘোষণা পাহৰক}
+::msgcat::mcset as {Forget node %s?} {ন'ড %s পাহৰিবনে?}
+::msgcat::mcset as {Forget node…} {ন'ড পাহৰক…}
+::msgcat::mcset as {Forgetting %1$s failed: %2$s} {%1$s পাহৰাটো বিফল: %2$s}
+::msgcat::mcset as {Forgot node %s.} {ন'ড %s পাহৰা হ'ল।}
+::msgcat::mcset as {Forgotten fleet-wide (refused until they heartbeat again): %s} {গোটেই ফ্লীটৰ পৰা পাহৰি দিয়া হ'ল (পুনৰ হাৰ্টবিট নিদিয়ালৈকে নাকচ): %s}
 ::msgcat::mcset as Fork {শাখা কৰক}
 ::msgcat::mcset as {Free space} {খালী ঠাই}
 ::msgcat::mcset as {Full source commit SHA} {সম্পূৰ্ণ উৎস কমিট SHA}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset as {Gateway image sha256 digest} {গেটৱে ইমেজ sha256 ডাইজেষ্ট}
 ::msgcat::mcset as {Gateway quadlet name} {গেটৱে quadlet নাম}
 ::msgcat::mcset as {Gateway status} {গেটৱেৰ স্থিতি}
+::msgcat::mcset as {Generate with AI…} {AI ৰ সৈতে সৃষ্টি কৰক…}
+::msgcat::mcset as {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {%s ৰ দ্বাৰা সৃষ্টি — একো লিখা হোৱা নাই। প্ৰতিটো ফাইল পৰ্যালোচনা কৰক, তাৰ পিছত এক্সটেনশ্যন সৃষ্টি কৰক-এ ঠিক এইবোৰেই লিখিব।}
 ::msgcat::mcset as {Get a key at %s} {%s ত এখন key লওক}
 ::msgcat::mcset as {GitHub release URL} {GitHub ৰিলিজ URL}
+::msgcat::mcset as {Give the extension a name and describe what it should do (the purpose), then generate.} {এক্সটেনশ্যনটোক এটা নাম দিয়ক আৰু ই কি কৰিব লাগে (উদ্দেশ্য) বৰ্ণনা কৰক, তাৰ পিছত সৃষ্টি কৰক।}
 ::msgcat::mcset as {Give up} {হাল পেলাওক}
 ::msgcat::mcset as Go যাওক
 ::msgcat::mcset as {Go to definition} {সংজ্ঞালৈ যাওক}
+::msgcat::mcset as {Gossip failed: %s} {গচিপ বিফল: %s}
+::msgcat::mcset as {Gossip now} {এতিয়াই গচিপ}
+::msgcat::mcset as {Gossip with %1$s: %2$s} {%1$s ৰ সৈতে গচিপ: %2$s}
+::msgcat::mcset as {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {গচিপ: %2$s টা পীয়াৰৰ ভিতৰত %1$s টাই উত্তৰ দিছে (%3$s)।}
 ::msgcat::mcset as Grant অনুমতি
 ::msgcat::mcset as {Grant access} {এক্সেছ অনুমতি}
+::msgcat::mcset as {Granted at} {অনুমোদনৰ সময়}
 ::msgcat::mcset as Grant… অনুমতি…
 ::msgcat::mcset as {Guards — what the harness stops, and where it stands now} {Guards — harness য়ে কি ৰখায়, আৰু এতিয়া ই ক'ত আছে}
 ::msgcat::mcset as {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {হেণ্ডলাৰবোৰ দেখুওৱা ক্ৰমত চলে; যিটোৱে প্ৰথমে খালী নহোৱা মান উভতাই দিয়ে সিয়েই জিকে। এটা বন্ধ কৰিলে সি আনৰেজিষ্টাৰ নোহোৱাকৈ এৰি দিয়া হয়, আৰু সেই সিদ্ধান্ত config.toml ত ৰখা হয়, যাতে প্লাগইন ৰিল'ডে ইয়াক চুপে-চুপে আকৌ চলাব নোৱাৰে।}
+::msgcat::mcset as Health স্বাস্থ্য
+::msgcat::mcset as {Health alerts (%s):} {স্বাস্থ্য সতৰ্কবাণী (%s):}
+::msgcat::mcset as Heartbeat হাৰ্টবিট
+::msgcat::mcset as {Heartbeat age: %s s} {হাৰ্টবিটৰ বয়স: %s ছে}
 ::msgcat::mcset as Help সহায়
 ::msgcat::mcset as {Help & keys} {সহায় আৰু কী}
 ::msgcat::mcset as {Hide right panes} {সোঁ পেনসমূহ লুকুৱাওক}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset as {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {ধৰি ৰাখক, তাৰ পিছত আঙুলি উঠোৱাৰ আগতে টানক: বাছনিয়ে শব্দৰ পিছত শব্দকৈ আপোনাৰ আঙুলি অনুসৰণ কৰে, ওপৰ বা তলৰ কাষত স্ক্ৰ'ল কৰি।}
 ::msgcat::mcset as Hooks হুক
 ::msgcat::mcset as {Hooks (what plugins run on)} {হুকসমূহ (প্লাগিনবোৰ কিত চলে)}
+::msgcat::mcset as Host হোষ্ট
 ::msgcat::mcset as {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {ধৰি ৰখাত কিমান সময় লাগে, সেয়া Androidৰ স্পৰ্শ কৰি ধৰি ৰখাৰ বিলম্ব, ইয়াৰ সুগমতা ছেটিংছত।}
 ::msgcat::mcset as {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {মই KEK আৰু PLC ঘূৰ্ণন কী অফলাইনত বেকআপ কৰিছো; পৰ্যালোচিত TLS আৰু সক্ৰিয়কৰণ হেণ্ডঅফত অনুমোদন দিয়ক}
 ::msgcat::mcset as {I-search backward: type to search, C-r for previous} {I-search পিছলৈ: বিচাৰিবলে টাইপ কৰক, পূৰ্বৰ বাবে C-r}
 ::msgcat::mcset as {I-search: type to search, C-s for next} {I-search: বিচাৰিবলে টাইপ কৰক, পৰৱৰ্তীৰ বাবে C-s}
+::msgcat::mcset as {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {IO চাপ: সময়ৰ %1$s%% / %2$s%% / %3$s%% ত কোনো কাম অপেক্ষা কৰিছিল (10 ছেকেণ্ড / 1 মিনিট / 5 মিনিট)}
 ::msgcat::mcset as IRC IRC
 ::msgcat::mcset as {IRC buffers} {IRC বাফাৰবোৰ}
 ::msgcat::mcset as {IRC composer} {IRC কম্প'জাৰ}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset as {IRC split: %s} {IRC স্প্লিট: %s}
 ::msgcat::mcset as {IRC transcript} {IRC ট্ৰান্সক্ৰিপ্ট}
 ::msgcat::mcset as {IRC — nothing to show} {IRC — দেখুৱাবলৈ একো নাই}
+::msgcat::mcset as {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {চলি আছে: %1$s টা টাৰ্ন %2$s, %3$s টা বেকগ্ৰাউণ্ড কাম %4$s}
 ::msgcat::mcset as {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {%s পৰিচালিত কম্পোনেণ্ট ভঁৰালত ইনষ্টল কৰিবনে? ইয়াৰ মেনিফেষ্ট দেখুওৱা হৈছে; ই কোনো সেৱা আৰম্ভ নকৰে।}
 ::msgcat::mcset as {Install component} {কম্পোনেণ্ট ইনষ্টল কৰক}
 ::msgcat::mcset as {Install components…} {কম্পোনেণ্টসমূহ ইনষ্টল কৰক…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset as Instances ইনষ্টেন্স
 ::msgcat::mcset as {It becomes the current content, as a new revision — so the restore can be undone too.} {ই নতুন সংশোধন হিচাপে বৰ্তমানৰ বিষয়বস্তু হ'ব — গতিকে পুনৰুদ্ধাৰো বাতিল কৰিব পাৰি।}
 ::msgcat::mcset as {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {ই এই মেচিনৰ এনক্ৰিপ্ট কৰা ভল্টলৈ যায়। এজেণ্টে ইয়াক কেতিয়াও নেদেখে: ই ইয়াক কেৱল কমাণ্ডত $%s হিচাপে ব্যৱহাৰ কৰিব পাৰে, বা অনুমতি থকা হ'ষ্টলৈ পঠিয়াব পাৰে।}
+::msgcat::mcset as {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {ইয়াক গোটেই ফ্লীটৰ ক্লাষ্টাৰ ৰেজিষ্ট্ৰীৰ পৰা মচা হৈছে: পৰৱৰ্তী গচিপ বিনিময়ে 0.2.0 ৰ প্ৰতিটো পীয়াৰকো ইয়াক বাদ দিবলৈ কয়, আৰু তেওঁলোকৰ কোনেও ইয়াক পুনৰ একত্ৰিত নকৰে। 0.2.0 ৰ পুৰণি পীয়াৰ এটাই ইয়াক তালিকাত ৰাখি থাকে। মেচিনটো ঘূৰি আহি হাৰ্টবিট দিলে ই পুনৰ ৰেজিষ্টাৰ হয়। ছিংক পীয়াৰ আৰু সংৰক্ষিত ইনষ্টেন্সবোৰ অক্ষত থাকে।}
 ::msgcat::mcset as {It leaves memory now. Its history keeps every revision, and History… can restore it.} {ই এতিয়া মেমৰিৰ পৰা আঁতৰিব। ইয়াৰ ইতিহাসে প্ৰতিটো সংশোধন ৰাখে, আৰু ইতিহাস…-এ ইয়াক ঘূৰাই আনিব পাৰে।}
 ::msgcat::mcset as Join {যোগ দিয়ক}
 ::msgcat::mcset as {Join a pool} {মেচিনৰ গোটত যোগ দিয়ক}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset as {Language (i18n)} {ভাষা (i18n)}
 ::msgcat::mcset as Language… ভাষা…
 ::msgcat::mcset as {Last active} {শেষ সক্ৰিয়}
+::msgcat::mcset as {Last probe: %1$s — %2$s} {শেষ প্ৰোব: %1$s — %2$s}
 ::msgcat::mcset as {Leave %s?} {%s এৰি যাবনে?}
 ::msgcat::mcset as Leave… {এৰি যাওক…}
 ::msgcat::mcset as {Legacy open — no [acl] section} {পুৰণা মুকলি অৱস্থা — [acl] ছেকশ্যন নাই}
 ::msgcat::mcset as {Let %s:} {%sক এইবোৰ কৰিবলৈ দিয়ক:}
 ::msgcat::mcset as {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {আখৰ, সংখ্যা, - আৰু _। plugin.toml আৰু এটা plugin.tcl সৃষ্টি হয় যিয়ে post_llm_call হুক ৰেজিষ্টাৰ কৰে, তাৰ পিছত Dev পেনত খোলে।}
+::msgcat::mcset as Level স্তৰ
 ::msgcat::mcset as {Lift lockdown} {লকডাউন আঁতৰাওক}
+::msgcat::mcset as Lines শাৰী
 ::msgcat::mcset as {List the provider's models} {প্ৰ'ভাইডাৰৰ মডেলবোৰ তালিকাবদ্ধ কৰক}
+::msgcat::mcset as Load লোড
 ::msgcat::mcset as {Load more} {আৰু লোড কৰক}
 ::msgcat::mcset as {Loading discovered components…} {আবিষ্কৃত কম্পোনেণ্টসমূহ ল'ড কৰা হৈছে…}
 ::msgcat::mcset as {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {স্থানীয় বাণ্ডল পৰ্যালোচিত হৈছে। ইনষ্টলেচন নিশ্চিত কৰিবলৈ Install selected component বাছক; একো ইনষ্টল হোৱা নাই।}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset as {Lock down} {লক ডাউন}
 ::msgcat::mcset as Log লগ
 ::msgcat::mcset as {Log (engine + status)} {লগ (ইঞ্জিন + স্থিতি)}
+::msgcat::mcset as {Log of %s} {%s ৰ লগ}
+::msgcat::mcset as Logs… লগ…
 ::msgcat::mcset as {M-g- (g: goto line)} {M-g- (g: লাইনলৈ যাওক)}
 ::msgcat::mcset as {M-p/M-n history · Tab complete} {M-p/M-n ইতিহাস · Tab সম্পূৰণ কৰে}
 ::msgcat::mcset as {MCP server list} {MCP চাৰ্ভাৰ তালিকা}
 ::msgcat::mcset as {MCP servers (from config.toml)} {MCP চাৰ্ভাৰ (config.toml ৰ পৰা)}
 ::msgcat::mcset as {Make default} {ডিফল্ট কৰক}
 ::msgcat::mcset as {Make default (config.toml)} {ডিফল্ট কৰক (config.toml)}
+::msgcat::mcset as {Manage extensions} {এক্সটেনশ্যন পৰিচালনা কৰক}
 ::msgcat::mcset as {Manifest SHA-256} {মেনিফেষ্ট SHA-256}
 ::msgcat::mcset as {Mark read} {পঢ়া বুলি চিহ্নিত কৰক}
 ::msgcat::mcset as {Mechanisms (what the engine does on its own)} {Mechanisms (ইঞ্জিনে নিজে কি কৰে)}
 ::msgcat::mcset as {Mechanisms — what the engine does on its own, and how to stop it} {Mechanisms — ইঞ্জিনে নিজে কি কৰে, আৰু কেনেকৈ ৰখাব}
 ::msgcat::mcset as Memory মেমৰি
 ::msgcat::mcset as {Memory history} {মেমৰি ইতিহাস}
+::msgcat::mcset as {Memory: %1$s available of %2$s (%3$s%% used)} {মেম'ৰি: %2$s ৰ ভিতৰত %1$s উপলব্ধ (%3$s%% ব্যৱহৃত)}
+::msgcat::mcset as {Merge the received %s into this node?} {গ্ৰহণ কৰা %s এই ন'ডত একত্ৰিত কৰিবনে?}
 ::msgcat::mcset as Messages বাৰ্তা
+::msgcat::mcset as Metrics মেট্ৰিক্স
+::msgcat::mcset as {Metrics (asked %s):} {মেট্ৰিক্স (%s ক সোধা হৈছে):}
+::msgcat::mcset as {Metrics of %1$s failed: %2$s} {%1$s ৰ মেট্ৰিক্স বিফল: %2$s}
+::msgcat::mcset as {Metrics of %s received.} {%s ৰ মেট্ৰিক্স পোৱা গ'ল।}
+::msgcat::mcset as {Metrics: not asked yet — use Metrics.} {মেট্ৰিক্স: এতিয়াও সোধা হোৱা নাই — মেট্ৰিক্স ব্যৱহাৰ কৰক।}
 ::msgcat::mcset as Model মডেল
 ::msgcat::mcset as {Model for this session} {এই ছেচনৰ মডেল}
 ::msgcat::mcset as {Models & settings} {মডেল আৰু ছেটিংছ}
+::msgcat::mcset as Monitors নিৰীক্ষকসমূহ
+::msgcat::mcset as Name নাম
+::msgcat::mcset as {Need an account? Optional sign-up links (open in your browser):} {একাউণ্ট লাগেনে? ঐচ্ছিক চাইন-আপ লিংক (ব্ৰাউজাৰত খোলক):}
 ::msgcat::mcset as Network নেটৱৰ্ক
 ::msgcat::mcset as {New alias} {নতুন এলিয়াছ}
+::msgcat::mcset as {New branch name} {নতুন শাখাৰ নাম}
 ::msgcat::mcset as {New cron job} {নতুন ক্ৰন কাম}
+::msgcat::mcset as {New extension} {নতুন এক্সটেনশ্যন}
 ::msgcat::mcset as {New memory file} {নতুন মেমৰি ফাইল}
 ::msgcat::mcset as {New plugin} {নতুন প্লাগইন}
 ::msgcat::mcset as {New session} {নতুন ছেচন}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset as Next পৰৱৰ্তী
 ::msgcat::mcset as Nickname নিকনেম
 ::msgcat::mcset as {NixOS: emit a module snippet; do not edit host declarations} {NixOS: মডিউল স্নিপেট এটা নিৰ্গত কৰক; হ'ষ্ট ঘোষণাসমূহ সম্পাদনা নকৰিব}
+::msgcat::mcset as {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {এই ন'ডৰ বাবে কোনো SSH লাইফচাইকেল টাৰ্গেট কনফিগাৰ কৰা নাই। ডিপ্লয় বা পুনৰ আৰম্ভ কৰিবলৈ স্পষ্টভাৱে এটা ইনষ্টেন্স যোগ কৰক।}
+::msgcat::mcset as {No additional push happens.} {অতিৰিক্ত কোনো পুশ নহয়।}
 ::msgcat::mcset as {No apps yet. Ask the agent to make one: “make me an app that…”} {এতিয়াও কোনো এপ নাই। এজেণ্টক এটা বনাবলৈ কওক: “মোক এনে এটা এপ বনাই দিয়া যিয়ে…”}
 ::msgcat::mcset as {No code in the picture. Hold the phone closer, straight on, and scan again.} {ছবিত কোনো কোড নাই। ফোনটো ওচৰলৈ আনি পোনপটীয়াকৈ ধৰক আৰু পুনৰ স্কেন কৰক।}
 ::msgcat::mcset as {No configuration snapshot will be restored.} {কোনো কনফিগাৰেচন স্নেপশ্বট পুনৰুদ্ধাৰ নকৰা হ'ব।}
+::msgcat::mcset as {No configured sync peer for this node.} {এই ন'ডৰ বাবে কোনো কনফিগাৰ কৰা ছিংক পীয়াৰ নাই।}
+::msgcat::mcset as {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {কোনো পৃথক অনুবাদক কনফিগাৰ কৰা নাই। ইয়াৰ প্ৰ'ভাইডাৰ, মডেল আৰু লক্ষ্য ভাষা বাছিবলৈ অনুবাদক কনফিগাৰ কৰক বিকল্পটো ব্যৱহাৰ কৰক।}
+::msgcat::mcset as {No deployment started.} {কোনো মোতায়েন আৰম্ভ হোৱা নাই।}
+::msgcat::mcset as {No diagnostics reported by the current LSP document.} {বৰ্তমান LSP দস্তাবেজে কোনো ডায়াগনষ্টিক্স জনোৱা নাই।}
+::msgcat::mcset as {No explicitly configured desktop gateway is bound to this node.} {কোনো স্পষ্টভাৱে কনফিগাৰ কৰা ডেস্কটপ গেটৱে এই নোডৰ সৈতে সংযুক্ত নাই।}
+::msgcat::mcset as {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {কোনো স্পষ্টভাৱে কনফিগাৰ কৰা গেটৱে এই নোডৰ সৈতে সংযুক্ত নাই। প্ৰথমে গেটৱেটো যোগ কৰক; ইয়াৰ ৰেজিষ্ট্ৰী এণ্ডপইণ্ট ডেস্কটপ URL হিচাপে ব্যৱহাৰ নহয়।}
+::msgcat::mcset as {No file is open. Ask a design question, or open an extension file for help with its code.} {কোনো ফাইল খোলা নাই। ডিজাইন সম্পৰ্কীয় প্ৰশ্ন সোধক, বা ইয়াৰ ক'ডত সহায়ৰ বাবে এক্সটেনশ্যনৰ ফাইল এখন খোলক।}
+::msgcat::mcset as {No files have been written. Review the exact manifest and source, then confirm creation.} {কোনো ফাইল লিখা হোৱা নাই। সঠিক মেনিফেষ্ট আৰু উৎস পৰ্যালোচনা কৰক, তাৰ পিছত সৃষ্টি নিশ্চিত কৰক।}
 ::msgcat::mcset as {No modules or process plugins were discovered. The provider setup steps can still continue.} {কোনো মডিউল বা প্ৰক্ৰিয়া প্লাগইন পোৱা নগ'ল। প্ৰ'ভাইডাৰ ছেটআপৰ পদক্ষেপসমূহ এতিয়াও আগবঢ়াব পাৰি।}
+::msgcat::mcset as {No other registered node to compare with.} {তুলনা কৰিবলৈ আন কোনো ৰেজিষ্টাৰ কৰা ন'ড নাই।}
 ::msgcat::mcset as {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {এই উইজাৰ্ডৰ পৰা কোনো প্ৰ'ফাইলেই এটা সেৱা আৰম্ভ নকৰে বা এডমিনিষ্ট্ৰেটৰ অধিকাৰ থকা স্ক্ৰিপ্ট নচলায়। চলোৱাৰ আগে প্লেন আৰু যিকোনো হেণ্ডঅফ পৰ্যালোচনা কৰক।}
+::msgcat::mcset as {No proposal has been requested. Nothing will be written automatically.} {কোনো প্ৰস্তাৱ বিচৰা হোৱা নাই। একো স্বয়ংক্ৰিয়ভাৱে লিখা নহ'ব।}
+::msgcat::mcset as {No proposal. Nothing was written.} {কোনো প্ৰস্তাৱ নাই। একো লিখা হোৱা নাই।}
 ::msgcat::mcset as {No routes configured.} {কোনো ৰুট কনফিগাৰ হোৱা নাই।}
 ::msgcat::mcset as {No session selected — pick one in the sidebar or start a new one} {কোনো ছেচন নিৰ্বাচিত নহয় — চাইডবাৰত এটা বাছক বা নতুন এটা আৰম্ভ কৰক}
 ::msgcat::mcset as {No swap target yet: pick a language and press “Set as swap target”.} {এতিয়াও সলাওকৰ ভাষা নাই: এটা ভাষা বাছি “সলাওকৰ ভাষা কৰক” টিপক।}
 ::msgcat::mcset as {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {config.toml ত কোনো {[}acl{]} ছেকচন নাই: গেটৱেলৈ পোৱা প্ৰতিজন পঠিওৱাজনক owner বুলি গণ্য কৰা হয় — pre-ACL একক-ব্যৱহাৰকৰ্তা ব্যৱহাৰ। অনুমতি দিয়া আৰু প্ৰত্যাহাৰ তথাপি কামত আহে, আৰু {[}acl{]} অস্তিত্বলৈ অহা মাত্ৰেই কাৰ্যকৰী হয়।}
+::msgcat::mcset as {Node id} {ন'ড আইডি}
+::msgcat::mcset as {Non-evaluating syntax checks} {কোড নচলাকৈ চিনটেক্স পৰীক্ষা}
+::msgcat::mcset as {Not available: %s} {উপলব্ধ নহয়: %s}
+::msgcat::mcset as Note টোকা
 ::msgcat::mcset as {Note for the agent (optional):} {এজেণ্টৰ বাবে টোকা (ঐচ্ছিক):}
+::msgcat::mcset as {Nothing selected.} {একো বাছনি কৰা নাই।}
 ::msgcat::mcset as {Nothing typed yet.} {এতিয়াও একো টাইপ কৰা হোৱা নাই।}
+::msgcat::mcset as {Nothing was generated or written.} {একো সৃষ্টি বা লিখা হোৱা নাই।}
+::msgcat::mcset as {Nothing was prepared: the chosen repository already has these paths.} {একো প্ৰস্তুত কৰা নহ'ল: বাছনি কৰা ৰিপ'জিটৰীত এই পথবোৰ আগৰে পৰা আছে।}
 ::msgcat::mcset as Notifications জাননী
 ::msgcat::mcset as OK ঠিক
 ::msgcat::mcset as Off বন্ধ
 ::msgcat::mcset as On চলু
+::msgcat::mcset as {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {কেৱল পৰ্যালোচনা কৰা এক্সটেনশ্যন বাফাৰটো প্ৰতিস্থাপিত হ'ব। এই পূৰ্বদৰ্শনৰ পিছত হোৱা পৰিবৰ্তনৰ পৰা ফাইলটো এতিয়াও সুৰক্ষিত থাকিব। কোনো কমিট, পুশ বা PR নহয়।}
+::msgcat::mcset as {Only this new branch is committed. Your ambient git identity is used.} {কেৱল এই নতুন শাখাটোতহে কমিট কৰা হয়। আপোনাৰ বৰ্তমান git পৰিচয় ব্যৱহাৰ কৰা হয়।}
 ::msgcat::mcset as Op {অপ দিয়ক}
 ::msgcat::mcset as Open খোলক
+::msgcat::mcset as {Open PR…} {PR খোলক…}
 ::msgcat::mcset as {Open a window} {এখন উইণ্ডো খোলক}
 ::msgcat::mcset as {Open in Dev} {Dev ত খোলক}
 ::msgcat::mcset as {Open in browser} {ব্ৰাউজাৰত খোলক}
 ::msgcat::mcset as {Open plugin} {প্লাগইন খোলক}
 ::msgcat::mcset as {Open terminal} {টাৰ্মিনেল খোলক}
+::msgcat::mcset as {Open this pull request?} {এই পুল ৰিকুৱেষ্টটো খুলিবনে?}
 ::msgcat::mcset as {Open veles in Android's settings} {Android ছেটিংছত veles খোলক}
 ::msgcat::mcset as {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {বৈকল্পিক: যোগ দিবলগীয়া IRC নেটৱৰ্ক। ফাঁক বা কমাৰেৰে চেনেলবোৰ পৰা পৰা আলাদা কৰি লিখক; .env ত IRC_CHANNELS, নিৰ্ধাৰিত হ'লে, এই তালিকাটোৰ ঠাইত বহে।}
 ::msgcat::mcset as {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {বিকল্পসমূহ বাছনি কৰা কম্পোনেণ্ট মেনিফেষ্টৰ পৰা আহে। গোপন যেন লগা ফিল্ডসমূহ ছেটআপ/ভল্ট প্ৰবাহতে থাকে। খালী ফিল্ডে সেই বিকল্প অপৰিবৰ্তিত ৰাখে।}
 ::msgcat::mcset as {Or paste a ticket signed on another device} {বা আন এটা ডিভাইচত স্বাক্ষৰিত টিকট পেষ্ট কৰক}
 ::msgcat::mcset as {Or type an answer:} {অথবা এটা উত্তৰ লিখক:}
+::msgcat::mcset as Origin অৰিজিন
 ::msgcat::mcset as Other… অন্য…
 ::msgcat::mcset as Outline আউটলাইন
+::msgcat::mcset as Output আউটপুট
 ::msgcat::mcset as {Override for THIS session (leave blank to inherit the default)} {এই ছেচনৰ বাবে অভাৰৰাইড (ডিফল্ট বিচাৰিলে খালী ৰাখক)}
 ::msgcat::mcset as {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {মালিকৰ পৰিচয় (telegram:123456, irc:account, বা nick!user@host মাস্ক)}
 ::msgcat::mcset as {PDS and handle domain} {PDS আৰু হেণ্ডেল ডোমেইন}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset as {Pause scheduler} {ছিডিউলাৰ পজ কৰক}
 ::msgcat::mcset as {Peek (C-c C-p)} {ঝলক (C-c C-p)}
 ::msgcat::mcset as {Peek definition} {সংজ্ঞা ঝলকাই চাওক}
+::msgcat::mcset as {Permission grants} {অনুমতি অনুমোদন}
+::msgcat::mcset as {Permission grants…} {অনুমতি অনুমোদন…}
 ::msgcat::mcset as Phone ফোন
 ::msgcat::mcset as {Phone: permissions, battery, storage} {ফোন: অনুমতি, বেটাৰী, ষ্ট'ৰেজ}
 ::msgcat::mcset as {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {%s এ বনোৱা ফোনে নিজেও এপ বন্ধ কৰি দিয়ে। veles ৰ এপ ছেটিংছত ইয়াক নিজে আৰম্ভ হ'বলৈ আৰু নেপথ্যত চলিবলৈ অনুমতি দিয়ক।}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset as Port প'ৰ্ট
 ::msgcat::mcset as {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {প্ৰিফিক্স কৰ্ড (C-x, M-o) সজ্জিত হোৱা মাত্ৰতে এটা which-key পপআপ দেখুৱায়।}
 ::msgcat::mcset as {Prepare an own vlpds PDS through the signed CLI handoff} {স্বাক্ষৰিত CLI হেণ্ডঅফযোগে নিজৰ vlpds PDS প্ৰস্তুত কৰক}
+::msgcat::mcset as {Prepare branch…} {শাখা সাজু কৰক…}
+::msgcat::mcset as {Prepare this branch and commit?} {এই শাখা আৰু কমিট দুয়োটা সাজু কৰিবনে?}
 ::msgcat::mcset as Preview প্ৰিভিউ
+::msgcat::mcset as {Preview change set} {পৰিৱৰ্তন-সংহতি পূৰ্বদৰ্শন}
+::msgcat::mcset as {Preview files} {ফাইলৰ পূৰ্বদৰ্শন কৰক}
 ::msgcat::mcset as {Preview here} {ইয়াতে প্ৰিভিউ}
 ::msgcat::mcset as {Preview pane} {প্ৰিভিউ পেন}
+::msgcat::mcset as {Preview proposal} {প্ৰস্তাৱৰ পূৰ্বদৰ্শন কৰক}
+::msgcat::mcset as {Preview the changed name or language before creating it.} {সৃষ্টি কৰাৰ আগতে সলনি কৰা নাম বা ভাষাৰ পূৰ্বদৰ্শন কৰক।}
+::msgcat::mcset as Probe প্ৰোব
+::msgcat::mcset as {Probe of %1$s failed: %2$s} {%1$s ৰ প্ৰোব বিফল: %2$s}
 ::msgcat::mcset as {Profile result} {প্ৰ'ফাইল ফলাফল}
 ::msgcat::mcset as {Promote into config.toml} {config.toml ত প্ৰমোট}
 ::msgcat::mcset as Promote… প্ৰমোট…
 ::msgcat::mcset as Provider প্ৰভাইডাৰ
+::msgcat::mcset as {Provider driver (plugin wire only)} {প্ৰ'ভাইডাৰ ড্ৰাইভাৰ (কেবল প্লাগইন ৱায়াৰ)}
 ::msgcat::mcset as {Provider entry name} {প্ৰভাইডাৰ এণ্ট্ৰিৰ নাম}
 ::msgcat::mcset as {Provider for this session} {এই ছেচনৰ প্ৰভাইডাৰ}
 ::msgcat::mcset as Providers প্ৰভাইডাৰ
 ::msgcat::mcset as {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {প্ৰভাইডাৰ হৈছে টেবলৰ তালিকা: custom_providers.0.base_url, .0.api_mode, .0.key_env … তলত দেখুওৱা ক্ৰমৰ পৰা ইনডেক্স লওক।}
 ::msgcat::mcset as {Public HTTPS URL} {পাব্লিক HTTPS URL}
+::msgcat::mcset as {Pull request base} {পুল ৰিকুৱেষ্টৰ ভিত্তি}
+::msgcat::mcset as {Pull request created} {পুল ৰিকুৱেষ্ট সৃষ্টি হৈছে}
+::msgcat::mcset as {Pull request description} {পুল ৰিকুৱেষ্টৰ বৰ্ণনা}
+::msgcat::mcset as {Pull request opened.} {পুল ৰিকুৱেষ্ট খোলা হৈছে।}
+::msgcat::mcset as {Pull request repository} {পুল ৰিকুৱেষ্ট ৰিপজিটৰী}
+::msgcat::mcset as {Pull request title} {পুল ৰিকুৱেষ্টৰ শিৰোনাম}
 ::msgcat::mcset as {Purge + delete files} {পাৰ্জ + ফাইল মচক}
 ::msgcat::mcset as {Purge container} {কণ্টেইনাৰ পাৰ্জ কৰক}
+::msgcat::mcset as Purpose উদ্দেশ্য
+::msgcat::mcset as Push পুশ
+::msgcat::mcset as {Push branch…} {শাখা পুশ কৰক…}
+::msgcat::mcset as {Push complete. No pull request has been opened.} {পুশ সম্পূৰ্ণ হৈছে। কোনো পুল ৰিকুৱেষ্ট খোলা হোৱা নাই।}
+::msgcat::mcset as {Push this branch?} {এই শাখাটো পুশ কৰিবনে?}
+::msgcat::mcset as {Push to %s:} {%s লৈ পুশ কৰক:}
 ::msgcat::mcset as Question প্ৰশ্ন
 ::msgcat::mcset as Questions প্ৰশ্নসমূহ
 ::msgcat::mcset as Quit প্ৰস্থান
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset as {Reading notifications, for triggers} {জাননী পঢ়া, ট্ৰিগাৰৰ বাবে}
 ::msgcat::mcset as Reasoning ৰিজনিং
 ::msgcat::mcset as {Reasoning effort} {ৰিজনিং ইফৰ্ট}
+::msgcat::mcset as {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {গ্ৰহণ কৰা হৈছে, প্ৰয়োগৰ বাবে অপেক্ষাৰত: ষ্ট'ৰ %1$s · মেমৰি %2$s · কনফিগ %3$s · ভল্ট %4$s}
+::msgcat::mcset as {Recommended checks} {পৰামৰ্শিত পৰীক্ষা}
 ::msgcat::mcset as {Refetch this transcript from the store} {এই ট্ৰান্সক্ৰিপ্টটো ষ্ট'ৰৰ পৰা পুনৰ আনক}
 ::msgcat::mcset as Refresh ৰিফ্ৰেছ
 ::msgcat::mcset as {Refresh preview} {প্ৰিভিউ সতেজ কৰক}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset as {Rename symbol} {চিহ্নৰ নাম সলনি কৰক}
 ::msgcat::mcset as Rename… {নাম সলনি…}
 ::msgcat::mcset as Rendered {ৰেণ্ডাৰ হ'ল}
+::msgcat::mcset as {Replace existing repository files?} {ৰিপ'জিটৰীত থকা ফাইলবোৰ সলনি কৰিবনে?}
+::msgcat::mcset as {Replace them in the new branch? Nothing else in the repository changes.} {নতুন শাখাত সেইবোৰ সলনি কৰিবনে? ৰিপ'জিটৰীত আন একো সলনি নহয়।}
 ::msgcat::mcset as Repository ভাণ্ডাৰ
 ::msgcat::mcset as {Repository (owner/name)} {ভাণ্ডাৰ (মালিক/নাম)}
+::msgcat::mcset as {Repository directory} {ৰিপ'জিটৰী ডাইৰেক্টৰী}
+::msgcat::mcset as {Repository paths} {ৰিপ'জিটৰী পথ}
+::msgcat::mcset as {Request a new preview before trying again.} {পুনৰ চেষ্টা কৰাৰ আগতে নতুন পূৰ্বদৰ্শনৰ অনুৰোধ কৰক।}
 ::msgcat::mcset as {Reset to default} {ডিফ'ল্টলৈ ঘূৰাই নিয়ক}
 ::msgcat::mcset as {Reset to template} {টেমপ্লেটলৈ ৰিছেট}
 ::msgcat::mcset as Restart {পুনৰাম্ভ কৰক}
+::msgcat::mcset as {Restart + verify canary} {কেনাৰী পুনৰ আৰম্ভ + সত্যাপন}
 ::msgcat::mcset as {Restore hidden windows} {লুকুৱা খিৰিকীসমূহ পুনৰুদ্ধাৰ কৰক}
 ::msgcat::mcset as {Restore plugins to %s?} {প্লাগইনবোৰ %s লৈ পুনৰুদ্ধাৰ কৰিবনে?}
 ::msgcat::mcset as {Restore revision r%1$s of %2$s?} {%2$s-ৰ সংশোধন r%1$s পুনৰুদ্ধাৰ কৰিব নেকি?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset as {Restore this commit} {এই কমিট পুনৰুদ্ধাৰ}
 ::msgcat::mcset as {Restore this revision} {এই সংশোধন পুনৰুদ্ধাৰ কৰক}
 ::msgcat::mcset as {Resume scheduler} {ছিডিউলাৰ পুনৰ আৰম্ভ কৰক}
+::msgcat::mcset as {Resume unfinished operation} {অসমাপ্ত কাৰ্য পুনৰ আৰম্ভ কৰক}
 ::msgcat::mcset as Revert উভটাওক
 ::msgcat::mcset as {Revert %s to HEAD? Uncommitted changes in this file are lost.} {%s-ক HEAD লৈ ঘূৰাই আনিবনে? এই ফাইলৰ কমিট নকৰা পৰিৱৰ্তনবোৰ হেৰাই যাব।}
 ::msgcat::mcset as Revert… উভটাওক…
 ::msgcat::mcset as Review ৰিভিউ
 ::msgcat::mcset as {Review (git) pane} {ৰিভিউ (git) পেন}
+::msgcat::mcset as {Review deployment} {মোতায়েন পৰ্যালোচনা কৰক}
+::msgcat::mcset as {Review extension contribution} {এক্সটেনশ্যন অৱদান পৰ্যালোচনা কৰক}
 ::msgcat::mcset as {Review managed local bundle…} {ব্যৱস্থাপিত স্থানীয় বাণ্ডল পৰ্যালোচনা কৰক…}
 ::msgcat::mcset as {Review rollback} {ৰোলবেক পৰ্যালোচনা}
+::msgcat::mcset as {Review selected files} {নিৰ্বাচিত ফাইল পৰ্যালোচনা কৰক}
 ::msgcat::mcset as {Review the component options on the summary screen before applying.} {প্ৰয়োগ কৰাৰ আগে সাৰাংশ পৰ্দাত কম্পোনেণ্টৰ বিকল্পসমূহ পৰ্যালোচনা কৰক।}
 ::msgcat::mcset as {Review the component preview before applying. No component configuration has been written.} {প্ৰয়োগ কৰাৰ আগে কম্পোনেণ্টৰ পূৰ্বদৰ্শন পৰ্যালোচনা কৰক। কোনো কম্পোনেণ্ট কনফিগাৰ লিখা হোৱা নাই।}
+::msgcat::mcset as {Review the selected files and remove credential findings before preparing.} {সাজু কৰাৰ আগতে নিৰ্বাচিত ফাইলবোৰ পৰ্যালোচনা কৰক আৰু ধৰা পৰা প্ৰমাণপত্ৰসমূহ আঁতৰাওক।}
 ::msgcat::mcset as {Reviewed core bundle in the managed install-sources directory} {ব্যৱস্থাপনা-অধীন install-sources ডিৰেক্টৰীত পৰ্যালোচিত ক'ৰ বাণ্ডল}
+::msgcat::mcset as {Reviewed fleet deployment} {পৰ্যালোচিত ফ্লীট মোতায়েন}
 ::msgcat::mcset as {Reviewed local bundle} {পৰ্যালোচিত স্থানীয় বাণ্ডল}
 ::msgcat::mcset as {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {পৰ্যালোচিত স্থানীয় বাণ্ডল ইনষ্টল হৈছে। ই signed-download যাচাই নকৰা। নতুন ক'ৰ ব্যৱহাৰৰ আগে পুনৰ আৰম্ভ কৰাটো প্ৰয়োজন।}
 ::msgcat::mcset as Revision সংশোধন
 ::msgcat::mcset as Revoke প্ৰত্যাহাৰ
+::msgcat::mcset as {Revoke selected} {বাছনি কৰা প্ৰত্যাহাৰ কৰক}
 ::msgcat::mcset as Roles ৰোলসমূহ
 ::msgcat::mcset as {Roll back %1$s from %2$s to %3$s?} {%1$s %2$s ৰ পৰা %3$s লৈ ৰোলবেক কৰিব?}
+::msgcat::mcset as {Roll back selected target} {বাছনি কৰা লক্ষ্য ৰোলবেক কৰক}
 ::msgcat::mcset as {Rollback completed. Reload the component or restart as requested by the report.} {ৰোলবেক সম্পন্ন হ'ল। ৰিপৰ্টত কোৱা অনুসৰি কম্পোনেন্ট পুনৰ লোড বা পুনৰ আৰম্ভ কৰক।}
 ::msgcat::mcset as {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {ৰোলবেক পৰ্যালোচিত হৈছে। পুনৰুদ্ধাৰ নিশ্চিত কৰিবলৈ Install selected component বাছক; একো পুনৰুদ্ধাৰ হোৱা নাই।}
 ::msgcat::mcset as Run চলাওক
 ::msgcat::mcset as {Run the wizard again} {উইজাৰ্ড আকৌ চলাওক}
 ::msgcat::mcset as {Running in the background} {নেপথ্যত চলি থকা}
-::msgcat::mcset as {Running tasks} {চলি থকা কামবোৰ}
-::msgcat::mcset as {Running tasks (subagents, shells, monitors)} {চলি থকা কামসমূহ (সাবএজেণ্ট, শ্বেল, মনিটৰ)}
 ::msgcat::mcset as {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {Runtime অনুমতি আৰু ব্যৱহাৰকৰ্তাসকল store ত থাকে, আৰু store ৰিছেটে সেইবোৰ মচি পায়। Promote: store ত স্থিৰ হোৱাবোৰ config.toml ত যোগ হয় — ফাইলৰ কমেন্ট আৰু কি ক্ৰম অক্ষত থাকে, কাষতে বেকআপ লিখা হয়, store ৰ কপিবোৰ বাদ পৰে — আৰু ফাইলটোত আগৰে পৰা মতামত থকা ঠাইত সি অনুমান নকৰি নাকচ কৰে।}
 ::msgcat::mcset as {S3 HTTPS endpoint} {S3 HTTPS এণ্ডপয়েন্ট}
 ::msgcat::mcset as {S3 bucket} {S3 বাকেট}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset as {Save as default} {ডিফল্ট হিচাপে সেভ}
 ::msgcat::mcset as {Save attachment as} {সংযুক্তিটো ছেভ কৰক এই নামেৰে}
 ::msgcat::mcset as {Save globally} {গোলকীয়ভাৱে সেভ}
+::msgcat::mcset as {Save or revert the open buffer before applying a change set.} {পৰিৱৰ্তন-সংহতি প্ৰয়োগ কৰাৰ আগতে খোলা বাফাৰখন সংৰক্ষণ কৰক বা ঘূৰাই দিয়ক।}
 ::msgcat::mcset as Scan {স্কেন কৰক}
 ::msgcat::mcset as {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {এই ফোনটোক আমন্ত্ৰণ জনোৱা মেচিনটোৰ veles কোড স্কেন কৰক। যদি ই প্ৰথমে এটা WireGuard কোড দেখুৱাইছিল, তেন্তে ইয়াৰ আগতে সেইটো WireGuard এপেৰে স্কেন কৰক।}
 ::msgcat::mcset as {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {Schedule: এটা অন্তৰাল ("30m", "every 2h"), এটা cron পেটাৰ্ণ ("0 9 * * 1"), বা এবাৰৰ বাবে ISO টাইমষ্টাম্প। ওপৰৰ লাইনটোৱে দেখুৱায় ইঞ্জিনে ইয়াক কি হিচাপে পঢ়ে। Deliver: "local" য়ে আউটপুটটো লগত ৰাখে — ডেস্কটপৰ পিছত কোনো chat প্লেটফৰ্ম নাই বাবে এইটোৱেই একমাত্ৰ সৎ ডিফল্ট — বা "platform:chat_id"। Wake session: নতুন ছেচনত চলাবলে খালী ৰাখক; ছেচন id (বা অনন্য উপসৰ্গ) দিলে সেই ছেচনখন ইয়াৰ সম্পূৰ্ণ ইতিহাসসহ পুনৰ আৰম্ভ হ'ব — ব্যস্ত ছেচনে পৰৱৰ্তী টাৰ্ন সীমাত প্ৰম্পটটো লয়।}
+::msgcat::mcset as Scope পৰিসৰ
 ::msgcat::mcset as {Scroll to end} {শেষলৈ স্ক্ৰ'ল কৰক}
 ::msgcat::mcset as {Search commands and sessions…} {কমান্ড আৰু ছেছন বিচাৰক…}
 ::msgcat::mcset as {Search message text} {বাৰ্তাৰ পাঠ সন্ধান কৰক}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset as Section শাখা
 ::msgcat::mcset as {Select a component first. No component options will be changed if you skip this step.} {প্ৰথমে এটা কম্পোনেণ্ট বাছক। এই পদক্ষেপ এৰি দিলে কোনো কম্পোনেণ্ট বিকল্প সলনি নহ'ব।}
 ::msgcat::mcset as {Select all} {সকলো বাছক}
+::msgcat::mcset as {Select all extensions} {সকলো এক্সটেনশ্যন বাছনি কৰক}
+::msgcat::mcset as {Select at least one source file.} {অন্ততঃ এটা উৎস ফাইল বাছক।}
+::msgcat::mcset as {Select none} {একোটিও নহয়}
+::msgcat::mcset as {Select text to translate first.} {প্ৰথমে অনুবাদ কৰিবলৈ টেক্সট বাছক।}
+::msgcat::mcset as {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {অৰিহণা দিবলগীয়া এক্সটেনশ্যন আৰু ফাইল বাছনি কৰক। সেইবোৰ এটা শাখা আৰু এটা পুল ৰিকুৱেষ্টত যায়, প্ৰতিটো এক্সটেনশ্যন নিজৰ নিজৰ ডাইৰেক্টৰীত। পৰ্যালোচনা কৰক, মূল্যায়ন নকৰা পৰীক্ষা চলাওক, তাৰ পিছত এটা পৃথক শাখা প্ৰস্তুত কৰি কমিট কৰক। পুশ কৰা আৰু পুল ৰিকুৱেষ্ট সৃষ্টি কৰা পৃথক নিশ্চিত কৰা কাৰ্য।}
 ::msgcat::mcset as Send পঠাওক
+::msgcat::mcset as {Send %s to the peer?} {পীয়াৰলৈ %s পঠিয়াবনে?}
 ::msgcat::mcset as {Send a %d-line message to the channel?} {চেনেললৈ %d শাৰীৰ বাৰ্তা পঠাবনে?}
 ::msgcat::mcset as {Send raw line to the server? (%s)} {চাৰ্ভাৰলৈ কেঁচা শাৰী পঠাবনে? (%s)}
 ::msgcat::mcset as {Server (empty = no IRC)} {চাৰ্ভাৰ (খালী = IRC নাই)}
 ::msgcat::mcset as {Server: gateway configuration and a reviewed user unit} {চাৰ্ভাৰ: গেটৱে কনফিগাৰেচন আৰু এটা পৰ্যালোচিত ব্যৱহাৰকাৰী ইউনিট}
 ::msgcat::mcset as {Server: install a user unit and prepare the separate linger handoff} {চাৰ্ভাৰ: এটা ব্যৱহাৰকাৰী ইউনিট ইনষ্টল কৰক আৰু পৃথক linger হেণ্ডঅফ প্ৰস্তুত কৰক}
 ::msgcat::mcset as {Server: use a system service and prepare a privileged CLI request} {চাৰ্ভাৰ: এটা চিস্টেম সেৱা ব্যৱহাৰ কৰক আৰু এটা অধিকাৰযুক্ত CLI অনুৰোধ প্ৰস্তুত কৰক}
+::msgcat::mcset as Session ছেছন
 ::msgcat::mcset as {Session id} {ছেশ্যন আইডি}
 ::msgcat::mcset as {Session id…} {ছেশ্যন আইডি…}
 ::msgcat::mcset as Sessions ছেছনসমূহ
 ::msgcat::mcset as {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {এই এলিয়াছত বৰ্তমান ওভাৰৰাইড হোৱা ছেশ্যনবোৰে নিৰ্ধাৰিত ৰুট বজাই ৰাখে; নতুন ওভাৰৰাইডে নামটো বিচাৰি নাপাব।}
+::msgcat::mcset as {Sessions served} {ছেছন সেৱা}
 ::msgcat::mcset as Set নিৰ্ধাৰণ
 ::msgcat::mcset as {Set [model] provider/default in config.toml.} {config.toml-ত [model] provider/default নিৰ্ধাৰণ কৰক।}
 ::msgcat::mcset as {Set as swap target} {সলাওকৰ ভাষা কৰক}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset as {Setup — summary} {ছেটআপ — সাৰাংশ}
 ::msgcat::mcset as {Setup — welcome} {ছেটআপ — স্বাগতম}
 ::msgcat::mcset as {Shared container network} {shared কণ্টেইনাৰ নেটৱৰ্ক}
+::msgcat::mcset as Shells শেলসমূহ
+::msgcat::mcset as {Shells and monitors} {শেলসমূহ আৰু নিৰীক্ষকসমূহ}
+::msgcat::mcset as {Shells and monitors (subagents, shells, monitors)} {শেলসমূহ আৰু নিৰীক্ষকসমূহ (সাবএজেণ্ট, শেল, নিৰীক্ষক)}
 ::msgcat::mcset as {Show diff} {পাৰ্থক্য দেখুৱাওক}
 ::msgcat::mcset as {Show every key} {সকলো কী দেখুৱাওক}
 ::msgcat::mcset as Sign {স্বাক্ষৰ কৰক}
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset as Solved {সমাধান হ'ল}
 ::msgcat::mcset as Source উৎস
 ::msgcat::mcset as {Source commit} {উৎস কমিট}
+::msgcat::mcset as {Source text} {উৎস পাঠ}
 ::msgcat::mcset as {Source→app (C-c C-c)} {উৎস→app (C-c C-c)}
 ::msgcat::mcset as Stage ষ্টেজ
+::msgcat::mcset as {Stage canary} {কেনাৰী ষ্টেজ কৰক}
+::msgcat::mcset as Stale অপ্ৰচলিত
+::msgcat::mcset as {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {স্থায়ী অনুমতিয়ে পিছৰ টুল কলবোৰ পুনৰ নোসোধাকৈ চলিব দিয়ে। ছেছন অনুমোদন প্ৰতিটো ছাৰফেছৰ (ডেস্কটপ, Telegram, IRC, …) সক্ৰিয় ছেছনে ৰাখে; গ্ল'বেল অনুমোদন স্থায়ী থাকে; config.toml ৰ [approvals] এলাউলিষ্ট এণ্ট্ৰিবোৰ কেৱল-পঠনযোগ্য হিচাপে দেখুওৱা হয়। এটা প্ৰত্যাহাৰ কৰিলে আন অনুমোদনবোৰ কেতিয়াও নসলনি।}
 ::msgcat::mcset as Start {আৰম্ভ কৰক}
+::msgcat::mcset as {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {আপোনাৰ ব্যৱহাৰকৰ্তাৰ প্লাগইন ডিৰেক্টৰীত থকা এটা এক্সটেনশ্যনৰ পৰা আৰম্ভ কৰক। ই আপগ্ৰেডৰ পিছতো থাকি যায় আৰু গেটৱে পুনৰ নিৰ্মাণৰ প্ৰয়োজন নকৰে। নতুন এক্সটেনশ্যনে লিখাৰ আগতে সঠিক মেনিফেষ্ট আৰু উৎসৰ পূৰ্বদৰ্শন দেখায়। সমৰ্থিত ভাষা আৰু API সংস্কৰণ বাছক, ফাইলবোৰ পৰ্যালোচনা কৰক, তাৰ পিছত এক্সটেনশ্যনটো পৃথকভাৱে পৰীক্ষা কৰক।}
 ::msgcat::mcset as {Start with the phone} {ফোনৰ লগত আৰম্ভ হোৱা}
+::msgcat::mcset as {Static IP} {স্থিৰ IP}
 ::msgcat::mcset as Status স্থিতি
 ::msgcat::mcset as Steer {ষ্টীয়াৰ কৰক}
 ::msgcat::mcset as {Step %1$d of %2$d} {ধাপ %1$d, মুঠ %2$d}
 ::msgcat::mcset as {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {এতিয়াও ছেট কৰিবলগীয়া: %s — ইয়াত /secret set NAME টাইপ কৰক, বা গেটৱেৰ মেচিনত veles secret set NAME চলাওক।}
 ::msgcat::mcset as Stop ৰখাওক
 ::msgcat::mcset as {Storage root} {ষ্ট'ৰেজ ৰুট}
+::msgcat::mcset as Store ষ্ট'ৰ
 ::msgcat::mcset as {Store a secret: %s} {গোপন কথা ৰাখক: %s}
 ::msgcat::mcset as {Store it} ৰাখক
+::msgcat::mcset as {Store replica} {ষ্ট'ৰ ৰেপ্লিকা}
 ::msgcat::mcset as Subagents সাবএজেণ্টসমূহ
 ::msgcat::mcset as {Subagents (/agents)} {সাবএজেণ্টসমূহ (/agents)}
 ::msgcat::mcset as Summary সাৰাংশ
+::msgcat::mcset as Surface ছাৰফেছ
 ::msgcat::mcset as {Swap ⇄} {সলাওক ⇄}
+::msgcat::mcset as {Sync cancelled.} {ছিংক বাতিল হ'ল।}
+::msgcat::mcset as {Sync complete.} {ছিংক সম্পূৰ্ণ হৈছে।}
+::msgcat::mcset as {Sync now} {এতিয়া ছিংক কৰক}
 ::msgcat::mcset as {TOML copied — paste it into config.toml} {TOML কপি হ'ল — config.toml-ত পেষ্ট কৰক}
 ::msgcat::mcset as Tag টেগ
 ::msgcat::mcset as {Tap a link to open it, or a block's header to open or close the block.} {লিংক খুলিবলৈ তাত টেপ কৰক, বা ব্লক খুলিবলৈ বা বন্ধ কৰিবলৈ ব্লকৰ শিৰোনামত টেপ কৰক।}
 ::msgcat::mcset as {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {টাইপ কৰিবলৈ তলৰ বাকচটোত টেপ কৰক। পঠাওকে পঠায়, ৰখাওকে টাৰ্ন শেষ কৰে, আৰু বিচ্ছিন্নই চলি থকা কমান্ড এটা পটভূমিলৈ নিয়ে।}
 ::msgcat::mcset as {Tap the text to clear the selection.} {বাছনি আঁতৰাবলৈ লেখাত টেপ কৰক।}
+::msgcat::mcset as {Target language:} {লক্ষ্য ভাষা:}
+::msgcat::mcset as {Target node IDs (canary first, comma separated)} {লক্ষ্য ন'ড আইডি (প্ৰথমে কেনাৰী, কমাৰে পৃথক কৰি)}
 ::msgcat::mcset as {Task list} {কামৰ তালিকা}
 ::msgcat::mcset as {Task list (right pane)} {কামৰ তালিকা (সোঁ পেন)}
 ::msgcat::mcset as Tasks কামসমূহ
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset as {That is not a ticket.} {এইয়া টিকট নহয়।}
 ::msgcat::mcset as {That is not a veles pool code.} {সেইটো veles গোটৰ কোড নহয়।}
 ::msgcat::mcset as {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {সেইটো WireGuard কোড: ইয়াক WireGuard এপেৰে স্কেন কৰক। veles কোডটো দ্বিতীয়টো।}
+::msgcat::mcset as {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {পৰ্যালোচনা কৰা %d টা ফাইল আপোনাৰ ব্যৱহাৰকৰ্তা প্লাগইন ডাইৰেক্টৰিৰ ভিতৰত এটা নতুন ডাইৰেক্টৰিত লিখা হ'ব, আৰু veles-এ এক্সটেনশ্যনটো ল'ড কৰাৰ চেষ্টা কৰে। পূৰ্বদৰ্শনৰ পিছত সেই নামৰ ডাইৰেক্টৰি এটা ওলালে একো লিখা নহয়। প্ৰকাশ কৰা এই কাৰ্যৰ অংশ নহয়।}
 ::msgcat::mcset as {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {Dev পেনৰ REPL লাইভ এপটোতে মূল্যায়ন হয় — UI নিজেই এটা lisp।}
 ::msgcat::mcset as {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {[mcp_servers.<name>] টেবুলটো config.toml-ৰ পৰা বিলোপ হৈছে। আগৰ ফাইলটো config.toml.bak হিচাপে ৰখা হৈছে।}
 ::msgcat::mcset as {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {এডাপ্টাৰৰ অনুমতি-তালিকাবোৰেই (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) বিশ্বাসৰ সীমা, আৰু অনুমতি দিয়া প্ৰতিজনেই owner হিচাপে গণ্য হয়। এইয়া ACL-ৰ আগৰ অৱস্থা।}
 ::msgcat::mcset as {The agent asks for a secret: %s} {এজেণ্টে এটা গোপন কথা বিচাৰিছে: %s}
+::msgcat::mcset as {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {আগতে পুশ কৰা শাখাটোৱেই PR ৰ হেড হিচাপে ব্যৱহৃত হ'ব। আপোনাৰ ফৰ্কৰ শাখা স্বয়ংক্ৰিয়ভাৱে owner:branch হিচাপে নামকৰণ কৰা হয়।}
+::msgcat::mcset as {The author asks} {লেখকে সুধিছে}
+::msgcat::mcset as {The buffer changed. Request a new proposal before applying.} {বাফাৰটো সলনি হৈছে। প্ৰয়োগ কৰাৰ আগতে নতুন প্ৰস্তাৱৰ অনুৰোধ কৰক।}
 ::msgcat::mcset as {The bundle operation returned an invalid result. Verify the installation before retrying.} {বাণ্ডল কাৰ্য্যই এটা অবৈধ ফলাফল ঘূৰাই দিলে। পুনৰ চেষ্টা কৰাৰ আগে ইনষ্টলেচন যাচাই কৰক।}
 ::msgcat::mcset as {The bundle preview was malformed; nothing was installed.} {বাণ্ডল প্ৰিভিউ দোষপূৰ্ণ আছিল; একো ইনষ্টল হোৱা নাই।}
 ::msgcat::mcset as {The camera did not open; paste the code instead.} {কেমেৰা খোল নাখালে; তাৰ সলনি কোডটো পেষ্ট কৰক।}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset as {The component manifest is still loading. Wait for it or choose another component.} {কম্পোনেণ্ট মেনিফেষ্ট এতিয়াও ল'ড হৈ আছে। তাৰ বাবে অপেক্ষা কৰক বা আন এটা কম্পোনেণ্ট বাছক।}
 ::msgcat::mcset as {The component preview is not ready yet. Refresh it and review the result before applying.} {কম্পোনেণ্টৰ পূৰ্বদৰ্শন এতিয়াও সাজু নহয়। ইয়াক ৰিফ্ৰেছ কৰি প্ৰয়োগ কৰাৰ আগে ফলাফল পৰ্যালোচনা কৰক।}
 ::msgcat::mcset as {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {কম্পোনেণ্টৰ পূৰ্বদৰ্শন এতিয়াও ল'ড হৈ আছে। সংযুক্ত সলনিসমূহ পৰ্যালোচনা কৰাৰ আগে উত্তৰৰ বাবে অপেক্ষা কৰক।}
+::msgcat::mcset as {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {বৰ্তমানৰ ডায়াগনষ্টিক্স (ভাষা চাৰ্ভাৰ বা পৰীক্ষাৰ পৰা) এই ফাইলৰ সৈতে পঠোৱা হয়। ইচ্ছা কৰিলে এটা প্ৰশ্ন যোগ কৰক। উত্তৰটো কেৱল টেক্সট; একো লিখিব নোৱাৰি।}
 ::msgcat::mcset as {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {ডিৰেক্টৰীটো আৰু তাৰ ভিতৰৰ সকলো বস্তু আঁতৰোৱা হয়। এইটো ঘূৰাই আনিব নোৱাৰি — কেৱল প্ৰম্পটৰ পৰা বাদ দিব বিচাৰিলে বন্ধ কৰি দিয়ক।}
 ::msgcat::mcset as {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {ডিৰেক্টৰীটো বিলোপ হয়। প্লাগিন ফ'ল্ডাৰটো এটা git ৰিপ'জিট'ৰি আৰু আগতে এটা স্নেপশ্বট কমিট কৰা হয়, গতিকে History… ইয়াক ঘূৰাই আনিব পাৰে।}
+::msgcat::mcset as {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {এডিটৰে গেটৱেৰ ফাইল খোলে, দূৰৰ ইনষ্টেন্সসমূহকে ধৰি, আৰু গেটৱেত ফাইলৰ ভাষাৰ বাবে ভাষা চাৰ্ভাৰ চলায়: tcl-lsp, typescript-language-server (TypeScript আৰু JavaScript), rust-analyzer (Rust প্লাগইন ক্ৰেট বা মডিউল), clangd (C), racket-langserver আৰু এটা Common Lisp চাৰ্ভাৰ। গেটৱেত যাৰ বাবে চাৰ্ভাৰ আছে এনে প্ৰতিটো ভাষাৰ বাবে হ'ভাৰ, সংজ্ঞালৈ যোৱা, কমপ্লিশ্বন আৰু জীৱন্ত ডায়াগনষ্টিক্সে কাম কৰে; নাথাকিলে এডিটৰে তাত কোনটো প্ৰগ্ৰাম ইনষ্টল কৰিব লাগে কয় আৰু চিনটেক্স হাইলাইটিং ৰাখি থাকে। পৰীক্ষাই গেটৱেত মিলাপ্ত পৰীক্ষকটো চলায়: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, বা Racket আৰু Lisp ৰিডাৰ। সংৰক্ষণ কৰক, Manage extensions ত পুনৰ ল'ড কৰক, আৰু স্থানীয় অৱস্থা প্ৰকাশ নকৰাকৈ এক্সটেনশ্যনটো পৰীক্ষা কৰক।}
 ::msgcat::mcset as {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {প্ৰথম হেণ্ডঅফে গোপন তথ্য, পিন কৰা ইমেজ আৰু ৰানটাইম ফাইল প্ৰস্তুত কৰে কিন্তু PDS আৰম্ভ নকৰে। KEK আৰু PLC ৰোটেশ্বন key অফলাইনত ব্যাক আপ কৰক, তাৰ পিছত HTTP-01 TLS আৰু সক্ৰিয়কৰণ স্থাপন কৰিবলৈ নতুনভাৱে পৰ্যালোচনা কৰা অনুৰোধ, বেকআপ স্বীকৃতিসহ জনাওক। DNS ৰেকৰ্ডবোৰে এই হোষ্টলৈ পোনে পোনে পইণ্ট কৰিব লাগিব; veles-এ কোনো CDN প্ৰক্সি বা DNS পৰিৱৰ্তন নকৰে।}
+::msgcat::mcset as {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {এক্সটেনশ্যন সৃষ্টিৰ পিছত ফৰ্মখন সলনি হৈছে। পুনৰ সৃষ্টি কৰক, বা সাধাৰণ স্কেফ'ল্ড পূৰ্বদৰ্শন কৰক।}
 ::msgcat::mcset as {The gateway itself is untouched.} {গেটৱে নিজে অবিকৃত থাকে।}
 ::msgcat::mcset as {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {গেটৱেয়ে কনফিগ পুনৰ লোড কৰিলে, গতিকে নতুন ছেছনবোৰে এতিয়াৰ পৰাই ইয়াক ব্যৱহাৰ কৰে, আৰু ভল্টত ৰখা key পিছৰ অনুৰোধত ব্যৱহাৰ হ'ব। Telegram আৰু IRC গেটৱেৰ পিছৰ পুনৰাৰম্ভত আৰম্ভ হ'ব: veles gateway restart।}
 ::msgcat::mcset as {The installed component no longer matches the selected manifest. Review the component list again.} {ইনষ্টল হোৱা কম্পোনেণ্টে এতিয়া বাছনি কৰা মেনিফেষ্টৰ সৈতে নিমিলে। কম্পোনেণ্ট তালিকা পুনৰ পৰ্যালোচনা কৰক।}
 ::msgcat::mcset as {The installer preview has no verification signatures; apply is disabled.} {ইনষ্টলাৰৰ পূৰ্বদৰ্শনত সত্যাপনৰ স্বাক্ষৰ নাই; প্ৰয়োগ অক্ষম কৰা হৈছে।}
 ::msgcat::mcset as {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {জবটো আৰু ইয়াৰ ৰান ইতিহাস আঁতৰোৱা হয়। এইটো ঘূৰাই আনিব নোৱাৰি — কেৱল বন্ধ কৰিব বিচাৰিলে ইয়াক পজ কৰক।}
+::msgcat::mcset as {The log could not be read: %s} {লগ পঢ়িব পৰা নগ'ল: %s}
 ::msgcat::mcset as {The manifest belongs to another component; its reply was discarded.} {মেনিফেষ্টটো আন এটা কম্পোনেণ্টৰ; ইয়াৰ উত্তৰ বাতিল কৰা হৈছে।}
 ::msgcat::mcset as {The profile changed. Review the fresh plan before applying it.} {প্ৰ'ফাইল সলনি হৈছে। প্ৰয়োগ কৰাৰ আগে নতুন প্লেন পৰ্যালোচনা কৰক।}
 ::msgcat::mcset as {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {ৰিপ'জিট'ৰিটোৰ মূল বা এটা শাখা গভীৰত SKILL.md লাগে। ই %s-ত স্থাপিত হয়।}
 ::msgcat::mcset as {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {ৰিপ'জিট'ৰি মূলত plugin.toml থাকিব লাগে। মেনিফেষ্টৰ নামেৰে ই %s-ত ক্ল'ন হয়।}
+::msgcat::mcset as {The reviewed change set was applied (%d files). Review and test it before publishing.} {পৰ্যালোচনা কৰা পৰিৱৰ্তন-সংহতিটো প্ৰয়োগ কৰা হ'ল (%d টা ফাইল)। প্ৰকাশ কৰাৰ আগতে ইয়াক পৰ্যালোচনা আৰু পৰীক্ষা কৰক।}
 ::msgcat::mcset as {The reviewed configuration snapshot will also be restored.} {পৰ্যালোচিত কনফিগাৰেচন স্নেপশ্বটটোও পুনৰুদ্ধাৰ হ'ব।}
+::msgcat::mcset as {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {পৰ্যালোচনা কৰা ফাইলবোৰ আপোনাৰ ব্যৱহাৰকৰ্তাৰ প্লাগইন ডিৰেক্টৰীত লিখা হ'ব। veles-এ এটা স্থানীয় পুনৰুদ্ধাৰ স্নেপশ্বট সংৰক্ষণ কৰে আৰু এক্সটেনশ্যনটো পুনৰ লোড কৰিবলৈ চেষ্টা কৰে; প্ৰকাশ এই কাৰ্যৰ অংশ নহয়।}
+::msgcat::mcset as {The reviewed proposal was applied locally. Review and test it before publishing.} {পৰ্যালোচনা কৰা প্ৰস্তাৱটো স্থানীয়ভাৱে প্ৰয়োগ কৰা হৈছে। প্ৰকাশৰ আগতে ইয়াক পৰ্যালোচনা আৰু পৰীক্ষা কৰক।}
 ::msgcat::mcset as {The rollback preview was malformed or named another component; nothing was restored.} {ৰোলবেক প্ৰিভিউ দোষপূৰ্ণ আছিল বা আন এটা কম্পোনেন্টক নাম দিছিল; একো পুনৰুদ্ধাৰ হোৱা নাই।}
 ::msgcat::mcset as {The rollback returned an invalid result. Verify the installation before retrying.} {ৰোলবেকে এটা অবৈধ ফলাফল ঘূৰাই দিলে। পুনৰ চেষ্টা কৰাৰ আগে ইনষ্টলেচন যাচাই কৰক।}
 ::msgcat::mcset as {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {নতুন ছেশ্বনে যি ৰুটত আৰম্ভ হয়। /model আৰু models overlay-এ পাছত সলাব পাৰি — প্ৰতি ছেশ্বনত বা নতুন ডিফল্ট হিচাপে।}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset as {The signed download discard returned an invalid response; no installation was requested.} {হস্তাক্ষৰিত ডাউনলোড বাতিল কৰাৰ অবৈধ উত্তৰ ঘূৰাই দিলে; কোনো ইনষ্টলেশন অনুৰোধ কৰা হোৱা নাই।}
 ::msgcat::mcset as {The signed installation returned an invalid result. Verify the installation before retrying.} {হস্তাক্ষৰিত ইনষ্টলেশনে অবৈধ ফলাফল ঘূৰাই দিলে। পুনৰ চেষ্টা কৰাৰ আগে ইনষ্টলেশন সত্যাপন কৰক।}
 ::msgcat::mcset as {The signed release preview was malformed; nothing was installed.} {হস্তাক্ষৰিত ৰিলিজ পূৰ্বদৰ্শন বিকৃত আছিল; একো ইনষ্টল কৰা হোৱা নাই।}
+::msgcat::mcset as {The source buffer changed. Request a new proposal before applying.} {উৎস বাফাৰটো সলনি হৈছে। প্ৰয়োগ কৰাৰ আগতে নতুন প্ৰস্তাৱৰ অনুৰোধ কৰক।}
 ::msgcat::mcset as {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {ষ্ট'ৰটো এটা ৰিভিজন পিছুৱাই যায়। ৰোলবেকটো নিজেও এটা ৰিভিজন, গতিকে ইয়াকো পিছত ঘূৰাই আনিব পাৰি।}
+::msgcat::mcset as {The translator returned no text.} {অনুবাদকে কোনো টেক্সট ঘূৰাই নিদিলে।}
 ::msgcat::mcset as {The verification reply was malformed; no integrity result was accepted.} {যাচাইকৰণৰ উত্তৰ দোষপূৰ্ণ আছিল; কোনো অখণ্ডতা ফলাফল গ্ৰহণ কৰা নহ'ল।}
 ::msgcat::mcset as Themes থিমসমূহ
+::msgcat::mcset as {These paths already exist in the chosen repository:} {এই পথবোৰ বাছনি কৰা ৰিপ'জিটৰীত আগৰে পৰা আছে:}
 ::msgcat::mcset as {They have not been saved.} {সেইবোৰ সেভ কৰা হোৱা নাই।}
+::msgcat::mcset as {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {এই বাফাৰত বুজাবলগীয়া কোনো ডায়াগনষ্টিক্স নাই। পৰীক্ষা চলাওক, বা ভাষা চাৰ্ভাৰৰ বাবে অপেক্ষা কৰক।}
 ::msgcat::mcset as {This challenge is over.} {এই প্ৰত্যাহ্বান শেষ হ’ল।}
 ::msgcat::mcset as {This code has expired. Ask for a new one.} {এই কোডটোৰ ম্যাদ উকলিছে। নতুন এটা বিচাৰক।}
 ::msgcat::mcset as {This does not start a service or claim signed-download verification.} {ই কোনো সেৱা আৰম্ভ নকৰে বা signed-download যাচাইকৰণ দাবী নকৰে।}
 ::msgcat::mcset as {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {এই গেটৱেয়ে এই মেচিনৰ পৰা গোপন মান গ্ৰহণ নকৰে: তাতেই veles secret set %sৰে দিয়ক, বা এই নেটৱৰ্কটো ইয়াৰ [vault] trusted_networksত যোগ কৰক}
 ::msgcat::mcset as {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {এইয়াই হুবহু লিখা হব — ইঞ্জিনৰ নিজৰ বাইট, লাইভত আনি। এতিয়ালৈ ডিস্কত একো স্পৰ্শ হোৱা নাই।}
+::msgcat::mcset as {This node is not a configured sync peer for any kind.} {এই ন'ড কোনো ধৰণৰ বাবে কনফিগাৰ কৰা ছিংক পীয়াৰ নহয়।}
+::msgcat::mcset as {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {এই প্লাগইনটো bundled আৰু কেৱল-পঠনযোগ্য। bundled কপিটো ব্যৱহাৰ কৰিবলৈ একে নামৰ ব্যৱহাৰকৰ্তা কপিটো আঁতৰাওক।}
+::msgcat::mcset as {This publishes the commit; no pull request is created yet.} {ইয়ে কমিটটো প্ৰকাশ কৰে; এতিয়ালৈকে কোনো পুল ৰিকুৱেষ্ট সৃষ্টি কৰা নহয়।}
 ::msgcat::mcset as {This review expires after %s seconds. Closing or cancelling discards its private staging.} {এই পৰ্যালোচনা %s ছেকেণ্ডৰ পিছত মুক্তি পাব। বন্ধ বা বাতিল কৰিলে ইয়াৰ ব্যক্তিগত স্টেজিং বাতিল হয়।}
 ::msgcat::mcset as {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {এই উইজাৰ্ডে config.toml লিখে, আৰু আপুনি দিয়া keys এনক্ৰিপ্ট কৰা ভল্টত ৰাখে। প্ৰতিটো পদক্ষেপ এৰি যাব পাৰি: এৰি যোৱা পদক্ষেপ নতুন কনফিগত নাথাকে, আৰু থকা কনফিগত যেনে আছে তেনেকৈয়ে থাকে। থকা config.toml ঠাইতে সম্পাদনা কৰা হয় — কেৱল আপুনি উত্তৰ দিয়া অংশবোৰ সলনি হয়, আৰু বাকী সকলো, মন্তব্যসহ, থাকি যায়।}
 ::msgcat::mcset as {Ticket needed} {টিকটৰ প্ৰয়োজন}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset as {Topic for %s} {%s-ৰ বিষয়}
 ::msgcat::mcset as {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {মেনু খুলিবলৈ এটা ছেছন, বা মেনু থকা আন যিকোনো বস্তু স্পৰ্শ কৰি ধৰি ৰাখক। বাহিৰত এটা টেপ, বা পিছলৈ বুটামে, ইয়াক বন্ধ কৰে।}
 ::msgcat::mcset as {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {এটা শব্দ বাছিবলৈ স্পৰ্শ কৰি ধৰি ৰাখক। আঙুলি উঠালে ইয়াৰ মেনু খোল খায়, ওপৰত কপি থাকে।}
+::msgcat::mcset as Translate {অনুবাদ কৰক}
+::msgcat::mcset as {Translate selection} {নিৰ্বাচন অনুবাদ কৰক}
+::msgcat::mcset as Translating… {অনুবাদ হৈছে…}
+::msgcat::mcset as {Translation cancelled.} {অনুবাদ বাতিল কৰা হৈছে।}
+::msgcat::mcset as {Translation copied.} {অনুবাদ কপি কৰা হ'ল।}
+::msgcat::mcset as {Translation failed} {অনুবাদ বিফল হ'ল}
+::msgcat::mcset as {Translation result} {অনুবাদৰ ফলাফল}
+::msgcat::mcset as {Translator configuration unavailable} {অনুবাদকৰ কনফিগাৰেশ্যন উপলব্ধ নাই}
 ::msgcat::mcset as {Trigger history} {ট্ৰিগাৰৰ ইতিহাস}
 ::msgcat::mcset as Triggers ট্ৰিগাৰ
 ::msgcat::mcset as {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {ট্ৰিগাৰে টাৰ্ন অবিহনেই চেনেল ঘটনাত সঁহাৰি দিয়ে। slopdrop-এ ঘটনাটো ব্ৰিজলৈ পঠায় আৰু উত্তৰটো পুনঃপ্ৰেৰণ কৰে; vision-এ cooldown আৰু ঘণ্টাজনিত সীমাৰ ভিতৰত এটা চিত্ৰ URL বৰ্ণনা কৰে। [triggers] কনফিগ চুইচ আৰু ব্যুৎপন্ন মাস্ক দুয়োটাই অনুমতি দিলেহে পংক্তিটো ফায়াৰ হয় — #coven-এ লাইভ slopdrop বাইণ্ডিঙত একো ফৰৱাৰ্ড নকৰে।}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset as {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {.env ত IRC_ALLOWED_USERS এ আপোনাৰ একাউণ্ট উল্লেখ নকৰালৈকে, নেটৱৰ্কৰ যিকোনো লোকে বটৰ সৈতে কথা পাতিব পাৰে — আৰু [acl] অংশ নাথাকিলে মালিক হিচাপে, সকলো সঁজুলিৰে সৈতে।}
 ::msgcat::mcset as {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {.env ত TELEGRAM_ALLOWED_USERS এ আপোনাৰ ব্যৱহাৰকাৰী আইডি উল্লেখ নকৰালৈকে, বটটো বিচাৰি পোৱা যিকোনো লোকে ইয়াৰ সৈতে কথা পাতিব পাৰে — আৰু [acl] অংশ নাথাকিলে মালিক হিচাপে, সকলো সঁজুলিৰে সৈতে।}
 ::msgcat::mcset as Untitled শিৰোনামবিহীন
+::msgcat::mcset as {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {আপষ্ট্ৰীম অৰিহণা এটা স্পষ্ট প্ৰকাশন কাৰ্য, স্বয়ংক্ৰিয় আপল'ড নহয়। Manage extensions ত, Contribute এ প্ৰতিটো ব্যৱহাৰকৰ্তা এক্সটেনশ্যন তালিকাভুক্ত কৰে: এক্সটেনশ্যন আৰু ফাইল বাছনি কৰক, diff আৰু গোপন-তথ্য স্কেন পৰীক্ষা কৰক, পৰীক্ষা চলাওক, তাৰ পিছত আপোনাৰ বাছনি কৰা git পৰিচয়েৰে এটা শাখা আৰু এটা PR (ডিফল্টভাৱে veles লৈ) সৃষ্টি কৰক। প্ৰতিটো এক্সটেনশ্যন ৰিপ'জিটৰীৰ নিজৰ ডাইৰেক্টৰীত যায়, আৰু তাত থকা এটা ফাইল কেৱল পৃথক নিশ্চিতকৰণৰ পিছতহে সলনি কৰা হয়। node.toml, স্থানীয় ক্ৰেডেন্সিয়েল, টোকেন, ব্যক্তিগত এণ্ডপইণ্ট বা সম্পৰ্কহীন প্লাগইন অৱস্থা কেতিয়াও প্ৰকাশ নকৰিব। স্থানীয় পুনৰুদ্ধাৰ স্নেপশ্বট আপষ্ট্ৰীম কমিট বা PR নহয়।}
+::msgcat::mcset as {Upstream repository or fork URL} {আপষ্ট্ৰীম ৰিপজিটৰী বা ফৰ্ক URL}
+::msgcat::mcset as {Uptime class} {আপটাইম শ্ৰেণী}
+::msgcat::mcset as {Uptime: host %1$s, gateway %2$s} {আপটাইম: হ'ষ্ট %1$s, গেটৱে %2$s}
 ::msgcat::mcset as Usage ব্যৱহাৰ
 ::msgcat::mcset as {Usage & Quota} {ব্যৱহাৰ & কোটা}
 ::msgcat::mcset as {Use TLS} {TLS ব্যৱহাৰ কৰক}
 ::msgcat::mcset as {Use now} {এতিয়াই ব্যৱহাৰ}
+::msgcat::mcset as {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {প্ৰকৃত চুক্তিসমূহৰ বাবে লেখকৰ নিৰ্দেশিকা আৰু API সন্দৰ্ভ বুটাম ব্যৱহাৰ কৰক। প্লাগইন অভাৰলেয়ে সক্ৰিয় হুকসমূহৰ তালিকা দেখায়; সেৱা আৰু অভাৰৰাইড বিন্দুসমূহ এই নিৰ্দেশিকাৰ কপি কৰা তালিকাৰ পৰা নহয়, গেটৱেৰ নিজৰ ৰেজিষ্ট্ৰীৰ পৰা আহে।}
 ::msgcat::mcset as {Use this ticket} {এই টিকট ব্যৱহাৰ কৰক}
+::msgcat::mcset as {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {নিজে veles লৈ পুশ কৰিব নোৱাৰিলে আপোনাৰ ফৰ্ক (https://github.com/<you>/veles.git বা git@github.com:<you>/veles.git) ব্যৱহাৰ কৰক। বাছনি কৰা ৰিপ'জিটৰী এটা পৃথক ৱাৰ্কট্ৰিত ক্লোন কৰা হয়। একো পুশ কৰা নহয়।}
 ::msgcat::mcset as {Users — one role across networks and platforms} {ব্যৱহাৰকাৰী — সকলো নেটৱৰ্ক আৰু প্লেটফৰ্মত একে ভূমিকা}
 ::msgcat::mcset as {Using the phone, for the agent} {ফোন ব্যৱহাৰ, এজেণ্টৰ বাবে}
 ::msgcat::mcset as {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {সাধাৰণতে প্ৰভাইডাৰ এণ্ট্ৰিৰ নামৰ লগত একেই। Skip বাছনিত দুয়োটা খালী থাঁক — আধা-ছেট যোৰে ৰাউট নকৰে।}
 ::msgcat::mcset as {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {মানসমূহ TOML: উদ্ধৃতি-চিহ্নিত ষ্ট্ৰিং, সংখ্যা বা তালিকা। [mcp_servers.<name>]-ত লিখা হয় — আপোনাৰ মন্তব্য আৰু বাকী সকলো অংশ অবিকৃত থাকে।}
+::msgcat::mcset as Vault ভল্ট
 ::msgcat::mcset as {Verified signed bundle installed. Restart the gateway before using the new core.} {সত্যাপিত হস্তাক্ষৰিত বাণ্ডেল ইনষ্টল হৈছে। নতুন ক'ৰ ব্যৱহাৰ কৰাৰ আগে গেটৱে পুনৰ আৰম্ভ কৰক।}
 ::msgcat::mcset as {Verified signed release — not installed yet} {সত্যাপিত হস্তাক্ষৰিত ৰিলিজ — এতিয়াও ইনষ্টল হোৱা নাই}
 ::msgcat::mcset as {Verify and review release…} {ৰিলিজ সত্যাপন আৰু পৰ্যালোচনা কৰক…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset as {Verify signed release} {হস্তাক্ষৰিত ৰিলিজ সত্যাপন কৰক}
 ::msgcat::mcset as {Verify signed release…} {হস্তাক্ষৰিত ৰিলিজ সত্যাপন কৰা হৈছে…}
 ::msgcat::mcset as Version সংস্কৰণ
+::msgcat::mcset as {Version %1$s: %2$s} {সংস্কৰণ %1$s: %2$s}
+::msgcat::mcset as {Version drift in the registry: %s} {ৰেজিষ্ট্ৰীত সংস্কৰণৰ ড্রিফ্ট: %s}
 ::msgcat::mcset as View দৃশ্য
 ::msgcat::mcset as {View markdown source} {markdown উৎস চাওক}
 ::msgcat::mcset as {View source / rendered} {উৎস / ৰেণ্ডাৰ কৰা ৰূপ}
 ::msgcat::mcset as Voice {ভইচ দিয়ক}
+::msgcat::mcset as {Waiting for the model…} {মডেলৰ বাবে অপেক্ষা কৰি আছে…}
+::msgcat::mcset as {Waiting for the model… Nothing has been written.} {মডেলৰ বাবে অপেক্ষা কৰি আছে… একো লিখা হোৱা নাই।}
 ::msgcat::mcset as {Welcome to veles} {veles লৈ স্বাগতম}
 ::msgcat::mcset as {What the agent can do here} {এজেণ্টে ইয়াত কি কৰিব পাৰে}
 ::msgcat::mcset as {What veles may do on this phone. Each button opens the Android setting that changes it.} {এই ফোনত veles এ কি কৰিব পাৰে। প্ৰতিটো বুটামে সেইটো সলনি কৰা Android ছেটিংটো খোলে।}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset as {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {veles পটভূমিত থাকোঁতে এজেণ্টৰ প্ৰশ্ন বা সম্পূৰ্ণ হোৱা টাৰ্ন এটা জাননী হয়; ছেছনটো খুলিবলৈ তাত টেপ কৰক।}
 ::msgcat::mcset as {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {কোনে বটৰ লগত কথা পাতিব পাৰে। এই বাছনিয়েই ঠিক কৰে config.toml-ত [acl] ছেকশ্যন থাকিব নে নাথাকিব — আৰু সেয়াই গোটেই অৱস্থাটো ওলোটা কৰি দিয়ে।}
 ::msgcat::mcset as Whois Whois
-::msgcat::mcset as {Wire protocol (chat_completions or responses)} {ৱায়াৰ প্ৰটোকল (chat_completions বা responses)}
+::msgcat::mcset as {Wire protocol (chat_completions, responses or plugin)} {ৱায়াৰ প্ৰট'কল (chat_completions, responses বা plugin)}
 ::msgcat::mcset as {With a keyboard attached, every key works as on a laptop.} {কীবৰ্ড সংযোগ কৰিলে প্ৰতিটো কী লেপটপৰ দৰে কাম কৰে।}
 ::msgcat::mcset as {Workflow SHA} {ৱৰ্কফ্ল' SHA}
+::msgcat::mcset as {Workflow commit} {ৱাৰ্কফ্ল' কমিট}
+::msgcat::mcset as Worktree ৱৰ্কট্ৰী
 ::msgcat::mcset as {Write it} লিখক
+::msgcat::mcset as {Write the design question first.} {প্ৰথমে ডিজাইন সম্পৰ্কীয় প্ৰশ্নটো লিখক।}
 ::msgcat::mcset as {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {কোনো প্ৰভাইডাৰ লিখা নহয়। এটা [[custom_providers]] এণ্ট্ৰি আৰু [model] যোৰ নোহোৱালৈ gateway-এ কোনো টাৰ্ণ ৰাউট নকৰে।}
 ::msgcat::mcset as {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {যিকোনো [acl] কী লিখিলে এই গেটৱে curated মোডলৈ যায়: ডিফল্ট ভূমিকা guest (fail-closed) হয় আৰু অনুমতি তালিকাবোৰ সীমা হৈ নাথাকে। বিশ্বাসযোগ্য মালিকৰ পৰিচয় থাকিলেহে এইটো বাছক।}
 ::msgcat::mcset as {[model] provider} {[model] provider}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset as {also list hooks with no handler} {হেণ্ডলাৰ নথকা হুকসমূহো তালিকাভুক্ত কৰক}
 ::msgcat::mcset as {also write grants that still have an expiry} {এতিয়াও ম্যাদ থকা grantসমূহো লিখক}
 ::msgcat::mcset as {also write runtime users} {runtime ব্যৱহাৰকাৰীসমূহো লিখক}
+::msgcat::mcset as {an allowlist entry is removed by editing config.toml} {config.toml সম্পাদনা কৰি এটা এলাউলিষ্ট এণ্ট্ৰি আঁতৰোৱা হয়}
 ::msgcat::mcset as {an allowlist is in force: a plugin not on it stays off} {এটা allowlist বলৱৎ আছে: ইয়াত নথকা প্লাগিন বন্ধ থাকিব}
 ::msgcat::mcset as {answer failed: %s} {উত্তৰ ব্যৰ্থ: %s}
+::msgcat::mcset as {answer only, nothing to apply} {কেৱল উত্তৰ, প্ৰয়োগ কৰিবলগীয়া একো নাই}
 ::msgcat::mcset as {append these rules to config.toml} {এই নিয়মসমূহ config.toml-ত সংযোজন কৰক}
 ::msgcat::mcset as {apply failed: %s} {প্ৰয়োগ ব্যৰ্থ: %s}
 ::msgcat::mcset as {apply to:} {প্ৰয়োগ কৰক:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset as {ask the agent} {এজেণ্টক সোধা}
 ::msgcat::mcset as {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset as {asked by: %s} {সোধা হৈছে: %s}
+::msgcat::mcset as {asking %s for its metrics…} {%s ৰ মেট্ৰিক্স সোধা হৈছে…}
 ::msgcat::mcset as {attach a file} {ফাইল সংলগ্ন কৰক}
 ::msgcat::mcset as {attach an image or file} {ছবি বা ফাইল সংলগ্ন কৰক}
 ::msgcat::mcset as {attach failed: %1$s} {সংযুক্তি ব্যৰ্থ: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset as {attached %1$s (%2$s pending)} {%1$s সংযুক্ত (%2$s অপেক্ষাত)}
 ::msgcat::mcset as {attached to %s} {%s-ত সংযুক্ত}
 ::msgcat::mcset as {attached to child session %1$s} {চাইল্ড ছেশ্যন %1$s-ত সংযুক্ত}
+::msgcat::mcset as automatic স্বয়ংক্ৰিয়
 ::msgcat::mcset as {aux model} {aux মডেল}
 ::msgcat::mcset as {aux provider} {aux প্ৰভাইডাৰ}
+::msgcat::mcset as available উপলব্ধ
 ::msgcat::mcset as {available components} {উপলব্ধ কম্পোনেণ্টসমূহ}
 ::msgcat::mcset as {back up N user turns} {ব্যৱহাৰকাৰীৰ N টা টাৰ্ণ পিছুৱাই যাওক}
 ::msgcat::mcset as {backed up the previous config to %s} {আগৰ config %s লৈ বেকআপ কৰা হ'ল}
 ::msgcat::mcset as {background shells; /shells output|kill <id>} {পৃষ্ঠভূমিৰ শ্বেল; /shells output|kill <id>}
+::msgcat::mcset as {backing off: %1$s failure(s), next automatic try in %2$s s} {পিছহুঁহকি থকা হৈছে: %1$s টা বিফলতা, পৰৱৰ্তী স্বয়ংক্ৰিয় চেষ্টা %2$s ছে পিছত}
 ::msgcat::mcset as {bad host for %1$s: %2$s} {%1$s-ৰ বাবে ভুল হ'ষ্ট: %2$s}
 ::msgcat::mcset as {bad unit for %1$s: %2$s} {%1$s-ৰ বাবে ভুল ইউনিট: %2$s}
 ::msgcat::mcset as {bare display off} {বে'ৰ ডিসপ্লে বন্ধ}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset as {browse the filesystem} {ফাইল ছিষ্টেম চাওক}
 ::msgcat::mcset as {browse the repo's files} {ৰেপ'ৰ ফাইলবোৰ ব্ৰাউজ কৰক}
 ::msgcat::mcset as {builtin (%s):} {বিল্ট-ইন (%s):}
+::msgcat::mcset as bundled বিল্ট-ইন
+::msgcat::mcset as {bundled, read-only} {বিল্ট-ইন, কেৱল-পঠনযোগ্য}
 ::msgcat::mcset as by দ্বাৰা
 ::msgcat::mcset as {by plan — all sessions} {পৰিকল্পনা অনুসৰি — সকলো ছেশ্যন}
 ::msgcat::mcset as {by plan — this session} {পৰিকল্পনা অনুসৰি — এই ছেশ্যন}
 ::msgcat::mcset as {by tool} {টুল অনুসৰি}
 ::msgcat::mcset as {cancel failed: %1$s} {বাতিল ব্যৰ্থ: %1$s}
 ::msgcat::mcset as {cancel the running turn} {চলি থকা টাৰ্ন বাতিল কৰক}
+::msgcat::mcset as {cancel the selected task} {নিৰ্বাচিত কামটো বাতিল}
 ::msgcat::mcset as {cancelled task %1$s} {কাৰ্য %1$s বাতিল হ'ল}
 ::msgcat::mcset as {cannot list scripts (gateway offline?)} {স্ক্রিপ্ট তালিকাভুক্ত কৰিব নোৱাৰি (গেটৱে অফলাইন?)}
 ::msgcat::mcset as {cannot reach the gateway: %s} {gateway লৈ সংযোগ কৰিব পৰা নগ'ল: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset as commit কমিট
 ::msgcat::mcset as {compacting %s messages in the background — the transcript reloads when it finishes} {নেপথ্যত %s টা বাৰ্তা কম্পেক্ট কৰি থকা হৈছে — শেষ হ'লে ট্ৰেন্সক্ৰিপ্ট ৰিল'ড হ'ব}
 ::msgcat::mcset as compacting… {কম্পেক্ট হৈ আছে…}
+::msgcat::mcset as {comparing the nodes' versions and config…} {ন'ডবোৰৰ সংস্কৰণ আৰু কনফিগ তুলনা কৰা হৈছে…}
 ::msgcat::mcset as {completion tokens} {কমপ্লিচন টকেন}
 ::msgcat::mcset as {component options and declared actions} {কম্পোনেণ্টৰ বিকল্পসমূহ আৰু ঘোষিত কাৰ্য}
 ::msgcat::mcset as composer কম্পোজাৰ
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset as {could not open %s} {%s খোলা নহ'ল}
 ::msgcat::mcset as {could not open %s (no working browser opener)} {%s খোলা নহ'ল (কাম কৰা browser opener নাই)}
 ::msgcat::mcset as {could not open %{url}: %{e}} {%{url} খোলা নহ'ল: %{e}}
+::msgcat::mcset as {could not open the optional referral link: %s} {ঐচ্ছিক ৰেফাৰেল লিংকটো খোলিব নোৱাৰিলে: %s}
 ::msgcat::mcset as {could not read %s: %s} {%s পঢ়িব পৰা নগ'ল: %s}
 ::msgcat::mcset as {could not read the current route} {বৰ্তমান ৰুট পঢ়া নহ'ল}
 ::msgcat::mcset as {could not save this session's language: %{e}} {এই ছেছনৰ ভাষা সংৰক্ষণ কৰিব পৰা নগ'ল: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset as {ctxmenu: no widget %s (attached too early?)} {ctxmenu: widget %s নাই (অতি সোনকালে সংযুক্ত?)}
 ::msgcat::mcset as {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {Curated প্ৰৱেশ বাছনি কৰা হ'ল কিন্তু মালিকৰ পৰিচয় দিয়া নহ'ল, সেয়ে [acl] নিষ্ক্ৰিয় হৈ থাকে — সক্ৰিয় কৰিবলৈ telegram:123456 বা irc:account ৰ দৰে এটা পৰিচয় দিয়ক}
 ::msgcat::mcset as {current theme: %{name} · /theme <name>} {বৰ্তমান থিম: %{name} · /theme <name>}
+::msgcat::mcset as {cursor %1$s of %2$s (%3$s behind)} {কাৰ্ছৰ %2$s ৰ ভিতৰত %1$s (%3$s পিছত)}
 ::msgcat::mcset as {custom command /%s…} {কাষ্টম কমাণ্ড /%s…}
 ::msgcat::mcset as {custom commands (.veles/commands/) and config aliases} {নিজা কমাণ্ড (.veles/commands/) আৰু কনফিগৰ উপনাম}
 ::msgcat::mcset as {cycle ends} {চক্ৰৰ অন্ত}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset as doctor_resident {প্ৰতিটো প্ৰম্পটত স্থায়ী: %{total} আখৰৰ ভিতৰত %{shown} (~%{tokens} টকেন) — বাকীখিনি প্ৰয়োজন অনুসৰি ইয়াৰে লোড হয়: memory action=read path=%{path}}
 ::msgcat::mcset as doctor_title {মেমৰি পৰীক্ষা}
 ::msgcat::mcset as doctor_total {মুঠ: %{files} টা ফাইলত %{chars} আখৰ (~%{tokens} টকেন)}
+::msgcat::mcset as {documentation is not in this source checkout: %s} {এই উৎস চেকআউটত ডকুমেন্টেশ্যন নাই: %s}
 ::msgcat::mcset as done {হৈ গ'ল}
 ::msgcat::mcset as {done · %1$s/%2$s} {হৈ গ'ল · %1$s/%2$s}
 ::msgcat::mcset as {done, but the model returned no text} {হৈ গ'ল, কিন্তু model-এ কোনো পাঠ ঘূৰাই দিয়া নাই}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset as {evaluate Tcl and answer with the result — no model turn} {Tcl চলাই ফলাফলেৰে উত্তৰ দিয়ক — মডেলৰ টাৰ্ণ অবিহনে}
 ::msgcat::mcset as everyone সকলো
 ::msgcat::mcset as everywhere সকলোতে
+::msgcat::mcset as {exchanging registry gossip…} {ৰেজিষ্ট্ৰী গচিপ বিনিময় কৰা হৈছে…}
 ::msgcat::mcset as exit {ওলাই যাওক}
 ::msgcat::mcset as {exit veles-desktop} {veles-desktop বন্ধ কৰক}
 ::msgcat::mcset as {export failed: %s} {এক্সপৰ্ট বিফল: %s}
 ::msgcat::mcset as {export session} {ছেছন ৰপ্তানি কৰক}
 ::msgcat::mcset as {exported to %s} {%s লৈ ৰপ্তানি কৰা হ'ল}
+::msgcat::mcset as {extension architecture, examples and LSP help} {এক্সটেনশ্যন আৰ্কিটেকচাৰ, উদাহৰণ আৰু LSP সহায়}
+::msgcat::mcset as {extension development guide} {এক্সটেনশ্যন উন্নয়ন গাইড}
+::msgcat::mcset as failed বিফল
 ::msgcat::mcset as {failed to load history: %s} {ইতিহাস ল'ড কৰিবলৈ ব্যৰ্থ: %s}
 ::msgcat::mcset as {failed to paint cached history: %s} {কেশ্ব কৰা ইতিহাস ৰেণ্ডাৰ কৰিবলৈ ব্যৰ্থ: %s}
 ::msgcat::mcset as {failed to paint replayed history: %s} {ৰিপ্লে কৰা ইতিহাস ৰেণ্ডাৰ কৰিবলৈ ব্যৰ্থ: %s}
 ::msgcat::mcset as {failed: %s} {বিফল: %s}
+::msgcat::mcset as {failing — heartbeating, but a sync push or the last probe failed} {বিফলমান — হাৰ্টবিট চলি আছে, কিন্তু এটা ছিংক পুশ বা শেষ প্ৰোব বিফল}
 ::msgcat::mcset as {failover blueprint: cannot reach the gateway} {ফেইলঅভাৰ ব্লুপ্ৰিণ্ট: গেটৱেটো পাব পৰা নাই}
 ::msgcat::mcset as {failover graph unavailable: %1$s} {ফেইলঅভাৰ গ্ৰাফ উপলব্ধ নহয়: %1$s}
 ::msgcat::mcset as {failover script: cannot reach the gateway} {ফেইলঅভাৰ স্ক্ৰিপ্ট: গেটৱেটো পাব পৰা নাই}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset as {fire the Tcl hook} {Tcl হুক ফায়াৰ কৰক}
 ::msgcat::mcset as {fires for %s:} {%s ৰ বাবে ফায়াৰ হয়:}
 ::msgcat::mcset as {fires per hour} {প্ৰতি ঘণ্টাত ফায়াৰ হয়}
+::msgcat::mcset as {fleet drift} {ফ্লীট ড্রিফ্ট}
 ::msgcat::mcset as {focus composer} {কম্পোজাৰত ফোকাচ কৰক}
 ::msgcat::mcset as {focus failed: %{e}} {ফকাছ বিফল: %{e}}
 ::msgcat::mcset as {focus next region} {পৰৱৰ্তী অঞ্চলত ফোকাচ কৰক}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset as {four splits is the maximum} {সৰ্বোচ্চ চাৰিটা স্প্লিট}
 ::msgcat::mcset as {fresh session} {নতুন ছেছন}
 ::msgcat::mcset as {fresh session (Ctrl-N too)} {নতুন ছেছন (Ctrl-N ও)}
+::msgcat::mcset as {fresh — heartbeating, sync passing} {সতেজ — হাৰ্টবিট চলি আছে, ছিংক সফল}
+::msgcat::mcset as from পৰা
 ::msgcat::mcset as {from node %{node}} {নোড %{node}ৰ পৰা}
 ::msgcat::mcset as {gateway     v%1$s · up %2$s} {গেটৱে     v%1$s · চলি আছে %2$s}
 ::msgcat::mcset as {gateway unreachable — is `veles gateway run` up?} {গেটৱে উপলব্ধ নহয় — `veles gateway run` চলি আছে নেকি?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset as {in %s} {%s ত}
 ::msgcat::mcset as {insert the next key literally (^B bold, ^C colour, ^O reset)} {পৰৱৰ্তী কীটো আক্ষৰিকভাৱে সুমুৱাওক (^B ডাঠ, ^C ৰং, ^O ৰিছেট)}
 ::msgcat::mcset as {inserted %s} {%s সুমুৱাই দিলো}
+::msgcat::mcset as {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {ক্লাষ্টাৰ পৰিদৰ্শন কৰক; স্পষ্টভাৱে store, memory, config বা vault ছিংক পুশ/প্ৰয়োগ কৰক; এটা পুৰণি ন'ড গোটেই ফ্লীটৰ পৰা পাহৰি দিয়ক; ন'ড এটাৰ লগৰ শেষাংশ বা মেট্ৰিক্স পঢ়ক; সংস্কৰণ আৰু কনফিগ তুলনা কৰক; এতিয়াই গচিপ কৰক}
 ::msgcat::mcset as {inspector — app internals · core state · gw plugins} {ইন্সপেক্টৰ — এপ অভ্যন্তৰ · ক'ৰ ষ্টেট · gw প্লাগিন}
 ::msgcat::mcset as {install a plugin from a git URL} {git URL ৰ পৰা প্লাগিন ইনষ্টল কৰক}
 ::msgcat::mcset as {install a skill from a git URL} {git URL ৰ পৰা স্কিল ইনষ্টল কৰক}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset as instance ইনষ্টেন্স
 ::msgcat::mcset as {instance controls} {ইনষ্টেন্স নিয়ন্ত্ৰণ}
 ::msgcat::mcset as {instance detail} {ইনষ্টেন্স বিৱৰণ}
+::msgcat::mcset as {instance names may not start with "cluster:" or "g:": %s} {ইনষ্টেন্সৰ নাম "cluster:" বা "g:" ৰে আৰম্ভ হ'ব নোৱাৰে: %s}
 ::msgcat::mcset as {instance needs a name} {ইনষ্টেন্সৰ নাম লাগে}
 ::msgcat::mcset as {instance unreachable} {ইনষ্টেন্স উপলব্ধ নহয়}
 ::msgcat::mcset as instances ইনষ্টেন্সসমূহ
 ::msgcat::mcset as interrupting… {বাধা দিছে…}
+::msgcat::mcset as into লৈ
 ::msgcat::mcset as {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset as {irc: %s} {irc: %s}
 ::msgcat::mcset as {irc: %s failed — %s} {irc: %s বিফল — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset as {language list} {ভাষা তালিকা}
 ::msgcat::mcset as {language picker (the swap for THIS window)} {ভাষা নিৰ্বাচক (কেৱল এই উইণ্ডোটোৰ বাবে সলনি)}
 ::msgcat::mcset as {language saved: %s} {ভাষা সাঁচি থোৱা হ'ল: %s}
+::msgcat::mcset as {language server} {ভাষা চাৰ্ভাৰ}
+::msgcat::mcset as {language server: event stream unavailable: %s} {ভাষা চাৰ্ভাৰ: ইভেণ্ট ষ্ট্ৰিম উপলব্ধ নহয়: %s}
+::msgcat::mcset as {language server: not started on the gateway — %s} {ভাষা চাৰ্ভাৰ: গেটৱেত আৰম্ভ হোৱা নাই — %s}
+::msgcat::mcset as {language server: the gateway would not start one: %s} {ভাষা চাৰ্ভাৰ: গেটৱেৱে এটা আৰম্ভ কৰিব নোৱাৰিলে: %s}
 ::msgcat::mcset as {language swapped: %1$s ⇄ %2$s} {ভাষা সলনি হ'ল: %1$s ⇄ %2$s}
 ::msgcat::mcset as {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {ভাষা → %1$s (আগতে %2$s) · চলি থকা খিৰিকীতহে — Save as default ল'লে config.toml লিখি দিয়ে}
 ::msgcat::mcset as {language: %s} {ভাষা: %s}
 ::msgcat::mcset as {last error} {শেষ ত্ৰুটি}
+::msgcat::mcset as {last pass %1$s at %2$s: %3$s} {শেষ সফল পাছ %1$s (%2$s ত): %3$s}
 ::msgcat::mcset as {last reply copied (%s chars)} {শেষ উত্তৰ কপি হ'ল (%sটা আখৰ)}
 ::msgcat::mcset as {layout not saved: %s} {লেআউট সাঁচি থোৱা নহল: %s}
 ::msgcat::mcset as {leave (cancels a running turn first)} {ওলাই যাওক (প্ৰথমে চলি থকা টাৰ্ণ বাতিল কৰে)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset as {list sessions} {ছেছনৰ তালিকা}
 ::msgcat::mcset as {list skills} {দক্ষতাৰ তালিকা}
 ::msgcat::mcset as {list tools} {টুলৰ তালিকা}
+::msgcat::mcset as {listed here only; [notify] fleet_alerts is off} {কেৱল ইয়াত তালিকাভুক্ত; [notify] fleet_alerts বন্ধ আছে}
 ::msgcat::mcset as {live patching ARMED} {লাইভ পেচিং সজ্জিত}
 ::msgcat::mcset as {live patching ARMED — an agent can now redefine procs in this window} {লাইভ পেচিং সজ্জিত — এজেন্টে এতিয়া এই খিৰিকীত proc-বোৰ পুনৰ সংজ্ঞায়িত কৰিব পাৰে}
 ::msgcat::mcset as {live patching disarmed} {লাইভ পেচিং নিষ্ক্রিয়}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset as {log pane shown} {লগ পেন দেখুওৱা হ'ল}
 ::msgcat::mcset as {log: %s} {লগ: %s}
 ::msgcat::mcset as {make media: image/video/audio, route = comfyui or provider[/model]} {মিডিয়া বনাওক: image/video/audio, ৰুট = comfyui বা provider[/model]}
+::msgcat::mcset as {managed via %s} {%s ৰ জৰিয়তে পৰিচালিত}
+::msgcat::mcset as {manual only} {কেৱল হাতেৰে}
 ::msgcat::mcset as {mark set} {মাৰ্ক স্থাপন হ'ল}
 ::msgcat::mcset as {mark whole buffer (emacs select-all)} {গোটেই বাফাৰটো মাৰ্ক কৰক (emacs select-all)}
 ::msgcat::mcset as {markdown preview of the composer} {কম্পোজাৰৰ মাৰ্কডাউন পূৰ্বদৰ্শন}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset as model মডেল
 ::msgcat::mcset as {model aliases} {মডেল এলিয়াছ}
 ::msgcat::mcset as {monitor %1$s fired} {মনিটৰ %1$s সক্ৰিয় হ'ল}
-::msgcat::mcset as monitors মনিটৰসমূহ
 ::msgcat::mcset as monitors_header মনিটৰসমূহ:
 ::msgcat::mcset as monitors_none {(কোনো মনিটৰ নাই — মডেলে monitor tool ৰ জৰিয়তে এইবোৰ আৰম্ভ কৰে)}
 ::msgcat::mcset as {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {এটা ছেছনক টাৰ্ণৰ সীমাত আন এটা পুল ন'ডলৈ স্থানান্তৰ কৰক (আৰু ইয়াৰ ছাবট্ৰীও); পাৰ্ক কৰা হেণ্ডঅফ সম্পূৰ্ণ/বাতিল কৰক; ছেছনৰ গৰাকী কোন সুধক (এডমিন)}
 ::msgcat::mcset as {move the running foreground command to the background} {চলি থকা সন্মুখৰ কমাণ্ড পৃষ্ঠভূমিলৈ নিয়ক}
 ::msgcat::mcset as {move the running foreground command to the background (keeps running)} {চলি থকা ফ'ৰগ্ৰাউণ্ড কমাণ্ডটো বেকগ্রাউণ্ডলৈ নিয়ক (চলি থাকিব)}
+::msgcat::mcset as {move this session's running foreground command to a background shell; keeps running} {এই ছেছনৰ চলি থকা ফৰগ্ৰাউণ্ড কমান্ডটো এটা বেকগ্ৰাউণ্ড শ্বেললৈ স্থানান্তৰ কৰক; ই চলি থাকিব}
 ::msgcat::mcset as {moving around} {ঘূৰি ফুৰা}
 ::msgcat::mcset as name নাম
 ::msgcat::mcset as {name a key first} {প্ৰথমে কীটোক নাম দিয়ক}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset as {neon impressionism} {neon impressionism}
 ::msgcat::mcset as {network (optional — e.g. libera; empty = any)} {নেটৱৰ্ক (বিকল্প — যেনে libera; খালী = যিকোনো)}
 ::msgcat::mcset as {network to scope the grant to} {অনুদান সীমিত কৰিবলগীয়া নেটৱৰ্ক}
+::msgcat::mcset as new নতুন
 ::msgcat::mcset as {new buffer} {নতুন বাফাৰ}
 ::msgcat::mcset as {new entry — replace this text, then Save} {নতুন এণ্ট্ৰি — এই পাঠটো সলনি কৰি Save টিপক}
 ::msgcat::mcset as {new name for %s} {%s ৰ নতুন নাম}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset as {no IRC buffer selected} {কোনো IRC বাফাৰ নিৰ্বাচিত নাই}
 ::msgcat::mcset as {no MCP servers configured — Add server… writes one into config.toml} {কোনো MCP চাৰ্ভাৰ কনফিগাৰ কৰা নাই — Add server… এটা config.toml ত লিখি দিয়ে}
 ::msgcat::mcset as {no URLs in this buffer} {এই বাফাৰত কোনো URL নাই}
+::msgcat::mcset as {no [a2a_agents] entry — this peer cannot be dialed} {[a2a_agents] এণ্ট্ৰি নাই — এই পীয়াৰলৈ সংযোগ কৰিব নোৱাৰি}
 ::msgcat::mcset as {no alias /%s} {কোনো এলিয়াছ /%s নাই}
 ::msgcat::mcset as {no background refresh} {পটভূমি ৰিফ্ৰেছ নাই}
 ::msgcat::mcset as {no buffer %s} {বাফাৰ %s নাই}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset as {no code block in the last reply} {শেষ উত্তৰত কোনো কোড ব্লক নাই}
 ::msgcat::mcset as {no cron jobs} {কোনো cron কাম নাই}
 ::msgcat::mcset as {no cron jobs — New… creates one} {কোনো cron কাম নাই — New… এটা সৃষ্টি কৰে}
+::msgcat::mcset as {no exchange yet} {এতিয়াও কোনো বিনিময় নাই}
 ::msgcat::mcset as {no file — pick a guts file or type a path} {কোনো ফাইল নাই — guts ফাইল বাছক বা পথ লিখক}
 ::msgcat::mcset as {no handler} {কোনো হেণ্ডলাৰ নাই}
+::msgcat::mcset as {no heartbeat for %{mins} min} {%{mins} মিনিট ধৰি হাৰ্টবিট নাই}
+::msgcat::mcset as {no heartbeat within the threshold} {সীমাৰ ভিতৰত হাৰ্টবিট নাই}
 ::msgcat::mcset as {no history yet} {এতিয়াও কোনো ইতিহাস নাই}
 ::msgcat::mcset as {no host configured for this instance} {এই ইনষ্টেন্সৰ বাবে কোনো হোষ্ট কনফিগাৰ কৰা নাই}
 ::msgcat::mcset as {no instance selected} {কোনো ইনষ্টেন্স নিৰ্বাচিত নাই}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset as {no program to open URLs} {URL খোলিবলৈ কোনো প্ৰগ্ৰাম নাই}
 ::msgcat::mcset as {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {কোনো প্ৰভাইডাৰ কনফিগাৰ কৰা হোৱা নাই — এটা টাৰ্ণ চলোৱাৰ আগতে [[custom_providers]] এণ্ট্ৰি যোগ কৰক আৰু [model] যোৰা ছেট কৰক}
 ::msgcat::mcset as {no reading yet — press Refresh} {এতিয়াও কোনো পঢ়া নাই — Refresh টিপক}
-::msgcat::mcset as {no running tasks} {কোনো চলি থকা কাম নাই}
 ::msgcat::mcset as {no sample available} {কোনো নমুনা উপলব্ধ নাই}
 ::msgcat::mcset as {no search bar on this surface} {এই পৃষ্ঠত সন্ধান-বাৰ নাই}
 ::msgcat::mcset as {no session matching %s} {%s ৰ সৈতে মিলা কোনো ছেছন নাই}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset as {no session open — switch the scope to the default, or open a session} {কোনো সেছন খোলা নাই — স্কোপটো ডিফল্টলৈ সলনি কৰক, বা এটা সেছন খোলক}
 ::msgcat::mcset as {no session open — the catalogue needs one; the default scope still works from config.toml} {কোনো সেছন খোলা নাই — কেটেলগৰ বাবে এটা লাগে; ডিফল্ট স্কোপে config.toml ৰ পৰাও কাম কৰে}
 ::msgcat::mcset as {no setting %s — try filter or bare} {ছেটিং %s নাই — filter বা bare চাওক}
+::msgcat::mcset as {no shells or monitors to show} {দেখুৱাবলৈ কোনো শেল বা নিৰীক্ষক নাই}
 ::msgcat::mcset as {no skills found} {কোনো স্কিল পোৱা নগ'ল}
 ::msgcat::mcset as {no such URL — /urls lists them} {এনে কোনো URL নাই — /urls ত তালিকাখন আছে}
 ::msgcat::mcset as {no such file: %s} {এনে কোনো ফাইল নাই: %s}
 ::msgcat::mcset as {no swap target yet — set one with /locale secondary <id>} {এতিয়াও সলাওকৰ ভাষা নাই — /locale secondary <id> ৰে ঠিক কৰক}
+::msgcat::mcset as {no task selected} {কোনো কাম নিৰ্বাচিত হোৱা নাই}
 ::msgcat::mcset as {no triggers} {কোনো ট্ৰিগাৰ নাই}
 ::msgcat::mcset as {no triggers — New… creates one} {কোনো ট্ৰিগাৰ নাই — New… এটা সৃষ্টি কৰে}
 ::msgcat::mcset as {no upstream reading for %s} {%s ৰ বাবে আপস্ট্রীম পঢ়া নাই}
 ::msgcat::mcset as {no word match} {শব্দ মিলা নাই}
 ::msgcat::mcset as {no xdg-open — path copied instead} {xdg-open নাই — তাৰ ঠাইত পথ কপি হ'ল}
+::msgcat::mcset as {node log} {ন'ড লগ}
 ::msgcat::mcset as {none loaded} {একো লোড হোৱা নাই}
 ::msgcat::mcset as {none recorded} {একো লিপিবদ্ধ নাই}
+::msgcat::mcset as {none since this gateway started} {এই গেটৱে আৰম্ভ হোৱাৰ পৰা একো নাই}
 ::msgcat::mcset as {none yet} {এতিয়াও নাই}
 ::msgcat::mcset as {normie is pure Ctrl — no emacs prefix chords.} {normie বিশুদ্ধ Ctrl — কোনো emacs প্ৰিফিক্স কৰ্ড নাই।}
 ::msgcat::mcset as {normie: select all · emacs: start of line} {normie: সকলো বাছনি · emacs: শাৰীৰ আৰম্ভণি}
 ::msgcat::mcset as {not a channel} {চেনেল নহয়}
 ::msgcat::mcset as {not a key = value line: %s} {কী = মান শাৰী নহয়: %s}
+::msgcat::mcset as {not a node in the attached gateway's cluster registry: %s} {সংযুক্ত গেটৱেৰ ক্লাষ্টাৰ ৰেজিষ্ট্ৰীত ন'ড নহয়: %s}
 ::msgcat::mcset as {not a number} {সংখ্যা নহয়}
 ::msgcat::mcset as {not a valid http(s) url: %s} {বৈধ http(s) url নহয়: %s}
 ::msgcat::mcset as {not a valid ssh host: %s} {বৈধ ssh হোষ্ট নহয়: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset as {not attached to a gateway} {গেটৱেত সংলগ্ন নহয়}
 ::msgcat::mcset as {not configured} {কনফিগাৰ হোৱা নাই}
 ::msgcat::mcset as {not ignoring %s} {%s অৱহেলা কৰা নাই}
+::msgcat::mcset as {not installed} {ইনষ্টল কৰা নাই}
 ::msgcat::mcset as {not reported} {ৰিপৰ্ট কৰা নাই}
 ::msgcat::mcset as {not running} {চলি থকা নাই}
 ::msgcat::mcset as {not set in config.toml — the built-in default applies. %s} {config.toml ত স্থাপন কৰা নাই — অন্তৰ্নিৰ্মিত ডিফল্ট প্ৰযোজ্য। %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset as off বন্ধ
 ::msgcat::mcset as {off (the default)} {বন্ধ (ডিফল্ট)}
 ::msgcat::mcset as offline অফলাইন
+::msgcat::mcset as ok ঠিক
 ::msgcat::mcset as on চালু
 ::msgcat::mcset as {on (the default)} {চালু (ডিফল্ট)}
 ::msgcat::mcset as {on failure} {বিফল হ'লে}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset as {open links} {লিংক খোলা}
 ::msgcat::mcset as {open the engine log} {ইঞ্জিন লগ খোলক}
 ::msgcat::mcset as {open the joined session before /leave (on %s)} {/leave দিয়াৰ আগে যোগদান হৈ থকা ছেচনটো খোলক (%s ত)}
+::msgcat::mcset as {open the selected child session} {নিৰ্বাচিত সন্তান ছেচনটো খোলক}
 ::msgcat::mcset as {open the selected skill in the Dev editor} {নিৰ্বাচিত স্কিলটো Dev এডিটৰত খোলক}
 ::msgcat::mcset as {open the setup wizard (re-runnable; edits config.toml in place)} {ছেটআপ উইজাৰ্ড খোলক (পুনৰ চলাব পাৰি; config.toml ঠাইতে সম্পাদনা কৰে)}
 ::msgcat::mcset as {open the share sheet} {শ্বেয়াৰ শ্বীট খোলা}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset as {override cleared — the default applies} {অভাৰৰাইড মচিল — ডিফল্ট প্ৰযোজ্য}
 ::msgcat::mcset as {override failed: %s} {অভাৰৰাইড বিফল: %s}
 ::msgcat::mcset as {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {মালিকৰ পৰিচয় %{id} ACL এ মিলাব নোৱাৰে — telegram:<সংখ্যাগত আইডি>, irc:<services একাউণ্ট>, বা nick!user@host মাস্ক ব্যৱহাৰ কৰক}
+::msgcat::mcset as owner/repository মালিক/ৰিপজিটৰী
 ::msgcat::mcset as {owners: %s} {মালিক: %s}
 ::msgcat::mcset as {pair a desktop with this agent} {এই এজেণ্টৰ সৈতে এটা ডেস্কটপ যোৰ কৰক}
 ::msgcat::mcset as {partly failed: %s} {আংশিক বিফল: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset as plugin প্লাগিন
 ::msgcat::mcset as {plugin directory git history} {প্লাগিন ডিৰেক্টৰিৰ git ইতিহাস}
 ::msgcat::mcset as {plugin list} {প্লাগিন তালিকা}
+::msgcat::mcset as {plugin provider driver} {প্লাগইন প্ৰ'ভাইডাৰ ড্ৰাইভাৰ}
 ::msgcat::mcset as {plugins reloaded on %s} {%s ত প্লাগিনসমূহ পুনঃলোড হৈছে}
 ::msgcat::mcset as {pop %s out into its own window} {%s ক নিজা উইন্ডোলৈ উলিয়াই নিয়ক}
 ::msgcat::mcset as {pop the buffer out into its own window} {বাফাৰটো বেলেগ খিৰিকীত উলিয়াওক}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset as {prefix: window & dock commands} {প্ৰিফিক্স: খিৰিকী আৰু ডক কমান্ডসমূহ}
 ::msgcat::mcset as {press Attach in the Instances tab} {Instances টেবত Attach টিপক}
 ::msgcat::mcset as preview প্ৰাকদৰ্শন
+::msgcat::mcset as {preview an AI extension change and explicitly apply its diff} {AI এক্সটেনশ্যন পৰিবৰ্তনৰ পূৰ্বদৰ্শন কৰক আৰু ইয়াৰ পাৰ্থক্য স্পষ্টভাৱে প্ৰয়োগ কৰক}
 ::msgcat::mcset as {preview failed: %s} {প্ৰাকদৰ্শন বিফল: %s}
 ::msgcat::mcset as {previous buffer} {পূৰ্বৱৰ্তী বাফাৰ}
 ::msgcat::mcset as {previous command was not a yank} {পূৰ্বৱৰ্তী কমান্ডটো yank নাছিল}
 ::msgcat::mcset as {previous match} {পূৰ্বৱৰ্তী মিল}
 ::msgcat::mcset as {previous session} {পূৰ্বৱৰ্তী ছেচন}
+::msgcat::mcset as {probing %s…} {%s প্ৰোব কৰি আছে…}
 ::msgcat::mcset as {proc body} {proc-ৰ দেহ}
 ::msgcat::mcset as {profile unavailable: %s} {প্ৰফাইল উপলব্ধ নহয়: %s}
 ::msgcat::mcset as profiles: প্ৰফাইলসমূহ:
 ::msgcat::mcset as prompt প্ৰম্পট
 ::msgcat::mcset as {prompt breakdown} {প্ৰম্পটৰ বিশ্লেষণ}
 ::msgcat::mcset as {prompt tokens} {প্ৰম্পট টকেন}
+::msgcat::mcset as {proposal only, not applied} {কেৱল প্ৰস্তাৱ, প্ৰয়োগ কৰা হোৱা নাই}
 ::msgcat::mcset as provider প্ৰভাইডাৰ
 ::msgcat::mcset as {provider / model} {প্ৰভাইডাৰ / মডেল}
 ::msgcat::mcset as {provider base URL} {প্ৰভাইডাৰৰ base URL}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset as {re-sync the slopdrop state mirror} {slopdrop ৰ মিৰৰ-অৱস্থা পুনৰ সিংক কৰক}
 ::msgcat::mcset as {read and set the clipboard} {ক্লিপব'ৰ্ড পঢ়া আৰু ছেট কৰা}
 ::msgcat::mcset as {read text aloud} {লিখনি জোৰেৰে পঢ়া}
+::msgcat::mcset as {read-only: [approvals] allowlist} {কেৱল-পঠনযোগ্য: [approvals] এলাউলিষ্ট}
 ::msgcat::mcset as {read-only: this session lives on %1$s (as read at %2$s)} {পঢ়া-মাত্ৰ: এই ছেছনটো %1$s-ত আছে (%2$s বজাত পঢ়া অনুসৰি)}
 ::msgcat::mcset as {read-only: this skill comes from the %s library} {পঢ়া-মাত্ৰ: এই দক্ষতাটো %s লাইব্ৰেৰীৰ পৰা আহিছে}
 ::msgcat::mcset as reasoning যুক্তি
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset as {refused to open %s (only http, https, mailto)} {%s খোলিব অস্বীকৃত (কেৱল http, https, mailto)}
 ::msgcat::mcset as {refused: %s} {অস্বীকৃত: %s}
 ::msgcat::mcset as {region copied} {অঞ্চল কপি হ'ল}
+::msgcat::mcset as registered {ৰেজিষ্টাৰ হৈছে}
 ::msgcat::mcset as {registry not saved: %s} {ৰেজিষ্ট্ৰি সংৰক্ষিত নহ'ল: %s}
 ::msgcat::mcset as {reload on %1$s failed: %2$s} {%1$s ত পুনঃলোড বিফল: %2$s}
 ::msgcat::mcset as {reload the mechanisms} {মেকানিজমসমূহ পুনঃলোড কৰক}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset as {resume a session (prefix ok)} {এটা ছেছন পুনৰ আৰম্ভ কৰক (উপসৰ্গই যথেষ্ট)}
 ::msgcat::mcset as {retry failed: %s} {পুনৰ-চেষ্টা বিফল: %s}
 ::msgcat::mcset as {retrying last prompt…} {শেষ প্ৰম্পট পুনৰ চেষ্টা চলিছে…}
+::msgcat::mcset as {review files for an explicit upstream contribution} {স্পষ্ট আপষ্ট্ৰীম অৱদানৰ বাবে ফাইল পৰ্যালোচনা কৰক}
+::msgcat::mcset as {review standing global and session tool permissions} {স্থায়ী গ্ল'বেল আৰু ছেছন টুল অনুমতি পৰ্যালোচনা কৰক}
 ::msgcat::mcset as revision সংশোধন
 ::msgcat::mcset as {revision history} {সংশোধন ইতিহাস}
+::msgcat::mcset as {revoke refused} {প্ৰত্যাহাৰ নাকচ কৰা হ'ল}
 ::msgcat::mcset as {revoke the selected identity's grant} {নিৰ্বাচিত পৰিচয়ৰ অনুমতি প্ৰত্যাহাৰ কৰক}
 ::msgcat::mcset as role ভূমিকা
 ::msgcat::mcset as {role to grant} {প্ৰদান কৰিবলগীয়া ভূমিকা}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset as {saved to %s} {%s ত সংৰক্ষিত}
 ::msgcat::mcset as saved. সংৰক্ষিত।
 ::msgcat::mcset as {scaffold a new plugin} {নতুন প্লাগিনৰ ভেটি সাজক}
+::msgcat::mcset as {scaffold a user plugin and open it in this editor} {এটা ব্যৱহাৰকাৰী প্লাগইন স্কাফোল্ড কৰি এই এডিটৰত খোলক}
 ::msgcat::mcset as {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {নিৰ্ধাৰিত কাম; /crons add "<sched>" [session=<id>] <prompt> (উপনাম /cron)}
 ::msgcat::mcset as scope পৰিসৰ
 ::msgcat::mcset as script স্ক্ৰিপ্ট
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset as {select %s first} {প্ৰথমে %s নিৰ্বাচন কৰক}
 ::msgcat::mcset as {select a checkpoint first} {প্ৰথমে এটা চেকপইণ্ট নিৰ্বাচন কৰক}
 ::msgcat::mcset as {select a file, or New… to create one} {এটা ফাইল বাছক, নতুবা সৃষ্টি কৰিবলৈ নতুন…}
+::msgcat::mcset as {select a grant first} {প্ৰথমে এটা অনুমোদন বাছনি কৰক}
 ::msgcat::mcset as {select a handler first} {প্ৰথমে এটা হেণ্ডলাৰ নিৰ্বাচন কৰক}
 ::msgcat::mcset as {select a member first} {প্ৰথমে এজন সদস্য নিৰ্বাচন কৰক}
 ::msgcat::mcset as {select a route} {এটা ৰুট নিৰ্বাচন কৰক}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset as {select an assignment first} {প্ৰথমে এটা নিযুক্তি নিৰ্বাচন কৰক}
 ::msgcat::mcset as {select an entry first} {প্ৰথমে এটা এণ্ট্ৰি নিৰ্বাচন কৰক}
 ::msgcat::mcset as {select an identity first} {প্ৰথমে এটা পৰিচয় নিৰ্বাচন কৰক}
+::msgcat::mcset as {selected task details and shell output} {নিৰ্বাচিত কামৰ বিৱৰণ আৰু শেল আউটপুট}
 ::msgcat::mcset as {selected: %s} {নিৰ্বাচিত: %s}
 ::msgcat::mcset as {send clipboard as prompt} {ক্লিপবৰ্ডক প্ৰম্পট হিচাপে পঠিয়াওক}
 ::msgcat::mcset as {send failed: %s} {পঠিয়াওঁতে বিফল: %s}
 ::msgcat::mcset as {send the message; while a turn runs, queue it as steering} {বাৰ্তাটো পঠাওক; টাৰ্ন চলি থাকোঁতে ইয়াক ষ্টিয়াৰিং হিচাপে কিউত ৰাখক}
+::msgcat::mcset as sent {পঠোৱা হ'ল}
+::msgcat::mcset as {sent to the owner's home chat} {মালিকৰ ঘৰুৱা চেটলৈ পঠোৱা হ'ল}
 ::msgcat::mcset as server চাৰ্ভাৰ
 ::msgcat::mcset as {server buffers merged} {চাৰ্ভাৰ বাফাৰ একত্ৰিত}
 ::msgcat::mcset as {server buffers separate} {চাৰ্ভাৰ বাফাৰ পৃথক}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset as {settings, one key = value per line} {ছেটিংছ, প্ৰতিটো শাৰীত এক key = value}
 ::msgcat::mcset as {setup_done marker NOT saved: %s} {setup_done মাৰ্কাৰ ছেভ হোৱা নাই: %s}
 ::msgcat::mcset as {shell %1$s finished} {শ্বেল %1$s শেষ হ'ল}
-::msgcat::mcset as shells শ্বেল
+::msgcat::mcset as {shells, monitors and subagents} {শেল, নিৰীক্ষক আৰু সাবএজেণ্ট}
 ::msgcat::mcset as shells_header {বেকগ্ৰাউণ্ড শ্বেল:}
 ::msgcat::mcset as shells_none {(কোনো বেকগ্ৰাউণ্ড শ্বেল নাই — /background <cmd> এটা আৰম্ভ কৰে)}
 ::msgcat::mcset as {show current configuration} {বৰ্তমান কনফিগাৰেচন দেখুৱাওক}
 ::msgcat::mcset as {show every key in this mode} {এই ম'ডত সকলো কী দেখুৱাওক}
 ::msgcat::mcset as {show or hide the session list} {ছেছন তালিকা দেখুৱাওক বা লুকুৱাওক}
 ::msgcat::mcset as {show or switch model (alias | model@provider | custom:<prov>)} {মডেল দেখুৱাওক বা সলনি কৰক (alias | model@provider | custom:<prov>)}
+::msgcat::mcset as {show selected shell output} {নিৰ্বাচিত শেলৰ আউটপুট দেখুৱাওক}
 ::msgcat::mcset as {show short messages} {চুটি বাৰ্তা দেখুওৱা}
 ::msgcat::mcset as {show the model's reasoning blocks (same as /reasoning)} {মডেলৰ ৰিজনিং ব্লকবোৰ দেখুৱাওক (/reasoning ৰ দৰেই)}
 ::msgcat::mcset as {show unclaimed} {দাবীহীন দেখুৱাওক}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset as spend ব্যয়
 ::msgcat::mcset as {split: %s} {বিভক্ত: %s}
 ::msgcat::mcset as {ssh to %1$s failed: %2$s} {%1$s লৈ ssh বিফল: %2$s}
+::msgcat::mcset as {stale — no heartbeat within the threshold} {পুৰণি — নিৰ্ধাৰিত সময়সীমাৰ ভিতৰত কোনো হাৰ্টবিট নাই}
+::msgcat::mcset as {standing global and session permission grants} {স্থায়ী গ্ল'বেল আৰু ছেছন অনুমতি অনুমোদন}
 ::msgcat::mcset as state অৱস্থা
 ::msgcat::mcset as {state       never reached} {অৱস্থা       কেতিয়াও উপনীত হোৱা নাই}
 ::msgcat::mcset as {state       reachable} {অৱস্থা       অভিগম্য}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset as {stored in the encrypted vault (%1$s): %2$s} {এনক্ৰিপ্ট কৰা ভল্টত ৰখা হ'ল (%1$s): %2$s}
 ::msgcat::mcset as {stream handler: %s} {ষ্ট্ৰীম হেণ্ডলাৰ: %s}
 ::msgcat::mcset as {subagent %1$s finished} {সাবএজেণ্ট %1$s শেষ হ'ল}
-::msgcat::mcset as subagents সাবএজেণ্ট
 ::msgcat::mcset as subagents_header {চলি থকা সাবএজেণ্টবোৰ:}
 ::msgcat::mcset as subagents_none {(কোনো চলি থকা সাবএজেণ্ট নাই — /btw <prompt> এটা আৰম্ভ কৰে, বা মডেলে delegate_task ব্যৱহাৰ কৰে)}
 ::msgcat::mcset as {suspend failed: %{e}} {স্থগিত বিফল: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset as {switch the selected skill off} {নিৰ্বাচিত দক্ষতাটো অফ কৰক}
 ::msgcat::mcset as {switch the selected skill on} {নিৰ্বাচিত দক্ষতাটো অন কৰক}
 ::msgcat::mcset as {switch to the %s tab} {%s টেবলৈ সলনি কৰক}
+::msgcat::mcset as {sync requested: %s} {ছিংক অনুৰোধ কৰা হ'ল: %s}
 ::msgcat::mcset as {tab 1} {টেব 1}
 ::msgcat::mcset as {tab 2} {টেব 2}
 ::msgcat::mcset as {tab 3} {টেব 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset as tasks_none {(কোনো চলি থকা কাম নাই)}
 ::msgcat::mcset as tasks_not_found {এনে কোনো কাম নাই: %{id}}
 ::msgcat::mcset as tasks_not_running {কাম %{id} ইতিমধ্যে শেষ হৈছে}
-::msgcat::mcset as {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset as {tcl-lsp: event stream unavailable: %s} {tcl-lsp: ইভেণ্ট ষ্ট্ৰীম অনুপলব্ধ: %s}
-::msgcat::mcset as {tcl-lsp: gateway would not start it: %s} {tcl-lsp: গেটৱেই ইয়াক আৰম্ভ নকৰিলে: %s}
-::msgcat::mcset as {tcl-lsp: not started on the gateway — %s} {tcl-lsp: গেটৱেত আৰম্ভ হোৱা নাই — %s}
 ::msgcat::mcset as {that buffer is not split} {সেই বাফাৰটো বিভক্ত নহয়}
 ::msgcat::mcset as {the %s plan} {%s পৰিকল্পনা}
 ::msgcat::mcset as {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {API key ক্ষেত্ৰখনত এটা এনভাইৰনমেণ্ট ভেৰিয়েবলৰ NAME লোৱা হয় (%{example}ৰ দৰে), নিজে key নহয় — keyটো লুকুৱা ক্ষেত্ৰখনলৈ যায়}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset as {the gateway answered without a report} {গেটৱেই ৰিপ'ৰ্ট নোহোৱাকৈ উত্তৰ দিলে}
 ::msgcat::mcset as {the model/provider pair is incomplete — the gateway will not route until both are present} {মডেল/প্ৰভাইডাৰ যোৰা অসম্পূৰ্ণ — দুয়োটা নথকালৈকে গেটৱেয়ে ৰাউট নকৰে}
 ::msgcat::mcset as {the options changed, so that is a fresh preview — press “Write it” again to write it} {পছন্দসমূহ সলনি হৈছে, গতিকে এইটো নতুন প্ৰাকদৰ্শন — লিখিবলৈ “Write it” আকৌ টিপক}
+::msgcat::mcset as {the peer has not been sent this vault yet} {এই ভল্টটো এতিয়াও পীয়াৰলৈ পঠোৱা হোৱা নাই}
+::msgcat::mcset as {the peer holds this vault} {পীয়াৰৰ ওচৰত এই ভল্ট আছে}
 ::msgcat::mcset as {the primary route is \[model\] provider/default — change it there, not here} {প্ৰাথমিক ৰুট হৈছে \[model\] provider/default — সেই ঠাইত সলনি কৰক, ইয়াত নহয়}
 ::msgcat::mcset as {the provider/model route this session sends to} {এই ছেছনে পাঠোৱা প্ৰভাইডাৰ/মডেল ৰুট}
 ::msgcat::mcset as {the same, on the privileged path (owner only)} {একেই, বিশেষাধিকাৰ পথেৰে (কেৱল owner)}
 ::msgcat::mcset as {the selected entry (edit, then Save)} {নিৰ্বাচিত এণ্ট্ৰি (সম্পাদনা, তাৰপিছত Save)}
+::msgcat::mcset as {the server stopped: %s} {চাৰ্ভাৰ বন্ধ হ'ল: %s}
 ::msgcat::mcset as {the synthwave splash} {synthwave আদৰণি পৰ্দা}
 ::msgcat::mcset as {the text after the name was NOT sent anywhere — type the value into the masked field} {নামৰ পিছৰ লেখা ক'লৈকো পঠিওৱা হোৱা নাই — মানটো লুকুৱাই ৰখা ঘৰত টাইপ কৰক}
 ::msgcat::mcset as {the transcript} ট্ৰেন্সক্ৰিপ্ট
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset as thinking… {চিন্তা কৰি আছে…}
 ::msgcat::mcset as {thinking… (%s)} {চিন্তা কৰি আছে… (%s)}
 ::msgcat::mcset as {this file's revisions, their diffs, and restore} {এই ফাইলৰ সংশোধনবোৰ, সেইবোৰৰ পাৰ্থক্য, আৰু পুনৰুদ্ধাৰ}
+::msgcat::mcset as {this gateway} {এই গেটৱে}
 ::msgcat::mcset as {this gateway has no Tcl interpreter} {এই গেটৱেত Tcl ইন্টাৰপ্ৰেটাৰ নাই}
 ::msgcat::mcset as {this list} {এই তালিকা}
+::msgcat::mcset as {this node has no vault} {এই ন'ডত কোনো ভল্ট নাই}
 ::msgcat::mcset as {this route} {এই ৰুট}
 ::msgcat::mcset as {this session} {এই ছেছন}
 ::msgcat::mcset as {this session follows the default language again (%{def})} {এই ছেছনে পুনৰ ডিফল্ট ভাষা মানি চলিছে (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset as {transcript finalization failed: %s} {ট্ৰান্সক্ৰিপ্টৰ সামৰণ বিফল হ'ল: %s}
 ::msgcat::mcset as {transcript refetched} {ট্ৰান্সক্ৰিপ্ট পুনৰ আহৰণ হ'ল}
 ::msgcat::mcset as {transcript — arrows to read, %s for composer} {ট্ৰান্সক্ৰিপ্ট — পঢ়িবলৈ কাঁড়, কম্প'জাৰৰ বাবে %s}
+::msgcat::mcset as {translate text with the dedicated translation model, without an agent turn} {এজেণ্ট টাৰ্ন নকৰাকৈ সমৰ্পিত অনুবাদ মডেলৰ সৈতে টেক্সট অনুবাদ কৰক}
+::msgcat::mcset as {translation result} {অনুবাদৰ ফলাফল}
 ::msgcat::mcset as {trigger %1$s %2$sd} {ট্ৰিগাৰ %1$s %2$sd}
 ::msgcat::mcset as {trigger created} {ট্ৰিগাৰ সৃষ্টি হ'ল}
 ::msgcat::mcset as {trigger updated} {ট্ৰিগাৰ আপডেট হ'ল}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset as {usage: /steer <instruction>} {ব্যৱহাৰ: /steer <instruction>}
 ::msgcat::mcset as used ব্যৱহৃত
 ::msgcat::mcset as user ব্যৱহাৰকৰ্তা
+::msgcat::mcset as {user copy} {ব্যৱহাৰকৰ্তা কপি}
 ::msgcat::mcset as {user identities, one per line} {ব্যৱহাৰকৰ্তা পৰিচয়, প্ৰতিটো শাৰীত এটা}
 ::msgcat::mcset as {user name} {ব্যৱহাৰকৰ্তাৰ নাম}
 ::msgcat::mcset as {user profile} {ব্যৱহাৰকাৰীৰ প্ৰফাইল}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset as {value (TOML: 5, true, "text", ["a","b"])} {মান (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset as veles veles
 ::msgcat::mcset as {veles editor} {veles এডিটৰ}
+::msgcat::mcset as {veles fleet: node %{node} is failing — %{detail}} {veles ফ্লীট: ন'ড %{node} বিফল হৈ আছে — %{detail}}
+::msgcat::mcset as {veles fleet: node %{node} is stale — %{detail}} {veles ফ্লীট: ন'ড %{node} পুৰণি হৈ গৈছে — %{detail}}
+::msgcat::mcset as {veles fleet: node %{node} recovered (it was %{was})} {veles ফ্লীট: ন'ড %{node} সুস্থ হৈ উঠিছে (আগে %{was} আছিল)}
 ::msgcat::mcset as {veles · keyboard help (bindings: %s)} {veles · কীব'ৰ্ড সহায় (bindings: %s)}
 ::msgcat::mcset as {veles · touch help} {veles · স্পৰ্শ সহায়}
 ::msgcat::mcset as {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset as widgets উইজেটসমূহ
 ::msgcat::mcset as {will be stored in the encrypted vault} {এনক্ৰিপ্ট কৰা ভল্টত ৰখা হ'ব}
 ::msgcat::mcset as {wire protocol} {ৱায়াৰ প্ৰটোকল}
+::msgcat::mcset as {without force to} {জোৰ নকৰাকৈ …লৈ}
 ::msgcat::mcset as {wizard language} {উইজাৰ্ডৰ ভাষা}
 ::msgcat::mcset as {wizard language: %s} {উইজাৰ্ডৰ ভাষা: %s}
 ::msgcat::mcset as {write failed: %s} {লিখা বিফল: %s}
 ::msgcat::mcset as {write grants that still expire (the expiry is dropped — a config line cannot expire)} {এতিয়াও ম্যাদ থকা grants লিখক (ম্যাদ বাদ দিয়া হয় — config শাৰীৰ ম্যাদ উকলিব নোৱাৰে)}
 ::msgcat::mcset as {write the entries back} {এণ্ট্ৰিসমূহ আকৌ লিখক}
 ::msgcat::mcset as {write the store's runtime rules into config.toml} {ষ্ট'ৰৰ ৰানটাইম নিয়মসমূহ config.toml ত লিখক}
+::msgcat::mcset as {write the whole extension from its purpose, as a reviewed preview} {ইয়াৰ উদ্দেশ্যৰ পৰা গোটেই এক্সটেনশ্যন লিখক, পৰ্যালোচনা কৰা পূৰ্বদৰ্শন হিচাপে}
 ::msgcat::mcset as {write these values into config.toml as the defaults} {এই মানসমূহ ডিফল্ট হিচাপে config.toml ত লিখক}
 ::msgcat::mcset as writing লিখা
 ::msgcat::mcset as {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {প্ৰথম [acl] মালিক লিখিলে এই গেটৱে curated মোডলৈ যায়: ডিফল্ট ভূমিকা guest (fail-closed) হয় আৰু এডাপ্টাৰৰ অনুমতি তালিকা আস্থাৰ সীমা হৈ নাথাকে}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset as {▲ VELES — neon impressionism} {▲ VELES — নীঅন প্ৰভাৱবাদ}
 ::msgcat::mcset as {▲ earlier} {▲ আগৰ}
 ::msgcat::mcset as {▼ later} {▼ পিছৰ}
+::msgcat::mcset as {▾ Cluster registry} {▾ ক্লাষ্টাৰ ৰেজিষ্ট্ৰী}
 ::msgcat::mcset as {▾ new output — follow} {▾ নতুন আউটপুট — অনুসৰণ}
 ::msgcat::mcset as {○ unattached} {○ সংলগ্ন নহয়}
 ::msgcat::mcset as {● %1$s — %2$s} {● %1$s — %2$s}

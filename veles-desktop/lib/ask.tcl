@@ -425,7 +425,12 @@ proc ::vask::show {d} {
             pack $w.btns.l -side left -padx {0 4}
             ttk::entry $w.btns.e
             pack $w.btns.e -side left -fill x -expand 1
-            bind $w.btns.e <Return> [list ::vask::_answer_note $id $w.btns.e]
+            # Return here is OK: _commit folds the note into q1 with
+            # the picked scope. A bare-note answer would be a refusal
+            # that drops the scope, and without `break` the toplevel's
+            # Return would then run _commit on the destroyed dialog
+            # (review finding approvals-1).
+            bind $w.btns.e <Return> "[list ::vask::_commit $id]; break"
         }
         ttk::button $w.btns.ok -text [::vi18n::mc {OK}] \
             -command [list ::vask::_commit $id]

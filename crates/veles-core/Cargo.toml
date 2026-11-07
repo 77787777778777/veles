@@ -163,7 +163,8 @@ rusqlite = { version = "0.31" }
 # The platform layer's Windows bodies (src/platform/windows.rs): job
 # objects for process trees and memory limits, a named pipe per process
 # for the local IPC, the loader's module table, DACLs on private files,
-# the console's echo bit. Nothing else in core names a Win32 call.
+# the console's echo bit, the per-user registry keys browsers find native
+# messaging hosts by. Nothing else in core names a Win32 call.
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "0.59", features = [
     "Win32_Foundation",
@@ -171,10 +172,15 @@ windows-sys = { version = "0.59", features = [
     "Win32_Security_Authorization",
     "Win32_Storage_FileSystem",
     "Win32_System_Console",
+    # ConnectNamedPipe's OVERLAPPED. It came only through feature
+    # unification with other crates, so `cargo test -p veles-core` alone
+    # did not compile on Windows (HANDOFF pitfall 107).
+    "Win32_System_IO",
     "Win32_System_JobObjects",
     "Win32_System_LibraryLoader",
     "Win32_System_Pipes",
     "Win32_System_ProcessStatus",
+    "Win32_System_Registry",
     "Win32_System_Threading",
 ] }
 

@@ -221,6 +221,81 @@ dict for {_loc _info} $_cc {
 }
 ok "the check read every shipped locale" {[dict size $_cc] == [llength [::vi18n::available]] - 1}
 
+# The seam between the two catalogs: a row the desktop translated and
+# the engine can reach must be in the engine's .yml too, or the TUI,
+# Telegram and IRC show English where the desktop does not (/translate
+# and /fleet's help shipped that way in all 46 locales).
+puts "── the engine catalogs carry what the desktop translated (i18n-sync.sh writes them)"
+set _engine [::i18ncheck::engine_keys [file normalize [file join $_dir .. ..]]]
+ok "the engine key walk found the Rust tree" {[dict size $_engine] > 1000}
+set _seam [::i18ncheck::seam [file normalize [file join $_dir .. ..]] [file join $_dir .. msgs] $_engine]
+dict for {_loc _gaps} $_seam {
+    if {[llength $_gaps]} { puts "      $_loc: [llength $_gaps] missing, first [list [lindex $_gaps 0 0]]" }
+    ok "$_loc.yml carries the desktop's engine-reachable translations" {[llength $_gaps] == 0}
+}
+ok "the seam check read every shipped locale" {[dict size $_seam] == [llength [::vi18n::available]] - 1}
+
+# The other direction: a .yml row whose key neither the engine nor the
+# desktop uses any more. msg2yml used to keep every row it found, so a
+# round that reworded a key left the old one in all 46 .yml files and
+# veles-core's catalog_keys_and_code_do_not_drift went red (0.2.0: the
+# Max/Ultra note and the old /fleet help line). A scratch tree with one
+# kept literal, one kept desktop key and one dead row; msg2yml drops the
+# dead row and leaves the other two.
+source [file join $_dir .. .. scripts i18n-msg2yml.tcl]
+set _sroot [file join $_tmp msg2yml-root]
+file mkdir [file join $_sroot crates veles-core src] [file join $_sroot crates veles-core locales] \
+    [file join $_sroot veles-desktop msgs]
+set _fh [open [file join $_sroot crates veles-core src a.rs] w]
+puts $_fh {fn f() -> &'static str { "engine literal" }}
+close $_fh
+set _fh [open [file join $_sroot crates veles-core locales en.yml] w]
+puts $_fh "_version: 1"
+close $_fh
+set _fh [open [file join $_sroot crates veles-core locales de.yml] w]
+fconfigure $_fh -encoding utf-8
+puts $_fh "# header\n_version: 1\n\"desktop key\": \"Desktop-Schlüssel\"\n\"engine literal\": \"Engine-Literal\"\n\"a reworded key\": \"Alter Wortlaut\""
+close $_fh
+set _fh [open [file join $_sroot veles-desktop msgs en.msg] w]
+puts $_fh {::msgcat::mcset en {desktop key} {desktop key}}
+close $_fh
+set _fh [open [file join $_sroot veles-desktop msgs de.msg] w]
+fconfigure $_fh -encoding utf-8
+puts $_fh {::msgcat::mcset de {desktop key} {Desktop-Schlüssel}}
+close $_fh
+::i18ncheck::msg2yml $_sroot
+set _srows [::i18ncheck::load_yml [file join $_sroot crates veles-core locales de.yml]]
+ok "msg2yml drops a .yml row no surface uses any more" {![dict exists $_srows {a reworded key}]}
+ok "and keeps the engine literal and the desktop key" {
+    [dict exists $_srows {engine literal}] && [dict exists $_srows {desktop key}]
+}
+ok "and the file's header" {
+    [string match "# header\n_version: 1\n*" [::i18ncheck::_read [file join $_sroot crates veles-core locales de.yml]]]
+}
+# The flake fileset copies veles-desktop as desktop/. Pass the copied
+# catalog directory instead of making the helper look for veles-desktop/
+# under /build (TR-6: the seam check above already honors this argument).
+set _stale [::i18ncheck::stale_yml_rows [file normalize [file join $_dir .. ..]] $_engine [file join $_dir .. msgs]]
+dict for {_loc _keys} $_stale {
+    if {[llength $_keys]} { puts "      $_loc: [llength $_keys] unused, first [list [lindex $_keys 0]]" }
+    ok "$_loc.yml has no row no surface uses (i18n-sync.sh drops them)" {[llength $_keys] == 0}
+}
+
+# The translation driver's default model (USER 2026-11-04: DeepSeek V4.1
+# Flash for translations). Its pool used to mix in qwen and kimi, so a
+# round reported as DeepSeek came from three models.
+set _driver [file normalize [file join $_dir .. .. scripts i18n-translate-keys.sh]]
+set _pool {}
+catch {
+    set _pool [exec env -u I18N_POOL -u I18N_LANES I18N_POOL_ONLY=1 bash $_driver 2>@1]
+}
+set _lanes [split [string trim $_pool] \n]
+ok "every default translation lane is deepseek-v4.1-flash-1017" {
+    [llength $_lanes] >= 1 &&
+    [llength [lsearch -all -inline -not -exact $_lanes \
+        {ali-token-plan-personal deepseek-v4.1-flash-1017}]] == 0
+}
+
 puts "── the swap switches the running app"
 set now [::vi18n::use de]
 ok "::vi18n::use installs the locale" {$now eq "de" && [::vi18n::current] eq "de"}
@@ -916,6 +991,40 @@ ok "every shipped locale has an endonym" {[llength $_noname] == 0}
 
 file delete -force $_tmp
 puts ""
+
+puts "── the translation script gate distinguishes kept names from English"
+# `%1$s` and `language server` can be kept names or pure placeholders;
+# neither supplies letters in a locale's own script. The 0.2.0 DeepSeek
+# round rejected those legitimate rows while still correctly refusing an
+# entirely Latin translation. Strip only the explicitly kept vocabulary,
+# never ordinary English, before applying the own-script requirement.
+set _script_gate [file join $_dir .. .. scripts i18n-script-check.tcl]
+set _script_tmp [file join $_tdir "i18n-script-gate-[pid]"]
+file mkdir $_script_tmp
+proc _script_gate_row {loc row} {
+    set f [file join $::_script_tmp "$loc.tsv"]
+    set h [open $f w]
+    fconfigure $h -encoding utf-8
+    puts $h $row
+    close $h
+    set rc [catch {exec tclsh $::_script_gate $loc $f >@ stdout 2>@ stderr} err]
+    file delete $f
+    return $rc
+}
+set _placeholder {%1$s: %2$s → %3$s %4$s (%5$s)}
+ok "a placeholder-only row needs no native-script letters" \
+    {[_script_gate_row as "${_placeholder}\t${_placeholder}"] == 0}
+set _zh_placeholder {%1$s：%2$s → %3$s %4$s（%5$s）}
+ok "full-width Chinese punctuation around placeholders is not prose" \
+    {[_script_gate_row zh_hans "${_placeholder}\t${_zh_placeholder}"] == 0}
+ok "a documented technical term may stay Latin" \
+    {[_script_gate_row bg "language server\tlanguage server"] == 0}
+ok "ordinary English is still refused in a non-Latin locale" \
+    {[_script_gate_row bg "Check source\tCheck source"] == 1}
+ok "a wrong foreign script is still refused" \
+    {[_script_gate_row sr_latn "failed\tнеуспех"] == 1}
+file delete -force $_script_tmp
+
 # ── a 4-byte character on a 4 KiB boundary ─────────────────────────
 # Tcl 8.6 reads a file in 4 KiB buffers and mis-decodes a 4-byte UTF-8
 # character (U+10000 and up) whose lead byte sits at 4093 mod 4096; a

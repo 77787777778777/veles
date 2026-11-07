@@ -51,6 +51,18 @@ impl PeerBackoff {
             .remove(key);
     }
 
+    /// The failures recorded for `key` and how long until it may be
+    /// tried again (zero once the wait is over). None = no failure since
+    /// the last success. Read-only: the fleet status shows it, nothing
+    /// decides on it.
+    pub fn status(&self, key: &str, now: Instant) -> Option<(u32, Duration)> {
+        self.state
+            .lock()
+            .unwrap_or_else(|p| p.into_inner())
+            .get(key)
+            .map(|(n, next)| (*n, next.saturating_duration_since(now)))
+    }
+
     /// Forget every key that names `peer` (the `<purpose>:<peer>` keys),
     /// e.g. when that peer is heard from again.
     pub fn reset_peer(&self, peer: &str) {
@@ -100,6 +112,23 @@ mod tests {
 
         b.succeeded("storesync:vps");
         assert!(b.ready("storesync:vps", t1), "a success clears it");
+    }
+
+    #[test]
+    fn status_reports_failures_and_the_remaining_wait() {
+        let b = PeerBackoff::default();
+        let base = Duration::from_secs(30);
+        let t0 = Instant::now();
+        assert_eq!(b.status("memsync:vps", t0), None);
+        b.failed("memsync:vps", base, t0);
+        assert_eq!(b.status("memsync:vps", t0), Some((1, base * 2)));
+        assert_eq!(
+            b.status("memsync:vps", t0 + base * 3),
+            Some((1, Duration::ZERO)),
+            "a wait that is over reads zero, the failure count stays"
+        );
+        b.succeeded("memsync:vps");
+        assert_eq!(b.status("memsync:vps", t0), None);
     }
 
     #[test]

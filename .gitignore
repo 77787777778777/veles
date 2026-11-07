@@ -9,6 +9,10 @@ target/
 # direnv cache
 /.direnv
 
+# Agent-local toolchain/test leftovers (R5; not project source)
+/.rustup/
+/veles-desktop/lib/.insttest-home/
+
 # Secrets (keys live in ~/.hermes/.env, never here)
 .env
 .env.*

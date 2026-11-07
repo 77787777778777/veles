@@ -186,7 +186,11 @@ fn tcl_path_equals(code: &str, expected: &str) -> String {
 }
 
 fn final_line(text: &str) -> Option<&str> {
-    text.lines().map(str::trim).rfind(|line| !line.is_empty())
+    // The Tcl result is stdout. Gateway identity is deliberately stderr
+    // (tcl_identity.rs); Command::output display order is not a protocol.
+    text.lines()
+        .map(str::trim)
+        .rfind(|line| !line.is_empty() && !line.starts_with("gateway: "))
 }
 
 #[test]

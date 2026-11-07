@@ -102,6 +102,18 @@ pub struct TaskRecord {
 }
 
 impl TaskRecord {
+    fn json(&self) -> Value {
+        json!({
+            "id": self.id,
+            "kind": self.kind.as_str(),
+            "label": self.label,
+            "session": self.session,
+            "status": self.status.as_str(),
+            "elapsed_s": self.elapsed_secs(),
+            "child_session": self.child_session,
+        })
+    }
+
     /// Seconds since start, or the full run time once finished.
     pub fn elapsed_secs(&self) -> u64 {
         let end = self.finished.unwrap_or_else(SystemTime::now);
@@ -240,24 +252,28 @@ impl TaskRegistry {
         });
     }
 
-    pub fn snapshot(&self) -> Value {
-        let tasks: Vec<Value> = self
+    pub fn snapshot_for(&self, session: &str) -> Value {
+        let tasks: Vec<&TaskRecord> = self
             .tasks
             .iter()
-            .map(|t| {
-                json!({
-                    "id": t.id,
-                    "kind": t.kind.as_str(),
-                    "label": t.label,
-                    "session": t.session,
-                    "status": t.status.as_str(),
-                    "elapsed_s": t.elapsed_secs(),
-                    // The child session id, when the kind has one (the
-                    // desktop's "attach" link rides this).
-                    "child_session": t.child_session,
-                })
-            })
+            .filter(|t| crate::shells::may_reach(session, &t.session))
             .collect();
+        json!({
+            "tasks": tasks.iter().map(|t| t.json()).collect::<Vec<_>>(),
+            "live": tasks.iter().filter(|t| t.status == TaskStatus::Running).count(),
+            "total_tracked": tasks.len(),
+        })
+    }
+
+    pub fn detail_for(&self, id: u32, session: &str) -> Option<Value> {
+        self.tasks
+            .iter()
+            .find(|t| t.id == id && crate::shells::may_reach(session, &t.session))
+            .map(TaskRecord::json)
+    }
+
+    pub fn snapshot(&self) -> Value {
+        let tasks: Vec<Value> = self.tasks.iter().map(TaskRecord::json).collect();
         json!({
             "tasks": tasks,
             "live": self.live().len(),
@@ -323,6 +339,20 @@ pub fn for_session(session: &str) -> Vec<TaskRecord> {
 
 pub fn snapshot() -> Value {
     registry().lock_ok().snapshot()
+}
+
+pub fn detail(id: u32) -> Option<Value> {
+    registry().lock_ok().get(id).map(|t| t.json())
+}
+
+/// Live and recently finished work visible to one calling session.
+pub fn snapshot_for(session: &str) -> Value {
+    registry().lock_ok().snapshot_for(session)
+}
+
+/// One task's registry details, with the same reach check as output/cancel.
+pub fn detail_for(id: u32, session: &str) -> Option<Value> {
+    registry().lock_ok().detail_for(id, session)
 }
 
 /// THE text formatter. CLI, REPL, TUI and gateway all render tasks
@@ -523,6 +553,37 @@ mod tests {
         assert_eq!(snap["live"], 1);
         assert_eq!(snap["total_tracked"], 2);
         assert_eq!(snap["tasks"][1]["kind"], "monitor");
+    }
+
+    #[test]
+    fn scoped_snapshot_keeps_finished_work_and_refuses_foreign_detail() {
+        let _g = crate::testenv::lock();
+        crate::acl::set_session_principal(
+            "sess-panel",
+            crate::acl::Principal::known("irc:panel-user", crate::acl::Role::User),
+        );
+        let mut r = TaskRegistry::new();
+        let (running, _) = r.start(TaskKind::Shell, "running", "sess-panel");
+        let (finished, _) = r.start(TaskKind::Monitor, "already fired", "sess-panel");
+        r.finish(finished, true);
+        let (foreign, _) = r.start(TaskKind::Shell, "private", "sess-other");
+        let snap = r.snapshot_for("sess-panel");
+        let ids: Vec<u64> = snap["tasks"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|t| t["id"].as_u64().unwrap())
+            .collect();
+        assert_eq!(ids, [running as u64, finished as u64]);
+        assert!(!ids.contains(&(foreign as u64)));
+        assert_eq!(snap["live"], 1);
+        assert_eq!(snap["total_tracked"], 2);
+        assert_eq!(
+            r.detail_for(running, "sess-panel").unwrap()["label"],
+            "running"
+        );
+        assert!(r.detail_for(foreign, "sess-panel").is_none());
+        crate::acl::clear_session_principal("sess-panel");
     }
 
     /// The per-kind command body (`/subagents`, `/monitors`) — the

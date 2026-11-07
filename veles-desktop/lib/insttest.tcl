@@ -73,6 +73,7 @@ namespace eval ::vchat {
 }
 
 source [file join $_dir safeexec.tcl]
+source [file join $_dir jsonfield.tcl]
 source [file join $_dir api.tcl]
 # ::vinst::path resolves the config base through ::vpaths now.
 source [file join $_dir paths.tcl]
@@ -93,6 +94,7 @@ namespace eval ::_http {
                                   ;# the HTTP code: a request can time
                                   ;# out with no code at all
     variable geturl_cb ""
+    variable throw_on ""       ;# URL substring whose geturl raises
     variable pump 0            ;# make the stub run a nested event loop
     proc reset {} {
         variable requests {}
@@ -119,6 +121,11 @@ namespace eval ::_http {
 
 proc ::http::geturl {url args} {
     lappend ::_http::requests [list $url GET]
+    # A host name that does not resolve: the real geturl raises
+    # synchronously, before any token exists.
+    if {$::_http::throw_on ne "" && [string first $::_http::throw_on $url] >= 0} {
+        ::error "couldn't open socket: Name or service not known" ;# not ::http::error, the stub below
+    }
     # ::vapi::get's REAL synchronous path ends in http::wait, i.e. a
     # NESTED EVENT LOOP — timers, clicks and queued virtual events all
     # get dispatched in the middle of a poll. Off by default (most
@@ -1010,6 +1017,373 @@ destroy .instdetail
 set ::vinstpane::R_list   .instlist
 set ::vinstpane::R_detail .instdetail
 set ::vinstpane::selected ""
+
+puts "\ncluster registry: automatic, inspectable and not implicitly SSH-managed"
+::vinstpane::build_list .instlist
+::vinstpane::build_detail .instdetail
+::vinstpane::build_ctl .instctl
+set ::vinstpane::fleet_nodes [list [dict create \
+    id node-unmanaged name {GPU worker} host worker version 0.2.0 \
+    load1 37 stale 0 endpoint http://10.0.30.9:8642 static_ip null \
+    heartbeat_at {2026-11-04 00:00:00} uptime_class always-on \
+    sessions_served 12 capabilities null replica null sync_peer null self 0]]
+::vinstpane::refresh_list
+ok "a registry node appears without a configured instance" {
+    [.instlist.list exists cluster:node-unmanaged]
+}
+ok "the cluster node carries its version and load" {
+    [.instlist.list item cluster:node-unmanaged -values] eq [list 0.2.0 {load 37} registered]
+}
+::vinstpane::_select cluster:node-unmanaged
+ok "the cluster node is inspectable" {
+    [string match "*GPU worker*" [.instdetail.body get 1.0 end]]
+}
+ok "the cluster node does not offer SSH lifecycle actions" {
+    [.instctl.start instate disabled] && [.instctl.restart instate disabled]
+}
+ok "the cluster node cannot masquerade as an attachable instance" {
+    [.instctl.attach instate disabled]
+}
+ok "a node without a sync peer cannot request a guessed sync" {
+    [.instctl.sync instate disabled] && [.instctl.apply instate disabled]
+}
+ok "a fresh node cannot be forgotten, and a remote one can be probed" {
+    [.instctl.forget instate disabled] && ![.instctl.probe instate disabled]
+}
+namespace eval ::vapp {
+    variable attached_name ""
+    proc attach {name} { set ::vapp::attached_name $name; return 1 }
+}
+rename ::vapp::attach {}
+source [file join $_dir attach.tcl]
+set fleet_node [lindex $::vinstpane::fleet_nodes 0]
+dict set fleet_node sync_peer gpu-worker
+set ::vinstpane::fleet_nodes [list $fleet_node]
+::vinstpane::_enable_buttons
+ok "a configured sync peer enables its explicit sync operation" {
+    ![.instctl.sync instate disabled]
+}
+namespace eval ::vapi {
+    variable fleet_posts {}
+    proc post_json_async {path body on_err on_ok} {
+        lappend ::vapi::fleet_posts [list $path $body]
+        {*}$on_ok [dict create result "nothing to push"]
+    }
+}
+# The confirmation prompt answers from a variable, and counts its asks.
+set ::confirm_answer 0
+set ::confirm_asked 0
+proc ::vinstpane::_confirm {message detail} {
+    incr ::confirm_asked
+    return $::confirm_answer
+}
+::vinstpane::_cluster_sync
+ok "Sync now offers the kinds this node is a peer for" {
+    [winfo exists .fleetsync] && [winfo exists .fleetsync.kstore]
+    && ![winfo exists .fleetsync.kmemory]
+}
+.fleetsync.btns.ok invoke
+ok "sync targets the registered node, not a pasted endpoint or token" {
+    $::vapi::fleet_posts eq [list [list /api/fleet/sync [dict create kind store operation push node node-unmanaged]]]
+}
+ok "a store push asks no confirmation (it only lands in the peer's inbox)" {
+    $::confirm_asked == 0 && ![winfo exists .fleetsync]
+}
+ok "the push result is shown, labelled with its kind" {
+    $::vstatus::last eq "Store sync: nothing to push"
+}
+dict set fleet_node self 1
+set ::vinstpane::fleet_nodes [list $fleet_node]
+::vinstpane::_enable_buttons
+ok "the self node can apply received offers without a push target" {
+    ![.instctl.apply instate disabled]
+}
+ok "this gateway's own row can neither be forgotten nor probed" {
+    [.instctl.forget instate disabled] && [.instctl.probe instate disabled]
+}
+set ::vinstpane::fleet_sync [dict create inbox [dict create store 1 memory 0 config 2 vault 0]]
+set ::vapi::fleet_posts {}
+::vinstpane::_cluster_apply
+ok "Apply received offers every sync kind, with what is waiting" {
+    [winfo exists .fleetsync.kstore] && [winfo exists .fleetsync.kmemory]
+    && [winfo exists .fleetsync.kconfig] && [winfo exists .fleetsync.kvault]
+    && [string match "*2 waiting*" [.fleetsync.kconfig cget -text]]
+}
+ok "only the store drain is preselected; data-changing kinds are opt-in" {
+    $::vinstpane::_sync_pick(store) == 1 && $::vinstpane::_sync_pick(config) == 0
+    && $::vinstpane::_sync_pick(vault) == 0 && $::vinstpane::_sync_pick(memory) == 0
+}
+.fleetsync.btns.ok invoke
+ok "apply received drains the local inbox, not a remote endpoint" {
+    $::vapi::fleet_posts eq [list [list /api/fleet/sync [dict create kind store operation apply]]]
+}
+# A config apply rewrites config.toml: declining the prompt sends nothing.
+set ::vapi::fleet_posts {}
+::vinstpane::_cluster_apply
+set ::vinstpane::_sync_pick(store) 0
+set ::vinstpane::_sync_pick(config) 1
+.fleetsync.btns.ok invoke
+ok "declining the confirmation sends nothing" {
+    $::confirm_asked == 1 && $::vapi::fleet_posts eq {}
+    && $::vstatus::last eq "Sync cancelled."
+}
+set ::confirm_answer 1
+::vinstpane::_cluster_apply
+set ::vinstpane::_sync_pick(store) 0
+set ::vinstpane::_sync_pick(config) 1
+.fleetsync.btns.ok invoke
+ok "a confirmed config apply carries confirm: true to the gateway" {
+    [llength $::vapi::fleet_posts] == 1
+    && [lindex $::vapi::fleet_posts 0 0] eq "/api/fleet/sync"
+    && [::vapi::_json_value [lindex $::vapi::fleet_posts 0 1]] eq
+       {{"kind": "config", "operation": "apply", "confirm": true}}
+}
+set ::confirm_answer 0
+dict set fleet_node self 0
+set ::vinstpane::fleet_nodes [list $fleet_node]
+::vinstpane::_enable_buttons
+ok "another node's Apply button stays disabled" {
+    [.instctl.apply instate disabled]
+}
+::vinst::add worker http://127.0.0.1:8642 token
+::vapi::bind_instance worker http://127.0.0.1:8642 token
+::vinstpane::_enable_buttons
+ok "a hostname-only saved gateway cannot masquerade as the selected node" {
+    [.instctl.attach instate disabled] &&
+    [::vinstpane::_cluster_gateway $fleet_node] eq ""
+}
+# FLEET-3: the cluster branch used to leave Fleet deploy in whatever
+# state the previously selected row gave it.
+.instctl.deploy configure -state normal
+::vinstpane::_enable_buttons
+ok "Fleet deploy is disabled on a cluster row with no bound saved instance, whatever the previous row left" {
+    [.instctl.deploy instate disabled]
+}
+::vinst::update worker node_id other-node
+ok "a different explicit node association is not enough" {
+    [::vinstpane::_cluster_gateway $fleet_node] eq ""
+}
+::vinst::update worker node_id node-unmanaged
+::vinstpane::_enable_buttons
+ok "an explicitly associated saved gateway is attachable" {
+    ![.instctl.attach instate disabled]
+}
+.instctl.deploy configure -state disabled
+::vinstpane::_enable_buttons
+ok "Fleet deploy is enabled on a cluster row bound to a saved instance, whatever the previous row left" {
+    ![.instctl.deploy instate disabled]
+}
+ok "cluster attach uses the associated saved gateway, not the A2A endpoint" {
+    [::vinstpane::_cluster_gateway $fleet_node] eq "worker"
+}
+::vinstpane::refresh_list
+ok "a bound registry row says which saved instance manages it" {
+    [lindex [.instlist.list item cluster:node-unmanaged -values] 2] eq "managed via worker"
+}
+# FLEET-4: the association is verified against the gateway itself.
+::_http::reset
+::_http::ok_with {{"nodes":[{"id":"node-elsewhere","self":true},{"id":"node-unmanaged","self":false}]}}
+set ::vapp::attached_name ""
+ok "attach refuses a saved gateway that is a different node" {
+    [::vinstpane::attach cluster:node-unmanaged] == 0
+    && [string match "*is node node-elsewhere, not node-unmanaged*" $::vstatus::last]
+}
+::_http::ok_with {{"nodes":[{"id":"node-unmanaged","self":true}]}}
+ok "a gateway whose own self row matches verifies" {
+    [::vinstpane::verify_node_binding worker node-unmanaged] eq ""
+}
+::_http::ok_with {{"nodes":[]}}
+ok "a gateway with no node identity cannot be verified" {
+    [string match "*cannot be verified*" [::vinstpane::verify_node_binding worker node-unmanaged]]
+}
+::_http::ok_with {{"status":"ok"}}
+set ::vinst::instances {}
+::vinst::load
+ok "the explicit node association survives the 0600 registry" {
+    [inst_field_str worker node_id] eq "node-unmanaged" &&
+    ([file attributes [::vinst::path] -permissions] & 0777) == 0600
+}
+# FLEET-4: drive the REAL editor save path, not ::vinst::update.
+proc save_form {name url node_id} {
+    return [::vinstpane::_save_entry $name [dict create name $name url $url \
+        token token host "" unit veles-gateway group "" node_id $node_id]]
+}
+ok "the editor can clear the node association" {
+    [save_form worker http://127.0.0.1:8642 ""] == 1
+    && ![dict exists [::vinst::get worker] node_id]
+    && [::vinstpane::_cluster_gateway $fleet_node] eq ""
+}
+::vinst::update worker node_id node-unmanaged
+# Add… with a name that exists replaces that entry: same save path.
+ok "re-adding a name does not inherit the old binding" {
+    [save_form worker http://127.0.0.1:9999 ""] == 1
+    && ![dict exists [::vinst::get worker] node_id]
+}
+ok "an id the attached registry does not know is refused" {
+    [save_form worker http://127.0.0.1:8642 node-typo] == 0
+    && [string match "*node-typo*" $::vstatus::last]
+    && ![dict exists [::vinst::get worker] node_id]
+}
+ok "a known registry id is saved" {
+    [save_form worker http://127.0.0.1:8642 node-unmanaged] == 1
+    && [inst_field_str worker node_id] eq "node-unmanaged"
+}
+# FLEET-13: names that collide with the tree's reserved ids.
+ok "a saved name cannot pose as a registry row or a group" {
+    [save_form cluster:x http://127.0.0.1:8642 ""] == 0
+    && [save_form g:x http://127.0.0.1:8642 ""] == 0
+    && [::vinst::get cluster:x] eq ""
+}
+::vinst::add grouped http://127.0.0.1:8643 ""
+::vinst::update grouped group cluster-registry
+ok "a saved group named cluster-registry renders beside the registry" {
+    ![catch { ::vinstpane::refresh_list }]
+    && [.instlist.list exists g:cluster-registry]
+    && [.instlist.list exists cluster:node-unmanaged]
+}
+::vinst::remove grouped
+# FLEET-6: Add… from a registry row adopts the node, guessing no target.
+set d [::vinstpane::add_defaults]
+ok "Add… from a registry row fills its name and node id, not its endpoint" {
+    [dict get $d name] eq "GPU worker" && [dict get $d node_id] eq "node-unmanaged"
+    && [dict get $d url] eq "http://127.0.0.1:8642" && [dict get $d host] eq ""
+}
+# Forget: only a stale, non-self row, and only after the prompt.
+dict set fleet_node stale 1
+set ::vinstpane::fleet_nodes [list $fleet_node]
+::vinstpane::_enable_buttons
+ok "a stale node can be forgotten" { ![.instctl.forget instate disabled] }
+set ::vapi::fleet_posts {}
+set ::confirm_asked 0
+::vinstpane::_ctl_forget
+ok "forgetting asks first, and a no sends nothing" {
+    $::confirm_asked == 1 && $::vapi::fleet_posts eq {}
+}
+set ::confirm_answer 1
+::vinstpane::_ctl_forget
+ok "a confirmed forget names the node and carries confirm: true" {
+    [lindex $::vapi::fleet_posts 0 0] eq "/api/fleet/forget"
+    && [::vapi::_json_value [lindex $::vapi::fleet_posts 0 1]] eq
+       {{"node": "node-unmanaged", "confirm": true}}
+    && [string match "Forgot node GPU worker*" $::vstatus::last]
+}
+set ::confirm_answer 0
+set ::vinstpane::selected cluster:node-unmanaged
+set ::vapi::fleet_posts {}
+::vinstpane::_ctl_probe
+ok "probe asks the gateway about the node id, nothing else" {
+    $::vapi::fleet_posts eq [list [list /api/fleet/probe [dict create node node-unmanaged]]]
+}
+# The per-kind status the gateway returns is shown, not thrown away
+# (FLEET-5: `fleet_sync` used to be set and read nowhere).
+dict set fleet_node stale 0
+dict set fleet_node sync_kinds [list memory store]
+dict set fleet_node health [dict create state failing heartbeat_age_secs 12 \
+    failing [list memory] probe null]
+dict set fleet_node sync_status [dict create \
+    memory [dict create peer gpu-worker auto true dialable true \
+        backoff [dict create failures 2 retry_in_secs 90] \
+        last [dict create at 2026-11-06T00:00:00Z ok false line {connection refused}] \
+        cursor 4 local 9 behind 5] \
+    store [dict create peer gpu-worker auto false dialable false backoff null \
+        last null cursor 10 acked 8 local 12 behind 2]]
+set ::vinstpane::fleet_nodes [list $fleet_node]
+::vinstpane::_paint_cluster_detail cluster:node-unmanaged
+::vinstpane::refresh_list
+set body [.instdetail.body get 1.0 end]
+ok "the detail shows each sync kind's peer, mode and cursor" {
+    [string match "*Memory sync with gpu-worker (automatic)*" $body]
+    && [string match "*cursor 4 of 9 (5 behind)*" $body]
+    && [string match "*Store sync with gpu-worker (manual only)*" $body]
+}
+ok "the detail shows a failing kind's last error and backoff" {
+    [string match "*last pass failed at 2026-11-06T00:00:00Z: connection refused*" $body]
+    && [string match "*2 failure(s), next automatic try in 90 s*" $body]
+}
+ok "the detail says when a peer has no dial entry" {
+    [string match "*cannot be dialed*" $body]
+}
+ok "health is shown and a failing node is red in the list" {
+    [string match "*Health: failing*" $body]
+    && [.instlist.list item cluster:node-unmanaged -tags] eq "down"
+}
+::vinst::remove worker
+set ::vinstpane::fleet_nodes {}
+destroy .instlist .instdetail .instctl
+set ::vinstpane::selected ""
+
+puts "\ncluster registry: discovered through the real poll"
+# FLEET-10(a): nothing drove refresh_fleet/_fleet_loaded before; the
+# rows were set by hand. This feeds the REAL tick a literal /api/fleet
+# body of the shape fleet_inventory_json + fleet_ops::annotate return.
+::vinstpane::build_list .instlist
+::vinstpane::build_detail .instdetail
+::vinstpane::build_ctl .instctl
+set _tab_was $::vtabs::current
+set ::vtabs::current instances
+::_http::ok_with {{"nodes":[{"id":"node-a","name":"alpha","host":"alpha-host","version":"0.2.0","uptime_class":"always-on","endpoint":"http://10.0.30.9:8642","static_ip":null,"static_ip_source":null,"gpu":null,"capabilities":null,"load1":0.5,"load_at":null,"sessions_served":3,"registered_at":"2026-11-06 00:00:00","heartbeat_at":"2026-11-06 00:00:00","self":false,"stale":false,"sync_peer":"alpha","replica":null,"health":{"state":"fresh","heartbeat_age_secs":12,"failing":[],"probe":null},"sync_kinds":["memory","store"],"sync_status":{"memory":{"peer":"alpha","auto":true,"dialable":true,"backoff":null,"last":null,"cursor":4,"local":9,"behind":5},"store":{"peer":"alpha","auto":false,"dialable":true,"backoff":null,"last":null,"cursor":10,"acked":8,"local":12,"behind":2}}}],"stale_after_secs":300,"sync":{"gossip_peers":["alpha"],"memory_peers":["alpha"],"store_peers":["alpha"],"memory_auto":true,"store_auto":false,"config_auto":false,"config_waiting":0,"inbox":{"store":1,"memory":0,"config":2,"vault":0}}}}
+::vinstpane::_poll_list_tick
+ok "the list tick asks the attached gateway for its registry" {
+    [::_http::seen /api/fleet]
+}
+# The stub never completes a transfer; finish it as http would.
+foreach tok [array names ::vapi::_async_done] { ::vapi::_get_json_async_done $tok }
+ok "the registry's nodes become rows without any configuration" {
+    [.instlist.list exists cluster:node-a]
+    && [lindex [.instlist.list item cluster:node-a -text] end] eq "alpha"
+}
+ok "the sync block is kept, not discarded" {
+    [::vapi::field [::vapi::field $::vinstpane::fleet_sync inbox] config 0] == 2
+}
+::vinstpane::_select cluster:node-a
+ok "a discovered peer node offers Sync now" {
+    ![.instctl.sync instate disabled]
+}
+# A memory-only peer (no store peer at all) still gets Sync now, and the
+# dialog offers exactly its kind.
+set _memnode [lindex $::vinstpane::fleet_nodes 0]
+dict set _memnode sync_peer null
+dict set _memnode sync_kinds [list memory]
+set ::vinstpane::fleet_nodes [list $_memnode]
+::vinstpane::_enable_buttons
+ok "a memory-only sync peer offers Sync now" {
+    ![.instctl.sync instate disabled]
+}
+::vinstpane::_cluster_sync
+ok "its Sync now offers memory, not a guessed store push" {
+    [winfo exists .fleetsync.kmemory] && ![winfo exists .fleetsync.kstore]
+}
+catch { destroy .fleetsync }
+after cancel $::vinstpane::list_after
+
+# FLEET-2: a host name that stops resolving makes http::geturl raise
+# synchronously. That used to unwind the tick before it re-armed.
+set ::_http::throw_on /api/fleet
+set ::vinstpane::list_after ""
+::_http::reset
+::vinst::add lohealth http://127.0.0.1:8642 ""
+::vapi::bind_instance lohealth http://127.0.0.1:8642 ""
+ok "a synchronous registry failure does not escape the tick" {
+    ![catch { ::vinstpane::_poll_list_tick }]
+}
+ok "the list poll is re-armed after a synchronous failure" {
+    $::vinstpane::list_after ne "" && $::vinstpane::list_after in [after info]
+}
+ok "health still polls when the registry fetch cannot even start" {
+    [::_http::seen http://127.0.0.1:8642/api/health]
+}
+ok "an unreachable registry is an empty one, not stale rows" {
+    $::vinstpane::fleet_nodes eq {} && ![.instlist.list exists cluster:node-a]
+}
+after cancel $::vinstpane::list_after
+set ::_http::throw_on ""
+::vinst::remove lohealth
+set ::vtabs::current $_tab_was
+set ::vinstpane::fleet_nodes {}
+set ::vinstpane::fleet_sync {}
+destroy .instlist .instdetail .instctl
+set ::vinstpane::selected ""
+::_http::ok_with {{"status":"ok"}}
 
 # ── Part 6: attach ──────────────────────────────────────────────────
 

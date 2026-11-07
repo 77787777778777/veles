@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset bg {%1$s %2$s failed: %3$s} {%1$s %2$s се провали: %3$s}
 ::msgcat::mcset bg {%1$s %2$s over ssh…} {%1$s %2$s по ssh…}
 ::msgcat::mcset bg {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset bg {%1$s (%2$s waiting)} {%1$s (%2$s чакат)}
 ::msgcat::mcset bg {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  reasoning %3$s}
 ::msgcat::mcset bg {%1$s = %2$s here} {%1$s = %2$s тук}
 ::msgcat::mcset bg {%1$s NOT saved: %2$s} {%1$s НЕ е запазено: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset bg {%1$s every cron job on %2$s?} {%1$s всяка cron задача на %2$s?}
 ::msgcat::mcset bg {%1$s failed: %2$s} {%1$s се провали: %2$s}
 ::msgcat::mcset bg {%1$s in / %2$s out / %3$s calls} {%1$s вход / %2$s изход / %3$s извиквания}
+::msgcat::mcset bg {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s е възел %2$s, а не %3$s. Коригирайте неговия node id в Редактиране….}
 ::msgcat::mcset bg {%1$s is not a whole number} {%1$s не е цяло число}
+::msgcat::mcset bg {%1$s is reachable (%2$s ms).} {%1$s е достъпен (%2$s ms).}
 ::msgcat::mcset bg {%1$s is set to something this box cannot edit (%2$s)} {%1$s е зададено на нещо, което тази машина не може да редактира (%2$s)}
+::msgcat::mcset bg {%1$s is unreachable: %2$s} {%1$s е недостъпен: %2$s}
 ::msgcat::mcset bg {%1$s of %2$s characters} {%1$s от %2$s символа}
 ::msgcat::mcset bg {%1$s of %2$s sessions} {%1$s от %2$s сесии}
 ::msgcat::mcset bg {%1$s of %2$s skills reach the prompt} {%1$s от %2$s умения достигат до prompt-а}
 ::msgcat::mcset bg {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s на %2$s: %3$d ок, %4$d се провалиха}
+::msgcat::mcset bg {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s не докладва самоличност на клъстерен възел, затова не може да бъде потвърден като %2$s.}
+::msgcat::mcset bg {%1$s sync failed: %2$s} {Синхронизацията на %1$s се провали: %2$s}
+::msgcat::mcset bg {%1$s sync with %2$s (%3$s)} {Синхронизация на %1$s с %2$s (%3$s)}
+::msgcat::mcset bg {%1$s sync: %2$s} {Синхронизация на %1$s: %2$s}
 ::msgcat::mcset bg {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset bg {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter за скок, Esc за затваряне}
 ::msgcat::mcset bg {%1$s — revision r%2$s} {%1$s — версия r%2$s}
 ::msgcat::mcset bg {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset bg {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset bg {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset bg {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset bg {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: последните %2$s от %3$s реда, които неговият gateway пази в паметта; тайните са заличени на този възел.}
 ::msgcat::mcset bg {%d MCP server(s) configured} {%d MCP сървъра са конфигурирани}
 ::msgcat::mcset bg {%d entries} {%d записа}
+::msgcat::mcset bg {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {%d файл(а) от разширението ще бъдат записани точно както са прегледани. Ако някой от тях се е променил след прегледа, нищо не се записва. Не се прави commit, push или PR.}
 ::msgcat::mcset bg {%d handler(s) registered} {%d handlers са регистрирани}
 ::msgcat::mcset bg {%d identities · %d users} {%d самоличности · %d потребители}
 ::msgcat::mcset bg {%d models — pick one from the list or type a name.} {%d модела — изберете един от списъка или въведете име.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset bg {%d shown} {%d показани}
 ::msgcat::mcset bg {%s %s%%} {%s %s%%}
 ::msgcat::mcset bg {%s (%s)} {%s (%s)}
+::msgcat::mcset bg {%s (referral)} {%s (реферал)}
+::msgcat::mcset bg {%s (stale)} {%s (застоял)}
 ::msgcat::mcset bg {%s (this session)} {%s (тази сесия)}
 ::msgcat::mcset bg {%s GB free of %s GB} {%s ГБ свободни от %s ГБ}
 ::msgcat::mcset bg {%s already exists — open it from the list} {%s вече съществува — отвори го от списъка}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset bg {%s comes from config.toml [acl] — edit there} {%s идва от config.toml [acl] — редактирайте там}
 ::msgcat::mcset bg {%s config change(s) wait for you — /configsync} {%s промени в конфигурацията чакат вас — /configsync}
 ::msgcat::mcset bg {%s did not become healthy within 30s} {%s не стана healthy в рамките на 30s}
+::msgcat::mcset bg {%s done} {%s готово}
 ::msgcat::mcset bg {%s failed: %s} {%s не успя: %s}
 ::msgcat::mcset bg {%s is already split} {%s вече е разделен}
 ::msgcat::mcset bg {%s is the language in use — pick another one to swap with} {%s е езикът в употреба — избери друг за размяна}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset bg {%s opens the command palette in %s.} {%s отваря командната палитра в %s.}
 ::msgcat::mcset bg {%s session(s)} {%s сесии}
 ::msgcat::mcset bg {%s skill(s):} {%s умение(я):}
+::msgcat::mcset bg {%s standing grants} {%s постоянни права}
 ::msgcat::mcset bg {%s takes no completable arguments} {%s не приема довършими аргументи}
 ::msgcat::mcset bg {%s takes on or off} {%s приема on или off}
 ::msgcat::mcset bg {%s —} {%s —}
+::msgcat::mcset bg {%s — changes data, asks to confirm} {%s — променя данни, иска потвърждение}
 ::msgcat::mcset bg {%s — deleted; History… can restore it} {%s — изтрит; История… може да го възстанови}
 ::msgcat::mcset bg {%s — new: type, then Save} {%s — нов: пиши, после Запази}
 ::msgcat::mcset bg {%s — not attached; press Attach in the Instances tab} {%s — не е прикачен; натиснете Attach в раздела Instances}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset bg {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} е включен без раздел [acl]: докато %{var} в .env не посочи кой може да пише на бота, всеки, който го достигне, се смята за собственик — с всички инструменти}
 ::msgcat::mcset bg (%{route}) (%{route})
 ::msgcat::mcset bg {(CLI redraws automatically)} {(CLI се прерисува автоматично)}
+::msgcat::mcset bg {(binary; not publishable)} {(двоичен; не може да се публикува)}
 ::msgcat::mcset bg {(clipboard empty or no clipboard tool)} {(клипбордът е празен или няма инструмент за клипборд)}
 ::msgcat::mcset bg (deleted) (изтрит)
 ::msgcat::mcset bg (empty) (празно)
 ::msgcat::mcset bg {(no sessions)} {(няма сесии)}
+::msgcat::mcset bg {(not a memsync peer of this gateway: config is not synced with it)} {(не е memsync партньор на този gateway: конфигурацията не се синхронизира с него)}
 ::msgcat::mcset bg {(nothing to reload — read from disk per use)} {(няма какво да се презарежда — чете се от диска при всяко ползване)}
 ::msgcat::mcset bg {(retrying last prompt…)} {(повтаряне на последния prompt…)}
 ::msgcat::mcset bg {(route did not resolve: %{e})} {(route не се разреши: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset bg {/url needs a number from /urls} {/url изисква номер от /urls}
 ::msgcat::mcset bg {/whois needs a nick} {/whois изисква nick}
 ::msgcat::mcset bg {; could not save the cleared return view: %s} {; изчистеният изглед за връщане не можа да бъде запазен: %s}
+::msgcat::mcset bg {; shadows bundled} {; засенчва вградената}
+::msgcat::mcset bg {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Предложение за конфигурация може да промени настройки, а предложение за трезор обединява тайни; промените в раздел за сигурност все още чакат собственика.}
 ::msgcat::mcset bg {A failing plugin may drop hooks mid-turn.} {Провалена добавка може да изпусне hooks по средата на ход.}
 ::msgcat::mcset bg {A local server: no key is needed unless you set one up.} {Локален сървър: не е нужен ключ, освен ако не сте задали такъв.}
+::msgcat::mcset bg {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Подписаното издание се подготвя само след предварителна проверка. Рестартирането/проверката, продължаването и връщането назад са отделни действия. Здравият процес трябва да докладва точната прегледана ревизия на изходния код.}
 ::msgcat::mcset bg {A value is stored for %s — leave this empty to keep it.} {За %s вече има запазена стойност — оставете полето празно, за да я запазите.}
 ::msgcat::mcset bg {ACL: ban mask} {ACL: забрани маска}
 ::msgcat::mcset bg {ACL: grant admin} {ACL: дай право admin}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset bg {ACL: grant user} {ACL: дай право user}
 ::msgcat::mcset bg {ACL: revoke} {ACL: отнеми право}
 ::msgcat::mcset bg {ACME account email} {ACME имейл на акаунта}
+::msgcat::mcset bg {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI assist работи на четири нива: задайте въпрос за дизайн (не е нужен файл), променете този файл, променете няколко файла от това разширение или обяснете текущата диагностика. Ново разширение може също да генерира цяло разширение от предназначението му. Всяка заявка се изпраща без инструменти и се отказва, когато съдържа регистрирана тайна или стойност с формата на идентификационни данни; промените се показват като разлики и се записват само когато ги приложите. Първо поискайте дизайн на разширение; искайте кръпка на ядрото само след като установите липсващия API.}
+::msgcat::mcset bg {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {Помощта от ИИ редактира само потребителски разширения, а този файл не е част от такова. Повечето промени се побират в разширение (hook, инструмент, override на услуга или драйвер на доставчик), което оцелява при обновявания; core patch е за онова, което API на разширенията не може да изрази. Да се създаде ли вместо това ново разширение за тази промяна? Файловете му се преглеждат, преди да се запише нещо.}
+::msgcat::mcset bg {AI assist…} {Помощ от ИИ…}
+::msgcat::mcset bg {AI extension assistance} {Помощ от ИИ за разширения}
 ::msgcat::mcset bg {API calls} {API повиквания}
+::msgcat::mcset bg {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {API кредитите от реферала на Anthropic се дават само ако закупите Max или Ultra. Veles не поддържа използването на този абонамент като вход или като API удостоверяване.}
 ::msgcat::mcset bg {API key (hidden)} {API ключ (скрит)}
 ::msgcat::mcset bg {API key env var name} {Име на env променлива за API ключа}
+::msgcat::mcset bg {API reference} {Справочник по API}
+::msgcat::mcset bg {Abandon untouched operation} {Изоставяне на недокосната операция}
 ::msgcat::mcset bg {Access control} {Контрол на достъпа}
 ::msgcat::mcset bg {Access control (ACL)} {Контрол на достъпа (ACL)}
 ::msgcat::mcset bg Add Добавяне
 ::msgcat::mcset bg {Add MCP server} {Добавяне на MCP сървър}
 ::msgcat::mcset bg {Add instance} {Добавяне на инстанция}
 ::msgcat::mcset bg {Add server…} {Добавяне на сървър…}
+::msgcat::mcset bg {Adds selected extension sources. Review the branch diff and checks before merging.} {Добавя избраните файлове с изходен код на разширението. Прегледайте разликите в клона и проверките преди сливане.}
 ::msgcat::mcset bg Add… Добавяне…
 ::msgcat::mcset bg {Agent & engine} {Агент и двигател}
 ::msgcat::mcset bg {Alias %s} {Псевдоним %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset bg {Applies to} {Важи за}
 ::msgcat::mcset bg Apply Приложи
 ::msgcat::mcset bg {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Приложи променя само ТЕКУЩАТА сесия. Copy TOML ви дава блоковете за поставяне. Save globally ги вплита в config.toml — засягат се само failover секциите, всеки друг ред и коментар остава, а старият файл се пази като config.toml.bak.}
+::msgcat::mcset bg {Apply proposal…} {Прилагане на предложението…}
+::msgcat::mcset bg {Apply received} {Прилагане на получените}
+::msgcat::mcset bg {Apply this AI proposal?} {Да се приложи ли това предложение на ИИ?}
+::msgcat::mcset bg {Apply this change set?} {Да се приложи ли този набор от промени?}
 ::msgcat::mcset bg {Apply to session} {Приложи към сесията}
+::msgcat::mcset bg {Apply what this node received:} {Прилагане на полученото от този възел:}
 ::msgcat::mcset bg {Approval needed} {Нужно е одобрение}
 ::msgcat::mcset bg Apps Приложения
 ::msgcat::mcset bg Archive Архив
 ::msgcat::mcset bg {Archive SHA-256} {SHA-256 на архива}
+::msgcat::mcset bg Ask Питай
+::msgcat::mcset bg {Ask a design question} {Задай въпрос за дизайн}
+::msgcat::mcset bg {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {Питайте как се изгражда разширение: коя граница, кой език, кой API. Изходен код не се изпраща и нищо не може да бъде записано.}
 ::msgcat::mcset bg {Ask the agent to change it} {Помоли агента да го промени}
+::msgcat::mcset bg {Asking %s…} {Питане на %s…}
 ::msgcat::mcset bg {Asking the provider for its models…} {Питаме доставчика за неговите модели…}
 ::msgcat::mcset bg Attach Прикачи
 ::msgcat::mcset bg {Attach to the next message} {Прикачи към следващото съобщение}
+::msgcat::mcset bg {Author guide} {Ръководство за автори}
+::msgcat::mcset bg {Automatically discovered from the attached gateway's cluster registry.} {Автоматично открити от регистъра на клъстера на прикачения gateway.}
 ::msgcat::mcset bg Back Назад
 ::msgcat::mcset bg {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {Назад затваря това, което е най-отгоре: меню, списъка със сесии, прозорец. Когато нищо не е отворено, veles минава във фонов режим и продължава да работи.}
 ::msgcat::mcset bg {Base URL} {Base URL}
+::msgcat::mcset bg {Base branch} {Базов клон}
 ::msgcat::mcset bg {Bot token (hidden)} {Токен на бота (скрит)}
+::msgcat::mcset bg Branch Клон
+::msgcat::mcset bg {Branch and commit prepared; nothing has been pushed} {Клонът и комитът са подготвени; нищо не е изтласкано}
+::msgcat::mcset bg {Branch pushed and verified on origin} {Клонът е изтласкан и проверен в ориджин}
 ::msgcat::mcset bg {Browse sessions} {Преглед на сесиите}
+::msgcat::mcset bg {Build manifest + preflight} {Манифест на билда + предварителна проверка}
+::msgcat::mcset bg {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Изграждане: veles %1$s, ревизия %2$s (%3$s %4$s)}
 ::msgcat::mcset bg {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e край на ред · C-b/C-f знак · M-b/M-f дума · C-k изрязване до EOL · C-y yank · M-w копиране · C-w изрязване на регион · C-space поставяне на маркер · C-/ връщане назад}
 ::msgcat::mcset bg {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g прекъсва всичко · C-j нов ред · M-p/M-n история · Tab довършва}
+::msgcat::mcset bg {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s ядра, натоварване %2$s / %3$s / %4$s (%5$s%% от ядрата)}
 ::msgcat::mcset bg Cancel Отказ
+::msgcat::mcset bg {Cancel task} {Отмяна на задача}
+::msgcat::mcset bg {Cancel task %1$s? This cannot be undone.} {Отмяна на задача %1$s? Това не може да бъде отменено.}
+::msgcat::mcset bg {Cannot verify that %1$s is node %2$s: %3$s} {Не може да се потвърди, че %1$s е възел %2$s: %3$s}
 ::msgcat::mcset bg Capabilities Възможности
 ::msgcat::mcset bg {Change my app “%s” (%s): } {Промени приложението ми „%s“ (%s): }
+::msgcat::mcset bg {Change this extension's files} {Промени файловете на това разширение}
+::msgcat::mcset bg {Change this file} {Промени този файл}
 ::msgcat::mcset bg Change… Промяна…
 ::msgcat::mcset bg {Channels (e.g. #veles #dev)} {Канали (напр. #veles #dev)}
 ::msgcat::mcset bg Chat Чат
 ::msgcat::mcset bg {Chat — not attached; press Attach in the Instances tab} {Чат — не е прикачен; натиснете Attach в раздела Instances}
 ::msgcat::mcset bg {Check (lsp)} {Проверка (lsp)}
+::msgcat::mcset bg {Check again} {Провери отново}
+::msgcat::mcset bg {Check files} {Проверка на файловете}
 ::msgcat::mcset bg Checkpoints {Контролни точки}
 ::msgcat::mcset bg {Checkpoints (undo)} {Контролни точки (връщане)}
+::msgcat::mcset bg {Checks and next steps} {Проверки и следващи стъпки}
+::msgcat::mcset bg {Checks run} {Извършени проверки}
 ::msgcat::mcset bg {Choose BUNDLE-INFO.json in the managed install-sources directory} {Изберете BUNDLE-INFO.json в управляваната директория install-sources}
 ::msgcat::mcset bg {Choose a failover script} {Избери failover скрипт}
 ::msgcat::mcset bg {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {Изберете модул или процесна добавка за преглед. Откриването чете само plugin.toml; изборът на компонент изисква декларирания му манифест и опции. Нищо не се инсталира при отваряне на тази стъпка.}
+::msgcat::mcset bg {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {Изберете име, цел и език, след което направете предварителен преглед на точните файлове. Нищо не е записано.}
 ::msgcat::mcset bg {Choose a user unit or a system service for the server profile. Neither starts a service.} {Изберете потребителски unit или системна услуга за сървърния профил. Никоя от двете не стартира услуга.}
 ::msgcat::mcset bg {Choose core bundle…} {Изберете пакет на ядрото…}
 ::msgcat::mcset bg {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {Изберете формата на инсталацията. Локалните профили използват прегледания инсталатор. Системните и контейнерните профили подготвят подписана заявка за изричното предаване през CLI. NixOS издава само фрагмент от модул.}
+::msgcat::mcset bg {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {Изберете най-тясната граница: Tool добавя възможност, извиквана от модел; Hook наблюдава или променя събитие от жизнения цикъл; Service или точка за override обгръща именовано решение; Provider driver добавя свързване с доставчик; Core patch е подходящ само когато публикуваното API за разширения не може да изрази промяната.}
 ::msgcat::mcset bg {Choose typed container-host options JSON} {Изберете JSON с типизирани опции за контейнерен хост}
 ::msgcat::mcset bg {Choose typed container-host options…} {Изберете типизирани опции за контейнерен хост…}
 ::msgcat::mcset bg Clear Изчисти
 ::msgcat::mcset bg {Clear composer} {Изчисти композитора}
 ::msgcat::mcset bg {Clear override} {Изчисти override-а}
 ::msgcat::mcset bg {Click the picture where you would click on the page.} {Кликни върху картинката там, където щеше да кликнеш на страницата.}
+::msgcat::mcset bg {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {Клониране на %1$s, създаване на %2$s и копиране само на прегледаните файлове от %3$s в %4$s/<extension>/. Файловете се проверяват и комитват. Сега не се прави push или pull request.}
 ::msgcat::mcset bg Close Затвори
 ::msgcat::mcset bg {Close (Esc)} {Затвори (Esc)}
 ::msgcat::mcset bg {Close the setup wizard? Nothing has been written yet.} {Да затворя ли съветника за настройка? Все още нищо не е записано.}
 ::msgcat::mcset bg {Code actions} {Кодови действия}
+::msgcat::mcset bg Commit Комит
+::msgcat::mcset bg {Commit ready for review. Push is a separate action.} {Комитът е готов за преглед. Изтласкването е отделно действие.}
 ::msgcat::mcset bg {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Попълнете всяко поле на PDS, включително фиксирания digest на образа, преди да прегледате предаването.}
 ::msgcat::mcset bg {Complete every typed container-host field before previewing this profile.} {Попълнете всяко типизирано поле за контейнерен хост, преди да прегледате този профил.}
 ::msgcat::mcset bg {Component configuration returned an invalid result; nothing was accepted as applied.} {Конфигурацията на компонента върна невалиден резултат; нищо не бе прието като приложено.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset bg {Component options changed. Review the new preview before applying.} {Опциите на компонента са променени. Прегледайте новия преглед преди прилагане.}
 ::msgcat::mcset bg Components Компоненти
 ::msgcat::mcset bg {Composer preview} {Преглед на композитора}
+::msgcat::mcset bg Config Конфигурация
+::msgcat::mcset bg {Config differs: %s} {Конфигурацията се различава: %s}
+::msgcat::mcset bg {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Лог на конфигурацията: онзи възел има промените на %1$s до %3$s, а този gateway — до %2$s}
+::msgcat::mcset bg {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Лог на конфигурацията: този gateway има промените на %1$s до %2$s, а онзи възел — до %3$s}
+::msgcat::mcset bg {Config only on that node: %s} {Конфигурация само на онзи възел: %s}
+::msgcat::mcset bg {Config only on this gateway: %s} {Конфигурация само на този gateway: %s}
 ::msgcat::mcset bg Configure Конфигурирай
 ::msgcat::mcset bg {Configure %s} {Конфигурирай %s}
+::msgcat::mcset bg {Configure translator} {Настройка на преводача}
+::msgcat::mcset bg {Configured desktop gateway} {Конфигуриран шлюз на настолното приложение}
 ::msgcat::mcset bg Configure… Конфигуриране…
 ::msgcat::mcset bg {Configuring %s} {Конфигуриране на %s}
 ::msgcat::mcset bg {Confirm or discard the current signed review before starting another download.} {Потвърдете или отхвърлете текущия подписан преглед, преди да започнете друго изтегляне.}
 ::msgcat::mcset bg {Container host: typed host plan and privileged CLI handoff} {Container host: типизиран хост план и предаване на CLI с администраторски права}
 ::msgcat::mcset bg {Context window} {Контекстен прозорец}
+::msgcat::mcset bg {Continue to next target} {Продължаване към следващата цел}
+::msgcat::mcset bg {Contribute extensions: %s} {Принос на разширения: %s}
+::msgcat::mcset bg Contribute… Допринасяне…
+::msgcat::mcset bg {Contribution branch} {Клон за принос}
+::msgcat::mcset bg {Contribution destination} {Дестинация за приноса}
 ::msgcat::mcset bg Copy Копирай
 ::msgcat::mcset bg {Copy TOML} {Копирай TOML}
+::msgcat::mcset bg {Copy a bundled extension into your user plugin directory before preparing a contribution.} {Копирайте вградено разширение във вашата потребителска директория за добавки, преди да подготвите принос.}
 ::msgcat::mcset bg {Copy message} {Копирай съобщението}
 ::msgcat::mcset bg {Copy name} {Копирай името}
 ::msgcat::mcset bg {Copy nick} {Копирай ника}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset bg {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {Не можаха да бъдат открити компоненти. Стъпките за настройка на доставчика все още работят; при нужда инсталирайте през CLI на целевата машина.}
 ::msgcat::mcset bg {Could not join: %s} {Неуспешно присъединяване: %s}
 ::msgcat::mcset bg {Could not list the models (%s) — type the model's name.} {Моделите не можаха да бъдат изброени (%s) — въведете името на модела.}
+::msgcat::mcset bg {Create a PR in} {Създаване на PR в}
+::msgcat::mcset bg {Create extension} {Създаване на разширение}
 ::msgcat::mcset bg {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Създайте бота чрез @BotFather и поставете токена му по-долу: той отива в шифрования трезор, никога в config.toml.}
+::msgcat::mcset bg {Create this extension?} {Да се създаде ли това разширение?}
+::msgcat::mcset bg {Create this generated extension?} {Да се създаде ли това генерирано разширение?}
+::msgcat::mcset bg {Created and reloaded. Review and test the extension before publishing.} {Създадено и презаредено. Прегледайте и тествайте разширението преди публикуване.}
+::msgcat::mcset bg {Created, but reload failed} {Създадено, но презареждането се провали}
 ::msgcat::mcset bg {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Създава %s/<name>/SKILL.md от шаблон и го отваря. Описанието в frontmatter-а е единствената част, която стига до индекса на prompt-а, така че то трябва да казва КОГА да се използва умението.}
 ::msgcat::mcset bg {Cron history} {Cron история}
 ::msgcat::mcset bg {Cron jobs} {Cron задачи}
 ::msgcat::mcset bg {Curated — write the first owner entry} {Curated — запиши първия owner запис}
 ::msgcat::mcset bg Cut Изрежи
 ::msgcat::mcset bg Decline Отказ
+::msgcat::mcset bg {Dedicated translator} {Отделен преводач}
 ::msgcat::mcset bg {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset bg Default Стандартно
 ::msgcat::mcset bg {Default model} {Стандартен модел}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset bg {Delete user} {Изтриване на потребител}
 ::msgcat::mcset bg {Delete workspace?} {Да се изтрие работното пространство?}
 ::msgcat::mcset bg Deop {Отнеми op}
+::msgcat::mcset bg {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Опишете промяната. AI може да промени или добави няколко файла от това разширение. Всеки файл се показва като разлика и нищо не се записва, преди да потвърдите.}
+::msgcat::mcset bg {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Опишете промяната. ИИ може да предложи замяна, но не може да я запише, преди да прегледате и потвърдите разликите.}
+::msgcat::mcset bg {Describe the requested extension change first.} {Първо опишете желаната промяна на разширението.}
+::msgcat::mcset bg Description Описание
 ::msgcat::mcset bg {Desktop: local core, modules and process plugins} {Desktop: локално ядро, модули и процесни добавки}
 ::msgcat::mcset bg Detach Откачи
+::msgcat::mcset bg {Detach foreground} {Премести на заден план}
 ::msgcat::mcset bg Dev Dev
 ::msgcat::mcset bg {Dev pane (REPL + LSP)} {Dev панел (REPL + LSP)}
 ::msgcat::mcset bg {Dev: arm / disarm live patching} {Dev: вкл. / изкл. живи кръпки}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset bg Devoice {Отнеми voice}
 ::msgcat::mcset bg {Discard review} {Отхвърляне на прегледа}
 ::msgcat::mcset bg {Discard your changes to %s?} {Да се отхвърлят ли промените ти в %s?}
+::msgcat::mcset bg {Disk: %1$s free of %2$s at %3$s} {Диск: %1$s свободни от %2$s в %3$s}
 ::msgcat::mcset bg Done Готово
 ::msgcat::mcset bg {Done — config written} {Готово — config-ът е записан}
 ::msgcat::mcset bg {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Изтеглете и проверете манифеста на изданието и архива за хоста преди инсталиране. Всички пет полета за самоличност са задължителни. Gateway-ът пази частния подготвен архив; този преглед не инсталира нищо.}
 ::msgcat::mcset bg {Downloading and verifying the signed release…} {Изтегляне и проверка на подписаното издание…}
+::msgcat::mcset bg {Draft this as an extension?} {Да се оформи ли това като разширение?}
 ::msgcat::mcset bg {Drag to scroll; a quick swipe goes further.} {Плъзнете, за да превъртите; бързо замахване стига по-далеч.}
+::msgcat::mcset bg {Drift check failed: %s} {Проверката за разминаване се провали: %s}
+::msgcat::mcset bg {Drift check: %s node(s) differ from this gateway.} {Проверка за разминаване: %s възел(а) се различават от този gateway.}
+::msgcat::mcset bg {Drift: built from revision %1$s, this gateway from %2$s} {Разминаване: изграден от ревизия %1$s, а този gateway — от %2$s}
+::msgcat::mcset bg {Drift: none — same version, revision and replicated config} {Разминаване: няма — еднаква версия, ревизия и репликирана конфигурация}
+::msgcat::mcset bg {Drift: not compared — %s} {Разминаване: не е сравнено — %s}
+::msgcat::mcset bg {Drift: runs version %1$s, this gateway %2$s} {Разминаване: работи версия %1$s, а този gateway — %2$s}
+::msgcat::mcset bg Drift… Разминаване…
 ::msgcat::mcset bg {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset bg {ESC %s is not bound} {ESC %s не е свързан}
 ::msgcat::mcset bg {ESC- … (Meta prefix)} {ESC- … (Meta префикс)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset bg Edit… Редактиране…
 ::msgcat::mcset bg {Enable / disable} {Включи / изключи}
 ::msgcat::mcset bg {Enable the Telegram adapter} {Включи Telegram адаптера}
+::msgcat::mcset bg Endpoint {Крайна точка}
 ::msgcat::mcset bg Engine Двигател
 ::msgcat::mcset bg Eval→gw Eval→gw
 ::msgcat::mcset bg {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Всяка промяна на %s се комитва. Възстановяването връща цялата директория към този commit — и първо снима текущото състояние, така че не е врата в една посока.}
 ::msgcat::mcset bg {Every plugin file goes back to that commit. The current state is committed first.} {Всеки файл на добавката се връща към този commit. Текущото състояние се комитва първо.}
+::msgcat::mcset bg {Exact commit} {Точен комит}
+::msgcat::mcset bg {Exact permission rule} {Точно правило за разрешение}
+::msgcat::mcset bg {Example: a hook} {Пример: hook}
+::msgcat::mcset bg {Example: a provider driver} {Пример: драйвер за доставчик}
+::msgcat::mcset bg {Example: a service override wrapping core} {Пример: service override, обгръщащ core}
+::msgcat::mcset bg {Example: a tool} {Пример: инструмент}
 ::msgcat::mcset bg {Existing shared container network} {Съществуваща споделена контейнерна мрежа}
+::msgcat::mcset bg Explain Обясни
+::msgcat::mcset bg {Explain the diagnostics} {Обясни диагностиката}
 ::msgcat::mcset bg Export… Експортирай…
+::msgcat::mcset bg {Extension API} {API на разширенията}
+::msgcat::mcset bg {Extension development} {Разработка на разширения}
+::msgcat::mcset bg {Extension guide} {Ръководство за разширения}
+::msgcat::mcset bg {Extension source} {Изходен код на разширението}
 ::msgcat::mcset bg {Failover blueprint} {Failover blueprint}
 ::msgcat::mcset bg {Failover blueprint (edit the route chain)} {Failover blueprint (редактиране на веригата от маршрути)}
 ::msgcat::mcset bg {Failover hook script (what `script` mode runs)} {Failover hook скрипт (какво изпълнява режимът `script`)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset bg {Find in transcript} {Търсене в преписа}
 ::msgcat::mcset bg {Find in transcript…} {Търсене в преписа…}
 ::msgcat::mcset bg {Find references} {Намери референции}
+::msgcat::mcset bg {Finish rollback} {Завършване на връщането назад}
 ::msgcat::mcset bg {First run: no config.toml yet.} {Първо стартиране: още няма config.toml.}
+::msgcat::mcset bg {Fix the failed syntax checks before preparing a contribution.} {Коригирайте грешките от неуспешните синтактични проверки, преди да подготвите принос.}
+::msgcat::mcset bg {Fleet deployment} {Разгръщане на флота}
+::msgcat::mcset bg {Fleet deployment runs from a desktop computer; it is not available on Android.} {Разгръщането на флота се изпълнява от настолен компютър; не е достъпно на Android.}
+::msgcat::mcset bg {Fleet deploy…} {Разгръщане на флота…}
+::msgcat::mcset bg {Fleet drift} {Разминаване в клъстера}
 ::msgcat::mcset bg {Fold / unfold} {Свий / разгъни}
 ::msgcat::mcset bg {Forget declaration} {Забрави декларацията}
+::msgcat::mcset bg {Forget node %s?} {Да се забрави ли възел %s?}
+::msgcat::mcset bg {Forget node…} {Забравяне на възел…}
+::msgcat::mcset bg {Forgetting %1$s failed: %2$s} {Забравянето на %1$s се провали: %2$s}
+::msgcat::mcset bg {Forgot node %s.} {Възелът %s е забравен.}
+::msgcat::mcset bg {Forgotten fleet-wide (refused until they heartbeat again): %s} {Забравено за целия клъстер (отказва се, докато не изпратят сърцебиене отново): %s}
 ::msgcat::mcset bg Fork Разклоняване
 ::msgcat::mcset bg {Free space} {Свободно място}
 ::msgcat::mcset bg {Full source commit SHA} {Пълен SHA на изходния комит}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset bg {Gateway image sha256 digest} {sha256 дайджест на образа на gateway-а}
 ::msgcat::mcset bg {Gateway quadlet name} {Име на gateway quadlet}
 ::msgcat::mcset bg {Gateway status} {Статус на gateway-а}
+::msgcat::mcset bg {Generate with AI…} {Генериране с AI…}
+::msgcat::mcset bg {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {Генерирано от %s — нищо не е записано. Прегледайте всеки файл; после „Създай разширение“ записва точно тези файлове.}
 ::msgcat::mcset bg {Get a key at %s} {Вземете ключ на %s}
 ::msgcat::mcset bg {GitHub release URL} {URL на изданието в GitHub}
+::msgcat::mcset bg {Give the extension a name and describe what it should do (the purpose), then generate.} {Дайте име на разширението и опишете какво трябва да прави (предназначението), после генерирайте.}
 ::msgcat::mcset bg {Give up} Откажи
 ::msgcat::mcset bg Go Отиди
 ::msgcat::mcset bg {Go to definition} {Към дефиницията}
+::msgcat::mcset bg {Gossip failed: %s} {Обменът на регистъра се провали: %s}
+::msgcat::mcset bg {Gossip now} {Обмен на регистъра сега}
+::msgcat::mcset bg {Gossip with %1$s: %2$s} {Обмен на регистъра с %1$s: %2$s}
+::msgcat::mcset bg {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {Обмен: %1$s от %2$s партньора отговориха (%3$s).}
 ::msgcat::mcset bg Grant {Дай право}
 ::msgcat::mcset bg {Grant access} {Дай достъп}
+::msgcat::mcset bg {Granted at} {Предоставено на}
 ::msgcat::mcset bg Grant… {Даване на право…}
 ::msgcat::mcset bg {Guards — what the harness stops, and where it stands now} {Guards — какво спира harness-ът и къде стои сега}
 ::msgcat::mcset bg {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handlers се изпълняват в показания ред; първият, върнал не-празна стойност, печели. Изключването го прескача без да го отрегистрира, а изборът се пази в config.toml, така че презареждане на добавка не може тихомълком да го включи обратно.}
+::msgcat::mcset bg Health Здраве
+::msgcat::mcset bg {Health alerts (%s):} {Предупреждения за състоянието (%s):}
+::msgcat::mcset bg Heartbeat Пулс
+::msgcat::mcset bg {Heartbeat age: %s s} {Възраст на heartbeat: %s s}
 ::msgcat::mcset bg Help Помощ
 ::msgcat::mcset bg {Help & keys} {Помощ и клавиши}
 ::msgcat::mcset bg {Hide right panes} {Скрий десните панели}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset bg {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {Задръжте, после плъзнете, преди да вдигнете пръста: селекцията следва пръста ви дума по дума и превърта при горния или долния ръб.}
 ::msgcat::mcset bg Hooks Hooks
 ::msgcat::mcset bg {Hooks (what plugins run on)} {Hooks (по какво се закачат добавките)}
+::msgcat::mcset bg Host Хост
 ::msgcat::mcset bg {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {Колко трае задържането определя забавянето при докосване и задържане на Android, в настройките за достъпност.}
 ::msgcat::mcset bg {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {Архивирах KEK и PLC ротационния ключ офлайн; разреши прегледания TLS и предаването на активирането}
 ::msgcat::mcset bg {I-search backward: type to search, C-r for previous} {I-search назад: пишете за търсене, C-r за предишно}
 ::msgcat::mcset bg {I-search: type to search, C-s for next} {I-search: пишете за търсене, C-s за следващо}
+::msgcat::mcset bg {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {Натоварване на IO: %1$s%% / %2$s%% / %3$s%% от времето някоя задача е чакала (10 s / 1 min / 5 min)}
 ::msgcat::mcset bg IRC IRC
 ::msgcat::mcset bg {IRC buffers} {IRC буфери}
 ::msgcat::mcset bg {IRC composer} {IRC композитор}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset bg {IRC split: %s} {IRC разделяне: %s}
 ::msgcat::mcset bg {IRC transcript} {IRC препис}
 ::msgcat::mcset bg {IRC — nothing to show} {IRC — няма какво да се покаже}
+::msgcat::mcset bg {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {В изпълнение: %1$s ход(а) %2$s, %3$s фонови задачи %4$s}
 ::msgcat::mcset bg {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {Инсталиране на %s в управляваното хранилище за компоненти? Манифестът му бе показан; това не стартира услуга.}
 ::msgcat::mcset bg {Install component} {Инсталиране на компонент}
 ::msgcat::mcset bg {Install components…} {Инсталиране на компоненти…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset bg Instances Инстанции
 ::msgcat::mcset bg {It becomes the current content, as a new revision — so the restore can be undone too.} {Става текущото съдържание, като нова версия — така и възстановяването може да се отмени.}
 ::msgcat::mcset bg {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Отива в шифрования трезор на тази машина. Агентът никога не го вижда: може само да го използва като $%s в команди или да го изпраща до разрешените хостове.}
+::msgcat::mcset bg {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Той се премахва от регистъра на клъстера за целия клъстер: следващият обмен на регистъра казва на всеки партньор 0.2.0 да го изхвърли също и никой от тях не го връща обратно. Партньор, по-стар от 0.2.0, продължава да го показва. Ако машината се върне и изпрати сърцебиене, тя се регистрира отново. Партньорите за синхронизация и запазените инстанции остават непокътнати.}
 ::msgcat::mcset bg {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Сега напуска паметта. Историята пази всяка версия и История… може да го възстанови.}
 ::msgcat::mcset bg Join Присъедини
 ::msgcat::mcset bg {Join a pool} {Присъединяване към група машини}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset bg {Language (i18n)} {Език (i18n)}
 ::msgcat::mcset bg Language… Език…
 ::msgcat::mcset bg {Last active} {Последна активност}
+::msgcat::mcset bg {Last probe: %1$s — %2$s} {Последна проверка: %1$s — %2$s}
 ::msgcat::mcset bg {Leave %s?} {Да се напусне %s?}
 ::msgcat::mcset bg Leave… Напусни…
 ::msgcat::mcset bg {Legacy open — no [acl] section} {Отворен (legacy) — без секция [acl]}
 ::msgcat::mcset bg {Let %s:} {Позволи на %s да:}
 ::msgcat::mcset bg {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {Букви, цифри, - и _. Създава plugin.toml и plugin.tcl, които регистрират post_llm_call hook, след което ги отваря в панела Dev.}
+::msgcat::mcset bg Level Ниво
 ::msgcat::mcset bg {Lift lockdown} {Вдигни lockdown-а}
+::msgcat::mcset bg Lines Редове
 ::msgcat::mcset bg {List the provider's models} {Изброй моделите на доставчика}
+::msgcat::mcset bg Load Натоварване
 ::msgcat::mcset bg {Load more} {Зареди още}
 ::msgcat::mcset bg {Loading discovered components…} {Зареждане на откритите компоненти…}
 ::msgcat::mcset bg {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {Локалният пакет е прегледан. Изберете Инсталиране на избрания компонент, за да потвърдите инсталацията; нищо все още не е инсталирано.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset bg {Lock down} Lockdown
 ::msgcat::mcset bg Log Дневник
 ::msgcat::mcset bg {Log (engine + status)} {Дневник (engine + статус)}
+::msgcat::mcset bg {Log of %s} {Лог на %s}
+::msgcat::mcset bg Logs… Логове…
 ::msgcat::mcset bg {M-g- (g: goto line)} {M-g- (g: отиди на ред)}
 ::msgcat::mcset bg {M-p/M-n history · Tab complete} {M-p/M-n история · Tab довършва}
 ::msgcat::mcset bg {MCP server list} {Списък на MCP сървъри}
 ::msgcat::mcset bg {MCP servers (from config.toml)} {MCP сървъри (от config.toml)}
 ::msgcat::mcset bg {Make default} {Направи стандартен}
 ::msgcat::mcset bg {Make default (config.toml)} {Направи подразбиращ се (config.toml)}
+::msgcat::mcset bg {Manage extensions} {Управление на разширенията}
 ::msgcat::mcset bg {Manifest SHA-256} {SHA-256 на манифеста}
 ::msgcat::mcset bg {Mark read} {Маркирай като прочетено}
 ::msgcat::mcset bg {Mechanisms (what the engine does on its own)} {Механизми (какво прави engine-ът сам)}
 ::msgcat::mcset bg {Mechanisms — what the engine does on its own, and how to stop it} {Mechanisms — какво прави engine-ът сам и как да се спре}
 ::msgcat::mcset bg Memory Памет
 ::msgcat::mcset bg {Memory history} {История на паметта}
+::msgcat::mcset bg {Memory: %1$s available of %2$s (%3$s%% used)} {Памет: %1$s налични от %2$s (%3$s%% използвани)}
+::msgcat::mcset bg {Merge the received %s into this node?} {Да се обедини ли полученото %s в този възел?}
 ::msgcat::mcset bg Messages Съобщения
+::msgcat::mcset bg Metrics Метрики
+::msgcat::mcset bg {Metrics (asked %s):} {Метрики (поискани в %s):}
+::msgcat::mcset bg {Metrics of %1$s failed: %2$s} {Метриките на %1$s се провалиха: %2$s}
+::msgcat::mcset bg {Metrics of %s received.} {Метриките на %s са получени.}
+::msgcat::mcset bg {Metrics: not asked yet — use Metrics.} {Метрики: още не са поискани — използвайте Метрики.}
 ::msgcat::mcset bg Model Модел
 ::msgcat::mcset bg {Model for this session} {Модел за тази сесия}
 ::msgcat::mcset bg {Models & settings} {Модели и настройки}
+::msgcat::mcset bg Monitors Монитори
+::msgcat::mcset bg Name Име
+::msgcat::mcset bg {Need an account? Optional sign-up links (open in your browser):} {Нуждаете се от акаунт? Опционални връзки за регистрация (отварят се в браузъра):}
 ::msgcat::mcset bg Network Мрежа
 ::msgcat::mcset bg {New alias} {Нов псевдоним}
+::msgcat::mcset bg {New branch name} {Име на новия клон}
 ::msgcat::mcset bg {New cron job} {Нова cron задача}
+::msgcat::mcset bg {New extension} {Ново разширение}
 ::msgcat::mcset bg {New memory file} {Нов файл в паметта}
 ::msgcat::mcset bg {New plugin} {Нова добавка}
 ::msgcat::mcset bg {New session} {Нова сесия}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset bg Next Напред
 ::msgcat::mcset bg Nickname Псевдоним
 ::msgcat::mcset bg {NixOS: emit a module snippet; do not edit host declarations} {NixOS: генериране на модулен фрагмент; не редактирайте декларациите на хоста}
+::msgcat::mcset bg {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {За този възел не е конфигурирана цел за жизнен цикъл по SSH. Добавете изрично инстанция, за да го разположите или рестартирате.}
+::msgcat::mcset bg {No additional push happens.} {Няма да се извърши допълнително изтласкване.}
 ::msgcat::mcset bg {No apps yet. Ask the agent to make one: “make me an app that…”} {Още няма приложения. Помолете агента да направи едно: „направи ми приложение, което…“}
 ::msgcat::mcset bg {No code in the picture. Hold the phone closer, straight on, and scan again.} {Няма код на снимката. Приближете телефона, дръжте го право и сканирайте отново.}
 ::msgcat::mcset bg {No configuration snapshot will be restored.} {Няма да бъде възстановена конфигурационна снимка.}
+::msgcat::mcset bg {No configured sync peer for this node.} {Няма конфигуриран sync peer за този възел.}
+::msgcat::mcset bg {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Няма конфигуриран отделен преводач. Използвайте „Настройка на преводача“, за да изберете неговия доставчик, модел и целеви език.}
+::msgcat::mcset bg {No deployment started.} {Не е започнато разгръщане.}
+::msgcat::mcset bg {No diagnostics reported by the current LSP document.} {Няма диагностика от текущия LSP документ.}
+::msgcat::mcset bg {No explicitly configured desktop gateway is bound to this node.} {Към този възел не е обвързан изрично конфигуриран шлюз на настолното приложение.}
+::msgcat::mcset bg {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {Към този възел не е обвързан изрично конфигуриран шлюз. Първо добавете шлюза; неговата крайна точка на регистъра не се използва като URL на настолното приложение.}
+::msgcat::mcset bg {No file is open. Ask a design question, or open an extension file for help with its code.} {Няма отворен файл. Задайте въпрос за дизайн или отворете файл на разширение за помощ с кода му.}
+::msgcat::mcset bg {No files have been written. Review the exact manifest and source, then confirm creation.} {Няма записани файлове. Прегледайте точния манифест и изходен код, след което потвърдете създаването.}
 ::msgcat::mcset bg {No modules or process plugins were discovered. The provider setup steps can still continue.} {Не бяха открити модули или процесни добавки. Стъпките за настройка на доставчика могат да продължат.}
+::msgcat::mcset bg {No other registered node to compare with.} {Няма друг регистриран възел за сравнение.}
 ::msgcat::mcset bg {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {Нито един профил не стартира услуга и не изпълнява скрипт с администраторски права от този съветник. Прегледайте плана и всяко предаване, преди да го изпълните.}
+::msgcat::mcset bg {No proposal has been requested. Nothing will be written automatically.} {Няма поискано предложение. Нищо няма да бъде записано автоматично.}
+::msgcat::mcset bg {No proposal. Nothing was written.} {Няма предложение. Нищо не е записано.}
 ::msgcat::mcset bg {No routes configured.} {Няма конфигурирани routes.}
 ::msgcat::mcset bg {No session selected — pick one in the sidebar or start a new one} {Няма избрана сесия — изберете от страничната лента или започнете нова}
 ::msgcat::mcset bg {No swap target yet: pick a language and press “Set as swap target”.} {Още няма цел за размяна: избери език и натисни „Направи цел за размяна“.}
 ::msgcat::mcset bg {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {Няма секция {[}acl{]} в config.toml: всеки подател, стигнал до gateway-а, се третира като собственик — поведението преди ACL. Даването и отнемането на права все още работи и влиза в сила в момента, в който се появи {[}acl{]}.}
+::msgcat::mcset bg {Node id} {ID на възел}
+::msgcat::mcset bg {Non-evaluating syntax checks} {Синтактични проверки без изпълнение}
+::msgcat::mcset bg {Not available: %s} {Не е налично: %s}
+::msgcat::mcset bg Note Бележка
 ::msgcat::mcset bg {Note for the agent (optional):} {Бележка за агента (по желание):}
+::msgcat::mcset bg {Nothing selected.} {Нищо не е избрано.}
 ::msgcat::mcset bg {Nothing typed yet.} {Още нищо не е въведено.}
+::msgcat::mcset bg {Nothing was generated or written.} {Нищо не е генерирано или записано.}
+::msgcat::mcset bg {Nothing was prepared: the chosen repository already has these paths.} {Нищо не беше подготвено: избраната репозитория вече съдържа тези пътища.}
 ::msgcat::mcset bg Notifications Известия
 ::msgcat::mcset bg OK OK
 ::msgcat::mcset bg Off Изкл.
 ::msgcat::mcset bg On Вкл.
+::msgcat::mcset bg {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {Ще бъде заменен само прегледаният буфер на разширението. Файлът остава защитен срещу промени, направени след този предварителен преглед. Няма да има комит, изтласкване или PR.}
+::msgcat::mcset bg {Only this new branch is committed. Your ambient git identity is used.} {Само този нов клон се комитва. Използва се текущо зададената ви git самоличност.}
 ::msgcat::mcset bg Op {Дай op}
 ::msgcat::mcset bg Open Отвори
+::msgcat::mcset bg {Open PR…} {Отваряне на PR…}
 ::msgcat::mcset bg {Open a window} {Отвори прозорец}
 ::msgcat::mcset bg {Open in Dev} {Отвори в Dev}
 ::msgcat::mcset bg {Open in browser} {Отвори в браузър}
 ::msgcat::mcset bg {Open plugin} {Отвори добавка}
 ::msgcat::mcset bg {Open terminal} {Отвори терминал}
+::msgcat::mcset bg {Open this pull request?} {Да се отвори ли тази заявка за изтегляне?}
 ::msgcat::mcset bg {Open veles in Android's settings} {Отвори veles в настройките на Android}
 ::msgcat::mcset bg {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {По избор: IRC мрежата, към която да се присъединим. Изброете каналите, разделени с интервали или запетаи; IRC_CHANNELS в .env, когато е зададена, замества този списък.}
 ::msgcat::mcset bg {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {Опциите идват от манифеста на избрания компонент. Полетата, изглеждащи като тайни, остават в потока за настройка/трезор. Празните полета оставят съответната опция непроменена.}
 ::msgcat::mcset bg {Or paste a ticket signed on another device} {Или поставете билет, подписан на друго устройство}
 ::msgcat::mcset bg {Or type an answer:} {Или въведете отговор:}
+::msgcat::mcset bg Origin Ориджин
 ::msgcat::mcset bg Other… Друго…
 ::msgcat::mcset bg Outline Скелет
+::msgcat::mcset bg Output Изход
 ::msgcat::mcset bg {Override for THIS session (leave blank to inherit the default)} {Override за ТАЗИ сесия (оставете празно, за да наследи стандартното)}
 ::msgcat::mcset bg {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {Идентичност на собственика (telegram:123456, irc:account или маска nick!user@host)}
 ::msgcat::mcset bg {PDS and handle domain} {Домейн на PDS и на handle}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset bg {Pause scheduler} {Пауза на планировчика}
 ::msgcat::mcset bg {Peek (C-c C-p)} {Надникване (C-c C-p)}
 ::msgcat::mcset bg {Peek definition} {Надникни в дефиницията}
+::msgcat::mcset bg {Permission grants} {Права за достъп}
+::msgcat::mcset bg {Permission grants…} {Права за достъп…}
 ::msgcat::mcset bg Phone Телефон
 ::msgcat::mcset bg {Phone: permissions, battery, storage} {Телефон: разрешения, батерия, хранилище}
 ::msgcat::mcset bg {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Телефоните на %s също спират приложения сами. В настройките на приложението veles му разрешете да се стартира само и да работи във фонов режим.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset bg Port Порт
 ::msgcat::mcset bg {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {Префиксни акорди (C-x, M-o) показват which-key прозорче щом се задействат.}
 ::msgcat::mcset bg {Prepare an own vlpds PDS through the signed CLI handoff} {Подгответе собствен vlpds PDS чрез подписаното предаване от CLI}
+::msgcat::mcset bg {Prepare branch…} {Подготовка на клон…}
+::msgcat::mcset bg {Prepare this branch and commit?} {Да се подготвят ли този клон и комит?}
 ::msgcat::mcset bg Preview Преглед
+::msgcat::mcset bg {Preview change set} {Прегледай набора от промени}
+::msgcat::mcset bg {Preview files} {Предварителен преглед на файловете}
 ::msgcat::mcset bg {Preview here} {Преглед тук}
 ::msgcat::mcset bg {Preview pane} {Панел за преглед}
+::msgcat::mcset bg {Preview proposal} {Предварителен преглед на предложението}
+::msgcat::mcset bg {Preview the changed name or language before creating it.} {Предварително прегледайте промененото име или език преди създаването.}
+::msgcat::mcset bg Probe Проверка
+::msgcat::mcset bg {Probe of %1$s failed: %2$s} {Проверката на %1$s се провали: %2$s}
 ::msgcat::mcset bg {Profile result} {Резултат от профила}
 ::msgcat::mcset bg {Promote into config.toml} {Пренеси в config.toml}
 ::msgcat::mcset bg Promote… Пренасяне…
 ::msgcat::mcset bg Provider Доставчик
+::msgcat::mcset bg {Provider driver (plugin wire only)} {Драйвър на доставчика (само за plugin wire)}
 ::msgcat::mcset bg {Provider entry name} {Име на записа за доставчика}
 ::msgcat::mcset bg {Provider for this session} {Provider за тази сесия}
 ::msgcat::mcset bg Providers Providers
 ::msgcat::mcset bg {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {Providers са списък от таблици: custom_providers.0.base_url, .0.api_mode, .0.key_env … Индексирайте по реда, показан по-долу.}
 ::msgcat::mcset bg {Public HTTPS URL} {Публичен HTTPS URL}
+::msgcat::mcset bg {Pull request base} {Базов клон на заявката за изтегляне}
+::msgcat::mcset bg {Pull request created} {Заявката за изтегляне е създадена}
+::msgcat::mcset bg {Pull request description} {Описание на заявката за изтегляне}
+::msgcat::mcset bg {Pull request opened.} {Заявката за изтегляне е отворена.}
+::msgcat::mcset bg {Pull request repository} {Хранилище на заявката за изтегляне}
+::msgcat::mcset bg {Pull request title} {Заглавие на заявката за изтегляне}
 ::msgcat::mcset bg {Purge + delete files} {Изчисти + изтрий файловете}
 ::msgcat::mcset bg {Purge container} {Изчисти контейнера}
+::msgcat::mcset bg Purpose Цел
+::msgcat::mcset bg Push Изтласкване
+::msgcat::mcset bg {Push branch…} {Изтласкване на клон…}
+::msgcat::mcset bg {Push complete. No pull request has been opened.} {Изтласкването завърши. Няма отворена заявка за изтегляне.}
+::msgcat::mcset bg {Push this branch?} {Да се изтласка ли този клон?}
+::msgcat::mcset bg {Push to %s:} {Push към %s:}
 ::msgcat::mcset bg Question Въпрос
 ::msgcat::mcset bg Questions Въпроси
 ::msgcat::mcset bg Quit Изход
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset bg {Reading notifications, for triggers} {Четене на известия, за тригерите}
 ::msgcat::mcset bg Reasoning Разсъждения
 ::msgcat::mcset bg {Reasoning effort} {Усилие на reasoning}
+::msgcat::mcset bg {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {Получено, чака прилагане: хранилище %1$s · памет %2$s · конфигурация %3$s · трезор %4$s}
+::msgcat::mcset bg {Recommended checks} {Препоръчителни проверки}
 ::msgcat::mcset bg {Refetch this transcript from the store} {Презареди преписа от store-а}
 ::msgcat::mcset bg Refresh Опресняване
 ::msgcat::mcset bg {Refresh preview} {Обнови прегледа}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset bg {Rename symbol} {Преименувай символа}
 ::msgcat::mcset bg Rename… Преименувай…
 ::msgcat::mcset bg Rendered Форматирано
+::msgcat::mcset bg {Replace existing repository files?} {Да се заменят ли съществуващите файлове в репозиторията?}
+::msgcat::mcset bg {Replace them in the new branch? Nothing else in the repository changes.} {Да се заменят ли в новия клон? Нищо друго в репозиторията не се променя.}
 ::msgcat::mcset bg Repository Хранилище
 ::msgcat::mcset bg {Repository (owner/name)} {Хранилище (собственик/име)}
+::msgcat::mcset bg {Repository directory} {Директория на репозиторията}
+::msgcat::mcset bg {Repository paths} {Пътища в репозиторията}
+::msgcat::mcset bg {Request a new preview before trying again.} {Поискайте нов предварителен преглед, преди да опитате отново.}
 ::msgcat::mcset bg {Reset to default} {Връщане по подразбиране}
 ::msgcat::mcset bg {Reset to template} {Върни към шаблона}
 ::msgcat::mcset bg Restart Рестартирай
+::msgcat::mcset bg {Restart + verify canary} {Рестарт + проверка на канарейката}
 ::msgcat::mcset bg {Restore hidden windows} {Върни скритите прозорци}
 ::msgcat::mcset bg {Restore plugins to %s?} {Да се възстановят добавките към %s?}
 ::msgcat::mcset bg {Restore revision r%1$s of %2$s?} {Да се възстанови ли версия r%1$s на %2$s?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset bg {Restore this commit} {Възстанови този commit}
 ::msgcat::mcset bg {Restore this revision} {Възстанови тази версия}
 ::msgcat::mcset bg {Resume scheduler} {Поднови планировчика}
+::msgcat::mcset bg {Resume unfinished operation} {Продължаване на незавършена операция}
 ::msgcat::mcset bg Revert Отмени
 ::msgcat::mcset bg {Revert %s to HEAD? Uncommitted changes in this file are lost.} {Да се върне ли %s към HEAD? Некоммитнатите промени в този файл се губят.}
 ::msgcat::mcset bg Revert… Отмени…
 ::msgcat::mcset bg Review Review
 ::msgcat::mcset bg {Review (git) pane} {Review (git) панел}
+::msgcat::mcset bg {Review deployment} {Преглед на разгръщането}
+::msgcat::mcset bg {Review extension contribution} {Преглед на приноса към разширението}
 ::msgcat::mcset bg {Review managed local bundle…} {Преглед на управлявания локален пакет…}
 ::msgcat::mcset bg {Review rollback} {Преглед на връщането назад}
+::msgcat::mcset bg {Review selected files} {Преглед на избраните файлове}
 ::msgcat::mcset bg {Review the component options on the summary screen before applying.} {Прегледайте опциите на компонента на екрана за обобщение преди прилагане.}
 ::msgcat::mcset bg {Review the component preview before applying. No component configuration has been written.} {Прегледайте прегледа на компонента преди прилагане. Не е записана конфигурация на компонента.}
+::msgcat::mcset bg {Review the selected files and remove credential findings before preparing.} {Прегледайте избраните файлове и премахнете откритите идентификационни данни, преди да продължите с подготовката.}
 ::msgcat::mcset bg {Reviewed core bundle in the managed install-sources directory} {Проверен пакет на ядрото в управляваната директория install-sources}
+::msgcat::mcset bg {Reviewed fleet deployment} {Прегледано разгръщане на флота}
 ::msgcat::mcset bg {Reviewed local bundle} {Прегледан локален пакет}
 ::msgcat::mcset bg {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {Прегледаният локален пакет е инсталиран. Той не бе проверен с подписано изтегляне. Необходим е рестарт преди използване на новото ядро.}
 ::msgcat::mcset bg Revision Ревизия
 ::msgcat::mcset bg Revoke {Отнеми право}
+::msgcat::mcset bg {Revoke selected} {Отнемане на избраните}
 ::msgcat::mcset bg Roles Роли
 ::msgcat::mcset bg {Roll back %1$s from %2$s to %3$s?} {Да се върне ли %1$s от %2$s към %3$s?}
+::msgcat::mcset bg {Roll back selected target} {Връщане назад на избраната цел}
 ::msgcat::mcset bg {Rollback completed. Reload the component or restart as requested by the report.} {Връщането назад завърши. Презаредете компонента или рестартирайте, както поиска отчетът.}
 ::msgcat::mcset bg {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {Връщането назад е прегледано. Изберете Инсталиране на избрания компонент, за да потвърдите възстановяването; нищо все още не е възстановено.}
 ::msgcat::mcset bg Run Стартирай
 ::msgcat::mcset bg {Run the wizard again} {Пусни съветника отново}
 ::msgcat::mcset bg {Running in the background} {Работа във фонов режим}
-::msgcat::mcset bg {Running tasks} {Текущи задачи}
-::msgcat::mcset bg {Running tasks (subagents, shells, monitors)} {Текущи задачи (субагенти, шелове, монитори)}
 ::msgcat::mcset bg {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {Правата и потребителите по време на работа живеят в store-а и reset на store-а ги отнема. Promote добавя тези, които store-ът реши, в config.toml — коментарите и редът на ключовете във файла се запазват, резервно копие се записва до него, копията в store-а се премахват — и отказва, вместо да гадае там, където файлът вече има мнение.}
 ::msgcat::mcset bg {S3 HTTPS endpoint} {HTTPS endpoint на S3}
 ::msgcat::mcset bg {S3 bucket} {S3 кофа}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset bg {Save as default} {Запази като стандартно}
 ::msgcat::mcset bg {Save attachment as} {Запази прикаченото като}
 ::msgcat::mcset bg {Save globally} {Запази глобално}
+::msgcat::mcset bg {Save or revert the open buffer before applying a change set.} {Запазете или върнете отворения буфер, преди да приложите набор от промени.}
 ::msgcat::mcset bg Scan Сканиране
 ::msgcat::mcset bg {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {Сканирайте кода на veles от машината, която покани този телефон. Ако първо е показала код на WireGuard, преди това сканирайте него с приложението WireGuard.}
 ::msgcat::mcset bg {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {Schedule: интервал ("30m", "every 2h"), cron модел ("0 9 * * 1") или ISO времева марка за еднократно. Редът горе показва как го чете engine-ът. Deliver: "local" държи изхода в лога — единственият честен стандарт от desktop-а, който няма чат платформа зад себе си — или "platform:chat_id". Wake session: оставете празно, за да се изпълни в нова сесия; задайте id на сесия (или уникален префикс), за да се поднови тази сесия с пълната ѝ история — заета сесия приема prompt-а при следващата си граница на ход вместо това.}
+::msgcat::mcset bg Scope Обхват
 ::msgcat::mcset bg {Scroll to end} {Превърти до края}
 ::msgcat::mcset bg {Search commands and sessions…} {Търсене на команди и сесии…}
 ::msgcat::mcset bg {Search message text} {Търсене в текста на съобщенията}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset bg Section Раздел
 ::msgcat::mcset bg {Select a component first. No component options will be changed if you skip this step.} {Първо изберете компонент. Ако пропуснете тази стъпка, няма да се променят опциите на компонента.}
 ::msgcat::mcset bg {Select all} {Избери всичко}
+::msgcat::mcset bg {Select all extensions} {Избор на всички разширения}
+::msgcat::mcset bg {Select at least one source file.} {Изберете поне един файл с изходен код.}
+::msgcat::mcset bg {Select none} {Без избор}
+::msgcat::mcset bg {Select text to translate first.} {Първо маркирайте текст за превод.}
+::msgcat::mcset bg {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {Изберете разширенията и файловете за принос. Те отиват в един клон и един pull request, всяко разширение в собствена директория. Прегледайте, пуснете непроверяващи проверки, после подгответе изолиран клон и комит. Push и създаването на pull request са отделни потвърдени действия.}
 ::msgcat::mcset bg Send Изпрати
+::msgcat::mcset bg {Send %s to the peer?} {Да се изпрати ли %s на peer-а?}
 ::msgcat::mcset bg {Send a %d-line message to the channel?} {Да изпратя %d-редово съобщение до канала?}
 ::msgcat::mcset bg {Send raw line to the server? (%s)} {Да изпратя суровия ред до сървъра? (%s)}
 ::msgcat::mcset bg {Server (empty = no IRC)} {Сървър (празно = без IRC)}
 ::msgcat::mcset bg {Server: gateway configuration and a reviewed user unit} {Server: конфигурация на gateway и проверена потребителска unit}
 ::msgcat::mcset bg {Server: install a user unit and prepare the separate linger handoff} {Server: инсталирайте потребителска unit и подгответе отделното linger предаване}
 ::msgcat::mcset bg {Server: use a system service and prepare a privileged CLI request} {Server: използвайте системна услуга и подгответе CLI заявка с администраторски права}
+::msgcat::mcset bg Session Сесия
 ::msgcat::mcset bg {Session id} {ID на сесията}
 ::msgcat::mcset bg {Session id…} {ID на сесията…}
 ::msgcat::mcset bg Sessions Сесии
 ::msgcat::mcset bg {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Сесиите, пренасочени към този алиас, запазват избрания маршрут; новите пренасочвания няма да намерят името.}
+::msgcat::mcset bg {Sessions served} {Обслужени сесии}
 ::msgcat::mcset bg Set Задай
 ::msgcat::mcset bg {Set [model] provider/default in config.toml.} {Задава provider/default на [model] в config.toml.}
 ::msgcat::mcset bg {Set as swap target} {Направи цел за размяна}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset bg {Setup — summary} {Настройка — обобщение}
 ::msgcat::mcset bg {Setup — welcome} {Настройка — начало}
 ::msgcat::mcset bg {Shared container network} {Споделена контейнерна мрежа}
+::msgcat::mcset bg Shells Шелове
+::msgcat::mcset bg {Shells and monitors} {Шелове и монитори}
+::msgcat::mcset bg {Shells and monitors (subagents, shells, monitors)} {Шелове и монитори (подагенти, шелове, монитори)}
 ::msgcat::mcset bg {Show diff} {Покажи разликите}
 ::msgcat::mcset bg {Show every key} {Покажи всички клавиши}
 ::msgcat::mcset bg Sign Подписване
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset bg Solved Решено
 ::msgcat::mcset bg Source Източник
 ::msgcat::mcset bg {Source commit} {Изходен комит}
+::msgcat::mcset bg {Source text} {Изходен текст}
 ::msgcat::mcset bg {Source→app (C-c C-c)} {Source→app (C-c C-c)}
 ::msgcat::mcset bg Stage Индексирай
+::msgcat::mcset bg {Stage canary} {Подготовка на канарейката}
+::msgcat::mcset bg Stale Неактуален
+::msgcat::mcset bg {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {Постоянните права позволяват по-късни извиквания на инструменти без ново питане. Сесийните права се държат от живи сесии на всяка повърхност (desktop, Telegram, IRC, …); глобалните права се запазват; записите в allowlist от [approvals] в config.toml се показват само за четене. Отнемането на едно право никога не променя другите права.}
 ::msgcat::mcset bg Start Старт
+::msgcat::mcset bg {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {Започнете с разширение във вашата потребителска директория за добавки. То се запазва при надграждания и не изисква повторно изграждане на шлюза. Създаването на ново разширение показва предварително точния манифест и изходния код преди записване. Изберете поддържания език и версия на API, прегледайте файловете, след което тествайте разширението изолирано.}
 ::msgcat::mcset bg {Start with the phone} {Стартиране заедно с телефона}
+::msgcat::mcset bg {Static IP} {Статично IP}
 ::msgcat::mcset bg Status Статус
 ::msgcat::mcset bg Steer Насочване
 ::msgcat::mcset bg {Step %1$d of %2$d} {Стъпка %1$d от %2$d}
 ::msgcat::mcset bg {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {Остава да се зададе: %s — напишете тук /secret set NAME или изпълнете veles secret set NAME на машината на шлюза.}
 ::msgcat::mcset bg Stop Спри
 ::msgcat::mcset bg {Storage root} {Корен на хранилището}
+::msgcat::mcset bg Store Хранилище
 ::msgcat::mcset bg {Store a secret: %s} {Запазване на тайна: %s}
 ::msgcat::mcset bg {Store it} Запази
+::msgcat::mcset bg {Store replica} {Реплика на хранилището}
 ::msgcat::mcset bg Subagents Субагенти
 ::msgcat::mcset bg {Subagents (/agents)} {Субагенти (/agents)}
 ::msgcat::mcset bg Summary Обобщение
+::msgcat::mcset bg Surface Повърхност
 ::msgcat::mcset bg {Swap ⇄} {Размени ⇄}
+::msgcat::mcset bg {Sync cancelled.} {Синхронизацията е отменена.}
+::msgcat::mcset bg {Sync complete.} {Синхронизирането завърши.}
+::msgcat::mcset bg {Sync now} {Синхронизиране сега}
 ::msgcat::mcset bg {TOML copied — paste it into config.toml} {TOML е копиран — постави го в config.toml}
 ::msgcat::mcset bg Tag Таг
 ::msgcat::mcset bg {Tap a link to open it, or a block's header to open or close the block.} {Докоснете връзка, за да я отворите, или заглавието на блок, за да го отворите или затворите.}
 ::msgcat::mcset bg {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {Докоснете полето долу, за да пишете. Изпрати изпраща, Спри прекратява хода, а Откачи премества работеща команда във фонов режим.}
 ::msgcat::mcset bg {Tap the text to clear the selection.} {Докоснете текста, за да изчистите селекцията.}
+::msgcat::mcset bg {Target language:} {Целеви език:}
+::msgcat::mcset bg {Target node IDs (canary first, comma separated)} {ID на целевите възли (канарейката първа, разделени със запетая)}
 ::msgcat::mcset bg {Task list} {Списък задачи}
 ::msgcat::mcset bg {Task list (right pane)} {Списък задачи (десен панел)}
 ::msgcat::mcset bg Tasks Задачи
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset bg {That is not a ticket.} {Това не е билет.}
 ::msgcat::mcset bg {That is not a veles pool code.} {Това не е код за група на veles.}
 ::msgcat::mcset bg {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {Това е кодът на WireGuard: сканирайте го с приложението WireGuard. Кодът на veles е вторият.}
+::msgcat::mcset bg {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {Прегледаните %d файл(а) ще бъдат записани в нова директория в потребителската ви директория за добавки и veles ще опита да зареди разширението. Ако директория с това име се е появила след прегледа, нищо не се записва. Публикуването не е част от това действие.}
 ::msgcat::mcset bg {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {REPL-ът на Dev панела се изпълнява в ЖИВОТО приложение — UI-ят е негов собствен lisp.}
 ::msgcat::mcset bg {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {Таблицата [mcp_servers.<name>] се изтрива от config.toml. Предишният файл се пази като config.toml.bak.}
 ::msgcat::mcset bg {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {Списъците за допускане на адаптерите (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) са границата на доверие, а всеки допуснат подател се разпознава като owner. Това е режимът отпреди ACL.}
 ::msgcat::mcset bg {The agent asks for a secret: %s} {Агентът иска тайна: %s}
+::msgcat::mcset bg {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {Вече изпратеният клон ще се използва като PR head. Клон във вашия fork се именува автоматично като owner:branch.}
+::msgcat::mcset bg {The author asks} {Авторът пита}
+::msgcat::mcset bg {The buffer changed. Request a new proposal before applying.} {Буферът се промени. Поискайте ново предложение преди прилагане.}
 ::msgcat::mcset bg {The bundle operation returned an invalid result. Verify the installation before retrying.} {Операцията с пакета върна невалиден резултат. Проверете инсталацията преди повторен опит.}
 ::msgcat::mcset bg {The bundle preview was malformed; nothing was installed.} {Прегледът на пакета беше неправилен; нищо не бе инсталирано.}
 ::msgcat::mcset bg {The camera did not open; paste the code instead.} {Камерата не се отвори; поставете кода вместо това.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset bg {The component manifest is still loading. Wait for it or choose another component.} {Манифестът на компонента все още се зарежда. Изчакайте или изберете друг компонент.}
 ::msgcat::mcset bg {The component preview is not ready yet. Refresh it and review the result before applying.} {Прегледът на компонента още не е готов. Опреснете го и прегледайте резултата преди прилагане.}
 ::msgcat::mcset bg {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {Прегледът на компонента все още се зарежда. Изчакайте отговора преди да прегледате комбинираните промени.}
+::msgcat::mcset bg {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Текущата диагностика (от езиковия сървър или от Проверка) се изпраща с този файл. По желание добавете въпрос. Отговорът е само текст; нищо не може да бъде записано.}
 ::msgcat::mcset bg {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Директорията и всичко в нея се изтрива. Това не може да се отмени — вместо това я изключи, ако просто искаш да я няма в промпта.}
 ::msgcat::mcset bg {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Директорията се изтрива. Папката на плъгина е git хранилище и първо се записва snapshot, така че История… може да я върне.}
+::msgcat::mcset bg {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Редакторът отваря файлове на gateway-а, включително от отдалечени инстанции, и стартира на gateway-а езиковия сървър за езика на файла: tcl-lsp, typescript-language-server (TypeScript и JavaScript), rust-analyzer (crate или модул на Rust плъгин), clangd (C), racket-langserver и сървър за Common Lisp. Hover, преминаване към дефиниция, довършване и диагностика на живо работят за всеки език, за който gateway-ът има сървър; когато няма такъв, редакторът казва коя програма да се инсталира там и запазва оцветяването на синтаксиса. Проверка стартира на gateway-а съответния проверяващ инструмент: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only или четците за Racket и Lisp. Запазете, презаредете в Управление на разширенията и тествайте разширението, без да публикувате локалното състояние.}
 ::msgcat::mcset bg {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Първото предаване подготвя тайните, фиксирания образ и файловете за средата, но не стартира PDS. Направете офлайн резервно копие на KEK и на ключа за ротация на PLC, след което създайте нова прегледана заявка с потвърждение за резервното копие, за да се настроят HTTP-01 TLS и активирането. DNS записите трябва да сочат директно към този хост; veles не настройва CDN прокси и не променя DNS.}
+::msgcat::mcset bg {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Формулярът се промени, откакто разширението беше генерирано. Генерирайте отново или прегледайте обикновения скелет.}
 ::msgcat::mcset bg {The gateway itself is untouched.} {Самият gateway не се пипа.}
 ::msgcat::mcset bg {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Шлюзът презареди конфигурацията: новите сесии я ползват веднага, а ключ, запазен в трезора, ще бъде използван от следващата заявка. Telegram и IRC стартират при следващото рестартиране на шлюза: veles gateway restart.}
 ::msgcat::mcset bg {The installed component no longer matches the selected manifest. Review the component list again.} {Инсталираният компонент вече не съвпада с избрания манифест. Прегледайте отново списъка с компоненти.}
 ::msgcat::mcset bg {The installer preview has no verification signatures; apply is disabled.} {Прегледът за инсталиране няма подписи за проверка; прилагането е изключено.}
 ::msgcat::mcset bg {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Задачата и историята на изпълненията ѝ се изтриват. Това не може да се отмени — вместо това я паузирай, ако просто искаш да спре.}
+::msgcat::mcset bg {The log could not be read: %s} {Логът не можа да бъде прочетен: %s}
 ::msgcat::mcset bg {The manifest belongs to another component; its reply was discarded.} {Манифестът принадлежи на друг компонент; отговорът му бе отхвърлен.}
 ::msgcat::mcset bg {The profile changed. Review the fresh plan before applying it.} {Профилът се промени. Прегледайте актуалния план, преди да го приложите.}
 ::msgcat::mcset bg {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {Хранилището трябва да има SKILL.md в корена или една категория по-надолу. Попада в %s.}
 ::msgcat::mcset bg {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {Коренът на хранилището трябва да съдържа plugin.toml. Клонира се в %s под името от манифеста.}
+::msgcat::mcset bg {The reviewed change set was applied (%d files). Review and test it before publishing.} {Прегледаният набор от промени е приложен (%d файла). Прегледайте го и го тествайте, преди да публикувате.}
 ::msgcat::mcset bg {The reviewed configuration snapshot will also be restored.} {Прегледаната конфигурационна снимка също ще бъде възстановена.}
+::msgcat::mcset bg {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {Прегледаните файлове ще бъдат записани във вашата потребителска директория за добавки. veles запазва локална моментна снимка за възстановяване и се опитва да презареди разширението; публикуването не е част от това действие.}
+::msgcat::mcset bg {The reviewed proposal was applied locally. Review and test it before publishing.} {Прегледаното предложение беше приложено локално. Прегледайте го и го тествайте преди публикуване.}
 ::msgcat::mcset bg {The rollback preview was malformed or named another component; nothing was restored.} {Прегледът на връщането назад беше неправилен или назоваваше друг компонент; нищо не бе възстановено.}
 ::msgcat::mcset bg {The rollback returned an invalid result. Verify the installation before retrying.} {Връщането назад върна невалиден резултат. Проверете инсталацията преди повторен опит.}
 ::msgcat::mcset bg {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {Маршрутът, с който тръгват новите сесии. /model и оверлеят с модели го променят по-късно — за сесия или като ново подразбиране.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset bg {The signed download discard returned an invalid response; no installation was requested.} {Отхвърлянето на подписаното изтегляне върна невалиден отговор; не е поискано инсталиране.}
 ::msgcat::mcset bg {The signed installation returned an invalid result. Verify the installation before retrying.} {Подписаното инсталиране върна невалиден резултат. Проверете инсталацията, преди да опитате отново.}
 ::msgcat::mcset bg {The signed release preview was malformed; nothing was installed.} {Прегледът на подписаното издание беше с грешен формат; нищо не беше инсталирано.}
+::msgcat::mcset bg {The source buffer changed. Request a new proposal before applying.} {Буферът с изходния код се промени. Поискайте ново предложение преди прилагане.}
 ::msgcat::mcset bg {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Хранилището се връща с една ревизия. Самото връщане също е ревизия, така че може да се отмени на свой ред.}
+::msgcat::mcset bg {The translator returned no text.} {Преводачът не върна текст.}
 ::msgcat::mcset bg {The verification reply was malformed; no integrity result was accepted.} {Отговорът на проверката беше неправилен; не бе приет резултат за цялостност.}
 ::msgcat::mcset bg Themes Теми
+::msgcat::mcset bg {These paths already exist in the chosen repository:} {Тези пътища вече съществуват в избраната репозитория:}
 ::msgcat::mcset bg {They have not been saved.} {Не са запазени.}
+::msgcat::mcset bg {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {Този буфер няма диагностика за обяснение. Изпълнете Проверка или изчакайте езиковия сървър.}
 ::msgcat::mcset bg {This challenge is over.} {Това предизвикатство приключи.}
 ::msgcat::mcset bg {This code has expired. Ask for a new one.} {Този код е изтекъл. Поискайте нов.}
 ::msgcat::mcset bg {This does not start a service or claim signed-download verification.} {Това не стартира услуга и не твърди проверка на подписано изтегляне.}
 ::msgcat::mcset bg {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Този шлюз не приема тайни стойности от тази машина: въведете го там с veles secret set %s или добавете тази мрежа в неговия [vault] trusted_networks}
 ::msgcat::mcset bg {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Това е точно какво ще бъде записано — самите байтове на engine-а, взети на живо. Дискът все още не е пипнат.}
+::msgcat::mcset bg {This node is not a configured sync peer for any kind.} {Този възел не е конфигуриран sync peer за нито един вид.}
+::msgcat::mcset bg {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Тази добавка е вградена и само за четене. Премахнете потребителско копие със същото име, за да се ползва вграденото копие вместо него.}
+::msgcat::mcset bg {This publishes the commit; no pull request is created yet.} {Това публикува комита; все още не се създава заявка за изтегляне.}
 ::msgcat::mcset bg {This review expires after %s seconds. Closing or cancelling discards its private staging.} {Този преглед изтича след %s секунди. Затварянето или отказът отхвърлят частния му подготвен архив.}
 ::msgcat::mcset bg {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {Този съветник записва config.toml, а ключовете, които му дадете, поставя в шифрования трезор. Всяка стъпка може да се пропусне: пропусната стъпка липсва в нова конфигурация и остава точно каквато е в съществуваща. Съществуващ config.toml се редактира на място — променят се само разделите, на които отговорите, а всичко останало в него, включително коментарите, остава.}
 ::msgcat::mcset bg {Ticket needed} {Необходим е билет}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset bg {Topic for %s} {Тема за %s}
 ::msgcat::mcset bg {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {Докоснете и задръжте сесия или нещо друго, което има меню, за да отворите менюто. Докосване извън него или Назад го затваря.}
 ::msgcat::mcset bg {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {Докоснете и задръжте дума, за да я изберете. Когато вдигнете пръста си, се отваря менюто ѝ, с Копирай най-отгоре.}
+::msgcat::mcset bg Translate Преведи
+::msgcat::mcset bg {Translate selection} {Преведи маркираното}
+::msgcat::mcset bg Translating… Превеждане…
+::msgcat::mcset bg {Translation cancelled.} {Преводът е отменен.}
+::msgcat::mcset bg {Translation copied.} {Преводът е копиран.}
+::msgcat::mcset bg {Translation failed} {Преводът не успя}
+::msgcat::mcset bg {Translation result} {Резултат от превода}
+::msgcat::mcset bg {Translator configuration unavailable} {Конфигурацията на преводача е недостъпна}
 ::msgcat::mcset bg {Trigger history} {История на задействанията}
 ::msgcat::mcset bg Triggers Тригери
 ::msgcat::mcset bg {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {Тригерите реагират на канални събития без turn. slopdrop препраща събитието към bridge-а и връща отговора; vision описва URL на изображение в рамките на cooldown периода и почасовата граница. Редът задейства само там, където превключвателят [triggers] в конфигурацията И получената маска го позволяват — #coven не препраща нищо при активните обвързвания на slopdrop.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset bg {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Докато IRC_ALLOWED_USERS в .env не назове вашия акаунт, всеки в мрежата може да говори с бота — а без раздел [acl] като собственик, с всички инструменти.}
 ::msgcat::mcset bg {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Докато TELEGRAM_ALLOWED_USERS в .env не назове вашия потребителски ID, всеки, който намери бота, може да говори с него — а без раздел [acl] като собственик, с всички инструменти.}
 ::msgcat::mcset bg Untitled {Без заглавие}
+::msgcat::mcset bg {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Приносът нагоре е изрично публикуващо действие, не автоматично качване. В Управление на разширенията Принос изброява всяко потребителско разширение: изберете разширенията и файловете, прегледайте diff-а и сканирането за тайни, пуснете проверки, после създайте един клон и един PR (по подразбиране към veles) с избраната от вас git самоличност. Всяко разширение отива в собствена директория в репозиторията, а съществуващ там файл се заменя само след отделно потвърждение. Никога не публикувайте node.toml, локални удостоверения, токени, частни endpoints или несвързано състояние на добавка. Локалните възстановителни снимки не са upstream комит или PR.}
+::msgcat::mcset bg {Upstream repository or fork URL} {Хранилище на оригиналния проект или URL на форк}
+::msgcat::mcset bg {Uptime class} {Клас на работно време}
+::msgcat::mcset bg {Uptime: host %1$s, gateway %2$s} {Време на работа: хост %1$s, gateway %2$s}
 ::msgcat::mcset bg Usage Използване
 ::msgcat::mcset bg {Usage & Quota} {Използване и квота}
 ::msgcat::mcset bg {Use TLS} {Използвай TLS}
 ::msgcat::mcset bg {Use now} {Използвай сега}
+::msgcat::mcset bg {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {Използвайте бутоните „Ръководство за автори“ и „Справочник по API“ за действителните договори на интерфейса. Панелът „Добавки“ изброява активните hooks; услугите и точките за замяна идват от собствения регистър на шлюза, а не от копиран списък в това ръководство.}
 ::msgcat::mcset bg {Use this ticket} {Използвай този билет}
+::msgcat::mcset bg {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {Използвайте своя fork (https://github.com/<you>/veles.git или git@github.com:<you>/veles.git), освен ако можете да push-вате към самия veles. Избраната репозитория се клонира в изолиран worktree. Нищо не се изпраща.}
 ::msgcat::mcset bg {Users — one role across networks and platforms} {Потребители — една роля за всички мрежи и платформи}
 ::msgcat::mcset bg {Using the phone, for the agent} {Използване на телефона, за агента}
 ::msgcat::mcset bg {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Обикновено съвпада с името на записа за доставчика. Остави и двете празни при „Пропусни“ — полузададена двойка не рутира.}
 ::msgcat::mcset bg {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Стойностите са TOML: низове в кавички, числа или списъци. Записват се в [mcp_servers.<name>] — коментарите ти и всички останали секции остават непокътнати.}
+::msgcat::mcset bg Vault Трезор
 ::msgcat::mcset bg {Verified signed bundle installed. Restart the gateway before using the new core.} {Инсталиран е провереният подписан пакет. Рестартирайте gateway-а, преди да използвате новото ядро.}
 ::msgcat::mcset bg {Verified signed release — not installed yet} {Проверено подписано издание — все още не е инсталирано}
 ::msgcat::mcset bg {Verify and review release…} {Проверка и преглед на изданието…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset bg {Verify signed release} {Проверка на подписаното издание}
 ::msgcat::mcset bg {Verify signed release…} {Проверка на подписаното издание…}
 ::msgcat::mcset bg Version Версия
+::msgcat::mcset bg {Version %1$s: %2$s} {Версия %1$s: %2$s}
+::msgcat::mcset bg {Version drift in the registry: %s} {Разминаване на версии в регистъра: %s}
 ::msgcat::mcset bg View Изглед
 ::msgcat::mcset bg {View markdown source} {Прегледай markdown източника}
 ::msgcat::mcset bg {View source / rendered} {Източник / форматирано}
 ::msgcat::mcset bg Voice {Дай voice}
+::msgcat::mcset bg {Waiting for the model…} {Чакане на модела…}
+::msgcat::mcset bg {Waiting for the model… Nothing has been written.} {Чакане на модела… Нищо не е записано.}
 ::msgcat::mcset bg {Welcome to veles} {Добре дошъл в veles}
 ::msgcat::mcset bg {What the agent can do here} {Какво може да прави агентът тук}
 ::msgcat::mcset bg {What veles may do on this phone. Each button opens the Android setting that changes it.} {Какво може да прави veles на този телефон. Всеки бутон отваря настройката на Android, която го променя.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset bg {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {Докато veles е във фонов режим, въпрос от агент или завършен ход идва като известие; докоснете го, за да отворите сесията.}
 ::msgcat::mcset bg {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {Кой може да говори с бота. Този избор решава дали config.toml изобщо ще има секция [acl] — а това обръща целия режим на достъп.}
 ::msgcat::mcset bg Whois Whois
-::msgcat::mcset bg {Wire protocol (chat_completions or responses)} {Протокол (chat_completions или responses)}
+::msgcat::mcset bg {Wire protocol (chat_completions, responses or plugin)} {Wire протокол (chat_completions, responses или plugin)}
 ::msgcat::mcset bg {With a keyboard attached, every key works as on a laptop.} {С включена клавиатура всеки клавиш работи като на лаптоп.}
 ::msgcat::mcset bg {Workflow SHA} {SHA на workflow}
+::msgcat::mcset bg {Workflow commit} {Комит на workflow}
+::msgcat::mcset bg Worktree {Работно дърво}
 ::msgcat::mcset bg {Write it} {Запиши го}
+::msgcat::mcset bg {Write the design question first.} {Първо напишете въпроса за дизайн.}
 ::msgcat::mcset bg {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Не записва доставчик. Gateway-ът няма да рутира ход, докато не съществува запис [[custom_providers]] и двойката [model].}
 ::msgcat::mcset bg {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Записването на КОЙТО И ДА Е ключ в [acl] превключва този шлюз в куриран режим: ролята по подразбиране става guest (fail-closed), а списъците с разрешени престават да са границата. Избирайте това само с идентичност на собственик, на която имате доверие.}
 ::msgcat::mcset bg {[model] provider} {[model] provider}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset bg {also list hooks with no handler} {изброи и hooks без handler}
 ::msgcat::mcset bg {also write grants that still have an expiry} {запиши и предоставянията, които все още имат срок}
 ::msgcat::mcset bg {also write runtime users} {запиши и runtime потребителите}
+::msgcat::mcset bg {an allowlist entry is removed by editing config.toml} {запис в allowlist се премахва чрез редактиране на config.toml}
 ::msgcat::mcset bg {an allowlist is in force: a plugin not on it stays off} {в сила е allowlist: плъгин, който не е в него, остава изключен}
 ::msgcat::mcset bg {answer failed: %s} {грешка при отговора: %s}
+::msgcat::mcset bg {answer only, nothing to apply} {само отговор, нищо за прилагане}
 ::msgcat::mcset bg {append these rules to config.toml} {добави тези правила към config.toml}
 ::msgcat::mcset bg {apply failed: %s} {грешка при прилагането: %s}
 ::msgcat::mcset bg {apply to:} {приложи към:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset bg {ask the agent} {да пита агента}
 ::msgcat::mcset bg {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset bg {asked by: %s} {попитан от: %s}
+::msgcat::mcset bg {asking %s for its metrics…} {поискване на метриките от %s…}
 ::msgcat::mcset bg {attach a file} {прикачи файл}
 ::msgcat::mcset bg {attach an image or file} {прикачи изображение или файл}
 ::msgcat::mcset bg {attach failed: %1$s} {прикачването не успя: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset bg {attached %1$s (%2$s pending)} {прикачен %1$s (%2$s на опашка)}
 ::msgcat::mcset bg {attached to %s} {прикачен към %s}
 ::msgcat::mcset bg {attached to child session %1$s} {прикачен към дъщерна сесия %1$s}
+::msgcat::mcset bg automatic автоматично
 ::msgcat::mcset bg {aux model} {aux модел}
 ::msgcat::mcset bg {aux provider} {aux доставчик}
+::msgcat::mcset bg available налично
 ::msgcat::mcset bg {available components} {налични компоненти}
 ::msgcat::mcset bg {back up N user turns} {върни N хода на потребителя назад}
 ::msgcat::mcset bg {backed up the previous config to %s} {архивирах предишния config в %s}
 ::msgcat::mcset bg {background shells; /shells output|kill <id>} {фонови шелове; /shells output|kill <id>}
+::msgcat::mcset bg {backing off: %1$s failure(s), next automatic try in %2$s s} {изчакване: %1$s неуспеха, следващ автоматичен опит след %2$s s}
 ::msgcat::mcset bg {bad host for %1$s: %2$s} {невалиден host за %1$s: %2$s}
 ::msgcat::mcset bg {bad unit for %1$s: %2$s} {невалидна unit за %1$s: %2$s}
 ::msgcat::mcset bg {bare display off} {bare показване: изкл.}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset bg {browse the filesystem} {разгледай файловата система}
 ::msgcat::mcset bg {browse the repo's files} {разгледай файловете на репото}
 ::msgcat::mcset bg {builtin (%s):} {вградени (%s):}
+::msgcat::mcset bg bundled вградена
+::msgcat::mcset bg {bundled, read-only} {вградена, само за четене}
 ::msgcat::mcset bg by от
 ::msgcat::mcset bg {by plan — all sessions} {по план — всички сесии}
 ::msgcat::mcset bg {by plan — this session} {по план — тази сесия}
 ::msgcat::mcset bg {by tool} {по инструмент}
 ::msgcat::mcset bg {cancel failed: %1$s} {грешка при отмяна: %1$s}
 ::msgcat::mcset bg {cancel the running turn} {отмени текущия ход}
+::msgcat::mcset bg {cancel the selected task} {отмени избраната задача}
 ::msgcat::mcset bg {cancelled task %1$s} {отменена задача %1$s}
 ::msgcat::mcset bg {cannot list scripts (gateway offline?)} {не може да се изброят скриптовете (gateway офлайн?)}
 ::msgcat::mcset bg {cannot reach the gateway: %s} {не мога да се свържа с gateway-а: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset bg commit Подай
 ::msgcat::mcset bg {compacting %s messages in the background — the transcript reloads when it finishes} {компактират се %s съобщения във фонов режим — преписът се презарежда при завършване}
 ::msgcat::mcset bg compacting… компактиране…
+::msgcat::mcset bg {comparing the nodes' versions and config…} {сравняване на версиите и конфигурацията на възлите…}
 ::msgcat::mcset bg {completion tokens} {токени на отговора}
 ::msgcat::mcset bg {component options and declared actions} {опции на компонента и декларирани действия}
 ::msgcat::mcset bg composer композитор
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset bg {could not open %s} {не може да се отвори %s}
 ::msgcat::mcset bg {could not open %s (no working browser opener)} {не може да се отвори %s (няма работещ отварач за браузър)}
 ::msgcat::mcset bg {could not open %{url}: %{e}} {не може да се отвори %{url}: %{e}}
+::msgcat::mcset bg {could not open the optional referral link: %s} {не можа да се отвори опционалният реферален линк: %s}
 ::msgcat::mcset bg {could not read %s: %s} {не можа да прочете %s: %s}
 ::msgcat::mcset bg {could not read the current route} {не може да се прочете текущият маршрут}
 ::msgcat::mcset bg {could not save this session's language: %{e}} {езикът на тази сесия не можа да се запази: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset bg {ctxmenu: no widget %s (attached too early?)} {ctxmenu: няма widget %s (прикачен твърде рано?)}
 ::msgcat::mcset bg {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {избран е курирен достъп без идентичност на собственик, затова [acl] остава неактивен — посочете такава, например telegram:123456 или irc:account, за да го включите}
 ::msgcat::mcset bg {current theme: %{name} · /theme <name>} {текуща тема: %{name} · /theme <name>}
+::msgcat::mcset bg {cursor %1$s of %2$s (%3$s behind)} {курсор %1$s от %2$s (%3$s назад)}
 ::msgcat::mcset bg {custom command /%s…} {персонална команда /%s…}
 ::msgcat::mcset bg {custom commands (.veles/commands/) and config aliases} {собствени команди (.veles/commands/) и псевдоними от конфигурацията}
 ::msgcat::mcset bg {cycle ends} {край на цикъла}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset bg doctor_resident {постоянно във всяка подкана: %{shown} от %{total} знака (~%{tokens} токена) — останалото се зарежда при нужда с: memory action=read path=%{path}}
 ::msgcat::mcset bg doctor_title {диагностика на паметта}
 ::msgcat::mcset bg doctor_total {общо: %{chars} знака в %{files} файла (~%{tokens} токена)}
+::msgcat::mcset bg {documentation is not in this source checkout: %s} {документацията не е в това копие на изходния код: %s}
 ::msgcat::mcset bg done готово
 ::msgcat::mcset bg {done · %1$s/%2$s} {готово · %1$s/%2$s}
 ::msgcat::mcset bg {done, but the model returned no text} {готово, но моделът не върна текст}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset bg {evaluate Tcl and answer with the result — no model turn} {изпълни Tcl и отговори с резултата — без ход на модела}
 ::msgcat::mcset bg everyone всички
 ::msgcat::mcset bg everywhere навсякъде
+::msgcat::mcset bg {exchanging registry gossip…} {обмен на регистъра…}
 ::msgcat::mcset bg exit изход
 ::msgcat::mcset bg {exit veles-desktop} {изход от veles-desktop}
 ::msgcat::mcset bg {export failed: %s} {експортът не успя: %s}
 ::msgcat::mcset bg {export session} {експортирай сесията}
 ::msgcat::mcset bg {exported to %s} {експортирано в %s}
+::msgcat::mcset bg {extension architecture, examples and LSP help} {Архитектура на разширенията, примери и помощ за LSP}
+::msgcat::mcset bg {extension development guide} {Ръководство за разработка на разширения}
+::msgcat::mcset bg failed неуспешно
 ::msgcat::mcset bg {failed to load history: %s} {зареждането на историята не успя: %s}
 ::msgcat::mcset bg {failed to paint cached history: %s} {изчертаването на кешираната история не успя: %s}
 ::msgcat::mcset bg {failed to paint replayed history: %s} {изчертаването на възпроизведената история не успя: %s}
 ::msgcat::mcset bg {failed: %s} {неуспех: %s}
+::msgcat::mcset bg {failing — heartbeating, but a sync push or the last probe failed} {проблемен — heartbeat има, но sync push или последната проверка се провали}
 ::msgcat::mcset bg {failover blueprint: cannot reach the gateway} {failover blueprint: няма достъп до gateway}
 ::msgcat::mcset bg {failover graph unavailable: %1$s} {графът за failover е недостъпен: %1$s}
 ::msgcat::mcset bg {failover script: cannot reach the gateway} {failover script: няма достъп до gateway}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset bg {fire the Tcl hook} {задействай Tcl hook-а}
 ::msgcat::mcset bg {fires for %s:} {задейства се за %s:}
 ::msgcat::mcset bg {fires per hour} {задействания на час}
+::msgcat::mcset bg {fleet drift} {разминаване в клъстера}
 ::msgcat::mcset bg {focus composer} {фокусирай композитора}
 ::msgcat::mcset bg {focus failed: %{e}} {не може да се фокусира: %{e}}
 ::msgcat::mcset bg {focus next region} {фокусирай следващия регион}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset bg {four splits is the maximum} {максимум четири разделяния}
 ::msgcat::mcset bg {fresh session} {нова сесия}
 ::msgcat::mcset bg {fresh session (Ctrl-N too)} {нова сесия (също Ctrl-N)}
+::msgcat::mcset bg {fresh — heartbeating, sync passing} {свеж — heartbeat има, sync минава}
+::msgcat::mcset bg from от
 ::msgcat::mcset bg {from node %{node}} {от възел %{node}}
 ::msgcat::mcset bg {gateway     v%1$s · up %2$s} {gateway     v%1$s · работи %2$s}
 ::msgcat::mcset bg {gateway unreachable — is `veles gateway run` up?} {gateway недостъпен — работи ли `veles gateway run`?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset bg {in %s} {в %s}
 ::msgcat::mcset bg {insert the next key literally (^B bold, ^C colour, ^O reset)} {вмъкни следващия клавиш буквално (^B удебеляване, ^C цвят, ^O нулиране)}
 ::msgcat::mcset bg {inserted %s} {вмъкнато %s}
+::msgcat::mcset bg {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {прегледай клъстера; изрично избутай/приложи синхронизация на store, памет, конфигурация или трезор; забрави застоял възел за целия клъстер; прочети края на лога или метриките на възел; сравни версиите и конфигурацията; обмен на регистъра сега}
 ::msgcat::mcset bg {inspector — app internals · core state · gw plugins} {инспектор — вътрешности на приложението · състояние на ядрото · gw плъгини}
 ::msgcat::mcset bg {install a plugin from a git URL} {инсталирай плъгин от git URL}
 ::msgcat::mcset bg {install a skill from a git URL} {инсталирай умение от git URL}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset bg instance инстанция
 ::msgcat::mcset bg {instance controls} {контроли на инстанцията}
 ::msgcat::mcset bg {instance detail} {детайли за инстанцията}
+::msgcat::mcset bg {instance names may not start with "cluster:" or "g:": %s} {имената на инстанции не може да започват с „cluster:“ или „g:“: %s}
 ::msgcat::mcset bg {instance needs a name} {инстанцията трябва да има име}
 ::msgcat::mcset bg {instance unreachable} {инстанцията е недостъпна}
 ::msgcat::mcset bg instances инстанции
 ::msgcat::mcset bg interrupting… прекъсвам…
+::msgcat::mcset bg into в
 ::msgcat::mcset bg {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset bg {irc: %s} {irc: %s}
 ::msgcat::mcset bg {irc: %s failed — %s} {irc: %s се провали — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset bg {language list} {списък с езици}
 ::msgcat::mcset bg {language picker (the swap for THIS window)} {избор на език (смената е само за ТОЗИ прозорец)}
 ::msgcat::mcset bg {language saved: %s} {езикът е запазен: %s}
+::msgcat::mcset bg {language server} {езиков сървър}
+::msgcat::mcset bg {language server: event stream unavailable: %s} {езиков сървър: потокът от събития не е наличен: %s}
+::msgcat::mcset bg {language server: not started on the gateway — %s} {езиков сървър: не е стартиран на gateway-а — %s}
+::msgcat::mcset bg {language server: the gateway would not start one: %s} {езиков сървър: gateway-ът отказа да стартира такъв: %s}
 ::msgcat::mcset bg {language swapped: %1$s ⇄ %2$s} {езиците са разменени: %1$s ⇄ %2$s}
 ::msgcat::mcset bg {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {език → %1$s (беше %2$s) · само за текущия прозорец — Save as default записва config.toml}
 ::msgcat::mcset bg {language: %s} {език: %s}
 ::msgcat::mcset bg {last error} {последна грешка}
+::msgcat::mcset bg {last pass %1$s at %2$s: %3$s} {последно успешно %1$s в %2$s: %3$s}
 ::msgcat::mcset bg {last reply copied (%s chars)} {последният отговор е копиран (%s знака)}
 ::msgcat::mcset bg {layout not saved: %s} {оформлението не е запазено: %s}
 ::msgcat::mcset bg {leave (cancels a running turn first)} {излез (първо отменя текущия ход)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset bg {list sessions} {списък на сесиите}
 ::msgcat::mcset bg {list skills} {списък на уменията}
 ::msgcat::mcset bg {list tools} {списък на инструментите}
+::msgcat::mcset bg {listed here only; [notify] fleet_alerts is off} {само са изброени тук; [notify] fleet_alerts е изключено}
 ::msgcat::mcset bg {live patching ARMED} {live patching ВКЛЮЧЕН}
 ::msgcat::mcset bg {live patching ARMED — an agent can now redefine procs in this window} {live patching ВКЛЮЧЕН — агент вече може да предефинира proc в този прозорец}
 ::msgcat::mcset bg {live patching disarmed} {live patching изключен}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset bg {log pane shown} {панелът с дневника е показан}
 ::msgcat::mcset bg {log: %s} {дневник: %s}
 ::msgcat::mcset bg {make media: image/video/audio, route = comfyui or provider[/model]} {създай медия: image/video/audio, маршрут = comfyui или provider[/model]}
+::msgcat::mcset bg {managed via %s} {управлявано чрез %s}
+::msgcat::mcset bg {manual only} {само ръчно}
 ::msgcat::mcset bg {mark set} {маркерът е зададен}
 ::msgcat::mcset bg {mark whole buffer (emacs select-all)} {маркирай целия буфер (emacs select-all)}
 ::msgcat::mcset bg {markdown preview of the composer} {markdown преглед на композитора}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset bg model модел
 ::msgcat::mcset bg {model aliases} {псевдоними на модели}
 ::msgcat::mcset bg {monitor %1$s fired} {монитор %1$s задействан}
-::msgcat::mcset bg monitors монитори
 ::msgcat::mcset bg monitors_header монитори:
 ::msgcat::mcset bg monitors_none {(няма монитори — моделът ги стартира с monitor tool)}
 ::msgcat::mcset bg {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {преместване на сесия (и нейното поддърво) към друг възел на пула на граница на ход; завършване/отмяна на паркирано предаване; запитване кой притежава сесия (админ)}
 ::msgcat::mcset bg {move the running foreground command to the background} {премести текущата команда от преден план във фонов режим}
 ::msgcat::mcset bg {move the running foreground command to the background (keeps running)} {премести текущата команда на заден план (продължава да върви)}
+::msgcat::mcset bg {move this session's running foreground command to a background shell; keeps running} {премества текущата работеща команда на преден план на тази сесия във фонов шел; продължава да работи}
 ::msgcat::mcset bg {moving around} придвижване
 ::msgcat::mcset bg name име
 ::msgcat::mcset bg {name a key first} {първо дай име на ключа}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset bg {neon impressionism} {неонов импресионизъм}
 ::msgcat::mcset bg {network (optional — e.g. libera; empty = any)} {мрежа (по избор — напр. libera; празно = всяка)}
 ::msgcat::mcset bg {network to scope the grant to} {мрежа, в която важи упълномощаването}
+::msgcat::mcset bg new ново
 ::msgcat::mcset bg {new buffer} {нов буфер}
 ::msgcat::mcset bg {new entry — replace this text, then Save} {нов запис — замени този текст, после Save}
 ::msgcat::mcset bg {new name for %s} {ново име за %s}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset bg {no IRC buffer selected} {не е избран IRC буфер}
 ::msgcat::mcset bg {no MCP servers configured — Add server… writes one into config.toml} {няма конфигурирани MCP сървъри — Add server… записва един в config.toml}
 ::msgcat::mcset bg {no URLs in this buffer} {няма URL адреси в този буфер}
+::msgcat::mcset bg {no [a2a_agents] entry — this peer cannot be dialed} {няма запис в [a2a_agents] — този peer не може да бъде набран}
 ::msgcat::mcset bg {no alias /%s} {няма алиас /%s}
 ::msgcat::mcset bg {no background refresh} {няма фоново опресняване}
 ::msgcat::mcset bg {no buffer %s} {няма буфер %s}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset bg {no code block in the last reply} {няма кодов блок в последния отговор}
 ::msgcat::mcset bg {no cron jobs} {няма cron задачи}
 ::msgcat::mcset bg {no cron jobs — New… creates one} {няма cron задачи — New… създава една}
+::msgcat::mcset bg {no exchange yet} {все още няма обмен}
 ::msgcat::mcset bg {no file — pick a guts file or type a path} {няма файл — избери файл с вътрешности или въведи път}
 ::msgcat::mcset bg {no handler} {няма обработчик}
+::msgcat::mcset bg {no heartbeat for %{mins} min} {няма сърцебиене от %{mins} мин}
+::msgcat::mcset bg {no heartbeat within the threshold} {няма сърцебиене в рамките на прага}
 ::msgcat::mcset bg {no history yet} {още няма история}
 ::msgcat::mcset bg {no host configured for this instance} {няма настроен хост за тази инстанция}
 ::msgcat::mcset bg {no instance selected} {не е избрана инстанция}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset bg {no program to open URLs} {няма програма за отваряне на URL адреси}
 ::msgcat::mcset bg {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {няма конфигуриран доставчик — добавете запис в [[custom_providers]] и задайте двойката [model], преди да пуснете ход}
 ::msgcat::mcset bg {no reading yet — press Refresh} {още няма прочетено — натисни Refresh}
-::msgcat::mcset bg {no running tasks} {няма работещи задачи}
 ::msgcat::mcset bg {no sample available} {няма налична проба}
 ::msgcat::mcset bg {no search bar on this surface} {няма лента за търсене на този интерфейс}
 ::msgcat::mcset bg {no session matching %s} {няма сесия, съвпадаща с %s}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset bg {no session open — switch the scope to the default, or open a session} {няма отворена сесия — смени обхвата на по подразбиране или отвори сесия}
 ::msgcat::mcset bg {no session open — the catalogue needs one; the default scope still works from config.toml} {няма отворена сесия — каталогът изисква една; обхватът по подразбиране пак работи от config.toml}
 ::msgcat::mcset bg {no setting %s — try filter or bare} {няма настройка %s — опитай filter или голо име}
+::msgcat::mcset bg {no shells or monitors to show} {няма шелове или монитори за показване}
 ::msgcat::mcset bg {no skills found} {няма намерени умения}
 ::msgcat::mcset bg {no such URL — /urls lists them} {няма такъв URL — /urls ги изброява}
 ::msgcat::mcset bg {no such file: %s} {няма такъв файл: %s}
 ::msgcat::mcset bg {no swap target yet — set one with /locale secondary <id>} {още няма цел за размяна — задай я с /locale secondary <id>}
+::msgcat::mcset bg {no task selected} {няма избрана задача}
 ::msgcat::mcset bg {no triggers} {няма тригери}
 ::msgcat::mcset bg {no triggers — New… creates one} {няма тригери — New… създава един}
 ::msgcat::mcset bg {no upstream reading for %s} {няма upstream прочит за %s}
 ::msgcat::mcset bg {no word match} {няма съвпадение на дума}
 ::msgcat::mcset bg {no xdg-open — path copied instead} {няма xdg-open — пътят е копиран вместо това}
+::msgcat::mcset bg {node log} {лог на възела}
 ::msgcat::mcset bg {none loaded} {нищо не е заредено}
 ::msgcat::mcset bg {none recorded} {няма записани}
+::msgcat::mcset bg {none since this gateway started} {няма от стартирането на този gateway}
 ::msgcat::mcset bg {none yet} {още няма}
 ::msgcat::mcset bg {normie is pure Ctrl — no emacs prefix chords.} {normie е чист Ctrl — без emacs префиксни акорди.}
 ::msgcat::mcset bg {normie: select all · emacs: start of line} {normie: избери всичко · emacs: начало на реда}
 ::msgcat::mcset bg {not a channel} {не е канал}
 ::msgcat::mcset bg {not a key = value line: %s} {не е ред ключ = стойност: %s}
+::msgcat::mcset bg {not a node in the attached gateway's cluster registry: %s} {не е възел в клъстерния регистър на прикачения gateway: %s}
 ::msgcat::mcset bg {not a number} {не е число}
 ::msgcat::mcset bg {not a valid http(s) url: %s} {не е валиден http(s) url: %s}
 ::msgcat::mcset bg {not a valid ssh host: %s} {не е валиден ssh хост: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset bg {not attached to a gateway} {не е прикачен към gateway}
 ::msgcat::mcset bg {not configured} {не е конфигурирано}
 ::msgcat::mcset bg {not ignoring %s} {не се игнорира %s}
+::msgcat::mcset bg {not installed} {не е инсталирано}
 ::msgcat::mcset bg {not reported} {не е отчетено}
 ::msgcat::mcset bg {not running} {не работи}
 ::msgcat::mcset bg {not set in config.toml — the built-in default applies. %s} {не е зададено в config.toml — важи вграденото по подразбиране. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset bg off изкл.
 ::msgcat::mcset bg {off (the default)} {изкл. (по подразбиране)}
 ::msgcat::mcset bg offline офлайн
+::msgcat::mcset bg ok ок
 ::msgcat::mcset bg on вкл.
 ::msgcat::mcset bg {on (the default)} {вкл. (по подразбиране)}
 ::msgcat::mcset bg {on failure} {при неуспех}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset bg {open links} {да отваря връзки}
 ::msgcat::mcset bg {open the engine log} {отвори дневника на engine}
 ::msgcat::mcset bg {open the joined session before /leave (on %s)} {отворете присъединената сесия, преди да използвате /leave (на %s)}
+::msgcat::mcset bg {open the selected child session} {отвори избраната дъщерна сесия}
 ::msgcat::mcset bg {open the selected skill in the Dev editor} {отвори избраното умение в редактора Dev}
 ::msgcat::mcset bg {open the setup wizard (re-runnable; edits config.toml in place)} {отваряне на съветника за настройка (може да се пуска повторно; редактира config.toml на място)}
 ::msgcat::mcset bg {open the share sheet} {да отваря менюто за споделяне}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset bg {override cleared — the default applies} {замяната е изчистена — важи по подразбиране}
 ::msgcat::mcset bg {override failed: %s} {замяната се провали: %s}
 ::msgcat::mcset bg {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {идентичността на собственика %{id} не може да бъде съпоставена от ACL — използвайте telegram:<числов ID>, irc:<акаунт в services> или маска nick!user@host}
+::msgcat::mcset bg owner/repository собственик/хранилище
 ::msgcat::mcset bg {owners: %s} {собственици: %s}
 ::msgcat::mcset bg {pair a desktop with this agent} {сдвои работен плот с този агент}
 ::msgcat::mcset bg {partly failed: %s} {частичен неуспех: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset bg plugin плъгин
 ::msgcat::mcset bg {plugin directory git history} {git история на папката с плъгини}
 ::msgcat::mcset bg {plugin list} {списък с плъгини}
+::msgcat::mcset bg {plugin provider driver} {драйвър на доставчика на добавка}
 ::msgcat::mcset bg {plugins reloaded on %s} {плъгините са презаредени на %s}
 ::msgcat::mcset bg {pop %s out into its own window} {извади %s в отделен прозорец}
 ::msgcat::mcset bg {pop the buffer out into its own window} {отдели буфера в собствен прозорец}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset bg {prefix: window & dock commands} {префикс: команди за прозорци и докове}
 ::msgcat::mcset bg {press Attach in the Instances tab} {натисни Attach в раздела Инстанции}
 ::msgcat::mcset bg preview преглед
+::msgcat::mcset bg {preview an AI extension change and explicitly apply its diff} {прегледайте предварително промяна на разширение от ИИ и приложете изрично нейните разлики}
 ::msgcat::mcset bg {preview failed: %s} {прегледът не успя: %s}
 ::msgcat::mcset bg {previous buffer} {предишен буфер}
 ::msgcat::mcset bg {previous command was not a yank} {предишната команда не беше yank}
 ::msgcat::mcset bg {previous match} {предишно съвпадение}
 ::msgcat::mcset bg {previous session} {предишна сесия}
+::msgcat::mcset bg {probing %s…} {проверка на %s…}
 ::msgcat::mcset bg {proc body} {тяло на proc}
 ::msgcat::mcset bg {profile unavailable: %s} {профилът е недостъпен: %s}
 ::msgcat::mcset bg profiles: профили:
 ::msgcat::mcset bg prompt подкана
 ::msgcat::mcset bg {prompt breakdown} {разбивка на подканата}
 ::msgcat::mcset bg {prompt tokens} {токени на промпта}
+::msgcat::mcset bg {proposal only, not applied} {само предложение, не е приложено}
 ::msgcat::mcset bg provider доставчик
 ::msgcat::mcset bg {provider / model} {доставчик / модел}
 ::msgcat::mcset bg {provider base URL} {base URL на доставчика}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset bg {re-sync the slopdrop state mirror} {пресинхронизирай state mirror-а на slopdrop}
 ::msgcat::mcset bg {read and set the clipboard} {да чете и задава клипборда}
 ::msgcat::mcset bg {read text aloud} {да чете текст на глас}
+::msgcat::mcset bg {read-only: [approvals] allowlist} {само за четене: allowlist от [approvals]}
 ::msgcat::mcset bg {read-only: this session lives on %1$s (as read at %2$s)} {само за четене: тази сесия е на %1$s (както е прочетена в %2$s)}
 ::msgcat::mcset bg {read-only: this skill comes from the %s library} {само за четене: това умение е от библиотеката %s}
 ::msgcat::mcset bg reasoning разсъждения
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset bg {refused to open %s (only http, https, mailto)} {отказах да отворя %s (само http, https, mailto)}
 ::msgcat::mcset bg {refused: %s} {отказано: %s}
 ::msgcat::mcset bg {region copied} {регионът е копиран}
+::msgcat::mcset bg registered регистриран
 ::msgcat::mcset bg {registry not saved: %s} {регистърът не е записан: %s}
 ::msgcat::mcset bg {reload on %1$s failed: %2$s} {презареждането на %1$s не успя: %2$s}
 ::msgcat::mcset bg {reload the mechanisms} {презареди механизмите}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset bg {resume a session (prefix ok)} {продължи сесия (стига и префикс)}
 ::msgcat::mcset bg {retry failed: %s} {повторният опит не успя: %s}
 ::msgcat::mcset bg {retrying last prompt…} {повтарям последната подкана…}
+::msgcat::mcset bg {review files for an explicit upstream contribution} {прегледайте файловете за изричен принос към оригиналния проект}
+::msgcat::mcset bg {review standing global and session tool permissions} {преглед на постоянните глобални и сесийни права за инструменти}
 ::msgcat::mcset bg revision версия
 ::msgcat::mcset bg {revision history} {история на версиите}
+::msgcat::mcset bg {revoke refused} {отнемането е отказано}
 ::msgcat::mcset bg {revoke the selected identity's grant} {оттегли правото на избраната самоличност}
 ::msgcat::mcset bg role роля
 ::msgcat::mcset bg {role to grant} {роля за предоставяне}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset bg {saved to %s} {записано в %s}
 ::msgcat::mcset bg saved. Записано.
 ::msgcat::mcset bg {scaffold a new plugin} {създай скелет на нов плъгин}
+::msgcat::mcset bg {scaffold a user plugin and open it in this editor} {Създайте потребителска добавка и я отворете в този редактор}
 ::msgcat::mcset bg {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {планирани задачи; /crons add "<sched>" [session=<id>] <prompt> (псевдоним /cron)}
 ::msgcat::mcset bg scope обхват
 ::msgcat::mcset bg script скрипт
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset bg {select %s first} {първо избери %s}
 ::msgcat::mcset bg {select a checkpoint first} {първо избери контролна точка}
 ::msgcat::mcset bg {select a file, or New… to create one} {избери файл или Ново…, за да създадеш}
+::msgcat::mcset bg {select a grant first} {първо изберете право}
 ::msgcat::mcset bg {select a handler first} {първо избери манипулатор}
 ::msgcat::mcset bg {select a member first} {първо избери член}
 ::msgcat::mcset bg {select a route} {избери маршрут}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset bg {select an assignment first} {първо избери задание}
 ::msgcat::mcset bg {select an entry first} {първо избери вписване}
 ::msgcat::mcset bg {select an identity first} {първо избери самоличност}
+::msgcat::mcset bg {selected task details and shell output} {детайли за избраната задача и изход на шела}
 ::msgcat::mcset bg {selected: %s} {избрано: %s}
 ::msgcat::mcset bg {send clipboard as prompt} {изпрати клипборда като подкана}
 ::msgcat::mcset bg {send failed: %s} {изпращането не успя: %s}
 ::msgcat::mcset bg {send the message; while a turn runs, queue it as steering} {изпрати съобщението; докато тече ход, го постави в опашка като steering}
+::msgcat::mcset bg sent изпратено
+::msgcat::mcset bg {sent to the owner's home chat} {изпратено в домашния чат на собственика}
 ::msgcat::mcset bg server сървър
 ::msgcat::mcset bg {server buffers merged} {сървърните буфери обединени}
 ::msgcat::mcset bg {server buffers separate} {сървърните буфери отделни}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset bg {settings, one key = value per line} {настройки, по един ключ = стойност на ред}
 ::msgcat::mcset bg {setup_done marker NOT saved: %s} {маркерът setup_done НЕ е записан: %s}
 ::msgcat::mcset bg {shell %1$s finished} {shell %1$s приключи}
-::msgcat::mcset bg shells шелове
+::msgcat::mcset bg {shells, monitors and subagents} {шелове, монитори и подагенти}
 ::msgcat::mcset bg shells_header {шелове на заден план:}
 ::msgcat::mcset bg shells_none {(няма шелове на заден план — /background <cmd> стартира такъв)}
 ::msgcat::mcset bg {show current configuration} {покажи текущата конфигурация}
 ::msgcat::mcset bg {show every key in this mode} {покажи всички клавиши в този режим}
 ::msgcat::mcset bg {show or hide the session list} {покажи или скрий списъка със сесии}
 ::msgcat::mcset bg {show or switch model (alias | model@provider | custom:<prov>)} {покажи или смени модела (alias | model@provider | custom:<prov>)}
+::msgcat::mcset bg {show selected shell output} {покажи изхода на избрания шел}
 ::msgcat::mcset bg {show short messages} {да показва кратки съобщения}
 ::msgcat::mcset bg {show the model's reasoning blocks (same as /reasoning)} {покажи reasoning блоковете на модела (същото като /reasoning)}
 ::msgcat::mcset bg {show unclaimed} {покажи неприписаните}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset bg spend разход
 ::msgcat::mcset bg {split: %s} {разделяне: %s}
 ::msgcat::mcset bg {ssh to %1$s failed: %2$s} {ssh до %1$s не успя: %2$s}
+::msgcat::mcset bg {stale — no heartbeat within the threshold} {остарял — няма heartbeat в рамките на прага}
+::msgcat::mcset bg {standing global and session permission grants} {постоянни глобални и сесийни права за достъп}
 ::msgcat::mcset bg state състояние
 ::msgcat::mcset bg {state       never reached} {състояние       никога не е достигнато}
 ::msgcat::mcset bg {state       reachable} {състояние       достижимо}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset bg {stored in the encrypted vault (%1$s): %2$s} {запазено в шифрования трезор (%1$s): %2$s}
 ::msgcat::mcset bg {stream handler: %s} {манипулатор на потока: %s}
 ::msgcat::mcset bg {subagent %1$s finished} {субагентът %1$s приключи}
-::msgcat::mcset bg subagents субагенти
 ::msgcat::mcset bg subagents_header {текущи субагенти:}
 ::msgcat::mcset bg subagents_none {(няма текущи субагенти — /btw <prompt> стартира такъв, или моделът използва delegate_task)}
 ::msgcat::mcset bg {suspend failed: %{e}} {спирането не успя: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset bg {switch the selected skill off} {изключи избраното умение}
 ::msgcat::mcset bg {switch the selected skill on} {включи избраното умение}
 ::msgcat::mcset bg {switch to the %s tab} {премини към раздела %s}
+::msgcat::mcset bg {sync requested: %s} {поискана синхронизация: %s}
 ::msgcat::mcset bg {tab 1} {таб 1}
 ::msgcat::mcset bg {tab 2} {таб 2}
 ::msgcat::mcset bg {tab 3} {таб 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset bg tasks_none {(няма работещи задачи)}
 ::msgcat::mcset bg tasks_not_found {няма такава задача: %{id}}
 ::msgcat::mcset bg tasks_not_running {задача %{id} вече е приключила}
-::msgcat::mcset bg {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset bg {tcl-lsp: event stream unavailable: %s} {tcl-lsp: потокът от събития е недостъпен: %s}
-::msgcat::mcset bg {tcl-lsp: gateway would not start it: %s} {tcl-lsp: gateway отказа да го стартира: %s}
-::msgcat::mcset bg {tcl-lsp: not started on the gateway — %s} {tcl-lsp: не е стартиран на gateway — %s}
 ::msgcat::mcset bg {that buffer is not split} {този буфер не е разделен}
 ::msgcat::mcset bg {the %s plan} {планът %s}
 ::msgcat::mcset bg {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {полето за API ключ приема ИМЕТО на променлива на средата (например %{example}), а не самия ключ — ключът се въвежда в скритото поле}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset bg {the gateway answered without a report} {gateway отговори без отчет}
 ::msgcat::mcset bg {the model/provider pair is incomplete — the gateway will not route until both are present} {двойката модел/доставчик е непълна — шлюзът няма да маршрутизира, докато и двете не са зададени}
 ::msgcat::mcset bg {the options changed, so that is a fresh preview — press “Write it” again to write it} {опциите се промениха, така че това е пресен преглед — натисни “Запиши го” отново, за да го запишеш}
+::msgcat::mcset bg {the peer has not been sent this vault yet} {на peer-а още не е изпратен този трезор}
+::msgcat::mcset bg {the peer holds this vault} {peer-ът държи този трезор}
 ::msgcat::mcset bg {the primary route is \[model\] provider/default — change it there, not here} {основният маршрут е \[model\] provider/default — промени го там, не тук}
 ::msgcat::mcset bg {the provider/model route this session sends to} {маршрутът provider/модел, към който изпраща тази сесия}
 ::msgcat::mcset bg {the same, on the privileged path (owner only)} {същото, по привилегирования път (само owner)}
 ::msgcat::mcset bg {the selected entry (edit, then Save)} {избраният запис (редактирай, после Запис)}
+::msgcat::mcset bg {the server stopped: %s} {сървърът спря: %s}
 ::msgcat::mcset bg {the synthwave splash} {началният екран в стил synthwave}
 ::msgcat::mcset bg {the text after the name was NOT sent anywhere — type the value into the masked field} {текстът след името НЕ беше изпратен никъде — въведете стойността в маскираното поле}
 ::msgcat::mcset bg {the transcript} преписът
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset bg thinking… мисля…
 ::msgcat::mcset bg {thinking… (%s)} {мисля… (%s)}
 ::msgcat::mcset bg {this file's revisions, their diffs, and restore} {версиите на този файл, разликите им и възстановяване}
+::msgcat::mcset bg {this gateway} {този gateway}
 ::msgcat::mcset bg {this gateway has no Tcl interpreter} {този gateway няма Tcl интерпретатор}
 ::msgcat::mcset bg {this list} {този списък}
+::msgcat::mcset bg {this node has no vault} {този възел няма трезор}
 ::msgcat::mcset bg {this route} {този маршрут}
 ::msgcat::mcset bg {this session} {тази сесия}
 ::msgcat::mcset bg {this session follows the default language again (%{def})} {тази сесия отново следва стандартния език (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset bg {transcript finalization failed: %s} {завършването на транскрипцията се провали: %s}
 ::msgcat::mcset bg {transcript refetched} {преписът е изтеглен отново}
 ::msgcat::mcset bg {transcript — arrows to read, %s for composer} {препис — стрелки за четене, %s за редактора}
+::msgcat::mcset bg {translate text with the dedicated translation model, without an agent turn} {превод на текст със специалния модел за превод, без ход на агента}
+::msgcat::mcset bg {translation result} {Резултат от превода}
 ::msgcat::mcset bg {trigger %1$s %2$sd} {тригер %1$s %2$sd}
 ::msgcat::mcset bg {trigger created} {тригерът е създаден}
 ::msgcat::mcset bg {trigger updated} {тригерът е обновен}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset bg {usage: /steer <instruction>} {употреба: /steer <instruction>}
 ::msgcat::mcset bg used използвано
 ::msgcat::mcset bg user потребител
+::msgcat::mcset bg {user copy} {потребителско копие}
 ::msgcat::mcset bg {user identities, one per line} {потребителски самоличности, по една на ред}
 ::msgcat::mcset bg {user name} {потребителско име}
 ::msgcat::mcset bg {user profile} {потребителски профил}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset bg {value (TOML: 5, true, "text", ["a","b"])} {стойност (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset bg veles veles
 ::msgcat::mcset bg {veles editor} {veles редактор}
+::msgcat::mcset bg {veles fleet: node %{node} is failing — %{detail}} {veles fleet: възел %{node} се проваля — %{detail}}
+::msgcat::mcset bg {veles fleet: node %{node} is stale — %{detail}} {veles fleet: възел %{node} е застоял — %{detail}}
+::msgcat::mcset bg {veles fleet: node %{node} recovered (it was %{was})} {veles fleet: възел %{node} се възстанови (беше %{was})}
 ::msgcat::mcset bg {veles · keyboard help (bindings: %s)} {veles · помощ за клавиатурата (клавиши: %s)}
 ::msgcat::mcset bg {veles · touch help} {veles · помощ за докосване}
 ::msgcat::mcset bg {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset bg widgets уиджети
 ::msgcat::mcset bg {will be stored in the encrypted vault} {ще бъде запазен в шифрования трезор}
 ::msgcat::mcset bg {wire protocol} протокол
+::msgcat::mcset bg {without force to} {без принудително изтласкване към}
 ::msgcat::mcset bg {wizard language} {език на съветника}
 ::msgcat::mcset bg {wizard language: %s} {език на съветника: %s}
 ::msgcat::mcset bg {write failed: %s} {записът не успя: %s}
 ::msgcat::mcset bg {write grants that still expire (the expiry is dropped — a config line cannot expire)} {запиши права, които все още изтичат (срокът отпада — един config ред не може да изтече)}
 ::msgcat::mcset bg {write the entries back} {запиши вписванията обратно}
 ::msgcat::mcset bg {write the store's runtime rules into config.toml} {запиши правилата на хранилището в config.toml}
+::msgcat::mcset bg {write the whole extension from its purpose, as a reviewed preview} {напиши цялото разширение от предназначението му, като предварителен преглед за одобрение}
 ::msgcat::mcset bg {write these values into config.toml as the defaults} {запиши тези стойности в config.toml като подразбиращи се}
 ::msgcat::mcset bg writing писане
 ::msgcat::mcset bg {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {първият собственик в [acl] превключва този шлюз в КУРИРАН режим: ролята по подразбиране става guest (fail-closed), а списъкът с разрешени на адаптера вече не е границата на доверие}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset bg {▲ VELES — neon impressionism} {▲ VELES — неонов импресионизъм}
 ::msgcat::mcset bg {▲ earlier} {▲ по-рано}
 ::msgcat::mcset bg {▼ later} {▼ по-късно}
+::msgcat::mcset bg {▾ Cluster registry} {▾ Регистър на клъстера}
 ::msgcat::mcset bg {▾ new output — follow} {▾ нов изход — следвай}
 ::msgcat::mcset bg {○ unattached} {○ неприкачен}
 ::msgcat::mcset bg {● %1$s — %2$s} {● %1$s — %2$s}

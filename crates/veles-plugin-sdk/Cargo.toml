@@ -13,7 +13,7 @@ categories = ["development-tools"]
 [dependencies]
 # The version is what crates.io resolves once this is published; "0.1"
 # keeps it right across patch releases and fails the build at 0.2.
-veles-types = { path = "../veles-types", version = "0.1" }
+veles-types = { path = "../veles-types", version = "0.2" }
 tokio = { version = "1", features = ["rt-multi-thread", "io-std", "io-util", "macros", "sync", "time"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

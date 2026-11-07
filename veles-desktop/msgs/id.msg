@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset id {%1$s %2$s failed: %3$s} {%1$s %2$s gagal: %3$s}
 ::msgcat::mcset id {%1$s %2$s over ssh…} {%1$s %2$s lewat ssh…}
 ::msgcat::mcset id {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset id {%1$s (%2$s waiting)} {%1$s (%2$s menunggu)}
 ::msgcat::mcset id {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  penalaran %3$s}
 ::msgcat::mcset id {%1$s = %2$s here} {%1$s = %2$s di sini}
 ::msgcat::mcset id {%1$s NOT saved: %2$s} {%1$s TIDAK tersimpan: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset id {%1$s every cron job on %2$s?} {%1$s semua tugas cron di %2$s?}
 ::msgcat::mcset id {%1$s failed: %2$s} {%1$s gagal: %2$s}
 ::msgcat::mcset id {%1$s in / %2$s out / %3$s calls} {%1$s masuk / %2$s keluar / %3$s panggilan}
+::msgcat::mcset id {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s adalah node %2$s, bukan %3$s. Perbaiki id node-nya di Edit….}
 ::msgcat::mcset id {%1$s is not a whole number} {%1$s bukan bilangan bulat}
+::msgcat::mcset id {%1$s is reachable (%2$s ms).} {%1$s dapat dijangkau (%2$s ms).}
 ::msgcat::mcset id {%1$s is set to something this box cannot edit (%2$s)} {%1$s diatur ke nilai yang tak bisa diedit mesin ini (%2$s)}
+::msgcat::mcset id {%1$s is unreachable: %2$s} {%1$s tidak dapat dijangkau: %2$s}
 ::msgcat::mcset id {%1$s of %2$s characters} {%1$s dari %2$s karakter}
 ::msgcat::mcset id {%1$s of %2$s sessions} {%1$s dari %2$s sesi}
 ::msgcat::mcset id {%1$s of %2$s skills reach the prompt} {%1$s dari %2$s skill sampai ke prompt}
 ::msgcat::mcset id {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s di %2$s: %3$d ok, %4$d gagal}
+::msgcat::mcset id {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s tidak melaporkan identitas node cluster, jadi tidak dapat diverifikasi sebagai %2$s.}
+::msgcat::mcset id {%1$s sync failed: %2$s} {Sinkronisasi %1$s gagal: %2$s}
+::msgcat::mcset id {%1$s sync with %2$s (%3$s)} {Sinkronisasi %1$s dengan %2$s (%3$s)}
+::msgcat::mcset id {%1$s sync: %2$s} {Sinkronisasi %1$s: %2$s}
 ::msgcat::mcset id {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset id {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter untuk lompat, Esc untuk tutup}
 ::msgcat::mcset id {%1$s — revision r%2$s} {%1$s — revisi r%2$s}
 ::msgcat::mcset id {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset id {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset id {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset id {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset id {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: %2$s terakhir dari %3$s baris yang disimpan gateway-nya di memori, rahasia disamarkan di node itu.}
 ::msgcat::mcset id {%d MCP server(s) configured} {%d server MCP terkonfigurasi}
 ::msgcat::mcset id {%d entries} {%d entri}
+::msgcat::mcset id {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {%d berkas ekstensi akan ditulis persis seperti yang ditinjau. Jika ada yang berubah sejak pratinjau, tidak ada yang ditulis. Tidak ada commit, push, atau PR.}
 ::msgcat::mcset id {%d handler(s) registered} {%d handler terdaftar}
 ::msgcat::mcset id {%d identities · %d users} {%d identitas · %d pengguna}
 ::msgcat::mcset id {%d models — pick one from the list or type a name.} {%d model — pilih satu dari daftar atau ketik sebuah nama.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset id {%d shown} {%d ditampilkan}
 ::msgcat::mcset id {%s %s%%} {%s %s%%}
 ::msgcat::mcset id {%s (%s)} {%s (%s)}
+::msgcat::mcset id {%s (referral)} {%s (referensi)}
+::msgcat::mcset id {%s (stale)} {%s (usang)}
 ::msgcat::mcset id {%s (this session)} {%s (sesi ini)}
 ::msgcat::mcset id {%s GB free of %s GB} {%s GB kosong dari %s GB}
 ::msgcat::mcset id {%s already exists — open it from the list} {%s sudah ada — buka dari daftar}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset id {%s comes from config.toml [acl] — edit there} {%s berasal dari config.toml [acl] — edit di sana}
 ::msgcat::mcset id {%s config change(s) wait for you — /configsync} {%s perubahan konfigurasi menunggu Anda — /configsync}
 ::msgcat::mcset id {%s did not become healthy within 30s} {%s tidak menjadi sehat dalam 30s}
+::msgcat::mcset id {%s done} {%s selesai}
 ::msgcat::mcset id {%s failed: %s} {%s gagal: %s}
 ::msgcat::mcset id {%s is already split} {%s sudah terpisah}
 ::msgcat::mcset id {%s is the language in use — pick another one to swap with} {%s adalah bahasa yang sedang dipakai — pilih bahasa lain untuk ditukar}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset id {%s opens the command palette in %s.} {%s membuka palet perintah di %s.}
 ::msgcat::mcset id {%s session(s)} {%s sesi}
 ::msgcat::mcset id {%s skill(s):} {%s skill:}
+::msgcat::mcset id {%s standing grants} {%s izin tetap}
 ::msgcat::mcset id {%s takes no completable arguments} {%s tidak menerima argumen yang bisa dilengkapi}
 ::msgcat::mcset id {%s takes on or off} {%s menerima on atau off}
 ::msgcat::mcset id {%s —} {%s —}
+::msgcat::mcset id {%s — changes data, asks to confirm} {%s — mengubah data, meminta konfirmasi}
 ::msgcat::mcset id {%s — deleted; History… can restore it} {%s — dihapus; Riwayat… dapat memulihkannya}
 ::msgcat::mcset id {%s — new: type, then Save} {%s — baru: ketik, lalu Simpan}
 ::msgcat::mcset id {%s — not attached; press Attach in the Instances tab} {%s — belum tersambung; tekan Sambungkan di tab Instances}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset id {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} aktif tanpa bagian [acl]: sampai %{var} di .env menyebutkan siapa yang boleh berbicara dengan bot, siapa pun yang menjangkaunya diperlakukan sebagai pemilik, dengan semua alat}
 ::msgcat::mcset id (%{route}) (%{route})
 ::msgcat::mcset id {(CLI redraws automatically)} {(CLI menggambar ulang otomatis)}
+::msgcat::mcset id {(binary; not publishable)} {(biner; tidak dapat dipublikasikan)}
 ::msgcat::mcset id {(clipboard empty or no clipboard tool)} {(clipboard kosong atau tak ada alat clipboard)}
 ::msgcat::mcset id (deleted) (dihapus)
 ::msgcat::mcset id (empty) (kosong)
 ::msgcat::mcset id {(no sessions)} {(tidak ada sesi)}
+::msgcat::mcset id {(not a memsync peer of this gateway: config is not synced with it)} {(bukan peer memsync gateway ini: config tidak disinkronkan dengannya)}
 ::msgcat::mcset id {(nothing to reload — read from disk per use)} {(tidak ada yang perlu dimuat ulang — dibaca dari disk setiap kali dipakai)}
 ::msgcat::mcset id {(retrying last prompt…)} {(mencoba ulang prompt terakhir…)}
 ::msgcat::mcset id {(route did not resolve: %{e})} {(route tidak terselesaikan: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset id {/url needs a number from /urls} {/url butuh nomor dari /urls}
 ::msgcat::mcset id {/whois needs a nick} {/whois butuh nick}
 ::msgcat::mcset id {; could not save the cleared return view: %s} {; tidak dapat menyimpan tampilan kembali yang dibersihkan: %s}
+::msgcat::mcset id {; shadows bundled} {; menaungi bawaan}
+::msgcat::mcset id {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Tawaran config dapat mengubah pengaturan dan tawaran brankas menggabungkan rahasia; perubahan pada bagian keamanan tetap menunggu pemilik.}
 ::msgcat::mcset id {A failing plugin may drop hooks mid-turn.} {Plugin yang gagal bisa menjatuhkan hook di tengah giliran.}
 ::msgcat::mcset id {A local server: no key is needed unless you set one up.} {Server lokal: tidak perlu kunci kecuali Anda mengaturnya sendiri.}
+::msgcat::mcset id {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Rilis bertanda tangan hanya di-stage setelah preflight. Mulai ulang/verifikasi, kelanjutan, dan rollback adalah tindakan terpisah. Proses yang sehat harus melaporkan revisi sumber persis seperti yang ditinjau.}
 ::msgcat::mcset id {A value is stored for %s — leave this empty to keep it.} {Sudah ada nilai tersimpan untuk %s — biarkan kosong untuk mempertahankannya.}
 ::msgcat::mcset id {ACL: ban mask} {ACL: blokir mask}
 ::msgcat::mcset id {ACL: grant admin} {ACL: berikan admin}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset id {ACL: grant user} {ACL: berikan user}
 ::msgcat::mcset id {ACL: revoke} {ACL: cabut}
 ::msgcat::mcset id {ACME account email} {Email akun ACME}
+::msgcat::mcset id {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI assist bekerja pada empat tingkat: ajukan pertanyaan desain (tanpa berkas), ubah berkas ini, ubah beberapa berkas ekstensi ini, atau jelaskan diagnostik saat ini. Ekstensi baru juga dapat menghasilkan seluruh ekstensi dari tujuannya. Setiap permintaan dikirim tanpa alat dan ditolak jika membawa rahasia terdaftar atau nilai berbentuk kredensial; perubahan ditampilkan sebagai diff dan hanya ditulis saat Anda menerapkannya. Mintalah desain ekstensi lebih dulu; minta patch inti hanya setelah mengidentifikasi API yang hilang.}
+::msgcat::mcset id {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {Bantuan AI hanya menyunting ekstensi pengguna, dan berkas ini bukan bagian dari ekstensi mana pun. Sebagian besar perubahan cocok jadi ekstensi (hook, alat, penimpaan layanan, atau driver penyedia) yang bertahan melewati pembaruan; patch inti dipakai untuk hal yang tidak dapat diungkapkan API ekstensi. Buat ekstensi baru untuk perubahan ini? Berkasnya ditampilkan sebagai pratinjau sebelum apa pun ditulis.}
+::msgcat::mcset id {AI assist…} {Bantuan AI…}
+::msgcat::mcset id {AI extension assistance} {Bantuan ekstensi AI}
 ::msgcat::mcset id {API calls} {Panggilan API}
+::msgcat::mcset id {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {Kredit API dari referensi Anthropic hanya diberikan jika Anda membeli Max atau Ultra. Veles tidak mendukung penggunaan langganan itu sebagai login atau autentikasi API.}
 ::msgcat::mcset id {API key (hidden)} {Kunci API (tersembunyi)}
 ::msgcat::mcset id {API key env var name} {Nama variabel env API key}
+::msgcat::mcset id {API reference} {Referensi API}
+::msgcat::mcset id {Abandon untouched operation} {Tinggalkan operasi yang belum disentuh}
 ::msgcat::mcset id {Access control} {Kontrol akses}
 ::msgcat::mcset id {Access control (ACL)} {Kontrol akses (ACL)}
 ::msgcat::mcset id Add Tambah
 ::msgcat::mcset id {Add MCP server} {Tambah server MCP}
 ::msgcat::mcset id {Add instance} {Tambah instance}
 ::msgcat::mcset id {Add server…} {Tambah server…}
+::msgcat::mcset id {Adds selected extension sources. Review the branch diff and checks before merging.} {Menambahkan sumber ekstensi terpilih. Tinjau diff cabang dan pemeriksaan sebelum menggabungkan.}
 ::msgcat::mcset id Add… Tambah…
 ::msgcat::mcset id {Agent & engine} {Agen & mesin}
 ::msgcat::mcset id {Alias %s} {Alias %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset id {Applies to} {Berlaku untuk}
 ::msgcat::mcset id Apply Terapkan
 ::msgcat::mcset id {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Terapkan hanya mengubah sesi yang SEDANG BERJALAN. Salin TOML memberi blok yang bisa ditempel. Simpan secara global menyisipkannya ke config.toml — hanya bagian failover yang disentuh, setiap baris dan komentar lain dibiarkan, dan file lama disimpan sebagai config.toml.bak.}
+::msgcat::mcset id {Apply proposal…} {Terapkan proposal…}
+::msgcat::mcset id {Apply received} {Terapkan yang diterima}
+::msgcat::mcset id {Apply this AI proposal?} {Terapkan proposal AI ini?}
+::msgcat::mcset id {Apply this change set?} {Terapkan set perubahan ini?}
 ::msgcat::mcset id {Apply to session} {Terapkan ke sesi}
+::msgcat::mcset id {Apply what this node received:} {Terapkan yang diterima node ini:}
 ::msgcat::mcset id {Approval needed} {Perlu persetujuan}
 ::msgcat::mcset id Apps Aplikasi
 ::msgcat::mcset id Archive Arsip
 ::msgcat::mcset id {Archive SHA-256} {SHA-256 arsip}
+::msgcat::mcset id Ask Tanya
+::msgcat::mcset id {Ask a design question} {Ajukan pertanyaan desain}
+::msgcat::mcset id {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {Tanyakan cara membangun ekstensi: batas mana, bahasa mana, API mana. Tidak ada kode sumber yang dikirim, dan tidak ada yang bisa ditulis.}
 ::msgcat::mcset id {Ask the agent to change it} {Minta agen mengubahnya}
+::msgcat::mcset id {Asking %s…} {Bertanya ke %s…}
 ::msgcat::mcset id {Asking the provider for its models…} {Meminta daftar model ke penyedia…}
 ::msgcat::mcset id Attach Lampirkan
 ::msgcat::mcset id {Attach to the next message} {Lampirkan ke pesan berikutnya}
+::msgcat::mcset id {Author guide} {Panduan penulis}
+::msgcat::mcset id {Automatically discovered from the attached gateway's cluster registry.} {Ditemukan otomatis dari registri cluster gateway yang tersambung.}
 ::msgcat::mcset id Back Kembali
 ::msgcat::mcset id {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {Kembali menutup yang ada di atas: menu, daftar sesi, jendela. Jika tidak ada yang terbuka, veles pindah ke latar belakang dan tetap berjalan.}
 ::msgcat::mcset id {Base URL} {Base URL}
+::msgcat::mcset id {Base branch} {Cabang dasar}
 ::msgcat::mcset id {Bot token (hidden)} {Token bot (tersembunyi)}
+::msgcat::mcset id Branch Cabang
+::msgcat::mcset id {Branch and commit prepared; nothing has been pushed} {Cabang dan commit disiapkan; belum ada yang di-push}
+::msgcat::mcset id {Branch pushed and verified on origin} {Cabang di-push dan diverifikasi di origin}
 ::msgcat::mcset id {Browse sessions} {Jelajahi sesi}
+::msgcat::mcset id {Build manifest + preflight} {Manifes build + preflight}
+::msgcat::mcset id {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Build: veles %1$s, revisi %2$s (%3$s %4$s)}
 ::msgcat::mcset id {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e akhir baris · C-b/C-f karakter · M-b/M-f kata · C-k kill sampai EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo}
 ::msgcat::mcset id {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g membatalkan semua · C-j baris baru · M-p/M-n riwayat · Tab lengkapi}
+::msgcat::mcset id {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s inti, beban %2$s / %3$s / %4$s (%5$s%% dari inti)}
 ::msgcat::mcset id Cancel Batal
+::msgcat::mcset id {Cancel task} {Batalkan tugas}
+::msgcat::mcset id {Cancel task %1$s? This cannot be undone.} {Batalkan tugas %1$s? Ini tidak dapat diurungkan.}
+::msgcat::mcset id {Cannot verify that %1$s is node %2$s: %3$s} {Tidak dapat memverifikasi bahwa %1$s adalah node %2$s: %3$s}
 ::msgcat::mcset id Capabilities Kapabilitas
 ::msgcat::mcset id {Change my app “%s” (%s): } {Ubah aplikasiku “%s” (%s): }
+::msgcat::mcset id {Change this extension's files} {Ubah berkas ekstensi ini}
+::msgcat::mcset id {Change this file} {Ubah berkas ini}
 ::msgcat::mcset id Change… Ubah…
 ::msgcat::mcset id {Channels (e.g. #veles #dev)} {Channels (mis. #veles #dev)}
 ::msgcat::mcset id Chat Obrolan
 ::msgcat::mcset id {Chat — not attached; press Attach in the Instances tab} {Chat — belum tersambung; tekan Sambungkan di tab Instances}
 ::msgcat::mcset id {Check (lsp)} {Periksa (lsp)}
+::msgcat::mcset id {Check again} {Periksa lagi}
+::msgcat::mcset id {Check files} {Periksa berkas}
 ::msgcat::mcset id Checkpoints Checkpoint
 ::msgcat::mcset id {Checkpoints (undo)} {Checkpoint (undo)}
+::msgcat::mcset id {Checks and next steps} {Pemeriksaan dan langkah berikutnya}
+::msgcat::mcset id {Checks run} {Pemeriksaan dijalankan}
 ::msgcat::mcset id {Choose BUNDLE-INFO.json in the managed install-sources directory} {Pilih BUNDLE-INFO.json di direktori install-sources yang dikelola}
 ::msgcat::mcset id {Choose a failover script} {Pilih skrip failover}
 ::msgcat::mcset id {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {Pilih modul atau plugin proses untuk diperiksa. Penemuan hanya membaca plugin.toml; memilih komponen akan meminta manifest dan opsi yang dideklarasikan. Membuka langkah ini tidak memasang apa pun.}
+::msgcat::mcset id {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {Pilih nama, tujuan, dan bahasa, lalu pratinjau berkas persisnya. Belum ada yang ditulis.}
 ::msgcat::mcset id {Choose a user unit or a system service for the server profile. Neither starts a service.} {Pilih unit pengguna atau layanan sistem untuk profil server. Keduanya tidak memulai layanan apa pun.}
 ::msgcat::mcset id {Choose core bundle…} {Pilih paket inti…}
 ::msgcat::mcset id {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {Pilih bentuk instalasi. Profil lokal memakai penginstal yang sudah ditinjau. Profil sistem dan kontainer menyiapkan permintaan bertanda tangan untuk handoff CLI eksplisit. NixOS hanya menghasilkan snippet modul.}
+::msgcat::mcset id {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {Pilih batas tersempit: Tool menambahkan kemampuan yang bisa dipanggil model; Hook mengamati atau mengubah peristiwa siklus hidup; Service atau titik override membungkus keputusan bernama; driver Provider menambahkan jalur protokol penyedia; patch Inti hanya tepat bila API ekstensi yang dipublikasikan tidak dapat menyatakan perubahan itu.}
 ::msgcat::mcset id {Choose typed container-host options JSON} {Pilih JSON opsi container-host bertipe}
 ::msgcat::mcset id {Choose typed container-host options…} {Pilih opsi container-host bertipe…}
 ::msgcat::mcset id Clear Bersihkan
 ::msgcat::mcset id {Clear composer} {Kosongkan composer}
 ::msgcat::mcset id {Clear override} {Bersihkan override}
 ::msgcat::mcset id {Click the picture where you would click on the page.} {Klik gambarnya di tempat yang akan Anda klik di halaman tersebut.}
+::msgcat::mcset id {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {Kloning %1$s, buat %2$s, dan salin hanya berkas %3$s yang sudah ditinjau ke %4$s/<extension>/. Berkas diperiksa lalu di-commit. Tidak ada push atau pull request sekarang.}
 ::msgcat::mcset id Close Tutup
 ::msgcat::mcset id {Close (Esc)} {Tutup (Esc)}
 ::msgcat::mcset id {Close the setup wizard? Nothing has been written yet.} {Tutup wizard setup? Belum ada apa pun yang ditulis.}
 ::msgcat::mcset id {Code actions} {Aksi kode}
+::msgcat::mcset id Commit Commit
+::msgcat::mcset id {Commit ready for review. Push is a separate action.} {Commit siap ditinjau. Push adalah tindakan terpisah.}
 ::msgcat::mcset id {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Lengkapi setiap kolom PDS, termasuk digest citra yang disematkan, sebelum melihat pratinjau handoff.}
 ::msgcat::mcset id {Complete every typed container-host field before previewing this profile.} {Lengkapi semua kolom host kontainer yang diketik sebelum mempratinjau profil ini.}
 ::msgcat::mcset id {Component configuration returned an invalid result; nothing was accepted as applied.} {Konfigurasi komponen mengembalikan hasil yang tidak valid; tidak ada yang diterima sebagai diterapkan.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset id {Component options changed. Review the new preview before applying.} {Opsi komponen berubah. Tinjau pratinjau baru sebelum menerapkan.}
 ::msgcat::mcset id Components Komponen
 ::msgcat::mcset id {Composer preview} {Pratinjau composer}
+::msgcat::mcset id Config Konfigurasi
+::msgcat::mcset id {Config differs: %s} {Config berbeda: %s}
+::msgcat::mcset id {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Log config: node itu memiliki perubahan %1$s hingga %3$s, gateway ini hingga %2$s}
+::msgcat::mcset id {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Log config: gateway ini memiliki perubahan %1$s hingga %2$s, node itu hingga %3$s}
+::msgcat::mcset id {Config only on that node: %s} {Config hanya di node itu: %s}
+::msgcat::mcset id {Config only on this gateway: %s} {Config hanya di gateway ini: %s}
 ::msgcat::mcset id Configure Konfigurasi
 ::msgcat::mcset id {Configure %s} {Konfigurasi %s}
+::msgcat::mcset id {Configure translator} {Konfigurasikan penerjemah}
+::msgcat::mcset id {Configured desktop gateway} {Gateway desktop terkonfigurasi}
 ::msgcat::mcset id Configure… Konfigurasi…
 ::msgcat::mcset id {Configuring %s} {Mengonfigurasi %s}
 ::msgcat::mcset id {Confirm or discard the current signed review before starting another download.} {Konfirmasi atau buang peninjauan bertanda tangan saat ini sebelum memulai unduhan lain.}
 ::msgcat::mcset id {Container host: typed host plan and privileged CLI handoff} {Container host: rencana host bertipe dan serah-terima CLI berhak administrator}
 ::msgcat::mcset id {Context window} {Jendela konteks}
+::msgcat::mcset id {Continue to next target} {Lanjut ke target berikutnya}
+::msgcat::mcset id {Contribute extensions: %s} {Kontribusikan ekstensi: %s}
+::msgcat::mcset id Contribute… Kontribusikan…
+::msgcat::mcset id {Contribution branch} {Cabang kontribusi}
+::msgcat::mcset id {Contribution destination} {Tujuan kontribusi}
 ::msgcat::mcset id Copy Salin
 ::msgcat::mcset id {Copy TOML} {Salin TOML}
+::msgcat::mcset id {Copy a bundled extension into your user plugin directory before preparing a contribution.} {Salin ekstensi bawaan ke direktori plugin pengguna Anda sebelum menyiapkan kontribusi.}
 ::msgcat::mcset id {Copy message} {Salin pesan}
 ::msgcat::mcset id {Copy name} {Salin nama}
 ::msgcat::mcset id {Copy nick} {Salin nick}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset id {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {Tidak dapat menemukan komponen. Langkah penyiapan penyedia tetap berfungsi; pasang melalui CLI di mesin target jika perlu.}
 ::msgcat::mcset id {Could not join: %s} {Tidak bisa bergabung: %s}
 ::msgcat::mcset id {Could not list the models (%s) — type the model's name.} {Tidak dapat membuat daftar model (%s) — ketik nama modelnya.}
+::msgcat::mcset id {Create a PR in} {Buat PR di}
+::msgcat::mcset id {Create extension} {Buat ekstensi}
 ::msgcat::mcset id {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Buat bot dengan @BotFather, lalu tempel tokennya di bawah: token masuk ke brankas terenkripsi, tidak pernah ke config.toml.}
+::msgcat::mcset id {Create this extension?} {Buat ekstensi ini?}
+::msgcat::mcset id {Create this generated extension?} {Buat ekstensi hasil generate ini?}
+::msgcat::mcset id {Created and reloaded. Review and test the extension before publishing.} {Dibuat dan dimuat ulang. Tinjau dan uji ekstensi sebelum menerbitkan.}
+::msgcat::mcset id {Created, but reload failed} {Dibuat, tetapi pemuatan ulang gagal}
 ::msgcat::mcset id {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Membuat %s/<name>/SKILL.md dari template dan membukanya. Deskripsi frontmatter adalah satu-satunya bagian yang mencapai indeks prompt, jadi buat ia menyebutkan KAPAN skill digunakan.}
 ::msgcat::mcset id {Cron history} {Riwayat cron}
 ::msgcat::mcset id {Cron jobs} {Tugas cron}
 ::msgcat::mcset id {Curated — write the first owner entry} {Curated — tulis entri owner pertama}
 ::msgcat::mcset id Cut Potong
 ::msgcat::mcset id Decline Tolak
+::msgcat::mcset id {Dedicated translator} {Penerjemah khusus}
 ::msgcat::mcset id {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset id Default Bawaan
 ::msgcat::mcset id {Default model} {Model bawaan}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset id {Delete user} {Hapus pengguna}
 ::msgcat::mcset id {Delete workspace?} {Hapus workspace?}
 ::msgcat::mcset id Deop {Cabut op}
+::msgcat::mcset id {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Jelaskan perubahannya. AI dapat mengubah atau menambah beberapa berkas ekstensi ini. Setiap berkas ditampilkan sebagai diff, dan tidak ada yang ditulis sebelum Anda mengonfirmasi.}
+::msgcat::mcset id {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Jelaskan perubahannya. AI dapat mengusulkan pengganti, tetapi tidak dapat menuliskannya sebelum Anda memeriksa dan mengonfirmasi diff.}
+::msgcat::mcset id {Describe the requested extension change first.} {Jelaskan dulu perubahan ekstensi yang diminta.}
+::msgcat::mcset id Description Deskripsi
 ::msgcat::mcset id {Desktop: local core, modules and process plugins} {Desktop: inti lokal, modul, dan plugin proses}
 ::msgcat::mcset id Detach Lepaskan
+::msgcat::mcset id {Detach foreground} {Lepas latar depan}
 ::msgcat::mcset id Dev Dev
 ::msgcat::mcset id {Dev pane (REPL + LSP)} {Panel Dev (REPL + LSP)}
 ::msgcat::mcset id {Dev: arm / disarm live patching} {Dev: aktifkan / matikan live patching}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset id Devoice {Cabut voice}
 ::msgcat::mcset id {Discard review} {Buang peninjauan}
 ::msgcat::mcset id {Discard your changes to %s?} {Buang perubahan Anda pada %s?}
+::msgcat::mcset id {Disk: %1$s free of %2$s at %3$s} {Disk: %1$s kosong dari %2$s di %3$s}
 ::msgcat::mcset id Done Selesai
 ::msgcat::mcset id {Done — config written} {Selesai — config ditulis}
 ::msgcat::mcset id {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Unduh dan verifikasi manifes rilis serta arsip host sebelum memasang. Kelima kolom identitas wajib diisi. Gateway menyimpan arsip panggung pribadi; pratinjau ini tidak memasang apa pun.}
 ::msgcat::mcset id {Downloading and verifying the signed release…} {Mengunduh dan memverifikasi rilis bertanda tangan…}
+::msgcat::mcset id {Draft this as an extension?} {Rancang ini sebagai ekstensi?}
 ::msgcat::mcset id {Drag to scroll; a quick swipe goes further.} {Seret untuk menggulir; usapan cepat menggulir lebih jauh.}
+::msgcat::mcset id {Drift check failed: %s} {Pemeriksaan drift gagal: %s}
+::msgcat::mcset id {Drift check: %s node(s) differ from this gateway.} {Pemeriksaan drift: %s node berbeda dari gateway ini.}
+::msgcat::mcset id {Drift: built from revision %1$s, this gateway from %2$s} {Drift: dibangun dari revisi %1$s, gateway ini dari %2$s}
+::msgcat::mcset id {Drift: none — same version, revision and replicated config} {Drift: tidak ada — versi, revisi, dan config yang direplikasi sama}
+::msgcat::mcset id {Drift: not compared — %s} {Drift: tidak dibandingkan — %s}
+::msgcat::mcset id {Drift: runs version %1$s, this gateway %2$s} {Drift: menjalankan versi %1$s, gateway ini %2$s}
+::msgcat::mcset id Drift… Drift…
 ::msgcat::mcset id {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset id {ESC %s is not bound} {ESC %s tidak terikat}
 ::msgcat::mcset id {ESC- … (Meta prefix)} {ESC- … (prefiks Meta)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset id Edit… Ubah…
 ::msgcat::mcset id {Enable / disable} {Aktifkan / nonaktifkan}
 ::msgcat::mcset id {Enable the Telegram adapter} {Aktifkan adapter Telegram}
+::msgcat::mcset id Endpoint Endpoint
 ::msgcat::mcset id Engine Mesin
 ::msgcat::mcset id Eval→gw Eval→gw
 ::msgcat::mcset id {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Setiap perubahan pada %s dikomit. Memulihkan mengembalikan seluruh direktori ke komit itu — dan membuat snapshot keadaan saat ini dulu, jadi bukan pintu satu arah.}
 ::msgcat::mcset id {Every plugin file goes back to that commit. The current state is committed first.} {Semua file plugin kembali ke komit itu. Keadaan saat ini dikomit lebih dulu.}
+::msgcat::mcset id {Exact commit} {Commit persis}
+::msgcat::mcset id {Exact permission rule} {Aturan izin persis}
+::msgcat::mcset id {Example: a hook} {Contoh: hook}
+::msgcat::mcset id {Example: a provider driver} {Contoh: driver penyedia}
+::msgcat::mcset id {Example: a service override wrapping core} {Contoh: override service yang membungkus inti}
+::msgcat::mcset id {Example: a tool} {Contoh: alat}
 ::msgcat::mcset id {Existing shared container network} {Jaringan kontainer bersama yang sudah ada}
+::msgcat::mcset id Explain Jelaskan
+::msgcat::mcset id {Explain the diagnostics} {Jelaskan diagnostik}
 ::msgcat::mcset id Export… Ekspor…
+::msgcat::mcset id {Extension API} {API ekstensi}
+::msgcat::mcset id {Extension development} {Pengembangan ekstensi}
+::msgcat::mcset id {Extension guide} {Panduan ekstensi}
+::msgcat::mcset id {Extension source} {Sumber ekstensi}
 ::msgcat::mcset id {Failover blueprint} {Blueprint failover}
 ::msgcat::mcset id {Failover blueprint (edit the route chain)} {Blueprint failover (edit rantai rute)}
 ::msgcat::mcset id {Failover hook script (what `script` mode runs)} {Skrip hook failover (yang dijalankan mode `script`)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset id {Find in transcript} {Cari di transkrip}
 ::msgcat::mcset id {Find in transcript…} {Cari di transkrip…}
 ::msgcat::mcset id {Find references} {Cari referensi}
+::msgcat::mcset id {Finish rollback} {Selesaikan rollback}
 ::msgcat::mcset id {First run: no config.toml yet.} {Jalankan pertama: belum ada config.toml.}
+::msgcat::mcset id {Fix the failed syntax checks before preparing a contribution.} {Perbaiki pemeriksaan sintaks yang gagal sebelum menyiapkan kontribusi.}
+::msgcat::mcset id {Fleet deployment} {Deployment fleet}
+::msgcat::mcset id {Fleet deployment runs from a desktop computer; it is not available on Android.} {Deployment fleet dijalankan dari komputer desktop; tidak tersedia di Android.}
+::msgcat::mcset id {Fleet deploy…} {Deploy fleet…}
+::msgcat::mcset id {Fleet drift} {Drift fleet}
 ::msgcat::mcset id {Fold / unfold} {Lipat / buka lipatan}
 ::msgcat::mcset id {Forget declaration} {Lupakan deklarasi}
+::msgcat::mcset id {Forget node %s?} {Lupakan node %s?}
+::msgcat::mcset id {Forget node…} {Lupakan node…}
+::msgcat::mcset id {Forgetting %1$s failed: %2$s} {Gagal melupakan %1$s: %2$s}
+::msgcat::mcset id {Forgot node %s.} {Node %s dilupakan.}
+::msgcat::mcset id {Forgotten fleet-wide (refused until they heartbeat again): %s} {Dilupakan di seluruh fleet (ditolak sampai heartbeat-nya kembali): %s}
 ::msgcat::mcset id Fork Cabangkan
 ::msgcat::mcset id {Free space} {Ruang kosong}
 ::msgcat::mcset id {Full source commit SHA} {SHA commit sumber lengkap}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset id {Gateway image sha256 digest} {Digest sha256 image gateway}
 ::msgcat::mcset id {Gateway quadlet name} {Nama quadlet gateway}
 ::msgcat::mcset id {Gateway status} {Status gateway}
+::msgcat::mcset id {Generate with AI…} {Hasilkan dengan AI…}
+::msgcat::mcset id {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {Dihasilkan oleh %s - belum ada yang ditulis. Tinjau setiap berkas, lalu Buat ekstensi menulis persis seperti ini.}
 ::msgcat::mcset id {Get a key at %s} {Dapatkan kunci di %s}
 ::msgcat::mcset id {GitHub release URL} {URL rilis GitHub}
+::msgcat::mcset id {Give the extension a name and describe what it should do (the purpose), then generate.} {Beri nama ekstensi dan jelaskan apa yang harus dilakukannya (tujuannya), lalu hasilkan.}
 ::msgcat::mcset id {Give up} Menyerah
 ::msgcat::mcset id Go Lanjut
 ::msgcat::mcset id {Go to definition} {Pergi ke definisi}
+::msgcat::mcset id {Gossip failed: %s} {Gossip gagal: %s}
+::msgcat::mcset id {Gossip now} {Gossip sekarang}
+::msgcat::mcset id {Gossip with %1$s: %2$s} {Gossip dengan %1$s: %2$s}
+::msgcat::mcset id {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {Gossip: %1$s dari %2$s peer menjawab (%3$s).}
 ::msgcat::mcset id Grant Berikan
 ::msgcat::mcset id {Grant access} {Beri akses}
+::msgcat::mcset id {Granted at} {Diberikan pada}
 ::msgcat::mcset id Grant… Berikan…
 ::msgcat::mcset id {Guards — what the harness stops, and where it stands now} {Guard — apa yang dihentikan harness, dan posisinya sekarang}
 ::msgcat::mcset id {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handler berjalan sesuai urutan yang tampil; yang pertama mengembalikan nilai tidak kosong yang menang. Mematikan salah satu melewatinya tanpa membatalkan pendaftarannya, dan pilihan disimpan di config.toml sehingga reload plugin tidak bisa diam-diam menyalakannya lagi.}
+::msgcat::mcset id Health Kesehatan
+::msgcat::mcset id {Health alerts (%s):} {Peringatan kesehatan (%s):}
+::msgcat::mcset id Heartbeat {Detak jantung}
+::msgcat::mcset id {Heartbeat age: %s s} {Usia heartbeat: %s s}
 ::msgcat::mcset id Help Bantuan
 ::msgcat::mcset id {Help & keys} {Bantuan & tombol}
 ::msgcat::mcset id {Hide right panes} {Sembunyikan panel kanan}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset id {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {Tahan, lalu seret sebelum mengangkat jari: pilihan mengikuti jari Anda kata demi kata, dan menggulir di tepi atas atau bawah.}
 ::msgcat::mcset id Hooks Hook
 ::msgcat::mcset id {Hooks (what plugins run on)} {Hooks (yang dijalankan plugin)}
+::msgcat::mcset id Host Host
 ::msgcat::mcset id {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {Lama sentuhan ditentukan oleh jeda sentuh lama Android, di setelan aksesibilitasnya.}
 ::msgcat::mcset id {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {Saya mencadangkan kunci rotasi KEK dan PLC secara offline; izinkan serah terima TLS dan aktivasi yang telah ditinjau}
 ::msgcat::mcset id {I-search backward: type to search, C-r for previous} {I-search mundur: ketik untuk mencari, C-r untuk sebelumnya}
 ::msgcat::mcset id {I-search: type to search, C-s for next} {I-search: ketik untuk mencari, C-s untuk berikutnya}
+::msgcat::mcset id {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {Tekanan IO: %1$s%% / %2$s%% / %3$s%% waktu ada tugas yang menunggu (10 dtk / 1 mnt / 5 mnt)}
 ::msgcat::mcset id IRC IRC
 ::msgcat::mcset id {IRC buffers} {Buffer IRC}
 ::msgcat::mcset id {IRC composer} {Komposer IRC}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset id {IRC split: %s} {Split IRC: %s}
 ::msgcat::mcset id {IRC transcript} {Transkrip IRC}
 ::msgcat::mcset id {IRC — nothing to show} {IRC — tidak ada yang ditampilkan}
+::msgcat::mcset id {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {Berjalan: %1$s giliran %2$s, %3$s tugas latar %4$s}
 ::msgcat::mcset id {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {Pasang %s ke penyimpanan komponen terkelola? Manifestnya sudah ditampilkan; ini tidak memulai layanan.}
 ::msgcat::mcset id {Install component} {Pasang komponen}
 ::msgcat::mcset id {Install components…} {Pasang komponen…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset id Instances Instances
 ::msgcat::mcset id {It becomes the current content, as a new revision — so the restore can be undone too.} {Ini menjadi konten saat ini, sebagai revisi baru — jadi pemulihan pun bisa dibatalkan.}
 ::msgcat::mcset id {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Nilai ini masuk ke brankas terenkripsi di mesin ini. Agen tidak pernah melihatnya: agen hanya bisa memakainya sebagai $%s dalam perintah, atau mengirimnya ke host yang diizinkan.}
+::msgcat::mcset id {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Node ini dihapus dari registri cluster di seluruh fleet: pertukaran gossip berikutnya memberi tahu setiap peer 0.2.0 untuk membuangnya juga, dan tidak ada yang menggabungkannya kembali. Peer yang lebih tua dari 0.2.0 tetap mencantumkannya. Jika mesin itu kembali dan mengirim heartbeat, ia terdaftar lagi. Peer sinkronisasi dan instance tersimpan tidak tersentuh.}
 ::msgcat::mcset id {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Berkas ini keluar dari memori sekarang. Riwayatnya menyimpan setiap revisi, dan Riwayat… dapat memulihkannya.}
 ::msgcat::mcset id Join Gabung
 ::msgcat::mcset id {Join a pool} {Gabung ke grup mesin}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset id {Language (i18n)} {Bahasa (i18n)}
 ::msgcat::mcset id Language… Bahasa…
 ::msgcat::mcset id {Last active} {Terakhir aktif}
+::msgcat::mcset id {Last probe: %1$s — %2$s} {Pemeriksaan terakhir: %1$s — %2$s}
 ::msgcat::mcset id {Leave %s?} {Tinggalkan %s?}
 ::msgcat::mcset id Leave… Tinggalkan…
 ::msgcat::mcset id {Legacy open — no [acl] section} {Legacy terbuka — tanpa bagian [acl]}
 ::msgcat::mcset id {Let %s:} {Izinkan %s untuk:}
 ::msgcat::mcset id {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {Huruf, angka, - dan _. Membuat plugin.toml dan plugin.tcl yang mendaftarkan hook post_llm_call, lalu membukanya di panel Dev.}
+::msgcat::mcset id Level Tingkat
 ::msgcat::mcset id {Lift lockdown} {Angkat lockdown}
+::msgcat::mcset id Lines Baris
 ::msgcat::mcset id {List the provider's models} {Tampilkan model penyedia}
+::msgcat::mcset id Load Beban
 ::msgcat::mcset id {Load more} {Muat lebih banyak}
 ::msgcat::mcset id {Loading discovered components…} {Memuat komponen yang ditemukan…}
 ::msgcat::mcset id {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {Bundle lokal telah ditinjau. Pilih Pasang komponen terpilih untuk mengonfirmasi instalasi; belum ada yang dipasang.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset id {Lock down} Kunci
 ::msgcat::mcset id Log Log
 ::msgcat::mcset id {Log (engine + status)} {Log (engine + status)}
+::msgcat::mcset id {Log of %s} {Log %s}
+::msgcat::mcset id Logs… Log…
 ::msgcat::mcset id {M-g- (g: goto line)} {M-g- (g: ke baris)}
 ::msgcat::mcset id {M-p/M-n history · Tab complete} {Riwayat M-p/M-n · lengkapi dengan Tab}
 ::msgcat::mcset id {MCP server list} {Daftar server MCP}
 ::msgcat::mcset id {MCP servers (from config.toml)} {Server MCP (dari config.toml)}
 ::msgcat::mcset id {Make default} {Jadikan bawaan}
 ::msgcat::mcset id {Make default (config.toml)} {Jadikan default (config.toml)}
+::msgcat::mcset id {Manage extensions} {Kelola ekstensi}
 ::msgcat::mcset id {Manifest SHA-256} {SHA-256 manifes}
 ::msgcat::mcset id {Mark read} {Tandai sudah dibaca}
 ::msgcat::mcset id {Mechanisms (what the engine does on its own)} {Mekanisme (yang dilakukan engine sendiri)}
 ::msgcat::mcset id {Mechanisms — what the engine does on its own, and how to stop it} {Mekanisme — apa yang dilakukan engine sendiri, dan cara menghentikannya}
 ::msgcat::mcset id Memory Memori
 ::msgcat::mcset id {Memory history} {Riwayat memori}
+::msgcat::mcset id {Memory: %1$s available of %2$s (%3$s%% used)} {Memori: %1$s tersedia dari %2$s (%3$s%% terpakai)}
+::msgcat::mcset id {Merge the received %s into this node?} {Gabungkan %s yang diterima ke node ini?}
 ::msgcat::mcset id Messages Pesan
+::msgcat::mcset id Metrics Metrik
+::msgcat::mcset id {Metrics (asked %s):} {Metrik (diminta %s):}
+::msgcat::mcset id {Metrics of %1$s failed: %2$s} {Metrik %1$s gagal: %2$s}
+::msgcat::mcset id {Metrics of %s received.} {Metrik %s diterima.}
+::msgcat::mcset id {Metrics: not asked yet — use Metrics.} {Metrik: belum diminta — gunakan Metrik.}
 ::msgcat::mcset id Model Model
 ::msgcat::mcset id {Model for this session} {Model untuk sesi ini}
 ::msgcat::mcset id {Models & settings} {Model & pengaturan}
+::msgcat::mcset id Monitors Monitor
+::msgcat::mcset id Name Nama
+::msgcat::mcset id {Need an account? Optional sign-up links (open in your browser):} {Perlu akun? Tautan pendaftaran opsional (terbuka di peramban Anda):}
 ::msgcat::mcset id Network Jaringan
 ::msgcat::mcset id {New alias} {Alias baru}
+::msgcat::mcset id {New branch name} {Nama cabang baru}
 ::msgcat::mcset id {New cron job} {Tugas cron baru}
+::msgcat::mcset id {New extension} {Ekstensi baru}
 ::msgcat::mcset id {New memory file} {Berkas memori baru}
 ::msgcat::mcset id {New plugin} {Plugin baru}
 ::msgcat::mcset id {New session} {Sesi baru}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset id Next Lanjut
 ::msgcat::mcset id Nickname Nickname
 ::msgcat::mcset id {NixOS: emit a module snippet; do not edit host declarations} {NixOS: keluarkan cuplikan modul; jangan ubah deklarasi host}
+::msgcat::mcset id {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Tidak ada target siklus hidup SSH yang dikonfigurasi untuk node ini. Tambahkan instance secara eksplisit untuk men-deploy atau memulainya ulang.}
+::msgcat::mcset id {No additional push happens.} {Tidak ada push tambahan yang terjadi.}
 ::msgcat::mcset id {No apps yet. Ask the agent to make one: “make me an app that…”} {Belum ada aplikasi. Minta agen membuatkan satu: “buatkan aku aplikasi yang…”}
 ::msgcat::mcset id {No code in the picture. Hold the phone closer, straight on, and scan again.} {Tidak ada kode di gambar. Dekatkan ponsel, tegak lurus, lalu pindai lagi.}
 ::msgcat::mcset id {No configuration snapshot will be restored.} {Snapshot konfigurasi tidak akan dipulihkan.}
+::msgcat::mcset id {No configured sync peer for this node.} {Tidak ada peer sinkronisasi yang dikonfigurasi untuk node ini.}
+::msgcat::mcset id {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Belum ada penerjemah khusus terkonfigurasi. Gunakan Konfigurasikan penerjemah untuk memilih penyedia, model, dan bahasa sasarannya.}
+::msgcat::mcset id {No deployment started.} {Tidak ada deployment yang dimulai.}
+::msgcat::mcset id {No diagnostics reported by the current LSP document.} {Tidak ada diagnostik yang dilaporkan dokumen LSP saat ini.}
+::msgcat::mcset id {No explicitly configured desktop gateway is bound to this node.} {Tidak ada gateway desktop yang dikonfigurasi secara eksplisit terikat ke node ini.}
+::msgcat::mcset id {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {Tidak ada gateway yang dikonfigurasi secara eksplisit terikat ke node ini. Tambahkan gateway terlebih dahulu; endpoint registry-nya tidak dipakai sebagai URL desktop.}
+::msgcat::mcset id {No file is open. Ask a design question, or open an extension file for help with its code.} {Tidak ada berkas yang terbuka. Ajukan pertanyaan desain, atau buka berkas ekstensi untuk bantuan atas kodenya.}
+::msgcat::mcset id {No files have been written. Review the exact manifest and source, then confirm creation.} {Belum ada berkas yang ditulis. Tinjau manifes dan sumber persisnya, lalu konfirmasi pembuatan.}
 ::msgcat::mcset id {No modules or process plugins were discovered. The provider setup steps can still continue.} {Tidak ada modul atau plugin proses yang ditemukan. Langkah penyiapan penyedia tetap bisa dilanjutkan.}
+::msgcat::mcset id {No other registered node to compare with.} {Tidak ada node terdaftar lain untuk dibandingkan.}
 ::msgcat::mcset id {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {Tidak ada profil yang memulai layanan atau menjalankan skrip dengan hak administrator dari wizard ini. Tinjau rencana dan handoff apa pun sebelum menjalankannya.}
+::msgcat::mcset id {No proposal has been requested. Nothing will be written automatically.} {Belum ada proposal yang diminta. Tidak ada yang akan ditulis otomatis.}
+::msgcat::mcset id {No proposal. Nothing was written.} {Tidak ada usulan. Tidak ada yang ditulis.}
 ::msgcat::mcset id {No routes configured.} {Tidak ada route yang dikonfigurasi.}
 ::msgcat::mcset id {No session selected — pick one in the sidebar or start a new one} {Tidak ada sesi dipilih — pilih salah satu di sidebar atau mulai yang baru}
 ::msgcat::mcset id {No swap target yet: pick a language and press “Set as swap target”.} {Belum ada target tukar: pilih bahasa lalu tekan “Jadikan target tukar”.}
 ::msgcat::mcset id {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {Tidak ada bagian {[}acl{]} di config.toml: setiap pengirim yang mencapai gateway diperlakukan sebagai owner, perilaku pengguna tunggal pra-ACL. Memberi dan mencabut izin tetap berfungsi dan berlaku begitu {[}acl{]} ada.}
+::msgcat::mcset id {Node id} {ID node}
+::msgcat::mcset id {Non-evaluating syntax checks} {Pemeriksaan sintaks tanpa evaluasi}
+::msgcat::mcset id {Not available: %s} {Tidak tersedia: %s}
+::msgcat::mcset id Note Catatan
 ::msgcat::mcset id {Note for the agent (optional):} {Catatan untuk agen (opsional):}
+::msgcat::mcset id {Nothing selected.} {Tidak ada yang dipilih.}
 ::msgcat::mcset id {Nothing typed yet.} {Belum ada yang diketik.}
+::msgcat::mcset id {Nothing was generated or written.} {Tidak ada yang dihasilkan atau ditulis.}
+::msgcat::mcset id {Nothing was prepared: the chosen repository already has these paths.} {Tidak ada yang disiapkan: repositori yang dipilih sudah memiliki path ini.}
 ::msgcat::mcset id Notifications Notifikasi
 ::msgcat::mcset id OK OK
 ::msgcat::mcset id Off Nonaktif
 ::msgcat::mcset id On Aktif
+::msgcat::mcset id {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {Hanya buffer ekstensi yang ditinjau yang akan diganti. Berkas tetap dilindungi dari perubahan setelah pratinjau ini. Tidak ada commit, push, atau PR yang terjadi.}
+::msgcat::mcset id {Only this new branch is committed. Your ambient git identity is used.} {Hanya cabang baru ini yang di-commit. Identitas git lingkungan Anda yang dipakai.}
 ::msgcat::mcset id Op {Beri op}
 ::msgcat::mcset id Open Buka
+::msgcat::mcset id {Open PR…} {Buka PR…}
 ::msgcat::mcset id {Open a window} {Buka jendela}
 ::msgcat::mcset id {Open in Dev} {Buka di Dev}
 ::msgcat::mcset id {Open in browser} {Buka di browser}
 ::msgcat::mcset id {Open plugin} {Buka plugin}
 ::msgcat::mcset id {Open terminal} {Buka terminal}
+::msgcat::mcset id {Open this pull request?} {Buka pull request ini?}
 ::msgcat::mcset id {Open veles in Android's settings} {Buka veles di pengaturan Android}
 ::msgcat::mcset id {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {Opsional: jaringan IRC untuk digabung. Daftar channel dipisahkan oleh spasi atau koma; IRC_CHANNELS di .env, bila diatur, menggantikan daftar ini.}
 ::msgcat::mcset id {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {Opsi berasal dari manifest komponen yang dipilih. Kolom yang tampak seperti rahasia tetap di alur setup/brankas. Kolom kosong membiarkan opsi itu tidak berubah.}
 ::msgcat::mcset id {Or paste a ticket signed on another device} {atau tempel tiket yang ditandatangani di perangkat lain}
 ::msgcat::mcset id {Or type an answer:} {Atau ketik jawaban:}
+::msgcat::mcset id Origin Origin
 ::msgcat::mcset id Other… Lainnya…
 ::msgcat::mcset id Outline {Garis besar}
+::msgcat::mcset id Output Keluaran
 ::msgcat::mcset id {Override for THIS session (leave blank to inherit the default)} {Override untuk sesi INI (biarkan kosong untuk mewarisi bawaan)}
 ::msgcat::mcset id {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {Identitas pemilik (telegram:123456, irc:account, atau mask nick!user@host)}
 ::msgcat::mcset id {PDS and handle domain} {Domain PDS dan handle}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset id {Pause scheduler} {Jeda penjadwal}
 ::msgcat::mcset id {Peek (C-c C-p)} {Intip (C-c C-p)}
 ::msgcat::mcset id {Peek definition} {Intip definisi}
+::msgcat::mcset id {Permission grants} {Pemberian izin}
+::msgcat::mcset id {Permission grants…} {Pemberian izin…}
 ::msgcat::mcset id Phone Ponsel
 ::msgcat::mcset id {Phone: permissions, battery, storage} {Ponsel: izin, baterai, penyimpanan}
 ::msgcat::mcset id {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Ponsel buatan %s juga menghentikan aplikasi dengan sendirinya. Di pengaturan aplikasi veles, izinkan aplikasi ini mulai sendiri dan berjalan di latar belakang.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset id Port Port
 ::msgcat::mcset id {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {Chord prefix (C-x, M-o) menampilkan popup which-key begitu aktif.}
 ::msgcat::mcset id {Prepare an own vlpds PDS through the signed CLI handoff} {Siapkan PDS vlpds sendiri melalui handoff CLI yang ditandatangani}
+::msgcat::mcset id {Prepare branch…} {Siapkan cabang…}
+::msgcat::mcset id {Prepare this branch and commit?} {Siapkan cabang dan commit ini?}
 ::msgcat::mcset id Preview Pratinjau
+::msgcat::mcset id {Preview change set} {Pratinjau set perubahan}
+::msgcat::mcset id {Preview files} {Pratinjau berkas}
 ::msgcat::mcset id {Preview here} {Pratinjau di sini}
 ::msgcat::mcset id {Preview pane} {Panel pratinjau}
+::msgcat::mcset id {Preview proposal} {Pratinjau proposal}
+::msgcat::mcset id {Preview the changed name or language before creating it.} {Pratinjau nama atau bahasa yang diubah sebelum membuatnya.}
+::msgcat::mcset id Probe Periksa
+::msgcat::mcset id {Probe of %1$s failed: %2$s} {Pemeriksaan %1$s gagal: %2$s}
 ::msgcat::mcset id {Profile result} {Hasil profil}
 ::msgcat::mcset id {Promote into config.toml} {Promosikan ke config.toml}
 ::msgcat::mcset id Promote… Promosikan…
 ::msgcat::mcset id Provider Penyedia
+::msgcat::mcset id {Provider driver (plugin wire only)} {Driver penyedia (hanya wire plugin)}
 ::msgcat::mcset id {Provider entry name} {Nama entri provider}
 ::msgcat::mcset id {Provider for this session} {Provider untuk sesi ini}
 ::msgcat::mcset id Providers Provider
 ::msgcat::mcset id {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {Provider adalah daftar tabel: custom_providers.0.base_url, .0.api_mode, .0.key_env … Indeks sesuai urutan yang ditampilkan di bawah.}
 ::msgcat::mcset id {Public HTTPS URL} {URL HTTPS publik}
+::msgcat::mcset id {Pull request base} {Dasar pull request}
+::msgcat::mcset id {Pull request created} {Pull request dibuat}
+::msgcat::mcset id {Pull request description} {Deskripsi pull request}
+::msgcat::mcset id {Pull request opened.} {Pull request dibuka.}
+::msgcat::mcset id {Pull request repository} {Repositori pull request}
+::msgcat::mcset id {Pull request title} {Judul pull request}
 ::msgcat::mcset id {Purge + delete files} {Bersihkan + hapus berkas}
 ::msgcat::mcset id {Purge container} {Bersihkan kontainer}
+::msgcat::mcset id Purpose Tujuan
+::msgcat::mcset id Push Push
+::msgcat::mcset id {Push branch…} {Push cabang…}
+::msgcat::mcset id {Push complete. No pull request has been opened.} {Push selesai. Belum ada pull request yang dibuka.}
+::msgcat::mcset id {Push this branch?} {Push cabang ini?}
+::msgcat::mcset id {Push to %s:} {Push ke %s:}
 ::msgcat::mcset id Question Pertanyaan
 ::msgcat::mcset id Questions Pertanyaan
 ::msgcat::mcset id Quit Keluar
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset id {Reading notifications, for triggers} {Membaca notifikasi, untuk pemicu}
 ::msgcat::mcset id Reasoning Penalaran
 ::msgcat::mcset id {Reasoning effort} {Upaya penalaran}
+::msgcat::mcset id {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {Diterima, menunggu diterapkan: penyimpanan %1$s · memori %2$s · konfigurasi %3$s · brankas %4$s}
+::msgcat::mcset id {Recommended checks} {Pemeriksaan yang disarankan}
 ::msgcat::mcset id {Refetch this transcript from the store} {Ambil ulang transkrip ini dari store}
 ::msgcat::mcset id Refresh Segarkan
 ::msgcat::mcset id {Refresh preview} {Segarkan pratinjau}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset id {Rename symbol} {Ganti nama simbol}
 ::msgcat::mcset id Rename… {Ganti nama…}
 ::msgcat::mcset id Rendered Dirender
+::msgcat::mcset id {Replace existing repository files?} {Ganti berkas repositori yang sudah ada?}
+::msgcat::mcset id {Replace them in the new branch? Nothing else in the repository changes.} {Ganti berkas itu di cabang baru? Tidak ada hal lain di repositori yang berubah.}
 ::msgcat::mcset id Repository Repositori
 ::msgcat::mcset id {Repository (owner/name)} {Repositori (pemilik/nama)}
+::msgcat::mcset id {Repository directory} {Direktori repositori}
+::msgcat::mcset id {Repository paths} {Path repositori}
+::msgcat::mcset id {Request a new preview before trying again.} {Minta pratinjau baru sebelum mencoba lagi.}
 ::msgcat::mcset id {Reset to default} {Kembalikan ke bawaan}
 ::msgcat::mcset id {Reset to template} {Atur ulang ke template}
 ::msgcat::mcset id Restart Restart
+::msgcat::mcset id {Restart + verify canary} {Mulai ulang + verifikasi canary}
 ::msgcat::mcset id {Restore hidden windows} {Pulihkan jendela tersembunyi}
 ::msgcat::mcset id {Restore plugins to %s?} {Pulihkan plugin ke %s?}
 ::msgcat::mcset id {Restore revision r%1$s of %2$s?} {Pulihkan revisi r%1$s dari %2$s?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset id {Restore this commit} {Pulihkan komit ini}
 ::msgcat::mcset id {Restore this revision} {Pulihkan revisi ini}
 ::msgcat::mcset id {Resume scheduler} {Lanjutkan penjadwal}
+::msgcat::mcset id {Resume unfinished operation} {Lanjutkan operasi yang belum selesai}
 ::msgcat::mcset id Revert Kembalikan
 ::msgcat::mcset id {Revert %s to HEAD? Uncommitted changes in this file are lost.} {Kembalikan %s ke HEAD? Perubahan yang belum dikomit di file ini akan hilang.}
 ::msgcat::mcset id Revert… Kembalikan…
 ::msgcat::mcset id Review Tinjau
 ::msgcat::mcset id {Review (git) pane} {Panel Review (git)}
+::msgcat::mcset id {Review deployment} {Tinjau deployment}
+::msgcat::mcset id {Review extension contribution} {Tinjau kontribusi ekstensi}
 ::msgcat::mcset id {Review managed local bundle…} {Tinjau bundle lokal yang dikelola…}
 ::msgcat::mcset id {Review rollback} {Tinjau rollback}
+::msgcat::mcset id {Review selected files} {Tinjau berkas terpilih}
 ::msgcat::mcset id {Review the component options on the summary screen before applying.} {Tinjau opsi komponen di layar ringkasan sebelum menerapkan.}
 ::msgcat::mcset id {Review the component preview before applying. No component configuration has been written.} {Tinjau pratinjau komponen sebelum menerapkan. Belum ada konfigurasi komponen yang ditulis.}
+::msgcat::mcset id {Review the selected files and remove credential findings before preparing.} {Tinjau berkas terpilih dan hapus temuan kredensial sebelum menyiapkan.}
 ::msgcat::mcset id {Reviewed core bundle in the managed install-sources directory} {Paket inti yang ditinjau di direktori install-sources terkelola}
+::msgcat::mcset id {Reviewed fleet deployment} {Deployment fleet yang ditinjau}
 ::msgcat::mcset id {Reviewed local bundle} {Bundle lokal yang ditinjau}
 ::msgcat::mcset id {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {Bundle lokal yang ditinjau telah terpasang. Tidak diverifikasi unduhan bertanda tangan. Restart diperlukan sebelum memakai core yang baru.}
 ::msgcat::mcset id Revision Revisi
 ::msgcat::mcset id Revoke Cabut
+::msgcat::mcset id {Revoke selected} {Cabut yang dipilih}
 ::msgcat::mcset id Roles Peran
 ::msgcat::mcset id {Roll back %1$s from %2$s to %3$s?} {Kembalikan %1$s dari %2$s ke %3$s?}
+::msgcat::mcset id {Roll back selected target} {Rollback target terpilih}
 ::msgcat::mcset id {Rollback completed. Reload the component or restart as requested by the report.} {Rollback selesai. Muat ulang komponen atau mulai ulang seperti yang diminta laporan.}
 ::msgcat::mcset id {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {Rollback telah ditinjau. Pilih Pasang komponen terpilih untuk mengonfirmasi pemulihan; belum ada yang dipulihkan.}
 ::msgcat::mcset id Run Jalankan
 ::msgcat::mcset id {Run the wizard again} {Jalankan wizard lagi}
 ::msgcat::mcset id {Running in the background} {Berjalan di latar belakang}
-::msgcat::mcset id {Running tasks} {Tugas berjalan}
-::msgcat::mcset id {Running tasks (subagents, shells, monitors)} {Tugas berjalan (subagent, shell, monitor)}
 ::msgcat::mcset id {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {Izin dan pengguna runtime hidup di store, dan reset store menghapusnya. Promosikan menambahkan yang diputuskan store ke config.toml — komentar dan urutan kunci file dipertahankan, cadangan ditulis di sampingnya, salinan store dibuang — dan menolak menebak di tempat file sudah punya keputusan.}
 ::msgcat::mcset id {S3 HTTPS endpoint} {Endpoint S3 HTTPS}
 ::msgcat::mcset id {S3 bucket} {Bucket S3}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset id {Save as default} {Simpan sebagai bawaan}
 ::msgcat::mcset id {Save attachment as} {Simpan lampiran sebagai}
 ::msgcat::mcset id {Save globally} {Simpan secara global}
+::msgcat::mcset id {Save or revert the open buffer before applying a change set.} {Simpan atau kembalikan buffer yang terbuka sebelum menerapkan set perubahan.}
 ::msgcat::mcset id Scan Pindai
 ::msgcat::mcset id {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {Pindai kode veles dari mesin yang mengundang ponsel ini. Jika mesin itu lebih dulu menampilkan kode WireGuard, pindai kode itu dengan aplikasi WireGuard sebelum ini.}
 ::msgcat::mcset id {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {Jadwal: interval ("30m", "every 2h"), pola cron ("0 9 * * 1"), atau timestamp ISO untuk sekali jalan. Baris di atas menunjukkan cara engine membacanya. Pengiriman: "local" menyimpan output di log — satu-satunya bawaan yang jujur dari desktop, yang tidak punya platform chat di belakangnya — atau "platform:chat_id". Bangunkan sesi: biarkan kosong untuk berjalan di sesi baru; isi id sesi (atau prefiks unik) untuk melanjutkan sesi dengan riwayat lengkapnya — sesi yang sibuk menerima prompt di batas giliran berikutnya.}
+::msgcat::mcset id Scope Cakupan
 ::msgcat::mcset id {Scroll to end} {Gulir ke akhir}
 ::msgcat::mcset id {Search commands and sessions…} {Cari perintah dan sesi…}
 ::msgcat::mcset id {Search message text} {Cari teks pesan}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset id Section Bagian
 ::msgcat::mcset id {Select a component first. No component options will be changed if you skip this step.} {Pilih komponen dulu. Tidak ada opsi komponen yang akan diubah jika Anda melewati langkah ini.}
 ::msgcat::mcset id {Select all} {Pilih semua}
+::msgcat::mcset id {Select all extensions} {Pilih semua ekstensi}
+::msgcat::mcset id {Select at least one source file.} {Pilih minimal satu berkas sumber.}
+::msgcat::mcset id {Select none} {Pilih tidak ada}
+::msgcat::mcset id {Select text to translate first.} {Pilih teks yang akan diterjemahkan lebih dulu.}
+::msgcat::mcset id {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {Pilih ekstensi dan berkas yang akan dikontribusikan. Semuanya masuk ke satu cabang dan satu pull request, tiap ekstensi di direktorinya sendiri. Tinjau, jalankan pemeriksaan yang tidak mengevaluasi, lalu siapkan cabang terisolasi dan commit. Push dan pembuatan pull request adalah tindakan terpisah yang dikonfirmasi sendiri-sendiri.}
 ::msgcat::mcset id Send Kirim
+::msgcat::mcset id {Send %s to the peer?} {Kirim %s ke peer?}
 ::msgcat::mcset id {Send a %d-line message to the channel?} {Kirim pesan %d baris ke kanal?}
 ::msgcat::mcset id {Send raw line to the server? (%s)} {Kirim baris mentah ke server? (%s)}
 ::msgcat::mcset id {Server (empty = no IRC)} {Server (kosong = tanpa IRC)}
 ::msgcat::mcset id {Server: gateway configuration and a reviewed user unit} {Server: konfigurasi gateway dan unit pengguna yang ditinjau}
 ::msgcat::mcset id {Server: install a user unit and prepare the separate linger handoff} {Server: pasang unit pengguna dan siapkan serah-terima linger terpisah}
 ::msgcat::mcset id {Server: use a system service and prepare a privileged CLI request} {Server: pakai layanan sistem dan siapkan permintaan CLI berhak administrator}
+::msgcat::mcset id Session Sesi
 ::msgcat::mcset id {Session id} {ID sesi}
 ::msgcat::mcset id {Session id…} {ID sesi…}
 ::msgcat::mcset id Sessions Sesi
 ::msgcat::mcset id {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Sesi yang saat ini di-override ke alias ini tetap memakai rute yang sudah teratasi; override baru tidak akan menemukan nama tersebut.}
+::msgcat::mcset id {Sessions served} {Sesi dilayani}
 ::msgcat::mcset id Set Atur
 ::msgcat::mcset id {Set [model] provider/default in config.toml.} {Atur provider/default [model] di config.toml.}
 ::msgcat::mcset id {Set as swap target} {Jadikan target tukar}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset id {Setup — summary} {Setup — ringkasan}
 ::msgcat::mcset id {Setup — welcome} {Setup — selamat datang}
 ::msgcat::mcset id {Shared container network} {Jaringan kontainer bersama}
+::msgcat::mcset id Shells Shell
+::msgcat::mcset id {Shells and monitors} {Shell dan monitor}
+::msgcat::mcset id {Shells and monitors (subagents, shells, monitors)} {Shell dan monitor (subagen, shell, monitor)}
 ::msgcat::mcset id {Show diff} {Tampilkan diff}
 ::msgcat::mcset id {Show every key} {Tampilkan semua tombol}
 ::msgcat::mcset id Sign Tandatangani
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset id Solved Selesai
 ::msgcat::mcset id Source Sumber
 ::msgcat::mcset id {Source commit} {Commit sumber}
+::msgcat::mcset id {Source text} {Teks sumber}
 ::msgcat::mcset id {Source→app (C-c C-c)} {Sumber→app (C-c C-c)}
 ::msgcat::mcset id Stage Stage
+::msgcat::mcset id {Stage canary} {Stage canary}
+::msgcat::mcset id Stale Kedaluwarsa
+::msgcat::mcset id {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {Izin tetap memungkinkan panggilan alat berikutnya tanpa bertanya lagi. Izin sesi dipegang oleh sesi yang aktif di setiap permukaan (desktop, Telegram, IRC, …); izin global bertahan; entri allowlist [approvals] dari config.toml ditampilkan baca-saja. Mencabut satu izin tidak pernah mengubah izin lainnya.}
 ::msgcat::mcset id Start Mulai
+::msgcat::mcset id {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {Mulai dengan ekstensi di direktori plugin pengguna Anda. Ekstensi itu bertahan saat upgrade dan tidak memerlukan rebuild gateway. Ekstensi baru mempratinjau manifes dan sumber persisnya sebelum menulis. Pilih bahasa dan versi API yang didukung, tinjau berkasnya, lalu uji ekstensi secara terisolasi.}
 ::msgcat::mcset id {Start with the phone} {Mulai bersama ponsel}
+::msgcat::mcset id {Static IP} {IP statis}
 ::msgcat::mcset id Status Status
 ::msgcat::mcset id Steer Arahkan
 ::msgcat::mcset id {Step %1$d of %2$d} {Langkah %1$d dari %2$d}
 ::msgcat::mcset id {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {Masih harus diatur: %s — ketik /secret set NAME di sini, atau jalankan veles secret set NAME di mesin gateway.}
 ::msgcat::mcset id Stop Hentikan
 ::msgcat::mcset id {Storage root} {Akar penyimpanan}
+::msgcat::mcset id Store Penyimpanan
 ::msgcat::mcset id {Store a secret: %s} {Simpan rahasia: %s}
 ::msgcat::mcset id {Store it} Simpan
+::msgcat::mcset id {Store replica} {Replika penyimpanan}
 ::msgcat::mcset id Subagents Subagent
 ::msgcat::mcset id {Subagents (/agents)} {Subagent (/agents)}
 ::msgcat::mcset id Summary Ringkasan
+::msgcat::mcset id Surface Permukaan
 ::msgcat::mcset id {Swap ⇄} {Tukar ⇄}
+::msgcat::mcset id {Sync cancelled.} {Sinkronisasi dibatalkan.}
+::msgcat::mcset id {Sync complete.} {Sinkronisasi selesai.}
+::msgcat::mcset id {Sync now} {Sinkronkan sekarang}
 ::msgcat::mcset id {TOML copied — paste it into config.toml} {TOML disalin — tempel ke config.toml}
 ::msgcat::mcset id Tag Tag
 ::msgcat::mcset id {Tap a link to open it, or a block's header to open or close the block.} {Ketuk tautan untuk membukanya, atau judul blok untuk membuka atau menutup blok itu.}
 ::msgcat::mcset id {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {Ketuk kotak di bawah untuk mengetik. Kirim mengirim, Hentikan mengakhiri giliran, dan Lepaskan memindahkan perintah yang sedang berjalan ke latar belakang.}
 ::msgcat::mcset id {Tap the text to clear the selection.} {Ketuk teks untuk menghapus pilihan.}
+::msgcat::mcset id {Target language:} {Bahasa target:}
+::msgcat::mcset id {Target node IDs (canary first, comma separated)} {ID node target (canary lebih dulu, dipisah koma)}
 ::msgcat::mcset id {Task list} {Daftar tugas}
 ::msgcat::mcset id {Task list (right pane)} {Daftar tugas (panel kanan)}
 ::msgcat::mcset id Tasks Tugas
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset id {That is not a ticket.} {Itu bukan tiket.}
 ::msgcat::mcset id {That is not a veles pool code.} {Itu bukan kode grup veles.}
 ::msgcat::mcset id {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {Itu kode WireGuard: pindai dengan aplikasi WireGuard. Kode veles adalah yang kedua.}
+::msgcat::mcset id {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {%d berkas yang ditinjau akan ditulis ke direktori baru di direktori plugin pengguna Anda, dan veles mencoba memuat ekstensi itu. Jika direktori dengan nama itu muncul sejak pratinjau, tidak ada yang ditulis. Publikasi bukan bagian dari tindakan ini.}
 ::msgcat::mcset id {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {REPL panel Dev mengevaluasi di aplikasi LIVE — UI adalah lisp-nya sendiri.}
 ::msgcat::mcset id {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {Tabel [mcp_servers.<name>] dihapus dari config.toml. File sebelumnya disimpan sebagai config.toml.bak.}
 ::msgcat::mcset id {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {Daftar izin adapter (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) adalah batas kepercayaan, dan setiap pengirim yang diizinkan otomatis dianggap owner. Ini postur pra-ACL.}
 ::msgcat::mcset id {The agent asks for a secret: %s} {Agen meminta sebuah rahasia: %s}
+::msgcat::mcset id {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {Cabang yang sudah di-push akan dipakai sebagai head PR. Cabang di fork Anda dinamai owner:branch secara otomatis.}
+::msgcat::mcset id {The author asks} {Penulisnya bertanya}
+::msgcat::mcset id {The buffer changed. Request a new proposal before applying.} {Buffer berubah. Minta proposal baru sebelum menerapkan.}
 ::msgcat::mcset id {The bundle operation returned an invalid result. Verify the installation before retrying.} {Operasi bundel mengembalikan hasil yang tidak valid. Verifikasi instalasi sebelum mencoba lagi.}
 ::msgcat::mcset id {The bundle preview was malformed; nothing was installed.} {Pratinjau bundel tidak valid; tidak ada yang dipasang.}
 ::msgcat::mcset id {The camera did not open; paste the code instead.} {Kamera tidak terbuka; tempel kodenya saja.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset id {The component manifest is still loading. Wait for it or choose another component.} {Manifest komponen masih dimuat. Tunggu sebentar atau pilih komponen lain.}
 ::msgcat::mcset id {The component preview is not ready yet. Refresh it and review the result before applying.} {Pratinjau komponen belum siap. Muat ulang dan tinjau hasilnya sebelum menerapkan.}
 ::msgcat::mcset id {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {Pratinjau komponen masih dimuat. Tunggu balasannya sebelum meninjau perubahan gabungan.}
+::msgcat::mcset id {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Diagnostik saat ini (dari language server atau Check) dikirim bersama berkas ini. Opsional, tambahkan pertanyaan. Jawabannya hanya teks; tidak ada yang bisa ditulis.}
 ::msgcat::mcset id {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Direktori dan semua isinya dihapus. Ini tidak bisa diurungkan — nonaktifkan saja jika Anda hanya ingin mengeluarkannya dari prompt.}
 ::msgcat::mcset id {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Direktori dihapus. Folder plugin adalah repositori git dan snapshot dikomit lebih dulu, jadi History… bisa memulihkannya.}
+::msgcat::mcset id {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Editor membuka berkas gateway, termasuk instance jarak jauh, dan menjalankan language server untuk bahasa berkas itu di gateway: tcl-lsp, typescript-language-server (TypeScript dan JavaScript), rust-analyzer (crate atau modul plugin Rust), clangd (C), racket-langserver, dan sebuah server Common Lisp. Hover, buka definisi, pelengkapan, dan diagnostik langsung berfungsi untuk setiap bahasa yang servernya ada di gateway; bila tidak ada, editor menyebutkan program mana yang perlu dipasang di sana dan tetap mempertahankan penyorotan sintaksis. Check menjalankan pemeriksa yang sesuai di gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, atau pembaca Racket dan Lisp. Simpan, muat ulang di Kelola ekstensi, dan uji ekstensi tanpa memublikasikan state lokal.}
 ::msgcat::mcset id {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Handoff pertama menyiapkan secret, citra yang disematkan, dan berkas runtime, tetapi tidak menjalankan PDS. Cadangkan kunci KEK dan kunci rotasi PLC secara offline, lalu ajukan permintaan tinjauan baru dengan konfirmasi pencadangan untuk mengatur TLS HTTP-01 dan aktivasi. Rekaman DNS harus mengarah langsung ke host ini; veles tidak membuat perubahan proksi CDN maupun DNS.}
+::msgcat::mcset id {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Formulir berubah sejak ekstensi dihasilkan. Hasilkan lagi, atau pratinjau kerangka polosnya.}
 ::msgcat::mcset id {The gateway itself is untouched.} {Gateway itu sendiri tidak disentuh.}
 ::msgcat::mcset id {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Gateway telah memuat ulang konfigurasi, jadi sesi baru langsung memakainya, dan kunci yang disimpan di brankas dipakai oleh permintaan berikutnya. Telegram dan IRC dimulai pada restart gateway berikutnya: veles gateway restart.}
 ::msgcat::mcset id {The installed component no longer matches the selected manifest. Review the component list again.} {Komponen yang terpasang tidak lagi cocok dengan manifest yang dipilih. Tinjau lagi daftar komponen.}
 ::msgcat::mcset id {The installer preview has no verification signatures; apply is disabled.} {Pratinjau pemasang tidak memiliki tanda tangan verifikasi; tombol terapkan dinonaktifkan.}
 ::msgcat::mcset id {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Job dan riwayat jalannya dihapus. Ini tidak bisa diurungkan — jeda saja jika Anda hanya ingin menghentikannya.}
+::msgcat::mcset id {The log could not be read: %s} {Log tidak dapat dibaca: %s}
 ::msgcat::mcset id {The manifest belongs to another component; its reply was discarded.} {Manifest milik komponen lain; balasannya dibuang.}
 ::msgcat::mcset id {The profile changed. Review the fresh plan before applying it.} {Profil telah berubah. Tinjau rencana terbaru sebelum menerapkannya.}
 ::msgcat::mcset id {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {Repositori butuh SKILL.md di akar atau sedalam satu kategori. Diletakkan di %s.}
 ::msgcat::mcset id {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {Akar repositori harus berisi plugin.toml. Repositori dikloning ke %s dengan nama dari manifest.}
+::msgcat::mcset id {The reviewed change set was applied (%d files). Review and test it before publishing.} {Set perubahan yang ditinjau telah diterapkan (%d berkas). Tinjau dan uji sebelum memublikasikan.}
 ::msgcat::mcset id {The reviewed configuration snapshot will also be restored.} {Snapshot konfigurasi yang ditinjau juga akan dipulihkan.}
+::msgcat::mcset id {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {Berkas yang ditinjau akan ditulis ke direktori plugin pengguna Anda. Veles menyimpan snapshot pemulihan lokal dan mencoba memuat ulang ekstensi; penerbitan bukan bagian dari tindakan ini.}
+::msgcat::mcset id {The reviewed proposal was applied locally. Review and test it before publishing.} {Proposal yang ditinjau telah diterapkan secara lokal. Tinjau dan uji sebelum menerbitkan.}
 ::msgcat::mcset id {The rollback preview was malformed or named another component; nothing was restored.} {Pratinjau rollback tidak valid atau menyebut komponen lain; tidak ada yang dipulihkan.}
 ::msgcat::mcset id {The rollback returned an invalid result. Verify the installation before retrying.} {Rollback mengembalikan hasil yang tidak valid. Verifikasi instalasi sebelum mencoba lagi.}
 ::msgcat::mcset id {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {Rute tempat sesi baru dimulai. /model dan overlay model bisa mengubahnya nanti, per sesi atau sebagai default baru.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset id {The signed download discard returned an invalid response; no installation was requested.} {Pembuangan unduhan bertanda tangan mengembalikan respons tidak valid; tidak ada pemasangan yang diminta.}
 ::msgcat::mcset id {The signed installation returned an invalid result. Verify the installation before retrying.} {Pemasangan bertanda tangan mengembalikan hasil tidak valid. Verifikasi pemasangan sebelum mencoba lagi.}
 ::msgcat::mcset id {The signed release preview was malformed; nothing was installed.} {Pratinjau rilis bertanda tangan rusak; tidak ada yang terpasang.}
+::msgcat::mcset id {The source buffer changed. Request a new proposal before applying.} {Buffer sumber berubah. Minta proposal baru sebelum menerapkan.}
 ::msgcat::mcset id {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Store mundur satu revisi. Rollback itu sendiri adalah revisi, jadi bisa diurungkan juga.}
+::msgcat::mcset id {The translator returned no text.} {Penerjemah tidak mengembalikan teks.}
 ::msgcat::mcset id {The verification reply was malformed; no integrity result was accepted.} {Balasan verifikasi tidak valid; tidak ada hasil integritas yang diterima.}
 ::msgcat::mcset id Themes Tema
+::msgcat::mcset id {These paths already exist in the chosen repository:} {Path ini sudah ada di repositori yang dipilih:}
 ::msgcat::mcset id {They have not been saved.} {Perubahan itu belum disimpan.}
+::msgcat::mcset id {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {Buffer ini tidak memiliki diagnostik untuk dijelaskan. Jalankan Check, atau tunggu language server.}
 ::msgcat::mcset id {This challenge is over.} {Tantangan ini sudah selesai.}
 ::msgcat::mcset id {This code has expired. Ask for a new one.} {Kode ini sudah kedaluwarsa. Minta yang baru.}
 ::msgcat::mcset id {This does not start a service or claim signed-download verification.} {Ini tidak memulai layanan atau mengklaim verifikasi unduhan bertanda tangan.}
 ::msgcat::mcset id {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Gateway ini tidak menerima nilai rahasia dari mesin ini: masukkan di sana dengan veles secret set %s, atau daftarkan jaringan ini di [vault] trusted_networks miliknya}
 ::msgcat::mcset id {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Ini persis yang akan ditulis — byte asli dari engine, diambil langsung. Belum ada yang menyentuh disk.}
+::msgcat::mcset id {This node is not a configured sync peer for any kind.} {Node ini bukan peer sinkronisasi yang dikonfigurasi untuk jenis apa pun.}
+::msgcat::mcset id {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Plugin ini bawaan dan baca-saja. Hapus salinan pengguna dengan nama yang sama untuk memakai salinan bawaan.}
+::msgcat::mcset id {This publishes the commit; no pull request is created yet.} {Ini menerbitkan commit; belum ada pull request yang dibuat.}
 ::msgcat::mcset id {This review expires after %s seconds. Closing or cancelling discards its private staging.} {Peninjauan ini berakhir setelah %s detik. Menutup atau membatalkan membuang panggung pribadinya.}
 ::msgcat::mcset id {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {Wizard ini menulis config.toml, dan menaruh kunci yang Anda berikan ke brankas terenkripsi. Setiap langkah bisa dilewati: langkah yang dilewati tidak dimasukkan ke konfigurasi baru, dan dibiarkan persis apa adanya di konfigurasi yang sudah ada. config.toml yang sudah ada disunting di tempat — hanya bagian yang Anda jawab yang berubah, dan semua hal lain di dalamnya, termasuk komentar, tetap ada.}
 ::msgcat::mcset id {Ticket needed} {Tiket diperlukan}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset id {Topic for %s} {Topik untuk %s}
 ::msgcat::mcset id {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {Sentuh lama sebuah sesi, atau apa pun yang punya menu, untuk membuka menunya. Ketukan di luarnya, atau Kembali, menutupnya.}
 ::msgcat::mcset id {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {Sentuh lama sebuah kata untuk memilihnya. Saat Anda mengangkat jari, menunya terbuka, dengan Salin di paling atas.}
+::msgcat::mcset id Translate Terjemahkan
+::msgcat::mcset id {Translate selection} {Terjemahkan pilihan}
+::msgcat::mcset id Translating… Menerjemahkan…
+::msgcat::mcset id {Translation cancelled.} {Penerjemahan dibatalkan.}
+::msgcat::mcset id {Translation copied.} {Terjemahan disalin.}
+::msgcat::mcset id {Translation failed} {Terjemahan gagal}
+::msgcat::mcset id {Translation result} {Hasil terjemahan}
+::msgcat::mcset id {Translator configuration unavailable} {Konfigurasi penerjemah tidak tersedia}
 ::msgcat::mcset id {Trigger history} {Riwayat pemicu}
 ::msgcat::mcset id Triggers Pemicu
 ::msgcat::mcset id {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {Pemicu bereaksi pada peristiwa kanal tanpa satu turn. slopdrop meneruskan peristiwa ke bridge dan menyampaikan balasannya; vision mendeskripsikan URL gambar dalam batas cooldown dan kuota per jam. Baris hanya menyala jika sakelar konfigurasi [triggers] DAN mask turunannya mengizinkan — #coven tidak meneruskan apa pun di bawah binding slopdrop yang aktif.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset id {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Sampai IRC_ALLOWED_USERS di .env menyebut akun Anda, siapa pun di jaringan bisa berbicara dengan bot — dan tanpa bagian [acl], sebagai pemilik, dengan semua alat.}
 ::msgcat::mcset id {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Sampai TELEGRAM_ALLOWED_USERS di .env menyebut ID pengguna Anda, siapa pun yang menemukan bot bisa berbicara dengannya — dan tanpa bagian [acl], sebagai pemilik, dengan semua alat.}
 ::msgcat::mcset id Untitled {Tanpa judul}
+::msgcat::mcset id {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Kontribusi ke upstream adalah tindakan penerbitan yang eksplisit, bukan unggahan otomatis. Di Manage extensions, Contribute mencantumkan setiap ekstensi pengguna: pilih ekstensi dan berkasnya, periksa diff dan pemindaian rahasia, jalankan pemeriksaan, lalu buat satu cabang dan satu PR (ke veles secara bawaan) dengan identitas git pilihan Anda. Tiap ekstensi berada di direktori sendiri di repositori, dan berkas yang sudah ada di sana hanya diganti setelah konfirmasi terpisah. Jangan pernah menerbitkan node.toml, kredensial lokal, token, endpoint privat, atau status plugin yang tidak terkait. Snapshot pemulihan lokal bukan commit upstream atau PR.}
+::msgcat::mcset id {Upstream repository or fork URL} {URL repositori upstream atau fork}
+::msgcat::mcset id {Uptime class} {Kelas waktu aktif}
+::msgcat::mcset id {Uptime: host %1$s, gateway %2$s} {Waktu aktif: host %1$s, gateway %2$s}
 ::msgcat::mcset id Usage Penggunaan
 ::msgcat::mcset id {Usage & Quota} {Pemakaian & Kuota}
 ::msgcat::mcset id {Use TLS} {Gunakan TLS}
 ::msgcat::mcset id {Use now} {Pakai sekarang}
+::msgcat::mcset id {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {Gunakan tombol Panduan penulis dan Referensi API untuk kontrak sebenarnya. Overlay Plugins mencantumkan hook aktif; layanan dan titik override berasal dari registry gateway sendiri, bukan daftar salinan di panduan ini.}
 ::msgcat::mcset id {Use this ticket} {Gunakan tiket ini}
+::msgcat::mcset id {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {Gunakan fork Anda (https://github.com/<you>/veles.git atau git@github.com:<you>/veles.git) kecuali Anda bisa push ke veles sendiri. Repositori yang dipilih dikloning ke worktree terisolasi. Tidak ada yang di-push.}
 ::msgcat::mcset id {Users — one role across networks and platforms} {Pengguna — satu peran di semua jaringan dan platform}
 ::msgcat::mcset id {Using the phone, for the agent} {Memakai ponsel, untuk agen}
 ::msgcat::mcset id {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Biasanya sama dengan nama entri provider. Kosongkan keduanya pada pilihan Lewati — pasangan yang setengah terisi tidak akan dirutekan.}
 ::msgcat::mcset id {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Nilainya TOML: string bertanda kutip, angka, atau daftar. Ditulis ke [mcp_servers.<name>] — komentar Anda dan semua bagian lain tidak disentuh.}
+::msgcat::mcset id Vault Brankas
 ::msgcat::mcset id {Verified signed bundle installed. Restart the gateway before using the new core.} {Bundel bertanda tangan terverifikasi terpasang. Mulai ulang gateway sebelum memakai inti baru.}
 ::msgcat::mcset id {Verified signed release — not installed yet} {Rilis bertanda tangan terverifikasi — belum terpasang}
 ::msgcat::mcset id {Verify and review release…} {Verifikasi dan tinjau rilis…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset id {Verify signed release} {Verifikasi rilis bertanda tangan}
 ::msgcat::mcset id {Verify signed release…} {Verifikasi rilis bertanda tangan…}
 ::msgcat::mcset id Version Versi
+::msgcat::mcset id {Version %1$s: %2$s} {Versi %1$s: %2$s}
+::msgcat::mcset id {Version drift in the registry: %s} {Drift versi di registri: %s}
 ::msgcat::mcset id View Tampilan
 ::msgcat::mcset id {View markdown source} {Lihat sumber markdown}
 ::msgcat::mcset id {View source / rendered} {Sumber / dirender}
 ::msgcat::mcset id Voice {Beri voice}
+::msgcat::mcset id {Waiting for the model…} {Menunggu model…}
+::msgcat::mcset id {Waiting for the model… Nothing has been written.} {Menunggu model… Tidak ada yang ditulis.}
 ::msgcat::mcset id {Welcome to veles} {Selamat datang di veles}
 ::msgcat::mcset id {What the agent can do here} {Yang bisa dilakukan agen di sini}
 ::msgcat::mcset id {What veles may do on this phone. Each button opens the Android setting that changes it.} {Apa yang boleh dilakukan veles di ponsel ini. Setiap tombol membuka pengaturan Android yang mengubahnya.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset id {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {Saat veles di latar belakang, pertanyaan dari agen atau giliran yang selesai menjadi notifikasi; ketuk untuk membuka sesinya.}
 ::msgcat::mcset id {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {Siapa yang boleh bicara ke bot. Pilihan ini menentukan apakah config.toml memuat bagian [acl] sama sekali — dan itu membalik seluruh postur.}
 ::msgcat::mcset id Whois Whois
-::msgcat::mcset id {Wire protocol (chat_completions or responses)} {Protokol wire (chat_completions atau responses)}
+::msgcat::mcset id {Wire protocol (chat_completions, responses or plugin)} {Protokol wire (chat_completions, responses, atau plugin)}
 ::msgcat::mcset id {With a keyboard attached, every key works as on a laptop.} {Dengan keyboard terpasang, setiap tombol bekerja seperti di laptop.}
 ::msgcat::mcset id {Workflow SHA} {SHA workflow}
+::msgcat::mcset id {Workflow commit} {Commit alur kerja}
+::msgcat::mcset id Worktree Worktree
 ::msgcat::mcset id {Write it} Tulis
+::msgcat::mcset id {Write the design question first.} {Tuliskan pertanyaan desainnya dulu.}
 ::msgcat::mcset id {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Tidak menulis provider apa pun. Gateway tidak akan merutekan giliran sampai ada entri [[custom_providers]] dan pasangan [model].}
 ::msgcat::mcset id {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Menulis kunci [acl] APA PUN mengalihkan gateway ini ke mode terkurasi: peran bawaan menjadi guest (fail-closed) dan daftar izin tidak lagi menjadi batas. Pilih ini hanya dengan identitas pemilik yang Anda percayai.}
 ::msgcat::mcset id {[model] provider} {Provider [model]}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset id {also list hooks with no handler} {tampilkan juga hooks tanpa handler}
 ::msgcat::mcset id {also write grants that still have an expiry} {tulis juga grant yang masih punya masa berlaku}
 ::msgcat::mcset id {also write runtime users} {tulis juga pengguna runtime}
+::msgcat::mcset id {an allowlist entry is removed by editing config.toml} {entri allowlist dihapus dengan menyunting config.toml}
 ::msgcat::mcset id {an allowlist is in force: a plugin not on it stays off} {allowlist berlaku: plugin yang tidak terdaftar tetap nonaktif}
 ::msgcat::mcset id {answer failed: %s} {jawaban gagal: %s}
+::msgcat::mcset id {answer only, nothing to apply} {hanya jawaban, tidak ada yang perlu diterapkan}
 ::msgcat::mcset id {append these rules to config.toml} {tambahkan aturan ini ke config.toml}
 ::msgcat::mcset id {apply failed: %s} {penerapan gagal: %s}
 ::msgcat::mcset id {apply to:} {terapkan ke:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset id {ask the agent} {bertanya ke agen}
 ::msgcat::mcset id {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset id {asked by: %s} {ditanyakan oleh: %s}
+::msgcat::mcset id {asking %s for its metrics…} {meminta metrik ke %s…}
 ::msgcat::mcset id {attach a file} {lampirkan file}
 ::msgcat::mcset id {attach an image or file} {lampirkan gambar atau berkas}
 ::msgcat::mcset id {attach failed: %1$s} {penyambungan gagal: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset id {attached %1$s (%2$s pending)} {melampirkan %1$s (%2$s tertunda)}
 ::msgcat::mcset id {attached to %s} {terlampir pada %s}
 ::msgcat::mcset id {attached to child session %1$s} {terlampir pada sesi anak %1$s}
+::msgcat::mcset id automatic otomatis
 ::msgcat::mcset id {aux model} {model aux}
 ::msgcat::mcset id {aux provider} {provider aux}
+::msgcat::mcset id available tersedia
 ::msgcat::mcset id {available components} {komponen yang tersedia}
 ::msgcat::mcset id {back up N user turns} {mundur N giliran pengguna}
 ::msgcat::mcset id {backed up the previous config to %s} {mencadangkan config sebelumnya ke %s}
 ::msgcat::mcset id {background shells; /shells output|kill <id>} {shell latar belakang; /shells output|kill <id>}
+::msgcat::mcset id {backing off: %1$s failure(s), next automatic try in %2$s s} {mundur sementara: %1$s kegagalan, percobaan otomatis berikutnya dalam %2$s s}
 ::msgcat::mcset id {bad host for %1$s: %2$s} {host tidak valid untuk %1$s: %2$s}
 ::msgcat::mcset id {bad unit for %1$s: %2$s} {unit tidak valid untuk %1$s: %2$s}
 ::msgcat::mcset id {bare display off} {tampilan bare mati}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset id {browse the filesystem} {jelajahi sistem berkas}
 ::msgcat::mcset id {browse the repo's files} {jelajahi file repo}
 ::msgcat::mcset id {builtin (%s):} {bawaan (%s):}
+::msgcat::mcset id bundled bawaan
+::msgcat::mcset id {bundled, read-only} {bawaan, baca-saja}
 ::msgcat::mcset id by oleh
 ::msgcat::mcset id {by plan — all sessions} {menurut plan — semua sesi}
 ::msgcat::mcset id {by plan — this session} {menurut plan — sesi ini}
 ::msgcat::mcset id {by tool} {menurut tool}
 ::msgcat::mcset id {cancel failed: %1$s} {pembatalan gagal: %1$s}
 ::msgcat::mcset id {cancel the running turn} {batalkan giliran yang berjalan}
+::msgcat::mcset id {cancel the selected task} {batalkan tugas yang dipilih}
 ::msgcat::mcset id {cancelled task %1$s} {tugas %1$s dibatalkan}
 ::msgcat::mcset id {cannot list scripts (gateway offline?)} {tidak bisa menampilkan skrip (gateway offline?)}
 ::msgcat::mcset id {cannot reach the gateway: %s} {tidak dapat menjangkau gateway: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset id commit commit
 ::msgcat::mcset id {compacting %s messages in the background — the transcript reloads when it finishes} {mengompres %s pesan di latar belakang — transkrip dimuat ulang setelah selesai}
 ::msgcat::mcset id compacting… memadatkan…
+::msgcat::mcset id {comparing the nodes' versions and config…} {membandingkan versi dan config node…}
 ::msgcat::mcset id {completion tokens} {token completion}
 ::msgcat::mcset id {component options and declared actions} {opsi komponen dan aksi yang dideklarasikan}
 ::msgcat::mcset id composer composer
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset id {could not open %s} {tidak dapat membuka %s}
 ::msgcat::mcset id {could not open %s (no working browser opener)} {tidak dapat membuka %s (tidak ada pembuka browser yang berfungsi)}
 ::msgcat::mcset id {could not open %{url}: %{e}} {tidak dapat membuka %{url}: %{e}}
+::msgcat::mcset id {could not open the optional referral link: %s} {tidak dapat membuka tautan referensi opsional: %s}
 ::msgcat::mcset id {could not read %s: %s} {tidak bisa membaca %s: %s}
 ::msgcat::mcset id {could not read the current route} {tidak dapat membaca rute saat ini}
 ::msgcat::mcset id {could not save this session's language: %{e}} {bahasa sesi ini tidak dapat disimpan: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset id {ctxmenu: no widget %s (attached too early?)} {ctxmenu: tidak ada widget %s (terlampir terlalu cepat?)}
 ::msgcat::mcset id {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {akses terkurasi dipilih tanpa identitas pemilik, jadi [acl] tetap tidak aktif — berikan satu, misalnya telegram:123456 atau irc:account, untuk mengaktifkannya}
 ::msgcat::mcset id {current theme: %{name} · /theme <name>} {tema saat ini: %{name} · /theme <name>}
+::msgcat::mcset id {cursor %1$s of %2$s (%3$s behind)} {kursor %1$s dari %2$s (tertinggal %3$s)}
 ::msgcat::mcset id {custom command /%s…} {perintah kustom /%s…}
 ::msgcat::mcset id {custom commands (.veles/commands/) and config aliases} {perintah kustom (.veles/commands/) dan alias dari konfigurasi}
 ::msgcat::mcset id {cycle ends} {siklus berakhir}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset id doctor_resident {selalu ada di setiap prompt: %{shown} dari %{total} karakter (~%{tokens} token) — sisanya dimuat saat diperlukan dengan: memory action=read path=%{path}}
 ::msgcat::mcset id doctor_title {diagnosis memori}
 ::msgcat::mcset id doctor_total {total: %{chars} karakter di %{files} berkas (~%{tokens} token)}
+::msgcat::mcset id {documentation is not in this source checkout: %s} {dokumentasi tidak ada di checkout sumber ini: %s}
 ::msgcat::mcset id done selesai
 ::msgcat::mcset id {done · %1$s/%2$s} {selesai · %1$s/%2$s}
 ::msgcat::mcset id {done, but the model returned no text} {selesai, tapi model tidak mengembalikan teks}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset id {evaluate Tcl and answer with the result — no model turn} {evaluasi Tcl dan jawab dengan hasilnya — tanpa giliran model}
 ::msgcat::mcset id everyone semua
 ::msgcat::mcset id everywhere {di mana pun}
+::msgcat::mcset id {exchanging registry gossip…} {menukar gossip registri…}
 ::msgcat::mcset id exit keluar
 ::msgcat::mcset id {exit veles-desktop} {keluar dari veles-desktop}
 ::msgcat::mcset id {export failed: %s} {ekspor gagal: %s}
 ::msgcat::mcset id {export session} {ekspor sesi}
 ::msgcat::mcset id {exported to %s} {diekspor ke %s}
+::msgcat::mcset id {extension architecture, examples and LSP help} {arsitektur ekstensi, contoh, dan bantuan LSP}
+::msgcat::mcset id {extension development guide} {panduan pengembangan ekstensi}
+::msgcat::mcset id failed gagal
 ::msgcat::mcset id {failed to load history: %s} {gagal memuat riwayat: %s}
 ::msgcat::mcset id {failed to paint cached history: %s} {gagal menampilkan riwayat yang di-cache: %s}
 ::msgcat::mcset id {failed to paint replayed history: %s} {gagal menampilkan riwayat replay: %s}
 ::msgcat::mcset id {failed: %s} {gagal: %s}
+::msgcat::mcset id {failing — heartbeating, but a sync push or the last probe failed} {bermasalah — heartbeat jalan, tetapi push sinkronisasi atau pemeriksaan terakhir gagal}
 ::msgcat::mcset id {failover blueprint: cannot reach the gateway} {failover blueprint: gateway tidak terjangkau}
 ::msgcat::mcset id {failover graph unavailable: %1$s} {grafik failover tidak tersedia: %1$s}
 ::msgcat::mcset id {failover script: cannot reach the gateway} {failover script: gateway tidak terjangkau}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset id {fire the Tcl hook} {jalankan hook Tcl}
 ::msgcat::mcset id {fires for %s:} {terpicu untuk %s:}
 ::msgcat::mcset id {fires per hour} {terpicu per jam}
+::msgcat::mcset id {fleet drift} {drift fleet}
 ::msgcat::mcset id {focus composer} {fokus ke composer}
 ::msgcat::mcset id {focus failed: %{e}} {gagal fokus: %{e}}
 ::msgcat::mcset id {focus next region} {fokus ke region berikutnya}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset id {four splits is the maximum} {maksimal empat split}
 ::msgcat::mcset id {fresh session} {sesi baru}
 ::msgcat::mcset id {fresh session (Ctrl-N too)} {sesi baru (juga Ctrl-N)}
+::msgcat::mcset id {fresh — heartbeating, sync passing} {segar — heartbeat jalan, sinkronisasi lolos}
+::msgcat::mcset id from dari
 ::msgcat::mcset id {from node %{node}} {dari node %{node}}
 ::msgcat::mcset id {gateway     v%1$s · up %2$s} {gateway v%1$s · aktif %2$s}
 ::msgcat::mcset id {gateway unreachable — is `veles gateway run` up?} {gateway tidak terjangkau — apakah `veles gateway run` berjalan?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset id {in %s} {dalam %s}
 ::msgcat::mcset id {insert the next key literally (^B bold, ^C colour, ^O reset)} {masukkan tombol berikutnya secara literal (^B tebal, ^C warna, ^O reset)}
 ::msgcat::mcset id {inserted %s} {disisipkan %s}
+::msgcat::mcset id {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {periksa cluster; secara eksplisit push/terapkan sinkronisasi store, memori, config, atau brankas; lupakan node usang di seluruh fleet; baca ekor log atau metrik sebuah node; bandingkan versi dan config; gossip sekarang}
 ::msgcat::mcset id {inspector — app internals · core state · gw plugins} {inspektur — internal aplikasi · status inti · plugin gw}
 ::msgcat::mcset id {install a plugin from a git URL} {pasang plugin dari URL git}
 ::msgcat::mcset id {install a skill from a git URL} {pasang skill dari URL git}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset id instance instance
 ::msgcat::mcset id {instance controls} {kontrol instance}
 ::msgcat::mcset id {instance detail} {detail instance}
+::msgcat::mcset id {instance names may not start with "cluster:" or "g:": %s} {nama instance tidak boleh diawali "cluster:" atau "g:": %s}
 ::msgcat::mcset id {instance needs a name} {instance perlu nama}
 ::msgcat::mcset id {instance unreachable} {instance tidak terjangkau}
 ::msgcat::mcset id instances instance
 ::msgcat::mcset id interrupting… menginterupsi…
+::msgcat::mcset id into ke
 ::msgcat::mcset id {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset id {irc: %s} {irc: %s}
 ::msgcat::mcset id {irc: %s failed — %s} {irc: %s gagal — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset id {language list} {daftar bahasa}
 ::msgcat::mcset id {language picker (the swap for THIS window)} {pemilih bahasa (penukaran untuk JENDELA INI)}
 ::msgcat::mcset id {language saved: %s} {bahasa disimpan: %s}
+::msgcat::mcset id {language server} {language server}
+::msgcat::mcset id {language server: event stream unavailable: %s} {language server: aliran peristiwa tidak tersedia: %s}
+::msgcat::mcset id {language server: not started on the gateway — %s} {language server: tidak dimulai di gateway — %s}
+::msgcat::mcset id {language server: the gateway would not start one: %s} {language server: gateway tidak mau memulainya: %s}
 ::msgcat::mcset id {language swapped: %1$s ⇄ %2$s} {bahasa ditukar: %1$s ⇄ %2$s}
 ::msgcat::mcset id {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {bahasa → %1$s (sebelumnya %2$s) · hanya jendela berjalan — Simpan sebagai bawaan menulis config.toml}
 ::msgcat::mcset id {language: %s} {bahasa: %s}
 ::msgcat::mcset id {last error} {kesalahan terakhir}
+::msgcat::mcset id {last pass %1$s at %2$s: %3$s} {lolos terakhir %1$s pada %2$s: %3$s}
 ::msgcat::mcset id {last reply copied (%s chars)} {balasan terakhir disalin (%s karakter)}
 ::msgcat::mcset id {layout not saved: %s} {tata letak tidak tersimpan: %s}
 ::msgcat::mcset id {leave (cancels a running turn first)} {keluar (membatalkan giliran yang berjalan dulu)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset id {list sessions} {daftar sesi}
 ::msgcat::mcset id {list skills} {daftar skill}
 ::msgcat::mcset id {list tools} {daftar alat}
+::msgcat::mcset id {listed here only; [notify] fleet_alerts is off} {hanya terdaftar di sini; [notify] fleet_alerts nonaktif}
 ::msgcat::mcset id {live patching ARMED} {live patching AKTIF}
 ::msgcat::mcset id {live patching ARMED — an agent can now redefine procs in this window} {live patching AKTIF — agen kini dapat mendefinisikan ulang proc di jendela ini}
 ::msgcat::mcset id {live patching disarmed} {live patching dinonaktifkan}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset id {log pane shown} {panel log ditampilkan}
 ::msgcat::mcset id {log: %s} {log: %s}
 ::msgcat::mcset id {make media: image/video/audio, route = comfyui or provider[/model]} {buat media: image/video/audio, rute = comfyui atau provider[/model]}
+::msgcat::mcset id {managed via %s} {dikelola lewat %s}
+::msgcat::mcset id {manual only} {hanya manual}
 ::msgcat::mcset id {mark set} {penanda diset}
 ::msgcat::mcset id {mark whole buffer (emacs select-all)} {tandai seluruh buffer (emacs select-all)}
 ::msgcat::mcset id {markdown preview of the composer} {pratinjau markdown komposer}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset id model model
 ::msgcat::mcset id {model aliases} {alias model}
 ::msgcat::mcset id {monitor %1$s fired} {monitor %1$s terpicu}
-::msgcat::mcset id monitors monitor
 ::msgcat::mcset id monitors_header monitor:
 ::msgcat::mcset id monitors_none {(tidak ada monitor — model memulai ini dengan tool monitor)}
 ::msgcat::mcset id {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {pindahkan sesi (beserta sub-pohonnya) ke node pool lain di batas giliran; selesaikan/batalkan serah terima yang ditunda; tanyakan siapa pemilik sesi (admin)}
 ::msgcat::mcset id {move the running foreground command to the background} {pindahkan perintah latar depan yang berjalan ke latar belakang}
 ::msgcat::mcset id {move the running foreground command to the background (keeps running)} {pindahkan perintah foreground yang berjalan ke background (tetap berjalan)}
+::msgcat::mcset id {move this session's running foreground command to a background shell; keeps running} {pindahkan perintah latar depan yang sedang berjalan di sesi ini ke shell latar belakang; tetap berjalan}
 ::msgcat::mcset id {moving around} berpindah
 ::msgcat::mcset id name nama
 ::msgcat::mcset id {name a key first} {beri nama kunci dulu}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset id {neon impressionism} {impresionisme neon}
 ::msgcat::mcset id {network (optional — e.g. libera; empty = any)} {jaringan (opsional — mis. libera; kosong = semua)}
 ::msgcat::mcset id {network to scope the grant to} {jaringan tempat pemberian berlaku}
+::msgcat::mcset id new baru
 ::msgcat::mcset id {new buffer} {buffer baru}
 ::msgcat::mcset id {new entry — replace this text, then Save} {entri baru — ganti teks ini, lalu Simpan}
 ::msgcat::mcset id {new name for %s} {nama baru untuk %s}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset id {no IRC buffer selected} {belum ada buffer IRC yang dipilih}
 ::msgcat::mcset id {no MCP servers configured — Add server… writes one into config.toml} {tidak ada server MCP yang dikonfigurasi — Tambah server… menulis satu ke config.toml}
 ::msgcat::mcset id {no URLs in this buffer} {tidak ada URL di buffer ini}
+::msgcat::mcset id {no [a2a_agents] entry — this peer cannot be dialed} {tidak ada entri [a2a_agents] — peer ini tidak dapat dihubungi}
 ::msgcat::mcset id {no alias /%s} {tidak ada alias /%s}
 ::msgcat::mcset id {no background refresh} {tanpa muat ulang latar belakang}
 ::msgcat::mcset id {no buffer %s} {buffer %s tidak ada}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset id {no code block in the last reply} {tidak ada blok kode di balasan terakhir}
 ::msgcat::mcset id {no cron jobs} {tidak ada tugas cron}
 ::msgcat::mcset id {no cron jobs — New… creates one} {tidak ada tugas cron — Baru… membuat satu}
+::msgcat::mcset id {no exchange yet} {belum ada pertukaran}
 ::msgcat::mcset id {no file — pick a guts file or type a path} {tidak ada berkas — pilih berkas guts atau ketik jalur}
 ::msgcat::mcset id {no handler} {tidak ada penangan}
+::msgcat::mcset id {no heartbeat for %{mins} min} {tidak ada heartbeat selama %{mins} mnt}
+::msgcat::mcset id {no heartbeat within the threshold} {tidak ada heartbeat dalam ambang batas}
 ::msgcat::mcset id {no history yet} {belum ada riwayat}
 ::msgcat::mcset id {no host configured for this instance} {tidak ada host yang dikonfigurasi untuk instance ini}
 ::msgcat::mcset id {no instance selected} {tidak ada instance yang dipilih}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset id {no program to open URLs} {tidak ada program untuk membuka URL}
 ::msgcat::mcset id {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {belum ada penyedia yang dikonfigurasi — tambahkan entri [[custom_providers]] dan atur pasangan [model] sebelum menjalankan giliran}
 ::msgcat::mcset id {no reading yet — press Refresh} {belum ada pembacaan — tekan Muat Ulang}
-::msgcat::mcset id {no running tasks} {tidak ada tugas yang berjalan}
 ::msgcat::mcset id {no sample available} {tidak ada contoh tersedia}
 ::msgcat::mcset id {no search bar on this surface} {tidak ada bilah pencarian di antarmuka ini}
 ::msgcat::mcset id {no session matching %s} {tidak ada sesi yang cocok dengan %s}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset id {no session open — switch the scope to the default, or open a session} {tidak ada sesi terbuka — alihkan cakupan ke bawaan, atau buka sesi}
 ::msgcat::mcset id {no session open — the catalogue needs one; the default scope still works from config.toml} {tidak ada sesi terbuka — katalog membutuhkannya; cakupan bawaan tetap berfungsi dari config.toml}
 ::msgcat::mcset id {no setting %s — try filter or bare} {tidak ada pengaturan %s — coba filter atau bare}
+::msgcat::mcset id {no shells or monitors to show} {tidak ada shell atau monitor untuk ditampilkan}
 ::msgcat::mcset id {no skills found} {tidak ada skill yang ditemukan}
 ::msgcat::mcset id {no such URL — /urls lists them} {URL tidak ditemukan — /urls mencantumkannya}
 ::msgcat::mcset id {no such file: %s} {berkas tidak ditemukan: %s}
 ::msgcat::mcset id {no swap target yet — set one with /locale secondary <id>} {belum ada target tukar — atur dengan /locale secondary <id>}
+::msgcat::mcset id {no task selected} {tidak ada tugas yang dipilih}
 ::msgcat::mcset id {no triggers} {tidak ada pemicu}
 ::msgcat::mcset id {no triggers — New… creates one} {tidak ada pemicu — Baru… membuat satu}
 ::msgcat::mcset id {no upstream reading for %s} {tidak ada pembacaan upstream untuk %s}
 ::msgcat::mcset id {no word match} {tidak ada kata yang cocok}
 ::msgcat::mcset id {no xdg-open — path copied instead} {tidak ada xdg-open — jalur disalin sebagai gantinya}
+::msgcat::mcset id {node log} {log node}
 ::msgcat::mcset id {none loaded} {tidak ada yang dimuat}
 ::msgcat::mcset id {none recorded} {tidak ada yang tercatat}
+::msgcat::mcset id {none since this gateway started} {tidak ada sejak gateway ini dimulai}
 ::msgcat::mcset id {none yet} {belum ada}
 ::msgcat::mcset id {normie is pure Ctrl — no emacs prefix chords.} {normie murni Ctrl — tanpa chord prefiks emacs.}
 ::msgcat::mcset id {normie: select all · emacs: start of line} {normie: pilih semua · emacs: awal baris}
 ::msgcat::mcset id {not a channel} {bukan channel}
 ::msgcat::mcset id {not a key = value line: %s} {bukan baris kunci = nilai: %s}
+::msgcat::mcset id {not a node in the attached gateway's cluster registry: %s} {bukan node di registri cluster gateway yang tersambung: %s}
 ::msgcat::mcset id {not a number} {bukan angka}
 ::msgcat::mcset id {not a valid http(s) url: %s} {bukan url http(s) yang valid: %s}
 ::msgcat::mcset id {not a valid ssh host: %s} {bukan host ssh yang valid: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset id {not attached to a gateway} {tidak tersambung ke gateway}
 ::msgcat::mcset id {not configured} {belum dikonfigurasi}
 ::msgcat::mcset id {not ignoring %s} {tidak mengabaikan %s}
+::msgcat::mcset id {not installed} {tidak terpasang}
 ::msgcat::mcset id {not reported} {tidak dilaporkan}
 ::msgcat::mcset id {not running} {tidak berjalan}
 ::msgcat::mcset id {not set in config.toml — the built-in default applies. %s} {tidak diatur di config.toml — bawaan berlaku. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset id off nonaktif
 ::msgcat::mcset id {off (the default)} {nonaktif (bawaan)}
 ::msgcat::mcset id offline offline
+::msgcat::mcset id ok ok
 ::msgcat::mcset id on aktif
 ::msgcat::mcset id {on (the default)} {aktif (bawaan)}
 ::msgcat::mcset id {on failure} {saat gagal}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset id {open links} {membuka tautan}
 ::msgcat::mcset id {open the engine log} {buka log engine}
 ::msgcat::mcset id {open the joined session before /leave (on %s)} {buka sesi yang tergabung sebelum /leave (di %s)}
+::msgcat::mcset id {open the selected child session} {buka sesi turunan yang dipilih}
 ::msgcat::mcset id {open the selected skill in the Dev editor} {buka skill yang dipilih di editor Dev}
 ::msgcat::mcset id {open the setup wizard (re-runnable; edits config.toml in place)} {buka wizard setup (bisa dijalankan ulang; mengedit config.toml di tempat)}
 ::msgcat::mcset id {open the share sheet} {membuka lembar bagikan}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset id {override cleared — the default applies} {penggantian dihapus — bawaan berlaku}
 ::msgcat::mcset id {override failed: %s} {penggantian gagal: %s}
 ::msgcat::mcset id {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {identitas pemilik %{id} tidak dapat dicocokkan oleh ACL — gunakan telegram:<ID numerik>, irc:<akun services>, atau mask nick!user@host}
+::msgcat::mcset id owner/repository pemilik/repositori
 ::msgcat::mcset id {owners: %s} {pemilik: %s}
 ::msgcat::mcset id {pair a desktop with this agent} {pasangkan desktop dengan agen ini}
 ::msgcat::mcset id {partly failed: %s} {sebagian gagal: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset id plugin plugin
 ::msgcat::mcset id {plugin directory git history} {riwayat git direktori plugin}
 ::msgcat::mcset id {plugin list} {daftar plugin}
+::msgcat::mcset id {plugin provider driver} {driver penyedia plugin}
 ::msgcat::mcset id {plugins reloaded on %s} {plugin dimuat ulang di %s}
 ::msgcat::mcset id {pop %s out into its own window} {keluarkan %s ke jendela tersendiri}
 ::msgcat::mcset id {pop the buffer out into its own window} {lepaskan buffer ke jendela tersendiri}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset id {prefix: window & dock commands} {prefiks: perintah jendela & dock}
 ::msgcat::mcset id {press Attach in the Instances tab} {tekan Attach di tab Instances}
 ::msgcat::mcset id preview pratinjau
+::msgcat::mcset id {preview an AI extension change and explicitly apply its diff} {pratinjau perubahan ekstensi AI dan terapkan diff-nya secara eksplisit}
 ::msgcat::mcset id {preview failed: %s} {pratinjau gagal: %s}
 ::msgcat::mcset id {previous buffer} {buffer sebelumnya}
 ::msgcat::mcset id {previous command was not a yank} {perintah sebelumnya bukan yank}
 ::msgcat::mcset id {previous match} {kecocokan sebelumnya}
 ::msgcat::mcset id {previous session} {sesi sebelumnya}
+::msgcat::mcset id {probing %s…} {memeriksa %s…}
 ::msgcat::mcset id {proc body} {isi proc}
 ::msgcat::mcset id {profile unavailable: %s} {profil tidak tersedia: %s}
 ::msgcat::mcset id profiles: profil:
 ::msgcat::mcset id prompt prompt
 ::msgcat::mcset id {prompt breakdown} {rincian prompt}
 ::msgcat::mcset id {prompt tokens} {token prompt}
+::msgcat::mcset id {proposal only, not applied} {hanya proposal, belum diterapkan}
 ::msgcat::mcset id provider provider
 ::msgcat::mcset id {provider / model} {provider / model}
 ::msgcat::mcset id {provider base URL} {base URL provider}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset id {re-sync the slopdrop state mirror} {sinkronkan ulang mirror status slopdrop}
 ::msgcat::mcset id {read and set the clipboard} {membaca dan mengatur papan klip}
 ::msgcat::mcset id {read text aloud} {membacakan teks}
+::msgcat::mcset id {read-only: [approvals] allowlist} {baca-saja: allowlist [approvals]}
 ::msgcat::mcset id {read-only: this session lives on %1$s (as read at %2$s)} {hanya-baca: sesi ini berada di %1$s (seperti dibaca pukul %2$s)}
 ::msgcat::mcset id {read-only: this skill comes from the %s library} {hanya-baca: skill ini berasal dari pustaka %s}
 ::msgcat::mcset id reasoning penalaran
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset id {refused to open %s (only http, https, mailto)} {menolak membuka %s (hanya http, https, mailto)}
 ::msgcat::mcset id {refused: %s} {ditolak: %s}
 ::msgcat::mcset id {region copied} {area disalin}
+::msgcat::mcset id registered terdaftar
 ::msgcat::mcset id {registry not saved: %s} {registry tak tersimpan: %s}
 ::msgcat::mcset id {reload on %1$s failed: %2$s} {muat ulang di %1$s gagal: %2$s}
 ::msgcat::mcset id {reload the mechanisms} {muat ulang mekanisme}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset id {resume a session (prefix ok)} {lanjutkan sesi (awalan cukup)}
 ::msgcat::mcset id {retry failed: %s} {coba lagi gagal: %s}
 ::msgcat::mcset id {retrying last prompt…} {mencoba ulang prompt terakhir…}
+::msgcat::mcset id {review files for an explicit upstream contribution} {tinjau berkas untuk kontribusi upstream eksplisit}
+::msgcat::mcset id {review standing global and session tool permissions} {tinjau izin alat global tetap dan izin sesi}
 ::msgcat::mcset id revision revisi
 ::msgcat::mcset id {revision history} {riwayat revisi}
+::msgcat::mcset id {revoke refused} {pencabutan ditolak}
 ::msgcat::mcset id {revoke the selected identity's grant} {cabut grant identitas yang dipilih}
 ::msgcat::mcset id role peran
 ::msgcat::mcset id {role to grant} {peran untuk diberikan}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset id {saved to %s} {tersimpan ke %s}
 ::msgcat::mcset id saved. tersimpan.
 ::msgcat::mcset id {scaffold a new plugin} {kerangka plugin baru}
+::msgcat::mcset id {scaffold a user plugin and open it in this editor} {buat kerangka plugin pengguna dan buka di editor ini}
 ::msgcat::mcset id {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {pekerjaan terjadwal; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)}
 ::msgcat::mcset id scope cakupan
 ::msgcat::mcset id script skrip
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset id {select %s first} {pilih %s dulu}
 ::msgcat::mcset id {select a checkpoint first} {pilih checkpoint dulu}
 ::msgcat::mcset id {select a file, or New… to create one} {pilih berkas, atau Baru… untuk membuatnya}
+::msgcat::mcset id {select a grant first} {pilih satu izin dulu}
 ::msgcat::mcset id {select a handler first} {pilih handler dulu}
 ::msgcat::mcset id {select a member first} {pilih anggota dulu}
 ::msgcat::mcset id {select a route} {pilih rute}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset id {select an assignment first} {pilih penugasan dulu}
 ::msgcat::mcset id {select an entry first} {pilih entri dulu}
 ::msgcat::mcset id {select an identity first} {pilih identitas dulu}
+::msgcat::mcset id {selected task details and shell output} {detail tugas yang dipilih dan keluaran shell}
 ::msgcat::mcset id {selected: %s} {dipilih: %s}
 ::msgcat::mcset id {send clipboard as prompt} {kirim papan klip sebagai prompt}
 ::msgcat::mcset id {send failed: %s} {kirim gagal: %s}
 ::msgcat::mcset id {send the message; while a turn runs, queue it as steering} {kirim pesan; saat giliran berjalan, antrekan sebagai steering}
+::msgcat::mcset id sent terkirim
+::msgcat::mcset id {sent to the owner's home chat} {dikirim ke chat utama pemilik}
 ::msgcat::mcset id server server
 ::msgcat::mcset id {server buffers merged} {buffer server digabungkan}
 ::msgcat::mcset id {server buffers separate} {buffer server terpisah}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset id {settings, one key = value per line} {pengaturan, satu key = value per baris}
 ::msgcat::mcset id {setup_done marker NOT saved: %s} {penanda setup_done TIDAK tersimpan: %s}
 ::msgcat::mcset id {shell %1$s finished} {shell %1$s selesai}
-::msgcat::mcset id shells shell
+::msgcat::mcset id {shells, monitors and subagents} {shell, monitor, dan subagen}
 ::msgcat::mcset id shells_header {shell background:}
 ::msgcat::mcset id shells_none {(tidak ada shell background — /background <cmd> memulai satu)}
 ::msgcat::mcset id {show current configuration} {tampilkan konfigurasi saat ini}
 ::msgcat::mcset id {show every key in this mode} {tampilkan semua tombol dalam mode ini}
 ::msgcat::mcset id {show or hide the session list} {tampilkan atau sembunyikan daftar sesi}
 ::msgcat::mcset id {show or switch model (alias | model@provider | custom:<prov>)} {tampilkan atau ganti model (alias | model@provider | custom:<prov>)}
+::msgcat::mcset id {show selected shell output} {tampilkan keluaran shell yang dipilih}
 ::msgcat::mcset id {show short messages} {menampilkan pesan singkat}
 ::msgcat::mcset id {show the model's reasoning blocks (same as /reasoning)} {tampilkan blok reasoning model (sama seperti /reasoning)}
 ::msgcat::mcset id {show unclaimed} {tampilkan yang tak diklaim}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset id spend terpakai
 ::msgcat::mcset id {split: %s} {split: %s}
 ::msgcat::mcset id {ssh to %1$s failed: %2$s} {ssh ke %1$s gagal: %2$s}
+::msgcat::mcset id {stale — no heartbeat within the threshold} {basi — tidak ada heartbeat dalam ambang batas}
+::msgcat::mcset id {standing global and session permission grants} {pemberian izin global tetap dan izin sesi}
 ::msgcat::mcset id state state
 ::msgcat::mcset id {state       never reached} {state       tak pernah tercapai}
 ::msgcat::mcset id {state       reachable} {state       dapat dijangkau}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset id {stored in the encrypted vault (%1$s): %2$s} {disimpan di brankas terenkripsi (%1$s): %2$s}
 ::msgcat::mcset id {stream handler: %s} {handler aliran: %s}
 ::msgcat::mcset id {subagent %1$s finished} {subagen %1$s selesai}
-::msgcat::mcset id subagents subagen
 ::msgcat::mcset id subagents_header {subagen berjalan:}
 ::msgcat::mcset id subagents_none {(tidak ada subagen berjalan — /btw <prompt> memulai satu, atau model memakai delegate_task)}
 ::msgcat::mcset id {suspend failed: %{e}} {gagal menunda: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset id {switch the selected skill off} {matikan skill yang dipilih}
 ::msgcat::mcset id {switch the selected skill on} {nyalakan skill yang dipilih}
 ::msgcat::mcset id {switch to the %s tab} {pindah ke tab %s}
+::msgcat::mcset id {sync requested: %s} {sinkronisasi diminta: %s}
 ::msgcat::mcset id {tab 1} {tab 1}
 ::msgcat::mcset id {tab 2} {tab 2}
 ::msgcat::mcset id {tab 3} {tab 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset id tasks_none {(tidak ada tugas yang berjalan)}
 ::msgcat::mcset id tasks_not_found {tidak ada tugas: %{id}}
 ::msgcat::mcset id tasks_not_running {tugas %{id} sudah selesai}
-::msgcat::mcset id {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset id {tcl-lsp: event stream unavailable: %s} {tcl-lsp: aliran event tak tersedia: %s}
-::msgcat::mcset id {tcl-lsp: gateway would not start it: %s} {tcl-lsp: gateway tak akan memulainya: %s}
-::msgcat::mcset id {tcl-lsp: not started on the gateway — %s} {tcl-lsp: tak dimulai di gateway — %s}
 ::msgcat::mcset id {that buffer is not split} {buffer itu tidak dipisah}
 ::msgcat::mcset id {the %s plan} {rencana %s}
 ::msgcat::mcset id {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {kolom kunci API menerima NAMA variabel lingkungan (misalnya %{example}), bukan kuncinya sendiri — kunci masuk ke kolom tersembunyi}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset id {the gateway answered without a report} {gateway menjawab tanpa laporan}
 ::msgcat::mcset id {the model/provider pair is incomplete — the gateway will not route until both are present} {pasangan model/penyedia belum lengkap — gateway tidak akan merutekan sampai keduanya ada}
 ::msgcat::mcset id {the options changed, so that is a fresh preview — press “Write it” again to write it} {opsi berubah, jadi itu pratinjau baru — tekan “Write it” lagi untuk menulisnya}
+::msgcat::mcset id {the peer has not been sent this vault yet} {brankas ini belum dikirim ke peer}
+::msgcat::mcset id {the peer holds this vault} {peer memegang brankas ini}
 ::msgcat::mcset id {the primary route is \[model\] provider/default — change it there, not here} {rute utama adalah \[model\] provider/default — ubah di sana, bukan di sini}
 ::msgcat::mcset id {the provider/model route this session sends to} {rute provider/model tujuan sesi ini}
 ::msgcat::mcset id {the same, on the privileged path (owner only)} {sama, lewat jalur istimewa (khusus owner)}
 ::msgcat::mcset id {the selected entry (edit, then Save)} {entri yang dipilih (edit, lalu Save)}
+::msgcat::mcset id {the server stopped: %s} {server berhenti: %s}
 ::msgcat::mcset id {the synthwave splash} {layar pembuka synthwave}
 ::msgcat::mcset id {the text after the name was NOT sent anywhere — type the value into the masked field} {teks setelah nama TIDAK dikirim ke mana pun — ketik nilainya di kolom yang disamarkan}
 ::msgcat::mcset id {the transcript} transkrip
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset id thinking… berpikir…
 ::msgcat::mcset id {thinking… (%s)} {berpikir… (%s)}
 ::msgcat::mcset id {this file's revisions, their diffs, and restore} {revisi berkas ini, perbedaannya, dan pemulihan}
+::msgcat::mcset id {this gateway} {gateway ini}
 ::msgcat::mcset id {this gateway has no Tcl interpreter} {gateway ini tidak punya interpreter Tcl}
 ::msgcat::mcset id {this list} {daftar ini}
+::msgcat::mcset id {this node has no vault} {node ini tidak punya brankas}
 ::msgcat::mcset id {this route} {rute ini}
 ::msgcat::mcset id {this session} {sesi ini}
 ::msgcat::mcset id {this session follows the default language again (%{def})} {sesi ini kembali mengikuti bahasa bawaan (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset id {transcript finalization failed: %s} {finalisasi transkrip gagal: %s}
 ::msgcat::mcset id {transcript refetched} {transkrip diambil ulang}
 ::msgcat::mcset id {transcript — arrows to read, %s for composer} {transkrip — panah untuk membaca, %s untuk komposer}
+::msgcat::mcset id {translate text with the dedicated translation model, without an agent turn} {terjemahkan teks dengan model terjemahan khusus, tanpa giliran agent}
+::msgcat::mcset id {translation result} {hasil terjemahan}
 ::msgcat::mcset id {trigger %1$s %2$sd} {picu %1$s %2$sd}
 ::msgcat::mcset id {trigger created} {pemicu dibuat}
 ::msgcat::mcset id {trigger updated} {pemicu diperbarui}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset id {usage: /steer <instruction>} {pemakaian: /steer <instruction>}
 ::msgcat::mcset id used terpakai
 ::msgcat::mcset id user pengguna
+::msgcat::mcset id {user copy} {salinan pengguna}
 ::msgcat::mcset id {user identities, one per line} {identitas pengguna, satu per baris}
 ::msgcat::mcset id {user name} {nama pengguna}
 ::msgcat::mcset id {user profile} {profil pengguna}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset id {value (TOML: 5, true, "text", ["a","b"])} {nilai (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset id veles veles
 ::msgcat::mcset id {veles editor} {editor veles}
+::msgcat::mcset id {veles fleet: node %{node} is failing — %{detail}} {veles fleet: node %{node} bermasalah — %{detail}}
+::msgcat::mcset id {veles fleet: node %{node} is stale — %{detail}} {veles fleet: node %{node} usang — %{detail}}
+::msgcat::mcset id {veles fleet: node %{node} recovered (it was %{was})} {veles fleet: node %{node} pulih (sebelumnya %{was})}
 ::msgcat::mcset id {veles · keyboard help (bindings: %s)} {veles · bantuan keyboard (bindings: %s)}
 ::msgcat::mcset id {veles · touch help} {veles · bantuan sentuh}
 ::msgcat::mcset id {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset id widgets widget
 ::msgcat::mcset id {will be stored in the encrypted vault} {akan disimpan di brankas terenkripsi}
 ::msgcat::mcset id {wire protocol} {protokol wire}
+::msgcat::mcset id {without force to} {tanpa paksa ke}
 ::msgcat::mcset id {wizard language} {bahasa wizard}
 ::msgcat::mcset id {wizard language: %s} {bahasa wizard: %s}
 ::msgcat::mcset id {write failed: %s} {gagal menulis: %s}
 ::msgcat::mcset id {write grants that still expire (the expiry is dropped — a config line cannot expire)} {tulis grant yang masih kedaluwarsa (kedaluwarsa dibuang — baris konfigurasi tak bisa kedaluwarsa)}
 ::msgcat::mcset id {write the entries back} {tulis kembali entri}
 ::msgcat::mcset id {write the store's runtime rules into config.toml} {tulis aturan runtime store ke config.toml}
+::msgcat::mcset id {write the whole extension from its purpose, as a reviewed preview} {tulis seluruh ekstensi dari tujuannya, sebagai pratinjau yang ditinjau}
 ::msgcat::mcset id {write these values into config.toml as the defaults} {tulis nilai-nilai ini ke config.toml sebagai bawaan}
 ::msgcat::mcset id writing menulis
 ::msgcat::mcset id {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {menulis pemilik [acl] pertama mengalihkan gateway ini ke mode TERKURASI: peran bawaan menjadi guest (fail-closed) dan daftar izin adapter tidak lagi menjadi batas kepercayaan}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset id {▲ VELES — neon impressionism} {▲ VELES — impresionisme neon}
 ::msgcat::mcset id {▲ earlier} {▲ sebelumnya}
 ::msgcat::mcset id {▼ later} {▼ berikutnya}
+::msgcat::mcset id {▾ Cluster registry} {▾ Registri cluster}
 ::msgcat::mcset id {▾ new output — follow} {▾ output baru — ikuti}
 ::msgcat::mcset id {○ unattached} {○ tak terpasang}
 ::msgcat::mcset id {● %1$s — %2$s} {● %1$s — %2$s}

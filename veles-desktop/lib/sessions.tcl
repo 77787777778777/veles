@@ -31,6 +31,10 @@ namespace eval ::vsessions {
     variable preview_after ""
     # What the last action did, kept for the reload that follows it —
     # which would otherwise overwrite it with the page count at once.
+    # Parent links for every row loaded in this view. Current Tk parenting
+    # cannot substitute for this: an orphan is temporarily a root, and a
+    # later page or supplied ancestor must be able to adopt it.
+    variable links [dict create]
     variable note ""
 }
 
@@ -155,6 +159,23 @@ proc ::vsessions::load {more} {
     ::vapi::get_json_async [_query $off] [list ::vsessions::_loaded $g $more]
 }
 
+proc ::vsessions::_insert_row {id row parent is_child} {
+    set t [_tree]
+    if {[$t exists $id]} { return }
+    set title [::vapi::field $row title]
+    set tags {}
+    if {$title eq ""} {
+        set title [string map {"\n" " "} [::vapi::field $row preview]]
+        if {$title eq ""} { set title $id }
+        set tags dim
+    }
+    if {[::vsessions::_pinned $id]} { set title "★ $title" }
+    if {$is_child} { set title "↳ $title" }
+    set state [expr {[::vapi::field $row running] in {1 true} ? [::vi18n::mc {running}] : ""}]
+    $t insert $parent end -id $id -tags $tags -open 1 -values [list $title \
+        [_when [::vapi::field $row updated_at]] [::vapi::field $row message_count] $state]
+}
+
 proc ::vsessions::_loaded {g more ok resp} {
     variable gen
     variable offset
@@ -167,25 +188,50 @@ proc ::vsessions::_loaded {g more ok resp} {
     }
     set t [_tree]
     if {!$more} {
+        # Deleting roots also deletes their nested children, so a previous
+        # page's tree cannot survive a new search.
         $t delete [$t children {}]
+        variable links
+        set links [dict create]
         set offset 0
     }
     set rows [dict get $resp sessions]
+    # Ancestors are context for rows on the page, never extra page results.
+    set parents {}
+    catch { set parents [dict get $resp parents] }
+    # ...and so are the children of page rows that rank past the page
+    # (SI-6): a flood of newer sessions must not hide a parent's subagents.
+    catch { set parents [concat $parents [dict get $resp children]] }
     catch { set total [dict get $resp total] }
-    foreach s $rows {
+    variable links
+    foreach s [concat $rows $parents] {
         set id [dict get $s id]
-        if {[$t exists $id]} { continue }
-        set title [::vapi::field $s title]
-        set tags {}
-        if {$title eq ""} {
-            set title [string map {"\n" " "} [::vapi::field $s preview]]
-            if {$title eq ""} { set title $id }
-            set tags dim
+        set parent [::vapi::field $s parent]
+        if {$parent ne ""} { dict set links $id $parent }
+    }
+    set row_by_id [dict create]
+    foreach s [concat $parents $rows] { dict set row_by_id [dict get $s id] $s }
+    foreach id [dict keys $row_by_id] {
+        if {![$t exists $id]} {
+            _insert_row $id [dict get $row_by_id $id] "" [dict exists $links $id]
         }
-        if {[::vsessions::_pinned $id]} { set title "★ $title" }
-        set state [expr {[::vapi::field $s running] in {1 true} ? [::vi18n::mc {running}] : ""}]
-        $t insert {} end -id $id -tags $tags -values [list $title \
-            [_when [::vapi::field $s updated_at]] [::vapi::field $s message_count] $state]
+    }
+    # Move orphans when their parent arrives. Test the PROPOSED ancestry,
+    # not merely the current widget parent: an orphan is a root until now.
+    # Cycles stay as visible roots, with no recursive tree walk.
+    foreach id [dict keys $links] {
+        if {![$t exists $id]} { continue }
+        set parent [dict get $links $id]
+        if {$parent eq $id || ![$t exists $parent]} { continue }
+        set current $parent
+        set seen [dict create $id 1]
+        set valid 1
+        while {[dict exists $links $current]} {
+            if {[dict exists $seen $current]} { set valid 0 ; break }
+            dict set seen $current 1
+            set current [dict get $links $current]
+        }
+        if {$valid && [$t parent $id] ne $parent} { $t move $id $parent end }
     }
     incr offset [llength $rows]
     [_win].foot.more configure -state [expr {$offset < $total ? "normal" : "disabled"}]

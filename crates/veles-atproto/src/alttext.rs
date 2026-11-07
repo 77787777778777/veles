@@ -76,6 +76,10 @@ struct Ledger {
     optin: BTreeMap<String, u64>,
     #[serde(default)]
     done: BTreeMap<String, u64>,
+    /// When gallery support first loaded (unix seconds); galleries are
+    /// answered from then on only (see [`AltText::candidate`]).
+    #[serde(default)]
+    galleries_since: Option<u64>,
 }
 
 /// The answered-posts record is trimmed to this many, oldest first.
@@ -105,18 +109,36 @@ pub struct AltText {
 impl AltText {
     pub fn load(state_dir: &Path, settings: AltSettings, operator_did: &str) -> Arc<Self> {
         let path = state_dir.join("alt-text.json");
-        let ledger = std::fs::read_to_string(&path)
+        let mut ledger: Ledger = std::fs::read_to_string(&path)
             .ok()
             .and_then(|s| serde_json::from_str(&s).ok())
             .unwrap_or_default();
-        Arc::new(Self {
+        let activate = ledger.galleries_since.is_none();
+        if activate {
+            ledger.galleries_since = Some(now_secs());
+        }
+        let alt = Arc::new(Self {
             path,
-            ledger: Mutex::new(ledger),
+            ledger: Mutex::new(ledger.clone()),
             settings,
             operator: operator_did.to_string(),
             recent: Mutex::new(Vec::new()),
             inflight: Mutex::new(std::collections::HashSet::new()),
-        })
+        });
+        if activate {
+            alt.save(&ledger);
+        }
+        alt
+    }
+
+    /// Since when galleries get alt text (the first load of gallery
+    /// support on this node).
+    pub fn galleries_since(&self) -> u64 {
+        self.ledger
+            .lock()
+            .ok()
+            .and_then(|l| l.galleries_since)
+            .unwrap_or(0)
     }
 
     /// Claim a post for one worker. False when one already has it.
@@ -233,6 +255,12 @@ impl AltText {
         if at < since {
             return false;
         }
+        // Galleries are forward-only for everyone, the operator too:
+        // older releases never answered one, so nothing marks the old
+        // ones done, and a cursor resume replays the downtime gap.
+        if carries_gallery(&ev.record) && at < self.galleries_since() {
+            return false;
+        }
         !missing_alt(&ev.record).is_empty() && !self.is_done(&ev.post_uri)
     }
 
@@ -273,6 +301,17 @@ pub fn missing_alt(record: &Value) -> Vec<(usize, String)> {
         .map(|(i, im)| (i + 1, crate::rich::image_cid(im)))
         .filter(|(_, cid)| !cid.is_empty())
         .collect()
+}
+
+/// Whether a post's images come from an `app.bsky.embed.gallery`, alone
+/// or as a quote post's media.
+fn carries_gallery(record: &Value) -> bool {
+    let Some(embed) = record.get("embed") else {
+        return false;
+    };
+    let gallery =
+        |v: &Value| v.get("$type").and_then(Value::as_str) == Some("app.bsky.embed.gallery");
+    gallery(embed) || embed.get("media").is_some_and(gallery)
 }
 
 /// How many images a post carries.
@@ -610,6 +649,58 @@ mod tests {
                       "items": [gallery_image("bafy-quoted", "")]}
         }});
         assert_eq!(missing_alt(&quoted), [(1, "bafy-quoted".into())]);
+    }
+
+    /// Gallery support is forward-only in code, not by luck of the done
+    /// ledger: 0.1.4 never saw a gallery as a candidate, so none was ever
+    /// marked done, and the operator's since is 0. A restart resumes
+    /// Jetstream from the stored cursor and replays the downtime gap
+    /// (up to the relay's retention after a long outage); a gallery from
+    /// before the first load of this code must not be captioned then.
+    #[test]
+    fn a_gallery_from_before_gallery_support_is_never_a_candidate() {
+        let dir = tempfile::tempdir().unwrap();
+        // A ledger as 0.1.4 left it: no gallery activation recorded.
+        std::fs::write(
+            dir.path().join("alt-text.json"),
+            r#"{"optin": {}, "done": {}}"#,
+        )
+        .unwrap();
+        let alt = AltText::load(dir.path(), AltSettings::default(), "did:plc:op");
+        let activated = alt.galleries_since();
+        assert!(activated + 5 >= now_secs(), "activated at the upgrade");
+        let record = gallery(&[gallery_image("bafy-old", "")]);
+        let replayed = ev("did:plc:op", record.clone(), activated.saturating_sub(600));
+        assert!(!alt.candidate(&replayed), "a replayed pre-upgrade gallery");
+        let quoted_old = ev(
+            "did:plc:op",
+            json!({"$type": "app.bsky.feed.post", "embed": {
+                "$type": "app.bsky.embed.recordWithMedia",
+                "media": {"$type": "app.bsky.embed.gallery",
+                          "items": [gallery_image("bafy-q", "")]}}}),
+            activated.saturating_sub(600),
+        );
+        assert!(!alt.candidate(&quoted_old), "inside recordWithMedia too");
+        assert!(alt.candidate(&ev("did:plc:op", record, activated + 1)));
+        // Ordinary images keep the catch-up they always had.
+        assert!(alt.candidate(&ev(
+            "did:plc:op",
+            post(&[""]),
+            activated.saturating_sub(600)
+        )));
+        // The activation is durable: a later restart does not move it.
+        let on_disk: Value = serde_json::from_str(
+            &std::fs::read_to_string(dir.path().join("alt-text.json")).unwrap(),
+        )
+        .unwrap();
+        assert_eq!(on_disk["galleries_since"], json!(activated));
+        std::fs::write(
+            dir.path().join("alt-text.json"),
+            r#"{"optin": {}, "done": {}, "galleries_since": 1000}"#,
+        )
+        .unwrap();
+        let again = AltText::load(dir.path(), AltSettings::default(), "did:plc:op");
+        assert_eq!(again.galleries_since(), 1000);
     }
 
     #[test]

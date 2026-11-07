@@ -183,6 +183,70 @@ fn parse_finite(s: &str) -> Option<f64> {
     (v.is_finite() && v >= 0.0).then_some(v)
 }
 
+/// How many CPUs this process may run on — the denominator `load1` is
+/// normalized by, and what placement weighs one more child against
+/// (owner ask 306787.b: a child on a 2-vCPU VPS is half the machine, on
+/// a 16-thread laptop a sixteenth). `available_parallelism` honours the
+/// affinity mask and cgroup quota, so a container reports its share.
+/// `None` = unknown, never a guessed 1.
+pub fn probe_cores() -> Option<u32> {
+    cpu_count()
+        .and_then(|c| u32::try_from(c).ok())
+        .filter(|&c| c > 0)
+}
+
+/// Disk IO pressure, as the kernel's pressure-stall information (PSI)
+/// reports it: the share of the last 10 seconds in which at least one
+/// task (`some`) or every non-idle task (`full`) waited on IO, in whole
+/// percent. A load average cannot see this — a node copying a disk
+/// image sits at load 1 with every other process stalled behind it.
+///
+/// Both halves are `Option`: a kernel without PSI, a `/proc` the app
+/// may not read (Android's SELinux policy can deny it), or a platform
+/// with no such counter (Windows, macOS, the BSDs) reports UNKNOWN —
+/// never 0, which placement would read as an idle disk.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct IoPressure {
+    pub some: Option<u8>,
+    pub full: Option<u8>,
+}
+
+/// Read this node's IO pressure ([`IoPressure`]). Linux and Android:
+/// `/proc/pressure/io`, one read, no subprocess; elsewhere `None`.
+pub fn probe_io_pressure() -> Option<IoPressure> {
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    {
+        parse_psi_io(&std::fs::read_to_string("/proc/pressure/io").ok()?)
+    }
+    #[cfg(not(any(target_os = "linux", target_os = "android")))]
+    {
+        None
+    }
+}
+
+/// Parse a PSI file (`some avg10=1.23 avg60=… total=…` and the same for
+/// `full`). `None` when neither line carries a readable `avg10`; a file
+/// with only `some` (the shape of `/proc/pressure/cpu` before 5.13) keeps
+/// `full` unknown.
+#[cfg_attr(not(any(target_os = "linux", target_os = "android")), allow(dead_code))]
+pub(crate) fn parse_psi_io(text: &str) -> Option<IoPressure> {
+    let avg10 = |kind: &str| -> Option<u8> {
+        let line = text
+            .lines()
+            .find(|l| l.split_whitespace().next() == Some(kind))?;
+        let v = line
+            .split_whitespace()
+            .find_map(|f| f.strip_prefix("avg10="))
+            .and_then(parse_finite)?;
+        Some(v.round().clamp(0.0, 100.0) as u8)
+    };
+    let p = IoPressure {
+        some: avg10("some"),
+        full: avg10("full"),
+    };
+    (p.some.is_some() || p.full.is_some()).then_some(p)
+}
+
 /// Probe for an NVIDIA GPU by asking `nvidia-smi`. Returns `None` when
 /// the binary is absent, errors, reports no devices, or does not answer
 /// within [`PROBE_TIMEOUT`] — every one of those collapses to "cannot
@@ -1068,6 +1132,62 @@ mod tests {
         assert!(probe_load_one_with(|| None, || Some(16)).is_none());
         assert!(probe_load_one_with(|| Some(1.0), || None).is_none());
         assert!(probe_load_one_with(|| Some(1.0), || Some(0)).is_none());
+    }
+
+    /// Owner ask 306787.b: disk IO pressure from PSI, avg10 rounded to a
+    /// whole percent. A missing line is unknown on its own; a file that
+    /// says nothing readable (no PSI, garbage) is unknown as a whole —
+    /// never a 0 that placement would read as an idle disk.
+    #[test]
+    fn io_pressure_parses_psi_and_never_invents_an_idle_disk() {
+        let busy = "some avg10=37.62 avg60=12.00 avg300=3.10 total=123456\n\
+                    full avg10=8.49 avg60=2.00 avg300=0.50 total=6543\n";
+        assert_eq!(
+            parse_psi_io(busy),
+            Some(IoPressure {
+                some: Some(38),
+                full: Some(8),
+            })
+        );
+        let idle = "some avg10=0.00 avg60=0.00 avg300=0.00 total=0\n\
+                    full avg10=0.00 avg60=0.00 avg300=0.00 total=0\n";
+        assert_eq!(
+            parse_psi_io(idle),
+            Some(IoPressure {
+                some: Some(0),
+                full: Some(0),
+            }),
+            "a measured zero is a real zero"
+        );
+        let some_only = "some avg10=5.00 avg60=0.00 avg300=0.00 total=1\n";
+        assert_eq!(
+            parse_psi_io(some_only),
+            Some(IoPressure {
+                some: Some(5),
+                full: None,
+            })
+        );
+        assert_eq!(parse_psi_io(""), None);
+        assert_eq!(parse_psi_io("some avg10=NaN total=1\n"), None);
+        assert_eq!(parse_psi_io("bogus avg10=3.00\n"), None);
+        // Over 100 cannot happen in PSI; clamped rather than wrapped.
+        assert_eq!(
+            parse_psi_io("some avg10=250.0 total=1\n").and_then(|p| p.some),
+            Some(100)
+        );
+    }
+
+    /// Off Linux and Android there is no PSI to read: the probe says
+    /// unknown rather than 0. On Linux it is whatever the kernel says
+    /// (CI kernels with `psi=0` give unknown too, which is the point).
+    #[test]
+    fn io_pressure_is_unknown_where_there_is_no_psi() {
+        if !cfg!(any(target_os = "linux", target_os = "android")) {
+            assert_eq!(probe_io_pressure(), None);
+        } else if let Some(p) = probe_io_pressure() {
+            assert!(p.some.is_some() || p.full.is_some());
+        }
+        assert!(probe_cores().is_some_and(|c| c > 0));
     }
 
     #[cfg(unix)]

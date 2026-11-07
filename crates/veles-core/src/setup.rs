@@ -149,6 +149,35 @@ pub const ANTHROPIC_BASE_URL: &str = "https://api.anthropic.com";
 /// the entry's own URL and wire.
 pub const ANTHROPIC_OPENAI_COMPAT_BASE_URL: &str = "https://api.anthropic.com/v1";
 
+/// One optional sign-up link shown by setup and the install guide.
+/// These are public, non-secret constants, not provider configuration:
+/// setup never fetches them, and they are not part of `SetupAnswers`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub struct ReferralLink {
+    pub provider: &'static str,
+    pub url: &'static str,
+}
+
+/// The shared referral registry (PLAN-provider-panels-onboarding.md D1/D2).
+/// Keep every URL byte-exact, query parameters included. Referral presence
+/// deliberately does not add, reorder or preselect a provider preset.
+pub const ANTHROPIC_REFERRAL_NOTE: &str = "API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.";
+
+pub const REFERRAL_LINKS: &[ReferralLink] = &[
+    ReferralLink {
+        provider: "Alibaba",
+        url: "https://www.alibabacloud.com/campaign/ai-landing-page-token?referral_code=A92XWC",
+    },
+    ReferralLink {
+        provider: "Anthropic",
+        url: "https://claude.ai/referral/wmE6hdL3CQ",
+    },
+    ReferralLink {
+        provider: "Kimi",
+        url: "https://www.kimi.ai/activities/en/invite/share?scenario=subscribe&from=share_poster&invitation_code=W5RK7K",
+    },
+];
+
 /// The provider step's choices, in the order the wizards show them.
 pub const PROVIDER_PRESETS: &[ProviderPreset] = &[
     ProviderPreset {
@@ -188,7 +217,7 @@ pub const PROVIDER_PRESETS: &[ProviderPreset] = &[
         base_url: ANTHROPIC_BASE_URL,
         key_env: "ANTHROPIC_API_KEY",
         api_mode: "plugin",
-        driver: "anthropic-messages",
+        driver: "tcl:tcl-anthropic-driver:anthropic-messages",
         model: "",
         key_url: "https://console.anthropic.com/settings/keys",
     },
@@ -364,8 +393,8 @@ pub struct SetupAnswers {
     /// `chat_completions` for the rest).
     pub api_mode: String,
     /// The provider driver for `api_mode = "plugin"`; empty → the
-    /// choice's own (`anthropic-messages` for Anthropic). Ignored, and
-    /// not written, for any other wire.
+    /// choice's own (the bundled Tcl driver's qualified name for
+    /// Anthropic). Ignored, and not written, for any other wire.
     pub driver: String,
     /// `[[custom_providers]] name`. Empty → the choice's default.
     pub provider_name: String,
@@ -2001,6 +2030,58 @@ mod tests {
     }
 
     #[test]
+    fn referral_links_are_exact_non_secret_and_do_not_change_provider_choices() {
+        let links: Vec<(&str, &str)> = REFERRAL_LINKS
+            .iter()
+            .map(|link| (link.provider, link.url))
+            .collect();
+        assert_eq!(
+            links,
+            [
+                (
+                    "Alibaba",
+                    "https://www.alibabacloud.com/campaign/ai-landing-page-token?referral_code=A92XWC",
+                ),
+                ("Anthropic", "https://claude.ai/referral/wmE6hdL3CQ"),
+                (
+                    "Kimi",
+                    "https://www.kimi.ai/activities/en/invite/share?scenario=subscribe&from=share_poster&invitation_code=W5RK7K",
+                ),
+            ]
+        );
+        // The Max/Ultra condition belongs to the REFERRAL's credits. Worded
+        // as "Anthropic API credits require Max or Ultra" it read as though
+        // the Anthropic preset itself needed a subscription.
+        assert!(
+            ANTHROPIC_REFERRAL_NOTE.starts_with("API credits from the Anthropic referral"),
+            "{ANTHROPIC_REFERRAL_NOTE}"
+        );
+        assert_eq!(SetupAnswers::default().provider, ProviderChoice::OpenRouter);
+        assert_eq!(PROVIDER_PRESETS.len(), 8);
+        for link in REFERRAL_LINKS {
+            assert!(link.url.starts_with("https://"), "{link:?}");
+            let plan = fresh(&SetupAnswers::default());
+            assert!(!plan.config_toml.contains(link.url));
+            assert!(!plan.env_text.contains(link.url));
+        }
+    }
+
+    #[test]
+    fn the_install_guide_repeats_the_shared_referral_registry_exactly() {
+        let guide = std::fs::read_to_string(
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../docs/install.md"),
+        )
+        .expect("install guide");
+        for link in REFERRAL_LINKS {
+            assert_eq!(guide.matches(link.url).count(), 1, "{}", link.provider);
+        }
+        assert!(guide.contains("optional"));
+        assert!(guide.contains("referral"));
+        let normalized = guide.split_whitespace().collect::<Vec<_>>().join(" ");
+        assert!(normalized.contains(ANTHROPIC_REFERRAL_NOTE));
+    }
+
+    #[test]
     fn every_preset_writes_a_routable_config_and_reads_back_as_itself() {
         for p in PROVIDER_PRESETS {
             let a = SetupAnswers {
@@ -2071,12 +2152,15 @@ mod tests {
             plan.config_toml
         );
         assert_eq!(e.api_mode, "plugin", "{}", plan.config_toml);
-        assert_eq!(e.driver.as_deref(), Some("anthropic-messages"));
+        assert_eq!(
+            e.driver.as_deref(),
+            Some("tcl:tcl-anthropic-driver:anthropic-messages")
+        );
         assert_eq!(e.key_env.as_deref(), Some("ANTHROPIC_API_KEY"));
         let ua = crate::providers::UserAgentProfile::veles();
         match crate::providers::build_client(e, "k", &ua).expect("a routable entry") {
             crate::providers::RouteClient::Plugin(r) => {
-                assert_eq!(r.driver, "anthropic-messages")
+                assert_eq!(r.driver, "tcl:tcl-anthropic-driver:anthropic-messages")
             }
             _ => panic!("the Anthropic preset must build a plugin route"),
         }
@@ -2088,7 +2172,12 @@ mod tests {
         assert!(
             shipped.contains(&format!(
                 "register_provider {}",
-                preset(ProviderChoice::Anthropic).unwrap().driver
+                preset(ProviderChoice::Anthropic)
+                    .unwrap()
+                    .driver
+                    .rsplit_once(':')
+                    .expect("the preset selects a plugin explicitly")
+                    .1
             )),
             "the preset names a driver the bundled plugin does not register"
         );

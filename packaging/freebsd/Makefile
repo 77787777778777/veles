@@ -5,12 +5,12 @@
 # bash, and veles shells out with `-c` from six call sites.
 
 PORTNAME=	veles-agent
-DISTVERSION=	0.1.6
+DISTVERSION=	0.2.0
 CATEGORIES=	misc
 
 MAINTAINER=	noreply@example.invalid
 COMMENT=	Rust core + Tcl scripting AI agent framework
-WWW=		https://github.com/veles-agent/veles-agent
+WWW=		https://github.com/77787777778777/veles
 
 LICENSE=	AGPLv3
 

@@ -100,7 +100,13 @@ the joined session, not their own:
   the owner wrote it and the session's person did not, and while the
   owner is joined, the person's own lines name the person.
 - What the session says (progress, replies, and the person's own lines)
-  is copied to the owner's chat behind that label.
+  is copied to the owner's chat behind that label. When the owner joined
+  from that session's own channel on the same network, there is no copy:
+  the owner already reads it there, and a copy would post every reply
+  twice.
+- Replies to the owner's line, and to session mail, go out on the
+  network the session's person speaks on. With two IRC networks
+  connected, that is what keeps the answer from being dropped.
 
 The person keeps talking as before; neither one locks the other out, and
 the person's own turns keep the person's rights. The owner's slash
@@ -117,10 +123,29 @@ by the owner's own principal, raises the turn. A relayed
 `join` row, or one anybody else wrote, runs as ordinary mail, at the
 lower of both rights.
 
+### Someone other than the owner joins (`session-join`)
+
+`/join` needs the `session-join` capability, which nobody but the owner
+holds unless it is granted. A grantee's join is narrower:
+
+- `/join` offers only another person's session in the channel the
+  grantee is typing in, on the same network. DMs are never offered.
+- Their line runs at the LOWER of their rights and the session's, like
+  ordinary mail, and never raises the turn. The model is told who wrote
+  it and that they are not the owner, and the session's own person's
+  lines name the grantee as a participant who is not the owner.
+- Questions from their lines are asked of them only.
+- Their line is not echoed into the channel they typed it in.
+- If the grant is revoked while they are joined, their next line ends
+  the join and goes to their own session.
+- One person at a time joins a session. The owner's `/join` ends a
+  grantee's join to it, and the grantee is told; a grantee cannot join a
+  session someone else has joined.
+
 Limits:
 
-- A join lives in the gateway's memory. A gateway restart ends it, and
-  the owner joins again.
+- A join is saved and restored when the gateway restarts, after the same
+  identity and ACL checks a live line gets.
 - Only sessions the same gateway holds can be joined: not a desktop
   session, and not another node's.
 - The owner's line is held to the session person's media and rate

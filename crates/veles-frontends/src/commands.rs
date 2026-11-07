@@ -175,6 +175,8 @@ pub const GATEWAY_OVERRIDES: &[&str] = &[
     // other verb, so only the HTTP half needs the override.
     "/triggers",
     "/trigger",
+    "/translate",
+    "/fleet",
     // `/quota` reads the Alibaba account over HTTP, same shape.
     "/quota",
     // `/models`: discovery may fetch a provider's catalog over HTTP.
@@ -209,6 +211,8 @@ pub const TUI_OVERRIDES: &[&str] = &[
     "/memory",
     "/acl",
     "/diff",
+    "/shells",
+    "/monitors",
 ];
 
 /// The ONE help table (RM4.4). Until now the REPL, the TUI and the
@@ -235,6 +239,14 @@ pub fn help_entries(surface: Surface) -> Vec<(&'static str, &'static str)> {
         (
             "/locale [id|swap|reset|primary <id>|secondary <id>]",
             "UI language: list the catalogs, set this session's language (the process on the TUI/REPL), or write the primary/secondary pair (admin)",
+        ),
+        (
+            "/translate [--to <language>] -- <text>",
+            "translate text with the dedicated translation model, without an agent turn",
+        ),
+        (
+            "/fleet [list|sync <node-id> [kind]|apply [kind]|forget <node-id> confirm|logs <node-id> [lines]|metrics <node-id>|drift|gossip [peer]]",
+            "inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now",
         ),
         ("/usage", "token usage by provider"),
         (
@@ -818,16 +830,7 @@ pub fn dispatch(ctx: &mut CommandCtx, head: &str, rest: &str) -> Option<Handled>
         // /api/detach, this dispatcher when the surface's command loop
         // is not blocked). request_detach refuses honestly when no
         // foreground terminal call is waiting right now.
-        "/detach" => {
-            let msg = if veles_core::agent::request_detach(&agent.session_id) {
-                "detaching — the command keeps running as a background shell (its task id lands in the turn)"
-            } else if veles_core::agent::turn_is_live(&agent.session_id) {
-                "nothing to detach: the running turn is not inside a foreground terminal command right now"
-            } else {
-                "nothing running in this session"
-            };
-            Some(msg.into())
-        }
+        "/detach" => Some(detach_reply(&agent.session_id).into()),
 
         // Scheduled work. Existed in the CLI and the desktop; the REPL
         // and the TUI had no reference to cron at all, so two of the
@@ -873,6 +876,17 @@ pub fn dispatch(ctx: &mut CommandCtx, head: &str, rest: &str) -> Option<Handled>
             Some(triggers_command(&AclCtx::from_agent(agent, ctx.principal), rest).into())
         }
 
+        // Dedicated translation: an async provider call, no agent turn.
+        "/translate" => Some(match tokio::runtime::Runtime::new() {
+            Ok(rt) => rt.block_on(translate_command(ctx, rest)).into(),
+            Err(e) => format!("runtime: {e}").into(),
+        }),
+        // Fleet inventory is shared; sync uses the same validated core
+        // operation as the desktop Instances panel.
+        "/fleet" => Some(match tokio::runtime::Runtime::new() {
+            Ok(rt) => rt.block_on(fleet_command(ctx, rest)).into(),
+            Err(e) => format!("runtime: {e}").into(),
+        }),
         // The UPSTREAM plan's quota. Async because it is HTTP to
         // Singapore, so this arm block_on's a fresh runtime and the
         // gateway awaits the twin in `dispatch_async` instead — the
@@ -1181,7 +1195,7 @@ pub fn dispatch(ctx: &mut CommandCtx, head: &str, rest: &str) -> Option<Handled>
         }
         .into()),
 
-        "/export" => Some(export_session(agent, rest).into()),
+        "/export" => Some(export_session(agent, ctx.surface, rest).into()),
 
         "/hooks" => Some(hooks_report().into()),
 
@@ -1379,6 +1393,7 @@ pub fn dispatch(ctx: &mut CommandCtx, head: &str, rest: &str) -> Option<Handled>
                             Some(l) => format!("  load={l}"),
                             None => "  load=?".to_string(),
                         };
+                        let load = format!("{load}{}", veles_core::placement::row_metrics(n));
                         let served = format!("  served={}", n.sessions_served);
                         let observed = n
                             .observed_addr
@@ -1807,8 +1822,232 @@ pub async fn dispatch_async_as(ctx: &AclCtx<'_>, head: &str, rest: &str) -> Opti
     }
 }
 
+/// Translate text with the dedicated route. `--to` is explicit because
+/// language names may contain spaces; `--` selects the configured target.
+fn translate_arguments(rest: &str) -> (Option<String>, String) {
+    let rest = rest.trim();
+    if let Some(after) = rest.strip_prefix("--to ") {
+        let mut parts = after.splitn(2, " -- ");
+        let target = parts
+            .next()
+            .unwrap_or_default()
+            .trim_end_matches("--")
+            .trim();
+        let text = parts.next().unwrap_or_default().trim();
+        return (
+            (!target.is_empty()).then(|| target.to_string()),
+            text.to_string(),
+        );
+    }
+    if let Some(text) = rest.strip_prefix("--") {
+        return (None, text.trim_start().to_string());
+    }
+    (None, rest.to_string())
+}
+
+pub async fn translate_command(ctx: &CommandCtx<'_>, rest: &str) -> String {
+    if !caller_is(ctx.principal, veles_core::acl::Cap::CmdSession) {
+        return denied(
+            ctx.principal,
+            "/translate",
+            veles_core::acl::Cap::CmdSession,
+        );
+    }
+    let (target, text) = translate_arguments(rest);
+    if text.is_empty() {
+        return "usage: /translate [--to <language>] -- <text>".into();
+    }
+    match veles_core::translate::translate(&ctx.agent.cfg, &text, target.as_deref()).await {
+        Ok(answer) => format!(
+            "{}\n\n[{} @ {} → {}]",
+            answer["text"].as_str().unwrap_or_default(),
+            answer["model"].as_str().unwrap_or_default(),
+            answer["provider"].as_str().unwrap_or_default(),
+            answer["target_language"].as_str().unwrap_or_default()
+        ),
+        Err(error) => format!("translation failed: {error:#}"),
+    }
+}
+
+pub async fn fleet_command(ctx: &CommandCtx<'_>, rest: &str) -> String {
+    let mut words = rest.split_whitespace();
+    let operation = words.next().unwrap_or("list");
+    if operation == "list" {
+        if !caller_is(ctx.principal, veles_core::acl::Cap::CmdStatus) {
+            return denied(
+                ctx.principal,
+                "/fleet list",
+                veles_core::acl::Cap::CmdStatus,
+            );
+        }
+        let nodes = match ctx.agent.store.lock_ok().nodes_list() {
+            Ok(nodes) => nodes,
+            Err(error) => return format!("fleet read failed: {error}"),
+        };
+        if nodes.is_empty() {
+            return "no registered nodes; enable the cluster registry to populate /fleet".into();
+        }
+        let mut out = "registered fleet nodes:\n".to_string();
+        for node in nodes {
+            let peer = if ctx
+                .agent
+                .cfg
+                .cluster
+                .storesync_peers
+                .iter()
+                .any(|p| p == &node.name || p == &node.id)
+            {
+                " [sync peer]"
+            } else {
+                ""
+            };
+            out.push_str(&format!(
+                "- {} ({}) {} — {}{}\n",
+                node.id,
+                node.name,
+                node.host,
+                // The configured threshold, as /nodes, /api/fleet and the
+                // nodes tool read it — 120 here once called a node stale
+                // that every other surface still called fresh (FLEET-7).
+                if veles_core::node::is_stale(
+                    &node.heartbeat_at,
+                    ctx.agent.cfg.cluster.stale_after_secs as i64,
+                ) {
+                    "stale"
+                } else {
+                    "fresh"
+                },
+                peer,
+            ));
+        }
+        out.push_str(
+            "Use /fleet sync <node-id> [store|memory|config|vault] to push; /fleet apply [kind] drains received offers; \
+             config/vault and memory apply need a trailing `confirm`.",
+        );
+        return out;
+    }
+    if !caller_is(ctx.principal, veles_core::acl::Cap::All) {
+        return denied(
+            ctx.principal,
+            "/fleet sync|apply|forget",
+            veles_core::acl::Cap::All,
+        );
+    }
+    const USAGE: &str = "usage: /fleet [list|sync <node-id> [store|memory|config|vault] [confirm]|apply [kind] [confirm]|forget <node-id> confirm|logs <node-id> [lines]|metrics <node-id>|drift|gossip [peer]]";
+    let args: Vec<&str> = words.collect();
+    // The command center's observation verbs (crate::fleet_obs): the
+    // same calls the Instances tab makes, owner-only like the rest.
+    match operation {
+        "logs" | "metrics" if !args.is_empty() && args.len() <= 2 => {
+            let lines = args.get(1).and_then(|n| n.parse::<u64>().ok());
+            if (operation == "metrics" && args.len() != 1)
+                || (operation == "logs" && args.len() == 2 && lines.is_none())
+            {
+                return USAGE.into();
+            }
+            let params = if operation == "logs" {
+                serde_json::json!({"op": "logs", "lines": lines.unwrap_or(30), "level": "all"})
+            } else {
+                serde_json::json!({"op": "metrics"})
+            };
+            let cfg: veles_core::config::VelesConfig = (*ctx.agent.cfg).clone();
+            return match crate::fleet_obs::ask(&ctx.agent.store, &cfg, args[0], params).await {
+                Ok(v) if operation == "logs" => crate::fleet_obs::logs_text(&v),
+                Ok(v) => crate::fleet_obs::metrics_text(&v),
+                Err(error) => format!("fleet {operation} failed: {error}"),
+            };
+        }
+        "drift" if args.is_empty() => {
+            let cfg: veles_core::config::VelesConfig = (*ctx.agent.cfg).clone();
+            return match crate::fleet_obs::drift(&ctx.agent.store, &cfg).await {
+                Ok(v) => crate::fleet_obs::drift_text(&v),
+                Err(error) => format!("fleet drift failed: {error}"),
+            };
+        }
+        "gossip" if args.len() <= 1 => {
+            let cfg: veles_core::config::VelesConfig = (*ctx.agent.cfg).clone();
+            return match crate::fleet_obs::gossip_now(&ctx.agent.store, &cfg, args.first().copied())
+                .await
+            {
+                Ok(v) => {
+                    let mut out = format!("{}\n", v["result"].as_str().unwrap_or(""));
+                    for r in v["results"].as_array().into_iter().flatten() {
+                        out.push_str(&format!(
+                            "- {}: {}\n",
+                            r["peer"].as_str().unwrap_or("?"),
+                            r["line"].as_str().unwrap_or("")
+                        ));
+                    }
+                    out
+                }
+                Err(error) => format!("fleet gossip failed: {error}"),
+            };
+        }
+        "logs" | "metrics" | "drift" | "gossip" => return USAGE.into(),
+        _ => {}
+    }
+    let confirmed = args.last() == Some(&"confirm");
+    let args: Vec<&str> = args.into_iter().filter(|a| *a != "confirm").collect();
+    let kind_at = |i: usize| args.get(i).copied().unwrap_or("store");
+    // A word where the kind goes must BE a kind: `/fleet sync a b` is a
+    // typo, not a request for a sync kind named "b".
+    let kind_slot = match operation {
+        "sync" => Some(1),
+        "apply" => Some(0),
+        _ => None,
+    };
+    if kind_slot.is_some_and(|i| !crate::fleet_ops::valid_kind(kind_at(i))) {
+        return USAGE.into();
+    }
+    let cfg: veles_core::config::VelesConfig = (*ctx.agent.cfg).clone();
+    let store = ctx.agent.store.clone();
+    let (node, kind, operation) = match operation {
+        "sync" if (1..=2).contains(&args.len()) => (args[0].to_string(), kind_at(1), "push"),
+        "sync" => {
+            return "usage: /fleet sync <registered-node-id> [store|memory|config|vault] [confirm]"
+                .into()
+        }
+        "apply" if args.len() <= 1 => (String::new(), kind_at(0), "apply"),
+        "forget" if args.len() == 1 => {
+            let me = veles_core::node::NodeIdentity::load(&veles_core::config::config_dir())
+                .ok()
+                .flatten()
+                .map(|id| id.id);
+            return match crate::fleet_ops::forget(&store, &cfg, args[0], me.as_deref(), confirmed) {
+                Ok(v) => format!(
+                    "forgot node {} ({})",
+                    v["node"].as_str().unwrap_or(""),
+                    v["name"].as_str().unwrap_or("")
+                ),
+                Err(error) => format!("fleet forget failed: {error}"),
+            };
+        }
+        _ => return USAGE.into(),
+    };
+    let kind = kind.to_string();
+    let result = veles_core::rt::spawn_blocking(move || {
+        let runtime = tokio::runtime::Runtime::new().map_err(|error| {
+            veles_core::storesync::OperationError::Failed(anyhow::anyhow!(error))
+        })?;
+        runtime.block_on(crate::fleet_ops::operate(
+            &store, &cfg, &kind, &node, operation, confirmed,
+        ))
+    })
+    .await;
+    let result = match result {
+        Ok(result) => result,
+        Err(error) => return format!("fleet operation worker failed: {error}"),
+    };
+    match result {
+        Ok(body) => serde_json::to_string_pretty(&body).unwrap_or_else(|_| body.to_string()),
+        Err(error) => format!("fleet {operation} failed: {error}"),
+    }
+}
+
 pub async fn dispatch_async(ctx: &mut CommandCtx<'_>, head: &str, rest: &str) -> Option<Handled> {
     match head {
+        "/translate" => Some(translate_command(ctx, rest).await.into()),
+        "/fleet" => Some(fleet_command(ctx, rest).await.into()),
         // B6: session migration, on every surface through the shared
         // dispatcher (the backport discipline). Admin-only: it moves
         // history across machines. The migrate/reclaim legs are the
@@ -2630,60 +2869,47 @@ fn first_line(body: &str) -> String {
     }
 }
 
-/// `/export [md|json]` — writes the file (same box as the session
-/// store) and says where; the session_export tool does the same job
-/// when a surface prefers a download over a path.
-fn export_session(agent: &Agent, rest: &str) -> String {
-    let store = agent.store.lock_ok();
-    let sid = agent.session_id.clone();
-    let msgs = store.load_history(&sid).unwrap_or_default();
-    let title = store
-        .title(&sid)
-        .ok()
-        .flatten()
-        .unwrap_or_else(|| sid.clone());
-    let fmt = if rest == "json" { "json" } else { "markdown" };
-    let path = std::env::temp_dir()
-        .join(format!(
-            "veles_export_{sid}.{}",
-            if fmt == "json" { "json" } else { "md" }
-        ))
-        .to_string_lossy()
-        .into_owned();
-    let output = if fmt == "json" {
-        let entries: Vec<serde_json::Value> = msgs
-            .iter()
-            .map(|m| {
-                serde_json::json!({"role": m.role, "content": m.content, "reasoning": m.reasoning})
-            })
-            .collect();
-        serde_json::json!({"session_id": sid, "title": title, "messages": entries}).to_string()
-    } else {
-        let mut out = format!(
-            "# {title}\n\n> Session `{sid}` · {} messages\n\n---\n\n",
-            msgs.len()
-        );
-        for msg in &msgs {
-            match msg.role.as_str() {
-                "user" => out.push_str(&format!("## User\n\n{}\n\n", msg.content)),
-                "assistant" => {
-                    if let Some(r) = &msg.reasoning {
-                        if !r.is_empty() {
-                            out.push_str("<details><summary>Reasoning</summary>\n\n");
-                            out.push_str(r);
-                            out.push_str("\n\n</details>\n\n");
-                        }
-                    }
-                    out.push_str(&format!("## Assistant\n\n{}\n\n", msg.content));
-                }
-                _ => {}
-            }
-        }
-        out
+/// `/export [md|json]` — writes the transcript through the shared
+/// exporter (`veles_core::export`: tool calls, tool results, notes and
+/// reasoning included) into `<data_dir>/exports` as a NEW owner-only
+/// file, and says where. It used to write a predictable, world-readable
+/// `/tmp/veles_export_<sid>.md` through `fs::write`, which follows a
+/// planted symlink, and kept only role/content/reasoning.
+///
+/// On a connector the file is on the GATEWAY's disk, not the chat
+/// user's; the reply says so rather than handing over a path that
+/// reads like a download.
+fn export_session(agent: &Agent, surface: Surface, rest: &str) -> String {
+    let Some(format) = veles_core::export::Format::parse(rest) else {
+        return "usage: /export [md|json]".into();
     };
-    match std::fs::write(&path, output) {
-        Ok(()) => format!("(exported {} messages → {path})", msgs.len()),
-        Err(e) => format!("export failed: {e}"),
+    let sid = agent.session_id.clone();
+    let written = {
+        let store = agent.store.lock_ok();
+        veles_core::export::export_to_file(&store, &sid, format)
+    };
+    match written {
+        Ok((path, n)) if surface.is_local() => {
+            format!("(exported {n} messages → {})", path.display())
+        }
+        Ok((path, n)) => format!(
+            "(exported {n} messages to {} on the gateway host — the file is not sent to this chat)",
+            path.display()
+        ),
+        Err(e) => format!("export failed: {e:#}"),
+    }
+}
+
+/// `/detach` and the TUI task browser's `b`: arm the one-shot detach
+/// flag for `session_id` and say which of the three outcomes happened,
+/// in one wording for every surface.
+pub(crate) fn detach_reply(session_id: &str) -> &'static str {
+    if veles_core::agent::request_detach(session_id) {
+        "detaching — the command keeps running as a background shell (its task id lands in the turn)"
+    } else if veles_core::agent::turn_is_live(session_id) {
+        "nothing to detach: the running turn is not inside a foreground terminal command right now"
+    } else {
+        "nothing running in this session"
     }
 }
 
@@ -2988,8 +3214,18 @@ pub(crate) fn triggers_command(ctx: &AclCtx, rest: &str) -> String {
                             )
                         }
                     }
-                    veles_core::triggers::ActionKind::Prompt => "start a turn".into(),
-                    veles_core::triggers::ActionKind::Command => "run a command".into(),
+                    veles_core::triggers::ActionKind::Prompt
+                        if veles_core::triggers::validate_action_on(
+                            &row.action,
+                            &row.event,
+                            row.platform.as_deref(),
+                        )
+                        .is_ok() =>
+                        "start a turn in the device's session".into(),
+                    veles_core::triggers::ActionKind::Prompt =>
+                        "do nothing: action=prompt runs only for device events".into(),
+                    veles_core::triggers::ActionKind::Command =>
+                        "do nothing: action=command is not implemented on any surface".into(),
                 },
             )
         }
@@ -3150,6 +3386,11 @@ fn triggers_add(
         last_fired_at: None,
         last_status: None,
     };
+    if let Err(e) =
+        veles_core::triggers::validate_action_on(&row.action, &row.event, row.platform.as_deref())
+    {
+        return e;
+    }
     match store.lock_ok().trigger_upsert(&row) {
         Ok(id) => format!("{name} added (id {id}) — the mask may need /triggers refresh"),
         Err(e) => format!("error: {e}"),
@@ -3237,6 +3478,22 @@ fn triggers_edit(
     let match_kind = canon_match.as_deref().or(match_kind);
     let action = canon_action.as_deref().or(action);
     let min_role = canon_min_role.as_deref().map(Some).or(min_role);
+    if action.is_some() || event.is_some() {
+        // The edited row's action, event and platform together decide
+        // whether anything would run it.
+        let current = match store.lock_ok().trigger_get(name) {
+            Ok(Some(t)) => t,
+            Ok(None) => return format!("no trigger named '{name}'"),
+            Err(e) => return format!("error: {e}"),
+        };
+        if let Err(e) = veles_core::triggers::validate_action_on(
+            action.unwrap_or(&current.action),
+            event.unwrap_or(&current.event),
+            current.platform.as_deref(),
+        ) {
+            return e;
+        }
+    }
     match store.lock_ok().trigger_update(
         name, network, channel, event, match_kind, pattern, action, arg, cooldown, cap, min_role,
     ) {
@@ -6615,9 +6872,9 @@ pub(crate) async fn gen_run(ctx: &AclCtx<'_>, req: GenRequest) -> String {
             veles_core::imagegen::ImageGenTool.call(args).await
         }
         GenKind::Video => {
-            // The comfyui route is still a workflow placeholder; a
-            // provider route (config or per-call) renders for real on
-            // the dashscope async task.
+            // Only a provider route (config or per-call) renders, on the
+            // dashscope async task; without one the tool says so as an
+            // error and generates nothing.
             let mut args = serde_json::json!({"prompt": req.prompt});
             if let Some(p) = &req.provider {
                 args["provider"] = p.clone().into();
@@ -7799,6 +8056,75 @@ pub fn usage_quotas_command(ctx: &AclCtx, rest: &str) -> String {
 mod tests {
     use super::*;
 
+    #[test]
+    fn translate_arguments_distinguish_language_from_text() {
+        assert_eq!(translate_arguments("-- hello"), (None, "hello".into()));
+        assert_eq!(
+            translate_arguments("--to Brazilian Portuguese -- hello"),
+            (Some("Brazilian Portuguese".into()), "hello".into())
+        );
+        assert_eq!(translate_arguments("hello"), (None, "hello".into()));
+        assert_eq!(
+            translate_arguments("--to German --"),
+            (Some("German".into()), "".into())
+        );
+    }
+
+    #[tokio::test]
+    async fn fleet_commands_keep_reads_separate_from_owner_only_sync() {
+        let (_home, _env) = veles_core::testenv::scratch_home();
+        let agent = veles_core::testenv::mock_agent("http://127.0.0.1:0", "fleet-command");
+        let guest = veles_core::acl::Principal::guest();
+        let guest_ctx = CommandCtx {
+            agent: &agent,
+            surface: Surface::Gateway,
+            history: None,
+            turn_live: false,
+            principal: Some(&guest),
+        };
+        // A node's log tail and metrics, the drift report and a gossip
+        // exchange are owner verbs too (fleet_obs.rs).
+        for rest in [
+            "sync unknown",
+            "apply",
+            "logs some-node",
+            "metrics some-node",
+            "drift",
+            "gossip",
+        ] {
+            let out = fleet_command(&guest_ctx, rest).await;
+            assert!(
+                out.contains("[acl]") && out.contains("`all` capability") && out.contains("guest"),
+                "{out}"
+            );
+        }
+        let owner_ctx = CommandCtx {
+            principal: None,
+            ..guest_ctx
+        };
+        assert!(fleet_command(&owner_ctx, "list")
+            .await
+            .contains("no registered nodes"));
+        assert!(fleet_command(&owner_ctx, "sync unknown")
+            .await
+            .contains("unknown registered node"));
+        assert!(fleet_command(&owner_ctx, "sync a b")
+            .await
+            .contains("usage:"));
+        assert!(fleet_command(&owner_ctx, "logs unknown")
+            .await
+            .contains("unknown registered node"));
+        assert!(fleet_command(&owner_ctx, "logs unknown many")
+            .await
+            .contains("usage:"));
+        assert!(fleet_command(&owner_ctx, "gossip")
+            .await
+            .contains("gossip_peers"));
+        assert!(fleet_command(&owner_ctx, "drift")
+            .await
+            .contains("no other registered node"));
+    }
+
     /// The pre-turn-lock dispatcher must not substitute an owner Agent for
     /// the actual IRC caller. A recording backend exposes the interpreter
     /// selection and the exact wire identity that crossed that boundary.
@@ -8778,6 +9104,74 @@ mod tests {
         assert_eq!(out.text, format!("veles {}", env!("CARGO_PKG_VERSION")));
     }
 
+    #[test]
+    fn fleet_listing_uses_the_shared_registry_and_does_not_touch_the_network() {
+        let (_home, _env) = veles_core::testenv::scratch_home();
+        let agent = veles_core::testenv::mock_agent("http://127.0.0.1:0/unused", "fleet-cmd");
+        agent
+            .store
+            .lock_ok()
+            .node_register(
+                "node-local",
+                "worker",
+                "worker-host",
+                "0.1.6",
+                "always-on",
+                None,
+                Some("http://127.0.0.1:0"),
+                None,
+                None,
+            )
+            .expect("registry fixture");
+        let mut ctx = CommandCtx {
+            agent: &agent,
+            surface: Surface::Repl,
+            history: None,
+            turn_live: false,
+            principal: None,
+        };
+        // FLEET-7: a heartbeat 200 s old is inside the configured 300 s
+        // default — fresh here exactly as on /api/fleet and the nodes tool.
+        let at = (chrono::Utc::now() - chrono::Duration::seconds(200))
+            .format("%Y-%m-%d %H:%M:%S")
+            .to_string();
+        agent
+            .store
+            .lock_ok()
+            .conn()
+            .execute(
+                "UPDATE nodes SET heartbeat_at = ?1 WHERE id = 'node-local'",
+                [at.as_str()],
+            )
+            .expect("age the heartbeat");
+        assert_eq!(agent.cfg.cluster.stale_after_secs, 300);
+        let output = dispatch(&mut ctx, "/fleet", "list")
+            .expect("fleet is shared")
+            .text;
+        assert!(output.contains("node-local"), "{output}");
+        assert!(output.contains("worker-host"), "{output}");
+        assert!(
+            output.contains("— fresh"),
+            "200 s is not stale at 300 s: {output}"
+        );
+        let forget = dispatch(&mut ctx, "/fleet", "forget node-local confirm")
+            .expect("fleet forget is shared")
+            .text;
+        assert!(forget.contains("still heartbeating"), "{forget}");
+        let unconfirmed = dispatch(&mut ctx, "/fleet", "apply config")
+            .expect("fleet apply is shared")
+            .text;
+        assert!(unconfirmed.contains("confirm"), "{unconfirmed}");
+        let refused = dispatch(&mut ctx, "/fleet", "sync unknown-node")
+            .expect("fleet sync is shared")
+            .text;
+        assert!(refused.contains("unknown registered node"), "{refused}");
+        let apply = dispatch(&mut ctx, "/fleet", "apply")
+            .expect("fleet apply is shared")
+            .text;
+        assert!(apply.contains("applied"), "{apply}");
+    }
+
     /// `/crons` is canonical and `/cron` is its alias, so all five
     /// list-shaped commands are plural (`/tasks /subagents /shells
     /// /monitors /crons`). Both spellings must answer IDENTICALLY —
@@ -8838,6 +9232,75 @@ mod tests {
     /// the failure where someone believes they left plan mode).
     fn catalog(loc: &str, key: &str) -> String {
         veles_core::i18n::translate(loc, key).unwrap_or_else(|| key.to_string())
+    }
+
+    /// `/export` writes through the shared exporter into the private
+    /// exports directory — never a predictable world-readable temp file —
+    /// keeps the tool round, and says on a connector that the file is on
+    /// the gateway host.
+    #[test]
+    fn export_writes_a_private_file_with_the_tool_round() {
+        let (home, _env) = veles_core::testenv::scratch_home();
+        let a = veles_core::testenv::mock_agent("http://127.0.0.1:0/unused", "exp-a");
+        {
+            let st = a.store.lock_ok();
+            st.append_message("exp-a", &veles_core::providers::ChatMessage::user("run ls"))
+                .unwrap();
+            let mut call = veles_core::providers::ChatMessage::assistant("", None);
+            call.tool_calls = Some(serde_json::json!([{
+                "id": "c1", "type": "function",
+                "function": {"name": "terminal", "arguments": "{\"cmd\":\"ls\"}"}
+            }]));
+            st.append_message("exp-a", &call).unwrap();
+            st.append_message(
+                "exp-a",
+                &veles_core::providers::ChatMessage::tool_result("c1", "terminal", "a b".into()),
+            )
+            .unwrap();
+        }
+        let mut local = CommandCtx {
+            agent: &a,
+            surface: Surface::Tui,
+            history: None,
+            turn_live: false,
+            principal: None,
+        };
+        let out = dispatch(&mut local, "/export", "").expect("claimed").text;
+        let path = out
+            .split("→ ")
+            .nth(1)
+            .and_then(|p| p.strip_suffix(')'))
+            .unwrap_or_else(|| panic!("no path in {out}"));
+        let path = std::path::Path::new(path);
+        assert!(path.starts_with(home.path().join("exports")), "{out}");
+        let md = std::fs::read_to_string(path).unwrap();
+        assert!(
+            md.contains("Tool call: terminal") && md.contains("Tool result: terminal"),
+            "{md}"
+        );
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt as _;
+            assert_eq!(
+                std::fs::metadata(path).unwrap().permissions().mode() & 0o777,
+                0o600
+            );
+        }
+        let mut remote = CommandCtx {
+            agent: &a,
+            surface: Surface::Gateway,
+            history: None,
+            turn_live: false,
+            principal: None,
+        };
+        let out = dispatch(&mut remote, "/export", "json")
+            .expect("claimed")
+            .text;
+        assert!(out.contains("on the gateway host"), "{out}");
+        let out = dispatch(&mut remote, "/export", "xml")
+            .expect("claimed")
+            .text;
+        assert!(out.starts_with("usage:"), "{out}");
     }
 
     /// `/locale <id>` on a gateway-served surface sets THIS SESSION's

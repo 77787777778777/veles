@@ -13,4 +13,4 @@ categories = ["development-tools::ffi"]
 [dependencies]
 # The version is what crates.io resolves once this is published; "0.1"
 # keeps it right across patch releases and fails the build at 0.2.
-veles-plugin-abi = { path = "../veles-plugin-abi", version = "0.1" }
+veles-plugin-abi = { path = "../veles-plugin-abi", version = "0.2" }

@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset ml {%1$s %2$s failed: %3$s} {%1$s %2$s പരാജയപ്പെട്ടു: %3$s}
 ::msgcat::mcset ml {%1$s %2$s over ssh…} {%1$s %2$s ssh വഴി…}
 ::msgcat::mcset ml {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset ml {%1$s (%2$s waiting)} {%1$s (%2$s കാത്തിരിക്കുന്നു)}
 ::msgcat::mcset ml {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  ചിന്തനം %3$s}
 ::msgcat::mcset ml {%1$s = %2$s here} {%1$s = %2$s ഇവിടെ}
 ::msgcat::mcset ml {%1$s NOT saved: %2$s} {%1$s സേവ് ചെയ്തില്ല: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset ml {%1$s every cron job on %2$s?} {%1$s ചെയ്യണോ %2$s-ലെ എല്ലാ ക്രോൺ ജോബുകളും?}
 ::msgcat::mcset ml {%1$s failed: %2$s} {%1$s പരാജയപ്പെട്ടു: %2$s}
 ::msgcat::mcset ml {%1$s in / %2$s out / %3$s calls} {%1$s അകത്തേക്ക് / %2$s പുറത്തേക്ക് / %3$s കോളുകൾ}
+::msgcat::mcset ml {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s എന്നത് നോഡ് %2$s ആണ്, %3$s അല്ല. Edit… എന്നതിൽ അതിന്റെ നോഡ് ഐഡി ശരിയാക്കുക.}
 ::msgcat::mcset ml {%1$s is not a whole number} {%1$s ഒരു പൂർണ്ണസംഖ്യയല്ല}
+::msgcat::mcset ml {%1$s is reachable (%2$s ms).} {%1$s ലഭ്യമാണ് (%2$s ms).}
 ::msgcat::mcset ml {%1$s is set to something this box cannot edit (%2$s)} {%1$s എന്നത് ഈ കമ്പ്യൂട്ടറിന് എഡിറ്റ് ചെയ്യാൻ പറ്റാത്ത ഒന്നാണ് (%2$s)}
+::msgcat::mcset ml {%1$s is unreachable: %2$s} {%1$s ലഭ്യമല്ല: %2$s}
 ::msgcat::mcset ml {%1$s of %2$s characters} {%1$s/%2$s അക്ഷരങ്ങൾ}
 ::msgcat::mcset ml {%1$s of %2$s sessions} {%2$s-ൽ %1$s സെഷനുകൾ}
 ::msgcat::mcset ml {%1$s of %2$s skills reach the prompt} {%1$s/%2$s സ്കിലുകൾ പ്രോംപ്റ്റിലെത്തുന്നു}
 ::msgcat::mcset ml {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s (%2$s): %3$d ശരി, %4$d പരാജയം}
+::msgcat::mcset ml {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s ഒരു ക്ലസ്റ്റർ നോഡ് ഐഡന്റിറ്റിയും റിപ്പോർട്ട് ചെയ്യുന്നില്ല, അതിനാൽ ഇത് %2$s ആണെന്ന് പരിശോധിച്ചുറപ്പിക്കാനാവില്ല.}
+::msgcat::mcset ml {%1$s sync failed: %2$s} {%1$s സിങ്ക് പരാജയപ്പെട്ടു: %2$s}
+::msgcat::mcset ml {%1$s sync with %2$s (%3$s)} {%1$s, %2$s-മായുള്ള സിങ്ക് (%3$s)}
+::msgcat::mcset ml {%1$s sync: %2$s} {%1$s സിങ്ക്: %2$s}
 ::msgcat::mcset ml {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset ml {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · പോകാൻ Enter, അടയ്ക്കാൻ Esc}
 ::msgcat::mcset ml {%1$s — revision r%2$s} {%1$s — റിവിഷൻ r%2$s}
 ::msgcat::mcset ml {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset ml {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset ml {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset ml {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset ml {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: അതിന്റെ ഗേറ്റ്വേ മെമ്മറിയിൽ സൂക്ഷിക്കുന്ന %3$s വരികളിൽ അവസാനത്തെ %2$s, ആ നോഡിൽ രഹസ്യങ്ങൾ മറച്ചിരിക്കുന്നു.}
 ::msgcat::mcset ml {%d MCP server(s) configured} {%d MCP സെർവർ ക്രമീകരിച്ചു}
 ::msgcat::mcset ml {%d entries} {%d എൻട്രികൾ}
+::msgcat::mcset ml {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {എക്സ്റ്റൻഷന്റെ %d ഫയൽ(കൾ) അവലോകനം ചെയ്തതുപോലെ കൃത്യമായി എഴുതപ്പെടും. പ്രിവ്യൂവിന് ശേഷം അവയിലേതെങ്കിലും മാറിയിട്ടുണ്ടെങ്കിൽ ഒന്നും എഴുതപ്പെടില്ല. കമ്മിറ്റോ പുഷോ PR-ഉം നടക്കില്ല.}
 ::msgcat::mcset ml {%d handler(s) registered} {%d ഹാൻഡ്ലർ രജിസ്റ്റർ ചെയ്തു}
 ::msgcat::mcset ml {%d identities · %d users} {%d ഐഡന്റിറ്റികൾ · %d ഉപയോക്താക്കൾ}
 ::msgcat::mcset ml {%d models — pick one from the list or type a name.} {%d മോഡലുകൾ — പട്ടികയിൽ നിന്ന് ഒന്ന് തിരഞ്ഞെടുക്കുക, അല്ലെങ്കിൽ ഒരു പേര് ടൈപ്പ് ചെയ്യുക.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset ml {%d shown} {%d കാണിക്കുന്നു}
 ::msgcat::mcset ml {%s %s%%} {%s %s%%}
 ::msgcat::mcset ml {%s (%s)} {%s (%s)}
+::msgcat::mcset ml {%s (referral)} {%s (റഫറൽ)}
+::msgcat::mcset ml {%s (stale)} {%s (കാലഹരണപ്പെട്ടത്)}
 ::msgcat::mcset ml {%s (this session)} {%s (ഈ സെഷൻ)}
 ::msgcat::mcset ml {%s GB free of %s GB} {%s GB ഒഴിവ്, ആകെ %s GB}
 ::msgcat::mcset ml {%s already exists — open it from the list} {%s ഇതിനകം നിലവിലുണ്ട് — പട്ടികയിൽ നിന്ന് തുറക്കുക}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset ml {%s comes from config.toml [acl] — edit there} {%s എന്നത് config.toml-ലെ [acl] വിഭാഗത്തിൽ നിന്നാണ് — അവിടെ എഡിറ്റ് ചെയ്യുക}
 ::msgcat::mcset ml {%s config change(s) wait for you — /configsync} {%s കോൺഫിഗ് മാറ്റം(ങ്ങൾ) നിങ്ങളെ കാത്തിരിക്കുന്നു — /configsync}
 ::msgcat::mcset ml {%s did not become healthy within 30s} {%s 30 സെക്കൻഡിനുള്ളിൽ പ്രവർത്തനക്ഷമമായില്ല}
+::msgcat::mcset ml {%s done} {%s പൂർത്തിയായി}
 ::msgcat::mcset ml {%s failed: %s} {%s പരാജയപ്പെട്ടു: %s}
 ::msgcat::mcset ml {%s is already split} {%s ഇതിനകം വിഭജിച്ചിരിക്കുന്നു}
 ::msgcat::mcset ml {%s is the language in use — pick another one to swap with} {%s ഇപ്പോൾ ഉപയോഗത്തിലുള്ള ഭാഷയാണ് — മാറ്റാനായി മറ്റൊരു ഭാഷ തിരഞ്ഞെടുക്കുക}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset ml {%s opens the command palette in %s.} {%s എന്നത് %s-ൽ കമാൻഡ് പാലറ്റ് തുറക്കുന്നു.}
 ::msgcat::mcset ml {%s session(s)} {%s സെഷനുകൾ}
 ::msgcat::mcset ml {%s skill(s):} {%s സ്കിൽ(കൾ):}
+::msgcat::mcset ml {%s standing grants} {%s സ്ഥിര അനുമതികൾ}
 ::msgcat::mcset ml {%s takes no completable arguments} {%s-ന് പൂർത്തിയാക്കാവുന്ന ആർഗ്യുമെന്റുകളൊന്നുമില്ല}
 ::msgcat::mcset ml {%s takes on or off} {%s-ന് on അല്ലെങ്കിൽ off വേണം}
 ::msgcat::mcset ml {%s —} {%s —}
+::msgcat::mcset ml {%s — changes data, asks to confirm} {%s — ഡേറ്റ മാറ്റുന്നു, സ്ഥിരീകരണം ചോദിക്കുന്നു}
 ::msgcat::mcset ml {%s — deleted; History… can restore it} {%s — ഇല്ലാതാക്കി; ചരിത്രം… ഉപയോഗിച്ച് തിരികെ കൊണ്ടുവരാം}
 ::msgcat::mcset ml {%s — new: type, then Save} {%s — പുതിയത്: ടൈപ്പ് ചെയ്യുക, തുടർന്ന് സേവ് ചെയ്യുക}
 ::msgcat::mcset ml {%s — not attached; press Attach in the Instances tab} {%s — അറ്റാച്ച് ചെയ്തിട്ടില്ല; Instances ടാബിൽ Attach അമർത്തുക}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset ml {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} [acl] വിഭാഗമില്ലാതെ സജീവമാണ്: .env-ലെ %{var} ബോട്ടുമായി ആർക്ക് സംസാരിക്കാമെന്ന് പറയുന്നതുവരെ, അതിലേക്ക് എത്തുന്ന ആരെയും ഉടമയായി കണക്കാക്കും, എല്ലാ ടൂളുകളോടും കൂടി}
 ::msgcat::mcset ml (%{route}) (%{route})
 ::msgcat::mcset ml {(CLI redraws automatically)} {(CLI സ്വയം വീണ്ടും വരയ്ക്കുന്നു)}
+::msgcat::mcset ml {(binary; not publishable)} {(ബൈനറി; പ്രസിദ്ധീകരിക്കാനാവില്ല)}
 ::msgcat::mcset ml {(clipboard empty or no clipboard tool)} {(ക്ലിപ്പ്ബോർഡ് ശൂന്യം അല്ലെങ്കിൽ ക്ലിപ്പ്ബോർഡ് ടൂൾ ഇല്ല)}
 ::msgcat::mcset ml (deleted) (ഇല്ലാതാക്കി)
 ::msgcat::mcset ml (empty) (ശൂന്യം)
 ::msgcat::mcset ml {(no sessions)} (സെഷനുകളൊന്നുമില്ല)
+::msgcat::mcset ml {(not a memsync peer of this gateway: config is not synced with it)} {(ഈ ഗേറ്റ്വേയുടെ memsync പിയർ അല്ല: അതുമായി കോൺഫിഗ് സിങ്ക് ചെയ്യുന്നില്ല)}
 ::msgcat::mcset ml {(nothing to reload — read from disk per use)} {(വീണ്ടും ലോഡ് ചെയ്യാൻ ഒന്നുമില്ല — ഓരോ ഉപയോഗത്തിലും ഡിസ്കിൽ നിന്ന് വായിക്കുന്നു)}
 ::msgcat::mcset ml {(retrying last prompt…)} {(അവസാന പ്രോംപ്റ്റ് വീണ്ടും ശ്രമിക്കുന്നു…)}
 ::msgcat::mcset ml {(route did not resolve: %{e})} {(റൂട്ട് പരിഹരിച്ചില്ല: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset ml {/url needs a number from /urls} {/url-ന് /urls-ൽ നിന്ന് ഒരു നമ്പർ വേണം}
 ::msgcat::mcset ml {/whois needs a nick} {/whois-ന് ഒരു നിക്ക് വേണം}
 ::msgcat::mcset ml {; could not save the cleared return view: %s} {; മായ്ച്ച മടക്ക കാഴ്ച സേവ് ചെയ്യാനായില്ല: %s}
+::msgcat::mcset ml {; shadows bundled} {; ബണ്ടിൽ ചെയ്തതിന് മുൻതൂക്കം}
+::msgcat::mcset ml {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {ഒരു കോൺഫിഗ് ഓഫർ ക്രമീകരണങ്ങൾ മാറ്റാം, ഒരു വോൾട്ട് ഓഫർ രഹസ്യങ്ങൾ ലയിപ്പിക്കും; സുരക്ഷാ വിഭാഗത്തിലെ മാറ്റങ്ങൾ ഇപ്പോഴും ഉടമയ്ക്കായി കാത്തിരിക്കും.}
 ::msgcat::mcset ml {A failing plugin may drop hooks mid-turn.} {പരാജയപ്പെടുന്ന പ്ലഗിൻ ടേണിനിടയിൽ ഹുക്കുകൾ ഒഴിവാക്കിയേക്കാം.}
 ::msgcat::mcset ml {A local server: no key is needed unless you set one up.} {ഒരു ലോക്കൽ സെർവർ: നിങ്ങൾ ഒന്ന് സജ്ജീകരിച്ചില്ലെങ്കിൽ key ആവശ്യമില്ല.}
+::msgcat::mcset ml {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {ഒരു ഒപ്പിട്ട റിലീസ് പ്രീഫ്ലൈറ്റിന് ശേഷം മാത്രമേ സ്റ്റേജ് ചെയ്യൂ. പുനരാരംഭിക്കൽ/പരിശോധന, തുടരൽ, റോൾബാക്ക് എന്നിവ വെവ്വേറെ പ്രവൃത്തികളാണ്. ആരോഗ്യകരമായ ഒരു പ്രോസസ് അവലോകനം ചെയ്ത കൃത്യമായ സോഴ്സ് റിവിഷൻ റിപ്പോർട്ട് ചെയ്യണം.}
 ::msgcat::mcset ml {A value is stored for %s — leave this empty to keep it.} {%s-ന് ഒരു മൂല്യം സൂക്ഷിച്ചിട്ടുണ്ട് — അത് നിലനിർത്താൻ ഇത് ശൂന്യമായി വിടുക.}
 ::msgcat::mcset ml {ACL: ban mask} {ACL: മാസ്ക് നിരോധിക്കുക}
 ::msgcat::mcset ml {ACL: grant admin} {ACL: admin അനുവദിക്കുക}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset ml {ACL: grant user} {ACL: user അനുവദിക്കുക}
 ::msgcat::mcset ml {ACL: revoke} {ACL: പിൻവലിക്കുക}
 ::msgcat::mcset ml {ACME account email} {ACME അക്കൗണ്ട് ഇമെയിൽ}
+::msgcat::mcset ml {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI സഹായം നാല് നിലകളിൽ പ്രവർത്തിക്കുന്നു: ഒരു ഡിസൈൻ ചോദ്യം ചോദിക്കുക (ഫയൽ ആവശ്യമില്ല), ഈ ഫയൽ മാറ്റുക, ഈ എക്സ്റ്റൻഷന്റെ ഒന്നിലധികം ഫയലുകൾ മാറ്റുക, അല്ലെങ്കിൽ നിലവിലെ ഡയഗ്നോസ്റ്റിക്സ് വിശദീകരിക്കുക. New extension-ന് അതിന്റെ ഉദ്ദേശ്യത്തിൽ നിന്ന് ഒരു മുഴുവൻ എക്സ്റ്റൻഷനും ജനറേറ്റ് ചെയ്യാനും കഴിയും. ഓരോ അഭ്യർത്ഥനയും ടൂളുകളില്ലാതെ അയക്കുന്നു, രജിസ്റ്റർ ചെയ്ത രഹസ്യമോ ക്രെഡൻഷ്യലിന്റെ രൂപത്തിലുള്ള മൂല്യമോ ഉണ്ടെങ്കിൽ അത് നിരസിക്കുന്നു; മാറ്റങ്ങൾ ഡിഫുകളായി കാണിക്കുന്നു, നിങ്ങൾ പ്രയോഗിക്കുമ്പോൾ മാത്രം എഴുതുന്നു. ആദ്യം ഒരു എക്സ്റ്റൻഷൻ ഡിസൈൻ ചോദിക്കുക; ഇല്ലാത്ത API തിരിച്ചറിഞ്ഞതിന് ശേഷം മാത്രം കോർ പാച്ച് അഭ്യർത്ഥിക്കുക.}
+::msgcat::mcset ml {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI സഹായം ഉപയോക്തൃ എക്സ്റ്റൻഷനുകൾ മാത്രം എഡിറ്റ് ചെയ്യുന്നു, ഈ ഫയൽ അവയിൽ ഒന്നിന്റെ ഭാഗമല്ല. മിക്ക മാറ്റങ്ങളും അപ്ഗ്രേഡുകളെ അതിജീവിക്കുന്ന ഒരു എക്സ്റ്റൻഷനിൽ (ഒരു ഹുക്ക്, ടൂൾ, സർവീസ് ഓവർറൈഡ് അല്ലെങ്കിൽ പ്രൊവൈഡർ ഡ്രൈവർ) ഒതുങ്ങും; എക്സ്റ്റൻഷൻ API പ്രകടിപ്പിക്കാനാവാത്തതിനാണ് കോർ പാച്ച്. പകരം ഈ മാറ്റത്തിനായി ഒരു പുതിയ എക്സ്റ്റൻഷൻ ഉണ്ടാക്കണോ? എഴുതുന്നതിന് മുമ്പ് അതിന്റെ ഫയലുകൾ പ്രിവ്യൂ ചെയ്യും.}
+::msgcat::mcset ml {AI assist…} {AI സഹായം…}
+::msgcat::mcset ml {AI extension assistance} {എക്സ്റ്റൻഷൻ AI സഹായം}
 ::msgcat::mcset ml {API calls} {API കോളുകൾ}
+::msgcat::mcset ml {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {Anthropic റഫറലിൽ നിന്നുള്ള API ക്രെഡിറ്റുകൾ നിങ്ങൾ Max അല്ലെങ്കിൽ Ultra വാങ്ങിയാൽ മാത്രമേ ലഭിക്കൂ. ആ സബ്സ്ക്രിപ്ഷൻ ലോഗിനായോ API പ്രാമാണീകരണത്തിനായോ ഉപയോഗിക്കുന്നത് വെലെസ് പിന്തുണയ്ക്കുന്നില്ല.}
 ::msgcat::mcset ml {API key (hidden)} {API key (മറച്ചത്)}
 ::msgcat::mcset ml {API key env var name} {API കീയുടെ env var പേര്}
+::msgcat::mcset ml {API reference} {API റഫറൻസ്}
+::msgcat::mcset ml {Abandon untouched operation} {സ്പർശിക്കാത്ത പ്രവർത്തനം ഉപേക്ഷിക്കുക}
 ::msgcat::mcset ml {Access control} {ആക്സസ് നിയന്ത്രണം}
 ::msgcat::mcset ml {Access control (ACL)} {ആക്സസ് നിയന്ത്രണം (ACL)}
 ::msgcat::mcset ml Add ചേർക്കുക
 ::msgcat::mcset ml {Add MCP server} {MCP സെർവർ ചേർക്കുക}
 ::msgcat::mcset ml {Add instance} {ഇൻസ്റ്റൻസ് ചേർക്കുക}
 ::msgcat::mcset ml {Add server…} {സെർവർ ചേർക്കുക…}
+::msgcat::mcset ml {Adds selected extension sources. Review the branch diff and checks before merging.} {തിരഞ്ഞെടുത്ത എക്സ്റ്റൻഷൻ സ്രോതസ്സുകൾ ചേർക്കുന്നു. ലയിപ്പിക്കുന്നതിന് മുമ്പ് ബ്രാഞ്ച് ഡിഫ്റ്റും പരിശോധനകളും അവലോകനം ചെയ്യുക.}
 ::msgcat::mcset ml Add… ചേർക്കുക…
 ::msgcat::mcset ml {Agent & engine} {ഏജന്റും എഞ്ചിനും}
 ::msgcat::mcset ml {Alias %s} {അലിയാസ് %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset ml {Applies to} ബാധകം
 ::msgcat::mcset ml Apply പ്രയോഗിക്കുക
 ::msgcat::mcset ml {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Apply നടന്നുകൊണ്ടിരിക്കുന്ന സെഷനിൽ മാത്രമാണ് മാറ്റം വരുത്തുന്നത്. Copy TOML ഒട്ടിക്കാനുള്ള ബ്ലോക്കുകൾ തരും. Save globally അവയെ config.toml-ലേക്ക് കൂട്ടിച്ചേർക്കും — failover വിഭാഗങ്ങൾ മാത്രമേ തൊടപ്പെടുകയുള്ളൂ, മറ്റെല്ലാ വരികളും കമന്റുകളും മാറ്റമില്ലാതെ നിലനിൽക്കും, പഴയ ഫയൽ config.toml.bak ആയി സൂക്ഷിക്കും.}
+::msgcat::mcset ml {Apply proposal…} {നിർദ്ദേശം പ്രയോഗിക്കുക…}
+::msgcat::mcset ml {Apply received} {ലഭിച്ചത് പ്രയോഗിക്കുക}
+::msgcat::mcset ml {Apply this AI proposal?} {ഈ AI നിർദ്ദേശം പ്രയോഗിക്കണോ?}
+::msgcat::mcset ml {Apply this change set?} {ഈ മാറ്റസെറ്റ് പ്രയോഗിക്കണോ?}
 ::msgcat::mcset ml {Apply to session} {സെഷനിൽ പ്രയോഗിക്കുക}
+::msgcat::mcset ml {Apply what this node received:} {ഈ നോഡ് സ്വീകരിച്ചത് പ്രയോഗിക്കുക:}
 ::msgcat::mcset ml {Approval needed} {അനുമതി ആവശ്യമാണ്}
 ::msgcat::mcset ml Apps ആപ്പുകൾ
 ::msgcat::mcset ml Archive ആർക്കൈവ്
 ::msgcat::mcset ml {Archive SHA-256} {ആർക്കൈവ് SHA-256}
+::msgcat::mcset ml Ask ചോദിക്കുക
+::msgcat::mcset ml {Ask a design question} {ഒരു ഡിസൈൻ ചോദ്യം ചോദിക്കുക}
+::msgcat::mcset ml {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {ഒരു എക്സ്റ്റൻഷൻ എങ്ങനെ നിർമ്മിക്കാമെന്ന് ചോദിക്കുക: ഏത് അതിർത്തി, ഏത് ഭാഷ, ഏത് API. സോഴ്സ് അയക്കുന്നില്ല, ഒന്നും എഴുതാനും കഴിയില്ല.}
 ::msgcat::mcset ml {Ask the agent to change it} {ഇത് മാറ്റാൻ ഏജന്റിനോട് ആവശ്യപ്പെടുക}
+::msgcat::mcset ml {Asking %s…} {%s-നോട് ചോദിക്കുന്നു…}
 ::msgcat::mcset ml {Asking the provider for its models…} {പ്രൊവൈഡറോട് അതിന്റെ മോഡലുകൾ ചോദിക്കുന്നു…}
 ::msgcat::mcset ml Attach അറ്റാച്ച്
 ::msgcat::mcset ml {Attach to the next message} {അടുത്ത സന്ദേശത്തിൽ ചേർക്കുക}
+::msgcat::mcset ml {Author guide} {രചയിതാവിന്റെ ഗൈഡ്}
+::msgcat::mcset ml {Automatically discovered from the attached gateway's cluster registry.} {അറ്റാച്ച് ചെയ്ത ഗേറ്റ്വേയുടെ ക്ലസ്റ്റർ രജിസ്ട്രിയിൽ നിന്ന് സ്വയം കണ്ടെത്തുന്നു.}
 ::msgcat::mcset ml Back പിന്നോട്ട്
 ::msgcat::mcset ml {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {തിരികെ മുകളിലുള്ളതിനെ അടയ്ക്കുന്നു: ഒരു മെനു, സെഷൻ പട്ടിക, ഒരു വിൻഡോ. ഒന്നും തുറന്നിട്ടില്ലെങ്കിൽ veles പശ്ചാത്തലത്തിലേക്ക് പോയി പ്രവർത്തനം തുടരും.}
 ::msgcat::mcset ml {Base URL} {Base URL}
+::msgcat::mcset ml {Base branch} {അടിസ്ഥാന ബ്രാഞ്ച്}
 ::msgcat::mcset ml {Bot token (hidden)} {ബോട്ട് ടോക്കൺ (മറച്ചത്)}
+::msgcat::mcset ml Branch ബ്രാഞ്ച്
+::msgcat::mcset ml {Branch and commit prepared; nothing has been pushed} {ബ്രാഞ്ചും കമിറ്റും തയ്യാറാക്കി; ഒന്നും പുഷ് ചെയ്തിട്ടില്ല}
+::msgcat::mcset ml {Branch pushed and verified on origin} {ബ്രാഞ്ച് പുഷ് ചെയ്ത് origin-ൽ സ്ഥിരീകരിച്ചു}
 ::msgcat::mcset ml {Browse sessions} {സെഷനുകൾ ബ്രൗസ് ചെയ്യുക}
+::msgcat::mcset ml {Build manifest + preflight} {ബിൽഡ് മാനിഫെസ്റ്റ് + പ്രീഫ്ലൈറ്റ്}
+::msgcat::mcset ml {Build: veles %1$s, revision %2$s (%3$s %4$s)} {ബിൽഡ്: veles %1$s, റിവിഷൻ %2$s (%3$s %4$s)}
 ::msgcat::mcset ml {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e വരിയുടെ അറ്റങ്ങൾ · C-b/C-f അക്ഷരം · M-b/M-f വാക്ക് · C-k EOL വരെ ഇല്ലാതാക്കുക · C-y yank · M-w പകർത്തുക · C-w മേഖല ഇല്ലാതാക്കുക · C-space മാർക്ക് സജ്ജമാക്കുക · C-/ പഴയപടിയാക്കുക}
 ::msgcat::mcset ml {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g എല്ലാം നിർത്തുന്നു · C-j പുതിയ വരി · M-p/M-n ചരിത്രം · Tab പൂർത്തീകരണം}
+::msgcat::mcset ml {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s കോറുകൾ, ലോഡ് %2$s / %3$s / %4$s (കോറുകളുടെ %5$s%%)}
 ::msgcat::mcset ml Cancel റദ്ദാക്കുക
+::msgcat::mcset ml {Cancel task} {ടാസ്ക് റദ്ദാക്കുക}
+::msgcat::mcset ml {Cancel task %1$s? This cannot be undone.} {%1$s ടാസ്ക് റദ്ദാക്കണോ? ഇത് പഴയപടിയാക്കാൻ പറ്റില്ല.}
+::msgcat::mcset ml {Cannot verify that %1$s is node %2$s: %3$s} {%1$s നോഡ് %2$s ആണെന്ന് പരിശോധിച്ചുറപ്പിക്കാനാവില്ല: %3$s}
 ::msgcat::mcset ml Capabilities കഴിവുകൾ
 ::msgcat::mcset ml {Change my app “%s” (%s): } {എന്റെ ആപ്പ് “%s” (%s) മാറ്റുക: }
+::msgcat::mcset ml {Change this extension's files} {ഈ എക്സ്റ്റൻഷന്റെ ഫയലുകൾ മാറ്റുക}
+::msgcat::mcset ml {Change this file} {ഈ ഫയൽ മാറ്റുക}
 ::msgcat::mcset ml Change… മാറ്റുക…
 ::msgcat::mcset ml {Channels (e.g. #veles #dev)} {ചാനലുകൾ (ഉദാ. #veles #dev)}
 ::msgcat::mcset ml Chat ചാറ്റ്
 ::msgcat::mcset ml {Chat — not attached; press Attach in the Instances tab} {ചാറ്റ് — അറ്റാച്ച് ചെയ്തിട്ടില്ല; Instances ടാബിൽ Attach അമർത്തുക}
 ::msgcat::mcset ml {Check (lsp)} {പരിശോധിക്കുക (lsp)}
+::msgcat::mcset ml {Check again} {വീണ്ടും പരിശോധിക്കുക}
+::msgcat::mcset ml {Check files} {ഫയലുകൾ പരിശോധിക്കുക}
 ::msgcat::mcset ml Checkpoints ചെക്ക്പോയിന്റുകൾ
 ::msgcat::mcset ml {Checkpoints (undo)} {ചെക്ക്പോയിന്റുകൾ (പഴയപടിയാക്കൽ)}
+::msgcat::mcset ml {Checks and next steps} {പരിശോധനകളും അടുത്ത ഘട്ടങ്ങളും}
+::msgcat::mcset ml {Checks run} {പരിശോധനകൾ നടത്തി}
 ::msgcat::mcset ml {Choose BUNDLE-INFO.json in the managed install-sources directory} {നിയന്ത്രിത ഇൻസ്റ്റാൾ-സ്രോതസ്സ് ഡയറക്ടറിയിൽ BUNDLE-INFO.json തിരഞ്ഞെടുക്കുക}
 ::msgcat::mcset ml {Choose a failover script} {ഒരു ഫെയ്‌ലോവർ സ്ക്രിപ്റ്റ് തിരഞ്ഞെടുക്കുക}
 ::msgcat::mcset ml {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {പരിശോധിക്കാൻ ഒരു മൊഡ്യൂളോ പ്രോസസ് പ്ലഗിനോ തിരഞ്ഞെടുക്കുക. കണ്ടെത്തൽ plugin.toml മാത്രമേ വായിക്കൂ; ഒരു ഘടകം തിരഞ്ഞെടുക്കുമ്പോൾ അതിന്റെ പ്രഖ്യാപിച്ച മാനിഫെസ്റ്റും ഓപ്ഷനുകളും അഭ്യർത്ഥിക്കപ്പെടും. ഈ ഘട്ടം തുറക്കുന്നതിലൂടെ ഒന്നും ഇൻസ്റ്റാൾ ചെയ്യപ്പെടില്ല.}
+::msgcat::mcset ml {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {ഒരു പേരും ഉദ്ദേശ്യവും ഭാഷയും തിരഞ്ഞെടുത്ത ശേഷം ഫയലുകൾ കൃത്യമായി പ്രിവ്യൂ ചെയ്യുക. ഒന്നും എഴുതിയിട്ടില്ല.}
 ::msgcat::mcset ml {Choose a user unit or a system service for the server profile. Neither starts a service.} {സെർവർ പ്രൊഫൈലിനായി ഒരു യൂസർ യൂണിറ്റോ സിസ്റ്റം സർവീസോ തിരഞ്ഞെടുക്കുക. രണ്ടും ഒരു സർവീസും ആരംഭിക്കുന്നില്ല.}
 ::msgcat::mcset ml {Choose core bundle…} {കോർ ബണ്ടിൽ തിരഞ്ഞെടുക്കുക…}
 ::msgcat::mcset ml {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {ഇൻസ്റ്റലേഷൻ രൂപം തിരഞ്ഞെടുക്കുക. ലോക്കൽ പ്രൊഫൈലുകൾ അവലോകനം ചെയ്ത ഇൻസ്റ്റാളർ ഉപയോഗിക്കുന്നു. സിസ്റ്റം, കണ്ടെയ്നർ പ്രൊഫൈലുകൾ വ്യക്തമായ CLI കൈമാറ്റത്തിനായി ഒപ്പിട്ട അഭ്യർത്ഥന തയ്യാറാക്കുന്നു. NixOS മോഡ്യൂൾ സ്നിപ്പറ്റ് മാത്രം പുറപ്പെടുവിക്കുന്നു.}
+::msgcat::mcset ml {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {ഏറ്റവും ഇടുങ്ങിയ അതിർത്തി തിരഞ്ഞെടുക്കുക: ഒരു ടൂൾ മോഡലിന് വിളിക്കാവുന്ന കഴിവ് ചേർക്കുന്നു; ഒരു ഹുക്ക് ലൈഫ്സൈക്കിൾ ഇവന്റ് നിരീക്ഷിക്കുകയോ തിരുത്തുകയോ ചെയ്യുന്നു; ഒരു സർവീസോ ഓവർറൈഡ് പോയിന്റോ ഒരു പേരിട്ട തീരുമാനത്തെ ചുറ്റിക്കെട്ടുന്നു; ഒരു പ്രൊവൈഡർ ഡ്രൈവർ പ്രൊവൈഡർ വയർ ചേർക്കുന്നു; പ്രസിദ്ധീകരിച്ച എക്സ്റ്റൻഷൻ API-യ്ക്ക് മാറ്റം പറയാൻ കഴിയാത്തപ്പോൾ മാത്രമേ കോർ പാച്ച് ഉചിതമാകൂ.}
 ::msgcat::mcset ml {Choose typed container-host options JSON} {ടൈപ്പ് ചെയ്ത കണ്ടെയ്നർ-ഹോസ്റ്റ് ഓപ്ഷനുകൾ JSON തിരഞ്ഞെടുക്കുക}
 ::msgcat::mcset ml {Choose typed container-host options…} {ടൈപ്പ് ചെയ്ത കണ്ടെയ്നർ-ഹോസ്റ്റ് ഓപ്ഷനുകൾ തിരഞ്ഞെടുക്കുക…}
 ::msgcat::mcset ml Clear മായ്ക്കുക
 ::msgcat::mcset ml {Clear composer} {കമ്പോസർ മായ്ക്കുക}
 ::msgcat::mcset ml {Clear override} {ഓവർറൈഡ് മായ്ക്കുക}
 ::msgcat::mcset ml {Click the picture where you would click on the page.} {പേജിൽ നിങ്ങൾ ക്ലിക്ക് ചെയ്യുമായിരുന്ന ഇടത്ത് ചിത്രത്തിൽ ക്ലിക്ക് ചെയ്യുക.}
+::msgcat::mcset ml {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {%1$s ക്ലോൺ ചെയ്യുക, %2$s സൃഷ്ടിക്കുക, %3$s-ന്റെ അവലോകനം ചെയ്ത ഫയലുകൾ മാത്രം %4$s/<extension>/ എന്നതിന് കീഴിൽ പകർത്തുക. ഫയലുകൾ പരിശോധിച്ച് കമ്മിറ്റ് ചെയ്യും. ഇപ്പോൾ പുഷ് ചെയ്യുകയോ പുൾ റിക്വസ്റ്റ് ഉണ്ടാക്കുകയോ ചെയ്യില്ല.}
 ::msgcat::mcset ml Close അടയ്ക്കുക
 ::msgcat::mcset ml {Close (Esc)} {അടയ്ക്കുക (Esc)}
 ::msgcat::mcset ml {Close the setup wizard? Nothing has been written yet.} {സെറ്റപ്പ് വിസാർഡ് അടയ്ക്കണോ? ഇതുവരെ ഒന്നും എഴുതിയിട്ടില്ല.}
 ::msgcat::mcset ml {Code actions} {കോഡ് പ്രവർത്തനങ്ങൾ}
+::msgcat::mcset ml Commit കമിറ്റ്
+::msgcat::mcset ml {Commit ready for review. Push is a separate action.} {കമിറ്റ് അവലോകനത്തിന് തയ്യാറാണ്. പുഷ് ഒരു പ്രത്യേക നടപടിയാണ്.}
 ::msgcat::mcset ml {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {ഹാൻഡ്ഓഫ് പ്രിവ്യൂ ചെയ്യുന്നതിന് മുമ്പ്, പിൻ ചെയ്ത ഇമേജ് ഡൈജസ്റ്റ് ഉൾപ്പെടെ എല്ലാ PDS ഫീൽഡും പൂർത്തിയാക്കുക.}
 ::msgcat::mcset ml {Complete every typed container-host field before previewing this profile.} {ഈ പ്രൊഫൈൽ പ്രിവ്യൂ ചെയ്യുന്നതിന് മുമ്പ് എല്ലാ ടൈപ്പ് ചെയ്ത കണ്ടെയ്നർ-ഹോസ്റ്റ് ഫീൽഡുകളും പൂർത്തിയാക്കുക.}
 ::msgcat::mcset ml {Component configuration returned an invalid result; nothing was accepted as applied.} {കോംപോണന്റ് കോൺഫിഗറേഷൻ അസാധുവായ ഫലമാണ് നൽകിയത്; ഒന്നും പ്രയോഗിച്ചതായി അംഗീകരിച്ചില്ല.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset ml {Component options changed. Review the new preview before applying.} {ഘടകം ഓപ്ഷനുകൾ മാറി. പ്രയോഗിക്കുന്നതിന് മുമ്പ് പുതിയ പ്രിവ്യൂ റിവ്യൂ ചെയ്യുക.}
 ::msgcat::mcset ml Components ഘടകങ്ങൾ
 ::msgcat::mcset ml {Composer preview} {കമ്പോസർ പ്രിവ്യൂ}
+::msgcat::mcset ml Config കോൺഫിഗ്
+::msgcat::mcset ml {Config differs: %s} {കോൺഫിഗ് വ്യത്യാസമുണ്ട്: %s}
+::msgcat::mcset ml {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {കോൺഫിഗ് ലോഗ്: ആ നോഡിൽ %1$s-ന്റെ മാറ്റങ്ങൾ %3$s വരെ, ഈ ഗേറ്റ്വേയിൽ %2$s വരെ}
+::msgcat::mcset ml {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {കോൺഫിഗ് ലോഗ്: ഈ ഗേറ്റ്വേയിൽ %1$s-ന്റെ മാറ്റങ്ങൾ %2$s വരെ, ആ നോഡിൽ %3$s വരെ}
+::msgcat::mcset ml {Config only on that node: %s} {ആ നോഡിൽ മാത്രമുള്ള കോൺഫിഗ്: %s}
+::msgcat::mcset ml {Config only on this gateway: %s} {ഈ ഗേറ്റ്വേയിൽ മാത്രമുള്ള കോൺഫിഗ്: %s}
 ::msgcat::mcset ml Configure ക്രമീകരിക്കുക
 ::msgcat::mcset ml {Configure %s} {%s ക്രമീകരിക്കുക}
+::msgcat::mcset ml {Configure translator} {പരിഭാഷകൻ ക്രമീകരിക്കുക}
+::msgcat::mcset ml {Configured desktop gateway} {ക്രമീകരിച്ച ഡെസ്ക്ടോപ് ഗേറ്റ്വേ}
 ::msgcat::mcset ml Configure… ക്രമീകരിക്കുക…
 ::msgcat::mcset ml {Configuring %s} {%s ക്രമീകരിക്കുന്നു}
 ::msgcat::mcset ml {Confirm or discard the current signed review before starting another download.} {മറ്റൊരു ഡൗൺലോഡ് തുടങ്ങുന്നതിന് മുമ്പ് നിലവിലെ ഒപ്പിട്ട അവലോകനം സ്ഥിരീകരിക്കുകയോ ഉപേക്ഷിക്കുകയോ ചെയ്യുക.}
 ::msgcat::mcset ml {Container host: typed host plan and privileged CLI handoff} {കണ്ടെയ്നർ ഹോസ്റ്റ്: ടൈപ്പ് ചെയ്ത ഹോസ്റ്റ് പ്ലാനും പ്രത്യേകാവകാശം ആവശ്യമുള്ള CLI ഹാൻഡ്‌ഓഫും}
 ::msgcat::mcset ml {Context window} {കോൺടെക്സ്റ്റ് വിൻഡോ}
+::msgcat::mcset ml {Continue to next target} {അടുത്ത ടാർഗറ്റിലേക്ക് തുടരുക}
+::msgcat::mcset ml {Contribute extensions: %s} {എക്സ്റ്റൻഷനുകൾ സംഭാവന ചെയ്യുക: %s}
+::msgcat::mcset ml Contribute… {സംഭാവന നൽകുക…}
+::msgcat::mcset ml {Contribution branch} {സംഭാവന ബ്രാഞ്ച്}
+::msgcat::mcset ml {Contribution destination} {സംഭാവന ലക്ഷ്യസ്ഥാനം}
 ::msgcat::mcset ml Copy പകർത്തുക
 ::msgcat::mcset ml {Copy TOML} {TOML പകർത്തുക}
+::msgcat::mcset ml {Copy a bundled extension into your user plugin directory before preparing a contribution.} {സംഭാവന തയ്യാറാക്കുന്നതിന് മുമ്പ് ഒരു ബണ്ടിൽ എക്സ്റ്റൻഷൻ നിങ്ങളുടെ യൂസർ പ്ലഗിൻ ഡയറക്ടറിയിലേക്ക് പകർത്തുക.}
 ::msgcat::mcset ml {Copy message} {സന്ദേശം പകർത്തുക}
 ::msgcat::mcset ml {Copy name} {പേര് പകർത്തുക}
 ::msgcat::mcset ml {Copy nick} {നിക്ക് പകർത്തുക}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset ml {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {ഘടകങ്ങൾ കണ്ടെത്താനായില്ല. പ്രൊവൈഡർ സെറ്റപ്പ് ഘട്ടങ്ങൾ ഇപ്പോഴും പ്രവർത്തിക്കും; ആവശ്യമെങ്കിൽ ലക്ഷ്യ മെഷീനിൽ CLI വഴി ഇൻസ്റ്റാൾ ചെയ്യുക.}
 ::msgcat::mcset ml {Could not join: %s} {ചേരാനായില്ല: %s}
 ::msgcat::mcset ml {Could not list the models (%s) — type the model's name.} {മോഡലുകൾ ലിസ്റ്റ് ചെയ്യാനായില്ല (%s) — മോഡലിന്റെ പേര് ടൈപ്പ് ചെയ്യുക.}
+::msgcat::mcset ml {Create a PR in} {ഇതിൽ ഒരു PR സൃഷ്ടിക്കുക}
+::msgcat::mcset ml {Create extension} {എക്സ്റ്റൻഷൻ സൃഷ്ടിക്കുക}
 ::msgcat::mcset ml {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {@BotFather ഉപയോഗിച്ച് ബോട്ട് ഉണ്ടാക്കുക, എന്നിട്ട് അതിന്റെ ടോക്കൺ താഴെ ഒട്ടിക്കുക: അത് എൻക്രിപ്റ്റ് ചെയ്ത ലോക്കറിലേക്ക് പോകുന്നു, ഒരിക്കലും config.toml-ലേക്ക് അല്ല.}
+::msgcat::mcset ml {Create this extension?} {ഈ എക്സ്റ്റൻഷൻ സൃഷ്ടിക്കണോ?}
+::msgcat::mcset ml {Create this generated extension?} {ഈ ജനറേറ്റ് ചെയ്ത എക്സ്റ്റൻഷൻ സൃഷ്ടിക്കണോ?}
+::msgcat::mcset ml {Created and reloaded. Review and test the extension before publishing.} {സൃഷ്ടിച്ച് വീണ്ടും ലോഡ് ചെയ്തു. പ്രസിദ്ധീകരിക്കുന്നതിന് മുമ്പ് എക്സ്റ്റൻഷൻ അവലോകനം ചെയ്ത് പരീക്ഷിക്കുക.}
+::msgcat::mcset ml {Created, but reload failed} {സൃഷ്ടിച്ചു, പക്ഷേ വീണ്ടും ലോഡ് ചെയ്യൽ പരാജയപ്പെട്ടു}
 ::msgcat::mcset ml {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {%s/<name>/SKILL.md ഒരു ടെംപ്ലേറ്റിൽ നിന്ന് സൃഷ്ടിച്ച് തുറക്കുന്നു. പ്രോംപ്റ്റ് സൂചികയിൽ എത്തുന്നത് frontmatter-ലെ വിവരണം മാത്രമാണ്, അതിനാൽ സ്കിൽ എപ്പോൾ ഉപയോഗിക്കണമെന്ന് അത് പറയുന്നുണ്ടെന്ന് ഉറപ്പാക്കുക.}
 ::msgcat::mcset ml {Cron history} {ക്രോൺ ചരിത്രം}
 ::msgcat::mcset ml {Cron jobs} {ക്രോൺ ജോബുകൾ}
 ::msgcat::mcset ml {Curated — write the first owner entry} {ക്യുറേറ്റഡ് — ആദ്യത്തെ ഉടമ എൻട്രി എഴുതുക}
 ::msgcat::mcset ml Cut മുറിക്കുക
 ::msgcat::mcset ml Decline നിരസിക്കുക
+::msgcat::mcset ml {Dedicated translator} {പ്രത്യേക വിവർത്തക മോഡൽ}
 ::msgcat::mcset ml {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset ml Default ഡിഫോൾട്ട്
 ::msgcat::mcset ml {Default model} {ഡിഫോൾട്ട് മോഡൽ}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset ml {Delete user} {ഉപയോക്താവിനെ ഇല്ലാതാക്കുക}
 ::msgcat::mcset ml {Delete workspace?} {വർക്ക്സ്പേസ് ഇല്ലാതാക്കണോ?}
 ::msgcat::mcset ml Deop {ഓപ് നീക്കുക}
+::msgcat::mcset ml {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {മാറ്റം വിവരിക്കുക. AI ഈ എക്സ്റ്റൻഷന്റെ നിരവധി ഫയലുകൾ മാറ്റാം അല്ലെങ്കിൽ ചേർക്കാം. ഓരോ ഫയലും ഡിഫായി കാണിക്കുന്നു, നിങ്ങൾ സ്ഥിരീകരിക്കുന്നതിന് മുമ്പ് ഒന്നും എഴുതുന്നില്ല.}
+::msgcat::mcset ml {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {മാറ്റം വിവരിക്കുക. AI-ക്ക് ഒരു മാറ്റം നിർദ്ദേശിക്കാം, എന്നാൽ നിങ്ങൾ ഡിഫ്റ്റ് പരിശോധിച്ച് സ്ഥിരീകരിക്കുന്നതിന് മുമ്പ് അതിന് അത് എഴുതാൻ കഴിയില്ല.}
+::msgcat::mcset ml {Describe the requested extension change first.} {ആദ്യം ആവശ്യപ്പെട്ട എക്സ്റ്റൻഷൻ മാറ്റം വിവരിക്കുക.}
+::msgcat::mcset ml Description വിവരണം
 ::msgcat::mcset ml {Desktop: local core, modules and process plugins} {ഡെസ്ക്ടോപ്പ്: ലോക്കൽ കോർ, മോഡ്യൂളുകൾ, പ്രോസസ് പ്ലഗിനുകൾ}
 ::msgcat::mcset ml Detach വേർപെടുത്തുക
+::msgcat::mcset ml {Detach foreground} {ഫോർഗ്രൗണ്ട് ഡിറ്റാച്ച് ചെയ്യുക}
 ::msgcat::mcset ml Dev ദേവ്
 ::msgcat::mcset ml {Dev pane (REPL + LSP)} {ദേവ് പാനൽ (REPL + LSP)}
 ::msgcat::mcset ml {Dev: arm / disarm live patching} {ദേവ്: ലൈവ് പാച്ചിങ് പ്രാപ്ത/നിർജീവമാക്കുക}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset ml Devoice {വോയ്സ് നീക്കുക}
 ::msgcat::mcset ml {Discard review} {അവലോകനം ഉപേക്ഷിക്കുക}
 ::msgcat::mcset ml {Discard your changes to %s?} {%s-ലെ നിങ്ങളുടെ മാറ്റങ്ങൾ ഉപേക്ഷിക്കണോ?}
+::msgcat::mcset ml {Disk: %1$s free of %2$s at %3$s} {ഡിസ്ക്: %3$s-ൽ ആകെ %2$s-ൽ %1$s ഒഴിവ്}
 ::msgcat::mcset ml Done കഴിഞ്ഞു
 ::msgcat::mcset ml {Done — config written} {പൂർത്തിയായി — കോൺഫിഗ് എഴുതി}
 ::msgcat::mcset ml {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {ഇൻസ്റ്റാൾ ചെയ്യുന്നതിന് മുമ്പ് റിലീസ് മാനിഫെസ്റ്റും ഹോസ്റ്റ് ആർക്കൈവും ഡൗൺലോഡ് ചെയ്ത് പരിശോധിക്കുക. അഞ്ച് ഐഡന്റിറ്റി ഫീൽഡുകളും ആവശ്യമാണ്. സ്വകാര്യ സ്റ്റേജ് ചെയ്ത ആർക്കൈവ് ഗേറ്റ്വേ സൂക്ഷിക്കുന്നു; ഈ പ്രിവ്യൂ ഒന്നും ഇൻസ്റ്റാൾ ചെയ്യുന്നില്ല.}
 ::msgcat::mcset ml {Downloading and verifying the signed release…} {ഒപ്പിട്ട റിലീസ് ഡൗൺലോഡ് ചെയ്ത് പരിശോധിക്കുന്നു…}
+::msgcat::mcset ml {Draft this as an extension?} {ഇത് ഒരു എക്സ്റ്റൻഷനായി തയ്യാറാക്കണോ?}
 ::msgcat::mcset ml {Drag to scroll; a quick swipe goes further.} {സ്ക്രോൾ ചെയ്യാൻ വലിക്കുക; വേഗത്തിലുള്ള സ്വൈപ്പ് കൂടുതൽ ദൂരം പോകും.}
+::msgcat::mcset ml {Drift check failed: %s} {ഡ്രിഫ്റ്റ് പരിശോധന പരാജയപ്പെട്ടു: %s}
+::msgcat::mcset ml {Drift check: %s node(s) differ from this gateway.} {ഡ്രിഫ്റ്റ് പരിശോധന: %s നോഡ്(കൾ) ഈ ഗേറ്റ്വേയിൽ നിന്ന് വ്യത്യസ്തമാണ്.}
+::msgcat::mcset ml {Drift: built from revision %1$s, this gateway from %2$s} {ഡ്രിഫ്റ്റ്: റിവിഷൻ %1$s-ൽ നിന്ന് ബിൽഡ് ചെയ്തത്, ഈ ഗേറ്റ്വേ %2$s-ൽ നിന്ന്}
+::msgcat::mcset ml {Drift: none — same version, revision and replicated config} {ഡ്രിഫ്റ്റ്: ഇല്ല — ഒരേ പതിപ്പ്, റിവിഷൻ, പകർത്തിയ കോൺഫിഗ്}
+::msgcat::mcset ml {Drift: not compared — %s} {ഡ്രിഫ്റ്റ്: താരതമ്യം ചെയ്തിട്ടില്ല — %s}
+::msgcat::mcset ml {Drift: runs version %1$s, this gateway %2$s} {ഡ്രിഫ്റ്റ്: പതിപ്പ് %1$s പ്രവർത്തിപ്പിക്കുന്നു, ഈ ഗേറ്റ്വേ %2$s}
+::msgcat::mcset ml Drift… ഡ്രിഫ്റ്റ്…
 ::msgcat::mcset ml {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset ml {ESC %s is not bound} {ESC %s ബൈൻഡ് ചെയ്തിട്ടില്ല}
 ::msgcat::mcset ml {ESC- … (Meta prefix)} {ESC- … (Meta പ്രിഫിക്സ്)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset ml Edit… എഡിറ്റ്…
 ::msgcat::mcset ml {Enable / disable} {പ്രവർത്തനക്ഷമമാക്കുക / അപ്രാപ്തമാക്കുക}
 ::msgcat::mcset ml {Enable the Telegram adapter} {Telegram അഡാപ്റ്റർ പ്രവർത്തനക്ഷമമാക്കുക}
+::msgcat::mcset ml Endpoint എൻഡ്‌പോയിന്റ്
 ::msgcat::mcset ml Engine എഞ്ചിൻ
 ::msgcat::mcset ml Eval→gw Eval→gw
 ::msgcat::mcset ml {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {%s-ലെ ഓരോ മാറ്റവും കമ്മിറ്റ് ചെയ്യുന്നു. പുനഃസ്ഥാപിക്കുമ്പോൾ മുഴുവൻ ഡയറക്ടറിയും ആ കമ്മിറ്റിലേക്ക് മടങ്ങുന്നു — അതിനുമുമ്പ് നിലവിലെ അവസ്ഥയുടെ സ്നാപ്പ്ഷോട്ട് എടുക്കും, അതിനാൽ ഇത് ഒരു വഴി മാത്രമുള്ള വാതിലല്ല.}
 ::msgcat::mcset ml {Every plugin file goes back to that commit. The current state is committed first.} {എല്ലാ പ്ലഗിൻ ഫയലുകളും ആ കമ്മിറ്റിലേക്ക് മടങ്ങുന്നു. നിലവിലെ അവസ്ഥ ആദ്യം കമ്മിറ്റ് ചെയ്യും.}
+::msgcat::mcset ml {Exact commit} {കൃത്യമായ കമ്മിറ്റ്}
+::msgcat::mcset ml {Exact permission rule} {കൃത്യമായ അനുമതി നിയമം}
+::msgcat::mcset ml {Example: a hook} {ഉദാഹരണം: ഒരു ഹുക്ക്}
+::msgcat::mcset ml {Example: a provider driver} {ഉദാഹരണം: ഒരു പ്രൊവൈഡർ ഡ്രൈവർ}
+::msgcat::mcset ml {Example: a service override wrapping core} {ഉദാഹരണം: കോറിനെ ചുറ്റിക്കെട്ടുന്ന സർവീസ് ഓവർറൈഡ്}
+::msgcat::mcset ml {Example: a tool} {ഉദാഹരണം: ഒരു ടൂൾ}
 ::msgcat::mcset ml {Existing shared container network} {നിലവിലുള്ള പങ്കിട്ട കണ്ടെയ്നർ നെറ്റ്‌വർക്ക്}
+::msgcat::mcset ml Explain വിശദീകരിക്കുക
+::msgcat::mcset ml {Explain the diagnostics} {ഡയഗ്നോസ്റ്റിക്സ് വിശദീകരിക്കുക}
 ::msgcat::mcset ml Export… {എക്സ്പോർട്ട് ചെയ്യുക…}
+::msgcat::mcset ml {Extension API} {എക്സ്റ്റൻഷൻ API}
+::msgcat::mcset ml {Extension development} {എക്സ്റ്റൻഷൻ വികസനം}
+::msgcat::mcset ml {Extension guide} {എക്സ്റ്റൻഷൻ ഗൈഡ്}
+::msgcat::mcset ml {Extension source} {എക്സ്റ്റൻഷൻ സ്രോതസ്സ്}
 ::msgcat::mcset ml {Failover blueprint} {ഫെയ്‌ലോവർ ബ്ലൂപ്രിന്റ്}
 ::msgcat::mcset ml {Failover blueprint (edit the route chain)} {ഫെയ്‌ലോവർ ബ്ലൂപ്രിന്റ് (റൂട്ട് ചെയിൻ എഡിറ്റ് ചെയ്യുക)}
 ::msgcat::mcset ml {Failover hook script (what `script` mode runs)} {ഫെയ്‌ലോവർ ഹുക്ക് സ്ക്രിപ്റ്റ് (`script` മോഡ് പ്രവർത്തിപ്പിക്കുന്നത്)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset ml {Find in transcript} {ട്രാൻസ്ക്രിപ്റ്റിൽ തിരയുക}
 ::msgcat::mcset ml {Find in transcript…} {ട്രാൻസ്ക്രിപ്റ്റിൽ തിരയുക…}
 ::msgcat::mcset ml {Find references} {റഫറൻസുകൾ കണ്ടെത്തുക}
+::msgcat::mcset ml {Finish rollback} {റോൾബാക്ക് പൂർത്തിയാക്കുക}
 ::msgcat::mcset ml {First run: no config.toml yet.} {ആദ്യ റൺ: config.toml ഇതുവരെ ഇല്ല.}
+::msgcat::mcset ml {Fix the failed syntax checks before preparing a contribution.} {സംഭാവന തയ്യാറാക്കുന്നതിന് മുമ്പ് പരാജയപ്പെട്ട സിൻടാക്‌സ് പരിശോധനകൾ പരിഹരിക്കുക.}
+::msgcat::mcset ml {Fleet deployment} {ഫ്ലീറ്റ് വിന്യാസം}
+::msgcat::mcset ml {Fleet deployment runs from a desktop computer; it is not available on Android.} {ഫ്ലീറ്റ് വിന്യാസം ഡെസ്ക്ടോപ്പ് കമ്പ്യൂട്ടറിൽ നിന്നാണ് പ്രവർത്തിക്കുന്നത്; Android-ൽ ഇത് ലഭ്യമല്ല.}
+::msgcat::mcset ml {Fleet deploy…} {ഫ്ലീറ്റ് വിന്യസിക്കുക…}
+::msgcat::mcset ml {Fleet drift} {ഫ്ലീറ്റ് ഡ്രിഫ്റ്റ്}
 ::msgcat::mcset ml {Fold / unfold} {ഫോൾഡ് / അൺഫോൾഡ്}
 ::msgcat::mcset ml {Forget declaration} {പ്രഖ്യാപനം മറക്കുക}
+::msgcat::mcset ml {Forget node %s?} {നോഡ് %s മറക്കണോ?}
+::msgcat::mcset ml {Forget node…} {നോഡ് മറക്കുക…}
+::msgcat::mcset ml {Forgetting %1$s failed: %2$s} {%1$s മറക്കൽ പരാജയപ്പെട്ടു: %2$s}
+::msgcat::mcset ml {Forgot node %s.} {നോഡ് %s മറന്നു.}
+::msgcat::mcset ml {Forgotten fleet-wide (refused until they heartbeat again): %s} {ഫ്ലീറ്റിലാകെ മറന്നു (വീണ്ടും ഹാർട്ട്ബീറ്റ് ചെയ്യുന്നതുവരെ നിരസിക്കും): %s}
 ::msgcat::mcset ml Fork ശാഖയാക്കുക
 ::msgcat::mcset ml {Free space} {ഒഴിവുള്ള ഇടം}
 ::msgcat::mcset ml {Full source commit SHA} {പൂർണ്ണ സോഴ്സ് കമ്മിറ്റ് SHA}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset ml {Gateway image sha256 digest} {ഗേറ്റ്വേ ഇമേജ് sha256 ഡൈജസ്റ്റ്}
 ::msgcat::mcset ml {Gateway quadlet name} {ഗേറ്റ്വേ ക്വാഡ്ലറ്റ് പേര്}
 ::msgcat::mcset ml {Gateway status} {ഗേറ്റ്വേ നില}
+::msgcat::mcset ml {Generate with AI…} {AI ഉപയോഗിച്ച് ജനറേറ്റ് ചെയ്യുക…}
+::msgcat::mcset ml {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {%s ജനറേറ്റ് ചെയ്തത് - ഒന്നും എഴുതിയിട്ടില്ല. ഓരോ ഫയലും അവലോകനം ചെയ്യുക, തുടർന്ന് Create extension ഇവ കൃത്യമായി എഴുതും.}
 ::msgcat::mcset ml {Get a key at %s} {ഒരു key നേടുക: %s}
 ::msgcat::mcset ml {GitHub release URL} {GitHub റിലീസ് URL}
+::msgcat::mcset ml {Give the extension a name and describe what it should do (the purpose), then generate.} {എക്സ്റ്റൻഷന് ഒരു പേര് നൽകി അത് എന്ത് ചെയ്യണമെന്ന് (ഉദ്ദേശ്യം) വിവരിക്കുക, തുടർന്ന് ജനറേറ്റ് ചെയ്യുക.}
 ::msgcat::mcset ml {Give up} ഉപേക്ഷിക്കുക
 ::msgcat::mcset ml Go പോകുക
 ::msgcat::mcset ml {Go to definition} {ഡെഫനിഷനിലേക്ക് പോകുക}
+::msgcat::mcset ml {Gossip failed: %s} {ഗോസിപ്പ് പരാജയപ്പെട്ടു: %s}
+::msgcat::mcset ml {Gossip now} {ഇപ്പോൾ ഗോസിപ്പ് ചെയ്യുക}
+::msgcat::mcset ml {Gossip with %1$s: %2$s} {%1$s-മായി ഗോസിപ്പ്: %2$s}
+::msgcat::mcset ml {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {ഗോസിപ്പ്: %2$s പിയർ(കൾ)ിൽ %1$s മറുപടി നൽകി (%3$s).}
 ::msgcat::mcset ml Grant അനുവദിക്കുക
 ::msgcat::mcset ml {Grant access} {ആക്സസ് അനുവദിക്കുക}
+::msgcat::mcset ml {Granted at} {അനുവദിച്ച സമയം}
 ::msgcat::mcset ml Grant… അനുവദിക്കുക…
 ::msgcat::mcset ml {Guards — what the harness stops, and where it stands now} {ഗാർഡുകൾ — ഹാർനസ് എന്തൊക്കെ തടയുന്നു, ഇപ്പോൾ അത് എവിടെ നിൽക്കുന്നു}
 ::msgcat::mcset ml {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {ഹാൻഡ്ലറുകൾ കാണിച്ചിരിക്കുന്ന ക്രമത്തിൽ പ്രവർത്തിക്കുന്നു; ശൂന്യമല്ലാത്ത മൂല്യം തിരികെ നൽകുന്ന ആദ്യത്തേത് വിജയിക്കുന്നു. ഒന്ന് ഓഫ് ചെയ്യുന്നത് അൺരജിസ്റ്റർ ചെയ്യാതെ അതിനെ ഒഴിവാക്കുന്നു, തിരഞ്ഞെടുപ്പ് config.toml-ൽ സൂക്ഷിക്കുന്നതിനാൽ ഒരു പ്ലഗിൻ റീലോഡിനും അതിനെ നിശബ്ദമായി തിരികെ ഓൺ ചെയ്യാൻ പറ്റില്ല.}
+::msgcat::mcset ml Health ആരോഗ്യം
+::msgcat::mcset ml {Health alerts (%s):} {ആരോഗ്യ മുന്നറിയിപ്പുകൾ (%s):}
+::msgcat::mcset ml Heartbeat ഹാർട്ട്‌ബീറ്റ്
+::msgcat::mcset ml {Heartbeat age: %s s} {ഹാർട്ട്ബീറ്റ് പ്രായം: %s s}
 ::msgcat::mcset ml Help സഹായം
 ::msgcat::mcset ml {Help & keys} {സഹായവും കീകളും}
 ::msgcat::mcset ml {Hide right panes} {വലത് പാനലുകൾ മറയ്ക്കുക}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset ml {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {പിടിക്കുക, എന്നിട്ട് വിരൽ ഉയർത്തുന്നതിന് മുമ്പ് വലിക്കുക: തിരഞ്ഞെടുപ്പ് വാക്കുവാക്കായി നിങ്ങളുടെ വിരലിനെ പിന്തുടരും, മുകളിലോ താഴെയോ ഉള്ള അരികിൽ സ്ക്രോൾ ചെയ്യും.}
 ::msgcat::mcset ml Hooks ഹുക്കുകൾ
 ::msgcat::mcset ml {Hooks (what plugins run on)} {ഹുക്കുകൾ (പ്ലഗിനുകൾ പ്രവർത്തിക്കുന്നത്)}
+::msgcat::mcset ml Host ഹോസ്റ്റ്
 ::msgcat::mcset ml {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {പിടിക്കാൻ എത്ര സമയം വേണം എന്നത് Android-ന്റെ സ്പർശിച്ച് പിടിക്കൽ കാലതാമസമാണ്, അതിന്റെ ഉപയോഗസഹായി ക്രമീകരണങ്ങളിൽ.}
 ::msgcat::mcset ml {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {KEK, PLC റൊട്ടേഷൻ കീ ഓഫ്‌ലൈനായി ബാക്കപ്പ് ചെയ്തു; അവലോകനം ചെയ്ത TLS, ആക്ടിവേഷൻ കൈമാറ്റം അനുവദിക്കുക}
 ::msgcat::mcset ml {I-search backward: type to search, C-r for previous} {I-search പിന്നോട്ട്: തിരയാൻ ടൈപ്പ് ചെയ്യുക, മുമ്പത്തേതിന് C-r}
 ::msgcat::mcset ml {I-search: type to search, C-s for next} {I-search: തിരയാൻ ടൈപ്പ് ചെയ്യുക, അടുത്തതിന് C-s}
+::msgcat::mcset ml {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {IO സമ്മർദ്ദം: ഏതെങ്കിലും ടാസ്ക് കാത്തിരുന്ന സമയത്തിന്റെ %1$s%% / %2$s%% / %3$s%% (10 s / 1 min / 5 min)}
 ::msgcat::mcset ml IRC IRC
 ::msgcat::mcset ml {IRC buffers} {IRC ബഫറുകൾ}
 ::msgcat::mcset ml {IRC composer} {IRC കമ്പോസർ}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset ml {IRC split: %s} {IRC വിഭജനം: %s}
 ::msgcat::mcset ml {IRC transcript} {IRC ട്രാൻസ്ക്രിപ്റ്റ്}
 ::msgcat::mcset ml {IRC — nothing to show} {IRC — കാണിക്കാൻ ഒന്നുമില്ല}
+::msgcat::mcset ml {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {നടന്നുകൊണ്ടിരിക്കുന്നു: %1$s ടേൺ(കൾ) %2$s, %3$s ബാക്ക്ഗ്രൗണ്ട് ടാസ്ക്(കൾ) %4$s}
 ::msgcat::mcset ml {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {മാനേജ്ഡ് ഘടക സ്റ്റോറിലേക്ക് %s ഇൻസ്റ്റാൾ ചെയ്യണോ? അതിന്റെ മാനിഫെസ്റ്റ് കാണിച്ചിട്ടുണ്ട്; ഇത് ഒരു സേവനവും ആരംഭിക്കുന്നില്ല.}
 ::msgcat::mcset ml {Install component} {ഘടകം ഇൻസ്റ്റാൾ ചെയ്യുക}
 ::msgcat::mcset ml {Install components…} {ഘടകങ്ങൾ ഇൻസ്റ്റാൾ ചെയ്യുക…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset ml Instances ഇൻസ്റ്റൻസുകൾ
 ::msgcat::mcset ml {It becomes the current content, as a new revision — so the restore can be undone too.} {ഇത് ഒരു പുതിയ റിവിഷനായി നിലവിലെ ഉള്ളടക്കമാകും — അതിനാൽ പുനഃസ്ഥാപനവും പഴയപടിയാക്കാം.}
 ::msgcat::mcset ml {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {ഇത് ഈ മെഷീനിലെ എൻക്രിപ്റ്റ് ചെയ്ത ലോക്കറിലേക്ക് പോകുന്നു. ഏജന്റ് ഇത് ഒരിക്കലും കാണുന്നില്ല: കമാൻഡുകളിൽ $%s ആയി ഉപയോഗിക്കാനോ, അനുവദിച്ച ഹോസ്റ്റുകളിലേക്ക് അയയ്ക്കാനോ മാത്രമേ അതിന് കഴിയൂ.}
+::msgcat::mcset ml {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {ഇത് ക്ലസ്റ്റർ രജിസ്ട്രിയിൽ നിന്ന് ഫ്ലീറ്റിലാകെ നീക്കം ചെയ്യുന്നു: അടുത്ത ഗോസിപ്പ് കൈമാറ്റം ഓരോ 0.2.0 പിയറിനോടും അത് ഒഴിവാക്കാൻ പറയും, അവയാരും അത് തിരികെ ലയിപ്പിക്കില്ല. 0.2.0-ൽ പഴയ പിയർ അത് പട്ടികയിൽ തുടരും. യന്ത്രം തിരികെ വന്ന് ഹാർട്ട്ബീറ്റ് ചെയ്താൽ അത് വീണ്ടും രജിസ്റ്റർ ചെയ്യപ്പെടും. സിങ്ക് പിയറുകളും സേവ് ചെയ്ത ഇൻസ്റ്റൻസുകളും തൊടാതെയിരിക്കും.}
 ::msgcat::mcset ml {It leaves memory now. Its history keeps every revision, and History… can restore it.} {ഇത് ഇപ്പോൾ മെമ്മറിയിൽ നിന്ന് പോകും. ഇതിന്റെ ചരിത്രം എല്ലാ റിവിഷനുകളും സൂക്ഷിക്കുന്നു, ചരിത്രം… ഉപയോഗിച്ച് തിരികെ കൊണ്ടുവരാം.}
 ::msgcat::mcset ml Join ചേരുക
 ::msgcat::mcset ml {Join a pool} {മെഷീനുകളുടെ ഗ്രൂപ്പിൽ ചേരുക}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset ml {Language (i18n)} {ഭാഷ (i18n)}
 ::msgcat::mcset ml Language… ഭാഷ…
 ::msgcat::mcset ml {Last active} {അവസാനം സജീവം}
+::msgcat::mcset ml {Last probe: %1$s — %2$s} {അവസാന പരിശോധന: %1$s — %2$s}
 ::msgcat::mcset ml {Leave %s?} {%s വിടണോ?}
 ::msgcat::mcset ml Leave… വിടുക…
 ::msgcat::mcset ml {Legacy open — no [acl] section} {പഴയ ഓപ്പൺ — [acl] വിഭാഗം ഇല്ല}
 ::msgcat::mcset ml {Let %s:} {%s-നെ ഇവ ചെയ്യാൻ അനുവദിക്കുക:}
 ::msgcat::mcset ml {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {അക്ഷരങ്ങൾ, അക്കങ്ങൾ, - ഒപ്പം _. post_llm_call ഹുക്ക് രജിസ്റ്റർ ചെയ്യുന്ന plugin.toml, plugin.tcl എന്നിവ സൃഷ്ടിച്ച് Dev ഫലകത്തിൽ തുറക്കുന്നു.}
+::msgcat::mcset ml Level നില
 ::msgcat::mcset ml {Lift lockdown} {ലോക്ക്ഡൗൺ പിൻവലിക്കുക}
+::msgcat::mcset ml Lines വരികൾ
 ::msgcat::mcset ml {List the provider's models} {പ്രൊവൈഡറുടെ മോഡലുകൾ ലിസ്റ്റ് ചെയ്യുക}
+::msgcat::mcset ml Load ലോഡ്
 ::msgcat::mcset ml {Load more} {കൂടുതൽ ലോഡ് ചെയ്യുക}
 ::msgcat::mcset ml {Loading discovered components…} {കണ്ടെത്തിയ ഘടകങ്ങൾ ലോഡ് ചെയ്യുന്നു…}
 ::msgcat::mcset ml {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {ലോക്കൽ ബണ്ടിൽ അവലോകനം ചെയ്തു. ഇൻസ്റ്റലേഷൻ സ്ഥിരീകരിക്കാൻ തിരഞ്ഞെടുത്ത കോംപോണന്റ് ഇൻസ്റ്റാൾ ചെയ്യുക എന്നത് തിരഞ്ഞെടുക്കുക; ഇതുവരെ ഒന്നും ഇൻസ്റ്റാൾ ചെയ്തിട്ടില്ല.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset ml {Lock down} {ലോക്ക്ഡൗൺ ചെയ്യുക}
 ::msgcat::mcset ml Log ലോഗ്
 ::msgcat::mcset ml {Log (engine + status)} {ലോഗ് (എഞ്ചിൻ + നില)}
+::msgcat::mcset ml {Log of %s} {%s-ന്റെ ലോഗ്}
+::msgcat::mcset ml Logs… ലോഗുകൾ…
 ::msgcat::mcset ml {M-g- (g: goto line)} {M-g- (g: വരിയിലേക്ക് പോകുക)}
 ::msgcat::mcset ml {M-p/M-n history · Tab complete} {M-p/M-n ചരിത്രം · Tab പൂർത്തീകരണം}
 ::msgcat::mcset ml {MCP server list} {MCP സെർവർ ലിസ്റ്റ്}
 ::msgcat::mcset ml {MCP servers (from config.toml)} {MCP സെർവറുകൾ (config.toml-ൽ നിന്ന്)}
 ::msgcat::mcset ml {Make default} ഡിഫോൾട്ടാക്കുക
 ::msgcat::mcset ml {Make default (config.toml)} {ഡിഫോൾട്ടാക്കുക (config.toml)}
+::msgcat::mcset ml {Manage extensions} {എക്സ്റ്റൻഷനുകൾ കൈകാര്യം ചെയ്യുക}
 ::msgcat::mcset ml {Manifest SHA-256} {മാനിഫെസ്റ്റ് SHA-256}
 ::msgcat::mcset ml {Mark read} {വായിച്ചതായി അടയാളപ്പെടുത്തുക}
 ::msgcat::mcset ml {Mechanisms (what the engine does on its own)} {സംവിധാനങ്ങൾ (എഞ്ചിൻ സ്വയം ചെയ്യുന്നത്)}
 ::msgcat::mcset ml {Mechanisms — what the engine does on its own, and how to stop it} {മെക്കാനിസങ്ങൾ — എഞ്ചിൻ സ്വന്തമായി എന്തൊക്കെ ചെയ്യുന്നു, അത് എങ്ങനെ നിർത്താം}
 ::msgcat::mcset ml Memory മെമ്മറി
 ::msgcat::mcset ml {Memory history} {മെമ്മറി ചരിത്രം}
+::msgcat::mcset ml {Memory: %1$s available of %2$s (%3$s%% used)} {മെമ്മറി: %2$s-ൽ %1$s ലഭ്യം (%3$s%% ഉപയോഗിച്ചു)}
+::msgcat::mcset ml {Merge the received %s into this node?} {സ്വീകരിച്ച %s ഈ നോഡിലേക്ക് ലയിപ്പിക്കണോ?}
 ::msgcat::mcset ml Messages സന്ദേശങ്ങൾ
+::msgcat::mcset ml Metrics മെട്രിക്സ്
+::msgcat::mcset ml {Metrics (asked %s):} {മെട്രിക്സ് (%s-നോട് ചോദിച്ചു):}
+::msgcat::mcset ml {Metrics of %1$s failed: %2$s} {%1$s-ന്റെ മെട്രിക്സ് പരാജയപ്പെട്ടു: %2$s}
+::msgcat::mcset ml {Metrics of %s received.} {%s-ന്റെ മെട്രിക്സ് ലഭിച്ചു.}
+::msgcat::mcset ml {Metrics: not asked yet — use Metrics.} {മെട്രിക്സ്: ഇതുവരെ ചോദിച്ചിട്ടില്ല — Metrics ഉപയോഗിക്കുക.}
 ::msgcat::mcset ml Model മോഡൽ
 ::msgcat::mcset ml {Model for this session} {ഈ സെഷനുള്ള മോഡൽ}
 ::msgcat::mcset ml {Models & settings} {മോഡലുകളും ക്രമീകരണങ്ങളും}
+::msgcat::mcset ml Monitors മോണിറ്ററുകൾ
+::msgcat::mcset ml Name പേര്
+::msgcat::mcset ml {Need an account? Optional sign-up links (open in your browser):} {അക്കൗണ്ട് വേണോ? ഓപ്ഷണൽ സൈൻ-അപ്പ് ലിങ്കുകൾ (നിങ്ങളുടെ ബ്രൗസറിൽ തുറക്കുന്നു):}
 ::msgcat::mcset ml Network നെറ്റ്‌വർക്ക്
 ::msgcat::mcset ml {New alias} {പുതിയ അലിയാസ്}
+::msgcat::mcset ml {New branch name} {പുതിയ ബ്രാഞ്ചിന്റെ പേര്}
 ::msgcat::mcset ml {New cron job} {പുതിയ ക്രോൺ ജോബ്}
+::msgcat::mcset ml {New extension} {പുതിയ എക്സ്റ്റൻഷൻ}
 ::msgcat::mcset ml {New memory file} {പുതിയ മെമ്മറി ഫയൽ}
 ::msgcat::mcset ml {New plugin} {പുതിയ പ്ലഗിൻ}
 ::msgcat::mcset ml {New session} {പുതിയ സെഷൻ}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset ml Next അടുത്തത്
 ::msgcat::mcset ml Nickname നിക്ക്
 ::msgcat::mcset ml {NixOS: emit a module snippet; do not edit host declarations} {NixOS: ഒരു മോഡ്യൂൾ സ്നിപ്പറ്റ് പുറപ്പെടുവിക്കുക; ഹോസ്റ്റ് പ്രഖ്യാപനങ്ങൾ എഡിറ്റ് ചെയ്യരുത്}
+::msgcat::mcset ml {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {ഈ നോഡിന് SSH ലൈഫ്സൈക്കിൾ ടാർഗറ്റ് ക്രമീകരിച്ചിട്ടില്ല. ഡീപ്ലോയ് ചെയ്യാനോ പുനരാരംഭിക്കാനോ വ്യക്തമായി ഒരു ഇൻസ്റ്റൻസ് ചേർക്കുക.}
+::msgcat::mcset ml {No additional push happens.} {അധിക പുഷ് ഒന്നും നടക്കുന്നില്ല.}
 ::msgcat::mcset ml {No apps yet. Ask the agent to make one: “make me an app that…”} {ഇതുവരെ ആപ്പുകളില്ല. ഒന്ന് ഉണ്ടാക്കാൻ ഏജന്റിനോട് പറയുക: “എനിക്ക് ഇങ്ങനെയൊരു ആപ്പ് ഉണ്ടാക്കിത്തരൂ…”}
 ::msgcat::mcset ml {No code in the picture. Hold the phone closer, straight on, and scan again.} {ചിത്രത്തിൽ കോഡ് ഇല്ല. ഫോൺ അടുത്ത്, നേരെ പിടിച്ച് വീണ്ടും സ്കാൻ ചെയ്യുക.}
 ::msgcat::mcset ml {No configuration snapshot will be restored.} {ഒരു കോൺഫിഗറേഷൻ സ്നാപ്പ്ഷോട്ടും പുനഃസ്ഥാപിക്കില്ല.}
+::msgcat::mcset ml {No configured sync peer for this node.} {ഈ നോഡിന് ക്രമീകരിച്ച സിങ്ക് പിയർ ഇല്ല.}
+::msgcat::mcset ml {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {പ്രത്യേക പരിഭാഷകൻ ക്രമീകരിച്ചിട്ടില്ല. അതിന്റെ പ്രൊവൈഡറും മോഡലും ലക്ഷ്യ ഭാഷയും തിരഞ്ഞെടുക്കാൻ പരിഭാഷകൻ ക്രമീകരിക്കുക ഉപയോഗിക്കുക.}
+::msgcat::mcset ml {No deployment started.} {വിന്യാസം ആരംഭിച്ചിട്ടില്ല.}
+::msgcat::mcset ml {No diagnostics reported by the current LSP document.} {നിലവിലെ LSP ഡോക്യുമെന്റ് ഡയഗ്നോസ്റ്റിക്സ് ഒന്നും റിപ്പോർട്ട് ചെയ്തിട്ടില്ല.}
+::msgcat::mcset ml {No explicitly configured desktop gateway is bound to this node.} {ഈ നോഡുമായി പ്രത്യേകം ക്രമീകരിച്ച ഡെസ്ക്ടോപ് ഗേറ്റ്വേയൊന്നും ബന്ധിപ്പിച്ചിട്ടില്ല.}
+::msgcat::mcset ml {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {ഈ നോഡുമായി പ്രത്യേകം ക്രമീകരിച്ച ഗേറ്റ്വേയൊന്നും ബന്ധിപ്പിച്ചിട്ടില്ല. ആദ്യം ഗേറ്റ്വേ ചേർക്കുക; അതിന്റെ റെജിസ്ട്രി എൻഡ്പോയിന്റ് ഡെസ്ക്ടോപ് URL ആയി ഉപയോഗിക്കുന്നില്ല.}
+::msgcat::mcset ml {No file is open. Ask a design question, or open an extension file for help with its code.} {ഒരു ഫയലും തുറന്നിട്ടില്ല. ഒരു ഡിസൈൻ ചോദ്യം ചോദിക്കുക, അല്ലെങ്കിൽ അതിന്റെ കോഡിന് സഹായത്തിനായി ഒരു എക്സ്റ്റൻഷൻ ഫയൽ തുറക്കുക.}
+::msgcat::mcset ml {No files have been written. Review the exact manifest and source, then confirm creation.} {ഫയലുകളൊന്നും എഴുതിയിട്ടില്ല. മാനിഫെസ്റ്റും സ്രോതസ്സും കൃത്യമായി അവലോകനം ചെയ്ത ശേഷം സൃഷ്ടിക്കൽ സ്ഥിരീകരിക്കുക.}
 ::msgcat::mcset ml {No modules or process plugins were discovered. The provider setup steps can still continue.} {ഒരു മൊഡ്യൂളോ പ്രോസസ് പ്ലഗിനോ കണ്ടെത്തിയില്ല. പ്രൊവൈഡർ സെറ്റപ്പ് ഘട്ടങ്ങൾ ഇപ്പോഴും തുടരാം.}
+::msgcat::mcset ml {No other registered node to compare with.} {താരതമ്യം ചെയ്യാൻ മറ്റ് രജിസ്റ്റർ ചെയ്ത നോഡുകളൊന്നുമില്ല.}
 ::msgcat::mcset ml {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {ഈ വിസാർഡിൽ നിന്ന് ഒരു പ്രൊഫൈലും സർവീസ് ആരംഭിക്കുകയോ അഡ്മിനിസ്ട്രേറ്റർ അവകാശം ആവശ്യമായ സ്ക്രിപ്റ്റ് പ്രവർത്തിപ്പിക്കുകയോ ചെയ്യുന്നില്ല. പ്രവർത്തിപ്പിക്കുന്നതിന് മുമ്പ് പദ്ധതിയും ഏതെങ്കിലും കൈമാറ്റവും അവലോകനം ചെയ്യുക.}
+::msgcat::mcset ml {No proposal has been requested. Nothing will be written automatically.} {നിർദ്ദേശമൊന്നും ആവശ്യപ്പെട്ടിട്ടില്ല. ഒന്നും സ്വയമേവ എഴുതപ്പെടില്ല.}
+::msgcat::mcset ml {No proposal. Nothing was written.} {നിർദ്ദേശമില്ല. ഒന്നും എഴുതിയിട്ടില്ല.}
 ::msgcat::mcset ml {No routes configured.} {റൂട്ടുകളൊന്നും ക്രമീകരിച്ചിട്ടില്ല.}
 ::msgcat::mcset ml {No session selected — pick one in the sidebar or start a new one} {സെഷൻ തിരഞ്ഞെടുത്തിട്ടില്ല — സൈഡ്ബാറിൽ ഒന്ന് തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ പുതിയത് തുടങ്ങുക}
 ::msgcat::mcset ml {No swap target yet: pick a language and press “Set as swap target”.} {ഇതുവരെ മാറ്റ ഭാഷയില്ല: ഒരു ഭാഷ തിരഞ്ഞെടുത്ത് “മാറ്റ ഭാഷയാക്കുക” അമർത്തുക.}
 ::msgcat::mcset ml {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {config.toml-ൽ {[}acl{]} വിഭാഗമില്ല: ഗേറ്റ്വേയിൽ എത്തുന്ന ഓരോ അയച്ചയാളെയും ഉടമയായി കണക്കാക്കും — ACL-നു മുമ്പുള്ള ഒറ്റ-ഉപയോക്തൃ പെരുമാറ്റം. അനുവദിക്കലും പിൻവലിക്കലും പ്രവർത്തിക്കുന്നത് തുടരും, {[}acl{]} നിലവിൽ വരുന്ന നിമിഷം മുതൽ ബാധകമാകും.}
+::msgcat::mcset ml {Node id} {നോഡ് ഐഡി}
+::msgcat::mcset ml {Non-evaluating syntax checks} {സിൻടാക്‌സ് പരിശോധനകൾ (കോഡ് പ്രവർത്തിപ്പിക്കാതെ)}
+::msgcat::mcset ml {Not available: %s} {ലഭ്യമല്ല: %s}
+::msgcat::mcset ml Note കുറിപ്പ്
 ::msgcat::mcset ml {Note for the agent (optional):} {ഏജന്റിനുള്ള കുറിപ്പ് (ഐച്ഛികം):}
+::msgcat::mcset ml {Nothing selected.} {ഒന്നും തിരഞ്ഞെടുത്തിട്ടില്ല.}
 ::msgcat::mcset ml {Nothing typed yet.} {ഇതുവരെ ഒന്നും ടൈപ്പ് ചെയ്തിട്ടില്ല.}
+::msgcat::mcset ml {Nothing was generated or written.} {ഒന്നും ജനറേറ്റ് ചെയ്തിട്ടില്ല, എഴുതിയിട്ടുമില്ല.}
+::msgcat::mcset ml {Nothing was prepared: the chosen repository already has these paths.} {ഒന്നും തയ്യാറാക്കിയില്ല: തിരഞ്ഞെടുത്ത റിപ്പോസിറ്ററിയിൽ ഈ പാതകൾ ഇതിനകം ഉണ്ട്.}
 ::msgcat::mcset ml Notifications അറിയിപ്പുകൾ
 ::msgcat::mcset ml OK ശരി
 ::msgcat::mcset ml Off ഓഫ്
 ::msgcat::mcset ml On ഓൺ
+::msgcat::mcset ml {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {അവലോകനം ചെയ്ത എക്സ്റ്റൻഷൻ ബഫർ മാത്രം മാറ്റപ്പെടും. ഈ പ്രിവ്യൂവിന് ശേഷം വരുത്തിയ മാറ്റങ്ങളിൽ നിന്ന് ഫയൽ ഇപ്പോഴും സംരക്ഷിച്ചിരിക്കുന്നു. കമിറ്റ്, പുഷ് അല്ലെങ്കിൽ PR ഒന്നും നടക്കില്ല.}
+::msgcat::mcset ml {Only this new branch is committed. Your ambient git identity is used.} {ഈ പുതിയ ബ്രാഞ്ച് മാത്രം കമിറ്റ് ചെയ്യുന്നു. നിങ്ങളുടെ നിലവിലെ git ഐഡന്റിറ്റി ഉപയോഗിക്കുന്നു.}
 ::msgcat::mcset ml Op {ഓപ് നൽകുക}
 ::msgcat::mcset ml Open തുറക്കുക
+::msgcat::mcset ml {Open PR…} {PR തുറക്കുക…}
 ::msgcat::mcset ml {Open a window} {ഒരു വിൻഡോ തുറക്കുക}
 ::msgcat::mcset ml {Open in Dev} {Dev-ൽ തുറക്കുക}
 ::msgcat::mcset ml {Open in browser} {ബ്രൗസറിൽ തുറക്കുക}
 ::msgcat::mcset ml {Open plugin} {പ്ലഗിൻ തുറക്കുക}
 ::msgcat::mcset ml {Open terminal} {ടെർമിനൽ തുറക്കുക}
+::msgcat::mcset ml {Open this pull request?} {ഈ പുൾ റിക്വസ്റ്റ് തുറക്കണോ?}
 ::msgcat::mcset ml {Open veles in Android's settings} {Android ക്രമീകരണങ്ങളിൽ veles തുറക്കുക}
 ::msgcat::mcset ml {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {ഐച്ഛികം: ചേരേണ്ട IRC നെറ്റ്വർക്ക്. ചാനലുകൾ സ്പെയ്സുകളോ കോമകളോ കൊണ്ട് വേർതിരിച്ച് ലിസ്റ്റ് ചെയ്യുക; .env-ലെ IRC_CHANNELS, സജ്ജീകരിച്ചിട്ടുണ്ടെങ്കിൽ, ഈ ലിസ്റ്റിന് പകരം വരുന്നു.}
 ::msgcat::mcset ml {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {ഓപ്ഷനുകൾ തിരഞ്ഞെടുത്ത ഘടകത്തിന്റെ മാനിഫെസ്റ്റിൽ നിന്നാണ് വരുന്നത്. രഹസ്യം പോലെ തോന്നിക്കുന്ന ഫീൽഡുകൾ സെറ്റപ്പ്/വോൾട്ട് ഫ്ലോയിൽ തന്നെ നിലനിൽക്കും. ശൂന്യമായ ഫീൽഡുകൾ ആ ഓപ്ഷനെ മാറ്റമില്ലാതെ വിടുന്നു.}
 ::msgcat::mcset ml {Or paste a ticket signed on another device} {അല്ലെങ്കിൽ മറ്റൊരു ഉപകരണത്തിൽ സൈൻ ചെയ്ത ടിക്കറ്റ് പേസ്റ്റ് ചെയ്യുക}
 ::msgcat::mcset ml {Or type an answer:} {അല്ലെങ്കിൽ ഒരു ഉത്തരം ടൈപ്പ് ചെയ്യുക:}
+::msgcat::mcset ml Origin ഒറിജിൻ
 ::msgcat::mcset ml Other… മറ്റുള്ളവ…
 ::msgcat::mcset ml Outline ഔട്ട്ലൈൻ
+::msgcat::mcset ml Output ഔട്ട്പുട്ട്
 ::msgcat::mcset ml {Override for THIS session (leave blank to inherit the default)} {ഈ സെഷനുള്ള ഓവർറൈഡ് (ഡിഫോൾട്ട് സ്വീകരിക്കാൻ ശൂന്യമായി വിടുക)}
 ::msgcat::mcset ml {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {ഉടമയുടെ ഐഡന്റിറ്റി (telegram:123456, irc:account, അല്ലെങ്കിൽ nick!user@host മാസ്ക്)}
 ::msgcat::mcset ml {PDS and handle domain} {PDS ഹാൻഡ്‌ൾ ഡൊമെയ്ൻ}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset ml {Pause scheduler} {ഷെഡ്യൂളർ താൽക്കാലികമായി നിർത്തുക}
 ::msgcat::mcset ml {Peek (C-c C-p)} {പീക്ക് (C-c C-p)}
 ::msgcat::mcset ml {Peek definition} {നിർവചനം നോക്കുക}
+::msgcat::mcset ml {Permission grants} {അനുമതി നൽകലുകൾ}
+::msgcat::mcset ml {Permission grants…} {അനുമതി നൽകലുകൾ…}
 ::msgcat::mcset ml Phone ഫോൺ
 ::msgcat::mcset ml {Phone: permissions, battery, storage} {ഫോൺ: അനുമതികൾ, ബാറ്ററി, സംഭരണം}
 ::msgcat::mcset ml {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {%s നിർമ്മിച്ച ഫോണുകൾ സ്വന്തമായും ആപ്പുകൾ നിർത്തുന്നു. veles-ന്റെ ആപ്പ് ക്രമീകരണങ്ങളിൽ അത് സ്വയം ആരംഭിക്കാനും പശ്ചാത്തലത്തിൽ പ്രവർത്തിക്കാനും അനുവദിക്കുക.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset ml Port പോർട്ട്
 ::msgcat::mcset ml {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {പ്രീഫിക്സ് കോർഡുകൾ (C-x, M-o) ആയിരിക്കുമ്പോൾ ഉടനടി which-key പോപ്പപ്പ് കാണിക്കുന്നു.}
 ::msgcat::mcset ml {Prepare an own vlpds PDS through the signed CLI handoff} {സൈൻ ചെയ്ത CLI ഹാൻഡ്ഓഫിലൂടെ സ്വന്തം vlpds PDS തയ്യാറാക്കുക}
+::msgcat::mcset ml {Prepare branch…} {ബ്രാഞ്ച് തയ്യാറാക്കുക…}
+::msgcat::mcset ml {Prepare this branch and commit?} {ഈ ബ്രാഞ്ചും കമിറ്റും തയ്യാറാക്കണോ?}
 ::msgcat::mcset ml Preview പ്രിവ്യൂ
+::msgcat::mcset ml {Preview change set} {മാറ്റസെറ്റ് പ്രിവ്യൂ ചെയ്യുക}
+::msgcat::mcset ml {Preview files} {ഫയലുകൾ പ്രിവ്യൂ ചെയ്യുക}
 ::msgcat::mcset ml {Preview here} {ഇവിടെ പ്രിവ്യൂ}
 ::msgcat::mcset ml {Preview pane} {പ്രിവ്യൂ പെയ്ൻ}
+::msgcat::mcset ml {Preview proposal} {നിർദ്ദേശം പ്രിവ്യൂ ചെയ്യുക}
+::msgcat::mcset ml {Preview the changed name or language before creating it.} {സൃഷ്ടിക്കുന്നതിന് മുമ്പ് മാറ്റിയ പേരോ ഭാഷയോ പ്രിവ്യൂ ചെയ്യുക.}
+::msgcat::mcset ml Probe പരിശോധിക്കുക
+::msgcat::mcset ml {Probe of %1$s failed: %2$s} {%1$s-ന്റെ പരിശോധന പരാജയപ്പെട്ടു: %2$s}
 ::msgcat::mcset ml {Profile result} {പ്രൊഫൈൽ ഫലം}
 ::msgcat::mcset ml {Promote into config.toml} {config.toml-ലേക്ക് പ്രമോട്ട് ചെയ്യുക}
 ::msgcat::mcset ml Promote… പ്രമോട്ട്…
 ::msgcat::mcset ml Provider പ്രോവൈഡർ
+::msgcat::mcset ml {Provider driver (plugin wire only)} {പ്രൊവൈഡർ ഡ്രൈവർ (പ്ലഗിൻ വയർ മാത്രം)}
 ::msgcat::mcset ml {Provider entry name} {പ്രൊവൈഡർ എൻട്രി പേര്}
 ::msgcat::mcset ml {Provider for this session} {ഈ സെഷനുള്ള പ്രൊവൈഡർ}
 ::msgcat::mcset ml Providers പ്രൊവൈഡറുകൾ
 ::msgcat::mcset ml {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {പ്രൊവൈഡറുകൾ ടേബിളുകളുടെ ഒരു ലിസ്റ്റാണ്: custom_providers.0.base_url, .0.api_mode, .0.key_env … താഴെ കാണിച്ചിരിക്കുന്ന ക്രമത്തിൽ നിന്ന് ഇൻഡക്സ് ചെയ്യുക.}
 ::msgcat::mcset ml {Public HTTPS URL} {പബ്ലിക് HTTPS URL}
+::msgcat::mcset ml {Pull request base} {പുൾ റിക്വസ്റ്റ് ബേസ്}
+::msgcat::mcset ml {Pull request created} {പുൾ റിക്വസ്റ്റ് സൃഷ്ടിച്ചു}
+::msgcat::mcset ml {Pull request description} {പുൾ റിക്വസ്റ്റ് വിവരണം}
+::msgcat::mcset ml {Pull request opened.} {പുൾ റിക്വസ്റ്റ് തുറന്നു.}
+::msgcat::mcset ml {Pull request repository} {പുൾ റിക്വസ്റ്റ് റെപ്പോസിറ്ററി}
+::msgcat::mcset ml {Pull request title} {പുൾ റിക്വസ്റ്റ് ശീർഷകം}
 ::msgcat::mcset ml {Purge + delete files} {പർജ് + ഫയലുകൾ ഇല്ലാതാക്കുക}
 ::msgcat::mcset ml {Purge container} {കണ്ടെയ്നർ പർജ് ചെയ്യുക}
+::msgcat::mcset ml Purpose ഉദ്ദേശ്യം
+::msgcat::mcset ml Push പുഷ്
+::msgcat::mcset ml {Push branch…} {ബ്രാഞ്ച് പുഷ് ചെയ്യുക…}
+::msgcat::mcset ml {Push complete. No pull request has been opened.} {പുഷ് പൂർത്തിയായി. പുൾ റിക്വസ്റ്റ് ഒന്നും തുറന്നിട്ടില്ല.}
+::msgcat::mcset ml {Push this branch?} {ഈ ബ്രാഞ്ച് പുഷ് ചെയ്യണോ?}
+::msgcat::mcset ml {Push to %s:} {%s-ലേക്ക് പുഷ് ചെയ്യുക:}
 ::msgcat::mcset ml Question ചോദ്യം
 ::msgcat::mcset ml Questions ചോദ്യങ്ങൾ
 ::msgcat::mcset ml Quit പുറത്തുകടക്കുക
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset ml {Reading notifications, for triggers} {അറിയിപ്പുകൾ വായിക്കൽ, ട്രിഗറുകൾക്കായി}
 ::msgcat::mcset ml Reasoning റീസണിംഗ്
 ::msgcat::mcset ml {Reasoning effort} {ചിന്തന പരിശ്രമം}
+::msgcat::mcset ml {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {സ്വീകരിച്ചു, പ്രയോഗിക്കാൻ കാത്തിരിക്കുന്നു: സ്റ്റോർ %1$s · മെമ്മറി %2$s · കോൺഫിഗ് %3$s · വോൾട്ട് %4$s}
+::msgcat::mcset ml {Recommended checks} {ശുപാർശ ചെയ്യുന്ന പരിശോധനകൾ}
 ::msgcat::mcset ml {Refetch this transcript from the store} {ഈ ട്രാൻസ്ക്രിപ്റ്റ് സ്റ്റോറിൽ നിന്ന് വീണ്ടും ലഭ്യമാക്കുക}
 ::msgcat::mcset ml Refresh പുതുക്കുക
 ::msgcat::mcset ml {Refresh preview} {പ്രിവ്യൂ പുതുക്കുക}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset ml {Rename symbol} {ചിഹ്നത്തിന്റെ പേരുമാറ്റുക}
 ::msgcat::mcset ml Rename… പേരുമാറ്റുക…
 ::msgcat::mcset ml Rendered {റെൻഡർ ചെയ്തു}
+::msgcat::mcset ml {Replace existing repository files?} {നിലവിലുള്ള റിപ്പോസിറ്ററി ഫയലുകൾ മാറ്റിസ്ഥാപിക്കണോ?}
+::msgcat::mcset ml {Replace them in the new branch? Nothing else in the repository changes.} {പുതിയ ബ്രാഞ്ചിൽ അവ മാറ്റിസ്ഥാപിക്കണോ? റിപ്പോസിറ്ററിയിൽ മറ്റൊന്നും മാറില്ല.}
 ::msgcat::mcset ml Repository റെപ്പോസിറ്ററി
 ::msgcat::mcset ml {Repository (owner/name)} {റെപ്പോസിറ്ററി (ഉടമ/പേര്)}
+::msgcat::mcset ml {Repository directory} {റിപ്പോസിറ്ററി ഡയറക്ടറി}
+::msgcat::mcset ml {Repository paths} {റിപ്പോസിറ്ററി പാതകൾ}
+::msgcat::mcset ml {Request a new preview before trying again.} {വീണ്ടും ശ്രമിക്കുന്നതിന് മുമ്പ് ഒരു പുതിയ പ്രിവ്യൂ ആവശ്യപ്പെടുക.}
 ::msgcat::mcset ml {Reset to default} {ഡിഫോൾട്ടിലേക്ക് മാറ്റുക}
 ::msgcat::mcset ml {Reset to template} {ടെംപ്ലേറ്റിലേക്ക് പുനഃസജ്ജമാക്കുക}
 ::msgcat::mcset ml Restart പുനരാരംഭിക്കുക
+::msgcat::mcset ml {Restart + verify canary} {പുനരാരംഭിക്കുക + കാനറി പരിശോധിക്കുക}
 ::msgcat::mcset ml {Restore hidden windows} {മറച്ച വിൻഡോകൾ പുനഃസ്ഥാപിക്കുക}
 ::msgcat::mcset ml {Restore plugins to %s?} {പ്ലഗിനുകൾ %s-ലേക്ക് പുനഃസ്ഥാപിക്കണോ?}
 ::msgcat::mcset ml {Restore revision r%1$s of %2$s?} {%2$s-ന്റെ റിവിഷൻ r%1$s പുനഃസ്ഥാപിക്കണോ?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset ml {Restore this commit} {ഈ കമ്മിറ്റ് പുനഃസ്ഥാപിക്കുക}
 ::msgcat::mcset ml {Restore this revision} {ഈ റിവിഷൻ പുനഃസ്ഥാപിക്കുക}
 ::msgcat::mcset ml {Resume scheduler} {ഷെഡ്യൂളർ പുനരാരംഭിക്കുക}
+::msgcat::mcset ml {Resume unfinished operation} {പൂർത്തിയാകാത്ത പ്രവർത്തനം തുടരുക}
 ::msgcat::mcset ml Revert {റിവേർട്ട് ചെയ്യുക}
 ::msgcat::mcset ml {Revert %s to HEAD? Uncommitted changes in this file are lost.} {%s എന്നത് HEAD ലേക്ക് തിരികെ പോകണോ? ഈ ഫയലിലെ കമ്മിറ്റ് ചെയ്യാത്ത മാറ്റങ്ങൾ നഷ്ടപ്പെടും.}
 ::msgcat::mcset ml Revert… {റിവേർട്ട് ചെയ്യുക…}
 ::msgcat::mcset ml Review റിവ്യൂ
 ::msgcat::mcset ml {Review (git) pane} {Review (git) പെയ്ൻ}
+::msgcat::mcset ml {Review deployment} {വിന്യാസം അവലോകനം ചെയ്യുക}
+::msgcat::mcset ml {Review extension contribution} {എക്സ്റ്റൻഷൻ സംഭാവന അവലോകനം ചെയ്യുക}
 ::msgcat::mcset ml {Review managed local bundle…} {നിയന്ത്രിത ലോക്കൽ ബണ്ടിൽ അവലോകനം ചെയ്യുക…}
 ::msgcat::mcset ml {Review rollback} {റോൾബാക്ക് അവലോകനം ചെയ്യുക}
+::msgcat::mcset ml {Review selected files} {തിരഞ്ഞെടുത്ത ഫയലുകൾ അവലോകനം ചെയ്യുക}
 ::msgcat::mcset ml {Review the component options on the summary screen before applying.} {പ്രയോഗിക്കുന്നതിന് മുമ്പ് സംഗ്രഹ സ്ക്രീനിൽ ഘടകം ഓപ്ഷനുകൾ റിവ്യൂ ചെയ്യുക.}
 ::msgcat::mcset ml {Review the component preview before applying. No component configuration has been written.} {പ്രയോഗിക്കുന്നതിന് മുമ്പ് ഘടക പ്രിവ്യൂ റിവ്യൂ ചെയ്യുക. ഒരു ഘടക കോൺഫിഗറേഷനും എഴുതിയിട്ടില്ല.}
+::msgcat::mcset ml {Review the selected files and remove credential findings before preparing.} {തയ്യാറാക്കുന്നതിന് മുമ്പ് തിരഞ്ഞെടുത്ത ഫയലുകൾ അവലോകനം ചെയ്ത് രഹസ്യാധാരങ്ങൾ കണ്ടെത്തിയവ നീക്കം ചെയ്യുക.}
 ::msgcat::mcset ml {Reviewed core bundle in the managed install-sources directory} {മാനേജ് ചെയ്ത ഇൻസ്റ്റൽ-സോഴ്സസ് ഡയറക്ടറിയിലെ അവലോകനം ചെയ്ത കോർ ബണ്ടിൽ}
+::msgcat::mcset ml {Reviewed fleet deployment} {അവലോകനം ചെയ്ത ഫ്ലീറ്റ് വിന്യാസം}
 ::msgcat::mcset ml {Reviewed local bundle} {അവലോകനം ചെയ്ത ലോക്കൽ ബണ്ടിൽ}
 ::msgcat::mcset ml {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {അവലോകനം ചെയ്ത ലോക്കൽ ബണ്ടിൽ ഇൻസ്റ്റാൾ ചെയ്തു. അത് ഒപ്പിട്ട-ഡൗൺലോഡ് പരിശോധിച്ചതല്ല. പുതിയ കോർ ഉപയോഗിക്കാൻ പുനരാരംഭം ആവശ്യമാണ്.}
 ::msgcat::mcset ml Revision റിവിഷൻ
 ::msgcat::mcset ml Revoke പിൻവലിക്കുക
+::msgcat::mcset ml {Revoke selected} {തിരഞ്ഞെടുത്തത് പിൻവലിക്കുക}
 ::msgcat::mcset ml Roles റോളുകൾ
 ::msgcat::mcset ml {Roll back %1$s from %2$s to %3$s?} {%1$s %2$s-ൽ നിന്ന് %3$s-ലേക്ക് പിന്തിരിപ്പിക്കണോ?}
+::msgcat::mcset ml {Roll back selected target} {തിരഞ്ഞെടുത്ത ടാർഗറ്റ് റോൾബാക്ക് ചെയ്യുക}
 ::msgcat::mcset ml {Rollback completed. Reload the component or restart as requested by the report.} {റോൾബാക്ക് പൂർത്തിയായി. റിപ്പോർട്ട് ആവശ്യപ്പെട്ടതുപോലെ കോംപോണന്റ് വീണ്ടും ലോഡ് ചെയ്യുക അല്ലെങ്കിൽ പുനരാരംഭിക്കുക.}
 ::msgcat::mcset ml {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {റോൾബാക്ക് അവലോകനം ചെയ്തു. പുനഃസ്ഥാപനം സ്ഥിരീകരിക്കാൻ തിരഞ്ഞെടുത്ത കോംപോണന്റ് ഇൻസ്റ്റാൾ ചെയ്യുക എന്നത് തിരഞ്ഞെടുക്കുക; ഒന്നും പുനഃസ്ഥാപിച്ചിട്ടില്ല.}
 ::msgcat::mcset ml Run പ്രവർത്തിപ്പിക്കുക
 ::msgcat::mcset ml {Run the wizard again} {വിസാർഡ് വീണ്ടും പ്രവർത്തിപ്പിക്കുക}
 ::msgcat::mcset ml {Running in the background} {പശ്ചാത്തലത്തിൽ പ്രവർത്തിക്കൽ}
-::msgcat::mcset ml {Running tasks} {പ്രവർത്തിക്കുന്ന ടാസ്കുകൾ}
-::msgcat::mcset ml {Running tasks (subagents, shells, monitors)} {പ്രവർത്തിക്കുന്ന ടാസ്ക്കുകൾ (സബ്‌ഏജന്റുകൾ, ഷെല്ലുകൾ, മോണിറ്ററുകൾ)}
 ::msgcat::mcset ml {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {റൺടൈം അനുമതികളും ഉപയോക്താക്കളും സ്റ്റോറിൽ കിടക്കുന്നു, ഒരു സ്റ്റോർ റീസെറ്റ് അവയെ തുടച്ചുനീക്കും. Promote സ്റ്റോർ തീരുമാനിക്കുന്നവയെ config.toml-ലേക്ക് ചേർക്കുന്നു — ഫയലിന്റെ കമന്റുകളും കീ ക്രമവും നിലനിർത്തി, അരികിൽ ബാക്കപ്പ് എഴുതി, സ്റ്റോർ പകർപ്പുകൾ ഒഴിവാക്കി — ഫയലിൽ ഇതിനകം അഭിപ്രായമുള്ളിടത്ത് ഊഹിച്ച് പ്രവർത്തിക്കുന്നതിന് പകരം നിരസിക്കുന്നു.}
 ::msgcat::mcset ml {S3 HTTPS endpoint} {S3 HTTPS എൻഡ്‌പോയിൻ്റ്}
 ::msgcat::mcset ml {S3 bucket} {S3 ബക്കറ്റ്}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset ml {Save as default} {ഡിഫോൾട്ടായി സേവ് ചെയ്യുക}
 ::msgcat::mcset ml {Save attachment as} {അറ്റാച്ച്മെന്റ് സേവ് ചെയ്യുക}
 ::msgcat::mcset ml {Save globally} {ആഗോളമായി സേവ് ചെയ്യുക}
+::msgcat::mcset ml {Save or revert the open buffer before applying a change set.} {ഒരു മാറ്റസെറ്റ് പ്രയോഗിക്കുന്നതിന് മുമ്പ് തുറന്ന ബഫർ സേവ് ചെയ്യുക അല്ലെങ്കിൽ പഴയപടിയാക്കുക.}
 ::msgcat::mcset ml Scan {സ്കാൻ ചെയ്യുക}
 ::msgcat::mcset ml {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {ഈ ഫോണിനെ ക്ഷണിച്ച മെഷീനിൽ നിന്നുള്ള veles കോഡ് സ്കാൻ ചെയ്യുക. അത് ആദ്യം ഒരു WireGuard കോഡ് കാണിച്ചിരുന്നെങ്കിൽ, ഇതിനുമുമ്പ് അത് WireGuard ആപ്പ് ഉപയോഗിച്ച് സ്കാൻ ചെയ്യുക.}
 ::msgcat::mcset ml {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {ഷെഡ്യൂൾ: ഒരു ഇടവേള ("30m", "every 2h"), ഒരു ക്രോൺ പാറ്റേൺ ("0 9 * * 1"), അല്ലെങ്കിൽ ഒറ്റത്തവണയ്ക്കുള്ള ISO ടൈംസ്റ്റാമ്പ്. മുകളിലെ വരി എഞ്ചിൻ അതിനെ എങ്ങനെ വായിക്കുന്നുവെന്ന് കാണിക്കുന്നു. ഡെലിവർ: "local" ഔട്ട്പുട്ട് ലോഗിൽ സൂക്ഷിക്കുന്നു — പിന്നിൽ ചാറ്റ് പ്ലാറ്റ്ഫോം ഇല്ലാത്ത ഡെസ്ക്ടോപ്പിൽ നിന്നുള്ള ഏക സത്യസന്ധമായ ഡിഫോൾട്ട് — അല്ലെങ്കിൽ "platform:chat_id". സെഷൻ ഉണർത്തുക: പുതിയ സെഷനിൽ പ്രവർത്തിപ്പിക്കാൻ ശൂന്യമായി വിടുക; ആ സെഷൻ അതിന്റെ മുഴുവൻ ചരിത്രവുമായി പുനരാരംഭിക്കാൻ ഒരു സെഷൻ ഐഡി (അല്ലെങ്കിൽ അദ്വിതീയ പ്രിഫിക്സ്) നൽകുക — തിരക്കുള്ള സെഷൻ പകരം അതിന്റെ അടുത്ത ടേൺ അതിരിൽ പ്രോംപ്റ്റ് സ്വീകരിക്കും.}
+::msgcat::mcset ml Scope പരിധി
 ::msgcat::mcset ml {Scroll to end} {അവസാനത്തിലേക്ക് സ്ക്രോൾ ചെയ്യുക}
 ::msgcat::mcset ml {Search commands and sessions…} {കമാൻഡുകളും സെഷനുകളും തിരയുക…}
 ::msgcat::mcset ml {Search message text} {സന്ദേശ വാചകത്തിൽ തിരയുക}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset ml Section വിഭാഗം
 ::msgcat::mcset ml {Select a component first. No component options will be changed if you skip this step.} {ആദ്യം ഒരു ഘടകം തിരഞ്ഞെടുക്കുക. നിങ്ങൾ ഈ ഘട്ടം ഒഴിവാക്കുകയാണെങ്കിൽ ഒരു ഘടക ഓപ്ഷനും മാറില്ല.}
 ::msgcat::mcset ml {Select all} {എല്ലാം തിരഞ്ഞെടുക്കുക}
+::msgcat::mcset ml {Select all extensions} {എല്ലാ എക്സ്റ്റൻഷനുകളും തിരഞ്ഞെടുക്കുക}
+::msgcat::mcset ml {Select at least one source file.} {കുറഞ്ഞത് ഒരു സ്രോതസ്സ് ഫയൽ തിരഞ്ഞെടുക്കുക.}
+::msgcat::mcset ml {Select none} {ഒന്നും തിരഞ്ഞെടുക്കരുത്}
+::msgcat::mcset ml {Select text to translate first.} {വിവർത്തനത്തിന് വേണ്ടി ആദ്യം വാചകം തിരഞ്ഞെടുക്കുക.}
+::msgcat::mcset ml {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {സംഭാവന ചെയ്യാനുള്ള എക്സ്റ്റൻഷനുകളും ഫയലുകളും തിരഞ്ഞെടുക്കുക. അവ ഒരു ബ്രാഞ്ചിലും ഒരു പുൾ റിക്വസ്റ്റിലും പോകുന്നു, ഓരോ എക്സ്റ്റൻഷനും അതിന്റേതായ ഡയറക്ടറിയിൽ. അവലോകനം ചെയ്യുക, വിലയിരുത്തലില്ലാത്ത പരിശോധനകൾ നടത്തുക, തുടർന്ന് ഒരു ഒറ്റപ്പെട്ട ബ്രാഞ്ച് തയ്യാറാക്കി കമ്മിറ്റ് ചെയ്യുക. പുഷ് ചെയ്യലും പുൾ റിക്വസ്റ്റ് സൃഷ്ടിക്കലും വെവ്വേറെ സ്ഥിരീകരിക്കേണ്ട പ്രവൃത്തികളാണ്.}
 ::msgcat::mcset ml Send അയയ്ക്കുക
+::msgcat::mcset ml {Send %s to the peer?} {പിയറിലേക്ക് %s അയക്കണോ?}
 ::msgcat::mcset ml {Send a %d-line message to the channel?} {ചാനലിലേക്ക് %d-വരി സന്ദേശം അയയ്ക്കണോ?}
 ::msgcat::mcset ml {Send raw line to the server? (%s)} {സെർവറിലേക്ക് അസംസ്കൃത വരി അയയ്ക്കണോ? (%s)}
 ::msgcat::mcset ml {Server (empty = no IRC)} {സെർവർ (ശൂന്യം = IRC ഇല്ല)}
 ::msgcat::mcset ml {Server: gateway configuration and a reviewed user unit} {സെർവർ: ഗേറ്റ്വേ കോൺഫിഗറേഷനും അവലോകനം ചെയ്ത യൂസർ യൂണിറ്റും}
 ::msgcat::mcset ml {Server: install a user unit and prepare the separate linger handoff} {സെർവർ: ഒരു യൂസർ യൂണിറ്റ് ഇൻസ്റ്റാൾ ചെയ്യുക, പ്രത്യേക ലിംഗർ ഹാൻഡ്‌ഓഫ് തയ്യാറാക്കുക}
 ::msgcat::mcset ml {Server: use a system service and prepare a privileged CLI request} {സെർവർ: ഒരു സിസ്റ്റം സേവനം ഉപയോഗിക്കുക, പ്രത്യേകാവകാശമുള്ള CLI അഭ്യർത്ഥന തയ്യാറാക്കുക}
+::msgcat::mcset ml Session സെഷൻ
 ::msgcat::mcset ml {Session id} {സെഷൻ ഐഡി}
 ::msgcat::mcset ml {Session id…} {സെഷൻ ഐഡി…}
 ::msgcat::mcset ml Sessions സെഷനുകൾ
 ::msgcat::mcset ml {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {ഈ അലിയാസിലേക്ക് ഇപ്പോൾ ഓവർറൈഡ് ചെയ്തിരിക്കുന്ന സെഷനുകൾ അവർക്ക് കിട്ടിയ റൂട്ട് തന്നെ നിലനിർത്തും; പുതിയ ഓവർറൈഡുകൾക്ക് പേര് കണ്ടെത്താനാകില്ല.}
+::msgcat::mcset ml {Sessions served} {നൽകിയ സെഷനുകൾ}
 ::msgcat::mcset ml Set സജ്ജമാക്കുക
 ::msgcat::mcset ml {Set [model] provider/default in config.toml.} {config.toml-ൽ [model] provider/default സജ്ജമാക്കുക.}
 ::msgcat::mcset ml {Set as swap target} {മാറ്റ ഭാഷയാക്കുക}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset ml {Setup — summary} {സെറ്റപ്പ് — സംഗ്രഹം}
 ::msgcat::mcset ml {Setup — welcome} {സെറ്റപ്പ് — സ്വാഗതം}
 ::msgcat::mcset ml {Shared container network} {പങ്കിട്ട കണ്ടെയ്നർ നെറ്റ്‌വർക്ക്}
+::msgcat::mcset ml Shells ഷെല്ലുകൾ
+::msgcat::mcset ml {Shells and monitors} {ഷെല്ലുകളും മോണിറ്ററുകളും}
+::msgcat::mcset ml {Shells and monitors (subagents, shells, monitors)} {ഷെല്ലുകളും മോണിറ്ററുകളും (സബ്ഏജന്റുകൾ, ഷെല്ലുകൾ, മോണിറ്ററുകൾ)}
 ::msgcat::mcset ml {Show diff} {ഡിഫ് കാണിക്കുക}
 ::msgcat::mcset ml {Show every key} {എല്ലാ കീകളും കാണിക്കുക}
 ::msgcat::mcset ml Sign {സൈൻ ചെയ്യുക}
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset ml Solved പരിഹരിച്ചു
 ::msgcat::mcset ml Source സോഴ്സ്
 ::msgcat::mcset ml {Source commit} {സോഴ്സ് കമ്മിറ്റ്}
+::msgcat::mcset ml {Source text} {സ്രോതസ്സ് വാചകം}
 ::msgcat::mcset ml {Source→app (C-c C-c)} {സോഴ്സ്→ആപ്പ് (C-c C-c)}
 ::msgcat::mcset ml Stage സ്റ്റേജ്
+::msgcat::mcset ml {Stage canary} {കാനറി സ്റ്റേജ് ചെയ്യുക}
+::msgcat::mcset ml Stale {കാലാവധി കഴിഞ്ഞത്}
+::msgcat::mcset ml {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {സ്ഥിര അനുമതികൾ പിന്നീടുള്ള ടൂൾ കോളുകൾ വീണ്ടും ചോദിക്കാതെ അനുവദിക്കുന്നു. സെഷൻ അനുമതികൾ ഓരോ സർഫേസിലും (ഡെസ്ക്ടോപ്പ്, Telegram, IRC, …) ഉള്ള ലൈവ് സെഷനുകൾ കൈവശം വയ്ക്കുന്നു; ഗ്ലോബൽ അനുമതികൾ നിലനിൽക്കുന്നു; config.toml-ലെ [approvals] allowlist എൻട്രികൾ വായന-മാത്രമായി പട്ടികപ്പെടുത്തുന്നു. ഒന്ന് പിൻവലിക്കുന്നത് മറ്റ് അനുമതികളെ ഒരിക്കലും മാറ്റില്ല.}
 ::msgcat::mcset ml Start ആരംഭിക്കുക
+::msgcat::mcset ml {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {നിങ്ങളുടെ യൂസർ പ്ലഗിൻ ഡയറക്ടറിയിലെ ഒരു എക്സ്റ്റൻഷനിൽ നിന്ന് ആരംഭിക്കുക. അത് അപ്ഗ്രേഡുകളിൽ നിലനിൽക്കുകയും ഗേറ്റ്വേ റീബിൽഡ് ആവശ്യപ്പെടാതിരിക്കുകയും ചെയ്യും. എഴുതുന്നതിന് മുമ്പ് പുതിയ എക്സ്റ്റൻഷൻ മാനിഫെസ്റ്റും സ്രോതസ്സും കൃത്യമായി പ്രിവ്യൂ ചെയ്യുന്നു. പിന്തുണയുള്ള ഭാഷയും API പതിപ്പും തിരഞ്ഞെടുത്ത് ഫയലുകൾ അവലോകനം ചെയ്ത ശേഷം എക്സ്റ്റൻഷൻ വേർതിരിച്ച് പരീക്ഷിക്കുക.}
 ::msgcat::mcset ml {Start with the phone} {ഫോണിനൊപ്പം ആരംഭിക്കൽ}
+::msgcat::mcset ml {Static IP} {സ്ഥിര IP}
 ::msgcat::mcset ml Status നില
 ::msgcat::mcset ml Steer സ്റ്റീർ
 ::msgcat::mcset ml {Step %1$d of %2$d} {ഘട്ടം %1$d, ആകെ %2$d}
 ::msgcat::mcset ml {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {ഇനിയും സജ്ജമാക്കാനുള്ളത്: %s — ഇവിടെ /secret set NAME ടൈപ്പ് ചെയ്യുക, അല്ലെങ്കിൽ ഗേറ്റ്‌വേയുടെ മെഷീനിൽ veles secret set NAME പ്രവർത്തിപ്പിക്കുക.}
 ::msgcat::mcset ml Stop നിർത്തുക
 ::msgcat::mcset ml {Storage root} {സ്റ്റോറേജ് റൂട്ട്}
+::msgcat::mcset ml Store സ്റ്റോർ
 ::msgcat::mcset ml {Store a secret: %s} {രഹസ്യം സൂക്ഷിക്കുക: %s}
 ::msgcat::mcset ml {Store it} സൂക്ഷിക്കുക
+::msgcat::mcset ml {Store replica} {സ്റ്റോർ റെപ്ലിക്ക}
 ::msgcat::mcset ml Subagents സബ്‌ഏജന്റുകൾ
 ::msgcat::mcset ml {Subagents (/agents)} {സബ്‌ഏജന്റുകൾ (/agents)}
 ::msgcat::mcset ml Summary സംഗ്രഹം
+::msgcat::mcset ml Surface സർഫേസ്
 ::msgcat::mcset ml {Swap ⇄} {മാറ്റുക ⇄}
+::msgcat::mcset ml {Sync cancelled.} {സിങ്ക് റദ്ദാക്കി.}
+::msgcat::mcset ml {Sync complete.} {സിങ്ക് പൂർത്തിയായി.}
+::msgcat::mcset ml {Sync now} {ഇപ്പോൾ സിങ്ക് ചെയ്യുക}
 ::msgcat::mcset ml {TOML copied — paste it into config.toml} {TOML പകർത്തി — config.toml-ലേക്ക് ഒട്ടിക്കുക}
 ::msgcat::mcset ml Tag ടാഗ്
 ::msgcat::mcset ml {Tap a link to open it, or a block's header to open or close the block.} {ലിങ്ക് തുറക്കാൻ അതിൽ ടാപ്പ് ചെയ്യുക, അല്ലെങ്കിൽ ബ്ലോക്ക് തുറക്കാനോ അടയ്ക്കാനോ അതിന്റെ തലക്കെട്ടിൽ ടാപ്പ് ചെയ്യുക.}
 ::msgcat::mcset ml {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {ടൈപ്പ് ചെയ്യാൻ താഴെയുള്ള ബോക്സിൽ ടാപ്പ് ചെയ്യുക. അയയ്ക്കുക അയയ്ക്കുന്നു, നിർത്തുക ടേൺ അവസാനിപ്പിക്കുന്നു, വേർപെടുത്തുക പ്രവർത്തിക്കുന്ന കമാൻഡിനെ പശ്ചാത്തലത്തിലേക്ക് മാറ്റുന്നു.}
 ::msgcat::mcset ml {Tap the text to clear the selection.} {തിരഞ്ഞെടുപ്പ് മായ്ക്കാൻ ടെക്സ്റ്റിൽ ടാപ്പ് ചെയ്യുക.}
+::msgcat::mcset ml {Target language:} {ലക്ഷ്യ ഭാഷ:}
+::msgcat::mcset ml {Target node IDs (canary first, comma separated)} {ടാർഗറ്റ് നോഡ് ഐഡികൾ (ആദ്യം കാനറി, കോമയാൽ വേർതിരിച്ചത്)}
 ::msgcat::mcset ml {Task list} {ടാസ്ക്ക് ലിസ്റ്റ്}
 ::msgcat::mcset ml {Task list (right pane)} {ടാസ്ക്ക് ലിസ്റ്റ് (വലത് പെയ്ൻ)}
 ::msgcat::mcset ml Tasks ടാസ്ക്കുകൾ
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset ml {That is not a ticket.} {ഇത് ഒരു ടിക്കറ്റല്ല.}
 ::msgcat::mcset ml {That is not a veles pool code.} {അത് ഒരു veles ഗ്രൂപ്പ് കോഡല്ല.}
 ::msgcat::mcset ml {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {അത് WireGuard കോഡാണ്: അത് WireGuard ആപ്പ് ഉപയോഗിച്ച് സ്കാൻ ചെയ്യുക. veles കോഡ് രണ്ടാമത്തേതാണ്.}
+::msgcat::mcset ml {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {അവലോകനം ചെയ്ത %d ഫയൽ(കൾ) നിങ്ങളുടെ യൂസർ പ്ലഗിൻ ഡയറക്ടറിയിലെ പുതിയ ഒരു ഡയറക്ടറിയിലേക്ക് എഴുതപ്പെടും, veles എക്സ്റ്റൻഷൻ ലോഡ് ചെയ്യാൻ ശ്രമിക്കും. പ്രിവ്യൂവിന് ശേഷം അതേ പേരിലുള്ള ഒരു ഡയറക്ടറി ഉണ്ടായിട്ടുണ്ടെങ്കിൽ ഒന്നും എഴുതപ്പെടില്ല. പ്രസിദ്ധീകരണം ഈ പ്രവർത്തിയുടെ ഭാഗമല്ല.}
 ::msgcat::mcset ml {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {Dev പെയ്‌നിലെ REPL ലൈവ് ആപ്പിൽ വിലയിരുത്തുന്നു — UI അതിന്റേതായ ലിസ്പ് ആണ്.}
 ::msgcat::mcset ml {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {[mcp_servers.<name>] ടേബിൾ config.toml-ൽ നിന്ന് നീക്കം ചെയ്തു. പഴയ ഫയൽ config.toml.bak ആയി സൂക്ഷിച്ചിരിക്കുന്നു.}
 ::msgcat::mcset ml {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {അഡാപ്റ്റർ അലൗലിസ്റ്റുകളാണ് (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) വിശ്വാസ അതിർത്തി; അനുവദിക്കപ്പെട്ട എല്ലാ അയക്കുന്നയാളും ഉടമയായി കണക്കാക്കപ്പെടും. ഇതാണ് ACL-ന് മുമ്പുള്ള നിലപാട്.}
 ::msgcat::mcset ml {The agent asks for a secret: %s} {ഏജന്റ് ഒരു രഹസ്യം ചോദിക്കുന്നു: %s}
+::msgcat::mcset ml {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {ഇതിനകം പുഷ് ചെയ്ത ബ്രാഞ്ച് PR ഹെഡായി ഉപയോഗിക്കും. നിങ്ങളുടെ ഫോർക്കിലെ ബ്രാഞ്ചിന് owner:branch എന്ന പേര് സ്വയം നൽകും.}
+::msgcat::mcset ml {The author asks} {രചയിതാവ് ചോദിക്കുന്നു}
+::msgcat::mcset ml {The buffer changed. Request a new proposal before applying.} {ബഫർ മാറിയിട്ടുണ്ട്. പ്രയോഗിക്കുന്നതിന് മുമ്പ് പുതിയ നിർദ്ദേശം ആവശ്യപ്പെടുക.}
 ::msgcat::mcset ml {The bundle operation returned an invalid result. Verify the installation before retrying.} {ബണ്ടിൽ പ്രവർത്തനം അസാധുവായ ഫലമാണ് നൽകിയത്. വീണ്ടും ശ്രമിക്കും മുമ്പ് ഇൻസ്റ്റലേഷൻ പരിശോധിച്ചുറപ്പിക്കുക.}
 ::msgcat::mcset ml {The bundle preview was malformed; nothing was installed.} {ബണ്ടിൽ പ്രിവ്യൂ തെറ്റായ രൂപത്തിലായിരുന്നു; ഒന്നും ഇൻസ്റ്റാൾ ചെയ്തിട്ടില്ല.}
 ::msgcat::mcset ml {The camera did not open; paste the code instead.} {ക്യാമറ തുറന്നില്ല; പകരം കോഡ് ഒട്ടിക്കുക.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset ml {The component manifest is still loading. Wait for it or choose another component.} {ഘടകത്തിന്റെ മാനിഫെസ്റ്റ് ഇപ്പോഴും ലോഡ് ചെയ്യുന്നു. അതിനായി കാത്തിരിക്കുക അല്ലെങ്കിൽ മറ്റൊരു ഘടകം തിരഞ്ഞെടുക്കുക.}
 ::msgcat::mcset ml {The component preview is not ready yet. Refresh it and review the result before applying.} {ഘടക പ്രിവ്യൂ ഇതുവരെ തയ്യാറായിട്ടില്ല. പ്രയോഗിക്കുന്നതിന് മുമ്പ് അത് പുതുക്കി ഫലം റിവ്യൂ ചെയ്യുക.}
 ::msgcat::mcset ml {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {ഘടക പ്രിവ്യൂ ഇപ്പോഴും ലോഡ് ചെയ്യുന്നു. സംയോജിത മാറ്റങ്ങൾ റിവ്യൂ ചെയ്യുന്നതിന് മുമ്പ് മറുപടിക്കായി കാത്തിരിക്കുക.}
+::msgcat::mcset ml {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {നിലവിലെ ഡയഗ്നോസ്റ്റിക്സ് (ലാംഗ്വേജ് സെർവറിൽ നിന്നോ Check-ൽ നിന്നോ) ഈ ഫയലിനൊപ്പം അയക്കുന്നു. ഓപ്ഷണലായി ഒരു ചോദ്യം ചേർക്കാം. ഉത്തരം ടെക്സ്റ്റ് മാത്രം; ഒന്നും എഴുതാനാകില്ല.}
 ::msgcat::mcset ml {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {ഡയറക്ടറിയും അതിലുള്ളതെല്ലാം നീക്കം ചെയ്യപ്പെടും. ഇത് തിരിച്ചെടുക്കാനാകില്ല — പ്രോംപ്റ്റിൽ നിന്ന് മാത്രം ഒഴിവാക്കണമെങ്കിൽ അത് ഓഫാക്കുക.}
 ::msgcat::mcset ml {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {ഡയറക്ടറി നീക്കം ചെയ്യപ്പെടും. പ്ലഗിൻ ഫോൾഡർ ഒരു git റിപ്പോസിറ്ററിയാണ്, ആദ്യം ഒരു സ്നാപ്പ്ഷോട്ട് കമ്മിറ്റ് ചെയ്യുന്നു, അതിനാൽ History… അത് തിരികെ കൊണ്ടുവരും.}
+::msgcat::mcset ml {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {എഡിറ്റർ ഗേറ്റ്വേ ഫയലുകൾ തുറക്കുന്നു, റിമോട്ട് ഇൻസ്റ്റൻസുകൾ ഉൾപ്പെടെ, ഫയലിന്റെ ഭാഷയ്ക്കുള്ള ലാംഗ്വേജ് സെർവർ ഗേറ്റ്വേയിൽ പ്രവർത്തിപ്പിക്കുന്നു: tcl-lsp, typescript-language-server (TypeScript, JavaScript), rust-analyzer (ഒരു Rust പ്ലഗിൻ ക്രേറ്റ് അല്ലെങ്കിൽ മൊഡ്യൂൾ), clangd (C), racket-langserver, ഒരു Common Lisp സെർവർ. ഗേറ്റ്വേയിൽ സെർവർ ഉള്ള ഓരോ ഭാഷയ്ക്കും ഹോവർ, നിർവചനത്തിലേക്ക് പോകൽ, പൂർത്തീകരണം, തത്സമയ ഡയഗ്നോസ്റ്റിക്സ് എന്നിവ പ്രവർത്തിക്കും; ഇല്ലാത്തപ്പോൾ എഡിറ്റർ അവിടെ ഏത് പ്രോഗ്രാം ഇൻസ്റ്റാൾ ചെയ്യണമെന്ന് പറയും, സിന്റാക്സ് ഹൈലൈറ്റിംഗ് തുടരും. Check ഗേറ്റ്വേയിൽ ബന്ധപ്പെട്ട ചെക്കർ പ്രവർത്തിപ്പിക്കുന്നു: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, അല്ലെങ്കിൽ Racket, Lisp റീഡറുകൾ. സേവ് ചെയ്യുക, Manage extensions-ൽ റീലോഡ് ചെയ്യുക, ലോക്കൽ സ്റ്റേറ്റ് പ്രസിദ്ധീകരിക്കാതെ എക്സ്റ്റൻഷൻ ടെസ്റ്റ് ചെയ്യുക.}
 ::msgcat::mcset ml {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {ആദ്യത്തെ ഹാൻഡ്ഓഫ് രഹസ്യങ്ങളും പിൻ ചെയ്ത ഇമേജും റൺടൈം ഫയലുകളും തയ്യാറാക്കുന്നു, പക്ഷേ PDS ആരംഭിക്കുന്നില്ല. KEK, PLC റൊട്ടേഷൻ കീ എന്നിവ ഓഫ്‌ലൈനിൽ ബാക്കപ്പ് ചെയ്യുക, തുടർന്ന് HTTP-01 TLS, ആക്ടിവേഷൻ സജ്ജീകരിക്കാൻ ബാക്കപ്പ് അംഗീകാരത്തോടെ പുതുതായി അവലോകനം ചെയ്ത അഭ്യർത്ഥന നടത്തുക. DNS റെക്കോർഡുകൾ നേരിട്ട് ഈ ഹോസ്റ്റിലേക്ക് ചൂണ്ടണം; CDN പ്രോക്സിയോ DNS മാറ്റങ്ങളോ veles നടത്തുന്നില്ല.}
+::msgcat::mcset ml {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {എക്സ്റ്റൻഷൻ ജനറേറ്റ് ചെയ്തതിന് ശേഷം ഫോം മാറിയിട്ടുണ്ട്. വീണ്ടും ജനറേറ്റ് ചെയ്യുക, അല്ലെങ്കിൽ സാധാരണ സ്കാഫോൾഡ് പ്രിവ്യൂ ചെയ്യുക.}
 ::msgcat::mcset ml {The gateway itself is untouched.} {ഗേറ്റ്വേ തന്നെ മാറ്റമില്ലാതെ തുടരുന്നു.}
 ::msgcat::mcset ml {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {ഗേറ്റ്‌വേ കോൺഫിഗ് വീണ്ടും ലോഡ് ചെയ്തു, അതിനാൽ പുതിയ സെഷനുകൾ ഇപ്പോൾ മുതൽ അത് ഉപയോഗിക്കുന്നു, ലോക്കറിൽ സൂക്ഷിച്ച key അടുത്ത അഭ്യർത്ഥനയിൽ ഉപയോഗിക്കപ്പെടും. Telegram-ഉം IRC-ഉം ഗേറ്റ്‌വേയുടെ അടുത്ത റീസ്റ്റാർട്ടിൽ തുടങ്ങും: veles gateway restart.}
 ::msgcat::mcset ml {The installed component no longer matches the selected manifest. Review the component list again.} {ഇൻസ്റ്റാൾ ചെയ്ത ഘടകം ഇനി തിരഞ്ഞെടുത്ത മാനിഫെസ്റ്റുമായി പൊരുത്തപ്പെടുന്നില്ല. ഘടക പട്ടിക വീണ്ടും റിവ്യൂ ചെയ്യുക.}
 ::msgcat::mcset ml {The installer preview has no verification signatures; apply is disabled.} {ഇൻസ്റ്റാളർ പ്രിവ്യൂവിന് പരിശോധനാ ഒപ്പുകളില്ല; പ്രയോഗിക്കൽ അപ്രാപ്തമാക്കിയിരിക്കുന്നു.}
 ::msgcat::mcset ml {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {ജോബും അതിന്റെ റൺ ഹിസ്റ്ററിയും നീക്കം ചെയ്യപ്പെടും. ഇത് തിരിച്ചെടുക്കാനാകില്ല — നിർത്തണം മാത്രമാണെങ്കിൽ പോസ് ചെയ്യുക.}
+::msgcat::mcset ml {The log could not be read: %s} {ലോഗ് വായിക്കാനായില്ല: %s}
 ::msgcat::mcset ml {The manifest belongs to another component; its reply was discarded.} {മാനിഫെസ്റ്റ് മറ്റൊരു ഘടകത്തിന്റേതാണ്; അതിന്റെ മറുപടി വലിച്ചെറിഞ്ഞു.}
 ::msgcat::mcset ml {The profile changed. Review the fresh plan before applying it.} {പ്രൊഫൈൽ മാറി. ഇത് പ്രയോഗിക്കുന്നതിന് മുമ്പ് പുതിയ പദ്ധതി അവലോകനം ചെയ്യുക.}
 ::msgcat::mcset ml {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {റിപ്പോസിറ്ററിയുടെ റൂട്ടിലോ ഒരു കാറ്റഗറി ആഴത്തിലോ SKILL.md വേണം. അത് %s-ൽ സ്ഥാപിക്കപ്പെടും.}
 ::msgcat::mcset ml {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {റിപ്പോസിറ്ററി റൂട്ടിൽ plugin.toml ഉണ്ടായിരിക്കണം. അത് മാനിഫെസ്റ്റിന്റെ പേരിൽ %s-ലേക്ക് ക്ലോൺ ചെയ്യപ്പെടും.}
+::msgcat::mcset ml {The reviewed change set was applied (%d files). Review and test it before publishing.} {അവലോകനം ചെയ്ത മാറ്റസെറ്റ് പ്രയോഗിച്ചു (%d ഫയലുകൾ). പ്രസിദ്ധീകരിക്കുന്നതിന് മുമ്പ് അത് അവലോകനം ചെയ്ത് ടെസ്റ്റ് ചെയ്യുക.}
 ::msgcat::mcset ml {The reviewed configuration snapshot will also be restored.} {അവലോകനം ചെയ്ത കോൺഫിഗറേഷൻ സ്നാപ്പ്ഷോട്ടും പുനഃസ്ഥാപിക്കും.}
+::msgcat::mcset ml {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {അവലോകനം ചെയ്ത ഫയലുകൾ നിങ്ങളുടെ യൂസർ പ്ലഗിൻ ഡയറക്ടറിയിലേക്ക് എഴുതും. വെലെസ് ഒരു ലോക്കൽ റിക്കവറി സ്നാപ്ഷോട്ട് സൂക്ഷിച്ച് എക്സ്റ്റൻഷൻ വീണ്ടും ലോഡ് ചെയ്യാൻ ശ്രമിക്കും; പ്രസിദ്ധീകരണം ഈ നടപടിയുടെ ഭാഗമല്ല.}
+::msgcat::mcset ml {The reviewed proposal was applied locally. Review and test it before publishing.} {അവലോകനം ചെയ്ത നിർദ്ദേശം ലോക്കലായി പ്രയോഗിച്ചു. പ്രസിദ്ധീകരിക്കുന്നതിന് മുമ്പ് അത് അവലോകനം ചെയ്ത് പരീക്ഷിക്കുക.}
 ::msgcat::mcset ml {The rollback preview was malformed or named another component; nothing was restored.} {റോൾബാക്ക് പ്രിവ്യൂ തെറ്റായ രൂപത്തിലോ മറ്റൊരു കോംപോണന്റിനെ സൂചിപ്പിക്കുന്നതോ ആയിരുന്നു; ഒന്നും പുനഃസ്ഥാപിച്ചിട്ടില്ല.}
 ::msgcat::mcset ml {The rollback returned an invalid result. Verify the installation before retrying.} {റോൾബാക്ക് അസാധുവായ ഫലമാണ് നൽകിയത്. വീണ്ടും ശ്രമിക്കും മുമ്പ് ഇൻസ്റ്റലേഷൻ പരിശോധിച്ചുറപ്പിക്കുക.}
 ::msgcat::mcset ml {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {പുതിയ സെഷനുകൾ സ്റ്റാർട്ടാകുന്ന റൂട്ട്. /model ഉം മോഡലുകളുടെ ഓവർലേയും പിന്നീട് ഇത് മാറ്റും — സെഷനനുസരിച്ചോ പുതിയ ഡിഫോൾട്ടായോ.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset ml {The signed download discard returned an invalid response; no installation was requested.} {ഒപ്പിട്ട ഡൗൺലോഡ് ഉപേക്ഷിക്കൽ അസാധുവായ പ്രതികരണം നൽകി; ഒരു ഇൻസ്റ്റാളേഷനും അഭ്യർത്ഥിച്ചിട്ടില്ല.}
 ::msgcat::mcset ml {The signed installation returned an invalid result. Verify the installation before retrying.} {ഒപ്പിട്ട ഇൻസ്റ്റാളേഷൻ അസാധുവായ ഫലം നൽകി. വീണ്ടും ശ്രമിക്കുന്നതിന് മുമ്പ് ഇൻസ്റ്റാളേഷൻ പരിശോധിക്കുക.}
 ::msgcat::mcset ml {The signed release preview was malformed; nothing was installed.} {ഒപ്പിട്ട റിലീസ് പ്രിവ്യൂ വികലമായിരുന്നു; ഒന്നും ഇൻസ്റ്റാൾ ചെയ്തിട്ടില്ല.}
+::msgcat::mcset ml {The source buffer changed. Request a new proposal before applying.} {സ്രോതസ്സ് ബഫർ മാറിയിട്ടുണ്ട്. പ്രയോഗിക്കുന്നതിന് മുമ്പ് പുതിയ നിർദ്ദേശം ആവശ്യപ്പെടുക.}
 ::msgcat::mcset ml {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {സ്റ്റോർ ഒരു റിവിഷൻ പിന്നിലേക്ക് പോകുന്നു. റോൾബാക്ക് തന്നെ ഒരു റിവിഷനാണ്, അതിനാൽ അതും തിരിച്ചെടുക്കാം.}
+::msgcat::mcset ml {The translator returned no text.} {വിവർത്തക മോഡൽ വാചകം തിരികെ നൽകിയില്ല.}
 ::msgcat::mcset ml {The verification reply was malformed; no integrity result was accepted.} {പരിശോധനാ മറുപടി തെറ്റായ രൂപത്തിലായിരുന്നു; ഒരു സമഗ്രതാ ഫലവും അംഗീകരിച്ചില്ല.}
 ::msgcat::mcset ml Themes തീമുകൾ
+::msgcat::mcset ml {These paths already exist in the chosen repository:} {ഈ പാതകൾ തിരഞ്ഞെടുത്ത റിപ്പോസിറ്ററിയിൽ ഇതിനകം ഉണ്ട്:}
 ::msgcat::mcset ml {They have not been saved.} {അവ സേവ് ചെയ്തിട്ടില്ല.}
+::msgcat::mcset ml {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {ഈ ബഫറിൽ വിശദീകരിക്കാൻ ഡയഗ്നോസ്റ്റിക്സ് ഇല്ല. Check പ്രവർത്തിപ്പിക്കുക, അല്ലെങ്കിൽ ലാംഗ്വേജ് സെർവറിനായി കാത്തിരിക്കുക.}
 ::msgcat::mcset ml {This challenge is over.} {ഈ ചലഞ്ച് അവസാനിച്ചു.}
 ::msgcat::mcset ml {This code has expired. Ask for a new one.} {ഈ കോഡിന്റെ കാലാവധി കഴിഞ്ഞു. പുതിയത് ചോദിക്കുക.}
 ::msgcat::mcset ml {This does not start a service or claim signed-download verification.} {ഇത് ഒരു സേവനവും ആരംഭിക്കുന്നില്ല, ഒപ്പിട്ട-ഡൗൺലോഡ് പരിശോധന അവകാശപ്പെടുന്നുമില്ല.}
 ::msgcat::mcset ml {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {ഈ ഗേറ്റ്‌വേ ഈ മെഷീനിൽ നിന്ന് രഹസ്യ മൂല്യങ്ങൾ സ്വീകരിക്കില്ല: അവിടെത്തന്നെ veles secret set %s ഉപയോഗിച്ച് നൽകുക, അല്ലെങ്കിൽ ഈ നെറ്റ്‌വർക്ക് അതിന്റെ [vault] trusted_networks-ൽ ചേർക്കുക}
 ::msgcat::mcset ml {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {എഴുതപ്പെടാൻ പോകുന്നത് കൃത്യമായി ഇതാണ് — എഞ്ചിന്റെ സ്വന്തം ബൈറ്റുകൾ, തത്സമയം എടുത്തത്. ഇതുവരെ ഡിസ്കിൽ ഒന്നും സ്പർശിച്ചിട്ടില്ല.}
+::msgcat::mcset ml {This node is not a configured sync peer for any kind.} {ഈ നോഡ് ഏതെങ്കിലും തരത്തിന് ക്രമീകരിച്ച സിങ്ക് പിയറല്ല.}
+::msgcat::mcset ml {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {ഈ പ്ലഗിൻ ബണ്ടിൽ ചെയ്തതും വായന-മാത്രവുമാണ്. ബണ്ടിൽ പകർപ്പ് ഉപയോഗിക്കാൻ ഇതേ പേരിലുള്ള ഉപയോക്തൃ പകർപ്പ് നീക്കം ചെയ്യുക.}
+::msgcat::mcset ml {This publishes the commit; no pull request is created yet.} {ഇത് കമിറ്റ് പ്രസിദ്ധീകരിക്കുന്നു; പുൾ റിക്വസ്റ്റ് ഇതുവരെ സൃഷ്ടിക്കുന്നില്ല.}
 ::msgcat::mcset ml {This review expires after %s seconds. Closing or cancelling discards its private staging.} {ഈ അവലോകനം %s സെക്കൻഡിനുശേഷം കാലഹരണപ്പെടുന്നു. അടയ്ക്കുകയോ റദ്ദാക്കുകയോ ചെയ്യുന്നത് അതിന്റെ സ്വകാര്യ സ്റ്റേജിംഗ് ഉപേക്ഷിക്കുന്നു.}
 ::msgcat::mcset ml {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {ഈ വിസാർഡ് config.toml എഴുതുന്നു, നിങ്ങൾ നൽകുന്ന keys എൻക്രിപ്റ്റ് ചെയ്ത ലോക്കറിൽ വയ്ക്കുന്നു. ഓരോ ഘട്ടവും ഒഴിവാക്കാം: ഒഴിവാക്കിയ ഘട്ടം പുതിയ കോൺഫിഗിൽ ഉൾപ്പെടില്ല, നിലവിലുള്ള കോൺഫിഗിൽ അത് അതേപടി നിലനിൽക്കും. നിലവിലുള്ള config.toml അതേ സ്ഥാനത്ത് എഡിറ്റ് ചെയ്യപ്പെടുന്നു — നിങ്ങൾ ഉത്തരം നൽകുന്ന ഭാഗങ്ങൾ മാത്രം മാറുന്നു, ബാക്കിയെല്ലാം, കമന്റുകൾ ഉൾപ്പെടെ, നിലനിൽക്കുന്നു.}
 ::msgcat::mcset ml {Ticket needed} {ടിക്കറ്റ് ആവശ്യമാണ്}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset ml {Topic for %s} {%s-ന്റെ വിഷയം}
 ::msgcat::mcset ml {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {മെനു തുറക്കാൻ ഒരു സെഷനിലോ മെനുവുള്ള മറ്റെന്തിലുമോ സ്പർശിച്ച് പിടിക്കുക. അതിന് പുറത്തുള്ള ഒരു ടാപ്പ്, അല്ലെങ്കിൽ തിരികെ, അത് അടയ്ക്കും.}
 ::msgcat::mcset ml {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {ഒരു വാക്ക് തിരഞ്ഞെടുക്കാൻ അതിൽ സ്പർശിച്ച് പിടിക്കുക. വിരൽ ഉയർത്തുമ്പോൾ അതിന്റെ മെനു തുറക്കും, ഏറ്റവും മുകളിൽ പകർത്തുക ഉണ്ടാകും.}
+::msgcat::mcset ml Translate {വിവർത്തനം ചെയ്യുക}
+::msgcat::mcset ml {Translate selection} {തിരഞ്ഞെടുത്തത് വിവർത്തനം ചെയ്യുക}
+::msgcat::mcset ml Translating… {വിവർത്തനം ചെയ്യുന്നു…}
+::msgcat::mcset ml {Translation cancelled.} {പരിഭാഷ റദ്ദാക്കി.}
+::msgcat::mcset ml {Translation copied.} {വിവർത്തനം പകർത്തി.}
+::msgcat::mcset ml {Translation failed} {വിവർത്തനം പരാജയപ്പെട്ടു}
+::msgcat::mcset ml {Translation result} {പരിഭാഷാ ഫലം}
+::msgcat::mcset ml {Translator configuration unavailable} {പരിഭാഷകന്റെ ക്രമീകരണം ലഭ്യമല്ല}
 ::msgcat::mcset ml {Trigger history} {ട്രിഗർ ചരിത്രം}
 ::msgcat::mcset ml Triggers ട്രിഗറുകൾ
 ::msgcat::mcset ml {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {ടേൺ ഇല്ലാതെ തന്നെ ട്രിഗറുകൾ ചാനൽ ഇവന്റുകളോട് പ്രതികരിക്കുന്നു. slopdrop ഇവന്റ് ബ്രിഡ്ജിലേക്ക് കൈമാറുകയും മറുപടി റിലേ ചെയ്യുകയും ചെയ്യുന്നു; കൂൾഡൗണിനും മണിക്കൂർ പരിധിക്കുള്ളിൽ vision ഒരു ഇമേജ് URL വിവരിക്കുന്നു. [triggers] കോൺഫിഗ് സ്വിച്ചും ഡിറൈവ്ഡ് മാസ്കും അനുവദിക്കുന്നിടത്ത് മാത്രമേ വരി പ്രവർത്തിക്കൂ — നിലവിലെ slopdrop ബൈൻഡിംഗുകളിൽ #coven ഒന്നും കൈമാറില്ല.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset ml {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {.env-ലെ IRC_ALLOWED_USERS നിങ്ങളുടെ അക്കൗണ്ട് പറയുന്നതുവരെ, നെറ്റ്‌വർക്കിലെ ആർക്കും ബോട്ടുമായി സംസാരിക്കാം — [acl] വിഭാഗം ഇല്ലെങ്കിൽ ഉടമയായി, എല്ലാ ടൂളുകളോടും കൂടി.}
 ::msgcat::mcset ml {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {.env-ലെ TELEGRAM_ALLOWED_USERS നിങ്ങളുടെ യൂസർ ഐഡി പറയുന്നതുവരെ, ബോട്ടിനെ കണ്ടെത്തുന്ന ആർക്കും അതുമായി സംസാരിക്കാം — [acl] വിഭാഗം ഇല്ലെങ്കിൽ ഉടമയായി, എല്ലാ ടൂളുകളോടും കൂടി.}
 ::msgcat::mcset ml Untitled തലക്കെട്ടില്ലാത്തവ
+::msgcat::mcset ml {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {അപ്സ്ട്രീം സംഭാവന ഒരു വ്യക്തമായ പ്രസിദ്ധീകരണ പ്രവൃത്തിയാണ്, സ്വയമേയമായ അപ്ലോഡല്ല. Manage extensions-ൽ, Contribute എല്ലാ ഉപയോക്തൃ എക്സ്റ്റൻഷനുകളും പട്ടികപ്പെടുത്തുന്നു: എക്സ്റ്റൻഷനുകളും ഫയലുകളും തിരഞ്ഞെടുക്കുക, ഡിഫ്റ്റും രഹസ്യ സ്കാനും പരിശോധിക്കുക, പരിശോധനകൾ നടത്തുക, തുടർന്ന് നിങ്ങൾ തിരഞ്ഞെടുത്ത git ഐഡന്റിറ്റി ഉപയോഗിച്ച് ഒരു ബ്രാഞ്ചും ഒരു PR-ഉം (ഡിഫോൾട്ടായി veles-ലേക്ക്) ഉണ്ടാക്കുക. ഓരോ എക്സ്റ്റൻഷനും റിപ്പോസിറ്ററിയിൽ അതിന്റേതായ ഡയറക്ടറിയിൽ പോകുന്നു, അവിടെ നിലവിലുള്ള ഒരു ഫയൽ വെവ്വേറെ സ്ഥിരീകരണത്തിന് ശേഷം മാത്രമേ മാറ്റിസ്ഥാപിക്കൂ. node.toml, ലോക്കൽ ക്രെഡൻഷ്യലുകൾ, ടോക്കണുകൾ, സ്വകാര്യ എൻഡ്പോയിന്റുകൾ, ബന്ധമില്ലാത്ത പ്ലഗിൻ സ്റ്റേറ്റ് എന്നിവ ഒരിക്കലും പ്രസിദ്ധീകരിക്കരുത്. ലോക്കൽ റിക്കവറി സ്നാപ്ഷോട്ടുകൾ അപ്സ്ട്രീം കമ്മിറ്റോ PR-ഓ അല്ല.}
+::msgcat::mcset ml {Upstream repository or fork URL} {അപ്സ്ട്രീം റെപ്പോസിറ്ററി അല്ലെങ്കിൽ ഫോർക്ക് URL}
+::msgcat::mcset ml {Uptime class} {അപ്‌ടൈം വിഭാഗം}
+::msgcat::mcset ml {Uptime: host %1$s, gateway %2$s} {അപ്ടൈം: ഹോസ്റ്റ് %1$s, ഗേറ്റ്വേ %2$s}
 ::msgcat::mcset ml Usage ഉപയോഗം
 ::msgcat::mcset ml {Usage & Quota} {ഉപയോഗവും ക്വോട്ടയും}
 ::msgcat::mcset ml {Use TLS} {TLS ഉപയോഗിക്കുക}
 ::msgcat::mcset ml {Use now} {ഇപ്പോൾ ഉപയോഗിക്കുക}
+::msgcat::mcset ml {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {യഥാർത്ഥ കരാരുകൾക്കായി രചയിതാവിന്റെ ഗൈഡ്, API റഫറൻസ് എന്നീ ബട്ടണുകൾ ഉപയോഗിക്കുക. പ്ലഗിനുകൾ ഓവർലേ ലൈവ് ഹുക്കുകൾ പട്ടികപ്പെടുത്തുന്നു; സേവനങ്ങളും ഓവർറൈഡ് പോയിന്റുകളും ഈ ഗൈഡിലെ പകർത്തിയ പട്ടികയിൽ നിന്നല്ല, ഗേറ്റ്വേയുടെ സ്വന്തം റെജിസ്ട്രിയിൽ നിന്നാണ് വരുന്നത്.}
 ::msgcat::mcset ml {Use this ticket} {ഈ ടിക്കറ്റ് ഉപയോഗിക്കുക}
+::msgcat::mcset ml {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {veles-ലേക്ക് തന്നെ പുഷ് ചെയ്യാനാകുന്നില്ലെങ്കിൽ നിങ്ങളുടെ ഫോർക്ക് (https://github.com/<you>/veles.git അല്ലെങ്കിൽ git@github.com:<you>/veles.git) ഉപയോഗിക്കുക. തിരഞ്ഞെടുത്ത റിപ്പോസിറ്ററി ഒരു ഒറ്റപ്പെട്ട വർക്ക്ട്രീയിലേക്ക് ക്ലോൺ ചെയ്യും. ഒന്നും പുഷ് ചെയ്യുന്നില്ല.}
 ::msgcat::mcset ml {Users — one role across networks and platforms} {ഉപയോക്താക്കൾ — നെറ്റ്വർക്കുകളിലും പ്ലാറ്റ്ഫോമുകളിലും ഒരൊറ്റ റോൾ}
 ::msgcat::mcset ml {Using the phone, for the agent} {ഫോൺ ഉപയോഗം, ഏജന്റിനായി}
 ::msgcat::mcset ml {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {സാധാരണയായി പ്രൊവൈഡർ എൻട്രി പേരിന് തുല്യം. Skip തിരഞ്ഞെടുക്കുമ്പോൾ രണ്ടും ശൂന്യമായി വിടുക — പകുതി മാത്രം നിറച്ച ജോഡി റൂട്ട് ചെയ്യില്ല.}
 ::msgcat::mcset ml {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {മൂല്യങ്ങൾ TOML ആണ്: ക്വോട്ട് ചെയ്ത സ്ട്രിംഗുകൾ, സംഖ്യകൾ, അല്ലെങ്കിൽ ലിസ്റ്റുകൾ. [mcp_servers.<name>]-ലേക്ക് എഴുതപ്പെടുന്നു — നിങ്ങളുടെ കമന്റുകളും മറ്റെല്ലാ സെക്ഷനുകളും മാറ്റമില്ലാതെ നിലനിൽക്കും.}
+::msgcat::mcset ml Vault വോൾട്ട്
 ::msgcat::mcset ml {Verified signed bundle installed. Restart the gateway before using the new core.} {പരിശോധിച്ച ഒപ്പിട്ട ബണ്ടിൽ ഇൻസ്റ്റാൾ ചെയ്തു. പുതിയ കോർ ഉപയോഗിക്കുന്നതിന് മുമ്പ് ഗേറ്റ്വേ പുനരാരംഭിക്കുക.}
 ::msgcat::mcset ml {Verified signed release — not installed yet} {പരിശോധിച്ച ഒപ്പിട്ട റിലീസ് — ഇതുവരെ ഇൻസ്റ്റാൾ ചെയ്തിട്ടില്ല}
 ::msgcat::mcset ml {Verify and review release…} {റിലീസ് പരിശോധിച്ച് അവലോകനം ചെയ്യുക…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset ml {Verify signed release} {ഒപ്പിട്ട റിലീസ് പരിശോധിക്കുക}
 ::msgcat::mcset ml {Verify signed release…} {ഒപ്പിട്ട റിലീസ് പരിശോധിക്കുക…}
 ::msgcat::mcset ml Version പതിപ്പ്
+::msgcat::mcset ml {Version %1$s: %2$s} {പതിപ്പ് %1$s: %2$s}
+::msgcat::mcset ml {Version drift in the registry: %s} {രജിസ്ട്രിയിൽ പതിപ്പ് ഡ്രിഫ്റ്റ്: %s}
 ::msgcat::mcset ml View കാഴ്ച
 ::msgcat::mcset ml {View markdown source} {മാർക്ക്ഡൗൺ സോഴ്സ് കാണുക}
 ::msgcat::mcset ml {View source / rendered} {സോഴ്സ് / റെൻഡർ ചെയ്ത രൂപം}
 ::msgcat::mcset ml Voice {വോയ്സ് നൽകുക}
+::msgcat::mcset ml {Waiting for the model…} {മോഡലിനായി കാത്തിരിക്കുന്നു…}
+::msgcat::mcset ml {Waiting for the model… Nothing has been written.} {മോഡലിനായി കാത്തിരിക്കുന്നു… ഒന്നും എഴുതിയിട്ടില്ല.}
 ::msgcat::mcset ml {Welcome to veles} {veles-ലേക്ക് സ്വാഗതം}
 ::msgcat::mcset ml {What the agent can do here} {ഏജന്റിന് ഇവിടെ എന്ത് ചെയ്യാം}
 ::msgcat::mcset ml {What veles may do on this phone. Each button opens the Android setting that changes it.} {ഈ ഫോണിൽ veles-ന് എന്തൊക്കെ ചെയ്യാം. ഓരോ ബട്ടണും അത് മാറ്റുന്ന Android ക്രമീകരണം തുറക്കുന്നു.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset ml {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {veles പശ്ചാത്തലത്തിലായിരിക്കുമ്പോൾ ഒരു ഏജന്റിന്റെ ചോദ്യമോ പൂർത്തിയായ ടേണോ അറിയിപ്പായി വരും; സെഷൻ തുറക്കാൻ അതിൽ ടാപ്പ് ചെയ്യുക.}
 ::msgcat::mcset ml {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {ബോട്ടിനോട് ആർക്കൊക്കെ സംസാരിക്കാം. ഈ തിരഞ്ഞെടുപ്പ് തീരുമാനിക്കുന്നത് config.toml-ൽ [acl] വിഭാഗം ഉണ്ടാകണോ എന്നാണ് — അത് മൊത്തം നിലപാട് തന്നെ മാറ്റും.}
 ::msgcat::mcset ml Whois Whois
-::msgcat::mcset ml {Wire protocol (chat_completions or responses)} {വയർ പ്രോട്ടോക്കോൾ (chat_completions അല്ലെങ്കിൽ responses)}
+::msgcat::mcset ml {Wire protocol (chat_completions, responses or plugin)} {വയർ പ്രോട്ടോക്കോൾ (chat_completions, responses അല്ലെങ്കിൽ plugin)}
 ::msgcat::mcset ml {With a keyboard attached, every key works as on a laptop.} {കീബോർഡ് ഘടിപ്പിച്ചാൽ എല്ലാ കീയും ലാപ്ടോപ്പിലെന്നപോലെ പ്രവർത്തിക്കും.}
 ::msgcat::mcset ml {Workflow SHA} {വർക്ക്ഫ്ലോ SHA}
+::msgcat::mcset ml {Workflow commit} {വർക്ക്ഫ്ലോ കമ്മിറ്റ്}
+::msgcat::mcset ml Worktree വർക്ട്രീ
 ::msgcat::mcset ml {Write it} എഴുതുക
+::msgcat::mcset ml {Write the design question first.} {ആദ്യം ഡിസൈൻ ചോദ്യം എഴുതുക.}
 ::msgcat::mcset ml {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {പ്രൊവൈഡർ ഒന്നും എഴുതില്ല. [[custom_providers]] എൻട്രിയും [model] ജോഡിയും ഉണ്ടാകുന്നതുവരെ ഗേറ്റ്വേ ഒരു ടേണും റൂട്ട് ചെയ്യില്ല.}
 ::msgcat::mcset ml {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {ഏതെങ്കിലും [acl] കീ എഴുതുന്നത് ഈ ഗേറ്റ്‌വേയെ ക്യുറേറ്റഡ് മോഡിലേക്ക് മാറ്റുന്നു: സ്ഥിര റോൾ guest (fail-closed) ആകുന്നു, അനുമതി പട്ടികകൾ ഇനി അതിരല്ല. നിങ്ങൾ വിശ്വസിക്കുന്ന ഉടമ ഐഡന്റിറ്റി ഉണ്ടെങ്കിൽ മാത്രം ഇത് തിരഞ്ഞെടുക്കുക.}
 ::msgcat::mcset ml {[model] provider} {[model] പ്രൊവൈഡർ}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset ml {also list hooks with no handler} {ഹാൻഡ്ലർ ഇല്ലാത്ത ഹുക്കുകളും ലിസ്റ്റ് ചെയ്യുക}
 ::msgcat::mcset ml {also write grants that still have an expiry} {കാലഹരണം ബാക്കിയുള്ള ഗ്രാന്റുകളും എഴുതുക}
 ::msgcat::mcset ml {also write runtime users} {റൺടൈം ഉപയോക്താക്കളെയും എഴുതുക}
+::msgcat::mcset ml {an allowlist entry is removed by editing config.toml} {ഒരു allowlist എൻട്രി config.toml എഡിറ്റ് ചെയ്താണ് ഒഴിവാക്കുന്നത്}
 ::msgcat::mcset ml {an allowlist is in force: a plugin not on it stays off} {അലൗലിസ്റ്റ് നിലവിലുണ്ട്: അതിൽ ഇല്ലാത്ത പ്ലഗിൻ ഓഫായി തന്നെ തുടരും}
 ::msgcat::mcset ml {answer failed: %s} {ഉത്തരം പരാജയപ്പെട്ടു: %s}
+::msgcat::mcset ml {answer only, nothing to apply} {ഉത്തരം മാത്രം, പ്രയോഗിക്കാൻ ഒന്നുമില്ല}
 ::msgcat::mcset ml {append these rules to config.toml} {ഈ നിയമങ്ങൾ config.toml-ലേക്ക് കൂട്ടിച്ചേർക്കുക}
 ::msgcat::mcset ml {apply failed: %s} {പ്രയോഗം പരാജയപ്പെട്ടു: %s}
 ::msgcat::mcset ml {apply to:} പ്രയോഗിക്കേണ്ടത്:
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset ml {ask the agent} {ഏജന്റിനോട് ചോദിക്കുക}
 ::msgcat::mcset ml {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset ml {asked by: %s} {ചോദിച്ചത്: %s}
+::msgcat::mcset ml {asking %s for its metrics…} {%s-നോട് അതിന്റെ മെട്രിക്സ് ചോദിക്കുന്നു…}
 ::msgcat::mcset ml {attach a file} {ഫയൽ അറ്റാച്ച് ചെയ്യുക}
 ::msgcat::mcset ml {attach an image or file} {ചിത്രമോ ഫയലോ ചേർക്കുക}
 ::msgcat::mcset ml {attach failed: %1$s} {അറ്റാച്ച് പരാജയപ്പെട്ടു: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset ml {attached %1$s (%2$s pending)} {അറ്റാച്ച് ചെയ്തു %1$s (%2$s കാത്തിരിപ്പിൽ)}
 ::msgcat::mcset ml {attached to %s} {%s-ലേക്ക് അറ്റാച്ച് ചെയ്തു}
 ::msgcat::mcset ml {attached to child session %1$s} {ചൈൽഡ് സെഷൻ %1$s-ലേക്ക് അറ്റാച്ച് ചെയ്തു}
+::msgcat::mcset ml automatic സ്വയമേയം
 ::msgcat::mcset ml {aux model} {ഓക്സ് മോഡൽ}
 ::msgcat::mcset ml {aux provider} {ഓക്സ് പ്രൊവൈഡർ}
+::msgcat::mcset ml available ലഭ്യം
 ::msgcat::mcset ml {available components} {ലഭ്യമായ ഘടകങ്ങൾ}
 ::msgcat::mcset ml {back up N user turns} {ഉപയോക്താവിന്റെ N ടേണുകൾ പിന്നോട്ട് പോകുക}
 ::msgcat::mcset ml {backed up the previous config to %s} {മുൻപത്തെ കോൺഫിഗ് %s-ലേക്ക് ബാക്കപ്പ് ചെയ്തു}
 ::msgcat::mcset ml {background shells; /shells output|kill <id>} {പശ്ചാത്തല ഷെല്ലുകൾ; /shells output|kill <id>}
+::msgcat::mcset ml {backing off: %1$s failure(s), next automatic try in %2$s s} {പിൻവാങ്ങുന്നു: %1$s പരാജയം, അടുത്ത സ്വയമേയ ശ്രമം %2$s സെക്കൻഡിൽ}
 ::msgcat::mcset ml {bad host for %1$s: %2$s} {%1$s-നുള്ള ഹോസ്റ്റ് മോശം: %2$s}
 ::msgcat::mcset ml {bad unit for %1$s: %2$s} {%1$s-നുള്ള യൂണിറ്റ് മോശം: %2$s}
 ::msgcat::mcset ml {bare display off} {ബെയർ ഡിസ്പ്ലേ ഓഫ്}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset ml {browse the filesystem} {ഫയൽ സിസ്റ്റം ബ്രൗസ് ചെയ്യുക}
 ::msgcat::mcset ml {browse the repo's files} {റെപ്പോയിലെ ഫയലുകൾ പരിശോധിക്കുക}
 ::msgcat::mcset ml {builtin (%s):} {ബിൾട്ടിൻ (%s):}
+::msgcat::mcset ml bundled {ബണ്ടിൽ ചെയ്തത്}
+::msgcat::mcset ml {bundled, read-only} {ബണ്ടിൽ ചെയ്തത്, വായന-മാത്രം}
 ::msgcat::mcset ml by ചെയ്തത്
 ::msgcat::mcset ml {by plan — all sessions} {പ്ലാൻ അനുസരിച്ച് — എല്ലാ സെഷനുകളും}
 ::msgcat::mcset ml {by plan — this session} {പ്ലാൻ അനുസരിച്ച് — ഈ സെഷൻ}
 ::msgcat::mcset ml {by tool} {ടൂൾ അനുസരിച്ച്}
 ::msgcat::mcset ml {cancel failed: %1$s} {റദ്ദാക്കൽ പരാജയപ്പെട്ടു: %1$s}
 ::msgcat::mcset ml {cancel the running turn} {നടക്കുന്ന ടേൺ റദ്ദാക്കുക}
+::msgcat::mcset ml {cancel the selected task} {തിരഞ്ഞെടുത്ത ടാസ്ക് റദ്ദാക്കുക}
 ::msgcat::mcset ml {cancelled task %1$s} {ടാസ്ക് %1$s റദ്ദാക്കി}
 ::msgcat::mcset ml {cannot list scripts (gateway offline?)} {സ്ക്രിപ്റ്റുകൾ ലിസ്റ്റ് ചെയ്യാനാകുന്നില്ല (ഗേറ്റ്വേ ഓഫ്‌ലൈനാണോ?)}
 ::msgcat::mcset ml {cannot reach the gateway: %s} {ഗേറ്റ്വേയിൽ എത്താനായില്ല: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset ml commit {കമ്മിറ്റ് ചെയ്യുക}
 ::msgcat::mcset ml {compacting %s messages in the background — the transcript reloads when it finishes} {പശ്ചാത്തലത്തിൽ %s സന്ദേശങ്ങൾ ചുരുക്കുന്നു — പൂർത്തിയാകുമ്പോൾ ട്രാൻസ്ക്രിപ്റ്റ് വീണ്ടും ലോഡ് ചെയ്യുന്നു}
 ::msgcat::mcset ml compacting… {കോംപാക്റ്റ് ചെയ്യുന്നു…}
+::msgcat::mcset ml {comparing the nodes' versions and config…} {നോഡുകളുടെ പതിപ്പുകളും കോൺഫിഗും താരതമ്യം ചെയ്യുന്നു…}
 ::msgcat::mcset ml {completion tokens} {പൂർത്തീകരണ ടോക്കണുകൾ}
 ::msgcat::mcset ml {component options and declared actions} {ഘടകം ഓപ്ഷനുകളും പ്രഖ്യാപിച്ച ആക്ഷനുകളും}
 ::msgcat::mcset ml composer കമ്പോസർ
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset ml {could not open %s} {തുറക്കാനായില്ല %s}
 ::msgcat::mcset ml {could not open %s (no working browser opener)} {%s തുറക്കാനായില്ല (പ്രവർത്തിക്കുന്ന ബ്രൗസർ ഓപ്പണർ ഇല്ല)}
 ::msgcat::mcset ml {could not open %{url}: %{e}} {തുറക്കാനായില്ല %{url}: %{e}}
+::msgcat::mcset ml {could not open the optional referral link: %s} {ഓപ്ഷണൽ റഫറൽ ലിങ്ക് തുറക്കാനായില്ല: %s}
 ::msgcat::mcset ml {could not read %s: %s} {%s വായിക്കാനായില്ല: %s}
 ::msgcat::mcset ml {could not read the current route} {നിലവിലെ റൂട്ട് വായിക്കാനായില്ല}
 ::msgcat::mcset ml {could not save this session's language: %{e}} {ഈ സെഷന്റെ ഭാഷ സേവ് ചെയ്യാനായില്ല: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset ml {ctxmenu: no widget %s (attached too early?)} {ctxmenu: വിജറ്റ് %s ഇല്ല (വളരെ നേരത്തെ അറ്റാച്ച് ചെയ്തോ?)}
 ::msgcat::mcset ml {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {ക്യുറേറ്റഡ് ആക്സസ് തിരഞ്ഞെടുത്തു, പക്ഷേ ഉടമയുടെ ഐഡന്റിറ്റി നൽകിയില്ല, അതിനാൽ [acl] നിഷ്ക്രിയമായി തുടരുന്നു — സജീവമാക്കാൻ telegram:123456 അല്ലെങ്കിൽ irc:account പോലെ ഒന്ന് നൽകുക}
 ::msgcat::mcset ml {current theme: %{name} · /theme <name>} {ഇപ്പോഴത്തെ തീം: %{name} · /theme <name>}
+::msgcat::mcset ml {cursor %1$s of %2$s (%3$s behind)} {കർസർ %2$s-ൽ %1$s (%3$s പിന്നിൽ)}
 ::msgcat::mcset ml {custom command /%s…} {കസ്റ്റം കമാൻഡ് /%s…}
 ::msgcat::mcset ml {custom commands (.veles/commands/) and config aliases} {ഇഷ്ടാനുസൃത കമാൻഡുകൾ (.veles/commands/) ഉം കോൺഫിഗിലെ അപരനാമങ്ങളും}
 ::msgcat::mcset ml {cycle ends} {സൈക്കിൾ അവസാനിക്കുന്നു}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset ml doctor_resident {എല്ലാ പ്രോംപ്റ്റിലും സ്ഥിരമായി: %{total} അക്ഷരങ്ങളിൽ %{shown} (~%{tokens} ടോക്കണുകൾ) — ബാക്കി ആവശ്യമുള്ളപ്പോൾ ഇതുവഴി ലോഡ് ചെയ്യും: memory action=read path=%{path}}
 ::msgcat::mcset ml doctor_title {മെമ്മറി പരിശോധന}
 ::msgcat::mcset ml doctor_total {ആകെ: %{files} ഫയലുകളിൽ %{chars} അക്ഷരങ്ങൾ (~%{tokens} ടോക്കണുകൾ)}
+::msgcat::mcset ml {documentation is not in this source checkout: %s} {ഈ സ്രോതസ്സ് ചെക്ക്ഔട്ടിൽ ഡോക്യുമെന്റേഷൻ ഇല്ല: %s}
 ::msgcat::mcset ml done പൂർത്തിയായി
 ::msgcat::mcset ml {done · %1$s/%2$s} {പൂർത്തിയായി · %1$s/%2$s}
 ::msgcat::mcset ml {done, but the model returned no text} {പൂർത്തിയായി, പക്ഷേ മോഡൽ ടെക്സ്റ്റ് ഒന്നും തിരികെ നൽകിയില്ല}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset ml {evaluate Tcl and answer with the result — no model turn} {Tcl പ്രവർത്തിപ്പിച്ച് ഫലം കൊണ്ട് മറുപടി നൽകുക — മോഡൽ ടേൺ ഇല്ല}
 ::msgcat::mcset ml everyone എല്ലാവർക്കും
 ::msgcat::mcset ml everywhere എല്ലായിടത്തും
+::msgcat::mcset ml {exchanging registry gossip…} {രജിസ്ട്രി ഗോസിപ്പ് കൈമാറുന്നു…}
 ::msgcat::mcset ml exit പുറത്തുകടക്കുക
 ::msgcat::mcset ml {exit veles-desktop} {veles-desktop പുറത്തുകടക്കുക}
 ::msgcat::mcset ml {export failed: %s} {എക്സ്പോർട്ട് പരാജയപ്പെട്ടു: %s}
 ::msgcat::mcset ml {export session} {സെഷൻ എക്സ്പോർട്ട് ചെയ്യുക}
 ::msgcat::mcset ml {exported to %s} {%s-ലേക്ക് എക്സ്പോർട്ട് ചെയ്തു}
+::msgcat::mcset ml {extension architecture, examples and LSP help} {എക്സ്റ്റൻഷൻ ആർക്കിടെക്ചർ, ഉദാഹരണങ്ങൾ, LSP സഹായം}
+::msgcat::mcset ml {extension development guide} {എക്സ്റ്റൻഷൻ വികസന ഗൈഡ്}
+::msgcat::mcset ml failed പരാജയപ്പെട്ടു
 ::msgcat::mcset ml {failed to load history: %s} {ചരിത്രം ലോഡ് ചെയ്യുന്നതിൽ പരാജയം: %s}
 ::msgcat::mcset ml {failed to paint cached history: %s} {കാഷ്ഡ് ചരിത്രം പ്രദർശിപ്പിക്കുന്നതിൽ പരാജയം: %s}
 ::msgcat::mcset ml {failed to paint replayed history: %s} {റീപ്ലേ ചെയ്ത ചരിത്രം പ്രദർശിപ്പിക്കുന്നതിൽ പരാജയം: %s}
 ::msgcat::mcset ml {failed: %s} {പരാജയം: %s}
+::msgcat::mcset ml {failing — heartbeating, but a sync push or the last probe failed} {പരാജയിക്കുന്നു — ഹാർട്ട്ബീറ്റ് ഉണ്ട്, പക്ഷേ സിങ്ക് പുഷ് അല്ലെങ്കിൽ അവസാന പരിശോധന പരാജയപ്പെട്ടു}
 ::msgcat::mcset ml {failover blueprint: cannot reach the gateway} {failover ബ്ലൂപ്രിന്റ്: ഗേറ്റ്വേയിൽ എത്താനായില്ല}
 ::msgcat::mcset ml {failover graph unavailable: %1$s} {failover ഗ്രാഫ് ലഭ്യമല്ല: %1$s}
 ::msgcat::mcset ml {failover script: cannot reach the gateway} {failover സ്ക്രിപ്റ്റ്: ഗേറ്റ്വേയിൽ എത്താനായില്ല}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset ml {fire the Tcl hook} {Tcl ഹൂക്ക് പ്രവർത്തിപ്പിക്കുക}
 ::msgcat::mcset ml {fires for %s:} {%s-നായി പ്രവർത്തിക്കുന്നു:}
 ::msgcat::mcset ml {fires per hour} {മണിക്കൂറിൽ പ്രവർത്തിക്കുന്നു}
+::msgcat::mcset ml {fleet drift} {ഫ്ലീറ്റ് ഡ്രിഫ്റ്റ്}
 ::msgcat::mcset ml {focus composer} {കമ്പോസർ ഫോക്കസ് ചെയ്യുക}
 ::msgcat::mcset ml {focus failed: %{e}} {ഫോക്കസ് പരാജയപ്പെട്ടു: %{e}}
 ::msgcat::mcset ml {focus next region} {അടുത്ത റീജനിലേക്ക് പോകുക}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset ml {four splits is the maximum} {നാല് സ്പ്ലിറ്റുകൾ ആണ് പരമാവധി}
 ::msgcat::mcset ml {fresh session} {പുതിയ സെഷൻ}
 ::msgcat::mcset ml {fresh session (Ctrl-N too)} {പുതിയ സെഷൻ (Ctrl-N ഉം)}
+::msgcat::mcset ml {fresh — heartbeating, sync passing} {പുതിയത് — ഹാർട്ട്ബീറ്റ് ഉണ്ട്, സിങ്ക് വിജയിക്കുന്നു}
+::msgcat::mcset ml from {ഇതിൽ നിന്ന്}
 ::msgcat::mcset ml {from node %{node}} {നോഡ് %{node}-ൽ നിന്ന്}
 ::msgcat::mcset ml {gateway     v%1$s · up %2$s} {ഗേറ്റ്വേ     v%1$s · %2$s പ്രവർത്തിക്കുന്നു}
 ::msgcat::mcset ml {gateway unreachable — is `veles gateway run` up?} {ഗേറ്റ്വേ ലഭ്യമല്ല — `veles gateway run` പ്രവർത്തിക്കുന്നുണ്ടോ?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset ml {in %s} %s-ൽ
 ::msgcat::mcset ml {insert the next key literally (^B bold, ^C colour, ^O reset)} {അടുത്ത കീ അതേപടി ചേർക്കുക (^B ബോൾഡ്, ^C നിറം, ^O റീസെറ്റ്)}
 ::msgcat::mcset ml {inserted %s} {%s ചേർത്തു}
+::msgcat::mcset ml {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {ക്ലസ്റ്റർ പരിശോധിക്കുക; സ്റ്റോർ, മെമ്മറി, കോൺഫിഗ് അല്ലെങ്കിൽ വോൾട്ട് സിങ്ക് വ്യക്തമായി പുഷ്/പ്രയോഗിക്കുക; കാലഹരണപ്പെട്ട നോഡ് ഫ്ലീറ്റിലാകെ മറക്കുക; ഒരു നോഡിന്റെ ലോഗ് ടെയിലോ മെട്രിക്സോ വായിക്കുക; പതിപ്പുകളും കോൺഫിഗും താരതമ്യം ചെയ്യുക; ഇപ്പോൾ ഗോസിപ്പ് ചെയ്യുക}
 ::msgcat::mcset ml {inspector — app internals · core state · gw plugins} {ഇൻസ്പെക്ടർ — ആപ്പ് ഇന്റേണലുകൾ · കോർ സ്റ്റേറ്റ് · gw പ്ലഗിനുകൾ}
 ::msgcat::mcset ml {install a plugin from a git URL} {ഒരു git URL-ൽ നിന്ന് പ്ലഗിൻ ഇൻസ്റ്റാൾ ചെയ്യുക}
 ::msgcat::mcset ml {install a skill from a git URL} {ഒരു git URL-ൽ നിന്ന് സ്കിൽ ഇൻസ്റ്റാൾ ചെയ്യുക}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset ml instance ഇൻസ്റ്റൻസ്
 ::msgcat::mcset ml {instance controls} {ഇൻസ്റ്റൻസ് നിയന്ത്രണങ്ങൾ}
 ::msgcat::mcset ml {instance detail} {ഇൻസ്റ്റൻസ് വിശദാംശങ്ങൾ}
+::msgcat::mcset ml {instance names may not start with "cluster:" or "g:": %s} {ഇൻസ്റ്റൻസ് നാമങ്ങൾ "cluster:" അല്ലെങ്കിൽ "g:" എന്നിവയിൽ തുടങ്ങരുത്: %s}
 ::msgcat::mcset ml {instance needs a name} {ഇൻസ്റ്റൻസിന് ഒരു പേര് വേണം}
 ::msgcat::mcset ml {instance unreachable} {ഇൻസ്റ്റൻസ് ലഭ്യമല്ല}
 ::msgcat::mcset ml instances ഇൻസ്റ്റൻസുകൾ
 ::msgcat::mcset ml interrupting… തടസ്സപ്പെടുത്തുന്നു…
+::msgcat::mcset ml into ഇതിലേക്ക്
 ::msgcat::mcset ml {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset ml {irc: %s} {irc: %s}
 ::msgcat::mcset ml {irc: %s failed — %s} {irc: %s പരാജയപ്പെട്ടു — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset ml {language list} {ഭാഷാ പട്ടിക}
 ::msgcat::mcset ml {language picker (the swap for THIS window)} {ഭാഷാ പിക്കർ (ഈ വിൻഡോയ്ക്കുള്ള മാറ്റം)}
 ::msgcat::mcset ml {language saved: %s} {ഭാഷ സൂക്ഷിച്ചു: %s}
+::msgcat::mcset ml {language server} {ലാംഗ്വേജ് സെർവർ}
+::msgcat::mcset ml {language server: event stream unavailable: %s} {ലാംഗ്വേജ് സെർവർ: ഇവന്റ് സ്ട്രീം ലഭ്യമല്ല: %s}
+::msgcat::mcset ml {language server: not started on the gateway — %s} {ലാംഗ്വേജ് സെർവർ: ഗേറ്റ്വേയിൽ ആരംഭിച്ചിട്ടില്ല — %s}
+::msgcat::mcset ml {language server: the gateway would not start one: %s} {ലാംഗ്വേജ് സെർവർ: ഗേറ്റ്വേ ഒന്നും ആരംഭിച്ചില്ല: %s}
 ::msgcat::mcset ml {language swapped: %1$s ⇄ %2$s} {ഭാഷ മാറ്റി: %1$s ⇄ %2$s}
 ::msgcat::mcset ml {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {ഭാഷ → %1$s (%2$s ആയിരുന്നു) · നടക്കുന്ന വിൻഡോയിൽ മാത്രം — Save as default config.toml-ൽ എഴുതുന്നു}
 ::msgcat::mcset ml {language: %s} {ഭാഷ: %s}
 ::msgcat::mcset ml {last error} {അവസാന പിശക്}
+::msgcat::mcset ml {last pass %1$s at %2$s: %3$s} {അവസാന പാസ് %1$s %2$s-ന്: %3$s}
 ::msgcat::mcset ml {last reply copied (%s chars)} {അവസാന മറുപടി പകർത്തി (%s അക്ഷരങ്ങൾ)}
 ::msgcat::mcset ml {layout not saved: %s} {ലേഔട്ട് സൂക്ഷിച്ചില്ല: %s}
 ::msgcat::mcset ml {leave (cancels a running turn first)} {പുറത്തുകടക്കുക (ആദ്യം പ്രവർത്തിക്കുന്ന ടേൺ റദ്ദാക്കും)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset ml {list sessions} {സെഷനുകളുടെ പട്ടിക}
 ::msgcat::mcset ml {list skills} {സ്കില്ലുകളുടെ പട്ടിക}
 ::msgcat::mcset ml {list tools} {ടൂളുകളുടെ പട്ടിക}
+::msgcat::mcset ml {listed here only; [notify] fleet_alerts is off} {ഇവിടെ മാത്രം ലിസ്റ്റ് ചെയ്തിരിക്കുന്നു; [notify] fleet_alerts off ആണ്}
 ::msgcat::mcset ml {live patching ARMED} {ലൈവ് പാച്ചിംഗ് സജ്ജമാണ്}
 ::msgcat::mcset ml {live patching ARMED — an agent can now redefine procs in this window} {ലൈവ് പാച്ചിംഗ് സജ്ജമാണ് — ഒരു ഏജന്റിന് ഇനി ഈ വിൻഡോയിൽ പ്രോക്യുകൾ വീണ്ടും നിർവചിക്കാം}
 ::msgcat::mcset ml {live patching disarmed} {ലൈവ് പാച്ചിംഗ് അപ്രാപ്തമാക്കി}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset ml {log pane shown} {ലോഗ് പേന കാണിച്ചു}
 ::msgcat::mcset ml {log: %s} {ലോഗ്: %s}
 ::msgcat::mcset ml {make media: image/video/audio, route = comfyui or provider[/model]} {മീഡിയ സൃഷ്ടിക്കുക: image/video/audio, റൂട്ട് = comfyui അല്ലെങ്കിൽ provider[/model]}
+::msgcat::mcset ml {managed via %s} {%s വഴി നിയന്ത്രിക്കുന്നു}
+::msgcat::mcset ml {manual only} {മാനുവൽ മാത്രം}
 ::msgcat::mcset ml {mark set} {മാർക്ക് സജ്ജമാക്കി}
 ::msgcat::mcset ml {mark whole buffer (emacs select-all)} {മുഴുവൻ ബഫറും അടയാളപ്പെടുത്തുക (emacs സെലക്ട്-ഓൾ)}
 ::msgcat::mcset ml {markdown preview of the composer} {കമ്പോസറിന്റെ മാർക്ക്ഡൗൺ പ്രിവ്യൂ}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset ml model മോഡൽ
 ::msgcat::mcset ml {model aliases} {മോഡൽ അലിയാസുകൾ}
 ::msgcat::mcset ml {monitor %1$s fired} {മോണിറ്റർ %1$s പ്രവർത്തിച്ചു}
-::msgcat::mcset ml monitors മോണിറ്ററുകൾ
 ::msgcat::mcset ml monitors_header മോണിറ്ററുകൾ:
 ::msgcat::mcset ml monitors_none {(മോണിറ്ററുകളില്ല — മോഡൽ monitor tool ഉപയോഗിച്ചാണ് ഇവ തുടങ്ങുന്നത്)}
 ::msgcat::mcset ml {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {ഒരു സെഷനും (അതിന്റെ സബ്ട്രീയും) ഒരു ടേൺ അതിർത്തിയിൽ മറ്റൊരു പൂൾ നോഡിലേക്ക് നീക്കുക; പാർക്ക് ചെയ്ത ഹാൻഡ്‌ഓഫ് പൂർത്തിയാക്കുക/പഴയപടിയാക്കുക; ഒരു സെഷൻ ആരുടേതാണെന്ന് ചോദിക്കുക (admin)}
 ::msgcat::mcset ml {move the running foreground command to the background} {പ്രവർത്തിക്കുന്ന മുൻഭാഗ കമാൻഡ് പശ്ചാത്തലത്തിലേക്ക് മാറ്റുക}
 ::msgcat::mcset ml {move the running foreground command to the background (keeps running)} {നടക്കുന്ന ഫോർഗ്രൗണ്ട് കമാൻഡ് ബാക്ക്ഗ്രൗണ്ടിലേക്ക് നീക്കുക (പ്രവർത്തനം തുടരും)}
+::msgcat::mcset ml {move this session's running foreground command to a background shell; keeps running} {ഈ സെഷനിൽ പ്രവർത്തിക്കുന്ന ഫോർഗ്രൗണ്ട് കമാൻഡ് ഒരു ബാക്ക്‌ഗ്രൗണ്ട് ഷെല്ലിലേക്ക് മാറ്റുന്നു; അത് തുടർന്നും പ്രവർത്തിക്കും}
 ::msgcat::mcset ml {moving around} {ചുറ്റി സഞ്ചരിക്കൽ}
 ::msgcat::mcset ml name പേര്
 ::msgcat::mcset ml {name a key first} {ആദ്യം കീക്ക് ഒരു പേര് നൽകുക}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset ml {neon impressionism} {നിയോൺ ഇംപ്രഷനിസം}
 ::msgcat::mcset ml {network (optional — e.g. libera; empty = any)} {നെറ്റ്വർക്ക് (ഓപ്ഷണൽ — ഉദാ. libera; ശൂന്യം = ഏതും)}
 ::msgcat::mcset ml {network to scope the grant to} {അനുവാദം ഏത് നെറ്റ്വർക്കിന് ബാധകം}
+::msgcat::mcset ml new പുതിയത്
 ::msgcat::mcset ml {new buffer} {പുതിയ ബഫർ}
 ::msgcat::mcset ml {new entry — replace this text, then Save} {പുതിയ എൻട്രി — ഈ വാചകം മാറ്റി, എന്നിട്ട് Save}
 ::msgcat::mcset ml {new name for %s} {%s-നുള്ള പുതിയ പേര്}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset ml {no IRC buffer selected} {IRC ബഫർ തിരഞ്ഞെടുത്തിട്ടില്ല}
 ::msgcat::mcset ml {no MCP servers configured — Add server… writes one into config.toml} {MCP സെർവറുകൾ ക്രമീകരിച്ചിട്ടില്ല — Add server… ഒന്ന് config.toml-ൽ എഴുതും}
 ::msgcat::mcset ml {no URLs in this buffer} {ഈ ബഫറിൽ URL-കളില്ല}
+::msgcat::mcset ml {no [a2a_agents] entry — this peer cannot be dialed} {[a2a_agents] എൻട്രി ഇല്ല — ഈ പിയറിലേക്ക് ഡയൽ ചെയ്യാനാവില്ല}
 ::msgcat::mcset ml {no alias /%s} {/%s അലിയാസ് ഇല്ല}
 ::msgcat::mcset ml {no background refresh} {ബാക്ക്ഗ്രൗണ്ട് റിഫ്രഷ് ഇല്ല}
 ::msgcat::mcset ml {no buffer %s} {%s ബഫർ ഇല്ല}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset ml {no code block in the last reply} {അവസാന മറുപടിയിൽ കോഡ് ബ്ലോക്ക് ഇല്ല}
 ::msgcat::mcset ml {no cron jobs} {ക്രോൺ ജോബുകളില്ല}
 ::msgcat::mcset ml {no cron jobs — New… creates one} {ക്രോൺ ജോബുകളില്ല — New… ഒന്ന് സൃഷ്ടിക്കും}
+::msgcat::mcset ml {no exchange yet} {ഇതുവരെ കൈമാറ്റമില്ല}
 ::msgcat::mcset ml {no file — pick a guts file or type a path} {ഫയൽ ഇല്ല — ഒരു guts ഫയൽ തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ പാത്ത് ടൈപ്പ് ചെയ്യുക}
 ::msgcat::mcset ml {no handler} {ഹാൻഡ്ലർ ഇല്ല}
+::msgcat::mcset ml {no heartbeat for %{mins} min} {%{mins} മിനിറ്റായി ഹാർട്ട്ബീറ്റ് ഇല്ല}
+::msgcat::mcset ml {no heartbeat within the threshold} {പരിധിക്കുള്ളിൽ ഹാർട്ട്ബീറ്റ് ഇല്ല}
 ::msgcat::mcset ml {no history yet} {ഇതുവരെ ചരിത്രമില്ല}
 ::msgcat::mcset ml {no host configured for this instance} {ഈ ഇൻസ്റ്റൻസിന് ഹോസ്റ്റ് ക്രമീകരിച്ചിട്ടില്ല}
 ::msgcat::mcset ml {no instance selected} {ഇൻസ്റ്റൻസ് തിരഞ്ഞെടുത്തിട്ടില്ല}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset ml {no program to open URLs} {URL-കൾ തുറക്കാൻ പ്രോഗ്രാം ഇല്ല}
 ::msgcat::mcset ml {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {ഒരു പ്രൊവൈഡറും കോൺഫിഗർ ചെയ്തിട്ടില്ല — ഒരു ടേൺ പ്രവർത്തിപ്പിക്കുന്നതിന് മുമ്പ് [[custom_providers]] എൻട്രി ചേർത്ത് [model] ജോഡി സജ്ജമാക്കുക}
 ::msgcat::mcset ml {no reading yet — press Refresh} {ഇതുവരെ വായനയില്ല — Refresh അമർത്തുക}
-::msgcat::mcset ml {no running tasks} {നടക്കുന്ന ടാസ്ക്കുകളില്ല}
 ::msgcat::mcset ml {no sample available} {സാമ്പിൾ ലഭ്യമല്ല}
 ::msgcat::mcset ml {no search bar on this surface} {ഈ സർഫേസിൽ സെർച്ച് ബാർ ഇല്ല}
 ::msgcat::mcset ml {no session matching %s} {%s-നോട് പൊരുത്തപ്പെടുന്ന സെഷനില്ല}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset ml {no session open — switch the scope to the default, or open a session} {സെഷൻ തുറന്നിട്ടില്ല — സ്കോപ്പ് ഡിഫോൾട്ടിലേക്ക് മാറ്റുക, അല്ലെങ്കിൽ ഒരു സെഷൻ തുറക്കുക}
 ::msgcat::mcset ml {no session open — the catalogue needs one; the default scope still works from config.toml} {സെഷൻ തുറന്നിട്ടില്ല — കാറ്റലോഗിന് ഒന്ന് വേണം; ഡിഫോൾട്ട് സ്കോപ്പ് config.toml-ൽ നിന്ന് പ്രവർത്തിക്കും}
 ::msgcat::mcset ml {no setting %s — try filter or bare} {%s ക്രമീകരണമില്ല — filter അല്ലെങ്കിൽ bare ശ്രമിക്കുക}
+::msgcat::mcset ml {no shells or monitors to show} {കാണിക്കാൻ ഷെല്ലുകളോ മോണിറ്ററുകളോ ഇല്ല}
 ::msgcat::mcset ml {no skills found} {സ്കില്ലുകൾ ഒന്നും കണ്ടെത്തിയില്ല}
 ::msgcat::mcset ml {no such URL — /urls lists them} {അത്തരം URL ഇല്ല — /urls അവ പട്ടികപ്പെടുത്തുന്നു}
 ::msgcat::mcset ml {no such file: %s} {അത്തരം ഫയൽ ഇല്ല: %s}
 ::msgcat::mcset ml {no swap target yet — set one with /locale secondary <id>} {ഇതുവരെ മാറ്റ ഭാഷയില്ല — /locale secondary <id> ഉപയോഗിച്ച് ക്രമീകരിക്കുക}
+::msgcat::mcset ml {no task selected} {ടാസ്ക് തിരഞ്ഞെടുത്തിട്ടില്ല}
 ::msgcat::mcset ml {no triggers} ട്രിഗറുകളില്ല
 ::msgcat::mcset ml {no triggers — New… creates one} {ട്രിഗറുകളില്ല — New… ഒന്ന് സൃഷ്ടിക്കും}
 ::msgcat::mcset ml {no upstream reading for %s} {%s-ന് അപ്സ്ട്രീം വായനയില്ല}
 ::msgcat::mcset ml {no word match} {വാക്കിന് ഫലമില്ല}
 ::msgcat::mcset ml {no xdg-open — path copied instead} {xdg-open ഇല്ല — പകരം പാത്ത് പകർത്തി}
+::msgcat::mcset ml {node log} {നോഡ് ലോഗ്}
 ::msgcat::mcset ml {none loaded} {ഒന്നും ലോഡായില്ല}
 ::msgcat::mcset ml {none recorded} {ഒന്നും രേഖപ്പെടുത്തിയിട്ടില്ല}
+::msgcat::mcset ml {none since this gateway started} {ഈ ഗേറ്റ്വേ ആരംഭിച്ചതിന് ശേഷം ഒന്നുമില്ല}
 ::msgcat::mcset ml {none yet} {ഇതുവരെ ഇല്ല}
 ::msgcat::mcset ml {normie is pure Ctrl — no emacs prefix chords.} {normie പൂർണ്ണമായും Ctrl ആണ് — emacs പ്രീഫിക്സ് കോർഡുകളില്ല.}
 ::msgcat::mcset ml {normie: select all · emacs: start of line} {normie: എല്ലാം സെലക്ട് ചെയ്യുക · emacs: വരിയുടെ തുടക്കം}
 ::msgcat::mcset ml {not a channel} ചാനലല്ല
 ::msgcat::mcset ml {not a key = value line: %s} {കീ = മൂല്യ വരിയല്ല: %s}
+::msgcat::mcset ml {not a node in the attached gateway's cluster registry: %s} {അറ്റാച്ച് ചെയ്ത ഗേറ്റ്വേയുടെ ക്ലസ്റ്റർ രജിസ്ട്രിയിലെ ഒരു നോഡല്ല: %s}
 ::msgcat::mcset ml {not a number} സംഖ്യയല്ല
 ::msgcat::mcset ml {not a valid http(s) url: %s} {സാധുവായ http(s) URL അല്ല: %s}
 ::msgcat::mcset ml {not a valid ssh host: %s} {സാധുവായ ssh ഹോസ്റ്റല്ല: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset ml {not attached to a gateway} {ഒരു ഗേറ്റ്വേയിലും അറ്റാച്ച് ചെയ്തിട്ടില്ല}
 ::msgcat::mcset ml {not configured} ക്രമീകരിച്ചിട്ടില്ല
 ::msgcat::mcset ml {not ignoring %s} {%s അവഗണിക്കുന്നില്ല}
+::msgcat::mcset ml {not installed} {ഇൻസ്റ്റാൾ ചെയ്തിട്ടില്ല}
 ::msgcat::mcset ml {not reported} {റിപ്പോർട്ട് ചെയ്തിട്ടില്ല}
 ::msgcat::mcset ml {not running} പ്രവർത്തിക്കുന്നില്ല
 ::msgcat::mcset ml {not set in config.toml — the built-in default applies. %s} {config.toml-ൽ സജ്ജമാക്കിയിട്ടില്ല — അന്തർനിർമ്മിത ഡിഫോൾട്ട് ബാധകമാണ്. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset ml off ഓഫ്
 ::msgcat::mcset ml {off (the default)} {ഓഫ് (ഡിഫോൾട്ട്)}
 ::msgcat::mcset ml offline ഓഫ്‌ലൈൻ
+::msgcat::mcset ml ok ശരി
 ::msgcat::mcset ml on ഓൺ
 ::msgcat::mcset ml {on (the default)} {ഓൺ (ഡിഫോൾട്ട്)}
 ::msgcat::mcset ml {on failure} പരാജയത്തിൽ
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset ml {open links} {ലിങ്കുകൾ തുറക്കുക}
 ::msgcat::mcset ml {open the engine log} {എഞ്ചിൻ ലോഗ് തുറക്കുക}
 ::msgcat::mcset ml {open the joined session before /leave (on %s)} {/leave ചെയ്യുന്നതിന് മുന്നേ ചേർന്ന സെഷൻ തുറക്കുക (%s-ൽ)}
+::msgcat::mcset ml {open the selected child session} {തിരഞ്ഞെടുത്ത ചൈൽഡ് സെഷൻ തുറക്കുക}
 ::msgcat::mcset ml {open the selected skill in the Dev editor} {തിരഞ്ഞെടുത്ത സ്കിൽ Dev എഡിറ്ററിൽ തുറക്കുക}
 ::msgcat::mcset ml {open the setup wizard (re-runnable; edits config.toml in place)} {സെറ്റപ്പ് വിസാർഡ് തുറക്കുക (വീണ്ടും പ്രവർത്തിപ്പിക്കാം; config.toml അതേ സ്ഥാനത്ത് എഡിറ്റ് ചെയ്യുന്നു)}
 ::msgcat::mcset ml {open the share sheet} {ഷെയർ ഷീറ്റ് തുറക്കുക}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset ml {override cleared — the default applies} {ഓവർറൈഡ് മായ്ച്ചു — ഡിഫോൾട്ട് ബാധകം}
 ::msgcat::mcset ml {override failed: %s} {ഓവർറൈഡ് പരാജയപ്പെട്ടു: %s}
 ::msgcat::mcset ml {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {ഉടമയുടെ ഐഡന്റിറ്റി %{id} ACL-ന് പൊരുത്തപ്പെടുത്താനാവില്ല — telegram:<സംഖ്യാ ഐഡി>, irc:<services അക്കൗണ്ട്>, അല്ലെങ്കിൽ nick!user@host മാസ്ക് ഉപയോഗിക്കുക}
+::msgcat::mcset ml owner/repository ഉടമ/റെപ്പോസിറ്ററി
 ::msgcat::mcset ml {owners: %s} {ഉടമകൾ: %s}
 ::msgcat::mcset ml {pair a desktop with this agent} {ഈ ഏജന്റുമായി ഒരു ഡെസ്ക്ടോപ്പ് ജോടിയാക്കുക}
 ::msgcat::mcset ml {partly failed: %s} {ഭാഗികമായി പരാജയപ്പെട്ടു: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset ml plugin പ്ലഗിൻ
 ::msgcat::mcset ml {plugin directory git history} {പ്ലഗിൻ ഡയറക്ടറിയുടെ ഗിറ്റ് ചരിത്രം}
 ::msgcat::mcset ml {plugin list} {പ്ലഗിൻ പട്ടിക}
+::msgcat::mcset ml {plugin provider driver} {പ്ലഗിൻ പ്രൊവൈഡർ ഡ്രൈവർ}
 ::msgcat::mcset ml {plugins reloaded on %s} {പ്ലഗിനുകൾ %s-ൽ വീണ്ടും ലോഡ് ചെയ്തു}
 ::msgcat::mcset ml {pop %s out into its own window} {%s സ്വന്തം വിൻഡോയിലേക്ക് പോപ്പ് ചെയ്യുക}
 ::msgcat::mcset ml {pop the buffer out into its own window} {ബഫർ അതിന്റേതായ വിൻഡോയിലേക്ക് മാറ്റുക}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset ml {prefix: window & dock commands} {പ്രീഫിക്സ്: വിൻഡോ & ഡോക്ക് കമാൻഡുകൾ}
 ::msgcat::mcset ml {press Attach in the Instances tab} {Instances ടാബിലെ Attach അമർത്തുക}
 ::msgcat::mcset ml preview പ്രിവ്യൂ
+::msgcat::mcset ml {preview an AI extension change and explicitly apply its diff} {ഒരു AI എക്സ്റ്റൻഷൻ മാറ്റം പ്രിവ്യൂ ചെയ്ത് അതിന്റെ ഡിഫ്റ്റ് പ്രത്യേകം പ്രയോഗിക്കുക}
 ::msgcat::mcset ml {preview failed: %s} {പ്രിവ്യൂ പരാജയപ്പെട്ടു: %s}
 ::msgcat::mcset ml {previous buffer} {മുൻ ബഫർ}
 ::msgcat::mcset ml {previous command was not a yank} {മുൻപത്തെ കമാൻഡ് യാങ്ക് ആയിരുന്നില്ല}
 ::msgcat::mcset ml {previous match} {മുൻപത്തെ മാച്ച്}
 ::msgcat::mcset ml {previous session} {മുൻ സെഷൻ}
+::msgcat::mcset ml {probing %s…} {%s പരിശോധിക്കുന്നു…}
 ::msgcat::mcset ml {proc body} {പ്രോക് ബോഡി}
 ::msgcat::mcset ml {profile unavailable: %s} {പ്രൊഫൈൽ ലഭ്യമല്ല: %s}
 ::msgcat::mcset ml profiles: പ്രൊഫൈലുകൾ:
 ::msgcat::mcset ml prompt പ്രോംപ്റ്റ്
 ::msgcat::mcset ml {prompt breakdown} {പ്രോംപ്റ്റ് വിശകലനം}
 ::msgcat::mcset ml {prompt tokens} {പ്രോംപ്റ്റ് ടോക്കണുകൾ}
+::msgcat::mcset ml {proposal only, not applied} {നിർദ്ദേശം മാത്രം, പ്രയോഗിച്ചിട്ടില്ല}
 ::msgcat::mcset ml provider പ്രൊവൈഡർ
 ::msgcat::mcset ml {provider / model} {പ്രൊവൈഡർ / മോഡൽ}
 ::msgcat::mcset ml {provider base URL} {പ്രൊവൈഡറിന്റെ base URL}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset ml {re-sync the slopdrop state mirror} {slopdrop സ്റ്റേറ്റ് മിറർ വീണ്ടും സമന്വയിപ്പിക്കുക}
 ::msgcat::mcset ml {read and set the clipboard} {ക്ലിപ്പ്ബോർഡ് വായിക്കുകയും സജ്ജമാക്കുകയും ചെയ്യുക}
 ::msgcat::mcset ml {read text aloud} {വാചകം ഉറക്കെ വായിക്കുക}
+::msgcat::mcset ml {read-only: [approvals] allowlist} {വായന-മാത്രം: [approvals] allowlist}
 ::msgcat::mcset ml {read-only: this session lives on %1$s (as read at %2$s)} {വായനമാത്രം: ഈ സെഷൻ %1$s-ലാണ് (%2$s-ന് വായിച്ചതുപോലെ)}
 ::msgcat::mcset ml {read-only: this skill comes from the %s library} {വായനമാത്രം: ഈ സ്കിൽ %s ലൈബ്രറിയിൽ നിന്നുള്ളതാണ്}
 ::msgcat::mcset ml reasoning റീസണിംഗ്
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset ml {refused to open %s (only http, https, mailto)} {%s തുറക്കാൻ നിരസിച്ചു (http, https, mailto മാത്രം)}
 ::msgcat::mcset ml {refused: %s} {നിരസിച്ചു: %s}
 ::msgcat::mcset ml {region copied} {റീജിയൻ പകർത്തി}
+::msgcat::mcset ml registered {രജിസ്റ്റർ ചെയ്തു}
 ::msgcat::mcset ml {registry not saved: %s} {റെജിസ്ട്രി സേവ് ചെയ്തില്ല: %s}
 ::msgcat::mcset ml {reload on %1$s failed: %2$s} {%1$s-ലെ റീലോഡ് പരാജയപ്പെട്ടു: %2$s}
 ::msgcat::mcset ml {reload the mechanisms} {മെക്കാനിസങ്ങൾ വീണ്ടും ലോഡ് ചെയ്യുക}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset ml {resume a session (prefix ok)} {ഒരു സെഷൻ തുടരുക (പ്രിഫിക്സ് മതി)}
 ::msgcat::mcset ml {retry failed: %s} {വീണ്ടും ശ്രമിക്കൽ പരാജയപ്പെട്ടു: %s}
 ::msgcat::mcset ml {retrying last prompt…} {അവസാന പ്രോംപ്റ്റ് വീണ്ടും ശ്രമിക്കുന്നു…}
+::msgcat::mcset ml {review files for an explicit upstream contribution} {പ്രത്യേകം തീരുമാനിക്കുന്ന അപ്സ്ട്രീം സംഭാവനയ്ക്കായി ഫയലുകൾ അവലോകനം ചെയ്യുക}
+::msgcat::mcset ml {review standing global and session tool permissions} {സ്ഥിര ഗ്ലോബൽ, സെഷൻ ടൂൾ അനുമതികൾ അവലോകനം ചെയ്യുക}
 ::msgcat::mcset ml revision റിവിഷൻ
 ::msgcat::mcset ml {revision history} {റിവിഷൻ ചരിത്രം}
+::msgcat::mcset ml {revoke refused} {പിൻവലിക്കാൻ വിസമ്മതിച്ചു}
 ::msgcat::mcset ml {revoke the selected identity's grant} {തിരഞ്ഞെടുത്ത ഐഡന്റിറ്റിയുടെ അനുമതി പിൻവലിക്കുക}
 ::msgcat::mcset ml role റോൾ
 ::msgcat::mcset ml {role to grant} {നൽകാനുള്ള റോൾ}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset ml {saved to %s} {%s-ലേക്ക് സേവ് ചെയ്തു}
 ::msgcat::mcset ml saved. {സേവ് ചെയ്തു.}
 ::msgcat::mcset ml {scaffold a new plugin} {പുതിയ പ്ലഗിൻ സ്കാഫോൾഡ് ചെയ്യുക}
+::msgcat::mcset ml {scaffold a user plugin and open it in this editor} {ഉപയോക്തൃ പ്ലഗിൻ സൃഷ്ടിച്ച് ഈ എഡിറ്ററിൽ തുറക്കുക}
 ::msgcat::mcset ml {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {ഷെഡ്യൂൾ ചെയ്ത ജോലികൾ; /crons add "<sched>" [session=<id>] <prompt> (അപരനാമം /cron)}
 ::msgcat::mcset ml scope സ്കോപ്പ്
 ::msgcat::mcset ml script സ്ക്രിപ്റ്റ്
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset ml {select %s first} {ആദ്യം %s തിരഞ്ഞെടുക്കുക}
 ::msgcat::mcset ml {select a checkpoint first} {ആദ്യം ഒരു ചെക്ക്പോയിന്റ് തിരഞ്ഞെടുക്കുക}
 ::msgcat::mcset ml {select a file, or New… to create one} {ഒരു ഫയൽ തിരഞ്ഞെടുക്കുക, അല്ലെങ്കിൽ സൃഷ്ടിക്കാൻ പുതിയത്…}
+::msgcat::mcset ml {select a grant first} {ആദ്യം ഒരു അനുമതി തിരഞ്ഞെടുക്കുക}
 ::msgcat::mcset ml {select a handler first} {ആദ്യം ഒരു ഹാൻഡ്ലർ തിരഞ്ഞെടുക്കുക}
 ::msgcat::mcset ml {select a member first} {ആദ്യം ഒരു അംഗത്തെ തിരഞ്ഞെടുക്കുക}
 ::msgcat::mcset ml {select a route} {ഒരു റൂട്ട് തിരഞ്ഞെടുക്കുക}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset ml {select an assignment first} {ആദ്യം ഒരു അസൈൻമെന്റ് തിരഞ്ഞെടുക്കുക}
 ::msgcat::mcset ml {select an entry first} {ആദ്യം ഒരു എൻട്രി തിരഞ്ഞെടുക്കുക}
 ::msgcat::mcset ml {select an identity first} {ആദ്യം ഒരു ഐഡന്റിറ്റി തിരഞ്ഞെടുക്കുക}
+::msgcat::mcset ml {selected task details and shell output} {തിരഞ്ഞെടുത്ത ടാസ്കിന്റെ വിശദാംശങ്ങളും ഷെൽ ഔട്ട്പുട്ടും}
 ::msgcat::mcset ml {selected: %s} {തിരഞ്ഞെടുത്തത്: %s}
 ::msgcat::mcset ml {send clipboard as prompt} {ക്ലിപ്പ്ബോർഡ് പ്രോംപ്റ്റായി അയയ്ക്കുക}
 ::msgcat::mcset ml {send failed: %s} {അയക്കൽ പരാജയപ്പെട്ടു: %s}
 ::msgcat::mcset ml {send the message; while a turn runs, queue it as steering} {സന്ദേശം അയയ്ക്കുക; ടേൺ നടക്കുമ്പോൾ, അത് സ്റ്റിയറിംഗായി ക്യൂ ചെയ്യുക}
+::msgcat::mcset ml sent അയച്ചു
+::msgcat::mcset ml {sent to the owner's home chat} {ഉടമയുടെ ഹോം ചാറ്റിലേക്ക് അയച്ചു}
 ::msgcat::mcset ml server സെർവർ
 ::msgcat::mcset ml {server buffers merged} {സെർവർ ബഫറുകൾ ലയിപ്പിച്ചു}
 ::msgcat::mcset ml {server buffers separate} {സെർവർ ബഫറുകൾ വേറെ}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset ml {settings, one key = value per line} {ക്രമീകരണങ്ങൾ, ഓരോ വരിയിലും key = value}
 ::msgcat::mcset ml {setup_done marker NOT saved: %s} {setup_done മാർക്കർ സേവ് ചെയ്തില്ല: %s}
 ::msgcat::mcset ml {shell %1$s finished} {ഷെൽ %1$s അവസാനിച്ചു}
-::msgcat::mcset ml shells ഷെല്ലുകൾ
+::msgcat::mcset ml {shells, monitors and subagents} {ഷെല്ലുകൾ, മോണിറ്ററുകൾ, സബ്ഏജന്റുകൾ}
 ::msgcat::mcset ml shells_header {ബാക്ക്ഗ്രൗണ്ട് ഷെല്ലുകൾ:}
 ::msgcat::mcset ml shells_none {(ബാക്ക്ഗ്രൗണ്ട് ഷെല്ലുകളില്ല — /background <cmd> കൊണ്ട് ഒന്ന് തുടങ്ങാം)}
 ::msgcat::mcset ml {show current configuration} {നിലവിലെ കോൺഫിഗറേഷൻ കാണിക്കുക}
 ::msgcat::mcset ml {show every key in this mode} {ഈ മോഡിലെ എല്ലാ കീകളും കാണിക്കുക}
 ::msgcat::mcset ml {show or hide the session list} {സെഷൻ പട്ടിക കാണിക്കുക അല്ലെങ്കിൽ മറയ്ക്കുക}
 ::msgcat::mcset ml {show or switch model (alias | model@provider | custom:<prov>)} {മോഡൽ കാണിക്കുക അല്ലെങ്കിൽ മാറ്റുക (alias | model@provider | custom:<prov>)}
+::msgcat::mcset ml {show selected shell output} {തിരഞ്ഞെടുത്ത ഷെല്ലിന്റെ ഔട്ട്പുട്ട് കാണിക്കുക}
 ::msgcat::mcset ml {show short messages} {ചെറിയ സന്ദേശങ്ങൾ കാണിക്കുക}
 ::msgcat::mcset ml {show the model's reasoning blocks (same as /reasoning)} {മോഡലിന്റെ റീസണിംഗ് ബ്ലോക്കുകൾ കാണിക്കുക (/reasoning പോലെ)}
 ::msgcat::mcset ml {show unclaimed} {അവകാശപ്പെടാത്തവ കാണിക്കുക}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset ml spend ചെലവ്
 ::msgcat::mcset ml {split: %s} {സ്പ്ലിറ്റ്: %s}
 ::msgcat::mcset ml {ssh to %1$s failed: %2$s} {%1$s-ലേക്കുള്ള ssh പരാജയപ്പെട്ടു: %2$s}
+::msgcat::mcset ml {stale — no heartbeat within the threshold} {കാലഹരണപ്പെട്ടത് — നിർദ്ദിഷ്ട സമയത്തിനുള്ളിൽ ഹാർട്ട്ബീറ്റ് ഇല്ല}
+::msgcat::mcset ml {standing global and session permission grants} {സ്ഥിര ഗ്ലോബൽ, സെഷൻ അനുമതികൾ}
 ::msgcat::mcset ml state സ്റ്റേറ്റ്
 ::msgcat::mcset ml {state       never reached} {സ്റ്റേറ്റ്       എത്തിയില്ല}
 ::msgcat::mcset ml {state       reachable} {സ്റ്റേറ്റ്       എത്താവുന്നത്}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset ml {stored in the encrypted vault (%1$s): %2$s} {എൻക്രിപ്റ്റ് ചെയ്ത ലോക്കറിൽ സൂക്ഷിച്ചു (%1$s): %2$s}
 ::msgcat::mcset ml {stream handler: %s} {സ്ട്രീം ഹാൻഡ്ലർ: %s}
 ::msgcat::mcset ml {subagent %1$s finished} {സബ്ഏജന്റ് %1$s അവസാനിച്ചു}
-::msgcat::mcset ml subagents സബ്ഏജന്റുകൾ
 ::msgcat::mcset ml subagents_header {നടക്കുന്ന സബ്ഏജന്റുകൾ:}
 ::msgcat::mcset ml subagents_none {(നടക്കുന്ന സബ്ഏജന്റുകളില്ല — /btw <prompt> കൊണ്ട് ഒന്ന് തുടങ്ങാം, അല്ലെങ്കിൽ മോഡൽ delegate_task ഉപയോഗിക്കും)}
 ::msgcat::mcset ml {suspend failed: %{e}} {താൽക്കാലിക നിർത്തൽ പരാജയപ്പെട്ടു: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset ml {switch the selected skill off} {തിരഞ്ഞെടുത്ത സ്കിൽ ഓഫ് ചെയ്യുക}
 ::msgcat::mcset ml {switch the selected skill on} {തിരഞ്ഞെടുത്ത സ്കിൽ ഓൺ ചെയ്യുക}
 ::msgcat::mcset ml {switch to the %s tab} {%s ടാബിലേക്ക് മാറുക}
+::msgcat::mcset ml {sync requested: %s} {സിങ്ക് അഭ്യർത്ഥിച്ചു: %s}
 ::msgcat::mcset ml {tab 1} {ടാബ് 1}
 ::msgcat::mcset ml {tab 2} {ടാബ് 2}
 ::msgcat::mcset ml {tab 3} {ടാബ് 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset ml tasks_none {(പ്രവർത്തിക്കുന്ന ടാസ്കുകളില്ല)}
 ::msgcat::mcset ml tasks_not_found {അങ്ങനെയൊരു ടാസ്കില്ല: %{id}}
 ::msgcat::mcset ml tasks_not_running {ടാസ്ക് %{id} ഇതിനകം പൂർത്തിയായി}
-::msgcat::mcset ml {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset ml {tcl-lsp: event stream unavailable: %s} {tcl-lsp: ഇവന്റ് സ്ട്രീം ലഭ്യമല്ല: %s}
-::msgcat::mcset ml {tcl-lsp: gateway would not start it: %s} {tcl-lsp: ഗേറ്റ്വേ അത് തുടങ്ങില്ല: %s}
-::msgcat::mcset ml {tcl-lsp: not started on the gateway — %s} {tcl-lsp: ഗേറ്റ്വേയിൽ തുടങ്ങിയിട്ടില്ല — %s}
 ::msgcat::mcset ml {that buffer is not split} {ആ ബഫർ സ്പ്ലിറ്റ് ചെയ്തിട്ടില്ല}
 ::msgcat::mcset ml {the %s plan} {%s പ്ലാൻ}
 ::msgcat::mcset ml {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {API key ഫീൽഡ് ഒരു എൻവയോൺമെന്റ് വേരിയബിളിന്റെ പേര് സ്വീകരിക്കുന്നു (%{example} പോലെ), key തന്നെയല്ല — key മറച്ച ഫീൽഡിലേക്കാണ്}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset ml {the gateway answered without a report} {ഗേറ്റ്വേ റിപ്പോർട്ടില്ലാതെ മറുപടി നൽകി}
 ::msgcat::mcset ml {the model/provider pair is incomplete — the gateway will not route until both are present} {മോഡൽ/പ്രൊവൈഡർ ജോഡി അപൂർണ്ണമാണ് — രണ്ടും ഉണ്ടാകുന്നതുവരെ ഗേറ്റ്‌വേ റൂട്ട് ചെയ്യില്ല}
 ::msgcat::mcset ml {the options changed, so that is a fresh preview — press “Write it” again to write it} {ഓപ്ഷനുകൾ മാറി, അതിനാൽ അത് പുതിയ പ്രിവ്യൂ ആണ് — എഴുതാൻ “Write it” വീണ്ടും അമർത്തുക}
+::msgcat::mcset ml {the peer has not been sent this vault yet} {ഈ വോൾട്ട് ഇതുവരെ പിയറിലേക്ക് അയച്ചിട്ടില്ല}
+::msgcat::mcset ml {the peer holds this vault} {ഈ വോൾട്ട് പിയറിന്റെ കൈവശമുണ്ട്}
 ::msgcat::mcset ml {the primary route is \[model\] provider/default — change it there, not here} {പ്രൈമറി റൂട്ട് \[model\] provider/default ആണ് — അത് അവിടെ മാറ്റുക, ഇവിടെയല്ല}
 ::msgcat::mcset ml {the provider/model route this session sends to} {ഈ സെഷൻ അയയ്ക്കുന്ന പ്രൊവൈഡർ/മോഡൽ റൂട്ട്}
 ::msgcat::mcset ml {the same, on the privileged path (owner only)} {അതുതന്നെ, പ്രത്യേകാവകാശ പാതയിലൂടെ (owner മാത്രം)}
 ::msgcat::mcset ml {the selected entry (edit, then Save)} {തിരഞ്ഞെടുത്ത എൻട്രി (എഡിറ്റ് ചെയ്തിട്ട് Save)}
+::msgcat::mcset ml {the server stopped: %s} {സെർവർ നിലച്ചു: %s}
 ::msgcat::mcset ml {the synthwave splash} {synthwave സ്വാഗത സ്ക്രീൻ}
 ::msgcat::mcset ml {the text after the name was NOT sent anywhere — type the value into the masked field} {പേരിനു ശേഷമുള്ള ടെക്സ്റ്റ് എങ്ങോട്ടും അയച്ചിട്ടില്ല — മൂല്യം മറച്ച ഫീൽഡിൽ ടൈപ്പ് ചെയ്യുക}
 ::msgcat::mcset ml {the transcript} ട്രാൻസ്ക്രിപ്റ്റ്
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset ml thinking… ചിന്തിക്കുന്നു…
 ::msgcat::mcset ml {thinking… (%s)} {ചിന്തിക്കുന്നു… (%s)}
 ::msgcat::mcset ml {this file's revisions, their diffs, and restore} {ഈ ഫയലിന്റെ റിവിഷനുകൾ, അവയുടെ വ്യത്യാസങ്ങൾ, പുനഃസ്ഥാപനം}
+::msgcat::mcset ml {this gateway} {ഈ ഗേറ്റ്വേ}
 ::msgcat::mcset ml {this gateway has no Tcl interpreter} {ഈ ഗേറ്റ്വേയിൽ Tcl ഇന്റർപ്രെട്ടർ ഇല്ല}
 ::msgcat::mcset ml {this list} {ഈ ലിസ്റ്റ്}
+::msgcat::mcset ml {this node has no vault} {ഈ നോഡിന് വോൾട്ട് ഇല്ല}
 ::msgcat::mcset ml {this route} {ഈ റൂട്ട്}
 ::msgcat::mcset ml {this session} {ഈ സെഷൻ}
 ::msgcat::mcset ml {this session follows the default language again (%{def})} {ഈ സെഷൻ വീണ്ടും ഡിഫോൾട്ട് ഭാഷ പിന്തുടരുന്നു (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset ml {transcript finalization failed: %s} {ട്രാൻസ്ക്രിപ്റ്റ് പൂർത്തിയാക്കൽ പരാജയപ്പെട്ടു: %s}
 ::msgcat::mcset ml {transcript refetched} {ട്രാൻസ്ക്രിപ്റ്റ് വീണ്ടും വലിച്ചു}
 ::msgcat::mcset ml {transcript — arrows to read, %s for composer} {ട്രാൻസ്ക്രിപ്റ്റ് — വായിക്കാൻ അമ്പുകൾ, കമ്പോസറിന് %s}
+::msgcat::mcset ml {translate text with the dedicated translation model, without an agent turn} {ഒരു ഏജന്റ് ടേൺ കൂടാതെ, സമർപ്പിച്ച വിവർത്തന മോഡൽ ഉപയോഗിച്ച് വാചകം വിവർത്തനം ചെയ്യുക}
+::msgcat::mcset ml {translation result} {വിവർത്തന ഫലം}
 ::msgcat::mcset ml {trigger %1$s %2$sd} {ട്രിഗർ %1$s %2$sd}
 ::msgcat::mcset ml {trigger created} {ട്രിഗർ സൃഷ്ടിച്ചു}
 ::msgcat::mcset ml {trigger updated} {ട്രിഗർ പുതുക്കി}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset ml {usage: /steer <instruction>} {ഉപയോഗം: /steer <instruction>}
 ::msgcat::mcset ml used ഉപയോഗിച്ചത്
 ::msgcat::mcset ml user ഉപയോക്താവ്
+::msgcat::mcset ml {user copy} {ഉപയോക്തൃ പകർപ്പ്}
 ::msgcat::mcset ml {user identities, one per line} {ഉപയോക്തൃ ഐഡന്റിറ്റികൾ, ഓരോ വരിയിൽ ഒന്ന്}
 ::msgcat::mcset ml {user name} ഉപയോക്തൃനാമം
 ::msgcat::mcset ml {user profile} {ഉപയോക്തൃ പ്രൊഫൈൽ}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset ml {value (TOML: 5, true, "text", ["a","b"])} {മൂല്യം (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset ml veles veles
 ::msgcat::mcset ml {veles editor} {veles എഡിറ്റർ}
+::msgcat::mcset ml {veles fleet: node %{node} is failing — %{detail}} {veles ഫ്ലീറ്റ്: നോഡ് %{node} പരാജയപ്പെടുന്നു — %{detail}}
+::msgcat::mcset ml {veles fleet: node %{node} is stale — %{detail}} {veles ഫ്ലീറ്റ്: നോഡ് %{node} കാലഹരണപ്പെട്ടതാണ് — %{detail}}
+::msgcat::mcset ml {veles fleet: node %{node} recovered (it was %{was})} {veles ഫ്ലീറ്റ്: നോഡ് %{node} വീണ്ടെടുത്തു (മുമ്പ് %{was} ആയിരുന്നു)}
 ::msgcat::mcset ml {veles · keyboard help (bindings: %s)} {veles · കീബോർഡ് സഹായം (ബൈൻഡിംഗുകൾ: %s)}
 ::msgcat::mcset ml {veles · touch help} {veles · സ്പർശ സഹായം}
 ::msgcat::mcset ml {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset ml widgets വിജറ്റുകൾ
 ::msgcat::mcset ml {will be stored in the encrypted vault} {എൻക്രിപ്റ്റ് ചെയ്ത ലോക്കറിൽ സൂക്ഷിക്കും}
 ::msgcat::mcset ml {wire protocol} {വയർ പ്രോട്ടോക്കോൾ}
+::msgcat::mcset ml {without force to} {ഫോഴ്‌സ് ചെയ്യാതെ ഇതിലേക്ക്}
 ::msgcat::mcset ml {wizard language} {വിസാർഡ് ഭാഷ}
 ::msgcat::mcset ml {wizard language: %s} {വിസാർഡ് ഭാഷ: %s}
 ::msgcat::mcset ml {write failed: %s} {എഴുത്ത് പരാജയപ്പെട്ടു: %s}
 ::msgcat::mcset ml {write grants that still expire (the expiry is dropped — a config line cannot expire)} {ഇനിയും കാലഹരണപ്പെടുന്ന അനുമതികൾ എഴുതുക (കാലഹരണം ഒഴിവാക്കും — ഒരു കോൺഫിഗ് വരിക്ക് കാലഹരണമാകാൻ കഴിയില്ല)}
 ::msgcat::mcset ml {write the entries back} {എൻട്രികൾ തിരിച്ചെഴുതുക}
 ::msgcat::mcset ml {write the store's runtime rules into config.toml} {സ്റ്റോറിന്റെ റൺടൈം നിയമങ്ങൾ config.toml-ലേക്ക് എഴുതുക}
+::msgcat::mcset ml {write the whole extension from its purpose, as a reviewed preview} {അതിന്റെ ഉദ്ദേശ്യത്തിൽ നിന്ന് മുഴുവൻ എക്സ്റ്റൻഷനും അവലോകനം ചെയ്ത പ്രിവ്യൂവായി എഴുതുക}
 ::msgcat::mcset ml {write these values into config.toml as the defaults} {ഈ മൂല്യങ്ങൾ ഡിഫോൾട്ടുകളായി config.toml-ലേക്ക് എഴുതുക}
 ::msgcat::mcset ml writing എഴുത്ത്
 ::msgcat::mcset ml {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {ആദ്യ [acl] ഉടമയെ എഴുതുന്നത് ഈ ഗേറ്റ്‌വേയെ ക്യുറേറ്റഡ് മോഡിലേക്ക് മാറ്റുന്നു: സ്ഥിര റോൾ guest (fail-closed) ആകുന്നു, അഡാപ്റ്ററിന്റെ അനുമതി പട്ടിക ഇനി വിശ്വാസത്തിന്റെ അതിരല്ല}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset ml {▲ VELES — neon impressionism} {▲ VELES — neon impressionism}
 ::msgcat::mcset ml {▲ earlier} {▲ മുൻപത്തേത്}
 ::msgcat::mcset ml {▼ later} {▼ പിന്നീടുള്ളത്}
+::msgcat::mcset ml {▾ Cluster registry} {▾ ക്ലസ്റ്റർ രജിസ്ട്രി}
 ::msgcat::mcset ml {▾ new output — follow} {▾ പുതിയ ഔട്ട്പുട്ട് — പിന്തുടരുക}
 ::msgcat::mcset ml {○ unattached} {○ അറ്റാച്ച് ചെയ്തിട്ടില്ല}
 ::msgcat::mcset ml {● %1$s — %2$s} {● %1$s — %2$s}

@@ -7,6 +7,27 @@ newest one against the spec (`crates/veles-cli/tests/ext_api.rs`).
 Every entry says what changed and what a plugin author has to do. See
 [extending.md](extending.md), "How a change to the API is published".
 
+## 0.11 sha256:866fd01868c96e63 (2026-11-03)
+
+Tcl plugin manifests can declare a source version, and native Anthropic
+provider drivers can receive an opt-in Message Threads request.
+
+Added:
+- Optional `version` in `plugin.toml`. It is a descriptive release label;
+  source hashes, not version strings, decide whether a user copy and a
+  bundled copy contain the same source.
+- Provider-driver requests can carry a top-level `thread` object and the
+  reserved `veles.message_threads.enabled` marker when the operator has
+  opted into the Anthropic Message Threads beta. Existing drivers without
+  that opt-in receive no thread object and require no change.
+- Qualified driver names retain the full owner prefix, including
+  `tcl:<plugin>:<driver>` and `so:<plugin>:<driver>`, so two same-named
+  drivers can be selected deliberately.
+
+What a plugin author has to do: nothing. Existing API 0.10 operations and
+manifests remain valid. A driver implementing the Anthropic beta must
+translate `thread` itself; it is not a generic OpenAI request field.
+
 ## 0.10 sha256:40729d740135033b (2026-10-29)
 
 `veles::http_post` takes a total timeout.

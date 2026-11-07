@@ -109,7 +109,7 @@ namespace eval ::vsetup {
     variable v
     array set v {
         provider openrouter     base_url {}       key_env {}
-        api_mode {}             provider_name {}  model {}
+        api_mode {}             driver {}         provider_name {}  model {}
         default_provider {}     model_touched 0   name_touched 0
         keyenv_touched 0        base_touched 0    dp_touched 0
         telegram 0              irc_server {}     irc_port 6697
@@ -185,6 +185,21 @@ proc ::vsetup::presets {} {
             api_mode chat_completions model {} key_url {}]]
     }
     return $p
+}
+
+# Public sign-up links supplied by the same setup-state payload. A gateway
+# without the additive field simply leaves this convenience section empty.
+proc ::vsetup::_referrals {} {
+    variable state
+    set links {}
+    catch { set links [dict get $state referrals] }
+    return $links
+}
+
+proc ::vsetup::_open_referral {url} {
+    if {![::vmd::open_url $url]} {
+        _say [format [::vi18n::mc {could not open the optional referral link: %s}] $url]
+    }
 }
 
 # The preset row for a choice id, or "" (skip, or unknown).
@@ -348,7 +363,7 @@ proc ::vsetup::_prefill {} {
     set v(provider) [{*}$g $c provider openai_compatible]
     if {$v(provider) ne "skip" && [preset $v(provider)] eq ""} { set v(provider) openai_compatible }
     foreach {field key} {
-        base_url base_url  key_env key_env  api_mode api_mode
+        base_url base_url  key_env key_env  api_mode api_mode  driver driver
         provider_name provider_name  model model
         default_provider default_provider  irc_server irc_server
         irc_nick irc_nickname  irc_channels irc_channels
@@ -739,11 +754,43 @@ proc ::vsetup::_step_provider {p} {
     ttk::label $f.hk -wraplength 600 -justify left -foreground $::vt::T(fg_dim)
     pack $f.hk -anchor w -padx {2 0} -pady {2 0}
 
+    # Optional public links only. They do not affect the provider choice,
+    # enter SetupAnswers, or cause a request until a button is activated.
+    ttk::frame $f.referrals
+    pack $f.referrals -anchor w -fill x -pady {4 2}
+    ttk::label $f.referrals.h -wraplength 600 -justify left \
+        -text [::vi18n::mc {Need an account? Optional sign-up links (open in your browser):}]
+    pack $f.referrals.h -anchor w
+    ttk::label $f.referrals.note -wraplength 600 -justify left \
+        -foreground $::vt::T(fg_dim) \
+        -text [::vi18n::mc {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.}]
+    pack $f.referrals.note -anchor w -pady {2 0}
+    ttk::frame $f.referrals.row
+    pack $f.referrals.row -anchor w -fill x
+    set referral_buttons {}
+    set referral_ids {ali anthropic kimi}
+    set n 0
+    foreach link [_referrals] {
+        set id [lindex $referral_ids $n]
+        incr n
+        if {$id eq ""} { continue }
+        set provider [dict get $link provider]
+        set url [dict get $link url]
+        set b $f.referrals.row.$id
+        ttk::button $b -command [list ::vsetup::_open_referral $url]
+        ::vi18n::label $b {%s (referral)} $provider
+        pack $b -side left -padx {0 6}
+        lappend referral_buttons $b
+        ::vi18n::aname $b {%s (referral)} $provider
+    }
+
     _field $f 20 [::vi18n::mc {Provider entry name}] provider_name [::vi18n::mc {provider entry name}]
     _field $f 22 [::vi18n::mc {Base URL}] base_url [::vi18n::mc {provider base URL}]
     _field $f 24 [::vi18n::mc {API key env var name}] key_env [::vi18n::mc {name of the env var holding the API key}]
     set key_entry [_secret_field $f 25 [::vi18n::mc {API key (hidden)}] key $v(key_env)]
-    _field $f 26 [::vi18n::mc {Wire protocol (chat_completions or responses)}] api_mode [::vi18n::mc {wire protocol}]
+    _field $f 26 [::vi18n::mc {Wire protocol (chat_completions, responses or plugin)}] api_mode [::vi18n::mc {wire protocol}]
+    _field $f 27 [::vi18n::mc {Provider driver (plugin wire only)}] driver [::vi18n::mc {plugin provider driver}]
+    bind $f.e26 <KeyRelease> [list + ::vsetup::_sync_provider_fields $f]
     # Mark typed-into fields so a provider change re-suggests defaults
     # without clobbering what the operator wrote.
     bind $f.e20 <KeyPress> {+ set ::vsetup::v(name_touched) 1 }
@@ -756,7 +803,7 @@ proc ::vsetup::_step_provider {p} {
     bind $f.e20 <KeyRelease> {+ ::vsetup::_follow_entry_name }
 
     _sync_provider_fields $f
-    ::va11y::tab_order [concat [list $f.cb $f.e20 $f.e22 $f.e24] $key_entry [list $f.e26]]
+    ::va11y::tab_order [concat [list $f.cb] $referral_buttons [list $f.e20 $f.e22 $f.e24] $key_entry [list $f.e26 $f.e27]]
     focus $f.cb
 }
 
@@ -808,6 +855,9 @@ proc ::vsetup::_suggest_provider {{force 1}} {
             }
         }
         if {$force || $v(api_mode) eq ""} { set v(api_mode) [dict get $row api_mode] }
+        if {$force || $v(driver) eq ""} {
+            set v(driver) [expr {[dict exists $row driver] ? [dict get $row driver] : ""}]
+        }
     }
     _follow_entry_name
 }
@@ -830,6 +880,10 @@ proc ::vsetup::_sync_provider_fields {f} {
         catch { $f.l$row configure -foreground \
             [expr {$st eq "disabled" ? $::vt::T(fg_dim) : $::vt::T(fg)}] }
     }
+    set driver_st [expr {!$skip && $v(api_mode) eq "plugin" ? "normal" : "disabled"}]
+    catch { $f.e27 configure -state $driver_st }
+    catch { $f.l27 configure -foreground \
+        [expr {$driver_st eq "disabled" ? $::vt::T(fg_dim) : $::vt::T(fg)}] }
     set row [preset $v(provider)]
     if {$skip} {
         set hint [::vi18n::mc {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.}]
@@ -1028,6 +1082,7 @@ proc ::vsetup::answers_body {} {
         base_url [::vapi::json_string $v(base_url)] \
         key_env [::vapi::json_string $v(key_env)] \
         api_mode [::vapi::json_string $v(api_mode)] \
+        driver [::vapi::json_string $v(driver)] \
         provider_name [::vapi::json_string $v(provider_name)] \
         model [::vapi::json_string $v(model)] \
         default_provider [::vapi::json_string $v(default_provider)] \
@@ -1076,7 +1131,7 @@ proc ::vsetup::secret_values {} {
 proc ::vsetup::answers_sig {} {
     variable v
     variable skipped
-    return [join [list $v(provider) $v(base_url) $v(key_env) $v(api_mode) \
+    return [join [list $v(provider) $v(base_url) $v(key_env) $v(api_mode) $v(driver) \
         $v(provider_name) $v(model) $v(default_provider) $v(telegram) \
         $v(irc_server) $v(irc_port) $v(irc_tls) $v(irc_nick) \
         $v(irc_channels) $v(irc_sasl) $v(acl_idx) $v(acl_owner) $v(locale) \

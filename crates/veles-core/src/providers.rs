@@ -281,6 +281,14 @@ pub struct ChatRequest {
     /// server-side options/tools). Provider-route values merge OVER the
     /// request-level one (which a session override sets).
     pub extra_body: Option<Value>,
+    /// Internal, opt-in Anthropic Message Threads request. Never read from
+    /// `extra_body`; only the native Messages drivers translate it.
+    pub thread: Option<ThreadRequest>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ThreadRequest {
+    pub previous_message_id: Option<String>,
 }
 
 /// A single streaming event, surfaced to the UI layer.
@@ -352,6 +360,19 @@ pub struct Completion {
     /// the surplus then shows up as answer output, which is exactly the
     /// lie the separate count exists to expose.
     pub reasoning_tokens: Option<u64>,
+    /// Complete streamed usage was received (Anthropic message_stop /
+    /// final delta). A stream that stopped before this cannot advance a
+    /// Message Threads cursor.
+    pub response_complete: bool,
+    /// Provider-native response id and stop reason, used by opt-in
+    /// Message Threads. None on wires with no such concepts.
+    pub response_id: Option<String>,
+    pub stop_reason: Option<String>,
+    /// The wire's stop reason before OpenAI finish_reason normalization.
+    pub native_stop_reason: Option<String>,
+    /// Server-side fallback wrote this response, so it is not storable
+    /// as a Message Threads continuation point.
+    pub fallback_message: Option<String>,
 }
 
 /// Cache accounting, normalized across the shapes providers use.
@@ -446,6 +467,48 @@ fn mark_cache_breakpoint(msg: &mut Value) {
             }
             *other = json!([{ "type": "text", "text": text, "cache_control": cc }]);
         }
+    }
+}
+
+/// The breakpoints of a Message Threads continue request.
+///
+/// It carries only the new suffix, so the history markers explicit mode
+/// computed for a full request (one of them on the PREVIOUS request's
+/// tail, which the thread already holds) do not apply, and `tools` is not
+/// sent at all. But a thread does not cache by itself: with no marker at
+/// all every continue paid full input price for the whole stored
+/// conversation. So, in explicit mode, exactly one marker goes on the last
+/// new message, the same "end of this request" breakpoint a full request
+/// has. The create's system and tools markers count again on every
+/// continue, which keeps a request at three of the four the API allows.
+fn continue_breakpoints(body: &mut Value, mode: CacheMode) {
+    strip_cache_breakpoints(body);
+    if mode != CacheMode::Explicit {
+        return;
+    }
+    if let Some(messages) = body["messages"].as_array_mut() {
+        if let Some(&last) = history_breakpoints(messages).last() {
+            mark_cache_breakpoint(&mut messages[last]);
+        }
+    }
+}
+
+/// A continuation carries only its new suffix. Markers belonging to the
+/// create's full prefix cannot be sent as though that prefix were present.
+fn strip_cache_breakpoints(value: &mut Value) {
+    match value {
+        Value::Object(map) => {
+            map.remove("cache_control");
+            for child in map.values_mut() {
+                strip_cache_breakpoints(child);
+            }
+        }
+        Value::Array(items) => {
+            for child in items {
+                strip_cache_breakpoints(child);
+            }
+        }
+        _ => {}
     }
 }
 
@@ -546,6 +609,7 @@ impl RouteClient {
             }
         }
     }
+
     pub async fn chat_stream<F>(
         &self,
         req: &ChatRequest,
@@ -754,19 +818,60 @@ impl ProviderClient {
         // stored row in that shape; repair it on the way out rather than
         // failing the whole request. Content is NEVER dropped — only
         // replaced with a placeholder when the row is provably invalid.
+        // Compute the set once, not by rescanning the whole conversation
+        // for each assistant row. Missing means no SAVED RESULT: an action
+        // may already have happened, so recovery must never dispatch it again.
+        let answered: std::collections::HashSet<&str> = req
+            .messages
+            .iter()
+            .filter(|candidate| candidate.role == "tool")
+            .filter_map(|candidate| candidate.tool_meta.as_ref())
+            .map(|meta| meta.tool_call_id.as_str())
+            .collect();
         let sanitized: Vec<ChatMessage> = req
             .messages
             .iter()
             .map(|m| {
                 let mut m = m.clone();
                 match m.role.as_str() {
-                    "assistant" if m.content.trim().is_empty() && m.tool_calls.is_none() => {
-                        tracing::warn!(
-                            "build_body: assistant message with empty content and no \
-                             tool_calls (msg_id={:?}) — substituting placeholder",
-                            m.msg_id
-                        );
-                        m.content = "[interrupted tool round]".to_string();
+                    "assistant" => {
+                        let missing: Vec<&str> = m
+                            .tool_calls
+                            .as_ref()
+                            .and_then(Value::as_array)
+                            .map(Vec::as_slice)
+                            .unwrap_or(&[])
+                            .iter()
+                            .filter_map(|call| call.get("id").and_then(Value::as_str))
+                            .filter(|id| !answered.contains(id))
+                            .collect();
+                        if !missing.is_empty() {
+                            // A call is persisted before dispatch. If its
+                            // result is absent after recovery/compaction,
+                            // its effect is UNKNOWN. Do not execute it a
+                            // second time, and do not send a call no tool
+                            // row answers: both are unsafe. Keep its id in
+                            // an explicit interruption marker for review.
+                            tracing::warn!(
+                                "build_body: assistant tool call(s) without saved results \
+                                 (msg_id={:?}, ids={missing:?}) — marking interrupted, not replaying",
+                                m.msg_id
+                            );
+                            let interruption = format!(
+                                "{}\n[interrupted tool round: no saved result for {}; the action was not repeated. Review its effects before proceeding.]",
+                                m.content,
+                                missing.join(", ")
+                            );
+                            m.tool_calls = None;
+                            m.content = interruption;
+                        } else if m.content.trim().is_empty() && m.tool_calls.is_none() {
+                            tracing::warn!(
+                                "build_body: assistant message with empty content and no \
+                                 tool_calls (msg_id={:?}) — substituting placeholder",
+                                m.msg_id
+                            );
+                            m.content = "[interrupted tool round]".to_string();
+                        }
                     }
                     "tool" if m.content.trim().is_empty() => {
                         tracing::warn!(
@@ -789,7 +894,107 @@ impl ProviderClient {
             })
             .collect();
 
-        let messages: Vec<Value> = sanitized
+        // Reconstruct each tool round for the provider: one assistant with
+        // every call in the round, then ALL of its results, before later
+        // work. Parallel dispatch can persist separate caller rows and
+        // finish their results out of order. Neither makes a legal replay:
+        // an assistant's calls must be answered before another assistant.
+        // This is a projection of saved actions, never a re-execution and
+        // never a fabricated result. Missing calls were marked interrupted
+        // above; orphaned results stay where they were, untouched.
+        let mut results: std::collections::HashMap<String, (usize, ChatMessage)> =
+            std::collections::HashMap::new();
+        for (position, m) in sanitized.iter().enumerate() {
+            if m.role == "tool" {
+                if let Some(meta) = &m.tool_meta {
+                    results
+                        .entry(meta.tool_call_id.clone())
+                        .or_insert_with(|| (position, m.clone()));
+                }
+            }
+        }
+        let mut consumed = std::collections::HashSet::new();
+        let mut output = Vec::with_capacity(sanitized.len());
+        let mut position = 0usize;
+        while position < sanitized.len() {
+            let m = &sanitized[position];
+            if m.role == "assistant" && m.tool_calls.is_some() {
+                let mut end = position + 1;
+                while end < sanitized.len()
+                    && sanitized[end].role == "assistant"
+                    && sanitized[end].tool_calls.is_some()
+                {
+                    end += 1;
+                }
+                let group = &sanitized[position..end];
+                let complete = group.iter().all(|m| {
+                    m.tool_calls
+                        .as_ref()
+                        .and_then(Value::as_array)
+                        .into_iter()
+                        .flatten()
+                        .filter_map(|call| call.get("id").and_then(Value::as_str))
+                        .all(|id| results.contains_key(id))
+                });
+                if complete {
+                    let mut combined = group[0].clone();
+                    for next in group.iter().skip(1) {
+                        if !next.content.trim().is_empty() {
+                            if !combined.content.trim().is_empty() {
+                                combined.content.push_str("\n\n");
+                            }
+                            combined.content.push_str(&next.content);
+                        }
+                        let mut calls = combined.tool_calls.take().unwrap_or_default();
+                        if let Some(array) = calls.as_array_mut() {
+                            array.extend(
+                                next.tool_calls
+                                    .as_ref()
+                                    .and_then(Value::as_array)
+                                    .cloned()
+                                    .unwrap_or_default(),
+                            );
+                        }
+                        combined.tool_calls = Some(calls);
+                    }
+                    output.push(combined);
+                    let mut completed: Vec<(usize, String)> = group
+                        .iter()
+                        .flat_map(|caller| {
+                            caller
+                                .tool_calls
+                                .as_ref()
+                                .and_then(Value::as_array)
+                                .into_iter()
+                                .flatten()
+                                .filter_map(|call| call.get("id").and_then(Value::as_str))
+                                .filter_map(|id| {
+                                    results.get(id).map(|(at, _)| (*at, id.to_string()))
+                                })
+                                .collect::<Vec<_>>()
+                        })
+                        .collect();
+                    completed.sort_by_key(|(at, _)| *at);
+                    for (_, id) in completed {
+                        if consumed.insert(id.clone()) {
+                            output.push(results[&id].1.clone());
+                        }
+                    }
+                    position = end;
+                    continue;
+                }
+            }
+            if m.role != "tool"
+                || m.tool_meta
+                    .as_ref()
+                    .is_none_or(|meta| !consumed.contains(&meta.tool_call_id))
+            {
+                output.push(m.clone());
+            }
+            position += 1;
+        }
+
+        let messages: Vec<Value> = output
             .iter()
             .map(|m| {
                 // A user message with attachments becomes an OpenAI
@@ -1163,6 +1368,11 @@ impl ProviderClient {
             cached_tokens,
             cache_write_tokens,
             reasoning_tokens,
+            response_complete: !cancelled,
+            response_id: None,
+            stop_reason: None,
+            native_stop_reason: None,
+            fallback_message: None,
         })
     }
 }
@@ -1252,7 +1462,9 @@ fn wants_breakpoints(entry: &crate::config::ProviderEntry, model: &str) -> bool 
     match entry.api_mode.as_str() {
         // The Messages schema itself carries `cache_control`, so any
         // endpoint this driver speaks to accepts the field.
-        "plugin" => entry.driver.as_deref() == Some("anthropic-messages"),
+        "plugin" => entry.driver.as_deref().is_some_and(|name| {
+            name.rsplit_once(':').map_or(name, |(_, driver)| driver) == "anthropic-messages"
+        }),
         "responses" => false,
         _ => {
             entry.base_url.contains("openrouter.ai")
@@ -1290,13 +1502,13 @@ pub fn build_client(
                 return Err(anyhow::anyhow!(
                     "provider \"{}\": base_url must start with http:// or https://, got {url:?}",
                     entry.name
-                ))
+                ));
             }
             Some(r) if r.split(['/', '?', '#']).next().unwrap_or("").is_empty() => {
                 return Err(anyhow::anyhow!(
                     "provider \"{}\": base_url {url:?} has no host",
                     entry.name
-                ))
+                ));
             }
             Some(_) => {}
         }
@@ -1344,6 +1556,7 @@ pub fn build_client(
                 built_in_tools: entry.built_in_tools.clone(),
                 timeout_secs: None,
                 cache_ttl: entry.cache_ttl.as_deref().unwrap_or("").trim().to_string(),
+                message_threads: entry.message_threads.unwrap_or(false),
             }))
         }
         "responses" => Ok(RouteClient::Responses(
@@ -1424,6 +1637,14 @@ pub fn completion_from_wire(v: &Value, model: &str, provider: &str) -> Completio
         cached_tokens,
         cache_write_tokens,
         reasoning_tokens: reasoning_usage(&v["usage"]),
+        response_id: v["id"].as_str().map(str::to_string),
+        stop_reason: v["stop_reason"]
+            .as_str()
+            .or_else(|| v["choices"][0]["finish_reason"].as_str())
+            .map(str::to_string),
+        native_stop_reason: v["stop_reason"].as_str().map(str::to_string),
+        fallback_message: v["fallback_message"].as_str().map(str::to_string),
+        response_complete: v["response_complete"].as_bool().unwrap_or(true),
     }
 }
 
@@ -1538,6 +1759,33 @@ pub struct ProviderDriver {
     pub name: String,
     pub plugin: String,
     pub call: ProviderDriverFn,
+    /// Host-attested source of this registration. Optional for in-tree
+    /// drivers and for source-compatible third-party callers.
+    pub provenance: crate::lifecycle::PluginProvenance,
+}
+
+impl ProviderDriver {
+    pub fn qualified_name(&self) -> String {
+        format!("{}:{}", self.plugin, self.name)
+    }
+
+    pub fn provenance_label(&self) -> String {
+        let mut fields = Vec::new();
+        if let Some(version) = self.provenance.version.as_deref() {
+            fields.push(format!("version={version}"));
+        }
+        if let Some(hash) = self.provenance.hash.as_deref() {
+            fields.push(format!("sha256={}", &hash[..hash.len().min(12)]));
+        }
+        if let Some(root) = self.provenance.root.as_deref() {
+            fields.push(format!("root={}", root.display()));
+        }
+        if fields.is_empty() {
+            "source=in-tree or unreported".into()
+        } else {
+            fields.join(" ")
+        }
+    }
 }
 
 /// The provider-driver registry. OWNER-TRACKED (M4/R2): each driver
@@ -1551,12 +1799,27 @@ fn drivers_cell() -> &'static crate::owned::OwnedRegistry<String, ProviderDriver
     DRIVERS.get_or_init(crate::owned::OwnedRegistry::default)
 }
 
-/// Register a provider driver. Replace-by-name, like every other plugin
-/// registry here: a reload must not stack two copies of one wire.
-/// The owner is read from the calling thread (M4).
-pub fn register_driver(driver: ProviderDriver) -> Result<(), String> {
+/// Register a provider driver. A same-owner registration replaces its
+/// previous version, as a reload requires. Registrations from different
+/// plugins are both retained: an unqualified route keeps the historical
+/// last-writer-wins behavior, while `<plugin>:<driver>` selects explicitly.
+pub fn register_driver(mut driver: ProviderDriver) -> Result<(), String> {
     if driver.name.trim().is_empty() {
         return Err("a provider driver needs a name".to_string());
+    }
+    if driver.provenance == crate::lifecycle::PluginProvenance::default() {
+        driver.provenance = crate::lifecycle::plugin_provenance().unwrap_or_default();
+    }
+    if let Some(previous) = self::driver(&driver.name) {
+        if previous.plugin != driver.plugin {
+            tracing::warn!(
+                driver = %driver.name,
+                previous_plugin = %previous.plugin,
+                new_plugin = %driver.plugin,
+                "provider driver name is now provided by another plugin; unqualified routes \
+                 use the new registration, or select explicitly with `<plugin>:<driver>`"
+            );
+        }
     }
     drivers_cell().insert(driver.name.clone(), driver);
     Ok(())
@@ -1574,8 +1837,33 @@ pub fn remove_owned_driver(name: &str, owner: Option<&'static str>) -> bool {
     drivers_cell().remove_owned(&name.to_string(), owner)
 }
 
+fn split_driver_name(name: &str) -> (&str, Option<&str>) {
+    name.rsplit_once(':')
+        .map_or((name, None), |(owner, driver)| (driver, Some(owner)))
+}
+
 pub fn driver(name: &str) -> Option<ProviderDriver> {
-    drivers_cell().with(&name.to_string(), |d| d.clone())
+    let (key, plugin) = split_driver_name(name);
+    if let Some(plugin) = plugin {
+        return drivers_cell().with_matching(
+            &key.to_string(),
+            |d| d.plugin == plugin,
+            |d| d.clone(),
+        );
+    }
+    drivers_cell().with(&key.to_string(), |d| d.clone())
+}
+
+/// Every registration with this name, including ones covered by a later
+/// registration. Qualified routes can select any of them; the unqualified
+/// spelling still resolves to the last registration for compatibility.
+pub fn driver_stack(name: &str) -> Vec<ProviderDriver> {
+    let key = name.rsplit_once(':').map_or(name, |(_, driver)| driver);
+    drivers_cell()
+        .stack(&key.to_string())
+        .into_iter()
+        .map(|(_, driver)| driver)
+        .collect()
 }
 
 /// Every registered driver, for diagnostics.
@@ -1585,6 +1873,59 @@ pub fn drivers() -> Vec<ProviderDriver> {
 
 /// A route whose wire is a plugin's.
 ///
+fn message_threads_env_value(value: &str) -> bool {
+    matches!(value.trim().to_ascii_lowercase().as_str(), "1" | "true")
+}
+
+pub fn env_message_threads() -> bool {
+    std::env::var("VELES_ANTHROPIC_MESSAGE_THREADS").is_ok_and(|v| message_threads_env_value(&v))
+}
+
+/// Restrict the beta to the two bundled native Anthropic drivers.
+/// A third-party driver may use the same public name for another wire;
+/// resolving the owner avoids silently changing that wire.
+pub fn message_threads_enabled(route: &PluginRoute) -> bool {
+    if !thread_opt_in(route, env_message_threads()) {
+        return false;
+    }
+    route.resolve().is_ok_and(|d| native_anthropic_driver(&d))
+}
+
+/// Whether a route asked for the beta. The route's own
+/// `message_threads = true` is an explicit choice for its host (the beta
+/// also exists on Claude Platform on AWS, Anthropic-managed Google Cloud
+/// and Foundry, under their own hostnames). The process-wide env switch is
+/// not: it reaches only the Claude API itself, because a compatible proxy
+/// that ignores the unknown `thread` field still returns an id, and the
+/// next request would then go out without system, tools or history.
+fn thread_opt_in(route: &PluginRoute, env: bool) -> bool {
+    route.message_threads || (env && claude_api_base(&route.base_url))
+}
+
+/// `https://api.anthropic.com` (any path), or empty, which both bundled
+/// drivers resolve to that same default.
+fn claude_api_base(base_url: &str) -> bool {
+    let base = base_url.trim();
+    base.is_empty()
+        || reqwest::Url::parse(base).is_ok_and(|u| {
+            u.scheme() == "https"
+                && u.port().is_none()
+                && u.host_str()
+                    .is_some_and(|h| h.eq_ignore_ascii_case("api.anthropic.com"))
+        })
+}
+
+fn native_anthropic_driver(d: &ProviderDriver) -> bool {
+    (d.plugin == "tcl:tcl-anthropic-driver" || d.plugin == "so:anthropic-so")
+        && d.name == "anthropic-messages"
+}
+
+/// Whether a request's internal thread directive is for the resolved
+/// bundled native Anthropic driver, even when a test aliases its name.
+pub fn native_thread_request(route: &PluginRoute, req: &ChatRequest) -> bool {
+    req.thread.is_some() && route.resolve().is_ok_and(|d| native_anthropic_driver(&d))
+}
+
 /// Holds the driver NAME rather than the driver, resolved per call.
 /// A route outlives a plugin reload, and a stale `Arc` would keep
 /// calling the old code after the plugin that owned it was replaced.
@@ -1631,6 +1972,8 @@ pub struct PluginRoute {
     /// The provider entry's `cache_ttl`, carried to the driver as
     /// `veles.cache_ttl`; empty means the driver's own default.
     pub cache_ttl: String,
+    /// Whether this route opted into the Message Threads beta.
+    pub message_threads: bool,
 }
 
 /// See [`PluginRoute::timeout_secs`].
@@ -1639,18 +1982,31 @@ pub const PLUGIN_NONSTREAM_TIMEOUT_SECS: u64 = 600;
 impl PluginRoute {
     fn resolve(&self) -> Result<ProviderDriver, ProviderError> {
         driver(&self.driver).ok_or_else(|| {
-            let known = drivers()
-                .iter()
-                .map(|d| format!("{} (from {})", d.name, d.plugin))
-                .collect::<Vec<_>>()
-                .join(", ");
+            let available = driver_stack(&self.driver);
+            let known = if available.is_empty() {
+                drivers()
+                    .iter()
+                    .map(|d| format!("{}:{} (unqualified: {})", d.plugin, d.name, d.name))
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            } else {
+                format!(
+                    "registered under this driver name: {}. Select one with `driver = ...`",
+                    available
+                        .iter()
+                        .map(|d| format!("{}:{}", d.plugin, d.name))
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                )
+            };
             ProviderError::Network(format!(
-                "no provider driver named `{}` is registered{}",
+                "no provider driver named `{}` is registered — {}. \
+                 Run `veles doctor --providers` to check loaded drivers and route resolution.",
                 self.driver,
                 if known.is_empty() {
-                    " — no plugin has registered one".to_string()
+                    "no plugin has registered a driver".to_string()
                 } else {
-                    format!(" — registered: {known}")
+                    known
                 }
             ))
         })
@@ -1669,6 +2025,21 @@ impl PluginRoute {
     ) -> Result<Completion, ProviderError> {
         let d = self.resolve()?;
         let mut body = wire_body(req);
+        if native_thread_request(self, req) {
+            let thread = req.thread.as_ref().ok_or_else(|| {
+                ProviderError::Network("message threads enabled without a thread request".into())
+            })?;
+            body["thread"] = match thread.previous_message_id.as_deref() {
+                Some(id) if !id.trim().is_empty() => json!({
+                    "type": "continue",
+                    "previous_message_id": id,
+                }),
+                _ => json!({"type": "create"}),
+            };
+            if body["thread"]["type"] == "continue" {
+                continue_breakpoints(&mut body, req.cache_mode);
+            }
+        }
         // The route's own identity, under a reserved key.
         //
         // A driver needs the endpoint and the credential for THIS
@@ -1698,6 +2069,7 @@ impl PluginRoute {
             "built_in_tools": self.built_in_tools,
             "timeout_secs": self.timeout_secs.unwrap_or(PLUGIN_NONSTREAM_TIMEOUT_SECS),
             "cache_ttl": self.cache_ttl,
+            "message_threads": {"enabled": native_thread_request(self, req)},
         });
         // The sink is installed for the whole call, so a driver on
         // ANOTHER thread can emit into it; a driver holding the
@@ -1932,6 +2304,93 @@ pub fn json_event(ev: &StreamEvent) -> String {
 pub mod tests {
     use super::*;
 
+    #[test]
+    fn qualified_driver_names_keep_the_full_plugin_owner() {
+        assert_eq!(
+            split_driver_name("anthropic-messages"),
+            ("anthropic-messages", None)
+        );
+        assert_eq!(
+            split_driver_name("tcl-anthropic-driver:anthropic-messages"),
+            ("anthropic-messages", Some("tcl-anthropic-driver"))
+        );
+        assert_eq!(
+            split_driver_name("tcl:tcl-anthropic-driver:anthropic-messages"),
+            ("anthropic-messages", Some("tcl:tcl-anthropic-driver"))
+        );
+        assert_eq!(
+            split_driver_name("so:anthropic-so:anthropic-messages"),
+            ("anthropic-messages", Some("so:anthropic-so"))
+        );
+    }
+
+    #[test]
+    fn message_threads_opt_in_is_explicit() {
+        for yes in ["1", "true", " TRUE ", "True"] {
+            assert!(message_threads_env_value(yes), "{yes}");
+        }
+        for no in ["", "0", "false", "off", "flase", "yes"] {
+            assert!(!message_threads_env_value(no), "{no}");
+        }
+    }
+
+    /// The process-wide switch reaches only the Claude API itself. A
+    /// compatible proxy that ignores the unknown `thread` field would hand
+    /// back an id, and the next request would go out with no system prompt,
+    /// no tools and no history: silent context loss, no error. Any other host
+    /// needs the route's own explicit `message_threads = true`.
+    #[test]
+    fn the_env_switch_reaches_only_the_claude_api() {
+        let at = |base: &str, flag: bool| PluginRoute {
+            driver: "anthropic-messages".into(),
+            base_url: base.into(),
+            message_threads: flag,
+            ..Default::default()
+        };
+        for anthropic in [
+            "",
+            "https://api.anthropic.com",
+            "https://api.anthropic.com/",
+            "https://API.anthropic.com/v1",
+        ] {
+            assert!(thread_opt_in(&at(anthropic, false), true), "{anthropic:?}");
+            assert!(
+                !thread_opt_in(&at(anthropic, false), false),
+                "{anthropic:?}"
+            );
+        }
+        for other in [
+            "https://anthropic-proxy.example.com",
+            "https://api.anthropic.com.evil.example",
+            "http://api.anthropic.com",
+            "http://127.0.0.1:8080",
+            "not a url",
+        ] {
+            assert!(!thread_opt_in(&at(other, false), true), "{other:?}");
+            // The route's own flag is an explicit choice for that host
+            // (Claude Platform on AWS, Foundry and Google Cloud also carry
+            // the beta under their own hostnames).
+            assert!(thread_opt_in(&at(other, true), false), "{other:?}");
+        }
+    }
+
+    /// Every driver spelling config validation accepts for the beta resolves
+    /// to one of the two bundled owners (or to the bare shared name).
+    #[test]
+    fn every_validated_thread_driver_spelling_resolves_to_a_native_owner() {
+        for name in crate::config::NATIVE_THREAD_DRIVERS {
+            let (driver, owner) = split_driver_name(name);
+            assert_eq!(driver, "anthropic-messages", "{name}");
+            assert!(
+                matches!(
+                    owner,
+                    None | Some("tcl:tcl-anthropic-driver") | Some("so:anthropic-so")
+                ),
+                "{name} names an owner no bundled driver registers under"
+            );
+        }
+    }
+
     /// A garbage base_url used to be accepted here and only explode
     /// deep inside a turn; it now fails at route-build.
     #[test]
@@ -1979,6 +2438,7 @@ pub mod tests {
                 "extra_options": {"a": 1},
                 "model": "SHOULD-NOT-WIN"
             })),
+            thread: None,
         };
         let client = ProviderClient::new(
             "https://example.invalid/v1",
@@ -2030,6 +2490,7 @@ pub mod tests {
             replay_reasoning: false,
             cache_mode: CacheMode::Auto,
             extra_body: None,
+            thread: None,
         };
         let body = client.build_body(&req);
         let parts = body["messages"][0]["content"]
@@ -2071,6 +2532,7 @@ pub mod tests {
             replay_reasoning: false,
             cache_mode: CacheMode::Auto,
             extra_body: None,
+            thread: None,
         };
         let body = client.build_body(&req);
         assert_eq!(body["messages"][0]["content"], "be helpful");
@@ -2134,6 +2596,7 @@ pub mod tests {
             replay_reasoning: false,
             cache_mode: CacheMode::Auto,
             extra_body: None,
+            thread: None,
         };
         let body = client.build_body(&req);
         let msgs = body["messages"].as_array().unwrap();
@@ -2152,6 +2615,184 @@ pub mod tests {
         assert_eq!(msgs[3]["content"], "[terminal produced no output]");
         assert_eq!(msgs[3]["tool_call_id"], "call_1");
         assert_eq!(msgs[3]["name"], "terminal");
+    }
+
+    /// Two separately persisted single-call assistant rows can share the
+    /// following result block. The provider protocol requires ONE assistant
+    /// carrying BOTH calls, then both results. An assistant followed by
+    /// another assistant before its result is a 400, even when every id
+    /// exists. Preserve the calls, text and results; repair the envelope.
+    #[test]
+    fn adjacent_call_rows_are_joined_before_their_shared_results() {
+        let home = scratch();
+        let ua = resolve_user_agent(None, &home);
+        let client = ProviderClient::new("http://127.0.0.1:0/v1", "k", ua).unwrap();
+        let call = |id: &str, text: &str| {
+            let mut m = ChatMessage::assistant(text, None);
+            m.tool_calls = Some(serde_json::json!([{
+                "id": id, "type": "function",
+                "function": {"name": "terminal", "arguments": "{}"}
+            }]));
+            m
+        };
+        let req = ChatRequest {
+            model: "m".into(),
+            messages: vec![
+                ChatMessage::user("start"),
+                call("first", "first action"),
+                call("second", "second action"),
+                ChatMessage::tool_result("first", "terminal", "first result".into()),
+                ChatMessage::tool_result("second", "terminal", "second result".into()),
+                ChatMessage::user("continue"),
+            ],
+            tools: vec![],
+            reasoning_effort: None,
+            stream: false,
+            replay_reasoning: false,
+            cache_mode: CacheMode::Auto,
+            extra_body: None,
+            thread: None,
+        };
+        let body = client.build_body(&req);
+        let msgs = body["messages"].as_array().unwrap();
+        assert_eq!(msgs.len(), 5, "the two call rows become one: {msgs:?}");
+        assert_eq!(msgs[1]["role"], "assistant");
+        assert_eq!(msgs[1]["tool_calls"][0]["id"], "first");
+        assert_eq!(msgs[1]["tool_calls"][1]["id"], "second");
+        assert_eq!(msgs[2]["tool_call_id"], "first");
+        assert_eq!(msgs[3]["tool_call_id"], "second");
+        assert_eq!(msgs[4]["role"], "user");
+    }
+
+    /// A result can complete after a later tool round. Reordering the
+    /// REPLAY of the saved result is required: every call's result must
+    /// immediately follow its declaring assistant. The persisted order
+    /// and the actual execution remain unchanged.
+    #[test]
+    fn delayed_results_follow_their_own_call_before_later_work() {
+        let home = scratch();
+        let ua = resolve_user_agent(None, &home);
+        let client = ProviderClient::new("http://127.0.0.1:0/v1", "k", ua).unwrap();
+        let call = |id: &str| {
+            let mut m = ChatMessage::assistant("", None);
+            m.tool_calls = Some(serde_json::json!([{
+                "id": id, "type": "function",
+                "function": {"name": "terminal", "arguments": "{}"}
+            }]));
+            m
+        };
+        let req = ChatRequest {
+            model: "m".into(),
+            messages: vec![
+                ChatMessage::user("start"),
+                call("slow"),
+                call("fast"),
+                ChatMessage::tool_result("fast", "terminal", "fast done".into()),
+                call("middle"),
+                ChatMessage::tool_result("middle", "terminal", "middle done".into()),
+                ChatMessage::tool_result("slow", "terminal", "slow done".into()),
+                call("last"),
+                ChatMessage::tool_result("last", "terminal", "last done".into()),
+                ChatMessage::user("continue"),
+            ],
+            tools: vec![],
+            reasoning_effort: None,
+            stream: false,
+            replay_reasoning: false,
+            cache_mode: CacheMode::Auto,
+            extra_body: None,
+            thread: None,
+        };
+        let body = client.build_body(&req);
+        let msgs = body["messages"].as_array().unwrap();
+        let pairs: Vec<(String, Vec<String>)> = msgs
+            .iter()
+            .map(|m| {
+                (
+                    m["role"].as_str().unwrap_or("").to_string(),
+                    if m["role"] == "assistant" {
+                        m["tool_calls"]
+                            .as_array()
+                            .into_iter()
+                            .flatten()
+                            .filter_map(|call| call["id"].as_str().map(String::from))
+                            .collect()
+                    } else {
+                        m["tool_call_id"]
+                            .as_str()
+                            .filter(|id| !id.is_empty())
+                            .map(|id| vec![id.to_string()])
+                            .unwrap_or_default()
+                    },
+                )
+            })
+            .collect();
+        assert_eq!(
+            pairs,
+            [
+                ("user".into(), vec![]),
+                ("assistant".into(), vec!["slow".into(), "fast".into()]),
+                ("tool".into(), vec!["fast".into()]),
+                ("tool".into(), vec!["slow".into()]),
+                ("assistant".into(), vec!["middle".into()]),
+                ("tool".into(), vec!["middle".into()]),
+                ("assistant".into(), vec!["last".into()]),
+                ("tool".into(), vec!["last".into()]),
+                ("user".into(), vec![]),
+            ]
+        );
+    }
+
+    /// The live Kimi failure on 2026-11-07: a recovered/compacted turn
+    /// carried `terminal:6` without its result. Sending that assistant
+    /// tool call again makes the endpoint reject the entire request.
+    /// The tool is NOT rerun: its effect is unknown, so the call becomes
+    /// an explicit interruption marker while completed rounds survive.
+    #[test]
+    fn an_unanswered_tool_call_is_an_interruption_not_a_provider_request() {
+        let home = scratch();
+        let ua = resolve_user_agent(None, &home);
+        let client = ProviderClient::new("http://127.0.0.1:0/v1", "k", ua).unwrap();
+        let call = |id: &str| {
+            let mut m = ChatMessage::assistant("running the tool", None);
+            m.tool_calls = Some(serde_json::json!([{
+                "id": id, "type": "function",
+                "function": {"name": "terminal", "arguments": "{}"}
+            }]));
+            m
+        };
+        let req = ChatRequest {
+            model: "m".into(),
+            messages: vec![
+                ChatMessage::user("start"),
+                call("done"),
+                ChatMessage::tool_result("done", "terminal", "finished".into()),
+                call("terminal:6"),
+                ChatMessage::user("continue"),
+            ],
+            tools: vec![],
+            reasoning_effort: None,
+            stream: false,
+            replay_reasoning: false,
+            cache_mode: CacheMode::Auto,
+            extra_body: None,
+            thread: None,
+        };
+        let body = client.build_body(&req);
+        let msgs = body["messages"].as_array().unwrap();
+        assert_eq!(msgs[2]["tool_call_id"], "done");
+        assert_eq!(msgs[1]["tool_calls"][0]["id"], "done");
+        let unfinished = &msgs[3];
+        assert!(
+            unfinished["tool_calls"].is_null(),
+            "an unanswered call must not reach the provider: {unfinished}"
+        );
+        assert!(
+            unfinished["content"]
+                .as_str()
+                .is_some_and(|s| s.contains("interrupted") && s.contains("terminal:6")),
+            "the unknown outcome stays explicit for review: {unfinished}"
+        );
     }
 
     #[test]
@@ -2353,6 +2994,7 @@ pub mod tests {
             replay_reasoning: false,
             cache_mode: CacheMode::Auto,
             extra_body: None,
+            thread: None,
         }
     }
 
@@ -2868,6 +3510,7 @@ pub mod tests {
             replay_reasoning: replay,
             cache_mode: CacheMode::Auto,
             extra_body: None,
+            thread: None,
         }
     }
 
@@ -2963,6 +3606,7 @@ pub mod tests {
             replay_reasoning: false,
             cache_mode: mode,
             extra_body: None,
+            thread: None,
         }
     }
 
@@ -3385,6 +4029,7 @@ mod driver_tests {
             api_version: None,
             max_output_tokens: None,
             cache_ttl: None,
+            message_threads: None,
         }
     }
 
@@ -3404,6 +4049,12 @@ mod driver_tests {
         );
         assert_eq!(
             resolve_cache_mode(&cfg, &anthropic, "claude-sonnet-5-5"),
+            CacheMode::Explicit
+        );
+        let mut qualified = anthropic.clone();
+        qualified.driver = Some("tcl:tcl-anthropic-driver:anthropic-messages".into());
+        assert_eq!(
+            resolve_cache_mode(&cfg, &qualified, "claude-sonnet-5-5"),
             CacheMode::Explicit
         );
         // A stated `auto` is the same answer as an unset one.
@@ -3517,6 +4168,7 @@ mod driver_tests {
             name: "present-wire".into(),
             plugin: "test".into(),
             call: Arc::new(|_body, _emit| Ok(serde_json::json!({}))),
+            provenance: Default::default(),
         })
         .expect("register");
 
@@ -3535,6 +4187,7 @@ mod driver_tests {
             replay_reasoning: false,
             cache_mode: CacheMode::Off,
             extra_body: None,
+            thread: None,
         };
         let err = RouteClient::Plugin(route)
             .chat(&req, "p")
@@ -3559,6 +4212,7 @@ mod driver_tests {
                 name: "replaceable".into(),
                 plugin: m.clone(),
                 call: Arc::new(move |_b, _e| Ok(serde_json::json!({ "marker": m }))),
+                provenance: Default::default(),
             })
             .expect("register");
         }
@@ -3572,8 +4226,74 @@ mod driver_tests {
             name: "  ".into(),
             plugin: "x".into(),
             call: Arc::new(|_b, _e| Ok(serde_json::json!({}))),
+            provenance: Default::default(),
         })
         .is_err());
+    }
+
+    /// Replace-by-name still applies to an unqualified lookup, but a
+    /// qualified lookup can select either registration without knowing
+    /// which plugin happened to load last.
+    #[test]
+    fn a_qualified_driver_selects_its_plugin() {
+        for plugin in ["tcl:driver-select-a", "so:driver-select-b"] {
+            let marker = plugin.to_string();
+            let tag = crate::lifecycle::owner_tag(plugin);
+            crate::lifecycle::with_thread_owner(tag, || {
+                register_driver(ProviderDriver {
+                    name: "shared-wire".into(),
+                    plugin: marker.clone(),
+                    call: Arc::new(move |_b, _e| Ok(serde_json::json!({ "marker": marker }))),
+                    provenance: Default::default(),
+                })
+                .expect("register");
+            });
+        }
+        assert_eq!(
+            driver("shared-wire").expect("legacy").plugin,
+            "so:driver-select-b"
+        );
+        assert_eq!(
+            driver("tcl:driver-select-a:shared-wire")
+                .expect("qualified")
+                .plugin,
+            "tcl:driver-select-a"
+        );
+        assert_eq!(
+            driver("so:driver-select-b:shared-wire")
+                .expect("qualified")
+                .plugin,
+            "so:driver-select-b"
+        );
+        assert!(driver("plugin-c:shared-wire").is_none());
+        assert_eq!(driver_stack("shared-wire").len(), 2);
+        let route = PluginRoute {
+            driver: "plugin-c:shared-wire".into(),
+            ..Default::default()
+        };
+        let error = match route.resolve() {
+            Ok(_) => panic!("an unknown plugin must not resolve"),
+            Err(error) => error.to_string(),
+        };
+        assert!(error.contains("tcl:driver-select-a:shared-wire"), "{error}");
+        assert!(error.contains("so:driver-select-b:shared-wire"), "{error}");
+        assert!(error.contains("veles doctor --providers"), "{error}");
+
+        // The previous owner was not discarded by the later registration.
+        assert!(remove_owned_driver(
+            "shared-wire",
+            Some(crate::lifecycle::owner_tag("so:driver-select-b"))
+        ));
+        assert_eq!(
+            driver("shared-wire")
+                .expect("covered owner restored")
+                .plugin,
+            "tcl:driver-select-a"
+        );
+        assert!(remove_owned_driver(
+            "shared-wire",
+            Some(crate::lifecycle::owner_tag("tcl:driver-select-a"))
+        ));
     }
 
     /// The driver contract in one test: a driver answers an
@@ -3610,6 +4330,7 @@ mod driver_tests {
                     }
                 }))
             }),
+            provenance: Default::default(),
         })
         .expect("register");
 
@@ -3622,6 +4343,7 @@ mod driver_tests {
             replay_reasoning: false,
             cache_mode: CacheMode::Off,
             extra_body: None,
+            thread: None,
         };
         let c = RouteClient::Plugin(PluginRoute {
             driver: "parse-me".into(),
@@ -3657,6 +4379,7 @@ mod driver_tests {
             call: Arc::new(|_b, _e| {
                 Ok(serde_json::json!({ "error": "upstream said no", "status": 418 }))
             }),
+            provenance: Default::default(),
         })
         .expect("register");
         let req = ChatRequest {
@@ -3668,6 +4391,7 @@ mod driver_tests {
             replay_reasoning: false,
             cache_mode: CacheMode::Off,
             extra_body: None,
+            thread: None,
         };
         let err = RouteClient::Plugin(PluginRoute {
             driver: "sad-wire".into(),
@@ -3707,6 +4431,7 @@ mod driver_tests {
                 let status = body["__test_status"].as_u64().unwrap_or(500);
                 Ok(serde_json::json!({ "error": "upstream unhappy", "status": status }))
             }),
+            provenance: Default::default(),
         })
         .expect("register");
 
@@ -3721,6 +4446,7 @@ mod driver_tests {
             // extra_body reaches the driver verbatim, which is how the test
             // tells the driver which status to answer with.
             extra_body: Some(serde_json::json!({ "__test_status": status })),
+            thread: None,
         };
 
         let route = RouteClient::Plugin(PluginRoute {
@@ -3790,6 +4516,7 @@ mod driver_tests {
                     "choices": [{ "message": { "role": "assistant", "content": "one two three" }}]
                 }))
             }),
+            provenance: Default::default(),
         })
         .expect("register");
 
@@ -3802,6 +4529,7 @@ mod driver_tests {
             replay_reasoning: false,
             cache_mode: CacheMode::Off,
             extra_body: None,
+            thread: None,
         };
         let seen = std::sync::Arc::new(std::sync::Mutex::new(Vec::<String>::new()));
         let sink = std::sync::Arc::clone(&seen);

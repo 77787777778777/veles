@@ -119,7 +119,9 @@ proc ::vmanage::post {w path body} {
     # saying "done" would be a lie.
     if {[dict exists $resp error]} {
         say $w [format [::vi18n::mc {partly failed: %s}] [dict get $resp error]] warn
-        return $resp
+        # A 2xx envelope can still describe a failed operation. Do not
+        # let the next confirmation stage treat it as a success receipt.
+        return ""
     }
     return $resp
 }

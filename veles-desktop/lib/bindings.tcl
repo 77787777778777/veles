@@ -73,11 +73,12 @@ proc ::vbindings::_managers {} {
         {C-S-U        all {::voverlay::open usage}        "Usage"                                    manage}
         {C-S-O        all {::vpanes::show tasks}          "Task list (right pane)"                   manage}
         {C-S-L        all {::voverlay::open log}          "Log (engine + status)"                    manage}
-        {C-S-B        all {::voverlay::open tasks}        "Running tasks (subagents, shells, monitors)" manage}
+        {C-S-B        all {::voverlay::open tasks}        "Shells and monitors (subagents, shells, monitors)" manage}
         {F3           all {::vstatus::show_gateway}       "Gateway status"                           general}
         {C-S-V        all {::vchat::force_refresh}        "Refetch this transcript from the store"   general}
         {F4           all {::vkeymap::picker}             "Keybindings"                              general}
         {C-S-Y        all {::vlang::picker}               "Language (i18n)"                          general}
+        {F11          all {::vtranslate::focused}         "Translate selection"                      general}
         {C-S-W        all {::vsetup::open}                "Setup wizard"                             manage}
         {C-S-C        all {::vsetup::open_install}        "Install components…"                     manage}
         {C-S-Z        all {::vsetup::open_profiles}       "Installation profiles…"                   manage}

@@ -55,6 +55,8 @@ pub const SHARED_COMMANDS: &[&str] = &[
     // `/triggers refresh`/`mask`, which talks to slopdrop over HTTP.
     "/triggers",
     "/trigger",
+    "/translate",
+    "/fleet",
     "/cancel",
     "/stop",
     // /cancel's gentle sibling: move the running foreground `terminal`

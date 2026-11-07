@@ -44,6 +44,61 @@ fn fake_provider() -> (u16, Arc<Mutex<Vec<String>>>) {
     (port, seen)
 }
 
+fn run_setup_with_answers(home: &tempfile::TempDir, answers: &str) -> String {
+    let mut child = Command::new(env!("CARGO_BIN_EXE_veles"))
+        .arg("setup")
+        .env("VELES_HOME", home.path())
+        .env("HOME", home.path())
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .expect("veles setup starts");
+    child
+        .stdin
+        .take()
+        .unwrap()
+        .write_all(answers.as_bytes())
+        .unwrap();
+    let mut out = String::new();
+    child
+        .stdout
+        .take()
+        .unwrap()
+        .read_to_string(&mut out)
+        .unwrap();
+    let status = child.wait().unwrap();
+    assert!(status.success(), "setup failed:\n{out}");
+    out
+}
+
+#[test]
+fn setup_prints_every_optional_referral_without_selecting_or_fetching_it() {
+    let home = tempfile::tempdir().unwrap();
+    let skip = veles_core::setup::PROVIDER_PRESETS.len() + 1;
+    let answers = format!("{skip}\n\nn\n\na\nn\n");
+    let out = run_setup_with_answers(&home, &answers);
+    for link in veles_core::setup::REFERRAL_LINKS {
+        let expected = format!("{} (referral): {}", link.provider, link.url);
+        assert!(out.contains(&expected), "missing {expected:?}:\n{out}");
+    }
+    assert!(
+        out.contains(veles_core::setup::ANTHROPIC_REFERRAL_NOTE),
+        "the Max/Ultra credit condition and unsupported subscription login must be clear: {out}"
+    );
+    assert!(
+        out.contains("Need an account? Optional sign-up links:"),
+        "{out}"
+    );
+    assert!(
+        out.contains("Choice [1]:"),
+        "referrals changed the default: {out}"
+    );
+    assert!(out.contains("Other OpenAI-compatible server"), "{out}");
+    assert!(!out.contains("Fetching http"), "{out}");
+    assert!(!home.path().join("config.toml").exists());
+}
+
 #[test]
 fn a_first_run_picks_a_preset_and_a_listed_model() {
     let (port, seen) = fake_provider();

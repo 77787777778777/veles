@@ -1168,7 +1168,9 @@ mod tests {
     #[test]
     fn a_doc_edit_or_a_parameter_rename_is_not_an_abi_change() {
         assert_eq!(
-            normalize_type("unsafe extern \"C\" fn(\n  args_json: *const c_char,\n  ctx: *mut c_void,\n) -> u8"),
+            normalize_type(
+                "unsafe extern \"C\" fn(\n  args_json: *const c_char,\n  ctx: *mut c_void,\n) -> u8"
+            ),
             "unsafe extern \"C\" fn(*const c_char, *mut c_void) -> u8"
         );
         assert_eq!(

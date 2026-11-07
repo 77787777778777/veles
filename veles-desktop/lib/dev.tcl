@@ -46,9 +46,15 @@ namespace eval ::vdev {
     variable editor_w ""
     variable editor_file      ;# widget -> the path it edits
     variable editor_sha       ;# widget -> bytes loaded/saved last ("" = new file)
+    variable editor_diagnostics ;# widget -> most recent LSP diagnostic rows
     variable editor_status_w  ;# widget -> where its status line goes
     variable editor_save_cmd  ;# widget -> what C-x C-s runs instead
     variable editor_dirty     ;# widget -> unsaved changes
+    # Text widgets whose FocusIn/Destroy append bindings are installed.
+    # Values are Tk window ids, not just paths: detach/reattach rebuilds
+    # an editor at the same path and the NEW object must be bound again.
+    variable editor_bound
+    array set editor_bound {}
     variable _mirror_root ""  ;# slopdrop mirror root, cached per process
     variable _mirror_root_fetched 0 ;# probed at least once
 
@@ -154,14 +160,22 @@ proc ::vdev::attach {w args} {
     variable editor_file
     variable editor_status_w
     variable editor_save_cmd
+    variable editor_bound
     array set o {-path "" -status "" -save ""}
     array set o $args
     set editor_file($w) $o(-path)
     if {$o(-status) ne ""} { set editor_status_w($w) $o(-status) }
     if {$o(-save) ne ""}   { set editor_save_cmd($w) $o(-save) }
 
-    bind $w <FocusIn> {+::vdev::_editor_focus %W}
-    bind $w <Destroy> {+::vdev::_editor_gone %W}
+    # These two are APPENDS; every other binding below replaces its
+    # previous script. Re-attaching the same editor must not make one
+    # focus event or one destruction run its bookkeeping repeatedly.
+    set id [winfo id $w]
+    if {![info exists editor_bound($w)] || $editor_bound($w) ne $id} {
+        bind $w <FocusIn> {+::vdev::_editor_focus %W}
+        bind $w <Destroy> {+::vdev::_editor_gone %W}
+        set editor_bound($w) $id
+    }
     bind $w <<Modified>> { ::vdev::_editor_modified %W }
     # lsp-mode feel: tree-sitter highlighting via tcl-lsp (live server),
     # regex fallback (::vsyn::highlight) when the server is absent.
@@ -264,6 +278,16 @@ proc ::vdev::_editor_modified {w} {
     # re-read, obvious the moment a tab carried a "•" and refused to
     # close.
     if {![$w edit modified]} { return }
+    catch {
+        if {[winfo exists .vdev_extension_assist] &&
+            $::vdev::assist_widget eq $w} {
+            set ::vdev::assist_preview {}
+            set ::vdev::assist_apply_allowed 0
+            .vdev_extension_assist.bar.apply state disabled
+            .vdev_extension_assist.bar.route configure -text \
+                [::vi18n::mc {The buffer changed. Request a new proposal before applying.}]
+        }
+    }
     _editor_focus $w
     _set_dirty_for $w 1
     editor_status "[editor_status_base] (modified)"
@@ -295,8 +319,9 @@ proc ::vdev::_editor_gone {w} {
     variable editor_status_w
     variable editor_save_cmd
     variable editor_dirty
+    variable editor_bound
     if {$editor_w eq $w} { set editor_w "" }
-    foreach a {editor_file editor_status_w editor_save_cmd editor_dirty} {
+    foreach a {editor_file editor_status_w editor_save_cmd editor_dirty editor_bound} {
         catch { unset ${a}($w) }
     }
     return
@@ -462,7 +487,10 @@ proc ::vdev::buf_show {id} {
     # The `count > 1` guard skips the empty widget that buf_new shows
     # before editor_open fills it — editor_open runs _lsp_open itself once
     # the text is in, and a didOpen of "" here would only make it flicker.
-    if {[::vlsp::running] && $buf_path($id) ne "" \
+    # A session parked for a non-Tcl buffer (_lsp_open) comes back here.
+    variable lsp_parked
+    if {([::vlsp::running] || ([info exists lsp_parked] && $lsp_parked)) \
+            && $buf_path($id) ne "" \
             && $buf_path($id) ne [::vlsp::doc_path] \
             && [$buf_w($id) count -chars 1.0 end] > 1} {
         _lsp_open
@@ -904,6 +932,13 @@ proc ::vpanes::_build_dev {w} {
         -command { ::vdev::_slopdrop_sync_click }
     ::va11y::name $w.edit.bar.slopdrop [::vi18n::mc {re-sync the slopdrop state mirror}]
 
+    ttk::button $w.edit.bar.newext -text [::vi18n::mc {New extension}] -command { ::vdev::new_extension }
+    ::va11y::name $w.edit.bar.newext [::vi18n::mc {scaffold a user plugin and open it in this editor}]
+    ttk::button $w.edit.bar.extguide -text [::vi18n::mc {Extension guide}] -command { ::vdev::extension_guide }
+    ::va11y::name $w.edit.bar.extguide [::vi18n::mc {extension architecture, examples and LSP help}]
+    ttk::button $w.edit.bar.assist -text [::vi18n::mc {AI assist…}] -command { ::vdev::extension_assist }
+    ::va11y::name $w.edit.bar.assist [::vi18n::mc {preview an AI extension change and explicitly apply its diff}]
+    pack $w.edit.bar.newext $w.edit.bar.extguide $w.edit.bar.assist -side left -padx 1
     pack $w.edit.bar.slopdrop -side left -padx 1
     pack $w.edit.bar.open $w.edit.bar.save $w.edit.bar.source \
         $w.edit.bar.evalgw $w.edit.bar.def $w.edit.bar.peek $w.edit.bar.outline \
@@ -1108,7 +1143,10 @@ proc ::vdev::editor_open {} {
     # truncated everything past the limit, and the LSP inherited the
     # truncation: didOpen carried the cut text, so the server diagnosed
     # "missing braces" on a document that ended mid-block.
-    if {[catch {::vapi::get_json "/api/fs/file?path=[::vapi::json_escape $path]"} resp]} {
+    # URL-encoded, not JSON-escaped: json_escape doubled every backslash
+    # of a Windows path (C:\\Users\\…, a file that does not exist) and
+    # left `&`, `#` and spaces to split the query (dev-ext-13).
+    if {[catch {::vapi::get_json "/api/fs/file?path=[::vapi::urlencode $path]"} resp]} {
         editor_status "open failed: $resp"; return
     }
     if {[dict exists $resp error]} {
@@ -1316,37 +1354,101 @@ proc ::vdev::editor_eval_gw {} {
     }
 }
 
-# Lint through our own tcl-lsp (one-shot stdio driver; the server has
-# no --check mode). LIVE-VERIFIED: bad file → line:col diagnostics.
+# Check: the file type's checker, run by the GATEWAY on its saved copy
+# (POST /api/lsp/check; dev_check.rs). It used to exec tclsh and the
+# tcl-lsp driver HERE, against a gateway path read from this machine's
+# disk (the wrong file against a remote gateway), with its scratch copy
+# in /tmp (absent on Windows), and it had nothing for any other language.
+# Now: tcl-lsp diagnostics, tsc --noEmit, node --check, cargo check,
+# clang -fsyntax-only, the Racket and Lisp readers. Asynchronous — a
+# cargo check takes minutes and the editor stays usable.
+namespace eval ::vdev { variable check_seq 0 }
+
 proc ::vdev::editor_check {} {
+    variable check_seq
     set path [string trim [editor_path]]
-    set content [[editor_widget] get 1.0 end-1c]
-    set tmp ""
     if {$path eq ""} {
-        set tmp "/tmp/veles-lsp-check.tcl"
-        set f [open $tmp w]; puts -nonewline $f $content; close $f
-        set path $tmp
-    } elseif {[editor_dirty]} {
-        editor_status "buffer modified — checking disk copy (save first to check the buffer)"
-    }
-    set tclsh [auto_execok tclsh]
-    if {$tclsh eq ""} { editor_status "tclsh not on PATH"; return }
-    variable lib_dir
-    set driver [file join [file dirname $lib_dir] scripts tcl-lsp-check.tcl]
-    if {![file exists $driver]} {
-        editor_status "lsp driver not found (veles-desktop/scripts/tcl-lsp-check.tcl)"
+        editor_status "[editor_status_base] save the buffer first: Check runs on the gateway's saved copy"
         return
     }
-    if {[catch {exec $tclsh $driver $path 2>@1} out]} {
-        set out [string trim $out]
-        if {$out eq ""} { set out "check produced no output" }
-        _dbg_print $out
-        editor_status "[editor_status_base] check: [string range [lindex [split $out \n] 0] 0 60]"
-    } else {
-        _dbg_print [string trim $out]
-        editor_status "[editor_status_base] check clean"
+    if {[_lsp_language $path] eq ""} {
+        editor_status "[editor_status_base] no checker for [file extension $path] files"
+        return
     }
-    if {$tmp ne ""} { catch { file delete $tmp } }
+    set dirty [editor_dirty]
+    editor_status "[editor_status_base] checking[expr {$dirty ? " the saved copy (unsaved changes are not checked)" : ""}]…"
+    set seq [incr check_seq]
+    set body [::vapi::json_object [list path [::vapi::json_string $path]]]
+    ::vapi::post_json_async /api/lsp/check $body \
+        [list ::vdev::_check_failed $seq] [list ::vdev::_check_result $seq $path] 600000
+}
+
+proc ::vdev::_check_failed {seq why} {
+    variable check_seq
+    if {$seq != $check_seq} { return }
+    editor_status "[editor_status_base] check failed: [string range [lindex [split $why \n] 0] 0 100]"
+}
+
+# Paint the current file's findings, list every finding in the inspector,
+# and say what ran. A checker that is not installed is "unavailable",
+# never "clean".
+proc ::vdev::_check_result {seq path report} {
+    variable check_seq
+    if {$seq != $check_seq} { return }
+    set status ""
+    catch { set status [dict get $report status] }
+    set method ""
+    catch { set method [dict get $report method] }
+    set note ""
+    catch { set note [dict get $report note] }
+    set mine {}
+    set lines {}
+    set diags {}
+    catch { set diags [dict get $report diagnostics] }
+    foreach d $diags {
+        set dp ""
+        set line 1
+        set col 0
+        set sev ERROR
+        set msg ""
+        catch { set dp [dict get $d path] }
+        catch { set line [dict get $d line] }
+        catch { set col [dict get $d col] }
+        catch { set sev [dict get $d severity] }
+        catch { set msg [dict get $d message] }
+        lappend lines "$dp:$line:$col $sev $msg"
+        set here 0
+        catch { set here [::vlsp::same_path $dp $path] }
+        if {$dp eq "" || $dp eq $path || $here} {
+            lappend mine [list $line $col $sev $msg]
+        }
+    }
+    set out ""
+    catch { set out [string trim [dict get $report output]] }
+    set text [join $lines \n]
+    if {$note ne ""} { append text [expr {$text eq "" ? "" : "\n\n"}] $note }
+    if {$out ne "" && ![llength $diags]} { append text [expr {$text eq "" ? "" : "\n\n"}] $out }
+    _dbg_print $text
+    set w [editor_widget]
+    if {[winfo exists $w] && [editor_path] eq $path} {
+        set ::vdev::editor_diagnostics($w) $mine
+        catch { ::vsyn::diagnostics $w $mine }
+    }
+    set label [expr {$method eq "" ? "" : " ($method)"}]
+    switch -- $status {
+        passed { editor_status "[editor_status_base] check clean$label" }
+        failed {
+            set n [llength $diags]
+            if {$n} {
+                editor_status "[editor_status_base] check$label: $n problem(s), [llength $mine] in this file"
+            } else {
+                editor_status "[editor_status_base] check$label failed: [string range [lindex [split $out \n] 0] 0 80]"
+            }
+        }
+        default {
+            editor_status "[editor_status_base] check unavailable: [string range $note 0 140]"
+        }
+    }
 }
 
 # ── inspector ────────────────────────────────────────────────────────
@@ -1473,12 +1575,14 @@ proc ::vdev::show_last_error {} {
     }
 }
 
-# ── tcl-lsp integration (lsp-mode feel) ─────────────────────────────
-# One server per dev-pane session; semantic tokens drive the
+# ── language-server integration (lsp-mode feel) ─────────────────────
+# One gateway server per language family (tcl-lsp, typescript-language-
+# server, rust-analyzer, clangd, …); semantic tokens drive the
 # highlighting, publishDiagnostics drive underlines, hover drives the
 # tooltip, completion drives Tab. Fallbacks: regex highlight
-# (::vsyn::highlight) when tcl-lsp is absent; the one-shot
-# tcl-lsp-check.tcl driver remains the "Check" button surface.
+# (::vsyn::highlight) when the gateway has no server for the file; the
+# "Check" button is the gateway's POST /api/lsp/check (editor_check),
+# no longer the desktop-side tcl-lsp-check.tcl driver.
 
 namespace eval ::vdev {
     variable lsp_sync_after ""
@@ -1498,12 +1602,46 @@ namespace eval ::vdev {
     variable _actions {}  ;# the code actions on offer
 }
 
+# The language of a buffer, as the LSP languageId the gateway's server
+# table uses (lsp_servers.rs Language::from_path): every language a veles
+# extension can be written in. Tcl was the only one until 0.2.0; a
+# TypeScript, Racket, Lisp, Rust or C buffer was gated off (dev-ext-8,
+# owner ask 287976.2). "" is a file no server is known for.
+proc ::vdev::_lsp_language {path} {
+    switch -- [string tolower [file extension $path]] {
+        .tcl - .tm - .test - .tk { return tcl }
+        .ts - .mts - .cts - .tsx { return typescript }
+        .js - .mjs - .cjs - .jsx { return javascript }
+        .rs { return rust }
+        .c - .h { return c }
+        .cc - .cpp - .cxx - .hh - .hpp - .hxx { return cpp }
+        .rkt { return racket }
+        .lisp - .lsp - .cl - .asd { return commonlisp }
+    }
+    return ""
+}
+
 # Called after the buffer is (re)loaded: start the server on this file.
+# Which server, and whether the gateway has one, is the gateway's answer.
 proc ::vdev::_lsp_open {} {
+    variable lsp_parked
     set w [editor_widget]
     set text [$w get 1.0 end-1c]
     set path [editor_path]
     if {$path eq ""} { return }
+    if {[_lsp_language $path] eq ""} {
+        # Step the client off the previous document (the gateway keeps its
+        # server for the next buffer of that language), so hover and sync
+        # use the fallbacks instead of answering for the wrong file.
+        if {[::vlsp::running]} {
+            catch { ::vlsp::_stop "" 0 }
+        }
+        set lsp_parked 1
+        ::vsyn::highlight $w
+        editor_status "[editor_status_base] loaded (no language server for [file extension $path] files)"
+        return
+    }
+    set lsp_parked 0
     if {![catch { ::vlsp::start $path $text ::vdev::_lsp_diag }]} {
         # Pin the paint target AFTER start: a new document clears the
         # pin (it belongs to the buffer that opened it), so a pin
@@ -1512,19 +1650,33 @@ proc ::vdev::_lsp_open {} {
         # at reply time, or nowhere at all.
         catch { ::vlsp::set_apply_widget $w }
         if {[::vlsp::running]} {
-            editor_status "[editor_status_base] loaded (lsp)"
+            set label lsp
+            catch { set label [::vlsp::server_label] }
+            set note ""
+            catch { set note [::vlsp::note] }
+            editor_status "[editor_status_base] loaded ($label)[expr {$note eq "" ? "" : " — $note"}]"
             return
         }
     }
-    # No server → regex fallback highlight.
+    # No server → regex fallback highlight, and the gateway's reason (it
+    # names the program it looked for and how to install it). The next
+    # buffer switch tries again.
+    set lsp_parked 1
     ::vsyn::highlight $w
-    editor_status "[editor_status_base] loaded"
+    set why ""
+    catch { set why [::vlsp::last_error] }
+    if {$why ne ""} {
+        editor_status "[editor_status_base] loaded — no language server: $why"
+    } else {
+        editor_status "[editor_status_base] loaded"
+    }
 }
 
 # Diagnostics callback from the LSP client: underline + status count.
 proc ::vdev::_lsp_diag {rows} {
     set w [editor_widget]
     if {![winfo exists $w]} { return }
+    set ::vdev::editor_diagnostics($w) $rows
     ::vsyn::diagnostics $w $rows
     set n [llength $rows]
     if {$n} {
@@ -1875,6 +2027,25 @@ proc ::vdev::_goto_def {} {
     ::vlsp::definition_at [expr {$line - 1}] $char ::vdev::_goto_def_result
 }
 
+# A server's file URI as the gateway path it names, and path equality on
+# the gateway's terms (lspclient.tcl owns both; the fallbacks keep a
+# client without them working on a same-machine unix gateway).
+proc ::vdev::_uri_path {uri} {
+    if {[llength [info commands ::vlsp::uri_to_path]]} {
+        set p [::vlsp::uri_to_path $uri]
+        if {$p ne ""} { return $p }
+    }
+    if {[string match "file://*" $uri]} { return [file normalize [string range $uri 7 end]] }
+    return $uri
+}
+
+proc ::vdev::_same_path {a b} {
+    if {[llength [info commands ::vlsp::same_path]]} {
+        return [::vlsp::same_path $a $b]
+    }
+    return [expr {[file normalize $a] eq [file normalize $b]}]
+}
+
 proc ::vdev::_goto_def_result {result err} {
     variable current_file
     variable _jump_after_open
@@ -1889,14 +2060,16 @@ proc ::vdev::_goto_def_result {result err} {
         editor_status "definition is not in a file"
         return
     }
-    set path [file normalize [string range $uri 7 end]]
+    # The URI names a GATEWAY path (decoded, and for a Windows gateway a
+    # drive path): never `string range 7` plus a local `file normalize`.
+    set path [_uri_path $uri]
     set pos "[expr {$line + 1}].$char"
     # Same-file is decided against the FOCUSED editor, not the docked
     # pane's current_file: M-. inside a popped-out buffer or the failover
     # script editor lands on its own file, and comparing to current_file
     # would treat that as cross-file and yank the file into the dock.
     set here [editor_path]
-    if {$here ne "" && $path eq [file normalize $here]} {
+    if {$here ne "" && [_same_path $path $here]} {
         _apply_jump $pos
         editor_status "[editor_status_base] -> [expr {$line + 1}]:$char"
         return
@@ -1988,7 +2161,7 @@ proc ::vdev::_references_result {result err} {
     foreach it [::vlsp::reference_list $result] {
         lassign $it uri line char
         set path $uri
-        if {[string match "file://*" $uri]} { set path [string range $uri 7 end] }
+        if {[string match "file://*" $uri]} { set path [_uri_path $uri] }
         lappend items [list $path [expr {$line + 1}] $char]
     }
     if {![llength $items]} {
@@ -2040,7 +2213,7 @@ proc ::vdev::_peek_source {path} {
         if {[catch {
             # Whole file, like editor_open: a peek past line 200 of the
             # preview endpoint would show a line that is not there.
-            set resp [::vapi::get_json "/api/fs/file?path=[::vapi::json_escape $path]"]
+            set resp [::vapi::get_json "/api/fs/file?path=[::vapi::urlencode $path]"]
             if {[dict exists $resp text]} { set text [dict get $resp text] }
         } e]} {
             # An empty preview with no explanation looks like the peek is
@@ -2219,7 +2392,7 @@ proc ::vdev::_peek_def_result {result err} {
         return
     }
     peek_open "definition" \
-        [list [list [string range $uri 7 end] [expr {$line + 1}] $char]]
+        [list [list [_uri_path $uri] [expr {$line + 1}] $char]]
 }
 
 # ── signature help (typed, and on demand with M-s) ──────────────────
@@ -2371,16 +2544,14 @@ proc ::vdev::apply_edits {edits} {
     variable current_file
     set w [editor_widget]
     if {![winfo exists $w]} { return [list -1 {}] }
-    set cur ""
-    catch { set cur [file normalize $current_file] }
+    set cur [string trim $current_file]
     set mine {}
     set other {}
     foreach e $edits {
         lassign $e uri sl sc el ec newtext
         set path $uri
-        if {[string match "file://*" $uri]} { set path [string range $uri 7 end] }
-        set path [file normalize $path]
-        if {$path eq $cur} {
+        if {[string match "file://*" $uri]} { set path [_uri_path $uri] }
+        if {$cur ne "" && [_same_path $path $cur]} {
             lappend mine [list $sl $sc $el $ec $newtext]
         } else {
             lappend other $path

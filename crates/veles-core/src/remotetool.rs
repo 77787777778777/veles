@@ -72,6 +72,7 @@ pub const STAYS_HOME: &[&str] = &[
     "cronjob",
     "session_search",
     "session_export",
+    "sessions",
     "skill_view",
     "skills_list",
     "skill_manage",
@@ -334,8 +335,9 @@ fn agent_name_for<'a>(
 
 /// The live peers that may take work from here (`[cluster]
 /// task_peers`, reached through `[a2a_agents]`) and advertise one of
-/// `needs`, least loaded first (`placement::load_order`). Never this
-/// node; never a stale one; never a node whose row advertises nothing.
+/// `needs`, least loaded first (`placement::rank`, mixed workload: load
+/// per core, children counted there, IO pressure). Never this node;
+/// never a stale one; never a node whose row advertises nothing.
 pub fn capable_peers(
     store: &crate::store::Store,
     cfg: &crate::config::VelesConfig,
@@ -343,7 +345,7 @@ pub fn capable_peers(
     needs: &[&str],
 ) -> Vec<crate::store::NodeRow> {
     let stale = cfg.cluster.stale_after_secs as i64;
-    let mut peers: Vec<crate::store::NodeRow> = store
+    let peers: Vec<crate::store::NodeRow> = store
         .nodes_list()
         .unwrap_or_default()
         .into_iter()
@@ -354,8 +356,15 @@ pub fn capable_peers(
             agent_name_for(cfg, n).is_some_and(|a| cfg.cluster.task_peers.iter().any(|p| p == a))
         })
         .collect();
-    peers.sort_by(crate::placement::load_order);
-    peers
+    crate::placement::rank(
+        store.conn(),
+        Some(me),
+        peers,
+        crate::placement::Workload::General,
+    )
+    .into_iter()
+    .map(|(n, _)| n)
+    .collect()
 }
 
 /// This node's advertised programs, from its own registry row (what
@@ -1740,6 +1749,10 @@ mod tests {
         assert!(
             auto_home_for(&store, &cfg, Some("phone-1"), "s2", "search_files").is_some(),
             "another session has no rule"
+        );
+        assert!(
+            auto_home_for(&store, &cfg, Some("phone-1"), "s1", "sessions").is_none(),
+            "session mail stays on this node and addresses remote peers itself"
         );
         cfg.tools.auto_home = false;
         assert_eq!(

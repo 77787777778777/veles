@@ -197,6 +197,83 @@ what it has itself runs everything here. `delegate_task` takes `needs =
 all, a named node without one is an error naming it, and `needs` alone
 means `any`.
 
+### How `any` and `gpu` choose
+
+Every heartbeat carries the node's 1-minute load per core (0-100), its
+core count, its disk IO pressure, and its delegate work: the children
+whose process runs there, the ones placed there and not started yet, and
+which node asked for each. IO pressure is the kernel's pressure-stall
+figure (`/proc/pressure/io`, `some` and `full`, 10-second average). It
+is read on Linux and, where the app may read it, on Android. Windows,
+macOS and the BSDs report it as unknown, and so does a Linux kernel
+without PSI. A 0.1.6 node sends none of these and is read as unknown,
+never as 0.
+
+`any` ranks the live nodes this node can reach by:
+
+- its load per core, plus one core's worth (100 / cores points) for each
+  child counted there. The count is what the node reports, plus the
+  children this node placed there that the node has not reported yet,
+  so a child is never counted twice. That is why a batch, a run of
+  background children, or placements made at the same time from two
+  nodes spread out instead of landing on the node whose last heartbeat
+  looked idlest. A node that reports no cores is counted as 4, so one
+  child is 25 points.
+- plus its IO pressure (`some`), point for point.
+
+`delegate_task workload` shifts the weights. `cpu` (compile, encode,
+test) halves the IO term. `io` (copy, scan, dump, download) doubles it,
+and a node at or over 20% IO pressure is chosen only when no other
+candidate is left. A node whose IO is unknown ranks after one with a
+measured low figure. A node of unknown load ranks after every node with
+a known load. Equal candidates break by sessions served and then by id,
+so the same registry always gives the same order. `gpu` ranks its GPU
+nodes the same way. A named backend is never moved. A named node with
+high IO pressure still takes `io` work, and the result says its disk is
+busy.
+
+Reachable means this node, or a node with an `[a2a_agents]` entry that
+passed a live auth probe: an authenticated `tasks/get` for a task that
+does not exist. Every veles peer answers it once the token and the
+trusted-peer list let the caller in. A pass stands for 5 minutes and a
+failure for 1, and a successful gossip exchange counts as a pass. A
+refused token (401), a caller missing from the trusted list (403), a
+rate limit (429) and no answer within 4 seconds are all failures. So a
+phone that stopped after five idle minutes, or a peer whose token was
+rotated, is skipped before any work is sent to it. The probe is not
+"use" for an idle phone, so it never keeps one awake. `delegate_task`
+with `any` or `gpu`, and the `nodes` tool, re-probe expired routes
+before they choose, all at once, so a call can wait up to 4 seconds for
+a peer that has gone quiet.
+
+The counts live in this node's `state.db` (`placement_work`), which
+every process on the node shares, so a TUI's delegates and the
+gateway's see each other. Each row ends with its process: a claim with
+the process that placed it, a running child with the child's own pid.
+A child placed here takes over its own claim when its process starts,
+so it is counted once. A gateway restart therefore keeps counting
+children that are still running, and the boot reconciliation drops the
+claims and children whose process is gone (or whose PID now belongs to
+another process). It logs what it kept and dropped. The same pruning
+runs on every heartbeat and before every `any`/`gpu` choice. A peer's
+figures are taken as reported but cannot rank it first: a count below
+0 is read as 0, a percentage is held to 0-100, and 0 cores is unknown.
+
+The `nodes` tool shows, for every node, the figures above (`cores`,
+`load_per_core_percent`, `io_pressure_percent`, `children_running`,
+`children_queued`, `placed_from_here_unreported`, the projected load per
+core), how its route probe went, and the order `any` would pick for
+mixed, cpu and io work. A node it cannot reach is never called
+eligible. `veles nodes list` prints `cores=… io=…% children=…` on each
+line, with `?` for unknown.
+
+Splitting one job into parts is the model's decision. The `delegate_task`
+and `nodes` descriptions, and the system prompt, tell it when to split:
+independent parts that each take minutes, sent as one `tasks` batch with
+`backend='any'` and a `workload`. They also tell it to keep short,
+sequential or same-file work where it is. veles does not split a task by
+itself.
+
 ## A node without a sandbox
 
 A phone has no container runtime, so a call that belongs in a sandbox
@@ -402,6 +479,24 @@ DEFLATE stream; a 500-row chunk is ~4.7× smaller). A node from before
 it cannot read one and refuses it ("payload is not base64"); the
 sender then sends that peer the plain layout until it restarts, so a
 pool upgraded one node at a time keeps syncing.
+
+**Forgetting a node is fleet-wide** (0.2.0). `veles nodes forget`,
+`/fleet forget` and the Instances tab remove the row and keep a
+tombstone (node id, time forgotten) that rides every gossip exchange,
+in both directions. A 0.2.0 peer drops the row, keeps the tombstone and
+refuses every copy of the row whose heartbeat is not newer than the
+forget, so a retired machine does not come back through a third node.
+A machine that does come back and heartbeats is registered again. A
+peer older than 0.2.0 ignores the tombstone and keeps its row, and the
+0.2.0 nodes do not take it back from that peer. The tombstone list is an
+added field of the gossip message, so the two versions still exchange
+gossip. Tombstones are kept for 90 days.
+
+**Peers answer fleet requests from their cluster peers only.** The
+command center's log tail, metrics and config fingerprint (the `veles/fleet`
+JSON-RPC method, docs/command-center.md "Observing nodes") are answered
+only for a peer named in `[cluster] memsync_peers`, the same list that
+gates gossip and the sync inboxes.
 
 ## Joining by invite (a QR code)
 

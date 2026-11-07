@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset xh {%1$s %2$s failed: %3$s} {%1$s %2$s silele: %3$s}
 ::msgcat::mcset xh {%1$s %2$s over ssh…} {%1$s %2$s nge-ssh…}
 ::msgcat::mcset xh {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset xh {%1$s (%2$s waiting)} {%1$s (%2$s ilindile)}
 ::msgcat::mcset xh {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  ukuqiqa %3$s}
 ::msgcat::mcset xh {%1$s = %2$s here} {%1$s = %2$s apha}
 ::msgcat::mcset xh {%1$s NOT saved: %2$s} {%1$s AYIGCINWANGA: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset xh {%1$s every cron job on %2$s?} {%1$s yonke imisebenzi ye-cron kwi-%2$s?}
 ::msgcat::mcset xh {%1$s failed: %2$s} {%1$s silele: %2$s}
 ::msgcat::mcset xh {%1$s in / %2$s out / %3$s calls} {%1$s zingene / %2$s ziphuma / %3$s iifowuni}
+::msgcat::mcset xh {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s yinode %2$s, ayiyiyo %3$s. Lungisa i-id yayo yenode ku-Hlela….}
 ::msgcat::mcset xh {%1$s is not a whole number} {%1$s asililo inani elipheleleyo}
+::msgcat::mcset xh {%1$s is reachable (%2$s ms).} {%1$s iyafikeleleka (%2$s ms).}
 ::msgcat::mcset xh {%1$s is set to something this box cannot edit (%2$s)} {%1$s isetelwe kwinto esi sixhobo singenako ukuyihlela (%2$s)}
+::msgcat::mcset xh {%1$s is unreachable: %2$s} {%1$s ayifikeleleki: %2$s}
 ::msgcat::mcset xh {%1$s of %2$s characters} {%1$s kwe-%2$s oonobumba}
 ::msgcat::mcset xh {%1$s of %2$s sessions} {%1$s kwezi-%2$s iiseshoni}
 ::msgcat::mcset xh {%1$s of %2$s skills reach the prompt} {%1$s kwe-%2$s izakhono zifikelela kwi-prompt}
 ::msgcat::mcset xh {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s kwi-%2$s: %3$d zilungile, %4$d silele}
+::msgcat::mcset xh {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s ayinikezi sazisi senode ye-cluster, ngoko ayinakuqinisekiswa njenge-%2$s.}
+::msgcat::mcset xh {%1$s sync failed: %2$s} {%1$s i-sync yehlulekile: %2$s}
+::msgcat::mcset xh {%1$s sync with %2$s (%3$s)} {%1$s i-sync kunye no-%2$s (%3$s)}
+::msgcat::mcset xh {%1$s sync: %2$s} {%1$s i-sync: %2$s}
 ::msgcat::mcset xh {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset xh {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Cofa i-Enter ukutsiba, i-Esc ukuvala}
 ::msgcat::mcset xh {%1$s — revision r%2$s} {%1$s — inguqulelo r%2$s}
 ::msgcat::mcset xh {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset xh {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset xh {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset xh {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset xh {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: imigca yokugqibela engu-%2$s kwengu-%3$s egcinwa yi-gateway yayo kwimemori, iimfihlo zisuswe kuleyo node.}
 ::msgcat::mcset xh {%d MCP server(s) configured} {%d iiserver ze-MCP zimisiwe}
 ::msgcat::mcset xh {%d entries} {%d izinto}
+::msgcat::mcset xh {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {Iifayile ezi-%d zolwandiso ziya kubhalwa kanye njengoko ziphononongiwe. Ukuba nayiphi kuzo itshintshile ukususela kumboniso wangaphambili, akukho nto ibhalwayo. Akukho commit, push okanye PR eyenzekayo.}
 ::msgcat::mcset xh {%d handler(s) registered} {%d abaphathi babhalisiwe}
 ::msgcat::mcset xh {%d identities · %d users} {%d izazisi · %d abasebenzisi}
 ::msgcat::mcset xh {%d models — pick one from the list or type a name.} {%d iimodeli — khetha enye kuluhlu okanye uchwetheze igama.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset xh {%d shown} {%d zibonisiwe}
 ::msgcat::mcset xh {%s %s%%} {%s %s%%}
 ::msgcat::mcset xh {%s (%s)} {%s (%s)}
+::msgcat::mcset xh {%s (referral)} {%s (ireferali)}
+::msgcat::mcset xh {%s (stale)} {%s (iphelelwe lixesha)}
 ::msgcat::mcset xh {%s (this session)} {%s (esi seshini)}
 ::msgcat::mcset xh {%s GB free of %s GB} {%s GB engenanto kwi-%s GB}
 ::msgcat::mcset xh {%s already exists — open it from the list} {%s sele ikhona — yivule kuluhlu}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset xh {%s comes from config.toml [acl] — edit there} {%s ivela kwi-config.toml [acl] — yihlele apho}
 ::msgcat::mcset xh {%s config change(s) wait for you — /configsync} {utshintsho loqwalaselo oluyi-%s lukulindile — /configsync}
 ::msgcat::mcset xh {%s did not become healthy within 30s} {%s ayizange ibe sempilweni kwi-30s}
+::msgcat::mcset xh {%s done} {%s kugqityiwe}
 ::msgcat::mcset xh {%s failed: %s} {%s yahlulekile: %s}
 ::msgcat::mcset xh {%s is already split} {%s sele yahlulwe}
 ::msgcat::mcset xh {%s is the language in use — pick another one to swap with} {%s lulwimi olusetyenziswayo — khetha olunye ukuze utshintshane nalo}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset xh {%s opens the command palette in %s.} {%s ivula ipalethi yomyalelo kwi-%s.}
 ::msgcat::mcset xh {%s session(s)} {%s iiseshini}
 ::msgcat::mcset xh {%s skill(s):} {%s izakhono (amakhono):}
+::msgcat::mcset xh {%s standing grants} {%s iimvume ezimileyo}
 ::msgcat::mcset xh {%s takes no completable arguments} {%s ayithathi zimpikiswano zokugqibezela}
 ::msgcat::mcset xh {%s takes on or off} {%s ithatha i-on okanye i-off}
 ::msgcat::mcset xh {%s —} {%s —}
+::msgcat::mcset xh {%s — changes data, asks to confirm} {%s — itshintsha idatha, icela ukuqinisekisa}
 ::msgcat::mcset xh {%s — deleted; History… can restore it} {%s — icinyiwe; Imbali… ingayibuyisela}
 ::msgcat::mcset xh {%s — new: type, then Save} {%s — entsha: chwetheza, emva koko Gcina}
 ::msgcat::mcset xh {%s — not attached; press Attach in the Instances tab} {%s — ayinanyathiselwa; cinezela i-Attach kwi-tab ye-Instances}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset xh {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {I-%{platform} ivuliwe ngaphandle kwecandelo le-[acl]: de i-%{var} ku-.env ibize ukuba ngubani onokuthetha nebhot, nabani na oyifikelelayo uthathwa njengomnini, enazo zonke izixhobo}
 ::msgcat::mcset xh (%{route}) (%{route})
 ::msgcat::mcset xh {(CLI redraws automatically)} {(i-CLI iyazizoba kwakhona)}
+::msgcat::mcset xh {(binary; not publishable)} {(yibhinari; ayinakupapashwa)}
 ::msgcat::mcset xh {(clipboard empty or no clipboard tool)} {(iklipbhodhi ingenanto okanye akukho sixhobo sayo)}
 ::msgcat::mcset xh (deleted) (icinyiwe)
 ::msgcat::mcset xh (empty) {(akukho nto)}
 ::msgcat::mcset xh {(no sessions)} {(akukho zisesheni)}
+::msgcat::mcset xh {(not a memsync peer of this gateway: config is not synced with it)} {(ayiloqabane le-memsync le gateway: uqwalaselo aludityaniswanga nayo)}
 ::msgcat::mcset xh {(nothing to reload — read from disk per use)} {(akukho nto izakulayishwa kwakhona — ifundwa kwidiski qho xa isetyenziswa)}
 ::msgcat::mcset xh {(retrying last prompt…)} {(kuphinda kuzanywe i-prompt yokugqibela…)}
 ::msgcat::mcset xh {(route did not resolve: %{e})} {(irothi ayikhange ibonakale: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset xh {/url needs a number from /urls} {/url ifuna inani kwi-/urls}
 ::msgcat::mcset xh {/whois needs a nick} {/whois ifuna isiteketiso}
 ::msgcat::mcset xh {; could not save the cleared return view: %s} {; ayikwazanga ukugcina umbono wokubuyela owasuswe: %s}
+::msgcat::mcset xh {; shadows bundled} {; igquma leyo ehambiswayo}
+::msgcat::mcset xh {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Isiphakamiso soqwalaselo singatshintsha iisetingi kwaye isiphakamiso sesisefo sidibanisa iimfihlo; utshintsho lwecandelo lokhuseleko lusalindela umnini.}
 ::msgcat::mcset xh {A failing plugin may drop hooks mid-turn.} {Iplagin ephoxekileyo ingalahla ii-hooks phakathi kothotho.}
 ::msgcat::mcset xh {A local server: no key is needed unless you set one up.} {Le yiserver yasekhaya: akukho sitshixo sifunekayo ngaphandle kokuba uyimise.}
+::msgcat::mcset xh {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Ukhupho olutyikityiweyo lulungiselelwa kuphela emva koqinisekiso lwangaphambili. Ukuqalwa kwakhona/uqinisekiso, ukuqhubeka nokubuyisela kuzizenzo ezahlukeneyo. Inkqubo esempilweni kufuneka ixele inguqulelo yemvelaphi ehloliweyo ngokuchanekileyo.}
 ::msgcat::mcset xh {A value is stored for %s — leave this empty to keep it.} {Kukho ixabiso eligciniweyo le-%s — shiya oku kungenanto ukuze uligcine.}
 ::msgcat::mcset xh {ACL: ban mask} {ACL: thintela i-mask}
 ::msgcat::mcset xh {ACL: grant admin} {ACL: nika i-admin}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset xh {ACL: grant user} {ACL: nika i-user}
 ::msgcat::mcset xh {ACL: revoke} {ACL: rhoxisa}
 ::msgcat::mcset xh {ACME account email} {I-imeyile ye-akhawunti ye-ACME}
+::msgcat::mcset xh {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {Uncedo lwe-AI lusebenza kumanqanaba amane: buza umbuzo woyilo (akukho fayile iyimfuneko), tshintsha le fayile, tshintsha iifayile ezininzi zolu lwandiso, okanye uchaze iingxelo zokuxilonga zangoku. Ulwandiso olutsha lungavelisa ulwandiso olupheleleyo ngokwenjongo yalo. Sonke isicelo sithunyelwa ngaphandle kwezixhobo kwaye siyaliwa xa sithwele imfihlo ebhalisiweyo okanye ixabiso elimile njengeqinisekiso; utshintsho luboniswa njengee-diff kwaye lubhalwa kuphela xa ulusebenzisa. Cela uyilo lolwandiso kuqala; cela ipetshi yomongo kuphela emva kokuchonga i-API engekhoyo.}
+::msgcat::mcset xh {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {Uncedo lwe-AI luhlela kuphela iilwandiso zomsebenzisi, kwaye le fayile ayiyonxalenye yolwandiso. Uninzi lotshintsho lungena kulwandiso (i-hook, isixhobo, ukugqitha kwenkonzo okanye umqhubi womboneleli) oluhlala lukho emva kophuculo; ipatch ye-core yeyento i-API yolwandiso engakwaziyo ukuyiveza. Yila ulwandiso olutsha kolu tshintsho endaweni yoko? Iifayile zalo ziboniswa kuqala phambi kokuba kubhalwe nantoni na.}
+::msgcat::mcset xh {AI assist…} {Uncedo lwe-AI…}
+::msgcat::mcset xh {AI extension assistance} {Uncedo lwe-AI lolwandiso}
 ::msgcat::mcset xh {API calls} {Amangeno e-API}
+::msgcat::mcset xh {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {Iikhredithi ze-API ezivela kwi-referral ye-Anthropic zinikezelwa kuphela xa uthenga i-Max okanye i-Ultra. IVeles ayikuxhasi ukusebenzisa eso sibhaliso njengokungena okanye ukuqinisekisa nge-API.}
 ::msgcat::mcset xh {API key (hidden)} {Isitshixo se-API (sifihliwe)}
 ::msgcat::mcset xh {API key env var name} {Igama le-env var ye-API key}
+::msgcat::mcset xh {API reference} {Ireferensi ye-API}
+::msgcat::mcset xh {Abandon untouched operation} {Yeka umsebenzi ongakhange ufakwe}
 ::msgcat::mcset xh {Access control} {Ulawulo lokufikelela}
 ::msgcat::mcset xh {Access control (ACL)} {Ulawulo lokufikelela (ACL)}
 ::msgcat::mcset xh Add Yongeza
 ::msgcat::mcset xh {Add MCP server} {Yongeza iserver ye-MCP}
 ::msgcat::mcset xh {Add instance} {Yongeza i-instance}
 ::msgcat::mcset xh {Add server…} {Yongeza iserver…}
+::msgcat::mcset xh {Adds selected extension sources. Review the branch diff and checks before merging.} {Yongeza imithombo yolwandiso ekhethiweyo. Hlola umahluko wesebe nokuhlolwa phambi kokudibanisa.}
 ::msgcat::mcset xh Add… Yongeza…
 ::msgcat::mcset xh {Agent & engine} {Iarhente ne-injini}
 ::msgcat::mcset xh {Alias %s} {Ialias %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset xh {Applies to} {Kusebenza kwi}
 ::msgcat::mcset xh Apply Sebenzisa
 ::msgcat::mcset xh {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {USebenzisa utshintsha kuphela ISESHINI ESEBENZAYO. I-Copy TOML ikunika iibhloko zokuncamathisela. I-Save globally izifaka kwi-config.toml — kuphela amacandelo e-failover achukunyiswayo, yonke eminye imigca nezimvo zihlala zinjalo, kwaye ifayile endala igcinwa njenge-config.toml.bak.}
+::msgcat::mcset xh {Apply proposal…} {Sebenzisa isiphakamiso…}
+::msgcat::mcset xh {Apply received} {Faka okufunyenweyo}
+::msgcat::mcset xh {Apply this AI proposal?} {Sebenzisa esi siphakamiso se-AI?}
+::msgcat::mcset xh {Apply this change set?} {Sebenzisa le seti yotshintsho?}
 ::msgcat::mcset xh {Apply to session} {Sebenzisa kwiseshini}
+::msgcat::mcset xh {Apply what this node received:} {Faka oko kufunyenwe yile node:}
 ::msgcat::mcset xh {Approval needed} {Kuyimfunekwe ukuVunywa}
 ::msgcat::mcset xh Apps Ii-app
 ::msgcat::mcset xh Archive I-archive
 ::msgcat::mcset xh {Archive SHA-256} {I-SHA-256 ye-archive}
+::msgcat::mcset xh Ask Buza
+::msgcat::mcset xh {Ask a design question} {Buza umbuzo woyilo}
+::msgcat::mcset xh {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {Buza indlela yokwakha ulwandiso: owuphi umda, oluphi ulwimi, eyiphi i-API. Akukho mvelaphi ithunyelwayo, kwaye akukho nto inokubhalwa.}
 ::msgcat::mcset xh {Ask the agent to change it} {Cela iarhente ukuba iyitshintshe}
+::msgcat::mcset xh {Asking %s…} {Kubuzwa u-%s…}
 ::msgcat::mcset xh {Asking the provider for its models…} {Kucelwa iimodeli kumboneleli…}
 ::msgcat::mcset xh Attach Namathela
 ::msgcat::mcset xh {Attach to the next message} {Fakela kwomyalezo olandelayo}
+::msgcat::mcset xh {Author guide} {Isikhokelo sombhali}
+::msgcat::mcset xh {Automatically discovered from the attached gateway's cluster registry.} {Kufunyanwa ngokuzenzekelayo kurejista yeqeqela ye-gateway enyathiselweyo.}
 ::msgcat::mcset xh Back Emva
 ::msgcat::mcset xh {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {Emva ivala oko kungaphezulu: imenyu, uluhlu lweeseshini, ifestile. Ukuba akukho nto ivulekileyo, i-veles iya ngasemva kwaye iqhubeke isebenza.}
 ::msgcat::mcset xh {Base URL} {I-base URL}
+::msgcat::mcset xh {Base branch} {Isebe lesiseko}
 ::msgcat::mcset xh {Bot token (hidden)} {Ithokheni ye-bot (ifihliwe)}
+::msgcat::mcset xh Branch Isebe
+::msgcat::mcset xh {Branch and commit prepared; nothing has been pushed} {Isebe ne-commit zilungiselelwe; akukho nto i-pushiwanga}
+::msgcat::mcset xh {Branch pushed and verified on origin} {Isebe li-pushiwe kwaye liqinisekisiwe kwi-origin}
 ::msgcat::mcset xh {Browse sessions} {Khangela iiseshoni}
+::msgcat::mcset xh {Build manifest + preflight} {Yakha i-manifest + uqinisekiso lwangaphambili}
+::msgcat::mcset xh {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Ukwakha: veles %1$s, uhlaziyo %2$s (%3$s %4$s)}
 ::msgcat::mcset xh {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e imiphetho yomgca · C-b/C-f unobumba · M-b/M-f igama · C-k bulala ukuze kufikelelwe kwi-EOL · C-y yank · M-w kopisha · C-w bulala izinga · C-space misa uphawu · C-/Undo}
 ::msgcat::mcset xh {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g iyekisa konke · C-j umgca omtsha · M-p/M-n imbali · Tab ugqibeliso}
+::msgcat::mcset xh {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: iikholi ezingu-%1$s, umthwalo %2$s / %3$s / %4$s (%5$s%% yeekholi)}
 ::msgcat::mcset xh Cancel Rhoxisa
+::msgcat::mcset xh {Cancel task} {Rhoxisa umsebenzi}
+::msgcat::mcset xh {Cancel task %1$s? This cannot be undone.} {Uyirhoxisa umsebenzi oyi-%1$s? Oku akurhoxiseki.}
+::msgcat::mcset xh {Cannot verify that %1$s is node %2$s: %3$s} {Ayinakuqinisekisa ukuba %1$s yinode %2$s: %3$s}
 ::msgcat::mcset xh Capabilities Izakhono
 ::msgcat::mcset xh {Change my app “%s” (%s): } {Tshintsha i-app yam “%s” (%s): }
+::msgcat::mcset xh {Change this extension's files} {Tshintsha iifayile zolu lwandiso}
+::msgcat::mcset xh {Change this file} {Tshintsha le fayile}
 ::msgcat::mcset xh Change… Tshintsha…
 ::msgcat::mcset xh {Channels (e.g. #veles #dev)} {Iitshaneli (umz. #veles #dev)}
 ::msgcat::mcset xh Chat Incoko
 ::msgcat::mcset xh {Chat — not attached; press Attach in the Instances tab} {Incoko — ayinanyathiselwa; cinezela i-Attach kwi-tab ye-Instances}
 ::msgcat::mcset xh {Check (lsp)} {Check (lsp)}
+::msgcat::mcset xh {Check again} {Khangela kwakhona}
+::msgcat::mcset xh {Check files} {Hlola iifayile}
 ::msgcat::mcset xh Checkpoints Amabakala
 ::msgcat::mcset xh {Checkpoints (undo)} {Amabakala (ukurhoxisa)}
+::msgcat::mcset xh {Checks and next steps} {Ukuhlolwa namanyathelo alandelayo}
+::msgcat::mcset xh {Checks run} {Ukuhlolwa kuqhutyiwe}
 ::msgcat::mcset xh {Choose BUNDLE-INFO.json in the managed install-sources directory} {Khetha i-BUNDLE-INFO.json kwifolda yemithombo yokufakela elawulwayo}
 ::msgcat::mcset xh {Choose a failover script} {Khetha iskripti se-failover}
 ::msgcat::mcset xh {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {Khetha imodyuli okanye iplagin yeprosesa ukuze uyihlole. Ukufumanisa kufunda kuphela plugin.toml; ukukhetha icandelo kucela imanifest ebonakalisiweyo kunye neenketho. Akukho nto ifakwayo ngokuvula eli nyathelo.}
+::msgcat::mcset xh {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {Khetha igama, injongo nolwimi, ujonge iifayile ezichanekileyo kuqala. Akukho nto ibhaliweyo.}
 ::msgcat::mcset xh {Choose a user unit or a system service for the server profile. Neither starts a service.} {Khetha iyunithi yomsebenzisi okanye inkonzo yenkqubo kwiprofayile yeserver. Akukho kwezi iqalisa nkonzo.}
 ::msgcat::mcset xh {Choose core bundle…} {Khetha ibhaneli ye-core…}
 ::msgcat::mcset xh {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {Khetha isimo sofakelo. Iiprofayile zasekhaya zisebenzisa isifaki esehloliweyo. Iiprofayile zenkqubo nezekhonteyina zilungisa isicelo esinesiyiniro somdluliso ocacileyo we-CLI. I-NixOS ikhupha icucu lemodyuli kuphela.}
+::msgcat::mcset xh {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {Khetha umda omncinci kunawo onke: i-Tool yongeza isakhono esinokubizwa yimodeli; i-Hook ijonga okanye ilungisa umsitho womjikelo wobomi; i-Service okanye iqundu le-override rigquma isigqibo esinesikhomba; umqhubi we-Provider yongeza ucingo lomboneleli; ipatch ye-Core ifanelekile kuphela xa i-API yolwandiso eketayiweyo ingakwazi ukuveza utshintsho.}
 ::msgcat::mcset xh {Choose typed container-host options JSON} {Khetha iinketho ze-JSON zehosti ye-container ezinetype}
 ::msgcat::mcset xh {Choose typed container-host options…} {Khetha iinketho zehosti ye-container ezinetype…}
 ::msgcat::mcset xh Clear Cima
 ::msgcat::mcset xh {Clear composer} {Cima umqambi}
 ::msgcat::mcset xh {Clear override} {Cima i-override}
 ::msgcat::mcset xh {Click the picture where you would click on the page.} {Cofa kumfanekiso apho ubuya kucofa khona kwiphepha.}
+::msgcat::mcset xh {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {Kopa i-%1$s, yenza i-%2$s, kwaye ukope kuphela iifayile ezihloliweyo ze-%3$s phantsi kwe-%4$s/<extension>/. Iifayile ziyahlolwa zize zikhomithwe. Akukho kuthunyelwa okanye isicelo sokudibanisa esenzekayo ngoku.}
 ::msgcat::mcset xh Close Vala
 ::msgcat::mcset xh {Close (Esc)} {Vala (Esc)}
 ::msgcat::mcset xh {Close the setup wizard? Nothing has been written yet.} {Uvala i-wizard yoseto? Akukho nto ibhaliweyo okwangoku.}
 ::msgcat::mcset xh {Code actions} {Iintshukumo zekhowudi}
+::msgcat::mcset xh Commit {Yenza i-commit}
+::msgcat::mcset xh {Commit ready for review. Push is a separate action.} {I-commit ilungele ukuhlolwa. I-push yinto eyahlukileyo.}
 ::msgcat::mcset xh {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Gqibezela zonke iintsimi ze-PDS, kuquka idayijesti yomfanekiso obotshiweyo, phambi kokubuka kwangaphambili udiluliselo.}
 ::msgcat::mcset xh {Complete every typed container-host field before previewing this profile.} {Gcwalisa yonke intsimi echaziweyo ngohlobo yekhaya lekhonteyina phambi kokubuka le profayile kwangaphambili.}
 ::msgcat::mcset xh {Component configuration returned an invalid result; nothing was accepted as applied.} {Ukucwangciswa kweqhekeza kubuyise iziphumo ezingavumelekileyo; akukho nto yamkelweyo njengesetyenzisiweyo.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset xh {Component options changed. Review the new preview before applying.} {Iinketho zecandelo zitshintshile. Hlola umboniso omtsha phambi kokuba usebenzise.}
 ::msgcat::mcset xh Components Amacandelo
 ::msgcat::mcset xh {Composer preview} {Ukubonwa kweComposer}
+::msgcat::mcset xh Config Uqwalaselo
+::msgcat::mcset xh {Config differs: %s} {Uqwalaselo luyahluka: %s}
+::msgcat::mcset xh {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Ingxelo yoqwalaselo: leyo node inotshintsho luka-%1$s ukufikelela ku-%3$s, le gateway ukufikelela ku-%2$s}
+::msgcat::mcset xh {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Ingxelo yoqwalaselo: le gateway inotshintsho luka-%1$s ukufikelela ku-%2$s, leyo node ukufikelela ku-%3$s}
+::msgcat::mcset xh {Config only on that node: %s} {Uqwalaselo kuloo node kuphela: %s}
+::msgcat::mcset xh {Config only on this gateway: %s} {Uqwalaselo kule gateway kuphela: %s}
 ::msgcat::mcset xh Configure Misela
 ::msgcat::mcset xh {Configure %s} {Misela %s}
+::msgcat::mcset xh {Configure translator} {Qwalasela umguquli}
+::msgcat::mcset xh {Configured desktop gateway} {I-gateway yedesktop eqwalaselweyo}
 ::msgcat::mcset xh Configure… Misela…
 ::msgcat::mcset xh {Configuring %s} {Kusethwa %s}
 ::msgcat::mcset xh {Confirm or discard the current signed review before starting another download.} {Qinisekisa okanye ulahle uphononongo lwangoku olusayiniweyo phambi kokuqala ukulanda okunye.}
 ::msgcat::mcset xh {Container host: typed host plan and privileged CLI handoff} {Ihosti ye-container: icwangco lehosti elinetype kunye nodluliselo lwe-CLI olufuna amalungelo omlawuli}
 ::msgcat::mcset xh {Context window} {Iwindow yomxholo}
+::msgcat::mcset xh {Continue to next target} {Qhubeka uye kwithagethi elandelayo}
+::msgcat::mcset xh {Contribute extensions: %s} {Nikela ngolwandiso: %s}
+::msgcat::mcset xh Contribute… Nikela…
+::msgcat::mcset xh {Contribution branch} {Isebe legalelo}
+::msgcat::mcset xh {Contribution destination} {Indawo yokufika legalelo}
 ::msgcat::mcset xh Copy Khuphela
 ::msgcat::mcset xh {Copy TOML} {Khuphela i-TOML}
+::msgcat::mcset xh {Copy a bundled extension into your user plugin directory before preparing a contribution.} {Kopa ulwandiso olubandakanyiweyo kwifolda yakho yeeplagin zomsebenzisi phambi kokulungiselela igalelo.}
 ::msgcat::mcset xh {Copy message} {Khuphela umyalezo}
 ::msgcat::mcset xh {Copy name} {Khuphela igama}
 ::msgcat::mcset xh {Copy nick} {Khuphela i-nick}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset xh {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {Akukwazanga ukufumanisa amacandelo. Amanyathelo okusetha umboneleli asasebenza; faka nge-CLI kumatshini ekujoliswe kuwo ukuba kuyafuneka.}
 ::msgcat::mcset xh {Could not join: %s} {Ayikwazanga ukujoyina: %s}
 ::msgcat::mcset xh {Could not list the models (%s) — type the model's name.} {Akwazekanga ukudwelisa iimodeli (%s) — chwetheza igama lemodeli.}
+::msgcat::mcset xh {Create a PR in} {Yakha i-PR kwi}
+::msgcat::mcset xh {Create extension} {Yakha ulwandiso}
 ::msgcat::mcset xh {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Yenza i-bot nge-@BotFather, emva koko ncamathisela ithokheni yayo ngezantsi: iya kwisisefo esifihliweyo, ingaze iye kwi-config.toml.}
+::msgcat::mcset xh {Create this extension?} {Yakha olu lwandiso?}
+::msgcat::mcset xh {Create this generated extension?} {Dala olu lwandiso luvelisiweyo?}
+::msgcat::mcset xh {Created and reloaded. Review and test the extension before publishing.} {Kuyenziwe kwaphinda kwalayishwa. Hlola kwaye uvavanye ulwandiso phambi kokulupapasha.}
+::msgcat::mcset xh {Created, but reload failed} {Kuyenziwe, kodwa ukuphinda kulayishe kuhlulekile}
 ::msgcat::mcset xh {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Yenza i-%s/<name>/SKILL.md isuka kwithemplate kwaye uyivule. Inkcazo ye-frontmatter kuphela efikelela kwisalathiso se-prompt, ngoko yenza ichaze NINI ukusebenzisa isakhono.}
 ::msgcat::mcset xh {Cron history} {Imbali yeCron}
 ::msgcat::mcset xh {Cron jobs} {Imisebenzi ye-cron}
 ::msgcat::mcset xh {Curated — write the first owner entry} {Curated — bhala i-entry yokuqala yomnikazi}
 ::msgcat::mcset xh Cut Sika
 ::msgcat::mcset xh Decline Yala
+::msgcat::mcset xh {Dedicated translator} {Umhumushi ozimeleyo}
 ::msgcat::mcset xh {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset xh Default Okumiselweyo
 ::msgcat::mcset xh {Default model} {Imodeli emiselweyo}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset xh {Delete user} {Cima umsebenzi}
 ::msgcat::mcset xh {Delete workspace?} {Cima indawo yokusebenza?}
 ::msgcat::mcset xh Deop {Susa i-op}
+::msgcat::mcset xh {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Chaza utshintsho. I-AI ingatshintsha okanye yongeze iifayile ezininzi zolu lwandiso. Yonke ifayile iboniswa njenge-diff, kwaye akukho nto ibhalwayo phambi kokuba uqinisekise.}
+::msgcat::mcset xh {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Chaza utshintsho. I-AI inokuphakamisa umbhalo oza kuyibuyisela, kodwa ayinakuwubhala phambi kokuba uhlole kwaye uqinisekise umahluko.}
+::msgcat::mcset xh {Describe the requested extension change first.} {Chaza kuqala utshintsho lolwandiso olufunekayo.}
+::msgcat::mcset xh Description Inkcazo
 ::msgcat::mcset xh {Desktop: local core, modules and process plugins} {iDesktop: i-core yasekhaya, iimodyuli neeplagin zeprosesi}
 ::msgcat::mcset xh Detach Qhawula
+::msgcat::mcset xh {Detach foreground} {Susa umyalelo ophambili}
 ::msgcat::mcset xh Dev Dev
 ::msgcat::mcset xh {Dev pane (REPL + LSP)} {Iqela le-Dev (REPL + LSP)}
 ::msgcat::mcset xh {Dev: arm / disarm live patching} {Dev: vula / vala ukulungisa okuphilayo}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset xh Devoice {Susa i-voice}
 ::msgcat::mcset xh {Discard review} {Lahla uphononongo}
 ::msgcat::mcset xh {Discard your changes to %s?} {Lahla utshintsho lwakho ku-%s?}
+::msgcat::mcset xh {Disk: %1$s free of %2$s at %3$s} {Idiski: %1$s ekhululekileyo kwi-%2$s ku-%3$s}
 ::msgcat::mcset xh Done Kwenziwe
 ::msgcat::mcset xh {Done — config written} {Kugqityiwe — iconfig ibhaliwe}
 ::msgcat::mcset xh {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Landa uze uqinisekise imanifesti yokukhutshwa kunye ne-archive yehosti phambi kokufaka. Zonke iintsimi ezihlanu zokuchonga ziyafuneka. I-gateway igcina i-archive eyimfihlo egciniweyo; akukho nto ifakiweyo ngalo mbono wangaphambili.}
 ::msgcat::mcset xh {Downloading and verifying the signed release…} {Kulandwa kuze kuqinisekiswe ukukhutshwa okusayiniweyo…}
+::msgcat::mcset xh {Draft this as an extension?} {Uyila oku njengolwandiso?}
 ::msgcat::mcset xh {Drag to scroll; a quick swipe goes further.} {Rhuqa ukuze uskrole; ukutyibilika ngokukhawuleza kuya kude ngakumbi.}
+::msgcat::mcset xh {Drift check failed: %s} {Ukuhlolwa kokwahluka kwehlulekile: %s}
+::msgcat::mcset xh {Drift check: %s node(s) differ from this gateway.} {Ukuhlolwa kokwahluka: ii-node ezi-%s ziyahluka kule gateway.}
+::msgcat::mcset xh {Drift: built from revision %1$s, this gateway from %2$s} {Ukwahluka: kwakhiwe kuhlaziyo %1$s, le gateway ku-%2$s}
+::msgcat::mcset xh {Drift: none — same version, revision and replicated config} {Ukwahluka: akukho — inguqulelo, uhlaziyo noqwalaselo olukhutshelweyo ziyafana}
+::msgcat::mcset xh {Drift: not compared — %s} {Ukwahluka: akuthelekiswanga — %s}
+::msgcat::mcset xh {Drift: runs version %1$s, this gateway %2$s} {Ukwahluka: isebenza ngenguqulelo %1$s, le gateway nge-%2$s}
+::msgcat::mcset xh Drift… Ukwahluka…
 ::msgcat::mcset xh {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset xh {ESC %s is not bound} {ESC %s ayibotshwanga}
 ::msgcat::mcset xh {ESC- … (Meta prefix)} {ESC- … (isandulela se-Meta)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset xh Edit… Hlela…
 ::msgcat::mcset xh {Enable / disable} {Vula / cima}
 ::msgcat::mcset xh {Enable the Telegram adapter} {Vula i-Telegram adapter}
+::msgcat::mcset xh Endpoint I-endpoint
 ::msgcat::mcset xh Engine Injini
 ::msgcat::mcset xh Eval→gw Eval→gw
 ::msgcat::mcset xh {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Yonke inguqu kwi-%s iyabhalwa. Ukubuyisela kubuyisela i-directory yonke kuloo commit — kwaye kuqala kuthathwe i-snapshot yale meko, ngoko ayisiyo mnyango wendlela enye.}
 ::msgcat::mcset xh {Every plugin file goes back to that commit. The current state is committed first.} {Zonke iifayile zeplagin zibuyela kuloo commit. Imeko yangoku iyabhalwa kuqala.}
+::msgcat::mcset xh {Exact commit} {Ikhomithi echanekileyo}
+::msgcat::mcset xh {Exact permission rule} {Umthetho wemvume ochanekileyo}
+::msgcat::mcset xh {Example: a hook} {Umzekelo: i-hook}
+::msgcat::mcset xh {Example: a provider driver} {Umzekelo: umqhubi womboneleli}
+::msgcat::mcset xh {Example: a service override wrapping core} {Umzekelo: i-override ye-service egquma i-core}
+::msgcat::mcset xh {Example: a tool} {Umzekelo: isixhobo}
 ::msgcat::mcset xh {Existing shared container network} {Uthungelwano lweekhonteyina olwabelweyo olukhoyo}
+::msgcat::mcset xh Explain Chaza
+::msgcat::mcset xh {Explain the diagnostics} {Chaza iingxelo zokuxilonga}
 ::msgcat::mcset xh Export… {Thumela ngaphandle…}
+::msgcat::mcset xh {Extension API} {I-API yolwandiso}
+::msgcat::mcset xh {Extension development} {Uphuhliso lolwandiso}
+::msgcat::mcset xh {Extension guide} {Isikhokelo solwandiso}
+::msgcat::mcset xh {Extension source} {Umthombo wolwandiso}
 ::msgcat::mcset xh {Failover blueprint} {Isicwangciso sokutshintsha}
 ::msgcat::mcset xh {Failover blueprint (edit the route chain)} {Isicwangciso sokutshintsha (hlela uthotho lweendlela)}
 ::msgcat::mcset xh {Failover hook script (what `script` mode runs)} {I-skript ye-hook yokutshintsha (eyenziwa yimowudi ye `script`)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset xh {Find in transcript} {Fumana kwi-transcript}
 ::msgcat::mcset xh {Find in transcript…} {Fumana kwi-transcript…}
 ::msgcat::mcset xh {Find references} {Fumana iireferensi}
+::msgcat::mcset xh {Finish rollback} {Gqibezela ukubuyisela}
 ::msgcat::mcset xh {First run: no config.toml yet.} {Ukuqala kokuqala: akukabikho config.toml.}
+::msgcat::mcset xh {Fix the failed syntax checks before preparing a contribution.} {Lungisa ukungaphumeleli kokuhlolwa kwesyntax phambi kokulungiselela igalelo.}
+::msgcat::mcset xh {Fleet deployment} {Ukusasazwa kwemishini yeqela}
+::msgcat::mcset xh {Fleet deployment runs from a desktop computer; it is not available on Android.} {Ukusasazwa kwemishini yeqela kuqhutywa kwikhompyutha yedesktop; akufumaneki ku-Android.}
+::msgcat::mcset xh {Fleet deploy…} {Sasaza imishini yeqela…}
+::msgcat::mcset xh {Fleet drift} {Ukwahluka kweqela}
 ::msgcat::mcset xh {Fold / unfold} {Songa / vula}
 ::msgcat::mcset xh {Forget declaration} {Libala isibhengezo}
+::msgcat::mcset xh {Forget node %s?} {Ulibale inode %s?}
+::msgcat::mcset xh {Forget node…} {Libala inode…}
+::msgcat::mcset xh {Forgetting %1$s failed: %2$s} {Ukulibala u-%1$s kwehlulekile: %2$s}
+::msgcat::mcset xh {Forgot node %s.} {Inode %s ilibalekile.}
+::msgcat::mcset xh {Forgotten fleet-wide (refused until they heartbeat again): %s} {Zalityelwa kulo lonke iqela (azamkelwa de ziphinda zithumele umqondiso wokuphila): %s}
 ::msgcat::mcset xh Fork {Yenza isebe}
 ::msgcat::mcset xh {Free space} {Isithuba esingenanto}
 ::msgcat::mcset xh {Full source commit SHA} {I-SHA epheleleyo ye-commit yemithombo}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset xh {Gateway image sha256 digest} {I-digest ye-sha256 ye-image ye-gateway}
 ::msgcat::mcset xh {Gateway quadlet name} {Igama le-quadlet le-gateway}
 ::msgcat::mcset xh {Gateway status} {Ixabiso le-Gateway}
+::msgcat::mcset xh {Generate with AI…} {Velisa nge-AI…}
+::msgcat::mcset xh {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {Iveliswe ngu-%s - akukho nto ibhaliweyo. Phonononga yonke ifayile, emva koko u-Dala ulwandiso ubhala kanye ezi.}
 ::msgcat::mcset xh {Get a key at %s} {Fumana isitshixo kwi-%s}
 ::msgcat::mcset xh {GitHub release URL} {I-URL yokukhutshwa kwe-GitHub}
+::msgcat::mcset xh {Give the extension a name and describe what it should do (the purpose), then generate.} {Nika ulwandiso igama kwaye uchaze into ekufuneka iyenze (injongo), emva koko velisa.}
 ::msgcat::mcset xh {Give up} Yeka
 ::msgcat::mcset xh Go Hamba
 ::msgcat::mcset xh {Go to definition} {Yiya kwinkcazelo}
+::msgcat::mcset xh {Gossip failed: %s} {I-gossip yehlulekile: %s}
+::msgcat::mcset xh {Gossip now} {I-gossip ngoku}
+::msgcat::mcset xh {Gossip with %1$s: %2$s} {I-gossip no-%1$s: %2$s}
+::msgcat::mcset xh {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {I-gossip: %1$s kuma-%2$s amaqabane aphendule (%3$s).}
 ::msgcat::mcset xh Grant Nika
 ::msgcat::mcset xh {Grant access} {Nika ukufikelela}
+::msgcat::mcset xh {Granted at} {Yanikezelwa ngo-}
 ::msgcat::mcset xh Grant… Nika…
 ::msgcat::mcset xh {Guards — what the harness stops, and where it stands now} {I-Guards — into i-harness eyimisayo, nendawo emi kuyo ngoku}
 ::msgcat::mcset xh {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Abaphathi basebenza ngomyalelo obonisiweyo; owokuqala ukubuyisa ixabiso elingeyiyo i-empty uyaphumelela. Ukumcima kumtsiba ngaphandle kokumsusa kubhaliso, kwaye ukhetho lugcinwa kwi-config.toml ukuze ukuvuselelwa kweplagin kungabuyiseli phezulu ngokufihlakeleyo.}
+::msgcat::mcset xh Health Impilo
+::msgcat::mcset xh {Health alerts (%s):} {Izilumkiso zempilo (%s):}
+::msgcat::mcset xh Heartbeat {Ukubetha kwentliziyo}
+::msgcat::mcset xh {Heartbeat age: %s s} {Ubude be-heartbeat: %s s}
 ::msgcat::mcset xh Help Uncedo
 ::msgcat::mcset xh {Help & keys} {Uncedo namaqhosha}
 ::msgcat::mcset xh {Hide right panes} {Fihla iiqela zasekunene}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset xh {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {Bamba, uze urhuqe ngaphambi kokuba uphakamise: ukhetho lulandela umnwe wakho igama ngegama, luskrola kumda ophezulu okanye ongezantsi.}
 ::msgcat::mcset xh Hooks Iihooks
 ::msgcat::mcset xh {Hooks (what plugins run on)} {Iihooki (oko kusebenza kuzo ii-plugins)}
+::msgcat::mcset xh Host I-host
 ::msgcat::mcset xh {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {Ixesha lokubamba lilibaziseko lokuchukumisa nokubamba lwe-Android, kwiisetingi zayo zofikeleleko.}
 ::msgcat::mcset xh {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {Ndigcinile kude ne-intanethi ikopi ye-KEK kunye nesitshixo sotshintsho lwe-PLC; vumela ukudluliselwa okuphononongiweyo kwe-TTLS nokuziswa ekusebenzeni}
 ::msgcat::mcset xh {I-search backward: type to search, C-r for previous} {I-search ngasemva: chwetheza ukukhangela, C-r kowanduleleyo}
 ::msgcat::mcset xh {I-search: type to search, C-s for next} {I-search: chwetheza ukukhangela, C-s kwolandelayo}
+::msgcat::mcset xh {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {Uxinzelelo lwe-IO: %1$s%% / %2$s%% / %3$s%% yexesha umsebenzi othile ulindile (10 s / 1 min / 5 min)}
 ::msgcat::mcset xh IRC IRC
 ::msgcat::mcset xh {IRC buffers} {Iibuffers ze-IRC}
 ::msgcat::mcset xh {IRC composer} {I-Composer ye-IRC}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset xh {IRC split: %s} {Isahlulo se-IRC: %s}
 ::msgcat::mcset xh {IRC transcript} {I-Transcript ye-IRC}
 ::msgcat::mcset xh {IRC — nothing to show} {I-IRC — akukho nto yokubonisa}
+::msgcat::mcset xh {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {Ezisendleleni: %1$s iitirani %2$s, %3$s imisebenzi yangasemva %4$s}
 ::msgcat::mcset xh {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {Faka i-%s kuvimba wamacandelo olawulwayo? Imanifest yayo ibonisiwe; oku akuqalisi nkonzo.}
 ::msgcat::mcset xh {Install component} {Faka icandelo}
 ::msgcat::mcset xh {Install components…} {Faka amacandelo…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset xh Instances Ii-instances
 ::msgcat::mcset xh {It becomes the current content, as a new revision — so the restore can be undone too.} {Iba ngumxholo wangoku, njengenguqulelo entsha — ngoko ukubuyisela nako kunokurhoxiswa.}
 ::msgcat::mcset xh {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Iya kwisisefo esifihliweyo kulo matshini. Iarhente ayiyiboni nanini na: inokuyisebenzisa kuphela njenge-$%s kwimiyalelo, okanye iyithumele kwiinginginya ezivumelekileyo.}
+::msgcat::mcset xh {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Isuswa kwirejista yeqela kulo lonke iqela: utshintshiselwano lwe-gossip olulandelayo luxelela onke amaqabane e-0.2.0 ukuba ayilahle nawo, kwaye akukho nanye kuwona eyilulisekayo. Iqabane elidala kune-0.2.0 liyaqhubeka nokuyidwelisa. Ukuba umatshini uyabuya kwaye uthumela umqondiso wokuphila, ubhaliswa kwakhona. Amaqabane e-sync neenstanzi ezigciniweyo azichatshazelwanga.}
 ::msgcat::mcset xh {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Ngoku iyaphuma kwimemori. Imbali yayo igcina inguqulelo nganye, kwaye Imbali… ingayibuyisela.}
 ::msgcat::mcset xh Join Joyina
 ::msgcat::mcset xh {Join a pool} {Joyina iqela loomatshini}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset xh {Language (i18n)} {Ulwimi (i18n)}
 ::msgcat::mcset xh Language… Ulwimi…
 ::msgcat::mcset xh {Last active} {Ugqibele ukusebenza}
+::msgcat::mcset xh {Last probe: %1$s — %2$s} {Uvavanyo lokugqibela: %1$s — %2$s}
 ::msgcat::mcset xh {Leave %s?} {Shiya %s?}
 ::msgcat::mcset xh Leave… Shiya…
 ::msgcat::mcset xh {Legacy open — no [acl] section} {I-Legacy evulekileyo — akukho candelo [acl]}
 ::msgcat::mcset xh {Let %s:} {Vumela u-%s:}
 ::msgcat::mcset xh {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {Iileta, iinombolo, - kunye no _. Yenza i-plugin.toml kunye ne-plugin.tcl ebhalisa i-post_llm_call hook, ukuze emva koko uyivule kwi-pane ye-Dev.}
+::msgcat::mcset xh Level Inqanaba
 ::msgcat::mcset xh {Lift lockdown} {Susa i-lockdown}
+::msgcat::mcset xh Lines Imigca
 ::msgcat::mcset xh {List the provider's models} {Dwelisa iimodeli zomboneleli}
+::msgcat::mcset xh Load Umthwalo
 ::msgcat::mcset xh {Load more} {Layisha ngaphezulu}
 ::msgcat::mcset xh {Loading discovered components…} {Kulayishwa amacandelo afunyenweyo…}
 ::msgcat::mcset xh {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {Iqhugu lasekhaya lihloliwe. Khetha iqhosha elithi Fakela iqhekeza ekhethiweyo ukuqinisekisa ukufakwa; akukho nto ifakiweyo.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset xh {Lock down} Valela
 ::msgcat::mcset xh Log Ilog
 ::msgcat::mcset xh {Log (engine + status)} {Ilog (i-enjini + isimo)}
+::msgcat::mcset xh {Log of %s} {Ilog ye-%s}
+::msgcat::mcset xh Logs… Iilog…
 ::msgcat::mcset xh {M-g- (g: goto line)} {M-g- (g: goto line)}
 ::msgcat::mcset xh {M-p/M-n history · Tab complete} {M-p/M-n imbali · Tab igqibezela}
 ::msgcat::mcset xh {MCP server list} {Uluhlu lweeserver ze-MCP}
 ::msgcat::mcset xh {MCP servers (from config.toml)} {Iiserver ze-MCP (zisuka kwi-config.toml)}
 ::msgcat::mcset xh {Make default} {Yenza okumiselweyo}
 ::msgcat::mcset xh {Make default (config.toml)} {Yenze ibe ngumgangatho (config.toml)}
+::msgcat::mcset xh {Manage extensions} {Lawula iilwandiso}
 ::msgcat::mcset xh {Manifest SHA-256} {I-SHA-256 yemanifesti}
 ::msgcat::mcset xh {Mark read} {Phawula njengokufundiweyo}
 ::msgcat::mcset xh {Mechanisms (what the engine does on its own)} {Iindlela (eyenzayo i-enjini ngokwayo)}
 ::msgcat::mcset xh {Mechanisms — what the engine does on its own, and how to stop it} {Iimekanizimu — into injini eyenza yodwa, nendlela yokuyimisa}
 ::msgcat::mcset xh Memory Imemori
 ::msgcat::mcset xh {Memory history} {Imbali yememori}
+::msgcat::mcset xh {Memory: %1$s available of %2$s (%3$s%% used)} {Imemori: %1$s ekhoyo kwi-%2$s (%3$s%% isetyenzisiwe)}
+::msgcat::mcset xh {Merge the received %s into this node?} {Hlanganisa i-%s efunyenweyo kule node?}
 ::msgcat::mcset xh Messages Imiyalezo
+::msgcat::mcset xh Metrics Imilinganiselo
+::msgcat::mcset xh {Metrics (asked %s):} {Imilinganiselo (kubuzwe %s):}
+::msgcat::mcset xh {Metrics of %1$s failed: %2$s} {Imilinganiselo ye-%1$s ehlulekile: %2$s}
+::msgcat::mcset xh {Metrics of %s received.} {Imilinganiselo ye-%s ifunyenwe.}
+::msgcat::mcset xh {Metrics: not asked yet — use Metrics.} {Imilinganiselo: akukabuzwa — sebenzisa Imilinganiselo.}
 ::msgcat::mcset xh Model Imodeli
 ::msgcat::mcset xh {Model for this session} {Imodeli yalesi seshini}
 ::msgcat::mcset xh {Models & settings} {Iimodeli neesetingi}
+::msgcat::mcset xh Monitors Abajoli
+::msgcat::mcset xh Name Igama
+::msgcat::mcset xh {Need an account? Optional sign-up links (open in your browser):} {Ufuna i-akhawunti? Amakhonkco okubhalisa angokuzithandela (avule kwibhrawuza yakho):}
 ::msgcat::mcset xh Network Inethiwekhi
 ::msgcat::mcset xh {New alias} {Ialias entsha}
+::msgcat::mcset xh {New branch name} {Igama lesebe elitsha}
 ::msgcat::mcset xh {New cron job} {Umsebenzi omtsha we-cron}
+::msgcat::mcset xh {New extension} {Ulwandiso olutsha}
 ::msgcat::mcset xh {New memory file} {Ifayile entsha yememori}
 ::msgcat::mcset xh {New plugin} {Iplagin entsha}
 ::msgcat::mcset xh {New session} {Iseshoni entsha}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset xh Next Okulandelayo
 ::msgcat::mcset xh Nickname Inickname
 ::msgcat::mcset xh {NixOS: emit a module snippet; do not edit host declarations} {NixOS: velisa isiqwenga semodyuli; ungahleli iinkcazo zehosti}
+::msgcat::mcset xh {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Akukho thagethi yomjikelo wobomi ye-SSH emisiweyo kule node. Yongeza i-instance ngokucacileyo ukuze uyibeke okanye uyiqale kwakhona.}
+::msgcat::mcset xh {No additional push happens.} {Akukho push eyongezelelweyo eza kwenziwa.}
 ::msgcat::mcset xh {No apps yet. Ask the agent to make one: “make me an app that…”} {Akukabikho zi-app. Cela iarhente yenze enye: “ndenzele i-app eya…”}
 ::msgcat::mcset xh {No code in the picture. Hold the phone closer, straight on, and scan again.} {Akukho khowudi emfanekisweni. Sondeza ifowuni, uyibambe ithe tye, uphinde uskene.}
 ::msgcat::mcset xh {No configuration snapshot will be restored.} {Akukho mfanekiso womiso uya kubuyiselwa.}
+::msgcat::mcset xh {No configured sync peer for this node.} {Akukho mlingane we-sync omiselweyo wale node.}
+::msgcat::mcset xh {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Akukho mguquli okhethekileyo oqwalaselweyo. Sebenzisa iQwalasela umguquli ukukhetha umboneleli, imodeli nolwimi ekujoliswe kulo.}
+::msgcat::mcset xh {No deployment started.} {Akukho kusasazwa kuqaliweyo.}
+::msgcat::mcset xh {No diagnostics reported by the current LSP document.} {Akukho ngxelo yeempazamo ephuma kuxwebhu lwangelo-LSP.}
+::msgcat::mcset xh {No explicitly configured desktop gateway is bound to this node.} {Akukho gateway yedesktop eqwalaselwe ngokucacileyo ebotshelelwe kule node.}
+::msgcat::mcset xh {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {Akukho gateway eqwalaselwe ngokucacileyo ebotshelelwe kule node. Yongeza i-gateway kuqala; i-registry endpoint yayo ayisetyenziswa njenge-URL yedesktop.}
+::msgcat::mcset xh {No file is open. Ask a design question, or open an extension file for help with its code.} {Akukho fayile ivulekileyo. Buza umbuzo woyilo, okanye uvule ifayile yolwandiso ukuze ufumane uncedo ngokhodi yayo.}
+::msgcat::mcset xh {No files have been written. Review the exact manifest and source, then confirm creation.} {Akukho zifayile zibhaliweyo. Hlola imanifesti nombhalo womthombo njengoko inje, uze uqinisekise ukwakhiwa.}
 ::msgcat::mcset xh {No modules or process plugins were discovered. The provider setup steps can still continue.} {Akukho zimodyuli okanye iiplagin zamaprosesa ezifunyenweyo. Amanyathelo okusetha umboneleli asenokuqhubeka.}
+::msgcat::mcset xh {No other registered node to compare with.} {Akukho enye inode ebhalisiweyo enokuthelekiswa nayo.}
 ::msgcat::mcset xh {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {Akukho profayile eqalisa nkonzo okanye esebenzisa iskripthi enamalungelo olawulo kulesi sikhokeli. Buyekeza icwangciso kunye nawuphina umdluliso phambi kokuwusebenzisa.}
+::msgcat::mcset xh {No proposal has been requested. Nothing will be written automatically.} {Akukho siphakamiso siceliweyo. Akukho nto iza kubhalwa ngokuzenzekelayo.}
+::msgcat::mcset xh {No proposal. Nothing was written.} {Akukho siphakamiso. Akukho nto ibhaliweyo.}
 ::msgcat::mcset xh {No routes configured.} {Akukho zirothi zimisiweyo.}
 ::msgcat::mcset xh {No session selected — pick one in the sidebar or start a new one} {Akukho seshini ikhethiweyo — khetha enye kwi-sidebar okanye uqale entsha}
 ::msgcat::mcset xh {No swap target yet: pick a language and press “Set as swap target”.} {Akukabikho lwimi lokutshintshana: khetha ulwimi uze ucofe “Yenza ulwimi lokutshintshana”.}
 ::msgcat::mcset xh {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {Akukho candelo {[}acl{]} kwi-config.toml: wonke umthumeli ofikelela kwi-gateway uthathwa njengomnini, indlela yaphambi kwe-ACL yomsebenzisi omnye. Ukunika nokurhoxisa kusasebenza kwaye kuqala ukusebenza ngalo mzuzu {[}acl{]} ibakho.}
+::msgcat::mcset xh {Node id} {I-ID ye-node}
+::msgcat::mcset xh {Non-evaluating syntax checks} {Ukuhlolwa kwesyntax ngaphandle kokuqhuba ikhowudi}
+::msgcat::mcset xh {Not available: %s} {Akufumaneki: %s}
+::msgcat::mcset xh Note Inqaku
 ::msgcat::mcset xh {Note for the agent (optional):} {Inqaku kuyiarhente (ukhetho):}
+::msgcat::mcset xh {Nothing selected.} {Akukho nto ikhethiweyo.}
 ::msgcat::mcset xh {Nothing typed yet.} {Akukabhalwa nto okwangoku.}
+::msgcat::mcset xh {Nothing was generated or written.} {Akukho nto yaveliswayo okanye yabhalwayo.}
+::msgcat::mcset xh {Nothing was prepared: the chosen repository already has these paths.} {Akukho nto ilungiselelweyo: irepository ekhethiweyo sele inazo ezi ndlela.}
 ::msgcat::mcset xh Notifications Izaziso
 ::msgcat::mcset xh OK Kulungile
 ::msgcat::mcset xh Off Cinyiwe
 ::msgcat::mcset xh On Vuliwe
+::msgcat::mcset xh {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {Ibhafa yolwandiso ehloliweyo kuphela eza kufakwa endaweni yayo. Ifayile isekhuselwe kwiinguqulelo ezenziwe emva kwesi sijongo-kuqala. Akukho commit, push okanye PR eyenzekayo.}
+::msgcat::mcset xh {Only this new branch is committed. Your ambient git identity is used.} {Kwenziwa i-commit kule sebe litsha kuphela. Kusetyenziswa isazisi sakho sangoku se-git.}
 ::msgcat::mcset xh Op {Nika i-op}
 ::msgcat::mcset xh Open Vula
+::msgcat::mcset xh {Open PR…} {Vula i-PR…}
 ::msgcat::mcset xh {Open a window} {Vula iwindow}
 ::msgcat::mcset xh {Open in Dev} {Vula kwi-Dev}
 ::msgcat::mcset xh {Open in browser} {Vula kwisikhangeli}
 ::msgcat::mcset xh {Open plugin} {Vula iplagin}
 ::msgcat::mcset xh {Open terminal} {Vula itheminali}
+::msgcat::mcset xh {Open this pull request?} {Vula le pull request?}
 ::msgcat::mcset xh {Open veles in Android's settings} {Vula i-veles kwiisetingi ze-Android}
 ::msgcat::mcset xh {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {Okunganyanzelwanga: yinethiwekhi ye-IRC ofuna ukuyijoyina. Dhwelisa izitishi ezahlulwe zizikhewu okanye ziikhowma; i-IRC_CHANNELS kwi-.env, xa imisiwe, ithabatha indawo yolu luhlu.}
 ::msgcat::mcset xh {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {Iinketho zivela kumanifest womcandelo okhethiweyo. Iifildi ezikhangeleka ziyimfihlo zihlala kuhambelo lokusetha/isisefo. Iifildi ezingenanto zishiya enketho ingatshintshanga.}
 ::msgcat::mcset xh {Or paste a ticket signed on another device} {Okanye ncamathelisa ithikethi etshikithisiweyo kwelelinye isixhobo}
 ::msgcat::mcset xh {Or type an answer:} {Okanye chwetheza impendulo:}
+::msgcat::mcset xh Origin Origin
 ::msgcat::mcset xh Other… Okunye…
 ::msgcat::mcset xh Outline Isishwankathelo
+::msgcat::mcset xh Output Uphumo
 ::msgcat::mcset xh {Override for THIS session (leave blank to inherit the default)} {I-override yale seshini (shiya ingenanto ukuze ithathe okumiselweyo)}
 ::msgcat::mcset xh {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {Isazisi somnini (telegram:123456, irc:account, okanye imaski ye-nick!user@host)}
 ::msgcat::mcset xh {PDS and handle domain} {Iidomeyini ze-PDS neze-handle}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset xh {Pause scheduler} {Yekisa ishedyuli}
 ::msgcat::mcset xh {Peek (C-c C-p)} {Peek (C-c C-p)}
 ::msgcat::mcset xh {Peek definition} {Jonga inkcazelo}
+::msgcat::mcset xh {Permission grants} Iimvume
+::msgcat::mcset xh {Permission grants…} Iimvume…
 ::msgcat::mcset xh Phone Ifowuni
 ::msgcat::mcset xh {Phone: permissions, battery, storage} {Ifowuni: iimvume, ibhetri, ugcino}
 ::msgcat::mcset xh {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Iifowuni ezenziwe ngu-%s nazo zimisa ii-app ngokwazo. Kwiisetingi ze-app ye-veles, yivumele iqale ngokwayo kwaye isebenze ngasemva.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset xh Port Iport
 ::msgcat::mcset xh {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {Iiprefix chords (C-x, M-o) zibonisa i-which-key popup ngoko nangoko xa zilungele.}
 ::msgcat::mcset xh {Prepare an own vlpds PDS through the signed CLI handoff} {Lungisa i-PDS yakho ye-vlpds ngodiluliselo lwe-CLI olusayiniweyo}
+::msgcat::mcset xh {Prepare branch…} {Lungiselela isebe…}
+::msgcat::mcset xh {Prepare this branch and commit?} {Lungiselela le sebe ne-commit?}
 ::msgcat::mcset xh Preview Jonga
+::msgcat::mcset xh {Preview change set} {Bonisa kuqala iseti yotshintsho}
+::msgcat::mcset xh {Preview files} {Jonga iifayile kuqala}
 ::msgcat::mcset xh {Preview here} {Jonga apha}
 ::msgcat::mcset xh {Preview pane} {Ipanele yemboniso}
+::msgcat::mcset xh {Preview proposal} {Jonga isiphakamiso kuqala}
+::msgcat::mcset xh {Preview the changed name or language before creating it.} {Jonga kuqala igama elitshintshiweyo okanye ulwimi olutshintshiweyo phambi kokuluyakha.}
+::msgcat::mcset xh Probe Vavanya
+::msgcat::mcset xh {Probe of %1$s failed: %2$s} {Uvavanyo lwe-%1$s lwehlulekile: %2$s}
 ::msgcat::mcset xh {Profile result} {Isiphumo seprofayile}
 ::msgcat::mcset xh {Promote into config.toml} {Phakamisela kwi-config.toml}
 ::msgcat::mcset xh Promote… Phakamisela…
 ::msgcat::mcset xh Provider Umthengisi
+::msgcat::mcset xh {Provider driver (plugin wire only)} {Umqhubi womboneleli (iplagin ye-wire kuphela)}
 ::msgcat::mcset xh {Provider entry name} {Igama le-entry yomnikezeli}
 ::msgcat::mcset xh {Provider for this session} {Umnikezeli wale seshini}
 ::msgcat::mcset xh Providers Abanikezeli
 ::msgcat::mcset xh {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {Abanikezeli luluhlu lweetafile: custom_providers.0.base_url, .0.api_mode, .0.key_env … Fumana isalathiso kumyalelo oboniswe ngezantsi.}
 ::msgcat::mcset xh {Public HTTPS URL} {I-URL ye-HTTPS evulekileyo}
+::msgcat::mcset xh {Pull request base} {Isebe lesiseko se-pull request}
+::msgcat::mcset xh {Pull request created} {I-pull request iyakhiwe}
+::msgcat::mcset xh {Pull request description} {Inkcazo ye-pull request}
+::msgcat::mcset xh {Pull request opened.} {I-pull request ivulwe.}
+::msgcat::mcset xh {Pull request repository} {I-repository ye-pull request}
+::msgcat::mcset xh {Pull request title} {Isihloko se-pull request}
 ::msgcat::mcset xh {Purge + delete files} {Coca + cima iifayile}
 ::msgcat::mcset xh {Purge container} {Coca i-container}
+::msgcat::mcset xh Purpose Injongo
+::msgcat::mcset xh Push Push
+::msgcat::mcset xh {Push branch…} {Pusha isebe…}
+::msgcat::mcset xh {Push complete. No pull request has been opened.} {I-push igqityiwe. Akukho pull request ivuliweyo.}
+::msgcat::mcset xh {Push this branch?} {Pusha le sebe?}
+::msgcat::mcset xh {Push to %s:} {Thumela ku-%s:}
 ::msgcat::mcset xh Question Umbuzo
 ::msgcat::mcset xh Questions Imibuzo
 ::msgcat::mcset xh Quit Phuma
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset xh {Reading notifications, for triggers} {Ukufunda izaziso, kwiitrigger}
 ::msgcat::mcset xh Reasoning Ukucacinga
 ::msgcat::mcset xh {Reasoning effort} {Umzamo wokuqiqa}
+::msgcat::mcset xh {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {Kufunyenwe, kulindwe ukufakwa: isitoreji %1$s · imemori %2$s · uqwalaselo %3$s · isisefo %4$s}
+::msgcat::mcset xh {Recommended checks} {Ukuhlolwa okucetyiswayo}
 ::msgcat::mcset xh {Refetch this transcript from the store} {Yenza Utshintsho oluTsha loMyalezho kwivenkile}
 ::msgcat::mcset xh Refresh Hlaziya
 ::msgcat::mcset xh {Refresh preview} {Hlaziya i-preview}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset xh {Rename symbol} {Tshintsha igama lesimboli}
 ::msgcat::mcset xh Rename… {Tshintsha igama…}
 ::msgcat::mcset xh Rendered Kuyiwe
+::msgcat::mcset xh {Replace existing repository files?} {Utshintshe iifayile ezikhoyo zerepository?}
+::msgcat::mcset xh {Replace them in the new branch? Nothing else in the repository changes.} {Zitshintshe kwibranch entsha? Akukho nto inye etshintshayo kwirepository.}
 ::msgcat::mcset xh Repository Irepoyithori
 ::msgcat::mcset xh {Repository (owner/name)} {Irepoyithori (umnini/igama)}
+::msgcat::mcset xh {Repository directory} {Ifolda yerepository}
+::msgcat::mcset xh {Repository paths} {Iindlela zerepository}
+::msgcat::mcset xh {Request a new preview before trying again.} {Cela isijongo-kuqala esitsha phambi kokuzama kwakhona.}
 ::msgcat::mcset xh {Reset to default} {Buyisela kokwesiqhelo}
 ::msgcat::mcset xh {Reset to template} {Buyisela kwithemplate}
 ::msgcat::mcset xh Restart {Qalisa kwakhona}
+::msgcat::mcset xh {Restart + verify canary} {Qala kwakhona + qinisekisa i-canary}
 ::msgcat::mcset xh {Restore hidden windows} {Buyisela ii-windows ezifihlileyo}
 ::msgcat::mcset xh {Restore plugins to %s?} {Buyisela iiplagin kwi-%s?}
 ::msgcat::mcset xh {Restore revision r%1$s of %2$s?} {Buyisela inguqulelo r%1$s ka-%2$s?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset xh {Restore this commit} {Buyisela le commit}
 ::msgcat::mcset xh {Restore this revision} {Buyisela le nguqulelo}
 ::msgcat::mcset xh {Resume scheduler} {Phinda uqalise umcwangcisi}
+::msgcat::mcset xh {Resume unfinished operation} {Qhubeka nomsebenzi ongagqitywanga}
 ::msgcat::mcset xh Revert {Buyisela umva}
 ::msgcat::mcset xh {Revert %s to HEAD? Uncommitted changes in this file are lost.} {Buyisela %s kwi-HEAD? Iitshintsho ezingagqitywanga kweli fayile zilahlekile.}
 ::msgcat::mcset xh Revert… {Buyisela umva…}
 ::msgcat::mcset xh Review Tyalika
 ::msgcat::mcset xh {Review (git) pane} {Ipane yoTyalo (git)}
+::msgcat::mcset xh {Review deployment} {Hlola ukusasazwa}
+::msgcat::mcset xh {Review extension contribution} {Hlola igalelo lolwandiso}
 ::msgcat::mcset xh {Review managed local bundle…} {Hlola iqhugu lasekhaya elawulwayo…}
 ::msgcat::mcset xh {Review rollback} {Hlola ukubuyela umva}
+::msgcat::mcset xh {Review selected files} {Hlola iifayile ezikhethiweyo}
 ::msgcat::mcset xh {Review the component options on the summary screen before applying.} {Hlola iinketho zecandelo kwiskrini sesishwankathelo phambi kokuba usebenzise.}
 ::msgcat::mcset xh {Review the component preview before applying. No component configuration has been written.} {Hlola umboniso wecandelo phambi kokuba usebenzise. Akukho qwalaselo locandelo olubhaliweyo.}
+::msgcat::mcset xh {Review the selected files and remove credential findings before preparing.} {Hlola iifayile ezikhethiweyo kwaye ususe iziphumo zezazisi zangenelelo phambi kokulungiselela.}
 ::msgcat::mcset xh {Reviewed core bundle in the managed install-sources directory} {Ibhaneli ye-core ehloliweyo kwidayirektori yemithombo yokufaka elawulwayo}
+::msgcat::mcset xh {Reviewed fleet deployment} {Ukusasazwa kwemishini yeqela okuhloliweyo}
 ::msgcat::mcset xh {Reviewed local bundle} {Iqhugu lasekhaya elihlolweyo}
 ::msgcat::mcset xh {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {Iqhugu lasekhaya elihlolweyo lifakiwe. Aliqinisekiswanga ngokukhuphela okusayiniweyo. Kufuneka kuqalwe kwakhona phambi kokusebenzisa undoqo omtsha.}
 ::msgcat::mcset xh Revision Uhlaziyo
 ::msgcat::mcset xh Revoke Rhoxisa
+::msgcat::mcset xh {Revoke selected} {Rhoxisa okukhethiweyo}
 ::msgcat::mcset xh Roles Iindima
 ::msgcat::mcset xh {Roll back %1$s from %2$s to %3$s?} {Buyisela umva u-%1$s ukusuka ku-%2$s ukuya ku-%3$s?}
+::msgcat::mcset xh {Roll back selected target} {Buyisela ithagethi ekhethiweyo}
 ::msgcat::mcset xh {Rollback completed. Reload the component or restart as requested by the report.} {Ukubuyela umva kugqityiwe. Vuselela iqhekeza okanye uqale kwakhona njengoko kucelwe yingxelo.}
 ::msgcat::mcset xh {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {Ukubuyela umva kuhlolwe. Khetha iqhosha elithi Fakela iqhekeza ekhethiweyo ukuqinisekisa ukubuyiselwa; akukho nto ibuyiselweyo.}
 ::msgcat::mcset xh Run Qhuba
 ::msgcat::mcset xh {Run the wizard again} {Phinda uyiqhube i-wizard yoseto}
 ::msgcat::mcset xh {Running in the background} {Ukusebenza ngasemva}
-::msgcat::mcset xh {Running tasks} {Imisebenzi eqhubayo}
-::msgcat::mcset xh {Running tasks (subagents, shells, monitors)} {Iisebenza ezisebenzayo (ii-subagents, iishelli, abaphi)}
 ::msgcat::mcset xh {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {I-grants zexesha lokusebenza kunye nabasebenzisi bahlala kwistore, kwaye uku-reset kwesitore kuyabathatha. I-Promote yongeza kwi-config.toml abo istore esigqibayo — izimvo zefayile kunye nomyalelo wezitshixo ziyagcinwa, kubhalwa ibackup ecaleni, iikopi zestore ziyalahlwa — kwaye iyala kunokuba iqikelele apho ifayile sele inoluvo.}
 ::msgcat::mcset xh {S3 HTTPS endpoint} {Isiphelo se-HTTPS se-S3}
 ::msgcat::mcset xh {S3 bucket} {Ibhakethi ye-S3}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset xh {Save as default} {Gcina njengokumiselweyo}
 ::msgcat::mcset xh {Save attachment as} {Gcina isongezelelo njenge}
 ::msgcat::mcset xh {Save globally} {Gcina ngokubanzi}
+::msgcat::mcset xh {Save or revert the open buffer before applying a change set.} {Gcina okanye buyisela umqulu ovulekileyo phambi kokusebenzisa iseti yotshintsho.}
 ::msgcat::mcset xh Scan Skena
 ::msgcat::mcset xh {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {Skena ikhowudi ye-veles kumatshini omeme le fowuni. Ukuba ubonise ikhowudi ye-WireGuard kuqala, yiskene ngaphambi koku nge-app ye-WireGuard.}
 ::msgcat::mcset xh {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {IShedyuli: i-interval ("30m", "every 2h"), i-cron pattern ("0 9 * * 1"), okanye i-ISO timestamp yento ekanye. Umgca ongentla ubonisa indlela injini eyifunda ngayo. IDeliver: "local" igcina umphumo kwilog — oku kuphela okunyanisekileyo kwi-desktop, engena-platform ye-chat ngasemva kwayo — okanye "platform:chat_id". IWake session: shiya ingenanto ukuze iqale kwiseshini entsha; faka i-session id (okanye isandulela esisodwa) ukuze uqhubeke ngaloo seshini nembali yayo epheleleyo — iseshini exakekileyo ithatha i-prompt kumda wothotho olulandelayo endaweni.}
+::msgcat::mcset xh Scope Umda
 ::msgcat::mcset xh {Scroll to end} {Skrolela ekupheleni}
 ::msgcat::mcset xh {Search commands and sessions…} {Khangela imiyalelo neeseshoni…}
 ::msgcat::mcset xh {Search message text} {Khangela kumbhalo wemiyalezo}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset xh Section Icandelo
 ::msgcat::mcset xh {Select a component first. No component options will be changed if you skip this step.} {Khetha icandelo kuqala. Akukho nketho zecandelo ziya kutshintshwa ukuba utsiba eli nyathelo.}
 ::msgcat::mcset xh {Select all} {Khetha konke}
+::msgcat::mcset xh {Select all extensions} {Khetha zonke iilwandiso}
+::msgcat::mcset xh {Select at least one source file.} {Khetha ubuncinane ifayile enye yomthombo.}
+::msgcat::mcset xh {Select none} {Khetha nanye}
+::msgcat::mcset xh {Select text to translate first.} {Khetha umbhalo oza kuwuhumusha kuqala.}
+::msgcat::mcset xh {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {Khetha iilwandiso neefayile eziza kunikelwa ngazo. Ziya kwibranch enye nakwisicelo esinye sokudibanisa, ulwandiso ngalunye kwifolda yalo. Hlola, sebenzisa uhlolo olungayihloli imveliso, emva koko lungiselela ibranch eyodwa kwaye ukhomithe. Ukuthumela nokwenza isicelo sokudibanisa zizenzo ezahlukeneyo ezivunywayo.}
 ::msgcat::mcset xh Send Thumela
+::msgcat::mcset xh {Send %s to the peer?} {Thumela i-%s kumlingane?}
 ::msgcat::mcset xh {Send a %d-line message to the channel?} {Thumela umyalezo onemigca %d kwitshaneli?}
 ::msgcat::mcset xh {Send raw line to the server? (%s)} {Thumela umgca ngqo kwiseva? (%s)}
 ::msgcat::mcset xh {Server (empty = no IRC)} {Iseva (ingenanto = akukho IRC)}
 ::msgcat::mcset xh {Server: gateway configuration and a reviewed user unit} {Iserver: uqwalaselo lwe-gateway kunye neyunithi yomsebenzisi ehloliweyo}
 ::msgcat::mcset xh {Server: install a user unit and prepare the separate linger handoff} {Iserver: faka iyunithi yomsebenzisi ulungiselele udluliselo lwe-linger olwahlukileyo}
 ::msgcat::mcset xh {Server: use a system service and prepare a privileged CLI request} {Iserver: sebenzisa inkonzo yenkqubo ulungiselele isicelo se-CLI esifuna amalungelo omlawuli}
+::msgcat::mcset xh Session Iseshini
 ::msgcat::mcset xh {Session id} {Isazisi seseshoni}
 ::msgcat::mcset xh {Session id…} {Isazisi seseshoni…}
 ::msgcat::mcset xh Sessions Iiseshoni
 ::msgcat::mcset xh {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Iiseshoni ezisele zigqithiselwe kule alias zigcina indlela ezaziyifumene; ezintsha azisayi kulifumana igama.}
+::msgcat::mcset xh {Sessions served} {Iiseshoni ezisebenzelweyo}
 ::msgcat::mcset xh Set Seta
 ::msgcat::mcset xh {Set [model] provider/default in config.toml.} {Seta [model] provider/default kwi config.toml.}
 ::msgcat::mcset xh {Set as swap target} {Yenza ulwimi lokutshintshana}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset xh {Setup — summary} {Useto — isishwankathelo}
 ::msgcat::mcset xh {Setup — welcome} {Useto — wamkelekile}
 ::msgcat::mcset xh {Shared container network} {Uthungelwano lweekhonteyina olwabelweyo}
+::msgcat::mcset xh Shells Iishell
+::msgcat::mcset xh {Shells and monitors} {Iishell nabajoli}
+::msgcat::mcset xh {Shells and monitors (subagents, shells, monitors)} {Iishell nabajoli (iiarhente eziphantsi, iishell, abajoli)}
 ::msgcat::mcset xh {Show diff} {Bonisa umahluko}
 ::msgcat::mcset xh {Show every key} {Bonisa onke amaqhosha}
 ::msgcat::mcset xh Sign Tshikithisa
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset xh Solved Kusonjululwe
 ::msgcat::mcset xh Source Umthombo
 ::msgcat::mcset xh {Source commit} {I-commit yemithombo}
+::msgcat::mcset xh {Source text} {Umbhalo womthombo}
 ::msgcat::mcset xh {Source→app (C-c C-c)} {Umthombo→app (C-c C-c)}
 ::msgcat::mcset xh Stage {Faka esiteji}
+::msgcat::mcset xh {Stage canary} {Lungiselela i-canary}
+::msgcat::mcset xh Stale Igugile
+::msgcat::mcset xh {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {Iimvume ezimileyo zivumela iifowuni zezixhobo kamva ngaphandle kombuzo omnye. Iimvume zeeseshini zigcinwa ziiseshini eziphilayo kuyo yonke iqonga (idesktop, i-Telegram, i-IRC, …); iimvume zomhlaba zihlala zikhona; izinto zoluhlu lwezivumelekileyo lwe-[approvals] ezivela kwi-config.toml zidweliswa ngokufundwa kuphela. Ukurhoxisa enye akusokuze kutshintshe ezinye iimvume.}
 ::msgcat::mcset xh Start Qalisa
+::msgcat::mcset xh {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {Qala ngolwandiso olukwifolda yakho yeeplagin zomsebenzisi. Luhlala lusekhona emva kohlaziyo kwaye alufuni kwakhona ukwakhiwa kwe-gateway. Ulwandiso olutsha lubonisa kuqala imanifesti nombhalo womthombo ngokuchanekileyo phambi kokubhala. Khetha ulwimi oluxhaswayo nenguqulelo ye-API, hlola iifayile, uze uvavanye ulwandiso lwodwa.}
 ::msgcat::mcset xh {Start with the phone} {Ukuqala kunye nefowuni}
+::msgcat::mcset xh {Static IP} {I-IP ezinzileyo}
 ::msgcat::mcset xh Status Isimo
 ::msgcat::mcset xh Steer Khokela
 ::msgcat::mcset xh {Step %1$d of %2$d} {Inyathelo %1$d kwe%2$d}
 ::msgcat::mcset xh {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {Okusafuneka kusetwe: %s — bhala /secret set NAME apha, okanye usebenzise veles secret set NAME kumatshini we-gateway.}
 ::msgcat::mcset xh Stop Yeka
 ::msgcat::mcset xh {Storage root} {Isiseko sokugcina}
+::msgcat::mcset xh Store Isitoreji
 ::msgcat::mcset xh {Store a secret: %s} {Gcina imfihlo: %s}
 ::msgcat::mcset xh {Store it} Yigcine
+::msgcat::mcset xh {Store replica} {Ireplikhi yesitoreji}
 ::msgcat::mcset xh Subagents Ii-Subagents
 ::msgcat::mcset xh {Subagents (/agents)} {Ii-Subagents (/agents)}
 ::msgcat::mcset xh Summary Isishwankathelo
+::msgcat::mcset xh Surface Iqonga
 ::msgcat::mcset xh {Swap ⇄} {Tshintshana ⇄}
+::msgcat::mcset xh {Sync cancelled.} {I-sync irhoxisiwe.}
+::msgcat::mcset xh {Sync complete.} {Ukuvumelanisa kugqityiwe.}
+::msgcat::mcset xh {Sync now} {Vumelanisa ngoku}
 ::msgcat::mcset xh {TOML copied — paste it into config.toml} {ITOML ikhutshelwe — yinamathisele kwi config.toml}
 ::msgcat::mcset xh Tag Ithegi
 ::msgcat::mcset xh {Tap a link to open it, or a block's header to open or close the block.} {Cofa ikhonkco ukuze ulivule, okanye isihloko sebhloko ukuze uvule okanye uvale ibhloko.}
 ::msgcat::mcset xh {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {Cofa ibhokisi esezantsi ukuze uchwetheze. Thumela iyathumela, Yeka igqiba ithuba, kwaye Qhawula ishenxisela umyalelo osebenzayo ngasemva.}
 ::msgcat::mcset xh {Tap the text to clear the selection.} {Cofa umbhalo ukuze ucime ukhetho.}
+::msgcat::mcset xh {Target language:} {Ulwimi olujolisweyo:}
+::msgcat::mcset xh {Target node IDs (canary first, comma separated)} {I-ID zenode zethagethi (i-canary kuqala, zahlulwe ngeekoma)}
 ::msgcat::mcset xh {Task list} {Uluhlu lomsebenzi}
 ::msgcat::mcset xh {Task list (right pane)} {Uluhlu lomsebenzi (ipane yasekunene)}
 ::msgcat::mcset xh Tasks Iimisebenzi
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset xh {That is not a ticket.} {Oko akuthikethi.}
 ::msgcat::mcset xh {That is not a veles pool code.} {Leyo ayisiyokhowudi yeqela le-veles.}
 ::msgcat::mcset xh {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {Leyo yikhowudi ye-WireGuard: yiskene nge-app ye-WireGuard. Ikhowudi ye-veles yeyesibini.}
+::msgcat::mcset xh {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {Iifayile ezi-%d eziphononongiweyo ziya kubhalwa kwidayirektori entsha kwideyirektori yakho yeeplagin zomsebenzisi, kwaye uveles uzama ukulayisha ulwandiso. Ukuba idayirektori yelo gama ivele ukususela kumboniso wangaphambili, akukho nto ibhalwayo. Ukupapasha akukho kule ntshukumo.}
 ::msgcat::mcset xh {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {I-REPL yeDev pane iyavalwa kwi-app EPHILILEYO — i-UI yil ilipsi yayo.}
 ::msgcat::mcset xh {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {Itafile [mcp_servers.<name>] isusiwe kwi config.toml. Ifayile yangaphambili igcinwa njenge config.toml.bak.}
 ::msgcat::mcset xh {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {Iiallowlists ze-adapter (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) zingumda wokuthenjwa, kwaye wonke umthumeli ovunyiweyo ujongwa njenge-owner. Le yimeko yangaphambi kwe-ACL.}
 ::msgcat::mcset xh {The agent asks for a secret: %s} {Iarhente icela imfihlo: %s}
+::msgcat::mcset xh {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {Ibranch esele ithunyelwe iya kusetyenziswa njengentloko ye-PR. Ibranch kwi-fork yakho ibizwa ngokuzenzekelayo njengo owner:branch.}
+::msgcat::mcset xh {The author asks} {Umbhali uyabuza}
+::msgcat::mcset xh {The buffer changed. Request a new proposal before applying.} {Ibhafa itshintshile. Cela isiphakamiso esitsha phambi kokusebenzisa.}
 ::msgcat::mcset xh {The bundle operation returned an invalid result. Verify the installation before retrying.} {Umsebenzi weqhugu ubuyise iziphumo ezingavumelekileyo. Qinisekisa ukufakwa phambi kokuphinda uzame.}
 ::msgcat::mcset xh {The bundle preview was malformed; nothing was installed.} {Imboniso yeqhugu ibingakhiwe ngokuchanekileyo; akukho nto ifakiweyo.}
 ::msgcat::mcset xh {The camera did not open; paste the code instead.} {Ikhamera ayivulekanga; endaweni yoko ncamathisela ikhowudi.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset xh {The component manifest is still loading. Wait for it or choose another component.} {Imanifest yecandelo isalayishwa. Yilinde okanye ukhethe elinye icandelo.}
 ::msgcat::mcset xh {The component preview is not ready yet. Refresh it and review the result before applying.} {Umboniso wecandelo awukakulungeleki. Wuhlaziye uze uhlole isiphumo phambi kokuba usebenzise.}
 ::msgcat::mcset xh {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {Umboniso wecandelo usalayishwa. Lindela impendulo phambi kokuba uhlole utshintsho oluhlanganisiweyo.}
+::msgcat::mcset xh {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Iingxelo zokuxilonga zangoku (ezivela kwi-server yolwimi okanye kwi-Check) zithunyelwa nale fayile. Ungongeza umbuzo ukuba uyafuna. Impendulo ingumbhalo kuphela; akukho nto inokubhalwa.}
 ::msgcat::mcset xh {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Ifolda nayo yonke into ekuyo iyasuswa. Oku akunakurhoxiswa — yicime endaweni yoko ukuba ufuna nje ukuba ingabikho kwi-prompt.}
 ::msgcat::mcset xh {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Ifolda isusiwe. Ifolda ye-plugin yi-git repository kwaye i-snapshot ifakwa kuqala, ngoko uHistory… angayibuyisela.}
+::msgcat::mcset xh {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Umhleli uvula iifayile ze-gateway, kuquka ezo zikude, kwaye usebenzisa iserver yolwimi yolo lwimi lwefayile kwi-gateway: i-tcl-lsp, i-typescript-language-server (i-TypeScript ne-JavaScript), i-rust-analyzer (i-crate okanye imodyuli yeplagin ye-Rust), i-clangd (C), i-racket-langserver neserver ye-Common Lisp. Ukugcoba, ukuya kwinkcazelo, ukugqibezela neengxelo zokuxilonga eziphilayo ziyasebenza kulo lonke ulwimi i-gateway eneserver yalo; xa ingenayo, umhleli uxela ukuba yeyiphi inkqubo ekufuneka ifakwe apho kwaye ugcina ukuqaqambisa kwe-syntax. Ukukhangela kusebenzisa isikhangeli esihambelanayo kwi-gateway: i-tcl-lsp, i-tsc --noEmit, i-node --check, i-cargo check, i-clang -fsyntax-only, okanye abafundi be-Racket ne-Lisp. Gcina, phinda ulayishe ku-Manage extensions, kwaye uvavanye ulwandiso ngaphandle kokupapasha imeko yasekhaya.}
 ::msgcat::mcset xh {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Udiluliselo lokuqala lungiselela iimfihlo, umfanekiso obotshiweyo neefayile zexesha lokuqhuba, kodwa asiyiqalisi i-PDS. Yenza iikhopya ezigciniweyo zesitshixo se-KEK nesokujikeleza se-PLC ngaphandle kwe-intanethi, emva koko wenze isicelo esijongwe ngokutsha esinokuqinisekisa okwam kokuba ndizenzile iikhopya zokugcina ukuze umise i-TLS ye-HTTP-01 nokuqalisa ukusebenza. Iirekhodi ze-DNS kufuneka zikhombe ngqo kule khompyutha; u-veles akayitshintshi proksi ye-CDN okanye i-DNS.}
+::msgcat::mcset xh {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Ifom itshintshile ukususela oko ulwandiso lwaveliswa. Velisa kwakhona, okanye bonisa kuqala isakhiwo sokuqala esilula.}
 ::msgcat::mcset xh {The gateway itself is untouched.} {Igateway ngokwayo ayichukunywanga.}
 ::msgcat::mcset xh {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {I-gateway ilayishe kwakhona uqwalaselo, ngoko iiseshoni ezintsha ziyalusebenzisa ngoku, kwaye isitshixo esigcinwe kwisisefo sisetyenziswa sisicelo esilandelayo. I-Telegram ne-IRC ziqala xa i-gateway iqaliswa kwakhona ngokulandelayo: veles gateway restart.}
 ::msgcat::mcset xh {The installed component no longer matches the selected manifest. Review the component list again.} {Icandelo elifakiweyo alisangqinelani nemanifest ekhethiweyo. Hlola kwakhona uluhlu lwamacandelo.}
 ::msgcat::mcset xh {The installer preview has no verification signatures; apply is disabled.} {Umboniso wokufaka awunayo imisayino yokuqinisekisa; ukusebenzisa kucinyiwe.}
 ::msgcat::mcset xh {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Umsebenzi kunye nembali yawo iyasuswa. Oku akunakurhoxiswa — wumise endaweni yoko ukuba ufuna nje ukuba ume.}
+::msgcat::mcset xh {The log could not be read: %s} {Ilog ayikwazanga ukufundwa: %s}
 ::msgcat::mcset xh {The manifest belongs to another component; its reply was discarded.} {Imanifest yeyelinye icandelo; impendulo yayo ilahlwe.}
 ::msgcat::mcset xh {The profile changed. Review the fresh plan before applying it.} {Iprofayile itshintshile. Buyekeza icwangciso elitsha phambi kokulisebenzisa.}
 ::msgcat::mcset xh {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {I-repository ifuna i-SKILL.md kwisiseko sayo okanye kudidi olunye. Ifika ku %s.}
 ::msgcat::mcset xh {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {Isiseko se-repository kufuneka ibe ne plugin.toml. Iklonwa ku %s ngegama lemanifest.}
+::msgcat::mcset xh {The reviewed change set was applied (%d files). Review and test it before publishing.} {Iseti yotshintsho ephononongiweyo isetyenzisiwe (iifayile ezi-%d). Yiphonononge kwaye uyivavanye phambi kokupapasha.}
 ::msgcat::mcset xh {The reviewed configuration snapshot will also be restored.} {Umfanekiso womiso ohloliweyo uya kubuyiselwa nawo.}
+::msgcat::mcset xh {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {Iifayile ezihloliweyo ziza kubhalwa kwifolda yakho yeeplagin zomsebenzisi. Veles igcina isnapshothi yokubuyisela yasekhaya kwaye izama ukuphinda ilayishe ulwandiso; ukupapasha akuyiyo inxalenye yeli nyathelo.}
+::msgcat::mcset xh {The reviewed proposal was applied locally. Review and test it before publishing.} {Isiphakamiso esihloliweyo sifakiwe ekhaya. Sihlole kwaye sivavanye phambi kokusipapasha.}
 ::msgcat::mcset xh {The rollback preview was malformed or named another component; nothing was restored.} {Imboniso yokubuyela umva ibingakhiwe ngokuchanekileyo okanye ibiza elinye iqhekeza; akukho nto ibuyiselweyo.}
 ::msgcat::mcset xh {The rollback returned an invalid result. Verify the installation before retrying.} {Ukubuyela umva kubuyise iziphumo ezingavumelekileyo. Qinisekisa ukufakwa phambi kokuphinda uzame.}
 ::msgcat::mcset xh {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {Umendo ekusungulwa kuwo iiseshini ezintsha. I-/model kunye ne-models overlay ziyitshintsha kamva, ngeseshini nganye okanye njengomgangatho omtsha.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset xh {The signed download discard returned an invalid response; no installation was requested.} {Ukulahla ukulanda okusayiniweyo kubuyise impendulo engalunganga; akukho kufakelwa kwacelwayo.}
 ::msgcat::mcset xh {The signed installation returned an invalid result. Verify the installation before retrying.} {Ukufakelwa okusayiniweyo kubuyise isiphumo esingalunganga. Qinisekisa ukufakelwa phambi kokuphinda uzame.}
 ::msgcat::mcset xh {The signed release preview was malformed; nothing was installed.} {Umbono wangaphambili wokukhutshwa okusayiniweyo ubungahlelekanga kakuhle; akukho nto ifakiweyo.}
+::msgcat::mcset xh {The source buffer changed. Request a new proposal before applying.} {Ibhafa yomthombo itshintshile. Cela isiphakamiso esitsha phambi kokusebenzisa.}
 ::msgcat::mcset xh {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Istore ibuyela umva ngenguqulelo enye. Ukubuyisela umva ngokwako yinguqulelo, ngoko nako ukurhoxiswa.}
+::msgcat::mcset xh {The translator returned no text.} {Umhumushi ubuyise umbhalo ongenanto.}
 ::msgcat::mcset xh {The verification reply was malformed; no integrity result was accepted.} {Impendulo yokuqinisekisa ibingakhiwe ngokuchanekileyo; akukho ziphumo zokuqina zamkelweyo.}
 ::msgcat::mcset xh Themes {Imixholo yombala}
+::msgcat::mcset xh {These paths already exist in the chosen repository:} {Ezi ndlela sele zikhona kwirepository ekhethiweyo:}
 ::msgcat::mcset xh {They have not been saved.} Azikagcinwa.
+::msgcat::mcset xh {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {Le buffer ayinazo iingxelo zokuxilonga zokuchaza. Sebenzisa i-Check, okanye ulinde iserver yolwimi.}
 ::msgcat::mcset xh {This challenge is over.} {Lo mngeni uphelile.}
 ::msgcat::mcset xh {This code has expired. Ask for a new one.} {Le khowudi iphelelwe lixesha. Cela entsha.}
 ::msgcat::mcset xh {This does not start a service or claim signed-download verification.} {Oku akuvuli nkonzo, kwaye akuqinisekisi ukukhuphela okusayiniweyo.}
 ::msgcat::mcset xh {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Le gateway ayamkeli amaxabiso ayimfihlo avela kulo matshini: yifake apho nge-veles secret set %s, okanye ufake le nethiwekhi kwi-[vault] trusted_networks yayo}
 ::msgcat::mcset xh {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Le yile nto iza kubhalwa kanye — iibytes ze-injini ngokwayo, ezifunyanwa ngoku. Akukho nto ichukumisile i-disk okwangoku.}
+::msgcat::mcset xh {This node is not a configured sync peer for any kind.} {Le node ayingomlingane we-sync omiselweyo walulo naluphi na uhlobo.}
+::msgcat::mcset xh {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Le plagin ihambiswayo kwaye ifundwa kuphela. Cima ikopi yomsebenzisi enegama elifanayo ukuze usebenzise ikopi ehambiswayo endaweni yayo.}
+::msgcat::mcset xh {This publishes the commit; no pull request is created yet.} {Oku kupapasha i-commit; akukho pull request eyenziweyo okwangoku.}
 ::msgcat::mcset xh {This review expires after %s seconds. Closing or cancelling discards its private staging.} {Olu phononongo lupelelwa lixesha emva kwamasekhondi angama-%s. Ukuvala okanye ukurhoxisa kuyayilahla indawo yalo yokugcina eyimfihlo.}
 ::msgcat::mcset xh {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {Lo mncedisi ubhala i-config.toml, kwaye ubeka izitshixo ozinika zona kwisisefo esifihliweyo. Onke amanyathelo angatsitywa: inyathelo elitsitywe alifakwa kuqwalaselo olutsha, kwaye lishiywa njengoko linjalo kolo lukhoyo. I-config.toml ekhoyo ihlelwa kanye apho ikhoyo — kutshintsha kuphela amacandelo owaphendulayo, kwaye yonke enye into ekuyo, kuquka amagqabantshintshi, iyahlala.}
 ::msgcat::mcset xh {Ticket needed} {Ithikethi iyimfuneko}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset xh {Topic for %s} {Isihloko se %s}
 ::msgcat::mcset xh {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {Chukumisa uze ubambe iseshoni, okanye nantoni na enye enemenyu, ukuze uvule imenyu. Ukucofa ngaphandle kwayo, okanye Emva, kuyayivala.}
 ::msgcat::mcset xh {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {Chukumisa uze ubambe igama ukuze ulikhethe. Xa uphakamisa umnwe wakho, imenyu yalo iyavuleka, Khuphela iphezulu.}
+::msgcat::mcset xh Translate Humusha
+::msgcat::mcset xh {Translate selection} {Humusha okukhethiweyo}
+::msgcat::mcset xh Translating… Iyahumushwa…
+::msgcat::mcset xh {Translation cancelled.} {Ukuguqulwa kurhoxisiwe.}
+::msgcat::mcset xh {Translation copied.} {Ukuhumusha kukotshiwe.}
+::msgcat::mcset xh {Translation failed} {Ukuhumusha kusilele}
+::msgcat::mcset xh {Translation result} {Isiphumo sokuguqulwa}
+::msgcat::mcset xh {Translator configuration unavailable} {Uqwalaselo lomguquli alufumaneki}
 ::msgcat::mcset xh {Trigger history} {Imbali yesixhokozelo}
 ::msgcat::mcset xh Triggers Iitrigger
 ::msgcat::mcset xh {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {Iitrigger zisabela kwimisebenzi yetshaneli ngaphandle kwetyala. Islopdrop ithumela umcimbi kwi-bridge ize igqithise impendulo; i-vision ichaza i-URL yomfanekiso ngaphakathi kwe-cooldown kunye nomda weyure. Umgca udubula kuphela apho iswitshi ye-[triggers] kunye ne-mask efunyenweyo kuvumela khona — i-#coven ayithumeli nto phantsi kwe-slopdrop bindings zangoku.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset xh {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {De i-IRC_ALLOWED_USERS ku-.env ibize i-akhawunti yakho, nabani na okwinethiwekhi angathetha nebhot — kwaye xa kungekho candelo le-[acl], njengomnini, enazo zonke izixhobo.}
 ::msgcat::mcset xh {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {De i-TELEGRAM_ALLOWED_USERS ku-.env ibize i-ID yakho yomsebenzisi, nabani na oyifumanayo ibhot angathetha nayo — kwaye xa kungekho candelo le-[acl], njengomnini, enazo zonke izixhobo.}
 ::msgcat::mcset xh Untitled Ezingenasihloko
+::msgcat::mcset xh {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Ukunikela kwi-upstream sisenzo sokupapasha esicacileyo, asikokulayisha okuzenzekelayo. Kwi-Lawula iilwandiso, i-Nikela idwelisa lonke ulwandiso lomsebenzisi: khetha iilwandiso neefayile, hlola i-diff nohlolo lweemfihlo, sebenzisa uhlolo, emva koko yenza ibranch enye ne-PR enye (ku-veles ngokumiselweyo) ngesazisi sakho se-git esikhethiweyo. Ulwandiso ngalunye luya phantsi kwefolda yalo kwirepository, kwaye ifayile ekhoyo apho itshintshwa kuphela emva kokuqinisekiswa okwahlukileyo. Ungaze upapashe i-node.toml, iziqinisekiso zasekhaya, iitokheni, ii-endpoint zabucala okanye imeko yeplagin engeyonxulumene nayo. Iisnapshothi zokubuyisela zasekhaya aziyiyo ikhomithi ye-upstream okanye i-PR.}
+::msgcat::mcset xh {Upstream repository or fork URL} {I-URL ye-repository okanye ye-fork ye-upstream}
+::msgcat::mcset xh {Uptime class} {Iklasi yexesha lokuSebenza}
+::msgcat::mcset xh {Uptime: host %1$s, gateway %2$s} {Ixesha lokusebenza: i-host %1$s, i-gateway %2$s}
 ::msgcat::mcset xh Usage Ukusetyenziswa
 ::msgcat::mcset xh {Usage & Quota} {Ukusetyenziswa & iquota}
 ::msgcat::mcset xh {Use TLS} {Sebenzisa i-TLS}
 ::msgcat::mcset xh {Use now} {Sebenzisa ngoku}
+::msgcat::mcset xh {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {Sebenzisa amaqhosha eSikhokelo sombhali neReferensi ye-API ukuze ufumane izivumelwano zangempela. I-overlay yeePlagin ibonisa ii-hooks eziphilayo; iinkonzo neendawo zokutshintsha okumiselweyo zivela kwi-registry ye-gateway ngokwayo, hayi kuluhlu olukopiweyo kulesi sikhokelo.}
 ::msgcat::mcset xh {Use this ticket} {Sebenzisa le thikethi}
+::msgcat::mcset xh {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {Sebenzisa i-fork yakho (https://github.com/<you>/veles.git okanye git@github.com:<you>/veles.git) ngaphandle kokuba unokuthumela ku-veles ngokwayo. Irepository ekhethiweyo ikopelwa kwi-worktree eyodwa. Akukho nto ithunyelwayo.}
 ::msgcat::mcset xh {Users — one role across networks and platforms} {Abasebenzisi — indima enye kuzo zonke iinethiwekhi neeplatfomu}
 ::msgcat::mcset xh {Using the phone, for the agent} {Ukusebenzisa ifowuni, kwi-agent}
 ::msgcat::mcset xh {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Ngokuqhelekileyo iyafana negama le-entry yomnikezeli. Zishiye zombini zingenanto xa ukhetha Tsiba — isibini esingagqitywanga asihambisi.}
 ::msgcat::mcset xh {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Amaxabiso yiTOML: iintambo ezicatshuliweyo, amanani, okanye uluhlu. Abhalwa kwi[mcp_servers.<name>] — amagqabaza akho nazo zonke ezinye iicandelo azichukunywanga.}
+::msgcat::mcset xh Vault Isisefo
 ::msgcat::mcset xh {Verified signed bundle installed. Restart the gateway before using the new core.} {Iqoqo elisayiniweyo eliqinisekisiweyo lifakiwe. Phinda uqale i-gateway phambi kokusebenzisa undoqo omtsha.}
 ::msgcat::mcset xh {Verified signed release — not installed yet} {Ukukhutshwa okusayiniweyo okuqinisekisiweyo — akukafakwa okwangoku}
 ::msgcat::mcset xh {Verify and review release…} {Qinisekisa uze uphonononge ukukhutshwa…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset xh {Verify signed release} {Qinisekisa ukukhutshwa okusayiniweyo}
 ::msgcat::mcset xh {Verify signed release…} {Qinisekisa ukukhutshwa okusayiniweyo…}
 ::msgcat::mcset xh Version Inguqulelo
+::msgcat::mcset xh {Version %1$s: %2$s} {Inguqulelo %1$s: %2$s}
+::msgcat::mcset xh {Version drift in the registry: %s} {Ukwahluka kwenguqulelo kwirejista: %s}
 ::msgcat::mcset xh View Imbonakalo
 ::msgcat::mcset xh {View markdown source} {Bonisa umthombo we-markdown}
 ::msgcat::mcset xh {View source / rendered} {Umthombo / okuboniswayo}
 ::msgcat::mcset xh Voice {Nika i-voice}
+::msgcat::mcset xh {Waiting for the model…} {Kulindelwe imodeli…}
+::msgcat::mcset xh {Waiting for the model… Nothing has been written.} {Kulindelwe imodeli… Akukho nto ibhaliweyo.}
 ::msgcat::mcset xh {Welcome to veles} {Wamkelekile ku-veles}
 ::msgcat::mcset xh {What the agent can do here} {Oko iarhente inokukwenza apha}
 ::msgcat::mcset xh {What veles may do on this phone. Each button opens the Android setting that changes it.} {Oko i-veles ivumelekileyo ukukwenza kule fowuni. Iqhosha ngalinye livula isetingi ye-Android eyitshintshayo.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset xh {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {Ngelixa i-veles ingasemva, umbuzo wearhente okanye ithuba eligqityiweyo liba sisaziso; licofe ukuze uvule iseshoni.}
 ::msgcat::mcset xh {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {Ngubani onokuthetha nebhoti. Olu khetho lugqiba ukuba i-config.toml iphethe icandelo [acl] na kanye — kwaye oku kuguqula yonke imeko.}
 ::msgcat::mcset xh Whois Whois
-::msgcat::mcset xh {Wire protocol (chat_completions or responses)} {Iprotocol yewire (chat_completions okanye responses)}
+::msgcat::mcset xh {Wire protocol (chat_completions, responses or plugin)} {Iprotokholi ye-wire (chat_completions, responses okanye iiplagin)}
 ::msgcat::mcset xh {With a keyboard attached, every key works as on a laptop.} {Xa ikhibhodi iqhagamshelwe, sonke isitshixo sisebenza njengakwilaptop.}
 ::msgcat::mcset xh {Workflow SHA} {I-SHA ye-workflow}
+::msgcat::mcset xh {Workflow commit} {Ikhomithi ye-workflow}
+::msgcat::mcset xh Worktree I-worktree
 ::msgcat::mcset xh {Write it} Yibhale
+::msgcat::mcset xh {Write the design question first.} {Bhala umbuzo woyilo kuqala.}
 ::msgcat::mcset xh {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Akubhali umnikezeli. I-gateway ayiyi kuhambisa umjikelo de kubekho i-entry ye-[[custom_providers]] nesibini se-[model].}
 ::msgcat::mcset xh {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Ukubhala NASIPHI na isitshixo se-[acl] kutshintsha le gateway iye kwimo elawulwayo: indima engagqibekanga iba yi-guest (fail-closed) kwaye uluhlu lwemvume aluselulo umda. Khetha oku kuphela ukuba unesazisi somnini osithembayo.}
 ::msgcat::mcset xh {[model] provider} {umnikezeli we-[model]}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset xh {also list hooks with no handler} {kwakhona dwelisa iihooks ezingenayo i-handler}
 ::msgcat::mcset xh {also write grants that still have an expiry} {kwakhona bhala iigrants ezisenexesha lokuphela}
 ::msgcat::mcset xh {also write runtime users} {kwakhona bhala abasebenzisi be-runtime}
+::msgcat::mcset xh {an allowlist entry is removed by editing config.toml} {into elikuluhlu lwezivumelekileyo lisuswa ngokuhlela i-config.toml}
 ::msgcat::mcset xh {an allowlist is in force: a plugin not on it stays off} {uluhlu lokuvunyelwa luyasebenza: i-plugin engakulo ihlala icinyiwe}
 ::msgcat::mcset xh {answer failed: %s} {impendulo isilele: %s}
+::msgcat::mcset xh {answer only, nothing to apply} {impendulo kuphela, akukho nto yokusetyenziswa}
 ::msgcat::mcset xh {append these rules to config.toml} {faka le mithetho kwi config.toml}
 ::msgcat::mcset xh {apply failed: %s} {ukufaka kusilele: %s}
 ::msgcat::mcset xh {apply to:} {Faka ku:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset xh {ask the agent} {ukubuza iarhente}
 ::msgcat::mcset xh {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset xh {asked by: %s} {ubuzwe ngu: %s}
+::msgcat::mcset xh {asking %s for its metrics…} {kubuzwa u-%s ngemilinganiselo yayo…}
 ::msgcat::mcset xh {attach a file} {Namathisela ifayile}
 ::msgcat::mcset xh {attach an image or file} {qhoboshela umfanekiso okanye ifayile}
 ::msgcat::mcset xh {attach failed: %1$s} {ukunanyathiselwa kusilele: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset xh {attached %1$s (%2$s pending)} {iqhotyoshelwe %1$s (%2$s zisalindile)}
 ::msgcat::mcset xh {attached to %s} {iqhotyoshelwe ku %s}
 ::msgcat::mcset xh {attached to child session %1$s} {iqhotyoshelwe kwiseshoni yomntwana %1$s}
+::msgcat::mcset xh automatic ngokuzenzekelayo
 ::msgcat::mcset xh {aux model} {Imodeli ye-aux}
 ::msgcat::mcset xh {aux provider} {umboneleli we-aux}
+::msgcat::mcset xh available iyafumaneka
 ::msgcat::mcset xh {available components} {amacandelo afumanekayo}
 ::msgcat::mcset xh {back up N user turns} {buyela umva imijikelo engu-N yomsebenzisi}
 ::msgcat::mcset xh {backed up the previous config to %s} {i-config yangaphambili ikhutshelwe i-backup kwi-%s}
 ::msgcat::mcset xh {background shells; /shells output|kill <id>} {iishell ezingasemva; /shells output|kill <id>}
+::msgcat::mcset xh {backing off: %1$s failure(s), next automatic try in %2$s s} {kuyarhoxa: %1$s ukungaphumeleli, ukuzama okuzenzekelayo okulandelayo kwi-%2$s s}
 ::msgcat::mcset xh {bad host for %1$s: %2$s} {ihost embi ku %1$s: %2$s}
 ::msgcat::mcset xh {bad unit for %1$s: %2$s} {iyunithi embi ku %1$s: %2$s}
 ::msgcat::mcset xh {bare display off} {umboniso olula ucinyiwe}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset xh {browse the filesystem} {khangela inkqubo yeefayile}
 ::msgcat::mcset xh {browse the repo's files} {khangela iifayile ze-repo}
 ::msgcat::mcset xh {builtin (%s):} {eyakhelweyo (%s):}
+::msgcat::mcset xh bundled ehambiswayo
+::msgcat::mcset xh {bundled, read-only} {ehambiswayo, ifundwa kuphela}
 ::msgcat::mcset xh by ngu
 ::msgcat::mcset xh {by plan — all sessions} {ngokweplani — zonke iiseshoni}
 ::msgcat::mcset xh {by plan — this session} {ngokweplani — le seshoni}
 ::msgcat::mcset xh {by tool} ngesixhobo
 ::msgcat::mcset xh {cancel failed: %1$s} {ukurhoxisa kusilele: %1$s}
 ::msgcat::mcset xh {cancel the running turn} {Tshitshisa umjikelo oqhubekayo}
+::msgcat::mcset xh {cancel the selected task} {rhoxisa umsebenzi okhethiweyo}
 ::msgcat::mcset xh {cancelled task %1$s} {umsebenzi %1$s urhoxisiwe}
 ::msgcat::mcset xh {cannot list scripts (gateway offline?)} {ayikwazi ukudwelisa iiscripts (igateway ayixhunyiwe?)}
 ::msgcat::mcset xh {cannot reach the gateway: %s} {ayikwazi ukufikelela i-gateway: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset xh commit {Yenza i-commit}
 ::msgcat::mcset xh {compacting %s messages in the background — the transcript reloads when it finishes} {inciphisa %s miyalelo yangasemva — i-transcript iyahlaziywa xa igqibile}
 ::msgcat::mcset xh compacting… iyahlanganiswa…
+::msgcat::mcset xh {comparing the nodes' versions and config…} {kuthelekiswa iinguqulelo noqwalaselo lweenode…}
 ::msgcat::mcset xh {completion tokens} {iithokheni zokugqibela}
 ::msgcat::mcset xh {component options and declared actions} {iinketho zecandelo nezenzo ezibhengeziweyo}
 ::msgcat::mcset xh composer Umqambi
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset xh {could not open %s} {ayikwazanga ukuvula %s}
 ::msgcat::mcset xh {could not open %s (no working browser opener)} {ayikwazanga ukuvula %s (akukho browser esebenzayo)}
 ::msgcat::mcset xh {could not open %{url}: %{e}} {ayikwazanga ukuvula %{url}: %{e}}
+::msgcat::mcset xh {could not open the optional referral link: %s} {ayikwazanga ukuvula ikhonkco le-ireferali langokuzithandela: %s}
 ::msgcat::mcset xh {could not read %s: %s} {ayikwazanga ukufunda %s: %s}
 ::msgcat::mcset xh {could not read the current route} {ayikwazanga ukufunda indlela yangoku}
 ::msgcat::mcset xh {could not save this session's language: %{e}} {akukwazanga ukugcina ulwimi lwale seshini: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset xh {ctxmenu: no widget %s (attached too early?)} {ctxmenu: akukho widget %s (iqhotyoshelwe kwangoko?)}
 ::msgcat::mcset xh {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {kukhethwe ufikelelo olulawulwayo ngaphandle kwesazisi somnini, ngoko i-[acl] ihlala ingasebenzi — nika esinye, njenge-telegram:123456 okanye irc:account, ukuze uyivule}
 ::msgcat::mcset xh {current theme: %{name} · /theme <name>} {itheme yangoku: %{name} · /theme <name>}
+::msgcat::mcset xh {cursor %1$s of %2$s (%3$s behind)} {ikhesa %1$s kwe-%2$s (%3$s ngasemva)}
 ::msgcat::mcset xh {custom command /%s…} {umyalelo wakho /%s…}
 ::msgcat::mcset xh {custom commands (.veles/commands/) and config aliases} {imiyalelo yakho (.veles/commands/) namagama esimo sokucwangcisa}
 ::msgcat::mcset xh {cycle ends} {umjikelo uphela}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset xh doctor_resident {ihlala kwisikhumbuzo ngasinye: %{shown} kwabangu-%{total} oonobumba (~iitokheni ezingu-%{tokens}) — okuseleyo kulayishwa xa kufuneka nge: memory action=read path=%{path}}
 ::msgcat::mcset xh doctor_title {uhlolo lwememori}
 ::msgcat::mcset xh doctor_total {iyonke: oonobumba abangu-%{chars} kwiifayile ezingu-%{files} (~iitokheni ezingu-%{tokens})}
+::msgcat::mcset xh {documentation is not in this source checkout: %s} {amaxwebhu akakho kule checkout yomthombo: %s}
 ::msgcat::mcset xh done Kugqityiwe
 ::msgcat::mcset xh {done · %1$s/%2$s} {kugqityiwe · %1$s/%2$s}
 ::msgcat::mcset xh {done, but the model returned no text} {kugqityiwe, kodwa imodeli ayibuyisanga mbhalo}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset xh {evaluate Tcl and answer with the result — no model turn} {vavanya i-Tcl uze uphendule ngesiphumo — ngaphandle komjikelo wemodeli}
 ::msgcat::mcset xh everyone {wonke umntu}
 ::msgcat::mcset xh everywhere {kuzo zonke iindawo}
+::msgcat::mcset xh {exchanging registry gossip…} {kutshintshiswa i-gossip yerejista…}
 ::msgcat::mcset xh exit phuma
 ::msgcat::mcset xh {exit veles-desktop} {phuma kwi-veles-desktop}
 ::msgcat::mcset xh {export failed: %s} {ukuthumelana kwehlulekile: %s}
 ::msgcat::mcset xh {export session} {thumela iseshini ngaphandle}
 ::msgcat::mcset xh {exported to %s} {kuthunyelwe kwiloo %s}
+::msgcat::mcset xh {extension architecture, examples and LSP help} {uhlo lwakhiwo weeLwandiso, imizekelo noncedo lweLSP}
+::msgcat::mcset xh {extension development guide} {isikhokelo sophuhliso loLwandiso}
+::msgcat::mcset xh failed kwehlulekile
 ::msgcat::mcset xh {failed to load history: %s} {ukulayisha kwembali kwehlulekile: %s}
 ::msgcat::mcset xh {failed to paint cached history: %s} {ukuzoba kwembali egciniweyo kwehlulekile: %s}
 ::msgcat::mcset xh {failed to paint replayed history: %s} {ukuzoba kwembali edlaliweyo kwehlulekile: %s}
 ::msgcat::mcset xh {failed: %s} {yehlulekile: %s}
+::msgcat::mcset xh {failing — heartbeating, but a sync push or the last probe failed} {iyaphoxeka — i-heartbeat iyasebenza, kodwa ukuthunyelwa kwe-sync okanye uvavanyo lokugqibela lwehlulekile}
 ::msgcat::mcset xh {failover blueprint: cannot reach the gateway} {i-blueprint ye-failover: ayifikeleli kwi-gateway}
 ::msgcat::mcset xh {failover graph unavailable: %1$s} {igrafu yokutshintsha ayifumaneki: %1$s}
 ::msgcat::mcset xh {failover script: cannot reach the gateway} {iskripthi se-failover: asifikeleli kwi-gateway}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset xh {fire the Tcl hook} {qalisa i-hook ye-Tcl}
 ::msgcat::mcset xh {fires for %s:} {iyabamba kwa-%s:}
 ::msgcat::mcset xh {fires per hour} {iyabamba ngeyure}
+::msgcat::mcset xh {fleet drift} {ukwahluka kweqela}
 ::msgcat::mcset xh {focus composer} {gxininisa umqambi}
 ::msgcat::mcset xh {focus failed: %{e}} {ukugxila kwehlulekile: %{e}}
 ::msgcat::mcset xh {focus next region} {gxininisa indawo elandelayo}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset xh {four splits is the maximum} {ama-split amane ngumda}
 ::msgcat::mcset xh {fresh session} {iseshini entsha}
 ::msgcat::mcset xh {fresh session (Ctrl-N too)} {iseshini entsha (ne-Ctrl-N)}
+::msgcat::mcset xh {fresh — heartbeating, sync passing} {intsha — i-heartbeat iyasebenza, i-sync iyadlula}
+::msgcat::mcset xh from ukusuka
 ::msgcat::mcset xh {from node %{node}} {ukusuka kwi-node %{node}}
 ::msgcat::mcset xh {gateway     v%1$s · up %2$s} {gateway     v%1$s · isebenza %2$s}
 ::msgcat::mcset xh {gateway unreachable — is `veles gateway run` up?} {i-gateway ayifikeleleki — ingaba `veles gateway run` iyasebenza?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset xh {in %s} {emva kwe-%s}
 ::msgcat::mcset xh {insert the next key literally (^B bold, ^C colour, ^O reset)} {faka isitshixo esilandelayo njengokuliterale (^B bold, ^C umbala, ^O reset)}
 ::msgcat::mcset xh {inserted %s} {kufakiwe %s}
+::msgcat::mcset xh {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {hlola iqela; thumela/usebenzise ngokucacileyo i-sync yesitoreji, yememori, yoqwalaselo okanye yesisefo; libala inode ephelelwe lixesha kulo lonke iqela; funda umsila welog okanye imilinganiselo yenode; thelekisa iinguqulelo noqwalaselo; i-gossip ngoku}
 ::msgcat::mcset xh {inspector — app internals · core state · gw plugins} {umhloli — okungaphakathi kwe-app · isimo se-core · ama-plugin e-gw}
 ::msgcat::mcset xh {install a plugin from a git URL} {faka i-plugin ivela kwi-URL ye-git}
 ::msgcat::mcset xh {install a skill from a git URL} {faka ikhono ivela kwi-URL ye-git}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset xh instance umzekelo
 ::msgcat::mcset xh {instance controls} {izilawulo zomzekelo}
 ::msgcat::mcset xh {instance detail} {iinkcukacha zomzekelo}
+::msgcat::mcset xh {instance names may not start with "cluster:" or "g:": %s} {amagama e-instance akanakuqala nge-"cluster:" okanye nge-"g:": %s}
 ::msgcat::mcset xh {instance needs a name} {umzekelo ufuna igama}
 ::msgcat::mcset xh {instance unreachable} {umzekelo awufikeleleki}
 ::msgcat::mcset xh instances imizekelo
 ::msgcat::mcset xh interrupting… kuphazamiswa…
+::msgcat::mcset xh into ukuya
 ::msgcat::mcset xh {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset xh {irc: %s} {irc: %s}
 ::msgcat::mcset xh {irc: %s failed — %s} {irc: %s yehlulekile — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset xh {language list} {uluhlu lweelwimi}
 ::msgcat::mcset xh {language picker (the swap for THIS window)} {ikhosi yolwazi (okutshintshiselwa kwi-LESI iwindow)}
 ::msgcat::mcset xh {language saved: %s} {ulimi lugcinwe: %s}
+::msgcat::mcset xh {language server} {iserver yolwimi}
+::msgcat::mcset xh {language server: event stream unavailable: %s} {iserver yolwimi: umjelo weziganeko awufumaneki: %s}
+::msgcat::mcset xh {language server: not started on the gateway — %s} {iserver yolwimi: ayiqalwanga kwi-gateway — %s}
+::msgcat::mcset xh {language server: the gateway would not start one: %s} {iserver yolwimi: i-gateway ayifunanga ukuyiqala: %s}
 ::msgcat::mcset xh {language swapped: %1$s ⇄ %2$s} {ulimi lutshintshiswe: %1$s ⇄ %2$s}
 ::msgcat::mcset xh {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {ulimi → %1$s (bekungu-%2$s) · ifestile esebenzayo kuphela — Gcina njengokumiselweyo kubhala ku-config.toml}
 ::msgcat::mcset xh {language: %s} {ulimi: %s}
 ::msgcat::mcset xh {last error} {impazamo yokugqibela}
+::msgcat::mcset xh {last pass %1$s at %2$s: %3$s} {ukudlula kokugqibela %1$s ngo-%2$s: %3$s}
 ::msgcat::mcset xh {last reply copied (%s chars)} {impendulo yokutsha ikopiwe (iinhlamvu %s)}
 ::msgcat::mcset xh {layout not saved: %s} {i-layout ayigcinwanga: %s}
 ::msgcat::mcset xh {leave (cancels a running turn first)} {phuma (kuqala irhoxisa umjikelo oqhubekayo)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset xh {list sessions} {dwelisa iiseshini}
 ::msgcat::mcset xh {list skills} {dwelisa izakhono}
 ::msgcat::mcset xh {list tools} {dwelisa izixhobo}
+::msgcat::mcset xh {listed here only; [notify] fleet_alerts is off} {kudweliswe apha kuphela; i-[notify] fleet_alerts icinyiwe}
 ::msgcat::mcset xh {live patching ARMED} {ukulungisa okuqhubekayo KUVULIWE}
 ::msgcat::mcset xh {live patching ARMED — an agent can now redefine procs in this window} {ukulungisa okuqhubekayo KUVULIWE — i-agent isenokuchaza kwakhona ii-proc kule festile}
 ::msgcat::mcset xh {live patching disarmed} {ukulungisa okuqhubekayo kuvaliwe}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset xh {log pane shown} {iphaneli yelog ibonisiwe}
 ::msgcat::mcset xh {log: %s} {ilog: %s}
 ::msgcat::mcset xh {make media: image/video/audio, route = comfyui or provider[/model]} {yenza imidiya: image/video/audio, umendo = comfyui okanye provider[/model]}
+::msgcat::mcset xh {managed via %s} {ilawulwa nge-%s}
+::msgcat::mcset xh {manual only} {ngesandla kuphela}
 ::msgcat::mcset xh {mark set} {uphawu lufakiwe}
 ::msgcat::mcset xh {mark whole buffer (emacs select-all)} {phawula ibhafa yonke (ukukhetha konke kwe-emacs)}
 ::msgcat::mcset xh {markdown preview of the composer} {imboniso ye-markdown yomqambi}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset xh model imodeli
 ::msgcat::mcset xh {model aliases} {ama-alias emodeli}
 ::msgcat::mcset xh {monitor %1$s fired} {imonitha %1$s idubule}
-::msgcat::mcset xh monitors iimonitha
 ::msgcat::mcset xh monitors_header iimonitha:
 ::msgcat::mcset xh monitors_none {(akukho iimonitha — imodeli iqalisa ezi nge-monitor tool)}
 ::msgcat::mcset xh {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {hambisa iseshoni (nakwityana yayo) kwelinye iphondo le-pool kwindawo yokutshintsha; gqiba/susa ukudluliselwa okumisiweyo; buza ngobani onikezwe iseshoni (admin)}
 ::msgcat::mcset xh {move the running foreground command to the background} {hambisa umyalelo wangaphambili oqhubekayo uye ngasemva}
 ::msgcat::mcset xh {move the running foreground command to the background (keeps running)} {Yisa umyalelo osebenzayo ngaphambili uye emva (uqhubeka usebenza)}
+::msgcat::mcset xh {move this session's running foreground command to a background shell; keeps running} {hambisa umyalelo ophambili osebenzayo wesi seshini kwi-shell engasemva; uyaqhubeka usebenza}
 ::msgcat::mcset xh {moving around} ukuhamba
 ::msgcat::mcset xh name igama
 ::msgcat::mcset xh {name a key first} {qamba iqhosha kuqala}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset xh {neon impressionism} {neon impressionism}
 ::msgcat::mcset xh {network (optional — e.g. libera; empty = any)} {inethiwekhi (ngokhetho — umz. libera; ingenanto = nayiphi)}
 ::msgcat::mcset xh {network to scope the grant to} {inethiwekhi elinganiselwa kuyo inikezelo}
+::msgcat::mcset xh new entsha
 ::msgcat::mcset xh {new buffer} {Ibhafa entsha}
 ::msgcat::mcset xh {new entry — replace this text, then Save} {ingeniso entsha — tshitshisa lo mbhalo, uze uGcine}
 ::msgcat::mcset xh {new name for %s} {igama elitsha le-%s}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset xh {no IRC buffer selected} {akukho buffer ye-IRC ekhethiweyo}
 ::msgcat::mcset xh {no MCP servers configured — Add server… writes one into config.toml} {akukho iiseva ze-MCP ezimiselweyo — Yongeza iseva… ibhala enye ku-config.toml}
 ::msgcat::mcset xh {no URLs in this buffer} {akukho URL kule buffer}
+::msgcat::mcset xh {no [a2a_agents] entry — this peer cannot be dialed} {akukho nto ku-[a2a_agents] — lo mlingane akanakufowunwa}
 ::msgcat::mcset xh {no alias /%s} {akukho alias /%s}
 ::msgcat::mcset xh {no background refresh} {akukho vuselelo lwangasese}
 ::msgcat::mcset xh {no buffer %s} {akukho buffer %s}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset xh {no code block in the last reply} {akukho bhloko yekhowudi empendulweni yakutsha}
 ::msgcat::mcset xh {no cron jobs} {akukho misebenzi ye-cron}
 ::msgcat::mcset xh {no cron jobs — New… creates one} {akukho misebenzi ye-cron — Yakha… yenza omnye}
+::msgcat::mcset xh {no exchange yet} {akukho tshintshiselwano okwangoku}
 ::msgcat::mcset xh {no file — pick a guts file or type a path} {akukho ifayile — khetha ifayile yemithombo okanye chwetheza indlela}
 ::msgcat::mcset xh {no handler} {akukho siphathi}
+::msgcat::mcset xh {no heartbeat for %{mins} min} {akukho mqondiso wokuphila imizuzu engu-%{mins}}
+::msgcat::mcset xh {no heartbeat within the threshold} {akukho mqondiso wokuphila kumda obekiweyo}
 ::msgcat::mcset xh {no history yet} {akukho mlando okwangoku}
 ::msgcat::mcset xh {no host configured for this instance} {akukho i-host emiselweyo kulo mzekelo}
 ::msgcat::mcset xh {no instance selected} {akukho mzekelo okhethiweyo}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset xh {no program to open URLs} {akukho nkqubo yokuvula ii-URL}
 ::msgcat::mcset xh {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {akukho mboneleli uqwalaselweyo — yongeza ungeniso lwe-[[custom_providers]] kwaye umisele isibini se-[model] phambi kokuqhuba ijika}
 ::msgcat::mcset xh {no reading yet — press Refresh} {akukho fundo okwangoku — cofa uVuselela}
-::msgcat::mcset xh {no running tasks} {akukho misebenzi eqhubekayo}
 ::msgcat::mcset xh {no sample available} {akukho isampuli ekhona}
 ::msgcat::mcset xh {no search bar on this surface} {akukho ibha yokukhangela kule ndawo}
 ::msgcat::mcset xh {no session matching %s} {akukho seshoni ihambelana ne-%s}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset xh {no session open — switch the scope to the default, or open a session} {akukho seshini evuliweyo — tshintsha umda ube kokumiselweyo, okanye vula iseshini}
 ::msgcat::mcset xh {no session open — the catalogue needs one; the default scope still works from config.toml} {akukho seshini evuliweyo — ikhathalogi iyayifuna; umda omiselweyo usasebenza ku-config.toml}
 ::msgcat::mcset xh {no setting %s — try filter or bare} {akukho lungiselelo %s — zama ukuhlunga okanye okulula}
+::msgcat::mcset xh {no shells or monitors to show} {akukho shell okanye njoli yokubonisa}
 ::msgcat::mcset xh {no skills found} {akukho zakhono zifunyenweyo}
 ::msgcat::mcset xh {no such URL — /urls lists them} {akukho URL enjalo — /urls izidwelisa}
 ::msgcat::mcset xh {no such file: %s} {akukho ifayile enjalo: %s}
 ::msgcat::mcset xh {no swap target yet — set one with /locale secondary <id>} {akukabikho lwimi lokutshintshana — lumisele nge-/locale secondary <id>}
+::msgcat::mcset xh {no task selected} {akukho msebenzi ukhethiweyo}
 ::msgcat::mcset xh {no triggers} {akukho zicupho}
 ::msgcat::mcset xh {no triggers — New… creates one} {akukho zicupho — Yakha… yenza esinye}
 ::msgcat::mcset xh {no upstream reading for %s} {akukho fundo lwe-upstream lwe-%s}
 ::msgcat::mcset xh {no word match} {akukho gama elihambelanayo}
 ::msgcat::mcset xh {no xdg-open — path copied instead} {akukho xdg-open — indlela ikopiwe endaweni yoko}
+::msgcat::mcset xh {node log} {ilog yenode}
 ::msgcat::mcset xh {none loaded} {akukho lutho olulayishiweyo}
 ::msgcat::mcset xh {none recorded} {akukho nanye irekhodiwe}
+::msgcat::mcset xh {none since this gateway started} {akukho nto ukususela oko i-gateway yaqalayo}
 ::msgcat::mcset xh {none yet} akukabikho
 ::msgcat::mcset xh {normie is pure Ctrl — no emacs prefix chords.} {inormie iyacoca-nje yeCtrl — ayinawo amachordi emembara e-emacs.}
 ::msgcat::mcset xh {normie: select all · emacs: start of line} {inormie: khetha konke · i-emacs: ukuqala komgca}
 ::msgcat::mcset xh {not a channel} {akuyona ikhanali}
 ::msgcat::mcset xh {not a key = value line: %s} {akulomgqa we-key = value: %s}
+::msgcat::mcset xh {not a node in the attached gateway's cluster registry: %s} {ayiyonode kwirejista ye-cluster ye-gateway enyathiselweyo: %s}
 ::msgcat::mcset xh {not a number} asilonani
 ::msgcat::mcset xh {not a valid http(s) url: %s} {i-url ye-http(s) ayivumelekanga: %s}
 ::msgcat::mcset xh {not a valid ssh host: %s} {i-host ye-ssh ayivumelekanga: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset xh {not attached to a gateway} {akanamathiselwanga kwi-gateway}
 ::msgcat::mcset xh {not configured} ayimiswanga
 ::msgcat::mcset xh {not ignoring %s} {akucashwanga %s}
+::msgcat::mcset xh {not installed} ayifakiwe
 ::msgcat::mcset xh {not reported} akubikiwanga
 ::msgcat::mcset xh {not running} ayiqhubi
 ::msgcat::mcset xh {not set in config.toml — the built-in default applies. %s} {akumiselwanga ku-config.toml — kusebenza okumiselweyo okwakhelwe ngaphakathi. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset xh off kuvaliwe
 ::msgcat::mcset xh {off (the default)} {kuvaliwe (okumiselweyo)}
 ::msgcat::mcset xh offline {ngaphandle kwenethiwekhi}
+::msgcat::mcset xh ok kulungile
 ::msgcat::mcset xh on kuvuliwe
 ::msgcat::mcset xh {on (the default)} {kuvuliwe (okumiselweyo)}
 ::msgcat::mcset xh {on failure} {xa kusilela}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset xh {open links} {ukuvula amakhonkco}
 ::msgcat::mcset xh {open the engine log} {vula ilogi ye-enjini}
 ::msgcat::mcset xh {open the joined session before /leave (on %s)} {Vula iseshini ejoyiniweyo phambi kwe-/leave (ku-%s)}
+::msgcat::mcset xh {open the selected child session} {vula iseshoni yomntwana ekhethiweyo}
 ::msgcat::mcset xh {open the selected skill in the Dev editor} {vula ikhono elikhethiweyo kumhleli we-Dev}
 ::msgcat::mcset xh {open the setup wizard (re-runnable; edits config.toml in place)} {vula i-wizard yoseto (ingaqhutywa kwakhona; ihlela i-config.toml kwindawo yayo)}
 ::msgcat::mcset xh {open the share sheet} {ukuvula iphepha lokwabelana}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset xh {override cleared — the default applies} {ukugqithisa kususiwe — okumiselweyo kusebenza}
 ::msgcat::mcset xh {override failed: %s} {ukugqithisa kwehlulekile: %s}
 ::msgcat::mcset xh {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {i-ACL ayinakuhambelanisa isazisi somnini %{id} — sebenzisa telegram:<i-ID yamanani>, irc:<i-akhawunti ye-services>, okanye imaski ye-nick!user@host}
+::msgcat::mcset xh owner/repository umnikazi/irepository
 ::msgcat::mcset xh {owners: %s} {abanini: %s}
 ::msgcat::mcset xh {pair a desktop with this agent} {dibanisa idesktop nale agent}
 ::msgcat::mcset xh {partly failed: %s} {yehlulekile inxalenye: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset xh plugin i-plugin
 ::msgcat::mcset xh {plugin directory git history} {imbali yegit yefolda ye-plugin}
 ::msgcat::mcset xh {plugin list} {uluhlu lwee-plugin}
+::msgcat::mcset xh {plugin provider driver} {umqhubi womboneleli weplagin}
 ::msgcat::mcset xh {plugins reloaded on %s} {i-plugin ziphinde zalayishwa ngo %s}
 ::msgcat::mcset xh {pop %s out into its own window} {Khupha %s uyise kwifestile yayo}
 ::msgcat::mcset xh {pop the buffer out into its own window} {khupha i-buffer iye kwifestile yayo}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset xh {prefix: window & dock commands} {umembara: iimiyalelo ye-window nedokhi}
 ::msgcat::mcset xh {press Attach in the Instances tab} {cinezela u-Attach kwithebhu yee-Instances}
 ::msgcat::mcset xh preview umboniso
+::msgcat::mcset xh {preview an AI extension change and explicitly apply its diff} {jonga kuqala utshintsho lolwandiso lwe-AI kwaye usebenzise umahluko walo ngokucacileyo}
 ::msgcat::mcset xh {preview failed: %s} {umboniso awuphumelelanga: %s}
 ::msgcat::mcset xh {previous buffer} {i-buffer edlulileyo}
 ::msgcat::mcset xh {previous command was not a yank} {umyalelo wangaphambili wawungeyiyo i-yank}
 ::msgcat::mcset xh {previous match} {umtshasi wangaphambili}
 ::msgcat::mcset xh {previous session} {iseshoni edlulileyo}
+::msgcat::mcset xh {probing %s…} {kuyavavanywa i-%s…}
 ::msgcat::mcset xh {proc body} {umzimba we-proc}
 ::msgcat::mcset xh {profile unavailable: %s} {iprofayile ayifumaneki: %s}
 ::msgcat::mcset xh profiles: iiprofayile:
 ::msgcat::mcset xh prompt isikhumbuzo
 ::msgcat::mcset xh {prompt breakdown} {uhlalutyo lwesikhumbuzo}
 ::msgcat::mcset xh {prompt tokens} {iithokeni zesikhwankqelo zomyalelo}
+::msgcat::mcset xh {proposal only, not applied} {isiphakamiso kuphela, asifakiwe}
 ::msgcat::mcset xh provider umnikezeli
 ::msgcat::mcset xh {provider / model} {umnikezeli / imodeli}
 ::msgcat::mcset xh {provider base URL} {i-base URL yomnikezeli}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset xh {re-sync the slopdrop state mirror} {Vumelanisa kwakhona isibuko semeko se-slopdrop}
 ::msgcat::mcset xh {read and set the clipboard} {ukufunda nokuseta i-clipboard}
 ::msgcat::mcset xh {read text aloud} {ukufunda isicatshulwa ngokuvakalayo}
+::msgcat::mcset xh {read-only: [approvals] allowlist} {ifundwa kuphela: uluhlu lwezivumelekileyo lwe-[approvals]}
 ::msgcat::mcset xh {read-only: this session lives on %1$s (as read at %2$s)} {kufundwa kuphela: le seshini ikwi-%1$s (njengoko ifundwe ngo-%2$s)}
 ::msgcat::mcset xh {read-only: this skill comes from the %s library} {kufundwa kuphela: obu buchule buvela kwithala le-%s}
 ::msgcat::mcset xh reasoning ukuqiqa
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset xh {refused to open %s (only http, https, mailto)} {walile ukuvula %s (http, https, mailto kuphela)}
 ::msgcat::mcset xh {refused: %s} {waliwe: %s}
 ::msgcat::mcset xh {region copied} {ummandla ukhutshelwe}
+::msgcat::mcset xh registered ibhalisiwe
 ::msgcat::mcset xh {registry not saved: %s} {irejistri ayigciniwanga: %s}
 ::msgcat::mcset xh {reload on %1$s failed: %2$s} {ukulayisha kwakhona ngo %1$s akuphumelelanga: %2$s}
 ::msgcat::mcset xh {reload the mechanisms} {layisha kwakhona iindlela zokusebenza}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset xh {resume a session (prefix ok)} {qhubeka neseshini (isiqalo saneli)}
 ::msgcat::mcset xh {retry failed: %s} {umzamo wohlulekile: %s}
 ::msgcat::mcset xh {retrying last prompt…} {kuphinda kuzanywe isikhumbuzo sokugqibela…}
+::msgcat::mcset xh {review files for an explicit upstream contribution} {hlola iifayile ukuze ugalelele ku-upstream ngokucacileyo}
+::msgcat::mcset xh {review standing global and session tool permissions} {hlola iimvume zezixhobo ezimileyo ezijikelele nezeseshini}
 ::msgcat::mcset xh revision inguqulelo
 ::msgcat::mcset xh {revision history} {imbali yeenguqulelo}
+::msgcat::mcset xh {revoke refused} {ukurhoxisa kwaliwe}
 ::msgcat::mcset xh {revoke the selected identity's grant} {rhoxisa igranti yesazisi esikhethiweyo}
 ::msgcat::mcset xh role indima
 ::msgcat::mcset xh {role to grant} {indima yokunika}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset xh {saved to %s} {igcinwe kwi-%s}
 ::msgcat::mcset xh saved. igciniwe.
 ::msgcat::mcset xh {scaffold a new plugin} {yila i-plugin entsha}
+::msgcat::mcset xh {scaffold a user plugin and open it in this editor} {yakha isakhelo seplagin yomsebenzisi uvule kumhleli lo}
 ::msgcat::mcset xh {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {imisebenzi ecwangcisiweyo; /crons add "<sched>" [session=<id>] <prompt> (elinye igama /cron)}
 ::msgcat::mcset xh scope ububanzi
 ::msgcat::mcset xh script iskripthi
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset xh {select %s first} {khetha %s kuqala}
 ::msgcat::mcset xh {select a checkpoint first} {khetha i-checkpoint kuqala}
 ::msgcat::mcset xh {select a file, or New… to create one} {khetha ifayile, okanye Entsha… ukwenza enye}
+::msgcat::mcset xh {select a grant first} {khetha imvume kuqala}
 ::msgcat::mcset xh {select a handler first} {khetha umphathi kuqala}
 ::msgcat::mcset xh {select a member first} {khetha ilungu kuqala}
 ::msgcat::mcset xh {select a route} {khetha umendo}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset xh {select an assignment first} {khetha isabelo kuqala}
 ::msgcat::mcset xh {select an entry first} {khetha into kuqala}
 ::msgcat::mcset xh {select an identity first} {khetha isazisi kuqala}
+::msgcat::mcset xh {selected task details and shell output} {inkcukacha zomsebenzi okhethiweyo nophumo lishell}
 ::msgcat::mcset xh {selected: %s} {ikhethiwe: %s}
 ::msgcat::mcset xh {send clipboard as prompt} {thumela ibhodi lokukhuphela njengesikhumbuzo}
 ::msgcat::mcset xh {send failed: %s} {ukuthumela kwahlulekile: %s}
 ::msgcat::mcset xh {send the message; while a turn runs, queue it as steering} {Thumela umyalezo; xa umjikelo usebenza, ulibeke emgqeni njengesikhokelo}
+::msgcat::mcset xh sent kuthunyelwe
+::msgcat::mcset xh {sent to the owner's home chat} {kuthunyelwe kwincoko yasekhaya yomnini}
 ::msgcat::mcset xh server iserver
 ::msgcat::mcset xh {server buffers merged} {iibhafa zeserver zidityanisiwe}
 ::msgcat::mcset xh {server buffers separate} {iibhafa zeserver zihlukene}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset xh {settings, one key = value per line} {iisetingi, key = ixabiso elinye ngomgca}
 ::msgcat::mcset xh {setup_done marker NOT saved: %s} {i-marker ye-setup_done ayigcinwanga: %s}
 ::msgcat::mcset xh {shell %1$s finished} {i-shell %1$s igqibile}
-::msgcat::mcset xh shells iishell
+::msgcat::mcset xh {shells, monitors and subagents} {iishell, abajoli neearhente eziphantsi}
 ::msgcat::mcset xh shells_header {iishell zangasemva:}
 ::msgcat::mcset xh shells_none {(akukho iishell zangasemva — /background <cmd> iqalisa enye)}
 ::msgcat::mcset xh {show current configuration} {bonisa uhlelo lwangoku lokucwangcisa}
 ::msgcat::mcset xh {show every key in this mode} {bonisa iqhosha ngalinye kolu hlobo}
 ::msgcat::mcset xh {show or hide the session list} {bonisa okanye fihla uluhlu lweeseshini}
 ::msgcat::mcset xh {show or switch model (alias | model@provider | custom:<prov>)} {bonisa okanye tshintsha imodeli (alias | model@provider | custom:<prov>)}
+::msgcat::mcset xh {show selected shell output} {bonisa uphumo lishell ekhethiweyo}
 ::msgcat::mcset xh {show short messages} {ukubonisa imiyalezo emifutshane}
 ::msgcat::mcset xh {show the model's reasoning blocks (same as /reasoning)} {Bonisa iibhloko zokuqiqa zemodeli (efana no-/reasoning)}
 ::msgcat::mcset xh {show unclaimed} {bonisa ezingabangwayo}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset xh spend inkcitho
 ::msgcat::mcset xh {split: %s} {ukwahlula: %s}
 ::msgcat::mcset xh {ssh to %1$s failed: %2$s} {i-ssh ukuya kwi-%1$s ayiphumelelanga: %2$s}
+::msgcat::mcset xh {stale — no heartbeat within the threshold} {indala — akukho heartbeat ngaphakathi komda}
+::msgcat::mcset xh {standing global and session permission grants} {iimvume zezixhobo ezimileyo ezijikelele nezeseshini}
 ::msgcat::mcset xh state imeko
 ::msgcat::mcset xh {state       never reached} {imeko       ayizange ifikelelwe}
 ::msgcat::mcset xh {state       reachable} {imeko       iyafikeleleka}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset xh {stored in the encrypted vault (%1$s): %2$s} {kugcinwe kwisisefo esifihliweyo (%1$s): %2$s}
 ::msgcat::mcset xh {stream handler: %s} {umphathi womjelo: %s}
 ::msgcat::mcset xh {subagent %1$s finished} {i-subagent %1$s igqibile}
-::msgcat::mcset xh subagents iisubagents
 ::msgcat::mcset xh subagents_header {ii-subagent eziqhubekayo:}
 ::msgcat::mcset xh subagents_none {(akukho ii-subagent eziqhubekayo — /btw <prompt> iqalisa enye, okanye imodeli isebenzisa delegate_task)}
 ::msgcat::mcset xh {suspend failed: %{e}} {ukumisa okwethutyana akuphumelelanga: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset xh {switch the selected skill off} {cime ubuchule obukhethiweyo}
 ::msgcat::mcset xh {switch the selected skill on} {vula ubuchule obukhethiweyo}
 ::msgcat::mcset xh {switch to the %s tab} {tshintshela kwithebhu ye-%s}
+::msgcat::mcset xh {sync requested: %s} {i-sync iceliwe: %s}
 ::msgcat::mcset xh {tab 1} {ithebhu 1}
 ::msgcat::mcset xh {tab 2} {ithebhu 2}
 ::msgcat::mcset xh {tab 3} {ithebhu 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset xh tasks_none {(akukho misebenzi iqhubekayo)}
 ::msgcat::mcset xh tasks_not_found {akukho msebenzi unjalo: %{id}}
 ::msgcat::mcset xh tasks_not_running {umsebenzi %{id} sele ugqityiwe}
-::msgcat::mcset xh {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset xh {tcl-lsp: event stream unavailable: %s} {tcl-lsp: umjelo weziganeko awufumaneki: %s}
-::msgcat::mcset xh {tcl-lsp: gateway would not start it: %s} {tcl-lsp: i-gateway ayifuni ukuyiqalisa: %s}
-::msgcat::mcset xh {tcl-lsp: not started on the gateway — %s} {tcl-lsp: ayikaqalwa kwi-gateway — %s}
 ::msgcat::mcset xh {that buffer is not split} {loo bhafa ayahlukanga}
 ::msgcat::mcset xh {the %s plan} {isicwangciso se-%s}
 ::msgcat::mcset xh {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {intsimi yesitshixo se-API ithatha IGAMA le-env var (njenge-%{example}), hayo isitshixo ngokwaso — isitshixo singena kwintsimi efihliweyo}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset xh {the gateway answered without a report} {i-gateway iphendule ngaphandle kwengxelo}
 ::msgcat::mcset xh {the model/provider pair is incomplete — the gateway will not route until both are present} {isibini se-model/umboneleli asiphelelanga — i-gateway ayiyi kuhambisa de zombini zibekho}
 ::msgcat::mcset xh {the options changed, so that is a fresh preview — press “Write it” again to write it} {iinketho zitshintshile, ngoko lo ngumboniso omtsha — cinezela “Write it” kwakhona ukuze ubhale}
+::msgcat::mcset xh {the peer has not been sent this vault yet} {lo mlingane awukathunyelwa esi sisefo}
+::msgcat::mcset xh {the peer holds this vault} {umlingane unaso esi sisefo}
 ::msgcat::mcset xh {the primary route is \[model\] provider/default — change it there, not here} {umendo oyintloko ngu-\[model\] provider/default — wutshintshe apho, hayi apha}
 ::msgcat::mcset xh {the provider/model route this session sends to} {Indlela yeprovider/imodeli ethunyelwa kuyo yile seshoni}
 ::msgcat::mcset xh {the same, on the privileged path (owner only)} {kwayona, ngendlela enelungelo (owner kuphela)}
 ::msgcat::mcset xh {the selected entry (edit, then Save)} {into ekhethiweyo (yihlele, uze u-Save)}
+::msgcat::mcset xh {the server stopped: %s} {iserver yema: %s}
 ::msgcat::mcset xh {the synthwave splash} {isikrini sokuqala se-synthwave}
 ::msgcat::mcset xh {the text after the name was NOT sent anywhere — type the value into the masked field} {isicatshulwa esilandela igama ASITHUNYELWANGA naphi na — bhala ixabiso kwibala elifihliweyo}
 ::msgcat::mcset xh {the transcript} i-transcript
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset xh thinking… iyacinga…
 ::msgcat::mcset xh {thinking… (%s)} {iyacinga… (%s)}
 ::msgcat::mcset xh {this file's revisions, their diffs, and restore} {iinguqulelo zale fayile, umahluko wazo, nokubuyisela}
+::msgcat::mcset xh {this gateway} {le gateway}
 ::msgcat::mcset xh {this gateway has no Tcl interpreter} {le gateway ayinayo i-interpreter ye-Tcl}
 ::msgcat::mcset xh {this list} {olu luhlu}
+::msgcat::mcset xh {this node has no vault} {le node ayinayo isisefo}
 ::msgcat::mcset xh {this route} {lo mendo}
 ::msgcat::mcset xh {this session} {le seshini}
 ::msgcat::mcset xh {this session follows the default language again (%{def})} {le seshini iphinda ilandela ulwimi olumiselweyo (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset xh {transcript finalization failed: %s} {ukugqitywa kwethranskripti kuhlulekile: %s}
 ::msgcat::mcset xh {transcript refetched} {itranscript iphinde yalandwa}
 ::msgcat::mcset xh {transcript — arrows to read, %s for composer} {itranscript — iintolo zokufunda, %s kwi-composer}
+::msgcat::mcset xh {translate text with the dedicated translation model, without an agent turn} {guqula umbhalo ngemodeli yokuguqulela eyodwa, ngaphandle kweturani ye-agent}
+::msgcat::mcset xh {translation result} {isiphumo sokuhumusha}
 ::msgcat::mcset xh {trigger %1$s %2$sd} {qalisa %1$s %2$sd}
 ::msgcat::mcset xh {trigger created} {i-trigger idaliwe}
 ::msgcat::mcset xh {trigger updated} {i-trigger ihlaziyiwe}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset xh {usage: /steer <instruction>} {ukusetyenziswa: /steer <instruction>}
 ::msgcat::mcset xh used isetyenzisiwe
 ::msgcat::mcset xh user umsebenzisi
+::msgcat::mcset xh {user copy} {ikopi yomsebenzisi}
 ::msgcat::mcset xh {user identities, one per line} {izazisi zomsebenzisi, enye ngomgca}
 ::msgcat::mcset xh {user name} {igama lomsebenzisi}
 ::msgcat::mcset xh {user profile} {iprofayile yomsebenzisi}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset xh {value (TOML: 5, true, "text", ["a","b"])} {ixabiso (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset xh veles veles
 ::msgcat::mcset xh {veles editor} {umhleli veles}
+::msgcat::mcset xh {veles fleet: node %{node} is failing — %{detail}} {veles iqela: inode %{node} iyasilela — %{detail}}
+::msgcat::mcset xh {veles fleet: node %{node} is stale — %{detail}} {veles iqela: inode %{node} iphelelwe lixesha — %{detail}}
+::msgcat::mcset xh {veles fleet: node %{node} recovered (it was %{was})} {veles iqela: inode %{node} ibuyile (yayiyi-%{was})}
 ::msgcat::mcset xh {veles · keyboard help (bindings: %s)} {veles · uncedo lwezitshixo (iibindings: %s)}
 ::msgcat::mcset xh {veles · touch help} {veles · uncedo lokuchukumisa}
 ::msgcat::mcset xh {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset xh widgets iiwidgets
 ::msgcat::mcset xh {will be stored in the encrypted vault} {kuya kugcinwa kwisisefo esifihliweyo}
 ::msgcat::mcset xh {wire protocol} {iprotocol yewire}
+::msgcat::mcset xh {without force to} {ngaphandle kwe-force ukuya}
 ::msgcat::mcset xh {wizard language} {ulwimi lwe-wizard}
 ::msgcat::mcset xh {wizard language: %s} {ulwimi lwe-wizard: %s}
 ::msgcat::mcset xh {write failed: %s} {ukubhala akuphumelelanga: %s}
 ::msgcat::mcset xh {write grants that still expire (the expiry is dropped — a config line cannot expire)} {bhala iigrants ezinokuphelelwa (ukuphelelwa kuyachithwa — umgca we-config awunakuphelelwa)}
 ::msgcat::mcset xh {write the entries back} {bhala kwakhona izinto}
 ::msgcat::mcset xh {write the store's runtime rules into config.toml} {bhala imithetho yokusebenza ye-store kwi-config.toml}
+::msgcat::mcset xh {write the whole extension from its purpose, as a reviewed preview} {bhala lonke ulwandiso ngokwenjongo yalo, njengomboniso ophononongiweyo}
 ::msgcat::mcset xh {write these values into config.toml as the defaults} {bhala la maxabiso kwi-config.toml njengezasiseko}
 ::msgcat::mcset xh writing ukubhala
 ::msgcat::mcset xh {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {ukubhala umnini wokuqala we-[acl] kutshintsha le gateway iye kwimo ELAWULWAYO: indima engagqibekanga iba yi-guest (fail-closed) kwaye uluhlu lwemvume lwe-adapter aluselulo umda wokuthemba}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset xh {▲ VELES — neon impressionism} {▲ VELES — neon impressionism}
 ::msgcat::mcset xh {▲ earlier} {▲ ngaphambili}
 ::msgcat::mcset xh {▼ later} {▼ kamva}
+::msgcat::mcset xh {▾ Cluster registry} {▾ Orejista yeeQeqela}
 ::msgcat::mcset xh {▾ new output — follow} {▾ umphumo omtsha — landela}
 ::msgcat::mcset xh {○ unattached} {○ ayincanyathiselwanga}
 ::msgcat::mcset xh {● %1$s — %2$s} {● %1$s — %2$s}

@@ -5,7 +5,10 @@
 //! peer conversations keep memory. Replies return directly on the
 //! request — the caller blocks until the turn finishes.
 //!
-//! Methods served: message/send, tasks/get, tasks/list, tasks/cancel.
+//! Methods served: message/send, tasks/get, tasks/list, tasks/cancel,
+//! and `veles/fleet` — a cluster peer's request for this node's log
+//! tail, metrics or config fingerprint (fleet_obs.rs), answered with
+//! data, never a turn.
 //! The Agent Card advertises streaming:false, so message/stream answers
 //! with JSON-RPC method-not-found rather than a half-baked SSE stream.
 //!
@@ -1024,6 +1027,46 @@ impl A2AServer {
         build_task(task_id, context_id, state, &reply)
     }
 
+    /// `veles/fleet` (fleet_obs.rs): a cluster peer asking, for its
+    /// owner's command center, for this node's log tail, metrics or
+    /// config fingerprint. Answered only for an authenticated peer named
+    /// in `[cluster] memsync_peers` — the cluster-business list gossip and
+    /// the sync inboxes use, read live — and never during a lockdown.
+    /// Data, never a turn; the audit log keeps who asked for what.
+    async fn fleet_request(&self, peer: &str, params: &Value) -> Result<Value, String> {
+        let op = params["op"].as_str().unwrap_or("").to_string();
+        let verdict = if veles_core::lockdown::current(Some(&self.store)).is_some() {
+            Err("this node is in lockdown and answers no fleet requests".to_string())
+        } else {
+            match veles_core::config::load() {
+                Err(e) => Err(format!("config load failed: {e:#}")),
+                Ok(c) if !c.cluster.memsync_peers.iter().any(|p| p == peer) => Err(format!(
+                    "fleet requests are answered only for peers named in [cluster] \
+                     memsync_peers, and '{peer}' is not one"
+                )),
+                Ok(_) => Ok(()),
+            }
+        };
+        let result = match verdict {
+            Err(why) => Err(why),
+            Ok(()) => {
+                let (store, params) = (self.store.clone(), params.clone());
+                let dirs = veles_core::config::dirs();
+                veles_core::rt::spawn_blocking(move || {
+                    let _dirs = veles_core::config::set_dirs(dirs);
+                    crate::fleet_obs::answer_local(&store, &params)
+                })
+                .await
+                .unwrap_or_else(|e| Err(format!("fleet request failed: {e}")))
+            }
+        };
+        veles_core::a2a::audit_log(&json!({
+            "event": "fleet_request", "peer": peer, "op": op,
+            "answered": result.is_ok(),
+        }));
+        result
+    }
+
     /// A singleton lease ask (B3a): this node is the arbiter, the peer
     /// is asking to hold (or renew, or read) a singleton lease. The
     /// ask's `holder` must be the node id this PEER owns — bound by the
@@ -1278,6 +1321,9 @@ impl A2AServer {
                         } else {
                             None
                         };
+                        // Counted here under the placing node, so its
+                        // ranking sees this child arrive (306787.b).
+                        let origin = ask.from_node.clone();
                         veles_core::rt::spawn_blocking(move || {
                             veles_core::delegate::run_remote_child(
                                 &goal,
@@ -1287,6 +1333,7 @@ impl A2AServer {
                                 r.as_deref(),
                                 principal.as_deref(),
                                 token,
+                                &origin,
                             )
                         })
                         .await
@@ -2055,6 +2102,13 @@ async fn dispatch_method(
                 "streaming not advertised on this agent's card; use message/send",
             )),
         ),
+        crate::fleet_obs::METHOD => match srv.fleet_request(identity, &params).await {
+            Ok(v) => (StatusCode::OK, Json(jsonrpc_result(&id, v))),
+            Err(why) => (
+                StatusCode::OK,
+                Json(jsonrpc_error(&id, ERR_UNTRUSTED, &why)),
+            ),
+        },
         "tasks/get" => {
             let tid = params
                 .get("id")
@@ -2854,6 +2908,68 @@ mod tests {
             !srv.tasks.get("t-done").expect("task").cancel.is_cancelled(),
             "and nothing was flipped on the way out"
         );
+    }
+
+    /// `veles/fleet`: refused for a peer outside `[cluster]
+    /// memsync_peers` (read live, so a config edit needs no restart),
+    /// answered with data for one inside it, an unknown request is an
+    /// error, not a turn — no session is ever made — and a lockdown
+    /// refuses even the cluster peer.
+    #[tokio::test]
+    async fn a_fleet_request_is_answered_only_for_a_cluster_peer() {
+        let (_home, srv, _env) = scratch_server();
+        let ask = |op: &str| {
+            json!({"jsonrpc": "2.0", "id": 7, "method": crate::fleet_obs::METHOD,
+                   "params": {"op": op}})
+        };
+        let (code, Json(resp)) =
+            dispatch_method(srv.clone(), "stranger", "127.0.0.1:0", &ask("metrics")).await;
+        assert_eq!(code, StatusCode::OK);
+        assert_eq!(resp["error"]["code"], ERR_UNTRUSTED, "{resp}");
+        assert!(
+            resp["error"]["message"]
+                .as_str()
+                .unwrap()
+                .contains("memsync_peers"),
+            "{resp}"
+        );
+        std::fs::write(
+            veles_core::config::config_dir().join("config.toml"),
+            "[cluster]\nmemsync_peers = [\"vps\"]\n",
+        )
+        .unwrap();
+        let (_, Json(resp)) =
+            dispatch_method(srv.clone(), "vps", "127.0.0.1:0", &ask("metrics")).await;
+        assert_eq!(
+            resp["result"]["version"],
+            env!("CARGO_PKG_VERSION"),
+            "{resp}"
+        );
+        assert_eq!(resp["result"]["op"], "metrics");
+        let (_, Json(resp)) =
+            dispatch_method(srv.clone(), "vps", "127.0.0.1:0", &ask("logs")).await;
+        assert!(resp["result"]["lines"].is_array(), "{resp}");
+        let (_, Json(resp)) = dispatch_method(srv.clone(), "vps", "127.0.0.1:0", &ask("rm")).await;
+        assert!(resp["error"]["message"]
+            .as_str()
+            .unwrap()
+            .contains("unknown fleet request"));
+        // A lockdown shuts this door too, for the cluster peer as well:
+        // a node being investigated does not hand out its log.
+        veles_core::lockdown::engage(&srv.store, "tui:owner", "an incident").unwrap();
+        let (_, Json(resp)) =
+            dispatch_method(srv.clone(), "vps", "127.0.0.1:0", &ask("logs")).await;
+        assert_eq!(resp["error"]["code"], ERR_UNTRUSTED, "{resp}");
+        assert!(
+            resp["error"]["message"]
+                .as_str()
+                .unwrap()
+                .contains("lockdown"),
+            "{resp}"
+        );
+        assert!(resp.get("result").is_none(), "{resp}");
+        veles_core::lockdown::release(&srv.store).unwrap();
+        assert!(srv.sessions.lock_ok().is_empty(), "no session, no turn");
     }
 
     #[test]

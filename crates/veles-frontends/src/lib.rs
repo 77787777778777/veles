@@ -22,8 +22,14 @@ pub mod commands;
 pub mod desktop_api;
 pub mod desktop_install;
 pub mod desktop_join;
+pub mod fleet_obs;
+pub mod fleet_ops;
+pub mod fleet_watch;
 pub mod gateway;
+mod grants_api;
 pub mod panes;
+#[cfg(test)]
+mod source_revision_tests;
 pub mod tui;
 
 // ── the agent handle the in-process surfaces share ───────────────────

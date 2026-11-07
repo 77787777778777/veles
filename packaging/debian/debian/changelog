@@ -1,3 +1,14 @@
+veles-agent (0.2.0) unstable; urgency=medium
+
+  * Add a fleet command center (node health, every sync kind, reviewed
+    staged deployment with rollback), Dev-tab extension authoring with
+    AI assistance and upstream contribution, selection translation, a
+    Chrome/Firefox tab bridge, restart recovery of interrupted turns,
+    capability-governed /join, a permission-grant review panel, an
+    interactive /shells panel and Anthropic Message Threads.
+
+ -- veles-agent maintainers <noreply@example.invalid>  Fri, 06 Nov 2026 22:00:00 +0000
+
 veles-agent (0.1.6) unstable; urgency=medium
 
   * Let owners select which matched approval classes a standing grant

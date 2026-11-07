@@ -136,6 +136,8 @@ pub enum Cap {
     A2a,
     /// session_search / session_export (other sessions' transcripts).
     SessionHistory,
+    /// Join a live conversation as an additional participant.
+    SessionJoin,
     /// todo.
     Todo,
     /// Answer approvals/asks in this session.
@@ -176,6 +178,7 @@ impl Cap {
             Cap::Cron => "cron",
             Cap::A2a => "a2a",
             Cap::SessionHistory => "session-history",
+            Cap::SessionJoin => "session-join",
             Cap::Todo => "todo",
             Cap::Approve => "approve",
             Cap::Desktop => "desktop",
@@ -215,6 +218,7 @@ impl Cap {
                 "cron" => Cap::Cron,
                 "a2a" => Cap::A2a,
                 "sessionhistory" | "session-history" => Cap::SessionHistory,
+                "sessionjoin" | "session-join" => Cap::SessionJoin,
                 "todo" => Cap::Todo,
                 "approve" => Cap::Approve,
                 "desktop" => Cap::Desktop,
@@ -256,6 +260,10 @@ pub fn cap_catalog() -> Vec<(String, String)> {
         (Cron, "schedule jobs"),
         (A2a, "talk to peer agents"),
         (SessionHistory, "read other sessions' transcripts"),
+        (
+            SessionJoin,
+            "join a live conversation as an additional participant",
+        ),
         (Todo, "track todos"),
         (Approve, "answer approvals"),
         (Desktop, "open panes and previews on the owner desktop"),
@@ -2271,7 +2279,7 @@ pub fn tool_cap(tool: &str) -> Option<Cap> {
         "browser_guest" => Web,
         "browser_navigate" | "browser_snapshot" | "browser_click" | "browser_type"
         | "browser_scroll" | "browser_press" | "browser_back" | "browser_console"
-        | "browser_challenge" => Browser,
+        | "browser_challenge" | "browser_extension" => Browser,
         "computer_use" => ComputerUse,
         "vision_analyze" => Vision,
         "generate_image" | "transcribe_audio" => MediaGen,
@@ -2306,7 +2314,7 @@ pub fn tool_cap(tool: &str) -> Option<Cap> {
         // mail starts runs with no more than its sender's rights anyway,
         // but WHO may knock on which session is the owner's call — a
         // `[tool_caps]` line can widen it, nothing here does.
-        "sessions" => All,
+        "sessions" | "nodes" => All,
         // A connected device (crate::devices): a phone's location, its
         // notifications, its share sheet, the laptop's clipboard. The
         // owner's, like the rest of the owner's hardware.
@@ -2935,6 +2943,12 @@ pub fn builtin_cap(cmd: &str) -> Option<Cap> {
         // arm existed in `dispatch` with no tier, which the gateway reads
         // as "no gate".
         "locale" | "language" | "lang" => CmdSession,
+        // Selected text incurs a provider call for this session. No
+        // arbitrary guest may spend the configured translator's quota.
+        "translate" => CmdSession,
+        // Reading the cluster registry is status; `fleet_command`
+        // separately requires the owner for store push/apply.
+        "fleet" => CmdStatus,
         "steer" => CmdSession,
         // The message queue (R4.6): listing is mild, editing/cancelling
         // what is ABOUT to run is session-shaping — one command with
@@ -2967,9 +2981,10 @@ pub fn builtin_cap(cmd: &str) -> Option<Cap> {
         // because the whole NAME is a write.
         "caps" => CmdStatus,
         "grant" | "revoke" => All,
-        // Joining someone else's session (the gateway's `/join`): the
-        // joined chat's lines run there with the owner's rights.
-        "join" | "leave" => All,
+        // Joining a live session is separately grantable. The caller's
+        // lines never run with more than the caller's own rights (a
+        // grantee's: the lower of theirs and the target's; SI-5).
+        "join" | "leave" => SessionJoin,
         // The pending questions. Listing them is a report; deciding one
         // is the gate in front of every tool call, and the BINDING
         // narrows it further inside the command — this cap only gets a
@@ -4007,6 +4022,12 @@ default_role: guest
         // provider override, /body's tier — is checked inside it.
         assert_eq!(builtin_cap("model"), Some(Cap::CmdStatus));
         assert_eq!(builtin_cap("models"), Some(Cap::CmdStatus));
+        assert_eq!(builtin_cap("join"), Some(Cap::SessionJoin));
+        assert_eq!(builtin_cap("leave"), Some(Cap::SessionJoin));
+        assert_eq!(Cap::from_str_lossy("session-join"), Some(Cap::SessionJoin));
+        assert!(!Role::Admin.default_caps().contains(&Cap::SessionJoin));
+        assert!(!Role::Trusted.default_caps().contains(&Cap::SessionJoin));
+        assert!(cap_catalog().iter().any(|(name, _)| name == "session-join"));
     }
 
     // ── S9: runtime grants from pairing codes ────────────────────────

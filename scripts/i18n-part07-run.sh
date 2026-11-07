@@ -24,7 +24,7 @@ cd "$WORK" || exit 1
 
 PLAN_SLOTS="${PLAN_SLOTS:-6}"
 TEAM_SLOTS="${TEAM_SLOTS:-2}"
-MODEL="${MODEL:-deepseek-v4-flash-0731}"
+MODEL="${MODEL:-deepseek-v4.1-flash-1017}"
 
 # A human-readable language name per locale id, so a child is told
 # "German" and not "de".

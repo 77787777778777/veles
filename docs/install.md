@@ -170,6 +170,21 @@ handle, so the change is in effect for new sessions immediately, and
 platform adapters (telegram, IRC) on the next `veles gateway restart`. If
 that reload fails, the finish screen says so.
 
+### Optional provider referral links
+
+Need an account? The setup wizards also show these **optional referral
+links**. They are conveniences only, not prerequisites: every provider and
+the custom-provider path remains available, and no provider is preselected
+because a referral exists. A link opens only when you choose it; setup does
+not fetch it automatically or send it to the gateway, a model or a transcript.
+
+- Alibaba (referral): https://www.alibabacloud.com/campaign/ai-landing-page-token?referral_code=A92XWC
+- Anthropic (referral): https://claude.ai/referral/wmE6hdL3CQ
+  **Note:** API credits from the Anthropic referral are granted only if you
+  buy Max or Ultra. Veles does not support using that subscription as login
+  or API authentication.
+- Kimi (referral): https://www.kimi.ai/activities/en/invite/share?scenario=subscribe&from=share_poster&invitation_code=W5RK7K
+
 ## Secrets: the vault
 
 Keys live in `~/.config/veles/vault/`: `identity.txt` (this node's age
@@ -617,6 +632,7 @@ registers the gateway and ends by running it.
 | Tcl/Tk, `tclsh.exe`, `wish.exe`, tcllib | `<prefix>\tcl` |
 | sqlite.org's `sqlite3.dll` + the import library the build links | `<prefix>\sqlite` |
 | the desktop app, the bundled skills | `<prefix>\veles-desktop`, `<prefix>\skills` |
+| the browser tab bridge's unpacked extension (`veles browser-extension install` copies it to `%LOCALAPPDATA%\veles\browser-extension\extension` and registers the native host in `HKCU`; see `browser-extension\README.md`) | `<prefix>\browser-extension` (also in the portable zip) |
 | config: `config.toml`, `.env`, `node.toml`, `vault\` | `%APPDATA%\veles` |
 | state: `state.db`, `modules\`, `gateway.log`, `run\` | `%LOCALAPPDATA%\veles` |
 | cache | `%LOCALAPPDATA%\veles\cache` |

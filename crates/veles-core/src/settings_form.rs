@@ -162,6 +162,21 @@ mod tests {
         ]);
         let f = form();
 
+        // [translation] is derived from the same VelesConfig as the
+        // dedicated translator. Keep these as ordinary string fields,
+        // never a second hand-maintained form or an API-key input.
+        for (path, default) in [
+            ("translation.provider", ""),
+            ("translation.model", ""),
+            ("translation.target_language", ""),
+        ] {
+            let field = field(&f, path).expect("the derived translator option");
+            assert_eq!(field["kind"], "string", "{field}");
+            assert_eq!(field["default"], json!(default), "{field}");
+            assert_eq!(field["set"], json!(false), "{field}");
+            assert_eq!(field["effect"], "new_sessions", "{field}");
+        }
+
         let t = field(&f, "agent.guards.max_iterations").expect("a typed option is a field");
         assert_eq!(t["kind"], "int", "{t}");
         assert_eq!(t["value"], json!(42), "{t}");

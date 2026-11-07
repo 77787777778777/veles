@@ -221,7 +221,25 @@ pub async fn forward_event(
     let sd_net = slopdrop_network(cfg, ev.network)
         .ok_or_else(|| format!("no slopdrop_network mapping for {}", ev.network))?;
     let args = slopdrop_args(&ev)?;
-    Ok(crate::bridge::event(
+    // Build the room context so slopdrop's `[names]` / `[name]` procs
+    // see the roster. Slopdrop applies it since 07663bc (SI-1); the wire
+    // event carries it from the IRC tap. `mask` goes as `ident@host`,
+    // the half `eval` sends, because slopdrop rebuilds
+    // `nick!ident@host` itself.
+    let mask = match wire.mask.split_once('!') {
+        Some((n, rest)) if n == wire.nick => rest.to_string(),
+        _ => wire.mask.clone(),
+    };
+    let ctx = crate::bridge::Context {
+        nick: wire.nick.clone(),
+        mask,
+        channel: wire.channel.clone(),
+        network: sd_net.clone(),
+        topic: String::new(),
+        members: wire.members.clone(),
+        bsky: None,
+    };
+    Ok(crate::bridge::event_with_context(
         &s,
         &sd_net,
         ev.event,
@@ -230,6 +248,7 @@ pub async fn forward_event(
         true,
         None,
         ev.role == Some(veles_core::acl::Role::Owner),
+        &ctx,
     )
     .await?
     .into_iter()
@@ -488,6 +507,7 @@ mod tests {
             mask: "a@b".into(),
             text: "hi".into(),
             role: Some("user".into()),
+            members: None,
         };
         crate::settings::pin_for_test(crate::settings::SlopdropSection::default());
         let err = forward_event(&cfg, &ev, &[]).await.unwrap_err();
@@ -511,5 +531,138 @@ mod tests {
             vec![TRIGGERS_FORWARD, TRIGGERS_MASKS]
         );
         assert!(d.iter().all(|d| d.cap.is_none()));
+    }
+
+    /// SI-2: the roster, end to end on OUR side. `event_wire` reads it
+    /// from the IRC tap (network and channel case-folded, the `@`/`+`
+    /// prefixes and a `!user@host` suffix stripped), and `forward_event`
+    /// puts it, with the nick and channel, into the body it POSTs to
+    /// `/api/event`. Reverting either half turns this red. Slopdrop
+    /// applies it since 07663bc (SI-1); the eval-route roster bugs the
+    /// review found are fixed in f814f42.
+    #[tokio::test]
+    async fn a_trigger_event_posts_the_rooms_roster_to_slopdrop() {
+        let (_home, _env) = veles_core::testenv::scratch_home();
+        let mut rosters = std::collections::HashMap::new();
+        rosters.insert(
+            "#FlashSupport".to_string(),
+            vec![
+                "@alice".to_string(),
+                "+bob!~b@synIRC-1.example".to_string(),
+                "wrath".to_string(),
+            ],
+        );
+        veles_core::irc_tap::put_state(veles_core::irc_tap::NetworkState {
+            network: "irc.SynIRC.net".to_string(),
+            presence: "bot".to_string(),
+            nick: "jackma".to_string(),
+            connected: true,
+            channels: vec!["#FlashSupport".to_string()],
+            topics: Default::default(),
+            rosters,
+            aways: Default::default(),
+        });
+        let ev = veles_core::triggers::Event {
+            platform: "irc",
+            network: "irc.synirc.net",
+            channel: "#flashsupport",
+            event: "TEXT",
+            nick: "wrath",
+            mask: "wrath!~w@host",
+            text: "soup",
+            role: Some(veles_core::acl::Role::User),
+        };
+        let wire = veles_core::triggers::event_wire(&ev);
+        assert_eq!(
+            wire.members,
+            Some(vec!["alice".into(), "bob".into(), "wrath".into()]),
+            "bare names, from a mixed-case network and channel"
+        );
+        let dm =
+            veles_core::triggers::event_wire(&veles_core::triggers::Event { channel: "", ..ev });
+        assert_eq!(dm.members, None, "a DM has no roster");
+        let unseen = veles_core::triggers::event_wire(&veles_core::triggers::Event {
+            channel: "#empty",
+            ..ev
+        });
+        assert_eq!(
+            unseen.members,
+            Some(Vec::new()),
+            "a real channel whose roster has not arrived clears chanlist"
+        );
+
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let srv = veles_core::rt::spawn(async move {
+            use tokio::io::{AsyncReadExt, AsyncWriteExt};
+            let (mut sock, _) = listener.accept().await.unwrap();
+            let mut raw = Vec::new();
+            let mut buf = vec![0u8; 8192];
+            // Read the head and the whole body (Content-Length).
+            loop {
+                let n = sock.read(&mut buf).await.unwrap_or(0);
+                if n == 0 {
+                    break;
+                }
+                raw.extend_from_slice(&buf[..n]);
+                let s = String::from_utf8_lossy(&raw).to_string();
+                if let Some(end) = s.find("\r\n\r\n") {
+                    let len = s[..end]
+                        .lines()
+                        .find_map(|l| {
+                            l.to_lowercase()
+                                .strip_prefix("content-length:")
+                                .map(|v| v.trim().to_string())
+                        })
+                        .and_then(|v| v.parse::<usize>().ok())
+                        .unwrap_or(0);
+                    if raw.len() >= end + 4 + len {
+                        break;
+                    }
+                }
+            }
+            let ok =
+                "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n";
+            sock.write_all(ok.as_bytes()).await.unwrap();
+            sock.write_all(
+                br##"{"is_error":false,"responses":[{"channel":"#flashsupport","message":"brings out the hot soup for bob"}]}"##,
+            )
+            .await
+            .unwrap();
+            String::from_utf8_lossy(&raw).to_string()
+        });
+        let cfg: VelesConfig = toml::from_str(
+            "[[platforms.irc.networks]]\nname = \"irc.synirc.net\"\nslopdrop_network = \"synirc\"\n",
+        )
+        .unwrap();
+        crate::settings::pin_for_test(crate::settings::SlopdropSection {
+            enabled: true,
+            url: Some(format!("http://127.0.0.1:{port}")),
+            timeout_ms: Some(5_000),
+            ..Default::default()
+        });
+        let replies = forward_event(&cfg, &wire, &[]).await.expect("forwarded");
+        assert_eq!(
+            replies,
+            vec![(
+                "#flashsupport".to_string(),
+                "brings out the hot soup for bob".to_string()
+            )]
+        );
+        let req = srv.await.unwrap();
+        assert!(req.starts_with("POST /api/event "), "{req}");
+        for needle in [
+            "\"event\":\"TEXT\"",
+            "\"network\":\"synirc\"",
+            "\"nick\":\"wrath\"",
+            "\"channel\":\"#flashsupport\"",
+            "\"members\":[\"alice\",\"bob\",\"wrath\"]",
+        ] {
+            assert!(
+                req.contains(needle),
+                "the event body carries {needle}: {req}"
+            );
+        }
+        crate::settings::pin_for_test(crate::settings::SlopdropSection::default());
     }
 }

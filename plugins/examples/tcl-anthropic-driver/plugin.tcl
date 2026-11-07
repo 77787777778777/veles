@@ -278,9 +278,20 @@ proc anthropic::endpoint_path {req} {
 # anything outside the two (`validate_auth_styles`), so this arm is a
 # defence against a caller that bypassed validation, not a silent default.
 proc anthropic::headers_for {req key} {
-    return [anthropic::headers_for_key $key \
-        [::veles::json_get $req veles auth_style] \
-        [anthropic::api_version_for $req]]
+    set style [::veles::json_get $req veles auth_style]
+    set ver [anthropic::api_version_for $req]
+    set fields {}
+    if {$style eq "bearer"} {
+        lappend fields [list "authorization" [anthropic::jstr "Bearer $key"]]
+    } else {
+        lappend fields [list "x-api-key" [anthropic::jstr $key]]
+    }
+    lappend fields [list "anthropic-version" [anthropic::jstr $ver]]
+    if {[::veles::json_get $req veles message_threads enabled] eq "true"} {
+        lappend fields [list "anthropic-beta" \
+            [anthropic::jstr "message-threads-2026-08-12"]]
+    }
+    return [anthropic::jobj $fields]
 }
 
 proc anthropic::api_version_for {req} {
@@ -604,6 +615,14 @@ proc anthropic::to_wire {req caps streaming} {
         if {$v ne ""} { lappend parts [list $f $v] }
     }
 
+    if {[::veles::json_get $req veles message_threads enabled] eq "true"} {
+        set thread [::veles::json_get $req thread type]
+        if {$thread eq "continue"} {
+            set parts [lsearch -all -inline -not -index 0 $parts "system"]
+            set parts [lsearch -all -inline -not -index 0 $parts "tools"]
+        }
+        lappend parts [list "thread" [::veles::json_get $req thread]]
+    }
     if {$streaming} {
         lappend parts [list "stream" "true"]
     }
@@ -842,11 +861,31 @@ proc anthropic::from_wire {resp} {
 
     set finish [anthropic::finish_reason [::veles::json_get $resp stop_reason]]
 
-    return [anthropic::jobj [list \
+    # Provider-native metadata is reserved for the engine. It is NOT a
+    # message content field and never reaches the model on the next turn.
+    set meta {}
+    set rid [::veles::json_get $resp id]
+    if {$rid ne ""} { lappend meta [list "id" [anthropic::jstr $rid]] }
+    set sr [::veles::json_get $resp stop_reason]
+    if {$sr ne ""} { lappend meta [list "stop_reason" [anthropic::jstr $sr]] }
+    # The stream path hands over what it read from the final message_delta
+    # as a top-level field; a plain response carries `usage.iterations`.
+    set fallback [anthropic::jget $resp fallback_message]
+    if {$fallback eq ""} {
+        set fallback [anthropic::fallback_model [anthropic::jget $resp usage]]
+    }
+    if {$fallback ne ""} {
+        lappend meta [list "fallback_message" [anthropic::jstr $fallback]]
+    }
+    set complete [::veles::json_get $resp response_complete]
+    if {$complete eq ""} { set complete "true" }
+    lappend meta [list "response_complete" $complete]
+
+    return [anthropic::jobj [concat [list \
         [list "choices" [anthropic::jarr [list [anthropic::jobj [list \
             [list "message" [anthropic::jobj $msg]] \
             [list "finish_reason" $finish]]]]]] \
-        [list "usage" [anthropic::jobj $usage]]]]
+        [list "usage" [anthropic::jobj $usage]]] $meta]]
 }
 
 # stop_reason → finish_reason. The engine reads finish_reason to decide
@@ -893,6 +932,10 @@ proc anthropic::drive_stream {body url headers} {
     array set tool_names {}
     array set usage {}
     set stop_reason ""
+    set response_id ""
+    set response_usage {}
+    set fallback_message ""
+    set response_complete "false"
 
     if {[catch {::veles::http_stream_open $url $body "application/json" $headers} opened]} {
         return [anthropic::err $opened [anthropic::status_of $opened]]
@@ -933,6 +976,8 @@ proc anthropic::drive_stream {body url headers} {
         set ev [anthropic::jget $data type]
         switch -- $ev {
             message_start {
+                set response_id [anthropic::jget $data message id]
+                set response_usage [anthropic::jget $data message usage]
                 # Input usage arrives FIRST on this wire, and the output
                 # count with it is a placeholder — message_delta corrects it.
                 foreach f {input_tokens output_tokens cache_creation_input_tokens cache_read_input_tokens} {
@@ -987,6 +1032,9 @@ proc anthropic::drive_stream {body url headers} {
             }
             message_delta {
                 set sr [anthropic::jget $data delta stop_reason]
+                set response_usage [anthropic::jget $data usage]
+                set f [anthropic::fallback_model $response_usage]
+                if {$f ne ""} { set fallback_message $f }
                 if {$sr ne ""} { set stop_reason $sr }
                 foreach f {output_tokens input_tokens cache_creation_input_tokens cache_read_input_tokens} {
                     set v [anthropic::jget $data usage $f]
@@ -995,9 +1043,13 @@ proc anthropic::drive_stream {body url headers} {
                 set think [anthropic::jget $data usage output_tokens_details thinking_tokens]
                 if {$think ne ""} { set usage(thinking_tokens) $think }
             }
-            message_stop { break }
+            message_stop {
+                set response_complete "true"
+                break
+            }
             error {
-                set m [anthropic::jget $data error message]
+                set m [anthropic::envelope_message $data]
+                if {$m eq ""} { set m [anthropic::jget $data error message] }
                 if {$m eq ""} { set m "stream error" }
                 catch {::veles::http_stream_close $stream_id}
                 return [anthropic::err $m [anthropic::status_of_type \
@@ -1058,9 +1110,12 @@ proc anthropic::drive_stream {body url headers} {
     }
 
     return [anthropic::from_wire [anthropic::jobj [list \
+        [list "id" [anthropic::jstr $response_id]] \
         [list "content" [anthropic::jarr $content]] \
         [list "stop_reason" [anthropic::jstr $stop_reason]] \
-        [list "usage" [anthropic::jobj $upairs]]]]]
+        [list "usage" [anthropic::jobj $upairs]] \
+        [list "fallback_message" [anthropic::jstr $fallback_message]] \
+        [list "response_complete" $response_complete]]]]
 }
 
 # One OpenAI-shaped streaming chunk carrying a single delta field. Split out
@@ -1218,18 +1273,60 @@ proc anthropic::error_message {raw} {
     # error escaped `drive`, and the engine reported a Network failure —
     # so a real 429 from the endpoint never reached the status mapping and
     # the route stopped failing over.
-    set type [anthropic::jget $raw error type]
-    if {$type ne ""} {
-        return "$type: [anthropic::jget $raw error message]"
-    }
-    # `http_post`'s raise shape: "http NNN: <body>". Try the body as JSON.
-    if {[regexp {http \d\d\d: (.*)$} $raw -> body]} {
-        set type [anthropic::jget $body error type]
-        if {$type ne ""} {
-            return "$type: [anthropic::jget $body error message]"
-        }
+    set msg [anthropic::envelope_message $raw]
+    if {$msg ne ""} { return $msg }
+    # `http_post`'s raise shape: "http NNN <reason>: <body>" (for example
+    # "http 400 Bad Request: {...}"). The reason phrase is optional, and
+    # without `[^:]*` a 4xx never matched, so the body was never read as
+    # JSON and the envelope's type, message and error code were lost. The
+    # .so twin takes the first ": " after "http " the same way.
+    if {[regexp {http \d\d\d[^:]*: (.*)$} $raw -> body]} {
+        set msg [anthropic::envelope_message $body]
+        if {$msg ne ""} { return $msg }
     }
     return $raw
+}
+
+# "type: message" out of an error envelope, plus its machine-readable
+# details when it has them: " [error_code: X; unsupported: a, b]". Message
+# Threads errors are identified ONLY by `error.details.error_code` (the type
+# is plain invalid_request_error or not_found_error), so a driver that
+# dropped it left the engine's replay classifier matching prose, and a
+# thread 400 failed the turn instead of replaying. "" when `json` is not an
+# envelope. The .so twin (`envelope_message`) formats it identically.
+proc anthropic::envelope_message {json} {
+    set type [anthropic::jget $json error type]
+    if {$type eq ""} { return "" }
+    set out "$type: [anthropic::jget $json error message]"
+    set extra {}
+    set code [anthropic::jget $json error details error_code]
+    if {$code ne ""} { lappend extra "error_code: $code" }
+    set names {}
+    for {set i 0} {1} {incr i} {
+        set u [anthropic::jget $json error details unsupported $i]
+        if {$u eq ""} { break }
+        lappend names $u
+    }
+    if {[llength $names]} { lappend extra "unsupported: [join $names {, }]" }
+    if {[llength $extra]} { append out " \[[join $extra {; }]\]" }
+    return $out
+}
+
+# The model that served a turn after a server-side fallback, or "". The
+# marker is an ENTRY in `usage.iterations` whose `type` is
+# `fallback_message` (refusals-and-fallback docs), not a field of that
+# name. The API does not store such a turn in a Message Thread, so the
+# engine must never continue from it.
+proc anthropic::fallback_model {usage} {
+    for {set i 0} {1} {incr i} {
+        set it [anthropic::jget $usage iterations $i]
+        if {$it eq ""} { return "" }
+        if {[anthropic::jget $it type] eq "fallback_message"} {
+            set m [anthropic::jget $it model]
+            if {$m eq ""} { set m "fallback" }
+            return $m
+        }
+    }
 }
 
 # ── JSON, by hand ───────────────────────────────────────────────────────

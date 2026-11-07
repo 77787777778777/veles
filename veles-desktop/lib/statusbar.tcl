@@ -734,6 +734,12 @@ proc ::vstatus::_context_segment {cx} {
     set measured ""
     catch { set measured [dict get $cx last_call_prompt_tokens] }
     set has_measured [expr {[string is double -strict $measured] && $measured > 0}]
+    # A compaction that ran after that call rewrote the prompt it counted
+    # (last_call_fresh false): until the next call, the estimate is the
+    # honest figure. A gateway that does not send the key is trusted.
+    set fresh 1
+    catch { set fresh [dict get $cx last_call_fresh] }
+    if {[string is boolean -strict $fresh] && !$fresh} { set has_measured 0 }
     set trig 85
     catch { set trig [dict get $cx compaction_trigger_percent] }
     if {![string is double -strict $trig]} { set trig 85 }

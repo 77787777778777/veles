@@ -397,6 +397,19 @@ proc ::vsidebar::_paint {resp} {
     if {![info exists labels]} { set labels {} }
     $::vsidebar::R.list delete 0 end
     set sessions [dict get $resp sessions]
+    set page_sessions $sessions
+    # Parent context is separate from the page: it must not change totals,
+    # offsets or running-state reconciliation. Older gateways omit it.
+    set ancestors {}
+    catch { set ancestors [dict get $resp parents] }
+    set ancestor_by_id [dict create]
+    foreach row $ancestors { dict set ancestor_by_id [dict get $row id] $row }
+    # The other direction (SI-6): children of page rows that rank past
+    # the page. Context too, never counted; the tree puts them under
+    # their parent wherever it lands.
+    set descendants {}
+    catch { set descendants [dict get $resp children] }
+    set sessions [concat $ancestors $descendants $sessions]
     # A gateway that pages reports `total` and has already applied the
     # filter (to titles, ids AND first lines); the local filter below is
     # for an older one that sent its newest 100 whatever was asked.
@@ -412,7 +425,34 @@ proc ::vsidebar::_paint {resp} {
     # ago".) Reconciling AFTER the rebuild would leave every mark one
     # refresh behind, which is why this sits here and sidebartest pins
     # the order.
-    catch { ::vchat::sync_running $sessions }
+    catch { ::vchat::sync_running $page_sessions }
+
+    set activity [dict create]
+    set row_by_id [dict create]
+    foreach s $sessions {
+        set id [dict get $s id]
+        dict set row_by_id $id $s
+        set stamp [::vapi::field $s updated_at]
+        if {[catch {clock scan $stamp -format "%Y-%m-%d %H:%M:%S" -gmt 1} when]} {
+            set when $now
+        }
+        dict set activity $id $when
+    }
+    # Ancestor context follows the newest visible descendant, not its own
+    # old timestamp. A recent child therefore keeps its parent visible even
+    # when the parent is outside the page or would otherwise be archived.
+    foreach s $sessions {
+        set current [dict get $s id]
+        set stamp [dict get $activity $current]
+        set seen [dict create]
+        while {![dict exists $seen $current]} {
+            dict set seen $current 1
+            set parent [::vapi::field [dict get $row_by_id $current] parent]
+            if {$parent eq "" || ![dict exists $ancestor_by_id $parent]} { break }
+            set current $parent
+            if {$stamp > [dict get $activity $current]} { dict set activity $current $stamp }
+        }
+    }
 
     set fl [expr {$total eq "" ? [string tolower $filter] : ""}]
     # Time buckets: TODAY / THIS WEEK / ARCHIVE (collapsed). A
@@ -466,13 +506,7 @@ proc ::vsidebar::_paint {resp} {
         # month ago — "recent" is a wall-clock notion about when you were
         # last in it, not when it was born (USER: "tier by last
         # activity, not by when it started").
-        set active $now
-        # The store's stamps are UTC; scanned as local time, every day
-        # bucket was off by the zone's offset.
-        catch {
-            set active [clock scan [dict get $s updated_at] \
-                -format "%Y-%m-%d %H:%M:%S" -gmt 1]
-        }
+        set active [dict get $activity $id]
         if {$fl ne "" && ![string match *[string map {* \\*} $fl]* [string tolower $label]] \
             && ![string match *[string map {* \\*} $fl]* [string tolower $id]]} {
             continue
@@ -645,11 +679,11 @@ proc ::vsidebar::_paint {resp} {
     catch { ::vchat::retitle_window }
     # The real count: "100 session(s)" was the page size, whatever the
     # store held.
-    if {$total ne "" && $total > [llength $sessions]} {
+    if {$total ne "" && $total > [llength $page_sessions]} {
         ::vstatus::set_msg [format [::vi18n::mc {%1$s of %2$s sessions}] \
-            [llength $sessions] $total]
+            [llength $page_sessions] $total]
     } else {
-        ::vstatus::set_msg [format [::vi18n::mc {%s session(s)}] [llength $sessions]]
+        ::vstatus::set_msg [format [::vi18n::mc {%s session(s)}] [llength $page_sessions]]
     }
 }
 

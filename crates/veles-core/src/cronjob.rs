@@ -680,6 +680,37 @@ mod tests {
         );
     }
 
+    /// `update` with a new schedule reports and stores the NEW schedule's
+    /// first fire; the old slot used to survive and fire once more.
+    #[tokio::test]
+    async fn update_with_a_new_schedule_moves_the_next_fire() {
+        let (_d, t) = tool(None);
+        let created = create_ok(&t, json!({ "schedule": "every 7d" })).await;
+        let v: Value = serde_json::from_str(&created).unwrap();
+        let id = v["created"]["job_id"].as_str().unwrap().to_string();
+        let weekly = v["created"]["next_run_at"].as_str().unwrap().to_string();
+
+        let before = chrono::Utc::now();
+        let out = t
+            .call(json!({ "action": "update", "job_id": id, "schedule": "1h" }))
+            .await;
+        let v: Value = serde_json::from_str(&out).unwrap_or_else(|_| panic!("json: {out}"));
+        let shown = v["updated"]["next_run_at"]
+            .as_str()
+            .unwrap_or("")
+            .to_string();
+        assert_ne!(shown, weekly, "the weekly slot is gone: {out}");
+        let next = chrono::DateTime::parse_from_rfc3339(&shown).unwrap();
+        let gap = next.with_timezone(&chrono::Utc) - before;
+        assert!(
+            // The edit instant is stored to the second, so allow that.
+            gap <= chrono::Duration::seconds(3602) && gap > chrono::Duration::minutes(59),
+            "an hour from the edit: {out}"
+        );
+        let row = t.store.lock().unwrap().cron_get(&id).unwrap().unwrap();
+        assert_eq!(row.next_run_at.as_deref(), Some(shown.as_str()));
+    }
+
     /// Update can SET, MOVE and CLEAR the wakeup target — a job is not
     /// welded to the session it was created for, and null must go back
     /// to fresh-session runs rather than refusing.

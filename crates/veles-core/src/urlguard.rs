@@ -104,6 +104,13 @@ fn classify(ip: IpAddr) -> Option<&'static str> {
                     octets[12], octets[13], octets[14], octets[15],
                 )));
             }
+            // 64:ff9b:1::/48 is the LOCAL-use translation prefix (RFC
+            // 8215): not globally reachable, and the operator picks where
+            // IPv4 sits inside it (any RFC 6052 offset), so it cannot be
+            // decoded reliably. Refuse it whole.
+            if seg[0] == 0x0064 && seg[1] == 0xff9b && seg[2] == 0x0001 {
+                return Some("a local-use IPv4/IPv6 translation prefix");
+            }
             if seg[0] == 0x2002 {
                 let octets = v6.octets();
                 return classify(IpAddr::V4(std::net::Ipv4Addr::new(
@@ -118,6 +125,18 @@ fn classify(ip: IpAddr) -> Option<&'static str> {
                 Some("a unique-local address")
             } else if seg[0] & 0xffc0 == 0xfe80 {
                 Some("link-local")
+            } else if seg[0] & 0xffc0 == 0xfec0 {
+                // fec0::/10, deprecated (RFC 3879) but still routed on
+                // some internal networks.
+                Some("a site-local address")
+            } else if seg[..6].iter().all(|s| *s == 0) {
+                // ::/96 (after :: and ::1 above): the deprecated
+                // IPv4-compatible form, IPv4 in the last four bytes.
+                Some("a deprecated IPv4-compatible address")
+            } else if seg[0] == 0x2001 && seg[1] == 0x0db8 {
+                Some("documentation address space")
+            } else if seg[0] == 0x0100 && seg[1..4].iter().all(|s| *s == 0) {
+                Some("the discard-only prefix")
             } else {
                 None
             }
@@ -307,6 +326,11 @@ mod tests {
             "http://[64:ff9b::a9fe:a9fe]/",
             "http://[2002:0a00:0001::1]/",
             "http://[2002:a9fe:a9fe::1]/",
+            "http://[64:ff9b:1::a00:1]/",
+            "http://[fec0::1]/",
+            "http://[::a00:1]/",
+            "http://[2001:db8::1]/",
+            "http://[100::1]/",
             "http://198.18.0.1/",
             "http://198.19.255.254/",
             "http://240.0.0.1/",
@@ -350,10 +374,13 @@ mod tests {
             ("64:ff9b::a00:1", Some("private")),
             ("64:ff9b::a9fe:a9fe", Some("link-local")),
             ("64:ff9b::5db8:d822", None),
-            // The first two segments are not enough: the well-known
-            // prefix is exactly /96. This ordinary public IPv6 address
-            // has private-looking trailing bytes but is not NAT64.
-            ("64:ff9b:1::a00:1", None),
+            // 64:ff9b:1::/48 is NOT public (RFC 8215 local-use
+            // translation): a network's own NAT64 may embed IPv4 at any
+            // RFC 6052 offset inside it, so it cannot be decoded, only
+            // refused, wherever the private-looking bytes sit.
+            ("64:ff9b:1::a00:1", Some("local-use")),
+            ("64:ff9b:1:a00:1::", Some("local-use")),
+            ("64:ff9b:1:5db8:d822::", Some("local-use")),
             // A public 6to4 relay whose bytes 4..7 happen to be private:
             // reading the NAT64 offset here rejects a valid public address.
             ("2002:5db8:d822:0a00:1::1", None),
@@ -367,6 +394,37 @@ mod tests {
                 assert!(verdict.unwrap().contains(text), "{addr}: {verdict:?}");
             }
         }
+    }
+
+    /// The rest of the IPv6 space that is not globally reachable, each
+    /// named for what it is; a public address beside them still passes.
+    #[test]
+    fn non_global_ipv6_ranges_are_named() {
+        // Every wrong verdict at once, not just the first.
+        let mut wrong = Vec::new();
+        for (addr, expected) in [
+            ("fec0::1", Some("site-local")),
+            ("feff:ffff::1", Some("site-local")),
+            ("::a00:1", Some("IPv4-compatible")),
+            ("::7f00:1", Some("IPv4-compatible")),
+            ("2001:db8::1", Some("documentation")),
+            ("2001:db8:ffff::1", Some("documentation")),
+            ("100::1", Some("discard")),
+            ("2001:db9::1", None),
+            ("2606:4700::1111", None),
+        ] {
+            let ip = addr.parse::<std::net::Ipv6Addr>().unwrap();
+            let verdict = classify(IpAddr::V6(ip));
+            let right = match (expected, verdict) {
+                (Some(text), Some(said)) => said.contains(text),
+                (None, None) => true,
+                _ => false,
+            };
+            if !right {
+                wrong.push(format!("{addr}: {verdict:?}"));
+            }
+        }
+        assert!(wrong.is_empty(), "{wrong:#?}");
     }
 
     #[tokio::test]

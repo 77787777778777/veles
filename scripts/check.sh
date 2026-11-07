@@ -47,6 +47,7 @@ run() {
 run "cargo fmt"   cargo fmt --all --check
 run "cargo clippy" cargo clippy --workspace --all-targets --all-features -- -D warnings
 run "cargo test"  cargo test --workspace --all-features
+run "browser extension" bash -c 'node --check browser-extension/background.js && node --check browser-extension/popup.js && node browser-extension/popup-test.cjs && node browser-extension/background-test.cjs'
 run "tcl desktop" bash scripts/tcl_tests.sh
 
 echo

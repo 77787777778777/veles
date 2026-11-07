@@ -33,7 +33,7 @@ namespace eval ::vapi {
 
 \[model]
 provider = \"ali-token-plan-personal\"
-default = \"deepseek-v4-flash-0731\"
+default = \"deepseek-v4.1-flash-1017\"
 
 \[\[custom_providers]]
 name = \"ali-token-plan-personal\"
@@ -116,7 +116,7 @@ proc fill_answers {} {
     set ::vsetup::v(base_url) "https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1"
     set ::vsetup::v(key_env) "ALI_TOKEN_PLAN_PERSONAL_API_KEY"
     set ::vsetup::v(api_mode) "chat_completions"
-    set ::vsetup::v(model) "deepseek-v4-flash-0731"
+    set ::vsetup::v(model) "deepseek-v4.1-flash-1017"
     set ::vsetup::v(default_provider) "ali-token-plan-personal"
     set ::vsetup::v(telegram) 1
     set ::vsetup::v(irc_server) "irc.libera.chat"

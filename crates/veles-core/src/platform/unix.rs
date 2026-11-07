@@ -86,6 +86,32 @@ pub fn pid_alive(pid: u32) -> bool {
     r == 0 || std::io::Error::last_os_error().raw_os_error() == Some(libc::EPERM)
 }
 
+/// An identity for this PID's actual process lifetime. A recycled PID
+/// has a different start tick, so it cannot silently own an old turn.
+///
+/// An exited process has no identity, even while its parent has not
+/// reaped it: a zombie (`Z`) or dying (`X`) entry still has a stat line
+/// with the old start tick, and a gateway its launcher never waited on
+/// would otherwise look like a live owner of its turns forever.
+#[cfg(any(target_os = "linux", target_os = "android"))]
+pub fn process_start_id(pid: u32) -> Option<String> {
+    let raw = std::fs::read_to_string(format!("/proc/{pid}/stat")).ok()?;
+    let end = raw.rfind(") ")?;
+    let mut fields = raw.get(end + 2..)?.split_whitespace();
+    let state = fields.next()?;
+    if matches!(state, "Z" | "X" | "x") {
+        return None;
+    }
+    fields.nth(18).map(str::to_string)
+}
+
+#[cfg(not(any(target_os = "linux", target_os = "android")))]
+pub fn process_start_id(_pid: u32) -> Option<String> {
+    // Without a lifetime identity we cannot distinguish a recycled PID.
+    // Recovery must stay manual on such a platform, not guess.
+    None
+}
+
 /// The process's arguments include `gateway`, as `veles gateway run`'s
 /// do under every launcher. A process /proc does not show us (another
 /// user's, under hidepid, as on Android) is not a gateway we could own.

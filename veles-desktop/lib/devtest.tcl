@@ -91,6 +91,7 @@ namespace eval ::vapi {
     # same empty string for everything would pass a broken switcher.
     proc get_json {url} {
         variable last_url $url
+        if {$url eq "/api/plugins/api"} { return [dict create version 0.11] }
         if {$url eq "/api/plugins/slopdrop/status"} {
             return [dict create root $::vapi::mirror_root]
         }
@@ -116,8 +117,23 @@ namespace eval ::vapi {
         }
         return "{}"
     }
-    proc post_json {path body} { return [dict create] }
+    proc post_json {path body} {
+        if {$path eq "/api/plugins/preview"} {
+            set name [dict get $body name]
+            set kind [dict get $body kind]
+            set entry [expr {$kind eq "js" ? "plugin.ts" : "plugin.tcl"}]
+            return [dict create name $name kind $kind files [list \
+                [dict create name plugin.toml text "api = \"0.11\"\ndescription = \"[dict get $body description]\""] \
+                [dict create name $entry text "::veles::hook post_llm_call ::example::handle"]]]
+        }
+        return [dict create]
+    }
     proc json_escape {s} { return $s }
+    # The real one percent-encodes everything; this one only the two
+    # characters a Windows path brings (so the path-keyed stub above still
+    # reads the unix paths it was given), which is enough to tell it from
+    # json_escape. lsptest.tcl pins the real encoding.
+    proc urlencode {s} { return [string map [list \\ %5C " " %20] $s] }
 }
 namespace eval ::va11y { proc name {w t} {} }
 namespace eval ::json {
@@ -150,6 +166,8 @@ namespace eval ::vpanes { variable R .devroot }
 source [file join $_dir i18n.tcl]
 ::vi18n::init
 source [file join $_dir dev.tcl]
+source [file join $_dir vtext.tcl]
+source [file join $_dir extensionguide.tcl]
 
 wm geometry . 800x600+0+0
 catch { wm attributes . -topmost 0 }
@@ -175,6 +193,20 @@ update idletasks
 
 set ::emacs_installed 0
 ::vdev::attach .other.body -path /tmp/hook.tcl -status .other.msg -save {set ::saved 1}
+::vdev::attach .other.body -path /tmp/hook.tcl -status .other.msg -save {set ::saved 1}
+set focus_attach_script [bind .other.body <FocusIn>]
+set destroy_attach_script [bind .other.body <Destroy>]
+ok "re-attaching an editor leaves one focus handler" \
+    {[regexp -all -- {::vdev::_editor_focus} $focus_attach_script] == 1}
+ok "re-attaching an editor leaves one destroy handler" \
+    {[regexp -all -- {::vdev::_editor_gone} $destroy_attach_script] == 1}
+destroy .other.body
+text .other.body
+pack .other.body
+::vdev::attach .other.body -path /tmp/hook.tcl -status .other.msg -save {set ::saved 1}
+set rebuilt_focus_script [bind .other.body <FocusIn>]
+ok "an editor rebuilt at the same path gets its focus handler" \
+    {[regexp -all -- {::vdev::_editor_focus} $rebuilt_focus_script] == 1}
 update
 
 foreach {seq what} {
@@ -448,6 +480,107 @@ pack .devroot.dev -fill both -expand 1
 wm geometry . 900x600+0+0
 update
 
+puts "\nextensions are the first-line Dev workflow"
+namespace eval ::vmanage {
+    proc window {w title geometry minsize} {
+        toplevel $w
+        ttk::frame $w.bar
+        pack $w.bar -fill x
+    }
+    proc button {bar name label cmd {help ""}} {
+        ttk::button $bar.$name -text $label -command $cmd
+        pack $bar.$name -side left
+        return $bar.$name
+    }
+    proc error_text {error} { return $error }
+    proc say {w msg {kind info}} {}
+}
+ok "New extension is directly available in the Dev toolbar" {
+    [winfo exists .devroot.dev.edit.bar.newext]
+}
+.devroot.dev.edit.bar.newext invoke
+ok "the button opens the extension form, not a name-only prompt" {
+    [winfo exists .vdev_new_extension.form.name] &&
+    [winfo exists .vdev_new_extension.form.kind] &&
+    [.vdev_new_extension.form.api cget -text] eq "0.11"
+}
+set ::vdev_new_name demo-tool
+set ::vdev_new_purpose {A tool example}
+set ::vdev_new_kind js
+::vdev::_extension_preview
+ok "the form previews exact files before creating anything" {
+    [string match {*api = "0.11"*} [.vdev_new_extension.preview get 1.0 end-1c]] &&
+    [string match {*plugin.ts*} [.vdev_new_extension.preview get 1.0 end-1c]] &&
+    [string match {*A tool example*} [.vdev_new_extension.preview get 1.0 end-1c]]
+}
+namespace eval ::vmanage {
+    proc confirm {w title detail} { set ::confirm_seen $title; return 0 }
+    proc post {w path body} { lappend ::create_posts [list $path $body]; return [dict create] }
+}
+set ::create_posts {}
+::vdev::_extension_create
+ok "declining creation writes nothing and starts no publish action" {
+    $::confirm_seen eq {Create this extension?} && [llength $::create_posts] == 0
+}
+set ::vdev_new_purpose {Changed purpose}
+::vdev::_extension_create
+ok "editing after the preview requires a new preview" {
+    [llength $::create_posts] == 0
+}
+destroy .vdev_new_extension
+.devroot.dev.edit.bar.extguide invoke
+set guide [.vdev_extension_guide.body get 1.0 end]
+ok "the guide includes the real service override contract" {
+    [string match "*::veles::service_next*" $guide] &&
+    [string match "*::veles::service_request*" $guide] &&
+    [string match "*::veles::register_service*" $guide]
+}
+ok "the guide explains extension-first and honest LSP availability" {
+    [string match "*survives upgrades*" $guide] &&
+    [string match "*remote instances*" $guide] &&
+    [string match "*every language the gateway has a server for*" $guide] &&
+    [string match "*which program to install there*" $guide]
+}
+ok "the guide names every extension language's server and checker" {
+    [string match "*rust-analyzer*" $guide] && [string match "*clangd*" $guide] &&
+    [string match "*typescript-language-server*" $guide] && [string match "*cargo check*" $guide]
+}
+ok "the guide describes the four AI assistance levels" {
+    [string match "*four levels*" $guide] && [string match "*whole extension*" $guide]
+}
+ok "the guide has working documentation buttons" {
+    [winfo exists .vdev_extension_guide.bar.author] &&
+    [winfo exists .vdev_extension_guide.bar.api]
+}
+# dev-ext-7: every example must load as written. Each one is sourced into
+# a fresh interpreter with the ::veles::* registration commands stubbed;
+# a `proc ::my_plugin::x` before its namespace exists fails with
+# "unknown namespace", exactly as it would in the gateway.
+set ::snippet_errors {}
+set ::snippet_ranges [.vdev_extension_guide.body tag ranges snippet]
+foreach {from to} $::snippet_ranges {
+    set code [.vdev_extension_guide.body get $from $to]
+    set child [interp create]
+    $child eval {
+        namespace eval ::veles {
+            foreach cmd {hook register_tool register_service register_provider json_get service_next} {
+                proc $cmd args {}
+            }
+        }
+    }
+    if {[catch { $child eval $code } err]} {
+        lappend ::snippet_errors $err
+    } elseif {![llength [$child eval {info procs ::my_plugin::*}]]} {
+        lappend ::snippet_errors "no ::my_plugin proc defined"
+    }
+    interp delete $child
+}
+ok "all four guide examples load as written (namespace before proc)" {
+    [llength $::snippet_ranges] == 8 && [llength $::snippet_errors] == 0
+}
+destroy .vdev_extension_guide
+update
+
 proc tabnames {} {
     set out {}
     foreach id [::vdev::buf_list] { lappend out [::vdev::buf_widget $id] }
@@ -560,6 +693,122 @@ ok "…but re-showing the tab already open on the LSP does nothing" {$::vlsp::st
 set ::vlsp::started {}
 ::vdev::buf_show $second
 ok "…and switching back re-points again"  {[lindex $::vlsp::started end] eq "/tmp/two.tcl"}
+
+puts "\nevery extension language goes to the gateway's server for it"
+# dev-ext-8 / owner ask 287976.2: a TypeScript, Racket, Lisp, Rust or C
+# buffer was first diagnosed as Tcl, then gated off with "no language
+# server". It is now opened like a Tcl buffer; the GATEWAY picks the
+# server by file type and says when it has none.
+set ::lsp_up_before $::vlsp::up
+set ::vlsp::up 1
+set ::vlsp::stops {}
+proc ::vlsp::_stop {why {tell_gateway 1}} {
+    set ::vlsp::up 0
+    lappend ::vlsp::stops $tell_gateway
+}
+set ::ts_w [::vdev::editor_widget]
+set ::ts_path_before ""
+catch { set ::ts_path_before $::vdev::editor_file($::ts_w) }
+foreach {file lang} {/tmp/plugin.ts typescript /tmp/plugin.js javascript
+                     /tmp/src/lib.rs rust /tmp/plugin.c c /tmp/plugin.rkt racket
+                     /tmp/plugin.lisp commonlisp /tmp/plugin.tcl tcl} {
+    ok "a $lang buffer has a language ([file extension $file])" \
+        {[::vdev::_lsp_language $file] eq $lang}
+}
+ok "…and a README has none" {[::vdev::_lsp_language /tmp/README.md] eq ""}
+set ::vdev::editor_file($::ts_w) /tmp/plugin.ts
+set ::vlsp::started {}
+::vdev::_lsp_open
+ok "a TypeScript buffer is opened on the gateway's server" \
+    {$::vlsp::started eq {/tmp/plugin.ts}}
+ok "…and the status says it loaded on a server" \
+    {[string match "*loaded (*)*" [$::vpanes::R.dev.edit.status cget -text]]}
+# The gateway has no server for it: the regex highlighter, and the
+# gateway's own reason, which names the program and the machine.
+set ::vlsp::up 0
+proc ::vlsp::last_error {} {
+    return "no TypeScript language server is installed on the gateway (tried typescript-language-server); install it"
+}
+set ::calls_before $::vsyn::calls
+::vdev::_lsp_open
+ok "…without a server on the gateway the fallback highlighter runs" \
+    {$::vsyn::calls > $::calls_before}
+ok "…and the status carries the gateway's reason" \
+    {[string match "*no language server*on the gateway*typescript-language-server*" [$::vpanes::R.dev.edit.status cget -text]]}
+rename ::vlsp::last_error ""
+# A file no server is known for is never sent to one.
+set ::vlsp::up 1
+set ::vdev::editor_file($::ts_w) /tmp/notes.md
+set ::vlsp::started {}
+::vdev::_lsp_open
+ok "a file no server is known for is not opened on any server" {$::vlsp::started eq {}}
+ok "…the client steps off the previous document, leaving the gateway's server up" \
+    {!$::vlsp::up && [lindex $::vlsp::stops end] eq {0}}
+ok "…and says there is no language server for it" \
+    {[string match "*no language server for .md files*" [$::vpanes::R.dev.edit.status cget -text]]}
+
+puts "\nCheck runs the file type's checker on the gateway"
+# It used to exec tclsh and the tcl-lsp driver on THIS machine against a
+# gateway path, with a scratch copy in /tmp, and had nothing for any
+# other language (W6 / dev-ext-13).
+namespace eval ::vapi {
+    variable async_posts {}
+    variable check_reply {}
+    proc json_object {pairs} { return $pairs }
+    proc json_string {v} { return $v }
+    proc post_json_async {path body on_err on_ok {ms 0}} {
+        lappend ::vapi::async_posts [list $path $body $ms]
+        uplevel #0 [list {*}$on_ok $::vapi::check_reply]
+    }
+}
+set ::vdev::editor_file($::ts_w) /tmp/plugin.ts
+set ::vapi::check_reply [dict create status failed method {tsc --noEmit} diagnostics [list \
+    [dict create path /tmp/plugin.ts line 2 col 6 severity ERROR message {TS2304: Cannot find name 'velez'.}] \
+    [dict create path /tmp/other.ts line 1 col 0 severity WARNING message {elsewhere}]]]
+::vdev::editor_check
+set ::last_check [lindex $::vapi::async_posts end]
+ok "Check asks the gateway, for the saved file, with a compiler's patience" \
+    {[lindex $::last_check 0] eq "/api/lsp/check" && [dict get [lindex $::last_check 1] path] eq "/tmp/plugin.ts" && [lindex $::last_check 2] >= 300000}
+ok "…paints only this file's findings" \
+    {$::vdev::editor_diagnostics($::ts_w) eq [list [list 2 6 ERROR {TS2304: Cannot find name 'velez'.}]]}
+ok "…and the status names the checker and counts every finding" \
+    {[string match "*tsc --noEmit*2 problem(s), 1 in this file*" [$::vpanes::R.dev.edit.status cget -text]]}
+set ::vapi::check_reply [dict create status unavailable diagnostics {} \
+    note {no TypeScript checker is installed on the gateway (looked for tsc); install typescript}]
+::vdev::editor_check
+ok "an unavailable checker is never reported clean" \
+    {[string match "*check unavailable*looked for tsc*" [$::vpanes::R.dev.edit.status cget -text]]}
+set ::vapi::check_reply [dict create status passed method {cargo check} diagnostics {}]
+set ::vdev::editor_file($::ts_w) /tmp/src/lib.rs
+::vdev::editor_check
+ok "a clean Rust crate says which checker passed it" \
+    {[string match "*check clean (cargo check)*" [$::vpanes::R.dev.edit.status cget -text]]}
+set ::posts_before [llength $::vapi::async_posts]
+set ::vdev::editor_file($::ts_w) ""
+set ::cf_before $::vdev::current_file
+set ::vdev::current_file ""
+::vdev::editor_check
+set ::vdev::current_file $::cf_before
+ok "a buffer with no file is not copied to /tmp and checked" \
+    {[llength $::vapi::async_posts] == $::posts_before &&
+     [string match "*save the buffer first*" [$::vpanes::R.dev.edit.status cget -text]]}
+set ::vdev::editor_file($::ts_w) $::ts_path_before
+# The file request names a gateway path in a URL query: a Windows path's
+# backslashes were JSON-escaped into `C:\\Users\\…`, a file that does not
+# exist on the gateway (dev-ext-13).
+set ::cf_before $::vdev::current_file
+set ::vdev::current_file {C:\Users\Ann\plugins\demo\plugin.tcl}
+catch { ::vdev::editor_open }
+ok "a Windows path is URL-encoded into the file request" \
+    {[string match {*/api/fs/file?path=C:%5CUsers%5CAnn%5Cplugins%5Cdemo%5Cplugin.tcl} $::vapi::last_url]}
+set ::win_tab [::vdev::buf_for_path {C:\Users\Ann\plugins\demo\plugin.tcl}]
+if {$::win_tab ne ""} { ::vdev::buf_close $::win_tab }
+set ::vdev::current_file $::cf_before
+::vdev::buf_show $first
+ok "…the next Tcl buffer starts tcl-lsp again" \
+    {[lindex $::vlsp::started end] eq "/tmp/one.tcl"}
+set ::vlsp::up $::lsp_up_before
+
 
 puts "\ndirty state is per tab, and visible in the strip"
 bufins [::vdev::buf_widget $second] "\nmore"

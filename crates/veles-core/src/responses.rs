@@ -200,6 +200,11 @@ impl ResponsesClient {
             cached_tokens,
             cache_write_tokens,
             reasoning_tokens: responses_reasoning_tokens(&v["usage"]),
+            response_complete: true,
+            response_id: None,
+            stop_reason: None,
+            native_stop_reason: None,
+            fallback_message: None,
         })
     }
 
@@ -470,6 +475,11 @@ impl ResponsesClient {
             cached_tokens,
             cache_write_tokens,
             reasoning_tokens,
+            response_complete: true,
+            response_id: None,
+            stop_reason: None,
+            native_stop_reason: None,
+            fallback_message: None,
         })
     }
 }
@@ -859,6 +869,7 @@ mod tests {
             replay_reasoning: false,
             cache_mode: CacheMode::Auto,
             extra_body: None,
+            thread: None,
         }
     }
 

@@ -5,4 +5,4 @@ surface. On FreeBSD the jail(8) sandbox backend fences untrusted code;
 it needs root, so an unprivileged veles uses the native safe-interp
 fence instead.
 
-WWW: https://github.com/veles-agent/veles-agent
+WWW: https://github.com/77787777778777/veles

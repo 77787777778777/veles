@@ -96,6 +96,7 @@ proc ::vapi::post {path body {ms 0}} {
 # A subset of /api/setup/state `presets` (veles_core::setup::PROVIDER_PRESETS):
 # one with a suggested model, one without, and the custom-server row.
 set ::PRESETS_JSON {[{"choice": "openrouter", "label": "OpenRouter", "entry_name": "openrouter", "base_url": "https://openrouter.ai/api/v1", "key_env": "OPENROUTER_API_KEY", "api_mode": "chat_completions", "model": "openrouter/auto", "key_url": "https://openrouter.ai/keys"}, {"choice": "openai", "label": "OpenAI", "entry_name": "openai", "base_url": "https://api.openai.com/v1", "key_env": "OPENAI_API_KEY", "api_mode": "chat_completions", "model": "", "key_url": "https://platform.openai.com/api-keys"}, {"choice": "openai_compatible", "label": "Other OpenAI-compatible server", "entry_name": "local", "base_url": "http://localhost:8000/v1", "key_env": "", "api_mode": "chat_completions", "model": "", "key_url": ""}]}
+set ::REFERRALS_JSON {[{"provider": "Alibaba", "url": "https://www.alibabacloud.com/campaign/ai-landing-page-token?referral_code=A92XWC"}, {"provider": "Anthropic", "url": "https://claude.ai/referral/wmE6hdL3CQ"}, {"provider": "Kimi", "url": "https://www.kimi.ai/activities/en/invite/share?scenario=subscribe&from=share_poster&invitation_code=W5RK7K"}]}
 # POST /api/setup/models, answered on the next idle like a real reply.
 namespace eval ::vapi { variable models_reply {ok true models {gpt-a gpt-b}} }
 proc ::vapi::post_json_async {path body on_err on_ok} {
@@ -129,7 +130,11 @@ namespace eval ::vstate {
 namespace eval ::va11y {
     variable orders {}
     variable names {}
-    proc name {w label} { variable names; dict set names $w $label }
+    proc name {w label args} {
+        variable names
+        if {[llength $args]} { set label [format $label {*}$args] }
+        dict set names $w $label
+    }
     proc tab_order {widgets} { variable orders; lappend orders $widgets }
 }
 namespace eval ::vplace {
@@ -152,6 +157,14 @@ proc tk_messageBox {args} {
 # The step scrolls in a ::vmanage::scrollframe.
 source [file join $_dir manage.tcl]
 source [file join $_dir install.tcl]
+namespace eval ::vmd {
+    variable opened {}
+    proc open_url {url} {
+        variable opened
+        lappend opened $url
+        return 1
+    }
+}
 source [file join $_dir setup.tcl]
 
 set passed 0
@@ -196,7 +209,7 @@ proc reset {{locale en}} {
     foreach k [array names ::vsetup::v] { unset ::vsetup::v($k) }
     array set ::vsetup::v {
         provider openrouter     base_url {}       key_env {}
-        api_mode {}             provider_name {}  model {}
+        api_mode {}             driver {}         provider_name {}  model {}
         default_provider {}     model_touched 0   name_touched 0
         keyenv_touched 0        base_touched 0    dp_touched 0
         telegram 0              irc_server {}     irc_port 6697
@@ -207,11 +220,12 @@ proc reset {{locale en}} {
     array set ::vsetup::secret { key {} bot {} sasl {} }
     set ::vapi::posts {}
     set ::vapi::bodies {}
+    set ::vmd::opened {}
     set ::vapi::fail_state 0
     set ::vapi::fail_preview 0
     set ::vapi::preview_code 200
     set ::vapi::apply_code 200
-    set ::vapi::state_json [string map [list @P@ $::PRESETS_JSON] {{"first_run": true, "config_exists": false, "config_path": "/cfg/config.toml", "env_path": "/cfg/.env", "env_exists": false, "current": null, "current_error": null, "presets": @P@}}]
+    set ::vapi::state_json [string map [list @P@ $::PRESETS_JSON @R@ $::REFERRALS_JSON] {{"first_run": true, "config_exists": false, "config_path": "/cfg/config.toml", "env_path": "/cfg/.env", "env_exists": false, "current": null, "current_error": null, "presets": @P@, "referrals": @R@}}]
     set ::vapi::preview_json {{"ok": true, "mode": "fresh", "base_sig": "", "diff": "", "config_toml": "# preview config\n[model]\n", "env_text": "", "secrets": ["SOME_KEY"], "notes": ["a note"]}}
     set ::vapi::apply_json {{"ok": true, "mode": "fresh", "config_path": "/cfg/config.toml", "config_backup": null, "env_path": "/cfg/.env", "env_written": true, "secrets_needed": ["SOME_KEY"], "notes": ["a note"], "reloaded": true}}
     set ::vstate::blob {}
@@ -322,6 +336,44 @@ ok "defaults were suggested for the first preset (OpenRouter)" \
      && $::vsetup::v(model) eq "openrouter/auto"}
 ok "…and the step says where to get its key" \
     {[string match "*openrouter.ai/keys*" [wtext .setup_wizard.body.c.inner.f.hk]]}
+ok "referral links are optional and do not change the provider choice" {
+    [wtext .setup_wizard.body.c.inner.f.referrals.h] eq "Need an account? Optional sign-up links (open in your browser):"
+    && $::vsetup::v(provider) eq "openrouter"
+}
+ok "Anthropic credits are distinguished from an unsupported subscription login" {
+    [wtext .setup_wizard.body.c.inner.f.referrals.note] eq "API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication."
+}
+foreach {button provider expected} {
+    ali Alibaba https://www.alibabacloud.com/campaign/ai-landing-page-token?referral_code=A92XWC
+    anthropic Anthropic https://claude.ai/referral/wmE6hdL3CQ
+    kimi Kimi https://www.kimi.ai/activities/en/invite/share?scenario=subscribe&from=share_poster&invitation_code=W5RK7K
+} {
+    set b .setup_wizard.body.c.inner.f.referrals.row.$button
+    ok "$provider is labelled as a referral" {[wtext $b] eq "$provider (referral)"}
+    focus -force $b
+    update
+    event generate $b <Key-space>
+    update
+    ok "$provider keyboard activation preserves the exact URL" {$::vmd::opened eq [list $expected]}
+    set ::vmd::opened {}
+}
+ok "the custom-provider path keeps its own fields and key guidance" {
+    [winfo exists .setup_wizard.body.c.inner.f.e22]
+    && [winfo exists .setup_wizard.body.c.inner.f.e26]
+    && [string match "*openrouter.ai/keys*" [wtext .setup_wizard.body.c.inner.f.hk]]
+}
+set provider_order [lsearch -inline -glob $::va11y::orders *.setup_wizard.body.c.inner.f.referrals.row.ali*]
+ok "the referral buttons are in keyboard tab order" {
+    [lsearch -exact $provider_order .setup_wizard.body.c.inner.f.referrals.row.ali] >= 0
+    && [lsearch -exact $provider_order .setup_wizard.body.c.inner.f.referrals.row.anthropic] >= 0
+    && [lsearch -exact $provider_order .setup_wizard.body.c.inner.f.referrals.row.kimi] >= 0
+}
+ok "opening referrals sends no setup request or provider selection" {
+    $::vsetup::v(provider) eq "openrouter"
+    && [llength $::vapi::posts] == 0
+    && ![string match "*referral_code=*" [join $::vapi::bodies]]
+    && ![string match "*invitation_code=*" [join $::vapi::bodies]]
+}
 ::vsetup::next
 ok "model step" {[wm title .setup_wizard] eq "Setup — default model" \
     && [winfo exists .setup_wizard.body.c.inner.f.e0]}
@@ -361,9 +413,33 @@ ok "Next became Write it on the summary" {[wtext .setup_wizard.nav.next] eq "Wri
 ok "Back returns to the ACL step" {[wm title .setup_wizard] eq "Setup — access control"}
 ::vsetup::next
 
+# Referral visibility never changes the custom-provider or Skip paths.
+reset
+::vsetup::open
+::vsetup::next
+set F .setup_wizard.body.c.inner.f
+$F.cb current 2
+::vsetup::_provider_picked $F
+ok "custom provider remains selectable with referrals visible" {
+    $::vsetup::v(provider) eq "openai_compatible"
+    && $::vsetup::v(base_url) eq "http://localhost:8000/v1"
+    && [string match "*A local server: no key is needed unless you set one up.*" [wtext $F.hk]]
+}
+$F.cb current 3
+::vsetup::_provider_picked $F
+ok "provider Skip remains available with referrals visible" {
+    $::vsetup::v(provider) eq "skip"
+    && [lsearch -exact [$F.e22 state] disabled] >= 0
+}
+::vsetup::next
+ok "Skip reaches the same model step" {[wm title .setup_wizard] eq "Setup — default model"}
+
 # ── 2. preview-then-apply: the sig gate ─────────────────────────────
 puts "── preview gates apply ──"
 
+reset
+::vsetup::open
+for {set i 0} {$i < 6} {incr i} { ::vsetup::next }
 set ::vapi::posts {}
 ::vsetup::next    ;# from the summary this is Write it, sig matches
 ok "Write it with a matching sig POSTs apply" \
@@ -444,9 +520,31 @@ array set ::vsetup::v {
 }
 set ::vsetup::skipped {irc}
 set rendered [::vapi::_json_value [::vsetup::answers_body]]
-set TK_SETUP_BODY {{"provider": "openai_compatible", "base_url": "http://127.0.0.1:11434/v1", "key_env": "OLLAMA_KEY", "api_mode": "chat_completions", "provider_name": "ollama", "model": "llama3", "default_provider": "ollama", "telegram": true, "irc_server": "", "irc_port": 6697, "irc_use_tls": true, "irc_nickname": "", "irc_channels": "", "irc_sasl_username": "", "acl": "legacy_open", "acl_owner": "", "locale": "de", "skipped": ["irc"]}}
+set TK_SETUP_BODY {{"provider": "openai_compatible", "base_url": "http://127.0.0.1:11434/v1", "key_env": "OLLAMA_KEY", "api_mode": "chat_completions", "driver": "", "provider_name": "ollama", "model": "llama3", "default_provider": "ollama", "telegram": true, "irc_server": "", "irc_port": 6697, "irc_use_tls": true, "irc_nickname": "", "irc_channels": "", "irc_sasl_username": "", "acl": "legacy_open", "acl_owner": "", "locale": "de", "skipped": ["irc"]}}
 ok "the body is byte-for-byte the one the Rust route test posts" {$rendered eq $TK_SETUP_BODY}
 if {$rendered ne $TK_SETUP_BODY} { puts "      got: $rendered" }
+set ::vsetup::v(api_mode) plugin
+set ::vsetup::v(driver) {tcl:example:custom-wire}
+set d [::json::json2dict [::vapi::_json_value [::vsetup::answers_body]]]
+ok "a plugin wire sends the selected provider driver" \
+    {[dict get $d driver] eq "tcl:example:custom-wire" && [dict get $d api_mode] eq "plugin"}
+::vsetup::_close
+::vsetup::open
+::vsetup::next
+ok "the provider step is showing for the driver widget test" \
+    {[winfo exists .setup_wizard.body.c.inner.f.e27]}
+::vsetup::_sync_provider_fields .setup_wizard.body.c.inner.f
+ok "the driver field is enabled for the plugin wire" \
+    {[.setup_wizard.body.c.inner.f.e27 cget -state] eq "normal"}
+set ::vsetup::v(api_mode) chat_completions
+::vsetup::_sync_provider_fields .setup_wizard.body.c.inner.f
+ok "the driver field is disabled on a native wire" \
+    {[.setup_wizard.body.c.inner.f.e27 cget -state] eq "disabled"}
+set ::vsetup::v(api_mode) plugin
+set before [::vsetup::answers_sig]
+set ::vsetup::v(driver) {tcl:example:another-wire}
+ok "changing the driver invalidates a reviewed preview" \
+    {[::vsetup::answers_sig] ne $before}
 
 reset
 set rendered [::vapi::_json_value [::vsetup::answers_body]]

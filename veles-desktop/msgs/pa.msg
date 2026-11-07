@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset pa {%1$s %2$s failed: %3$s} {%1$s %2$s ਅਸਫਲ: %3$s}
 ::msgcat::mcset pa {%1$s %2$s over ssh…} {%1$s %2$s ssh ਰਾਹੀਂ…}
 ::msgcat::mcset pa {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset pa {%1$s (%2$s waiting)} {%1$s (%2$s ਉਡੀਕ ਰਹੇ)}
 ::msgcat::mcset pa {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  ਤਰਕ %3$s}
 ::msgcat::mcset pa {%1$s = %2$s here} {%1$s = %2$s ਇੱਥੇ}
 ::msgcat::mcset pa {%1$s NOT saved: %2$s} {%1$s ਸੰਭਾਲਿਆ ਨਹੀਂ ਗਿਆ: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset pa {%1$s every cron job on %2$s?} {%1$s %2$s 'ਤੇ ਹਰ cron ਕੰਮ?}
 ::msgcat::mcset pa {%1$s failed: %2$s} {%1$s ਅਸਫਲ: %2$s}
 ::msgcat::mcset pa {%1$s in / %2$s out / %3$s calls} {%1$s ਇਨ / %2$s ਆਉਟ / %3$s ਕਾਲਾਂ}
+::msgcat::mcset pa {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s ਨੋਡ %2$s ਹੈ, %3$s ਨਹੀਂ। ਇਸਦੀ ਨੋਡ ਆਈਡੀ Edit… ਵਿੱਚ ਠੀਕ ਕਰੋ।}
 ::msgcat::mcset pa {%1$s is not a whole number} {%1$s ਪੂਰਨ ਅੰਕ ਨਹੀਂ ਹੈ}
+::msgcat::mcset pa {%1$s is reachable (%2$s ms).} {%1$s ਪਹੁੰਚਯੋਗ ਹੈ (%2$s ms)।}
 ::msgcat::mcset pa {%1$s is set to something this box cannot edit (%2$s)} {%1$s ਕਿਸੇ ਅਜਿਹੀ ਚੀਜ਼ 'ਤੇ ਸੈੱਟ ਹੈ ਜੋ ਇਹ ਮਸ਼ੀਨ ਐਡਿਟ ਨਹੀਂ ਕਰ ਸਕਦੀ (%2$s)}
+::msgcat::mcset pa {%1$s is unreachable: %2$s} {%1$s ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ: %2$s}
 ::msgcat::mcset pa {%1$s of %2$s characters} {%1$s %2$s ਅੱਖਰਾਂ ਵਿੱਚੋਂ}
 ::msgcat::mcset pa {%1$s of %2$s sessions} {%2$s ਵਿੱਚੋਂ %1$s ਸੈਸ਼ਨ}
 ::msgcat::mcset pa {%1$s of %2$s skills reach the prompt} {%1$s / %2$s ਸਕਿੱਲ ਪ੍ਰੋਂਪਟ ਤੱਕ ਪਹੁੰਚਦੇ ਹਨ}
 ::msgcat::mcset pa {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s %2$s 'ਤੇ: %3$d ਠੀਕ, %4$d ਅਸਫਲ}
+::msgcat::mcset pa {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s ਕੋਈ ਕਲਸਟਰ ਨੋਡ ਪਛਾਣ ਨਹੀਂ ਦੱਸਦਾ, ਇਸ ਲਈ ਇਸਨੂੰ %2$s ਵਜੋਂ ਤਸਦੀਕ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।}
+::msgcat::mcset pa {%1$s sync failed: %2$s} {%1$s ਸਿੰਕ ਫੇਲ੍ਹ: %2$s}
+::msgcat::mcset pa {%1$s sync with %2$s (%3$s)} {%1$s ਦਾ %2$s ਨਾਲ ਸਿੰਕ (%3$s)}
+::msgcat::mcset pa {%1$s sync: %2$s} {%1$s ਸਿੰਕ: %2$s}
 ::msgcat::mcset pa {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset pa {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · ਜਾਣ ਲਈ Enter, ਬੰਦ ਕਰਨ ਲਈ Esc}
 ::msgcat::mcset pa {%1$s — revision r%2$s} {%1$s — ਰੀਵਿਜ਼ਨ r%2$s}
 ::msgcat::mcset pa {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset pa {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset pa {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset pa {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset pa {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: ਆਪਣੇ ਗੇਟਵੇ ਵੱਲੋਂ ਮੈਮਰੀ ਵਿੱਚ ਰੱਖੀਆਂ ਜਾਣ ਵਾਲੀਆਂ %3$s ਲਾਈਨਾਂ ਵਿੱਚੋਂ ਆਖਰੀ %2$s, ਉਸ ਨੋਡ 'ਤੇ ਸੀਕ੍ਰੇਟ ਹਟਾਏ ਗਏ।}
 ::msgcat::mcset pa {%d MCP server(s) configured} {%d MCP ਸਰਵਰ ਕੌਂਫਿਗਰ ਹਨ}
 ::msgcat::mcset pa {%d entries} {%d ਐਂਟਰੀਆਂ}
+::msgcat::mcset pa {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {ਐਕਸਟੈਂਸ਼ਨ ਦੀਆਂ %d ਫ਼ਾਈਲਾਂ ਬਿਲਕੁਲ ਸਮੀਖਿਆ ਮੁਤਾਬਕ ਲਿਖੀਆਂ ਜਾਣਗੀਆਂ। ਜੇ ਪੂਰਵਦਰਸ਼ਨ ਤੋਂ ਬਾਅਦ ਇਹਨਾਂ ਵਿੱਚੋਂ ਕੋਈ ਬਦਲ ਗਈ ਹੈ ਤਾਂ ਕੁਝ ਵੀ ਨਹੀਂ ਲਿਖਿਆ ਜਾਵੇਗਾ। ਕੋਈ commit, push ਜਾਂ PR ਨਹੀਂ ਹੁੰਦਾ।}
 ::msgcat::mcset pa {%d handler(s) registered} {%d ਹੈਂਡਲਰ ਰਜਿਸਟਰ ਹੋਏ}
 ::msgcat::mcset pa {%d identities · %d users} {%d ਪਛਾਣਾਂ · %d ਉਪਭੋਗਤਾ}
 ::msgcat::mcset pa {%d models — pick one from the list or type a name.} {%d ਮਾਡਲ — ਸੂਚੀ ਵਿੱਚੋਂ ਇੱਕ ਚੁਣੋ ਜਾਂ ਨਾਮ ਟਾਈਪ ਕਰੋ।}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset pa {%d shown} {%d ਦਿਖਾਏ ਗਏ}
 ::msgcat::mcset pa {%s %s%%} {%s %s%%}
 ::msgcat::mcset pa {%s (%s)} {%s (%s)}
+::msgcat::mcset pa {%s (referral)} {%s (ਰੈਫਰਲ)}
+::msgcat::mcset pa {%s (stale)} {%s (ਪੁਰਾਣਾ)}
 ::msgcat::mcset pa {%s (this session)} {%s (ਇਹ ਸੈਸ਼ਨ)}
 ::msgcat::mcset pa {%s GB free of %s GB} {%s GB ਖ਼ਾਲੀ, ਕੁੱਲ %s GB}
 ::msgcat::mcset pa {%s already exists — open it from the list} {%s ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ — ਇਸਨੂੰ ਸੂਚੀ ਵਿੱਚੋਂ ਖੋਲ੍ਹੋ}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset pa {%s comes from config.toml [acl] — edit there} {%s config.toml [acl] ਤੋਂ ਆਉਂਦਾ ਹੈ — ਉੱਥੇ ਸੋਧੋ}
 ::msgcat::mcset pa {%s config change(s) wait for you — /configsync} {%s ਕੌਂਫਿਗ ਬਦਲਾਅ ਤੁਹਾਡੀ ਉਡੀਕ ਕਰ ਰਹੇ ਹਨ — /configsync}
 ::msgcat::mcset pa {%s did not become healthy within 30s} {%s 30s ਦੇ ਅੰਦਰ ਠੀਕ ਨਹੀਂ ਹੋਇਆ}
+::msgcat::mcset pa {%s done} {%s ਹੋ ਗਿਆ}
 ::msgcat::mcset pa {%s failed: %s} {%s ਫੇਲ੍ਹ ਹੋਇਆ: %s}
 ::msgcat::mcset pa {%s is already split} {%s ਪਹਿਲਾਂ ਹੀ ਵੰਡਿਆ ਹੋਇਆ ਹੈ}
 ::msgcat::mcset pa {%s is the language in use — pick another one to swap with} {%s ਇਸ ਵੇਲੇ ਵਰਤੀ ਜਾ ਰਹੀ ਭਾਸ਼ਾ ਹੈ — ਅਦਲਾ-ਬਦਲੀ ਲਈ ਕੋਈ ਹੋਰ ਭਾਸ਼ਾ ਚੁਣੋ}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset pa {%s opens the command palette in %s.} {%s %s ਵਿੱਚ ਕਮਾਂਡ ਪੈਲਟ ਖੋਲ੍ਹਦਾ ਹੈ।}
 ::msgcat::mcset pa {%s session(s)} {%s ਸੈਸ਼ਨ}
 ::msgcat::mcset pa {%s skill(s):} {%s ਸਕਿਲ(s):}
+::msgcat::mcset pa {%s standing grants} {%s ਸਥਾਈ ਇਜਾਜ਼ਤਾਂ}
 ::msgcat::mcset pa {%s takes no completable arguments} {%s ਕੋਈ ਪੂਰਕ ਆਰਗੂਮੈਂਟ ਨਹੀਂ ਲੈਂਦਾ}
 ::msgcat::mcset pa {%s takes on or off} {%s on ਜਾਂ off ਲੈਂਦਾ ਹੈ}
 ::msgcat::mcset pa {%s —} {%s —}
+::msgcat::mcset pa {%s — changes data, asks to confirm} {%s — ਡਾਟਾ ਬਦਲਦਾ ਹੈ, ਪੁਸ਼ਟੀ ਮੰਗਦਾ ਹੈ}
 ::msgcat::mcset pa {%s — deleted; History… can restore it} {%s — ਮਿਟਾਈ ਗਈ; ਇਤਿਹਾਸ… ਇਸਨੂੰ ਵਾਪਸ ਲਿਆ ਸਕਦਾ ਹੈ}
 ::msgcat::mcset pa {%s — new: type, then Save} {%s — ਨਵੀਂ: ਟਾਈਪ ਕਰੋ, ਫਿਰ ਸੰਭਾਲੋ}
 ::msgcat::mcset pa {%s — not attached; press Attach in the Instances tab} {%s — ਜੁੜਿਆ ਨਹੀਂ; Instances ਟੈਬ ਵਿੱਚ Attach ਦਬਾਓ}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset pa {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} [acl] ਭਾਗ ਤੋਂ ਬਿਨਾਂ ਚਾਲੂ ਹੈ: ਜਦੋਂ ਤੱਕ .env ਵਿੱਚ %{var} ਇਹ ਨਹੀਂ ਦੱਸਦਾ ਕਿ ਬੋਟ ਨਾਲ ਕੌਣ ਗੱਲ ਕਰ ਸਕਦਾ ਹੈ, ਉਸ ਤੱਕ ਪਹੁੰਚਣ ਵਾਲੇ ਹਰ ਵਿਅਕਤੀ ਨੂੰ ਮਾਲਕ ਮੰਨਿਆ ਜਾਂਦਾ ਹੈ, ਸਾਰੇ ਟੂਲਾਂ ਸਮੇਤ}
 ::msgcat::mcset pa (%{route}) (%{route})
 ::msgcat::mcset pa {(CLI redraws automatically)} {(CLI ਆਪਣੇ-ਆਪ ਮੁੜ ਬਣਦਾ ਹੈ)}
+::msgcat::mcset pa {(binary; not publishable)} {(ਬਾਈਨਰੀ; ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਹੋ ਸਕਦਾ)}
 ::msgcat::mcset pa {(clipboard empty or no clipboard tool)} {(ਕਲਿੱਪਬੋਰਡ ਖਾਲੀ ਜਾਂ ਕੋਈ ਕਲਿੱਪਬੋਰਡ ਟੂਲ ਨਹੀਂ)}
 ::msgcat::mcset pa (deleted) {(ਮਿਟਾਈ ਗਈ)}
 ::msgcat::mcset pa (empty) (ਖਾਲੀ)
 ::msgcat::mcset pa {(no sessions)} {(ਕੋਈ ਸੈਸ਼ਨ ਨਹੀਂ)}
+::msgcat::mcset pa {(not a memsync peer of this gateway: config is not synced with it)} {(ਇਹ ਗੇਟਵੇ ਦਾ memsync ਸਾਥੀ ਨਹੀਂ: ਇਸ ਨਾਲ ਕੌਂਫਿਗ ਸਿੰਕ ਨਹੀਂ ਹੁੰਦਾ)}
 ::msgcat::mcset pa {(nothing to reload — read from disk per use)} {(ਮੁੜ ਲੋਡ ਕਰਨ ਨੂੰ ਕੁਝ ਨਹੀਂ — ਹਰ ਵਰਤੋਂ ’ਤੇ ਡਿਸਕ ਤੋਂ ਪੜ੍ਹਿਆ ਜਾਂਦਾ ਹੈ)}
 ::msgcat::mcset pa {(retrying last prompt…)} {(ਆਖਰੀ ਪ੍ਰੋਂਪਟ ਦੀ ਮੁੜ ਕੋਸ਼ਿਸ਼…)}
 ::msgcat::mcset pa {(route did not resolve: %{e})} {(ਰੂਟ ਹੱਲ ਨਹੀਂ ਹੋਇਆ: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset pa {/url needs a number from /urls} {/url ਨੂੰ /urls ਵਿੱਚੋਂ ਇੱਕ ਨੰਬਰ ਚਾਹੀਦਾ ਹੈ}
 ::msgcat::mcset pa {/whois needs a nick} {/whois ਨੂੰ ਨਿਕ ਦੀ ਲੋੜ ਹੈ}
 ::msgcat::mcset pa {; could not save the cleared return view: %s} {; ਸਾਫ਼ ਕੀਤਾ ਵਾਪਸੀ ਦ੍ਰਿਸ਼ ਸੰਭਾਲਿਆ ਨਹੀਂ ਗਿਆ: %s}
+::msgcat::mcset pa {; shadows bundled} {; ਬੰਡਲ ਕੀਤੇ ਨੂੰ ਮਾਤ ਦਿੰਦਾ ਹੈ}
+::msgcat::mcset pa {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {ਕੌਂਫਿਗ ਪੇਸ਼ਕਸ਼ ਸੈਟਿੰਗਾਂ ਬਦਲ ਸਕਦੀ ਹੈ ਅਤੇ ਤਿਜੋਰੀ ਪੇਸ਼ਕਸ਼ ਸੀਕ੍ਰੇਟ ਮਿਲਾਉਂਦੀ ਹੈ; ਸੁਰੱਖਿਆ ਭਾਗ ਵਿੱਚ ਬਦਲਾਅ ਫਿਰ ਵੀ ਮਾਲਕ ਦੀ ਉਡੀਕ ਕਰਦੇ ਹਨ।}
 ::msgcat::mcset pa {A failing plugin may drop hooks mid-turn.} {ਇੱਕ ਫੇਲ੍ਹ ਪਲੱਗਇਨ ਵਾਰੀ ਦੇ ਵਿਚਕਾਰ ਹੁੱਕ ਛੱਡ ਸਕਦਾ ਹੈ।}
 ::msgcat::mcset pa {A local server: no key is needed unless you set one up.} {ਸਥਾਨਕ ਸਰਵਰ: ਕੋਈ key ਦੀ ਲੋੜ ਨਹੀਂ ਜਦੋਂ ਤੱਕ ਤੁਸੀਂ ਇੱਕ ਸੈੱਟ ਨਹੀਂ ਕਰਦੇ।}
+::msgcat::mcset pa {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {ਦਸਤਖ਼ਤ ਕੀਤੀ ਰਿਲੀਜ਼ ਪ੍ਰੀਫਲਾਈਟ ਤੋਂ ਬਾਅਦ ਹੀ ਸਟੇਜ ਕੀਤੀ ਜਾਂਦੀ ਹੈ। ਮੁੜ ਚਾਲੂ ਕਰਨਾ/ਪੜਤਾਲ, ਜਾਰੀ ਰੱਖਣਾ ਅਤੇ ਰੋਲਬੈਕ ਵੱਖ-ਵੱਖ ਕਾਰਵਾਈਆਂ ਹਨ। ਸਿਹਤਮੰਦ ਪ੍ਰਕਿਰਿਆ ਨੂੰ ਬਿਲਕੁਲ ਉਸੇ ਸਮੀਖਿਆ ਕੀਤੇ ਸਰੋਤ ਰੀਵਿਜ਼ਨ ਦੀ ਰਿਪੋਰਟ ਕਰਨੀ ਚਾਹੀਦੀ ਹੈ।}
 ::msgcat::mcset pa {A value is stored for %s — leave this empty to keep it.} {%s ਲਈ ਇੱਕ ਮੁੱਲ ਰੱਖਿਆ ਹੋਇਆ ਹੈ — ਉਸਨੂੰ ਰੱਖਣ ਲਈ ਇਹ ਖਾਲੀ ਛੱਡੋ।}
 ::msgcat::mcset pa {ACL: ban mask} {ACL: ਮਾਸਕ 'ਤੇ ਪਾਬੰਦੀ ਲਗਾਓ}
 ::msgcat::mcset pa {ACL: grant admin} {ACL: admin ਦਿਓ}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset pa {ACL: grant user} {ACL: user ਦਿਓ}
 ::msgcat::mcset pa {ACL: revoke} {ACL: ਵਾਪਸ ਲਓ}
 ::msgcat::mcset pa {ACME account email} {ACME ਖਾਤਾ ਈਮੇਲ}
+::msgcat::mcset pa {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI ਸਹਾਇਤਾ ਚਾਰ ਪੱਧਰਾਂ 'ਤੇ ਕੰਮ ਕਰਦੀ ਹੈ: ਡਿਜ਼ਾਈਨ ਸਵਾਲ ਪੁੱਛੋ (ਕੋਈ ਫ਼ਾਈਲ ਨਹੀਂ ਚਾਹੀਦੀ), ਇਹ ਫ਼ਾਈਲ ਬਦਲੋ, ਇਸ ਐਕਸਟੈਂਸ਼ਨ ਦੀਆਂ ਕਈ ਫ਼ਾਈਲਾਂ ਬਦਲੋ, ਜਾਂ ਮੌਜੂਦਾ ਡਾਇਗਨੋਸਟਿਕਸ ਸਮਝਾਓ। New extension ਇਸਦੇ ਮਕਸਦ ਤੋਂ ਪੂਰਾ ਐਕਸਟੈਂਸ਼ਨ ਵੀ ਤਿਆਰ ਕਰ ਸਕਦਾ ਹੈ। ਹਰ ਬੇਨਤੀ ਟੂਲਾਂ ਤੋਂ ਬਿਨਾਂ ਭੇਜੀ ਜਾਂਦੀ ਹੈ ਅਤੇ ਜੇ ਇਸ ਵਿੱਚ ਰਜਿਸਟਰ ਹੋਇਆ ਸੀਕ੍ਰੇਟ ਜਾਂ ਕ੍ਰੈਡੈਂਸ਼ਲ ਵਰਗੀ ਕੋਈ ਚੀਜ਼ ਹੋਵੇ ਤਾਂ ਇਨਕਾਰ ਕਰ ਦਿੱਤੀ ਜਾਂਦੀ ਹੈ; ਬਦਲਾਅ ਡਿਫ਼ਾਂ ਵਜੋਂ ਦਿਖਾਏ ਜਾਂਦੇ ਹਨ ਅਤੇ ਸਿਰਫ਼ ਤੁਹਾਡੇ ਲਾਗੂ ਕਰਨ 'ਤੇ ਲਿਖੇ ਜਾਂਦੇ ਹਨ। ਪਹਿਲਾਂ ਐਕਸਟੈਂਸ਼ਨ ਡਿਜ਼ਾਈਨ ਮੰਗੋ; ਕੋਰ ਪੈਚ ਸਿਰਫ਼ ਗੁੰਮ API ਪਛਾਣਨ ਤੋਂ ਬਾਅਦ ਮੰਗੋ।}
+::msgcat::mcset pa {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI ਸਹਾਇਤਾ ਸਿਰਫ਼ ਉਪਭੋਗਤਾ ਐਕਸਟੈਂਸ਼ਨ ਸੋਧਦੀ ਹੈ, ਅਤੇ ਇਹ ਫ਼ਾਈਲ ਕਿਸੇ ਦਾ ਹਿੱਸਾ ਨਹੀਂ। ਜ਼ਿਆਦਾਤਰ ਬਦਲਾਅ ਇੱਕ ਐਕਸਟੈਂਸ਼ਨ (ਹੁੱਕ, ਟੂਲ, ਸੇਵਾ ਓਵਰਰਾਈਡ ਜਾਂ ਪ੍ਰੋਵਾਈਡਰ ਡਰਾਈਵਰ) ਵਿੱਚ ਫਿੱਟ ਹੁੰਦੇ ਹਨ ਜੋ ਅੱਪਗ੍ਰੇਡ ਤੋਂ ਬਾਅਦ ਵੀ ਚੱਲਦਾ ਰਹਿੰਦਾ ਹੈ; ਕੋਰ ਪੈਚ ਉਸ ਲਈ ਹੈ ਜੋ ਐਕਸਟੈਂਸ਼ਨ API ਨਹੀਂ ਦੱਸ ਸਕਦੀ। ਇਸ ਬਦਲਾਅ ਲਈ ਨਵਾਂ ਐਕਸਟੈਂਸ਼ਨ ਬਣਾਉਣਾ ਹੈ? ਕੁਝ ਵੀ ਲਿਖਣ ਤੋਂ ਪਹਿਲਾਂ ਇਸਦੀਆਂ ਫ਼ਾਈਲਾਂ ਦੀ ਝਲਕ ਦਿਖਾਈ ਜਾਂਦੀ ਹੈ।}
+::msgcat::mcset pa {AI assist…} {AI ਸਹਾਇਤਾ…}
+::msgcat::mcset pa {AI extension assistance} {AI ਐਕਸਟੈਂਸ਼ਨ ਸਹਾਇਤਾ}
 ::msgcat::mcset pa {API calls} {API ਕਾਲਾਂ}
+::msgcat::mcset pa {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {Anthropic ਰੈਫਰਲ ਤੋਂ API ਕ੍ਰੈਡਿਟ ਸਿਰਫ਼ ਤਾਂ ਹੀ ਮਿਲਦੇ ਹਨ ਜੇ ਤੁਸੀਂ Max ਜਾਂ Ultra ਖਰੀਦੋ। Veles ਉਸ ਸਬਸਕ੍ਰਿਪਸ਼ਨ ਨੂੰ ਲੌਗਇਨ ਜਾਂ API ਪ੍ਰਮਾਣਿਕਤਾ ਵਜੋਂ ਵਰਤਣ ਦਾ ਸਮਰਥਨ ਨਹੀਂ ਕਰਦਾ।}
 ::msgcat::mcset pa {API key (hidden)} {API key (ਲੁਕੀ ਹੋਈ)}
 ::msgcat::mcset pa {API key env var name} {API key env ਵੈਰੀਏਬਲ ਦਾ ਨਾਅ}
+::msgcat::mcset pa {API reference} {API ਹਵਾਲਾ}
+::msgcat::mcset pa {Abandon untouched operation} {ਅਛੂਤੀ ਕਾਰਵਾਈ ਛੱਡ ਦਿਓ}
 ::msgcat::mcset pa {Access control} {ਪਹੁੰਚ ਨਿਯੰਤਰਣ}
 ::msgcat::mcset pa {Access control (ACL)} {ਪਹੁੰਚ ਨਿਯੰਤਰਣ (ACL)}
 ::msgcat::mcset pa Add ਜੋੜੋ
 ::msgcat::mcset pa {Add MCP server} {MCP ਸਰਵਰ ਜੋੜੋ}
 ::msgcat::mcset pa {Add instance} {ਇੰਸਟੈਂਸ ਜੋੜੋ}
 ::msgcat::mcset pa {Add server…} {ਸਰਵਰ ਜੋੜੋ…}
+::msgcat::mcset pa {Adds selected extension sources. Review the branch diff and checks before merging.} {ਚੁਣੇ ਐਕਸਟੈਂਸ਼ਨ ਸਰੋਤ ਜੋੜਦਾ ਹੈ। ਮਰਜ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਬ੍ਰਾਂਚ ਡਿਫ਼ ਅਤੇ ਜਾਂਚਾਂ ਦੀ ਸਮੀਖਿਆ ਕਰੋ।}
 ::msgcat::mcset pa Add… ਜੋੜੋ…
 ::msgcat::mcset pa {Agent & engine} {ਏਜੰਟ ਅਤੇ ਇੰਜਣ}
 ::msgcat::mcset pa {Alias %s} {ਉਪਨਾਮ %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset pa {Applies to} {ਕਿਸ 'ਤੇ ਲਾਗੂ}
 ::msgcat::mcset pa Apply {ਲਾਗੂ ਕਰੋ}
 ::msgcat::mcset pa {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Apply ਸਿਰਫ਼ ਚੱਲ ਰਹੇ ਸੈਸ਼ਨ ਨੂੰ ਹੀ ਬਦਲਦਾ ਹੈ। Copy TOML ਤੁਹਾਨੂੰ ਪੇਸਟ ਕਰਨ ਲਈ ਬਲਾਕ ਦਿੰਦਾ ਹੈ। Save globally ਉਹਨਾਂ ਨੂੰ config.toml ਵਿੱਚ ਜੋੜਦਾ ਹੈ — ਸਿਰਫ਼ failover ਭਾਗ ਹੀ ਛੋਹੇ ਜਾਂਦੇ ਹਨ, ਬਾਕੀ ਹਰ ਲਾਈਨ ਅਤੇ ਟਿੱਪਣੀ ਉਵੇਂ ਰਹਿੰਦੀ ਹੈ, ਅਤੇ ਪੁਰਾਣੀ ਫਾਈਲ config.toml.bak ਵਜੋਂ ਰੱਖੀ ਜਾਂਦੀ ਹੈ।}
+::msgcat::mcset pa {Apply proposal…} {ਪ੍ਰਸਤਾਵ ਲਾਗੂ ਕਰੋ…}
+::msgcat::mcset pa {Apply received} {ਪ੍ਰਾਪਤੀਆਂ ਲਾਗੂ ਕਰੋ}
+::msgcat::mcset pa {Apply this AI proposal?} {ਇਹ AI ਪ੍ਰਸਤਾਵ ਲਾਗੂ ਕਰਨਾ ਹੈ?}
+::msgcat::mcset pa {Apply this change set?} {ਇਹ ਬਦਲਾਅ ਸੈੱਟ ਲਾਗੂ ਕਰਨਾ ਹੈ?}
 ::msgcat::mcset pa {Apply to session} {ਸੈਸ਼ਨ 'ਤੇ ਲਾਗੂ ਕਰੋ}
+::msgcat::mcset pa {Apply what this node received:} {ਇਸ ਨੋਡ ਨੂੰ ਜੋ ਮਿਲਿਆ ਉਹ ਲਾਗੂ ਕਰੋ:}
 ::msgcat::mcset pa {Approval needed} {ਮਨਜ਼ੂਰੀ ਲੋੜੀਂਦੀ}
 ::msgcat::mcset pa Apps ਐਪਾਂ
 ::msgcat::mcset pa Archive ਆਰਕਾਈਵ
 ::msgcat::mcset pa {Archive SHA-256} {ਆਰਕਾਈਵ SHA-256}
+::msgcat::mcset pa Ask ਪੁੱਛੋ
+::msgcat::mcset pa {Ask a design question} {ਡਿਜ਼ਾਈਨ ਸਵਾਲ ਪੁੱਛੋ}
+::msgcat::mcset pa {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {ਪੁੱਛੋ ਕਿ ਐਕਸਟੈਂਸ਼ਨ ਕਿਵੇਂ ਬਣਾਈਏ: ਕਿਹੜੀ ਹੱਦ, ਕਿਹੜੀ ਭਾਸ਼ਾ, ਕਿਹੜੀ API। ਕੋਈ ਸਰੋਤ ਨਹੀਂ ਭੇਜਿਆ ਜਾਂਦਾ, ਅਤੇ ਕੁਝ ਵੀ ਨਹੀਂ ਲਿਖਿਆ ਜਾ ਸਕਦਾ।}
 ::msgcat::mcset pa {Ask the agent to change it} {ਏਜੰਟ ਨੂੰ ਇਸਨੂੰ ਬਦਲਣ ਲਈ ਕਹੋ}
+::msgcat::mcset pa {Asking %s…} {%s ਨੂੰ ਪੁੱਛਿਆ ਜਾ ਰਿਹਾ ਹੈ…}
 ::msgcat::mcset pa {Asking the provider for its models…} {ਪ੍ਰੋਵਾਈਡਰ ਤੋਂ ਇਸਦੇ ਮਾਡਲ ਪੁੱਛੇ ਜਾ ਰਹੇ ਹਨ…}
 ::msgcat::mcset pa Attach ਜੋੜੋ
 ::msgcat::mcset pa {Attach to the next message} {ਅਗਲੇ ਸੁਨੇਹੇ ਨਾਲ ਜੋੜੋ}
+::msgcat::mcset pa {Author guide} {ਲੇਖਕ ਗਾਈਡ}
+::msgcat::mcset pa {Automatically discovered from the attached gateway's cluster registry.} {ਜੁੜੇ ਗੇਟਵੇ ਦੇ ਕਲੱਸਟਰ ਰਜਿਸਟਰੀ ਤੋਂ ਆਪਣੇ-ਆਪ ਖੋਜਿਆ ਗਿਆ।}
 ::msgcat::mcset pa Back ਪਿੱਛੇ
 ::msgcat::mcset pa {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {ਪਿੱਛੇ ਉੱਪਰ ਵਾਲੀ ਚੀਜ਼ ਬੰਦ ਕਰਦਾ ਹੈ: ਮੀਨੂ, ਸੈਸ਼ਨ ਸੂਚੀ, ਵਿੰਡੋ। ਕੁਝ ਵੀ ਖੁੱਲ੍ਹਾ ਨਾ ਹੋਵੇ ਤਾਂ veles ਬੈਕਗ੍ਰਾਊਂਡ ਵਿੱਚ ਚਲਾ ਜਾਂਦਾ ਹੈ ਅਤੇ ਚੱਲਦਾ ਰਹਿੰਦਾ ਹੈ।}
 ::msgcat::mcset pa {Base URL} {Base URL}
+::msgcat::mcset pa {Base branch} {ਬੇਸ ਬ੍ਰਾਂਚ}
 ::msgcat::mcset pa {Bot token (hidden)} {ਬੋਟ ਟੋਕਨ (ਲੁਕਿਆ ਹੋਇਆ)}
+::msgcat::mcset pa Branch ਬ੍ਰਾਂਚ
+::msgcat::mcset pa {Branch and commit prepared; nothing has been pushed} {ਬ੍ਰਾਂਚ ਅਤੇ ਕਮਿਟ ਤਿਆਰ ਹਨ; ਕੁਝ ਵੀ ਪੁਸ਼ ਨਹੀਂ ਹੋਇਆ}
+::msgcat::mcset pa {Branch pushed and verified on origin} {ਬ੍ਰਾਂਚ ਪੁਸ਼ ਹੋਈ ਅਤੇ ਓਰਿਜਿਨ ’ਤੇ ਤਸਦੀਕ ਹੋਈ}
 ::msgcat::mcset pa {Browse sessions} {ਸੈਸ਼ਨ ਬ੍ਰਾਊਜ਼ ਕਰੋ}
+::msgcat::mcset pa {Build manifest + preflight} {ਬਿਲਡ ਮੈਨੀਫੈਸਟ + ਪ੍ਰੀਫਲਾਈਟ}
+::msgcat::mcset pa {Build: veles %1$s, revision %2$s (%3$s %4$s)} {ਬਿਲਡ: veles %1$s, ਰੀਵਿਜ਼ਨ %2$s (%3$s %4$s)}
 ::msgcat::mcset pa {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e ਲਾਈਨ ਅੰਤ · C-b/C-f ਅੱਖਰ · M-b/M-f ਸ਼ਬਦ · C-k EOL ਤੱਕ ਮਿਟਾਓ · C-y yank · M-w ਕਾਪੀ · C-w ਖੇਤਰ ਮਿਟਾਓ · C-space ਮਾਰਕ ਸੈੱਟ · C-/ undo}
 ::msgcat::mcset pa {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g ਸਭ ਰੱਦ · C-j ਨਵੀਂ ਲਾਈਨ · M-p/M-n ਇਤਿਹਾਸ · Tab ਪੂਰਾ ਕਰੋ}
+::msgcat::mcset pa {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s ਕੋਰ, ਲੋਡ %2$s / %3$s / %4$s (ਕੋਰਾਂ ਦਾ %5$s%%)}
 ::msgcat::mcset pa Cancel {ਰੱਦ ਕਰੋ}
+::msgcat::mcset pa {Cancel task} {ਕੰਮ ਰੱਦ ਕਰੋ}
+::msgcat::mcset pa {Cancel task %1$s? This cannot be undone.} {ਕੰਮ %1$s ਰੱਦ ਕਰੀਏ? ਇਹ ਵਾਪਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।}
+::msgcat::mcset pa {Cannot verify that %1$s is node %2$s: %3$s} {ਤਸਦੀਕ ਨਹੀਂ ਕਰ ਸਕਦੇ ਕਿ %1$s ਨੋਡ %2$s ਹੈ: %3$s}
 ::msgcat::mcset pa Capabilities ਸਮਰੱਥਾਵਾਂ
 ::msgcat::mcset pa {Change my app “%s” (%s): } {ਮੇਰੀ ਐਪ “%s” (%s) ਬਦਲੋ: }
+::msgcat::mcset pa {Change this extension's files} {ਇਸ ਐਕਸਟੈਂਸ਼ਨ ਦੀਆਂ ਫ਼ਾਈਲਾਂ ਬਦਲੋ}
+::msgcat::mcset pa {Change this file} {ਇਹ ਫ਼ਾਈਲ ਬਦਲੋ}
 ::msgcat::mcset pa Change… ਬਦਲੋ…
 ::msgcat::mcset pa {Channels (e.g. #veles #dev)} {ਚੈਨਲ (ਜਿਵੇਂ #veles #dev)}
 ::msgcat::mcset pa Chat ਚੈਟ
 ::msgcat::mcset pa {Chat — not attached; press Attach in the Instances tab} {Chat — ਜੁੜਿਆ ਨਹੀਂ; Instances ਟੈਬ ਵਿੱਚ Attach ਦਬਾਓ}
 ::msgcat::mcset pa {Check (lsp)} {ਜਾਂਚ (lsp)}
+::msgcat::mcset pa {Check again} {ਮੁੜ ਜਾਂਚੋ}
+::msgcat::mcset pa {Check files} {ਫ਼ਾਈਲਾਂ ਜਾਂਚੋ}
 ::msgcat::mcset pa Checkpoints ਚੈੱਕਪੁਆਇੰਟ
 ::msgcat::mcset pa {Checkpoints (undo)} {ਚੈੱਕਪੁਆਇੰਟ (undo)}
+::msgcat::mcset pa {Checks and next steps} {ਜਾਂਚਾਂ ਅਤੇ ਅਗਲੇ ਕਦਮ}
+::msgcat::mcset pa {Checks run} {ਜਾਂਚਾਂ ਚਲਾਈਆਂ ਗਈਆਂ}
 ::msgcat::mcset pa {Choose BUNDLE-INFO.json in the managed install-sources directory} {ਪ੍ਰਬੰਧਿਤ install-sources ਡਾਇਰੈਕਟਰੀ ਵਿੱਚ BUNDLE-INFO.json ਚੁਣੋ}
 ::msgcat::mcset pa {Choose a failover script} {ਫੇਲ੍ਹੋਵਰ ਸਕ੍ਰਿਪਟ ਚੁਣੋ}
 ::msgcat::mcset pa {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {ਕਿਸੇ ਮਾਡਿਊਲ ਜਾਂ ਪ੍ਰਕਿਰਿਆ ਪਲੱਗਇਨ ਦੀ ਜਾਂਚ ਕਰਨ ਲਈ ਚੁਣੋ। ਖੋਜ ਸਿਰਫ਼ plugin.toml ਨੂੰ ਪੜ੍ਹਦੀ ਹੈ; ਕੰਪੋਨੈਂਟ ਚੁਣਨ ਨਾਲ ਉਸਦੇ ਘੋਸ਼ਿਤ ਮੈਨੀਫੈਸਟ ਅਤੇ ਵਿਕਲਪ ਲਿਆਏ ਜਾਂਦੇ ਹਨ। ਇਹ ਕਦਮ ਖੋਲ੍ਹਣ ਨਾਲ ਕੁਝ ਵੀ ਇੰਸਟਾਲ ਨਹੀਂ ਹੁੰਦਾ।}
+::msgcat::mcset pa {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {ਨਾਮ, ਮਕਸਦ ਅਤੇ ਭਾਸ਼ਾ ਚੁਣੋ, ਫਿਰ ਫ਼ਾਈਲਾਂ ਦੀ ਸਹੀ ਝਲਕ ਵੇਖੋ। ਹਾਲੇ ਕੁਝ ਲਿਖਿਆ ਨਹੀਂ ਗਿਆ।}
 ::msgcat::mcset pa {Choose a user unit or a system service for the server profile. Neither starts a service.} {ਸਰਵਰ ਪ੍ਰੋਫਾਈਲ ਲਈ ਕੋਈ user unit ਜਾਂ system service ਚੁਣੋ। ਦੋਵਾਂ ਵਿੱਚੋਂ ਕੋਈ ਵੀ ਸਰਵਿਸ ਸ਼ੁਰੂ ਨਹੀਂ ਕਰਦਾ।}
 ::msgcat::mcset pa {Choose core bundle…} {ਕੋਰ ਬੰਡਲ ਚੁਣੋ…}
 ::msgcat::mcset pa {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {ਇੰਸਟਾਲੇਸ਼ਨ ਦਾ ਰੂਪ ਚੁਣੋ। ਸਥਾਨਕ ਪ੍ਰੋਫਾਈਲ ਸਮੀਖਿਆ ਕੀਤੇ ਇੰਸਟਾਲਰ ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ। system ਅਤੇ container ਪ੍ਰੋਫਾਈਲ ਸਪੱਸ਼ਟ CLI ਹੈਂਡਓਫ ਲਈ ਦਸਤਖਤ ਕੀਤੀ ਬੇਨਤੀ ਤਿਆਰ ਕਰਦੇ ਹਨ। NixOS ਸਿਰਫ਼ ਇੱਕ module snippet ਭੇਜਦਾ ਹੈ।}
+::msgcat::mcset pa {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {ਸਭ ਤੋਂ ਸੰਕੀਰਨ ਸੀਮਾ ਚੁਣੋ: ਇੱਕ Tool ਮਾਡਲ-ਕਾਲ ਕਰਨ ਯੋਗ ਸਮਰੱਥਾ ਜੋੜਦਾ ਹੈ; ਇੱਕ Hook ਕਿਸੇ ਜੀਵਨ-ਚੱਕਰ ਘਟਨਾ ਨੂੰ ਦੇਖਦਾ ਜਾਂ ਸੋਧਦਾ ਹੈ; ਇੱਕ Service ਜਾਂ override point ਇੱਕ ਨਾਮੀਂ ਫੈਸਲੇ ਨੂੰ ਲਪੇਟਦਾ ਹੈ; ਇੱਕ Provider driver ਪ੍ਰੋਵਾਈਡਰ ਵਾਇਰ ਜੋੜਦਾ ਹੈ; ਕੋਰ ਪੈਚ ਸਿਰਫ਼ ਤਦੀਂ ਢੁਕਵਾਂ ਹੈ ਜਦੋਂ ਪ੍ਰਕਾਸ਼ਿਤ ਐਕਸ਼ਨਸ਼ਨ API ਬਦਲਾਅ ਨੂੰ ਵਿਆਖਿਆ ਨਹੀਂ ਕਰ ਸਕਦਾ।}
 ::msgcat::mcset pa {Choose typed container-host options JSON} {ਟਾਈਪ ਕੀਤੇ ਕੰਟੇਨਰ-ਹੋਸਟ ਵਿਕਲਪ JSON ਚੁਣੋ}
 ::msgcat::mcset pa {Choose typed container-host options…} {ਟਾਈਪ ਕੀਤੇ ਕੰਟੇਨਰ-ਹੋਸਟ ਵਿਕਲਪ ਚੁਣੋ…}
 ::msgcat::mcset pa Clear {ਸਾਫ਼ ਕਰੋ}
 ::msgcat::mcset pa {Clear composer} {ਕੰਪੋਜ਼ਰ ਸਾਫ਼ ਕਰੋ}
 ::msgcat::mcset pa {Clear override} {ਓਵਰਰਾਈਡ ਸਾਫ਼ ਕਰੋ}
 ::msgcat::mcset pa {Click the picture where you would click on the page.} {ਤਸਵੀਰ ਉੱਤੇ ਉੱਥੇ ਕਲਿੱਕ ਕਰੋ ਜਿੱਥੇ ਤੁਸੀਂ ਪੰਨੇ ਉੱਤੇ ਕਲਿੱਕ ਕਰਦੇ।}
+::msgcat::mcset pa {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {%1$s ਨੂੰ ਕਲੋਨ ਕਰੋ, %2$s ਬਣਾਓ, ਅਤੇ %3$s ਦੀਆਂ ਸਿਰਫ਼ ਸਮੀਖਿਆ ਕੀਤੀਆਂ ਫ਼ਾਈਲਾਂ %4$s/<extension>/ ਹੇਠ ਕਾਪੀ ਕਰੋ। ਫ਼ਾਈਲਾਂ ਦੀ ਜਾਂਚ ਹੁੰਦੀ ਹੈ ਅਤੇ ਉਹ ਕਮਿਟ ਹੁੰਦੀਆਂ ਹਨ। ਹੁਣ ਕੋਈ ਪੁਸ਼ ਜਾਂ pull request ਨਹੀਂ ਹੁੰਦੀ।}
 ::msgcat::mcset pa Close {ਬੰਦ ਕਰੋ}
 ::msgcat::mcset pa {Close (Esc)} {ਬੰਦ ਕਰੋ (Esc)}
 ::msgcat::mcset pa {Close the setup wizard? Nothing has been written yet.} {ਸੈੱਟਅੱਪ ਵਿਜ਼ਾਰਡ ਬੰਦ ਕਰਨਾ ਹੈ? ਹਾਲੇ ਕੁਝ ਵੀ ਲਿਖਿਆ ਨਹੀਂ ਗਿਆ।}
 ::msgcat::mcset pa {Code actions} {ਕੋਡ ਕਾਰਵਾਈਆਂ}
+::msgcat::mcset pa Commit ਕਮਿਟ
+::msgcat::mcset pa {Commit ready for review. Push is a separate action.} {ਕਮਿਟ ਸਮੀਖਿਆ ਲਈ ਤਿਆਰ ਹੈ। ਪੁਸ਼ ਇੱਕ ਵੱਖਰੀ ਕਾਰਵਾਈ ਹੈ।}
 ::msgcat::mcset pa {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {ਹੈਂਡਆਫ਼ ਦਾ ਝਲਕਾਉਣ ਵੇਖਣ ਤੋਂ ਪਹਿਲਾਂ ਹਰੇਕ PDS ਖੇਤਰ ਪੂਰਾ ਕਰੋ, ਪਿੰਨ ਕੀਤੀ ਇਮੇਜ਼ ਡਾਈਜੈਸਟ ਸਮੇਤ।}
 ::msgcat::mcset pa {Complete every typed container-host field before previewing this profile.} {ਇਸ ਪ੍ਰੋਫਾਈਲ ਦਾ ਪ੍ਰੀਵਿਊ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਹਰ ਟਾਈਪ ਕੀਤਾ container-host ਖੇਤਰ ਪੂਰਾ ਕਰੋ।}
 ::msgcat::mcset pa {Component configuration returned an invalid result; nothing was accepted as applied.} {ਕੰਪੋਨੈਂਟ ਕੌਂਫਿਗਰੇਸ਼ਨ ਨੇ ਅਵੈਧ ਨਤੀਜਾ ਦਿੱਤਾ; ਲਾਗੂ ਹੋਏ ਵਜੋਂ ਕੁਝ ਵੀ ਸਵੀਕਾਰ ਨਹੀਂ ਕੀਤਾ ਗਿਆ।}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset pa {Component options changed. Review the new preview before applying.} {ਕੰਪੋਨੈਂਟ ਵਿਕਲਪ ਬਦਲ ਗਏ। ਲਾਗੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਨਵੀਂ ਝਲਕ ਦੀ ਸਮੀਖਿਆ ਕਰੋ।}
 ::msgcat::mcset pa Components ਕੰਪੋਨੈਂਟ
 ::msgcat::mcset pa {Composer preview} {ਕੰਪੋਜ਼ਰ ਝਲਕ}
+::msgcat::mcset pa Config ਕੌਂਫਿਗ
+::msgcat::mcset pa {Config differs: %s} {ਕੌਂਫਿਗ ਵੱਖਰਾ ਹੈ: %s}
+::msgcat::mcset pa {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {ਕੌਂਫਿਗ ਲਾਗ: ਉਸ ਨੋਡ ਕੋਲ %1$s ਦੇ ਬਦਲਾਅ %3$s ਤੱਕ ਹਨ, ਇਸ ਗੇਟਵੇ ਕੋਲ %2$s ਤੱਕ}
+::msgcat::mcset pa {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {ਕੌਂਫਿਗ ਲਾਗ: ਇਸ ਗੇਟਵੇ ਕੋਲ %1$s ਦੇ ਬਦਲਾਅ %2$s ਤੱਕ ਹਨ, ਉਸ ਨੋਡ ਕੋਲ %3$s ਤੱਕ}
+::msgcat::mcset pa {Config only on that node: %s} {ਕੌਂਫਿਗ ਸਿਰਫ਼ ਉਸ ਨੋਡ 'ਤੇ: %s}
+::msgcat::mcset pa {Config only on this gateway: %s} {ਕੌਂਫਿਗ ਸਿਰਫ਼ ਇਸ ਗੇਟਵੇ 'ਤੇ: %s}
 ::msgcat::mcset pa Configure {ਕੌਂਫਿਗਰ ਕਰੋ}
 ::msgcat::mcset pa {Configure %s} {%s ਕੌਂਫਿਗਰ ਕਰੋ}
+::msgcat::mcset pa {Configure translator} {ਅਨੁਵਾਦਕ ਕੌਂਫਿਗਰ ਕਰੋ}
+::msgcat::mcset pa {Configured desktop gateway} {ਕੌਂਫਿਗਰ ਕੀਤਾ ਡੈਸਕਟਾਪ ਗੇਟਵੇ}
 ::msgcat::mcset pa Configure… {ਕੌਂਫਿਗਰ ਕਰੋ…}
 ::msgcat::mcset pa {Configuring %s} {%s ਕੌਂਫਿਗਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ}
 ::msgcat::mcset pa {Confirm or discard the current signed review before starting another download.} {ਕੋਈ ਹੋਰ ਡਾਊਨਲੋਡ ਸ਼ੁਰੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਮੌਜੂਦਾ ਹਸਤਾਖਰਿਤ ਸਮੀਖਿਆ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ ਜਾਂ ਰੱਦ ਕਰੋ।}
 ::msgcat::mcset pa {Container host: typed host plan and privileged CLI handoff} {ਕੰਟੇਨਰ ਹੋਸਟ: ਟਾਈਪ ਕੀਤਾ ਹੋਸਟ ਪਲਾਨ ਅਤੇ ਪ੍ਰਬੰਧਕ ਅਧਿਕਾਰਾਂ ਵਾਲਾ CLI ਹੈਂਡਆਫ}
 ::msgcat::mcset pa {Context window} {ਸੰਦਰਭ ਵਿੰਡੋ}
+::msgcat::mcset pa {Continue to next target} {ਅਗਲੇ ਨਿਸ਼ਾਨੇ 'ਤੇ ਜਾਰੀ ਰੱਖੋ}
+::msgcat::mcset pa {Contribute extensions: %s} {ਐਕਸਟੈਂਸ਼ਨ ਦਾ ਯੋਗਦਾਨ ਦਿਓ: %s}
+::msgcat::mcset pa Contribute… ਯੋਗਦਾਨ…
+::msgcat::mcset pa {Contribution branch} {ਯੋਗਦਾਨ ਬ੍ਰਾਂਚ}
+::msgcat::mcset pa {Contribution destination} {ਯੋਗਦਾਨ ਦੀ ਮੰਜ਼ਿਲ}
 ::msgcat::mcset pa Copy {ਕਾਪੀ ਕਰੋ}
 ::msgcat::mcset pa {Copy TOML} {TOML ਕਾਪੀ ਕਰੋ}
+::msgcat::mcset pa {Copy a bundled extension into your user plugin directory before preparing a contribution.} {ਯੋਗਦਾਨ ਤਿਆਰ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਬੰਡਲ ਕੀਤੇ ਐਕਸਟੈਂਸ਼ਨ ਨੂੰ ਆਪਣੀ ਉਪਭੋਗਤਾ ਪਲੱਗਇਨ ਡਾਇਰੈਕਟਰੀ ਵਿੱਚ ਕਾਪੀ ਕਰੋ।}
 ::msgcat::mcset pa {Copy message} {ਸੁਨੇਹਾ ਕਾਪੀ ਕਰੋ}
 ::msgcat::mcset pa {Copy name} {ਨਾਮ ਕਾਪੀ ਕਰੋ}
 ::msgcat::mcset pa {Copy nick} {ਨਿੱਕ ਕਾਪੀ ਕਰੋ}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset pa {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {ਕੰਪੋਨੈਂਟ ਖੋਜੇ ਨਹੀਂ ਜਾ ਸਕੇ। ਪ੍ਰੋਵਾਈਡਰ ਸੈੱਟਅੱਪ ਕਦਮ ਫਿਰ ਵੀ ਕੰਮ ਕਰਦੇ ਹਨ; ਲੋੜ ਪੈਣ 'ਤੇ ਨਿਸ਼ਾਨਾ ਮਸ਼ੀਨ 'ਤੇ CLI ਰਾਹੀਂ ਇੰਸਟਾਲ ਕਰੋ।}
 ::msgcat::mcset pa {Could not join: %s} {ਸ਼ਾਮਲ ਨਹੀਂ ਹੋ ਸਕਿਆ: %s}
 ::msgcat::mcset pa {Could not list the models (%s) — type the model's name.} {ਮਾਡਲਾਂ ਦੀ ਸੂਚੀ ਨਹੀਂ ਬਣ ਸਕੀ (%s) — ਮਾਡਲ ਦਾ ਨਾਮ ਟਾਈਪ ਕਰੋ।}
+::msgcat::mcset pa {Create a PR in} {ਵਿੱਚ PR ਬਣਾਓ}
+::msgcat::mcset pa {Create extension} {ਐਕਸਟੈਂਸ਼ਨ ਬਣਾਓ}
 ::msgcat::mcset pa {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {@BotFather ਨਾਲ ਬੋਟ ਬਣਾਓ, ਫਿਰ ਉਸਦਾ ਟੋਕਨ ਹੇਠਾਂ ਪੇਸਟ ਕਰੋ: ਇਹ ਇਨਕ੍ਰਿਪਟ ਕੀਤੀ ਤਿਜੋਰੀ ਵਿੱਚ ਜਾਂਦਾ ਹੈ, ਕਦੇ ਵੀ config.toml ਵਿੱਚ ਨਹੀਂ।}
+::msgcat::mcset pa {Create this extension?} {ਇਹ ਐਕਸਟੈਂਸ਼ਨ ਬਣਾਉਣਾ ਹੈ?}
+::msgcat::mcset pa {Create this generated extension?} {ਇਹ ਤਿਆਰ ਕੀਤਾ ਐਕਸਟੈਂਸ਼ਨ ਬਣਾਉਣਾ ਹੈ?}
+::msgcat::mcset pa {Created and reloaded. Review and test the extension before publishing.} {ਬਣਾਇਆ ਗਿਆ ਅਤੇ ਮੁੜ ਲੋਡ ਹੋਇਆ। ਪ੍ਰਕਾਸ਼ਿਤ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਐਕਸਟੈਂਸ਼ਨ ਦੀ ਸਮੀਖਿਆ ਅਤੇ ਜਾਂਚ ਕਰੋ।}
+::msgcat::mcset pa {Created, but reload failed} {ਬਣਾਇਆ ਗਿਆ, ਪਰ ਮੁੜ ਲੋਡ ਅਸਫਲ ਰਿਹਾ}
 ::msgcat::mcset pa {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {ਇੱਕ ਟੈਂਪਲੇਟ ਤੋਂ %s/<name>/SKILL.md ਬਣਾਉਂਦਾ ਹੈ ਅਤੇ ਇਸਨੂੰ ਖੋਲ੍ਹਦਾ ਹੈ। frontmatter ਦਾ ਵਰਣਨ ਹੀ ਇੱਕੋ ਇੱਕ ਹਿੱਸਾ ਹੈ ਜੋ ਪ੍ਰੋਂਪਟ ਇੰਡੈਕਸ ਤੱਕ ਪਹੁੰਚਦਾ ਹੈ, ਇਸ ਲਈ ਇਸ ਵਿੱਚ ਦੱਸੋ ਕਿ ਸਕਿੱਲ ਕਦੋਂ ਵਰਤਣਾ ਹੈ।}
 ::msgcat::mcset pa {Cron history} {Cron ਇਤਿਹਾਸ}
 ::msgcat::mcset pa {Cron jobs} {Cron ਕੰਮ}
 ::msgcat::mcset pa {Curated — write the first owner entry} {ਕਿਊਰੇਟਿਡ — ਪਹਿਲੀ owner ਐਂਟਰੀ ਲਿਖੋ}
 ::msgcat::mcset pa Cut ਕੱਟੋ
 ::msgcat::mcset pa Decline {ਇਨਕਾਰ ਕਰੋ}
+::msgcat::mcset pa {Dedicated translator} {ਅਲੱਗ ਅਨੁਵਾਦਕ}
 ::msgcat::mcset pa {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset pa Default ਮੂਲ
 ::msgcat::mcset pa {Default model} {ਮੂਲ ਮਾਡਲ}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset pa {Delete user} {ਉਪਭੋਗਤਾ ਮਿਟਾਓ}
 ::msgcat::mcset pa {Delete workspace?} {ਵਰਕਸਪੇਸ ਮਿਟਾਓ?}
 ::msgcat::mcset pa Deop {ਓਪ ਹਟਾਓ}
+::msgcat::mcset pa {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {ਬਦਲਾਅ ਦੱਸੋ। AI ਇਸ ਐਕਸਟੈਂਸ਼ਨ ਦੀਆਂ ਕਈ ਫ਼ਾਈਲਾਂ ਬਦਲ ਜਾਂ ਜੋੜ ਸਕਦਾ ਹੈ। ਹਰ ਫ਼ਾਈਲ ਡਿਫ਼ ਵਜੋਂ ਦਿਖਾਈ ਜਾਂਦੀ ਹੈ, ਅਤੇ ਤੁਹਾਡੀ ਪੁਸ਼ਟੀ ਤੋਂ ਪਹਿਲਾਂ ਕੁਝ ਨਹੀਂ ਲਿਖਿਆ ਜਾਂਦਾ।}
+::msgcat::mcset pa {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {ਬਦਲਾਅ ਦਾ ਵੇਰਵਾ ਦਿਓ। AI ਬਦਲਣ ਦਾ ਪ੍ਰਸਤਾਵ ਦੇ ਸਕਦਾ ਹੈ, ਪਰ ਜਦੋਂ ਤੱਕ ਤੁਸੀਂ ਡਿਫ਼ ਦੀ ਜਾਂਚ ਕਰਕੇ ਪੁਸ਼ਟੀ ਨਹੀਂ ਕਰਦੇ, ਇਹ ਇਸਨੂੰ ਲਿਖ ਨਹੀਂ ਸਕਦਾ।}
+::msgcat::mcset pa {Describe the requested extension change first.} {ਪਹਿਲਾਂ ਲੋੜੀਂਦੇ ਐਕਸਟੈਂਸ਼ਨ ਬਦਲਾਅ ਦਾ ਵੇਰਵਾ ਦਿਓ।}
+::msgcat::mcset pa Description ਵੇਰਵਾ
 ::msgcat::mcset pa {Desktop: local core, modules and process plugins} {ਡੈਸਕਟਾਪ: ਸਥਾਨਕ ਕੋਰ, ਮੌਡਿਊਲ ਅਤੇ ਪ੍ਰੋਸੈਸ ਪਲੱਗਇਨ}
 ::msgcat::mcset pa Detach {ਅਲੱਗ ਕਰੋ}
+::msgcat::mcset pa {Detach foreground} {ਫੋਰਗ੍ਰਾਉਂਡ ਅਲਗ ਕਰੋ}
 ::msgcat::mcset pa Dev ਡੀਵ
 ::msgcat::mcset pa {Dev pane (REPL + LSP)} {ਡੀਵ ਪੈਨ (REPL + LSP)}
 ::msgcat::mcset pa {Dev: arm / disarm live patching} {ਡੀਵ: ਲਾਈਵ ਪੈਚਿੰਗ ਚਾਲੂ / ਬੰਦ ਕਰੋ}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset pa Devoice {ਵੌਇਸ ਹਟਾਓ}
 ::msgcat::mcset pa {Discard review} {ਸਮੀਖਿਆ ਰੱਦ ਕਰੋ}
 ::msgcat::mcset pa {Discard your changes to %s?} {ਕੀ %s ਵਿੱਚ ਆਪਣੀਆਂ ਤਬਦੀਲੀਆਂ ਰੱਦ ਕਰਨੀਆਂ ਹਨ?}
+::msgcat::mcset pa {Disk: %1$s free of %2$s at %3$s} {ਡਿਸਕ: %3$s 'ਤੇ %2$s ਵਿੱਚੋਂ %1$s ਖ਼ਾਲੀ}
 ::msgcat::mcset pa Done {ਹੋ ਗਿਆ}
 ::msgcat::mcset pa {Done — config written} {ਹੋ ਗਿਆ — config ਲਿਖਿਆ ਗਿਆ}
 ::msgcat::mcset pa {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {ਇੰਸਟਾਲ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਰਿਲੀਜ਼ ਮੈਨੀਫੈਸਟ ਅਤੇ ਹੋਸਟ ਆਰਕਾਈਵ ਡਾਊਨਲੋਡ ਕਰਕੇ ਪੜਤਾਲ ਕਰੋ। ਸਾਰੇ ਪੰਜ ਪਛਾਣ ਖੇਤਰ ਲਾਜ਼ਮੀ ਹਨ। ਗੇਟਵੇ ਨਿੱਜੀ ਸਟੇਜਡ ਆਰਕਾਈਵ ਰੱਖਦਾ ਹੈ; ਇਸ ਪ੍ਰੀਵਿਊ ਨਾਲ ਕੁਝ ਵੀ ਇੰਸਟਾਲ ਨਹੀਂ ਹੁੰਦਾ।}
 ::msgcat::mcset pa {Downloading and verifying the signed release…} {ਹਸਤਾਖਰਿਤ ਰਿਲੀਜ਼ ਡਾਊਨਲੋਡ ਕਰਕੇ ਪੜਤਾਲ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ…}
+::msgcat::mcset pa {Draft this as an extension?} {ਇਸਨੂੰ ਐਕਸਟੈਂਸ਼ਨ ਵਜੋਂ ਡਰਾਫ਼ਟ ਕਰਨਾ ਹੈ?}
 ::msgcat::mcset pa {Drag to scroll; a quick swipe goes further.} {ਸਕ੍ਰੋਲ ਕਰਨ ਲਈ ਖਿੱਚੋ; ਤੇਜ਼ ਸਵਾਈਪ ਹੋਰ ਅੱਗੇ ਲੈ ਜਾਂਦਾ ਹੈ।}
+::msgcat::mcset pa {Drift check failed: %s} {ਡ੍ਰਿਫਟ ਜਾਂਚ ਫੇਲ੍ਹ ਹੋਈ: %s}
+::msgcat::mcset pa {Drift check: %s node(s) differ from this gateway.} {ਡ੍ਰਿਫਟ ਜਾਂਚ: %s ਨੋਡ ਇਸ ਗੇਟਵੇ ਤੋਂ ਵੱਖਰੇ ਹਨ।}
+::msgcat::mcset pa {Drift: built from revision %1$s, this gateway from %2$s} {ਡ੍ਰਿਫਟ: ਰੀਵਿਜ਼ਨ %1$s ਤੋਂ ਬਣਿਆ, ਇਹ ਗੇਟਵੇ %2$s ਤੋਂ}
+::msgcat::mcset pa {Drift: none — same version, revision and replicated config} {ਡ੍ਰਿਫਟ: ਕੋਈ ਨਹੀਂ — ਇੱਕੋ ਵਰਜ਼ਨ, ਰੀਵਿਜ਼ਨ ਅਤੇ ਨਕਲ ਕੀਤਾ ਕੌਂਫਿਗ}
+::msgcat::mcset pa {Drift: not compared — %s} {ਡ੍ਰਿਫਟ: ਤੁਲਨਾ ਨਹੀਂ ਕੀਤੀ — %s}
+::msgcat::mcset pa {Drift: runs version %1$s, this gateway %2$s} {ਡ੍ਰਿਫਟ: ਵਰਜ਼ਨ %1$s ਚਲਾ ਰਿਹਾ ਹੈ, ਇਹ ਗੇਟਵੇ %2$s}
+::msgcat::mcset pa Drift… ਡ੍ਰਿਫਟ…
 ::msgcat::mcset pa {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset pa {ESC %s is not bound} {ESC %s ਬੰਨ੍ਹਿਆ ਨਹੀਂ ਹੈ}
 ::msgcat::mcset pa {ESC- … (Meta prefix)} {ESC- … (Meta ਅਗੇਤਰ)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset pa Edit… ਸੋਧੋ…
 ::msgcat::mcset pa {Enable / disable} {ਚਾਲੂ / ਬੰਦ}
 ::msgcat::mcset pa {Enable the Telegram adapter} {Telegram ਐਡਾਪਟਰ ਚਾਲੂ ਕਰੋ}
+::msgcat::mcset pa Endpoint ਐਂਡਪੁਆਇੰਟ
 ::msgcat::mcset pa Engine ਇੰਜਣ
 ::msgcat::mcset pa Eval→gw Eval→gw
 ::msgcat::mcset pa {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {%s ਦੀ ਹਰ ਤਬਦੀਲੀ ਕਮਿਟ ਹੁੰਦੀ ਹੈ। ਰੀਸਟੋਰ ਕਰਨ ਨਾਲ ਪੂਰੀ ਡਾਇਰੈਕਟਰੀ ਉਸ ਕਮਿਟ ਉੱਤੇ ਵਾਪਸ ਚਲੀ ਜਾਂਦੀ ਹੈ — ਅਤੇ ਪਹਿਲਾਂ ਮੌਜੂਦਾ ਸਥਿਤੀ ਦਾ ਸਨੈਪਸ਼ਾਟ ਲਿਆ ਜਾਂਦਾ ਹੈ, ਇਸ ਲਈ ਇਹ ਇੱਕ-ਪਾਸੇ ਵਾਲਾ ਦਰਵਾਜ਼ਾ ਨਹੀਂ ਹੈ।}
 ::msgcat::mcset pa {Every plugin file goes back to that commit. The current state is committed first.} {ਹਰ ਪਲੱਗਇਨ ਫਾਈਲ ਉਸ ਕਮਿਟ ਉੱਤੇ ਵਾਪਸ ਚਲੀ ਜਾਂਦੀ ਹੈ। ਮੌਜੂਦਾ ਸਥਿਤੀ ਪਹਿਲਾਂ ਕਮਿਟ ਕੀਤੀ ਜਾਂਦੀ ਹੈ।}
+::msgcat::mcset pa {Exact commit} {ਸਹੀ ਕਮਿਟ}
+::msgcat::mcset pa {Exact permission rule} {ਸਹੀ ਇਜਾਜ਼ਤ ਨਿਯਮ}
+::msgcat::mcset pa {Example: a hook} {ਉਦਾਹਰਨ: ਇੱਕ ਹੁੱਕ}
+::msgcat::mcset pa {Example: a provider driver} {ਉਦਾਹਰਣ: ਪ੍ਰੋਵਾਈਡਰ ਡਰਾਈਵਰ}
+::msgcat::mcset pa {Example: a service override wrapping core} {ਉਦਾਹਰਨ: ਕੋਰ ਨੂੰ ਲਪੇਟਣ ਵਾਲਾ service override}
+::msgcat::mcset pa {Example: a tool} {ਉਦਾਹਰਣ: ਇੱਕ ਟੂਲ}
 ::msgcat::mcset pa {Existing shared container network} {ਮੌਜੂਦਾ ਸਾਂਝਾ ਕੰਟੇਨਰ ਨੈਟਵਰਕ}
+::msgcat::mcset pa Explain ਸਮਝਾਓ
+::msgcat::mcset pa {Explain the diagnostics} {ਡਾਇਗਨੋਸਟਿਕਸ ਸਮਝਾਓ}
 ::msgcat::mcset pa Export… {ਨਿਰਯਾਤ ਕਰੋ…}
+::msgcat::mcset pa {Extension API} {ਐਕਸਟੈਂਸ਼ਨ API}
+::msgcat::mcset pa {Extension development} {ਐਕਸ਼ਨਸ਼ਨ ਵਿਕਾਸ}
+::msgcat::mcset pa {Extension guide} {ਐਕਸ਼ਨਸ਼ਨ ਗਾਈਡ}
+::msgcat::mcset pa {Extension source} {ਐਕਸਟੈਂਸ਼ਨ ਸਰੋਤ}
 ::msgcat::mcset pa {Failover blueprint} {ਫੇਲਓਵਰ ਬਲੂਪ੍ਰਿੰਟ}
 ::msgcat::mcset pa {Failover blueprint (edit the route chain)} {ਫੇਲਓਵਰ ਬਲੂਪ੍ਰਿੰਟ (ਰੂਟ ਚੇਨ ਸੋਧੋ)}
 ::msgcat::mcset pa {Failover hook script (what `script` mode runs)} {ਫੇਲਓਵਰ ਹੁੱਕ ਸਕ੍ਰਿਪਟ (`script` ਮੋਡ ਕੀ ਚਲਾਉਂਦਾ ਹੈ)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset pa {Find in transcript} {ਟ੍ਰਾਂਸਕ੍ਰਿਪਟ ਵਿੱਚ ਲੱਭੋ}
 ::msgcat::mcset pa {Find in transcript…} {ਟ੍ਰਾਂਸਕ੍ਰਿਪਟ ਵਿੱਚ ਲੱਭੋ…}
 ::msgcat::mcset pa {Find references} {ਹਵਾਲੇ ਲੱਭੋ}
+::msgcat::mcset pa {Finish rollback} {ਰੋਲਬੈਕ ਪੂਰਾ ਕਰੋ}
 ::msgcat::mcset pa {First run: no config.toml yet.} {ਪਹਿਲੀ ਚੱਲਣ: ਹਾਲੇ ਕੋਈ config.toml ਨਹੀਂ।}
+::msgcat::mcset pa {Fix the failed syntax checks before preparing a contribution.} {ਯੋਗਦਾਨ ਤਿਆਰ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਅਸਫਲ ਸਿੰਟੈਕਸ ਜਾਂਚਾਂ ਠੀਕ ਕਰੋ।}
+::msgcat::mcset pa {Fleet deployment} {ਫਲੀਟ ਤਾਇਨਾਤੀ}
+::msgcat::mcset pa {Fleet deployment runs from a desktop computer; it is not available on Android.} {ਫਲੀਟ ਤਾਇਨਾਤੀ ਡੈਸਕਟਾਪ ਕੰਪਿਊਟਰ ਤੋਂ ਚੱਲਦੀ ਹੈ; ਇਹ Android 'ਤੇ ਉਪਲਬਧ ਨਹੀਂ।}
+::msgcat::mcset pa {Fleet deploy…} {ਫਲੀਟ ਤਾਇਨਾਤ…}
+::msgcat::mcset pa {Fleet drift} {ਫਲੀਟ ਡ੍ਰਿਫਟ}
 ::msgcat::mcset pa {Fold / unfold} {ਫੋਲਡ / ਅਨਫੋਲਡ}
 ::msgcat::mcset pa {Forget declaration} {ਘੋਸ਼ਣਾ ਭੁੱਲ ਜਾਓ}
+::msgcat::mcset pa {Forget node %s?} {ਨੋਡ %s ਭੁੱਲ ਜਾਣਾ ਹੈ?}
+::msgcat::mcset pa {Forget node…} {ਨੋਡ ਭੁੱਲੋ…}
+::msgcat::mcset pa {Forgetting %1$s failed: %2$s} {%1$s ਭੁਲਾਉਣਾ ਫੇਲ੍ਹ: %2$s}
+::msgcat::mcset pa {Forgot node %s.} {ਨੋਡ %s ਭੁੱਲ ਗਿਆ।}
+::msgcat::mcset pa {Forgotten fleet-wide (refused until they heartbeat again): %s} {ਪੂਰੇ ਫਲੀਟ ਵਿੱਚ ਭੁਲਾ ਦਿੱਤਾ (ਦੁਬਾਰਾ ਹਾਰਟਬੀਟ ਆਉਣ ਤੱਕ ਇਨਕਾਰ): %s}
 ::msgcat::mcset pa Fork {ਸ਼ਾਖਾ ਬਣਾਓ}
 ::msgcat::mcset pa {Free space} {ਖ਼ਾਲੀ ਥਾਂ}
 ::msgcat::mcset pa {Full source commit SHA} {ਪੂਰਾ ਸੋਰਸ ਕਮਿਟ SHA}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset pa {Gateway image sha256 digest} {ਗੇਟਵੇ ਇਮੇਜ sha256 ਡਾਇਜੈਸਟ}
 ::msgcat::mcset pa {Gateway quadlet name} {ਗੇਟਵੇ quadlet ਨਾਮ}
 ::msgcat::mcset pa {Gateway status} {ਗੇਟਵੇ ਸਥਿਤੀ}
+::msgcat::mcset pa {Generate with AI…} {AI ਨਾਲ ਤਿਆਰ ਕਰੋ…}
+::msgcat::mcset pa {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {%s ਵੱਲੋਂ ਤਿਆਰ ਕੀਤਾ — ਕੁਝ ਵੀ ਨਹੀਂ ਲਿਖਿਆ ਗਿਆ। ਹਰ ਫ਼ਾਈਲ ਦੀ ਸਮੀਖਿਆ ਕਰੋ, ਫਿਰ Create extension ਬਿਲਕੁਲ ਇਹੀ ਲਿਖਦਾ ਹੈ।}
 ::msgcat::mcset pa {Get a key at %s} {%s 'ਤੇ key ਲਵੋ}
 ::msgcat::mcset pa {GitHub release URL} {GitHub ਰਿਲੀਜ਼ URL}
+::msgcat::mcset pa {Give the extension a name and describe what it should do (the purpose), then generate.} {ਐਕਸਟੈਂਸ਼ਨ ਨੂੰ ਨਾਮ ਦਿਓ ਅਤੇ ਦੱਸੋ ਕਿ ਇਹ ਕੀ ਕਰੇ (ਮਕਸਦ), ਫਿਰ ਤਿਆਰ ਕਰੋ।}
 ::msgcat::mcset pa {Give up} {ਛੱਡ ਦਿਓ}
 ::msgcat::mcset pa Go ਚੱਲੋ
 ::msgcat::mcset pa {Go to definition} {ਪਰਿਭਾਸ਼ਾ 'ਤੇ ਜਾਓ}
+::msgcat::mcset pa {Gossip failed: %s} {ਗੌਸਿਪ ਫੇਲ੍ਹ: %s}
+::msgcat::mcset pa {Gossip now} {ਹੁਣੇ ਗੌਸਿਪ ਕਰੋ}
+::msgcat::mcset pa {Gossip with %1$s: %2$s} {%1$s ਨਾਲ ਗੌਸਿਪ: %2$s}
+::msgcat::mcset pa {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {ਗੌਸਿਪ: %2$s ਸਾਥੀਆਂ ਵਿੱਚੋਂ %1$s ਨੇ ਜਵਾਬ ਦਿੱਤਾ (%3$s)।}
 ::msgcat::mcset pa Grant ਦਿਓ
 ::msgcat::mcset pa {Grant access} {ਪਹੁੰਚ ਦਿਓ}
+::msgcat::mcset pa {Granted at} {ਇਜਾਜ਼ਤ ਦਿੱਤੀ ਗਈ}
 ::msgcat::mcset pa Grant… ਦਿਓ…
 ::msgcat::mcset pa {Guards — what the harness stops, and where it stands now} {Guards — ਹਾਰਨੈੱਸ ਕੀ ਰੋਕਦਾ ਹੈ, ਅਤੇ ਇਹ ਹੁਣ ਕਿੱਥੇ ਖੜ੍ਹਾ ਹੈ}
 ::msgcat::mcset pa {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {ਹੈਂਡਲਰ ਦਿਖਾਏ ਗਏ ਕ੍ਰਮ ਵਿੱਚ ਚੱਲਦੇ ਹਨ; ਜੋ ਪਹਿਲਾ ਗੈਰ-ਖਾਲੀ ਮੁੱਲ ਦਿੰਦਾ ਹੈ ਉਹ ਜਿੱਤਦਾ ਹੈ। ਇੱਕ ਨੂੰ ਬੰਦ ਕਰਨ ਨਾਲ ਉਹ ਛੱਡ ਦਿੱਤਾ ਜਾਂਦਾ ਹੈ ਪਰ ਰਜਿਸਟਰ ਤੋਂ ਨਹੀਂ ਹਟਦਾ, ਅਤੇ ਇਹ ਚੋਣ config.toml ਵਿੱਚ ਰੱਖੀ ਜਾਂਦੀ ਹੈ ਤਾਂ ਕਿ ਪਲੱਗਇਨ ਰੀਲੋਡ ਇਸਨੂੰ ਚੁੱਪ-ਚਾਪ ਵਾਪਸ ਚਾਲੂ ਨਾ ਕਰ ਸਕੇ।}
+::msgcat::mcset pa Health ਸਿਹਤ
+::msgcat::mcset pa {Health alerts (%s):} {ਸਿਹਤ ਚੇਤਾਵਨੀਆਂ (%s):}
+::msgcat::mcset pa Heartbeat ਹਾਰਟਬੀਟ
+::msgcat::mcset pa {Heartbeat age: %s s} {ਹਾਰਟਬੀਟ ਦੀ ਉਮਰ: %s s}
 ::msgcat::mcset pa Help ਮਦਦ
 ::msgcat::mcset pa {Help & keys} {ਮਦਦ ਅਤੇ ਕੁੰਜੀਆਂ}
 ::msgcat::mcset pa {Hide right panes} {ਸੱਜੇ ਪੈਨ ਲੁਕਾਓ}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset pa {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {ਦਬਾਈ ਰੱਖੋ, ਫਿਰ ਉਂਗਲ ਚੁੱਕਣ ਤੋਂ ਪਹਿਲਾਂ ਖਿੱਚੋ: ਚੋਣ ਸ਼ਬਦ-ਦਰ-ਸ਼ਬਦ ਤੁਹਾਡੀ ਉਂਗਲ ਦੇ ਪਿੱਛੇ ਚੱਲਦੀ ਹੈ, ਉੱਪਰਲੇ ਜਾਂ ਹੇਠਲੇ ਕਿਨਾਰੇ 'ਤੇ ਸਕ੍ਰੋਲ ਕਰਦੀ ਹੋਈ।}
 ::msgcat::mcset pa Hooks ਹੁੱਕ
 ::msgcat::mcset pa {Hooks (what plugins run on)} {ਹੁੱਕ (ਪਲੱਗਇਨ ਕੀ ਚਲਾਉਂਦੇ ਹਨ)}
+::msgcat::mcset pa Host ਹੋਸਟ
 ::msgcat::mcset pa {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {ਦਬਾਈ ਰੱਖਣ ਨੂੰ ਕਿੰਨਾ ਸਮਾਂ ਲੱਗਦਾ ਹੈ, ਇਹ Android ਦੀ ਛੋਹ ਕੇ ਦਬਾਈ ਰੱਖਣ ਦੀ ਦੇਰੀ ਤੈਅ ਕਰਦੀ ਹੈ, ਇਸਦੀਆਂ ਪਹੁੰਚਯੋਗਤਾ ਸੈਟਿੰਗਾਂ ਵਿੱਚ।}
 ::msgcat::mcset pa {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {ਮੈਂ KEK ਅਤੇ PLC ਰੋਟੇਸ਼ਨ ਕੁੰਜੀ ਨੂੰ ਆਫ਼ਲਾਈਨ ਬੈਕਅੱਪ ਕੀਤਾ ਸੀ; ਸਮੀਖਿਆ ਕੀਤਾ TLS ਅਤੇ ਸਰਗਰਮੀ ਹੈਂਡਆਫ ਮਨਜ਼ੂਰ ਕਰੋ}
 ::msgcat::mcset pa {I-search backward: type to search, C-r for previous} {I-search ਪਿੱਛੇ ਵੱਲ: ਖੋਜਣ ਲਈ ਟਾਈਪ ਕਰੋ, ਪਿਛਲੇ ਲਈ C-r}
 ::msgcat::mcset pa {I-search: type to search, C-s for next} {I-search: ਖੋਜਣ ਲਈ ਟਾਈਪ ਕਰੋ, ਅਗਲੇ ਲਈ C-s}
+::msgcat::mcset pa {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {IO ਦਬਾਅ: ਸਮੇਂ ਦਾ %1$s%% / %2$s%% / %3$s%% ਕੋਈ ਕੰਮ ਉਡੀਕਦਾ ਰਿਹਾ (10 s / 1 min / 5 min)}
 ::msgcat::mcset pa IRC IRC
 ::msgcat::mcset pa {IRC buffers} {IRC ਬਫਰ}
 ::msgcat::mcset pa {IRC composer} {IRC ਕੰਪੋਜ਼ਰ}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset pa {IRC split: %s} {IRC ਵੰਡ: %s}
 ::msgcat::mcset pa {IRC transcript} {IRC ਟਰਾਂਸਕ੍ਰਿਪਟ}
 ::msgcat::mcset pa {IRC — nothing to show} {IRC — ਦਿਖਾਉਣ ਲਈ ਕੁਝ ਨਹੀਂ}
+::msgcat::mcset pa {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {ਚੱਲ ਰਹੇ: %1$s ਟਰਨ %2$s, %3$s ਬੈਕਗਰਾਊਂਡ ਕੰਮ %4$s}
 ::msgcat::mcset pa {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {%s ਨੂੰ ਪ੍ਰਬੰਧਿਤ ਕੰਪੋਨੈਂਟ ਸਟੋਰ ਵਿੱਚ ਇੰਸਟਾਲ ਕਰੀਏ? ਇਸਦਾ ਮੈਨੀਫੈਸਟ ਵਿਖਾਇਆ ਜਾ ਚੁੱਕਾ ਹੈ; ਇਹ ਕੋਈ ਸੇਵਾ ਸ਼ੁਰੂ ਨਹੀਂ ਕਰਦਾ।}
 ::msgcat::mcset pa {Install component} {ਕੰਪੋਨੈਂਟ ਇੰਸਟਾਲ ਕਰੋ}
 ::msgcat::mcset pa {Install components…} {ਕੰਪੋਨੈਂਟ ਇੰਸਟਾਲ ਕਰੋ…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset pa Instances ਇੰਸਟੈਂਸਾਂ
 ::msgcat::mcset pa {It becomes the current content, as a new revision — so the restore can be undone too.} {ਇਹ ਨਵੇਂ ਰੀਵਿਜ਼ਨ ਵਜੋਂ ਮੌਜੂਦਾ ਸਮੱਗਰੀ ਬਣ ਜਾਂਦੀ ਹੈ — ਇਸ ਲਈ ਬਹਾਲੀ ਨੂੰ ਵੀ ਵਾਪਸ ਲਿਆ ਜਾ ਸਕਦਾ ਹੈ।}
 ::msgcat::mcset pa {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {ਇਹ ਇਸ ਮਸ਼ੀਨ ਦੀ ਇਨਕ੍ਰਿਪਟ ਕੀਤੀ ਤਿਜੋਰੀ ਵਿੱਚ ਜਾਂਦਾ ਹੈ। ਏਜੰਟ ਇਸਨੂੰ ਕਦੇ ਨਹੀਂ ਵੇਖਦਾ: ਉਹ ਇਸਨੂੰ ਸਿਰਫ਼ ਕਮਾਂਡਾਂ ਵਿੱਚ $%s ਵਜੋਂ ਵਰਤ ਸਕਦਾ ਹੈ, ਜਾਂ ਮਨਜ਼ੂਰ ਹੋਸਟਾਂ ਨੂੰ ਭੇਜ ਸਕਦਾ ਹੈ।}
+::msgcat::mcset pa {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {ਇਹ ਪੂਰੇ ਫਲੀਟ ਦੀ ਕਲਸਟਰ ਰਜਿਸਟਰੀ ਵਿੱਚੋਂ ਹਟਾ ਦਿੱਤਾ ਜਾਂਦਾ ਹੈ: ਅਗਲਾ ਗੌਸਿਪ ਆਦਾਨ-ਪ੍ਰਦਾਨ ਹਰ 0.2.0 ਸਾਥੀ ਨੂੰ ਵੀ ਇਸਨੂੰ ਹਟਾਉਣ ਲਈ ਦੱਸਦਾ ਹੈ, ਅਤੇ ਉਹਨਾਂ ਵਿੱਚੋਂ ਕੋਈ ਇਸਨੂੰ ਵਾਪਸ ਨਹੀਂ ਮਿਲਾਉਂਦਾ। 0.2.0 ਤੋਂ ਪੁਰਾਣਾ ਸਾਥੀ ਇਸਨੂੰ ਦਿਖਾਉਂਦਾ ਰਹਿੰਦਾ ਹੈ। ਜੇ ਮਸ਼ੀਨ ਵਾਪਸ ਆ ਕੇ ਹਾਰਟਬੀਟ ਕਰਦੀ ਹੈ ਤਾਂ ਇਹ ਮੁੜ ਰਜਿਸਟਰ ਹੋ ਜਾਂਦੀ ਹੈ। ਸਿੰਕ ਸਾਥੀ ਅਤੇ ਸੰਭਾਲੇ ਇੰਸਟੈਂਸ ਅਛੂਤੇ ਰਹਿੰਦੇ ਹਨ।}
 ::msgcat::mcset pa {It leaves memory now. Its history keeps every revision, and History… can restore it.} {ਇਹ ਹੁਣ ਯਾਦਦਾਸ਼ਤ ਵਿੱਚੋਂ ਨਿਕਲ ਜਾਵੇਗੀ। ਇਸਦਾ ਇਤਿਹਾਸ ਹਰ ਰੀਵਿਜ਼ਨ ਰੱਖਦਾ ਹੈ, ਅਤੇ ਇਤਿਹਾਸ… ਇਸਨੂੰ ਵਾਪਸ ਲਿਆ ਸਕਦਾ ਹੈ।}
 ::msgcat::mcset pa Join {ਸ਼ਾਮਲ ਹੋਵੋ}
 ::msgcat::mcset pa {Join a pool} {ਮਸ਼ੀਨਾਂ ਦੇ ਸਮੂਹ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset pa {Language (i18n)} {ਭਾਸ਼ਾ (i18n)}
 ::msgcat::mcset pa Language… ਭਾਸ਼ਾ…
 ::msgcat::mcset pa {Last active} {ਆਖਰੀ ਵਾਰ ਸਰਗਰਮ}
+::msgcat::mcset pa {Last probe: %1$s — %2$s} {ਆਖਰੀ ਜਾਂਚ: %1$s — %2$s}
 ::msgcat::mcset pa {Leave %s?} {%s ਛੱਡੋ?}
 ::msgcat::mcset pa Leave… ਛੱਡੋ…
 ::msgcat::mcset pa {Legacy open — no [acl] section} {ਪੁਰਾਣਾ ਖੁੱਲ੍ਹਾ — ਕੋਈ [acl] ਸੈਕਸ਼ਨ ਨਹੀਂ}
 ::msgcat::mcset pa {Let %s:} {%s ਨੂੰ ਇਹ ਕਰਨ ਦਿਓ:}
 ::msgcat::mcset pa {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {ਅੱਖਰ, ਅੰਕ, - ਅਤੇ _। plugin.toml ਅਤੇ ਇੱਕ plugin.tcl ਬਣਾਉਂਦਾ ਹੈ ਜੋ post_llm_call ਹੁੱਕ ਰਜਿਸਟਰ ਕਰਦਾ ਹੈ, ਫਿਰ ਇਸਨੂੰ Dev ਪੈਨ ਵਿੱਚ ਖੋਲ੍ਹਦਾ ਹੈ।}
+::msgcat::mcset pa Level ਪੱਧਰ
 ::msgcat::mcset pa {Lift lockdown} {ਲੌਕਡਾਊਨ ਹਟਾਓ}
+::msgcat::mcset pa Lines ਲਾਈਨਾਂ
 ::msgcat::mcset pa {List the provider's models} {ਪ੍ਰੋਵਾਈਡਰ ਦੇ ਮਾਡਲਾਂ ਦੀ ਸੂਚੀ ਬਣਾਓ}
+::msgcat::mcset pa Load ਲੋਡ
 ::msgcat::mcset pa {Load more} {ਹੋਰ ਲੋਡ ਕਰੋ}
 ::msgcat::mcset pa {Loading discovered components…} {ਖੋਜੇ ਗਏ ਕੰਪੋਨੈਂਟ ਲੋਡ ਹੋ ਰਹੇ ਹਨ…}
 ::msgcat::mcset pa {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {ਸਥਾਨਕ ਬੰਡਲ ਦੀ ਸਮੀਖਿਆ ਕੀਤੀ ਗਈ। ਇੰਸਟਾਲੇਸ਼ਨ ਦੀ ਪੁਸ਼ਟੀ ਲਈ Install selected component ਚੁਣੋ; ਕੁਝ ਵੀ ਇੰਸਟਾਲ ਨਹੀਂ ਹੋਇਆ।}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset pa {Lock down} {ਲੌਕ ਕਰ ਦਿਓ}
 ::msgcat::mcset pa Log ਲੌਗ
 ::msgcat::mcset pa {Log (engine + status)} {ਲੌਗ (ਇੰਜਣ + ਸਥਿਤੀ)}
+::msgcat::mcset pa {Log of %s} {%s ਦਾ ਲੌਗ}
+::msgcat::mcset pa Logs… ਲੌਗ…
 ::msgcat::mcset pa {M-g- (g: goto line)} {M-g- (g: ਲਾਈਨ ਉੱਤੇ ਜਾਓ)}
 ::msgcat::mcset pa {M-p/M-n history · Tab complete} {M-p/M-n ਇਤਿਹਾਸ · Tab ਪੂਰਾ ਕਰੋ}
 ::msgcat::mcset pa {MCP server list} {MCP ਸਰਵਰ ਸੂਚੀ}
 ::msgcat::mcset pa {MCP servers (from config.toml)} {MCP ਸਰਵਰ (config.toml ਤੋਂ)}
 ::msgcat::mcset pa {Make default} {ਮੂਲ ਬਣਾਓ}
 ::msgcat::mcset pa {Make default (config.toml)} {ਡਿਫ਼ੌਲਟ ਬਣਾਓ (config.toml)}
+::msgcat::mcset pa {Manage extensions} {ਐਕਸ਼ਨਸ਼ਨਾਂ ਦਾ ਪ੍ਰਬੰਧ ਕਰੋ}
 ::msgcat::mcset pa {Manifest SHA-256} {ਮੈਨੀਫੈਸਟ SHA-256}
 ::msgcat::mcset pa {Mark read} {ਪੜ੍ਹਿਆ ਵਜੋਂ ਨਿਸ਼ਾਨ ਲਗਾਓ}
 ::msgcat::mcset pa {Mechanisms (what the engine does on its own)} {ਤਰੀਕੇ (ਇੰਜਣ ਆਪ ਕੀ ਕਰਦਾ ਹੈ)}
 ::msgcat::mcset pa {Mechanisms — what the engine does on its own, and how to stop it} {Mechanisms — ਇੰਜਣ ਆਪਣੇ ਆਪ ਕੀ ਕਰਦਾ ਹੈ, ਅਤੇ ਇਸਨੂੰ ਕਿਵੇਂ ਰੋਕਣਾ ਹੈ}
 ::msgcat::mcset pa Memory ਯਾਦਦਾਸ਼ਤ
 ::msgcat::mcset pa {Memory history} {ਯਾਦਦਾਸ਼ਤ ਇਤਿਹਾਸ}
+::msgcat::mcset pa {Memory: %1$s available of %2$s (%3$s%% used)} {ਮੈਮਰੀ: %2$s ਵਿੱਚੋਂ %1$s ਉਪਲਬਧ (%3$s%% ਵਰਤੀ ਗਈ)}
+::msgcat::mcset pa {Merge the received %s into this node?} {ਪ੍ਰਾਪਤ %s ਨੂੰ ਇਸ ਨੋਡ ਵਿੱਚ ਮਿਲਾਉਣਾ ਹੈ?}
 ::msgcat::mcset pa Messages ਸੁਨੇਹੇ
+::msgcat::mcset pa Metrics ਮੈਟ੍ਰਿਕਸ
+::msgcat::mcset pa {Metrics (asked %s):} {ਮੈਟ੍ਰਿਕਸ (%s 'ਤੇ ਪੁੱਛੇ):}
+::msgcat::mcset pa {Metrics of %1$s failed: %2$s} {%1$s ਦੇ ਮੈਟ੍ਰਿਕਸ ਫੇਲ੍ਹ: %2$s}
+::msgcat::mcset pa {Metrics of %s received.} {%s ਦੇ ਮੈਟ੍ਰਿਕਸ ਪ੍ਰਾਪਤ ਹੋਏ।}
+::msgcat::mcset pa {Metrics: not asked yet — use Metrics.} {ਮੈਟ੍ਰਿਕਸ: ਹਾਲੇ ਨਹੀਂ ਪੁੱਛੇ — Metrics ਵਰਤੋ।}
 ::msgcat::mcset pa Model ਮਾਡਲ
 ::msgcat::mcset pa {Model for this session} {ਇਸ ਸੈਸ਼ਨ ਲਈ ਮਾਡਲ}
 ::msgcat::mcset pa {Models & settings} {ਮਾਡਲ ਅਤੇ ਸੈਟਿੰਗਾਂ}
+::msgcat::mcset pa Monitors ਮਾਨੀਟਰ
+::msgcat::mcset pa Name ਨਾਮ
+::msgcat::mcset pa {Need an account? Optional sign-up links (open in your browser):} {ਖਾਤਾ ਚਾਹੀਦਾ ਹੈ? ਇੱਛਕ ਸਾਈਨ-ਅੱਪ ਲਿੰਕ (ਤੁਹਾਡੇ ਬ੍ਰਾਉਜ਼ਰ ਵਿੱਚ ਖੁੱਲ੍ਹਦੇ ਹਨ):}
 ::msgcat::mcset pa Network ਨੈੱਟਵਰਕ
 ::msgcat::mcset pa {New alias} {ਨਵਾਂ ਉਪਨਾਮ}
+::msgcat::mcset pa {New branch name} {ਨਵੀਂ ਬ੍ਰਾਂਚ ਦਾ ਨਾਮ}
 ::msgcat::mcset pa {New cron job} {ਨਵਾਂ cron ਕੰਮ}
+::msgcat::mcset pa {New extension} {ਨਵਾਂ ਐਕਸ਼ਨਸ਼ਨ}
 ::msgcat::mcset pa {New memory file} {ਨਵੀਂ ਯਾਦਦਾਸ਼ਤ ਫ਼ਾਈਲ}
 ::msgcat::mcset pa {New plugin} {ਨਵਾਂ ਪਲੱਗਇਨ}
 ::msgcat::mcset pa {New session} {ਨਵਾਂ ਸੈਸ਼ਨ}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset pa Next ਅੱਗੇ
 ::msgcat::mcset pa Nickname ਨਿੱਕਨੇਮ
 ::msgcat::mcset pa {NixOS: emit a module snippet; do not edit host declarations} {NixOS: ਮੌਡਿਊਲ ਸਨੀਪਟ ਬਣਾਓ; ਹੋਸਟ ਘੋਸ਼ਣਾਵਾਂ ਵਿੱਚ ਸੋਧ ਨਾ ਕਰੋ}
+::msgcat::mcset pa {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {ਇਸ ਨੋਡ ਲਈ ਕੋਈ SSH lifecycle target ਕੌਂਫਿਗਰ ਨਹੀਂ ਹੈ। ਇਸਨੂੰ ਤੈਨਾਤ ਜਾਂ ਮੁੜ ਚਾਲੂ ਕਰਨ ਲਈ ਸਪੱਸ਼ਟ ਤੌਰ 'ਤੇ ਇੱਕ instance ਜੋੜੋ।}
+::msgcat::mcset pa {No additional push happens.} {ਕੋਈ ਵਾਧੂ ਪੁਸ਼ ਨਹੀਂ ਕੀਤੀ ਜਾਂਦੀ।}
 ::msgcat::mcset pa {No apps yet. Ask the agent to make one: “make me an app that…”} {ਅਜੇ ਕੋਈ ਐਪ ਨਹੀਂ। ਏਜੰਟ ਨੂੰ ਇੱਕ ਬਣਾਉਣ ਲਈ ਕਹੋ: “ਮੇਰੇ ਲਈ ਇੱਕ ਐਪ ਬਣਾਓ ਜੋ…”}
 ::msgcat::mcset pa {No code in the picture. Hold the phone closer, straight on, and scan again.} {ਤਸਵੀਰ ਵਿੱਚ ਕੋਈ ਕੋਡ ਨਹੀਂ। ਫ਼ੋਨ ਨੂੰ ਨੇੜੇ, ਸਿੱਧਾ ਫੜ ਕੇ ਦੁਬਾਰਾ ਸਕੈਨ ਕਰੋ।}
 ::msgcat::mcset pa {No configuration snapshot will be restored.} {ਕੋਈ ਕੌਂਫਿਗ ਸਨੈਪਸ਼ੌਟ ਬਹਾਲ ਨਹੀਂ ਕੀਤਾ ਜਾਵੇਗਾ।}
+::msgcat::mcset pa {No configured sync peer for this node.} {ਇਸ ਨੋਡ ਲਈ ਕੋਈ ਕੌਂਫਿਗਰ ਕੀਤਾ ਸਿੰਕ ਪੀਅਰ ਨਹੀਂ।}
+::msgcat::mcset pa {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {ਕੋਈ ਸਮਰਪਿਤ ਅਨੁਵਾਦਕ ਕੌਂਫਿਗਰ ਨਹੀਂ ਹੈ। ਇਸਦਾ ਪ੍ਰੋਵਾਈਡਰ, ਮਾਡਲ ਅਤੇ ਟੀਚਾ ਭਾਸ਼ਾ ਚੁਣਨ ਲਈ ਅਨੁਵਾਦਕ ਕੌਂਫਿਗਰ ਕਰੋ ਵਰਤੋ।}
+::msgcat::mcset pa {No deployment started.} {ਕੋਈ ਤਾਇਨਾਤੀ ਸ਼ੁਰੂ ਨਹੀਂ ਹੋਈ।}
+::msgcat::mcset pa {No diagnostics reported by the current LSP document.} {ਮੌਜੂਦਾ LSP ਦਸਤਾਵੇਜ਼ ਨੇ ਕੋਈ ਡਾਇਗਨੋਸਟਿਕਸ ਰਿਪੋਰਟ ਨਹੀਂ ਕੀਤੇ।}
+::msgcat::mcset pa {No explicitly configured desktop gateway is bound to this node.} {ਇਸ ਨੋਡ ਨਾਲ ਕੋਈ ਸਪਸ਼ਟ ਤੌਰ ’ਤੇ ਕੌਂਫਿਗਰ ਕੀਤਾ ਡੈਸਕਟਾਪ ਗੇਟਵੇ ਜੁੜਿਆ ਨਹੀਂ ਹੈ।}
+::msgcat::mcset pa {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {ਇਸ ਨੋਡ ਨਾਲ ਕੋਈ ਸਪਸ਼ਟ ਤੌਰ ’ਤੇ ਕੌਂਫਿਗਰ ਕੀਤਾ ਗੇਟਵੇ ਜੁੜਿਆ ਨਹੀਂ ਹੈ। ਪਹਿਲਾਂ ਗੇਟਵੇ ਜੋੜੋ; ਇਸਦੇ ਰਜਿਸਟਰੀ ਐਂਡਪੁਆਇੰਟ ਨੂੰ ਡੈਸਕਟਾਪ URL ਵਜੋਂ ਨਹੀਂ ਵਰਤਿਆ ਜਾਂਦਾ।}
+::msgcat::mcset pa {No file is open. Ask a design question, or open an extension file for help with its code.} {ਕੋਈ ਫ਼ਾਈਲ ਖੁੱਲ੍ਹੀ ਨਹੀਂ। ਡਿਜ਼ਾਈਨ ਸਵਾਲ ਪੁੱਛੋ, ਜਾਂ ਇਸਦੇ ਕੋਡ ਵਿੱਚ ਮਦਦ ਲਈ ਐਕਸਟੈਂਸ਼ਨ ਫ਼ਾਈਲ ਖੋਲ੍ਹੋ।}
+::msgcat::mcset pa {No files have been written. Review the exact manifest and source, then confirm creation.} {ਕੋਈ ਫ਼ਾਈਲਾਂ ਨਹੀਂ ਲਿਖੀਆਂ ਗਈਆਂ। ਸਹੀ ਮੈਨੀਫੈਸਟ ਅਤੇ ਸਰੋਤ ਦੀ ਸਮੀਖਿਆ ਕਰੋ, ਫਿਰ ਬਣਾਉਣ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ।}
 ::msgcat::mcset pa {No modules or process plugins were discovered. The provider setup steps can still continue.} {ਕੋਈ ਮਾਡਿਊਲ ਜਾਂ ਪ੍ਰਕਿਰਿਆ ਪਲੱਗਇਨ ਖੋਜੇ ਨਹੀਂ ਗਏ। ਪ੍ਰੋਵਾਈਡਰ ਸੈੱਟਅੱਪ ਕਦਮ ਫਿਰ ਵੀ ਜਾਰੀ ਰਹਿ ਸਕਦੇ ਹਨ।}
+::msgcat::mcset pa {No other registered node to compare with.} {ਤੁਲਨਾ ਲਈ ਕੋਈ ਹੋਰ ਰਜਿਸਟਰ ਹੋਇਆ ਨੋਡ ਨਹੀਂ।}
 ::msgcat::mcset pa {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {ਕੋਈ ਵੀ ਪ੍ਰੋਫਾਈਲ ਇਸ ਵਿਜ਼ਾਰਡ ਤੋਂ ਕੋਈ ਸਰਵਿਸ ਸ਼ੁਰੂ ਨਹੀਂ ਕਰਦਾ ਜਾਂ ਪ੍ਰਬੰਧਕ ਅਧਿਕਾਰਾਂ ਵਾਲਾ ਸਕ੍ਰਿਪਟ ਨਹੀਂ ਚਲਾਉਂਦਾ। ਚਲਾਉਣ ਤੋਂ ਪਹਿਲਾਂ ਯੋਜਨਾ ਅਤੇ ਕਿਸੇ ਵੀ ਹੈਂਡਓਫ ਦੀ ਸਮੀਖਿਆ ਕਰੋ।}
+::msgcat::mcset pa {No proposal has been requested. Nothing will be written automatically.} {ਕੋਈ ਪ੍ਰਸਤਾਵ ਨਹੀਂ ਮੰਗਿਆ ਗਿਆ। ਕੁਝ ਵੀ ਆਪਣੇ-ਆਪ ਨਹੀਂ ਲਿਖਿਆ ਜਾਵੇਗਾ।}
+::msgcat::mcset pa {No proposal. Nothing was written.} {ਕੋਈ ਪ੍ਰਸਤਾਵ ਨਹੀਂ। ਕੁਝ ਵੀ ਨਹੀਂ ਲਿਖਿਆ ਗਿਆ।}
 ::msgcat::mcset pa {No routes configured.} {ਕੋਈ ਰੂਟ ਕੌਂਫਿਗਰ ਨਹੀਂ।}
 ::msgcat::mcset pa {No session selected — pick one in the sidebar or start a new one} {ਕੋਈ ਸੈਸ਼ਨ ਚੁਣਿਆ ਨਹੀਂ — ਸਾਈਡਬਾਰ ਵਿੱਚੋਂ ਚੁਣੋ ਜਾਂ ਨਵਾਂ ਸ਼ੁਰੂ ਕਰੋ}
 ::msgcat::mcset pa {No swap target yet: pick a language and press “Set as swap target”.} {ਹਾਲੇ ਅਦਲਾ-ਬਦਲੀ ਦੀ ਭਾਸ਼ਾ ਨਹੀਂ: ਕੋਈ ਭਾਸ਼ਾ ਚੁਣੋ ਅਤੇ “ਅਦਲਾ-ਬਦਲੀ ਦੀ ਭਾਸ਼ਾ ਬਣਾਓ” ਦਬਾਓ।}
 ::msgcat::mcset pa {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {config.toml ਵਿੱਚ ਕੋਈ {[}acl{]} ਭਾਗ ਨਹੀਂ: gateway ਤੱਕ ਪਹੁੰਚਣ ਵਾਲਾ ਹਰ ਭੇਜਣ ਵਾਲਾ ਮਾਲਕ ਮੰਨਿਆ ਜਾਂਦਾ ਹੈ, ਭਾਵ pre-ACL ਇੱਕ-ਉਪਭੋਗਤਾ ਵਿਵਹਾਰ। ਇਜਾਜ਼ਤ ਦੇਣਾ ਅਤੇ ਵਾਪਸ ਲੈਣਾ ਫਿਰ ਵੀ ਕੰਮ ਕਰਦਾ ਹੈ ਅਤੇ {[}acl{]} ਮੌਜੂਦ ਹੁੰਦੇ ਹੀ ਲਾਗੂ ਹੋ ਜਾਂਦਾ ਹੈ।}
+::msgcat::mcset pa {Node id} {ਨੋਡ ਆਈਡੀ}
+::msgcat::mcset pa {Non-evaluating syntax checks} {ਕੋਡ ਚਲਾਏ ਬਿਨਾਂ ਸਿੰਟੈਕਸ ਜਾਂਚਾਂ}
+::msgcat::mcset pa {Not available: %s} {ਉਪਲਬਧ ਨਹੀਂ: %s}
+::msgcat::mcset pa Note ਨੋਟ
 ::msgcat::mcset pa {Note for the agent (optional):} {ਏਜੰਟ ਲਈ ਨੋਟ (ਵਿਕਲਪਿਕ):}
+::msgcat::mcset pa {Nothing selected.} {ਕੁਝ ਵੀ ਚੁਣਿਆ ਨਹੀਂ।}
 ::msgcat::mcset pa {Nothing typed yet.} {ਹਾਲੇ ਕੁਝ ਟਾਈਪ ਨਹੀਂ ਕੀਤਾ।}
+::msgcat::mcset pa {Nothing was generated or written.} {ਕੁਝ ਵੀ ਤਿਆਰ ਜਾਂ ਲਿਖਿਆ ਨਹੀਂ ਗਿਆ।}
+::msgcat::mcset pa {Nothing was prepared: the chosen repository already has these paths.} {ਕੁਝ ਤਿਆਰ ਨਹੀਂ ਹੋਇਆ: ਚੁਣੀ ਰਿਪੋਜ਼ਟਰੀ ਵਿੱਚ ਇਹ ਪਾਥ ਪਹਿਲਾਂ ਹੀ ਹਨ।}
 ::msgcat::mcset pa Notifications ਸੂਚਨਾਵਾਂ
 ::msgcat::mcset pa OK {ਠੀਕ ਹੈ}
 ::msgcat::mcset pa Off ਬੰਦ
 ::msgcat::mcset pa On ਚਾਲੂ
+::msgcat::mcset pa {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {ਸਿਰਫ਼ ਸਮੀਖਿਆ ਕੀਤਾ ਐਕਸਟੈਂਸ਼ਨ ਬਫ਼ਰ ਬਦਲਿਆ ਜਾਵੇਗਾ। ਇਸ ਝਲਕ ਤੋਂ ਬਾਅਦ ਹੋਏ ਬਦਲਾਵਾਂ ਤੋਂ ਫ਼ਾਈਲ ਹਾਲੇ ਵੀ ਸੁਰੱਖਿਅਤ ਹੈ। ਕੋਈ ਕਮਿਟ, ਪੁਸ਼ ਜਾਂ PR ਨਹੀਂ ਹੁੰਦਾ।}
+::msgcat::mcset pa {Only this new branch is committed. Your ambient git identity is used.} {ਸਿਰਫ਼ ਇਸ ਨਵੀਂ ਬ੍ਰਾਂਚ ਨੂੰ ਕਮਿਟ ਕੀਤਾ ਜਾਂਦਾ ਹੈ। ਤੁਹਾਡੀ ਮੌਜੂਦਾ git ਪਛਾਣ ਵਰਤੀ ਜਾਂਦੀ ਹੈ।}
 ::msgcat::mcset pa Op {ਓਪ ਦਿਓ}
 ::msgcat::mcset pa Open ਖੋਲ੍ਹੋ
+::msgcat::mcset pa {Open PR…} {PR ਖੋਲ੍ਹੋ…}
 ::msgcat::mcset pa {Open a window} {ਵਿੰਡੋ ਖੋਲ੍ਹੋ}
 ::msgcat::mcset pa {Open in Dev} {Dev ਵਿੱਚ ਖੋਲ੍ਹੋ}
 ::msgcat::mcset pa {Open in browser} {ਬਰਾਊਜ਼ਰ ਵਿੱਚ ਖੋਲ੍ਹੋ}
 ::msgcat::mcset pa {Open plugin} {ਪਲੱਗਇਨ ਖੋਲ੍ਹੋ}
 ::msgcat::mcset pa {Open terminal} {ਟਰਮੀਨਲ ਖੋਲ੍ਹੋ}
+::msgcat::mcset pa {Open this pull request?} {ਇਹ ਪੁਲ ਬੇਨਤੀ ਖੋਲ੍ਹਣੀ ਹੈ?}
 ::msgcat::mcset pa {Open veles in Android's settings} {Android ਸੈਟਿੰਗਾਂ ਵਿੱਚ veles ਖੋਲ੍ਹੋ}
 ::msgcat::mcset pa {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {ਵਿਕਲਪਿਕ: ਜੁੜਨ ਵਾਲਾ IRC ਨੈੱਟਵਰਕ। ਚੈਨਲਾਂ ਨੂੰ ਸਪੇਸ ਜਾਂ ਕਾਮੇ ਨਾਲ ਵੱਖ ਕਰ ਕੇ ਸੂਚੀਬੱਧ ਕਰੋ; .env ਵਿੱਚ IRC_CHANNELS, ਜਦੋਂ ਸੈੱਟ ਹੋਵੇ, ਇਸ ਸੂਚੀ ਦੀ ਥਾਂ ਲੈਂਦਾ ਹੈ।}
 ::msgcat::mcset pa {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {ਵਿਕਲਪ ਚੁਣੇ ਗਏ ਕੰਪੋਨੈਂਟ ਦੇ ਮੈਨੀਫੈਸਟ ਤੋਂ ਆਉਂਦੇ ਹਨ। ਗੁਪਤ-ਦਿੱਖ ਵਾਲੇ ਖੇਤਰ ਸੈੱਟਅੱਪ/ਤਿਜੋਰੀ ਪ੍ਰਵਾਹ ਵਿੱਚ ਰਹਿੰਦੇ ਹਨ। ਖਾਲੀ ਖੇਤਰ ਉਸ ਵਿਕਲਪ ਨੂੰ ਬਦਲੇ ਬਿਨਾਂ ਛੱਡ ਦਿੰਦੇ ਹਨ।}
 ::msgcat::mcset pa {Or paste a ticket signed on another device} {ਜਾਂ ਕਿਸੇ ਹੋਰ ਡਿਵਾਈਸ 'ਤੇ ਸਾਈਨ ਕੀਤੀ ਟਿਕਟ ਪੇਸਟ ਕਰੋ}
 ::msgcat::mcset pa {Or type an answer:} {ਜਾਂ ਜਵਾਬ ਟਾਈਪ ਕਰੋ:}
+::msgcat::mcset pa Origin ਓਰਿਜਿਨ
 ::msgcat::mcset pa Other… ਹੋਰ…
 ::msgcat::mcset pa Outline ਰੂਪਰੇਖਾ
+::msgcat::mcset pa Output ਆਉਟਪੁੱਟ
 ::msgcat::mcset pa {Override for THIS session (leave blank to inherit the default)} {ਸਿਰਫ਼ ਇਸ ਸੈਸ਼ਨ ਲਈ ਓਵਰਰਾਈਡ (ਮੂਲ ਵਰਤਣ ਲਈ ਖਾਲੀ ਛੱਡੋ)}
 ::msgcat::mcset pa {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {ਮਾਲਕ ਦੀ ਪਛਾਣ (telegram:123456, irc:account, ਜਾਂ nick!user@host ਮਾਸਕ)}
 ::msgcat::mcset pa {PDS and handle domain} {PDS ਅਤੇ ਹੈਂਡਲ ਡੋਮੇਨ}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset pa {Pause scheduler} {ਸ਼ਡਿਊਲਰ ਰੋਕੋ}
 ::msgcat::mcset pa {Peek (C-c C-p)} {ਝਾਤ (C-c C-p)}
 ::msgcat::mcset pa {Peek definition} {ਪਰਿਭਾਸ਼ਾ ਵੇਖੋ}
+::msgcat::mcset pa {Permission grants} ਇਜਾਜ਼ਤਾਂ
+::msgcat::mcset pa {Permission grants…} ਇਜਾਜ਼ਤਾਂ…
 ::msgcat::mcset pa Phone ਫ਼ੋਨ
 ::msgcat::mcset pa {Phone: permissions, battery, storage} {ਫ਼ੋਨ: ਇਜਾਜ਼ਤਾਂ, ਬੈਟਰੀ, ਸਟੋਰੇਜ}
 ::msgcat::mcset pa {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {%s ਦੇ ਬਣਾਏ ਫ਼ੋਨ ਆਪਣੇ ਆਪ ਵੀ ਐਪਾਂ ਬੰਦ ਕਰ ਦਿੰਦੇ ਹਨ। veles ਦੀਆਂ ਐਪ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਇਸਨੂੰ ਆਪਣੇ ਆਪ ਸ਼ੁਰੂ ਹੋਣ ਅਤੇ ਪਿਛੋਕੜ ਵਿੱਚ ਚੱਲਣ ਦਿਓ।}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset pa Port ਪੋਰਟ
 ::msgcat::mcset pa {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {ਪ੍ਰੀਫਿਕਸ ਕੋਰਡ (C-x, M-o) ਚਾਲੂ ਹੁੰਦਿਆਂ ਹੀ which-key ਪੌਪਅੱਪ ਦਿਖਾਉਂਦੇ ਹਨ।}
 ::msgcat::mcset pa {Prepare an own vlpds PDS through the signed CLI handoff} {sਾਈਨ ਕੀਤੀ CLI ਹੈਂਡਆਫ਼ ਰਾਹੀਂ ਆਪਣਾ vlpds PDS ਤਿਆਰ ਕਰੋ}
+::msgcat::mcset pa {Prepare branch…} {ਬ੍ਰਾਂਚ ਤਿਆਰ ਕਰੋ…}
+::msgcat::mcset pa {Prepare this branch and commit?} {ਇਹ ਬ੍ਰਾਂਚ ਅਤੇ ਕਮਿਟ ਤਿਆਰ ਕਰਨੇ ਹਨ?}
 ::msgcat::mcset pa Preview ਝਲਕ
+::msgcat::mcset pa {Preview change set} {ਬਦਲਾਅ ਸੈੱਟ ਦਾ ਪੂਰਵਦਰਸ਼ਨ}
+::msgcat::mcset pa {Preview files} {ਫ਼ਾਈਲਾਂ ਦੀ ਝਲਕ ਵੇਖੋ}
 ::msgcat::mcset pa {Preview here} {ਇੱਥੇ ਝਲਕ}
 ::msgcat::mcset pa {Preview pane} {ਝਲਕ ਪੈਨ}
+::msgcat::mcset pa {Preview proposal} {ਪ੍ਰਸਤਾਵ ਦੀ ਝਲਕ}
+::msgcat::mcset pa {Preview the changed name or language before creating it.} {ਬਣਾਉਣ ਤੋਂ ਪਹਿਲਾਂ ਬਦਲੇ ਨਾਮ ਜਾਂ ਭਾਸ਼ਾ ਦੀ ਝਲਕ ਵੇਖੋ।}
+::msgcat::mcset pa Probe ਜਾਂਚ
+::msgcat::mcset pa {Probe of %1$s failed: %2$s} {%1$s ਦੀ ਜਾਂਚ ਫੇਲ੍ਹ: %2$s}
 ::msgcat::mcset pa {Profile result} {ਪ੍ਰੋਫਾਈਲ ਨਤੀਜਾ}
 ::msgcat::mcset pa {Promote into config.toml} {config.toml ਵਿੱਚ ਪ੍ਰਮੋਟ ਕਰੋ}
 ::msgcat::mcset pa Promote… {ਪ੍ਰਮੋਟ ਕਰੋ…}
 ::msgcat::mcset pa Provider ਪ੍ਰੋਵਾਈਡਰ
+::msgcat::mcset pa {Provider driver (plugin wire only)} {ਪ੍ਰੋਵਾਈਡਰ ਡਰਾਈਵਰ (ਸਿਰਫ਼ ਪਲੱਗਇਨ ਵਾਇਰ)}
 ::msgcat::mcset pa {Provider entry name} {ਪ੍ਰੋਵਾਈਡਰ ਐਂਟਰੀ ਦਾ ਨਾਅ}
 ::msgcat::mcset pa {Provider for this session} {ਇਸ ਸੈਸ਼ਨ ਲਈ ਪ੍ਰਦਾਤਾ}
 ::msgcat::mcset pa Providers ਪ੍ਰਦਾਤੇ
 ::msgcat::mcset pa {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {ਪ੍ਰਦਾਤੇ ਟੇਬਲਾਂ ਦੀ ਸੂਚੀ ਹਨ: custom_providers.0.base_url, .0.api_mode, .0.key_env … ਇੰਡੈਕਸ ਹੇਠਾਂ ਦਿਖਾਏ ਕ੍ਰਮ ਅਨੁਸਾਰ।}
 ::msgcat::mcset pa {Public HTTPS URL} {ਜਨਤਕ HTTPS URL}
+::msgcat::mcset pa {Pull request base} {ਪੁਲ ਬੇਨਤੀ ਦਾ ਬੇਸ}
+::msgcat::mcset pa {Pull request created} {ਪੁਲ ਬੇਨਤੀ ਬਣਾਈ ਗਈ}
+::msgcat::mcset pa {Pull request description} {ਪੁਲ ਬੇਨਤੀ ਦਾ ਵੇਰਵਾ}
+::msgcat::mcset pa {Pull request opened.} {ਪੁਲ ਬੇਨਤੀ ਖੋਲ੍ਹੀ ਗਈ।}
+::msgcat::mcset pa {Pull request repository} {ਪੁਲ ਬੇਨਤੀ ਰਿਪੋਜ਼ਿਟਰੀ}
+::msgcat::mcset pa {Pull request title} {ਪੁਲ ਬੇਨਤੀ ਦਾ ਸਿਰਲੇਖ}
 ::msgcat::mcset pa {Purge + delete files} {ਪਰਜ + ਫ਼ਾਈਲਾਂ ਮਿਟਾਓ}
 ::msgcat::mcset pa {Purge container} {ਕੰਟੇਨਰ ਪਰਜ ਕਰੋ}
+::msgcat::mcset pa Purpose ਮਕਸਦ
+::msgcat::mcset pa Push ਪੁਸ਼
+::msgcat::mcset pa {Push branch…} {ਬ੍ਰਾਂਚ ਪੁਸ਼ ਕਰੋ…}
+::msgcat::mcset pa {Push complete. No pull request has been opened.} {ਪੁਸ਼ ਪੂਰੀ ਹੋਈ। ਕੋਈ ਪੁਲ ਬੇਨਤੀ ਨਹੀਂ ਖੋਲ੍ਹੀ ਗਈ।}
+::msgcat::mcset pa {Push this branch?} {ਇਹ ਬ੍ਰਾਂਚ ਪੁਸ਼ ਕਰਨੀ ਹੈ?}
+::msgcat::mcset pa {Push to %s:} {%s ਨੂੰ ਪੁਸ਼ ਕਰੋ:}
 ::msgcat::mcset pa Question ਸਵਾਲ
 ::msgcat::mcset pa Questions ਸਵਾਲ
 ::msgcat::mcset pa Quit {ਬੰਦ ਕਰੋ}
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset pa {Reading notifications, for triggers} {ਸੂਚਨਾਵਾਂ ਪੜ੍ਹਨਾ, ਟਰਿੱਗਰਾਂ ਲਈ}
 ::msgcat::mcset pa Reasoning ਤਰਕ
 ::msgcat::mcset pa {Reasoning effort} {ਤਰਕ ਦਾ ਪੱਧਰ}
+::msgcat::mcset pa {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {ਪ੍ਰਾਪਤ ਹੋਇਆ, ਲਾਗੂ ਕਰਨ ਦੀ ਉਡੀਕ: ਸਟੋਰ %1$s · ਮੈਮੋਰੀ %2$s · ਕੌਂਫਿਗ %3$s · ਤਿਜੋਰੀ %4$s}
+::msgcat::mcset pa {Recommended checks} {ਸਿਫ਼ਾਰਸ਼ੀ ਜਾਂਚਾਂ}
 ::msgcat::mcset pa {Refetch this transcript from the store} {ਇਸ ਟ੍ਰਾਂਸਕ੍ਰਿਪਟ ਨੂੰ ਸਟੋਰ ਤੋਂ ਦੁਬਾਰਾ ਲਿਆਓ}
 ::msgcat::mcset pa Refresh {ਤਾਜ਼ਾ ਕਰੋ}
 ::msgcat::mcset pa {Refresh preview} {ਪ੍ਰੀਵਿਊ ਤਾਜ਼ਾ ਕਰੋ}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset pa {Rename symbol} {ਚਿੰਨ੍ਹ ਦਾ ਨਾਮ ਬਦਲੋ}
 ::msgcat::mcset pa Rename… {ਨਾਮ ਬਦਲੋ…}
 ::msgcat::mcset pa Rendered {ਰੈਂਡਰ ਕੀਤਾ}
+::msgcat::mcset pa {Replace existing repository files?} {ਮੌਜੂਦਾ ਰਿਪੋਜ਼ਟਰੀ ਫ਼ਾਈਲਾਂ ਬਦਲਣੀਆਂ ਹਨ?}
+::msgcat::mcset pa {Replace them in the new branch? Nothing else in the repository changes.} {ਨਵੀਂ ਬ੍ਰਾਂਚ ਵਿੱਚ ਉਹ ਬਦਲ ਦੇਣੀਆਂ ਹਨ? ਰਿਪੋਜ਼ਟਰੀ ਵਿੱਚ ਹੋਰ ਕੁਝ ਨਹੀਂ ਬਦਲਦਾ।}
 ::msgcat::mcset pa Repository ਰਿਪੋਜ਼ਟਰੀ
 ::msgcat::mcset pa {Repository (owner/name)} {ਰਿਪੋਜ਼ਟਰੀ (ਮਾਲਕ/ਨਾਮ)}
+::msgcat::mcset pa {Repository directory} {ਰਿਪੋਜ਼ਟਰੀ ਡਾਇਰੈਕਟਰੀ}
+::msgcat::mcset pa {Repository paths} {ਰਿਪੋਜ਼ਟਰੀ ਪਾਥ}
+::msgcat::mcset pa {Request a new preview before trying again.} {ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਨਵੀਂ ਝਲਕ ਮੰਗੋ।}
 ::msgcat::mcset pa {Reset to default} {ਡਿਫ਼ਾਲਟ 'ਤੇ ਵਾਪਸ ਕਰੋ}
 ::msgcat::mcset pa {Reset to template} {ਟੈਂਪਲੇਟ ਉੱਤੇ ਰੀਸੈੱਟ ਕਰੋ}
 ::msgcat::mcset pa Restart {ਮੁੜ-ਸ਼ੁਰੂ ਕਰੋ}
+::msgcat::mcset pa {Restart + verify canary} {ਮੁੜ ਚਾਲੂ + ਕੈਨਰੀ ਦੀ ਪੜਤਾਲ}
 ::msgcat::mcset pa {Restore hidden windows} {ਲੁਕੀਆਂ ਵਿੰਡੋਆਂ ਮੁੜ ਦਿਖਾਓ}
 ::msgcat::mcset pa {Restore plugins to %s?} {ਪਲੱਗਇਨਾਂ ਨੂੰ %s ਉੱੱਤੇ ਰੀਸਟੋਰ ਕਰੋ?}
 ::msgcat::mcset pa {Restore revision r%1$s of %2$s?} {ਕੀ %2$s ਦਾ ਰੀਵਿਜ਼ਨ r%1$s ਬਹਾਲ ਕਰਨਾ ਹੈ?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset pa {Restore this commit} {ਇਹ ਕਮਿਟ ਰੀਸਟੋਰ ਕਰੋ}
 ::msgcat::mcset pa {Restore this revision} {ਇਹ ਰੀਵਿਜ਼ਨ ਬਹਾਲ ਕਰੋ}
 ::msgcat::mcset pa {Resume scheduler} {ਸ਼ਡਿਊਲਰ ਮੁੜ ਚਾਲੂ ਕਰੋ}
+::msgcat::mcset pa {Resume unfinished operation} {ਅਧੂਰੀ ਕਾਰਵਾਈ ਮੁੜ ਸ਼ੁਰੂ ਕਰੋ}
 ::msgcat::mcset pa Revert {ਵਾਪਸ ਕਰੋ}
 ::msgcat::mcset pa {Revert %s to HEAD? Uncommitted changes in this file are lost.} {ਕੀ %s ਨੂੰ HEAD ’ਤੇ ਵਾਪਸ ਕਰਨਾ ਹੈ? ਇਸ ਫ਼ਾਈਲ ਵਿੱਚ ਬਿਨਾਂ ਕਮਿਟ ਕੀਤੇ ਬਦਲਾਅ ਗੁੰਮ ਹੋ ਜਾਣਗੇ।}
 ::msgcat::mcset pa Revert… {ਵਾਪਸ ਕਰੋ…}
 ::msgcat::mcset pa Review ਸਮੀਖਿਆ
 ::msgcat::mcset pa {Review (git) pane} {ਸਮੀਖਿਆ (git) ਪੈਨ}
+::msgcat::mcset pa {Review deployment} {ਤਾਇਨਾਤੀ ਦੀ ਸਮੀਖਿਆ}
+::msgcat::mcset pa {Review extension contribution} {ਐਕਸਟੈਂਸ਼ਨ ਯੋਗਦਾਨ ਦੀ ਸਮੀਖਿਆ ਕਰੋ}
 ::msgcat::mcset pa {Review managed local bundle…} {ਪ੍ਰਬੰਧਿਤ ਸਥਾਨਕ ਬੰਡਲ ਦੀ ਸਮੀਖਿਆ ਕਰੋ…}
 ::msgcat::mcset pa {Review rollback} {ਰੋਲਬੈਕ ਦੀ ਸਮੀਖਿਆ ਕਰੋ}
+::msgcat::mcset pa {Review selected files} {ਚੁਣੀਆਂ ਫ਼ਾਈਲਾਂ ਦੀ ਸਮੀਖਿਆ ਕਰੋ}
 ::msgcat::mcset pa {Review the component options on the summary screen before applying.} {ਲਾਗੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਸਾਰ ਸਕ੍ਰੀਨ 'ਤੇ ਕੰਪੋਨੈਂਟ ਵਿਕਲਪਾਂ ਦੀ ਸਮੀਖਿਆ ਕਰੋ।}
 ::msgcat::mcset pa {Review the component preview before applying. No component configuration has been written.} {ਲਾਗੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਕੰਪੋਨੈਂਟ ਝਲਕ ਦੀ ਸਮੀਖਿਆ ਕਰੋ। ਕੋਈ ਕੰਪੋਨੈਂਟ ਕੌਂਫਿਗਰੇਸ਼ਨ ਲਿਖੀ ਨਹੀਂ ਗਈ।}
+::msgcat::mcset pa {Review the selected files and remove credential findings before preparing.} {ਤਿਆਰ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਚੁਣੀਆਂ ਫ਼ਾਈਲਾਂ ਦੀ ਸਮੀਖਿਆ ਕਰੋ ਅਤੇ ਲੱਭੇ ਕ੍ਰੈਡੈਂਸ਼ਲ ਹਟਾਓ।}
 ::msgcat::mcset pa {Reviewed core bundle in the managed install-sources directory} {ਪ੍ਰਬੰਧਿਤ install-sources ਡਾਇਰੈਕਟਰੀ ਵਿੱਚ ਸਮੀਖਿਆ ਕੀਤਾ ਗਿਆ ਕੋਰ ਬੰਡਲ}
+::msgcat::mcset pa {Reviewed fleet deployment} {ਸਮੀਖਿਆ ਕੀਤੀ ਫਲੀਟ ਤਾਇਨਾਤੀ}
 ::msgcat::mcset pa {Reviewed local bundle} {ਸਮੀਖਿਆ ਕੀਤਾ ਸਥਾਨਕ ਬੰਡਲ}
 ::msgcat::mcset pa {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {ਸਮੀਖਿਆ ਕੀਤਾ ਸਥਾਨਕ ਬੰਡਲ ਇੰਸਟਾਲ ਹੋ ਗਿਆ। ਇਹ signed-download ਪੁਸ਼ਟੀ ਰਾਹੀਂ ਵੈਰੀਫਾਈ ਨਹੀਂ ਹੋਇਆ ਸੀ। ਨਵਾਂ ਕੋਰ ਵਰਤਣ ਤੋਂ ਪਹਿਲਾਂ ਮੁੜ ਚਾਲੂ ਕਰਨਾ ਲਾਜ਼ਮੀ ਹੈ।}
 ::msgcat::mcset pa Revision ਰੀਵਿਜ਼ਨ
 ::msgcat::mcset pa Revoke {ਵਾਪਸ ਲਓ}
+::msgcat::mcset pa {Revoke selected} {ਚੁਣੀ ਇਜਾਜ਼ਤ ਵਾਪਸ ਲਓ}
 ::msgcat::mcset pa Roles ਭੂਮਿਕਾਵਾਂ
 ::msgcat::mcset pa {Roll back %1$s from %2$s to %3$s?} {ਕੀ %1$s ਨੂੰ %2$s ਤੋਂ %3$s 'ਤੇ ਵਾਪਸ ਲਿਆ ਜਾਵੇ?}
+::msgcat::mcset pa {Roll back selected target} {ਚੁਣੇ ਨਿਸ਼ਾਨੇ ਦਾ ਰੋਲਬੈਕ ਕਰੋ}
 ::msgcat::mcset pa {Rollback completed. Reload the component or restart as requested by the report.} {ਰੋਲਬੈਕ ਮੁਕੰਮਲ। ਰਿਪੋਰਟ ਵਿੱਚ ਬੇਨਤੀ ਅਨੁਸਾਰ ਕੰਪੋਨੈਂਟ ਨੂੰ ਮੁੜ ਲੋਡ ਕਰੋ ਜਾਂ ਮੁੜ ਚਾਲੂ ਕਰੋ।}
 ::msgcat::mcset pa {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {ਰੋਲਬੈਕ ਦੀ ਸਮੀਖਿਆ ਕੀਤੀ ਗਈ। ਬਹਾਲੀ ਦੀ ਪੁਸ਼ਟੀ ਲਈ Install selected component ਚੁਣੋ; ਕੁਝ ਵੀ ਬਹਾਲ ਨਹੀਂ ਹੋਇਆ।}
 ::msgcat::mcset pa Run ਚਲਾਓ
 ::msgcat::mcset pa {Run the wizard again} {ਵਿਜ਼ਾਰਡ ਦੁਬਾਰਾ ਚਲਾਓ}
 ::msgcat::mcset pa {Running in the background} {ਪਿਛੋਕੜ ਵਿੱਚ ਚੱਲਣਾ}
-::msgcat::mcset pa {Running tasks} {ਚੱਲ ਰਹੇ ਕੰਮ}
-::msgcat::mcset pa {Running tasks (subagents, shells, monitors)} {ਚੱਲ ਰਹੇ ਕੰਮ (ਸਬ-ਏਜੰਟ, ਸ਼ੈੱਲ, ਮਾਨੀਟਰ)}
 ::msgcat::mcset pa {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {ਰਨ-ਟਾਈਮ ਗ੍ਰਾਂਟਾਂ ਅਤੇ ਉਪਭੋਗਤਾ ਸਟੋਰ ਵਿੱਚ ਰਹਿੰਦੇ ਹਨ, ਅਤੇ ਸਟੋਰ ਰੀਸੈੱਟ ਉਹਨਾਂ ਨੂੰ ਮਿਟਾ ਦਿੰਦਾ ਹੈ। Promote ਉਹਨਾਂ ਨੂੰ ਜੋ ਸਟੋਰ ਚੁਣਦਾ ਹੈ config.toml ਵਿੱਚ ਜੋੜਦਾ ਹੈ — ਫਾਈਲ ਦੀਆਂ ਟਿੱਪਣੀਆਂ ਅਤੇ ਕੁੰਜੀ ਕ੍ਰਮ ਉਵੇਂ ਰਹਿੰਦੇ ਹਨ, ਨਾਲ ਹੀ ਬੈਕਅੱਪ ਲਿਖਿਆ ਜਾਂਦਾ ਹੈ, ਸਟੋਰ ਦੀਆਂ ਕਾਪੀਆਂ ਹਟਾਈਆਂ ਜਾਂਦੀਆਂ ਹਨ — ਅਤੇ ਜਿੱਥੇ ਫਾਈਲ ਦੀ ਪਹਿਲਾਂ ਤੋਂ ਰਾਏ ਹੋਵੇ, ਉੱਥੇ ਅੰਦਾਜ਼ਾ ਲਗਾਉਣ ਦੀ ਬਜਾਏ ਇਨਕਾਰ ਕਰਦਾ ਹੈ।}
 ::msgcat::mcset pa {S3 HTTPS endpoint} {S3 HTTPS ਐਂਡਪੁਆਇਂਟ}
 ::msgcat::mcset pa {S3 bucket} {S3 ਬਕੇਟ}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset pa {Save as default} {ਮੂਲ ਵਜੋਂ ਸੰਭਾਲੋ}
 ::msgcat::mcset pa {Save attachment as} {ਅਟੈਚਮੈਂਟ ਨੂੰ ਇਸ ਵਜੋਂ ਸੰਭਾਲੋ}
 ::msgcat::mcset pa {Save globally} {ਗਲੋਬਲ ਸੰਭਾਲੋ}
+::msgcat::mcset pa {Save or revert the open buffer before applying a change set.} {ਬਦਲਾਅ ਸੈੱਟ ਲਾਗੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਖੁੱਲ੍ਹੇ ਬਫਰ ਨੂੰ ਸੰਭਾਲੋ ਜਾਂ ਵਾਪਸ ਲਿਆਓ।}
 ::msgcat::mcset pa Scan {ਸਕੈਨ ਕਰੋ}
 ::msgcat::mcset pa {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {ਇਸ ਫ਼ੋਨ ਨੂੰ ਸੱਦਾ ਦੇਣ ਵਾਲੀ ਮਸ਼ੀਨ ਦਾ veles ਕੋਡ ਸਕੈਨ ਕਰੋ। ਜੇ ਉਸਨੇ ਪਹਿਲਾਂ WireGuard ਕੋਡ ਦਿਖਾਇਆ ਸੀ, ਤਾਂ ਇਸ ਤੋਂ ਪਹਿਲਾਂ ਉਸਨੂੰ WireGuard ਐਪ ਨਾਲ ਸਕੈਨ ਕਰੋ।}
 ::msgcat::mcset pa {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {ਸਮਾਂ-ਸਾਰਣੀ: ਇੱਕ ਅੰਤਰਾਲ ("30m", "every 2h"), ਇੱਕ cron ਪੈਟਰਨ ("0 9 * * 1"), ਜਾਂ ਇੱਕ-ਵਾਰ ਲਈ ਇੱਕ ISO ਟਾਈਮਸਟੈਂਪ। ਉੱਪਰ ਵਾਲੀ ਲਾਈਨ ਦਿਖਾਉਂਦੀ ਹੈ ਕਿ ਇੰਜਣ ਇਸਨੂੰ ਕਿਵੇਂ ਪੜ੍ਹਦਾ ਹੈ। ਡਿਲੀਵਰ: "local" ਆਉਟਪੁੱਟ ਨੂੰ ਲੌਗ ਵਿੱਚ ਰੱਖਦਾ ਹੈ — ਡੈਸਕਟਾਪ ਤੋਂ ਇਹੀ ਇੱਕੋ ਇੱਕ ਇਮਾਨਦਾਰ ਮੂਲ ਹੈ, ਕਿਉਂਕਿ ਇਸਦੇ ਪਿੱਛੇ ਕੋਈ ਚੈਟ ਪਲੇਟਫਾਰਮ ਨਹੀਂ ਹੈ — ਜਾਂ "platform:chat_id"। ਵੇਕ ਸੈਸ਼ਨ: ਨਵੇਂ ਸੈਸ਼ਨ ਵਿੱਚ ਚਲਾਉਣ ਲਈ ਖਾਲੀ ਛੱਡੋ; ਪੂਰੇ ਇਤਿਹਾਸ ਨਾਲ ਉਸ ਸੈਸ਼ਨ ਨੂੰ ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਸੈਸ਼ਨ id (ਜਾਂ ਵਿਲੱਖਣ ਅਗੇਤਰ) ਦਿਓ — ਇੱਕ ਵਿਅਸਤ ਸੈਸ਼ਨ ਪ੍ਰੋਂਪਟ ਨੂੰ ਆਪਣੀ ਅਗਲੀ ਵਾਰੀ ਦੀ ਹੱਦ ਉੱਤੇ ਲੈਂਦਾ ਹੈ।}
+::msgcat::mcset pa Scope ਦਾਇਰਾ
 ::msgcat::mcset pa {Scroll to end} {ਅੰਤ ਤੱਕ ਸਕ੍ਰੋਲ ਕਰੋ}
 ::msgcat::mcset pa {Search commands and sessions…} {ਕਮਾਂਡਾਂ ਅਤੇ ਸੈਸ਼ਨ ਖੋਜੋ…}
 ::msgcat::mcset pa {Search message text} {ਸੁਨੇਹੇ ਦਾ ਪਾਠ ਖੋਜੋ}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset pa Section ਭਾਗ
 ::msgcat::mcset pa {Select a component first. No component options will be changed if you skip this step.} {ਪਹਿਲਾਂ ਇੱਕ ਕੰਪੋਨੈਂਟ ਚੁਣੋ। ਜੇ ਤੁਸੀਂ ਇਹ ਕਦਮ ਛੱਡਦੇ ਹੋ ਤਾਂ ਕੋਈ ਵੀ ਕੰਪੋਨੈਂਟ ਵਿਕਲਪ ਨਹੀਂ ਬਦਲਿਆ ਜਾਵੇਗਾ।}
 ::msgcat::mcset pa {Select all} {ਸਭ ਚੁਣੋ}
+::msgcat::mcset pa {Select all extensions} {ਸਾਰੇ ਐਕਸਟੈਂਸ਼ਨ ਚੁਣੋ}
+::msgcat::mcset pa {Select at least one source file.} {ਘੱਟੋ-ਘੱਟ ਇੱਕ ਸਰੋਤ ਫ਼ਾਈਲ ਚੁਣੋ।}
+::msgcat::mcset pa {Select none} {ਕੋਈ ਨਹੀਂ ਚੁਣੋ}
+::msgcat::mcset pa {Select text to translate first.} {ਪਹਿਲਾਂ ਅਨੁਵਾਦ ਕਰਨ ਲਈ ਟੈਕਸਟ ਚੁਣੋ।}
+::msgcat::mcset pa {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {ਯੋਗਦਾਨ ਦੇਣ ਲਈ ਐਕਸਟੈਂਸ਼ਨ ਅਤੇ ਫ਼ਾਈਲਾਂ ਚੁਣੋ। ਉਹ ਇੱਕ ਬ੍ਰਾਂਚ ਅਤੇ ਇੱਕ pull request ਵਿੱਚ ਜਾਂਦੇ ਹਨ, ਹਰ ਐਕਸਟੈਂਸ਼ਨ ਆਪਣੀ ਡਾਇਰੈਕਟਰੀ ਵਿੱਚ। ਸਮੀਖਿਆ ਕਰੋ, ਬਿਨਾਂ-ਮੁਲਾਂਕਣ ਵਾਲੀਆਂ ਜਾਂਚਾਂ ਚਲਾਓ, ਫਿਰ ਅਲੱਗ ਬ੍ਰਾਂਚ ਤਿਆਰ ਕਰਕੇ ਕਮਿਟ ਕਰੋ। ਪੁਸ਼ ਕਰਨਾ ਅਤੇ pull request ਬਣਾਉਣਾ ਵੱਖ-ਵੱਖ ਪੁਸ਼ਟੀ ਕੀਤੀਆਂ ਕਾਰਵਾਈਆਂ ਹਨ।}
 ::msgcat::mcset pa Send ਭੇਜੋ
+::msgcat::mcset pa {Send %s to the peer?} {%s ਪੀਅਰ ਨੂੰ ਭੇਜਣਾ ਹੈ?}
 ::msgcat::mcset pa {Send a %d-line message to the channel?} {ਚੈਨਲ ਨੂੰ %d-ਲਾਈਨਾਂ ਦਾ ਸੁਨੇਹਾ ਭੇਜੋ?}
 ::msgcat::mcset pa {Send raw line to the server? (%s)} {ਸਰਵਰ ਨੂੰ ਕੱਚੀ ਲਾਈਨ ਭੇਜੋ? (%s)}
 ::msgcat::mcset pa {Server (empty = no IRC)} {ਸਰਵਰ (ਖਾਲੀ = IRC ਨਹੀਂ)}
 ::msgcat::mcset pa {Server: gateway configuration and a reviewed user unit} {ਸਰਵਰ: ਗੇਟਵੇ ਸੰਰਚਨਾ ਅਤੇ ਇੱਕ ਸਮੀਖਿਆ ਕੀਤੀ ਯੂਜ਼ਰ ਯੂਨਿਟ}
 ::msgcat::mcset pa {Server: install a user unit and prepare the separate linger handoff} {ਸਰਵਰ: ਯੂਜ਼ਰ ਯੂਨਿਟ ਇੰਸਟਾਲ ਕਰੋ ਅਤੇ ਵੱਖਰਾ ਲਿੰਗਰ ਹੈਂਡਆਫ ਤਿਆਰ ਕਰੋ}
 ::msgcat::mcset pa {Server: use a system service and prepare a privileged CLI request} {ਸਰਵਰ: ਸਿਸਟਮ ਸਰਵਿਸ ਵਰਤੋ ਅਤੇ ਪ੍ਰਬੰਧਕ ਅਧਿਕਾਰਾਂ ਵਾਲੀ CLI ਬੇਨਤੀ ਤਿਆਰ ਕਰੋ}
+::msgcat::mcset pa Session ਸੈਸ਼ਨ
 ::msgcat::mcset pa {Session id} {ਸੈਸ਼ਨ ਆਈਡੀ}
 ::msgcat::mcset pa {Session id…} {ਸੈਸ਼ਨ ਆਈਡੀ…}
 ::msgcat::mcset pa Sessions ਸੈਸ਼ਨ
 ::msgcat::mcset pa {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {ਇਸ ਅਲੀਸ ਨਾਲ ਓਵਰਰਾਈਡ ਕੀਤੇ ਮੌਜੂਦਾ ਸੈਸ਼ਨ ਆਪਣਾ ਚੁਣਿਆ ਰੂਟ ਬਰਕਰਾਰ ਰੱਖਦੇ ਹਨ; ਨਵੇਂ ਓਵਰਰਾਈਡਾਂ ਨੂੰ ਇਹ ਨਾਮ ਨਹੀਂ ਮਿਲੇਗਾ।}
+::msgcat::mcset pa {Sessions served} {ਸੇਵਾ ਕੀਤੇ ਸੈਸ਼ਨ}
 ::msgcat::mcset pa Set {ਸੈੱਟ ਕਰੋ}
 ::msgcat::mcset pa {Set [model] provider/default in config.toml.} {config.toml ਵਿੱਚ [model] ਪ੍ਰੋਵਾਈਡਰ/ਡਿਫਾਲਟ ਸੈੱਟ ਕਰੋ।}
 ::msgcat::mcset pa {Set as swap target} {ਅਦਲਾ-ਬਦਲੀ ਦੀ ਭਾਸ਼ਾ ਬਣਾਓ}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset pa {Setup — summary} {ਸੈੱਟਅੱਪ — ਸਾਰ}
 ::msgcat::mcset pa {Setup — welcome} {ਸੈੱਟਅੱਪ — ਜੀ ਆਇਆਂ ਨੂੰ}
 ::msgcat::mcset pa {Shared container network} {ਸਾਂਝਾ ਕੰਟੇਨਰ ਨੈਟਵਰਕ}
+::msgcat::mcset pa Shells ਸ਼ੈੱਲ
+::msgcat::mcset pa {Shells and monitors} {ਸ਼ੈੱਲ ਅਤੇ ਮਾਨੀਟਰ}
+::msgcat::mcset pa {Shells and monitors (subagents, shells, monitors)} {ਸ਼ੈੱਲ ਅਤੇ ਮਾਨੀਟਰ (ਸਬਾਏਜੰਟ, ਸ਼ੈੱਲ, ਮਾਨੀਟਰ)}
 ::msgcat::mcset pa {Show diff} {ਫ਼ਰਕ ਦਿਖਾਓ}
 ::msgcat::mcset pa {Show every key} {ਹਰ ਕੁੰਜੀ ਦਿਖਾਓ}
 ::msgcat::mcset pa Sign {ਸਾਈਨ ਕਰੋ}
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset pa Solved {ਹੱਲ ਹੋ ਗਿਆ}
 ::msgcat::mcset pa Source ਸਰੋਤ
 ::msgcat::mcset pa {Source commit} {ਸੋਰਸ ਕਮਿਟ}
+::msgcat::mcset pa {Source text} {ਸਰੋਤ ਟੈਕਸਟ}
 ::msgcat::mcset pa {Source→app (C-c C-c)} {ਸਰੋਤ→app (C-c C-c)}
 ::msgcat::mcset pa Stage ਸਟੇਜ
+::msgcat::mcset pa {Stage canary} {ਕੈਨਰੀ ਸਟੇਜ ਕਰੋ}
+::msgcat::mcset pa Stale ਪੁਰਾਣਾ
+::msgcat::mcset pa {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {ਸਥਾਈ ਇਜਾਜ਼ਤਾਂ ਬਾਅਦ ਦੀਆਂ ਟੂਲ ਕਾਲਾਂ ਨੂੰ ਬਿਨਾਂ ਹੋਰ ਪੁੱਛੇ ਚੱਲਣ ਦਿੰਦੀਆਂ ਹਨ। ਸੈਸ਼ਨ ਇਜਾਜ਼ਤਾਂ ਹਰ ਸਤ੍ਹਾ (ਡੈਸਕਟਾਪ, Telegram, IRC, …) 'ਤੇ ਲਾਈਵ ਸੈਸ਼ਨਾਂ ਕੋਲ ਰਹਿੰਦੀਆਂ ਹਨ; ਗਲੋਬਲ ਇਜਾਜ਼ਤਾਂ ਕਾਇਮ ਰਹਿੰਦੀਆਂ ਹਨ; config.toml ਦੀਆਂ [approvals] allowlist ਐਂਟਰੀਆਂ ਸਿਰਫ਼-ਪੜ੍ਹਨ ਵਾਲੀਆਂ ਦਿਖਾਈਆਂ ਜਾਂਦੀਆਂ ਹਨ। ਇੱਕ ਵਾਪਸ ਲੈਣ ਨਾਲ ਦੂਜੀਆਂ ਇਜਾਜ਼ਤਾਂ ਕਦੇ ਨਹੀਂ ਬਦਲਦੀਆਂ।}
 ::msgcat::mcset pa Start {ਸ਼ੁਰੂ ਕਰੋ}
+::msgcat::mcset pa {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {ਆਪਣੀ ਉਪਭੋਗਤਾ ਪਲੱਗਇਨ ਡਾਇਰੈਕਟਰੀ ਵਿੱਚ ਕਿਸੇ ਐਕਸਟੈਂਸ਼ਨ ਨਾਲ ਸ਼ੁਰੂ ਕਰੋ। ਇਹ ਅੱਪਗ੍ਰੇਡਾਂ ਵਿੱਚ ਵੀ ਰਹਿੰਦਾ ਹੈ ਅਤੇ ਗੇਟਵੇ ਮੁੜ-ਬਿਲਡ ਦੀ ਲੋੜ ਨਹੀਂ ਹੁੰਦੀ। ਨਵਾਂ ਐਕਸਟੈਂਸ਼ਨ ਲਿਖਣ ਤੋਂ ਪਹਿਲਾਂ ਸਹੀ ਮੈਨੀਫੈਸਟ ਅਤੇ ਸਰੋਤ ਦੀ ਝਲਕ ਦਿਖਾਉਂਦਾ ਹੈ। ਸਮਰਥਿਤ ਭਾਸ਼ਾ ਅਤੇ API ਵਰਜ਼ਨ ਚੁਣੋ, ਫ਼ਾਈਲਾਂ ਦੀ ਸਮੀਖਿਆ ਕਰੋ, ਫਿਰ ਐਕਸਟੈਂਸ਼ਨ ਨੂੰ ਅਲਹਿਦਾ ਟੈਸਟ ਕਰੋ।}
 ::msgcat::mcset pa {Start with the phone} {ਫ਼ੋਨ ਨਾਲ ਸ਼ੁਰੂ ਹੋਣਾ}
+::msgcat::mcset pa {Static IP} {ਸਟੇਟਿਕ IP}
 ::msgcat::mcset pa Status ਸਥਿਤੀ
 ::msgcat::mcset pa Steer {ਦਿਸ਼ਾ ਦਿਓ}
 ::msgcat::mcset pa {Step %1$d of %2$d} {ਸਟੈੱਪ %1$d of %2$d}
 ::msgcat::mcset pa {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {ਹਾਲੇ ਸੈੱਟ ਕਰਨਾ ਬਾਕੀ: %s — ਇੱਥੇ /secret set NAME ਟਾਈਪ ਕਰੋ, ਜਾਂ ਗੇਟਵੇ ਦੀ ਮਸ਼ੀਨ 'ਤੇ veles secret set NAME ਚਲਾਓ।}
 ::msgcat::mcset pa Stop ਰੋਕੋ
 ::msgcat::mcset pa {Storage root} {ਸਟੋਰੇਜ ਰੂਟ}
+::msgcat::mcset pa Store ਸਟੋਰ
 ::msgcat::mcset pa {Store a secret: %s} {ਸੀਕ੍ਰੇਟ ਰੱਖੋ: %s}
 ::msgcat::mcset pa {Store it} ਰੱਖੋ
+::msgcat::mcset pa {Store replica} {ਸਟੋਰ ਰੇਪਲੀਕਾ}
 ::msgcat::mcset pa Subagents ਸਬ-ਏਜੰਟ
 ::msgcat::mcset pa {Subagents (/agents)} {ਸਬ-ਏਜੰਟ (/agents)}
 ::msgcat::mcset pa Summary ਸਾਰ
+::msgcat::mcset pa Surface ਸਤ੍ਹਾ
 ::msgcat::mcset pa {Swap ⇄} {ਅਦਲਾ-ਬਦਲੀ ⇄}
+::msgcat::mcset pa {Sync cancelled.} {ਸਿੰਕ ਰੱਦ ਕੀਤਾ।}
+::msgcat::mcset pa {Sync complete.} {ਸਿੰਕ ਪੂਰਾ ਹੋਇਆ।}
+::msgcat::mcset pa {Sync now} {ਹੁਣ ਸਿੰਕ ਕਰੋ}
 ::msgcat::mcset pa {TOML copied — paste it into config.toml} {TOML ਕਾਪੀ ਹੋਇਆ — config.toml ਵਿੱਚ ਪੇਸਟ ਕਰੋ}
 ::msgcat::mcset pa Tag ਟੈਗ
 ::msgcat::mcset pa {Tap a link to open it, or a block's header to open or close the block.} {ਲਿੰਕ ਖੋਲ੍ਹਣ ਲਈ ਉਸ 'ਤੇ ਟੈਪ ਕਰੋ, ਜਾਂ ਬਲਾਕ ਖੋਲ੍ਹਣ ਜਾਂ ਬੰਦ ਕਰਨ ਲਈ ਉਸਦੇ ਸਿਰਲੇਖ 'ਤੇ ਟੈਪ ਕਰੋ।}
 ::msgcat::mcset pa {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {ਟਾਈਪ ਕਰਨ ਲਈ ਹੇਠਲੇ ਬਕਸੇ 'ਤੇ ਟੈਪ ਕਰੋ। ਭੇਜੋ ਭੇਜਦਾ ਹੈ, ਰੋਕੋ ਵਾਰੀ ਖਤਮ ਕਰਦਾ ਹੈ, ਅਤੇ ਅਲੱਗ ਕਰੋ ਚੱਲ ਰਹੀ ਕਮਾਂਡ ਨੂੰ ਬੈਕਗ੍ਰਾਊਂਡ ਵਿੱਚ ਭੇਜਦਾ ਹੈ।}
 ::msgcat::mcset pa {Tap the text to clear the selection.} {ਚੋਣ ਹਟਾਉਣ ਲਈ ਲਿਖਤ 'ਤੇ ਟੈਪ ਕਰੋ।}
+::msgcat::mcset pa {Target language:} {ਲਕਸ਼ਯ ਭਾਸ਼ਾ:}
+::msgcat::mcset pa {Target node IDs (canary first, comma separated)} {ਨਿਸ਼ਾਨਾ ਨੋਡ ਆਈਡੀਆਂ (ਕੈਨਰੀ ਪਹਿਲਾਂ, ਕਾਮੇ ਨਾਲ ਵੱਖਰੀਆਂ)}
 ::msgcat::mcset pa {Task list} {ਕੰਮਾਂ ਦੀ ਸੂਚੀ}
 ::msgcat::mcset pa {Task list (right pane)} {ਕੰਮਾਂ ਦੀ ਸੂਚੀ (ਸੱਜਾ ਪੈਨ)}
 ::msgcat::mcset pa Tasks ਕੰਮ
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset pa {That is not a ticket.} {ਇਹ ਟਿਕਟ ਨਹੀਂ ਹੈ।}
 ::msgcat::mcset pa {That is not a veles pool code.} {ਇਹ veles ਸਮੂਹ ਦਾ ਕੋਡ ਨਹੀਂ ਹੈ।}
 ::msgcat::mcset pa {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {ਇਹ WireGuard ਕੋਡ ਹੈ: ਇਸਨੂੰ WireGuard ਐਪ ਨਾਲ ਸਕੈਨ ਕਰੋ। veles ਕੋਡ ਦੂਜਾ ਹੈ।}
+::msgcat::mcset pa {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {ਸਮੀਖਿਆ ਕੀਤੀਆਂ %d ਫ਼ਾਈਲਾਂ ਤੁਹਾਡੀ ਉਪਭੋਗਤਾ ਪਲੱਗਇਨ ਡਾਇਰੈਕਟਰੀ ਵਿੱਚ ਨਵੀਂ ਡਾਇਰੈਕਟਰੀ ਵਿੱਚ ਲਿਖੀਆਂ ਜਾਣਗੀਆਂ, ਅਤੇ veles ਐਕਸਟੈਂਸ਼ਨ ਲੋਡ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰਦਾ ਹੈ। ਜੇ ਪੂਰਵਦਰਸ਼ਨ ਤੋਂ ਬਾਅਦ ਉਸ ਨਾਮ ਦੀ ਡਾਇਰੈਕਟਰੀ ਬਣ ਗਈ ਹੈ ਤਾਂ ਕੁਝ ਨਹੀਂ ਲਿਖਿਆ ਜਾਵੇਗਾ। ਪ੍ਰਕਾਸ਼ਨ ਇਸ ਕਾਰਵਾਈ ਦਾ ਹਿੱਸਾ ਨਹੀਂ।}
 ::msgcat::mcset pa {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {ਡੈਵ ਪੈਨ ਦਾ REPL ਚੱਲਦੀ (LIVE) ਐਪ ਵਿੱਚ ਮੁਲਾਂਕਣ ਕਰਦਾ ਹੈ — UI ਆਪਣਾ ਹੀ lisp ਹੈ।}
 ::msgcat::mcset pa {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {[mcp_servers.<name>] ਟੇਬਲ config.toml ਵਿੱਚੋਂ ਮਿਟਾਇਆ ਗਿਆ ਹੈ। ਪਿਛਲੀ ਫਾਈਲ config.toml.bak ਵਜੋਂ ਰੱਖੀ ਗਈ ਹੈ।}
 ::msgcat::mcset pa {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {ਐਡਾਪਟਰ ਦੀਆਂ ਆਗਿਆ-ਲਿਸਟਾਂ (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) ਹੀ ਭਰੋਸੇ ਦੀ ਹੱਦ ਹਨ, ਅਤੇ ਹਰ ਆਗਿਆ ਸ਼ਤ ਭੇਜਣ ਵਾਲਾ owner ਵਜੋਂ ਗਿਣਿਆ ਜਾਂਦਾ ਹੈ। ਇਹ ACL ਤੋਂ ਪਹਿਲਾਂ ਵਾਲਾ ਹਾਲ ਹੈ।}
 ::msgcat::mcset pa {The agent asks for a secret: %s} {ਏਜੰਟ ਇੱਕ ਸੀਕ੍ਰੇਟ ਮੰਗ ਰਿਹਾ ਹੈ: %s}
+::msgcat::mcset pa {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {ਪਹਿਲਾਂ ਹੀ ਪੁਸ਼ ਕੀਤੀ ਬ੍ਰਾਂਚ ਨੂੰ PR head ਵਜੋਂ ਵਰਤਿਆ ਜਾਵੇਗਾ। ਤੁਹਾਡੇ ਫੋਰਕ ਦੀ ਬ੍ਰਾਂਚ ਦਾ ਨਾਮ owner:branch ਵਾਂਗ ਆਪਣੇ-ਆਪ ਰੱਖਿਆ ਜਾਂਦਾ ਹੈ।}
+::msgcat::mcset pa {The author asks} {ਲੇਖਕ ਪੁੱਛਦਾ ਹੈ}
+::msgcat::mcset pa {The buffer changed. Request a new proposal before applying.} {ਬਫ਼ਰ ਬਦਲ ਗਿਆ ਹੈ। ਲਾਗੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਨਵਾਂ ਪ੍ਰਸਤਾਵ ਮੰਗੋ।}
 ::msgcat::mcset pa {The bundle operation returned an invalid result. Verify the installation before retrying.} {ਬੰਡਲ ਓਪਰੇਸ਼ਨ ਨੇ ਅਵੈਧ ਨਤੀਜਾ ਦਿੱਤਾ। ਮੁੜ ਕੋਸ਼ਿਸ਼ ਤੋਂ ਪਹਿਲਾਂ ਇੰਸਟਾਲੇਸ਼ਨ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ।}
 ::msgcat::mcset pa {The bundle preview was malformed; nothing was installed.} {ਬੰਡਲ ਪ੍ਰੀਵਿਊ ਗਲਤ ਢੰਗ ਦਾ ਸੀ; ਕੁਝ ਵੀ ਇੰਸਟਾਲ ਨਹੀਂ ਹੋਇਆ।}
 ::msgcat::mcset pa {The camera did not open; paste the code instead.} {ਕੈਮਰਾ ਨਹੀਂ ਖੁੱਲ੍ਹਿਆ; ਇਸਦੀ ਬਜਾਏ ਕੋਡ ਪੇਸਟ ਕਰੋ।}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset pa {The component manifest is still loading. Wait for it or choose another component.} {ਕੰਪੋਨੈਂਟ ਦਾ ਮੈਨੀਫੈਸਟ ਅਜੇ ਵੀ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ। ਇਸਦੀ ਉਡੀਕ ਕਰੋ ਜਾਂ ਕੋਈ ਹੋਰ ਕੰਪੋਨੈਂਟ ਚੁਣੋ।}
 ::msgcat::mcset pa {The component preview is not ready yet. Refresh it and review the result before applying.} {ਕੰਪੋਨੈਂਟ ਝਲਕ ਅਜੇ ਤਿਆਰ ਨਹੀਂ ਹੈ। ਲਾਗੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਇਸਨੂੰ ਤਾਜ਼ਾ ਕਰੋ ਅਤੇ ਨਤੀਜੇ ਦੀ ਸਮੀਖਿਆ ਕਰੋ।}
 ::msgcat::mcset pa {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {ਕੰਪੋਨੈਂਟ ਝਲਕ ਅਜੇ ਵੀ ਲੋਡ ਹੋ ਰਹੀ ਹੈ। ਸੰਯੁਕਤ ਤਬਦੀਲੀਆਂ ਦੀ ਸਮੀਖਿਆ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਜਵਾਬ ਦੀ ਉਡੀਕ ਕਰੋ।}
+::msgcat::mcset pa {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {ਮੌਜੂਦਾ ਡਾਇਗਨੋਸਟਿਕਸ (ਲੈਂਗੂਏਜ ਸਰਵਰ ਜਾਂ Check ਤੋਂ) ਇਸ ਫ਼ਾਈਲ ਨਾਲ ਭੇਜੇ ਜਾਂਦੇ ਹਨ। ਚਾਹੋ ਤਾਂ ਸਵਾਲ ਵੀ ਜੋੜੋ। ਜਵਾਬ ਸਿਰਫ਼ ਟੈਕਸਟ ਹੈ; ਕੁਝ ਵੀ ਲਿਖਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ।}
 ::msgcat::mcset pa {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {ਡਾਇਰੈਕਟਰੀ ਅਤੇ ਇਸ ਵਿੱਚਲੀ ਹਰ ਚੀਜ਼ ਹਟਾ ਦਿੱਤੀ ਜਾਂਦੀ ਹੈ। ਇਹ ਵਾਪਸ ਨਹੀਂ ਆਉਂਦੀ — ਜੇ ਸਿਰਫ਼ ਪ੍ਰੌਂਪਟ ਵਿੱਚੋਂ ਕੱਢਣਾ ਹੈ ਤਾਂ ਇਸ ਦੀ ਬਜਾਏ ਬੰਦ ਕਰੋ।}
 ::msgcat::mcset pa {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {ਡਾਇਰੈਕਟਰੀ ਮਿਟਾ ਦਿੱਤੀ ਗਈ ਹੈ। ਪਲੱਗਇਨ ਫੋਲਡਰ ਇੱਕ git ਰਿਪੋਜ਼ਟਰੀ ਹੈ ਅਤੇ ਪਹਿਲਾਂ ਸਨੈਪਸ਼ਾਟ ਕਮਿੱਟ ਕੀਤਾ ਜਾਂਦਾ ਹੈ, ਇਸ ਲਈ History… ਇਸ ਨੂੰ ਵਾਪਸ ਲਿਆ ਸਕਦਾ ਹੈ।}
+::msgcat::mcset pa {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {ਐਡੀਟਰ ਗੇਟਵੇ ਦੀਆਂ ਫ਼ਾਈਲਾਂ ਖੋਲ੍ਹਦਾ ਹੈ, ਰਿਮੋਟ ਇੰਸਟੈਂਸ ਸਮੇਤ, ਅਤੇ ਫ਼ਾਈਲ ਦੀ ਭਾਸ਼ਾ ਲਈ ਲੈਂਗੂਏਜ ਸਰਵਰ ਗੇਟਵੇ 'ਤੇ ਚਲਾਉਂਦਾ ਹੈ: tcl-lsp, typescript-language-server (TypeScript ਅਤੇ JavaScript), rust-analyzer (Rust ਪਲੱਗਇਨ crate ਜਾਂ ਮਾਡਿਊਲ), clangd (C), racket-langserver ਅਤੇ ਇੱਕ Common Lisp ਸਰਵਰ। ਹੋਵਰ, ਪਰਿਭਾਸ਼ਾ 'ਤੇ ਜਾਣਾ, ਪੂਰਨਤਾ ਅਤੇ ਲਾਈਵ ਡਾਇਗਨੋਸਟਿਕਸ ਹਰ ਉਸ ਭਾਸ਼ਾ ਲਈ ਕੰਮ ਕਰਦੇ ਹਨ ਜਿਸ ਲਈ ਗੇਟਵੇ ਕੋਲ ਸਰਵਰ ਹੈ; ਜਦੋਂ ਨਹੀਂ ਹੈ ਤਾਂ ਐਡੀਟਰ ਦੱਸਦਾ ਹੈ ਕਿ ਉੱਥੇ ਕਿਹੜਾ ਪ੍ਰੋਗਰਾਮ ਇੰਸਟਾਲ ਕਰਨਾ ਹੈ ਅਤੇ ਸਿੰਟੈਕਸ ਹਾਈਲਾਈਟਿੰਗ ਬਣਾਈ ਰੱਖਦਾ ਹੈ। Check ਗੇਟਵੇ 'ਤੇ ਮੇਲ ਖਾਂਦਾ ਚੈਕਰ ਚਲਾਉਂਦਾ ਹੈ: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, ਜਾਂ Racket ਅਤੇ Lisp ਰੀਡਰ। ਸੰਭਾਲੋ, Manage extensions ਵਿੱਚ ਮੁੜ ਲੋਡ ਕਰੋ, ਅਤੇ ਸਥਾਨਕ ਸਥਿਤੀ ਪ੍ਰਕਾਸ਼ਿਤ ਕੀਤੇ ਬਿਨਾਂ ਐਕਸਟੈਂਸ਼ਨ ਦੀ ਜਾਂਚ ਕਰੋ।}
 ::msgcat::mcset pa {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {ਪਹਿਲੀ ਹੈਂਡਆਫ਼ ਸੀਕ੍ਰੇਟ, ਪਿੰਨ ਕੀਤੀ ਇਮੇਜ਼ ਅਤੇ ਰਨਟਾਈਮ ਫਾਈਲਾਂ ਤਿਆਰ ਕਰਦੀ ਹੈ ਪਰ PDS ਨਹੀਂ ਚਲਾਉਂਦੀ। KEK ਅਤੇ PLC ਰੋਟੇਸ਼ਨ ਕੁੰਜੀ ਆਫਲਾਈਨ ਬੈਕਅਪ ਕਰੋ, ਫਿਰ ਬੈਕਅਪ ਸਵੀਕਾਰਨ ਨਾਲ ਇੱਕ ਨਵੀਂ ਪੜਤਾਲੀ ਬੇਨਤੀ ਕਰੋ ਤਾਂ ਜੋ HTTP-01 TLS ਅਤੇ ਐਕਟੀਵੇਸ਼ਨ ਸੈੱਟ ਕੀਤਾ ਜਾ ਸਕੇ। DNS ਰਿਕਾਰਡ ਸਿੱਧੇ ਇਸ ਹੋਸਟ ’ਤੇ ਇਸ਼ਾਰਾ ਕਰਨੇ ਚਾਹੀਦੇ ਹਨ; veles ਵੱਲੋਂ ਕੋਈ CDN ਪ੍ਰੌਕਸੀ ਜਾਂ DNS ਬਦਲਾਅ ਨਹੀਂ ਕੀਤਾ ਜਾਂਦਾ।}
+::msgcat::mcset pa {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {ਐਕਸਟੈਂਸ਼ਨ ਤਿਆਰ ਹੋਣ ਤੋਂ ਬਾਅਦ ਫ਼ਾਰਮ ਬਦਲ ਗਿਆ ਹੈ। ਦੁਬਾਰਾ ਤਿਆਰ ਕਰੋ, ਜਾਂ ਸਾਧਾਰਨ ਸਕੈਫੋਲਡ ਦਾ ਪੂਰਵਦਰਸ਼ਨ ਕਰੋ।}
 ::msgcat::mcset pa {The gateway itself is untouched.} {ਗੇਟਵੇ ਆਪ ਨੂੰ ਕੋਈ ਅਸਰ ਨਹੀਂ ਪੈਂਦਾ।}
 ::msgcat::mcset pa {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {ਗੇਟਵੇ ਨੇ ਕੌਂਫਿਗ ਦੁਬਾਰਾ ਲੋਡ ਕਰ ਲਈ ਹੈ, ਇਸ ਲਈ ਨਵੇਂ ਸੈਸ਼ਨ ਹੁਣੇ ਤੋਂ ਇਸਨੂੰ ਵਰਤਦੇ ਹਨ, ਅਤੇ ਤਿਜੋਰੀ ਵਿੱਚ ਰੱਖੀ key ਅਗਲੀ ਬੇਨਤੀ ਵਿੱਚ ਵਰਤੀ ਜਾਵੇਗੀ। Telegram ਅਤੇ IRC ਗੇਟਵੇ ਦੇ ਅਗਲੇ ਰੀਸਟਾਰਟ 'ਤੇ ਸ਼ੁਰੂ ਹੋਣਗੇ: veles gateway restart।}
 ::msgcat::mcset pa {The installed component no longer matches the selected manifest. Review the component list again.} {ਇੰਸਟਾਲ ਕੀਤਾ ਕੰਪੋਨੈਂਟ ਚੁਣੇ ਗਏ ਮੈਨੀਫੈਸਟ ਨਾਲ ਹੁਣ ਮੇਲ ਨਹੀਂ ਖਾਂਦਾ। ਕੰਪੋਨੈਂਟ ਸੂਚੀ ਦੀ ਦੁਬਾਰਾ ਸਮੀਖਿਆ ਕਰੋ।}
 ::msgcat::mcset pa {The installer preview has no verification signatures; apply is disabled.} {ਇੰਸਟਾਲਰ ਝਲਕ ਦਾ ਕੋਈ ਗਵਾਹੀ ਦਸਤਖਤ ਨਹੀਂ ਹੈ; ਲਾਗੂ ਕਰਨਾ ਅਸਮਰੱਥ ਹੈ।}
 ::msgcat::mcset pa {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {ਕੰਮ ਅਤੇ ਇਸ ਦਾ ਰਨ ਇਤਿਹਾਸ ਹਟਾ ਦਿੱਤਾ ਜਾਂਦਾ ਹੈ। ਇਹ ਵਾਪਸ ਨਹੀਂ ਹੋ ਸਕਦਾ — ਜੇ ਸਿਰਫ਼ ਰੋਕਣਾ ਹੈ ਤਾਂ ਪਾਜ਼ ਕਰੋ।}
+::msgcat::mcset pa {The log could not be read: %s} {ਲੌਗ ਪੜ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ: %s}
 ::msgcat::mcset pa {The manifest belongs to another component; its reply was discarded.} {ਮੈਨੀਫੈਸਟ ਕਿਸੇ ਹੋਰ ਕੰਪੋਨੈਂਟ ਦਾ ਹੈ; ਉਸਦਾ ਜਵਾਬ ਛੱਡ ਦਿੱਤਾ ਗਿਆ।}
 ::msgcat::mcset pa {The profile changed. Review the fresh plan before applying it.} {ਪ੍ਰੋਫਾਈਲ ਬਦਲ ਗਿਆ ਹੈ। ਲਾਗੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਨਵੀਂ ਯੋਜਨਾ ਦੀ ਸਮੀਖਿਆ ਕਰੋ।}
 ::msgcat::mcset pa {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {ਰਿਪੋਜ਼ਟਰੀ ਦੇ ਮੂਲ ਜਾਂ ਇੱਕ ਕੈਟਾਗਰੀ ਅੰਦਰ SKILL.md ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ। ਇਹ %s ਵਿੱਚ ਆ ਜਾਵੇਗੀ।}
 ::msgcat::mcset pa {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {ਰਿਪੋਜ਼ਟਰੀ ਦੇ ਮੂਲ ਵਿੱਚ plugin.toml ਹੋਣਾ ਲਾਜ਼ਮੀ ਹੈ। ਇਹ ਮੈਨੀਫੈਸਟ ਦੇ ਨਾਮ ਹੇਠ %s ਵਿੱਚ ਕਲੋਨ ਹੁੰਦੀ ਹੈ।}
+::msgcat::mcset pa {The reviewed change set was applied (%d files). Review and test it before publishing.} {ਸਮੀਖਿਆ ਕੀਤਾ ਬਦਲਾਅ ਸੈੱਟ ਲਾਗੂ ਹੋ ਗਿਆ (%d ਫ਼ਾਈਲਾਂ)। ਪ੍ਰਕਾਸ਼ਿਤ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਇਸਦੀ ਸਮੀਖਿਆ ਅਤੇ ਜਾਂਚ ਕਰੋ।}
 ::msgcat::mcset pa {The reviewed configuration snapshot will also be restored.} {ਸਮੀਖਿਆ ਕੀਤਾ ਕੌਂਫਿਗ ਸਨੈਪਸ਼ੌਟ ਵੀ ਬਹਾਲ ਕੀਤਾ ਜਾਵੇਗਾ।}
+::msgcat::mcset pa {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {ਸਮੀਖਿਆ ਕੀਤੀਆਂ ਫ਼ਾਈਲਾਂ ਤੁਹਾਡੀ ਉਪਭੋਗਤਾ ਪਲੱਗਇਨ ਡਾਇਰੈਕਟਰੀ ਵਿੱਚ ਲਿਖੀਆਂ ਜਾਣਗੀਆਂ। Veles ਸਥਾਨਕ ਰਿਕਵਰੀ ਸਨੈਪਸ਼ਾਟ ਸੰਭਾਲਦਾ ਹੈ ਅਤੇ ਐਕਸਟੈਂਸ਼ਨ ਮੁੜ ਲੋਡ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰਦਾ ਹੈ; ਪ੍ਰਕਾਸ਼ਨ ਇਸ ਕਾਰਵਾਈ ਦਾ ਹਿੱਸਾ ਨਹੀਂ ਹੈ।}
+::msgcat::mcset pa {The reviewed proposal was applied locally. Review and test it before publishing.} {ਸਮੀਖਿਆ ਕੀਤਾ ਪ੍ਰਸਤਾਵ ਸਥਾਨਕ ਤੌਰ ’ਤੇ ਲਾਗੂ ਹੋਇਆ। ਪ੍ਰਕਾਸ਼ਿਤ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਇਸਦੀ ਸਮੀਖਿਆ ਅਤੇ ਜਾਂਚ ਕਰੋ।}
 ::msgcat::mcset pa {The rollback preview was malformed or named another component; nothing was restored.} {ਰੋਲਬੈਕ ਪ੍ਰੀਵਿਊ ਗਲਤ ਢੰਗ ਦਾ ਸੀ ਜਾਂ ਕਿਸੇ ਹੋਰ ਕੰਪੋਨੈਂਟ ਦਾ ਨਾਮ ਸੀ; ਕੁਝ ਵੀ ਬਹਾਲ ਨਹੀਂ ਹੋਇਆ।}
 ::msgcat::mcset pa {The rollback returned an invalid result. Verify the installation before retrying.} {ਰੋਲਬੈਕ ਨੇ ਅਵੈਧ ਨਤੀਜਾ ਦਿੱਤਾ। ਮੁੜ ਕੋਸ਼ਿਸ਼ ਤੋਂ ਪਹਿਲਾਂ ਇੰਸਟਾਲੇਸ਼ਨ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ।}
 ::msgcat::mcset pa {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {ਇਹ ਰੂਟ ਹੈ ਜਿਸ ਉੱਤੇ ਨਵੇਂ ਸੈਸ਼ਨ ਸ਼ੁਰੂ ਹੁੰਦੇ ਹਨ। /model ਅਤੇ models overlay ਇਸਨੂੰ ਬਾਅਦ ਵਿੱਚ ਬਦਲਦੇ ਹਨ, ਹਰ ਸੈਸ਼ਨ ਲਈ ਜਾਂ ਨਵੇਂ ਡਿਫ਼ੌਲਟ ਵਜੋਂ।}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset pa {The signed download discard returned an invalid response; no installation was requested.} {ਹਸਤਾਖਰਿਤ ਡਾਊਨਲੋਡ ਰੱਦ ਕਰਨ ਨੇ ਅਵੈਧ ਜਵਾਬ ਦਿੱਤਾ; ਕੋਈ ਇੰਸਟਾਲੇਸ਼ਨ ਨਹੀਂ ਮੰਗੀ ਗਈ।}
 ::msgcat::mcset pa {The signed installation returned an invalid result. Verify the installation before retrying.} {ਹਸਤਾਖਰਿਤ ਇੰਸਟਾਲੇਸ਼ਨ ਨੇ ਅਵੈਧ ਨਤੀਜਾ ਦਿੱਤਾ। ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਇੰਸਟਾਲੇਸ਼ਨ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ।}
 ::msgcat::mcset pa {The signed release preview was malformed; nothing was installed.} {ਹਸਤਾਖਰਿਤ ਰਿਲੀਜ਼ ਪ੍ਰੀਵਿਊ ਵਿਗੜਿਆ ਹੋਇਆ ਸੀ; ਕੁਝ ਵੀ ਇੰਸਟਾਲ ਨਹੀਂ ਹੋਇਆ।}
+::msgcat::mcset pa {The source buffer changed. Request a new proposal before applying.} {ਸਰੋਤ ਬਫ਼ਰ ਬਦਲ ਗਿਆ ਹੈ। ਲਾਗੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਨਵਾਂ ਪ੍ਰਸਤਾਵ ਮੰਗੋ।}
 ::msgcat::mcset pa {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {ਸਟੋਰ ਇੱਕ ਰੀਵਿਜ਼ਨ ਪਿੱਛੇ ਜਾਂਦਾ ਹੈ। ਰੋਲਬੈਕ ਖੁਦ ਇੱਕ ਰੀਵਿਜ਼ਨ ਹੁੰਦਾ ਹੈ, ਇਸ ਲਈ ਇਸ ਨੂੰ ਵੀ ਵਾਪਸ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ।}
+::msgcat::mcset pa {The translator returned no text.} {ਅਨੁਵਾਦਕ ਨੇ ਕੋਈ ਟੈਕਸਟ ਨਹੀਂ ਵਾਪਸ ਕੀਤਾ।}
 ::msgcat::mcset pa {The verification reply was malformed; no integrity result was accepted.} {ਪੁਸ਼ਟੀ ਦਾ ਜਵਾਬ ਗਲਤ ਢੰਗ ਦਾ ਸੀ; ਕੋਈ ਅਖੰਡਤਾ ਨਤੀਜਾ ਸਵੀਕਾਰ ਨਹੀਂ ਕੀਤਾ ਗਿਆ।}
 ::msgcat::mcset pa Themes ਥੀਮ
+::msgcat::mcset pa {These paths already exist in the chosen repository:} {ਇਹ ਪਾਥ ਚੁਣੀ ਰਿਪੋਜ਼ਟਰੀ ਵਿੱਚ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹਨ:}
 ::msgcat::mcset pa {They have not been saved.} {ਉਹ ਸੰਭਾਲੀਆਂ ਨਹੀਂ ਗਈਆਂ।}
+::msgcat::mcset pa {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {ਇਸ ਬਫਰ ਵਿੱਚ ਸਮਝਾਉਣ ਲਈ ਕੋਈ ਡਾਇਗਨੋਸਟਿਕ ਨਹੀਂ। Check ਚਲਾਓ, ਜਾਂ ਲੈਂਗੂਏਜ ਸਰਵਰ ਦੀ ਉਡੀਕ ਕਰੋ।}
 ::msgcat::mcset pa {This challenge is over.} {ਇਹ ਚੁਣੌਤੀ ਖਤਮ ਹੋ ਗਈ ਹੈ।}
 ::msgcat::mcset pa {This code has expired. Ask for a new one.} {ਇਸ ਕੋਡ ਦੀ ਮਿਆਦ ਖ਼ਤਮ ਹੋ ਗਈ ਹੈ। ਨਵਾਂ ਮੰਗੋ।}
 ::msgcat::mcset pa {This does not start a service or claim signed-download verification.} {ਇਹ ਕੋਈ ਸੇਵਾ ਸ਼ੁਰੂ ਨਹੀਂ ਕਰਦਾ ਅਤੇ signed-download ਪੁਸ਼ਟੀ ਦਾ ਦਾਅਵਾ ਨਹੀਂ ਕਰਦਾ।}
 ::msgcat::mcset pa {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {ਇਹ ਗੇਟਵੇ ਇਸ ਮਸ਼ੀਨ ਤੋਂ ਸੀਕ੍ਰੇਟ ਮੁੱਲ ਨਹੀਂ ਲੈਂਦਾ: ਉੱਥੇ ਹੀ veles secret set %s ਨਾਲ ਦਾਖਲ ਕਰੋ, ਜਾਂ ਇਸ ਨੈੱਟਵਰਕ ਨੂੰ ਇਸਦੇ [vault] trusted_networks ਵਿੱਚ ਜੋੜੋ}
 ::msgcat::mcset pa {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {ਇਹ ਓਹਹੀ ਹੈ ਜੋ ਲਿਖਿਆ ਜਾਵੇਗਾ — ਇੰਜਣ ਦੇ ਆਪਣੇ ਬਾਈਟ, ਲਾਈਵ ਲਿਆਂਦੇ ਹੋਏ। ਹਾਲੇ ਡਿਸਕ ਨੂੰ ਕੁਝ ਛੂਹਿਆ ਨਹੀਂ ਗਿਆ।}
+::msgcat::mcset pa {This node is not a configured sync peer for any kind.} {ਇਹ ਨੋਡ ਕਿਸੇ ਵੀ ਕਿਸਮ ਲਈ ਕੌਂਫਿਗਰ ਕੀਤਾ ਸਿੰਕ ਪੀਅਰ ਨਹੀਂ ਹੈ।}
+::msgcat::mcset pa {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {ਇਹ ਪਲੱਗਇਨ ਬੰਡਲ ਕੀਤਾ ਅਤੇ ਸਿਰਫ਼-ਪੜ੍ਹਨ ਵਾਲਾ ਹੈ। ਇਸ ਦੀ ਬਜਾਏ ਬੰਡਲ ਕੀਤੀ ਕਾਪੀ ਵਰਤਣ ਲਈ ਇਸੇ ਨਾਮ ਵਾਲੀ user ਕਾਪੀ ਹਟਾਓ।}
+::msgcat::mcset pa {This publishes the commit; no pull request is created yet.} {ਇਹ ਕਮਿਟ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰਦਾ ਹੈ; ਹਾਲੇ ਕੋਈ ਪੁਲ ਬੇਨਤੀ ਨਹੀਂ ਬਣਾਈ ਜਾਂਦੀ।}
 ::msgcat::mcset pa {This review expires after %s seconds. Closing or cancelling discards its private staging.} {ਇਹ ਸਮੀਖਿਆ %s ਸਕਿੰਟਾਂ ਬਾਅਦ ਮਿਆਦ ਪੁੱਗ ਜਾਂਦੀ ਹੈ। ਬੰਦ ਜਾਂ ਰੱਦ ਕਰਨ ਨਾਲ ਇਸਦਾ ਨਿੱਜੀ ਸਟੇਜਿੰਗ ਰੱਦ ਹੋ ਜਾਂਦਾ ਹੈ।}
 ::msgcat::mcset pa {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {ਇਹ ਵਿਜ਼ਾਰਡ config.toml ਲਿਖਦਾ ਹੈ, ਅਤੇ ਤੁਹਾਡੀਆਂ ਦਿੱਤੀਆਂ keys ਇਨਕ੍ਰਿਪਟ ਕੀਤੀ ਤਿਜੋਰੀ ਵਿੱਚ ਰੱਖਦਾ ਹੈ। ਹਰ ਕਦਮ ਛੱਡਿਆ ਜਾ ਸਕਦਾ ਹੈ: ਛੱਡਿਆ ਕਦਮ ਨਵੀਂ ਕੌਂਫਿਗ ਵਿੱਚ ਸ਼ਾਮਲ ਨਹੀਂ ਹੁੰਦਾ, ਅਤੇ ਮੌਜੂਦਾ ਕੌਂਫਿਗ ਵਿੱਚ ਜਿਵੇਂ ਹੈ ਉਵੇਂ ਹੀ ਰਹਿੰਦਾ ਹੈ। ਮੌਜੂਦਾ config.toml ਉਸੇ ਥਾਂ ਸੋਧੀ ਜਾਂਦੀ ਹੈ — ਸਿਰਫ਼ ਉਹ ਹਿੱਸੇ ਬਦਲਦੇ ਹਨ ਜਿਨ੍ਹਾਂ ਦਾ ਤੁਸੀਂ ਜਵਾਬ ਦਿੰਦੇ ਹੋ, ਅਤੇ ਬਾਕੀ ਸਭ, ਟਿੱਪਣੀਆਂ ਸਮੇਤ, ਰਹਿੰਦਾ ਹੈ।}
 ::msgcat::mcset pa {Ticket needed} {ਟਿਕਟ ਲੋੜੀਂਦੀ ਹੈ}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset pa {Topic for %s} {%s ਲਈ ਵਿਸ਼ਾ}
 ::msgcat::mcset pa {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {ਮੀਨੂ ਖੋਲ੍ਹਣ ਲਈ ਕਿਸੇ ਸੈਸ਼ਨ, ਜਾਂ ਮੀਨੂ ਵਾਲੀ ਕਿਸੇ ਹੋਰ ਚੀਜ਼ ਨੂੰ ਛੋਹ ਕੇ ਦਬਾਈ ਰੱਖੋ। ਉਸਦੇ ਬਾਹਰ ਟੈਪ, ਜਾਂ ਪਿੱਛੇ, ਉਸਨੂੰ ਬੰਦ ਕਰਦਾ ਹੈ।}
 ::msgcat::mcset pa {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {ਕੋਈ ਸ਼ਬਦ ਚੁਣਨ ਲਈ ਉਸਨੂੰ ਛੋਹ ਕੇ ਦਬਾਈ ਰੱਖੋ। ਉਂਗਲ ਚੁੱਕਣ 'ਤੇ ਉਸਦਾ ਮੀਨੂ ਖੁੱਲ੍ਹਦਾ ਹੈ, ਸਭ ਤੋਂ ਉੱਪਰ ਕਾਪੀ ਕਰੋ ਨਾਲ।}
+::msgcat::mcset pa Translate {ਅਨੁਵਾਦ ਕਰੋ}
+::msgcat::mcset pa {Translate selection} {ਚੋਣ ਦਾ ਅਨੁਵਾਦ ਕਰੋ}
+::msgcat::mcset pa Translating… {ਅਨੁਵਾਦ ਹੋ ਰਿਹਾ ਹੈ…}
+::msgcat::mcset pa {Translation cancelled.} {ਅਨੁਵਾਦ ਰੱਦ ਕੀਤਾ ਗਿਆ।}
+::msgcat::mcset pa {Translation copied.} {ਅਨੁਵਾਦ ਕਾਪੀ ਕੀਤਾ ਗਿਆ।}
+::msgcat::mcset pa {Translation failed} {ਅਨੁਵਾਦ ਅਸਫਲ ਰਿਹਾ}
+::msgcat::mcset pa {Translation result} {ਅਨੁਵਾਦ ਦਾ ਨਤੀਜਾ}
+::msgcat::mcset pa {Translator configuration unavailable} {ਅਨੁਵਾਦਕ ਕੌਂਫਿਗਰੇਸ਼ਨ ਅਣਉਪਲਬਧ}
 ::msgcat::mcset pa {Trigger history} {ਟ੍ਰਿੱਗਰ ਇਤਿਹਾਸ}
 ::msgcat::mcset pa Triggers ਟਰਿੱਗਰ
 ::msgcat::mcset pa {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {ਟਰਿੱਗਰ ਬਿਨਾਂ ਟਰਨ ਤੋਂ ਚੈਨਲ ਈਵੈਂਟਾਂ 'ਤੇ ਪ੍ਰਤੀਕਿਰਿਆ ਕਰਦੇ ਹਨ। slopdrop ਈਵੈਂਟ ਨੂੰ ਬ੍ਰਿਜ ਤੱਕ ਭੇਜਦਾ ਹੈ ਅਤੇ ਜਵਾਬ ਵਾਪਸ ਕਰਦਾ ਹੈ; vision ਕੂਲਡਾਊਨ ਅਤੇ ਹਰ ਘੰਟੇ ਦੀ ਕੈਪ ਅੰਦਰ ਇਮੇਜ URL ਦਾ ਵਰਣਨ ਕਰਦਾ ਹੈ। ਰੋ ਸਿਰਫ਼ ਉੱਥੇ ਵੱਜਦੀ ਹੈ ਜਿੱਥੇ [triggers] ਕੌਂਫਿਗ ਸਵਿੱਚ ਅਤੇ ਡਿਰਾਈਵਡ ਮਾਸਕ ਦੋਵੇਂ ਇਜਾਜ਼ਤ ਦਿੰਦੇ ਹਨ — #coven ਲਾਈਵ slopdrop ਬਾਈਡਿੰਗਾਂ ਹੇਠ ਕੁਝ ਵੀ ਅੱਗੇ ਨਹੀਂ ਭੇਜਦਾ।}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset pa {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {ਜਦੋਂ ਤੱਕ .env ਵਿੱਚ IRC_ALLOWED_USERS ਤੁਹਾਡਾ ਖਾਤਾ ਨਹੀਂ ਦੱਸਦਾ, ਨੈੱਟਵਰਕ ’ਤੇ ਕੋਈ ਵੀ ਬੋਟ ਨਾਲ ਗੱਲ ਕਰ ਸਕਦਾ ਹੈ — ਅਤੇ [acl] ਭਾਗ ਨਾ ਹੋਣ ’ਤੇ ਮਾਲਕ ਵਜੋਂ, ਸਾਰੇ ਟੂਲਾਂ ਸਮੇਤ।}
 ::msgcat::mcset pa {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {ਜਦੋਂ ਤੱਕ .env ਵਿੱਚ TELEGRAM_ALLOWED_USERS ਤੁਹਾਡੀ ਯੂਜ਼ਰ ਆਈਡੀ ਨਹੀਂ ਦੱਸਦਾ, ਬੋਟ ਨੂੰ ਲੱਭਣ ਵਾਲਾ ਕੋਈ ਵੀ ਉਸ ਨਾਲ ਗੱਲ ਕਰ ਸਕਦਾ ਹੈ — ਅਤੇ [acl] ਭਾਗ ਨਾ ਹੋਣ ’ਤੇ ਮਾਲਕ ਵਜੋਂ, ਸਾਰੇ ਟੂਲਾਂ ਸਮੇਤ।}
 ::msgcat::mcset pa Untitled {ਬਿਨਾਂ ਸਿਰਲੇਖ}
+::msgcat::mcset pa {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {ਅੱਪਸਟ੍ਰੀਮ ਯੋਗਦਾਨ ਇੱਕ ਸਪਸ਼ਟ ਪ੍ਰਕਾਸ਼ਨ ਕਾਰਵਾਈ ਹੈ, ਆਪਣੇ-ਆਪ ਅੱਪਲੋਡ ਨਹੀਂ। Manage extensions ਵਿੱਚ, Contribute ਹਰ ਉਪਭੋਗਤਾ ਐਕਸਟੈਂਸ਼ਨ ਦੀ ਸੂਚੀ ਦਿੰਦਾ ਹੈ: ਐਕਸਟੈਂਸ਼ਨ ਅਤੇ ਫ਼ਾਈਲਾਂ ਚੁਣੋ, diff ਅਤੇ ਸੀਕ੍ਰੇਟ ਸਕੈਨ ਵੇਖੋ, ਜਾਂਚਾਂ ਚਲਾਓ, ਫਿਰ ਆਪਣੀ ਚੁਣੀ git ਪਛਾਣ ਨਾਲ ਇੱਕ ਬ੍ਰਾਂਚ ਅਤੇ ਇੱਕ PR (ਮੂਲ ਰੂਪ ਵਿੱਚ veles ਨੂੰ) ਬਣਾਓ। ਹਰ ਐਕਸਟੈਂਸ਼ਨ ਰਿਪੋਜ਼ਟਰੀ ਵਿੱਚ ਆਪਣੀ ਡਾਇਰੈਕਟਰੀ ਹੇਠ ਜਾਂਦਾ ਹੈ, ਅਤੇ ਉੱਥੇ ਮੌਜੂਦ ਫ਼ਾਈਲ ਸਿਰਫ਼ ਵੱਖਰੀ ਪੁਸ਼ਟੀ ਤੋਂ ਬਾਅਦ ਬਦਲੀ ਜਾਂਦੀ ਹੈ। node.toml, ਸਥਾਨਕ ਪ੍ਰਮਾਣ, ਟੋਕਨ, ਨਿੱਜੀ ਐਂਡਪੌਇੰਟ ਜਾਂ ਅਸੰਬੰਧਿਤ ਪਲੱਗਇਨ ਸਥਿਤੀ ਕਦੇ ਪ੍ਰਕਾਸ਼ਿਤ ਨਾ ਕਰੋ। ਸਥਾਨਕ ਰਿਕਵਰੀ ਸਨੈਪਸ਼ਾਟ ਅੱਪਸਟ੍ਰੀਮ ਕਮਿਟ ਜਾਂ PR ਨਹੀਂ ਹਨ।}
+::msgcat::mcset pa {Upstream repository or fork URL} {ਅੱਪਸਟਰੀਮ ਰਿਪੋਜ਼ਿਟਰੀ ਜਾਂ ਫੋਰਕ URL}
+::msgcat::mcset pa {Uptime class} {ਅਪਟਾਈਮ ਕਲਾਸ}
+::msgcat::mcset pa {Uptime: host %1$s, gateway %2$s} {ਅੱਪਟਾਈਮ: ਹੋਸਟ %1$s, ਗੇਟਵੇ %2$s}
 ::msgcat::mcset pa Usage ਵਰਤੋਂ
 ::msgcat::mcset pa {Usage & Quota} {ਵਰਤੋਂ ਅਤੇ ਕੋਟਾ}
 ::msgcat::mcset pa {Use TLS} {TLS ਵਰਤੋ}
 ::msgcat::mcset pa {Use now} {ਹੁਣ ਵਰਤੋ}
+::msgcat::mcset pa {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {ਅਸਲੀ ਇਕਰਾਰਨਾਮਿਆਂ ਲਈ ਲੇਖਕ ਗਾਈਡ ਅਤੇ API ਹਵਾਲਾ ਬਟਨ ਵਰਤੋ। ਪਲੱਗਇਨ ਓਵਰਲੇ ਲਾਈਵ ਹੁੱਕ ਸੂਚੀਬੱਧ ਕਰਦਾ ਹੈ; ਸੇਵਾਵਾਂ ਅਤੇ ਓਵਰਰਾਈਡ ਪੁਆਇੰਟ ਗੇਟਵੇ ਦੀ ਆਪਣੀ ਰਜਿਸਟਰੀ ਤੋਂ ਆਉਂਦੇ ਹਨ, ਇਸ ਗਾਈਡ ਵਿੱਚ ਕਾਪੀ ਕੀਤੀ ਸੂਚੀ ਤੋਂ ਨਹੀਂ।}
 ::msgcat::mcset pa {Use this ticket} {ਇਹ ਟਿਕਟ ਵਰਤੋ}
+::msgcat::mcset pa {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {ਆਪਣਾ ਫੋਰਕ ਵਰਤੋ (https://github.com/<you>/veles.git ਜਾਂ git@github.com:<you>/veles.git), ਜਦੋਂ ਤੱਕ ਤੁਸੀਂ ਸਿੱਧਾ veles ਵਿੱਚ ਪੁਸ਼ ਨਹੀਂ ਕਰ ਸਕਦੇ। ਚੁਣੀ ਰਿਪੋਜ਼ਟਰੀ ਨੂੰ ਅਲੱਗ ਵਰਕਟ੍ਰੀ ਵਿੱਚ ਕਲੋਨ ਕੀਤਾ ਜਾਂਦਾ ਹੈ। ਕੁਝ ਵੀ ਪੁਸ਼ ਨਹੀਂ ਹੁੰਦਾ।}
 ::msgcat::mcset pa {Users — one role across networks and platforms} {ਯੂਜ਼ਰ — ਸਾਰੇ ਨੈੱਟਵਰਕਾਂ ਅਤੇ ਪਲੈਟਫਾਰਮਾਂ ਵਿੱਚ ਇੱਕੋ ਰੋਲ}
 ::msgcat::mcset pa {Using the phone, for the agent} {ਫ਼ੋਨ ਦੀ ਵਰਤੋਂ, ਏਜੰਟ ਲਈ}
 ::msgcat::mcset pa {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {ਆਮ ਕਰਕੇ ਪ੍ਰੋਵਾਈਡਰ ਐਂਟਰੀ ਦੇ ਨਾਅ ਵਾਂਗ ਹੀ ਹੁੰਦਾ ਹੈ। Skip ਚੁਣਿਆ ਹੋਵੇ ਤਾਂ ਦੋਵੇਂ ਖਾਲੀ ਛੱਡੋ — ਅੱਧਾ ਭਰਿਆ ਜੋੜਾ ਰੂਟ ਨਹੀਂ ਹੁੰਦਾ।}
 ::msgcat::mcset pa {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {ਮੁੱਲ TOML ਹਨ: ਹਵਾਲੇ ਵਾਲੀਆਂ ਸਤਰਾਂ, ਨੰਬਰ, ਜਾਂ ਸੂਚੀਆਂ। [mcp_servers.<name>] ਵਿੱਚ ਲਿਖੇ ਜਾਂਦੇ ਹਨ — ਤੁਹਾਡੀਆਂ ਟਿੱਪਣੀਆਂ ਅਤੇ ਬਾਕੀ ਸਾਰੇ ਭਾਗ ਅਛੂਤੇ ਰਹਿੰਦੇ ਹਨ।}
+::msgcat::mcset pa Vault ਤਿਜੋਰੀ
 ::msgcat::mcset pa {Verified signed bundle installed. Restart the gateway before using the new core.} {ਤਸਦੀਕ ਕੀਤਾ ਹਸਤਾਖਰਿਤ ਬੰਡਲ ਇੰਸਟਾਲ ਹੋ ਗਿਆ। ਨਵਾਂ ਕੋਰ ਵਰਤਣ ਤੋਂ ਪਹਿਲਾਂ ਗੇਟਵੇ ਮੁੜ ਚਾਲੂ ਕਰੋ।}
 ::msgcat::mcset pa {Verified signed release — not installed yet} {ਤਸਦੀਕ ਕੀਤੀ ਹਸਤਾਖਰਿਤ ਰਿਲੀਜ਼ — ਅਜੇ ਇੰਸਟਾਲ ਨਹੀਂ ਹੋਈ}
 ::msgcat::mcset pa {Verify and review release…} {ਰਿਲੀਜ਼ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ ਅਤੇ ਸਮੀਖਿਆ ਕਰੋ…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset pa {Verify signed release} {ਹਸਤਾਖਰਿਤ ਰਿਲੀਜ਼ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ}
 ::msgcat::mcset pa {Verify signed release…} {ਹਸਤਾਖਰਿਤ ਰਿਲੀਜ਼ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ…}
 ::msgcat::mcset pa Version ਵਰਜਨ
+::msgcat::mcset pa {Version %1$s: %2$s} {ਵਰਜ਼ਨ %1$s: %2$s}
+::msgcat::mcset pa {Version drift in the registry: %s} {ਰਜਿਸਟਰੀ ਵਿੱਚ ਵਰਜ਼ਨ ਡ੍ਰਿਫਟ: %s}
 ::msgcat::mcset pa View ਦ੍ਰਿਸ਼
 ::msgcat::mcset pa {View markdown source} {ਮਾਰਕਡਾਊਨ ਸਰੋਤ ਵੇਖੋ}
 ::msgcat::mcset pa {View source / rendered} {ਸਰੋਤ / ਰੈਂਡਰ ਕੀਤਾ}
 ::msgcat::mcset pa Voice {ਵੌਇਸ ਦਿਓ}
+::msgcat::mcset pa {Waiting for the model…} {ਮਾਡਲ ਦੀ ਉਡੀਕ…}
+::msgcat::mcset pa {Waiting for the model… Nothing has been written.} {ਮਾਡਲ ਦੀ ਉਡੀਕ… ਕੁਝ ਵੀ ਨਹੀਂ ਲਿਖਿਆ ਗਿਆ।}
 ::msgcat::mcset pa {Welcome to veles} {veles ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ}
 ::msgcat::mcset pa {What the agent can do here} {ਏਜੰਟ ਇੱਥੇ ਕੀ ਕਰ ਸਕਦਾ ਹੈ}
 ::msgcat::mcset pa {What veles may do on this phone. Each button opens the Android setting that changes it.} {ਇਸ ਫ਼ੋਨ 'ਤੇ veles ਕੀ ਕਰ ਸਕਦਾ ਹੈ। ਹਰ ਬਟਨ ਉਹ Android ਸੈਟਿੰਗ ਖੋਲ੍ਹਦਾ ਹੈ ਜੋ ਇਸਨੂੰ ਬਦਲਦੀ ਹੈ।}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset pa {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {veles ਬੈਕਗ੍ਰਾਊਂਡ ਵਿੱਚ ਹੋਵੇ ਤਾਂ ਏਜੰਟ ਦਾ ਸਵਾਲ ਜਾਂ ਪੂਰੀ ਹੋਈ ਵਾਰੀ ਸੂਚਨਾ ਬਣ ਜਾਂਦੀ ਹੈ; ਸੈਸ਼ਨ ਖੋਲ੍ਹਣ ਲਈ ਉਸ 'ਤੇ ਟੈਪ ਕਰੋ।}
 ::msgcat::mcset pa {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {ਬੋਟ ਨਾਲ ਕੌਣ ਗੱਲ ਕਰ ਸਕਦਾ ਹੈ। ਇਹ ਚੋਣ ਫ਼ੈਸਲਾ ਕਰਦੀ ਹੈ ਕਿ config.toml ਵਿੱਚ [acl] ਸੈਕਸ਼ਨ ਹੈ ਹੀ ਜਾਂ ਨਹੀਂ — ਅਤੇ ਇਹੀ ਸਾਰਾ ਹਾਲ ਪਲਟ ਦਿੰਦਾ ਹੈ।}
 ::msgcat::mcset pa Whois Whois
-::msgcat::mcset pa {Wire protocol (chat_completions or responses)} {ਵਾਇਰ ਪ੍ਰੋਟੋਕਾਲ (chat_completions ਜਾਂ responses)}
+::msgcat::mcset pa {Wire protocol (chat_completions, responses or plugin)} {ਵਾਇਰ ਪ੍ਰੋਟੋਕਾਲ (chat_completions, responses ਜਾਂ plugin)}
 ::msgcat::mcset pa {With a keyboard attached, every key works as on a laptop.} {ਕੀਬੋਰਡ ਲੱਗਾ ਹੋਵੇ ਤਾਂ ਹਰ ਕੁੰਜੀ ਲੈਪਟਾਪ ਵਾਂਗ ਕੰਮ ਕਰਦੀ ਹੈ।}
 ::msgcat::mcset pa {Workflow SHA} {ਵਰਕਫਲੋ SHA}
+::msgcat::mcset pa {Workflow commit} {ਵਰਕਫਲੋ ਕਮਿਟ}
+::msgcat::mcset pa Worktree ਵਰਕਟਰੀ
 ::msgcat::mcset pa {Write it} ਲਿਖੋ
+::msgcat::mcset pa {Write the design question first.} {ਪਹਿਲਾਂ ਡਿਜ਼ਾਈਨ ਸਵਾਲ ਲਿਖੋ।}
 ::msgcat::mcset pa {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {ਕੋਈ ਪ੍ਰੋਵਾਈਡਰ ਨਹੀਂ ਲਿਖਦਾ। ਗੇਟਵੇ ਕੋਈ ਵਾਰ ਰੂਟ ਨਹੀਂ ਕਰੇਗਾ ਜਦ ਤੱਕ ਇੱਕ [[custom_providers]] ਐਂਟਰੀ ਅਤੇ [model] ਦਾ ਜੋੜਾ ਨਹੀਂ ਹੁੰਦਾ।}
 ::msgcat::mcset pa {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {ਕੋਈ ਵੀ [acl] ਕੁੰਜੀ ਲਿਖਣ ਨਾਲ ਇਹ ਗੇਟਵੇ ਕਿਊਰੇਟਿਡ ਮੋਡ ਵਿੱਚ ਚਲਾ ਜਾਂਦਾ ਹੈ: ਡਿਫ਼ੌਲਟ ਭੂਮਿਕਾ guest (fail-closed) ਬਣ ਜਾਂਦੀ ਹੈ ਅਤੇ ਇਜਾਜ਼ਤ ਸੂਚੀਆਂ ਸੀਮਾ ਨਹੀਂ ਰਹਿੰਦੀਆਂ। ਇਸਨੂੰ ਸਿਰਫ਼ ਤਾਂ ਹੀ ਚੁਣੋ ਜੇ ਤੁਹਾਡੇ ਕੋਲ ਭਰੋਸੇਯੋਗ ਮਾਲਕ ਪਛਾਣ ਹੋਵੇ।}
 ::msgcat::mcset pa {[model] provider} {[model] ਪ੍ਰੋਵਾਈਡਰ}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset pa {also list hooks with no handler} {ਬਿਨਾਂ ਹੈਂਡਲਰ ਵਾਲੇ ਹੁੱਕ ਵੀ ਸੂਚੀਬੱਧ ਕਰੋ}
 ::msgcat::mcset pa {also write grants that still have an expiry} {ਉਹ ਗ੍ਰਾਂਟਾਂ ਵੀ ਲਿਖੋ ਜਿਨ੍ਹਾਂ ਦੀ ਮਿਆਦ ਅਜੇ ਬਾਕੀ ਹੈ}
 ::msgcat::mcset pa {also write runtime users} {ਰਨਟਾਈਮ ਯੂਜ਼ਰ ਵੀ ਲਿਖੋ}
+::msgcat::mcset pa {an allowlist entry is removed by editing config.toml} {allowlist ਐਂਟਰੀ config.toml ਸੋਧ ਕੇ ਹਟਾਈ ਜਾਂਦੀ ਹੈ}
 ::msgcat::mcset pa {an allowlist is in force: a plugin not on it stays off} {ਅਲਾਊਲਿਸਟ ਲਾਗੂ ਹੈ: ਜਿਹੜਾ ਪਲੱਗਇਨ ਇਸ ਵਿੱਚ ਨਹੀਂ, ਉਹ ਬੰਦ ਰਹਿੰਦਾ ਹੈ}
 ::msgcat::mcset pa {answer failed: %s} {ਜਵਾਬ ਅਸਫਲ: %s}
+::msgcat::mcset pa {answer only, nothing to apply} {ਸਿਰਫ਼ ਜਵਾਬ, ਲਾਗੂ ਕਰਨ ਨੂੰ ਕੁਝ ਨਹੀਂ}
 ::msgcat::mcset pa {append these rules to config.toml} {ਇਹ ਨਿਯਮ config.toml ਵਿੱਚ ਜੋੜੋ}
 ::msgcat::mcset pa {apply failed: %s} {ਲਾਗੂ ਕਰਨਾ ਅਸਫਲ: %s}
 ::msgcat::mcset pa {apply to:} {ਇੱਥੇ ਲਾਗੂ ਕਰੋ:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset pa {ask the agent} {ਏਜੰਟ ਨੂੰ ਪੁੱਛਣਾ}
 ::msgcat::mcset pa {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset pa {asked by: %s} {ਪੁੱਛਿਆ: %s}
+::msgcat::mcset pa {asking %s for its metrics…} {%s ਤੋਂ ਇਸਦੇ ਮੈਟ੍ਰਿਕਸ ਪੁੱਛੇ ਜਾ ਰਹੇ ਹਨ…}
 ::msgcat::mcset pa {attach a file} {ਫ਼ਾਈਲ ਜੋੜੋ}
 ::msgcat::mcset pa {attach an image or file} {ਕੋਈ ਚਿੱਤਰ ਜਾਂ ਫ਼ਾਈਲ ਨੱਥੀ ਕਰੋ}
 ::msgcat::mcset pa {attach failed: %1$s} {ਜੁੜਨਾ ਫੇਲ੍ਹ ਹੋਇਆ: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset pa {attached %1$s (%2$s pending)} {%1$s ਅਟੈਚ ਹੋਇਆ (%2$s ਬਕਾਇਆ)}
 ::msgcat::mcset pa {attached to %s} {%s ਨਾਲ ਅਟੈਚ ਹੋਇਆ}
 ::msgcat::mcset pa {attached to child session %1$s} {ਚਾਈਲਡ ਸੈਸ਼ਨ %1$s ਨਾਲ ਅਟੈਚ ਹੋਇਆ}
+::msgcat::mcset pa automatic ਆਪਣੇ-ਆਪ
 ::msgcat::mcset pa {aux model} {ਸਹਾਇਕ ਮਾਡਲ}
 ::msgcat::mcset pa {aux provider} {ਸਹਾਇਕ ਪ੍ਰੋਵਾਈਡਰ}
+::msgcat::mcset pa available ਉਪਲਬਧ
 ::msgcat::mcset pa {available components} {ਉਪਲਬਧ ਕੰਪੋਨੈਂਟ}
 ::msgcat::mcset pa {back up N user turns} {ਵਰਤੋਂਕਾਰ ਦੇ N ਟਰਨ ਪਿੱਛੇ ਜਾਓ}
 ::msgcat::mcset pa {backed up the previous config to %s} {ਪਿਛਲਾ config %s ਵਿੱਚ ਬੈਕਅੱਪ ਕੀਤਾ}
 ::msgcat::mcset pa {background shells; /shells output|kill <id>} {ਬੈਕਗ੍ਰਾਊਂਡ ਸ਼ੈੱਲ; /shells output|kill <id>}
+::msgcat::mcset pa {backing off: %1$s failure(s), next automatic try in %2$s s} {ਪਿੱਛੇ ਹਟ ਰਿਹਾ: %1$s ਫੇਲ੍ਹ, ਅਗਲੀ ਆਪਣੇ-ਆਪ ਕੋਸ਼ਿਸ਼ %2$s s ਵਿੱਚ}
 ::msgcat::mcset pa {bad host for %1$s: %2$s} {%1$s ਲਈ ਗਲਤ ਹੋਸਟ: %2$s}
 ::msgcat::mcset pa {bad unit for %1$s: %2$s} {%1$s ਲਈ ਗਲਤ ਯੂਨਿਟ: %2$s}
 ::msgcat::mcset pa {bare display off} {ਬੇਅਰ ਡਿਸਪਲੇ ਬੰਦ}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset pa {browse the filesystem} {ਫ਼ਾਈਲ ਸਿਸਟਮ ਵੇਖੋ}
 ::msgcat::mcset pa {browse the repo's files} {ਰਿਪੋ ਦੀਆਂ ਫਾਈਲਾਂ ਵੇਖੋ}
 ::msgcat::mcset pa {builtin (%s):} {ਬਿਲਟ-ਇਨ (%s):}
+::msgcat::mcset pa bundled {ਬੰਡਲ ਕੀਤਾ}
+::msgcat::mcset pa {bundled, read-only} {ਬੰਡਲ ਕੀਤਾ, ਸਿਰਫ਼-ਪੜ੍ਹਨ ਵਾਲਾ}
 ::msgcat::mcset pa by ਵੱਲੋਂ
 ::msgcat::mcset pa {by plan — all sessions} {ਪਲਾਨ ਮੁਤਾਬਕ — ਸਾਰੇ ਸੈਸ਼ਨ}
 ::msgcat::mcset pa {by plan — this session} {ਪਲਾਨ ਮੁਤਾਬਕ — ਇਹ ਸੈਸ਼ਨ}
 ::msgcat::mcset pa {by tool} {ਟੂਲ ਮੁਤਾਬਕ}
 ::msgcat::mcset pa {cancel failed: %1$s} {ਰੱਦ ਕਰਨਾ ਅਸਫਲ: %1$s}
 ::msgcat::mcset pa {cancel the running turn} {ਚੱਲ ਰਹੀ ਵਾਰੀ ਰੱਦ ਕਰੋ}
+::msgcat::mcset pa {cancel the selected task} {ਚੁਣਿਆ ਕੰਮ ਰੱਦ ਕਰੋ}
 ::msgcat::mcset pa {cancelled task %1$s} {ਕੰਮ %1$s ਰੱਦ ਕੀਤਾ ਗਿਆ}
 ::msgcat::mcset pa {cannot list scripts (gateway offline?)} {ਸਕ੍ਰਿਪਟਾਂ ਦੀ ਸੂਚੀ ਨਹੀਂ ਆ ਸਕਦੀ (ਗੇਟਵੇ ਔਫਲਾਈਨ?)}
 ::msgcat::mcset pa {cannot reach the gateway: %s} {ਗੇਟਵੇ ਤੱਕ ਨਹੀਂ ਪਹੁੰਚ ਸਕਦੇ: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset pa commit ਕਮਿੱਟ
 ::msgcat::mcset pa {compacting %s messages in the background — the transcript reloads when it finishes} {ਬੈਕਗ੍ਰਾਊਂਡ ਵਿੱਚ %s ਸੁਨੇਹੇ ਕੰਪੈਕਟ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ — ਪੂਰਾ ਹੋਣ 'ਤੇ ਟ੍ਰਾਂਸਕ੍ਰਿਪਟ ਮੁੜ ਲੋਡ ਹੋਵੇਗਾ}
 ::msgcat::mcset pa compacting… {ਕੰਪੈਕਟ ਹੋ ਰਿਹਾ ਹੈ…}
+::msgcat::mcset pa {comparing the nodes' versions and config…} {ਨੋਡਾਂ ਦੇ ਵਰਜ਼ਨ ਅਤੇ ਕੌਂਫਿਗ ਦੀ ਤੁਲਨਾ…}
 ::msgcat::mcset pa {completion tokens} {ਪੂਰਨਤਾ ਟੋਕਨ}
 ::msgcat::mcset pa {component options and declared actions} {ਕੰਪੋਨੈਂਟ ਵਿਕਲਪ ਅਤੇ ਘੋਸ਼ਿਤ ਕਾਰਵਾਈਆਂ}
 ::msgcat::mcset pa composer ਕੰਪੋਜ਼ਰ
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset pa {could not open %s} {ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ %s}
 ::msgcat::mcset pa {could not open %s (no working browser opener)} {ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ %s (ਕੋਈ ਕੰਮ ਕਰਦਾ ਬ੍ਰਾਊਜ਼ਰ ਓਪਨਰ ਨਹੀਂ)}
 ::msgcat::mcset pa {could not open %{url}: %{e}} {ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ %{url}: %{e}}
+::msgcat::mcset pa {could not open the optional referral link: %s} {ਇੱਛਕ ਰੈਫਰਲ ਲਿੰਕ ਨਹੀਂ ਖੁੱਲ੍ਹ ਸਕਿਆ: %s}
 ::msgcat::mcset pa {could not read %s: %s} {%s ਪੜ੍ਹ ਨਹੀਂ ਸਕਿਆ: %s}
 ::msgcat::mcset pa {could not read the current route} {ਮੌਜੂਦਾ ਰੂਟ ਪੜ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ}
 ::msgcat::mcset pa {could not save this session's language: %{e}} {ਇਸ ਸੈਸ਼ਨ ਦੀ ਭਾਸ਼ਾ ਸੰਭਾਲੀ ਨਹੀਂ ਜਾ ਸਕੀ: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset pa {ctxmenu: no widget %s (attached too early?)} {ctxmenu: ਕੋਈ ਵਿਜੇਟ ਨਹੀਂ: %s (ਬਹੁਤ ਪਹਿਲਾਂ ਅਟੈਚ ਹੋਇਆ?)}
 ::msgcat::mcset pa {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {ਕਿਊਰੇਟਿਡ ਪਹੁੰਚ ਚੁਣੀ ਗਈ ਪਰ ਮਾਲਕ ਦੀ ਪਛਾਣ ਨਹੀਂ ਦਿੱਤੀ ਗਈ, ਇਸ ਲਈ [acl] ਨਿਸ਼ਕਿਰਿਆ ਰਹਿੰਦਾ ਹੈ — ਇਸਨੂੰ ਚਾਲੂ ਕਰਨ ਲਈ telegram:123456 ਜਾਂ irc:account ਵਰਗੀ ਪਛਾਣ ਦਿਓ}
 ::msgcat::mcset pa {current theme: %{name} · /theme <name>} {ਮੌਜੂਦਾ ਥੀਮ: %{name} · /theme <name>}
+::msgcat::mcset pa {cursor %1$s of %2$s (%3$s behind)} {ਕਰਸਰ %2$s ਵਿੱਚੋਂ %1$s (%3$s ਪਿੱਛੇ)}
 ::msgcat::mcset pa {custom command /%s…} {ਕਸਟਮ ਕਮਾਂਡ /%s…}
 ::msgcat::mcset pa {custom commands (.veles/commands/) and config aliases} {ਕਸਟਮ ਕਮਾਂਡਾਂ (.veles/commands/) ਅਤੇ ਕੌਨਫ਼ਿਗ ਦੇ ਉਪਨਾਮ}
 ::msgcat::mcset pa {cycle ends} {ਚੱਕਰ ਖਤਮ}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset pa doctor_resident {ਹਰ ਪ੍ਰੌਂਪਟ ਵਿੱਚ ਸਥਾਈ: %{total} ਵਿੱਚੋਂ %{shown} ਅੱਖਰ (~%{tokens} ਟੋਕਨ) — ਬਾਕੀ ਲੋੜ ਪੈਣ ’ਤੇ ਇਸ ਨਾਲ ਲੋਡ ਹੁੰਦਾ ਹੈ: memory action=read path=%{path}}
 ::msgcat::mcset pa doctor_title {ਮੈਮਰੀ ਜਾਂਚ}
 ::msgcat::mcset pa doctor_total {ਕੁੱਲ: %{files} ਫ਼ਾਈਲਾਂ ਵਿੱਚ %{chars} ਅੱਖਰ (~%{tokens} ਟੋਕਨ)}
+::msgcat::mcset pa {documentation is not in this source checkout: %s} {ਦਸਤਾਵੇਜ਼ ਇਸ ਸਰੋਤ ਚੈਕਆਉਟ ਵਿੱਚ ਨਹੀਂ ਹੈ: %s}
 ::msgcat::mcset pa done {ਹੋ ਗਿਆ}
 ::msgcat::mcset pa {done · %1$s/%2$s} {ਹੋ ਗਿਆ · %1$s/%2$s}
 ::msgcat::mcset pa {done, but the model returned no text} {ਹੋ ਗਿਆ, ਪਰ ਮਾਡਲ ਨੇ ਕੋਈ ਟੈਕਸਟ ਨਹੀਂ ਦਿੱਤਾ}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset pa {evaluate Tcl and answer with the result — no model turn} {Tcl ਚਲਾਓ ਅਤੇ ਨਤੀਜੇ ਨਾਲ ਜਵਾਬ ਦਿਓ — ਮਾਡਲ ਦੇ ਟਰਨ ਤੋਂ ਬਿਨਾਂ}
 ::msgcat::mcset pa everyone ਸਭ
 ::msgcat::mcset pa everywhere {ਹਰ ਜਗ੍ਹਾ}
+::msgcat::mcset pa {exchanging registry gossip…} {ਰਜਿਸਟਰੀ ਗੌਸਿਪ ਦਾ ਆਦਾਨ-ਪ੍ਰਦਾਨ…}
 ::msgcat::mcset pa exit {ਬਾਹਰ ਜਾਓ}
 ::msgcat::mcset pa {exit veles-desktop} {veles-desktop ਬੰਦ ਕਰੋ}
 ::msgcat::mcset pa {export failed: %s} {ਐਕਸਪੋਰਟ ਅਸਫਲ: %s}
 ::msgcat::mcset pa {export session} {ਸੈਸ਼ਨ ਨਿਰਯਾਤ ਕਰੋ}
 ::msgcat::mcset pa {exported to %s} {%s ਵਿੱਚ ਐਕਸਪੋਰਟ ਹੋਇਆ}
+::msgcat::mcset pa {extension architecture, examples and LSP help} {ਐਕਸ਼ਨਸ਼ਨ ਆਰਕੀਟੈਕਚਰ, ਉਦਾਹਰਨ ਅਤੇ LSP ਮਦਦ}
+::msgcat::mcset pa {extension development guide} {ਐਕਸ਼ਨਸ਼ਨ ਵਿਕਾਸ ਗਾਈਡ}
+::msgcat::mcset pa failed ਫੇਲ੍ਹ
 ::msgcat::mcset pa {failed to load history: %s} {ਇਤਿਹਾਸ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ: %s}
 ::msgcat::mcset pa {failed to paint cached history: %s} {ਕੈਸ਼ ਕੀਤਾ ਇਤਿਹਾਸ ਦਿਖਾਉਣ ਵਿੱਚ ਅਸਫਲ: %s}
 ::msgcat::mcset pa {failed to paint replayed history: %s} {ਰੀਪਲੇ ਕੀਤਾ ਇਤਿਹਾਸ ਦਿਖਾਉਣ ਵਿੱਚ ਅਸਫਲ: %s}
 ::msgcat::mcset pa {failed: %s} {ਅਸਫਲ: %s}
+::msgcat::mcset pa {failing — heartbeating, but a sync push or the last probe failed} {ਫੇਲ੍ਹ ਹੋ ਰਿਹਾ — ਹਾਰਟਬੀਟ ਆ ਰਿਹਾ ਹੈ, ਪਰ ਸਿੰਕ ਪੁਸ਼ ਜਾਂ ਆਖਰੀ ਜਾਂਚ ਫੇਲ੍ਹ ਹੋਈ}
 ::msgcat::mcset pa {failover blueprint: cannot reach the gateway} {failover blueprint: ਗੇਟਵੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਹੋ ਸਕਦੀ}
 ::msgcat::mcset pa {failover graph unavailable: %1$s} {ਫੇਲਓਵਰ ਗ੍ਰਾਫ ਉਪਲਬਧ ਨਹੀਂ: %1$s}
 ::msgcat::mcset pa {failover script: cannot reach the gateway} {failover script: ਗੇਟਵੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਹੋ ਸਕਦੀ}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset pa {fire the Tcl hook} {Tcl ਹੂਕ ਚਲਾਓ}
 ::msgcat::mcset pa {fires for %s:} {%s ਲਈ ਚੱਲਦਾ ਹੈ:}
 ::msgcat::mcset pa {fires per hour} {ਪ੍ਰਤੀ ਘੰਟਾ ਚੱਲਦਾ ਹੈ}
+::msgcat::mcset pa {fleet drift} {ਫਲੀਟ ਡ੍ਰਿਫਟ}
 ::msgcat::mcset pa {focus composer} {ਕੰਪੋਜ਼ਰ 'ਤੇ ਫੋਕਸ}
 ::msgcat::mcset pa {focus failed: %{e}} {ਫੋਕਸ ਅਸਫਲ: %{e}}
 ::msgcat::mcset pa {focus next region} {ਅਗਲੇ ਖੇਤਰ 'ਤੇ ਫੋਕਸ}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset pa {four splits is the maximum} {ਵੱਧ ਤੋਂ ਵੱਧ ਚਾਰ ਸਪਲਿਟ ਹਨ}
 ::msgcat::mcset pa {fresh session} {ਨਵਾਂ ਸੈਸ਼ਨ}
 ::msgcat::mcset pa {fresh session (Ctrl-N too)} {ਨਵਾਂ ਸੈਸ਼ਨ (Ctrl-N ਵੀ)}
+::msgcat::mcset pa {fresh — heartbeating, sync passing} {ਤਾਜ਼ਾ — ਹਾਰਟਬੀਟ ਆ ਰਿਹਾ, ਸਿੰਕ ਠੀਕ ਚੱਲ ਰਿਹਾ}
+::msgcat::mcset pa from ਤੋਂ
 ::msgcat::mcset pa {from node %{node}} {ਨੋਡ %{node} ਤੋਂ}
 ::msgcat::mcset pa {gateway     v%1$s · up %2$s} {ਗੇਟਵੇ     v%1$s · %2$s ਤੋਂ ਚਾਲੂ}
 ::msgcat::mcset pa {gateway unreachable — is `veles gateway run` up?} {ਗੇਟਵੇ ਪਹੁੰਚ ਤੋਂ ਬਾਹਰ — ਕੀ `veles gateway run` ਚੱਲ ਰਿਹਾ ਹੈ?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset pa {in %s} {%s ਵਿੱਚ}
 ::msgcat::mcset pa {insert the next key literally (^B bold, ^C colour, ^O reset)} {ਅਗਲੀ ਕੁੰਜੀ ਸ਼ਾਬਦਿਕ ਪਾਓ (^B ਬੋਲਡ, ^C ਰੰਗ, ^O ਰੀਸੈੱਟ)}
 ::msgcat::mcset pa {inserted %s} {%s ਪਾਇਆ ਗਿਆ}
+::msgcat::mcset pa {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {ਕਲਸਟਰ ਦੀ ਜਾਂਚ ਕਰੋ; ਸਟੋਰ, ਮੈਮਰੀ, ਕੌਂਫਿਗ ਜਾਂ ਤਿਜੋਰੀ ਸਿੰਕ ਸਪਸ਼ਟ ਤੌਰ 'ਤੇ push/apply ਕਰੋ; ਪੁਰਾਣਾ ਨੋਡ ਪੂਰੇ ਫਲੀਟ ਵਿੱਚੋਂ ਭੁਲਾ ਦਿਓ; ਨੋਡ ਦਾ ਲੌਗ ਅੰਤ ਜਾਂ ਮੈਟ੍ਰਿਕਸ ਪੜ੍ਹੋ; ਵਰਜ਼ਨ ਅਤੇ ਕੌਂਫਿਗ ਦੀ ਤੁਲਨਾ ਕਰੋ; ਹੁਣੇ ਗੌਸਿਪ ਕਰੋ}
 ::msgcat::mcset pa {inspector — app internals · core state · gw plugins} {ਇੰਸਪੈਕਟਰ — ਐਪ ਅੰਦਰੂਨੀ · ਕੋਰ ਸਟੇਟ · gw ਪਲੱਗਇਨ}
 ::msgcat::mcset pa {install a plugin from a git URL} {git URL ਤੋਂ ਪਲੱਗਇਨ ਇੰਸਟਾਲ ਕਰੋ}
 ::msgcat::mcset pa {install a skill from a git URL} {git URL ਤੋਂ ਸਕਿੱਲ ਇੰਸਟਾਲ ਕਰੋ}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset pa instance ਇੰਸਟੈਂਸ
 ::msgcat::mcset pa {instance controls} {ਇੰਸਟੈਂਸ ਕੰਟਰੋਲ}
 ::msgcat::mcset pa {instance detail} {ਇੰਸਟੈਂਸ ਵੇਰਵਾ}
+::msgcat::mcset pa {instance names may not start with "cluster:" or "g:": %s} {ਇੰਸਟੈਂਸ ਨਾਮ "cluster:" ਜਾਂ "g:" ਨਾਲ ਸ਼ੁਰੂ ਨਹੀਂ ਹੋ ਸਕਦੇ: %s}
 ::msgcat::mcset pa {instance needs a name} {ਇੰਸਟੈਂਸ ਦਾ ਨਾਂ ਚਾਹੀਦਾ ਹੈ}
 ::msgcat::mcset pa {instance unreachable} {ਇੰਸਟੈਂਸ ਪਹੁੰਚ ਤੋਂ ਬਾਹਰ}
 ::msgcat::mcset pa instances ਇੰਸਟੈਂਸਾਂ
 ::msgcat::mcset pa interrupting… {ਰੋਕ ਰਹੇ ਹਾਂ…}
+::msgcat::mcset pa into ਵਿੱਚ
 ::msgcat::mcset pa {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset pa {irc: %s} {irc: %s}
 ::msgcat::mcset pa {irc: %s failed — %s} {irc: %s ਅਸਫਲ — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset pa {language list} {ਭਾਸ਼ਾ ਸੂਚੀ}
 ::msgcat::mcset pa {language picker (the swap for THIS window)} {ਭਾਸ਼ਾ ਚੋਣਕਾਰ (ਇਸ ਵਿੰਡੋ ਲਈ ਸਵੈਪ)}
 ::msgcat::mcset pa {language saved: %s} {ਭਾਸ਼ਾ ਸੇਵ ਹੋਈ: %s}
+::msgcat::mcset pa {language server} {ਲੈਂਗੂਏਜ ਸਰਵਰ}
+::msgcat::mcset pa {language server: event stream unavailable: %s} {ਲੈਂਗੂਏਜ ਸਰਵਰ: ਇਵੈਂਟ ਸਟ੍ਰੀਮ ਉਪਲਬਧ ਨਹੀਂ: %s}
+::msgcat::mcset pa {language server: not started on the gateway — %s} {ਲੈਂਗੂਏਜ ਸਰਵਰ: ਗੇਟਵੇ 'ਤੇ ਸ਼ੁਰੂ ਨਹੀਂ ਹੋਇਆ — %s}
+::msgcat::mcset pa {language server: the gateway would not start one: %s} {ਲੈਂਗੂਏਜ ਸਰਵਰ: ਗੇਟਵੇ ਨੇ ਇੱਕ ਸ਼ੁਰੂ ਨਹੀਂ ਕੀਤਾ: %s}
 ::msgcat::mcset pa {language swapped: %1$s ⇄ %2$s} {ਭਾਸ਼ਾ ਬਦਲੀ: %1$s ⇄ %2$s}
 ::msgcat::mcset pa {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {ਭਾਸ਼ਾ → %1$s (ਪਹਿਲਾਂ %2$s) · ਸਿਰਫ ਚੱਲਦੀ ਵਿੰਡੋ — Save as default config.toml ਲਿਖਦਾ ਹੈ}
 ::msgcat::mcset pa {language: %s} {ਭਾਸ਼ਾ: %s}
 ::msgcat::mcset pa {last error} {ਆਖਰੀ ਗ਼ਲਤੀ}
+::msgcat::mcset pa {last pass %1$s at %2$s: %3$s} {ਆਖਰੀ ਪਾਸ %1$s, %2$s 'ਤੇ: %3$s}
 ::msgcat::mcset pa {last reply copied (%s chars)} {ਆਖਰੀ ਜਵਾਬ ਕਾਪੀ ਹੋਇਆ (%s ਅੱਖਰ)}
 ::msgcat::mcset pa {layout not saved: %s} {ਲੇਆਉਟ ਸੇਵ ਨਹੀਂ ਹੋਇਆ: %s}
 ::msgcat::mcset pa {leave (cancels a running turn first)} {ਬਾਹਰ ਜਾਓ (ਪਹਿਲਾਂ ਚੱਲ ਰਿਹਾ ਟਰਨ ਰੱਦ ਕਰਦਾ ਹੈ)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset pa {list sessions} {ਸੈਸ਼ਨਾਂ ਦੀ ਸੂਚੀ}
 ::msgcat::mcset pa {list skills} {ਸਕਿੱਲਾਂ ਦੀ ਸੂਚੀ}
 ::msgcat::mcset pa {list tools} {ਟੂਲਾਂ ਦੀ ਸੂਚੀ}
+::msgcat::mcset pa {listed here only; [notify] fleet_alerts is off} {ਸਿਰਫ਼ ਇੱਥੇ ਦਿਖਾਇਆ; [notify] fleet_alerts ਬੰਦ ਹੈ}
 ::msgcat::mcset pa {live patching ARMED} {ਲਾਈਵ ਪੈਚਿੰਗ ARMED}
 ::msgcat::mcset pa {live patching ARMED — an agent can now redefine procs in this window} {ਲਾਈਵ ਪੈਚਿੰਗ ARMED — ਏਜੰਟ ਹੁਣ ਇਸ ਵਿੰਡੋ ਵਿੱਚ ਪ੍ਰੌਕਸ ਮੁੜ ਪਰਿਭਾਸ਼ਿਤ ਕਰ ਸਕਦਾ ਹੈ}
 ::msgcat::mcset pa {live patching disarmed} {ਲਾਈਵ ਪੈਚਿੰਗ ਬੰਦ}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset pa {log pane shown} {ਲੌਗ ਪੈਨ ਦਿਖਾਇਆ ਗਿਆ}
 ::msgcat::mcset pa {log: %s} {ਲੌਗ: %s}
 ::msgcat::mcset pa {make media: image/video/audio, route = comfyui or provider[/model]} {ਮੀਡੀਆ ਬਣਾਓ: image/video/audio, ਰੂਟ = comfyui ਜਾਂ provider[/model]}
+::msgcat::mcset pa {managed via %s} {%s ਰਾਹੀਂ ਸੰਭਾਲਿਆ}
+::msgcat::mcset pa {manual only} {ਸਿਰਫ਼ ਹੱਥੋਂ}
 ::msgcat::mcset pa {mark set} {ਨਿਸ਼ਾਨ ਲੱਗ ਗਿਆ}
 ::msgcat::mcset pa {mark whole buffer (emacs select-all)} {ਪੂਰਾ ਬਫ਼ਰ ਮਾਰਕ ਕਰੋ (emacs select-all)}
 ::msgcat::mcset pa {markdown preview of the composer} {ਕੰਪੋਜ਼ਰ ਦਾ ਮਾਰਕਡਾਉਨ ਪ੍ਰੀਵਿਊ}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset pa model ਮਾਡਲ
 ::msgcat::mcset pa {model aliases} {ਮਾਡਲ ਅਲੀਅਸ}
 ::msgcat::mcset pa {monitor %1$s fired} {ਮਾਨੀਟਰ %1$s ਚੱਲਿਆ}
-::msgcat::mcset pa monitors ਮਾਨੀਟਰ
 ::msgcat::mcset pa monitors_header ਮਾਨੀਟਰ:
 ::msgcat::mcset pa monitors_none {(ਕੋਈ ਮਾਨੀਟਰ ਨਹੀਂ — ਮਾਡਲ ਇਹ ਮਾਨੀਟਰ tool ਨਾਲ ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ)}
 ::msgcat::mcset pa {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {ਇੱਕ ਸੈਸ਼ਨ (ਅਤੇ ਇਸਦਾ ਸਬਟਰੀ) ਨੂੰ ਇੱਕ ਟਰਨ ਬਾਊਂਡਰੀ 'ਤੇ ਦੂਜੇ ਪੂਲ ਨੋਡ ਵਿੱਚ ਭੇਜੋ; ਪਾਰਕ ਕੀਤੀ ਹੈਂਡਓਫ਼ ਨੂੰ ਪੂਰਾ/ਅਣਕੀਤਾ ਕਰੋ; ਪੁੱਛੋ ਕਿ ਸੈਸ਼ਨ ਦਾ ਮਾਲਕ ਕੌਣ ਹੈ (ਐਡਮਿਨ)}
 ::msgcat::mcset pa {move the running foreground command to the background} {ਚੱਲ ਰਹੀ ਫੋਰਗ੍ਰਾਊਂਡ ਕਮਾਂਡ ਨੂੰ ਬੈਕਗ੍ਰਾਊਂਡ ਵਿੱਚ ਭੇਜੋ}
 ::msgcat::mcset pa {move the running foreground command to the background (keeps running)} {ਚੱਲ ਰਹੀ ਫੋਰਗ੍ਰਾਉਂਡ ਕਮਾਂਡ ਨੂੰ ਬੈਕਗ੍ਰਾਉਂਡ ਵਿੱਚ ਭੇਜੋ (ਚਲਦੀ ਰਹਿੰਦੀ ਹੈ)}
+::msgcat::mcset pa {move this session's running foreground command to a background shell; keeps running} {ਇਸ ਸੈਸ਼ਨ ਦੀ ਚੱਲ ਰਹੀ ਫੋਰਗ੍ਰਾਉਂਡ ਕਮਾਂਡ ਨੂੰ ਬੈਕਗ੍ਰਾਉਂਡ ਸ਼ੈੱਲ ਵਿੱਚ ਭੇਜੋ; ਇਹ ਚੱਲਦੀ ਰਹਿੰਦੀ ਹੈ}
 ::msgcat::mcset pa {moving around} {ਇੱਧਰ-ਉੱਧਰ ਜਾਣਾ}
 ::msgcat::mcset pa name ਨਾਂ
 ::msgcat::mcset pa {name a key first} {ਪਹਿਲਾਂ ਕੁੰਜੀ ਦਾ ਨਾਂ ਦਿਓ}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset pa {neon impressionism} {ਨੀਓਨ ਇੰਪ੍ਰੈਸ਼ਨਿਜ਼ਮ}
 ::msgcat::mcset pa {network (optional — e.g. libera; empty = any)} {ਨੈੱਟਵਰਕ (ਵਿਕਲਪਿਕ — ਜਿਵੇਂ libera; ਖਾਲੀ = ਕੋਈ ਵੀ)}
 ::msgcat::mcset pa {network to scope the grant to} {ਗ੍ਰਾਂਟ ਸੀਮਤ ਕਰਨ ਲਈ ਨੈੱਟਵਰਕ}
+::msgcat::mcset pa new ਨਵਾਂ
 ::msgcat::mcset pa {new buffer} {ਨਵਾਂ ਬਫ਼ਰ}
 ::msgcat::mcset pa {new entry — replace this text, then Save} {ਨਵੀਂ ਐਂਟਰੀ — ਇਹ ਟੈਕਸਟ ਬਦਲੋ, ਫਿਰ Save}
 ::msgcat::mcset pa {new name for %s} {%s ਲਈ ਨਵਾਂ ਨਾਂ}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset pa {no IRC buffer selected} {ਕੋਈ IRC ਬਫਰ ਚੁਣਿਆ ਨਹੀਂ}
 ::msgcat::mcset pa {no MCP servers configured — Add server… writes one into config.toml} {ਕੋਈ MCP ਸਰਵਰ ਕੌਨਫਿਗ ਨਹੀਂ — Add server… config.toml ਵਿੱਚ ਇੱਕ ਲਿਖਦਾ ਹੈ}
 ::msgcat::mcset pa {no URLs in this buffer} {ਇਸ ਬਫਰ ਵਿੱਚ ਕੋਈ URL ਨਹੀਂ}
+::msgcat::mcset pa {no [a2a_agents] entry — this peer cannot be dialed} {ਕੋਈ [a2a_agents] ਐਂਟਰੀ ਨਹੀਂ — ਇਸ ਪੀਅਰ ਨੂੰ ਡਾਇਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ}
 ::msgcat::mcset pa {no alias /%s} {ਕੋਈ ਅਲੀਅਸ /%s ਨਹੀਂ}
 ::msgcat::mcset pa {no background refresh} {ਕੋਈ ਬੈਕਗ੍ਰਾਉਂਡ ਰਿਫ੍ਰੈਸ਼ ਨਹੀਂ}
 ::msgcat::mcset pa {no buffer %s} {ਕੋਈ ਬਫਰ %s ਨਹੀਂ}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset pa {no code block in the last reply} {ਆਖਰੀ ਜਵਾਬ ਵਿੱਚ ਕੋਈ ਕੋਡ ਬਲਾਕ ਨਹੀਂ}
 ::msgcat::mcset pa {no cron jobs} {ਕੋਈ ਕ੍ਰੌਨ ਕੰਮ ਨਹੀਂ}
 ::msgcat::mcset pa {no cron jobs — New… creates one} {ਕੋਈ ਕ੍ਰੌਨ ਕੰਮ ਨਹੀਂ — New… ਇੱਕ ਬਣਾਉਂਦਾ ਹੈ}
+::msgcat::mcset pa {no exchange yet} {ਹਾਲੇ ਕੋਈ ਆਦਾਨ-ਪ੍ਰਦਾਨ ਨਹੀਂ}
 ::msgcat::mcset pa {no file — pick a guts file or type a path} {ਕੋਈ ਫਾਈਲ ਨਹੀਂ — guts ਫਾਈਲ ਚੁਣੋ ਜਾਂ ਪਾਥ ਟਾਈਪ ਕਰੋ}
 ::msgcat::mcset pa {no handler} {ਕੋਈ ਹੈਂਡਲਰ ਨਹੀਂ}
+::msgcat::mcset pa {no heartbeat for %{mins} min} {%{mins} ਮਿੰਟ ਤੋਂ ਕੋਈ ਹਾਰਟਬੀਟ ਨਹੀਂ}
+::msgcat::mcset pa {no heartbeat within the threshold} {ਹੱਦ ਦੇ ਅੰਦਰ ਕੋਈ ਹਾਰਟਬੀਟ ਨਹੀਂ}
 ::msgcat::mcset pa {no history yet} {ਅਜੇ ਕੋਈ ਇਤਿਹਾਸ ਨਹੀਂ}
 ::msgcat::mcset pa {no host configured for this instance} {ਇਸ ਇੰਸਟੈਂਸ ਲਈ ਕੋਈ ਹੋਸਟ ਕੌਨਫਿਗ ਨਹੀਂ}
 ::msgcat::mcset pa {no instance selected} {ਕੋਈ ਇੰਸਟੈਂਸ ਚੁਣਿਆ ਨਹੀਂ}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset pa {no program to open URLs} {URLs ਖੋਲ੍ਹਣ ਲਈ ਕੋਈ ਪ੍ਰੋਗਰਾਮ ਨਹੀਂ}
 ::msgcat::mcset pa {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {ਕੋਈ ਪ੍ਰੋਵਾਈਡਰ ਸੰਰਚਿਤ ਨਹੀਂ ਹੈ — ਟਰਨ ਚਲਾਉਣ ਤੋਂ ਪਹਿਲਾਂ [[custom_providers]] ਐਂਟਰੀ ਜੋੜੋ ਅਤੇ [model] ਜੋੜੀ ਸੈੱਟ ਕਰੋ}
 ::msgcat::mcset pa {no reading yet — press Refresh} {ਅਜੇ ਕੋਈ ਰੀਡਿੰਗ ਨਹੀਂ — Refresh ਦਬਾਓ}
-::msgcat::mcset pa {no running tasks} {ਕੋਈ ਚੱਲਦਾ ਕੰਮ ਨਹੀਂ}
 ::msgcat::mcset pa {no sample available} {ਕੋਈ ਨਮੂਨਾ ਉਪਲਬਧ ਨਹੀਂ}
 ::msgcat::mcset pa {no search bar on this surface} {ਇਸ ਸਤ੍ਹਾ ਤੇ ਕੋਈ ਖੋਜ ਬਾਰ ਨਹੀਂ}
 ::msgcat::mcset pa {no session matching %s} {%s ਨਾਲ ਮੇਲ ਖਾਂਦਾ ਕੋਈ ਸੈਸ਼ਨ ਨਹੀਂ}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset pa {no session open — switch the scope to the default, or open a session} {ਕੋਈ ਸੈਸ਼ਨ ਖੁੱਲ੍ਹਾ ਨਹੀਂ — ਸਕੋਪ ਨੂੰ ਡਿਫਾਲਟ ਤੇ ਬਦਲੋ, ਜਾਂ ਸੈਸ਼ਨ ਖੋਲ੍ਹੋ}
 ::msgcat::mcset pa {no session open — the catalogue needs one; the default scope still works from config.toml} {ਕੋਈ ਸੈਸ਼ਨ ਖੁੱਲ੍ਹਾ ਨਹੀਂ — ਕੈਟਾਲਾਗ ਲਈ ਇੱਕ ਚਾਹੀਦਾ ਹੈ; ਡਿਫਾਲਟ ਸਕੋਪ config.toml ਤੋਂ ਵੀ ਚੱਲਦਾ ਹੈ}
 ::msgcat::mcset pa {no setting %s — try filter or bare} {ਕੋਈ ਸੈਟਿੰਗ %s ਨਹੀਂ — filter ਜਾਂ bare ਅਜ਼ਮਾਓ}
+::msgcat::mcset pa {no shells or monitors to show} {ਦਿਖਾਉਣ ਲਈ ਕੋਈ ਸ਼ੈੱਲ ਜਾਂ ਮਾਨੀਟਰ ਨਹੀਂ}
 ::msgcat::mcset pa {no skills found} {ਕੋਈ skills ਨਹੀਂ ਮਿਲੇ}
 ::msgcat::mcset pa {no such URL — /urls lists them} {ਅਜਿਹਾ ਕੋਈ URL ਨਹੀਂ — /urls ਉਹਨਾਂ ਨੂੰ ਸੂਚੀਬੱਧ ਕਰਦਾ ਹੈ}
 ::msgcat::mcset pa {no such file: %s} {ਅਜਿਹੀ ਕੋਈ ਫਾਈਲ ਨਹੀਂ: %s}
 ::msgcat::mcset pa {no swap target yet — set one with /locale secondary <id>} {ਹਾਲੇ ਅਦਲਾ-ਬਦਲੀ ਦੀ ਭਾਸ਼ਾ ਨਹੀਂ — /locale secondary <id> ਨਾਲ ਸੈੱਟ ਕਰੋ}
+::msgcat::mcset pa {no task selected} {ਕੋਈ ਕੰਮ ਚੁਣਿਆ ਨਹੀਂ}
 ::msgcat::mcset pa {no triggers} {ਕੋਈ ਟਰਿੱਗਰ ਨਹੀਂ}
 ::msgcat::mcset pa {no triggers — New… creates one} {ਕੋਈ ਟਰਿੱਗਰ ਨਹੀਂ — New… ਇੱਕ ਬਣਾਉਂਦਾ ਹੈ}
 ::msgcat::mcset pa {no upstream reading for %s} {%s ਲਈ ਕੋਈ ਅੱਪਸਟਰੀਮ ਰੀਡਿੰਗ ਨਹੀਂ}
 ::msgcat::mcset pa {no word match} {ਕੋਈ ਸ਼ਬਦ ਮੇਲ ਨਹੀਂ}
 ::msgcat::mcset pa {no xdg-open — path copied instead} {ਕੋਈ xdg-open ਨਹੀਂ — ਇਸ ਦੀ ਬਜਾਏ ਪਾਥ ਕਾਪੀ ਕੀਤਾ}
+::msgcat::mcset pa {node log} {ਨੋਡ ਲੌਗ}
 ::msgcat::mcset pa {none loaded} {ਕੁਝ ਲੋਡ ਨਹੀਂ ਹੋਇਆ}
 ::msgcat::mcset pa {none recorded} {ਕੋਈ ਦਰਜ ਨਹੀਂ}
+::msgcat::mcset pa {none since this gateway started} {ਇਹ ਗੇਟਵੇ ਸ਼ੁਰੂ ਹੋਣ ਤੋਂ ਬਾਅਦ ਕੋਈ ਨਹੀਂ}
 ::msgcat::mcset pa {none yet} {ਹਾਲੇ ਨਹੀਂ}
 ::msgcat::mcset pa {normie is pure Ctrl — no emacs prefix chords.} {normie ਪੂਰੀ ਤਰ੍ਹਾਂ Ctrl ਹੈ — ਕੋਈ emacs prefix chords ਨਹੀਂ।}
 ::msgcat::mcset pa {normie: select all · emacs: start of line} {normie: ਸਭ ਚੁਣੋ · emacs: ਲਾਈਨ ਦਾ ਸ਼ੁਰੂ}
 ::msgcat::mcset pa {not a channel} {ਚੈਨਲ ਨਹੀਂ ਹੈ}
 ::msgcat::mcset pa {not a key = value line: %s} {key = value ਵਾਲੀ ਲਾਈਨ ਨਹੀਂ: %s}
+::msgcat::mcset pa {not a node in the attached gateway's cluster registry: %s} {ਜੁੜੇ ਗੇਟਵੇ ਦੀ ਕਲਸਟਰ ਰਜਿਸਟਰੀ ਵਿੱਚ ਨੋਡ ਨਹੀਂ: %s}
 ::msgcat::mcset pa {not a number} {ਨੰਬਰ ਨਹੀਂ}
 ::msgcat::mcset pa {not a valid http(s) url: %s} {ਵੈਧ http(s) url ਨਹੀਂ: %s}
 ::msgcat::mcset pa {not a valid ssh host: %s} {ਵੈਧ ssh ਹੋਸਟ ਨਹੀਂ: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset pa {not attached to a gateway} {ਕਿਸੇ ਗੇਟਵੇ ਨਾਲ ਅਟੈਚ ਨਹੀਂ}
 ::msgcat::mcset pa {not configured} {ਕੌਨਫਿਗ ਨਹੀਂ}
 ::msgcat::mcset pa {not ignoring %s} {%s ਨੂੰ ਅਣਡਿੱਠਾ ਨਹੀਂ ਕਰ ਰਹੇ}
+::msgcat::mcset pa {not installed} {ਇੰਸਟਾਲ ਨਹੀਂ}
 ::msgcat::mcset pa {not reported} {ਰਿਪੋਰਟ ਨਹੀਂ ਕੀਤਾ}
 ::msgcat::mcset pa {not running} {ਚੱਲ ਨਹੀਂ ਰਿਹਾ}
 ::msgcat::mcset pa {not set in config.toml — the built-in default applies. %s} {config.toml ਵਿੱਚ ਸੈੱਟ ਨਹੀਂ — ਬਿਲਟ-ਇਨ ਡਿਫਾਲਟ ਲਾਗੂ ਹੁੰਦਾ ਹੈ. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset pa off ਬੰਦ
 ::msgcat::mcset pa {off (the default)} {ਬੰਦ (ਡਿਫਾਲਟ)}
 ::msgcat::mcset pa offline ਆਫ਼ਲਾਈਨ
+::msgcat::mcset pa ok ਠੀਕ
 ::msgcat::mcset pa on ਚਾਲੂ
 ::msgcat::mcset pa {on (the default)} {ਚਾਲੂ (ਡਿਫਾਲਟ)}
 ::msgcat::mcset pa {on failure} {ਅਸਫਲਤਾ ਤੇ}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset pa {open links} {ਲਿੰਕ ਖੋਲ੍ਹਣਾ}
 ::msgcat::mcset pa {open the engine log} {ਇੰਜਣ ਲੌਗ ਖੋਲ੍ਹੋ}
 ::msgcat::mcset pa {open the joined session before /leave (on %s)} {/leave ਤੋਂ ਪਹਿਲਾਂ ਜੁੜਿਆ ਸੈਸ਼ਨ ਖੋਲ੍ਹੋ (%s ’ਤੇ)}
+::msgcat::mcset pa {open the selected child session} {ਚੁਣਿਆ ਚਾਈਲਡ ਸੈਸ਼ਨ ਖੋਲ੍ਹੋ}
 ::msgcat::mcset pa {open the selected skill in the Dev editor} {ਚੁਣੀ ਸਕਿੱਲ ਨੂੰ Dev ਐਡੀਟਰ ਵਿੱਚ ਖੋਲ੍ਹੋ}
 ::msgcat::mcset pa {open the setup wizard (re-runnable; edits config.toml in place)} {ਸੈੱਟਅੱਪ ਵਿਜ਼ਾਰਡ ਖੋਲ੍ਹੋ (ਦੁਬਾਰਾ ਚਲਾਇਆ ਜਾ ਸਕਦਾ ਹੈ; config.toml ਥਾਂ ’ਤੇ ਹੀ ਸੋਧਦਾ ਹੈ)}
 ::msgcat::mcset pa {open the share sheet} {ਸਾਂਝਾ ਕਰਨ ਵਾਲੀ ਸ਼ੀਟ ਖੋਲ੍ਹਣਾ}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset pa {override cleared — the default applies} {ਓਵਰਰਾਈਡ ਹਟਾਇਆ — ਡਿਫਾਲਟ ਲਾਗੂ ਹੁੰਦਾ ਹੈ}
 ::msgcat::mcset pa {override failed: %s} {ਓਵਰਰਾਈਡ ਅਸਫਲ: %s}
 ::msgcat::mcset pa {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {ਮਾਲਕ ਦੀ ਪਛਾਣ %{id} ਨੂੰ ACL ਮਿਲਾ ਨਹੀਂ ਸਕਦਾ — telegram:<ਸੰਖਿਆਤਮਕ ਆਈਡੀ>, irc:<services ਖਾਤਾ>, ਜਾਂ nick!user@host ਮਾਸਕ ਵਰਤੋ}
+::msgcat::mcset pa owner/repository ਮਾਲਕ/ਰਿਪੋਜ਼ਿਟਰੀ
 ::msgcat::mcset pa {owners: %s} {ਮਾਲਕ: %s}
 ::msgcat::mcset pa {pair a desktop with this agent} {ਇਸ ਏਜੰਟ ਨਾਲ ਡੈਸਕਟਾਪ ਜੋੜੋ}
 ::msgcat::mcset pa {partly failed: %s} {ਅੰਸ਼ਕ ਤੌਰ ਤੇ ਅਸਫਲ: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset pa plugin ਪਲੱਗਇਨ
 ::msgcat::mcset pa {plugin directory git history} {ਪਲੱਗਇਨ ਡਾਇਰੈਕਟਰੀ ਦਾ git ਇਤਿਹਾਸ}
 ::msgcat::mcset pa {plugin list} {ਪਲੱਗਇਨ ਸੂਚੀ}
+::msgcat::mcset pa {plugin provider driver} {ਪਲੱਗਇਨ ਪ੍ਰੋਵਾਈਡਰ ਡਰਾਈਵਰ}
 ::msgcat::mcset pa {plugins reloaded on %s} {%s 'ਤੇ ਪਲੱਗਇਨ ਰੀਲੋਡ ਹੋਏ}
 ::msgcat::mcset pa {pop %s out into its own window} {%s ਨੂੰ ਆਪਣੀ ਵਿੰਡੋ ਵਿੱਚ ਕੱਢੋ}
 ::msgcat::mcset pa {pop the buffer out into its own window} {ਬਫ਼ਰ ਨੂੰ ਵੱਖਰੀ ਵਿੰਡੋ ਵਿੱਚ ਖੋਲ੍ਹੋ}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset pa {prefix: window & dock commands} {prefix: ਵਿੰਡੋ ਅਤੇ dock ਕਮਾਂਡਾਂ}
 ::msgcat::mcset pa {press Attach in the Instances tab} {Instances ਟੈਬ ਵਿੱਚ Attach ਦਬਾਓ}
 ::msgcat::mcset pa preview ਪ੍ਰੀਵਿਊ
+::msgcat::mcset pa {preview an AI extension change and explicitly apply its diff} {AI ਐਕਸਟੈਂਸ਼ਨ ਬਦਲਾਅ ਦੀ ਝਲਕ ਵੇਖੋ ਅਤੇ ਇਸਦਾ ਡਿਫ਼ ਸਪਸ਼ਟ ਤੌਰ ’ਤੇ ਲਾਗੂ ਕਰੋ}
 ::msgcat::mcset pa {preview failed: %s} {ਪ੍ਰੀਵਿਊ ਵਿਫਲ: %s}
 ::msgcat::mcset pa {previous buffer} {ਪਿਛਲਾ ਬਫ਼ਰ}
 ::msgcat::mcset pa {previous command was not a yank} {ਪਿਛਲੀ ਕਮਾਂਡ yank ਨਹੀਂ ਸੀ}
 ::msgcat::mcset pa {previous match} {ਪਿਛਲਾ ਮੇਲ}
 ::msgcat::mcset pa {previous session} {ਪਿਛਲਾ ਸੈਸ਼ਨ}
+::msgcat::mcset pa {probing %s…} {%s ਦੀ ਜਾਂਚ ਹੋ ਰਹੀ…}
 ::msgcat::mcset pa {proc body} {proc ਸਰੀਰ}
 ::msgcat::mcset pa {profile unavailable: %s} {profile ਉਪਲਬਧ ਨਹੀਂ: %s}
 ::msgcat::mcset pa profiles: profiles:
 ::msgcat::mcset pa prompt ਪ੍ਰੌਂਪਟ
 ::msgcat::mcset pa {prompt breakdown} {ਪ੍ਰੌਂਪਟ ਦਾ ਵੇਰਵਾ}
 ::msgcat::mcset pa {prompt tokens} {prompt ਟੋਕਨ}
+::msgcat::mcset pa {proposal only, not applied} {ਸਿਰਫ਼ ਪ੍ਰਸਤਾਵ, ਲਾਗੂ ਨਹੀਂ ਕੀਤਾ}
 ::msgcat::mcset pa provider ਪ੍ਰੋਵਾਈਡਰ
 ::msgcat::mcset pa {provider / model} {ਪ੍ਰੋਵਾਈਡਰ / ਮਾਡਲ}
 ::msgcat::mcset pa {provider base URL} {ਪ੍ਰੋਵਾਈਡਰ ਦਾ base URL}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset pa {re-sync the slopdrop state mirror} {slopdrop ਸਟੇਟ ਮਿਰਰ ਨੂੰ ਮੁੜ ਸਿੰਕ ਕਰੋ}
 ::msgcat::mcset pa {read and set the clipboard} {ਕਲਿੱਪਬੋਰਡ ਪੜ੍ਹਨਾ ਅਤੇ ਸੈੱਟ ਕਰਨਾ}
 ::msgcat::mcset pa {read text aloud} {ਲਿਖਤ ਉੱਚੀ ਪੜ੍ਹਨਾ}
+::msgcat::mcset pa {read-only: [approvals] allowlist} {ਸਿਰਫ਼-ਪੜ੍ਹਨ: [approvals] allowlist}
 ::msgcat::mcset pa {read-only: this session lives on %1$s (as read at %2$s)} {ਸਿਰਫ਼-ਪੜ੍ਹਨ ਲਈ: ਇਹ ਸੈਸ਼ਨ %1$s 'ਤੇ ਹੈ (%2$s ਵਜੇ ਪੜ੍ਹੇ ਅਨੁਸਾਰ)}
 ::msgcat::mcset pa {read-only: this skill comes from the %s library} {ਸਿਰਫ਼-ਪੜ੍ਹਨ ਲਈ: ਇਹ ਸਕਿੱਲ %s ਲਾਇਬ੍ਰੇਰੀ ਤੋਂ ਆਉਂਦੀ ਹੈ}
 ::msgcat::mcset pa reasoning ਰੀਜ਼ਨਿੰਗ
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset pa {refused to open %s (only http, https, mailto)} {%s ਖੋਲ੍ਹਣ ਤੋਂ ਇਨਕਾਰ (ਸਿਰਫ਼ http, https, mailto)}
 ::msgcat::mcset pa {refused: %s} {ਰੱਦ: %s}
 ::msgcat::mcset pa {region copied} {ਖੇਤਰ ਕਾਪੀ ਕੀਤਾ ਗਿਆ}
+::msgcat::mcset pa registered {ਰਜਿਸਟਰ ਹੋਇਆ}
 ::msgcat::mcset pa {registry not saved: %s} {ਰਜਿਸਟਰੀ ਸੇਵ ਨਹੀਂ ਹੋਈ: %s}
 ::msgcat::mcset pa {reload on %1$s failed: %2$s} {%1$s 'ਤੇ ਰੀਲੋਡ ਵਿਫਲ: %2$s}
 ::msgcat::mcset pa {reload the mechanisms} {ਤੰਤਰ ਰੀਲੋਡ ਕਰੋ}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset pa {resume a session (prefix ok)} {ਕੋਈ ਸੈਸ਼ਨ ਮੁੜ ਸ਼ੁਰੂ ਕਰੋ (ਅਗੇਤਰ ਕਾਫ਼ੀ ਹੈ)}
 ::msgcat::mcset pa {retry failed: %s} {ਮੁੜ-ਕੋਸ਼ਿਸ਼ ਅਸਫ਼ਲ: %s}
 ::msgcat::mcset pa {retrying last prompt…} {ਆਖਰੀ ਪ੍ਰੌਂਪਟ ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰ ਰਿਹਾ…}
+::msgcat::mcset pa {review files for an explicit upstream contribution} {ਸਪਸ਼ਟ ਅੱਪਸਟਰੀਮ ਯੋਗਦਾਨ ਲਈ ਫ਼ਾਈਲਾਂ ਦੀ ਸਮੀਖਿਆ ਕਰੋ}
+::msgcat::mcset pa {review standing global and session tool permissions} {ਸਥਾਈ ਗਲੋਬਲ ਅਤੇ ਸੈਸ਼ਨ ਟੂਲ ਇਜਾਜ਼ਤਾਂ ਦੀ ਸਮੀਖਿਆ ਕਰੋ}
 ::msgcat::mcset pa revision ਰੀਵਿਜ਼ਨ
 ::msgcat::mcset pa {revision history} {ਰੀਵਿਜ਼ਨ ਇਤਿਹਾਸ}
+::msgcat::mcset pa {revoke refused} {ਵਾਪਸ ਲੈਣ ਤੋਂ ਇਨਕਾਰ}
 ::msgcat::mcset pa {revoke the selected identity's grant} {ਚੁਣੀ ਪਛਾਣ ਦੀ ਗ੍ਰਾਂਟ ਰੱਦ ਕਰੋ}
 ::msgcat::mcset pa role ਭੂਮਿਕਾ
 ::msgcat::mcset pa {role to grant} {ਦੇਣ ਵਾਲੀ ਭੂਮਿਕਾ}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset pa {saved to %s} {%s ਵਿੱਚ ਸੇਵ ਹੋਇਆ}
 ::msgcat::mcset pa saved. {ਸੇਵ ਹੋ ਗਿਆ।}
 ::msgcat::mcset pa {scaffold a new plugin} {ਨਵਾਂ ਪਲੱਗਇਨ ਬਣਾਓ}
+::msgcat::mcset pa {scaffold a user plugin and open it in this editor} {ਇੱਕ user plugin ਦਾ scaffold ਬਣਾਓ ਅਤੇ ਇਸ ਐਡੀਟਰ ਵਿੱਚ ਖੋਲ੍ਹੋ}
 ::msgcat::mcset pa {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {ਨਿਰਧਾਰਤ ਕੰਮ; /crons add "<sched>" [session=<id>] <prompt> (ਉਪਨਾਮ /cron)}
 ::msgcat::mcset pa scope ਦਾਇਰਾ
 ::msgcat::mcset pa script ਸਕ੍ਰਿਪਟ
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset pa {select %s first} {ਪਹਿਲਾਂ %s ਚੁਣੋ}
 ::msgcat::mcset pa {select a checkpoint first} {ਪਹਿਲਾਂ ਕੋਈ ਚੈੱਕਪੁਆਇੰਟ ਚੁਣੋ}
 ::msgcat::mcset pa {select a file, or New… to create one} {ਕੋਈ ਫ਼ਾਈਲ ਚੁਣੋ, ਜਾਂ ਬਣਾਉਣ ਲਈ ਨਵਾਂ…}
+::msgcat::mcset pa {select a grant first} {ਪਹਿਲਾਂ ਇੱਕ ਇਜਾਜ਼ਤ ਚੁਣੋ}
 ::msgcat::mcset pa {select a handler first} {ਪਹਿਲਾਂ ਕੋਈ ਹੈਂਡਲਰ ਚੁਣੋ}
 ::msgcat::mcset pa {select a member first} {ਪਹਿਲਾਂ ਕੋਈ ਮੈਂਬਰ ਚੁਣੋ}
 ::msgcat::mcset pa {select a route} {ਕੋਈ ਰੂਟ ਚੁਣੋ}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset pa {select an assignment first} {ਪਹਿਲਾਂ ਕੋਈ ਅਸਾਈਨਮੈਂਟ ਚੁਣੋ}
 ::msgcat::mcset pa {select an entry first} {ਪਹਿਲਾਂ ਕੋਈ ਐਂਟਰੀ ਚੁਣੋ}
 ::msgcat::mcset pa {select an identity first} {ਪਹਿਲਾਂ ਕੋਈ ਪਛਾਣ ਚੁਣੋ}
+::msgcat::mcset pa {selected task details and shell output} {ਚੁਣੇ ਕੰਮ ਦੇ ਵੇਰਵੇ ਅਤੇ ਸ਼ੈੱਲ ਆਉਟਪੁੱਟ}
 ::msgcat::mcset pa {selected: %s} {ਚੁਣਿਆ ਗਿਆ: %s}
 ::msgcat::mcset pa {send clipboard as prompt} {ਕਲਿੱਪਬੋਰਡ ਨੂੰ ਪ੍ਰੌਂਪਟ ਵਜੋਂ ਭੇਜੋ}
 ::msgcat::mcset pa {send failed: %s} {ਭੇਜਣਾ ਅਸਫ਼ਲ: %s}
 ::msgcat::mcset pa {send the message; while a turn runs, queue it as steering} {ਸੁਨੇਹਾ ਭੇਜੋ; ਜਦੋਂ ਵਾਰੀ ਚੱਲ ਰਹੀ ਹੋਵੇ, ਇਸਨੂੰ ਸਟੀਅਰਿੰਗ ਵਜੋਂ ਕਤਾਰ ਵਿੱਚ ਰੱਖੋ}
+::msgcat::mcset pa sent {ਭੇਜਿਆ ਗਿਆ}
+::msgcat::mcset pa {sent to the owner's home chat} {ਮਾਲਕ ਦੀ ਹੋਮ ਚੈਟ 'ਤੇ ਭੇਜਿਆ ਗਿਆ}
 ::msgcat::mcset pa server ਸਰਵਰ
 ::msgcat::mcset pa {server buffers merged} {ਸਰਵਰ ਬਫ਼ਰ ਮਿਲਾਏ ਗਏ}
 ::msgcat::mcset pa {server buffers separate} {ਸਰਵਰ ਬਫ਼ਰ ਵੱਖਰੇ}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset pa {settings, one key = value per line} {ਸੈਟਿੰਗਾਂ, ਹਰ ਲਾਈਨ 'ਤੇ ਇੱਕ key = value}
 ::msgcat::mcset pa {setup_done marker NOT saved: %s} {setup_done ਮਾਰਕਰ ਸੰਭਾਲਿਆ ਨਹੀਂ ਗਿਆ: %s}
 ::msgcat::mcset pa {shell %1$s finished} {ਸ਼ੈੱਲ %1$s ਖਤਮ ਹੋਇਆ}
-::msgcat::mcset pa shells ਸ਼ੈੱਲ
+::msgcat::mcset pa {shells, monitors and subagents} {ਸ਼ੈੱਲ, ਮਾਨੀਟਰ ਅਤੇ ਸਬਾਏਜੰਟ}
 ::msgcat::mcset pa shells_header {ਬੈਕਗਰਾਊਂਡ ਸ਼ੈੱਲ:}
 ::msgcat::mcset pa shells_none {(ਕੋਈ ਬੈਕਗਰਾਊਂਡ ਸ਼ੈੱਲ ਨਹੀਂ — /background <cmd> ਇੱਕ ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ)}
 ::msgcat::mcset pa {show current configuration} {ਮੌਜੂਦਾ ਸੰਰਚਨਾ ਵੇਖਾਓ}
 ::msgcat::mcset pa {show every key in this mode} {ਇਸ ਮੋਡ ਦੀਆਂ ਸਾਰੀਆਂ ਕੁੰਜੀਆਂ ਵੇਖਾਓ}
 ::msgcat::mcset pa {show or hide the session list} {ਸੈਸ਼ਨ ਸੂਚੀ ਦਿਖਾਓ ਜਾਂ ਲੁਕਾਓ}
 ::msgcat::mcset pa {show or switch model (alias | model@provider | custom:<prov>)} {ਮਾਡਲ ਵੇਖੋ ਜਾਂ ਬਦਲੋ (alias | model@provider | custom:<prov>)}
+::msgcat::mcset pa {show selected shell output} {ਚੁਣੇ ਸ਼ੈੱਲ ਦਾ ਆਉਟਪੁੱਟ ਦਿਖਾਓ}
 ::msgcat::mcset pa {show short messages} {ਛੋਟੇ ਸੁਨੇਹੇ ਦਿਖਾਉਣਾ}
 ::msgcat::mcset pa {show the model's reasoning blocks (same as /reasoning)} {ਮਾਡਲ ਦੇ ਰੀਜ਼ਨਿੰਗ ਬਲਾਕ ਦਿਖਾਓ (/reasoning ਵਾਂਗ)}
 ::msgcat::mcset pa {show unclaimed} {ਬੇ-ਮਾਲਕ ਦਿਖਾਓ}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset pa spend ਖਰਚ
 ::msgcat::mcset pa {split: %s} {ਸਪਲਿਟ: %s}
 ::msgcat::mcset pa {ssh to %1$s failed: %2$s} {%1$s ਲਈ ssh ਵਿਫਲ: %2$s}
+::msgcat::mcset pa {stale — no heartbeat within the threshold} {ਪੁਰਾਣਾ — ਸੀਮਾ ਦੇ ਅੰਦਰ ਕੋਈ ਹਾਰਟਬੀਟ ਨਹੀਂ}
+::msgcat::mcset pa {standing global and session permission grants} {ਸਥਾਈ ਗਲੋਬਲ ਅਤੇ ਸੈਸ਼ਨ ਇਜਾਜ਼ਤਾਂ}
 ::msgcat::mcset pa state ਸਥਿਤੀ
 ::msgcat::mcset pa {state       never reached} {ਸਥਿਤੀ       ਕਦੇ ਨਹੀਂ ਪਹੁੰਚੀ}
 ::msgcat::mcset pa {state       reachable} {ਸਥਿਤੀ       ਪਹੁੰਚਯੋਗ}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset pa {stored in the encrypted vault (%1$s): %2$s} {ਇਨਕ੍ਰਿਪਟ ਕੀਤੀ ਤਿਜੋਰੀ ਵਿੱਚ ਰੱਖਿਆ ਗਿਆ (%1$s): %2$s}
 ::msgcat::mcset pa {stream handler: %s} {ਸਟ੍ਰੀਮ ਹੈਂਡਲਰ: %s}
 ::msgcat::mcset pa {subagent %1$s finished} {ਸਬਏਜੈਂਟ %1$s ਖਤਮ ਹੋਇਆ}
-::msgcat::mcset pa subagents ਸਬਏਜੈਂਟ
 ::msgcat::mcset pa subagents_header {ਚੱਲ ਰਹੇ ਸਬਏਜੈਂਟ:}
 ::msgcat::mcset pa subagents_none {(ਕੋਈ ਚੱਲਦਾ ਸਬਏਜੈਂਟ ਨਹੀਂ — /btw <prompt> ਇੱਕ ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ, ਜਾਂ ਮਾਡਲ delegate_task ਵਰਤਦਾ ਹੈ)}
 ::msgcat::mcset pa {suspend failed: %{e}} {ਸਸਪੈਂਡ ਵਿਫਲ: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset pa {switch the selected skill off} {ਚੁਣੀ ਸਕਿੱਲ ਬੰਦ ਕਰੋ}
 ::msgcat::mcset pa {switch the selected skill on} {ਚੁਣੀ ਸਕਿੱਲ ਚਾਲੂ ਕਰੋ}
 ::msgcat::mcset pa {switch to the %s tab} {%s ਟੈਬ 'ਤੇ ਜਾਓ}
+::msgcat::mcset pa {sync requested: %s} {ਸਿੰਕ ਮੰਗਿਆ: %s}
 ::msgcat::mcset pa {tab 1} {ਟੈਬ 1}
 ::msgcat::mcset pa {tab 2} {ਟੈਬ 2}
 ::msgcat::mcset pa {tab 3} {ਟੈਬ 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset pa tasks_none {(ਕੋਈ ਚੱਲ ਰਿਹਾ ਕਾਰਜ ਨਹੀਂ)}
 ::msgcat::mcset pa tasks_not_found {ਅਜਿਹਾ ਕੋਈ ਕਾਰਜ ਨਹੀਂ: %{id}}
 ::msgcat::mcset pa tasks_not_running {ਕਾਰਜ %{id} ਪਹਿਲਾਂ ਹੀ ਪੂਰਾ ਹੋ ਚੁੱਕਾ ਹੈ}
-::msgcat::mcset pa {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset pa {tcl-lsp: event stream unavailable: %s} {tcl-lsp: ਈਵੈਂਟ ਸਟ੍ਰੀਮ ਅਣਉਪਲਬਧ: %s}
-::msgcat::mcset pa {tcl-lsp: gateway would not start it: %s} {tcl-lsp: ਗੇਟਵੇ ਨੇ ਇਸ ਨੂੰ ਸ਼ੁਰੂ ਨਹੀਂ ਕੀਤਾ: %s}
-::msgcat::mcset pa {tcl-lsp: not started on the gateway — %s} {tcl-lsp: ਗੇਟਵੇ 'ਤੇ ਸ਼ੁਰੂ ਨਹੀਂ ਹੋਇਆ — %s}
 ::msgcat::mcset pa {that buffer is not split} {ਉਹ ਬਫ਼ਰ ਸਪਲਿਟ ਨਹੀਂ ਹੈ}
 ::msgcat::mcset pa {the %s plan} {%s ਯੋਜਨਾ}
 ::msgcat::mcset pa {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {API key ਖੇਤਰ ਵਿੱਚ ਇੱਕ ਵਾਤਾਵਰਨ ਵੈਰੀਏਬਲ ਦਾ ਨਾਮ ਆਉਂਦਾ ਹੈ (%{example} ਵਰਗਾ), key ਖੁਦ ਨਹੀਂ — key ਲੁਕੇ ਹੋਏ ਖੇਤਰ ਵਿੱਚ ਜਾਂਦਾ ਹੈ}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset pa {the gateway answered without a report} {ਗੇਟਵੇ ਨੇ ਬਿਨਾਂ ਰਿਪੋਰਟ ਜਵਾਬ ਦਿੱਤਾ}
 ::msgcat::mcset pa {the model/provider pair is incomplete — the gateway will not route until both are present} {ਮਾਡਲ/ਪ੍ਰੋਵਾਈਡਰ ਜੋੜੀ ਅਧੂਰੀ ਹੈ — ਜਦੋਂ ਤੱਕ ਦੋਵੇਂ ਮੌਜੂਦ ਨਾ ਹੋਣ, ਗੇਟਵੇ ਰੂਟ ਨਹੀਂ ਕਰੇਗਾ}
 ::msgcat::mcset pa {the options changed, so that is a fresh preview — press “Write it” again to write it} {ਵਿਕਲਪ ਬਦਲ ਗਏ, ਇਸ ਲਈ ਇਹ ਤਾਜ਼ਾ ਪ੍ਰੀਵਿਊ ਹੈ — ਲਿਖਣ ਲਈ “Write it” ਦੁਬਾਰਾ ਦਬਾਓ}
+::msgcat::mcset pa {the peer has not been sent this vault yet} {ਪੀਅਰ ਨੂੰ ਇਹ ਤਿਜੋਰੀ ਅਜੇ ਭੇਜੀ ਨਹੀਂ ਗਈ}
+::msgcat::mcset pa {the peer holds this vault} {ਪੀਅਰ ਕੋਲ ਇਹ ਤਿਜੋਰੀ ਹੈ}
 ::msgcat::mcset pa {the primary route is \[model\] provider/default — change it there, not here} {ਮੁੱਖ ਰੂਟ \[model\] provider/default ਹੈ — ਇਸ ਨੂੰ ਉੱਥੇ ਬਦਲੋ, ਇੱਥੇ ਨਹੀਂ}
 ::msgcat::mcset pa {the provider/model route this session sends to} {ਇਹ ਸੈਸ਼ਨ ਕਿਸ ਪ੍ਰੋਵਾਈਡਰ/ਮਾਡਲ ਰਾਹੀਂ ਭੇਜਦਾ ਹੈ}
 ::msgcat::mcset pa {the same, on the privileged path (owner only)} {ਉਹੀ, ਵਿਸ਼ੇਸ਼ ਅਧਿਕਾਰ ਵਾਲੇ ਰਾਹ ਤੋਂ (ਸਿਰਫ਼ owner)}
 ::msgcat::mcset pa {the selected entry (edit, then Save)} {ਚੁਣੀ ਐਂਟਰੀ (ਸੋਧੋ, ਫਿਰ Save)}
+::msgcat::mcset pa {the server stopped: %s} {ਸਰਵਰ ਬੰਦ ਹੋ ਗਿਆ: %s}
 ::msgcat::mcset pa {the synthwave splash} {synthwave ਸਵਾਗਤੀ ਸਕਰੀਨ}
 ::msgcat::mcset pa {the text after the name was NOT sent anywhere — type the value into the masked field} {ਨਾਂ ਤੋਂ ਬਾਅਦ ਵਾਲਾ ਟੈਕਸਟ ਕਿਤੇ ਨਹੀਂ ਭੇਜਿਆ ਗਿਆ — ਮੁੱਲ ਲੁਕੇ ਹੋਏ ਖਾਨੇ ਵਿੱਚ ਟਾਈਪ ਕਰੋ}
 ::msgcat::mcset pa {the transcript} ਟ੍ਰਾਂਸਕ੍ਰਿਪਟ
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset pa thinking… {ਸੋਚ ਰਿਹਾ…}
 ::msgcat::mcset pa {thinking… (%s)} {ਸੋਚ ਰਿਹਾ… (%s)}
 ::msgcat::mcset pa {this file's revisions, their diffs, and restore} {ਇਸ ਫ਼ਾਈਲ ਦੇ ਰੀਵਿਜ਼ਨ, ਉਨ੍ਹਾਂ ਦੇ ਫ਼ਰਕ, ਅਤੇ ਬਹਾਲੀ}
+::msgcat::mcset pa {this gateway} {ਇਹ ਗੇਟਵੇ}
 ::msgcat::mcset pa {this gateway has no Tcl interpreter} {ਇਸ ਗੇਟਵੇ ਕੋਲ Tcl ਇੰਟਰਪ੍ਰੀਟਰ ਨਹੀਂ ਹੈ}
 ::msgcat::mcset pa {this list} {ਇਹ ਸੂਚੀ}
+::msgcat::mcset pa {this node has no vault} {ਇਸ ਨੋਡ ਕੋਲ ਕੋਈ ਤਿਜੋਰੀ ਨਹੀਂ}
 ::msgcat::mcset pa {this route} {ਇਹ ਰੂਟ}
 ::msgcat::mcset pa {this session} {ਇਹ ਸੈਸ਼ਨ}
 ::msgcat::mcset pa {this session follows the default language again (%{def})} {ਇਹ ਸੈਸ਼ਨ ਮੁੜ ਮੂਲ ਭਾਸ਼ਾ ਮੰਨਦਾ ਹੈ (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset pa {transcript finalization failed: %s} {ਟਰਾਂਸਕ੍ਰਿਪਟ ਅੰਤਿਮ ਰੂਪ ਦੇਣ ਵਿੱਚ ਅਸਫਲ: %s}
 ::msgcat::mcset pa {transcript refetched} {ਟ੍ਰਾਂਸਕ੍ਰਿਪਟ ਮੁੜ ਲਿਆ ਗਈ}
 ::msgcat::mcset pa {transcript — arrows to read, %s for composer} {ਟ੍ਰਾਂਸਕ੍ਰਿਪਟ — ਪੜ੍ਹਨ ਲਈ ਤੀਰ, ਕੰਪੋਜ਼ਰ ਲਈ %s}
+::msgcat::mcset pa {translate text with the dedicated translation model, without an agent turn} {ਸਮਰਪਿਤ ਅਨੁਵਾਦ ਮਾਡਲ ਨਾਲ ਟੈਕਸਟ ਦਾ ਅਨੁਵਾਦ ਕਰੋ, ਬਿਨਾਂ ਏਜੰਟ ਟਰਨ ਦੇ}
+::msgcat::mcset pa {translation result} {ਅਨੁਵਾਦ ਨਤੀਜਾ}
 ::msgcat::mcset pa {trigger %1$s %2$sd} {ਟਰਿੱਗਰ %1$s %2$s ਕੀਤਾ ਗਿਆ}
 ::msgcat::mcset pa {trigger created} {ਟਰਿੱਗਰ ਬਣਾਇਆ ਗਿਆ}
 ::msgcat::mcset pa {trigger updated} {ਟਰਿੱਗਰ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset pa {usage: /steer <instruction>} {ਵਰਤੋਂ: /steer <instruction>}
 ::msgcat::mcset pa used {ਵਰਤਿਆ ਗਿਆ}
 ::msgcat::mcset pa user ਵਰਤੋਂਕਾਰ
+::msgcat::mcset pa {user copy} {user ਕਾਪੀ}
 ::msgcat::mcset pa {user identities, one per line} {ਵਰਤੋਂਕਾਰ ਪਛਾਣਾਂ, ਹਰ ਲਾਈਨ 'ਤੇ ਇੱਕ}
 ::msgcat::mcset pa {user name} {ਵਰਤੋਂਕਾਰ ਨਾਮ}
 ::msgcat::mcset pa {user profile} {ਵਰਤੋਂਕਾਰ ਪ੍ਰੋਫਾਈਲ}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset pa {value (TOML: 5, true, "text", ["a","b"])} {ਮੁੱਲ (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset pa veles veles
 ::msgcat::mcset pa {veles editor} {veles ਐਡੀਟਰ}
+::msgcat::mcset pa {veles fleet: node %{node} is failing — %{detail}} {veles ਫਲੀਟ: ਨੋਡ %{node} ਫੇਲ੍ਹ ਹੋ ਰਿਹਾ ਹੈ — %{detail}}
+::msgcat::mcset pa {veles fleet: node %{node} is stale — %{detail}} {veles ਫਲੀਟ: ਨੋਡ %{node} ਪੁਰਾਣਾ ਹੈ — %{detail}}
+::msgcat::mcset pa {veles fleet: node %{node} recovered (it was %{was})} {veles ਫਲੀਟ: ਨੋਡ %{node} ਠੀਕ ਹੋ ਗਿਆ (ਪਹਿਲਾਂ %{was} ਸੀ)}
 ::msgcat::mcset pa {veles · keyboard help (bindings: %s)} {veles · ਕੀਬੋਰਡ ਮਦਦ (ਬਾਈਂਡਿੰਗਾਂ: %s)}
 ::msgcat::mcset pa {veles · touch help} {veles · ਛੋਹ ਮਦਦ}
 ::msgcat::mcset pa {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset pa widgets ਵਿਜੇਟਸ
 ::msgcat::mcset pa {will be stored in the encrypted vault} {ਇਨਕ੍ਰਿਪਟ ਕੀਤੀ ਤਿਜੋਰੀ ਵਿੱਚ ਰੱਖਿਆ ਜਾਵੇਗਾ}
 ::msgcat::mcset pa {wire protocol} {ਵਾਇਰ ਪ੍ਰੋਟੋਕਾਲ}
+::msgcat::mcset pa {without force to} {ਬਿਨਾਂ ਫੋਰਸ ਦੇ, ਇਸ ’ਤੇ}
 ::msgcat::mcset pa {wizard language} {ਵਿਜ਼ਾਰਡ ਦੀ ਭਾਸ਼ਾ}
 ::msgcat::mcset pa {wizard language: %s} {ਵਿਜ਼ਾਰਡ ਦੀ ਭਾਸ਼ਾ: %s}
 ::msgcat::mcset pa {write failed: %s} {ਲਿਖਣਾ ਵਿਫਲ: %s}
 ::msgcat::mcset pa {write grants that still expire (the expiry is dropped — a config line cannot expire)} {ਉਹ ਗ੍ਰਾਂਟਾਂ ਲਿਖੋ ਜੋ ਅਜੇ ਵੀ ਖਤਮ ਹੁੰਦੀਆਂ ਹਨ (ਮਿਆਦ ਛੱਡ ਦਿੱਤੀ ਜਾਂਦੀ ਹੈ — config ਲਾਈਨ ਦੀ ਮਿਆਦ ਖਤਮ ਨਹੀਂ ਹੋ ਸਕਦੀ)}
 ::msgcat::mcset pa {write the entries back} {ਐਂਟਰੀਆਂ ਵਾਪਸ ਲਿਖੋ}
 ::msgcat::mcset pa {write the store's runtime rules into config.toml} {ਸਟੋਰ ਦੇ ਰਨਟਾਈਮ ਨਿਯਮ config.toml ਵਿੱਚ ਲਿਖੋ}
+::msgcat::mcset pa {write the whole extension from its purpose, as a reviewed preview} {ਇਸਦੇ ਮਕਸਦ ਤੋਂ ਪੂਰਾ ਐਕਸਟੈਂਸ਼ਨ ਲਿਖੋ, ਸਮੀਖਿਆ ਯੋਗ ਪੂਰਵਦਰਸ਼ਨ ਵਜੋਂ}
 ::msgcat::mcset pa {write these values into config.toml as the defaults} {ਇਨ੍ਹਾਂ ਮੁੱਲਾਂ ਨੂੰ ਡਿਫਾਲਟ ਵਜੋਂ config.toml ਵਿੱਚ ਲਿਖੋ}
 ::msgcat::mcset pa writing ਲਿਖਣਾ
 ::msgcat::mcset pa {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {ਪਹਿਲਾ [acl] ਮਾਲਕ ਲਿਖਣ ਨਾਲ ਇਹ ਗੇਟਵੇ ਕਿਊਰੇਟਿਡ ਮੋਡ ਵਿੱਚ ਚਲਾ ਜਾਂਦਾ ਹੈ: ਡਿਫ਼ੌਲਟ ਭੂਮਿਕਾ guest (fail-closed) ਬਣ ਜਾਂਦੀ ਹੈ ਅਤੇ ਅਡੈਪਟਰ ਦੀ ਇਜਾਜ਼ਤ ਸੂਚੀ ਭਰੋਸੇ ਦੀ ਸੀਮਾ ਨਹੀਂ ਰਹਿੰਦੀ}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset pa {▲ VELES — neon impressionism} {▲ VELES — ਨੀਓਨ ਇਮਪ੍ਰੈਸ਼ਨਿਜ਼ਮ}
 ::msgcat::mcset pa {▲ earlier} {▲ ਪਹਿਲਾਂ}
 ::msgcat::mcset pa {▼ later} {▼ ਬਾਅਦ ਵਿੱਚ}
+::msgcat::mcset pa {▾ Cluster registry} {▾ ਕਲੱਸਟਰ ਰਜਿਸਟਰੀ}
 ::msgcat::mcset pa {▾ new output — follow} {▾ ਨਵਾਂ ਆਉਟਪੁੱਟ — ਫਾਲੋ ਕਰੋ}
 ::msgcat::mcset pa {○ unattached} {○ ਅਟੈਚਡ ਨਹੀਂ}
 ::msgcat::mcset pa {● %1$s — %2$s} {● %1$s — %2$s}

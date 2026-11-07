@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {%1$s %2$s failed: %3$s} {%1$s %2$s neuspešno: %3$s}
 ::msgcat::mcset sr_latn {%1$s %2$s over ssh…} {%1$s %2$s preko ssh…}
 ::msgcat::mcset sr_latn {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset sr_latn {%1$s (%2$s waiting)} {%1$s (%2$s čeka)}
 ::msgcat::mcset sr_latn {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  razmišljanje %3$s}
 ::msgcat::mcset sr_latn {%1$s = %2$s here} {%1$s = %2$s ovde}
 ::msgcat::mcset sr_latn {%1$s NOT saved: %2$s} {%1$s NIJE sačuvano: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset sr_latn {%1$s every cron job on %2$s?} {%1$s svaki cron posao na %2$s?}
 ::msgcat::mcset sr_latn {%1$s failed: %2$s} {%1$s nije uspelo: %2$s}
 ::msgcat::mcset sr_latn {%1$s in / %2$s out / %3$s calls} {%1$s u / %2$s iz / %3$s poziva}
+::msgcat::mcset sr_latn {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s je čvor %2$s, a ne %3$s. Ispravite njegov id čvora u Izmeni….}
 ::msgcat::mcset sr_latn {%1$s is not a whole number} {%1$s nije ceo broj}
+::msgcat::mcset sr_latn {%1$s is reachable (%2$s ms).} {%1$s je dostupan (%2$s ms).}
 ::msgcat::mcset sr_latn {%1$s is set to something this box cannot edit (%2$s)} {%1$s je postavljeno na nešto što ovaj računar ne može da menja (%2$s)}
+::msgcat::mcset sr_latn {%1$s is unreachable: %2$s} {%1$s nije dostupan: %2$s}
 ::msgcat::mcset sr_latn {%1$s of %2$s characters} {%1$s od %2$s znakova}
 ::msgcat::mcset sr_latn {%1$s of %2$s sessions} {%1$s od %2$s sesija}
 ::msgcat::mcset sr_latn {%1$s of %2$s skills reach the prompt} {%1$s od %2$s veština stiže do prompta}
 ::msgcat::mcset sr_latn {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s na %2$s: %3$d ok, %4$d neuspešno}
+::msgcat::mcset sr_latn {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s ne prijavljuje identitet čvora klastera, pa se ne može potvrditi kao %2$s.}
+::msgcat::mcset sr_latn {%1$s sync failed: %2$s} {Sinhronizacija %1$s nije uspela: %2$s}
+::msgcat::mcset sr_latn {%1$s sync with %2$s (%3$s)} {Sinhronizacija %1$s sa %2$s (%3$s)}
+::msgcat::mcset sr_latn {%1$s sync: %2$s} {Sinhronizacija %1$s: %2$s}
 ::msgcat::mcset sr_latn {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset sr_latn {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter za skok, Esc za zatvaranje}
 ::msgcat::mcset sr_latn {%1$s — revision r%2$s} {%1$s — revizija r%2$s}
 ::msgcat::mcset sr_latn {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset sr_latn {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset sr_latn {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset sr_latn {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset sr_latn {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: poslednjih %2$s od %3$s linija koje njegov gateway drži u memoriji, tajne su na tom čvoru uklonjene.}
 ::msgcat::mcset sr_latn {%d MCP server(s) configured} {%d MCP server(a) konfigurisano}
 ::msgcat::mcset sr_latn {%d entries} {%d stavki}
+::msgcat::mcset sr_latn {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {%d datoteka ekstenzije biće zapisano tačno kako je pregledano. Ako se neka od njih promenila od pregleda, ništa se ne zapisuje. Nema commit-a, push-a ni PR-a.}
 ::msgcat::mcset sr_latn {%d handler(s) registered} {%d handler(a) registrovanih}
 ::msgcat::mcset sr_latn {%d identities · %d users} {%d identiteta · %d korisnika}
 ::msgcat::mcset sr_latn {%d models — pick one from the list or type a name.} {%d modela — izaberi jedan sa liste ili ukucaj ime.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset sr_latn {%d shown} {%d prikazano}
 ::msgcat::mcset sr_latn {%s %s%%} {%s %s%%}
 ::msgcat::mcset sr_latn {%s (%s)} {%s (%s)}
+::msgcat::mcset sr_latn {%s (referral)} {%s (preporuka)}
+::msgcat::mcset sr_latn {%s (stale)} {%s (zastareo)}
 ::msgcat::mcset sr_latn {%s (this session)} {%s (ova sesija)}
 ::msgcat::mcset sr_latn {%s GB free of %s GB} {%s GB slobodno od %s GB}
 ::msgcat::mcset sr_latn {%s already exists — open it from the list} {%s već postoji — otvorite je sa liste}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {%s comes from config.toml [acl] — edit there} {%s dolazi iz config.toml [acl] — menjaj tamo}
 ::msgcat::mcset sr_latn {%s config change(s) wait for you — /configsync} {izmene konfiguracije koje čekaju vas: %s — /configsync}
 ::msgcat::mcset sr_latn {%s did not become healthy within 30s} {%s nije postao ispravan u roku od 30s}
+::msgcat::mcset sr_latn {%s done} {%s završeno}
 ::msgcat::mcset sr_latn {%s failed: %s} {%s nije uspelo: %s}
 ::msgcat::mcset sr_latn {%s is already split} {%s je već podeljen}
 ::msgcat::mcset sr_latn {%s is the language in use — pick another one to swap with} {%s je jezik u upotrebi — izaberi drugi za zamenu}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset sr_latn {%s opens the command palette in %s.} {%s otvara paletu komandi u %s.}
 ::msgcat::mcset sr_latn {%s session(s)} {%s sesija(a)}
 ::msgcat::mcset sr_latn {%s skill(s):} {%s veština:}
+::msgcat::mcset sr_latn {%s standing grants} {%s stalnih dozvola}
 ::msgcat::mcset sr_latn {%s takes no completable arguments} {%s nema argumente za dopunjavanje}
 ::msgcat::mcset sr_latn {%s takes on or off} {%s prima on ili off}
 ::msgcat::mcset sr_latn {%s —} {%s —}
+::msgcat::mcset sr_latn {%s — changes data, asks to confirm} {%s — menja podatke, traži potvrdu}
 ::msgcat::mcset sr_latn {%s — deleted; History… can restore it} {%s — obrisana; Istorija… može da je vrati}
 ::msgcat::mcset sr_latn {%s — new: type, then Save} {%s — nova: kucajte, pa Sačuvaj}
 ::msgcat::mcset sr_latn {%s — not attached; press Attach in the Instances tab} {%s — nije prikačen; pritisni Prikači u kartici Instance}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset sr_latn {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} je uključen bez odeljka [acl]: dok %{var} u .env ne navede ko sme da piše botu, svako ko do njega stigne smatra se vlasnikom — sa svim alatima}
 ::msgcat::mcset sr_latn (%{route}) (%{route})
 ::msgcat::mcset sr_latn {(CLI redraws automatically)} {(CLI se sam iscrtava)}
+::msgcat::mcset sr_latn {(binary; not publishable)} {(binarno; ne može se objaviti)}
 ::msgcat::mcset sr_latn {(clipboard empty or no clipboard tool)} {(klipbord prazan ili nema alata za klipbord)}
 ::msgcat::mcset sr_latn (deleted) (obrisano)
 ::msgcat::mcset sr_latn (empty) (prazno)
 ::msgcat::mcset sr_latn {(no sessions)} {(nema sesija)}
+::msgcat::mcset sr_latn {(not a memsync peer of this gateway: config is not synced with it)} {(nije memsync partner ovog gateway-a: konfiguracija se ne sinhronizuje s njim)}
 ::msgcat::mcset sr_latn {(nothing to reload — read from disk per use)} {(nema šta da se ponovo učita — čita se sa diska pri svakoj upotrebi)}
 ::msgcat::mcset sr_latn {(retrying last prompt…)} {(ponavljam poslednji prompt…)}
 ::msgcat::mcset sr_latn {(route did not resolve: %{e})} {(ruta se nije razrešila: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset sr_latn {/url needs a number from /urls} {/url traži broj iz /urls}
 ::msgcat::mcset sr_latn {/whois needs a nick} {/whois traži nadimak}
 ::msgcat::mcset sr_latn {; could not save the cleared return view: %s} {; nije moguće sačuvati obrisan povratni pogled: %s}
+::msgcat::mcset sr_latn {; shadows bundled} {; zasenjuje ugrađeni}
+::msgcat::mcset sr_latn {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Ponuda konfiguracije može da promeni podešavanja, a ponuda trezora spaja tajne; izmene u bezbednosnom odeljku i dalje čekaju vlasnika.}
 ::msgcat::mcset sr_latn {A failing plugin may drop hooks mid-turn.} {Neispravan plugin može da ispusti hook-ove usred okreta.}
 ::msgcat::mcset sr_latn {A local server: no key is needed unless you set one up.} {Lokalni server: ključ nije potreban osim ako ga sam ne podesiš.}
+::msgcat::mcset sr_latn {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Potpisano izdanje se priprema tek nakon preliminarne provere. Ponovno pokretanje/provera, nastavak i vraćanje unazad su zasebne radnje. Ispravan proces mora da prijavi tačno pregledanu reviziju izvora.}
 ::msgcat::mcset sr_latn {A value is stored for %s — leave this empty to keep it.} {Za %s je sačuvana vrednost — ostavite ovo prazno da je zadržite.}
 ::msgcat::mcset sr_latn {ACL: ban mask} {ACL: zabrani masku}
 ::msgcat::mcset sr_latn {ACL: grant admin} {ACL: dodeli admin}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset sr_latn {ACL: grant user} {ACL: dodeli user}
 ::msgcat::mcset sr_latn {ACL: revoke} {ACL: oduzmi}
 ::msgcat::mcset sr_latn {ACME account email} {ACME email naloga}
+::msgcat::mcset sr_latn {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI pomoć radi na četiri nivoa: postavite pitanje o dizajnu (datoteka nije potrebna), izmenite ovu datoteku, izmenite više datoteka ove ekstenzije ili objasnite trenutnu dijagnostiku. Nova ekstenzija može i da generiše celu ekstenziju iz njenog opisa. Svaki zahtev se šalje bez alata i odbija se ako sadrži registrovanu tajnu ili vrednost koja liči na akreditive; izmene se prikazuju kao diff-ovi i zapisuju se samo kada ih primenite. Prvo zatražite dizajn ekstenzije; izmenu jezgra tražite tek kada utvrdite koji API nedostaje.}
+::msgcat::mcset sr_latn {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI pomoć menja samo korisničke ekstenzije, a ova datoteka nije deo nijedne. Većina izmena staje u ekstenziju (hook, alat, prepisivanje servisa ili drajver provajdera) koja preživljava nadogradnje; zakrpa jezgra je za ono što API za ekstenzije ne može da izrazi. Da li da za ovu izmenu napravim novu ekstenziju? Njene datoteke se pregledaju pre nego što se bilo šta upiše.}
+::msgcat::mcset sr_latn {AI assist…} {AI pomoć…}
+::msgcat::mcset sr_latn {AI extension assistance} {AI pomoć za ekstenzije}
 ::msgcat::mcset sr_latn {API calls} {API pozivi}
+::msgcat::mcset sr_latn {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {API krediti iz Anthropic preporuke dodeljuju se samo ako kupite Max ili Ultra. Veles ne podržava korišćenje te pretplate kao prijave ili API autentifikacije.}
 ::msgcat::mcset sr_latn {API key (hidden)} {API ključ (skriven)}
 ::msgcat::mcset sr_latn {API key env var name} {Ime env promenljive za API ključ}
+::msgcat::mcset sr_latn {API reference} {API referenca}
+::msgcat::mcset sr_latn {Abandon untouched operation} {Napusti nedirnutu operaciju}
 ::msgcat::mcset sr_latn {Access control} {Kontrola pristupa}
 ::msgcat::mcset sr_latn {Access control (ACL)} {Kontrola pristupa (ACL)}
 ::msgcat::mcset sr_latn Add Dodaj
 ::msgcat::mcset sr_latn {Add MCP server} {Dodaj MCP server}
 ::msgcat::mcset sr_latn {Add instance} {Dodaj instancu}
 ::msgcat::mcset sr_latn {Add server…} {Dodaj server…}
+::msgcat::mcset sr_latn {Adds selected extension sources. Review the branch diff and checks before merging.} {Dodaje izvore izabranih ekstenzija. Pregledajte diff grane i provere pre spajanja.}
 ::msgcat::mcset sr_latn Add… Dodaj…
 ::msgcat::mcset sr_latn {Agent & engine} {Agent i pogon}
 ::msgcat::mcset sr_latn {Alias %s} {Alias %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset sr_latn {Applies to} {Primenjuje se na}
 ::msgcat::mcset sr_latn Apply Primeni
 ::msgcat::mcset sr_latn {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Promena se primenjuje samo na TRENUTNU sesiju. Kopiraj TOML ti daje blokove za lepljenje. Sačuvaj globalno ih ušiva u config.toml — diraju se samo failover sekcije, svaka druga linija i komentar ostaju netaknuti, a stari fajl se čuva kao config.toml.bak.}
+::msgcat::mcset sr_latn {Apply proposal…} {Primeni predlog…}
+::msgcat::mcset sr_latn {Apply received} {Primeni primljeno}
+::msgcat::mcset sr_latn {Apply this AI proposal?} {Primeni ovaj AI predlog?}
+::msgcat::mcset sr_latn {Apply this change set?} {Primeniti ovaj set izmena?}
 ::msgcat::mcset sr_latn {Apply to session} {Primeni na sesiju}
+::msgcat::mcset sr_latn {Apply what this node received:} {Primeni ono što je ovaj čvor primio:}
 ::msgcat::mcset sr_latn {Approval needed} {Potrebno odobrenje}
 ::msgcat::mcset sr_latn Apps Aplikacije
 ::msgcat::mcset sr_latn Archive Arhiva
 ::msgcat::mcset sr_latn {Archive SHA-256} {SHA-256 arhive}
+::msgcat::mcset sr_latn Ask Pitaj
+::msgcat::mcset sr_latn {Ask a design question} {Pitaj o dizajnu}
+::msgcat::mcset sr_latn {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {Pitaj kako da se napravi ekstenzija: koja granica, koji jezik, koji API. Izvorni kod se ne šalje i ništa ne može da se zapiše.}
 ::msgcat::mcset sr_latn {Ask the agent to change it} {Zamoli agenta da je promeni}
+::msgcat::mcset sr_latn {Asking %s…} {Pitam %s…}
 ::msgcat::mcset sr_latn {Asking the provider for its models…} {Tražim modele od provajdera…}
 ::msgcat::mcset sr_latn Attach Priloži
 ::msgcat::mcset sr_latn {Attach to the next message} {Priloži uz sledeću poruku}
+::msgcat::mcset sr_latn {Author guide} {Vodič za autore}
+::msgcat::mcset sr_latn {Automatically discovered from the attached gateway's cluster registry.} {Automatski otkriveno iz registra klastera priključenog gateway-a.}
 ::msgcat::mcset sr_latn Back Nazad
 ::msgcat::mcset sr_latn {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {Nazad zatvara ono što je na vrhu: meni, listu sesija, prozor. Kad ništa nije otvoreno, veles odlazi u pozadinu i nastavlja da radi.}
 ::msgcat::mcset sr_latn {Base URL} {Base URL}
+::msgcat::mcset sr_latn {Base branch} {Osnovna grana}
 ::msgcat::mcset sr_latn {Bot token (hidden)} {Token bota (skriven)}
+::msgcat::mcset sr_latn Branch Grana
+::msgcat::mcset sr_latn {Branch and commit prepared; nothing has been pushed} {Grana i commit su pripremljeni; ništa nije gurnuto}
+::msgcat::mcset sr_latn {Branch pushed and verified on origin} {Grana je gurnuta i proverena na origin}
 ::msgcat::mcset sr_latn {Browse sessions} {Pregledaj sesije}
+::msgcat::mcset sr_latn {Build manifest + preflight} {Manifest izgradnje + preliminarna provera}
+::msgcat::mcset sr_latn {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Izgradnja: veles %1$s, revizija %2$s (%3$s %4$s)}
 ::msgcat::mcset sr_latn {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e krajevi reda · C-b/C-f znak · M-b/M-f reč · C-k brisanje do kraja reda · C-y yank · M-w kopiranje · C-w brisanje regiona · C-space postavi marku · C-/ opoziv}
 ::msgcat::mcset sr_latn {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g prekida sve · C-j novi red · M-p/M-n istorija · Tab dopuna}
+::msgcat::mcset sr_latn {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s jezgara, opterećenje %2$s / %3$s / %4$s (%5$s%% jezgara)}
 ::msgcat::mcset sr_latn Cancel Otkaži
+::msgcat::mcset sr_latn {Cancel task} {Otkaži zadatak}
+::msgcat::mcset sr_latn {Cancel task %1$s? This cannot be undone.} {Otkaži zadatak %1$s? Ovo se ne može poništiti.}
+::msgcat::mcset sr_latn {Cannot verify that %1$s is node %2$s: %3$s} {Ne mogu da potvrdim da je %1$s čvor %2$s: %3$s}
 ::msgcat::mcset sr_latn Capabilities Mogućnosti
 ::msgcat::mcset sr_latn {Change my app “%s” (%s): } {Promeni moju aplikaciju „%s” (%s): }
+::msgcat::mcset sr_latn {Change this extension's files} {Izmeni datoteke ove ekstenzije}
+::msgcat::mcset sr_latn {Change this file} {Izmeni ovu datoteku}
 ::msgcat::mcset sr_latn Change… Promeni…
 ::msgcat::mcset sr_latn {Channels (e.g. #veles #dev)} {Kanali (npr. #veles #dev)}
 ::msgcat::mcset sr_latn Chat Ćaskanje
 ::msgcat::mcset sr_latn {Chat — not attached; press Attach in the Instances tab} {Ćaskanje — nije prikačeno; pritisni Prikači u kartici Instance}
 ::msgcat::mcset sr_latn {Check (lsp)} {Proveri (lsp)}
+::msgcat::mcset sr_latn {Check again} {Proveri ponovo}
+::msgcat::mcset sr_latn {Check files} {Proveri datoteke}
 ::msgcat::mcset sr_latn Checkpoints {Kontrolne tačke}
 ::msgcat::mcset sr_latn {Checkpoints (undo)} {Kontrolne tačke (opoziv)}
+::msgcat::mcset sr_latn {Checks and next steps} {Provere i sledeći koraci}
+::msgcat::mcset sr_latn {Checks run} {Pokrenute provere}
 ::msgcat::mcset sr_latn {Choose BUNDLE-INFO.json in the managed install-sources directory} {Izaberite BUNDLE-INFO.json u upravljanom direktorijumu izvora instalacije}
 ::msgcat::mcset sr_latn {Choose a failover script} {Izaberite failover skriptu}
 ::msgcat::mcset sr_latn {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {Izaberite modul ili procesni plugin za pregled. Otkrivanje samo čita plugin.toml; izbor komponente traži njen prijavljeni manifest i opcije. Otvaranjem ovog koraka se ništa ne instalira.}
+::msgcat::mcset sr_latn {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {Izaberite ime, namenu i jezik, zatim pregledajte tačne datoteke. Ništa nije zapisano.}
 ::msgcat::mcset sr_latn {Choose a user unit or a system service for the server profile. Neither starts a service.} {Odaberite korisničku jedinicu ili sistemsku uslugu za server profil. Nijedna ne pokreće uslugu.}
 ::msgcat::mcset sr_latn {Choose core bundle…} {Izaberi core bundle…}
 ::msgcat::mcset sr_latn {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {Odaberite oblik instalacije. Lokalni profili koriste pregledani instalater. Sistemski i kontejnerski profili pripremaju potpisan zahtev za eksplicitnu CLI predaju. NixOS samo generiše isečak modula.}
+::msgcat::mcset sr_latn {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {Izaberite najužu granicu: Tool dodaje mogućnost koju model može da pozove; Hook posmatra ili menja događaj životnog ciklusa; Service ili tačka prepisivanja obavija imenovanu odluku; Provider drajver dodaje način komunikacije sa provajderom; izmena jezgra je opravdana samo kada objavljeni API za ekstenzije ne može da izrazi promenu.}
 ::msgcat::mcset sr_latn {Choose typed container-host options JSON} {Izaberi JSON tipizovanih opcija container hosta}
 ::msgcat::mcset sr_latn {Choose typed container-host options…} {Izaberi tipizovane opcije container hosta…}
 ::msgcat::mcset sr_latn Clear Očisti
 ::msgcat::mcset sr_latn {Clear composer} {Očisti kompozitor}
 ::msgcat::mcset sr_latn {Clear override} {Očisti nadjačavanje}
 ::msgcat::mcset sr_latn {Click the picture where you would click on the page.} {Klikni na sliku tamo gde bi kliknuo na stranici.}
+::msgcat::mcset sr_latn {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {Klonirajte %1$s, napravite %2$s i kopirajte samo pregledane datoteke iz %3$s u %4$s/<extension>/. Datoteke se proveravaju i komituju. Push ni pull request se sada ne dešavaju.}
 ::msgcat::mcset sr_latn Close Zatvori
 ::msgcat::mcset sr_latn {Close (Esc)} {Zatvori (Esc)}
 ::msgcat::mcset sr_latn {Close the setup wizard? Nothing has been written yet.} {Zatvori čarobnjaka za podešavanje? Ništa još nije upisano.}
 ::msgcat::mcset sr_latn {Code actions} {Code akcije}
+::msgcat::mcset sr_latn Commit Commit
+::msgcat::mcset sr_latn {Commit ready for review. Push is a separate action.} {Commit je spreman za pregled. Push je zasebna radnja.}
 ::msgcat::mcset sr_latn {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Popunite svako PDS polje, uključujući zaključani digest slike, pre nego što pregledate handoff.}
 ::msgcat::mcset sr_latn {Complete every typed container-host field before previewing this profile.} {Popunite svako uneto polje kontejner-hosta pre pregledanja ovog profila.}
 ::msgcat::mcset sr_latn {Component configuration returned an invalid result; nothing was accepted as applied.} {Podešavanje komponente je vratilo nevažeći rezultat; ništa nije prihvaćeno kao primenjeno.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset sr_latn {Component options changed. Review the new preview before applying.} {Opcije komponente su se promenile. Pregledajte novi pregled pre primene.}
 ::msgcat::mcset sr_latn Components Komponente
 ::msgcat::mcset sr_latn {Composer preview} {Pregled kompozitora}
+::msgcat::mcset sr_latn Config Konfiguracija
+::msgcat::mcset sr_latn {Config differs: %s} {Konfiguracija se razlikuje: %s}
+::msgcat::mcset sr_latn {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Dnevnik konfiguracije: taj čvor ima izmene %1$s do %3$s, ovaj gateway do %2$s}
+::msgcat::mcset sr_latn {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Dnevnik konfiguracije: ovaj gateway ima izmene %1$s do %2$s, taj čvor do %3$s}
+::msgcat::mcset sr_latn {Config only on that node: %s} {Konfiguracija samo na tom čvoru: %s}
+::msgcat::mcset sr_latn {Config only on this gateway: %s} {Konfiguracija samo na ovom gateway-u: %s}
 ::msgcat::mcset sr_latn Configure Podesi
 ::msgcat::mcset sr_latn {Configure %s} {Podesi %s}
+::msgcat::mcset sr_latn {Configure translator} {Podesi prevodioca}
+::msgcat::mcset sr_latn {Configured desktop gateway} {Podešen desktop gateway}
 ::msgcat::mcset sr_latn Configure… Podesi…
 ::msgcat::mcset sr_latn {Configuring %s} {Podešavanje %s}
 ::msgcat::mcset sr_latn {Confirm or discard the current signed review before starting another download.} {Potvrdite ili odbacite trenutni potpisani pregled pre nego što započnete novo preuzimanje.}
 ::msgcat::mcset sr_latn {Container host: typed host plan and privileged CLI handoff} {Container host: tipizovan plan hosta i CLI predaja koja zahteva administratorska prava}
 ::msgcat::mcset sr_latn {Context window} {Kontekstni prozor}
+::msgcat::mcset sr_latn {Continue to next target} {Nastavi na sledeću metu}
+::msgcat::mcset sr_latn {Contribute extensions: %s} {Doprinos ekstenzijama: %s}
+::msgcat::mcset sr_latn Contribute… Doprinesi…
+::msgcat::mcset sr_latn {Contribution branch} {Grana doprinosa}
+::msgcat::mcset sr_latn {Contribution destination} {Odredište doprinosa}
 ::msgcat::mcset sr_latn Copy Kopiraj
 ::msgcat::mcset sr_latn {Copy TOML} {Kopiraj TOML}
+::msgcat::mcset sr_latn {Copy a bundled extension into your user plugin directory before preparing a contribution.} {Kopirajte ugrađenu ekstenziju u svoj korisnički direktorijum plugina pre pripreme doprinosa.}
 ::msgcat::mcset sr_latn {Copy message} {Kopiraj poruku}
 ::msgcat::mcset sr_latn {Copy name} {Kopiraj naziv}
 ::msgcat::mcset sr_latn {Copy nick} {Kopiraj nadimak}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset sr_latn {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {Nije moguće otkriti komponente. Koraci za podešavanje provajdera i dalje rade; ako je potrebno, instalirajte preko CLI na ciljnoj mašini.}
 ::msgcat::mcset sr_latn {Could not join: %s} {Pridruživanje nije uspelo: %s}
 ::msgcat::mcset sr_latn {Could not list the models (%s) — type the model's name.} {Ne mogu da izlistam modele (%s) — ukucaj ime modela.}
+::msgcat::mcset sr_latn {Create a PR in} {Napravi PR u}
+::msgcat::mcset sr_latn {Create extension} {Napravi ekstenziju}
 ::msgcat::mcset sr_latn {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Napravite bota preko @BotFather, pa nalepite njegov token ispod: ide u šifrovani trezor, nikad u config.toml.}
+::msgcat::mcset sr_latn {Create this extension?} {Napraviti ovu ekstenziju?}
+::msgcat::mcset sr_latn {Create this generated extension?} {Kreirati ovu generisanu ekstenziju?}
+::msgcat::mcset sr_latn {Created and reloaded. Review and test the extension before publishing.} {Napravljeno i ponovo učitano. Pregledajte i isprobajte ekstenziju pre objavljivanja.}
+::msgcat::mcset sr_latn {Created, but reload failed} {Napravljeno, ali ponovno učitavanje nije uspelo}
 ::msgcat::mcset sr_latn {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Pravi %s/<name>/SKILL.md od šablona i otvara ga. Opis u zaglavlju je jedini deo koji stiže do indeksa prompta, pa neka kaže KADA koristiti veštinu.}
 ::msgcat::mcset sr_latn {Cron history} {Istorija cron-a}
 ::msgcat::mcset sr_latn {Cron jobs} {Cron poslovi}
 ::msgcat::mcset sr_latn {Curated — write the first owner entry} {Curated — upiši prvi owner unos}
 ::msgcat::mcset sr_latn Cut Iseci
 ::msgcat::mcset sr_latn Decline Odbij
+::msgcat::mcset sr_latn {Dedicated translator} {Namenski prevodilac}
 ::msgcat::mcset sr_latn {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset sr_latn Default Podrazumevano
 ::msgcat::mcset sr_latn {Default model} {Podrazumevani model}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset sr_latn {Delete user} {Obriši korisnika}
 ::msgcat::mcset sr_latn {Delete workspace?} {Obriši radni prostor?}
 ::msgcat::mcset sr_latn Deop {Oduzmi op}
+::msgcat::mcset sr_latn {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Opišite izmenu. AI može da izmeni ili doda više datoteka ove ekstenzije. Svaka datoteka se prikazuje kao diff i ništa se ne zapisuje pre nego što potvrdite.}
+::msgcat::mcset sr_latn {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Opišite izmenu. AI može da predloži zamenu, ali ne može da je zapiše pre nego što pregledate i potvrdite diff.}
+::msgcat::mcset sr_latn {Describe the requested extension change first.} {Prvo opišite traženu izmenu ekstenzije.}
+::msgcat::mcset sr_latn Description Opis
 ::msgcat::mcset sr_latn {Desktop: local core, modules and process plugins} {Desktop: lokalno jezgro, moduli i pluginovi procesa}
 ::msgcat::mcset sr_latn Detach Otkači
+::msgcat::mcset sr_latn {Detach foreground} {Otkači komandu u prvom planu}
 ::msgcat::mcset sr_latn Dev Dev
 ::msgcat::mcset sr_latn {Dev pane (REPL + LSP)} {Dev panel (REPL + LSP)}
 ::msgcat::mcset sr_latn {Dev: arm / disarm live patching} {Dev: aktiviraj / deaktiviraj živo zakrpljivanje}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset sr_latn Devoice {Oduzmi voice}
 ::msgcat::mcset sr_latn {Discard review} {Odbaci pregled}
 ::msgcat::mcset sr_latn {Discard your changes to %s?} {Odbaciti vaše izmene u %s?}
+::msgcat::mcset sr_latn {Disk: %1$s free of %2$s at %3$s} {Disk: %1$s slobodno od %2$s na %3$s}
 ::msgcat::mcset sr_latn Done Gotovo
 ::msgcat::mcset sr_latn {Done — config written} {Gotovo — config upisan}
 ::msgcat::mcset sr_latn {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Preuzmite i verifikujte manifest izdanja i host arhivu pre instalacije. Svih pet polja identiteta je obavezno. Gateway čuva privatnu pripremljenu arhivu; ovaj pregled ništa ne instalira.}
 ::msgcat::mcset sr_latn {Downloading and verifying the signed release…} {Preuzimanje i verifikacija potpisanog izdanja…}
+::msgcat::mcset sr_latn {Draft this as an extension?} {Nacrtati ovo kao ekstenziju?}
 ::msgcat::mcset sr_latn {Drag to scroll; a quick swipe goes further.} {Prevucite da pomerite; brzo prevlačenje ide dalje.}
+::msgcat::mcset sr_latn {Drift check failed: %s} {Provera odstupanja nije uspela: %s}
+::msgcat::mcset sr_latn {Drift check: %s node(s) differ from this gateway.} {Provera odstupanja: %s čvor(ova) se razlikuje od ovog gateway-a.}
+::msgcat::mcset sr_latn {Drift: built from revision %1$s, this gateway from %2$s} {Odstupanje: napravljen iz revizije %1$s, ovaj gateway iz %2$s}
+::msgcat::mcset sr_latn {Drift: none — same version, revision and replicated config} {Odstupanje: nema — ista verzija, revizija i replicirana konfiguracija}
+::msgcat::mcset sr_latn {Drift: not compared — %s} {Odstupanje: nije upoređivano — %s}
+::msgcat::mcset sr_latn {Drift: runs version %1$s, this gateway %2$s} {Odstupanje: radi na verziji %1$s, ovaj gateway %2$s}
+::msgcat::mcset sr_latn Drift… Odstupanje…
 ::msgcat::mcset sr_latn {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset sr_latn {ESC %s is not bound} {ESC %s nije vezan}
 ::msgcat::mcset sr_latn {ESC- … (Meta prefix)} {ESC- … (Meta prefiks)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset sr_latn Edit… Uredi…
 ::msgcat::mcset sr_latn {Enable / disable} {Omogući / onemogući}
 ::msgcat::mcset sr_latn {Enable the Telegram adapter} {Omogući Telegram adapter}
+::msgcat::mcset sr_latn Endpoint {Krajnja tačka}
 ::msgcat::mcset sr_latn Engine Pogon
 ::msgcat::mcset sr_latn Eval→gw Eval→gw
 ::msgcat::mcset sr_latn {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Svaka izmena u %s se commit-uje. Vraćanje vraća ceo direktorijum na taj commit — prvo se napravi snimak trenutnog stanja, tako da nije jednosmerna ulica.}
 ::msgcat::mcset sr_latn {Every plugin file goes back to that commit. The current state is committed first.} {Svaki plugin fajl se vraća na taj commit. Trenutno stanje se prvo commit-uje.}
+::msgcat::mcset sr_latn {Exact commit} {Tačan komit}
+::msgcat::mcset sr_latn {Exact permission rule} {Tačno pravilo dozvole}
+::msgcat::mcset sr_latn {Example: a hook} {Primer: hook}
+::msgcat::mcset sr_latn {Example: a provider driver} {Primer: drajver provajdera}
+::msgcat::mcset sr_latn {Example: a service override wrapping core} {Primer: prepisivanje servisa koje obavija jezgro}
+::msgcat::mcset sr_latn {Example: a tool} {Primer: alat}
 ::msgcat::mcset sr_latn {Existing shared container network} {Postojeća deljena mreža kontejnera}
+::msgcat::mcset sr_latn Explain Objasni
+::msgcat::mcset sr_latn {Explain the diagnostics} {Objasni dijagnostiku}
 ::msgcat::mcset sr_latn Export… Izvezi…
+::msgcat::mcset sr_latn {Extension API} {API ekstenzija}
+::msgcat::mcset sr_latn {Extension development} {Razvoj ekstenzija}
+::msgcat::mcset sr_latn {Extension guide} {Vodič za ekstenzije}
+::msgcat::mcset sr_latn {Extension source} {Izvor ekstenzije}
 ::msgcat::mcset sr_latn {Failover blueprint} {Failover nacrt}
 ::msgcat::mcset sr_latn {Failover blueprint (edit the route chain)} {Failover nacrt (uredi lanac ruta)}
 ::msgcat::mcset sr_latn {Failover hook script (what `script` mode runs)} {Failover hook skripta (šta `script` režim pokreće)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset sr_latn {Find in transcript} {Pretraga u transkriptu}
 ::msgcat::mcset sr_latn {Find in transcript…} {Pretraga u transkriptu…}
 ::msgcat::mcset sr_latn {Find references} {Nađi reference}
+::msgcat::mcset sr_latn {Finish rollback} {Završi vraćanje unazad}
 ::msgcat::mcset sr_latn {First run: no config.toml yet.} {Prvo pokretanje: još nema config.toml.}
+::msgcat::mcset sr_latn {Fix the failed syntax checks before preparing a contribution.} {Ispravite neuspele provere sintakse pre pripreme doprinosa.}
+::msgcat::mcset sr_latn {Fleet deployment} {Postavljanje flote}
+::msgcat::mcset sr_latn {Fleet deployment runs from a desktop computer; it is not available on Android.} {Postavljanje flote radi sa desktop računara; nije dostupno na Androidu.}
+::msgcat::mcset sr_latn {Fleet deploy…} {Postavljanje flote…}
+::msgcat::mcset sr_latn {Fleet drift} {Odstupanje flote}
 ::msgcat::mcset sr_latn {Fold / unfold} {Sklopi / rasklopi}
 ::msgcat::mcset sr_latn {Forget declaration} {Zaboravi deklaraciju}
+::msgcat::mcset sr_latn {Forget node %s?} {Zaboraviti čvor %s?}
+::msgcat::mcset sr_latn {Forget node…} {Zaboravi čvor…}
+::msgcat::mcset sr_latn {Forgetting %1$s failed: %2$s} {Zaboravljanje %1$s nije uspelo: %2$s}
+::msgcat::mcset sr_latn {Forgot node %s.} {Čvor %s je zaboravljen.}
+::msgcat::mcset sr_latn {Forgotten fleet-wide (refused until they heartbeat again): %s} {Zaboravljeno na nivou cele flote (odbijeno dok ponovo ne pošalju otkucaj): %s}
 ::msgcat::mcset sr_latn Fork Razgranaj
 ::msgcat::mcset sr_latn {Free space} {Slobodan prostor}
 ::msgcat::mcset sr_latn {Full source commit SHA} {Pun SHA source komita}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset sr_latn {Gateway image sha256 digest} {sha256 digest slike gateway-a}
 ::msgcat::mcset sr_latn {Gateway quadlet name} {Ime gateway quadlet-a}
 ::msgcat::mcset sr_latn {Gateway status} {Status Gateway-a}
+::msgcat::mcset sr_latn {Generate with AI…} {Generiši uz AI…}
+::msgcat::mcset sr_latn {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {Generisao %s - ništa nije zapisano. Pregledajte svaku datoteku, pa Kreiraj ekstenziju upisuje tačno ove.}
 ::msgcat::mcset sr_latn {Get a key at %s} {Dobij ključ na %s}
 ::msgcat::mcset sr_latn {GitHub release URL} {URL GitHub izdanja}
+::msgcat::mcset sr_latn {Give the extension a name and describe what it should do (the purpose), then generate.} {Dajte ekstenziji ime i opišite šta treba da radi (svrhu), pa generišite.}
 ::msgcat::mcset sr_latn {Give up} Odustani
 ::msgcat::mcset sr_latn Go Idi
 ::msgcat::mcset sr_latn {Go to definition} {Idi na definiciju}
+::msgcat::mcset sr_latn {Gossip failed: %s} {Gosip nije uspeo: %s}
+::msgcat::mcset sr_latn {Gossip now} {Gosip sada}
+::msgcat::mcset sr_latn {Gossip with %1$s: %2$s} {Gosip sa %1$s: %2$s}
+::msgcat::mcset sr_latn {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {Gosip: odgovorilo je %1$s od %2$s partner(a) (%3$s).}
 ::msgcat::mcset sr_latn Grant Dodeli
 ::msgcat::mcset sr_latn {Grant access} {Dodeli pristup}
+::msgcat::mcset sr_latn {Granted at} Dodeljeno
 ::msgcat::mcset sr_latn Grant… Dodeli…
 ::msgcat::mcset sr_latn {Guards — what the harness stops, and where it stands now} {Guards — šta harness zaustavlja i gde sada stoji}
 ::msgcat::mcset sr_latn {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handleri se izvršavaju prikazanim redosledom; prvi koji vrati nepraznu vrednost pobeđuje. Gašenje jednog ga preskače bez odjavljivanja, a izbor se čuva u config.toml tako da ponovno učitavanje plugina ne može tiho da ga vrati.}
+::msgcat::mcset sr_latn Health Zdravlje
+::msgcat::mcset sr_latn {Health alerts (%s):} {Upozorenja o zdravlju (%s):}
+::msgcat::mcset sr_latn Heartbeat {Otkucaj srca}
+::msgcat::mcset sr_latn {Heartbeat age: %s s} {Starost otkucaja: %s s}
 ::msgcat::mcset sr_latn Help Pomoć
 ::msgcat::mcset sr_latn {Help & keys} {Pomoć i tasteri}
 ::msgcat::mcset sr_latn {Hide right panes} {Sakrij desne panele}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset sr_latn {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {Zadržite, pa prevucite pre nego što podignete prst: izbor prati vaš prst reč po reč i pomera se na gornjoj ili donjoj ivici.}
 ::msgcat::mcset sr_latn Hooks Hook-ovi
 ::msgcat::mcset sr_latn {Hooks (what plugins run on)} {Hookovi (na šta se plugin-i kače)}
+::msgcat::mcset sr_latn Host Host
 ::msgcat::mcset sr_latn {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {Koliko zadržavanje traje određuje Androidovo kašnjenje dodira i zadržavanja, u podešavanjima pristupačnosti.}
 ::msgcat::mcset sr_latn {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {Kreiran je rezervni ključ van mreže za KEK i rotacioni ključ; odobri pregledani TLS i aktivacionu predaju}
 ::msgcat::mcset sr_latn {I-search backward: type to search, C-r for previous} {I-search unazad: kucaj za pretragu, C-r za prethodno}
 ::msgcat::mcset sr_latn {I-search: type to search, C-s for next} {I-search: kucaj za pretragu, C-s za sledeće}
+::msgcat::mcset sr_latn {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {IO pritisak: %1$s%% / %2$s%% / %3$s%% vremena je neki zadatak čekao (10 s / 1 min / 5 min)}
 ::msgcat::mcset sr_latn IRC IRC
 ::msgcat::mcset sr_latn {IRC buffers} {IRC baferi}
 ::msgcat::mcset sr_latn {IRC composer} {IRC komposer}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {IRC split: %s} {IRC split: %s}
 ::msgcat::mcset sr_latn {IRC transcript} {IRC transkript}
 ::msgcat::mcset sr_latn {IRC — nothing to show} {IRC — nema ništa za prikaz}
+::msgcat::mcset sr_latn {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {U toku: %1$s poteza %2$s, %3$s pozadinskih zadataka %4$s}
 ::msgcat::mcset sr_latn {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {Instalirati %s u upravljano skladište komponenti? Njegov manifest je prikazan; ovo ne pokreće servis.}
 ::msgcat::mcset sr_latn {Install component} {Instaliraj komponentu}
 ::msgcat::mcset sr_latn {Install components…} {Instaliraj komponente…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset sr_latn Instances Instance
 ::msgcat::mcset sr_latn {It becomes the current content, as a new revision — so the restore can be undone too.} {Postaje trenutni sadržaj, kao nova revizija — pa se i vraćanje može poništiti.}
 ::msgcat::mcset sr_latn {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Ide u šifrovani trezor na ovom računaru. Agent ga nikad ne vidi: može samo da ga koristi kao $%s u komandama ili da ga šalje na dozvoljene hostove.}
+::msgcat::mcset sr_latn {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Uklanja se iz registra klastera na nivou cele flote: sledeća razmena gosipa kaže svakom partneru 0.2.0 da ga i on ispusti i nijedan ga ne vraća nazad. Partner stariji od 0.2.0 nastavlja da ga prikazuje. Ako se mašina vrati i pošalje otkucaj, ponovo se registruje. Sync partneri i sačuvane instance ostaju netaknuti.}
 ::msgcat::mcset sr_latn {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Sada napušta memoriju. Njena istorija čuva svaku reviziju, a Istorija… može da je vrati.}
 ::msgcat::mcset sr_latn Join {Pridruži se}
 ::msgcat::mcset sr_latn {Join a pool} {Pridruži se grupi mašina}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset sr_latn {Language (i18n)} {Jezik (i18n)}
 ::msgcat::mcset sr_latn Language… Jezik…
 ::msgcat::mcset sr_latn {Last active} {Poslednja aktivnost}
+::msgcat::mcset sr_latn {Last probe: %1$s — %2$s} {Poslednja provera: %1$s — %2$s}
 ::msgcat::mcset sr_latn {Leave %s?} {Napusti %s?}
 ::msgcat::mcset sr_latn Leave… Napusti…
 ::msgcat::mcset sr_latn {Legacy open — no [acl] section} {Legacy otvoreno — nema [acl] sekcije}
 ::msgcat::mcset sr_latn {Let %s:} {Dozvoli aplikaciji %s da:}
 ::msgcat::mcset sr_latn {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {Slova, cifre, - i _. Pravi plugin.toml i plugin.tcl koji registruje post_llm_call hook, pa ga otvara u Dev panelu.}
+::msgcat::mcset sr_latn Level Nivo
 ::msgcat::mcset sr_latn {Lift lockdown} {Ukloni zaključavanje}
+::msgcat::mcset sr_latn Lines Linije
 ::msgcat::mcset sr_latn {List the provider's models} {Izlistaj modele provajdera}
+::msgcat::mcset sr_latn Load Opterećenje
 ::msgcat::mcset sr_latn {Load more} {Učitaj još}
 ::msgcat::mcset sr_latn {Loading discovered components…} {Učitavam otkrivene komponente…}
 ::msgcat::mcset sr_latn {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {Lokalni bundle je pregledan. Izaberite Instaliraj izabranu komponentu da biste potvrdili instalaciju; ništa nije instalirano.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset sr_latn {Lock down} Zaključaj
 ::msgcat::mcset sr_latn Log Zapisnik
 ::msgcat::mcset sr_latn {Log (engine + status)} {Zapisnik (engine + status)}
+::msgcat::mcset sr_latn {Log of %s} {Dnevnik za %s}
+::msgcat::mcset sr_latn Logs… Dnevnici…
 ::msgcat::mcset sr_latn {M-g- (g: goto line)} {M-g- (g: idi na liniju)}
 ::msgcat::mcset sr_latn {M-p/M-n history · Tab complete} {M-p/M-n istorijat · Tab dopuna}
 ::msgcat::mcset sr_latn {MCP server list} {Lista MCP servera}
 ::msgcat::mcset sr_latn {MCP servers (from config.toml)} {MCP serveri (iz config.toml)}
 ::msgcat::mcset sr_latn {Make default} {Postavi kao podrazumevani}
 ::msgcat::mcset sr_latn {Make default (config.toml)} {Postavi kao podrazumevano (config.toml)}
+::msgcat::mcset sr_latn {Manage extensions} {Upravljaj ekstenzijama}
 ::msgcat::mcset sr_latn {Manifest SHA-256} {SHA-256 manifesta}
 ::msgcat::mcset sr_latn {Mark read} {Označi kao pročitano}
 ::msgcat::mcset sr_latn {Mechanisms (what the engine does on its own)} {Mehanizmi (šta engine radi sam od sebe)}
 ::msgcat::mcset sr_latn {Mechanisms — what the engine does on its own, and how to stop it} {Mehanizmi — šta engine sam radi i kako ga zaustaviti}
 ::msgcat::mcset sr_latn Memory Memorija
 ::msgcat::mcset sr_latn {Memory history} {Istorija memorije}
+::msgcat::mcset sr_latn {Memory: %1$s available of %2$s (%3$s%% used)} {Memorija: dostupno %1$s od %2$s (iskorišćeno %3$s%%)}
+::msgcat::mcset sr_latn {Merge the received %s into this node?} {Spojiti primljeno %s u ovaj čvor?}
 ::msgcat::mcset sr_latn Messages Poruke
+::msgcat::mcset sr_latn Metrics Metrike
+::msgcat::mcset sr_latn {Metrics (asked %s):} {Metrike (zatraženo %s):}
+::msgcat::mcset sr_latn {Metrics of %1$s failed: %2$s} {Metrike za %1$s nisu uspele: %2$s}
+::msgcat::mcset sr_latn {Metrics of %s received.} {Metrike za %s su primljene.}
+::msgcat::mcset sr_latn {Metrics: not asked yet — use Metrics.} {Metrike: još nisu zatražene — koristite Metrike.}
 ::msgcat::mcset sr_latn Model Model
 ::msgcat::mcset sr_latn {Model for this session} {Model za ovu sesiju}
 ::msgcat::mcset sr_latn {Models & settings} {Modeli i podešavanja}
+::msgcat::mcset sr_latn Monitors Monitori
+::msgcat::mcset sr_latn Name Naziv
+::msgcat::mcset sr_latn {Need an account? Optional sign-up links (open in your browser):} {Trebate nalog? Opcioni linkovi za registraciju (otvaraju se u pregledaču):}
 ::msgcat::mcset sr_latn Network Mreža
 ::msgcat::mcset sr_latn {New alias} {Novi alias}
+::msgcat::mcset sr_latn {New branch name} {Ime nove grane}
 ::msgcat::mcset sr_latn {New cron job} {Novi cron posao}
+::msgcat::mcset sr_latn {New extension} {Nova ekstenzija}
 ::msgcat::mcset sr_latn {New memory file} {Nova datoteka memorije}
 ::msgcat::mcset sr_latn {New plugin} {Novi plugin}
 ::msgcat::mcset sr_latn {New session} {Nova sesija}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset sr_latn Next Dalje
 ::msgcat::mcset sr_latn Nickname Nadimak
 ::msgcat::mcset sr_latn {NixOS: emit a module snippet; do not edit host declarations} {NixOS: izbaci odsečak modula; ne menjaj deklaracije hosta}
+::msgcat::mcset sr_latn {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Za ovaj čvor nije podešena SSH meta za životni ciklus. Dodajte instancu ručno da biste je rasporedili ili ponovo pokrenuli.}
+::msgcat::mcset sr_latn {No additional push happens.} {Ne dešava se dodatni push.}
 ::msgcat::mcset sr_latn {No apps yet. Ask the agent to make one: “make me an app that…”} {Još nema aplikacija. Zamolite agenta da napravi jednu: „napravi mi aplikaciju koja…”}
 ::msgcat::mcset sr_latn {No code in the picture. Hold the phone closer, straight on, and scan again.} {Na slici nema koda. Držite telefon bliže, pravo, i skenirajte ponovo.}
 ::msgcat::mcset sr_latn {No configuration snapshot will be restored.} {Nijedan snimak konfiguracije neće biti vraćen.}
+::msgcat::mcset sr_latn {No configured sync peer for this node.} {Za ovaj čvor nema konfigurisanog sync peera.}
+::msgcat::mcset sr_latn {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Nije podešen poseban prevodilac. Koristite Podesi prevodioca da izaberete provajdera, model i ciljni jezik.}
+::msgcat::mcset sr_latn {No deployment started.} {Nijedno postavljanje nije pokrenuto.}
+::msgcat::mcset sr_latn {No diagnostics reported by the current LSP document.} {Trenutni LSP dokument nije prijavio dijagnostiku.}
+::msgcat::mcset sr_latn {No explicitly configured desktop gateway is bound to this node.} {Nijedan izričito podešen desktop gateway nije vezan za ovaj čvor.}
+::msgcat::mcset sr_latn {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {Nijedan izričito podešen gateway nije vezan za ovaj čvor. Prvo dodajte gateway; njegov registry endpoint se ne koristi kao desktop URL.}
+::msgcat::mcset sr_latn {No file is open. Ask a design question, or open an extension file for help with its code.} {Nema otvorene datoteke. Postavite pitanje o dizajnu ili otvorite datoteku ekstenzije za pomoć oko njenog koda.}
+::msgcat::mcset sr_latn {No files have been written. Review the exact manifest and source, then confirm creation.} {Nijedna datoteka nije zapisana. Pregledajte tačan manifest i izvor, zatim potvrdite pravljenje.}
 ::msgcat::mcset sr_latn {No modules or process plugins were discovered. The provider setup steps can still continue.} {Nisu otkriveni moduli ni procesni plugin-i. Koraci za podešavanje provajdera i dalje mogu da se nastave.}
+::msgcat::mcset sr_latn {No other registered node to compare with.} {Nema drugog registrovanog čvora za poređenje.}
 ::msgcat::mcset sr_latn {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {Nijedan profil ne pokreće uslugu niti izvršava privilegovani skript iz ovog čarobnjaka. Pregledajte plan i svaku predaju pre pokretanja.}
+::msgcat::mcset sr_latn {No proposal has been requested. Nothing will be written automatically.} {Predlog nije zatražen. Ništa se neće automatski zapisati.}
+::msgcat::mcset sr_latn {No proposal. Nothing was written.} {Nema predloga. Ništa nije zapisano.}
 ::msgcat::mcset sr_latn {No routes configured.} {Nema konfigurisanih ruta.}
 ::msgcat::mcset sr_latn {No session selected — pick one in the sidebar or start a new one} {Nije izabrana sesija — izaberi jednu u bočnoj traci ili započni novu}
 ::msgcat::mcset sr_latn {No swap target yet: pick a language and press “Set as swap target”.} {Još nema cilja zamene: izaberi jezik i pritisni „Postavi kao cilj zamene”.}
 ::msgcat::mcset sr_latn {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {Nema {[}acl{]} sekcije u config.toml: svaki pošiljalac koji stigne do gateway-a tretira se kao vlasnik, ponašanje pre-ACL sa jednim korisnikom. Dodeljivanje i oduzimanje i dalje radi i stupa na snagu čim {[}acl{]} postoji.}
+::msgcat::mcset sr_latn {Node id} {ID čvora}
+::msgcat::mcset sr_latn {Non-evaluating syntax checks} {Provere sintakse bez izvršavanja}
+::msgcat::mcset sr_latn {Not available: %s} {Nije dostupno: %s}
+::msgcat::mcset sr_latn Note Beleška
 ::msgcat::mcset sr_latn {Note for the agent (optional):} {Napomena za agenta (opciono):}
+::msgcat::mcset sr_latn {Nothing selected.} {Ništa nije izabrano.}
 ::msgcat::mcset sr_latn {Nothing typed yet.} {Još ništa nije uneto.}
+::msgcat::mcset sr_latn {Nothing was generated or written.} {Ništa nije generisano ni zapisano.}
+::msgcat::mcset sr_latn {Nothing was prepared: the chosen repository already has these paths.} {Ništa nije pripremljeno: izabrani repozitorijum već sadrži ove putanje.}
 ::msgcat::mcset sr_latn Notifications Obaveštenja
 ::msgcat::mcset sr_latn OK OK
 ::msgcat::mcset sr_latn Off Isključeno
 ::msgcat::mcset sr_latn On Uključeno
+::msgcat::mcset sr_latn {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {Zameniće se samo pregledani bafer ekstenzije. Datoteka je i dalje zaštićena od izmena napravljenih posle ovog pregleda. Ne dešava se commit, push ni PR.}
+::msgcat::mcset sr_latn {Only this new branch is committed. Your ambient git identity is used.} {Commituje se samo ova nova grana. Koristi se vaš trenutni git identitet.}
 ::msgcat::mcset sr_latn Op {Daj op}
 ::msgcat::mcset sr_latn Open Otvori
+::msgcat::mcset sr_latn {Open PR…} {Otvori PR…}
 ::msgcat::mcset sr_latn {Open a window} {Otvori prozor}
 ::msgcat::mcset sr_latn {Open in Dev} {Otvori u Dev}
 ::msgcat::mcset sr_latn {Open in browser} {Otvori u pregledaču}
 ::msgcat::mcset sr_latn {Open plugin} {Otvori plugin}
 ::msgcat::mcset sr_latn {Open terminal} {Otvori terminal}
+::msgcat::mcset sr_latn {Open this pull request?} {Otvoriti ovaj pull request?}
 ::msgcat::mcset sr_latn {Open veles in Android's settings} {Otvori veles u podešavanjima Androida}
 ::msgcat::mcset sr_latn {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {Opciono: IRC mreža kojoj se pridružuješ. Navedi kanale odvojene razmacima ili zapetama; IRC_CHANNELS u .env, kada je postavljeno, zamenjuje ovu listu.}
 ::msgcat::mcset sr_latn {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {Opcije dolaze iz manifesta izabrane komponente. Polja koja izgledaju kao tajne ostaju u toku podešavanja/trezora. Prazna polja ostavljaju tu opciju nepromenjenu.}
 ::msgcat::mcset sr_latn {Or paste a ticket signed on another device} {Ili nalepite kartu potpisanu na drugom uređaju}
 ::msgcat::mcset sr_latn {Or type an answer:} {Ili otkucajte odgovor:}
+::msgcat::mcset sr_latn Origin Origin
 ::msgcat::mcset sr_latn Other… Drugo…
 ::msgcat::mcset sr_latn Outline Struktura
+::msgcat::mcset sr_latn Output Izlaz
 ::msgcat::mcset sr_latn {Override for THIS session (leave blank to inherit the default)} {Nadjačavanje za OVU sesiju (ostavi prazno za podrazumevano)}
 ::msgcat::mcset sr_latn {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {Identitet vlasnika (telegram:123456, irc:account ili maska nick!user@host)}
 ::msgcat::mcset sr_latn {PDS and handle domain} {PDS i handle domen}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset sr_latn {Pause scheduler} {Pauziraj planer}
 ::msgcat::mcset sr_latn {Peek (C-c C-p)} {Pogledaj (C-c C-p)}
 ::msgcat::mcset sr_latn {Peek definition} {Pogledaj definiciju}
+::msgcat::mcset sr_latn {Permission grants} {Dozvole za alate}
+::msgcat::mcset sr_latn {Permission grants…} {Dozvole za alate…}
 ::msgcat::mcset sr_latn Phone Telefon
 ::msgcat::mcset sr_latn {Phone: permissions, battery, storage} {Telefon: dozvole, baterija, skladište}
 ::msgcat::mcset sr_latn {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Telefoni proizvođača %s i sami zaustavljaju aplikacije. U podešavanjima aplikacije veles dozvolite joj da se sama pokreće i radi u pozadini.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset sr_latn Port Port
 ::msgcat::mcset sr_latn {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {Prefiks akordi (C-x, M-o) prikazuju which-key iskačući prozor čim se aktiviraju.}
 ::msgcat::mcset sr_latn {Prepare an own vlpds PDS through the signed CLI handoff} {Pripremite sopstveni vlpds PDS kroz potpisani CLI handoff}
+::msgcat::mcset sr_latn {Prepare branch…} {Pripremi granu…}
+::msgcat::mcset sr_latn {Prepare this branch and commit?} {Pripremiti ovu granu i commit?}
 ::msgcat::mcset sr_latn Preview Pregled
+::msgcat::mcset sr_latn {Preview change set} {Pregled seta izmena}
+::msgcat::mcset sr_latn {Preview files} {Pregled datoteka}
 ::msgcat::mcset sr_latn {Preview here} {Pregled ovde}
 ::msgcat::mcset sr_latn {Preview pane} {Panel za pregled}
+::msgcat::mcset sr_latn {Preview proposal} {Pregled predloga}
+::msgcat::mcset sr_latn {Preview the changed name or language before creating it.} {Pregledajte promenjeno ime ili jezik pre pravljenja.}
+::msgcat::mcset sr_latn Probe Proveri
+::msgcat::mcset sr_latn {Probe of %1$s failed: %2$s} {Provera %1$s nije uspela: %2$s}
 ::msgcat::mcset sr_latn {Profile result} {Rezultat profila}
 ::msgcat::mcset sr_latn {Promote into config.toml} {Promoviši u config.toml}
 ::msgcat::mcset sr_latn Promote… Promoviši…
 ::msgcat::mcset sr_latn Provider Pružalac
+::msgcat::mcset sr_latn {Provider driver (plugin wire only)} {Draver provajdera (samo plugin wire)}
 ::msgcat::mcset sr_latn {Provider entry name} {Ime provider unosa}
 ::msgcat::mcset sr_latn {Provider for this session} {Provajder za ovu sesiju}
 ::msgcat::mcset sr_latn Providers Provajderi
 ::msgcat::mcset sr_latn {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {Provajderi su lista tabela: custom_providers.0.base_url, .0.api_mode, .0.key_env … Indeks prema redosledu prikazanom ispod.}
 ::msgcat::mcset sr_latn {Public HTTPS URL} {Javni HTTPS URL}
+::msgcat::mcset sr_latn {Pull request base} {Osnova pull requesta}
+::msgcat::mcset sr_latn {Pull request created} {Pull request napravljen}
+::msgcat::mcset sr_latn {Pull request description} {Opis pull requesta}
+::msgcat::mcset sr_latn {Pull request opened.} {Pull request otvoren.}
+::msgcat::mcset sr_latn {Pull request repository} {Repozitorijum pull requesta}
+::msgcat::mcset sr_latn {Pull request title} {Naslov pull requesta}
 ::msgcat::mcset sr_latn {Purge + delete files} {Očisti + obriši datoteke}
 ::msgcat::mcset sr_latn {Purge container} {Očisti kontejner}
+::msgcat::mcset sr_latn Purpose Namena
+::msgcat::mcset sr_latn Push Push
+::msgcat::mcset sr_latn {Push branch…} {Push granu…}
+::msgcat::mcset sr_latn {Push complete. No pull request has been opened.} {Push završen. Nijedan pull request nije otvoren.}
+::msgcat::mcset sr_latn {Push this branch?} {Push ovu granu?}
+::msgcat::mcset sr_latn {Push to %s:} {Slanje na %s:}
 ::msgcat::mcset sr_latn Question Pitanje
 ::msgcat::mcset sr_latn Questions Pitanja
 ::msgcat::mcset sr_latn Quit Izlaz
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset sr_latn {Reading notifications, for triggers} {Čitanje obaveštenja, za okidače}
 ::msgcat::mcset sr_latn Reasoning Zaključivanje
 ::msgcat::mcset sr_latn {Reasoning effort} {Nivo razmišljanja}
+::msgcat::mcset sr_latn {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {Primljeno, čeka primenu: skladište %1$s · memorija %2$s · konfiguracija %3$s · trezor %4$s}
+::msgcat::mcset sr_latn {Recommended checks} {Preporučene provere}
 ::msgcat::mcset sr_latn {Refetch this transcript from the store} {Ponovo dohvati ovaj transkript iz skladišta}
 ::msgcat::mcset sr_latn Refresh Osveži
 ::msgcat::mcset sr_latn {Refresh preview} {Osveži pregled}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset sr_latn {Rename symbol} {Preimenuj simbol}
 ::msgcat::mcset sr_latn Rename… Preimenuj…
 ::msgcat::mcset sr_latn Rendered Prikazano
+::msgcat::mcset sr_latn {Replace existing repository files?} {Zameniti postojeće datoteke u repozitorijumu?}
+::msgcat::mcset sr_latn {Replace them in the new branch? Nothing else in the repository changes.} {Zameniti ih u novoj grani? Ništa drugo u repozitorijumu se ne menja.}
 ::msgcat::mcset sr_latn Repository Repozitorijum
 ::msgcat::mcset sr_latn {Repository (owner/name)} {Repozitorijum (vlasnik/ime)}
+::msgcat::mcset sr_latn {Repository directory} {Direktorijum repozitorijuma}
+::msgcat::mcset sr_latn {Repository paths} {Putanje u repozitorijumu}
+::msgcat::mcset sr_latn {Request a new preview before trying again.} {Zatražite novi pregled pre ponovnog pokušaja.}
 ::msgcat::mcset sr_latn {Reset to default} {Vrati na podrazumevano}
 ::msgcat::mcset sr_latn {Reset to template} {Vrati na šablon}
 ::msgcat::mcset sr_latn Restart {Ponovo pokreni}
+::msgcat::mcset sr_latn {Restart + verify canary} {Ponovo pokreni + proveri kanarinca}
 ::msgcat::mcset sr_latn {Restore hidden windows} {Vrati skrivene prozore}
 ::msgcat::mcset sr_latn {Restore plugins to %s?} {Vrati plugine na %s?}
 ::msgcat::mcset sr_latn {Restore revision r%1$s of %2$s?} {Vratiti reviziju r%1$s datoteke %2$s?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset sr_latn {Restore this commit} {Vrati ovaj commit}
 ::msgcat::mcset sr_latn {Restore this revision} {Vrati ovu reviziju}
 ::msgcat::mcset sr_latn {Resume scheduler} {Nastavi planer}
+::msgcat::mcset sr_latn {Resume unfinished operation} {Nastavi nezavršenu operaciju}
 ::msgcat::mcset sr_latn Revert Poništi
 ::msgcat::mcset sr_latn {Revert %s to HEAD? Uncommitted changes in this file are lost.} {Vratiti %s na HEAD? Nesacuvane promene u ovoj datoteci biće izgubljene.}
 ::msgcat::mcset sr_latn Revert… Poništi…
 ::msgcat::mcset sr_latn Review Revizija
 ::msgcat::mcset sr_latn {Review (git) pane} {Panel za reviziju (git)}
+::msgcat::mcset sr_latn {Review deployment} {Pregledaj postavljanje}
+::msgcat::mcset sr_latn {Review extension contribution} {Pregled doprinosa ekstenzije}
 ::msgcat::mcset sr_latn {Review managed local bundle…} {Pregledaj upravljani lokalni bundle…}
 ::msgcat::mcset sr_latn {Review rollback} {Pregled povratka}
+::msgcat::mcset sr_latn {Review selected files} {Pregled izabranih datoteka}
 ::msgcat::mcset sr_latn {Review the component options on the summary screen before applying.} {Pregledajte opcije komponente na ekranu sažetka pre primene.}
 ::msgcat::mcset sr_latn {Review the component preview before applying. No component configuration has been written.} {Pregledajte pregled komponente pre primene. Nijedna konfiguracija komponente nije upisana.}
+::msgcat::mcset sr_latn {Review the selected files and remove credential findings before preparing.} {Pregledajte izabrane datoteke i uklonite pronađene kredencijale pre pripreme.}
 ::msgcat::mcset sr_latn {Reviewed core bundle in the managed install-sources directory} {Pregledan core bundle u upravljanom direktorijumu install-sources}
+::msgcat::mcset sr_latn {Reviewed fleet deployment} {Pregledano postavljanje flote}
 ::msgcat::mcset sr_latn {Reviewed local bundle} {Pregledan lokalni bundle}
 ::msgcat::mcset sr_latn {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {Pregledan lokalni bundle je instaliran. Nije proveren potpisom pri preuzimanju. Potrebno je ponovo pokrenuti program pre korišćenja novog jezgra.}
 ::msgcat::mcset sr_latn Revision Revizija
 ::msgcat::mcset sr_latn Revoke Oduzmi
+::msgcat::mcset sr_latn {Revoke selected} {Oduzmi izabrane}
 ::msgcat::mcset sr_latn Roles Uloge
 ::msgcat::mcset sr_latn {Roll back %1$s from %2$s to %3$s?} {Vrati %1$s sa %2$s na %3$s?}
+::msgcat::mcset sr_latn {Roll back selected target} {Vrati izabranu metu unazad}
 ::msgcat::mcset sr_latn {Rollback completed. Reload the component or restart as requested by the report.} {Povratak je završen. Ponovo učitajte komponentu ili ponovo pokrenite program, kako zahteva izveštaj.}
 ::msgcat::mcset sr_latn {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {Povratak je pregledan. Izaberite Instaliraj izabranu komponentu da biste potvrdili vraćanje; ništa nije vraćeno.}
 ::msgcat::mcset sr_latn Run Pokreni
 ::msgcat::mcset sr_latn {Run the wizard again} {Pokreni čarobnjaka ponovo}
 ::msgcat::mcset sr_latn {Running in the background} {Rad u pozadini}
-::msgcat::mcset sr_latn {Running tasks} {Aktivni zadaci}
-::msgcat::mcset sr_latn {Running tasks (subagents, shells, monitors)} {Pokrenuti zadaci (podagenti, ljuske, monitori)}
 ::msgcat::mcset sr_latn {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {Runtime dozvole i korisnici žive u skladištu (store), a reset skladišta ih briše. Promoviši dopisuje one koje skladište odluči u config.toml — komentari i redosled ključeva fajla se čuvaju, rezervna kopija se piše pored, kopije iz skladišta se brišu — i odbija radije nego da nagađa tamo gde fajl već ima stav.}
 ::msgcat::mcset sr_latn {S3 HTTPS endpoint} {S3 HTTPS endpoint}
 ::msgcat::mcset sr_latn {S3 bucket} {S3 bucket}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset sr_latn {Save as default} {Sačuvaj kao podrazumevano}
 ::msgcat::mcset sr_latn {Save attachment as} {Sačuvaj prilog kao}
 ::msgcat::mcset sr_latn {Save globally} {Sačuvaj globalno}
+::msgcat::mcset sr_latn {Save or revert the open buffer before applying a change set.} {Sačuvajte ili poništite izmene otvorenog bafera pre primene seta izmena.}
 ::msgcat::mcset sr_latn Scan Skeniraj
 ::msgcat::mcset sr_latn {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {Skenirajte veles kod sa mašine koja je pozvala ovaj telefon. Ako je prvo pokazala WireGuard kod, pre ovoga skenirajte njega aplikacijom WireGuard.}
 ::msgcat::mcset sr_latn {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {Raspored: interval ("30m", "every 2h"), cron obrazac ("0 9 * * 1") ili ISO vremenska oznaka za jednokratno izvršavanje. Linija iznad pokazuje kako engine to čita. Isporuka: "local" zadržava izlaz u logu — jedina iskrena podrazumevana vrednost sa desktopa, koji nema chat platformu iza sebe — ili "platform:chat_id". Budi sesiju: ostavi prazno da radi u novoj sesiji; postavi id sesije (ili jedinstveni prefiks) da nastavi tu sesiju sa celom istorijom — zauzeta sesija prima prompt na sledećoj granici okreta umesto toga.}
+::msgcat::mcset sr_latn Scope Obim
 ::msgcat::mcset sr_latn {Scroll to end} {Pomeri do kraja}
 ::msgcat::mcset sr_latn {Search commands and sessions…} {Pretraži komande i sesije…}
 ::msgcat::mcset sr_latn {Search message text} {Pretraži tekst poruka}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset sr_latn Section Odeljak
 ::msgcat::mcset sr_latn {Select a component first. No component options will be changed if you skip this step.} {Prvo izaberite komponentu. Nijedna opcija komponente neće biti promenjena ako preskočite ovaj korak.}
 ::msgcat::mcset sr_latn {Select all} {Izaberi sve}
+::msgcat::mcset sr_latn {Select all extensions} {Izaberi sve ekstenzije}
+::msgcat::mcset sr_latn {Select at least one source file.} {Izaberite bar jednu izvornu datoteku.}
+::msgcat::mcset sr_latn {Select none} {Poništi izbor}
+::msgcat::mcset sr_latn {Select text to translate first.} {Prvo izaberite tekst za prevođenje.}
+::msgcat::mcset sr_latn {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {Izaberite ekstenzije i datoteke za doprinos. One idu u jednu granu i jedan pull request, svaka ekstenzija u svom direktorijumu. Pregledajte, pokrenite provere koje ništa ne menjaju, pa pripremite izolovanu granu i komitujte. Push i pravljenje pull request-a su odvojene radnje koje se posebno potvrđuju.}
 ::msgcat::mcset sr_latn Send Pošalji
+::msgcat::mcset sr_latn {Send %s to the peer?} {Poslati %s peer-u?}
 ::msgcat::mcset sr_latn {Send a %d-line message to the channel?} {Pošalji poruku od %d redova na kanal?}
 ::msgcat::mcset sr_latn {Send raw line to the server? (%s)} {Pošalji sirovu liniju serveru? (%s)}
 ::msgcat::mcset sr_latn {Server (empty = no IRC)} {Server (prazno = bez IRC-a)}
 ::msgcat::mcset sr_latn {Server: gateway configuration and a reviewed user unit} {Server: konfiguracija gateway-a i pregledana korisnička jedinica}
 ::msgcat::mcset sr_latn {Server: install a user unit and prepare the separate linger handoff} {Server: instaliraj korisničku jedinicu i pripremi odvojenu linger predaju}
 ::msgcat::mcset sr_latn {Server: use a system service and prepare a privileged CLI request} {Server: koristi sistemsku uslugu i pripremi CLI zahtev koji zahteva administratorska prava}
+::msgcat::mcset sr_latn Session Sesija
 ::msgcat::mcset sr_latn {Session id} {ID sesije}
 ::msgcat::mcset sr_latn {Session id…} {ID sesije…}
 ::msgcat::mcset sr_latn Sessions Sesije
 ::msgcat::mcset sr_latn {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Sesije koje su trenutno prebačene na ovaj alias zadržavaju rutu koju su već odredile; novi override-i neće pronaći to ime.}
+::msgcat::mcset sr_latn {Sessions served} {Opslužene sesije}
 ::msgcat::mcset sr_latn Set Postavi
 ::msgcat::mcset sr_latn {Set [model] provider/default in config.toml.} {Postavi provider/default za [model] u config.toml.}
 ::msgcat::mcset sr_latn {Set as swap target} {Postavi kao cilj zamene}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset sr_latn {Setup — summary} {Podešavanje — rezime}
 ::msgcat::mcset sr_latn {Setup — welcome} {Podešavanje — dobrodošlica}
 ::msgcat::mcset sr_latn {Shared container network} {Deljena mreža kontejnera}
+::msgcat::mcset sr_latn Shells Šelovi
+::msgcat::mcset sr_latn {Shells and monitors} {Šelovi i monitori}
+::msgcat::mcset sr_latn {Shells and monitors (subagents, shells, monitors)} {Šelovi i monitori (podagenti, šelovi, monitori)}
 ::msgcat::mcset sr_latn {Show diff} {Prikaži razlike}
 ::msgcat::mcset sr_latn {Show every key} {Prikaži sve tastere}
 ::msgcat::mcset sr_latn Sign Potpši
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset sr_latn Solved Rešeno
 ::msgcat::mcset sr_latn Source Izvor
 ::msgcat::mcset sr_latn {Source commit} {Source komit}
+::msgcat::mcset sr_latn {Source text} {Izvorni tekst}
 ::msgcat::mcset sr_latn {Source→app (C-c C-c)} {Izvor→aplikacija (C-c C-c)}
 ::msgcat::mcset sr_latn Stage {U indeks}
+::msgcat::mcset sr_latn {Stage canary} {Pripremi kanarinca}
+::msgcat::mcset sr_latn Stale Zastareo
+::msgcat::mcset sr_latn {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {Stalne dozvole omogućavaju kasnije pozive alata bez novog pitanja. Dozvole za sesiju drže aktivne sesije na svakoj površini (desktop, Telegram, IRC, …); globalne dozvole traju; stavke allowlist-e iz [approvals] u config.toml prikazuju se samo za čitanje. Oduzimanje jedne nikad ne menja ostale dozvole.}
 ::msgcat::mcset sr_latn Start Pokreni
+::msgcat::mcset sr_latn {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {Počnite sa ekstenzijom u svom korisničkom direktorijumu plugina. Ona preživljava nadogradnje i ne zahteva ponovnu izgradnju gateway-a. Nova ekstenzija prikazuje pregled tačnog manifesta i izvora pre zapisivanja. Izaberite podržani jezik i verziju API-ja, pregledajte datoteke, zatim isprobajte ekstenziju u izolaciji.}
 ::msgcat::mcset sr_latn {Start with the phone} {Pokretanje sa telefonom}
+::msgcat::mcset sr_latn {Static IP} {Statička IP}
 ::msgcat::mcset sr_latn Status Status
 ::msgcat::mcset sr_latn Steer Upravljaj
 ::msgcat::mcset sr_latn {Step %1$d of %2$d} {Korak %1$d od %2$d}
 ::msgcat::mcset sr_latn {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {Još treba podesiti: %s — ovde unesite /secret set NAME ili na računaru prolaza pokrenite veles secret set NAME.}
 ::msgcat::mcset sr_latn Stop Zaustavi
 ::msgcat::mcset sr_latn {Storage root} {Osnovni direktorijum skladišta}
+::msgcat::mcset sr_latn Store Skladište
 ::msgcat::mcset sr_latn {Store a secret: %s} {Sačuvaj tajnu: %s}
 ::msgcat::mcset sr_latn {Store it} Sačuvaj
+::msgcat::mcset sr_latn {Store replica} {Replika skladišta}
 ::msgcat::mcset sr_latn Subagents Podagenti
 ::msgcat::mcset sr_latn {Subagents (/agents)} {Podagenti (/agents)}
 ::msgcat::mcset sr_latn Summary Rezime
+::msgcat::mcset sr_latn Surface Površina
 ::msgcat::mcset sr_latn {Swap ⇄} {Zameni ⇄}
+::msgcat::mcset sr_latn {Sync cancelled.} {Sinhronizacija otkazana.}
+::msgcat::mcset sr_latn {Sync complete.} {Sinhronizacija završena.}
+::msgcat::mcset sr_latn {Sync now} {Sinhronizuj sada}
 ::msgcat::mcset sr_latn {TOML copied — paste it into config.toml} {TOML kopiran — nalepi ga u config.toml}
 ::msgcat::mcset sr_latn Tag Oznaka
 ::msgcat::mcset sr_latn {Tap a link to open it, or a block's header to open or close the block.} {Dodirnite vezu da je otvorite, ili zaglavlje bloka da blok otvorite ili zatvorite.}
 ::msgcat::mcset sr_latn {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {Dodirnite polje na dnu da kucate. Pošalji šalje, Zaustavi završava potez, a Otkači premešta komandu koja radi u pozadinu.}
 ::msgcat::mcset sr_latn {Tap the text to clear the selection.} {Dodirnite tekst da poništite izbor.}
+::msgcat::mcset sr_latn {Target language:} {Ciljni jezik:}
+::msgcat::mcset sr_latn {Target node IDs (canary first, comma separated)} {ID-ovi ciljnih čvorova (kanarinac prvi, razdvojeni zapetama)}
 ::msgcat::mcset sr_latn {Task list} {Lista zadataka}
 ::msgcat::mcset sr_latn {Task list (right pane)} {Lista zadataka (desni panel)}
 ::msgcat::mcset sr_latn Tasks Zadaci
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset sr_latn {That is not a ticket.} {To nije karta.}
 ::msgcat::mcset sr_latn {That is not a veles pool code.} {To nije kod veles grupe.}
 ::msgcat::mcset sr_latn {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {To je WireGuard kod: skenirajte ga aplikacijom WireGuard. Veles kod je drugi.}
+::msgcat::mcset sr_latn {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {%d pregledanih datoteka biće zapisano u novi direktorijum u vašem korisničkom direktorijumu za plugin-ove i veles pokušava da učita ekstenziju. Ako se direktorijum tog imena pojavio od pregleda, ništa se ne zapisuje. Objavljivanje nije deo ove radnje.}
 ::msgcat::mcset sr_latn {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {Dev panelov REPL izvršava se u ŽIVOJ aplikaciji — UI je njen sopstveni lisp.}
 ::msgcat::mcset sr_latn {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {Tabela [mcp_servers.<name>] se briše iz config.toml. Prethodni fajl se čuva kao config.toml.bak.}
 ::msgcat::mcset sr_latn {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {Bele liste adaptera (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) su granica poverenja i svaki dozvoljeni pošiljalac se tretira kao owner. Ovo je pre-ACL postavka.}
 ::msgcat::mcset sr_latn {The agent asks for a secret: %s} {Agent traži tajnu: %s}
+::msgcat::mcset sr_latn {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {Već poslata grana biće upotrebljena kao PR head. Grana na vašem forku se automatski imenuje kao owner:branch.}
+::msgcat::mcset sr_latn {The author asks} {Autor pita}
+::msgcat::mcset sr_latn {The buffer changed. Request a new proposal before applying.} {Bafer se promenio. Zatražite novi predlog pre primene.}
 ::msgcat::mcset sr_latn {The bundle operation returned an invalid result. Verify the installation before retrying.} {Operacija nad bundle-om je vratila nevažeći rezultat. Proverite instalaciju pre ponovnog pokušaja.}
 ::msgcat::mcset sr_latn {The bundle preview was malformed; nothing was installed.} {Pregled bundle-a je bio neispravan; ništa nije instalirano.}
 ::msgcat::mcset sr_latn {The camera did not open; paste the code instead.} {Kamera se nije otvorila; umesto toga nalepite kod.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset sr_latn {The component manifest is still loading. Wait for it or choose another component.} {Manifest komponente se još učitava. Sačekajte ga ili izaberite drugu komponentu.}
 ::msgcat::mcset sr_latn {The component preview is not ready yet. Refresh it and review the result before applying.} {Pregled komponente još nije spreman. Osvežite ga i pregledajte rezultat pre primene.}
 ::msgcat::mcset sr_latn {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {Pregled komponente se još učitava. Sačekajte odgovor pre nego što pregledate kombinovane izmene.}
+::msgcat::mcset sr_latn {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Trenutna dijagnostika (iz jezičkog servera ili iz Provere) šalje se uz ovu datoteku. Opciono dodajte pitanje. Odgovor je samo tekst; ništa ne može da se zapiše.}
 ::msgcat::mcset sr_latn {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Direktorijum i sve u njemu se uklanja. Ovo se ne može poništiti — ako ga samo želiš van prompta, radije ga isključi.}
 ::msgcat::mcset sr_latn {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Direktorijum se briše. Fascikla dodatka je git repozitorijum i prvo se pravi snapshot, pa Istorija… može da ga vrati.}
+::msgcat::mcset sr_latn {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Editor otvara datoteke gateway-a, uključujući udaljene instance, i pokreće jezički server za jezik datoteke na gateway-u: tcl-lsp, typescript-language-server (TypeScript i JavaScript), rust-analyzer (Rust plugin crate ili modul), clangd (C), racket-langserver i server za Common Lisp. Preletanje mišem, idi na definiciju, dovršavanje i dijagnostika u realnom vremenu rade za svaki jezik za koji gateway ima server; kada ga nema, editor kaže koji program treba tamo instalirati i zadržava isticanje sintakse. Provera pokreće odgovarajući proverivač na gateway-u: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only ili Racket i Lisp čitače. Sačuvajte, ponovo učitajte u Upravljanju ekstenzijama i testirajte ekstenziju bez objavljivanja lokalnog stanja.}
 ::msgcat::mcset sr_latn {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Prvi handoff priprema tajne, zaključanu sliku i runtime datoteke, ali ne pokreće PDS. Napravite rezervnu kopiju KEK i PLC rotacionog ključa van mreže, zatim pošaljite novi pregledan zahtev sa potvrdom rezervne kopije da biste postavili HTTP-01 TLS i aktivaciju. DNS zapisi moraju da pokazuju direktno na ovaj host; veles ne menja CDN proxy niti vrši DNS izmene.}
+::msgcat::mcset sr_latn {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Obrazac se promenio od kad je ekstenzija generisana. Generišite ponovo ili pregledajte čist skelet.}
 ::msgcat::mcset sr_latn {The gateway itself is untouched.} {Sam gateway ostaje netaknut.}
 ::msgcat::mcset sr_latn {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Prolaz je ponovo učitao konfiguraciju: nove sesije je koriste odmah, a ključ sačuvan u trezoru koristi sledeći zahtev. Telegram i IRC se pokreću pri sledećem ponovnom pokretanju prolaza: veles gateway restart.}
 ::msgcat::mcset sr_latn {The installed component no longer matches the selected manifest. Review the component list again.} {Instalirana komponenta se više ne poklapa sa izabranim manifestom. Ponovo pregledajte listu komponenti.}
 ::msgcat::mcset sr_latn {The installer preview has no verification signatures; apply is disabled.} {Pregled instalatera nema potvrđujuće potpise; primena je onemogućena.}
 ::msgcat::mcset sr_latn {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Posao i istorija njegovih pokretanja se uklanjaju. Ovo se ne može poništiti — ako ga samo želiš zaustaviti, radije ga pauziraj.}
+::msgcat::mcset sr_latn {The log could not be read: %s} {Dnevnik nije mogao da se pročita: %s}
 ::msgcat::mcset sr_latn {The manifest belongs to another component; its reply was discarded.} {Manifest pripada drugoj komponenti; njen odgovor je odbačen.}
 ::msgcat::mcset sr_latn {The profile changed. Review the fresh plan before applying it.} {Profil se promenio. Pregledajte sveži plan pre primene.}
 ::msgcat::mcset sr_latn {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {Repozitorijum mora imati SKILL.md u korenu ili jedan nivo kategorije dublje. Završava u %s.}
 ::msgcat::mcset sr_latn {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {U korenu repozitorijuma mora biti plugin.toml. Klonira se u %s pod imenom iz manifesta.}
+::msgcat::mcset sr_latn {The reviewed change set was applied (%d files). Review and test it before publishing.} {Pregledan set izmena je primenjen (%d datoteka). Pregledajte ga i testirajte pre objavljivanja.}
 ::msgcat::mcset sr_latn {The reviewed configuration snapshot will also be restored.} {Pregledan snimak konfiguracije će takođe biti vraćen.}
+::msgcat::mcset sr_latn {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {Pregledane datoteke će biti zapisane u vaš korisnički direktorijum plugina. Veles čuva lokalni oporavni snimak i pokušava da ponovo učita ekstenziju; objavljivanje nije deo ove radnje.}
+::msgcat::mcset sr_latn {The reviewed proposal was applied locally. Review and test it before publishing.} {Pregledani predlog je primenjen lokalno. Pregledajte ga i isprobajte pre objavljivanja.}
 ::msgcat::mcset sr_latn {The rollback preview was malformed or named another component; nothing was restored.} {Pregled povratka je bio neispravan ili je imenovao drugu komponentu; ništa nije vraćeno.}
 ::msgcat::mcset sr_latn {The rollback returned an invalid result. Verify the installation before retrying.} {Povratak je vratio nevažeći rezultat. Proverite instalaciju pre ponovnog pokušaja.}
 ::msgcat::mcset sr_latn {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {Ruta na kojoj nove sesije kreću. /model i models overlay to kasnije menjaju, po sesiji ili kao novi podrazumevani.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset sr_latn {The signed download discard returned an invalid response; no installation was requested.} {Odbacivanje potpisanog preuzimanja vratilo je nevažeći odgovor; instalacija nije bila tražena.}
 ::msgcat::mcset sr_latn {The signed installation returned an invalid result. Verify the installation before retrying.} {Potpisana instalacija vratila je nevažeći rezultat. Verifikujte instalaciju pre ponovnog pokušaja.}
 ::msgcat::mcset sr_latn {The signed release preview was malformed; nothing was installed.} {Pregled potpisanog izdanja bio je loše formiran; ništa nije instalirano.}
+::msgcat::mcset sr_latn {The source buffer changed. Request a new proposal before applying.} {Izvorni bafer se promenio. Zatražite novi predlog pre primene.}
 ::msgcat::mcset sr_latn {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Skladište se vraća jednu reviziju unazad. Sam rollback je takođe revizija, pa se i on može poništiti.}
+::msgcat::mcset sr_latn {The translator returned no text.} {Prevodilac nije vratio nikakav tekst.}
 ::msgcat::mcset sr_latn {The verification reply was malformed; no integrity result was accepted.} {Odgovor provere je bio neispravan; nijedan rezultat integriteta nije prihvaćen.}
 ::msgcat::mcset sr_latn Themes Teme
+::msgcat::mcset sr_latn {These paths already exist in the chosen repository:} {Ove putanje već postoje u izabranom repozitorijumu:}
 ::msgcat::mcset sr_latn {They have not been saved.} {Nisu sačuvane.}
+::msgcat::mcset sr_latn {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {Ovaj bafer nema dijagnostiku za objašnjenje. Pokrenite Proveru ili sačekajte jezički server.}
 ::msgcat::mcset sr_latn {This challenge is over.} {Ovaj izazov je završen.}
 ::msgcat::mcset sr_latn {This code has expired. Ask for a new one.} {Ovaj kod je istekao. Zatražite novi.}
 ::msgcat::mcset sr_latn {This does not start a service or claim signed-download verification.} {Ovo ne pokreće servis niti tvrdi proveru potpisom pri preuzimanju.}
 ::msgcat::mcset sr_latn {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Ovaj prolaz ne prima tajne vrednosti sa ovog računara: unesite ga tamo pomoću veles secret set %s ili dodajte ovu mrežu u njegov [vault] trusted_networks}
 ::msgcat::mcset sr_latn {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Ovo je tačno ono što će biti upisano — pravi bajtovi engine-a, preuzeti uživo. Ništa još nije dirnulo disk.}
+::msgcat::mcset sr_latn {This node is not a configured sync peer for any kind.} {Ovaj čvor nije konfigurisan kao sync peer ni za jednu vrstu.}
+::msgcat::mcset sr_latn {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Ovaj plugin je ugrađen i samo za čitanje. Uklonite korisničku kopiju sa istim imenom da biste umesto nje koristili ugrađenu.}
+::msgcat::mcset sr_latn {This publishes the commit; no pull request is created yet.} {Ovo objavljuje commit; pull request još nije napravljen.}
 ::msgcat::mcset sr_latn {This review expires after %s seconds. Closing or cancelling discards its private staging.} {Ovaj pregled ističe posle %s sekundi. Zatvaranje ili otkazivanje odbacuje njegovu privatnu pripremu.}
 ::msgcat::mcset sr_latn {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {Ovaj čarobnjak upisuje config.toml, a ključeve koje mu date čuva u šifrovanom trezoru. Svaki korak može da se preskoči: preskočen korak izostaje iz nove konfiguracije i ostaje tačno kakav jeste u postojećoj. Postojeći config.toml se uređuje na licu mesta — menjaju se samo odeljci na koje odgovorite, a sve ostalo u njemu, uključujući komentare, ostaje.}
 ::msgcat::mcset sr_latn {Ticket needed} {Potrebna je karta}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset sr_latn {Topic for %s} {Tema za %s}
 ::msgcat::mcset sr_latn {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {Dodirnite i zadržite sesiju, ili bilo šta drugo što ima meni, da otvorite meni. Dodir izvan njega, ili Nazad, ga zatvara.}
 ::msgcat::mcset sr_latn {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {Dodirnite i zadržite reč da je izaberete. Kad podignete prst, otvara se njen meni, sa Kopiraj na vrhu.}
+::msgcat::mcset sr_latn Translate Prevedi
+::msgcat::mcset sr_latn {Translate selection} {Prevedi izbor}
+::msgcat::mcset sr_latn Translating… Prevođenje…
+::msgcat::mcset sr_latn {Translation cancelled.} {Prevođenje otkazano.}
+::msgcat::mcset sr_latn {Translation copied.} {Prevod je kopiran.}
+::msgcat::mcset sr_latn {Translation failed} {Prevođenje nije uspelo}
+::msgcat::mcset sr_latn {Translation result} {Rezultat prevoda}
+::msgcat::mcset sr_latn {Translator configuration unavailable} {Podešavanje prevodioca nije dostupno}
 ::msgcat::mcset sr_latn {Trigger history} {Istorijat okidača}
 ::msgcat::mcset sr_latn Triggers Okidači
 ::msgcat::mcset sr_latn {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {Okidači reaguju na događaje u kanalu bez okreta. slopdrop prosleđuje događaj mostu i prenosi odgovor; vision opisuje URL slike u okviru cooldown-a i satnog ograničenja. Red se aktivira samo tamo gde i prekidač [triggers] u konfigu i izvedena maska to dozvoljavaju — #coven ne prosleđuje ništa pod aktivnim slopdrop vezama.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset sr_latn {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Dok IRC_ALLOWED_USERS u .env ne navede vaš nalog, svako na mreži može da razgovara sa botom — a bez odeljka [acl] kao vlasnik, sa svim alatima.}
 ::msgcat::mcset sr_latn {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Dok TELEGRAM_ALLOWED_USERS u .env ne navede vaš korisnički ID, svako ko pronađe bota može da razgovara s njim — a bez odeljka [acl] kao vlasnik, sa svim alatima.}
 ::msgcat::mcset sr_latn Untitled {Bez naslova}
+::msgcat::mcset sr_latn {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Doprinos uzvodno je izričita radnja objavljivanja, a ne automatsko otpremanje. U Upravljanju ekstenzijama, Doprinos prikazuje sve korisničke ekstenzije: izaberite ekstenzije i datoteke, pregledajte diff i skeniranje tajni, pokrenite provere, pa napravite jednu granu i jedan PR (podrazumevano ka veles-u) sa svojim git identitetom. Svaka ekstenzija ide u svoj direktorijum u repozitorijumu, a postojeća datoteka tamo se zamenjuje samo posle posebne potvrde. Nikada ne objavljujte node.toml, lokalne akreditive, tokene, privatne endpoint-e ili nepovezano stanje plugin-a. Lokalni snimci za oporavak nisu uzvodni komit niti PR.}
+::msgcat::mcset sr_latn {Upstream repository or fork URL} {Upstream repozitorijum ili URL forka}
+::msgcat::mcset sr_latn {Uptime class} {Klasa neprekidnog rada}
+::msgcat::mcset sr_latn {Uptime: host %1$s, gateway %2$s} {Vreme rada: host %1$s, gateway %2$s}
 ::msgcat::mcset sr_latn Usage Upotreba
 ::msgcat::mcset sr_latn {Usage & Quota} {Upotreba i kvota}
 ::msgcat::mcset sr_latn {Use TLS} {Koristi TLS}
 ::msgcat::mcset sr_latn {Use now} {Iskoristi sada}
+::msgcat::mcset sr_latn {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {Koristite dugmad Vodič za autore i API referenca za stvarne ugovore. Preklop Plugins navodi aktivne hook-ove; servisi i tačke za pregazivanje dolaze iz sopstvenog registra gateway-a, ne iz kopirane liste u ovom vodiču.}
 ::msgcat::mcset sr_latn {Use this ticket} {Koristi ovu kartu}
+::msgcat::mcset sr_latn {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {Koristite svoj fork (https://github.com/<you>/veles.git ili git@github.com:<you>/veles.git) osim ako možete da šaljete direktno u veles. Izabrani repozitorijum se klonira u izolovan worktree. Ništa se ne šalje.}
 ::msgcat::mcset sr_latn {Users — one role across networks and platforms} {Korisnici — jedna uloga na svim mrežama i platformama}
 ::msgcat::mcset sr_latn {Using the phone, for the agent} {Korišćenje telefona, za agenta}
 ::msgcat::mcset sr_latn {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Obično isto kao ime provider unosa. Na Skip izboru ostavi oba prazna — napola popunjen par ne rutira.}
 ::msgcat::mcset sr_latn {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Vrednosti su TOML: niske u navodnicima, brojevi ili liste. Upisuju se u [mcp_servers.<name>] — tvoji komentari i sve ostale sekcije ostaju netaknuti.}
+::msgcat::mcset sr_latn Vault Trezor
 ::msgcat::mcset sr_latn {Verified signed bundle installed. Restart the gateway before using the new core.} {Verifikovani potpisani paket je instaliran. Ponovo pokrenite gateway pre korišćenja novog jezgra.}
 ::msgcat::mcset sr_latn {Verified signed release — not installed yet} {Verifikovano potpisano izdanje — još nije instalirano}
 ::msgcat::mcset sr_latn {Verify and review release…} {Verifikuj i pregledaj izdanje…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset sr_latn {Verify signed release} {Verifikuj potpisano izdanje}
 ::msgcat::mcset sr_latn {Verify signed release…} {Verifikuj potpisano izdanje…}
 ::msgcat::mcset sr_latn Version Verzija
+::msgcat::mcset sr_latn {Version %1$s: %2$s} {Verzija %1$s: %2$s}
+::msgcat::mcset sr_latn {Version drift in the registry: %s} {Odstupanje verzija u registru: %s}
 ::msgcat::mcset sr_latn View Prikaz
 ::msgcat::mcset sr_latn {View markdown source} {Prikaži markdown izvor}
 ::msgcat::mcset sr_latn {View source / rendered} {Izvor / prikazano}
 ::msgcat::mcset sr_latn Voice {Daj voice}
+::msgcat::mcset sr_latn {Waiting for the model…} {Čekam model…}
+::msgcat::mcset sr_latn {Waiting for the model… Nothing has been written.} {Čekam model… Ništa nije zapisano.}
 ::msgcat::mcset sr_latn {Welcome to veles} {Dobrodošao u veles}
 ::msgcat::mcset sr_latn {What the agent can do here} {Šta agent ovde može da radi}
 ::msgcat::mcset sr_latn {What veles may do on this phone. Each button opens the Android setting that changes it.} {Šta veles sme da radi na ovom telefonu. Svako dugme otvara podešavanje Androida koje to menja.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset sr_latn {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {Dok je veles u pozadini, pitanje agenta ili završeni potez postaje obaveštenje; dodirnite ga da otvorite sesiju.}
 ::msgcat::mcset sr_latn {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {Ko sme da priča sa botom. Ovaj izbor odlučuje da li config.toml uopšte nosi [acl] sekciju — i to preokreće celu postavku.}
 ::msgcat::mcset sr_latn Whois Whois
-::msgcat::mcset sr_latn {Wire protocol (chat_completions or responses)} {Wire protokol (chat_completions ili responses)}
+::msgcat::mcset sr_latn {Wire protocol (chat_completions, responses or plugin)} {Wire protokol (chat_completions, responses ili plugin)}
 ::msgcat::mcset sr_latn {With a keyboard attached, every key works as on a laptop.} {Sa priključenom tastaturom svaki taster radi kao na laptopu.}
 ::msgcat::mcset sr_latn {Workflow SHA} {Workflow SHA}
+::msgcat::mcset sr_latn {Workflow commit} {Komit radnog toka}
+::msgcat::mcset sr_latn Worktree Worktree
 ::msgcat::mcset sr_latn {Write it} Zapiši
+::msgcat::mcset sr_latn {Write the design question first.} {Prvo napišite pitanje o dizajnu.}
 ::msgcat::mcset sr_latn {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Ne upisuje nijedan provider. Gateway neće rutirati turn dok ne postoje [[custom_providers]] unos i [model] par.}
 ::msgcat::mcset sr_latn {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Upisivanje BILO KOG ključa u [acl] prebacuje ovaj prolaz u kurirani režim: podrazumevana uloga postaje guest (fail-closed), a liste dozvoljenih više nisu granica. Birajte ovo samo sa identitetom vlasnika kome verujete.}
 ::msgcat::mcset sr_latn {[model] provider} {[model] provider}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset sr_latn {also list hooks with no handler} {takođe prikaži hookove bez handlera}
 ::msgcat::mcset sr_latn {also write grants that still have an expiry} {takođe upiši i dodele koje još imaju rok}
 ::msgcat::mcset sr_latn {also write runtime users} {takođe upiši i runtime korisnike}
+::msgcat::mcset sr_latn {an allowlist entry is removed by editing config.toml} {stavka allowlist-e uklanja se izmenom config.toml}
 ::msgcat::mcset sr_latn {an allowlist is in force: a plugin not on it stays off} {na snazi je bela lista: dodatak koji nije na njoj ostaje isključen}
 ::msgcat::mcset sr_latn {answer failed: %s} {odgovor neuspešan: %s}
+::msgcat::mcset sr_latn {answer only, nothing to apply} {samo odgovor, nema šta da se primeni}
 ::msgcat::mcset sr_latn {append these rules to config.toml} {dodaj ova pravila u config.toml}
 ::msgcat::mcset sr_latn {apply failed: %s} {primena neuspešna: %s}
 ::msgcat::mcset sr_latn {apply to:} {primeni na:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {ask the agent} {da pita agenta}
 ::msgcat::mcset sr_latn {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset sr_latn {asked by: %s} {pitao: %s}
+::msgcat::mcset sr_latn {asking %s for its metrics…} {tražim metrike od %s…}
 ::msgcat::mcset sr_latn {attach a file} {prikači fajl}
 ::msgcat::mcset sr_latn {attach an image or file} {priloži sliku ili datoteku}
 ::msgcat::mcset sr_latn {attach failed: %1$s} {prikačivanje nije uspelo: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset sr_latn {attached %1$s (%2$s pending)} {prikačeno %1$s (%2$s na čekanju)}
 ::msgcat::mcset sr_latn {attached to %s} {prikačeno na %s}
 ::msgcat::mcset sr_latn {attached to child session %1$s} {prikačeno na podsesiju %1$s}
+::msgcat::mcset sr_latn automatic automatski
 ::msgcat::mcset sr_latn {aux model} {aux model}
 ::msgcat::mcset sr_latn {aux provider} {aux provider}
+::msgcat::mcset sr_latn available dostupno
 ::msgcat::mcset sr_latn {available components} {dostupne komponente}
 ::msgcat::mcset sr_latn {back up N user turns} {vrati se N korisničkih poteza}
 ::msgcat::mcset sr_latn {backed up the previous config to %s} {bekapovao prethodni config u %s}
 ::msgcat::mcset sr_latn {background shells; /shells output|kill <id>} {shellovi u pozadini; /shells output|kill <id>}
+::msgcat::mcset sr_latn {backing off: %1$s failure(s), next automatic try in %2$s s} {odlaganje: %1$s neuspeha, sledeći automatski pokušaj za %2$s s}
 ::msgcat::mcset sr_latn {bad host for %1$s: %2$s} {loš host za %1$s: %2$s}
 ::msgcat::mcset sr_latn {bad unit for %1$s: %2$s} {loš unit za %1$s: %2$s}
 ::msgcat::mcset sr_latn {bare display off} {goli prikaz isključen}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset sr_latn {browse the filesystem} {pregledaj sistem datoteka}
 ::msgcat::mcset sr_latn {browse the repo's files} {pregledaj fajlove repozitorijuma}
 ::msgcat::mcset sr_latn {builtin (%s):} {ugrađeno (%s):}
+::msgcat::mcset sr_latn bundled ugrađen
+::msgcat::mcset sr_latn {bundled, read-only} {ugrađen, samo za čitanje}
 ::msgcat::mcset sr_latn by ko
 ::msgcat::mcset sr_latn {by plan — all sessions} {po planu — sve sesije}
 ::msgcat::mcset sr_latn {by plan — this session} {po planu — ova sesija}
 ::msgcat::mcset sr_latn {by tool} {po alatu}
 ::msgcat::mcset sr_latn {cancel failed: %1$s} {otkazivanje neuspešno: %1$s}
 ::msgcat::mcset sr_latn {cancel the running turn} {otkaži tekući odgovor}
+::msgcat::mcset sr_latn {cancel the selected task} {otkaži izabrani zadatak}
 ::msgcat::mcset sr_latn {cancelled task %1$s} {zadatak %1$s otkazan}
 ::msgcat::mcset sr_latn {cannot list scripts (gateway offline?)} {ne mogu da izlistam skripte (je li gateway offline?)}
 ::msgcat::mcset sr_latn {cannot reach the gateway: %s} {ne mogu da dohvatim gateway: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset sr_latn commit Komituj
 ::msgcat::mcset sr_latn {compacting %s messages in the background — the transcript reloads when it finishes} {kompaktujem %s poruka u pozadini — transkript se ponovo učitava kad završi}
 ::msgcat::mcset sr_latn compacting… sažimanje…
+::msgcat::mcset sr_latn {comparing the nodes' versions and config…} {upoređujem verzije i konfiguraciju čvorova…}
 ::msgcat::mcset sr_latn {completion tokens} {tokeni završetka}
 ::msgcat::mcset sr_latn {component options and declared actions} {opcije komponente i prijavljene akcije}
 ::msgcat::mcset sr_latn composer kompozitor
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {could not open %s} {nije moguće otvoriti %s}
 ::msgcat::mcset sr_latn {could not open %s (no working browser opener)} {nije moguće otvoriti %s (nema ispravnog otvarača pregledača)}
 ::msgcat::mcset sr_latn {could not open %{url}: %{e}} {nije moguće otvoriti %{url}: %{e}}
+::msgcat::mcset sr_latn {could not open the optional referral link: %s} {nije moguće otvoriti opcioni link za registraciju: %s}
 ::msgcat::mcset sr_latn {could not read %s: %s} {nije moguće pročitati %s: %s}
 ::msgcat::mcset sr_latn {could not read the current route} {nije moguće pročitati trenutnu rutu}
 ::msgcat::mcset sr_latn {could not save this session's language: %{e}} {jezik ove sesije nije moguće sačuvati: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {ctxmenu: no widget %s (attached too early?)} {ctxmenu: nema widgeta %s (prikačeno prerano?)}
 ::msgcat::mcset sr_latn {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {izabran je kurirani pristup bez identiteta vlasnika, pa [acl] ostaje neaktivan — navedite ga, npr. telegram:123456 ili irc:account, da biste ga uključili}
 ::msgcat::mcset sr_latn {current theme: %{name} · /theme <name>} {trenutna tema: %{name} · /theme <name>}
+::msgcat::mcset sr_latn {cursor %1$s of %2$s (%3$s behind)} {kursor %1$s od %2$s (%3$s zaostaje)}
 ::msgcat::mcset sr_latn {custom command /%s…} {sopstvena komanda /%s…}
 ::msgcat::mcset sr_latn {custom commands (.veles/commands/) and config aliases} {sopstvene komande (.veles/commands/) i alijasi iz konfiguracije}
 ::msgcat::mcset sr_latn {cycle ends} {kraj ciklusa}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset sr_latn doctor_resident {stalno u svakom promptu: %{shown} od %{total} znakova (~%{tokens} tokena) — ostatak se učitava po potrebi sa: memory action=read path=%{path}}
 ::msgcat::mcset sr_latn doctor_title {dijagnostika memorije}
 ::msgcat::mcset sr_latn doctor_total {ukupno: %{chars} znakova u %{files} datoteka (~%{tokens} tokena)}
+::msgcat::mcset sr_latn {documentation is not in this source checkout: %s} {dokumentacija nije u ovom izvornom checkoutu: %s}
 ::msgcat::mcset sr_latn done gotovo
 ::msgcat::mcset sr_latn {done · %1$s/%2$s} {gotovo · %1$s/%2$s}
 ::msgcat::mcset sr_latn {done, but the model returned no text} {gotovo, ali model nije vratio tekst}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset sr_latn {evaluate Tcl and answer with the result — no model turn} {izvrši Tcl i odgovori rezultatom — bez poteza modela}
 ::msgcat::mcset sr_latn everyone svi
 ::msgcat::mcset sr_latn everywhere svuda
+::msgcat::mcset sr_latn {exchanging registry gossip…} {razmenjujem gosip registra…}
 ::msgcat::mcset sr_latn exit izlaz
 ::msgcat::mcset sr_latn {exit veles-desktop} {izlaz iz veles-desktop}
 ::msgcat::mcset sr_latn {export failed: %s} {izvoz nije uspeo: %s}
 ::msgcat::mcset sr_latn {export session} {izvezi sesiju}
 ::msgcat::mcset sr_latn {exported to %s} {izvezeno u %s}
+::msgcat::mcset sr_latn {extension architecture, examples and LSP help} {arhitektura ekstenzija, primeri i LSP pomoć}
+::msgcat::mcset sr_latn {extension development guide} {vodič za razvoj ekstenzija}
+::msgcat::mcset sr_latn failed neuspešno
 ::msgcat::mcset sr_latn {failed to load history: %s} {neuspešno učitavanje istorije: %s}
 ::msgcat::mcset sr_latn {failed to paint cached history: %s} {neuspešno iscrtavanje keširane istorije: %s}
 ::msgcat::mcset sr_latn {failed to paint replayed history: %s} {neuspešno iscrtavanje replay istorije: %s}
 ::msgcat::mcset sr_latn {failed: %s} {neuspešno: %s}
+::msgcat::mcset sr_latn {failing — heartbeating, but a sync push or the last probe failed} {neuspešan — otkucaji stižu, ali sync slanje ili poslednja provera nije uspela}
 ::msgcat::mcset sr_latn {failover blueprint: cannot reach the gateway} {failover blueprint: gateway je nedostupan}
 ::msgcat::mcset sr_latn {failover graph unavailable: %1$s} {failover graf nedostupan: %1$s}
 ::msgcat::mcset sr_latn {failover script: cannot reach the gateway} {failover skripta: gateway je nedostupan}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {fire the Tcl hook} {okini Tcl hook}
 ::msgcat::mcset sr_latn {fires for %s:} {okida se za %s:}
 ::msgcat::mcset sr_latn {fires per hour} {okida se na sat}
+::msgcat::mcset sr_latn {fleet drift} {odstupanje flote}
 ::msgcat::mcset sr_latn {focus composer} {fokusiraj composer}
 ::msgcat::mcset sr_latn {focus failed: %{e}} {fokus nije uspeo: %{e}}
 ::msgcat::mcset sr_latn {focus next region} {fokusiraj sledeću regiju}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset sr_latn {four splits is the maximum} {maksimum su četiri podele}
 ::msgcat::mcset sr_latn {fresh session} {nova sesija}
 ::msgcat::mcset sr_latn {fresh session (Ctrl-N too)} {nova sesija (i Ctrl-N)}
+::msgcat::mcset sr_latn {fresh — heartbeating, sync passing} {svež — otkucaji stižu, sync prolazi}
+::msgcat::mcset sr_latn from iz
 ::msgcat::mcset sr_latn {from node %{node}} {sa čvora %{node}}
 ::msgcat::mcset sr_latn {gateway     v%1$s · up %2$s} {gateway     v%1$s · aktivan %2$s}
 ::msgcat::mcset sr_latn {gateway unreachable — is `veles gateway run` up?} {gateway nedostupan — da li je `veles gateway run` pokrenut?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {in %s} {u %s}
 ::msgcat::mcset sr_latn {insert the next key literally (^B bold, ^C colour, ^O reset)} {unesi sledeći taster doslovno (^B podebljano, ^C boja, ^O reset)}
 ::msgcat::mcset sr_latn {inserted %s} {ubaceno %s}
+::msgcat::mcset sr_latn {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {pregledaj klaster; eksplicitno gurni/primeni sinhronizaciju store-a, memorije, konfiguracije ili trezora; zaboravi zastareo čvor na nivou cele flote; pročitaj kraj dnevnika ili metrike čvora; uporedi verzije i konfiguraciju; gosip sada}
 ::msgcat::mcset sr_latn {inspector — app internals · core state · gw plugins} {inspektor — unutrašnjost aplikacije · stanje jezgra · gw dodaci}
 ::msgcat::mcset sr_latn {install a plugin from a git URL} {instaliraj dodatak sa git URL-a}
 ::msgcat::mcset sr_latn {install a skill from a git URL} {instaliraj veštinu sa git URL-a}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset sr_latn instance instanca
 ::msgcat::mcset sr_latn {instance controls} {kontrole instance}
 ::msgcat::mcset sr_latn {instance detail} {detalji instance}
+::msgcat::mcset sr_latn {instance names may not start with "cluster:" or "g:": %s} {imena instanci ne mogu počinjati sa "cluster:" ili "g:": %s}
 ::msgcat::mcset sr_latn {instance needs a name} {instanca mora imati ime}
 ::msgcat::mcset sr_latn {instance unreachable} {instanca nedostupna}
 ::msgcat::mcset sr_latn instances instance
 ::msgcat::mcset sr_latn interrupting… prekidam…
+::msgcat::mcset sr_latn into u
 ::msgcat::mcset sr_latn {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset sr_latn {irc: %s} {irc: %s}
 ::msgcat::mcset sr_latn {irc: %s failed — %s} {irc: %s neuspešno — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset sr_latn {language list} {lista jezika}
 ::msgcat::mcset sr_latn {language picker (the swap for THIS window)} {birač jezika (zamena za OVaj prozor)}
 ::msgcat::mcset sr_latn {language saved: %s} {jezik sačuvan: %s}
+::msgcat::mcset sr_latn {language server} {jezički server}
+::msgcat::mcset sr_latn {language server: event stream unavailable: %s} {jezički server: tok događaja nije dostupan: %s}
+::msgcat::mcset sr_latn {language server: not started on the gateway — %s} {jezički server: nije pokrenut na gateway-u — %s}
+::msgcat::mcset sr_latn {language server: the gateway would not start one: %s} {jezički server: gateway nije hteo da ga pokrene: %s}
 ::msgcat::mcset sr_latn {language swapped: %1$s ⇄ %2$s} {jezici zamenjeni: %1$s ⇄ %2$s}
 ::msgcat::mcset sr_latn {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {jezik → %1$s (bio %2$s) · samo za aktivni prozor — Save as default upisuje config.toml}
 ::msgcat::mcset sr_latn {language: %s} {jezik: %s}
 ::msgcat::mcset sr_latn {last error} {poslednja greška}
+::msgcat::mcset sr_latn {last pass %1$s at %2$s: %3$s} {poslednji prolaz %1$s u %2$s: %3$s}
 ::msgcat::mcset sr_latn {last reply copied (%s chars)} {poslednji odgovor kopiran (%s znakova)}
 ::msgcat::mcset sr_latn {layout not saved: %s} {raspored nije sačuvan: %s}
 ::msgcat::mcset sr_latn {leave (cancels a running turn first)} {izađi (prvo otkazuje potez u toku)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {list sessions} {spisak sesija}
 ::msgcat::mcset sr_latn {list skills} {spisak veština}
 ::msgcat::mcset sr_latn {list tools} {spisak alata}
+::msgcat::mcset sr_latn {listed here only; [notify] fleet_alerts is off} {prikazano samo ovde; [notify] fleet_alerts je isključen}
 ::msgcat::mcset sr_latn {live patching ARMED} {live patching AKTIVIRAN}
 ::msgcat::mcset sr_latn {live patching ARMED — an agent can now redefine procs in this window} {live patching AKTIVIRAN — agent sada može da ponovo definiše procs-ove u ovom prozoru}
 ::msgcat::mcset sr_latn {live patching disarmed} {live patching deaktiviran}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset sr_latn {log pane shown} {log panel prikazan}
 ::msgcat::mcset sr_latn {log: %s} {log: %s}
 ::msgcat::mcset sr_latn {make media: image/video/audio, route = comfyui or provider[/model]} {napravi medije: image/video/audio, ruta = comfyui ili provider[/model]}
+::msgcat::mcset sr_latn {managed via %s} {upravlja se preko %s}
+::msgcat::mcset sr_latn {manual only} {samo ručno}
 ::msgcat::mcset sr_latn {mark set} {mark postavljen}
 ::msgcat::mcset sr_latn {mark whole buffer (emacs select-all)} {označi ceo bafer (emacs select-all)}
 ::msgcat::mcset sr_latn {markdown preview of the composer} {markdown pregled kompozera}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset sr_latn model model
 ::msgcat::mcset sr_latn {model aliases} {model aliasi}
 ::msgcat::mcset sr_latn {monitor %1$s fired} {monitor %1$s se aktivirao}
-::msgcat::mcset sr_latn monitors monitori
 ::msgcat::mcset sr_latn monitors_header monitori:
 ::msgcat::mcset sr_latn monitors_none {(nema monitora — model ih pokreće pomoću monitor tool)}
 ::msgcat::mcset sr_latn {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {pomeri sesiju (i njeno podstablo) na drugi čvor bazena na granici poteza; zavrži/opozovi parkirano predavanje; pitaj ko je vlasnik sesije (admin)}
 ::msgcat::mcset sr_latn {move the running foreground command to the background} {premesti komandu iz prvog plana u pozadinu}
 ::msgcat::mcset sr_latn {move the running foreground command to the background (keeps running)} {prebaci tekuću komandu u pozadinu (nastavlja da radi)}
+::msgcat::mcset sr_latn {move this session's running foreground command to a background shell; keeps running} {premešta pokrenutu komandu ove sesije iz prednjeg plana u pozadinski shell; nastavlja da radi}
 ::msgcat::mcset sr_latn {moving around} kretanje
 ::msgcat::mcset sr_latn name ime
 ::msgcat::mcset sr_latn {name a key first} {prvo daj ključu ime}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {neon impressionism} {neon impresionizam}
 ::msgcat::mcset sr_latn {network (optional — e.g. libera; empty = any)} {mreža (opciono — npr. libera; prazno = bilo koja)}
 ::msgcat::mcset sr_latn {network to scope the grant to} {mreža na koju se dodela ograničava}
+::msgcat::mcset sr_latn new novo
 ::msgcat::mcset sr_latn {new buffer} {novi bafer}
 ::msgcat::mcset sr_latn {new entry — replace this text, then Save} {novi unos — zameni ovaj tekst, pa Save}
 ::msgcat::mcset sr_latn {new name for %s} {novo ime za %s}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {no IRC buffer selected} {nijedan IRC buffer nije izabran}
 ::msgcat::mcset sr_latn {no MCP servers configured — Add server… writes one into config.toml} {nijedan MCP server nije konfigurisan — Add server… upisuje jedan u config.toml}
 ::msgcat::mcset sr_latn {no URLs in this buffer} {nema URL-ova u ovom bufferu}
+::msgcat::mcset sr_latn {no [a2a_agents] entry — this peer cannot be dialed} {nema stavke [a2a_agents] — ovaj peer se ne može pozvati}
 ::msgcat::mcset sr_latn {no alias /%s} {nema aliasa /%s}
 ::msgcat::mcset sr_latn {no background refresh} {nema pozadinskog osvežavanja}
 ::msgcat::mcset sr_latn {no buffer %s} {nema buffera %s}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset sr_latn {no code block in the last reply} {nema kod bloka u poslednjem odgovoru}
 ::msgcat::mcset sr_latn {no cron jobs} {nema cron poslova}
 ::msgcat::mcset sr_latn {no cron jobs — New… creates one} {nema cron poslova — New… kreira jedan}
+::msgcat::mcset sr_latn {no exchange yet} {još nema razmene}
 ::msgcat::mcset sr_latn {no file — pick a guts file or type a path} {nema fajla — izaberi guts fajl ili ukucaj putanju}
 ::msgcat::mcset sr_latn {no handler} {nema handlera}
+::msgcat::mcset sr_latn {no heartbeat for %{mins} min} {nema otkucaja već %{mins} min}
+::msgcat::mcset sr_latn {no heartbeat within the threshold} {nema otkucaja u okviru praga}
 ::msgcat::mcset sr_latn {no history yet} {još nema istorije}
 ::msgcat::mcset sr_latn {no host configured for this instance} {nijedan host nije konfigurisan za ovu instancu}
 ::msgcat::mcset sr_latn {no instance selected} {nijedna instanca nije izabrana}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset sr_latn {no program to open URLs} {nema programa za otvaranje URL-ova}
 ::msgcat::mcset sr_latn {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {nijedan provajder nije podešen — dodajte zapis u [[custom_providers]] i postavite par [model] pre pokretanja poteza}
 ::msgcat::mcset sr_latn {no reading yet — press Refresh} {još nema očitavanja — pritisni Refresh}
-::msgcat::mcset sr_latn {no running tasks} {nema aktivnih zadataka}
 ::msgcat::mcset sr_latn {no sample available} {nema dostupnog uzorka}
 ::msgcat::mcset sr_latn {no search bar on this surface} {nema trake za pretragu na ovom frontendu}
 ::msgcat::mcset sr_latn {no session matching %s} {nijedna sesija ne odgovara %s}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset sr_latn {no session open — switch the scope to the default, or open a session} {nema otvorene sesije — prebaci opseg na default, ili otvori sesiju}
 ::msgcat::mcset sr_latn {no session open — the catalogue needs one; the default scope still works from config.toml} {nema otvorene sesije — katalog traži jednu; default opseg i dalje radi iz config.toml}
 ::msgcat::mcset sr_latn {no setting %s — try filter or bare} {nema podešavanja %s — probaj filter ili bare}
+::msgcat::mcset sr_latn {no shells or monitors to show} {nema šelova ni monitora za prikaz}
 ::msgcat::mcset sr_latn {no skills found} {nema pronađenih veština}
 ::msgcat::mcset sr_latn {no such URL — /urls lists them} {ne postoji takav URL — /urls ih listira}
 ::msgcat::mcset sr_latn {no such file: %s} {fajl ne postoji: %s}
 ::msgcat::mcset sr_latn {no swap target yet — set one with /locale secondary <id>} {još nema cilja zamene — postavi ga sa /locale secondary <id>}
+::msgcat::mcset sr_latn {no task selected} {nije izabran zadatak}
 ::msgcat::mcset sr_latn {no triggers} {nema okidača}
 ::msgcat::mcset sr_latn {no triggers — New… creates one} {nema okidača — New… kreira jedan}
 ::msgcat::mcset sr_latn {no upstream reading for %s} {nema očitavanja sa izvora za %s}
 ::msgcat::mcset sr_latn {no word match} {nema poklapanja reči}
 ::msgcat::mcset sr_latn {no xdg-open — path copied instead} {nema xdg-open — putanja je umesto toga kopirana}
+::msgcat::mcset sr_latn {node log} {dnevnik čvora}
 ::msgcat::mcset sr_latn {none loaded} {ništa nije učitano}
 ::msgcat::mcset sr_latn {none recorded} {nijedan nije zabeležen}
+::msgcat::mcset sr_latn {none since this gateway started} {nema ničega od pokretanja ovog gateway-a}
 ::msgcat::mcset sr_latn {none yet} {još nema}
 ::msgcat::mcset sr_latn {normie is pure Ctrl — no emacs prefix chords.} {normie je čist Ctrl — bez emacs prefiks akorda.}
 ::msgcat::mcset sr_latn {normie: select all · emacs: start of line} {normie: selektuj sve · emacs: početak reda}
 ::msgcat::mcset sr_latn {not a channel} {nije kanal}
 ::msgcat::mcset sr_latn {not a key = value line: %s} {nije red ključ = vrednost: %s}
+::msgcat::mcset sr_latn {not a node in the attached gateway's cluster registry: %s} {nije čvor u registru klastera prikačenog gateway-a: %s}
 ::msgcat::mcset sr_latn {not a number} {nije broj}
 ::msgcat::mcset sr_latn {not a valid http(s) url: %s} {nije validan http(s) url: %s}
 ::msgcat::mcset sr_latn {not a valid ssh host: %s} {nije validan ssh host: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {not attached to a gateway} {nije prikačeno na gateway}
 ::msgcat::mcset sr_latn {not configured} {nije konfigurisano}
 ::msgcat::mcset sr_latn {not ignoring %s} {ne zanemarujem %s}
+::msgcat::mcset sr_latn {not installed} {nije instalirano}
 ::msgcat::mcset sr_latn {not reported} {nije prijavljeno}
 ::msgcat::mcset sr_latn {not running} {nije pokrenuto}
 ::msgcat::mcset sr_latn {not set in config.toml — the built-in default applies. %s} {nije postavljeno u config.toml — primenjuje se ugrađeni default. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset sr_latn off isključeno
 ::msgcat::mcset sr_latn {off (the default)} {isključeno (podrazumevano)}
 ::msgcat::mcset sr_latn offline {van mreže}
+::msgcat::mcset sr_latn ok ok
 ::msgcat::mcset sr_latn on uključeno
 ::msgcat::mcset sr_latn {on (the default)} {uključeno (podrazumevano)}
 ::msgcat::mcset sr_latn {on failure} {pri neuspehu}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {open links} {da otvara veze}
 ::msgcat::mcset sr_latn {open the engine log} {otvori dnevnik motora}
 ::msgcat::mcset sr_latn {open the joined session before /leave (on %s)} {otvori priključenu sesiju pre /leave (na %s)}
+::msgcat::mcset sr_latn {open the selected child session} {otvori izabranu podsesiju}
 ::msgcat::mcset sr_latn {open the selected skill in the Dev editor} {otvori izabranu veštinu u Dev editoru}
 ::msgcat::mcset sr_latn {open the setup wizard (re-runnable; edits config.toml in place)} {otvori čarobnjak za podešavanje (može ponovo; uređuje config.toml na mestu)}
 ::msgcat::mcset sr_latn {open the share sheet} {da otvori meni za deljenje}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {override cleared — the default applies} {override uklonjen — primenjuje se default}
 ::msgcat::mcset sr_latn {override failed: %s} {override neuspešan: %s}
 ::msgcat::mcset sr_latn {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {ACL ne može da upari identitet vlasnika %{id} — koristite telegram:<brojčani ID>, irc:<nalog na services> ili masku nick!user@host}
+::msgcat::mcset sr_latn owner/repository vlasnik/repozitorijum
 ::msgcat::mcset sr_latn {owners: %s} {vlasnici: %s}
 ::msgcat::mcset sr_latn {pair a desktop with this agent} {upari desktop sa ovim agentom}
 ::msgcat::mcset sr_latn {partly failed: %s} {delimično neuspešno: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset sr_latn plugin plugin
 ::msgcat::mcset sr_latn {plugin directory git history} {git istorija direktorijuma plugina}
 ::msgcat::mcset sr_latn {plugin list} {lista plugina}
+::msgcat::mcset sr_latn {plugin provider driver} {draver provajdera plugin-a}
 ::msgcat::mcset sr_latn {plugins reloaded on %s} {pluginovi ponovo učitani na %s}
 ::msgcat::mcset sr_latn {pop %s out into its own window} {izdvoji %s u zaseban prozor}
 ::msgcat::mcset sr_latn {pop the buffer out into its own window} {izdvoji bafer u zaseban prozor}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset sr_latn {prefix: window & dock commands} {prefiks: komande za prozor i dok}
 ::msgcat::mcset sr_latn {press Attach in the Instances tab} {pritisnite Attach u kartici Instances}
 ::msgcat::mcset sr_latn preview pregled
+::msgcat::mcset sr_latn {preview an AI extension change and explicitly apply its diff} {pregled AI izmene ekstenzije i izričita primena njenog diffa}
 ::msgcat::mcset sr_latn {preview failed: %s} {pregled nije uspeo: %s}
 ::msgcat::mcset sr_latn {previous buffer} {prethodni bafer}
 ::msgcat::mcset sr_latn {previous command was not a yank} {prethodna komanda nije bila yank}
 ::msgcat::mcset sr_latn {previous match} {prethodno poklapanje}
 ::msgcat::mcset sr_latn {previous session} {prethodna sesija}
+::msgcat::mcset sr_latn {probing %s…} {proveravam %s…}
 ::msgcat::mcset sr_latn {proc body} {telo procedure}
 ::msgcat::mcset sr_latn {profile unavailable: %s} {profil nedostupan: %s}
 ::msgcat::mcset sr_latn profiles: profilii:
 ::msgcat::mcset sr_latn prompt prompt
 ::msgcat::mcset sr_latn {prompt breakdown} {raščlanjivanje prompta}
 ::msgcat::mcset sr_latn {prompt tokens} {prompt tokeni}
+::msgcat::mcset sr_latn {proposal only, not applied} {samo predlog, nije primenjen}
 ::msgcat::mcset sr_latn provider provajder
 ::msgcat::mcset sr_latn {provider / model} {provajder / model}
 ::msgcat::mcset sr_latn {provider base URL} {provider base URL}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {re-sync the slopdrop state mirror} {ponovo sinhronizuj slopdrop ogledalo stanja}
 ::msgcat::mcset sr_latn {read and set the clipboard} {da čita i postavlja privremenu memoriju}
 ::msgcat::mcset sr_latn {read text aloud} {da čita tekst naglas}
+::msgcat::mcset sr_latn {read-only: [approvals] allowlist} {samo za čitanje: allowlist-a [approvals]}
 ::msgcat::mcset sr_latn {read-only: this session lives on %1$s (as read at %2$s)} {samo za čitanje: ova sesija je na %1$s (stanje pročitano u %2$s)}
 ::msgcat::mcset sr_latn {read-only: this skill comes from the %s library} {samo za čitanje: ova veština dolazi iz %s biblioteke}
 ::msgcat::mcset sr_latn reasoning rezonovanje
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {refused to open %s (only http, https, mailto)} {odbijeno otvaranje %s (samo http, https, mailto)}
 ::msgcat::mcset sr_latn {refused: %s} {odbijeno: %s}
 ::msgcat::mcset sr_latn {region copied} {region kopiran}
+::msgcat::mcset sr_latn registered registrovan
 ::msgcat::mcset sr_latn {registry not saved: %s} {registar nije sačuvan: %s}
 ::msgcat::mcset sr_latn {reload on %1$s failed: %2$s} {ponovno učitavanje na %1$s nije uspelo: %2$s}
 ::msgcat::mcset sr_latn {reload the mechanisms} {ponovo učitaj mehanizme}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset sr_latn {resume a session (prefix ok)} {nastavi sesiju (dovoljan je prefiks)}
 ::msgcat::mcset sr_latn {retry failed: %s} {ponovni pokušaj nije uspeo: %s}
 ::msgcat::mcset sr_latn {retrying last prompt…} {ponavljam poslednji prompt…}
+::msgcat::mcset sr_latn {review files for an explicit upstream contribution} {pregled datoteka za izričiti doprinos upstreamu}
+::msgcat::mcset sr_latn {review standing global and session tool permissions} {pregledaj stalne globalne i sesijske dozvole za alate}
 ::msgcat::mcset sr_latn revision revizija
 ::msgcat::mcset sr_latn {revision history} {istorija revizija}
+::msgcat::mcset sr_latn {revoke refused} {oduzimanje odbijeno}
 ::msgcat::mcset sr_latn {revoke the selected identity's grant} {opozovi dozvolu izabranog identiteta}
 ::msgcat::mcset sr_latn role uloga
 ::msgcat::mcset sr_latn {role to grant} {uloga za dodelu}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {saved to %s} {sačuvano u %s}
 ::msgcat::mcset sr_latn saved. sačuvano.
 ::msgcat::mcset sr_latn {scaffold a new plugin} {napravi skelu novog plugina}
+::msgcat::mcset sr_latn {scaffold a user plugin and open it in this editor} {napravi kostur korisničkog plugin-a i otvori ga u ovom uređivaču}
 ::msgcat::mcset sr_latn {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {zakazani poslovi; /crons add "<sched>" [session=<id>] <prompt> (alijas /cron)}
 ::msgcat::mcset sr_latn scope opseg
 ::msgcat::mcset sr_latn script skripta
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {select %s first} {prvo izaberite %s}
 ::msgcat::mcset sr_latn {select a checkpoint first} {prvo izaberite checkpoint}
 ::msgcat::mcset sr_latn {select a file, or New… to create one} {izaberite datoteku, ili Novo… da napravite novu}
+::msgcat::mcset sr_latn {select a grant first} {prvo izaberite dozvolu}
 ::msgcat::mcset sr_latn {select a handler first} {prvo izaberite handler}
 ::msgcat::mcset sr_latn {select a member first} {prvo izaberite člana}
 ::msgcat::mcset sr_latn {select a route} {izaberite rutu}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset sr_latn {select an assignment first} {prvo izaberite dodelu}
 ::msgcat::mcset sr_latn {select an entry first} {prvo izaberite stavku}
 ::msgcat::mcset sr_latn {select an identity first} {prvo izaberite identitet}
+::msgcat::mcset sr_latn {selected task details and shell output} {detalji izabranog zadatka i izlaz šela}
 ::msgcat::mcset sr_latn {selected: %s} {izabrano: %s}
 ::msgcat::mcset sr_latn {send clipboard as prompt} {pošalji klipbord kao prompt}
 ::msgcat::mcset sr_latn {send failed: %s} {slanje nije uspelo: %s}
 ::msgcat::mcset sr_latn {send the message; while a turn runs, queue it as steering} {pošalji poruku; dok traje odgovor, stavi je u red kao usmeravanje}
+::msgcat::mcset sr_latn sent poslato
+::msgcat::mcset sr_latn {sent to the owner's home chat} {poslato u vlasnikov matični chat}
 ::msgcat::mcset sr_latn server server
 ::msgcat::mcset sr_latn {server buffers merged} {server baferi spojeni}
 ::msgcat::mcset sr_latn {server buffers separate} {server baferi odvojeni}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset sr_latn {settings, one key = value per line} {podešavanja, jedan ključ = vrednost po liniji}
 ::msgcat::mcset sr_latn {setup_done marker NOT saved: %s} {setup_done marker NIJE sačuvan: %s}
 ::msgcat::mcset sr_latn {shell %1$s finished} {shell %1$s je završen}
-::msgcat::mcset sr_latn shells shellovi
+::msgcat::mcset sr_latn {shells, monitors and subagents} {šelovi, monitori i podagenti}
 ::msgcat::mcset sr_latn shells_header {pozadinski shellovi:}
 ::msgcat::mcset sr_latn shells_none {(nema pozadinskih shellova — /background <cmd> pokreće jedan)}
 ::msgcat::mcset sr_latn {show current configuration} {prikaži trenutnu konfiguraciju}
 ::msgcat::mcset sr_latn {show every key in this mode} {prikaži svaki taster u ovom režimu}
 ::msgcat::mcset sr_latn {show or hide the session list} {prikaži ili sakrij listu sesija}
 ::msgcat::mcset sr_latn {show or switch model (alias | model@provider | custom:<prov>)} {prikaži ili promeni model (alias | model@provider | custom:<prov>)}
+::msgcat::mcset sr_latn {show selected shell output} {prikaži izlaz izabranog šela}
 ::msgcat::mcset sr_latn {show short messages} {da prikazuje kratke poruke}
 ::msgcat::mcset sr_latn {show the model's reasoning blocks (same as /reasoning)} {prikaži blokove razmišljanja modela (isto kao /reasoning)}
 ::msgcat::mcset sr_latn {show unclaimed} {prikaži nepreuzete}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset sr_latn spend potrošnja
 ::msgcat::mcset sr_latn {split: %s} {podela: %s}
 ::msgcat::mcset sr_latn {ssh to %1$s failed: %2$s} {ssh ka %1$s nije uspeo: %2$s}
+::msgcat::mcset sr_latn {stale — no heartbeat within the threshold} {zastareo — nema otkucaja u granicama praga}
+::msgcat::mcset sr_latn {standing global and session permission grants} {stalne globalne i sesijske dozvole za alate}
 ::msgcat::mcset sr_latn state stanje
 ::msgcat::mcset sr_latn {state       never reached} {stanje       nikad nedostignuto}
 ::msgcat::mcset sr_latn {state       reachable} {stanje       dostupno}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset sr_latn {stored in the encrypted vault (%1$s): %2$s} {sačuvano u šifrovanom trezoru (%1$s): %2$s}
 ::msgcat::mcset sr_latn {stream handler: %s} {stream handler: %s}
 ::msgcat::mcset sr_latn {subagent %1$s finished} {subagent %1$s je završen}
-::msgcat::mcset sr_latn subagents subagenti
 ::msgcat::mcset sr_latn subagents_header {aktivni subagenti:}
 ::msgcat::mcset sr_latn subagents_none {(nema aktivnih subagenata — /btw <prompt> pokreće jednog, ili model koristi delegate_task)}
 ::msgcat::mcset sr_latn {suspend failed: %{e}} {suspenzija nije uspela: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {switch the selected skill off} {isključi izabranu veštinu}
 ::msgcat::mcset sr_latn {switch the selected skill on} {uključi izabranu veštinu}
 ::msgcat::mcset sr_latn {switch to the %s tab} {prebaci se na karticu %s}
+::msgcat::mcset sr_latn {sync requested: %s} {sinhronizacija zatražena: %s}
 ::msgcat::mcset sr_latn {tab 1} {tab 1}
 ::msgcat::mcset sr_latn {tab 2} {tab 2}
 ::msgcat::mcset sr_latn {tab 3} {tab 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset sr_latn tasks_none {(nema pokrenutih zadataka)}
 ::msgcat::mcset sr_latn tasks_not_found {nema takvog zadatka: %{id}}
 ::msgcat::mcset sr_latn tasks_not_running {zadatak %{id} je već završen}
-::msgcat::mcset sr_latn {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset sr_latn {tcl-lsp: event stream unavailable: %s} {tcl-lsp: tok događaja nedostupan: %s}
-::msgcat::mcset sr_latn {tcl-lsp: gateway would not start it: %s} {tcl-lsp: gateway ga ne bi pokrenuo: %s}
-::msgcat::mcset sr_latn {tcl-lsp: not started on the gateway — %s} {tcl-lsp: nije pokrenut na gateway-u — %s}
 ::msgcat::mcset sr_latn {that buffer is not split} {taj bafer nije podeljen}
 ::msgcat::mcset sr_latn {the %s plan} {%s plan}
 ::msgcat::mcset sr_latn {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {polje za API ključ prihvata IME promenljive okruženja (kao %{example}), ne sam ključ — ključ ide u skriveno polje}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset sr_latn {the gateway answered without a report} {gateway je odgovorio bez izveštaja}
 ::msgcat::mcset sr_latn {the model/provider pair is incomplete — the gateway will not route until both are present} {par model/provajder je nepotpun — prolaz neće usmeravati dok nisu zadata oba}
 ::msgcat::mcset sr_latn {the options changed, so that is a fresh preview — press “Write it” again to write it} {opcije su se promenile, pa je ovo svež pregled — pritisnite “Write it” ponovo da se upiše}
+::msgcat::mcset sr_latn {the peer has not been sent this vault yet} {peer-u još nije poslat ovaj trezor}
+::msgcat::mcset sr_latn {the peer holds this vault} {peer ima ovaj trezor}
 ::msgcat::mcset sr_latn {the primary route is \[model\] provider/default — change it there, not here} {primarna ruta je \[model\] provider/default — menjaj je tamo, ne ovde}
 ::msgcat::mcset sr_latn {the provider/model route this session sends to} {ruta provajdera/modela koju ova sesija koristi}
 ::msgcat::mcset sr_latn {the same, on the privileged path (owner only)} {isto, privilegovanim putem (samo owner)}
 ::msgcat::mcset sr_latn {the selected entry (edit, then Save)} {izabrana stavka (uredite, pa Sačuvaj)}
+::msgcat::mcset sr_latn {the server stopped: %s} {server se zaustavio: %s}
 ::msgcat::mcset sr_latn {the synthwave splash} {synthwave uvodni ekran}
 ::msgcat::mcset sr_latn {the text after the name was NOT sent anywhere — type the value into the masked field} {tekst posle naziva NIJE nigde poslat — unesite vrednost u maskirano polje}
 ::msgcat::mcset sr_latn {the transcript} transkript
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset sr_latn thinking… razmišljam…
 ::msgcat::mcset sr_latn {thinking… (%s)} {razmišljam… (%s)}
 ::msgcat::mcset sr_latn {this file's revisions, their diffs, and restore} {revizije ove datoteke, njihove razlike i vraćanje}
+::msgcat::mcset sr_latn {this gateway} {ovaj gateway}
 ::msgcat::mcset sr_latn {this gateway has no Tcl interpreter} {ovaj gateway nema Tcl interpreter}
 ::msgcat::mcset sr_latn {this list} {ova lista}
+::msgcat::mcset sr_latn {this node has no vault} {ovaj čvor nema trezor}
 ::msgcat::mcset sr_latn {this route} {ova ruta}
 ::msgcat::mcset sr_latn {this session} {ova sesija}
 ::msgcat::mcset sr_latn {this session follows the default language again (%{def})} {ova sesija opet prati podrazumevani jezik (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset sr_latn {transcript finalization failed: %s} {finalizacija transkripta nije uspela: %s}
 ::msgcat::mcset sr_latn {transcript refetched} {transkript ponovo dohvaćen}
 ::msgcat::mcset sr_latn {transcript — arrows to read, %s for composer} {transkript — strelice za čitanje, %s za unos}
+::msgcat::mcset sr_latn {translate text with the dedicated translation model, without an agent turn} {prevedi tekst namenskim modelom za prevođenje, bez okreta agenta}
+::msgcat::mcset sr_latn {translation result} {rezultat prevođenja}
 ::msgcat::mcset sr_latn {trigger %1$s %2$sd} {okidač %1$s %2$sd}
 ::msgcat::mcset sr_latn {trigger created} {okidač napravljen}
 ::msgcat::mcset sr_latn {trigger updated} {okidač ažuriran}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {usage: /steer <instruction>} {upotreba: /steer <instruction>}
 ::msgcat::mcset sr_latn used iskorišćeno
 ::msgcat::mcset sr_latn user korisnik
+::msgcat::mcset sr_latn {user copy} {korisnička kopija}
 ::msgcat::mcset sr_latn {user identities, one per line} {korisnički identiteti, po jedan u liniji}
 ::msgcat::mcset sr_latn {user name} {korisničko ime}
 ::msgcat::mcset sr_latn {user profile} {korisnički profil}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset sr_latn {value (TOML: 5, true, "text", ["a","b"])} {vrednost (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset sr_latn veles veles
 ::msgcat::mcset sr_latn {veles editor} {veles editor}
+::msgcat::mcset sr_latn {veles fleet: node %{node} is failing — %{detail}} {veles flota: čvor %{node} je u kvaru — %{detail}}
+::msgcat::mcset sr_latn {veles fleet: node %{node} is stale — %{detail}} {veles flota: čvor %{node} je zastareo — %{detail}}
+::msgcat::mcset sr_latn {veles fleet: node %{node} recovered (it was %{was})} {veles flota: čvor %{node} se oporavio (bio je %{was})}
 ::msgcat::mcset sr_latn {veles · keyboard help (bindings: %s)} {veles · pomoć za tastaturu (prečice: %s)}
 ::msgcat::mcset sr_latn {veles · touch help} {veles · pomoć za dodir}
 ::msgcat::mcset sr_latn {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset sr_latn widgets viđeti
 ::msgcat::mcset sr_latn {will be stored in the encrypted vault} {biće sačuvano u šifrovanom trezoru}
 ::msgcat::mcset sr_latn {wire protocol} {wire protokol}
+::msgcat::mcset sr_latn {without force to} {bez force u}
 ::msgcat::mcset sr_latn {wizard language} {jezik čarobnjaka}
 ::msgcat::mcset sr_latn {wizard language: %s} {jezik čarobnjaka: %s}
 ::msgcat::mcset sr_latn {write failed: %s} {upis nije uspeo: %s}
 ::msgcat::mcset sr_latn {write grants that still expire (the expiry is dropped — a config line cannot expire)} {upiši dozvole koje još ističu (istek se odbacuje — linija konfiguracije ne može isticati)}
 ::msgcat::mcset sr_latn {write the entries back} {upiši stavke nazad}
 ::msgcat::mcset sr_latn {write the store's runtime rules into config.toml} {upiši runtime pravila skladišta u config.toml}
+::msgcat::mcset sr_latn {write the whole extension from its purpose, as a reviewed preview} {napiši celu ekstenziju iz njenog opisa, kao pregledan predlog}
 ::msgcat::mcset sr_latn {write these values into config.toml as the defaults} {upiši ove vrednosti u config.toml kao podrazumevane}
 ::msgcat::mcset sr_latn writing pisanje
 ::msgcat::mcset sr_latn {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {prvi vlasnik u [acl] prebacuje ovaj prolaz u KURIRANI režim: podrazumevana uloga postaje guest (fail-closed), a lista dozvoljenih adaptera više nije granica poverenja}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset sr_latn {▲ VELES — neon impressionism} {▲ VELES — neon impresionizam}
 ::msgcat::mcset sr_latn {▲ earlier} {▲ ranije}
 ::msgcat::mcset sr_latn {▼ later} {▼ kasnije}
+::msgcat::mcset sr_latn {▾ Cluster registry} {▾ Registar klastera}
 ::msgcat::mcset sr_latn {▾ new output — follow} {▾ novi izlaz — prati}
 ::msgcat::mcset sr_latn {○ unattached} {○ nije prikačeno}
 ::msgcat::mcset sr_latn {● %1$s — %2$s} {● %1$s — %2$s}

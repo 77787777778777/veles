@@ -125,6 +125,15 @@ fn component_upgrade_uses_the_real_manifest_and_rollback_restores_the_old_execut
         .unwrap()
         .contains(second["component"]["source"].as_str().unwrap()));
     let review = upgraded_service.preview_rollback("fixture").unwrap();
+    let current_digest = review["current_artifact_sha256"].as_str().unwrap();
+    let previous_digest = review["previous_artifact_sha256"].as_str().unwrap();
+    assert_eq!(current_digest.len(), 64);
+    assert_eq!(previous_digest.len(), 64);
+    assert_ne!(current_digest, previous_digest);
+    assert_eq!(
+        upgraded_service.preview_rollback("fixture").unwrap()["current_artifact_sha256"],
+        review["current_artifact_sha256"]
+    );
     let rolled = upgraded_service
         .rollback("fixture", review["plan_sig"].as_str().unwrap())
         .unwrap();
@@ -499,6 +508,54 @@ fn a_changed_bundle_cannot_be_applied_with_the_old_review() {
     );
     assert!(!s.paths.install_root.join("current").exists());
     assert!(!s.paths.config_dir.join("install.toml").exists());
+}
+
+/// Fleet staging (veles-desktop/lib/fleetdeploy.tcl `_stage`) records
+/// the target's current core digest as its rollback baseline, then
+/// refuses a later rollback unless the retained previous core has that
+/// digest. The baseline must be readable on a node's FIRST managed core,
+/// where a rollback preview refuses, and the cross-step equality is the
+/// property fleet relies on (review finding F1-07).
+#[test]
+fn installer_state_reports_the_core_digest_a_later_install_retains() {
+    let temp = tempfile::tempdir().unwrap();
+    let s = service(&temp);
+    let bundle = |name: &str, version: &str| {
+        let source = temp.path().join(name);
+        std::fs::create_dir_all(source.join("bin")).unwrap();
+        std::fs::write(
+            source.join("BUNDLE-INFO.json"),
+            format!("{{\"version\":\"{version}\",\"revision\":\"a\",\"architecture\":\"x86_64\"}}"),
+        )
+        .unwrap();
+        std::fs::write(source.join("bin/veles"), format!("{version}\n")).unwrap();
+        source
+    };
+    let first = bundle("bundle-one", "1");
+    let plan = s.preview_bundle(&first).unwrap();
+    s.install_local_bundle(&first, &plan.plan_sig).unwrap();
+    assert!(
+        s.preview_rollback("core").is_err(),
+        "a first managed core retains no previous one"
+    );
+    let state = s.state().unwrap();
+    let before = state["current_artifacts"]["core"]
+        .as_str()
+        .unwrap_or_else(|| panic!("installer state lacks the core digest: {state}"))
+        .to_string();
+    assert_eq!(before.len(), 64);
+    let second = bundle("bundle-two", "2");
+    let plan = s.preview_bundle(&second).unwrap();
+    s.install_local_bundle(&second, &plan.plan_sig).unwrap();
+    let review = s.preview_rollback("core").unwrap();
+    assert_eq!(
+        review["previous_artifact_sha256"].as_str(),
+        Some(before.as_str())
+    );
+    assert_eq!(
+        s.state().unwrap()["current_artifacts"]["core"],
+        review["current_artifact_sha256"]
+    );
 }
 
 #[test]

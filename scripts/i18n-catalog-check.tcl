@@ -152,12 +152,99 @@ proc ::i18ncheck::run {root {msgs ""}} {
     return $result
 }
 
+# ── the seam: what the desktop translated, the engine must carry ────
+#
+# The two catalogs share one key space but are WRITTEN separately: a
+# translation round's TSV went through i18n-tsv2msg.sh, and the .yml
+# side only if someone also ran i18n-tsv2yml.sh. The 2026-11 rounds did
+# not, so `/translate` and `/fleet` (and ~50 rows per locale) were
+# translated in every .msg and English on the TUI, Telegram and IRC,
+# with every check green. The rule here: an engine-reachable key (any
+# Rust string literal, the same superset `--engine-keys` trims .yml to)
+# that a locale's .msg translates must appear in its .yml with the same
+# text. scripts/i18n-msg2yml.tcl (run by i18n-sync.sh) writes them.
+
+# The engine-reachable key set, as a dict. Files are read as UTF-8
+# explicitly: the extractor's own CLI reads in the system encoding, and
+# the flake sandbox has no UTF-8 locale.
+proc ::i18ncheck::engine_keys {root} {
+    if {![llength [info commands ::rust_literals_in]]} {
+        uplevel #0 [list source [file join $root scripts i18n-keys.tcl]]
+    }
+    set files {}
+    ::walk_rs [file join $root crates] files
+    set keys [dict create]
+    foreach f $files {
+        foreach k [::rust_literals_in [_read $f]] { dict set keys $k 1 }
+    }
+    return $keys
+}
+
+# locale -> {key msg-value yml-value-or-""} for every gap in the seam.
+# `engine` may be passed in (a dict from engine_keys) to walk once.
+proc ::i18ncheck::seam {root {msgs ""} {engine ""}} {
+    set locales [file join $root crates veles-core locales]
+    if {$msgs eq ""} { set msgs [file join $root veles-desktop msgs] }
+    if {$engine eq ""} { set engine [engine_keys $root] }
+    set en [load_yml [file join $locales en.yml]]
+    set result [dict create]
+    foreach f [lsort [glob -nocomplain [file join $msgs *.msg]]] {
+        set loc [file rootname [file tail $f]]
+        if {$loc eq "en"} { continue }
+        set ypath [file join $locales $loc.yml]
+        set y [expr {[file exists $ypath] ? [load_yml $ypath] : {}}]
+        set gaps {}
+        dict for {k v} [load_msg $f $loc] {
+            if {![dict exists $engine $k]} { continue }
+            set src [expr {[dict exists $en $k] ? [dict get $en $k] : $k}]
+            if {$v eq $src || $v eq $k} { continue }
+            if {![dict exists $y $k]} {
+                lappend gaps [list $k $v ""]
+            } elseif {[dict get $y $k] ne $v} {
+                lappend gaps [list $k $v [dict get $y $k]]
+            }
+        }
+        dict set result $loc $gaps
+    }
+    return $result
+}
+
+# locale -> {key ...}: .yml rows whose key no surface uses any more —
+# neither an engine-reachable literal nor a desktop (en.msg) key. The
+# same rule as veles-core's catalog_keys_and_code_do_not_drift, so a
+# reworded key's old row is dropped by msg2yml instead of turning that
+# test red in every locale.
+proc ::i18ncheck::stale_yml_rows {root {engine ""} {msgs ""}} {
+    set locales [file join $root crates veles-core locales]
+    if {$msgs eq ""} { set msgs [file join $root veles-desktop msgs] }
+    if {$engine eq ""} { set engine [engine_keys $root] }
+    set desk [load_msg [file join $msgs en.msg] en]
+    set result [dict create]
+    foreach f [lsort [glob -nocomplain [file join $locales *.yml]]] {
+        set loc [file rootname [file tail $f]]
+        if {$loc eq "en"} { continue }
+        set stale {}
+        foreach k [dict keys [load_yml $f]] {
+            if {![dict exists $engine $k] && ![dict exists $desk $k]} { lappend stale $k }
+        }
+        dict set result $loc $stale
+    }
+    return $result
+}
+
 # ── CLI ─────────────────────────────────────────────────────────────
 if {[info exists argv0] && [file tail $argv0] eq [file tail [info script]]} {
     set root [lindex $argv 0]
     if {$root eq ""} { set root [file normalize [file join [file dirname [info script]] ..]] }
     set r [::i18ncheck::run $root]
     set total 0
+    dict for {loc gaps} [::i18ncheck::seam $root] {
+        if {![llength $gaps]} { continue }
+        incr total [llength $gaps]
+        puts [format "%-9s %4d engine rows the .msg translates and the .yml lacks — run scripts/i18n-sync.sh" \
+            $loc [llength $gaps]]
+        puts "    first: [list [lindex $gaps 0 0]]"
+    }
     dict for {loc info} $r {
         set p [dict get $info problems]
         incr total [llength $p]

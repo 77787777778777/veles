@@ -15,7 +15,7 @@ Build-Depends: debhelper-compat (= 13),
                clang
 Standards-Version: 4.7.0
 Rules-Requires-Root: no
-Homepage: https://github.com/veles-agent/veles-agent
+Homepage: https://github.com/77787777778777/veles
 
 Package: veles-agent
 Architecture: any

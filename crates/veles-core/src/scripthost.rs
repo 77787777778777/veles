@@ -995,6 +995,7 @@ mod tests {
         let d = dir.join(name);
         std::fs::create_dir_all(&d).unwrap();
         std::fs::write(d.join("plugin.fake"), body).unwrap();
+        let digest = crate::plugins::source_digest(&d).unwrap_or_default();
         LoadedPlugin {
             manifest: PluginManifest {
                 name: name.into(),
@@ -1002,9 +1003,11 @@ mod tests {
                 provides_hooks: Vec::new(),
                 entry: "plugin.fake".into(),
                 description: String::new(),
+                version: None,
                 api: None,
             },
             dir: d,
+            digest,
         }
     }
 
@@ -1298,9 +1301,11 @@ mod tests {
                 provides_hooks: Vec::new(),
                 entry: "plugin.tcl".into(),
                 description: String::new(),
+                version: None,
                 api: None,
             },
             dir: PathBuf::from("/nowhere"),
+            digest: String::new(),
         };
         assert!(request_in("a-tcl-one", "unload", vec![p.clone()]).is_none());
         assert!(request_in("missing", "start", vec![p]).is_none());

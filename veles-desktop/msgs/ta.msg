@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset ta {%1$s %2$s failed: %3$s} {%1$s %2$s தோல்வி: %3$s}
 ::msgcat::mcset ta {%1$s %2$s over ssh…} {%1$s %2$s ssh வழியாக…}
 ::msgcat::mcset ta {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset ta {%1$s (%2$s waiting)} {%1$s (%2$s காத்திருக்கிறது)}
 ::msgcat::mcset ta {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  சிந்தனை %3$s}
 ::msgcat::mcset ta {%1$s = %2$s here} {%1$s = %2$s இங்கே}
 ::msgcat::mcset ta {%1$s NOT saved: %2$s} {%1$s சேமிக்கப்படவில்லை: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset ta {%1$s every cron job on %2$s?} {%1$s %2$s-இல் உள்ள ஒவ்வொரு cron வேலையும்?}
 ::msgcat::mcset ta {%1$s failed: %2$s} {%1$s தோல்வி: %2$s}
 ::msgcat::mcset ta {%1$s in / %2$s out / %3$s calls} {%1$s உள்ளே / %2$s வெளியே / %3$s அழைப்புகள்}
+::msgcat::mcset ta {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s முனை %2$s, %3$s அல்ல. அதன் முனை id-ஐ Edit…-இல் சரிசெய்யவும்.}
 ::msgcat::mcset ta {%1$s is not a whole number} {%1$s முழு எண் அல்ல}
+::msgcat::mcset ta {%1$s is reachable (%2$s ms).} {%1$s அணுகக்கூடியது (%2$s ms).}
 ::msgcat::mcset ta {%1$s is set to something this box cannot edit (%2$s)} {%1$s இந்த இயந்திரத்தால் திருத்த முடியாத ஒன்றாக அமைக்கப்பட்டுள்ளது (%2$s)}
+::msgcat::mcset ta {%1$s is unreachable: %2$s} {%1$s அணுக முடியவில்லை: %2$s}
 ::msgcat::mcset ta {%1$s of %2$s characters} {எழுத்து எண்ணிக்கை: %1$s / %2$s}
 ::msgcat::mcset ta {%1$s of %2$s sessions} {%2$s இல் %1$s அமர்வுகள்}
 ::msgcat::mcset ta {%1$s of %2$s skills reach the prompt} {%1$s / %2$s திறன்கள் prompt-ஐ அடைகின்றன}
 ::msgcat::mcset ta {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s (%2$s-இல்): %3$d சரி, %4$d தோல்வி}
+::msgcat::mcset ta {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s எந்த cluster முனை அடையாளத்தையும் அறிவிக்கவில்லை, எனவே அதை %2$s எனச் சரிபார்க்க முடியாது.}
+::msgcat::mcset ta {%1$s sync failed: %2$s} {%1$s ஒத்திசைவு தோல்வி: %2$s}
+::msgcat::mcset ta {%1$s sync with %2$s (%3$s)} {%1$s %2$s உடன் ஒத்திசைவு (%3$s)}
+::msgcat::mcset ta {%1$s sync: %2$s} {%1$s ஒத்திசைவு: %2$s}
 ::msgcat::mcset ta {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset ta {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter மூலம் செல்ல, Esc மூலம் மூட}
 ::msgcat::mcset ta {%1$s — revision r%2$s} {%1$s — திருத்தம் r%2$s}
 ::msgcat::mcset ta {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset ta {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset ta {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset ta {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset ta {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: அதன் கேட்வே நினைவகத்தில் வைத்திருக்கும் %3$s வரிகளில் கடைசி %2$s, அந்த முனையில் ரகசியங்கள் நீக்கப்பட்டவை.}
 ::msgcat::mcset ta {%d MCP server(s) configured} {%d MCP சேவையகங்கள் அமைக்கப்பட்டுள்ளன}
 ::msgcat::mcset ta {%d entries} {%d உருப்படிகள்}
+::msgcat::mcset ta {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {நீட்டிப்பின் %d கோப்பு(கள்) மதிப்பாய்வு செய்தபடியே சரியாக எழுதப்படும். முன்னோட்டத்திற்குப் பிறகு அவற்றில் ஏதேனும் மாறியிருந்தால், எதுவும் எழுதப்படாது. commit, push அல்லது PR நடக்காது.}
 ::msgcat::mcset ta {%d handler(s) registered} {%d கையாளிகள் பதிவு செய்யப்பட்டன}
 ::msgcat::mcset ta {%d identities · %d users} {%d அடையாளங்கள் · %d பயனர்கள்}
 ::msgcat::mcset ta {%d models — pick one from the list or type a name.} {%d மாடல்கள் — பட்டியலிலிருந்து ஒன்றைத் தேர்ந்தெடுக்கவும் அல்லது பெயரைத் தட்டச்சு செய்யவும்.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset ta {%d shown} {%d காட்டப்பட்டுள்ளன}
 ::msgcat::mcset ta {%s %s%%} {%s %s%%}
 ::msgcat::mcset ta {%s (%s)} {%s (%s)}
+::msgcat::mcset ta {%s (referral)} {%s (பரிந்துரை இணைப்பு)}
+::msgcat::mcset ta {%s (stale)} {%s (பழையது)}
 ::msgcat::mcset ta {%s (this session)} {%s (இந்த அமர்வு)}
 ::msgcat::mcset ta {%s GB free of %s GB} {%s GB காலி, மொத்தம் %s GB}
 ::msgcat::mcset ta {%s already exists — open it from the list} {%s ஏற்கனவே உள்ளது — பட்டியலிலிருந்து திறக்கவும்}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset ta {%s comes from config.toml [acl] — edit there} {%s config.toml [acl]-இலிருந்து வருகிறது — அங்கே திருத்தவும்}
 ::msgcat::mcset ta {%s config change(s) wait for you — /configsync} {%s கட்டமைப்பு மாற்றம்(கள்) உங்களுக்காகக் காத்திருக்கின்றன — /configsync}
 ::msgcat::mcset ta {%s did not become healthy within 30s} {%s 30 வினாடிகளில் சரியான நிலைக்கு வரவில்லை}
+::msgcat::mcset ta {%s done} {%s முடிந்தது}
 ::msgcat::mcset ta {%s failed: %s} {%s தோல்வி: %s}
 ::msgcat::mcset ta {%s is already split} {%s ஏற்கனவே பிரிக்கப்பட்டுள்ளது}
 ::msgcat::mcset ta {%s is the language in use — pick another one to swap with} {%s தற்போது பயன்பாட்டில் உள்ள மொழி — மாற்றுவதற்கு வேறொரு மொழியைத் தேர்ந்தெடுக்கவும்}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset ta {%s opens the command palette in %s.} {%s இல் %s கட்டளைப் பலகையைத் திறக்கும்.}
 ::msgcat::mcset ta {%s session(s)} {%s அமர்வுகள்}
 ::msgcat::mcset ta {%s skill(s):} {%s திறன்(கள்):}
+::msgcat::mcset ta {%s standing grants} {%s நிலையான வழங்கல்கள்}
 ::msgcat::mcset ta {%s takes no completable arguments} {%s நிறைவுசெய்யக்கூடிய வாதங்களை ஏற்காது}
 ::msgcat::mcset ta {%s takes on or off} {%s on அல்லது off-ஐ ஏற்கும்}
 ::msgcat::mcset ta {%s —} {%s —}
+::msgcat::mcset ta {%s — changes data, asks to confirm} {%s — தரவை மாற்றும், உறுதிப்படுத்தக் கேட்கும்}
 ::msgcat::mcset ta {%s — deleted; History… can restore it} {%s — நீக்கப்பட்டது; வரலாறு… அதை மீட்டெடுக்கலாம்}
 ::msgcat::mcset ta {%s — new: type, then Save} {%s — புதியது: தட்டச்சு செய்து, பிறகு சேமி}
 ::msgcat::mcset ta {%s — not attached; press Attach in the Instances tab} {%s — இணைக்கப்படவில்லை; Instances தாவலில் Attach அழுத்தவும்}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset ta {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} [acl] பிரிவு இல்லாமல் இயக்கத்தில் உள்ளது: .env இல் %{var} பாட்டுடன் யார் பேசலாம் என்று குறிப்பிடும் வரை, அதை அடையும் எவரும் உரிமையாளராகக் கருதப்படுவர், எல்லாக் கருவிகளுடனும்}
 ::msgcat::mcset ta (%{route}) (%{route})
 ::msgcat::mcset ta {(CLI redraws automatically)} {(CLI தானாகவே மீண்டும் வரையும்)}
+::msgcat::mcset ta {(binary; not publishable)} {(இருமம்; வெளியிட இயலாது)}
 ::msgcat::mcset ta {(clipboard empty or no clipboard tool)} {(கிளிப்போர்டு காலியாக உள்ளது அல்லது கிளிப்போர்டு கருவி இல்லை)}
 ::msgcat::mcset ta (deleted) (நீக்கப்பட்டது)
 ::msgcat::mcset ta (empty) (காலி)
 ::msgcat::mcset ta {(no sessions)} {(அமர்வுகள் இல்லை)}
+::msgcat::mcset ta {(not a memsync peer of this gateway: config is not synced with it)} {(இந்தக் கேட்வேயின் memsync சகா அல்ல: அதனுடன் கட்டமைப்பு ஒத்திசைக்கப்படவில்லை)}
 ::msgcat::mcset ta {(nothing to reload — read from disk per use)} {(மீண்டும் ஏற்ற ஒன்றுமில்லை — ஒவ்வொரு பயன்பாட்டிலும் வட்டிலிருந்து படிக்கப்படுகிறது)}
 ::msgcat::mcset ta {(retrying last prompt…)} {(கடைசி prompt-ஐ மீண்டும் முயற்சிக்கிறது…)}
 ::msgcat::mcset ta {(route did not resolve: %{e})} {(route தீர்க்கப்படவில்லை: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset ta {/url needs a number from /urls} {/url-க்கு /urls-இலிருந்து ஒரு எண் தேவை}
 ::msgcat::mcset ta {/whois needs a nick} {/whois-க்கு nick தேவை}
 ::msgcat::mcset ta {; could not save the cleared return view: %s} {; துடைக்கப்பட்ட திரும்பும் காட்சியைச் சேமிக்க முடியவில்லை: %s}
+::msgcat::mcset ta {; shadows bundled} {; உள்ளடக்கியதை மறைக்கிறது}
+::msgcat::mcset ta {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {கட்டமைப்புச் சலுகை அமைப்புகளை மாற்றலாம், பெட்டகச் சலுகை ரகசியங்களை இணைக்கும்; பாதுகாப்புப் பிரிவின் மாற்றங்கள் இன்னும் உரிமையாளருக்காகக் காத்திருக்கும்.}
 ::msgcat::mcset ta {A failing plugin may drop hooks mid-turn.} {தோல்வியடைந்த plugin திருப்பத்தின் நடுவில் hooks-ஐ விட்டுவிடலாம்.}
 ::msgcat::mcset ta {A local server: no key is needed unless you set one up.} {உள்ளூர் சேவையகம்: நீங்கள் ஒன்றை அமைக்காத வரை key தேவையில்லை.}
+::msgcat::mcset ta {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {கையெழுத்திட்ட வெளியீடு முன் சரிபார்ப்புக்குப் பிறகு மட்டுமே ஒதுக்கப்படும். மறுதொடக்கம்/சரிபார்ப்பு, தொடர்தல், பின்வாங்கல் ஆகியவை தனித்தனிச் செயல்கள். ஆரோக்கியமான செயல்முறை மதிப்பாய்வு செய்யப்பட்ட மூலத் திருத்தத்தையே துல்லியமாக அறிவிக்க வேண்டும்.}
 ::msgcat::mcset ta {A value is stored for %s — leave this empty to keep it.} {%s-க்கு ஒரு மதிப்பு சேமிக்கப்பட்டுள்ளது — அதை வைத்திருக்க இதைக் காலியாக விடுங்கள்.}
 ::msgcat::mcset ta {ACL: ban mask} {ACL: மாஸ்க்கைத் தடைசெய்}
 ::msgcat::mcset ta {ACL: grant admin} {ACL: admin வழங்கு}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset ta {ACL: grant user} {ACL: user வழங்கு}
 ::msgcat::mcset ta {ACL: revoke} {ACL: திரும்பப் பெறு}
 ::msgcat::mcset ta {ACME account email} {ACME கணக்கு மின்னஞ்சல்}
+::msgcat::mcset ta {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI assist நான்கு நிலைகளில் செயல்படும்: வடிவமைப்புக் கேள்வி கேட்பது (கோப்பு தேவையில்லை), இந்தக் கோப்பை மாற்றுவது, இந்த நீட்டிப்பின் பல கோப்புகளை மாற்றுவது, அல்லது தற்போதைய கண்டறிதல்களை விளக்குவது. புதிய நீட்டிப்பு என்பதன் மூலம் முழு நீட்டிப்பையும் அதன் நோக்கத்திலிருந்து உருவாக்கவும் முடியும். ஒவ்வொரு கோரிக்கையும் கருவிகள் இல்லாமல் அனுப்பப்படும், பதிவுசெய்த ரகசியம் அல்லது ரகசிய வடிவ மதிப்பு இருந்தால் நிராகரிக்கப்படும்; மாற்றங்கள் diff-களாகக் காட்டப்படும், நீங்கள் பயன்படுத்தும்போது மட்டுமே எழுதப்படும். முதலில் நீட்டிப்பு வடிவமைப்பைக் கேளுங்கள்; காணாமல் போன API-ஐ அடையாளம் கண்ட பிறகே core patch கேளுங்கள்.}
+::msgcat::mcset ta {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI உதவி பயனர் extensions-ஐ மட்டுமே திருத்தும், இந்தக் கோப்பு எந்த extension-இன் பகுதியும் அல்ல. பெரும்பாலான மாற்றங்கள் மேம்படுத்தல்களுக்குப் பின்னும் நிலைத்திருக்கும் extension-க்குள் (ஒரு hook, கருவி, சேவை மேலெழுதல் அல்லது வழங்குநர் இயக்கி) பொருந்தும்; மையச் சிறுநிரல் திருத்தம் extension API வெளிப்படுத்த முடியாதவற்றுக்கு மட்டுமே. இந்த மாற்றத்துக்காகப் புதிய extension ஒன்றை உருவாக்கவா? எழுதுவதற்கு முன் அதன் கோப்புகள் முன்னோட்டமாகக் காட்டப்படும்.}
+::msgcat::mcset ta {AI assist…} {AI உதவி…}
+::msgcat::mcset ta {AI extension assistance} {AI extension உதவி}
 ::msgcat::mcset ta {API calls} {API அழைப்புகள்}
+::msgcat::mcset ta {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {Anthropic பரிந்துரை இணைப்பின் API credits, நீங்கள் Max அல்லது Ultra வாங்கினால் மட்டுமே வழங்கப்படும். அந்தச் சந்தாவை உள்நுழைவு அல்லது API அங்கீகாரத்திற்குப் பயன்படுத்துவதை veles ஆதரிக்காது.}
 ::msgcat::mcset ta {API key (hidden)} {API key (மறைக்கப்பட்டது)}
 ::msgcat::mcset ta {API key env var name} {API key env var பெயர்}
+::msgcat::mcset ta {API reference} {API குறிப்பு}
+::msgcat::mcset ta {Abandon untouched operation} {தொடப்படாத செயல்பாட்டைக் கைவிடு}
 ::msgcat::mcset ta {Access control} {அணுகல் கட்டுப்பாடு}
 ::msgcat::mcset ta {Access control (ACL)} {அணுகல் கட்டுப்பாடு (ACL)}
 ::msgcat::mcset ta Add சேர்
 ::msgcat::mcset ta {Add MCP server} {MCP சேவையகத்தைச் சேர்}
 ::msgcat::mcset ta {Add instance} {நிகழ்வைச் சேர்}
 ::msgcat::mcset ta {Add server…} {சேவையகத்தைச் சேர்…}
+::msgcat::mcset ta {Adds selected extension sources. Review the branch diff and checks before merging.} {தேர்ந்தெடுத்த extension மூலங்களைச் சேர்க்கும். இணைப்பதற்கு முன் கிளை வேறுபாட்டையும் சரிபார்ப்புகளையும் மதிப்பாய்வு செய்யுங்கள்.}
 ::msgcat::mcset ta Add… சேர்…
 ::msgcat::mcset ta {Agent & engine} {முகவர் & இயந்திரம்}
 ::msgcat::mcset ta {Alias %s} {மாற்றுப்பெயர் %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset ta {Applies to} பொருந்தும்
 ::msgcat::mcset ta Apply பயன்படுத்து
 ::msgcat::mcset ta {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Apply நடப்பு அமர்வை மட்டுமே மாற்றும். Copy TOML ஒட்டுவதற்கான தொகுதிகளைத் தருகிறது. Save globally அவற்றை config.toml-இல் இணைக்கிறது — failover பிரிவுகள் மட்டுமே மாற்றப்படும், மற்ற ஒவ்வொரு வரியும் கருத்தும் அப்படியே விடப்படும், பழைய கோப்பு config.toml.bak ஆக வைக்கப்படும்.}
+::msgcat::mcset ta {Apply proposal…} {முன்மொழிவைப் பயன்படுத்து…}
+::msgcat::mcset ta {Apply received} {பெற்றதைப் பயன்படுத்து}
+::msgcat::mcset ta {Apply this AI proposal?} {இந்த AI முன்மொழிவைப் பயன்படுத்தவா?}
+::msgcat::mcset ta {Apply this change set?} {இந்த மாற்றத் தொகுப்பைப் பயன்படுத்தவா?}
 ::msgcat::mcset ta {Apply to session} {அமர்வுக்குப் பயன்படுத்து}
+::msgcat::mcset ta {Apply what this node received:} {இந்த முனை பெற்றதைப் பயன்படுத்து:}
 ::msgcat::mcset ta {Approval needed} {அனுமதி தேவை}
 ::msgcat::mcset ta Apps ஆப்ஸ்
 ::msgcat::mcset ta Archive காப்பகம்
 ::msgcat::mcset ta {Archive SHA-256} {காப்பக SHA-256}
+::msgcat::mcset ta Ask கேள்
+::msgcat::mcset ta {Ask a design question} {வடிவமைப்புக் கேள்வி கேள்}
+::msgcat::mcset ta {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {நீட்டிப்பை எவ்வாறு உருவாக்குவது என்று கேளுங்கள்: எந்த எல்லை, எந்த மொழி, எந்த API. மூலக் குறியீடு எதுவும் அனுப்பப்படாது, எதுவும் எழுதவும் முடியாது.}
 ::msgcat::mcset ta {Ask the agent to change it} {இதை மாற்ற முகவரிடம் கேளுங்கள்}
+::msgcat::mcset ta {Asking %s…} {%s-ஐக் கேட்கிறது…}
 ::msgcat::mcset ta {Asking the provider for its models…} {வழங்குநரிடம் அதன் மாடல்களைக் கேட்கிறது…}
 ::msgcat::mcset ta Attach இணை
 ::msgcat::mcset ta {Attach to the next message} {அடுத்த செய்தியுடன் இணை}
+::msgcat::mcset ta {Author guide} {ஆசிரியர் வழிகாட்டி}
+::msgcat::mcset ta {Automatically discovered from the attached gateway's cluster registry.} {இணைக்கப்பட்ட gateway-இன் கிளஸ்டர் பதிவேட்டிலிருந்து தானாகக் கண்டறியப்பட்டது.}
 ::msgcat::mcset ta Back பின்செல்
 ::msgcat::mcset ta {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {பின்செல் மேலே உள்ளதை மூடும்: ஒரு மெனு, அமர்வு பட்டியல், ஒரு சாளரம். எதுவும் திறந்திருக்கவில்லை என்றால் veles பின்னணிக்குச் சென்று இயங்கிக்கொண்டே இருக்கும்.}
 ::msgcat::mcset ta {Base URL} {Base URL}
+::msgcat::mcset ta {Base branch} {அடிப்படைக் கிளை}
 ::msgcat::mcset ta {Bot token (hidden)} {பாட் டோக்கன் (மறைக்கப்பட்டது)}
+::msgcat::mcset ta Branch கிளை
+::msgcat::mcset ta {Branch and commit prepared; nothing has been pushed} {கிளையும் கமிட்டும் தயாராகிவிட்டன; எதுவும் push செய்யப்படவில்லை}
+::msgcat::mcset ta {Branch pushed and verified on origin} {கிளை push செய்யப்பட்டு ஆரிஜினில் சரிபார்க்கப்பட்டது}
 ::msgcat::mcset ta {Browse sessions} {அமர்வுகளை உலாவு}
+::msgcat::mcset ta {Build manifest + preflight} {கட்டுமான விவரப்பட்டியல் + முன் சரிபார்ப்பு}
+::msgcat::mcset ta {Build: veles %1$s, revision %2$s (%3$s %4$s)} {கட்டுமானம்: veles %1$s, திருத்தம் %2$s (%3$s %4$s)}
 ::msgcat::mcset ta {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e வரி முடிவு · C-b/C-f எழுத்து · M-b/M-f சொல் · C-k வரி இறுதி வரை நீக்கு · C-y மீட்டெடு · M-w நகல் · C-w பகுதி நீக்கு · C-space குறி அமை · C-/ செயல்நீக்கம்}
 ::msgcat::mcset ta {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g எல்லாம் ரத்து · C-j புதிய வரி · M-p/M-n வரலாறு · Tab நிறைவு}
+::msgcat::mcset ta {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s மையங்கள், சுமை %2$s / %3$s / %4$s (மையங்களில் %5$s%%)}
 ::msgcat::mcset ta Cancel ரத்து
+::msgcat::mcset ta {Cancel task} {பணியை ரத்து செய்}
+::msgcat::mcset ta {Cancel task %1$s? This cannot be undone.} {%1$s பணியை ரத்து செய்யவா? இதைச் செயல்தவிர்க்க முடியாது.}
+::msgcat::mcset ta {Cannot verify that %1$s is node %2$s: %3$s} {%1$s முனை %2$s எனச் சரிபார்க்க முடியவில்லை: %3$s}
 ::msgcat::mcset ta Capabilities திறன்கள்
 ::msgcat::mcset ta {Change my app “%s” (%s): } {என் ஆப் “%s” (%s) ஐ மாற்று: }
+::msgcat::mcset ta {Change this extension's files} {இந்த நீட்டிப்பின் கோப்புகளை மாற்று}
+::msgcat::mcset ta {Change this file} {இந்தக் கோப்பை மாற்று}
 ::msgcat::mcset ta Change… மாற்று…
 ::msgcat::mcset ta {Channels (e.g. #veles #dev)} {சேனல்கள் (எ.கா. #veles #dev)}
 ::msgcat::mcset ta Chat அரட்டை
 ::msgcat::mcset ta {Chat — not attached; press Attach in the Instances tab} {Chat — இணைக்கப்படவில்லை; Instances தாவலில் Attach அழுத்தவும்}
 ::msgcat::mcset ta {Check (lsp)} {சரிபார் (lsp)}
+::msgcat::mcset ta {Check again} {மீண்டும் சரிபார்}
+::msgcat::mcset ta {Check files} {கோப்புகளைச் சரிபார்}
 ::msgcat::mcset ta Checkpoints செக்பாயிண்ட்கள்
 ::msgcat::mcset ta {Checkpoints (undo)} {செக்பாயிண்ட்கள் (செயல்நீக்கம்)}
+::msgcat::mcset ta {Checks and next steps} {சரிபார்ப்புகளும் அடுத்த படிகளும்}
+::msgcat::mcset ta {Checks run} {சரிபார்ப்புகள் இயக்கப்பட்டன}
 ::msgcat::mcset ta {Choose BUNDLE-INFO.json in the managed install-sources directory} {மேலாண்மை செய்யப்பட்ட நிறுவல்-மூலங்கள் அடைவில் BUNDLE-INFO.json-ஐத் தேர்ந்தெடுக்கவும்}
 ::msgcat::mcset ta {Choose a failover script} {ஃபெயிலோவர் ஸ்கிரிப்டைத் தேர்ந்தெடுங்கள்}
 ::msgcat::mcset ta {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {ஆய்வு செய்ய ஒரு தொகுதி அல்லது process plugin-ஐத் தேர்ந்தெடுக்கவும். கண்டுபிடிப்பு plugin.toml-ஐ மட்டுமே படிக்கிறது; ஒரு கூறைத் தேர்ந்தெடுப்பது அதன் அறிவிக்கப்பட்ட மேனிஃபெஸ்டையும் விருப்பங்களையும் கேட்கிறது. இந்தப் படியைத் திறப்பதால் எதுவும் நிறுவப்படாது.}
+::msgcat::mcset ta {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {பெயர், நோக்கம், மொழி ஆகியவற்றைத் தேர்ந்தெடுத்து, சரியான கோப்புகளை முன்னோட்டமாகப் பாருங்கள். எதுவும் எழுதப்படவில்லை.}
 ::msgcat::mcset ta {Choose a user unit or a system service for the server profile. Neither starts a service.} {சேவையக சுயவிவரத்திற்கு பயனர் அலகு அல்லது அமைப்பு சேவையைத் தேர்ந்தெடுக்கவும். இரண்டும் சேவையைத் தொடங்காது.}
 ::msgcat::mcset ta {Choose core bundle…} {மையத் தொகுப்பைத் தேர்ந்தெடு…}
 ::msgcat::mcset ta {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {நிறுவல் வடிவத்தைத் தேர்ந்தெடுக்கவும். உள்ளூர் சுயவிவரங்கள் மதிப்பாய்வு செய்யப்பட்ட நிறுவியைப் பயன்படுத்துகின்றன. கணினி மற்றும் கொள்கலன் சுயவிவரங்கள் வெளிப்படையான CLI கையளிப்புக்கான கையொப்பமிடப்பட்ட கோரிக்கையைத் தயார் செய்கின்றன. NixOS ஒரு தொகுதி சிறு துண்டை மட்டுமே வெளியிடுகிறது.}
+::msgcat::mcset ta {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {மிகக் குறுகிய எல்லையைத் தேர்ந்தெடுக்கவும்: Tool ஒன்று model-அழைக்கக்கூடிய திறனைச் சேர்க்கிறது; Hook ஒன்று lifecycle நிகழ்வைக் கவனிக்கிறது அல்லது திருத்துகிறது; Service அல்லது override point ஒன்று பெயரிடப்பட்ட முடிவைச் சுற்றி இடுகிறது; Provider driver ஒன்று வழங்குநர் இணைப்பைச் சேர்க்கிறது; Core சிறுநிரல் வெளியிடப்பட்ட extension API மாற்றத்தை வெளிப்படுத்த முடியாதபோது மட்டுமே பொருத்தமானது.}
 ::msgcat::mcset ta {Choose typed container-host options JSON} {வகைப்படுத்தப்பட்ட கொள்கலன் புரவலன் விருப்பங்கள் JSON-ஐத் தேர்ந்தெடு}
 ::msgcat::mcset ta {Choose typed container-host options…} {வகைப்படுத்தப்பட்ட கொள்கலன் புரவலன் விருப்பங்களைத் தேர்ந்தெடு…}
 ::msgcat::mcset ta Clear அழி
 ::msgcat::mcset ta {Clear composer} {கம்போசரை அழி}
 ::msgcat::mcset ta {Clear override} {மாற்றீட்டை அழி}
 ::msgcat::mcset ta {Click the picture where you would click on the page.} {பக்கத்தில் நீங்கள் சொடுக்குவிட்ட இடத்தில் படத்தைச் சொடுக்கவும்.}
+::msgcat::mcset ta {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {%1$s-ஐ clone செய், %2$s-ஐ உருவாக்கு, %3$s-இல் மதிப்பாய்வு செய்யப்பட்ட கோப்புகளை மட்டும் %4$s/<extension>/-க்குக் கீழ் நகலெடு. கோப்புகள் சரிபார்க்கப்பட்டு commit செய்யப்படும். இப்போது push அல்லது pull request எதுவும் நடக்காது.}
 ::msgcat::mcset ta Close மூடு
 ::msgcat::mcset ta {Close (Esc)} {மூடு (Esc)}
 ::msgcat::mcset ta {Close the setup wizard? Nothing has been written yet.} {அமைவு வழிகாட்டியை மூடவா? இன்னும் எதுவும் எழுதப்படவில்லை.}
 ::msgcat::mcset ta {Code actions} {குறியீடு செயல்கள்}
+::msgcat::mcset ta Commit கமிட்
+::msgcat::mcset ta {Commit ready for review. Push is a separate action.} {கமிட் மதிப்பாய்வுக்குத் தயார். Push வேறொரு செயல்.}
 ::msgcat::mcset ta {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {handoff-ஐ முன்னோட்டமிடும் முன், பொருத்தப்பட்ட படத்தின் sha256 digest உட்பட PDS-இன் ஒவ்வொரு புலத்தையும் நிரப்பவும்.}
 ::msgcat::mcset ta {Complete every typed container-host field before previewing this profile.} {இந்த சுயவிவரத்தை முன்னோட்டமிடுவதற்கு முன், ஒவ்வொரு வகைப்படுத்தப்பட்ட கொள்கலன்-புரவலன் புலத்தையும் நிரப்பவும்.}
 ::msgcat::mcset ta {Component configuration returned an invalid result; nothing was accepted as applied.} {கூறு கட்டமைப்பு தவறான முடிவைத் திருப்பியது; எதுவும் பயன்படுத்தப்பட்டதாக ஏற்கப்படவில்லை.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset ta {Component options changed. Review the new preview before applying.} {கூறு விருப்பங்கள் மாறின. பயன்படுத்தும் முன் புதிய முன்னோட்டத்தைப் பரிசீலிக்கவும்.}
 ::msgcat::mcset ta Components கூறுகள்
 ::msgcat::mcset ta {Composer preview} {Composer முன்தோற்றம்}
+::msgcat::mcset ta Config கட்டமைப்பு
+::msgcat::mcset ta {Config differs: %s} {கட்டமைப்பு வேறுபடுகிறது: %s}
+::msgcat::mcset ta {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {கட்டமைப்புப் பதிவு: அந்த முனையில் %1$s-இன் மாற்றங்கள் %3$s வரை உள்ளன, இந்தக் கேட்வேயில் %2$s வரை}
+::msgcat::mcset ta {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {கட்டமைப்புப் பதிவு: இந்தக் கேட்வேயில் %1$s-இன் மாற்றங்கள் %2$s வரை உள்ளன, அந்த முனையில் %3$s வரை}
+::msgcat::mcset ta {Config only on that node: %s} {அந்த முனையில் மட்டும் கட்டமைப்பு: %s}
+::msgcat::mcset ta {Config only on this gateway: %s} {இந்தக் கேட்வேயில் மட்டும் கட்டமைப்பு: %s}
 ::msgcat::mcset ta Configure உள்ளமை
 ::msgcat::mcset ta {Configure %s} {%s-ஐ உள்ளமை}
+::msgcat::mcset ta {Configure translator} {மொழிபெயர்ப்பியை அமை}
+::msgcat::mcset ta {Configured desktop gateway} {அமைக்கப்பட்ட desktop கேட்வே}
 ::msgcat::mcset ta Configure… உள்ளமை…
 ::msgcat::mcset ta {Configuring %s} {%s-ஐ அமைத்துக் கொண்டிருக்கிறது}
 ::msgcat::mcset ta {Confirm or discard the current signed review before starting another download.} {மற்றொரு பதிவிறக்கத்தைத் தொடங்குவதற்கு முன், தற்போதைய கையொப்பமிடப்பட்ட மதிப்பாய்வை உறுதிப்படுத்தவும் அல்லது தள்ளுபடி செய்யவும்.}
 ::msgcat::mcset ta {Container host: typed host plan and privileged CLI handoff} {கொள்கலன் புரவலன்: வகைப்படுத்தப்பட்ட புரவலன் திட்டம் மற்றும் நிர்வாக உரிமை தேவைப்படும் CLI கையளிப்பு}
 ::msgcat::mcset ta {Context window} {சூழல் சாளரம்}
+::msgcat::mcset ta {Continue to next target} {அடுத்த இலக்குக்குத் தொடர்}
+::msgcat::mcset ta {Contribute extensions: %s} {Extension-களைப் பங்களி: %s}
+::msgcat::mcset ta Contribute… பங்களி…
+::msgcat::mcset ta {Contribution branch} {பங்களிப்புக் கிளை}
+::msgcat::mcset ta {Contribution destination} {பங்களிப்பு இலக்கு}
 ::msgcat::mcset ta Copy நகலெடு
 ::msgcat::mcset ta {Copy TOML} {TOML நகலெடு}
+::msgcat::mcset ta {Copy a bundled extension into your user plugin directory before preparing a contribution.} {பங்களிப்பைத் தயாரிப்பதற்கு முன், உள்ளடங்கிய extension ஒன்றை உங்கள் பயனர் plugin அடைவுக்கு நகலெடுங்கள்.}
 ::msgcat::mcset ta {Copy message} {செய்தியை நகலெடு}
 ::msgcat::mcset ta {Copy name} {பெயரை நகலெடு}
 ::msgcat::mcset ta {Copy nick} {நிக்கை நகலெடு}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset ta {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {கூறுகளைக் கண்டறிய முடியவில்லை. provider அமைவு படிகள் இன்னும் வேலை செய்கின்றன; தேவைப்பட்டால் இலக்கு இயந்திரத்தில் CLI வழியாக நிறுவவும்.}
 ::msgcat::mcset ta {Could not join: %s} {சேர முடியவில்லை: %s}
 ::msgcat::mcset ta {Could not list the models (%s) — type the model's name.} {மாடல்களைப் பட்டியலிட முடியவில்லை (%s) — மாடலின் பெயரைத் தட்டச்சு செய்யவும்.}
+::msgcat::mcset ta {Create a PR in} {PR உருவாக்கு:}
+::msgcat::mcset ta {Create extension} {extension உருவாக்கு}
 ::msgcat::mcset ta {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {@BotFather மூலம் பாட்டை உருவாக்கி, அதன் டோக்கனைக் கீழே ஒட்டுங்கள்: அது குறியாக்கம் செய்யப்பட்ட பெட்டகத்துக்குச் செல்லும், ஒருபோதும் config.toml-க்கு அல்ல.}
+::msgcat::mcset ta {Create this extension?} {இந்த extension-ஐ உருவாக்கவா?}
+::msgcat::mcset ta {Create this generated extension?} {இந்த உருவாக்கப்பட்ட நீட்டிப்பை உருவாக்கவா?}
+::msgcat::mcset ta {Created and reloaded. Review and test the extension before publishing.} {உருவாக்கப்பட்டு மீண்டும் ஏற்றப்பட்டது. வெளியிடுவதற்கு முன் extension-ஐ மதிப்பாய்வு செய்து சோதியுங்கள்.}
+::msgcat::mcset ta {Created, but reload failed} {உருவாக்கப்பட்டது, ஆனால் மீண்டும் ஏற்றுவது தோல்வியடைந்தது}
 ::msgcat::mcset ta {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {வார்ப்புருவிலிருந்து %s/<name>/SKILL.md-ஐ உருவாக்கி திறக்கும். frontmatter விளக்கம்தான் prompt அட்டவணையை அடையும் ஒரே பகுதி, எனவே அது திறனை எப்போது பயன்படுத்த வேண்டும் என்று சொல்லும்படி எழுதவும்.}
 ::msgcat::mcset ta {Cron history} {Cron வரலாறு}
 ::msgcat::mcset ta {Cron jobs} {Cron வேலைகள்}
 ::msgcat::mcset ta {Curated — write the first owner entry} {Curated — முதல் owner உள்ளீட்டை எழுது}
 ::msgcat::mcset ta Cut வெட்டு
 ::msgcat::mcset ta Decline மறு
+::msgcat::mcset ta {Dedicated translator} {தனி மொழிபெயர்ப்பாளர்}
 ::msgcat::mcset ta {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset ta Default இயல்புநிலை
 ::msgcat::mcset ta {Default model} {இயல்புநிலை மாதிரி}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset ta {Delete user} {பயனரை நீக்கு}
 ::msgcat::mcset ta {Delete workspace?} {பணியிடத்தை நீக்கவா?}
 ::msgcat::mcset ta Deop {op-ஐ நீக்கு}
+::msgcat::mcset ta {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {மாற்றத்தை விவரியுங்கள். AI இந்த நீட்டிப்பின் பல கோப்புகளை மாற்றலாம் அல்லது சேர்க்கலாம். ஒவ்வொரு கோப்பும் diff ஆகக் காட்டப்படும், நீங்கள் உறுதிப்படுத்தும் முன் எதுவும் எழுதப்படாது.}
+::msgcat::mcset ta {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {மாற்றத்தை விவரிக்கவும். AI ஒரு மாற்றீட்டை முன்மொழியலாம், ஆனால் நீங்கள் வேறுபாட்டைப் பார்த்து உறுதிப்படுத்தும் வரை அதை எழுத முடியாது.}
+::msgcat::mcset ta {Describe the requested extension change first.} {முதலில் கோரிய extension மாற்றத்தை விவரிக்கவும்.}
+::msgcat::mcset ta Description விவரம்
 ::msgcat::mcset ta {Desktop: local core, modules and process plugins} {மேசைத்தளம்: உள்ளூர் மையம், தொகுதிகள் மற்றும் செயல்முறை செருகுநிரல்கள்}
 ::msgcat::mcset ta Detach பிரி
+::msgcat::mcset ta {Detach foreground} {முன்னிலைக் கட்டளையைப் பிரி}
 ::msgcat::mcset ta Dev டெவ்
 ::msgcat::mcset ta {Dev pane (REPL + LSP)} {டெவ் பேனல் (REPL + LSP)}
 ::msgcat::mcset ta {Dev: arm / disarm live patching} {டெவ்: லைவ் பேட்சிங்கை இயக்கு / முடக்கு}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset ta Devoice {voice-ஐ நீக்கு}
 ::msgcat::mcset ta {Discard review} {மதிப்பாய்வைத் தள்ளுபடி செய்}
 ::msgcat::mcset ta {Discard your changes to %s?} {%s இல் உங்கள் மாற்றங்களை நிராகரிக்கவா?}
+::msgcat::mcset ta {Disk: %1$s free of %2$s at %3$s} {வட்டு: %3$s-இல் %1$s காலி, மொத்தம் %2$s}
 ::msgcat::mcset ta Done முடிந்தது
 ::msgcat::mcset ta {Done — config written} {முடிந்தது — config எழுதப்பட்டது}
 ::msgcat::mcset ta {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {நிறுவுவதற்கு முன் வெளியீட்டு அறிவிப்பும் ஹோஸ்ட் காப்பகமும் பதிவிறக்கி சரிபார்க்கப்படும். ஐந்து அடையாளப் புலங்களும் கட்டாயம். கேட்வே தனியார் முன்நிலை காப்பகத்தை வைத்திருக்கிறது; இந்த முன்பார்வை எதையும் நிறுவாது.}
 ::msgcat::mcset ta {Downloading and verifying the signed release…} {கையொப்பமிடப்பட்ட வெளியீட்டைப் பதிவிறக்கி சரிபார்க்கிறது…}
+::msgcat::mcset ta {Draft this as an extension?} {இதை ஒரு extension ஆக வரைவு செய்யவா?}
 ::msgcat::mcset ta {Drag to scroll; a quick swipe goes further.} {உருட்ட இழுக்கவும்; வேகமான ஸ்வைப் இன்னும் தொலைவு செல்லும்.}
+::msgcat::mcset ta {Drift check failed: %s} {விலகல் சரிபார்ப்பு தோல்வி: %s}
+::msgcat::mcset ta {Drift check: %s node(s) differ from this gateway.} {விலகல் சரிபார்ப்பு: %s முனை(கள்) இந்தக் கேட்வேயிலிருந்து வேறுபடுகின்றன.}
+::msgcat::mcset ta {Drift: built from revision %1$s, this gateway from %2$s} {விலகல்: திருத்தம் %1$s-இலிருந்து கட்டப்பட்டது, இந்தக் கேட்வே %2$s-இலிருந்து}
+::msgcat::mcset ta {Drift: none — same version, revision and replicated config} {விலகல்: இல்லை — அதே பதிப்பு, திருத்தம் மற்றும் நகலெடுக்கப்பட்ட கட்டமைப்பு}
+::msgcat::mcset ta {Drift: not compared — %s} {விலகல்: ஒப்பிடப்படவில்லை — %s}
+::msgcat::mcset ta {Drift: runs version %1$s, this gateway %2$s} {விலகல்: பதிப்பு %1$s-ஐ இயக்குகிறது, இந்தக் கேட்வே %2$s}
+::msgcat::mcset ta Drift… விலகல்…
 ::msgcat::mcset ta {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset ta {ESC %s is not bound} {ESC %s பிணைக்கப்படவில்லை}
 ::msgcat::mcset ta {ESC- … (Meta prefix)} {ESC- … (Meta முன்னொட்டு)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset ta Edit… திருத்து…
 ::msgcat::mcset ta {Enable / disable} {இயக்கு / முடக்கு}
 ::msgcat::mcset ta {Enable the Telegram adapter} {Telegram adapter-ஐ இயக்கு}
+::msgcat::mcset ta Endpoint இணைப்புமுனை
 ::msgcat::mcset ta Engine எஞ்சின்
 ::msgcat::mcset ta Eval→gw Eval→gw
 ::msgcat::mcset ta {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {%s-க்கான ஒவ்வொரு மாற்றமும் commit ஆகும். Restoring முழு அடைவையும் அந்த commit-க்கு மீண்டும் கொண்டு செல்லும் — முதலில் தற்போதைய நிலையை snapshot எடுக்கிறது, எனவே இது ஒருவழிக் கதவு அல்ல.}
 ::msgcat::mcset ta {Every plugin file goes back to that commit. The current state is committed first.} {ஒவ்வொரு plugin கோப்பும் அந்த commit-க்குத் திரும்பும். தற்போதைய நிலை முதலில் commit ஆகும்.}
+::msgcat::mcset ta {Exact commit} {சரியான commit}
+::msgcat::mcset ta {Exact permission rule} {சரியான அனுமதி விதி}
+::msgcat::mcset ta {Example: a hook} {உதாரணம்: ஒரு hook}
+::msgcat::mcset ta {Example: a provider driver} {எடுத்துக்காட்டு: ஒரு வழங்குநர் இயக்கி}
+::msgcat::mcset ta {Example: a service override wrapping core} {உதாரணம்: மையத்தைச் சுற்றி அமைக்கப்பட்ட service override}
+::msgcat::mcset ta {Example: a tool} {எடுத்துக்காட்டு: ஒரு கருவி}
 ::msgcat::mcset ta {Existing shared container network} {ஏற்கனவே உள்ள பகிர்வு கொள்கலன் வலையமைப்பு}
+::msgcat::mcset ta Explain விளக்கு
+::msgcat::mcset ta {Explain the diagnostics} {கண்டறிதல்களை விளக்கு}
 ::msgcat::mcset ta Export… {ஏற்றுமதி செய்…}
+::msgcat::mcset ta {Extension API} {நீட்டிப்பு API}
+::msgcat::mcset ta {Extension development} {Extension உருவாக்கம்}
+::msgcat::mcset ta {Extension guide} {Extension வழிகாட்டி}
+::msgcat::mcset ta {Extension source} {Extension மூலம்}
 ::msgcat::mcset ta {Failover blueprint} {பெய்லோவர் புளூபிரிண்ட்}
 ::msgcat::mcset ta {Failover blueprint (edit the route chain)} {பெய்லோவர் புளூபிரிண்ட் (ரூட் சங்கிலியை திருத்து)}
 ::msgcat::mcset ta {Failover hook script (what `script` mode runs)} {பெய்லோவர் ஹூக் ஸ்கிரிப்ட் (`script` முறை இயக்குவது)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset ta {Find in transcript} {டிரான்ஸ்கிரிப்டில் தேடு}
 ::msgcat::mcset ta {Find in transcript…} {டிரான்ஸ்கிரிப்டில் தேடு…}
 ::msgcat::mcset ta {Find references} {குறிப்புகளைக் கண்டறி}
+::msgcat::mcset ta {Finish rollback} {பின்வாங்கலை முடி}
 ::msgcat::mcset ta {First run: no config.toml yet.} {முதல் இயக்கம்: config.toml இன்னும் இல்லை.}
+::msgcat::mcset ta {Fix the failed syntax checks before preparing a contribution.} {பங்களிப்பைத் தயாரிப்பதற்கு முன் தோல்வியடைந்த syntax சரிபார்ப்புகளைச் சரிசெய்யுங்கள்.}
+::msgcat::mcset ta {Fleet deployment} {முனைக்குழு வெளியீடு}
+::msgcat::mcset ta {Fleet deployment runs from a desktop computer; it is not available on Android.} {முனைக்குழு வெளியீடு டெஸ்க்டாப் கணினியிலிருந்து இயங்கும்; Android-இல் கிடைக்காது.}
+::msgcat::mcset ta {Fleet deploy…} {முனைக்குழு வெளியீடு…}
+::msgcat::mcset ta {Fleet drift} {Fleet விலகல்}
 ::msgcat::mcset ta {Fold / unfold} {மடி / விரி}
 ::msgcat::mcset ta {Forget declaration} {அறிவிப்பை மற}
+::msgcat::mcset ta {Forget node %s?} {முனை %s-ஐ மறந்துவிடவா?}
+::msgcat::mcset ta {Forget node…} {முனையை மறந்துவிடு…}
+::msgcat::mcset ta {Forgetting %1$s failed: %2$s} {%1$s-ஐ மறக்க முடியவில்லை: %2$s}
+::msgcat::mcset ta {Forgot node %s.} {முனை %s மறக்கப்பட்டது.}
+::msgcat::mcset ta {Forgotten fleet-wide (refused until they heartbeat again): %s} {Fleet முழுவதும் மறக்கப்பட்டது (மீண்டும் heartbeat அனுப்பும் வரை மறுக்கப்படும்): %s}
 ::msgcat::mcset ta Fork கிளையாக்கு
 ::msgcat::mcset ta {Free space} {காலி இடம்}
 ::msgcat::mcset ta {Full source commit SHA} {முழு மூலச் செயல் SHA}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset ta {Gateway image sha256 digest} {கேட்வே பட sha256 சுருக்கம்}
 ::msgcat::mcset ta {Gateway quadlet name} {கேட்வே quadlet பெயர்}
 ::msgcat::mcset ta {Gateway status} {கேட்வே நிலை}
+::msgcat::mcset ta {Generate with AI…} {AI மூலம் உருவாக்கு…}
+::msgcat::mcset ta {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {%s உருவாக்கியது - எதுவும் எழுதப்படவில்லை. ஒவ்வொரு கோப்பையும் மதிப்பாய்வு செய்யுங்கள்; பிறகு நீட்டிப்பை உருவாக்கும் செயல் இவற்றையே சரியாக எழுதும்.}
 ::msgcat::mcset ta {Get a key at %s} {%s இல் key பெறுங்கள்}
 ::msgcat::mcset ta {GitHub release URL} {GitHub வெளியீட்டு URL}
+::msgcat::mcset ta {Give the extension a name and describe what it should do (the purpose), then generate.} {நீட்டிப்புக்கு ஒரு பெயர் கொடுத்து, அது என்ன செய்ய வேண்டும் (நோக்கம்) என்பதை விவரித்து, பிறகு உருவாக்குங்கள்.}
 ::msgcat::mcset ta {Give up} விட்டுவிடு
 ::msgcat::mcset ta Go செல்
 ::msgcat::mcset ta {Go to definition} {வரையறைக்குச் செல்}
+::msgcat::mcset ta {Gossip failed: %s} {Gossip தோல்வி: %s}
+::msgcat::mcset ta {Gossip now} {இப்போது Gossip}
+::msgcat::mcset ta {Gossip with %1$s: %2$s} {%1$s உடன் Gossip: %2$s}
+::msgcat::mcset ta {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {Gossip: %2$s சகா(க்கள்)ளில் %1$s பதிலளித்தன (%3$s).}
 ::msgcat::mcset ta Grant வழங்கு
 ::msgcat::mcset ta {Grant access} {அணுகலை வழங்கு}
+::msgcat::mcset ta {Granted at} {வழங்கிய நேரம்}
 ::msgcat::mcset ta Grant… வழங்கு…
 ::msgcat::mcset ta {Guards — what the harness stops, and where it stands now} {காவலர்கள் — harness எதை நிறுத்துகிறது, அது இப்போது எங்கே நிற்கிறது}
 ::msgcat::mcset ta {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handlers காட்டப்பட்ட வரிசையில் இயங்குகின்றன; காலியாக இல்லாத மதிப்பைத் தரும் முதல் ஒன்று வெல்லும். ஒன்றை அணைப்பது அதை பதிவுநீக்காமல் தவிர்க்கிறது, தேர்வு config.toml-இல் சேமிக்கப்படும், எனவே plugin reload அதை அமைதியாக மீண்டும் இயக்காது.}
+::msgcat::mcset ta Health ஆரோக்கியம்
+::msgcat::mcset ta {Health alerts (%s):} {ஆரோக்கிய எச்சரிக்கைகள் (%s):}
+::msgcat::mcset ta Heartbeat உயிர்துடிப்பு
+::msgcat::mcset ta {Heartbeat age: %s s} {இதயத்துடிப்புக் காலம்: %s s}
 ::msgcat::mcset ta Help உதவி
 ::msgcat::mcset ta {Help & keys} {உதவி & விசைகள்}
 ::msgcat::mcset ta {Hide right panes} {வலது பேனல்களை மறை}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset ta {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {பிடித்துக்கொண்டு, விரலை எடுப்பதற்கு முன் இழுக்கவும்: தேர்வு சொல் சொல்லாக உங்கள் விரலைப் பின்தொடரும், மேல் அல்லது கீழ் விளிம்பில் உருளும்.}
 ::msgcat::mcset ta Hooks Hooks
 ::msgcat::mcset ta {Hooks (what plugins run on)} {ஹூக்குகள் (பிளக்கின்கள் இயங்குவது)}
+::msgcat::mcset ta Host புரவலன்
 ::msgcat::mcset ta {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {பிடிக்க எவ்வளவு நேரம் ஆகும் என்பது Android இன் தொட்டுப் பிடிக்கும் தாமதம், அதன் அணுகல்தன்மை அமைப்புகளில்.}
 ::msgcat::mcset ta {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {KEK மற்றும் PLC சுழற்சி விசைகளை ஆஃப்லைனில் காப்புப் பிரதி எடுத்தேன்; மதிப்பாய்வு செய்யப்பட்ட TLS மற்றும் செயல்படுத்தல் கைமாற்றத்தை அனுமதி}
 ::msgcat::mcset ta {I-search backward: type to search, C-r for previous} {I-search பின்னோக்கி: தேட தட்டச்சு, முந்தையதற்கு C-r}
 ::msgcat::mcset ta {I-search: type to search, C-s for next} {I-search: தேட தட்டச்சு, அடுத்ததற்கு C-s}
+::msgcat::mcset ta {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {IO அழுத்தம்: ஏதேனும் பணி காத்திருக்கும் நேரம் %1$s%% / %2$s%% / %3$s%% (10 வி / 1 நிமி / 5 நிமி)}
 ::msgcat::mcset ta IRC IRC
 ::msgcat::mcset ta {IRC buffers} {IRC இடையகங்கள்}
 ::msgcat::mcset ta {IRC composer} {IRC உரை உள்ளீடு}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset ta {IRC split: %s} {IRC பிரிவு: %s}
 ::msgcat::mcset ta {IRC transcript} {IRC பதிவு}
 ::msgcat::mcset ta {IRC — nothing to show} {IRC — காட்ட எதுவும் இல்லை}
+::msgcat::mcset ta {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {நடப்பில்: %1$s திருப்பம்(கள்) %2$s, %3$s பின்னணிப் பணி(கள்) %4$s}
 ::msgcat::mcset ta {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {%s-ஐ நிர்வகிக்கப்படும் கூறு சேமிப்பகத்தில் நிறுவவா? அதன் மேனிஃபெஸ்ட் காட்டப்பட்டது; இது ஒரு சேவையைத் தொடங்காது.}
 ::msgcat::mcset ta {Install component} {கூறை நிறுவு}
 ::msgcat::mcset ta {Install components…} {கூறுகளை நிறுவு…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset ta Instances நிகழ்வுகள்
 ::msgcat::mcset ta {It becomes the current content, as a new revision — so the restore can be undone too.} {இது புதிய திருத்தமாக தற்போதைய உள்ளடக்கமாகிறது — எனவே மீட்டெடுப்பையும் செயல்தவிர்க்கலாம்.}
 ::msgcat::mcset ta {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {இது இந்தக் கணினியின் குறியாக்கம் செய்யப்பட்ட பெட்டகத்துக்குச் செல்கிறது. முகவர் இதை ஒருபோதும் பார்ப்பதில்லை: கட்டளைகளில் $%s ஆகப் பயன்படுத்தவோ, அனுமதிக்கப்பட்ட ஹோஸ்ட்களுக்கு அனுப்பவோ மட்டுமே அதனால் முடியும்.}
+::msgcat::mcset ta {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {இது cluster பதிவேட்டிலிருந்து fleet முழுவதும் நீக்கப்படுகிறது: அடுத்த gossip பரிமாற்றம் ஒவ்வொரு 0.2.0 சகாவுக்கும் அதை நீக்கச் சொல்லும், அவற்றில் எதுவும் அதை மீண்டும் இணைக்காது. 0.2.0-ஐ விடப் பழைய சகா அதைப் பட்டியலிடுவதைத் தொடரும். இயந்திரம் திரும்பி வந்து heartbeat அனுப்பினால், அது மீண்டும் பதிவு செய்யப்படும். ஒத்திசைவு சகாக்களும் சேமித்த நிகழ்வுகளும் தொடப்படாது.}
 ::msgcat::mcset ta {It leaves memory now. Its history keeps every revision, and History… can restore it.} {இது இப்போது நினைவகத்திலிருந்து வெளியேறுகிறது. இதன் வரலாறு ஒவ்வொரு திருத்தத்தையும் வைத்திருக்கிறது, வரலாறு… அதை மீட்டெடுக்கலாம்.}
 ::msgcat::mcset ta Join சேர்
 ::msgcat::mcset ta {Join a pool} {இயந்திரக் குழுவில் சேர்}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset ta {Language (i18n)} {மொழி (i18n)}
 ::msgcat::mcset ta Language… மொழி…
 ::msgcat::mcset ta {Last active} {கடைசியாகச் செயல்பட்டது}
+::msgcat::mcset ta {Last probe: %1$s — %2$s} {கடைசி ஆய்வு: %1$s — %2$s}
 ::msgcat::mcset ta {Leave %s?} {%s-ஐ விட்டு வெளியேறவா?}
 ::msgcat::mcset ta Leave… {விட்டு வெளியேறு…}
 ::msgcat::mcset ta {Legacy open — no [acl] section} {மரபு திறந்த முறை — [acl] பகுதி இல்லை}
 ::msgcat::mcset ta {Let %s:} {%s ஐ இவற்றைச் செய்ய அனுமதி:}
 ::msgcat::mcset ta {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {எழுத்துகள், இலக்கங்கள், - மற்றும் _. post_llm_call hook-ஐ பதிவு செய்யும் plugin.toml மற்றும் plugin.tcl-ஐ உருவாக்கி, அதை Dev பலகத்தில் திறக்கும்.}
+::msgcat::mcset ta Level நிலை
 ::msgcat::mcset ta {Lift lockdown} {Lockdown-ஐ நீக்கு}
+::msgcat::mcset ta Lines வரிகள்
 ::msgcat::mcset ta {List the provider's models} {வழங்குநரின் மாடல்களைப் பட்டியலிடு}
+::msgcat::mcset ta Load சுமை
 ::msgcat::mcset ta {Load more} {மேலும் ஏற்று}
 ::msgcat::mcset ta {Loading discovered components…} {கண்டறியப்பட்ட கூறுகளை ஏற்றுகிறது…}
 ::msgcat::mcset ta {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {உள்ளூர் தொகுப்பு மதிப்பாய்வு செய்யப்பட்டது. நிறுவலை உறுதிப்படுத்த 'தேர்ந்தெடுக்கப்பட்ட கூறை நிறுவு' என்பதைத் தேர்ந்தெடுக்கவும்; எதுவும் நிறுவப்படவில்லை.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset ta {Lock down} {Lockdown செய்}
 ::msgcat::mcset ta Log பதிவு
 ::msgcat::mcset ta {Log (engine + status)} {பதிவு (என்ஜின் + நிலை)}
+::msgcat::mcset ta {Log of %s} {%s-இன் பதிவு}
+::msgcat::mcset ta Logs… பதிவுகள்…
 ::msgcat::mcset ta {M-g- (g: goto line)} {M-g- (g: வரிக்குச் செல்)}
 ::msgcat::mcset ta {M-p/M-n history · Tab complete} {M-p/M-n வரலாறு · Tab நிரப்பு}
 ::msgcat::mcset ta {MCP server list} {MCP சேவையகப் பட்டியல்}
 ::msgcat::mcset ta {MCP servers (from config.toml)} {MCP சேவையகங்கள் (config.toml-இலிருந்து)}
 ::msgcat::mcset ta {Make default} இயல்புநிலையாக்கு
 ::msgcat::mcset ta {Make default (config.toml)} {இயல்புநிலையாக்கு (config.toml)}
+::msgcat::mcset ta {Manage extensions} {Extensions-ஐ நிர்வகி}
 ::msgcat::mcset ta {Manifest SHA-256} {அறிவிப்பு SHA-256}
 ::msgcat::mcset ta {Mark read} {படித்ததாகக் குறி}
 ::msgcat::mcset ta {Mechanisms (what the engine does on its own)} {பொறிமுறைகள் (என்ஜின் தானாகச் செய்வது)}
 ::msgcat::mcset ta {Mechanisms — what the engine does on its own, and how to stop it} {வழிமுறைகள் — இயந்திரம் தானாக என்ன செய்கிறது, அதை எப்படி நிறுத்துவது}
 ::msgcat::mcset ta Memory நினைவகம்
 ::msgcat::mcset ta {Memory history} {நினைவக வரலாறு}
+::msgcat::mcset ta {Memory: %1$s available of %2$s (%3$s%% used)} {நினைவகம்: %2$s இல் %1$s கிடைக்கிறது (%3$s%% பயன்பாட்டில்)}
+::msgcat::mcset ta {Merge the received %s into this node?} {பெற்ற %s-ஐ இந்த முனையில் இணைக்கவா?}
 ::msgcat::mcset ta Messages செய்திகள்
+::msgcat::mcset ta Metrics அளவீடுகள்
+::msgcat::mcset ta {Metrics (asked %s):} {அளவீடுகள் (%s-இல் கேட்கப்பட்டது):}
+::msgcat::mcset ta {Metrics of %1$s failed: %2$s} {%1$s-இன் அளவீடுகள் தோல்வி: %2$s}
+::msgcat::mcset ta {Metrics of %s received.} {%s-இன் அளவீடுகள் பெறப்பட்டன.}
+::msgcat::mcset ta {Metrics: not asked yet — use Metrics.} {அளவீடுகள்: இன்னும் கேட்கப்படவில்லை — அளவீடுகள் பயன்படுத்தவும்.}
 ::msgcat::mcset ta Model மாதிரி
 ::msgcat::mcset ta {Model for this session} {இந்த அமர்வுக்கான மாதிரி}
 ::msgcat::mcset ta {Models & settings} {மாதிரிகள் & அமைப்புகள்}
+::msgcat::mcset ta Monitors கண்காணிப்பான்கள்
+::msgcat::mcset ta Name பெயர்
+::msgcat::mcset ta {Need an account? Optional sign-up links (open in your browser):} {கணக்கு தேவையா? விருப்பமான பதிவு இணைப்புகள் (உங்கள் உலாவியில் திறக்கும்):}
 ::msgcat::mcset ta Network நெட்வொர்க்
 ::msgcat::mcset ta {New alias} {புதிய மாற்றுப்பெயர்}
+::msgcat::mcset ta {New branch name} {புதிய கிளையின் பெயர்}
 ::msgcat::mcset ta {New cron job} {புதிய cron வேலை}
+::msgcat::mcset ta {New extension} {புதிய extension}
 ::msgcat::mcset ta {New memory file} {புதிய நினைவகக் கோப்பு}
 ::msgcat::mcset ta {New plugin} {புதிய plugin}
 ::msgcat::mcset ta {New session} {புதிய அமர்வு}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset ta Next அடுத்து
 ::msgcat::mcset ta Nickname புனைபெயர்
 ::msgcat::mcset ta {NixOS: emit a module snippet; do not edit host declarations} {NixOS: ஒரு தொகுதி சிறு துண்டை வெளியிடு; புரவலன் அறிவிப்புகளைத் திருத்தாதே}
+::msgcat::mcset ta {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {இந்த முனைக்கு SSH lifecycle இலக்கு கட்டமைக்கப்படவில்லை. வெளியிட அல்லது மறுதொடக்கம் செய்ய, ஒரு instance-ஐ தெளிவாகச் சேர்க்கவும்.}
+::msgcat::mcset ta {No additional push happens.} {கூடுதல் push எதுவும் நடக்காது.}
 ::msgcat::mcset ta {No apps yet. Ask the agent to make one: “make me an app that…”} {இன்னும் ஆப்ஸ் இல்லை. ஒன்றை உருவாக்க முகவரிடம் கேளுங்கள்: “எனக்கு … செய்யும் ஆப் ஒன்றை உருவாக்கு”}
 ::msgcat::mcset ta {No code in the picture. Hold the phone closer, straight on, and scan again.} {படத்தில் குறியீடு இல்லை. தொலைபேசியை அருகில், நேராகப் பிடித்து மீண்டும் ஸ்கேன் செய்யுங்கள்.}
 ::msgcat::mcset ta {No configuration snapshot will be restored.} {கட்டமைப்பு நொடிப்படிமம் எதுவும் மீட்டமைக்கப்படாது.}
+::msgcat::mcset ta {No configured sync peer for this node.} {இந்த முனைக்கு அமைக்கப்பட்ட ஒத்திசைவு சக முனை இல்லை.}
+::msgcat::mcset ta {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {தனி மொழிபெயர்ப்பி எதுவும் அமைக்கப்படவில்லை. அதன் வழங்குநர், model, இலக்கு மொழியைத் தேர்ந்தெடுக்க Configure translator-ஐப் பயன்படுத்துங்கள்.}
+::msgcat::mcset ta {No deployment started.} {எந்த வெளியீடும் தொடங்கப்படவில்லை.}
+::msgcat::mcset ta {No diagnostics reported by the current LSP document.} {தற்போதைய LSP ஆவணம் எந்தக் கண்டறிதலையும் தெரிவிக்கவில்லை.}
+::msgcat::mcset ta {No explicitly configured desktop gateway is bound to this node.} {இந்த node-உடன் வெளிப்படையாக அமைக்கப்பட்ட desktop கேட்வே எதுவும் இணைக்கப்படவில்லை.}
+::msgcat::mcset ta {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {இந்த node-உடன் வெளிப்படையாக அமைக்கப்பட்ட கேட்வே எதுவும் இணைக்கப்படவில்லை. முதலில் கேட்வேயைச் சேர்க்கவும்; அதன் registry முனை desktop URL ஆகப் பயன்படுத்தப்படாது.}
+::msgcat::mcset ta {No file is open. Ask a design question, or open an extension file for help with its code.} {எந்தக் கோப்பும் திறந்திருக்கவில்லை. வடிவமைப்புக் கேள்வி கேளுங்கள், அல்லது அதன் குறியீட்டுக்கு உதவி பெற நீட்டிப்புக் கோப்பைத் திறங்கள்.}
+::msgcat::mcset ta {No files have been written. Review the exact manifest and source, then confirm creation.} {கோப்புகள் எதுவும் எழுதப்படவில்லை. சரியான விவரப்பட்டியலையும் மூலத்தையும் மதிப்பாய்வு செய்து, பின்னர் உருவாக்கத்தை உறுதிப்படுத்துங்கள்.}
 ::msgcat::mcset ta {No modules or process plugins were discovered. The provider setup steps can still continue.} {எந்த தொகுதிகளும் process plugin-களும் கண்டறியப்படவில்லை. provider அமைவு படிகள் இன்னும் தொடரலாம்.}
+::msgcat::mcset ta {No other registered node to compare with.} {ஒப்பிட வேறு பதிவுசெய்யப்பட்ட முனை இல்லை.}
 ::msgcat::mcset ta {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {எந்த சுயவிவரமும் இந்த வழிகாட்டியிலிருந்து சேவையைத் தொடங்காது அல்லது நிர்வாக உரிமை தேவைப்படும் ஸ்கிரிப்ட்டை இயக்காது. இயக்குவதற்கு முன் திட்டத்தையும் ஏதேனும் கையளிப்பையும் பரிசீலிக்கவும்.}
+::msgcat::mcset ta {No proposal has been requested. Nothing will be written automatically.} {எந்த முன்மொழிவும் கோரப்படவில்லை. தானாக எதுவும் எழுதப்படாது.}
+::msgcat::mcset ta {No proposal. Nothing was written.} {முன்மொழிவு இல்லை. எதுவும் எழுதப்படவில்லை.}
 ::msgcat::mcset ta {No routes configured.} {route எதுவும் உள்ளமைக்கப்படவில்லை.}
 ::msgcat::mcset ta {No session selected — pick one in the sidebar or start a new one} {அமர்வு எதுவும் தேர்ந்தெடுக்கப்படவில்லை — பக்கப்பட்டியில் ஒன்றைத் தேர்ந்தெடுக்கவும் அல்லது புதியதைத் தொடங்கவும்}
 ::msgcat::mcset ta {No swap target yet: pick a language and press “Set as swap target”.} {இன்னும் மாற்று மொழி இல்லை: ஒரு மொழியைத் தேர்ந்தெடுத்து “மாற்று மொழியாக்கு” என்பதை அழுத்தவும்.}
 ::msgcat::mcset ta {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {config.toml-இல் {[}acl{]} பிரிவு இல்லை: gateway-ஐ அடையும் ஒவ்வொரு அனுப்புநரும் உரிமையாளராக நடத்தப்படுவார் — இது pre-ACL ஒற்றைப் பயனர் நடத்தை. வழங்குவதும் திரும்பப் பெறுவதும் இன்னும் செயல்படும், {[}acl{]} உள்ள தருணத்திலிருந்து அவை பயன்பாட்டுக்கு வரும்.}
+::msgcat::mcset ta {Node id} {முனை அடையாளம்}
+::msgcat::mcset ta {Non-evaluating syntax checks} {குறியீட்டை இயக்காத syntax சரிபார்ப்புகள்}
+::msgcat::mcset ta {Not available: %s} {கிடைக்கவில்லை: %s}
+::msgcat::mcset ta Note குறிப்பு
 ::msgcat::mcset ta {Note for the agent (optional):} {முகவருக்கான குறிப்பு (விருப்பம்):}
+::msgcat::mcset ta {Nothing selected.} {எதுவும் தேர்ந்தெடுக்கப்படவில்லை.}
 ::msgcat::mcset ta {Nothing typed yet.} {இன்னும் எதுவும் தட்டச்சு செய்யப்படவில்லை.}
+::msgcat::mcset ta {Nothing was generated or written.} {எதுவும் உருவாக்கப்படவோ எழுதப்படவோ இல்லை.}
+::msgcat::mcset ta {Nothing was prepared: the chosen repository already has these paths.} {எதுவும் தயாரிக்கப்படவில்லை: தேர்ந்தெடுத்த களஞ்சியத்தில் இந்தப் பாதைகள் ஏற்கனவே உள்ளன.}
 ::msgcat::mcset ta Notifications அறிவிப்புகள்
 ::msgcat::mcset ta OK சரி
 ::msgcat::mcset ta Off முடக்கு
 ::msgcat::mcset ta On இயக்கு
+::msgcat::mcset ta {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {மதிப்பாய்வு செய்யப்பட்ட extension இடையகம் மட்டுமே மாற்றப்படும். இந்த முன்னோட்டத்திற்குப் பிறகு செய்யப்படும் மாற்றங்களிலிருந்து கோப்பு இன்னும் பாதுகாக்கப்பட்டுள்ளது. commit, push அல்லது PR எதுவும் நடக்காது.}
+::msgcat::mcset ta {Only this new branch is committed. Your ambient git identity is used.} {இந்தப் புதிய கிளை மட்டுமே commit செய்யப்படும். உங்கள் தற்போதைய git அடையாளம் பயன்படுத்தப்படும்.}
 ::msgcat::mcset ta Op {op வழங்கு}
 ::msgcat::mcset ta Open திற
+::msgcat::mcset ta {Open PR…} {PR திற…}
 ::msgcat::mcset ta {Open a window} {ஒரு சாளரத்தைத் திற}
 ::msgcat::mcset ta {Open in Dev} {Dev-இல் திற}
 ::msgcat::mcset ta {Open in browser} {உலாவியில் திற}
 ::msgcat::mcset ta {Open plugin} {plugin-ஐ திற}
 ::msgcat::mcset ta {Open terminal} {முனையத்தைத் திற}
+::msgcat::mcset ta {Open this pull request?} {இந்த PR-ஐத் திறக்கவா?}
 ::msgcat::mcset ta {Open veles in Android's settings} {Android அமைப்புகளில் veles-ஐத் திற}
 ::msgcat::mcset ta {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {விருப்பத்தேர்வு: சேர வேண்டிய IRC வலையமைப்பு. சேனல்களை இடைவெளி அல்லது காற்புள்ளிகளால் பிரித்து எழுதுங்கள்; .env இல் IRC_CHANNELS அமைக்கப்பட்டால், அது இந்தப் பட்டியலை மாற்றும்.}
 ::msgcat::mcset ta {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {விருப்பங்கள் தேர்ந்தெடுக்கப்பட்ட கூறு மேனிஃபெஸ்டில் இருந்து வருகின்றன. ரகசியம் போல் தோன்றும் புலங்கள் setup/பெட்டக ஓட்டத்தில் இருக்கும். காலி புலங்கள் அந்த விருப்பத்தை மாற்றாது.}
 ::msgcat::mcset ta {Or paste a ticket signed on another device} {அல்லது மற்றொரு சாதனத்தில் கையொப்பமிடப்பட்ட டிக்கெட்டை ஒட்டவும்}
 ::msgcat::mcset ta {Or type an answer:} {அல்லது பதில் தட்டச்சு செய்க:}
+::msgcat::mcset ta Origin ஆரிஜின்
 ::msgcat::mcset ta Other… மற்றவை…
 ::msgcat::mcset ta Outline வெளிக்கோடு
+::msgcat::mcset ta Output வெளியீடு
 ::msgcat::mcset ta {Override for THIS session (leave blank to inherit the default)} {இந்த அமர்விற்கான மாற்றீடு (இயல்புநிலையைப் பெற காலியாக விடவும்)}
 ::msgcat::mcset ta {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {உரிமையாளர் அடையாளம் (telegram:123456, irc:account, அல்லது nick!user@host முகமூடி)}
 ::msgcat::mcset ta {PDS and handle domain} {PDS மற்றும் handle களம்}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset ta {Pause scheduler} {திட்டமிடாளை இடைநிறுத்து}
 ::msgcat::mcset ta {Peek (C-c C-p)} {எட்டிப்பார் (C-c C-p)}
 ::msgcat::mcset ta {Peek definition} {வரையறையை முன்தோற்றம் காண்}
+::msgcat::mcset ta {Permission grants} {அனுமதி வழங்கல்கள்}
+::msgcat::mcset ta {Permission grants…} {அனுமதி வழங்கல்கள்…}
 ::msgcat::mcset ta Phone தொலைபேசி
 ::msgcat::mcset ta {Phone: permissions, battery, storage} {தொலைபேசி: அனுமதிகள், பேட்டரி, சேமிப்பகம்}
 ::msgcat::mcset ta {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {%s தயாரித்த தொலைபேசிகள் தாமாகவும் ஆப்ஸை நிறுத்துகின்றன. veles-இன் ஆப் அமைப்புகளில் அது தானாகத் தொடங்கவும் பின்னணியில் இயங்கவும் அனுமதியுங்கள்.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset ta Port Port
 ::msgcat::mcset ta {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {முன்னொட்டு விசைகள் (C-x, M-o) செயல்படும் நேரத்தில் உடனே which-key பாப்அப் காட்டப்படும்.}
 ::msgcat::mcset ta {Prepare an own vlpds PDS through the signed CLI handoff} {கையொப்பமிட்ட CLI handoff மூலம் சொந்த vlpds PDS-ஐ தயார் செய்யவும்}
+::msgcat::mcset ta {Prepare branch…} {கிளையைத் தயார் செய்…}
+::msgcat::mcset ta {Prepare this branch and commit?} {இந்தக் கிளையையும் கமிட்டையும் தயார் செய்யவா?}
 ::msgcat::mcset ta Preview முன்னோட்டம்
+::msgcat::mcset ta {Preview change set} {மாற்றத் தொகுப்பின் முன்னோட்டம்}
+::msgcat::mcset ta {Preview files} {கோப்புகளை முன்னோட்டமாகப் பார்}
 ::msgcat::mcset ta {Preview here} {இங்கே முன்னோட்டம்}
 ::msgcat::mcset ta {Preview pane} {Preview பேனா}
+::msgcat::mcset ta {Preview proposal} {முன்மொழிவை முன்னோட்டமாகப் பார்}
+::msgcat::mcset ta {Preview the changed name or language before creating it.} {உருவாக்குவதற்கு முன் மாற்றப்பட்ட பெயரையோ மொழியையோ முன்னோட்டமாகப் பாருங்கள்.}
+::msgcat::mcset ta Probe ஆய்வு
+::msgcat::mcset ta {Probe of %1$s failed: %2$s} {%1$s ஆய்வு தோல்வி: %2$s}
 ::msgcat::mcset ta {Profile result} {சுயவிவர முடிவு}
 ::msgcat::mcset ta {Promote into config.toml} {config.toml-க்கு உயர்த்து}
 ::msgcat::mcset ta Promote… உயர்த்து…
 ::msgcat::mcset ta Provider வழங்குநர்
+::msgcat::mcset ta {Provider driver (plugin wire only)} {வழங்குநர் இயக்கி (plugin wire மட்டும்)}
 ::msgcat::mcset ta {Provider entry name} {Provider உள்ளீட்டுப் பெயர்}
 ::msgcat::mcset ta {Provider for this session} {இந்த அமர்வுக்கான வழங்குநர்}
 ::msgcat::mcset ta Providers வழங்குநர்கள்
 ::msgcat::mcset ta {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {Providers என்பது அட்டவணைகளின் பட்டியல்: custom_providers.0.base_url, .0.api_mode, .0.key_env … அட்டவணை எண் கீழே காட்டப்பட்டுள்ள வரிசையில் இருந்து வருகிறது.}
 ::msgcat::mcset ta {Public HTTPS URL} {பொது HTTPS URL}
+::msgcat::mcset ta {Pull request base} {PR அடிப்படைக் கிளை}
+::msgcat::mcset ta {Pull request created} {PR உருவாக்கப்பட்டது}
+::msgcat::mcset ta {Pull request description} {PR விவரம்}
+::msgcat::mcset ta {Pull request opened.} {PR திறக்கப்பட்டது.}
+::msgcat::mcset ta {Pull request repository} {PR களஞ்சியம்}
+::msgcat::mcset ta {Pull request title} {PR தலைப்பு}
 ::msgcat::mcset ta {Purge + delete files} {சுத்திகரி + கோப்புகளை நீக்கு}
 ::msgcat::mcset ta {Purge container} {கொள்கலனைச் சுத்திகரி}
+::msgcat::mcset ta Purpose நோக்கம்
+::msgcat::mcset ta Push புஷ்
+::msgcat::mcset ta {Push branch…} {கிளையைப் புஷ் செய்…}
+::msgcat::mcset ta {Push complete. No pull request has been opened.} {புஷ் முடிந்தது. எந்த PR-உம் திறக்கப்படவில்லை.}
+::msgcat::mcset ta {Push this branch?} {இந்தக் கிளையைப் புஷ் செய்யவா?}
+::msgcat::mcset ta {Push to %s:} {%s-க்குத் தள்ளு:}
 ::msgcat::mcset ta Question கேள்வி
 ::msgcat::mcset ta Questions கேள்விகள்
 ::msgcat::mcset ta Quit வெளியேறு
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset ta {Reading notifications, for triggers} {அறிவிப்புகளைப் படித்தல், தூண்டுதல்களுக்காக}
 ::msgcat::mcset ta Reasoning காரணம்
 ::msgcat::mcset ta {Reasoning effort} {சிந்தனை முயற்சி}
+::msgcat::mcset ta {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {பெறப்பட்டது, பயன்படுத்தக் காத்திருக்கிறது: சேமிப்பு %1$s · நினைவகம் %2$s · கட்டமைப்பு %3$s · பெட்டகம் %4$s}
+::msgcat::mcset ta {Recommended checks} {பரிந்துரைக்கப்பட்ட சரிபார்ப்புகள்}
 ::msgcat::mcset ta {Refetch this transcript from the store} {இந்த transcript-ஐ கடையிலிருந்து மீண்டும் எடு}
 ::msgcat::mcset ta Refresh புதுப்பி
 ::msgcat::mcset ta {Refresh preview} {முன்தோற்றத்தைப் புதுப்பி}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset ta {Rename symbol} {சின்னத்தின் பெயரை மாற்று}
 ::msgcat::mcset ta Rename… மறுபெயர்…
 ::msgcat::mcset ta Rendered வரையப்பட்டது
+::msgcat::mcset ta {Replace existing repository files?} {உள்ள களஞ்சியக் கோப்புகளை மாற்றவா?}
+::msgcat::mcset ta {Replace them in the new branch? Nothing else in the repository changes.} {புதிய கிளையில் அவற்றை மாற்றவா? களஞ்சியத்தில் வேறு எதுவும் மாறாது.}
 ::msgcat::mcset ta Repository களஞ்சியம்
 ::msgcat::mcset ta {Repository (owner/name)} {களஞ்சியம் (உரிமையாளர்/பெயர்)}
+::msgcat::mcset ta {Repository directory} {களஞ்சிய அடைவு}
+::msgcat::mcset ta {Repository paths} {களஞ்சியப் பாதைகள்}
+::msgcat::mcset ta {Request a new preview before trying again.} {மீண்டும் முயற்சிக்கும் முன் புதிய முன்னோட்டத்தைக் கோருங்கள்.}
 ::msgcat::mcset ta {Reset to default} {இயல்புநிலைக்கு மாற்று}
 ::msgcat::mcset ta {Reset to template} {வார்ப்புருவுக்கு மீட்டமை}
 ::msgcat::mcset ta Restart மறுதொடக்கம்
+::msgcat::mcset ta {Restart + verify canary} {முன்னோட்டத்தை மீண்டும் தொடங்கிச் சரிபார்}
 ::msgcat::mcset ta {Restore hidden windows} {மறைக்கப்பட்ட சாளரங்களை மீட்டெடு}
 ::msgcat::mcset ta {Restore plugins to %s?} {plugins-ஐ %s-க்கு மீட்டெடுக்கவா?}
 ::msgcat::mcset ta {Restore revision r%1$s of %2$s?} {%2$s இன் திருத்தம் r%1$s ஐ மீட்டெடுக்கவா?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset ta {Restore this commit} {இந்த commit-ஐ மீட்டெடு}
 ::msgcat::mcset ta {Restore this revision} {இந்தத் திருத்தத்தை மீட்டெடு}
 ::msgcat::mcset ta {Resume scheduler} {திட்டமிடாளை தொடர்}
+::msgcat::mcset ta {Resume unfinished operation} {முடியாத செயல்பாட்டைத் தொடர்}
 ::msgcat::mcset ta Revert மீளமை
 ::msgcat::mcset ta {Revert %s to HEAD? Uncommitted changes in this file are lost.} {%s ஐ HEAD க்கு திருப்பவா? இந்த கோப்பில் செய்யப்படாத மாற்றங்கள் இழக்கப்படும்.}
 ::msgcat::mcset ta Revert… மீளமை…
 ::msgcat::mcset ta Review Review
 ::msgcat::mcset ta {Review (git) pane} {Review (git) பேனா}
+::msgcat::mcset ta {Review deployment} {வெளியீட்டை மதிப்பாய்வு செய்}
+::msgcat::mcset ta {Review extension contribution} {extension பங்களிப்பை மதிப்பாய்வு செய்}
 ::msgcat::mcset ta {Review managed local bundle…} {மேலாண்மை செய்யப்பட்ட உள்ளூர் தொகுப்பை மதிப்பாய்வு செய்…}
 ::msgcat::mcset ta {Review rollback} {மீளமைப்பை மதிப்பாய்வு செய்}
+::msgcat::mcset ta {Review selected files} {தேர்ந்தெடுத்த கோப்புகளை மதிப்பாய்வு செய்}
 ::msgcat::mcset ta {Review the component options on the summary screen before applying.} {பயன்படுத்தும் முன் சுருக்கத் திரையில் கூறு விருப்பங்களைப் பரிசீலிக்கவும்.}
 ::msgcat::mcset ta {Review the component preview before applying. No component configuration has been written.} {பயன்படுத்தும் முன் கூறு முன்னோட்டத்தைப் பரிசீலிக்கவும். எந்த கூறு கட்டமைப்பும் எழுதப்படவில்லை.}
+::msgcat::mcset ta {Review the selected files and remove credential findings before preparing.} {தயாரிப்பதற்கு முன் தேர்ந்தெடுத்த கோப்புகளை மதிப்பாய்வு செய்து, கண்டறியப்பட்ட சான்றுக் குறிப்புகளை நீக்குங்கள்.}
 ::msgcat::mcset ta {Reviewed core bundle in the managed install-sources directory} {நிர்வகிக்கப்பட்ட நிறுவல் மூல அடைவில் ஆய்வு செய்யப்பட்ட மையத் தொகுப்பு}
+::msgcat::mcset ta {Reviewed fleet deployment} {மதிப்பாய்வு செய்யப்பட்ட முனைக்குழு வெளியீடு}
 ::msgcat::mcset ta {Reviewed local bundle} {மதிப்பாய்வு செய்யப்பட்ட உள்ளூர் தொகுப்பு}
 ::msgcat::mcset ta {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {மதிப்பாய்வு செய்யப்பட்ட உள்ளூர் தொகுப்பு நிறுவப்பட்டது. அது கையொப்பமிடப்பட்ட பதிவிறக்க சரிபார்ப்புக்கு உட்படுத்தப்படவில்லை. புதிய கோரைப் பயன்படுத்தும் முன் மறுதொடக்கம் தேவை.}
 ::msgcat::mcset ta Revision திருத்தம்
 ::msgcat::mcset ta Revoke {திரும்பப் பெறு}
+::msgcat::mcset ta {Revoke selected} {தேர்ந்ததைத் திரும்பப் பெறு}
 ::msgcat::mcset ta Roles பாத்திரங்கள்
 ::msgcat::mcset ta {Roll back %1$s from %2$s to %3$s?} {%1$s-ஐ %2$s இலிருந்து %3$s இற்கு மீளமைக்கவா?}
+::msgcat::mcset ta {Roll back selected target} {தேர்ந்தெடுத்த இலக்கைப் பின்வாங்கு}
 ::msgcat::mcset ta {Rollback completed. Reload the component or restart as requested by the report.} {மீளமைப்பு முடிந்தது. அறிக்கை கேட்டபடி கூறை மீண்டும் ஏற்றவோ அல்லது மறுதொடக்கம் செய்யவோ செய்க.}
 ::msgcat::mcset ta {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {மீளமைப்பு மதிப்பாய்வு செய்யப்பட்டது. மீட்டமைப்பை உறுதிப்படுத்த 'தேர்ந்தெடுக்கப்பட்ட கூறை நிறுவு' என்பதைத் தேர்ந்தெடுக்கவும்; எதுவும் மீட்டமைக்கப்படவில்லை.}
 ::msgcat::mcset ta Run இயக்கு
 ::msgcat::mcset ta {Run the wizard again} {வழிகாட்டியை மீண்டும் இயக்கு}
 ::msgcat::mcset ta {Running in the background} {பின்னணியில் இயங்குதல்}
-::msgcat::mcset ta {Running tasks} {இயங்கும் பணிகள்}
-::msgcat::mcset ta {Running tasks (subagents, shells, monitors)} {இயங்கும் பணிகள் (subagents, shells, monitors)}
 ::msgcat::mcset ta {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {Runtime வழங்கல்களும் பயனர்களும் store-இல் வாழ்கின்றன, store மீட்டமைப்பு அவற்றை நீக்கும். Promote, store முடிவு செய்யும் உள்ளீடுகளை config.toml-இல் சேர்க்கிறது — கோப்பின் கருத்துகளும் விசை வரிசையும் பாதுகாக்கப்படும், அதன் அருகில் காப்புப்பிரதி எழுதப்படும், store நகல்கள் நீக்கப்படும் — மேலும் கோப்பில் ஏற்கனவே ஒரு முடிவு இருந்தால் யூகிக்காமல் மறுக்கிறது.}
 ::msgcat::mcset ta {S3 HTTPS endpoint} {S3 HTTPS முடிவுபுள்ளி}
 ::msgcat::mcset ta {S3 bucket} {S3 பாக்கெட்}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset ta {Save as default} {இயல்புநிலையாகச் சேமி}
 ::msgcat::mcset ta {Save attachment as} {இணைப்பை சேமி என}
 ::msgcat::mcset ta {Save globally} {உலகளவில் சேமி}
+::msgcat::mcset ta {Save or revert the open buffer before applying a change set.} {மாற்றத் தொகுப்பைப் பயன்படுத்தும் முன் திறந்த இடையகத்தைச் சேமிக்கவும் அல்லது மீட்டமைக்கவும்.}
 ::msgcat::mcset ta Scan {ஸ்கேன் செய்}
 ::msgcat::mcset ta {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {இந்தத் தொலைபேசியை அழைத்த இயந்திரத்தின் veles குறியீட்டை ஸ்கேன் செய்யுங்கள். அது முதலில் WireGuard குறியீட்டைக் காட்டியிருந்தால், இதற்கு முன் அதை WireGuard ஆப்பில் ஸ்கேன் செய்யுங்கள்.}
 ::msgcat::mcset ta {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {கால அட்டவணை: ஒரு இடைவெளி ("30m", "every 2h"), ஒரு cron முறை ("0 9 * * 1"), அல்லது ஒருமுறைக்கான ISO நேர முத்திரை. மேலேயுள்ள வரி இயந்திரம் அதை எப்படி வாசிக்கிறது என்பதைக் காட்டுகிறது. வழங்கல்: "local" வெளியீட்டை பதிவில் வைக்கிறது — பின்னால் chat தளம் இல்லாத desktop-க்கு இதுவே நேர்மையான இயல்புநிலை — அல்லது "platform:chat_id". அமர்வை எழுப்பு: புதிய அமர்வில் இயக்க காலியாக விடவும்; அந்த அமர்வை முழு வரலாற்றுடன் தொடர session id (அல்லது தனித்த முன்னொட்டு) அமைக்கவும் — பரபரப்பான அமர்வு அடுத்த திருப்ப எல்லையில் prompt-ஐ எடுத்துக்கொள்ளும்.}
+::msgcat::mcset ta Scope எல்லை
 ::msgcat::mcset ta {Scroll to end} {இறுதிவரை உருட்டு}
 ::msgcat::mcset ta {Search commands and sessions…} {கட்டளைகளையும் அமர்வுகளையும் தேடு…}
 ::msgcat::mcset ta {Search message text} {செய்தி உரையில் தேடு}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset ta Section பிரிவு
 ::msgcat::mcset ta {Select a component first. No component options will be changed if you skip this step.} {முதலில் ஒரு கூறைத் தேர்ந்தெடுக்கவும். இந்தப் படியைத் தவிர்த்தால் எந்த கூறு விருப்பங்களும் மாறாது.}
 ::msgcat::mcset ta {Select all} {அனைத்தையும் தேர்ந்தெடு}
+::msgcat::mcset ta {Select all extensions} {எல்லா extensions-ஐயும் தேர்ந்தெடு}
+::msgcat::mcset ta {Select at least one source file.} {குறைந்தது ஒரு மூலக் கோப்பையாவது தேர்ந்தெடுக்கவும்.}
+::msgcat::mcset ta {Select none} {எதையும் தேர்ந்தெடுக்காதே}
+::msgcat::mcset ta {Select text to translate first.} {முதலில் மொழிபெயர்க்க உரையைத் தேர்ந்தெடுக்கவும்.}
+::msgcat::mcset ta {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {பங்களிக்க வேண்டிய extensions-ஐயும் கோப்புகளையும் தேர்ந்தெடுக்கவும். அவை ஒரே கிளையிலும் ஒரே pull request-இலும் செல்லும், ஒவ்வொரு extension-ம் அதன் சொந்த அடைவில். மதிப்பாய்வு செய்து, மதிப்பீடு செய்யாத சரிபார்ப்புகளை இயக்கி, பிறகு தனிமைப்படுத்தப்பட்ட கிளையைத் தயார் செய்து commit செய்யவும். Push செய்தலும் pull request உருவாக்குதலும் தனித்தனி உறுதிசெய்யப்பட்ட செயல்கள்.}
 ::msgcat::mcset ta Send அனுப்பு
+::msgcat::mcset ta {Send %s to the peer?} {%s-ஐ சக முனைக்கு அனுப்பவா?}
 ::msgcat::mcset ta {Send a %d-line message to the channel?} {சேனலுக்கு %d வரி செய்தியை அனுப்பவா?}
 ::msgcat::mcset ta {Send raw line to the server? (%s)} {சர்வருக்கு மூல வரியை அனுப்பவா? (%s)}
 ::msgcat::mcset ta {Server (empty = no IRC)} {சர்வர் (காலி = IRC இல்லை)}
 ::msgcat::mcset ta {Server: gateway configuration and a reviewed user unit} {சேவையகம்: கேட்வே கட்டமைப்பு மற்றும் ஆய்வு செய்யப்பட்ட பயனர் அலகு}
 ::msgcat::mcset ta {Server: install a user unit and prepare the separate linger handoff} {சேவையகம்: பயனர் அலகை நிறுவி தனி linger கையளிப்பைத் தயார் செய்}
 ::msgcat::mcset ta {Server: use a system service and prepare a privileged CLI request} {சேவையகம்: அமைப்பு சேவையைப் பயன்படுத்தி நிர்வாக உரிமை தேவைப்படும் CLI கோரிக்கையைத் தயார் செய்}
+::msgcat::mcset ta Session அமர்வு
 ::msgcat::mcset ta {Session id} {அமர்வு ஐடி}
 ::msgcat::mcset ta {Session id…} {அமர்வு ஐடி…}
 ::msgcat::mcset ta Sessions அமர்வுகள்
 ::msgcat::mcset ta {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {தற்போது இந்த மாற்றுப்பெயருக்கு மாற்றப்பட்ட அமர்வுகள் தீர்க்கப்பட்ட வழியைத் தொடரும்; புதிய மாற்றீடுகள் பெயரைக் காணாது.}
+::msgcat::mcset ta {Sessions served} {சேவை செய்யப்பட்ட அமர்வுகள்}
 ::msgcat::mcset ta Set அமை
 ::msgcat::mcset ta {Set [model] provider/default in config.toml.} {config.toml-இல் [model] provider/இயல்புநிலையை அமை.}
 ::msgcat::mcset ta {Set as swap target} {மாற்று மொழியாக்கு}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset ta {Setup — summary} {அமைவு — சுருக்கம்}
 ::msgcat::mcset ta {Setup — welcome} {அமைவு — வரவேற்பு}
 ::msgcat::mcset ta {Shared container network} {பகிர்வு கொள்கலன் வலையமைப்பு}
+::msgcat::mcset ta Shells செல்கள்
+::msgcat::mcset ta {Shells and monitors} {செல்கள் மற்றும் கண்காணிப்பான்கள்}
+::msgcat::mcset ta {Shells and monitors (subagents, shells, monitors)} {செல்கள் மற்றும் கண்காணிப்பான்கள் (துணைமுகவர்கள், செல்கள், கண்காணிப்பான்கள்)}
 ::msgcat::mcset ta {Show diff} {வேறுபாட்டைக் காட்டு}
 ::msgcat::mcset ta {Show every key} {எல்லா விசைகளையும் காட்டு}
 ::msgcat::mcset ta Sign கையொப்பமிடு
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset ta Solved முடிந்தது
 ::msgcat::mcset ta Source மூலம்
 ::msgcat::mcset ta {Source commit} {மூலச் செயல்}
+::msgcat::mcset ta {Source text} {மூல உரை}
 ::msgcat::mcset ta {Source→app (C-c C-c)} {மூலம்→ஆப் (C-c C-c)}
 ::msgcat::mcset ta Stage மேடையேற்று
+::msgcat::mcset ta {Stage canary} {முன்னோட்டத்தை ஒதுக்கு}
+::msgcat::mcset ta Stale காலாவதியான
+::msgcat::mcset ta {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {நிலையான அனுமதிகள் பின்வரும் கருவி அழைப்புகளை மீண்டும் கேட்காமல் இயக்க அனுமதிக்கின்றன. அமர்வு வழங்கல்களை ஒவ்வொரு மேற்பரப்பிலும் (டெஸ்க்டாப், Telegram, IRC, …) உள்ள நேரடி அமர்வுகள் வைத்திருக்கின்றன; உலகளாவிய வழங்கல்கள் நிலைத்திருக்கும்; config.toml-இலிருந்து வரும் [approvals] அனுமதிப்பட்டியல் உருப்படிகள் படிக்க மட்டும் காட்டப்படும். ஒன்றைத் திரும்பப் பெறுவது மற்ற வழங்கல்களை ஒருபோதும் மாற்றாது.}
 ::msgcat::mcset ta Start தொடங்கு
+::msgcat::mcset ta {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {உங்கள் பயனர் plugin அடைவில் உள்ள extension-ல் தொடங்குங்கள். அது upgrade-களையும் தாண்டி நிலைத்திருக்கும், கேட்வேயை மீண்டும் build செய்யத் தேவையில்லை. New extension எழுதுவதற்கு முன் சரியான விவரப்பட்டியலையும் மூலத்தையும் முன்னோட்டமாகக் காட்டும். ஆதரிக்கப்பட்ட மொழியையும் API பதிப்பையும் தேர்ந்தெடுத்து, கோப்புகளை மதிப்பாய்வு செய்து, பின்னர் extension-ஐ தனிமையில் சோதியுங்கள்.}
 ::msgcat::mcset ta {Start with the phone} {தொலைபேசியுடன் தொடங்குதல்}
+::msgcat::mcset ta {Static IP} {நிலையான IP}
 ::msgcat::mcset ta Status நிலை
 ::msgcat::mcset ta Steer திசைமாற்று
 ::msgcat::mcset ta {Step %1$d of %2$d} {படி %1$d / %2$d}
 ::msgcat::mcset ta {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {இன்னும் அமைக்க வேண்டியவை: %s — இங்கே /secret set NAME என்று தட்டச்சு செய்யுங்கள், அல்லது நுழைவாயிலின் கணினியில் veles secret set NAME-ஐ இயக்குங்கள்.}
 ::msgcat::mcset ta Stop நிறுத்து
 ::msgcat::mcset ta {Storage root} {சேமிப்பு மூலம்}
+::msgcat::mcset ta Store சேமிப்பு
 ::msgcat::mcset ta {Store a secret: %s} {ரகசியத்தைச் சேமி: %s}
 ::msgcat::mcset ta {Store it} சேமி
+::msgcat::mcset ta {Store replica} {சேமிப்பக நகல்}
 ::msgcat::mcset ta Subagents {துணை முகவர்கள்}
 ::msgcat::mcset ta {Subagents (/agents)} {துணை முகவர்கள் (/agents)}
 ::msgcat::mcset ta Summary சுருக்கம்
+::msgcat::mcset ta Surface மேற்பரப்பு
 ::msgcat::mcset ta {Swap ⇄} {மாற்று ⇄}
+::msgcat::mcset ta {Sync cancelled.} {ஒத்திசைவு ரத்து செய்யப்பட்டது.}
+::msgcat::mcset ta {Sync complete.} {Sync முடிந்தது.}
+::msgcat::mcset ta {Sync now} {இப்போது sync செய்}
 ::msgcat::mcset ta {TOML copied — paste it into config.toml} {TOML நகலெடுக்கப்பட்டது — அதை config.toml இல் ஒட்டவும்}
 ::msgcat::mcset ta Tag டேக்
 ::msgcat::mcset ta {Tap a link to open it, or a block's header to open or close the block.} {இணைப்பைத் திறக்க அதைத் தட்டவும், அல்லது ஒரு தொகுதியைத் திறக்க அல்லது மூட அதன் தலைப்பைத் தட்டவும்.}
 ::msgcat::mcset ta {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {தட்டச்சு செய்ய கீழே உள்ள பெட்டியைத் தட்டவும். அனுப்பு அனுப்பும், நிறுத்து சுற்றை முடிக்கும், பிரி இயங்கும் கட்டளையைப் பின்னணிக்கு நகர்த்தும்.}
 ::msgcat::mcset ta {Tap the text to clear the selection.} {தேர்வை அழிக்க உரையைத் தட்டவும்.}
+::msgcat::mcset ta {Target language:} {இலக்கு மொழி:}
+::msgcat::mcset ta {Target node IDs (canary first, comma separated)} {இலக்கு முனை id-கள் (முன்னோட்டம் முதலில், கமாவால் பிரிக்கப்பட்டவை)}
 ::msgcat::mcset ta {Task list} {பணி பட்டியல்}
 ::msgcat::mcset ta {Task list (right pane)} {பணி பட்டியல் (வலது பேனா)}
 ::msgcat::mcset ta Tasks பணிகள்
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset ta {That is not a ticket.} {அது ஒரு டிக்கெட் அல்ல.}
 ::msgcat::mcset ta {That is not a veles pool code.} {அது veles குழுக் குறியீடு அல்ல.}
 ::msgcat::mcset ta {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {அது WireGuard குறியீடு: அதை WireGuard ஆப்பில் ஸ்கேன் செய்யுங்கள். veles குறியீடு இரண்டாவது.}
+::msgcat::mcset ta {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {மதிப்பாய்வு செய்யப்பட்ட %d கோப்பு(கள்) உங்கள் பயனர் plugin கோப்பகத்தில் புதிய கோப்பகத்தில் எழுதப்படும், veles அந்த நீட்டிப்பை ஏற்ற முயலும். முன்னோட்டத்திற்குப் பிறகு அந்தப் பெயரில் ஒரு கோப்பகம் தோன்றியிருந்தால், எதுவும் எழுதப்படாது. வெளியிடுதல் இந்தச் செயலின் பகுதி அல்ல.}
 ::msgcat::mcset ta {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {Dev பேனாவின் REPL நேரடி செயலியில் இயங்குகிறது — UI அதன் சொந்த lisp ஆகும்.}
 ::msgcat::mcset ta {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {[mcp_servers.<name>] அட்டவணை config.toml இலிருந்து நீக்கப்படுகிறது. முந்தைய கோப்பு config.toml.bak ஆக வைக்கப்படுகிறது.}
 ::msgcat::mcset ta {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {Adapter allowlist-கள் (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) தான் நம்பக எல்லை, அனுமதிக்கப்பட்ட ஒவ்வொரு அனுப்புநரும் owner ஆகவே கருதப்படுவார். இது ACL-க்கு முந்தைய நிலைப்பாடு.}
 ::msgcat::mcset ta {The agent asks for a secret: %s} {முகவர் ஒரு ரகசியத்தைக் கேட்கிறது: %s}
+::msgcat::mcset ta {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {ஏற்கனவே push செய்யப்பட்ட கிளை PR-இன் தலைப்பாகப் பயன்படுத்தப்படும். உங்கள் fork-இல் உள்ள கிளை தானாகவே owner:branch எனப் பெயரிடப்படும்.}
+::msgcat::mcset ta {The author asks} {ஆசிரியர் கேட்கிறார்}
+::msgcat::mcset ta {The buffer changed. Request a new proposal before applying.} {இடையகம் மாறிவிட்டது. பயன்படுத்துவதற்கு முன் புதிய முன்மொழிவைக் கோருங்கள்.}
 ::msgcat::mcset ta {The bundle operation returned an invalid result. Verify the installation before retrying.} {தொகுப்புச் செயல்பாடு தவறான முடிவைத் திருப்பியது. மீண்டும் முயற்சிப்பதற்கு முன் நிறுவலைச் சரிபார்க்கவும்.}
 ::msgcat::mcset ta {The bundle preview was malformed; nothing was installed.} {தொகுப்பின் முன்னோட்டம் தவறான வடிவத்தில் இருந்தது; எதுவும் நிறுவப்படவில்லை.}
 ::msgcat::mcset ta {The camera did not open; paste the code instead.} {கேமரா திறக்கவில்லை; அதற்கு பதிலாக குறியீட்டை ஒட்டவும்.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset ta {The component manifest is still loading. Wait for it or choose another component.} {கூறு மேனிஃபெஸ்ட் இன்னும் ஏற்றப்படுகிறது. அதற்காகக் காத்திருங்கள் அல்லது மற்றொரு கூறைத் தேர்ந்தெடுக்கவும்.}
 ::msgcat::mcset ta {The component preview is not ready yet. Refresh it and review the result before applying.} {கூறு முன்னோட்டம் இன்னும் தயாராகவில்லை. பயன்படுத்தும் முன் அதைப் புதுப்பித்து முடிவைப் பரிசீலிக்கவும்.}
 ::msgcat::mcset ta {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {கூறு முன்னோட்டம் இன்னும் ஏற்றப்படுகிறது. இணைந்த மாற்றங்களைப் பரிசீலிக்கும் முன் பதிலுக்காகக் காத்திருங்கள்.}
+::msgcat::mcset ta {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {தற்போதைய கண்டறிதல்கள் (மொழி சேவையகம் அல்லது Check-இலிருந்து) இந்தக் கோப்புடன் அனுப்பப்படும். விருப்பமானால் ஒரு கேள்வி சேர்க்கலாம். பதில் உரை மட்டுமே; எதுவும் எழுத முடியாது.}
 ::msgcat::mcset ta {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {கோப்பகமும் அதில் உள்ள அனைத்தும் நீக்கப்படும். இதை மீளமைக்க முடியாது — prompt-இல் இருந்து மட்டும் விலக்க விரும்பினால், அதற்கு பதிலாக அணைத்து விடுங்கள்.}
 ::msgcat::mcset ta {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {கோப்பகம் நீக்கப்படுகிறது. சொருகி கோப்புறை ஒரு git களஞ்சியம் — முதலில் ஒரு ஸ்னாப்ஷாட் கமிட் செய்யப்படும், எனவே வரலாறு… அதை திருப்பித் தரும்.}
+::msgcat::mcset ta {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {திருத்தி கேட்வே கோப்புகளைத் திறக்கும், தொலை நிகழ்வுகள் உட்பட, மேலும் கோப்பின் மொழிக்கான மொழி சேவையகத்தைக் கேட்வேயில் இயக்கும்: tcl-lsp, typescript-language-server (TypeScript மற்றும் JavaScript), rust-analyzer (Rust plugin crate அல்லது module), clangd (C), racket-langserver மற்றும் ஒரு Common Lisp சேவையகம். கேட்வேயில் சேவையகம் உள்ள ஒவ்வொரு மொழிக்கும் hover, வரையறைக்குச் செல்லல், நிறைவு மற்றும் நேரடிக் கண்டறிதல்கள் வேலை செய்யும்; எதுவும் இல்லாவிட்டால், அங்கே எந்த நிரலை நிறுவ வேண்டும் என்பதைத் திருத்தி சொல்லும், இலக்கண வண்ணமேற்றம் தொடரும். Check கேட்வேயில் பொருந்தும் சரிபார்ப்பையே இயக்கும்: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, அல்லது Racket மற்றும் Lisp படிப்பான்கள். சேமி, Manage extensions-இல் மீண்டும் ஏற்று, உள்ளூர் நிலையை வெளியிடாமல் நீட்டிப்பைச் சோதிக்கவும்.}
 ::msgcat::mcset ta {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {முதல் handoff, ரகசியங்களையும், பொருத்தப்பட்ட படத்தையும், இயக்க நேரக் கோப்புகளையும் தயார் செய்கிறது, ஆனால் PDS-ஐத் தொடங்குவதில்லை. KEK மற்றும் PLC சுழற்சி விசையை ஆஃப்லைனில் காப்புப் பிரதி எடுத்து, காப்புப்பிரதி செய்ததை உறுதிப்படுத்தி, புதிதாக மதிப்பீடு செய்யப்பட்ட கோரிக்கையை அளித்து HTTP-01 TLS மற்றும் செயல்பாட்டை அமைக்கவும். DNS பதிவுகள் நேரடியாக இந்த ஹோஸ்ட்டைக் குறிக்க வேண்டும்; CDN ப்ராக்ஸி அல்லது DNS மாற்றங்களை veles செய்யாது.}
+::msgcat::mcset ta {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {நீட்டிப்பு உருவாக்கப்பட்ட பிறகு படிவம் மாறிவிட்டது. மீண்டும் உருவாக்குங்கள், அல்லது வெறும் scaffold-ஐ முன்னோட்டமாகப் பார்க்கவும்.}
 ::msgcat::mcset ta {The gateway itself is untouched.} {கேட்வே தொடப்படாமல் இருக்கும்.}
 ::msgcat::mcset ta {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {நுழைவாயில் கட்டமைப்பை மீண்டும் ஏற்றியது, எனவே புதிய அமர்வுகள் இப்போதே அதைப் பயன்படுத்துகின்றன, பெட்டகத்தில் சேமித்த key அடுத்த கோரிக்கையில் பயன்படுத்தப்படும். Telegram மற்றும் IRC நுழைவாயிலின் அடுத்த மறுதொடக்கத்தில் தொடங்கும்: veles gateway restart.}
 ::msgcat::mcset ta {The installed component no longer matches the selected manifest. Review the component list again.} {நிறுவப்பட்ட கூறு தேர்ந்தெடுக்கப்பட்ட மேனிஃபெஸ்டுடன் இனி பொருந்தவில்லை. கூறு பட்டியலை மீண்டும் பரிசீலிக்கவும்.}
 ::msgcat::mcset ta {The installer preview has no verification signatures; apply is disabled.} {நிறுவியின் முன்னோட்டத்தில் சரிபார்ப்பு கையொப்பங்கள் இல்லை; apply முடக்கப்பட்டுள்ளது.}
 ::msgcat::mcset ta {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {வேலையும் அதன் இயக்க வரலாறும் நீக்கப்படுகின்றன. இதை மீளமைக்க முடியாது — நிறுத்த மட்டுமே விரும்பினால் அதற்கு பதிலாக இடைநிறுத்தவும்.}
+::msgcat::mcset ta {The log could not be read: %s} {பதிவைப் படிக்க முடியவில்லை: %s}
 ::msgcat::mcset ta {The manifest belongs to another component; its reply was discarded.} {மேனிஃபெஸ்ட் மற்றொரு கூறைச் சேர்ந்தது; அதன் பதில் நிராகரிக்கப்பட்டது.}
 ::msgcat::mcset ta {The profile changed. Review the fresh plan before applying it.} {சுயவிவரம் மாறிவிட்டது. அதைப் பயன்படுத்துவதற்கு முன் புதிய திட்டத்தைப் பரிசீலிக்கவும்.}
 ::msgcat::mcset ta {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {களஞ்சியத்தின் மூலத்தில் அல்லது ஒரு பிரிவு ஆழத்தில் SKILL.md இருக்க வேண்டும். இது %s இல் வைக்கப்படும்.}
 ::msgcat::mcset ta {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {களஞ்சிய மூலத்தில் plugin.toml இருக்க வேண்டும். இது %s இல் அதன் பெயருடன் குளோன் செய்யப்படும்.}
+::msgcat::mcset ta {The reviewed change set was applied (%d files). Review and test it before publishing.} {மதிப்பாய்வு செய்யப்பட்ட மாற்றத் தொகுப்பு பயன்படுத்தப்பட்டது (%d கோப்புகள்). வெளியிடும் முன் அதை மதிப்பாய்வு செய்து சோதிக்கவும்.}
 ::msgcat::mcset ta {The reviewed configuration snapshot will also be restored.} {மதிப்பாய்வு செய்யப்பட்ட கட்டமைப்பு நொடிப்படிமமும் மீட்டமைக்கப்படும்.}
+::msgcat::mcset ta {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {மதிப்பாய்வு செய்யப்பட்ட கோப்புகள் உங்கள் பயனர் plugin அடைவில் எழுதப்படும். Veles உள்ளூர் மீட்பு நிலைப்பாட்டைச் சேமித்து, extension-ஐ மீண்டும் ஏற்ற முயலும்; வெளியிடுவது இந்தச் செயலின் பகுதி அல்ல.}
+::msgcat::mcset ta {The reviewed proposal was applied locally. Review and test it before publishing.} {மதிப்பாய்வு செய்யப்பட்ட முன்மொழிவு உள்ளூரில் பயன்படுத்தப்பட்டது. வெளியிடுவதற்கு முன் அதை மதிப்பாய்வு செய்து சோதியுங்கள்.}
 ::msgcat::mcset ta {The rollback preview was malformed or named another component; nothing was restored.} {மீளமைப்பு முன்னோட்டம் தவறான வடிவமாக இருந்தது அல்லது வேறொரு கூறைக் குறிப்பிட்டது; எதுவும் மீட்டமைக்கப்படவில்லை.}
 ::msgcat::mcset ta {The rollback returned an invalid result. Verify the installation before retrying.} {மீளமைப்பு தவறான முடிவைத் திருப்பியது. மீண்டும் முயற்சிப்பதற்கு முன் நிறுவலைச் சரிபார்க்கவும்.}
 ::msgcat::mcset ta {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {புதிய sessions தொடங்கும் route இதுதான். /model மற்றும் models overlay பிறகு மாற்றலாம் — ஒரு session-க்கு மட்டுமோ புதிய இயல்புநிலையாகவோ.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset ta {The signed download discard returned an invalid response; no installation was requested.} {கையொப்பமிடப்பட்ட பதிவிறக்கத் தள்ளுபடி செல்லாத பதிலைத் தந்தது; நிறுவல் கோரப்படவில்லை.}
 ::msgcat::mcset ta {The signed installation returned an invalid result. Verify the installation before retrying.} {கையொப்பமிடப்பட்ட நிறுவல் செல்லாத முடிவைத் தந்தது. மீண்டும் முயற்சிப்பதற்கு முன் நிறுவலைச் சரிபார்க்கவும்.}
 ::msgcat::mcset ta {The signed release preview was malformed; nothing was installed.} {கையொப்பமிடப்பட்ட வெளியீட்டு முன்பார்வை சிதைவாக இருந்தது; எதுவும் நிறுவப்படவில்லை.}
+::msgcat::mcset ta {The source buffer changed. Request a new proposal before applying.} {மூல இடையகம் மாறிவிட்டது. பயன்படுத்துவதற்கு முன் புதிய முன்மொழிவைக் கோருங்கள்.}
 ::msgcat::mcset ta {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {சேமிப்பகம் ஒரு திருத்தம் பின்னோக்கி செல்கிறது. மீள்திருப்பமும் தானே ஒரு திருத்தம், எனவே அதையும் மீளமைக்கலாம்.}
+::msgcat::mcset ta {The translator returned no text.} {மொழிபெயர்ப்பாளர் எந்த உரையையும் திருப்பியனுப்பவில்லை.}
 ::msgcat::mcset ta {The verification reply was malformed; no integrity result was accepted.} {சரிபார்ப்பு பதில் தவறான வடிவத்தில் இருந்தது; ஒருமைப்பாட்டு முடிவு எதுவும் ஏற்கப்படவில்லை.}
 ::msgcat::mcset ta Themes தீம்கள்
+::msgcat::mcset ta {These paths already exist in the chosen repository:} {இந்தப் பாதைகள் தேர்ந்தெடுத்த களஞ்சியத்தில் ஏற்கனவே உள்ளன:}
 ::msgcat::mcset ta {They have not been saved.} {அவை சேமிக்கப்படவில்லை.}
+::msgcat::mcset ta {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {இந்த இடையகத்தில் விளக்கக் கண்டறிதல்கள் எதுவும் இல்லை. Check இயக்குங்கள், அல்லது மொழி சேவையகத்திற்காகக் காத்திருங்கள்.}
 ::msgcat::mcset ta {This challenge is over.} {இந்த சவால் முடிந்தது.}
 ::msgcat::mcset ta {This code has expired. Ask for a new one.} {இந்தக் குறியீடு காலாவதியானது. புதியது கேளுங்கள்.}
 ::msgcat::mcset ta {This does not start a service or claim signed-download verification.} {இது எந்த சேவையையும் தொடங்காது அல்லது கையொப்பமிடப்பட்ட பதிவிறக்க சரிபார்ப்பைக் கூறாது.}
 ::msgcat::mcset ta {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {இந்த நுழைவாயில் இந்தக் கணினியிலிருந்து ரகசிய மதிப்புகளை ஏற்பதில்லை: அங்கேயே veles secret set %s மூலம் உள்ளிடுங்கள், அல்லது இந்த வலையமைப்பை அதன் [vault] trusted_networks-இல் சேருங்கள்}
 ::msgcat::mcset ta {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {எழுதப்போவது இதுவே ஆகும் — engine-இன் சொந்த bytes, நேரடியாக எடுக்கப்பட்டவை. இன்னும் டிஸ்கில் எதுவும் தொடப்படவில்லை.}
+::msgcat::mcset ta {This node is not a configured sync peer for any kind.} {இந்த முனை எந்த வகைக்கும் அமைக்கப்பட்ட ஒத்திசைவு சக முனை அல்ல.}
+::msgcat::mcset ta {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {இந்தச் செருகுநிரல் உள்ளடக்கியது, படிக்க மட்டுமே. அதே பெயரில் பயனர் நகலை நீக்கினால், உள்ளடக்கிய நகல் பயன்படுத்தப்படும்.}
+::msgcat::mcset ta {This publishes the commit; no pull request is created yet.} {இது கமிட்டை வெளியிடும்; இன்னும் PR எதுவும் உருவாக்கப்படவில்லை.}
 ::msgcat::mcset ta {This review expires after %s seconds. Closing or cancelling discards its private staging.} {இந்த மதிப்பாய்வு %s வினாடிகளுக்குப் பிறகு காலாவதியாகிறது. மூடுவதும் ரத்துசெய்வதும் அதன் தனியார் முன்நிலையைத் தள்ளுபடி செய்யும்.}
 ::msgcat::mcset ta {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {இந்த வழிகாட்டி config.toml-ஐ எழுதுகிறது, நீங்கள் தரும் keys-ஐக் குறியாக்கம் செய்யப்பட்ட பெட்டகத்தில் வைக்கிறது. ஒவ்வொரு படியையும் தவிர்க்கலாம்: தவிர்த்த படி புதிய கட்டமைப்பில் சேர்க்கப்படாது, ஏற்கனவே உள்ள கட்டமைப்பில் அப்படியே இருக்கும். ஏற்கனவே உள்ள config.toml அதே இடத்தில் திருத்தப்படுகிறது — நீங்கள் பதிலளிக்கும் பகுதிகள் மட்டுமே மாறும், மற்ற அனைத்தும், கருத்துரைகள் உட்பட, அப்படியே இருக்கும்.}
 ::msgcat::mcset ta {Ticket needed} {டிக்கெட் தேவை}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset ta {Topic for %s} {%s க்கான தலைப்பு}
 ::msgcat::mcset ta {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {மெனுவைத் திறக்க ஒரு அமர்வை, அல்லது மெனு உள்ள வேறு எதையும் தொட்டுப் பிடிக்கவும். அதற்கு வெளியே ஒரு தட்டல், அல்லது பின்செல், அதை மூடும்.}
 ::msgcat::mcset ta {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {ஒரு சொல்லைத் தேர்ந்தெடுக்க அதைத் தொட்டுப் பிடிக்கவும். விரலை எடுக்கும்போது அதன் மெனு திறக்கும், மேலே நகலெடு இருக்கும்.}
+::msgcat::mcset ta Translate மொழிபெயர்
+::msgcat::mcset ta {Translate selection} {தேர்வை மொழிபெயர்}
+::msgcat::mcset ta Translating… மொழிபெயர்க்கிறது…
+::msgcat::mcset ta {Translation cancelled.} {மொழிபெயர்ப்பு ரத்தானது.}
+::msgcat::mcset ta {Translation copied.} {மொழிபெயர்ப்பு நகலெடுக்கப்பட்டது.}
+::msgcat::mcset ta {Translation failed} {மொழிபெயர்ப்பு தோல்வியடைந்தது}
+::msgcat::mcset ta {Translation result} {மொழிபெயர்ப்பு முடிவு}
+::msgcat::mcset ta {Translator configuration unavailable} {மொழிபெயர்ப்பி அமைப்பு கிடைக்கவில்லை}
 ::msgcat::mcset ta {Trigger history} {தூண்டல் வரலாறு}
 ::msgcat::mcset ta Triggers தூண்டுதல்கள்
 ::msgcat::mcset ta {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {தூண்டுதல்கள் ஒரு சுற்று இல்லாமல் சேனல் நிகழ்வுகளுக்கு எதிர்வினையாற்றும். slopdrop நிகழ்வை பாலத்திற்கு அனுப்பி பதிலை தெரிவிக்கும்; vision குளிர்வு மற்றும் மணிநேர வரம்பிற்குள் பட URL-ஐ விவரிக்கும். [triggers] உள்ளமைவு சுவிட்ச் AND பெறப்பட்ட மாஸ்க் அனுமதித்தால் மட்டுமே வரிசை செயல்படும் — #coven நேரடி slopdrop பிணைப்புகளின் கீழ் எதையும் அனுப்பாது.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset ta {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {.env இல் IRC_ALLOWED_USERS உங்கள் கணக்கைக் குறிப்பிடும் வரை, வலையமைப்பில் எவரும் பாட்டுடன் பேசலாம் — [acl] பிரிவு இல்லையெனில் உரிமையாளராக, எல்லாக் கருவிகளுடனும்.}
 ::msgcat::mcset ta {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {.env இல் TELEGRAM_ALLOWED_USERS உங்கள் பயனர் ஐடியைக் குறிப்பிடும் வரை, பாட்டைக் கண்டுபிடிக்கும் எவரும் அதனுடன் பேசலாம் — [acl] பிரிவு இல்லையெனில் உரிமையாளராக, எல்லாக் கருவிகளுடனும்.}
 ::msgcat::mcset ta Untitled தலைப்பில்லாதவை
+::msgcat::mcset ta {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {மேல்நிலைப் பங்களிப்பு ஒரு வெளிப்படையான வெளியீட்டுச் செயல், தானியங்கிப் பதிவேற்றம் அல்ல. Manage extensions-இல், Contribute ஒவ்வொரு பயனர் extension-ஐயும் பட்டியலிடும்: extensions-ஐயும் கோப்புகளையும் தேர்ந்தெடுத்து, வேறுபாட்டையும் ரகசியச் சோதனையையும் பார்த்து, சரிபார்ப்புகளை இயக்கி, பிறகு நீங்கள் தேர்ந்த git அடையாளத்துடன் ஒரே கிளையையும் ஒரே PR-ஐயும் (இயல்பாக veles-க்கு) உருவாக்கவும். ஒவ்வொரு extension-ம் களஞ்சியத்தில் அதன் சொந்த அடைவின் கீழ் செல்லும், அங்கு ஏற்கனவே உள்ள கோப்பு தனி உறுதிப்படுத்தலுக்குப் பிறகு மட்டுமே மாற்றப்படும். node.toml, உள்ளூர் அங்கீகாரங்கள், டோக்கன்கள், தனிப்பட்ட முனை முகவரிகள் அல்லது தொடர்பில்லாத plugin நிலையை ஒருபோதும் வெளியிட வேண்டாம். உள்ளூர் மீட்பு நிலைப்பதிவுகள் மேல்நிலை commit அல்லது PR அல்ல.}
+::msgcat::mcset ta {Upstream repository or fork URL} {Upstream களஞ்சியம் அல்லது fork URL}
+::msgcat::mcset ta {Uptime class} {இயக்கநேர வகை}
+::msgcat::mcset ta {Uptime: host %1$s, gateway %2$s} {இயக்க நேரம்: host %1$s, கேட்வே %2$s}
 ::msgcat::mcset ta Usage பயன்பாடு
 ::msgcat::mcset ta {Usage & Quota} {பயன்பாடு & ஒதுக்கீடு}
 ::msgcat::mcset ta {Use TLS} {TLS பயன்படுத்து}
 ::msgcat::mcset ta {Use now} {இப்போது பயன்படுத்து}
+::msgcat::mcset ta {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {உண்மையான ஒப்பந்தங்களுக்கு Author guide மற்றும் API reference பொத்தான்களைப் பயன்படுத்துங்கள். Plugins மேலடுக்கு நேரடி hooks-ஐப் பட்டியலிடும்; சேவைகளும் override புள்ளிகளும் கேட்வேயின் சொந்த registry-இலிருந்து வரும், இந்த வழிகாட்டியில் நகலெடுத்த பட்டியலிலிருந்து அல்ல.}
 ::msgcat::mcset ta {Use this ticket} {இந்த டிக்கெட்டைப் பயன்படுத்து}
+::msgcat::mcset ta {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {veles-க்கே push செய்ய முடியாவிட்டால் உங்கள் fork-ஐப் (https://github.com/<you>/veles.git அல்லது git@github.com:<you>/veles.git) பயன்படுத்தவும். தேர்ந்தெடுத்த களஞ்சியம் தனிமைப்படுத்தப்பட்ட worktree-இல் clone செய்யப்படும். எதுவும் push செய்யப்படாது.}
 ::msgcat::mcset ta {Users — one role across networks and platforms} {பயனர்கள் — எல்லா நெட்வொர்க்குகளிலும் தளங்களிலும் ஒரே பங்கு}
 ::msgcat::mcset ta {Using the phone, for the agent} {தொலைபேசிப் பயன்பாடு, முகவருக்காக}
 ::msgcat::mcset ta {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {பொதுவாக provider உள்ளீட்டுப் பெயருக்கே சமமாக இருக்கும். தவிர் விருப்பத்தில் இரண்டையும் காலியாக விடுங்கள் — பாதி அமைக்கப்பட்ட ஜோடி route ஆகாது.}
 ::msgcat::mcset ta {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {மதிப்புகள் TOML: மேற்கோள் சரங்கள், எண்கள், அல்லது பட்டியல்கள். [mcp_servers.<name>] இல் எழுதப்படும் — உங்கள் கருத்துகளும் மற்ற எல்லா பிரிவுகளும் தொடப்படாமல் இருக்கும்.}
+::msgcat::mcset ta Vault பெட்டகம்
 ::msgcat::mcset ta {Verified signed bundle installed. Restart the gateway before using the new core.} {சரிபார்க்கப்பட்ட கையொப்பத் தொகுப்பு நிறுவப்பட்டது. புதிய மையத்தைப் பயன்படுத்துவதற்கு முன் கேட்வேயை மீண்டும் தொடங்கவும்.}
 ::msgcat::mcset ta {Verified signed release — not installed yet} {சரிபார்க்கப்பட்ட கையொப்ப வெளியீடு — இன்னும் நிறுவப்படவில்லை}
 ::msgcat::mcset ta {Verify and review release…} {வெளியீட்டைச் சரிபார்த்து மதிப்பிடு…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset ta {Verify signed release} {கையொப்பமிடப்பட்ட வெளியீட்டைச் சரிபார்}
 ::msgcat::mcset ta {Verify signed release…} {கையொப்பமிடப்பட்ட வெளியீட்டைச் சரிபார்க்கிறது…}
 ::msgcat::mcset ta Version பதிப்பு
+::msgcat::mcset ta {Version %1$s: %2$s} {பதிப்பு %1$s: %2$s}
+::msgcat::mcset ta {Version drift in the registry: %s} {பதிவேட்டில் பதிப்பு விலகல்: %s}
 ::msgcat::mcset ta View காட்சி
 ::msgcat::mcset ta {View markdown source} {மார்க்டவுன் மூலத்தைப் பார்}
 ::msgcat::mcset ta {View source / rendered} {மூலம் / வரையப்பட்டது}
 ::msgcat::mcset ta Voice {voice வழங்கு}
+::msgcat::mcset ta {Waiting for the model…} {மாடலுக்காகக் காத்திருக்கிறது…}
+::msgcat::mcset ta {Waiting for the model… Nothing has been written.} {மாடலுக்காகக் காத்திருக்கிறது… எதுவும் எழுதப்படவில்லை.}
 ::msgcat::mcset ta {Welcome to veles} {veles-க்கு வரவேற்கிறோம்}
 ::msgcat::mcset ta {What the agent can do here} {முகவர் இங்கே செய்யக்கூடியவை}
 ::msgcat::mcset ta {What veles may do on this phone. Each button opens the Android setting that changes it.} {இந்தத் தொலைபேசியில் veles செய்யக்கூடியவை. ஒவ்வொரு பொத்தானும் அதை மாற்றும் Android அமைப்பைத் திறக்கும்.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset ta {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {veles பின்னணியில் இருக்கும்போது ஒரு முகவரின் கேள்வி அல்லது முடிந்த சுற்று அறிவிப்பாக வரும்; அமர்வைத் திறக்க அதைத் தட்டவும்.}
 ::msgcat::mcset ta {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {Bot-உடன் யார் பேசலாம். இந்தத் தேர்வு config.toml-இல் [acl] பகுதி இருக்க வேண்டுமா இல்லையா என்பதையே முடிவு செய்யும் — அது முழு நிலைப்பாட்டையும் மாற்றிவிடும்.}
 ::msgcat::mcset ta Whois Whois
-::msgcat::mcset ta {Wire protocol (chat_completions or responses)} {Wire protocol (chat_completions அல்லது responses)}
+::msgcat::mcset ta {Wire protocol (chat_completions, responses or plugin)} {Wire நெறிமுறை (chat_completions, responses அல்லது plugin)}
 ::msgcat::mcset ta {With a keyboard attached, every key works as on a laptop.} {விசைப்பலகை இணைக்கப்பட்டால் ஒவ்வொரு விசையும் மடிக்கணினியில் போலவே வேலை செய்யும்.}
 ::msgcat::mcset ta {Workflow SHA} {பணிப்பாய்முறை SHA}
+::msgcat::mcset ta {Workflow commit} {பணிப்பாதை commit}
+::msgcat::mcset ta Worktree வேலைமரம்
 ::msgcat::mcset ta {Write it} எழுது
+::msgcat::mcset ta {Write the design question first.} {முதலில் வடிவமைப்புக் கேள்வியை எழுதுங்கள்.}
 ::msgcat::mcset ta {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Provider எதுவும் எழுதாது. ஒரு [[custom_providers]] உள்ளீடும் [model] ஜோடியும் இருக்கும் வரை gateway எந்த turn-ஐயும் route செய்யாது.}
 ::msgcat::mcset ta {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {எந்த [acl] விசையை எழுதினாலும் இந்த நுழைவாயில் curated பயன்முறைக்கு மாறும்: இயல்புப் பங்கு guest (fail-closed) ஆகிறது, அனுமதிப் பட்டியல்கள் இனி எல்லை அல்ல. நீங்கள் நம்பும் உரிமையாளர் அடையாளம் இருந்தால் மட்டுமே இதைத் தேர்ந்தெடுக்கவும்.}
 ::msgcat::mcset ta {[model] provider} {[model] provider}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset ta {also list hooks with no handler} {கையாளர் இல்லாத ஹூக்குகளையும் பட்டியலிடு}
 ::msgcat::mcset ta {also write grants that still have an expiry} {இன்னும் காலாவதி உள்ள அனுமதிகளையும் எழுது}
 ::msgcat::mcset ta {also write runtime users} {இயக்க நேர பயனர்களையும் எழுது}
+::msgcat::mcset ta {an allowlist entry is removed by editing config.toml} {அனுமதிப்பட்டியல் உருப்படி config.toml-ஐத் திருத்துவதன் மூலம் நீக்கப்படும்}
 ::msgcat::mcset ta {an allowlist is in force: a plugin not on it stays off} {அனுமதிப்பட்டியல் நடைமுறையில் உள்ளது: பட்டியலில் இல்லாத சொருகி அணைக்கப்பட்டே இருக்கும்}
 ::msgcat::mcset ta {answer failed: %s} {பதில் தோல்வியடைந்தது: %s}
+::msgcat::mcset ta {answer only, nothing to apply} {பதில் மட்டும், பயன்படுத்த ஒன்றுமில்லை}
 ::msgcat::mcset ta {append these rules to config.toml} {இந்த விதிகளை config.toml-இல் சேர்}
 ::msgcat::mcset ta {apply failed: %s} {பயன்படுத்த முடியவில்லை: %s}
 ::msgcat::mcset ta {apply to:} பயன்படுத்து:
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset ta {ask the agent} {முகவரிடம் கேட்பது}
 ::msgcat::mcset ta {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset ta {asked by: %s} {கேட்டவர்: %s}
+::msgcat::mcset ta {asking %s for its metrics…} {%s-இடம் அதன் அளவீடுகளைக் கேட்கிறது…}
 ::msgcat::mcset ta {attach a file} {கோப்பு இணை}
 ::msgcat::mcset ta {attach an image or file} {படம் அல்லது கோப்பை இணை}
 ::msgcat::mcset ta {attach failed: %1$s} {இணைப்பு தோல்வி: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset ta {attached %1$s (%2$s pending)} {%1$s இணைக்கப்பட்டது (%2$s நிலுவையில்)}
 ::msgcat::mcset ta {attached to %s} {%s உடன் இணைக்கப்பட்டது}
 ::msgcat::mcset ta {attached to child session %1$s} {துணை அமர்வு %1$s உடன் இணைக்கப்பட்டது}
+::msgcat::mcset ta automatic தானியங்கி
 ::msgcat::mcset ta {aux model} {துணை மாடல்}
 ::msgcat::mcset ta {aux provider} {துணை வழங்குநர்}
+::msgcat::mcset ta available கிடைக்கிறது
 ::msgcat::mcset ta {available components} {கிடைக்கும் கூறுகள்}
 ::msgcat::mcset ta {back up N user turns} {பயனரின் N திருப்பங்கள் பின்செல்}
 ::msgcat::mcset ta {backed up the previous config to %s} {முந்தைய config-ஐ %s-இல் காப்புப் பதிவு செய்தது}
 ::msgcat::mcset ta {background shells; /shells output|kill <id>} {பின்னணி ஷெல்கள்; /shells output|kill <id>}
+::msgcat::mcset ta {backing off: %1$s failure(s), next automatic try in %2$s s} {பின்வாங்குகிறது: %1$s தோல்வி(கள்), அடுத்த தானியங்கி முயற்சி %2$s வினாடிகளில்}
 ::msgcat::mcset ta {bad host for %1$s: %2$s} {%1$s க்கு தவறான host: %2$s}
 ::msgcat::mcset ta {bad unit for %1$s: %2$s} {%1$s க்கு தவறான unit: %2$s}
 ::msgcat::mcset ta {bare display off} {எளிய காட்சி அணைக்கப்பட்டது}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset ta {browse the filesystem} {கோப்பு முறைமையை உலாவு}
 ::msgcat::mcset ta {browse the repo's files} {repo-வின் கோப்புகளை உலாவு}
 ::msgcat::mcset ta {builtin (%s):} {உள்ளமைந்தது (%s):}
+::msgcat::mcset ta bundled உள்ளடக்கியது
+::msgcat::mcset ta {bundled, read-only} {உள்ளடக்கியது, படிக்க மட்டுமே}
 ::msgcat::mcset ta by செய்தவர்
 ::msgcat::mcset ta {by plan — all sessions} {திட்டப்படி — அனைத்து அமர்வுகள்}
 ::msgcat::mcset ta {by plan — this session} {திட்டப்படி — இந்த அமர்வு}
 ::msgcat::mcset ta {by tool} {கருவி வாரியாக}
 ::msgcat::mcset ta {cancel failed: %1$s} {ரத்து செய்ய முடியவில்லை: %1$s}
 ::msgcat::mcset ta {cancel the running turn} {நடப்பு turn-ஐ ரத்து செய்}
+::msgcat::mcset ta {cancel the selected task} {தேர்ந்தெடுத்த பணியை ரத்து செய்}
 ::msgcat::mcset ta {cancelled task %1$s} {%1$s பணி ரத்து செய்யப்பட்டது}
 ::msgcat::mcset ta {cannot list scripts (gateway offline?)} {ஸ்கிரிப்ட்களை பட்டியலிட முடியவில்லை (கேட்வே ஆஃப்லைனாக உள்ளதா?)}
 ::msgcat::mcset ta {cannot reach the gateway: %s} {gateway-ஐ அடைய முடியவில்லை: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset ta commit கமிட்
 ::msgcat::mcset ta {compacting %s messages in the background — the transcript reloads when it finishes} {பின்னணியில் %s செய்திகள் சுருக்கப்படுகின்றன — முடிந்ததும் உரையாடல் மீள்ஏற்றப்படும்}
 ::msgcat::mcset ta compacting… சுருக்குகிறது…
+::msgcat::mcset ta {comparing the nodes' versions and config…} {முனைகளின் பதிப்புகளையும் கட்டமைப்பையும் ஒப்பிடுகிறது…}
 ::msgcat::mcset ta {completion tokens} {நிறைவு டோக்கன்கள்}
 ::msgcat::mcset ta {component options and declared actions} {கூறு விருப்பங்களும் அறிவிக்கப்பட்ட செயல்களும்}
 ::msgcat::mcset ta composer கம்போசர்
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset ta {could not open %s} {%s-ஐ திறக்க முடியவில்லை}
 ::msgcat::mcset ta {could not open %s (no working browser opener)} {%s-ஐ திறக்க முடியவில்லை (செயல்படும் உலாவி திறப்பி இல்லை)}
 ::msgcat::mcset ta {could not open %{url}: %{e}} {%{url}-ஐ திறக்க முடியவில்லை: %{e}}
+::msgcat::mcset ta {could not open the optional referral link: %s} {விருப்பமான பரிந்துரை இணைப்பைத் திறக்க முடியவில்லை: %s}
 ::msgcat::mcset ta {could not read %s: %s} {%s ஐப் படிக்க முடியவில்லை: %s}
 ::msgcat::mcset ta {could not read the current route} {தற்போதைய வழியைப் படிக்க முடியவில்லை}
 ::msgcat::mcset ta {could not save this session's language: %{e}} {இந்த அமர்வின் மொழியைச் சேமிக்க முடியவில்லை: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset ta {ctxmenu: no widget %s (attached too early?)} {ctxmenu: விட்ஜெட் %s இல்லை (மிகச் சீக்கிரம் இணைக்கப்பட்டதா?)}
 ::msgcat::mcset ta {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {Curated அணுகல் தேர்ந்தெடுக்கப்பட்டது ஆனால் உரிமையாளர் அடையாளம் கொடுக்கப்படவில்லை, எனவே [acl] செயலற்றதாகவே உள்ளது — அதை இயக்க telegram:123456 அல்லது irc:account போன்ற ஒன்றைக் கொடுக்கவும்}
 ::msgcat::mcset ta {current theme: %{name} · /theme <name>} {தற்போதைய தீம்: %{name} · /theme <name>}
+::msgcat::mcset ta {cursor %1$s of %2$s (%3$s behind)} {கர்சர் %1$s / %2$s (%3$s பின்தங்கியுள்ளது)}
 ::msgcat::mcset ta {custom command /%s…} {தனிப்பயன் கட்டளை /%s…}
 ::msgcat::mcset ta {custom commands (.veles/commands/) and config aliases} {தனிப்பயன் கட்டளைகள் (.veles/commands/) மற்றும் கட்டமைப்பு மாற்றுப்பெயர்கள்}
 ::msgcat::mcset ta {cycle ends} {சுழற்சி முடிகிறது}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset ta doctor_resident {ஒவ்வொரு வரியுரையிலும் நிலையாக: %{total} எழுத்துகளில் %{shown} (~%{tokens} டோக்கன்கள்) — மீதி தேவைப்படும்போது இதன் மூலம் ஏற்றப்படும்: memory action=read path=%{path}}
 ::msgcat::mcset ta doctor_title {நினைவக ஆய்வு}
 ::msgcat::mcset ta doctor_total {மொத்தம்: %{files} கோப்புகளில் %{chars} எழுத்துகள் (~%{tokens} டோக்கன்கள்)}
+::msgcat::mcset ta {documentation is not in this source checkout: %s} {ஆவணங்கள் இந்த மூல checkout-ல் இல்லை: %s}
 ::msgcat::mcset ta done முடிந்தது
 ::msgcat::mcset ta {done · %1$s/%2$s} {முடிந்தது · %1$s/%2$s}
 ::msgcat::mcset ta {done, but the model returned no text} {முடிந்தது, ஆனால் மாடல் உரை எதுவும் அளிக்கவில்லை}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset ta {evaluate Tcl and answer with the result — no model turn} {Tcl ஐ இயக்கி முடிவைப் பதிலாகக் கொடு — மாடல் திருப்பம் இல்லை}
 ::msgcat::mcset ta everyone அனைவரும்
 ::msgcat::mcset ta everywhere {எல்லா இடங்களிலும்}
+::msgcat::mcset ta {exchanging registry gossip…} {பதிவேட்டு gossip பரிமாறப்படுகிறது…}
 ::msgcat::mcset ta exit வெளியேறு
 ::msgcat::mcset ta {exit veles-desktop} {veles-desktop-ஐ வெளியேறு}
 ::msgcat::mcset ta {export failed: %s} {ஏற்றுமதி தோல்வி: %s}
 ::msgcat::mcset ta {export session} {அமர்வை ஏற்றுமதி செய்}
 ::msgcat::mcset ta {exported to %s} {%s க்கு ஏற்றுமதி செய்யப்பட்டது}
+::msgcat::mcset ta {extension architecture, examples and LSP help} {extension கட்டமைப்பு, உதாரணங்கள் மற்றும் LSP உதவி}
+::msgcat::mcset ta {extension development guide} {extension உருவாக்க வழிகாட்டி}
+::msgcat::mcset ta failed தோல்வி
 ::msgcat::mcset ta {failed to load history: %s} {வரலாற்றை ஏற்ற முடியவில்லை: %s}
 ::msgcat::mcset ta {failed to paint cached history: %s} {தற்காலிக சேமிப்பு வரலாற்றைக் காட்ட முடியவில்லை: %s}
 ::msgcat::mcset ta {failed to paint replayed history: %s} {மறுஇயக்கப்பட்ட வரலாற்றைக் காட்ட முடியவில்லை: %s}
 ::msgcat::mcset ta {failed: %s} {தோல்வி: %s}
+::msgcat::mcset ta {failing — heartbeating, but a sync push or the last probe failed} {தோல்வியில் — இதயத்துடிப்பு உள்ளது, ஆனால் ஒத்திசைவுத் தள்ளல் அல்லது கடைசி ஆய்வு தோல்வியடைந்தது}
 ::msgcat::mcset ta {failover blueprint: cannot reach the gateway} {failover blueprint: கேட்வேயை அடைய முடியவில்லை}
 ::msgcat::mcset ta {failover graph unavailable: %1$s} {failover வரைபடம் கிடைக்கவில்லை: %1$s}
 ::msgcat::mcset ta {failover script: cannot reach the gateway} {failover script: கேட்வேயை அடைய முடியவில்லை}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset ta {fire the Tcl hook} {Tcl hook-ஐ இயக்கு}
 ::msgcat::mcset ta {fires for %s:} {%s க்கு இயங்கும்:}
 ::msgcat::mcset ta {fires per hour} {மணிக்கு இயங்கும் முறை}
+::msgcat::mcset ta {fleet drift} {fleet விலகல்}
 ::msgcat::mcset ta {focus composer} {இசைவியலாளரை கவனம் செலுத்து}
 ::msgcat::mcset ta {focus failed: %{e}} {கவனம் செலுத்த முடியவில்லை: %{e}}
 ::msgcat::mcset ta {focus next region} {அடுத்த பகுதிக்கு செல்}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset ta {four splits is the maximum} {அதிகபட்சம் நான்கு பிரிவுகள்}
 ::msgcat::mcset ta {fresh session} {புதிய அமர்வு}
 ::msgcat::mcset ta {fresh session (Ctrl-N too)} {புதிய அமர்வு (Ctrl-N உம்)}
+::msgcat::mcset ta {fresh — heartbeating, sync passing} {புதியது — இதயத்துடிப்பு உள்ளது, ஒத்திசைவு சரியாக உள்ளது}
+::msgcat::mcset ta from இதிலிருந்து
 ::msgcat::mcset ta {from node %{node}} {முனை %{node} இலிருந்து}
 ::msgcat::mcset ta {gateway     v%1$s · up %2$s} {கேட்வே     v%1$s · %2$s இயக்கத்தில்}
 ::msgcat::mcset ta {gateway unreachable — is `veles gateway run` up?} {கேட்வே அடைய முடியவில்லை — `veles gateway run` இயங்குகிறதா?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset ta {in %s} {%s இல்}
 ::msgcat::mcset ta {insert the next key literally (^B bold, ^C colour, ^O reset)} {அடுத்த விசையை அப்படியே சேர் (^B தடிமன், ^C நிறம், ^O மீட்டமை)}
 ::msgcat::mcset ta {inserted %s} {%s செருகப்பட்டது}
+::msgcat::mcset ta {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {cluster-ஐ ஆராய்; store, memory, config அல்லது vault ஒத்திசைவை வெளிப்படையாக push/apply செய்; பழைய முனையை fleet முழுவதும் மற; ஒரு முனையின் பதிவு இறுதிப் பகுதியையோ அளவீடுகளையோ படி; பதிப்புகளையும் கட்டமைப்பையும் ஒப்பிடு; இப்போது gossip செய்}
 ::msgcat::mcset ta {inspector — app internals · core state · gw plugins} {இன்ஸ்பெக்டர் — ஆப் உள்ளகங்கள் · கோர் நிலை · gw பிளக்கின்கள்}
 ::msgcat::mcset ta {install a plugin from a git URL} {git URL-இலிருந்து ஒரு பிளக்கினை நிறுவு}
 ::msgcat::mcset ta {install a skill from a git URL} {git URL-இலிருந்து ஒரு திறனை நிறுவு}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset ta instance இன்ஸ்டன்ஸ்
 ::msgcat::mcset ta {instance controls} {இன்ஸ்டன்ஸ் கட்டுப்பாடுகள்}
 ::msgcat::mcset ta {instance detail} {இன்ஸ்டன்ஸ் விவரம்}
+::msgcat::mcset ta {instance names may not start with "cluster:" or "g:": %s} {instance பெயர்கள் "cluster:" அல்லது "g:" உடன் தொடங்கக்கூடாது: %s}
 ::msgcat::mcset ta {instance needs a name} {இன்ஸ்டன்ஸுக்கு பெயர் தேவை}
 ::msgcat::mcset ta {instance unreachable} {இன்ஸ்டன்ஸ் அடைய முடியவில்லை}
 ::msgcat::mcset ta instances இன்ஸ்டன்ஸ்கள்
 ::msgcat::mcset ta interrupting… இடைநிறுத்துகிறது…
+::msgcat::mcset ta into இதற்குள்
 ::msgcat::mcset ta {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset ta {irc: %s} {irc: %s}
 ::msgcat::mcset ta {irc: %s failed — %s} {irc: %s தோல்வி — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset ta {language list} {மொழி பட்டியல்}
 ::msgcat::mcset ta {language picker (the swap for THIS window)} {மொழி தேர்வாளர் (இந்த சாளரத்திற்கான மாற்றம்)}
 ::msgcat::mcset ta {language saved: %s} {மொழி சேமிக்கப்பட்டது: %s}
+::msgcat::mcset ta {language server} {மொழி சேவையகம்}
+::msgcat::mcset ta {language server: event stream unavailable: %s} {மொழி சேவையகம்: நிகழ்வு ஓடை கிடைக்கவில்லை: %s}
+::msgcat::mcset ta {language server: not started on the gateway — %s} {மொழி சேவையகம்: கேட்வேயில் தொடங்கப்படவில்லை — %s}
+::msgcat::mcset ta {language server: the gateway would not start one: %s} {மொழி சேவையகம்: கேட்வே ஒன்றைத் தொடங்க மறுத்தது: %s}
 ::msgcat::mcset ta {language swapped: %1$s ⇄ %2$s} {மொழி மாற்றப்பட்டது: %1$s ⇄ %2$s}
 ::msgcat::mcset ta {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {மொழி → %1$s (முன்பு %2$s) · இயங்கும் சாளரம் மட்டும் — Save as default config.toml-இல் எழுதும்}
 ::msgcat::mcset ta {language: %s} {மொழி: %s}
 ::msgcat::mcset ta {last error} {கடைசி பிழை}
+::msgcat::mcset ta {last pass %1$s at %2$s: %3$s} {கடைசிச் சுற்று %1$s, %2$s-இல்: %3$s}
 ::msgcat::mcset ta {last reply copied (%s chars)} {கடைசி பதில் நகலெடுக்கப்பட்டது (%s எழுத்துகள்)}
 ::msgcat::mcset ta {layout not saved: %s} {லேஅவுட் சேமிக்கப்படவில்லை: %s}
 ::msgcat::mcset ta {leave (cancels a running turn first)} {வெளியேறு (முதலில் இயங்கும் திருப்பத்தை ரத்துசெய்யும்)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset ta {list sessions} {அமர்வுகளைப் பட்டியலிடு}
 ::msgcat::mcset ta {list skills} {திறன்களைப் பட்டியலிடு}
 ::msgcat::mcset ta {list tools} {கருவிகளைப் பட்டியலிடு}
+::msgcat::mcset ta {listed here only; [notify] fleet_alerts is off} {இங்கே மட்டும் பட்டியலிடப்பட்டது; [notify] fleet_alerts அணைக்கப்பட்டுள்ளது}
 ::msgcat::mcset ta {live patching ARMED} {நேரடி இணைப்பு ARMED}
 ::msgcat::mcset ta {live patching ARMED — an agent can now redefine procs in this window} {நேரடி இணைப்பு ARMED — இப்போது இந்த சாளரத்தில் ஒரு ஏஜெண்ட் procs-ஐ மறுவரையறை செய்யலாம்}
 ::msgcat::mcset ta {live patching disarmed} {நேரடி இணைப்பு செயலிழக்கப்பட்டது}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset ta {log pane shown} {பதிவு பேன் காட்டப்பட்டது}
 ::msgcat::mcset ta {log: %s} {பதிவு: %s}
 ::msgcat::mcset ta {make media: image/video/audio, route = comfyui or provider[/model]} {ஊடகம் உருவாக்கு: image/video/audio, தடம் = comfyui அல்லது provider[/model]}
+::msgcat::mcset ta {managed via %s} {%s வழியாக நிர்வகிக்கப்படுகிறது}
+::msgcat::mcset ta {manual only} {கைமுறை மட்டும்}
 ::msgcat::mcset ta {mark set} {குறி அமைக்கப்பட்டது}
 ::msgcat::mcset ta {mark whole buffer (emacs select-all)} {முழு buffer-ஐயும் குறி (emacs select-all)}
 ::msgcat::mcset ta {markdown preview of the composer} {கம்போசரின் markdown முன்னோட்டம்}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset ta model மாடல்
 ::msgcat::mcset ta {model aliases} {மாடல் மாற்றுப்பெயர்கள்}
 ::msgcat::mcset ta {monitor %1$s fired} {மானிட்டர் %1$s செயல்பட்டது}
-::msgcat::mcset ta monitors மானிட்டர்கள்
 ::msgcat::mcset ta monitors_header மானிட்டர்கள்:
 ::msgcat::mcset ta monitors_none {(மானிட்டர்கள் இல்லை — model இவற்றை monitor tool மூலம் தொடங்கும்)}
 ::msgcat::mcset ta {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {ஒரு அமர்வை (மற்றும் அதன் துணை மரத்தை) மறுவரிசை எல்லையில் மற்றொரு பூல் நோடுக்கு நகர்த்து; நிறுத்தி வைக்கப்பட்ட கையளிப்பை முடி/ரத்து செய்; ஒரு அமர்வு யாருடையது எனக் கேள் (நிர்வாகி)}
 ::msgcat::mcset ta {move the running foreground command to the background} {இயங்கும் முன்புலக் கட்டளையைப் பின்னணிக்கு நகர்த்து}
 ::msgcat::mcset ta {move the running foreground command to the background (keeps running)} {இயங்கும் முன்னணி கட்டளையை பின்னணிக்கு நகர்த்து (தொடர்ந்து இயங்கும்)}
+::msgcat::mcset ta {move this session's running foreground command to a background shell; keeps running} {இந்த அமர்வின் இயங்கும் முன்னிலைக் கட்டளையை ஒரு பின்னணி ஷெல்லுக்கு நகர்த்தும்; அது தொடர்ந்து இயங்கும்}
 ::msgcat::mcset ta {moving around} நகர்தல்
 ::msgcat::mcset ta name பெயர்
 ::msgcat::mcset ta {name a key first} {முதலில் விசைக்கு பெயரிடு}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset ta {neon impressionism} {நியான் இம்ப்ரெஷனிசம்}
 ::msgcat::mcset ta {network (optional — e.g. libera; empty = any)} {நெட்வொர்க் (விருப்பம் — எ.கா. libera; காலி = ஏதேனும்)}
 ::msgcat::mcset ta {network to scope the grant to} {அனுமதியை வரம்பிடும் நெட்வொர்க்}
+::msgcat::mcset ta new புதியது
 ::msgcat::mcset ta {new buffer} {புதிய buffer}
 ::msgcat::mcset ta {new entry — replace this text, then Save} {புதிய உள்ளீடு — இந்த உரையை மாற்றவும், பிறகு Save}
 ::msgcat::mcset ta {new name for %s} {%s-க்கு புதிய பெயர்}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset ta {no IRC buffer selected} {IRC பஃபர் தேர்ந்தெடுக்கப்படவில்லை}
 ::msgcat::mcset ta {no MCP servers configured — Add server… writes one into config.toml} {MCP சர்வர்கள் உள்ளமைக்கப்படவில்லை — Add server… config.toml-இல் ஒன்றை எழுதும்}
 ::msgcat::mcset ta {no URLs in this buffer} {இந்த பஃபரில் URLகள் இல்லை}
+::msgcat::mcset ta {no [a2a_agents] entry — this peer cannot be dialed} {[a2a_agents] உருப்படி இல்லை — இந்த சக முனையை அழைக்க முடியாது}
 ::msgcat::mcset ta {no alias /%s} {மாற்றுப்பெயர் இல்லை /%s}
 ::msgcat::mcset ta {no background refresh} {பின்னணி புதுப்பிப்பு இல்லை}
 ::msgcat::mcset ta {no buffer %s} {பஃபர் இல்லை: %s}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset ta {no code block in the last reply} {கடைசி பதிலில் குறியீடு தொகுதி இல்லை}
 ::msgcat::mcset ta {no cron jobs} {cron வேலைகள் இல்லை}
 ::msgcat::mcset ta {no cron jobs — New… creates one} {cron வேலைகள் இல்லை — New… ஒன்றை உருவாக்கும்}
+::msgcat::mcset ta {no exchange yet} {இன்னும் பரிமாற்றம் இல்லை}
 ::msgcat::mcset ta {no file — pick a guts file or type a path} {கோப்பு இல்லை — ஒரு guts கோப்பை தேர்ந்தெடு அல்லது பாதையை தட்டச்சு செய்}
 ::msgcat::mcset ta {no handler} {கையாளி இல்லை}
+::msgcat::mcset ta {no heartbeat for %{mins} min} {%{mins} நிமிடங்களாக heartbeat இல்லை}
+::msgcat::mcset ta {no heartbeat within the threshold} {வரம்புக்குள் heartbeat இல்லை}
 ::msgcat::mcset ta {no history yet} {இன்னும் வரலாறு இல்லை}
 ::msgcat::mcset ta {no host configured for this instance} {இந்த இன்ஸ்டன்ஸுக்கு ஹோஸ்ட் உள்ளமைக்கப்படவில்லை}
 ::msgcat::mcset ta {no instance selected} {இன்ஸ்டன்ஸ் தேர்ந்தெடுக்கப்படவில்லை}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset ta {no program to open URLs} {URLகளை திறக்க நிரல் இல்லை}
 ::msgcat::mcset ta {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {எந்த வழங்குநரும் கட்டமைக்கப்படவில்லை — ஒரு சுற்றை இயக்கும் முன் [[custom_providers]] உள்ளீட்டைச் சேர்த்து [model] இணையை அமைக்கவும்}
 ::msgcat::mcset ta {no reading yet — press Refresh} {இன்னும் வாசிப்பு இல்லை — Refresh அழுத்தவும்}
-::msgcat::mcset ta {no running tasks} {இயங்கும் பணிகள் இல்லை}
 ::msgcat::mcset ta {no sample available} {மாதிரி கிடைக்கவில்லை}
 ::msgcat::mcset ta {no search bar on this surface} {இந்த மேற்பரப்பில் தேடல் பட்டை இல்லை}
 ::msgcat::mcset ta {no session matching %s} {%s உடன் பொருந்தும் அமர்வு இல்லை}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset ta {no session open — switch the scope to the default, or open a session} {அமர்வு திறக்கப்படவில்லை — வரம்பை இயல்புநிலைக்கு மாற்று, அல்லது ஒரு அமர்வை திற}
 ::msgcat::mcset ta {no session open — the catalogue needs one; the default scope still works from config.toml} {அமர்வு திறக்கப்படவில்லை — கேடலாக்கிற்கு ஒன்று தேவை; இயல்புநிலை வரம்பு config.toml-இலிருந்து இன்னும் வேலை செய்கிறது}
 ::msgcat::mcset ta {no setting %s — try filter or bare} {%s அமைப்பு இல்லை — filter அல்லது bare முயற்சி செய்}
+::msgcat::mcset ta {no shells or monitors to show} {காட்டுவதற்கு செல்கள் அல்லது கண்காணிப்பான்கள் இல்லை}
 ::msgcat::mcset ta {no skills found} {skills எதுவும் கிடைக்கவில்லை}
 ::msgcat::mcset ta {no such URL — /urls lists them} {அத்தகைய URL இல்லை — /urls அவற்றை பட்டியலிடுகிறது}
 ::msgcat::mcset ta {no such file: %s} {அத்தகைய கோப்பு இல்லை: %s}
 ::msgcat::mcset ta {no swap target yet — set one with /locale secondary <id>} {இன்னும் மாற்று மொழி இல்லை — /locale secondary <id> மூலம் அமைக்கவும்}
+::msgcat::mcset ta {no task selected} {பணி தேர்ந்தெடுக்கப்படவில்லை}
 ::msgcat::mcset ta {no triggers} {ட்ரிக்கர்கள் இல்லை}
 ::msgcat::mcset ta {no triggers — New… creates one} {ட்ரிக்கர்கள் இல்லை — New… ஒன்றை உருவாக்கும்}
 ::msgcat::mcset ta {no upstream reading for %s} {%s-க்கு அப்ஸ்ட்ரீம் வாசிப்பு இல்லை}
 ::msgcat::mcset ta {no word match} {சொல் பொருத்தம் இல்லை}
 ::msgcat::mcset ta {no xdg-open — path copied instead} {xdg-open இல்லை — பாதை நகலெடுக்கப்பட்டது}
+::msgcat::mcset ta {node log} {முனைப் பதிவு}
 ::msgcat::mcset ta {none loaded} {எதுவும் ஏற்றப்படவில்லை}
 ::msgcat::mcset ta {none recorded} {எதுவும் பதிவு செய்யப்படவில்லை}
+::msgcat::mcset ta {none since this gateway started} {இந்தக் கேட்வே தொடங்கியதிலிருந்து எதுவும் இல்லை}
 ::msgcat::mcset ta {none yet} {இன்னும் இல்லை}
 ::msgcat::mcset ta {normie is pure Ctrl — no emacs prefix chords.} {normie முற்றிலும் Ctrl — emacs முன்னொட்டு chords இல்லை.}
 ::msgcat::mcset ta {normie: select all · emacs: start of line} {normie: எல்லாம் தேர்ந்தெடு · emacs: வரி தொடக்கம்}
 ::msgcat::mcset ta {not a channel} {சேனல் அல்ல}
 ::msgcat::mcset ta {not a key = value line: %s} {இது key = value வரி அல்ல: %s}
+::msgcat::mcset ta {not a node in the attached gateway's cluster registry: %s} {இணைக்கப்பட்ட கேட்வேயின் cluster பதிவேட்டில் முனையாக இல்லை: %s}
 ::msgcat::mcset ta {not a number} {எண் அல்ல}
 ::msgcat::mcset ta {not a valid http(s) url: %s} {செல்லுபடியாகும் http(s) url அல்ல: %s}
 ::msgcat::mcset ta {not a valid ssh host: %s} {செல்லுபடியாகும் ssh ஹோஸ்ட் அல்ல: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset ta {not attached to a gateway} {கேட்வேயுடன் இணைக்கப்படவில்லை}
 ::msgcat::mcset ta {not configured} உள்ளமைக்கப்படவில்லை
 ::msgcat::mcset ta {not ignoring %s} {%s-ஐ புறக்கணிக்கவில்லை}
+::msgcat::mcset ta {not installed} நிறுவப்படவில்லை
 ::msgcat::mcset ta {not reported} தெரிவிக்கப்படவில்லை
 ::msgcat::mcset ta {not running} இயங்கவில்லை
 ::msgcat::mcset ta {not set in config.toml — the built-in default applies. %s} {config.toml-இல் அமைக்கப்படவில்லை — உள்ளமைக்கப்பட்ட இயல்புநிலை பொருந்தும். %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset ta off ஆஃப்
 ::msgcat::mcset ta {off (the default)} {ஆஃப் (இயல்புநிலை)}
 ::msgcat::mcset ta offline ஆஃப்லைன்
+::msgcat::mcset ta ok சரி
 ::msgcat::mcset ta on ஆன்
 ::msgcat::mcset ta {on (the default)} {ஆன் (இயல்புநிலை)}
 ::msgcat::mcset ta {on failure} தோல்வியில்
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset ta {open links} {இணைப்புகளைத் திறப்பது}
 ::msgcat::mcset ta {open the engine log} {engine log-ஐத் திற}
 ::msgcat::mcset ta {open the joined session before /leave (on %s)} {/join-க்கு முன் இணைக்கப்பட்ட அமர்வைத் திறக்கவும் (%s-இல்)}
+::msgcat::mcset ta {open the selected child session} {தேர்ந்தெடுத்த துணை அமர்வைத் திற}
 ::msgcat::mcset ta {open the selected skill in the Dev editor} {தேர்ந்தெடுத்த திறனை Dev எடிட்டரில் திற}
 ::msgcat::mcset ta {open the setup wizard (re-runnable; edits config.toml in place)} {அமைவு வழிகாட்டியைத் திற (மீண்டும் இயக்கலாம்; config.toml ஐ அதே இடத்தில் திருத்தும்)}
 ::msgcat::mcset ta {open the share sheet} {பகிர்வுத் தாளைத் திறப்பது}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset ta {override cleared — the default applies} {மேலோட்டம் அழிக்கப்பட்டது — இயல்புநிலை பொருந்தும்}
 ::msgcat::mcset ta {override failed: %s} {மேலோட்டம் தோல்வியடைந்தது: %s}
 ::msgcat::mcset ta {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {உரிமையாளர் அடையாளம் %{id} ஐ ACL பொருத்த முடியாது — telegram:<எண் ஐடி>, irc:<services கணக்கு>, அல்லது nick!user@host முகமூடியைப் பயன்படுத்தவும்}
+::msgcat::mcset ta owner/repository உரிமையாளர்/களஞ்சியம்
 ::msgcat::mcset ta {owners: %s} {உரிமையாளர்கள்: %s}
 ::msgcat::mcset ta {pair a desktop with this agent} {இந்த முகவருடன் ஒரு டெஸ்க்டாப்பை இணை}
 ::msgcat::mcset ta {partly failed: %s} {பகுதியளவு தோல்வி: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset ta plugin செருகுநிரல்
 ::msgcat::mcset ta {plugin directory git history} {செருகுநிரல் கோப்புறை git வரலாறு}
 ::msgcat::mcset ta {plugin list} {செருகுநிரல் பட்டியல்}
+::msgcat::mcset ta {plugin provider driver} {செருகுநிரல் வழங்குநர் இயக்கி}
 ::msgcat::mcset ta {plugins reloaded on %s} {செருகுநிரல்கள் %s-இல் மீண்டும் ஏற்றப்பட்டன}
 ::msgcat::mcset ta {pop %s out into its own window} {%s-ஐ தனி சாளரத்தில் பிரி}
 ::msgcat::mcset ta {pop the buffer out into its own window} {பஃபரை தனி சாளரத்திற்கு வெளியேற்று}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset ta {prefix: window & dock commands} {முன்னொட்டு: சாளர & dock கட்டளைகள்}
 ::msgcat::mcset ta {press Attach in the Instances tab} {Instances தாவலில் Attach-ஐ அழுத்தவும்}
 ::msgcat::mcset ta preview முன்னோட்டம்
+::msgcat::mcset ta {preview an AI extension change and explicitly apply its diff} {AI extension மாற்றத்தை முன்னோட்டமாகப் பார்த்து, அதன் வேறுபாட்டை வெளிப்படையாகப் பயன்படுத்து}
 ::msgcat::mcset ta {preview failed: %s} {முன்னோட்டம் தோல்வி: %s}
 ::msgcat::mcset ta {previous buffer} {முந்தைய பஃபர்}
 ::msgcat::mcset ta {previous command was not a yank} {முந்தைய கட்டளை yank அல்ல}
 ::msgcat::mcset ta {previous match} {முந்தைய பொருத்தம்}
 ::msgcat::mcset ta {previous session} {முந்தைய அமர்வு}
+::msgcat::mcset ta {probing %s…} {%s ஆய்வு செய்யப்படுகிறது…}
 ::msgcat::mcset ta {proc body} {proc body}
 ::msgcat::mcset ta {profile unavailable: %s} {சுயவிவரம் கிடைக்கவில்லை: %s}
 ::msgcat::mcset ta profiles: சுயவிவரங்கள்:
 ::msgcat::mcset ta prompt வரியுரை
 ::msgcat::mcset ta {prompt breakdown} {வரியுரையின் விவரம்}
 ::msgcat::mcset ta {prompt tokens} {prompt tokens}
+::msgcat::mcset ta {proposal only, not applied} {முன்மொழிவு மட்டும், பயன்படுத்தப்படவில்லை}
 ::msgcat::mcset ta provider வழங்குநர்
 ::msgcat::mcset ta {provider / model} {வழங்குநர் / மாதிரி}
 ::msgcat::mcset ta {provider base URL} {provider base URL}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset ta {re-sync the slopdrop state mirror} {slopdrop நிலை mirror-ஐ மறு-ஒத்திசை}
 ::msgcat::mcset ta {read and set the clipboard} {கிளிப்போர்டைப் படித்து அமைப்பது}
 ::msgcat::mcset ta {read text aloud} {உரையை உரக்கப் படிப்பது}
+::msgcat::mcset ta {read-only: [approvals] allowlist} {படிக்க மட்டும்: [approvals] அனுமதிப்பட்டியல்}
 ::msgcat::mcset ta {read-only: this session lives on %1$s (as read at %2$s)} {படிக்க மட்டும்: இந்த அமர்வு %1$s இல் உள்ளது (%2$s மணிக்கு படித்தபடி)}
 ::msgcat::mcset ta {read-only: this skill comes from the %s library} {படிக்க மட்டும்: இந்த திறன் %s நூலகத்திலிருந்து வந்தது}
 ::msgcat::mcset ta reasoning சிந்தனை
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset ta {refused to open %s (only http, https, mailto)} {%s திறக்க மறுக்கப்பட்டது (http, https, mailto மட்டும்)}
 ::msgcat::mcset ta {refused: %s} {மறுக்கப்பட்டது: %s}
 ::msgcat::mcset ta {region copied} {பகுதி நகலெடுக்கப்பட்டது}
+::msgcat::mcset ta registered {பதிவு செய்யப்பட்டது}
 ::msgcat::mcset ta {registry not saved: %s} {பதிவேடு சேமிக்கப்படவில்லை: %s}
 ::msgcat::mcset ta {reload on %1$s failed: %2$s} {%1$s-இல் மீண்டும் ஏற்றுவது தோல்வி: %2$s}
 ::msgcat::mcset ta {reload the mechanisms} {வழிமுறைகளை மீண்டும் ஏற்று}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset ta {resume a session (prefix ok)} {ஒரு அமர்வைத் தொடர் (முன்னொட்டு போதும்)}
 ::msgcat::mcset ta {retry failed: %s} {மீண்டும் முயற்சி தோல்வி: %s}
 ::msgcat::mcset ta {retrying last prompt…} {கடைசி வரியுரையை மீண்டும் முயற்சிக்கிறது…}
+::msgcat::mcset ta {review files for an explicit upstream contribution} {வெளிப்படையான upstream பங்களிப்புக்காகக் கோப்புகளை மதிப்பாய்வு செய்}
+::msgcat::mcset ta {review standing global and session tool permissions} {நிலையான உலகளாவிய மற்றும் அமர்வுக் கருவி அனுமதிகளை மதிப்பாய்வு செய்}
 ::msgcat::mcset ta revision திருத்தம்
 ::msgcat::mcset ta {revision history} {திருத்த வரலாறு}
+::msgcat::mcset ta {revoke refused} {திரும்பப் பெறுதல் மறுக்கப்பட்டது}
 ::msgcat::mcset ta {revoke the selected identity's grant} {தேர்ந்தெடுத்த அடையாளத்தின் அனுமதியை ரத்து செய்}
 ::msgcat::mcset ta role பங்கு
 ::msgcat::mcset ta {role to grant} {வழங்க வேண்டிய பங்கு}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset ta {saved to %s} {%s-க்கு சேமிக்கப்பட்டது}
 ::msgcat::mcset ta saved. சேமிக்கப்பட்டது.
 ::msgcat::mcset ta {scaffold a new plugin} {புதிய செருகுநிரலை உருவாக்கு}
+::msgcat::mcset ta {scaffold a user plugin and open it in this editor} {ஒரு பயனர் plugin-ஐ scaffold செய்து இந்தத் திருத்தியில் திற}
 ::msgcat::mcset ta {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {திட்டமிட்ட பணிகள்; /crons add "<sched>" [session=<id>] <prompt> (மாற்றுப்பெயர் /cron)}
 ::msgcat::mcset ta scope நோக்கம்
 ::msgcat::mcset ta script ஸ்கிரிப்ட்
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset ta {select %s first} {முதலில் %s-ஐ தேர்ந்தெடுக்கவும்}
 ::msgcat::mcset ta {select a checkpoint first} {முதலில் ஒரு checkpoint-ஐ தேர்ந்தெடுக்கவும்}
 ::msgcat::mcset ta {select a file, or New… to create one} {ஒரு கோப்பைத் தேர்ந்தெடுக்கவும், அல்லது உருவாக்க புதியது…}
+::msgcat::mcset ta {select a grant first} {முதலில் ஒரு வழங்கலைத் தேர்ந்தெடுக்கவும்}
 ::msgcat::mcset ta {select a handler first} {முதலில் ஒரு handler-ஐ தேர்ந்தெடுக்கவும்}
 ::msgcat::mcset ta {select a member first} {முதலில் ஒரு உறுப்பினரை தேர்ந்தெடுக்கவும்}
 ::msgcat::mcset ta {select a route} {ஒரு தடத்தை தேர்ந்தெடுக்கவும்}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset ta {select an assignment first} {முதலில் ஒரு ஒதுக்கீட்டை தேர்ந்தெடுக்கவும்}
 ::msgcat::mcset ta {select an entry first} {முதலில் ஒரு உள்ளீட்டை தேர்ந்தெடுக்கவும்}
 ::msgcat::mcset ta {select an identity first} {முதலில் ஒரு அடையாளத்தை தேர்ந்தெடுக்கவும்}
+::msgcat::mcset ta {selected task details and shell output} {தேர்ந்தெடுத்த பணியின் விவரங்கள் மற்றும் செல் வெளியீடு}
 ::msgcat::mcset ta {selected: %s} {தேர்ந்தெடுக்கப்பட்டது: %s}
 ::msgcat::mcset ta {send clipboard as prompt} {கிளிப்போர்டை வரியுரையாக அனுப்பு}
 ::msgcat::mcset ta {send failed: %s} {அனுப்புதல் தோல்வி: %s}
 ::msgcat::mcset ta {send the message; while a turn runs, queue it as steering} {செய்தியை அனுப்பு; turn இயங்கும்போது, அதை steering-ஆக வரிசைப்படுத்து}
+::msgcat::mcset ta sent அனுப்பப்பட்டது
+::msgcat::mcset ta {sent to the owner's home chat} {உரிமையாளரின் முகப்பு அரட்டைக்கு அனுப்பப்பட்டது}
 ::msgcat::mcset ta server சேவையகம்
 ::msgcat::mcset ta {server buffers merged} {சேவையக இடையகங்கள் இணைக்கப்பட்டன}
 ::msgcat::mcset ta {server buffers separate} {சேவையக இடையகங்கள் தனித்தனி}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset ta {settings, one key = value per line} {அமைப்புகள், ஒவ்வொரு வரியிலும் ஒரு key = value}
 ::msgcat::mcset ta {setup_done marker NOT saved: %s} {setup_done குறியீடு சேமிக்கப்படவில்லை: %s}
 ::msgcat::mcset ta {shell %1$s finished} {ஷெல் %1$s முடிந்தது}
-::msgcat::mcset ta shells ஷெல்கள்
+::msgcat::mcset ta {shells, monitors and subagents} {செல்கள், கண்காணிப்பான்கள் மற்றும் துணைமுகவர்கள்}
 ::msgcat::mcset ta shells_header {பின்னணி ஷெல்கள்:}
 ::msgcat::mcset ta shells_none {(பின்னணி ஷெல்கள் இல்லை — /background <cmd> ஒன்றைத் தொடங்கும்)}
 ::msgcat::mcset ta {show current configuration} {தற்போதைய கட்டமைப்பைக் காட்டு}
 ::msgcat::mcset ta {show every key in this mode} {இந்த முறையில் உள்ள ஒவ்வொரு விசையையும் காட்டு}
 ::msgcat::mcset ta {show or hide the session list} {அமர்வு பட்டியலைக் காட்டு அல்லது மறை}
 ::msgcat::mcset ta {show or switch model (alias | model@provider | custom:<prov>)} {மாடலைக் காட்டு அல்லது மாற்று (alias | model@provider | custom:<prov>)}
+::msgcat::mcset ta {show selected shell output} {தேர்ந்தெடுத்த செல் வெளியீட்டைக் காட்டு}
 ::msgcat::mcset ta {show short messages} {சிறு செய்திகளைக் காட்டுவது}
 ::msgcat::mcset ta {show the model's reasoning blocks (same as /reasoning)} {model-இன் reasoning பகுதிகளைக் காட்டு (/reasoning போல)}
 ::msgcat::mcset ta {show unclaimed} {உரிமை கோரப்படாதவற்றை காட்டு}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset ta spend செலவு
 ::msgcat::mcset ta {split: %s} {பிரிப்பு: %s}
 ::msgcat::mcset ta {ssh to %1$s failed: %2$s} {%1$s-க்கு ssh தோல்வி: %2$s}
+::msgcat::mcset ta {stale — no heartbeat within the threshold} {காலாவதி — நிர்ணய எல்லைக்குள் இதயத்துடிப்பு இல்லை}
+::msgcat::mcset ta {standing global and session permission grants} {நிலையான உலகளாவிய மற்றும் அமர்வு அனுமதி வழங்கல்கள்}
 ::msgcat::mcset ta state நிலை
 ::msgcat::mcset ta {state       never reached} {நிலை       அடையப்படவில்லை}
 ::msgcat::mcset ta {state       reachable} {நிலை       அடையக்கூடியது}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset ta {stored in the encrypted vault (%1$s): %2$s} {குறியாக்கம் செய்யப்பட்ட பெட்டகத்தில் சேமிக்கப்பட்டது (%1$s): %2$s}
 ::msgcat::mcset ta {stream handler: %s} {ஸ்ட்ரீம் handler: %s}
 ::msgcat::mcset ta {subagent %1$s finished} {துணை முகவர் %1$s முடிந்தது}
-::msgcat::mcset ta subagents {துணை முகவர்கள்}
 ::msgcat::mcset ta subagents_header {இயங்கும் துணை முகவர்கள்:}
 ::msgcat::mcset ta subagents_none {(துணை முகவர்கள் இயங்கவில்லை — /btw <prompt> ஒன்றைத் தொடங்கும், அல்லது model delegate_task-ஐ பயன்படுத்தும்)}
 ::msgcat::mcset ta {suspend failed: %{e}} {இடைநிறுத்தம் தோல்வி: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset ta {switch the selected skill off} {தேர்ந்தெடுத்த திறனை முடக்கு}
 ::msgcat::mcset ta {switch the selected skill on} {தேர்ந்தெடுத்த திறனை இயக்கு}
 ::msgcat::mcset ta {switch to the %s tab} {%s தாவலுக்கு மாறு}
+::msgcat::mcset ta {sync requested: %s} {ஒத்திசைவு கோரப்பட்டது: %s}
 ::msgcat::mcset ta {tab 1} {டேப் 1}
 ::msgcat::mcset ta {tab 2} {டேப் 2}
 ::msgcat::mcset ta {tab 3} {டேப் 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset ta tasks_none {(இயங்கும் பணிகள் இல்லை)}
 ::msgcat::mcset ta tasks_not_found {அப்படி ஒரு பணி இல்லை: %{id}}
 ::msgcat::mcset ta tasks_not_running {பணி %{id} ஏற்கெனவே முடிந்துவிட்டது}
-::msgcat::mcset ta {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset ta {tcl-lsp: event stream unavailable: %s} {tcl-lsp: நிகழ்வு ஸ்ட்ரீம் கிடைக்கவில்லை: %s}
-::msgcat::mcset ta {tcl-lsp: gateway would not start it: %s} {tcl-lsp: gateway அதைத் தொடங்கவில்லை: %s}
-::msgcat::mcset ta {tcl-lsp: not started on the gateway — %s} {tcl-lsp: gateway-இல் தொடங்கப்படவில்லை — %s}
 ::msgcat::mcset ta {that buffer is not split} {அந்த buffer பிரிக்கப்படவில்லை}
 ::msgcat::mcset ta {the %s plan} {%s திட்டம்}
 ::msgcat::mcset ta {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {API key புலம் சூழல் மாறியின் பெயரையே (உ.ம். %{example}) ஏற்கும், key-ஐ அல்ல — key மறைக்கப்பட்ட புலத்தில்தான் இடப்படும்}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset ta {the gateway answered without a report} {gateway அறிக்கை இல்லாமல் பதிலளித்தது}
 ::msgcat::mcset ta {the model/provider pair is incomplete — the gateway will not route until both are present} {மாதிரி/வழங்குநர் இணை முழுமையில்லை — இரண்டும் இருக்கும் வரை நுழைவாயில் வழிசெலுத்தாது}
 ::msgcat::mcset ta {the options changed, so that is a fresh preview — press “Write it” again to write it} {விருப்பங்கள் மாறிவிட்டன, இது புதிய முன்னோட்டம் — எழுத “Write it”-ஐ மீண்டும் அழுத்தவும்}
+::msgcat::mcset ta {the peer has not been sent this vault yet} {இந்தப் பெட்டகம் இன்னும் சக முனைக்கு அனுப்பப்படவில்லை}
+::msgcat::mcset ta {the peer holds this vault} {சக முனையிடம் இந்தப் பெட்டகம் உள்ளது}
 ::msgcat::mcset ta {the primary route is \[model\] provider/default — change it there, not here} {முதன்மை தடம் \[model\] provider/default — அங்கே மாற்றவும், இங்கே அல்ல}
 ::msgcat::mcset ta {the provider/model route this session sends to} {இந்த session அனுப்பும் provider/model பாதை}
 ::msgcat::mcset ta {the same, on the privileged path (owner only)} {அதே, சிறப்புரிமைப் பாதையில் (owner மட்டும்)}
 ::msgcat::mcset ta {the selected entry (edit, then Save)} {தேர்ந்தெடுத்த உள்ளீடு (திருத்தவும், பிறகு Save)}
+::msgcat::mcset ta {the server stopped: %s} {சேவையகம் நின்றுவிட்டது: %s}
 ::msgcat::mcset ta {the synthwave splash} {synthwave வரவேற்புத் திரை}
 ::msgcat::mcset ta {the text after the name was NOT sent anywhere — type the value into the masked field} {பெயருக்குப் பின் உள்ள உரை எங்கும் அனுப்பப்படவில்லை — மதிப்பை மறைக்கப்பட்ட புலத்தில் தட்டச்சு செய்யுங்கள்}
 ::msgcat::mcset ta {the transcript} உரையாடல்
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset ta thinking… சிந்திக்கிறது…
 ::msgcat::mcset ta {thinking… (%s)} {சிந்திக்கிறது… (%s)}
 ::msgcat::mcset ta {this file's revisions, their diffs, and restore} {இந்தக் கோப்பின் திருத்தங்கள், அவற்றின் வேறுபாடுகள், மீட்டெடுப்பு}
+::msgcat::mcset ta {this gateway} {இந்தக் கேட்வே}
 ::msgcat::mcset ta {this gateway has no Tcl interpreter} {இந்த gateway-க்கு Tcl மொழிபெயர்ப்பாளர் இல்லை}
 ::msgcat::mcset ta {this list} {இந்த பட்டியல்}
+::msgcat::mcset ta {this node has no vault} {இந்த முனையிடம் பெட்டகம் இல்லை}
 ::msgcat::mcset ta {this route} {இந்த தடம்}
 ::msgcat::mcset ta {this session} {இந்த அமர்வு}
 ::msgcat::mcset ta {this session follows the default language again (%{def})} {இந்த அமர்வு மீண்டும் இயல்புநிலை மொழியைப் பின்பற்றுகிறது (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset ta {transcript finalization failed: %s} {உரையாடல் தொகுப்பு தோல்வி: %s}
 ::msgcat::mcset ta {transcript refetched} {உரையாடல் மீண்டும் பெறப்பட்டது}
 ::msgcat::mcset ta {transcript — arrows to read, %s for composer} {உரையாடல் — படிக்க அம்புகள், உள்ளீட்டிற்கு %s}
+::msgcat::mcset ta {translate text with the dedicated translation model, without an agent turn} {agent திருப்பம் இல்லாமல், தனி மொழிபெயர்ப்பு மாடலுடன் உரையை மொழிபெயர்}
+::msgcat::mcset ta {translation result} {மொழிபெயர்ப்பு முடிவு}
 ::msgcat::mcset ta {trigger %1$s %2$sd} {தூண்டு %1$s %2$sd}
 ::msgcat::mcset ta {trigger created} {தூண்டுதல் உருவாக்கப்பட்டது}
 ::msgcat::mcset ta {trigger updated} {தூண்டுதல் புதுப்பிக்கப்பட்டது}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset ta {usage: /steer <instruction>} {பயன்பாடு: /steer <instruction>}
 ::msgcat::mcset ta used பயன்படுத்தப்பட்டது
 ::msgcat::mcset ta user பயனர்
+::msgcat::mcset ta {user copy} {பயனர் நகல்}
 ::msgcat::mcset ta {user identities, one per line} {பயனர் அடையாளங்கள், ஒவ்வொரு வரியிலும் ஒன்று}
 ::msgcat::mcset ta {user name} {பயனர் பெயர்}
 ::msgcat::mcset ta {user profile} {பயனர் சுயவிவரம்}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset ta {value (TOML: 5, true, "text", ["a","b"])} {மதிப்பு (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset ta veles veles
 ::msgcat::mcset ta {veles editor} {veles எடிட்டர்}
+::msgcat::mcset ta {veles fleet: node %{node} is failing — %{detail}} {veles fleet: முனை %{node} தோல்வியடைகிறது — %{detail}}
+::msgcat::mcset ta {veles fleet: node %{node} is stale — %{detail}} {veles fleet: முனை %{node} பழையது — %{detail}}
+::msgcat::mcset ta {veles fleet: node %{node} recovered (it was %{was})} {veles fleet: முனை %{node} மீண்டது (முன்பு %{was})}
 ::msgcat::mcset ta {veles · keyboard help (bindings: %s)} {veles · விசைப்பலகை உதவி (பிணைப்புகள்: %s)}
 ::msgcat::mcset ta {veles · touch help} {veles · தொடு உதவி}
 ::msgcat::mcset ta {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset ta widgets விட்ஜெட்டுகள்
 ::msgcat::mcset ta {will be stored in the encrypted vault} {குறியாக்கம் செய்யப்பட்ட பெட்டகத்தில் சேமிக்கப்படும்}
 ::msgcat::mcset ta {wire protocol} {wire protocol}
+::msgcat::mcset ta {without force to} {force இல்லாமல் இதற்கு}
 ::msgcat::mcset ta {wizard language} {வழிகாட்டி மொழி}
 ::msgcat::mcset ta {wizard language: %s} {வழிகாட்டி மொழி: %s}
 ::msgcat::mcset ta {write failed: %s} {எழுதுதல் தோல்வி: %s}
 ::msgcat::mcset ta {write grants that still expire (the expiry is dropped — a config line cannot expire)} {இன்னும் காலாவதியாகும் அனுமதிகளை எழுது (காலாவதி நீக்கப்படுகிறது — ஒரு config வரி காலாவதியாகாது)}
 ::msgcat::mcset ta {write the entries back} {உள்ளீடுகளை மீண்டும் எழுது}
 ::msgcat::mcset ta {write the store's runtime rules into config.toml} {களஞ்சியத்தின் இயக்க நேர விதிகளை config.toml-இல் எழுது}
+::msgcat::mcset ta {write the whole extension from its purpose, as a reviewed preview} {முழு நீட்டிப்பையும் அதன் நோக்கத்திலிருந்து, மதிப்பாய்வு செய்யப்பட்ட முன்னோட்டமாக எழுது}
 ::msgcat::mcset ta {write these values into config.toml as the defaults} {இந்த மதிப்புகளை முன்னிருப்புகளாக config.toml-இல் எழுது}
 ::msgcat::mcset ta writing எழுதுதல்
 ::msgcat::mcset ta {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {முதல் [acl] உரிமையாளரை எழுதுவது இந்த நுழைவாயிலை curated பயன்முறைக்கு மாற்றுகிறது: இயல்புப் பங்கு guest (fail-closed) ஆகிறது, அடாப்டரின் அனுமதிப் பட்டியல் இனி நம்பிக்கை எல்லை அல்ல}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset ta {▲ VELES — neon impressionism} {▲ VELES — neon impressionism}
 ::msgcat::mcset ta {▲ earlier} {▲ முந்தையவை}
 ::msgcat::mcset ta {▼ later} {▼ பிந்தையவை}
+::msgcat::mcset ta {▾ Cluster registry} {▾ கிளஸ்டர் பதிவேடு}
 ::msgcat::mcset ta {▾ new output — follow} {▾ புதிய வெளியீடு — பின்தொடர்}
 ::msgcat::mcset ta {○ unattached} {○ இணைக்கப்படவில்லை}
 ::msgcat::mcset ta {● %1$s — %2$s} {● %1$s — %2$s}

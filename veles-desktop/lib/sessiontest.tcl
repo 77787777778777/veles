@@ -234,6 +234,22 @@ proc body_of {sid} {
 puts "event routing"
 reset
 set ::vchat::session "A"
+scrollbar .mid.chatwrap.chat.sb -orient vertical \
+    -command {.mid.chatwrap.chat.log yview}
+bind .mid.chatwrap.chat.sb <ButtonRelease-1> {set ::release_owner_seen 1}
+for {set i 0} {$i < 20} {incr i} { ::vchat::_show_log "A" }
+set release_script [bind .mid.chatwrap.chat.sb <ButtonRelease-1>]
+ok "session switches leave one scrollbar pose handler" \
+    {[regexp -all -- {::vchat::_read_pose} $release_script] == 1}
+ok "the idempotent pose binding preserves other release handlers" \
+    {[string first {set ::release_owner_seen 1} $release_script] >= 0}
+# _show_log attaches the real transcript to this fixture scrollbar. Detach
+# it before destroying the scrollbar: Tk otherwise retries the dead command
+# on every idle repaint and _drain_finalizers never returns.
+.mid.chatwrap.chat.log configure -yscrollcommand {}
+destroy .mid.chatwrap.chat.sb
+reset
+set ::vchat::session "A"
 set ::vchat::stream_session "A"
 ok "an event for the visible session is displayed" {[::vchat::for_display]}
 ok "…and is attributed to it" {[::vchat::event_session] eq "A"}
@@ -1332,6 +1348,76 @@ proc ::vapi::post_json {path body} { incr ::vapi::steers; return [dict create] }
 ok "sending during finalization cannot become a steer to a dead turn" \
     {$::vapi::steers == 0 && [string match "*finishing the transcript*" $::vstatus::last]}
 ::vchat::_drain_finalizers
+
+# The send hold above covers only this window's Send. The gateway starts
+# a turn queued from another window, the phone, a TUI, /queue or a
+# post-turn wake the moment run_turn returns, so turn-started can land
+# while the previous turn is still finalizing (review DR-1). The old
+# job must finish first: the new prompt and stream go after the first
+# answer, and the old job's completion must not clear the new turn's
+# running mark or anchor.
+reset
+set ::vchat::session "A"
+set ::vchat::stream_session "A"
+::vchat::open_session "A"
+::vchat::on_session_event "A" turn-started [dict create surface desktop base_msg_id 42]
+for {set i 1} {$i <= 20} {incr i} {
+    ::vchat::on_session_event "A" delta [dict create text "race call $i"]
+    ::vchat::on_session_event "A" tool [dict create state start name terminal args "{}"]
+    ::vchat::on_session_event "A" tool [dict create state end name terminal result "race result $i"]
+    ::vchat::on_session_event "A" note [dict create note_id [expr {500+$i}] kind guard summary "race guard $i"]
+}
+::vchat::on_session_event "A" turn-result [dict create text "first race done" provider p model m \
+    prompt_tokens 1 completion_tokens 2 display_reasoning "" notice "" last_msg_id 43]
+ok "a many-guard turn is still finalizing when the queued turn starts" \
+    {[::vchat::_finalizing "A"]}
+::vchat::on_session_event "A" turn-started [dict create surface telegram base_msg_id 44 \
+    prompt "SECOND RACE PROMPT" prompt_msg_id 45]
+::vchat::on_session_event "A" delta [dict create text "SECOND RACE STREAM"]
+::vchat::_drain_finalizers
+set race_body [body_of "A"]
+set race_first [string first "first race done" $race_body]
+set race_guard [string first "race guard 20" $race_body]
+set race_prompt [string first "SECOND RACE PROMPT" $race_body]
+set race_stream [string first "SECOND RACE STREAM" $race_body]
+ok "a turn started during finalization lands after the first answer" \
+    {$race_first >= 0 && $race_guard >= 0 && $race_first < $race_prompt
+     && $race_guard < $race_prompt && $race_prompt < $race_stream}
+ok "the old finalizer leaves the new turn running" {[::vchat::is_running "A"]}
+ok "the old finalizer leaves the new turn its anchor" \
+    {[dict exists $::vchat::turn_anchor "A"]}
+::vchat::on_session_event "A" turn-result [dict create text "second race done" provider p model m \
+    prompt_tokens 1 completion_tokens 2 display_reasoning "" notice "" last_msg_id 46]
+::vchat::_drain_finalizers
+set race_body [body_of "A"]
+ok "both raced turns survive the second reconcile, in order" \
+    {[string first "first race done" $race_body] >= 0
+     && [string first "first race done" $race_body] < [string first "SECOND RACE PROMPT" $race_body]
+     && [string first "SECOND RACE PROMPT" $race_body] < [string first "second race done" $race_body]
+     && [llength [regexp -all -inline {second race done} $race_body]] == 1
+     && ![::vchat::is_running "A"]}
+
+# Cancelling a finalizer (LRU eviction, a rebuilt widget) must drop its
+# insertion point. A stale namespace insert_at routes every later emit
+# into that widget to a dead reconcile mark (review DR-2).
+reset
+set ::vchat::session "A"
+set ::vchat::stream_session "A"
+::vchat::open_session "A"
+set cancel_w [::vchat::log_for "A"]
+::vchat::on_session_event "A" turn-started [dict create surface desktop base_msg_id 42]
+for {set i 1} {$i <= 5} {incr i} {
+    ::vchat::on_session_event "A" delta [dict create text "cancel call $i"]
+    ::vchat::on_session_event "A" note [dict create note_id [expr {700+$i}] kind guard summary "cancel guard $i"]
+}
+::vchat::on_session_event "A" turn-result [dict create text "cancel done" provider p model m \
+    prompt_tokens 1 completion_tokens 2 display_reasoning "" notice "" last_msg_id 43]
+set cancel_mark [dict get $::vchat::finalizing "A" insert_mark]
+::vchat::_cancel_finalizer "A"
+ok "cancelling a finalizer clears its insertion point" \
+    {![dict exists $::vchat::insert_at $cancel_w]
+     && ($cancel_mark eq "" || [lsearch -exact [$cancel_w mark names] $cancel_mark] < 0)}
+set ::vchat::insert_at {}
 
 # A redraw invalidates the finalizer's positional marks. It must finish
 # safely before rebuilding, rather than resume against a new layout.

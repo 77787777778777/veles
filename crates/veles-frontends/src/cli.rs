@@ -588,6 +588,9 @@ pub fn plugins(action: Option<PluginsCmd>) -> Result<()> {
                     }
                 );
             }
+            for shadow in found.iter().filter_map(veles_core::plugins::shadow_report) {
+                println!("WARNING: {shadow}");
+            }
             println!("\n\u{25cf} {on} loaded   \u{25cb} {off} present but not loaded");
             // A non-empty `enabled` is an allowlist, which is the one
             // config shape where a plugin is off without being named in
@@ -1609,7 +1612,20 @@ pub fn doctor_providers(probe: bool) -> Result<()> {
         println!("  (none — no plugin has called register_provider)");
     }
     for d in &drivers {
-        println!("  {:<24} from {}", d.name, d.plugin);
+        println!("  {:<48} unqualified: {}", d.qualified_name(), d.name);
+        println!("    {}", d.provenance_label());
+        let stack = veles_core::providers::driver_stack(&d.name);
+        if stack.len() > 1 {
+            let choices = stack
+                .iter()
+                .map(|candidate| format!("{}:{}", candidate.plugin, candidate.name))
+                .collect::<Vec<_>>()
+                .join(", ");
+            println!(
+                "    multiple registrations; the unqualified name selects {}. Choices: {choices}",
+                d.plugin
+            );
+        }
     }
 
     let cfg = match veles_core::config::load() {
@@ -1677,6 +1693,7 @@ pub fn doctor_providers(probe: bool) -> Result<()> {
                 replay_reasoning: false,
                 cache_mode: veles_core::providers::CacheMode::Off,
                 extra_body: None,
+                thread: None,
             };
             match rt.block_on(route.client.chat(&req, &route.provider)) {
                 Ok(c) if !c.message.content.trim().is_empty() => {

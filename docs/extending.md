@@ -1,6 +1,6 @@
 # Extending and overriding veles without forking it
 
-<!-- extension-api: 0.10 sha256:40729d740135033b -->
+<!-- extension-api: 0.11 sha256:866fd01868c96e63 -->
 
 You change how veles behaves from your own plugin directory, not from a
 patch to this repository. An update replaces the program and leaves
@@ -273,6 +273,14 @@ platform, a module seam.
   `api = "0.1"` in its `plugin.toml`. The loader notes when a plugin
   targets a newer API than the running veles has. After 1.0 it refuses a
   plugin whose major version differs.
+- A Tcl plugin may declare `version = "…"` as its own release label.
+  Doctor and the plugin surfaces use it beside the source hash when
+  reporting provenance or a user copy that shadows a bundled copy.
+- Provider-driver requests for the opt-in Anthropic Message Threads beta
+  carry a top-level `thread` object and `veles.message_threads.enabled`.
+  This is additive; an existing driver needs no change when the beta is
+  off. Qualified route names preserve the full owner prefix, such as
+  `tcl:my-plugin:my-driver` and `so:my-plugin:my-driver`.
 
 ## How a change to the API is published
 

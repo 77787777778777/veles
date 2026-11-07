@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset pcm {%1$s %2$s failed: %3$s} {%1$s %2$s don fail: %3$s}
 ::msgcat::mcset pcm {%1$s %2$s over ssh…} {%1$s %2$s over ssh…}
 ::msgcat::mcset pcm {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset pcm {%1$s (%2$s waiting)} {%1$s (%2$s dey wait)}
 ::msgcat::mcset pcm {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  reasoning %3$s}
 ::msgcat::mcset pcm {%1$s = %2$s here} {%1$s = %2$s here}
 ::msgcat::mcset pcm {%1$s NOT saved: %2$s} {%1$s NO save: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset pcm {%1$s every cron job on %2$s?} {%1$s every cron job for %2$s?}
 ::msgcat::mcset pcm {%1$s failed: %2$s} {%1$s don fail: %2$s}
 ::msgcat::mcset pcm {%1$s in / %2$s out / %3$s calls} {%1$s in / %2$s out / %3$s calls}
+::msgcat::mcset pcm {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s na node %2$s, no be %3$s. Fix im node id inside Edit….}
 ::msgcat::mcset pcm {%1$s is not a whole number} {%1$s no be whole number}
+::msgcat::mcset pcm {%1$s is reachable (%2$s ms).} {%1$s dey reachable (%2$s ms).}
 ::msgcat::mcset pcm {%1$s is set to something this box cannot edit (%2$s)} {%1$s don set to somtin wey dis box no fit edit (%2$s)}
+::msgcat::mcset pcm {%1$s is unreachable: %2$s} {%1$s no dey reachable: %2$s}
 ::msgcat::mcset pcm {%1$s of %2$s characters} {%1$s of %2$s characters}
 ::msgcat::mcset pcm {%1$s of %2$s sessions} {%1$s for %2$s sessions}
 ::msgcat::mcset pcm {%1$s of %2$s skills reach the prompt} {%1$s of %2$s skills dey reach the prompt}
 ::msgcat::mcset pcm {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s for %2$s: %3$d ok, %4$d don fail}
+::msgcat::mcset pcm {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s no report any cluster node identity, so dem no fit verify am as %2$s.}
+::msgcat::mcset pcm {%1$s sync failed: %2$s} {%1$s sync no work: %2$s}
+::msgcat::mcset pcm {%1$s sync with %2$s (%3$s)} {%1$s sync wit %2$s (%3$s)}
+::msgcat::mcset pcm {%1$s sync: %2$s} {%1$s sync: %2$s}
 ::msgcat::mcset pcm {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset pcm {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter make e jump, Esc make e close}
 ::msgcat::mcset pcm {%1$s — revision r%2$s} {%1$s — revision r%2$s}
 ::msgcat::mcset pcm {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset pcm {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset pcm {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset pcm {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset pcm {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: di last %2$s for di %3$s lines wey im gateway dey keep for memory, dem don hide di secrets for dat node.}
 ::msgcat::mcset pcm {%d MCP server(s) configured} {%d MCP server(s) don configure}
 ::msgcat::mcset pcm {%d entries} {%d entries}
+::msgcat::mcset pcm {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {Dem go write %d file(s) of di extension exactly as dem review am. If any of dem change since di preview, nothing go write. No commit, push or PR go happen.}
 ::msgcat::mcset pcm {%d handler(s) registered} {%d handler(s) don register}
 ::msgcat::mcset pcm {%d identities · %d users} {%d identities · %d users}
 ::msgcat::mcset pcm {%d models — pick one from the list or type a name.} {%d models — pick one from di list or type name.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset pcm {%d shown} {%d dey show}
 ::msgcat::mcset pcm {%s %s%%} {%s %s%%}
 ::msgcat::mcset pcm {%s (%s)} {%s (%s)}
+::msgcat::mcset pcm {%s (referral)} {%s (referral)}
+::msgcat::mcset pcm {%s (stale)} {%s (e don old)}
 ::msgcat::mcset pcm {%s (this session)} {%s (dis session)}
 ::msgcat::mcset pcm {%s GB free of %s GB} {%s GB remain out of %s GB}
 ::msgcat::mcset pcm {%s already exists — open it from the list} {%s don already dey — open am from the list}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset pcm {%s comes from config.toml [acl] — edit there} {%s dey come from config.toml [acl] — go edit am der}
 ::msgcat::mcset pcm {%s config change(s) wait for you — /configsync} {%s config change dey wait for you — /configsync}
 ::msgcat::mcset pcm {%s did not become healthy within 30s} {%s no don become healthy within 30s}
+::msgcat::mcset pcm {%s done} {%s don finish}
 ::msgcat::mcset pcm {%s failed: %s} {%s no work: %s}
 ::msgcat::mcset pcm {%s is already split} {%s don already split}
 ::msgcat::mcset pcm {%s is the language in use — pick another one to swap with} {%s na the language wey you dey use — pick another one to swap with}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset pcm {%s opens the command palette in %s.} {%s open command palette inside %s.}
 ::msgcat::mcset pcm {%s session(s)} {%s session(s)}
 ::msgcat::mcset pcm {%s skill(s):} {%s skill(s):}
+::msgcat::mcset pcm {%s standing grants} {%s grants wey dey stand}
 ::msgcat::mcset pcm {%s takes no completable arguments} {%s no gatz argument wey fit complete}
 ::msgcat::mcset pcm {%s takes on or off} {%s dey take on or off}
 ::msgcat::mcset pcm {%s —} {%s —}
+::msgcat::mcset pcm {%s — changes data, asks to confirm} {%s — e dey change data, e go ask make you confirm}
 ::msgcat::mcset pcm {%s — deleted; History… can restore it} {%s — e don delete; History… fit bring am back}
 ::msgcat::mcset pcm {%s — new: type, then Save} {%s — new: type, then Save}
 ::msgcat::mcset pcm {%s — not attached; press Attach in the Instances tab} {%s — no dey attach; press Attach for the Instances tab}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset pcm {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} dey on without [acl] section: until %{var} for .env name who fit talk to di bot, anybody wey reach am go be owner, wit every tool}
 ::msgcat::mcset pcm (%{route}) (%{route})
 ::msgcat::mcset pcm {(CLI redraws automatically)} {(CLI dey redraw by itself)}
+::msgcat::mcset pcm {(binary; not publishable)} {(binary; dem no fit publish am)}
 ::msgcat::mcset pcm {(clipboard empty or no clipboard tool)} {(clipboard don empty or no clipboard tool dey)}
 ::msgcat::mcset pcm (deleted) {(e don delete)}
 ::msgcat::mcset pcm (empty) {(notin dey)}
 ::msgcat::mcset pcm {(no sessions)} {(no session dey)}
+::msgcat::mcset pcm {(not a memsync peer of this gateway: config is not synced with it)} {(e no be memsync peer of dis gateway: config no dey sync wit am)}
 ::msgcat::mcset pcm {(nothing to reload — read from disk per use)} {(nothing to reload — e dey read from disk every time you use am)}
 ::msgcat::mcset pcm {(retrying last prompt…)} {(dey try di last prompt again…)}
 ::msgcat::mcset pcm {(route did not resolve: %{e})} {(route no resolve: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset pcm {/url needs a number from /urls} {/url gatz number from /urls}
 ::msgcat::mcset pcm {/whois needs a nick} {/whois gatz nick}
 ::msgcat::mcset pcm {; could not save the cleared return view: %s} {; no fit save di cleared return view: %s}
+::msgcat::mcset pcm {; shadows bundled} {; e cover di bundled one}
+::msgcat::mcset pcm {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Config offer fit change settings and vault offer dey merge secrets; changes for security section still dey wait for di owner.}
 ::msgcat::mcset pcm {A failing plugin may drop hooks mid-turn.} {Plugin wey dey fail fit drop hooks mid-turn.}
 ::msgcat::mcset pcm {A local server: no key is needed unless you set one up.} {Na local server: you no need key unless you set one up.}
+::msgcat::mcset pcm {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Na only after preflight dem go stage release wey dem sign. Restart/verify, continuation and rollback na different actions. Process wey dey healthy must report di exact source revision wey dem review.}
 ::msgcat::mcset pcm {A value is stored for %s — leave this empty to keep it.} {Value don dey for %s already — leave dis one empty make e remain.}
 ::msgcat::mcset pcm {ACL: ban mask} {ACL: ban di mask}
 ::msgcat::mcset pcm {ACL: grant admin} {ACL: give admin}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset pcm {ACL: grant user} {ACL: give user}
 ::msgcat::mcset pcm {ACL: revoke} {ACL: collect am back}
 ::msgcat::mcset pcm {ACME account email} {ACME account email}
+::msgcat::mcset pcm {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI assist dey work for four levels: ask design question (no file needed), change dis file, change plenty files of dis extension, or explain di diagnostics wey dey now. New extension fit still generate whole extension from im purpose. Dem dey send every request without tools and dem go refuse am if e carry registered secret or value wey be like credential; dem dey show changes as diffs and dem dey write am only when you apply am. First ask for extension design; only ask for core patch after you don find di API wey no dey.}
+::msgcat::mcset pcm {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI assistance dey edit user extensions only, and dis file no be part of any. Most changes fit inside extension (hook, tool, service override or provider driver) wey go survive upgrades; core patch na for wetin di extension API no fit express. You wan create new extension for dis change instead? Dem go preview im files before dem write anything.}
+::msgcat::mcset pcm {AI assist…} {AI assist…}
+::msgcat::mcset pcm {AI extension assistance} {AI assistance for extension}
 ::msgcat::mcset pcm {API calls} {API calls}
+::msgcat::mcset pcm {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {API credits from di Anthropic referral na only when you buy Max or Ultra dem dey give am. Veles no support to use dat subscription as login or API authentication.}
 ::msgcat::mcset pcm {API key (hidden)} {API key (e hide)}
 ::msgcat::mcset pcm {API key env var name} {Name of di env var wey hold di API key}
+::msgcat::mcset pcm {API reference} {API reference}
+::msgcat::mcset pcm {Abandon untouched operation} {Abandon operation wey you never touch}
 ::msgcat::mcset pcm {Access control} {Access control}
 ::msgcat::mcset pcm {Access control (ACL)} {Access control (ACL)}
 ::msgcat::mcset pcm Add Add
 ::msgcat::mcset pcm {Add MCP server} {Add MCP server}
 ::msgcat::mcset pcm {Add instance} {Add instance}
 ::msgcat::mcset pcm {Add server…} {Add server…}
+::msgcat::mcset pcm {Adds selected extension sources. Review the branch diff and checks before merging.} {E dey add di extension sources wey you select. Review di branch diff and checks before you merge am.}
 ::msgcat::mcset pcm Add… Add…
 ::msgcat::mcset pcm {Agent & engine} {Agent and engine}
 ::msgcat::mcset pcm {Alias %s} {Alias %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset pcm {Applies to} {E dey apply to}
 ::msgcat::mcset pcm Apply Apply
 ::msgcat::mcset pcm {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Apply dey change only the RUNNING session. Copy TOML dey give you the blocks to paste. Save globally dey splice dem into config.toml — na only the failover sections dem touch, every other line and comment dey stay as e dey, and the old file dey keep as config.toml.bak.}
+::msgcat::mcset pcm {Apply proposal…} {Apply proposal…}
+::msgcat::mcset pcm {Apply received} {Apply wetin don receive}
+::msgcat::mcset pcm {Apply this AI proposal?} {You want apply dis AI proposal?}
+::msgcat::mcset pcm {Apply this change set?} {Apply dis change set?}
 ::msgcat::mcset pcm {Apply to session} {Apply to session}
+::msgcat::mcset pcm {Apply what this node received:} {Apply wetin dis node receive:}
 ::msgcat::mcset pcm {Approval needed} {Approval dey needed}
 ::msgcat::mcset pcm Apps Apps
 ::msgcat::mcset pcm Archive Archive
 ::msgcat::mcset pcm {Archive SHA-256} {Archive SHA-256}
+::msgcat::mcset pcm Ask {Ask am}
+::msgcat::mcset pcm {Ask a design question} {Ask design question}
+::msgcat::mcset pcm {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {Ask how you go build extension: which boundary, which language, which API. Dem no dey send source, and nothing no fit write.}
 ::msgcat::mcset pcm {Ask the agent to change it} {Ask di agent make e change am}
+::msgcat::mcset pcm {Asking %s…} {Dey ask %s…}
 ::msgcat::mcset pcm {Asking the provider for its models…} {Dey ask di provider for im models…}
 ::msgcat::mcset pcm Attach Attach
 ::msgcat::mcset pcm {Attach to the next message} {Attach am to the next message}
+::msgcat::mcset pcm {Author guide} {Author guide}
+::msgcat::mcset pcm {Automatically discovered from the attached gateway's cluster registry.} {Dem discover am automatically from di cluster registry of di gateway wey attach.}
 ::msgcat::mcset pcm Back {Go back}
 ::msgcat::mcset pcm {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {Back dey close wetin dey for top: menu, di session list, window. If nothing open, veles go enter background and e go still dey run.}
 ::msgcat::mcset pcm {Base URL} {Base URL}
+::msgcat::mcset pcm {Base branch} {Base branch}
 ::msgcat::mcset pcm {Bot token (hidden)} {Bot token (e hide)}
+::msgcat::mcset pcm Branch Branch
+::msgcat::mcset pcm {Branch and commit prepared; nothing has been pushed} {Branch and commit don ready; notin don push}
+::msgcat::mcset pcm {Branch pushed and verified on origin} {Branch don push and dem don verify am for origin}
 ::msgcat::mcset pcm {Browse sessions} {Look through sessions}
+::msgcat::mcset pcm {Build manifest + preflight} {Build manifest + preflight}
+::msgcat::mcset pcm {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Build: veles %1$s, revision %2$s (%3$s %4$s)}
 ::msgcat::mcset pcm {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill go EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo}
 ::msgcat::mcset pcm {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g abort everything · C-j newline · M-p/M-n history · Tab complete}
+::msgcat::mcset pcm {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of di cores)}
 ::msgcat::mcset pcm Cancel Cancel
+::msgcat::mcset pcm {Cancel task} {Cancel task}
+::msgcat::mcset pcm {Cancel task %1$s? This cannot be undone.} {Cancel task %1$s? You no fit undo am.}
+::msgcat::mcset pcm {Cannot verify that %1$s is node %2$s: %3$s} {No fit verify say %1$s na node %2$s: %3$s}
 ::msgcat::mcset pcm Capabilities Capabilities
 ::msgcat::mcset pcm {Change my app “%s” (%s): } {Change my app “%s” (%s): }
+::msgcat::mcset pcm {Change this extension's files} {Change dis extension files}
+::msgcat::mcset pcm {Change this file} {Change dis file}
 ::msgcat::mcset pcm Change… Change…
 ::msgcat::mcset pcm {Channels (e.g. #veles #dev)} {Channels (e.g. #veles #dev)}
 ::msgcat::mcset pcm Chat Chat
 ::msgcat::mcset pcm {Chat — not attached; press Attach in the Instances tab} {Chat — no dey attach; press Attach for the Instances tab}
 ::msgcat::mcset pcm {Check (lsp)} {Check (lsp)}
+::msgcat::mcset pcm {Check again} {Check am again}
+::msgcat::mcset pcm {Check files} {Check files}
 ::msgcat::mcset pcm Checkpoints Checkpoints
 ::msgcat::mcset pcm {Checkpoints (undo)} {Checkpoints (undo)}
+::msgcat::mcset pcm {Checks and next steps} {Checks and di next steps}
+::msgcat::mcset pcm {Checks run} {Checks don run}
 ::msgcat::mcset pcm {Choose BUNDLE-INFO.json in the managed install-sources directory} {Pick BUNDLE-INFO.json inside di managed install-sources directory}
 ::msgcat::mcset pcm {Choose a failover script} {Choose failover script}
 ::msgcat::mcset pcm {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {Pick module or process plugin make you check am. Discovery dey only read plugin.toml; wen you select component e go ask for di manifest and options wey e declare. Nothing go install wen you open dis step.}
+::msgcat::mcset pcm {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {Choose name, purpose and language, then preview di exact files. Notin don write.}
 ::msgcat::mcset pcm {Choose a user unit or a system service for the server profile. Neither starts a service.} {Pick user unit or system service for di server profile. None of dem go start service.}
 ::msgcat::mcset pcm {Choose core bundle…} {Pick core bundle…}
 ::msgcat::mcset pcm {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {Pick di installation shape. Local profile dey use di reviewed installer. System and container profile dey prepare one signed request for di explicit CLI handoff. NixOS dey only emit one module snippet.}
+::msgcat::mcset pcm {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {Pick di narrowest boundary: Tool dey add model-callable capability; Hook dey watch or amend lifecycle event; Service or override point dey wrap named decision; Provider driver dey add provider wire; Core patch na only when di published extension API no fit express di change.}
 ::msgcat::mcset pcm {Choose typed container-host options JSON} {Pick typed container-host options JSON}
 ::msgcat::mcset pcm {Choose typed container-host options…} {Pick typed container-host options…}
 ::msgcat::mcset pcm Clear Clear
 ::msgcat::mcset pcm {Clear composer} {Clear di composer}
 ::msgcat::mcset pcm {Clear override} {Clear override}
 ::msgcat::mcset pcm {Click the picture where you would click on the page.} {Click di picture for where you go click am on di page.}
+::msgcat::mcset pcm {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {Clone %1$s, create %2$s, then copy only di files of %3$s wey dem review inside %4$s/<extension>/. Dem go check di files and commit dem. No push or pull request go happen now.}
 ::msgcat::mcset pcm Close Close
 ::msgcat::mcset pcm {Close (Esc)} {Close (Esc)}
 ::msgcat::mcset pcm {Close the setup wizard? Nothing has been written yet.} {Close di setup wizard? Notin don write yet.}
 ::msgcat::mcset pcm {Code actions} {Code actions}
+::msgcat::mcset pcm Commit Commit
+::msgcat::mcset pcm {Commit ready for review. Push is a separate action.} {Commit don ready for review. Push na separate action.}
 ::msgcat::mcset pcm {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Make sure you complete every PDS field, including di pinned image digest, before you preview the handoff.}
 ::msgcat::mcset pcm {Complete every typed container-host field before previewing this profile.} {Fill all di typed container-host field before you preview dis profile.}
 ::msgcat::mcset pcm {Component configuration returned an invalid result; nothing was accepted as applied.} {Component configuration don return invalid result; dem no accept notin as applied.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset pcm {Component options changed. Review the new preview before applying.} {Component options don change. Check di new preview before you apply.}
 ::msgcat::mcset pcm Components Components
 ::msgcat::mcset pcm {Composer preview} {Composer preview}
+::msgcat::mcset pcm Config Config
+::msgcat::mcset pcm {Config differs: %s} {Config no match: %s}
+::msgcat::mcset pcm {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Config log: dat node get %1$s changes reach %3$s, dis gateway reach %2$s}
+::msgcat::mcset pcm {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Config log: dis gateway get %1$s changes reach %2$s, dat node reach %3$s}
+::msgcat::mcset pcm {Config only on that node: %s} {Config dey only for dat node: %s}
+::msgcat::mcset pcm {Config only on this gateway: %s} {Config dey only for dis gateway: %s}
 ::msgcat::mcset pcm Configure Configure
 ::msgcat::mcset pcm {Configure %s} {Configure %s}
+::msgcat::mcset pcm {Configure translator} {Configure translator}
+::msgcat::mcset pcm {Configured desktop gateway} {Desktop gateway wey don configure}
 ::msgcat::mcset pcm Configure… Configure…
 ::msgcat::mcset pcm {Configuring %s} {Dey configure %s}
 ::msgcat::mcset pcm {Confirm or discard the current signed review before starting another download.} {Confirm or throway the current signed review before you start another download.}
 ::msgcat::mcset pcm {Container host: typed host plan and privileged CLI handoff} {Container host: typed host plan and CLI handoff wey need administrator rights}
 ::msgcat::mcset pcm {Context window} {Context window}
+::msgcat::mcset pcm {Continue to next target} {Continue go next target}
+::msgcat::mcset pcm {Contribute extensions: %s} {Contribute extensions: %s}
+::msgcat::mcset pcm Contribute… Contribute…
+::msgcat::mcset pcm {Contribution branch} {Contribution branch}
+::msgcat::mcset pcm {Contribution destination} {Where di contribution dey go}
 ::msgcat::mcset pcm Copy Copy
 ::msgcat::mcset pcm {Copy TOML} {Copy TOML}
+::msgcat::mcset pcm {Copy a bundled extension into your user plugin directory before preparing a contribution.} {Copy bundled extension enter your user plugin directory before you prepare contribution.}
 ::msgcat::mcset pcm {Copy message} {Copy di message}
 ::msgcat::mcset pcm {Copy name} {Copy di name}
 ::msgcat::mcset pcm {Copy nick} {Copy di nick}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset pcm {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {No fit discover components. Di provider setup steps still dey work; install through di CLI for di target machine if you need am.}
 ::msgcat::mcset pcm {Could not join: %s} {E no fit join: %s}
 ::msgcat::mcset pcm {Could not list the models (%s) — type the model's name.} {No fit list di models (%s) — type di model im name.}
+::msgcat::mcset pcm {Create a PR in} {Create PR inside}
+::msgcat::mcset pcm {Create extension} {Create extension}
 ::msgcat::mcset pcm {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Create di bot with @BotFather, then paste im token for down: e go enter di encrypted vault, e no go ever enter config.toml.}
+::msgcat::mcset pcm {Create this extension?} {You want create dis extension?}
+::msgcat::mcset pcm {Create this generated extension?} {Create dis extension wey dem generate?}
+::msgcat::mcset pcm {Created and reloaded. Review and test the extension before publishing.} {E don create and reload. Review and test di extension before you publish am.}
+::msgcat::mcset pcm {Created, but reload failed} {E don create, but reload no work}
 ::msgcat::mcset pcm {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {E go create %s/<name>/SKILL.md from template and open am. Na only frontmatter description wey dey reach the prompt index, so make am talk WHEN to use the skill.}
 ::msgcat::mcset pcm {Cron history} {Cron history}
 ::msgcat::mcset pcm {Cron jobs} {Cron jobs}
 ::msgcat::mcset pcm {Curated — write the first owner entry} {Curated — write di first owner entry}
 ::msgcat::mcset pcm Cut {Cut am}
 ::msgcat::mcset pcm Decline Refuse
+::msgcat::mcset pcm {Dedicated translator} {Dedicated translator}
 ::msgcat::mcset pcm {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset pcm Default Default
 ::msgcat::mcset pcm {Default model} {Default model}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset pcm {Delete user} {Delete user}
 ::msgcat::mcset pcm {Delete workspace?} {Delete workspace?}
 ::msgcat::mcset pcm Deop {Collect op}
+::msgcat::mcset pcm {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Describe di change. Di AI fit change or add plenty files of dis extension. Dem dey show every file as diff, and nothing no dey write before you confirm.}
+::msgcat::mcset pcm {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Describe di change. AI fit propose replacement, but e no fit write am before you inspect and confirm di diff.}
+::msgcat::mcset pcm {Describe the requested extension change first.} {Describe di extension change wey you want first.}
+::msgcat::mcset pcm Description Description
 ::msgcat::mcset pcm {Desktop: local core, modules and process plugins} {Desktop: local core, modules and process plugins}
 ::msgcat::mcset pcm Detach Detach
+::msgcat::mcset pcm {Detach foreground} {Move command go background shell}
 ::msgcat::mcset pcm Dev Dev
 ::msgcat::mcset pcm {Dev pane (REPL + LSP)} {Dev pane (REPL + LSP)}
 ::msgcat::mcset pcm {Dev: arm / disarm live patching} {Dev: set / clear live patching}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset pcm Devoice {Collect voice}
 ::msgcat::mcset pcm {Discard review} {Throway review}
 ::msgcat::mcset pcm {Discard your changes to %s?} {You wan throw away your changes for %s?}
+::msgcat::mcset pcm {Disk: %1$s free of %2$s at %3$s} {Disk: %1$s free out of %2$s for %3$s}
 ::msgcat::mcset pcm Done {E don finish}
 ::msgcat::mcset pcm {Done — config written} {Done — config don write}
 ::msgcat::mcset pcm {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Download and verify the release manifest and host archive before you install. All five identity fields gatz dey. The gateway go keep the private staged archive; this preview no dey install anything.}
 ::msgcat::mcset pcm {Downloading and verifying the signed release…} {Dey download and verify the signed release…}
+::msgcat::mcset pcm {Draft this as an extension?} {You wan draft dis one as extension?}
 ::msgcat::mcset pcm {Drag to scroll; a quick swipe goes further.} {Drag am make e scroll; quick swipe go carry am go far pass.}
+::msgcat::mcset pcm {Drift check failed: %s} {Drift check no work: %s}
+::msgcat::mcset pcm {Drift check: %s node(s) differ from this gateway.} {Drift check: %s node(s) different from dis gateway.}
+::msgcat::mcset pcm {Drift: built from revision %1$s, this gateway from %2$s} {Drift: dem build am from revision %1$s, dis gateway from %2$s}
+::msgcat::mcset pcm {Drift: none — same version, revision and replicated config} {Drift: notin — same version, revision and replicated config}
+::msgcat::mcset pcm {Drift: not compared — %s} {Drift: dem no compare am — %s}
+::msgcat::mcset pcm {Drift: runs version %1$s, this gateway %2$s} {Drift: e dey run version %1$s, dis gateway %2$s}
+::msgcat::mcset pcm Drift… Drift…
 ::msgcat::mcset pcm {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset pcm {ESC %s is not bound} {ESC %s no dey bind}
 ::msgcat::mcset pcm {ESC- … (Meta prefix)} {ESC- … (Meta prefix)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset pcm Edit… Edit…
 ::msgcat::mcset pcm {Enable / disable} {Enable / disable}
 ::msgcat::mcset pcm {Enable the Telegram adapter} {Enable di Telegram adapter}
+::msgcat::mcset pcm Endpoint Endpoint
 ::msgcat::mcset pcm Engine Engine
 ::msgcat::mcset pcm Eval→gw Eval→gw
 ::msgcat::mcset pcm {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Every change to %s dey commit. Restoring go put the whole directory back to dat commit — and e go snapshot the current state first, so e no be one-way door.}
 ::msgcat::mcset pcm {Every plugin file goes back to that commit. The current state is committed first.} {Every plugin file go back to dat commit. The current state dey commit first.}
+::msgcat::mcset pcm {Exact commit} {Exact commit}
+::msgcat::mcset pcm {Exact permission rule} {Exact permission rule}
+::msgcat::mcset pcm {Example: a hook} {Example: a hook}
+::msgcat::mcset pcm {Example: a provider driver} {Example: provider driver}
+::msgcat::mcset pcm {Example: a service override wrapping core} {Example: a service override wey wrap core}
+::msgcat::mcset pcm {Example: a tool} {Example: tool}
 ::msgcat::mcset pcm {Existing shared container network} {Shared container network wey don dey}
+::msgcat::mcset pcm Explain {Explain am}
+::msgcat::mcset pcm {Explain the diagnostics} {Explain di diagnostics}
 ::msgcat::mcset pcm Export… {Export am…}
+::msgcat::mcset pcm {Extension API} {Extension API}
+::msgcat::mcset pcm {Extension development} {Extension development}
+::msgcat::mcset pcm {Extension guide} {Extension guide}
+::msgcat::mcset pcm {Extension source} {Extension source}
 ::msgcat::mcset pcm {Failover blueprint} {Failover blueprint}
 ::msgcat::mcset pcm {Failover blueprint (edit the route chain)} {Failover blueprint (edit di route chain)}
 ::msgcat::mcset pcm {Failover hook script (what `script` mode runs)} {Failover hook script (wetin `script` mode dey run)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset pcm {Find in transcript} {Find inside transcript}
 ::msgcat::mcset pcm {Find in transcript…} {Find inside transcript…}
 ::msgcat::mcset pcm {Find references} {Find di references}
+::msgcat::mcset pcm {Finish rollback} {Finish rollback}
 ::msgcat::mcset pcm {First run: no config.toml yet.} {First run: no config.toml yet.}
+::msgcat::mcset pcm {Fix the failed syntax checks before preparing a contribution.} {Fix di syntax checks wey fail before you prepare contribution.}
+::msgcat::mcset pcm {Fleet deployment} {Fleet deployment}
+::msgcat::mcset pcm {Fleet deployment runs from a desktop computer; it is not available on Android.} {Fleet deployment dey run from desktop computer; e no dey available for Android.}
+::msgcat::mcset pcm {Fleet deploy…} {Fleet deploy…}
+::msgcat::mcset pcm {Fleet drift} {Fleet drift}
 ::msgcat::mcset pcm {Fold / unfold} {Fold / open am}
 ::msgcat::mcset pcm {Forget declaration} {Forget di declaration}
+::msgcat::mcset pcm {Forget node %s?} {Forget node %s?}
+::msgcat::mcset pcm {Forget node…} {Forget node…}
+::msgcat::mcset pcm {Forgetting %1$s failed: %2$s} {To forget %1$s no work: %2$s}
+::msgcat::mcset pcm {Forgot node %s.} {Node %s don forget.}
+::msgcat::mcset pcm {Forgotten fleet-wide (refused until they heartbeat again): %s} {Dem don forget am for di whole fleet (dem go refuse until e heartbeat again): %s}
 ::msgcat::mcset pcm Fork {Branch am}
 ::msgcat::mcset pcm {Free space} {Space wey remain}
 ::msgcat::mcset pcm {Full source commit SHA} {Full source commit SHA}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset pcm {Gateway image sha256 digest} {Gateway image sha256 digest}
 ::msgcat::mcset pcm {Gateway quadlet name} {Gateway quadlet name}
 ::msgcat::mcset pcm {Gateway status} {Gateway status}
+::msgcat::mcset pcm {Generate with AI…} {Generate wit AI…}
+::msgcat::mcset pcm {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {%s generate am - nothing no dey write. Review every file, then Create extension go write exactly dis ones.}
 ::msgcat::mcset pcm {Get a key at %s} {Get key from %s}
 ::msgcat::mcset pcm {GitHub release URL} {GitHub release URL}
+::msgcat::mcset pcm {Give the extension a name and describe what it should do (the purpose), then generate.} {Give di extension name and describe wetin e suppose do (di purpose), then generate.}
 ::msgcat::mcset pcm {Give up} {Give up}
 ::msgcat::mcset pcm Go Go
 ::msgcat::mcset pcm {Go to definition} {Go di definition}
+::msgcat::mcset pcm {Gossip failed: %s} {Gossip no work: %s}
+::msgcat::mcset pcm {Gossip now} {Gossip now}
+::msgcat::mcset pcm {Gossip with %1$s: %2$s} {Gossip wit %1$s: %2$s}
+::msgcat::mcset pcm {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {Gossip: %1$s for %2$s peer(s) answer (%3$s).}
 ::msgcat::mcset pcm Grant Grant
 ::msgcat::mcset pcm {Grant access} {Grant access}
+::msgcat::mcset pcm {Granted at} {Dem grant am for}
 ::msgcat::mcset pcm Grant… Grant…
 ::msgcat::mcset pcm {Guards — what the harness stops, and where it stands now} {Guards — wetin the harness dey stop, and where e dey stand now}
 ::msgcat::mcset pcm {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handlers dey run for the order wey dey show; the first one wey return non-empty value na im dey win. If you switch one off, e dey skip am without unregistering am, and the choice dey keep inside config.toml so plugin reload no fit quietly turn am back on.}
+::msgcat::mcset pcm Health Health
+::msgcat::mcset pcm {Health alerts (%s):} {Health alerts (%s):}
+::msgcat::mcset pcm Heartbeat Heartbeat
+::msgcat::mcset pcm {Heartbeat age: %s s} {Heartbeat age: %s s}
 ::msgcat::mcset pcm Help Help
 ::msgcat::mcset pcm {Help & keys} {Help and keys}
 ::msgcat::mcset pcm {Hide right panes} {Hide right panes}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset pcm {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {Hold am, then drag before you raise finger: di selection go follow your finger word by word, and e go scroll for di top or bottom edge.}
 ::msgcat::mcset pcm Hooks Hooks
 ::msgcat::mcset pcm {Hooks (what plugins run on)} {Hooks (wetin plugins dey run on)}
+::msgcat::mcset pcm Host Host
 ::msgcat::mcset pcm {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {How long hold go take na Android touch and hold delay, for im accessibility settings.}
 ::msgcat::mcset pcm {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {I don back up the KEK and PLC rotation key offline; gree the reviewed TLS and activation handoff}
 ::msgcat::mcset pcm {I-search backward: type to search, C-r for previous} {I-search backward: type make e search, C-r for previous}
 ::msgcat::mcset pcm {I-search: type to search, C-s for next} {I-search: type make e search, C-s for next}
+::msgcat::mcset pcm {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {IO pressure: %1$s%% / %2$s%% / %3$s%% of di time some task dey wait (10 s / 1 min / 5 min)}
 ::msgcat::mcset pcm IRC IRC
 ::msgcat::mcset pcm {IRC buffers} {IRC buffers}
 ::msgcat::mcset pcm {IRC composer} {IRC composer}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset pcm {IRC split: %s} {IRC split: %s}
 ::msgcat::mcset pcm {IRC transcript} {IRC transcript}
 ::msgcat::mcset pcm {IRC — nothing to show} {IRC — notin to show}
+::msgcat::mcset pcm {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {Dey run: %1$s turn(s) %2$s, %3$s background task(s) %4$s}
 ::msgcat::mcset pcm {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {Install %s inside di managed component store? Dem don show im manifest; dis one no go start any service.}
 ::msgcat::mcset pcm {Install component} {Install component}
 ::msgcat::mcset pcm {Install components…} {Install components…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset pcm Instances Instances
 ::msgcat::mcset pcm {It becomes the current content, as a new revision — so the restore can be undone too.} {E go become the content wey dey now, as new revision — so you fit undo the restore too.}
 ::msgcat::mcset pcm {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {E go enter di encrypted vault for dis machine. Di agent no go ever see am: e fit only use am as $%s for commands, or send am go di hosts wey dem allow.}
+::msgcat::mcset pcm {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Dem don comot am from di cluster registry for di whole fleet: di next gossip exchange go tell every 0.2.0 peer make e drop am too, and none of dem go merge am back. Peer wey old pass 0.2.0 go keep dey list am. If di machine come back and heartbeat, dem go register am again. Sync peers and saved instances no touch.}
 ::msgcat::mcset pcm {It leaves memory now. Its history keeps every revision, and History… can restore it.} {E go comot from memory now. Im history keep every revision, and History… fit bring am back.}
 ::msgcat::mcset pcm Join Join
 ::msgcat::mcset pcm {Join a pool} {Join one group of machine}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset pcm {Language (i18n)} {Language (i18n)}
 ::msgcat::mcset pcm Language… Language…
 ::msgcat::mcset pcm {Last active} {Last time e active}
+::msgcat::mcset pcm {Last probe: %1$s — %2$s} {Last probe: %1$s — %2$s}
 ::msgcat::mcset pcm {Leave %s?} {Leave %s?}
 ::msgcat::mcset pcm Leave… Comot…
 ::msgcat::mcset pcm {Legacy open — no [acl] section} {Legacy open — no [acl] section}
 ::msgcat::mcset pcm {Let %s:} {Allow %s make e:}
 ::msgcat::mcset pcm {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {Letters, digits, - and _. E go create plugin.toml and plugin.tcl wey dey register post_llm_call hook, then e go open am for the Dev pane.}
+::msgcat::mcset pcm Level Level
 ::msgcat::mcset pcm {Lift lockdown} {Lift lockdown}
+::msgcat::mcset pcm Lines Lines
 ::msgcat::mcset pcm {List the provider's models} {List di provider im models}
+::msgcat::mcset pcm Load Load
 ::msgcat::mcset pcm {Load more} {Load more}
 ::msgcat::mcset pcm {Loading discovered components…} {Dey load discovered components…}
 ::msgcat::mcset pcm {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {Local bundle don review. Select Install selected component make you confirm installation; notin don install.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset pcm {Lock down} {Lock down}
 ::msgcat::mcset pcm Log Log
 ::msgcat::mcset pcm {Log (engine + status)} {Log (engine + status)}
+::msgcat::mcset pcm {Log of %s} {Log of %s}
+::msgcat::mcset pcm Logs… Logs…
 ::msgcat::mcset pcm {M-g- (g: goto line)} {M-g- (g: goto line)}
 ::msgcat::mcset pcm {M-p/M-n history · Tab complete} {M-p/M-n history · Tab complete}
 ::msgcat::mcset pcm {MCP server list} {MCP server list}
 ::msgcat::mcset pcm {MCP servers (from config.toml)} {MCP servers (from config.toml)}
 ::msgcat::mcset pcm {Make default} {Make am default}
 ::msgcat::mcset pcm {Make default (config.toml)} {Make am default (config.toml)}
+::msgcat::mcset pcm {Manage extensions} {Manage extensions}
 ::msgcat::mcset pcm {Manifest SHA-256} {Manifest SHA-256}
 ::msgcat::mcset pcm {Mark read} {Mark am as read}
 ::msgcat::mcset pcm {Mechanisms (what the engine does on its own)} {Mechanisms (wetin di engine dey do on im own)}
 ::msgcat::mcset pcm {Mechanisms — what the engine does on its own, and how to stop it} {Mechanisms — wetin the engine dey do by itself, and how to stop am}
 ::msgcat::mcset pcm Memory Memory
 ::msgcat::mcset pcm {Memory history} {Memory history}
+::msgcat::mcset pcm {Memory: %1$s available of %2$s (%3$s%% used)} {Memory: %1$s dey available for %2$s (%3$s%% dey use)}
+::msgcat::mcset pcm {Merge the received %s into this node?} {You wan merge di %s wey dem receive inside dis node?}
 ::msgcat::mcset pcm Messages {Di messages}
+::msgcat::mcset pcm Metrics Metrics
+::msgcat::mcset pcm {Metrics (asked %s):} {Metrics (dem ask %s):}
+::msgcat::mcset pcm {Metrics of %1$s failed: %2$s} {Metrics of %1$s no work: %2$s}
+::msgcat::mcset pcm {Metrics of %s received.} {Metrics of %s don land.}
+::msgcat::mcset pcm {Metrics: not asked yet — use Metrics.} {Metrics: dem never ask — use Metrics.}
 ::msgcat::mcset pcm Model Models
 ::msgcat::mcset pcm {Model for this session} {Model for dis session}
 ::msgcat::mcset pcm {Models & settings} {Models & settings}
+::msgcat::mcset pcm Monitors Monitors
+::msgcat::mcset pcm Name Name
+::msgcat::mcset pcm {Need an account? Optional sign-up links (open in your browser):} {You need account? Optional sign-up links (dem go open inside your browser):}
 ::msgcat::mcset pcm Network Network
 ::msgcat::mcset pcm {New alias} {New alias}
+::msgcat::mcset pcm {New branch name} {New branch name}
 ::msgcat::mcset pcm {New cron job} {New cron job}
+::msgcat::mcset pcm {New extension} {New extension}
 ::msgcat::mcset pcm {New memory file} {New memory file}
 ::msgcat::mcset pcm {New plugin} {New plugin}
 ::msgcat::mcset pcm {New session} {New session}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset pcm Next Next
 ::msgcat::mcset pcm Nickname Nickname
 ::msgcat::mcset pcm {NixOS: emit a module snippet; do not edit host declarations} {NixOS: produce module snippet; no edit host declarations}
+::msgcat::mcset pcm {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {No SSH lifecycle target don configure for dis node. Add instance explicitly make you fit deploy or restart am.}
+::msgcat::mcset pcm {No additional push happens.} {No additional push go happen.}
 ::msgcat::mcset pcm {No apps yet. Ask the agent to make one: “make me an app that…”} {No app dey yet. Ask di agent make e build one: “build me app wey go…”}
 ::msgcat::mcset pcm {No code in the picture. Hold the phone closer, straight on, and scan again.} {No code dey di picture. Hold di phone near, straight, and scan again.}
 ::msgcat::mcset pcm {No configuration snapshot will be restored.} {No configuration snapshot dem go restore.}
+::msgcat::mcset pcm {No configured sync peer for this node.} {No sync peer configure for dis node.}
+::msgcat::mcset pcm {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {No dedicated translator don configure. Use Configure translator choose im provider, model and target language.}
+::msgcat::mcset pcm {No deployment started.} {No deployment start.}
+::msgcat::mcset pcm {No diagnostics reported by the current LSP document.} {Current LSP document no report any diagnostics.}
+::msgcat::mcset pcm {No explicitly configured desktop gateway is bound to this node.} {No desktop gateway wey dem configure bind to dis node.}
+::msgcat::mcset pcm {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {No gateway wey dem configure bind to dis node. Add di gateway first; im registry endpoint no dey used as desktop URL.}
+::msgcat::mcset pcm {No file is open. Ask a design question, or open an extension file for help with its code.} {No file dey open. Ask design question, or open extension file make e help you wit im code.}
+::msgcat::mcset pcm {No files have been written. Review the exact manifest and source, then confirm creation.} {No files don write. Review di exact manifest and source, then confirm di creation.}
 ::msgcat::mcset pcm {No modules or process plugins were discovered. The provider setup steps can still continue.} {No modules or process plugins dem discover. Di provider setup steps fit still continue.}
+::msgcat::mcset pcm {No other registered node to compare with.} {No other node wey dem register wey you fit compare wit.}
 ::msgcat::mcset pcm {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {No profile go start service or run script wey need admin rights from dis wizard. Review di plan and any handoff before you run am.}
+::msgcat::mcset pcm {No proposal has been requested. Nothing will be written automatically.} {No proposal don dey requested. Notin go write by itself.}
+::msgcat::mcset pcm {No proposal. Nothing was written.} {No proposal. Nothing no dey write.}
 ::msgcat::mcset pcm {No routes configured.} {No route don configure.}
 ::msgcat::mcset pcm {No session selected — pick one in the sidebar or start a new one} {You no pick any session — pick one for the sidebar or start new one}
 ::msgcat::mcset pcm {No swap target yet: pick a language and press “Set as swap target”.} {No swap target yet: pick one language come press “Make am swap target”.}
 ::msgcat::mcset pcm {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {No {[}acl{]} section for config.toml: every sender wey reach the gateway dey treat am as owner, the pre-ACL single-user behaviour. Granting and revoking still dey work and e go take effect the moment {[}acl{]} dey exist.}
+::msgcat::mcset pcm {Node id} {Node id}
+::msgcat::mcset pcm {Non-evaluating syntax checks} {Syntax checks wey no dey evaluate}
+::msgcat::mcset pcm {Not available: %s} {No dey available: %s}
+::msgcat::mcset pcm Note Note
 ::msgcat::mcset pcm {Note for the agent (optional):} {Note for di agent (if you want):}
+::msgcat::mcset pcm {Nothing selected.} {You never select anything.}
 ::msgcat::mcset pcm {Nothing typed yet.} {You never type anything.}
+::msgcat::mcset pcm {Nothing was generated or written.} {Nothing no dey generate or write.}
+::msgcat::mcset pcm {Nothing was prepared: the chosen repository already has these paths.} {Nothing prepare: di repository wey you pick don already get dis paths.}
 ::msgcat::mcset pcm Notifications {Notification dem}
 ::msgcat::mcset pcm OK OK
 ::msgcat::mcset pcm Off Off
 ::msgcat::mcset pcm On On
+::msgcat::mcset pcm {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {Na only di extension buffer wey you review go replace. Di file still dey protected against changes wey happen after dis preview. No commit, push or PR go happen.}
+::msgcat::mcset pcm {Only this new branch is committed. Your ambient git identity is used.} {Na only dis new branch don commit. Your ambient git identity dey used.}
 ::msgcat::mcset pcm Op {Give op}
 ::msgcat::mcset pcm Open Open
+::msgcat::mcset pcm {Open PR…} {Open PR…}
 ::msgcat::mcset pcm {Open a window} {Open window}
 ::msgcat::mcset pcm {Open in Dev} {Open in Dev}
 ::msgcat::mcset pcm {Open in browser} {Open in browser}
 ::msgcat::mcset pcm {Open plugin} {Open plugin}
 ::msgcat::mcset pcm {Open terminal} {Open terminal}
+::msgcat::mcset pcm {Open this pull request?} {You want open dis pull request?}
 ::msgcat::mcset pcm {Open veles in Android's settings} {Open veles for Android settings}
 ::msgcat::mcset pcm {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {Na your choice: di IRC network wey you wan join. List di channels wit space or comma between dem; if IRC_CHANNELS dey for .env, e go replace dis list.}
 ::msgcat::mcset pcm {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {Options dey come from di selected component manifest. Fields wey look like secret go stay for di setup/vault flow. Empty fields go leave dat option as e dey.}
 ::msgcat::mcset pcm {Or paste a ticket signed on another device} {Or paste tiket wey another device sign}
 ::msgcat::mcset pcm {Or type an answer:} {Or type your own answer:}
+::msgcat::mcset pcm Origin Origin
 ::msgcat::mcset pcm Other… {Oda one…}
 ::msgcat::mcset pcm Outline Outline
+::msgcat::mcset pcm Output Output
 ::msgcat::mcset pcm {Override for THIS session (leave blank to inherit the default)} {Override for dis session (make am empty make e take the default)}
 ::msgcat::mcset pcm {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {Owner identity (telegram:123456, irc:account, or one nick!user@host mask)}
 ::msgcat::mcset pcm {PDS and handle domain} {PDS and handle domain}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset pcm {Pause scheduler} {Pause scheduler}
 ::msgcat::mcset pcm {Peek (C-c C-p)} {Peek (C-c C-p)}
 ::msgcat::mcset pcm {Peek definition} {Peek di definition}
+::msgcat::mcset pcm {Permission grants} {Permission grants}
+::msgcat::mcset pcm {Permission grants…} {Permission grants…}
 ::msgcat::mcset pcm Phone Phone
 ::msgcat::mcset pcm {Phone: permissions, battery, storage} {Phone: permission, battery, storage}
 ::msgcat::mcset pcm {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Phone wey %s make dey stop app by demself too. For veles app settings, allow am make e fit start by imself and run for background.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset pcm Port Port
 ::msgcat::mcset pcm {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {Prefix chords (C-x, M-o) go show which-key popup once dem arm.}
 ::msgcat::mcset pcm {Prepare an own vlpds PDS through the signed CLI handoff} {Prepare your own vlpds PDS through the signed CLI handoff}
+::msgcat::mcset pcm {Prepare branch…} {Prepare branch…}
+::msgcat::mcset pcm {Prepare this branch and commit?} {You want prepare dis branch and commit?}
 ::msgcat::mcset pcm Preview Preview
+::msgcat::mcset pcm {Preview change set} {Preview change set}
+::msgcat::mcset pcm {Preview files} {Preview files}
 ::msgcat::mcset pcm {Preview here} {Preview for here}
 ::msgcat::mcset pcm {Preview pane} {Preview pane}
+::msgcat::mcset pcm {Preview proposal} {Preview proposal}
+::msgcat::mcset pcm {Preview the changed name or language before creating it.} {Preview di name or language wey change before you create am.}
+::msgcat::mcset pcm Probe Probe
+::msgcat::mcset pcm {Probe of %1$s failed: %2$s} {Probe of %1$s no work: %2$s}
 ::msgcat::mcset pcm {Profile result} {Profile result}
 ::msgcat::mcset pcm {Promote into config.toml} {Promote into config.toml}
 ::msgcat::mcset pcm Promote… Promote…
 ::msgcat::mcset pcm Provider Provider
+::msgcat::mcset pcm {Provider driver (plugin wire only)} {Provider driver (plugin wire only)}
 ::msgcat::mcset pcm {Provider entry name} {Name of di provider entry}
 ::msgcat::mcset pcm {Provider for this session} {Provider for dis session}
 ::msgcat::mcset pcm Providers Providers
 ::msgcat::mcset pcm {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {Providers na list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order wey dey show below.}
 ::msgcat::mcset pcm {Public HTTPS URL} {Public HTTPS URL}
+::msgcat::mcset pcm {Pull request base} {Pull request base}
+::msgcat::mcset pcm {Pull request created} {Pull request don create}
+::msgcat::mcset pcm {Pull request description} {Pull request description}
+::msgcat::mcset pcm {Pull request opened.} {Pull request don open.}
+::msgcat::mcset pcm {Pull request repository} {Pull request repository}
+::msgcat::mcset pcm {Pull request title} {Pull request title}
 ::msgcat::mcset pcm {Purge + delete files} {Purge + delete di files}
 ::msgcat::mcset pcm {Purge container} {Purge di container}
+::msgcat::mcset pcm Purpose Purpose
+::msgcat::mcset pcm Push Push
+::msgcat::mcset pcm {Push branch…} {Push branch…}
+::msgcat::mcset pcm {Push complete. No pull request has been opened.} {Push don complete. No pull request don open.}
+::msgcat::mcset pcm {Push this branch?} {You want push dis branch?}
+::msgcat::mcset pcm {Push to %s:} {Push go %s:}
 ::msgcat::mcset pcm Question Question
 ::msgcat::mcset pcm Questions Questions
 ::msgcat::mcset pcm Quit Quit
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset pcm {Reading notifications, for triggers} {To read notification, for triggers}
 ::msgcat::mcset pcm Reasoning Reasoning
 ::msgcat::mcset pcm {Reasoning effort} {Reasoning effort}
+::msgcat::mcset pcm {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {Dem don receive, e dey wait make e apply: store %1$s · memory %2$s · config %3$s · vault %4$s}
+::msgcat::mcset pcm {Recommended checks} {Checks wey dem recommend}
 ::msgcat::mcset pcm {Refetch this transcript from the store} {Fetch dis transcript again from di store}
 ::msgcat::mcset pcm Refresh Refresh
 ::msgcat::mcset pcm {Refresh preview} {Refresh di preview}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset pcm {Rename symbol} {Rename di symbol}
 ::msgcat::mcset pcm Rename… Rename…
 ::msgcat::mcset pcm Rendered {Don render}
+::msgcat::mcset pcm {Replace existing repository files?} {You wan replace di files wey don dey for repository?}
+::msgcat::mcset pcm {Replace them in the new branch? Nothing else in the repository changes.} {You wan replace dem inside di new branch? Nothing else for di repository go change.}
 ::msgcat::mcset pcm Repository Repository
 ::msgcat::mcset pcm {Repository (owner/name)} {Repository (owner/name)}
+::msgcat::mcset pcm {Repository directory} {Repository directory}
+::msgcat::mcset pcm {Repository paths} {Repository paths}
+::msgcat::mcset pcm {Request a new preview before trying again.} {Request new preview before you try again.}
 ::msgcat::mcset pcm {Reset to default} {Put am back as e be}
 ::msgcat::mcset pcm {Reset to template} {Reset to template}
 ::msgcat::mcset pcm Restart {Restart am}
+::msgcat::mcset pcm {Restart + verify canary} {Restart + verify canary}
 ::msgcat::mcset pcm {Restore hidden windows} {Restore hidden windows}
 ::msgcat::mcset pcm {Restore plugins to %s?} {Restore plugins to %s?}
 ::msgcat::mcset pcm {Restore revision r%1$s of %2$s?} {You wan restore revision r%1$s of %2$s?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset pcm {Restore this commit} {Restore dis commit}
 ::msgcat::mcset pcm {Restore this revision} {Restore this revision}
 ::msgcat::mcset pcm {Resume scheduler} {Continue scheduler}
+::msgcat::mcset pcm {Resume unfinished operation} {Continue operation wey never finish}
 ::msgcat::mcset pcm Revert Revert
 ::msgcat::mcset pcm {Revert %s to HEAD? Uncommitted changes in this file are lost.} {Revert %s back to HEAD? Any change wey you neva commit for dis file go loss.}
 ::msgcat::mcset pcm Revert… {Revert am…}
 ::msgcat::mcset pcm Review Review
 ::msgcat::mcset pcm {Review (git) pane} {Review (git) pane}
+::msgcat::mcset pcm {Review deployment} {Review deployment}
+::msgcat::mcset pcm {Review extension contribution} {Review extension contribution}
 ::msgcat::mcset pcm {Review managed local bundle…} {Review managed local bundle…}
 ::msgcat::mcset pcm {Review rollback} {Review rollback}
+::msgcat::mcset pcm {Review selected files} {Review files wey you select}
 ::msgcat::mcset pcm {Review the component options on the summary screen before applying.} {Review di component options for di summary screen before you apply.}
 ::msgcat::mcset pcm {Review the component preview before applying. No component configuration has been written.} {Review di component preview before you apply. No component configuration don write yet.}
+::msgcat::mcset pcm {Review the selected files and remove credential findings before preparing.} {Review di files wey you select and remove credential findings before you prepare.}
 ::msgcat::mcset pcm {Reviewed core bundle in the managed install-sources directory} {Reviewed core bundle inside the managed install-sources directory}
+::msgcat::mcset pcm {Reviewed fleet deployment} {Fleet deployment wey dem don review}
 ::msgcat::mcset pcm {Reviewed local bundle} {Reviewed local bundle}
 ::msgcat::mcset pcm {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {Reviewed local bundle don install. Dem no verify am as signed-download. Restart gatz happen before you fit use di new core.}
 ::msgcat::mcset pcm Revision Revision
 ::msgcat::mcset pcm Revoke Revoke
+::msgcat::mcset pcm {Revoke selected} {Revoke di ones wey you select}
 ::msgcat::mcset pcm Roles Roles
 ::msgcat::mcset pcm {Roll back %1$s from %2$s to %3$s?} {Roll back %1$s from %2$s to %3$s?}
+::msgcat::mcset pcm {Roll back selected target} {Roll back di target wey you select}
 ::msgcat::mcset pcm {Rollback completed. Reload the component or restart as requested by the report.} {Rollback don complete. Reload di component or restart as di report ask.}
 ::msgcat::mcset pcm {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {Rollback don review. Select Install selected component make you confirm restoration; notin don restore.}
 ::msgcat::mcset pcm Run Run
 ::msgcat::mcset pcm {Run the wizard again} {Run di wizard again}
 ::msgcat::mcset pcm {Running in the background} {To dey run for background}
-::msgcat::mcset pcm {Running tasks} {Tasks wey dey run}
-::msgcat::mcset pcm {Running tasks (subagents, shells, monitors)} {Tasks wey dey run (subagents, shells, monitors)}
 ::msgcat::mcset pcm {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {Runtime grants and users dey live for the store, and store reset go take dem. Promote dey append the ones wey the store decide to config.toml — the file comments and key order dey keep, backup dey write beside am, the store copies dey drop — and e dey refuse rather than guess where the file don already get opinion.}
 ::msgcat::mcset pcm {S3 HTTPS endpoint} {S3 HTTPS endpoint}
 ::msgcat::mcset pcm {S3 bucket} {S3 bucket}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset pcm {Save as default} {Save as default}
 ::msgcat::mcset pcm {Save attachment as} {Save attachment as}
 ::msgcat::mcset pcm {Save globally} {Save globally}
+::msgcat::mcset pcm {Save or revert the open buffer before applying a change set.} {Save or revert di buffer wey dey open before you apply change set.}
 ::msgcat::mcset pcm Scan {Scan am}
 ::msgcat::mcset pcm {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {Scan di veles code from di machine wey invite dis phone. If e first show WireGuard code, scan that one with di WireGuard app before dis one.}
 ::msgcat::mcset pcm {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {Schedule: interval ("30m", "every 2h"), cron pattern ("0 9 * * 1"), or ISO timestamp for one-off. The line wey dey above dey show wetin the engine dey read am as. Deliver: "local" dey keep the output for the log — na the only honest default from the desktop, wey no get any chat platform behind am — or "platform:chat_id". Wake session: make am empty make e run for fresh session; put session id (or unique prefix) make e resume dat session with im full history — a busy session go take the prompt for im next turn boundary instead.}
+::msgcat::mcset pcm Scope Scope
 ::msgcat::mcset pcm {Scroll to end} {Scroll go end}
 ::msgcat::mcset pcm {Search commands and sessions…} {Find commands and sessions…}
 ::msgcat::mcset pcm {Search message text} {Find for message text}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset pcm Section Section
 ::msgcat::mcset pcm {Select a component first. No component options will be changed if you skip this step.} {Select component first. No component options go change if you skip dis step.}
 ::msgcat::mcset pcm {Select all} {Select everything}
+::msgcat::mcset pcm {Select all extensions} {Select every extension}
+::msgcat::mcset pcm {Select at least one source file.} {Select at least one source file.}
+::msgcat::mcset pcm {Select none} {No select any}
+::msgcat::mcset pcm {Select text to translate first.} {First select text to translate.}
+::msgcat::mcset pcm {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {Select di extensions and files wey you wan contribute. Dem go enter one branch and one pull request, each extension inside im own directory. Review, run checks wey no dey evaluate, then prepare isolated branch and commit. Push and pull request creation na different actions wey you go confirm.}
 ::msgcat::mcset pcm Send Send
+::msgcat::mcset pcm {Send %s to the peer?} {You wan send %s go di peer?}
 ::msgcat::mcset pcm {Send a %d-line message to the channel?} {Send %d-line message go di channel?}
 ::msgcat::mcset pcm {Send raw line to the server? (%s)} {Send di raw line go di server? (%s)}
 ::msgcat::mcset pcm {Server (empty = no IRC)} {Server (empty = no IRC)}
 ::msgcat::mcset pcm {Server: gateway configuration and a reviewed user unit} {Server: gateway configuration and reviewed user unit}
 ::msgcat::mcset pcm {Server: install a user unit and prepare the separate linger handoff} {Server: install user unit and prepare the separate linger handoff}
 ::msgcat::mcset pcm {Server: use a system service and prepare a privileged CLI request} {Server: use system service and prepare CLI request wey need administrator rights}
+::msgcat::mcset pcm Session Session
 ::msgcat::mcset pcm {Session id} {Session id}
 ::msgcat::mcset pcm {Session id…} {Session id…}
 ::msgcat::mcset pcm Sessions {Di sessions}
 ::msgcat::mcset pcm {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Sessions wey dem don override go dis alias dey keep di route wey dem use; new override no go find di name again.}
+::msgcat::mcset pcm {Sessions served} {Sessions served}
 ::msgcat::mcset pcm Set Set
 ::msgcat::mcset pcm {Set [model] provider/default in config.toml.} {Set [model] provider/default inside config.toml.}
 ::msgcat::mcset pcm {Set as swap target} {Make am swap target}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset pcm {Setup — summary} {Setup — summary}
 ::msgcat::mcset pcm {Setup — welcome} {Setup — welcome}
 ::msgcat::mcset pcm {Shared container network} {Shared container network}
+::msgcat::mcset pcm Shells Shells
+::msgcat::mcset pcm {Shells and monitors} {Shells and monitors}
+::msgcat::mcset pcm {Shells and monitors (subagents, shells, monitors)} {Shells and monitors (subagents, shells, monitors)}
 ::msgcat::mcset pcm {Show diff} {Show di diff}
 ::msgcat::mcset pcm {Show every key} {Show every key}
 ::msgcat::mcset pcm Sign Sign
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset pcm Solved {Don solve am}
 ::msgcat::mcset pcm Source Source
 ::msgcat::mcset pcm {Source commit} {Source commit}
+::msgcat::mcset pcm {Source text} {Source text}
 ::msgcat::mcset pcm {Source→app (C-c C-c)} {Source→app (C-c C-c)}
 ::msgcat::mcset pcm Stage Stage
+::msgcat::mcset pcm {Stage canary} {Stage canary}
+::msgcat::mcset pcm Stale Old
+::msgcat::mcset pcm {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {Standing permissions dey allow anoda tool calls later without dem ask you again. Live sessions for every surface (desktop, Telegram, IRC, …) dey hold session grants; global grants dey stay; [approvals] allowlist entries from config.toml dey show read-only. If you revoke one, e no dey ever change di oda grants.}
 ::msgcat::mcset pcm Start Start
+::msgcat::mcset pcm {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {Start with extension inside your user plugin directory. E dey survive upgrades and e no need gateway rebuild. New extension dey preview di exact manifest and source before e write. Choose di supported language and API version, review di files, then test di extension by itself.}
 ::msgcat::mcset pcm {Start with the phone} {To start together with the phone}
+::msgcat::mcset pcm {Static IP} {Static IP}
 ::msgcat::mcset pcm Status Status
 ::msgcat::mcset pcm Steer Steer
 ::msgcat::mcset pcm {Step %1$d of %2$d} {Step %1$d out of %2$d}
 ::msgcat::mcset pcm {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {Still to set: %s — type /secret set NAME for here, or run veles secret set NAME for di gateway machine.}
 ::msgcat::mcset pcm Stop Stop
 ::msgcat::mcset pcm {Storage root} {Base directory for container data}
+::msgcat::mcset pcm Store Store
 ::msgcat::mcset pcm {Store a secret: %s} {Keep secret: %s}
 ::msgcat::mcset pcm {Store it} {Keep am}
+::msgcat::mcset pcm {Store replica} {Store replica}
 ::msgcat::mcset pcm Subagents Subagents
 ::msgcat::mcset pcm {Subagents (/agents)} {Subagents (/agents)}
 ::msgcat::mcset pcm Summary Summary
+::msgcat::mcset pcm Surface Surface
 ::msgcat::mcset pcm {Swap ⇄} {Swap ⇄}
+::msgcat::mcset pcm {Sync cancelled.} {Sync don cancel.}
+::msgcat::mcset pcm {Sync complete.} {Sync don complete.}
+::msgcat::mcset pcm {Sync now} {Sync now}
 ::msgcat::mcset pcm {TOML copied — paste it into config.toml} {TOML don copy — paste am inside config.toml}
 ::msgcat::mcset pcm Tag Tag
 ::msgcat::mcset pcm {Tap a link to open it, or a block's header to open or close the block.} {Tap link make e open, or tap di head of block make di block open or close.}
 ::msgcat::mcset pcm {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {Tap di box for bottom make you type. Send dey send, Stop dey end di turn, and Detach dey move command wey dey run go background.}
 ::msgcat::mcset pcm {Tap the text to clear the selection.} {Tap di text make di selection clear.}
+::msgcat::mcset pcm {Target language:} {Target language:}
+::msgcat::mcset pcm {Target node IDs (canary first, comma separated)} {Target node IDs (canary first, use comma separate dem)}
 ::msgcat::mcset pcm {Task list} {Task list}
 ::msgcat::mcset pcm {Task list (right pane)} {Task list (right pane)}
 ::msgcat::mcset pcm Tasks Tasks
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset pcm {That is not a ticket.} {Dat one no be tiket.}
 ::msgcat::mcset pcm {That is not a veles pool code.} {Dat one no be veles group code.}
 ::msgcat::mcset pcm {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {Na di WireGuard code be dat: scan am with di WireGuard app. Di veles code na di second one.}
+::msgcat::mcset pcm {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {Dem go write di %d reviewed file(s) inside new directory for your user plugin directory, and veles go try load di extension. If directory wit dat name appear since di preview, nothing go write. Publishing no be part of dis action.}
 ::msgcat::mcset pcm {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {Dev pane REPL dey evaluate inside di LIVE app — di UI na im own lisp.}
 ::msgcat::mcset pcm {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {Dem don delete di [mcp_servers.<name>] table from config.toml. Di previous file dey stay as config.toml.bak.}
 ::msgcat::mcset pcm {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {Di adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) na di trust boundary, and every sender wey dem allow dey count as owner. Dis na di pre-ACL posture.}
 ::msgcat::mcset pcm {The agent asks for a secret: %s} {Di agent dey ask for secret: %s}
+::msgcat::mcset pcm {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {Dem go use di branch wey don already push as PR head. Branch for your fork dem dey name am owner:branch by itself.}
+::msgcat::mcset pcm {The author asks} {Di author dey ask}
+::msgcat::mcset pcm {The buffer changed. Request a new proposal before applying.} {Di buffer don change. Request new proposal before you apply.}
 ::msgcat::mcset pcm {The bundle operation returned an invalid result. Verify the installation before retrying.} {Di bundle operation don return invalid result. Verify di installation before you retry.}
 ::msgcat::mcset pcm {The bundle preview was malformed; nothing was installed.} {Di bundle preview dey malformed; notin don install.}
 ::msgcat::mcset pcm {The camera did not open; paste the code instead.} {Di camera no open; paste di code instead.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset pcm {The component manifest is still loading. Wait for it or choose another component.} {Di component manifest still dey load. Wait for am or choose anoda component.}
 ::msgcat::mcset pcm {The component preview is not ready yet. Refresh it and review the result before applying.} {Di component preview no ready yet. Refresh am and review di result before you apply.}
 ::msgcat::mcset pcm {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {Di component preview still dey load. Wait for di reply before you review di combined changes.}
+::msgcat::mcset pcm {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Dem dey send di diagnostics wey dey now (from di language server or Check) wit dis file. If you want, add question. Na only text di answer be; nothing no fit write.}
 ::msgcat::mcset pcm {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Dem don remove di directory and everything wey dey inside am. Dis one no fit undo — if you only want make e comot from di prompt, switch am off instead.}
 ::msgcat::mcset pcm {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Dem don delete di directory. Di plugin folder na git repository, and dem go commit snapshot first, so History… fit bring am back.}
+::msgcat::mcset pcm {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Di editor dey open gateway files, including remote instances, and e dey run di language server for di file language for di gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (Rust plugin crate or module), clangd (C), racket-langserver and Common Lisp server. Hover, go to definition, completion and live diagnostics dey work for every language wey di gateway get server for; when e no get any, di editor go tell you which program to install der and e go keep syntax highlighting. Check dey run di checker wey match for di gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or di Racket and Lisp readers. Save, reload inside Manage extensions, and test di extension without publishing local state.}
 ::msgcat::mcset pcm {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Di first handoff dey prepare secrets, di pinned image and runtime files but e no go start di PDS. Back up di KEK and PLC rotation key offline, then make one request wey dem review newly, with acknowledgement say I don back up, make dem set up HTTP-01 TLS and activation. DNS records gatz point directly to dis host; veles no go make any CDN proxy or DNS change.}
+::msgcat::mcset pcm {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Di form don change since dem generate di extension. Generate again, or preview di plain scaffold.}
 ::msgcat::mcset pcm {The gateway itself is untouched.} {Dem no touch di gateway itself.}
 ::msgcat::mcset pcm {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Di gateway don reload di config, so new sessions dey use am now, and key wey dey inside di vault na di next request go use am. Telegram and IRC go start for di next gateway restart: veles gateway restart.}
 ::msgcat::mcset pcm {The installed component no longer matches the selected manifest. Review the component list again.} {Di installed component no longer match di selected manifest. Review di component list again.}
 ::msgcat::mcset pcm {The installer preview has no verification signatures; apply is disabled.} {Di installer preview no get verification signatures; apply dey disabled.}
 ::msgcat::mcset pcm {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Dem don remove di job and di history of how e run. Dis one no fit undo — if you only want make e stop, pause am instead.}
+::msgcat::mcset pcm {The log could not be read: %s} {Dem no fit read di log: %s}
 ::msgcat::mcset pcm {The manifest belongs to another component; its reply was discarded.} {Di manifest belong to anoda component; dem throway im reply.}
 ::msgcat::mcset pcm {The profile changed. Review the fresh plan before applying it.} {Di profile don change. Review di fresh plan before you apply am.}
 ::msgcat::mcset pcm {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {Di repository need SKILL.md for e root or one category deep. E go land inside %s.}
 ::msgcat::mcset pcm {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {Di root of di repository must get plugin.toml. Dem go clone am go %s under di name wey di manifest carry.}
+::msgcat::mcset pcm {The reviewed change set was applied (%d files). Review and test it before publishing.} {Dem don apply di change set wey dem review (%d files). Review am and test am before you publish.}
 ::msgcat::mcset pcm {The reviewed configuration snapshot will also be restored.} {Dem go also restore di reviewed configuration snapshot.}
+::msgcat::mcset pcm {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {Di files wey you review go write enter your user plugin directory. Veles dey save local recovery snapshot and try reload di extension; publishing no dey part of dis action.}
+::msgcat::mcset pcm {The reviewed proposal was applied locally. Review and test it before publishing.} {Di proposal wey you review don apply locally. Review and test am before you publish.}
 ::msgcat::mcset pcm {The rollback preview was malformed or named another component; nothing was restored.} {Di rollback preview dey malformed or e name anoda component; notin don restore.}
 ::msgcat::mcset pcm {The rollback returned an invalid result. Verify the installation before retrying.} {Di rollback don return invalid result. Verify di installation before you retry.}
 ::msgcat::mcset pcm {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {Na di route wey new sessions dey start on. /model and di models overlay dey change am later, per session or as di new default.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset pcm {The signed download discard returned an invalid response; no installation was requested.} {Di throway of the signed download return invalid response; no installation request dey.}
 ::msgcat::mcset pcm {The signed installation returned an invalid result. Verify the installation before retrying.} {Di signed installation return invalid result. Verify the installation before you try again.}
 ::msgcat::mcset pcm {The signed release preview was malformed; nothing was installed.} {Di signed release preview no dey correct; nothing don install.}
+::msgcat::mcset pcm {The source buffer changed. Request a new proposal before applying.} {Di source buffer don change. Request new proposal before you apply.}
 ::msgcat::mcset pcm {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Di store go back one revision. Di rollback na revision itself, so you fit undo am as well.}
+::msgcat::mcset pcm {The translator returned no text.} {Translator no return any text.}
 ::msgcat::mcset pcm {The verification reply was malformed; no integrity result was accepted.} {Di verification reply dey malformed; dem no accept any integrity result.}
 ::msgcat::mcset pcm Themes Themes
+::msgcat::mcset pcm {These paths already exist in the chosen repository:} {Dis paths don already dey inside di repository wey you pick:}
 ::msgcat::mcset pcm {They have not been saved.} {You never save dem.}
+::msgcat::mcset pcm {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {Dis buffer no get diagnostics wey you go explain. Run Check, or wait for di language server.}
 ::msgcat::mcset pcm {This challenge is over.} {Dis challenge don finish.}
 ::msgcat::mcset pcm {This code has expired. Ask for a new one.} {Dis code don expire. Ask for new one.}
 ::msgcat::mcset pcm {This does not start a service or claim signed-download verification.} {Dis no start any service or claim signed-download verification.}
 ::msgcat::mcset pcm {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Dis gateway no dey collect secret values from dis machine: enter am for there with veles secret set %s, or put dis network for im [vault] trusted_networks}
 ::msgcat::mcset pcm {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Dis na exactly wetin go write — di engine im own bytes, wey dem fetch live. Notin don touch di disk yet.}
+::msgcat::mcset pcm {This node is not a configured sync peer for any kind.} {Dis node no be configured sync peer for any kind.}
+::msgcat::mcset pcm {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Dis plugin na bundled and read-only. Remove user copy wey get di same name make you use di bundled copy instead.}
+::msgcat::mcset pcm {This publishes the commit; no pull request is created yet.} {Dis dey publish di commit; no pull request don create yet.}
 ::msgcat::mcset pcm {This review expires after %s seconds. Closing or cancelling discards its private staging.} {Dis review go expire after %s seconds. Closing or cancelling dey throway im private staging.}
 ::msgcat::mcset pcm {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {Dis wizard dey write config.toml, and e dey put di keys wey you give am inside di encrypted vault. You fit skip any step: step wey you skip no go dey inside new config, and e go remain exactly how e be for di one wey don dey before. Di config.toml wey don dey before, dem dey edit am for where e dey — na only di sections wey you answer go change, and every other thing inside am, plus di comments, go remain.}
 ::msgcat::mcset pcm {Ticket needed} {Tiket dey need}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset pcm {Topic for %s} {Topic for %s}
 ::msgcat::mcset pcm {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {Touch and hold session, or any oda tin wey get menu, make di menu open. Tap outside am, or Back, go close am.}
 ::msgcat::mcset pcm {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {Touch and hold one word make you select am. When you raise your finger, im menu go open, with Copy for di top.}
+::msgcat::mcset pcm Translate Translate
+::msgcat::mcset pcm {Translate selection} {Translate selection}
+::msgcat::mcset pcm Translating… {Dey translate…}
+::msgcat::mcset pcm {Translation cancelled.} {Translation don cancel.}
+::msgcat::mcset pcm {Translation copied.} {Translation don copy.}
+::msgcat::mcset pcm {Translation failed} {Translation don fail}
+::msgcat::mcset pcm {Translation result} {Translation result}
+::msgcat::mcset pcm {Translator configuration unavailable} {Translator configuration no dey available}
 ::msgcat::mcset pcm {Trigger history} {Trigger history}
 ::msgcat::mcset pcm Triggers Triggers
 ::msgcat::mcset pcm {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {Triggers dey react to channel events without any turn. slopdrop dey forward di event go di bridge and relay di reply; vision dey describe image URL inside di cooldown and hourly cap. Di row only dey fire where di [triggers] config switch AND di derived mask allow am — #coven no dey forward anything under di live slopdrop bindings.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset pcm {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Until IRC_ALLOWED_USERS for .env name your account, anybody for di network fit talk to di bot — and if no [acl] section, as owner, wit every tool.}
 ::msgcat::mcset pcm {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Until TELEGRAM_ALLOWED_USERS for .env name your user id, anybody wey find di bot fit talk to am — and if no [acl] section, as owner, wit every tool.}
 ::msgcat::mcset pcm Untitled {No get title}
+::msgcat::mcset pcm {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Upstream contribution na publishing action wey you must do by hand, no be automatic upload. Inside Manage extensions, Contribute dey list every user extension: select di extensions and files, check di diff and secrets scan, run checks, then create one branch and one PR (to veles by default) wit di git identity wey you pick. Each extension go enter im own directory for di repository, and dem go replace file wey don dey der only after you confirm anoda time. Never publish node.toml, local credentials, tokens, private endpoints or plugin state wey no concern. Local recovery snapshots no be upstream commit or PR.}
+::msgcat::mcset pcm {Upstream repository or fork URL} {Upstream repository or fork URL}
+::msgcat::mcset pcm {Uptime class} {Uptime class}
+::msgcat::mcset pcm {Uptime: host %1$s, gateway %2$s} {Uptime: host %1$s, gateway %2$s}
 ::msgcat::mcset pcm Usage Usage
 ::msgcat::mcset pcm {Usage & Quota} {Usage & Quota}
 ::msgcat::mcset pcm {Use TLS} {Use TLS}
 ::msgcat::mcset pcm {Use now} {Use am now}
+::msgcat::mcset pcm {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {Use di Author guide and API reference buttons for di actual contracts. Di Plugins overlay dey list live hooks; services and override points dey come from di gateway im own registry, no be copied list inside dis guide.}
 ::msgcat::mcset pcm {Use this ticket} {Use dis tiket}
+::msgcat::mcset pcm {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you fit push go veles itself. Dem dey clone di repository wey you pick inside isolated worktree. Nothing dey push.}
 ::msgcat::mcset pcm {Users — one role across networks and platforms} {Users — one role wey dey cover all networks and platforms}
 ::msgcat::mcset pcm {Using the phone, for the agent} {To use the phone, for the agent}
 ::msgcat::mcset pcm {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Normally e dey same as di provider entry name. Leave both dem empty when you pick Skip — if na half-set pair, e no go route.}
 ::msgcat::mcset pcm {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Di values na TOML: quoted strings, numbers, or lists. Dem go write am inside [mcp_servers.<name>] — dem no go touch your comments and every other section.}
+::msgcat::mcset pcm Vault Vault
 ::msgcat::mcset pcm {Verified signed bundle installed. Restart the gateway before using the new core.} {Verified signed bundle don install. Restart di gateway before you use the new core.}
 ::msgcat::mcset pcm {Verified signed release — not installed yet} {Verified signed release — e never install yet}
 ::msgcat::mcset pcm {Verify and review release…} {Verify and review di release…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset pcm {Verify signed release} {Verify signed release}
 ::msgcat::mcset pcm {Verify signed release…} {Verify signed release…}
 ::msgcat::mcset pcm Version Version
+::msgcat::mcset pcm {Version %1$s: %2$s} {Version %1$s: %2$s}
+::msgcat::mcset pcm {Version drift in the registry: %s} {Version drift for di registry: %s}
 ::msgcat::mcset pcm View {Di view}
 ::msgcat::mcset pcm {View markdown source} {View markdown source}
 ::msgcat::mcset pcm {View source / rendered} {Source / don render}
 ::msgcat::mcset pcm Voice {Give voice}
+::msgcat::mcset pcm {Waiting for the model…} {Dey wait for di model…}
+::msgcat::mcset pcm {Waiting for the model… Nothing has been written.} {Dey wait for di model… Nothing no dey write.}
 ::msgcat::mcset pcm {Welcome to veles} {Welcome to veles}
 ::msgcat::mcset pcm {What the agent can do here} {Wetin di agent fit do for here}
 ::msgcat::mcset pcm {What veles may do on this phone. Each button opens the Android setting that changes it.} {Wetin veles fit do for dis phone. Each button dey open di Android setting wey dey change am.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset pcm {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {When veles dey background, agent question or turn wey don finish go come as notification; tap am make di session open.}
 ::msgcat::mcset pcm {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {Who fit talk to di bot. Dis choice dey decide whether config.toml go carry [acl] section at all — and dat go flip di whole posture.}
 ::msgcat::mcset pcm Whois Whois
-::msgcat::mcset pcm {Wire protocol (chat_completions or responses)} {Wire protocol (chat_completions or responses)}
+::msgcat::mcset pcm {Wire protocol (chat_completions, responses or plugin)} {Wire protocol (chat_completions, responses or plugin)}
 ::msgcat::mcset pcm {With a keyboard attached, every key works as on a laptop.} {If keyboard dey connect, every key go work like for laptop.}
 ::msgcat::mcset pcm {Workflow SHA} {Workflow SHA}
+::msgcat::mcset pcm {Workflow commit} {Workflow commit}
+::msgcat::mcset pcm Worktree Worktree
 ::msgcat::mcset pcm {Write it} {Write am}
+::msgcat::mcset pcm {Write the design question first.} {First write di design question.}
 ::msgcat::mcset pcm {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {E no go write any provider. Di gateway no go route a turn until [[custom_providers]] entry and di [model] pair dey.}
 ::msgcat::mcset pcm {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {To write ANY [acl] key go switch dis gateway to curated mode: di default role go be guest (fail-closed) and di allowlists no be di boundary again. Only pick dis if you get owner identity wey you trust.}
 ::msgcat::mcset pcm {[model] provider} {[model] provider}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset pcm {also list hooks with no handler} {also list hooks wey no get handler}
 ::msgcat::mcset pcm {also write grants that still have an expiry} {also write grants wey still get expiry}
 ::msgcat::mcset pcm {also write runtime users} {also write runtime users}
+::msgcat::mcset pcm {an allowlist entry is removed by editing config.toml} {dem dey remove allowlist entry by editing config.toml}
 ::msgcat::mcset pcm {an allowlist is in force: a plugin not on it stays off} {allowlist dey active: plugin wey no dey inside am go stay off}
 ::msgcat::mcset pcm {answer failed: %s} {answer no gree: %s}
+::msgcat::mcset pcm {answer only, nothing to apply} {na only answer, nothing to apply}
 ::msgcat::mcset pcm {append these rules to config.toml} {add these rules go config.toml}
 ::msgcat::mcset pcm {apply failed: %s} {apply no gree: %s}
 ::msgcat::mcset pcm {apply to:} {apply am go:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset pcm {ask the agent} {ask di agent}
 ::msgcat::mcset pcm {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset pcm {asked by: %s} {na %s ask am}
+::msgcat::mcset pcm {asking %s for its metrics…} {dey ask %s for im metrics…}
 ::msgcat::mcset pcm {attach a file} {attach file}
 ::msgcat::mcset pcm {attach an image or file} {attach picture or file}
 ::msgcat::mcset pcm {attach failed: %1$s} {attach no work: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset pcm {attached %1$s (%2$s pending)} {don attach %1$s (%2$s dey wait)}
 ::msgcat::mcset pcm {attached to %s} {don attach to %s}
 ::msgcat::mcset pcm {attached to child session %1$s} {don attach to child session %1$s}
+::msgcat::mcset pcm automatic automatic
 ::msgcat::mcset pcm {aux model} {aux model}
 ::msgcat::mcset pcm {aux provider} {aux provider}
+::msgcat::mcset pcm available {e dey available}
 ::msgcat::mcset pcm {available components} {available components}
 ::msgcat::mcset pcm {back up N user turns} {go back N user turns}
 ::msgcat::mcset pcm {backed up the previous config to %s} {dem don back up di previous config to %s}
 ::msgcat::mcset pcm {background shells; /shells output|kill <id>} {background shells; /shells output|kill <id>}
+::msgcat::mcset pcm {backing off: %1$s failure(s), next automatic try in %2$s s} {e dey back off: %1$s failure(s), next automatic try inside %2$s s}
 ::msgcat::mcset pcm {bad host for %1$s: %2$s} {host no good for %1$s: %2$s}
 ::msgcat::mcset pcm {bad unit for %1$s: %2$s} {unit no good for %1$s: %2$s}
 ::msgcat::mcset pcm {bare display off} {bare display don off}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset pcm {browse the filesystem} {waka through the filesystem}
 ::msgcat::mcset pcm {browse the repo's files} {waka through the repo files}
 ::msgcat::mcset pcm {builtin (%s):} {builtin (%s):}
+::msgcat::mcset pcm bundled bundled
+::msgcat::mcset pcm {bundled, read-only} {bundled, read-only}
 ::msgcat::mcset pcm by by
 ::msgcat::mcset pcm {by plan — all sessions} {per plan — all sessions}
 ::msgcat::mcset pcm {by plan — this session} {per plan — dis session}
 ::msgcat::mcset pcm {by tool} {per tool}
 ::msgcat::mcset pcm {cancel failed: %1$s} {cancel no gree: %1$s}
 ::msgcat::mcset pcm {cancel the running turn} {cancel di turn wey dey run}
+::msgcat::mcset pcm {cancel the selected task} {cancel di task wey you select}
 ::msgcat::mcset pcm {cancelled task %1$s} {don cancel task %1$s}
 ::msgcat::mcset pcm {cannot list scripts (gateway offline?)} {no fit list scripts (gateway no dey?)}
 ::msgcat::mcset pcm {cannot reach the gateway: %s} {e no fit reach di gateway: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset pcm commit commit
 ::msgcat::mcset pcm {compacting %s messages in the background — the transcript reloads when it finishes} {dey compact %s messages for background — the transcript go reload when e finish}
 ::msgcat::mcset pcm compacting… {dey compact…}
+::msgcat::mcset pcm {comparing the nodes' versions and config…} {dey compare di nodes versions and config…}
 ::msgcat::mcset pcm {completion tokens} {completion tokens}
 ::msgcat::mcset pcm {component options and declared actions} {component options and declared actions}
 ::msgcat::mcset pcm composer composer
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset pcm {could not open %s} {no fit open %s}
 ::msgcat::mcset pcm {could not open %s (no working browser opener)} {no fit open %s (no browser opener wey dey work)}
 ::msgcat::mcset pcm {could not open %{url}: %{e}} {no fit open %{url}: %{e}}
+::msgcat::mcset pcm {could not open the optional referral link: %s} {no fit open di optional referral link: %s}
 ::msgcat::mcset pcm {could not read %s: %s} {e no fit read %s: %s}
 ::msgcat::mcset pcm {could not read the current route} {no fit read di route wey dey now}
 ::msgcat::mcset pcm {could not save this session's language: %{e}} {e no fit save this session language: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset pcm {ctxmenu: no widget %s (attached too early?)} {ctxmenu: no widget %s (e don attach too early?)}
 ::msgcat::mcset pcm {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {you choose curated access but no owner identity, so [acl] still dey sleep — give one, like telegram:123456 or irc:account, to on am}
 ::msgcat::mcset pcm {current theme: %{name} · /theme <name>} {theme wey dey active: %{name} · /theme <name>}
+::msgcat::mcset pcm {cursor %1$s of %2$s (%3$s behind)} {cursor %1$s of %2$s (%3$s behind)}
 ::msgcat::mcset pcm {custom command /%s…} {di custom command /%s…}
 ::msgcat::mcset pcm {custom commands (.veles/commands/) and config aliases} {your own commands (.veles/commands/) and config aliases}
 ::msgcat::mcset pcm {cycle ends} {di cycle don end}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset pcm doctor_resident {e dey inside every prompt: %{shown} out of %{total} characters (~%{tokens} tokens) — the rest go load when you need am with: memory action=read path=%{path}}
 ::msgcat::mcset pcm doctor_title {memory check-up}
 ::msgcat::mcset pcm doctor_total {total: %{chars} characters for %{files} files (~%{tokens} tokens)}
+::msgcat::mcset pcm {documentation is not in this source checkout: %s} {documentation no dey inside dis source checkout: %s}
 ::msgcat::mcset pcm done {don finish}
 ::msgcat::mcset pcm {done · %1$s/%2$s} {don finish · %1$s/%2$s}
 ::msgcat::mcset pcm {done, but the model returned no text} {don finish, but di model no return any text}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset pcm {evaluate Tcl and answer with the result — no model turn} {run Tcl come answer with the result — no model turn}
 ::msgcat::mcset pcm everyone everybody
 ::msgcat::mcset pcm everywhere everywhere
+::msgcat::mcset pcm {exchanging registry gossip…} {dey exchange registry gossip…}
 ::msgcat::mcset pcm exit comot
 ::msgcat::mcset pcm {exit veles-desktop} {exit veles-desktop}
 ::msgcat::mcset pcm {export failed: %s} {export no work: %s}
 ::msgcat::mcset pcm {export session} {export session}
 ::msgcat::mcset pcm {exported to %s} {don export am go %s}
+::msgcat::mcset pcm {extension architecture, examples and LSP help} {extension architecture, examples and LSP help}
+::msgcat::mcset pcm {extension development guide} {extension development guide}
+::msgcat::mcset pcm failed {e fail}
 ::msgcat::mcset pcm {failed to load history: %s} {e no fit load history: %s}
 ::msgcat::mcset pcm {failed to paint cached history: %s} {e no fit paint cached history: %s}
 ::msgcat::mcset pcm {failed to paint replayed history: %s} {e no fit paint replayed history: %s}
 ::msgcat::mcset pcm {failed: %s} {e don fail: %s}
+::msgcat::mcset pcm {failing — heartbeating, but a sync push or the last probe failed} {e dey fail — heartbeat dey come, but sync push or di last probe no work}
 ::msgcat::mcset pcm {failover blueprint: cannot reach the gateway} {failover blueprint: no fit reach di gateway}
 ::msgcat::mcset pcm {failover graph unavailable: %1$s} {failover graph no dey: %1$s}
 ::msgcat::mcset pcm {failover script: cannot reach the gateway} {failover script: no fit reach di gateway}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset pcm {fire the Tcl hook} {fire di Tcl hook}
 ::msgcat::mcset pcm {fires for %s:} {e go fire for %s:}
 ::msgcat::mcset pcm {fires per hour} {e dey fire every hour}
+::msgcat::mcset pcm {fleet drift} {fleet drift}
 ::msgcat::mcset pcm {focus composer} {focus composer}
 ::msgcat::mcset pcm {focus failed: %{e}} {focus no work: %{e}}
 ::msgcat::mcset pcm {focus next region} {focus next region}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset pcm {four splits is the maximum} {four splits na di maximum}
 ::msgcat::mcset pcm {fresh session} {new session}
 ::msgcat::mcset pcm {fresh session (Ctrl-N too)} {new session (Ctrl-N too)}
+::msgcat::mcset pcm {fresh — heartbeating, sync passing} {fresh — heartbeat dey come, sync dey pass}
+::msgcat::mcset pcm from from
 ::msgcat::mcset pcm {from node %{node}} {e come from node %{node}}
 ::msgcat::mcset pcm {gateway     v%1$s · up %2$s} {gateway     v%1$s · up %2$s}
 ::msgcat::mcset pcm {gateway unreachable — is `veles gateway run` up?} {no fit reach gateway — `veles gateway run` dey up?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset pcm {in %s} {in %s}
 ::msgcat::mcset pcm {insert the next key literally (^B bold, ^C colour, ^O reset)} {put di next key as e be (^B bold, ^C colour, ^O reset)}
 ::msgcat::mcset pcm {inserted %s} {dem don insert %s}
+::msgcat::mcset pcm {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {inspect di cluster; explicitly push/apply store, memory, config or vault sync; forget stale node for di whole fleet; read node log tail or im metrics; compare versions and config; gossip now}
 ::msgcat::mcset pcm {inspector — app internals · core state · gw plugins} {inspector — app internals · core state · gw plugins}
 ::msgcat::mcset pcm {install a plugin from a git URL} {install plugin from git URL}
 ::msgcat::mcset pcm {install a skill from a git URL} {install skill from git URL}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset pcm instance instance
 ::msgcat::mcset pcm {instance controls} {instance controls}
 ::msgcat::mcset pcm {instance detail} {instance detail}
+::msgcat::mcset pcm {instance names may not start with "cluster:" or "g:": %s} {instance name no fit start wit "cluster:" or "g:": %s}
 ::msgcat::mcset pcm {instance needs a name} {instance need name}
 ::msgcat::mcset pcm {instance unreachable} {no fit reach instance}
 ::msgcat::mcset pcm instances instances
 ::msgcat::mcset pcm interrupting… {dey interrupt…}
+::msgcat::mcset pcm into into
 ::msgcat::mcset pcm {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset pcm {irc: %s} {irc: %s}
 ::msgcat::mcset pcm {irc: %s failed — %s} {irc: %s don fail — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset pcm {language list} {language list}
 ::msgcat::mcset pcm {language picker (the swap for THIS window)} {language picker (di swap for dis window)}
 ::msgcat::mcset pcm {language saved: %s} {dem don save language: %s}
+::msgcat::mcset pcm {language server} {language server}
+::msgcat::mcset pcm {language server: event stream unavailable: %s} {language server: event stream no dey available: %s}
+::msgcat::mcset pcm {language server: not started on the gateway — %s} {language server: e no start for di gateway — %s}
+::msgcat::mcset pcm {language server: the gateway would not start one: %s} {language server: di gateway no gree start one: %s}
 ::msgcat::mcset pcm {language swapped: %1$s ⇄ %2$s} {language don swap: %1$s ⇄ %2$s}
 ::msgcat::mcset pcm {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {language → %1$s (na %2$s before) · dis window only — Save as default go write config.toml}
 ::msgcat::mcset pcm {language: %s} {language: %s}
 ::msgcat::mcset pcm {last error} {last error}
+::msgcat::mcset pcm {last pass %1$s at %2$s: %3$s} {last pass %1$s for %2$s: %3$s}
 ::msgcat::mcset pcm {last reply copied (%s chars)} {dem don copy di last reply (%s chars)}
 ::msgcat::mcset pcm {layout not saved: %s} {dem no save layout: %s}
 ::msgcat::mcset pcm {leave (cancels a running turn first)} {comot (e go first cancel the turn wey dey run)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset pcm {list sessions} {list sessions}
 ::msgcat::mcset pcm {list skills} {list skills}
 ::msgcat::mcset pcm {list tools} {list tools}
+::msgcat::mcset pcm {listed here only; [notify] fleet_alerts is off} {na only here e dey list; [notify] fleet_alerts don off}
 ::msgcat::mcset pcm {live patching ARMED} {live patching ARMED}
 ::msgcat::mcset pcm {live patching ARMED — an agent can now redefine procs in this window} {live patching ARMED — agent fit now redefine procs inside dis window}
 ::msgcat::mcset pcm {live patching disarmed} {live patching don disarm}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset pcm {log pane shown} {dem don show di log pane}
 ::msgcat::mcset pcm {log: %s} {log: %s}
 ::msgcat::mcset pcm {make media: image/video/audio, route = comfyui or provider[/model]} {make media: image/video/audio, route = comfyui or provider[/model]}
+::msgcat::mcset pcm {managed via %s} {dem dey manage am via %s}
+::msgcat::mcset pcm {manual only} {by hand only}
 ::msgcat::mcset pcm {mark set} {mark don set}
 ::msgcat::mcset pcm {mark whole buffer (emacs select-all)} {mark di whole buffer (emacs select-all)}
 ::msgcat::mcset pcm {markdown preview of the composer} {markdown preview for di composer}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset pcm model model
 ::msgcat::mcset pcm {model aliases} {model aliases}
 ::msgcat::mcset pcm {monitor %1$s fired} {monitor %1$s don fire}
-::msgcat::mcset pcm monitors monitors
 ::msgcat::mcset pcm monitors_header monitors:
 ::msgcat::mcset pcm monitors_none {(no monitor dey — di model go start dem with di monitor tool)}
 ::msgcat::mcset pcm {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {move one session (and all wey dey under am) go another pool node when turn finish; finish or cancel parked handoff; ask who get session (admin)}
 ::msgcat::mcset pcm {move the running foreground command to the background} {move the foreground command wey dey run go background}
 ::msgcat::mcset pcm {move the running foreground command to the background (keeps running)} {move di foreground command wey dey run go background (e go still dey run)}
+::msgcat::mcset pcm {move this session's running foreground command to a background shell; keeps running} {move di command wey dey run for foreground for dis session go background shell; e go keep dey run}
 ::msgcat::mcset pcm {moving around} {how to waka around}
 ::msgcat::mcset pcm name name
 ::msgcat::mcset pcm {name a key first} {name di key first}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset pcm {neon impressionism} {neon impressionism}
 ::msgcat::mcset pcm {network (optional — e.g. libera; empty = any)} {network (optional — e.g. libera; empty = any)}
 ::msgcat::mcset pcm {network to scope the grant to} {network wey dem go scope di grant for}
+::msgcat::mcset pcm new new
 ::msgcat::mcset pcm {new buffer} {new buffer}
 ::msgcat::mcset pcm {new entry — replace this text, then Save} {new entry — replace dis text, then Save}
 ::msgcat::mcset pcm {new name for %s} {new name for %s}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset pcm {no IRC buffer selected} {dem no select IRC buffer}
 ::msgcat::mcset pcm {no MCP servers configured — Add server… writes one into config.toml} {no MCP server dey — Add server… go write one inside config.toml}
 ::msgcat::mcset pcm {no URLs in this buffer} {no URL dey for dis buffer}
+::msgcat::mcset pcm {no [a2a_agents] entry — this peer cannot be dialed} {no [a2a_agents] entry — dem no fit dial dis peer}
 ::msgcat::mcset pcm {no alias /%s} {no alias /%s}
 ::msgcat::mcset pcm {no background refresh} {no background refresh}
 ::msgcat::mcset pcm {no buffer %s} {no buffer %s}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset pcm {no code block in the last reply} {no code block dey for di last reply}
 ::msgcat::mcset pcm {no cron jobs} {no cron job dey}
 ::msgcat::mcset pcm {no cron jobs — New… creates one} {no cron job dey — New… go create one}
+::msgcat::mcset pcm {no exchange yet} {dem never exchange yet}
 ::msgcat::mcset pcm {no file — pick a guts file or type a path} {no file — pick guts file or type path}
 ::msgcat::mcset pcm {no handler} {no handler}
+::msgcat::mcset pcm {no heartbeat for %{mins} min} {no heartbeat for %{mins} min}
+::msgcat::mcset pcm {no heartbeat within the threshold} {no heartbeat within di threshold}
 ::msgcat::mcset pcm {no history yet} {history no dey yet}
 ::msgcat::mcset pcm {no host configured for this instance} {dem no configure host for dis instance}
 ::msgcat::mcset pcm {no instance selected} {dem no select instance}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset pcm {no program to open URLs} {no program wey go open URL}
 ::msgcat::mcset pcm {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {no provider don set — add one [[custom_providers]] entry and set di [model] pair before you run one turn}
 ::msgcat::mcset pcm {no reading yet — press Refresh} {no reading dey yet — press Refresh}
-::msgcat::mcset pcm {no running tasks} {no task dey run}
 ::msgcat::mcset pcm {no sample available} {no sample dey}
 ::msgcat::mcset pcm {no search bar on this surface} {no search bar dey for dis surface}
 ::msgcat::mcset pcm {no session matching %s} {no session wey match %s}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset pcm {no session open — switch the scope to the default, or open a session} {no session dey open — switch di scope go di default, or open session}
 ::msgcat::mcset pcm {no session open — the catalogue needs one; the default scope still works from config.toml} {no session dey open — di catalogue need one; di default scope still dey work from config.toml}
 ::msgcat::mcset pcm {no setting %s — try filter or bare} {no setting %s — try filter or bare}
+::msgcat::mcset pcm {no shells or monitors to show} {no shells or monitors to show}
 ::msgcat::mcset pcm {no skills found} {no skills dey}
 ::msgcat::mcset pcm {no such URL — /urls lists them} {no URL like dat — /urls dey list dem}
 ::msgcat::mcset pcm {no such file: %s} {no file like dat: %s}
 ::msgcat::mcset pcm {no swap target yet — set one with /locale secondary <id>} {no swap target yet — set one with /locale secondary <id>}
+::msgcat::mcset pcm {no task selected} {no task selected}
 ::msgcat::mcset pcm {no triggers} {no trigger dey}
 ::msgcat::mcset pcm {no triggers — New… creates one} {no trigger dey — New… go create one}
 ::msgcat::mcset pcm {no upstream reading for %s} {no upstream reading for %s}
 ::msgcat::mcset pcm {no word match} {no word match}
 ::msgcat::mcset pcm {no xdg-open — path copied instead} {no xdg-open — dem don copy di path instead}
+::msgcat::mcset pcm {node log} {node log}
 ::msgcat::mcset pcm {none loaded} {none don load}
 ::msgcat::mcset pcm {none recorded} {nobody record am}
+::msgcat::mcset pcm {none since this gateway started} {notin since dis gateway start}
 ::msgcat::mcset pcm {none yet} {nothing yet}
 ::msgcat::mcset pcm {normie is pure Ctrl — no emacs prefix chords.} {normie na pure Ctrl — no emacs prefix chords.}
 ::msgcat::mcset pcm {normie: select all · emacs: start of line} {normie: select all · emacs: start of line}
 ::msgcat::mcset pcm {not a channel} {e no be channel}
 ::msgcat::mcset pcm {not a key = value line: %s} {e no be key = value line: %s}
+::msgcat::mcset pcm {not a node in the attached gateway's cluster registry: %s} {no be node inside di cluster registry of di gateway wey attach: %s}
 ::msgcat::mcset pcm {not a number} {dis one no be number}
 ::msgcat::mcset pcm {not a valid http(s) url: %s} {e no be valid http(s) url: %s}
 ::msgcat::mcset pcm {not a valid ssh host: %s} {e no be valid ssh host: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset pcm {not attached to a gateway} {e no dey attach to gateway}
 ::msgcat::mcset pcm {not configured} {dem no configure am}
 ::msgcat::mcset pcm {not ignoring %s} {we no dey ignore %s}
+::msgcat::mcset pcm {not installed} {no dey installed}
 ::msgcat::mcset pcm {not reported} {dem no report am}
 ::msgcat::mcset pcm {not running} {e no dey run}
 ::msgcat::mcset pcm {not set in config.toml — the built-in default applies. %s} {dem no set am for config.toml — di built-in default dey apply. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset pcm off off
 ::msgcat::mcset pcm {off (the default)} {off (na di default)}
 ::msgcat::mcset pcm offline {no network}
+::msgcat::mcset pcm ok ok
 ::msgcat::mcset pcm on on
 ::msgcat::mcset pcm {on (the default)} {on (na di default)}
 ::msgcat::mcset pcm {on failure} {when e fail}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset pcm {open links} {open link}
 ::msgcat::mcset pcm {open the engine log} {open di engine log}
 ::msgcat::mcset pcm {open the joined session before /leave (on %s)} {open di joined session before /leave (for %s)}
+::msgcat::mcset pcm {open the selected child session} {open di child session wey you select}
 ::msgcat::mcset pcm {open the selected skill in the Dev editor} {open di skill wey dem select for di Dev editor}
 ::msgcat::mcset pcm {open the setup wizard (re-runnable; edits config.toml in place)} {open di setup wizard (you fit run am again; e dey edit config.toml for im place)}
 ::msgcat::mcset pcm {open the share sheet} {open di share sheet}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset pcm {override cleared — the default applies} {dem don clear di override — di default dey apply}
 ::msgcat::mcset pcm {override failed: %s} {override don fail: %s}
 ::msgcat::mcset pcm {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {di ACL no fit match owner identity %{id} — use telegram:<number id>, irc:<services account>, or one nick!user@host mask}
+::msgcat::mcset pcm owner/repository owner/repository
 ::msgcat::mcset pcm {owners: %s} {owners: %s}
 ::msgcat::mcset pcm {pair a desktop with this agent} {pair one desktop with this agent}
 ::msgcat::mcset pcm {partly failed: %s} {e fail small: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset pcm plugin plugin
 ::msgcat::mcset pcm {plugin directory git history} {plugin folder git history}
 ::msgcat::mcset pcm {plugin list} {plugin list}
+::msgcat::mcset pcm {plugin provider driver} {plugin provider driver}
 ::msgcat::mcset pcm {plugins reloaded on %s} {plugins don reload on %s}
 ::msgcat::mcset pcm {pop %s out into its own window} {pop %s go im own window}
 ::msgcat::mcset pcm {pop the buffer out into its own window} {comot di buffer go im own window}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset pcm {prefix: window & dock commands} {prefix: window & dock commands}
 ::msgcat::mcset pcm {press Attach in the Instances tab} {press Attach inside the Instances tab}
 ::msgcat::mcset pcm preview preview
+::msgcat::mcset pcm {preview an AI extension change and explicitly apply its diff} {preview AI extension change and explicitly apply im diff}
 ::msgcat::mcset pcm {preview failed: %s} {preview no work: %s}
 ::msgcat::mcset pcm {previous buffer} {di buffer wey pass}
 ::msgcat::mcset pcm {previous command was not a yank} {the last command no be yank}
 ::msgcat::mcset pcm {previous match} {the match before am}
 ::msgcat::mcset pcm {previous session} {previous session}
+::msgcat::mcset pcm {probing %s…} {dey probe %s…}
 ::msgcat::mcset pcm {proc body} {proc body}
 ::msgcat::mcset pcm {profile unavailable: %s} {profile no dey: %s}
 ::msgcat::mcset pcm profiles: profiles:
 ::msgcat::mcset pcm prompt prompt
 ::msgcat::mcset pcm {prompt breakdown} {how the prompt take break down}
 ::msgcat::mcset pcm {prompt tokens} {prompt tokens}
+::msgcat::mcset pcm {proposal only, not applied} {na proposal only, e never apply}
 ::msgcat::mcset pcm provider provider
 ::msgcat::mcset pcm {provider / model} {provider / model}
 ::msgcat::mcset pcm {provider base URL} {di base URL of di provider}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset pcm {re-sync the slopdrop state mirror} {re-sync di slopdrop state mirror}
 ::msgcat::mcset pcm {read and set the clipboard} {read and set di clipboard}
 ::msgcat::mcset pcm {read text aloud} {read text out loud}
+::msgcat::mcset pcm {read-only: [approvals] allowlist} {read-only: [approvals] allowlist}
 ::msgcat::mcset pcm {read-only: this session lives on %1$s (as read at %2$s)} {read-only: dis session dey live for %1$s (as e be when we read am for %2$s)}
 ::msgcat::mcset pcm {read-only: this skill comes from the %s library} {read-only: this skill come from the %s library}
 ::msgcat::mcset pcm reasoning reasoning
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset pcm {refused to open %s (only http, https, mailto)} {no gree open %s (na only http, https, mailto)}
 ::msgcat::mcset pcm {refused: %s} {no gree: %s}
 ::msgcat::mcset pcm {region copied} {region don copy}
+::msgcat::mcset pcm registered {e don register}
 ::msgcat::mcset pcm {registry not saved: %s} {registry no save: %s}
 ::msgcat::mcset pcm {reload on %1$s failed: %2$s} {reload on %1$s no work: %2$s}
 ::msgcat::mcset pcm {reload the mechanisms} {reload di mechanisms}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset pcm {resume a session (prefix ok)} {continue session (prefix dey ok)}
 ::msgcat::mcset pcm {retry failed: %s} {try again fail: %s}
 ::msgcat::mcset pcm {retrying last prompt…} {dey retry the last prompt…}
+::msgcat::mcset pcm {review files for an explicit upstream contribution} {review files for explicit upstream contribution}
+::msgcat::mcset pcm {review standing global and session tool permissions} {check standing global and session permission for tools}
 ::msgcat::mcset pcm revision revision
 ::msgcat::mcset pcm {revision history} {revision history}
+::msgcat::mcset pcm {revoke refused} {dem refuse di revoke}
 ::msgcat::mcset pcm {revoke the selected identity's grant} {cancel the grant of the identity wey you select}
 ::msgcat::mcset pcm role role
 ::msgcat::mcset pcm {role to grant} {role wey you wan grant}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset pcm {saved to %s} {don save to %s}
 ::msgcat::mcset pcm saved. {don save.}
 ::msgcat::mcset pcm {scaffold a new plugin} {set up new plugin}
+::msgcat::mcset pcm {scaffold a user plugin and open it in this editor} {scaffold user plugin and open am inside dis editor}
 ::msgcat::mcset pcm {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)}
 ::msgcat::mcset pcm scope scope
 ::msgcat::mcset pcm script script
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset pcm {select %s first} {select %s first}
 ::msgcat::mcset pcm {select a checkpoint first} {select checkpoint first}
 ::msgcat::mcset pcm {select a file, or New… to create one} {select file, or New… to create one}
+::msgcat::mcset pcm {select a grant first} {select one grant first}
 ::msgcat::mcset pcm {select a handler first} {select handler first}
 ::msgcat::mcset pcm {select a member first} {select member first}
 ::msgcat::mcset pcm {select a route} {select route}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset pcm {select an assignment first} {select assignment first}
 ::msgcat::mcset pcm {select an entry first} {select entry first}
 ::msgcat::mcset pcm {select an identity first} {select identity first}
+::msgcat::mcset pcm {selected task details and shell output} {selected task details and shell output}
 ::msgcat::mcset pcm {selected: %s} {you select: %s}
 ::msgcat::mcset pcm {send clipboard as prompt} {send clipboard as prompt}
 ::msgcat::mcset pcm {send failed: %s} {send fail: %s}
 ::msgcat::mcset pcm {send the message; while a turn runs, queue it as steering} {send di message; if turn dey run, queue am as steering}
+::msgcat::mcset pcm sent {dem don send am}
+::msgcat::mcset pcm {sent to the owner's home chat} {dem send am go di owner home chat}
 ::msgcat::mcset pcm server server
 ::msgcat::mcset pcm {server buffers merged} {server buffers don merge}
 ::msgcat::mcset pcm {server buffers separate} {server buffers dey separate}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset pcm {settings, one key = value per line} {settings, one key = value for every line}
 ::msgcat::mcset pcm {setup_done marker NOT saved: %s} {setup_done marker NO save: %s}
 ::msgcat::mcset pcm {shell %1$s finished} {shell %1$s don finish}
-::msgcat::mcset pcm shells shells
+::msgcat::mcset pcm {shells, monitors and subagents} {shells, monitors and subagents}
 ::msgcat::mcset pcm shells_header {background shells:}
 ::msgcat::mcset pcm shells_none {(no background shell dey — /background <cmd> go start one)}
 ::msgcat::mcset pcm {show current configuration} {show current configuration}
 ::msgcat::mcset pcm {show every key in this mode} {show every key inside this mode}
 ::msgcat::mcset pcm {show or hide the session list} {show or hide di session list}
 ::msgcat::mcset pcm {show or switch model (alias | model@provider | custom:<prov>)} {show or change model (alias | model@provider | custom:<prov>)}
+::msgcat::mcset pcm {show selected shell output} {show selected shell output}
 ::msgcat::mcset pcm {show short messages} {show short message}
 ::msgcat::mcset pcm {show the model's reasoning blocks (same as /reasoning)} {show di model im reasoning blocks (same as /reasoning)}
 ::msgcat::mcset pcm {show unclaimed} {show the ones wey nobody claim}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset pcm spend spend
 ::msgcat::mcset pcm {split: %s} {split: %s}
 ::msgcat::mcset pcm {ssh to %1$s failed: %2$s} {ssh to %1$s no work: %2$s}
+::msgcat::mcset pcm {stale — no heartbeat within the threshold} {stale — no heartbeat inside di threshold}
+::msgcat::mcset pcm {standing global and session permission grants} {permission grants wey dey stand for global and session}
 ::msgcat::mcset pcm state state
 ::msgcat::mcset pcm {state       never reached} {state       we never reach am}
 ::msgcat::mcset pcm {state       reachable} {state       we fit reach am}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset pcm {stored in the encrypted vault (%1$s): %2$s} {e don enter di encrypted vault (%1$s): %2$s}
 ::msgcat::mcset pcm {stream handler: %s} {stream handler: %s}
 ::msgcat::mcset pcm {subagent %1$s finished} {subagent %1$s don finish}
-::msgcat::mcset pcm subagents subagents
 ::msgcat::mcset pcm subagents_header {subagents dey run:}
 ::msgcat::mcset pcm subagents_none {(no subagent dey run — /btw <prompt> go start one, or di model go use delegate_task)}
 ::msgcat::mcset pcm {suspend failed: %{e}} {suspend no work: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset pcm {switch the selected skill off} {switch the skill wey you select off}
 ::msgcat::mcset pcm {switch the selected skill on} {switch the skill wey you select on}
 ::msgcat::mcset pcm {switch to the %s tab} {open the %s tab}
+::msgcat::mcset pcm {sync requested: %s} {dem request sync: %s}
 ::msgcat::mcset pcm {tab 1} {tab 1}
 ::msgcat::mcset pcm {tab 2} {tab 2}
 ::msgcat::mcset pcm {tab 3} {tab 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset pcm tasks_none {(no task dey run)}
 ::msgcat::mcset pcm tasks_not_found {no such task: %{id}}
 ::msgcat::mcset pcm tasks_not_running {task %{id} don already finish}
-::msgcat::mcset pcm {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset pcm {tcl-lsp: event stream unavailable: %s} {tcl-lsp: event stream no dey: %s}
-::msgcat::mcset pcm {tcl-lsp: gateway would not start it: %s} {tcl-lsp: gateway no gree start am: %s}
-::msgcat::mcset pcm {tcl-lsp: not started on the gateway — %s} {tcl-lsp: no start on the gateway — %s}
 ::msgcat::mcset pcm {that buffer is not split} {that buffer no dey split}
 ::msgcat::mcset pcm {the %s plan} {di %s plan}
 ::msgcat::mcset pcm {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {di API key field dey take di NAME of environment variable (like %{example}), no be di key itself — di key dey go inside di hidden field}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset pcm {the gateway answered without a report} {the gateway answer but no bring any report}
 ::msgcat::mcset pcm {the model/provider pair is incomplete — the gateway will not route until both are present} {di model/provider pair never complete — di gateway no go route until di two dey}
 ::msgcat::mcset pcm {the options changed, so that is a fresh preview — press “Write it” again to write it} {the options don change, so na fresh preview be this — press “Write it” again to write am}
+::msgcat::mcset pcm {the peer has not been sent this vault yet} {dem never send dis vault go di peer}
+::msgcat::mcset pcm {the peer holds this vault} {di peer hold dis vault}
 ::msgcat::mcset pcm {the primary route is \[model\] provider/default — change it there, not here} {di main route na \[model\] provider/default — change am there, no be here}
 ::msgcat::mcset pcm {the provider/model route this session sends to} {di provider/model route wey dis session dey send go}
 ::msgcat::mcset pcm {the same, on the privileged path (owner only)} {the same thing, through the privileged road (owner only)}
 ::msgcat::mcset pcm {the selected entry (edit, then Save)} {the entry wey you select (edit am, then press Save)}
+::msgcat::mcset pcm {the server stopped: %s} {di server stop: %s}
 ::msgcat::mcset pcm {the synthwave splash} {the synthwave splash}
 ::msgcat::mcset pcm {the text after the name was NOT sent anywhere — type the value into the masked field} {di text wey follow di name NO go anywhere — type di value inside di masked field}
 ::msgcat::mcset pcm {the transcript} {di transcript}
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset pcm thinking… {dey think…}
 ::msgcat::mcset pcm {thinking… (%s)} {dey think… (%s)}
 ::msgcat::mcset pcm {this file's revisions, their diffs, and restore} {the revisions of this file, how dem different, and restore}
+::msgcat::mcset pcm {this gateway} {dis gateway}
 ::msgcat::mcset pcm {this gateway has no Tcl interpreter} {this gateway no get Tcl interpreter}
 ::msgcat::mcset pcm {this list} {this list}
+::msgcat::mcset pcm {this node has no vault} {dis node no get vault}
 ::msgcat::mcset pcm {this route} {dis route}
 ::msgcat::mcset pcm {this session} {dis session}
 ::msgcat::mcset pcm {this session follows the default language again (%{def})} {this session don dey follow the default language again (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset pcm {transcript finalization failed: %s} {transcript finalization don fail: %s}
 ::msgcat::mcset pcm {transcript refetched} {don fetch the transcript again}
 ::msgcat::mcset pcm {transcript — arrows to read, %s for composer} {transcript — arrow keys to read am, %s for composer}
+::msgcat::mcset pcm {translate text with the dedicated translation model, without an agent turn} {translate text wit di dedicated translation model, without agent turn}
+::msgcat::mcset pcm {translation result} {translation result}
 ::msgcat::mcset pcm {trigger %1$s %2$sd} {trigger %1$s — we don %2$s am}
 ::msgcat::mcset pcm {trigger created} {trigger don create}
 ::msgcat::mcset pcm {trigger updated} {trigger don update}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset pcm {usage: /steer <instruction>} {to use am: /steer <instruction>}
 ::msgcat::mcset pcm used {don use}
 ::msgcat::mcset pcm user user
+::msgcat::mcset pcm {user copy} {user copy}
 ::msgcat::mcset pcm {user identities, one per line} {user identities, one for each line}
 ::msgcat::mcset pcm {user name} {user name}
 ::msgcat::mcset pcm {user profile} {user profile}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset pcm {value (TOML: 5, true, "text", ["a","b"])} {value (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset pcm veles veles
 ::msgcat::mcset pcm {veles editor} {veles editor}
+::msgcat::mcset pcm {veles fleet: node %{node} is failing — %{detail}} {veles fleet: node %{node} dey fail — %{detail}}
+::msgcat::mcset pcm {veles fleet: node %{node} is stale — %{detail}} {veles fleet: node %{node} don old — %{detail}}
+::msgcat::mcset pcm {veles fleet: node %{node} recovered (it was %{was})} {veles fleet: node %{node} don come back (e bin be %{was})}
 ::msgcat::mcset pcm {veles · keyboard help (bindings: %s)} {veles · keyboard help (the bindings: %s)}
 ::msgcat::mcset pcm {veles · touch help} {veles · help for touch}
 ::msgcat::mcset pcm {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset pcm widgets widgets
 ::msgcat::mcset pcm {will be stored in the encrypted vault} {e go enter di encrypted vault}
 ::msgcat::mcset pcm {wire protocol} {di wire protocol}
+::msgcat::mcset pcm {without force to} {without force to}
 ::msgcat::mcset pcm {wizard language} {di wizard language}
 ::msgcat::mcset pcm {wizard language: %s} {di wizard language: %s}
 ::msgcat::mcset pcm {write failed: %s} {write no work: %s}
 ::msgcat::mcset pcm {write grants that still expire (the expiry is dropped — a config line cannot expire)} {write the grant dem wey still dey expire (we go drop the expiry — config line no fit expire)}
 ::msgcat::mcset pcm {write the entries back} {write all the entries back}
 ::msgcat::mcset pcm {write the store's runtime rules into config.toml} {write the store him runtime rules inside config.toml}
+::msgcat::mcset pcm {write the whole extension from its purpose, as a reviewed preview} {write di whole extension from im purpose, as reviewed preview}
 ::msgcat::mcset pcm {write these values into config.toml as the defaults} {write all this value dem inside config.toml as the default}
 ::msgcat::mcset pcm writing {to write}
 ::msgcat::mcset pcm {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {to write di first [acl] owner go switch dis gateway to CURATED mode: di default role go be guest (fail-closed) and di adapter allowlist no be di trust boundary again}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset pcm {▲ VELES — neon impressionism} {▲ VELES — neon impressionism}
 ::msgcat::mcset pcm {▲ earlier} {▲ before}
 ::msgcat::mcset pcm {▼ later} {▼ after}
+::msgcat::mcset pcm {▾ Cluster registry} {▾ Cluster registry}
 ::msgcat::mcset pcm {▾ new output — follow} {▾ new output — follow am}
 ::msgcat::mcset pcm {○ unattached} {○ no attach}
 ::msgcat::mcset pcm {● %1$s — %2$s} {● %1$s — %2$s}

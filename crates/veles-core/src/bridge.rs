@@ -1029,10 +1029,14 @@ extern "C" fn ffi_register_provider(
         },
     );
 
+    let plugin = crate::lifecycle::thread_owner()
+        .unwrap_or("tcl:unknown-plugin")
+        .to_string();
     if let Err(e) = crate::providers::register_driver(crate::providers::ProviderDriver {
         name: name.clone(),
-        plugin: format!("tcl:{procname}"),
+        plugin,
         call,
+        provenance: crate::lifecycle::plugin_provenance().unwrap_or_default(),
     }) {
         set_result(interp, &e);
         return TCL_ERROR;

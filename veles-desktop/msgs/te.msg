@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset te {%1$s %2$s failed: %3$s} {%1$s %2$s విఫలమైంది: %3$s}
 ::msgcat::mcset te {%1$s %2$s over ssh…} {%1$s %2$s ssh ద్వారా…}
 ::msgcat::mcset te {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset te {%1$s (%2$s waiting)} {%1$s (%2$s వేచి ఉంది)}
 ::msgcat::mcset te {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  రీజనింగ్ %3$s}
 ::msgcat::mcset te {%1$s = %2$s here} {ఇక్కడ %1$s = %2$s}
 ::msgcat::mcset te {%1$s NOT saved: %2$s} {%1$s సేవ్ కాలేదు: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset te {%1$s every cron job on %2$s?} {ప్రతి క్రాన్ జాబ్ను %1$s చేయాలా, %2$s పై?}
 ::msgcat::mcset te {%1$s failed: %2$s} {%1$s విఫలమైంది: %2$s}
 ::msgcat::mcset te {%1$s in / %2$s out / %3$s calls} {%1$s ఇన్ / %2$s అవుట్ / %3$s కాల్స్}
+::msgcat::mcset te {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s అనేది నోడ్ %2$s, %3$s కాదు. దాని నోడ్ id ను Edit… లో సరిచేయండి.}
 ::msgcat::mcset te {%1$s is not a whole number} {%1$s పూర్ణ సంఖ్య కాదు}
+::msgcat::mcset te {%1$s is reachable (%2$s ms).} {%1$s చేరుకోగలిగేది (%2$s ms).}
 ::msgcat::mcset te {%1$s is set to something this box cannot edit (%2$s)} {%1$s ఈ బాక్స్ సవరించలేని విలువకు సెట్ చేయబడింది (%2$s)}
+::msgcat::mcset te {%1$s is unreachable: %2$s} {%1$s చేరుకోలేము: %2$s}
 ::msgcat::mcset te {%1$s of %2$s characters} {%1$s/%2$s అక్షరాలు}
 ::msgcat::mcset te {%1$s of %2$s sessions} {%2$s లో %1$s సెషన్లు}
 ::msgcat::mcset te {%1$s of %2$s skills reach the prompt} {%1$s/%2$s స్కిల్లు ప్రాంప్ట్కు చేరతాయి}
 ::msgcat::mcset te {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s %2$s లో: %3$d సరే, %4$d విఫలం}
+::msgcat::mcset te {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s ఏ క్లస్టర్ నోడ్ ఐడెంటిటీని నివేదించలేదు, కాబట్టి దాన్ని %2$s గా ధృవీకరించలేము.}
+::msgcat::mcset te {%1$s sync failed: %2$s} {%1$s సింక్ విఫలమైంది: %2$s}
+::msgcat::mcset te {%1$s sync with %2$s (%3$s)} {%1$s, %2$s తో సింక్ (%3$s)}
+::msgcat::mcset te {%1$s sync: %2$s} {%1$s సింక్: %2$s}
 ::msgcat::mcset te {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset te {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · వెళ్ళడానికి Enter, మూసివేయడానికి Esc}
 ::msgcat::mcset te {%1$s — revision r%2$s} {%1$s — మార్పు r%2$s}
 ::msgcat::mcset te {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset te {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset te {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset te {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset te {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: దాని గేట్‌వే మెమొరీలో ఉంచుకునే %3$s లైన్లలో చివరి %2$s, ఆ నోడ్‌పై రహస్యాలు తొలగించబడతాయి.}
 ::msgcat::mcset te {%d MCP server(s) configured} {%d MCP సర్వర్(లు) కాన్ఫిగర్ చేయబడ్డాయి}
 ::msgcat::mcset te {%d entries} {%d ఎంట్రీలు}
+::msgcat::mcset te {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {ఎక్స్‌టెన్షన్ యొక్క %d ఫైల్(లు) సమీక్షించిన విధంగానే రాయబడతాయి. ప్రివ్యూ తర్వాత వాటిలో ఏదైనా మారితే, ఏదీ రాయబడదు. కమిట్, పుష్ లేదా PR జరగదు.}
 ::msgcat::mcset te {%d handler(s) registered} {%d హ్యాండ్లర్(లు) నమోదు అయ్యాయి}
 ::msgcat::mcset te {%d identities · %d users} {%d ఐడెంటిటీలు · %d యూజర్లు}
 ::msgcat::mcset te {%d models — pick one from the list or type a name.} {%d మోడల్స్ — జాబితా నుండి ఒకటి ఎంచుకోండి లేదా పేరు టైప్ చేయండి.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset te {%d shown} {%d చూపించాం}
 ::msgcat::mcset te {%s %s%%} {%s %s%%}
 ::msgcat::mcset te {%s (%s)} {%s (%s)}
+::msgcat::mcset te {%s (referral)} {%s (సూచనా లింక్)}
+::msgcat::mcset te {%s (stale)} {%s (పాతది)}
 ::msgcat::mcset te {%s (this session)} {%s (ఈ సెషన్)}
 ::msgcat::mcset te {%s GB free of %s GB} {%s GB ఖాళీ, మొత్తం %s GB}
 ::msgcat::mcset te {%s already exists — open it from the list} {%s ఇప్పటికే ఉంది — దాన్ని జాబితా నుండి తెరవండి}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset te {%s comes from config.toml [acl] — edit there} {%s config.toml [acl] నుండి వస్తుంది — అక్కడ సవరించండి}
 ::msgcat::mcset te {%s config change(s) wait for you — /configsync} {%s కాన్ఫిగ్ మార్పు(లు) మీ కోసం వేచి ఉన్నాయి — /configsync}
 ::msgcat::mcset te {%s did not become healthy within 30s} {%s 30 సెకన్లలోపు హెల్తీ కాలేదు}
+::msgcat::mcset te {%s done} {%s పూర్తయింది}
 ::msgcat::mcset te {%s failed: %s} {%s విఫలమైంది: %s}
 ::msgcat::mcset te {%s is already split} {%s ఇప్పటికే స్ప్లిట్ అయ్యింది}
 ::msgcat::mcset te {%s is the language in use — pick another one to swap with} {%s ఇప్పుడు వాడుతున్న భాష — మార్చడానికి వేరే భాషను ఎంచుకోండి}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset te {%s opens the command palette in %s.} {%s లో కమాండ్ పాలెట్ తెరుస్తుంది %s.}
 ::msgcat::mcset te {%s session(s)} {%s సెషన్(లు)}
 ::msgcat::mcset te {%s skill(s):} {%s స్కిల్(లు):}
+::msgcat::mcset te {%s standing grants} {%s స్థిరమైన అనుమతులు}
 ::msgcat::mcset te {%s takes no completable arguments} {%s కి కాంప్లీట్ చేయదగిన ఆర్గ్యుమెంట్లు లేవు}
 ::msgcat::mcset te {%s takes on or off} {%s on లేదా off తీసుకుంటుంది}
 ::msgcat::mcset te {%s —} {%s —}
+::msgcat::mcset te {%s — changes data, asks to confirm} {%s — డేటాను మారుస్తుంది, నిర్ధారణ అడుగుతుంది}
 ::msgcat::mcset te {%s — deleted; History… can restore it} {%s — తొలగించబడింది; చరిత్ర… దాన్ని పునరుద్ధరించగలదు}
 ::msgcat::mcset te {%s — new: type, then Save} {%s — కొత్తది: టైప్ చేసి, తర్వాత సేవ్ చేయండి}
 ::msgcat::mcset te {%s — not attached; press Attach in the Instances tab} {%s — జోడించబడలేదు; ఇన్స్టాన్స్లు ట్యాబ్లో Attach నొక్కండి}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset te {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} [acl] విభాగం లేకుండా ప్రారంభించబడింది: .env లోని %{var} బాట్‌తో ఎవరు మాట్లాడవచ్చో చెప్పే వరకు, దాన్ని చేరుకునే ఎవరైనా యజమానిగా పరిగణించబడతారు, అన్ని టూల్స్‌తో}
 ::msgcat::mcset te (%{route}) (%{route})
 ::msgcat::mcset te {(CLI redraws automatically)} {(CLI దానంతట అదే మళ్లీ గీస్తుంది)}
+::msgcat::mcset te {(binary; not publishable)} {(బైనరీ; ప్రచురించలేము)}
 ::msgcat::mcset te {(clipboard empty or no clipboard tool)} {(క్లిప్బోర్డ్ ఖాళీ లేదా క్లిప్బోర్డ్ టూల్ లేదు)}
 ::msgcat::mcset te (deleted) (తొలగించబడింది)
 ::msgcat::mcset te (empty) (ఖాళీ)
 ::msgcat::mcset te {(no sessions)} {(సెషన్‌లు లేవు)}
+::msgcat::mcset te {(not a memsync peer of this gateway: config is not synced with it)} {(ఇది ఈ గేట్‌వే యొక్క memsync పీర్ కాదు: దానితో కాన్ఫిగ్ సింక్ అవ్వదు)}
 ::msgcat::mcset te {(nothing to reload — read from disk per use)} {(మళ్లీ లోడ్ చేయాల్సింది లేదు — ప్రతి వాడకంలో డిస్క్ నుంచి చదువుతుంది)}
 ::msgcat::mcset te {(retrying last prompt…)} {(చివరి ప్రాంప్ట్ను మళ్ళీ ప్రయత్నిస్తోంది…)}
 ::msgcat::mcset te {(route did not resolve: %{e})} {(రూట్ కనుగొనబడలేదు: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset te {/url needs a number from /urls} {/url కి /urls నుండి నంబర్ అవసరం}
 ::msgcat::mcset te {/whois needs a nick} {/whois కి నిక్ అవసరం}
 ::msgcat::mcset te {; could not save the cleared return view: %s} {; క్లియర్ చేసిన తిరిగి వెళ్లే వీక్షణను సేవ్ చేయలేకపోయాం: %s}
+::msgcat::mcset te {; shadows bundled} {; బండిల్డ్ కాపీని అధిగమిస్తుంది}
+::msgcat::mcset te {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {కాన్ఫిగ్ ఆఫర్ సెట్టింగ్లను మార్చగలదు, వాల్ట్ ఆఫర్ రహస్యాలను విలీనం చేస్తుంది; భద్రతా విభాగానికి సంబంధించిన మార్పులు ఇప్పటికీ యజమాని కోసం వేచి ఉంటాయి.}
 ::msgcat::mcset te {A failing plugin may drop hooks mid-turn.} {పనిచేయని ప్లగిన్ టర్న్ మధ్యలో హుక్స్ను వదిలివేయవచ్చు.}
 ::msgcat::mcset te {A local server: no key is needed unless you set one up.} {లోకల్ సర్వర్: మీరు సెట్ చేసుకోకపోతే key అవసరం లేదు.}
+::msgcat::mcset te {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {సంతకం చేసిన రిలీజ్ ప్రీఫ్లైట్ తర్వాతే స్టేజ్ చేయబడుతుంది. రీస్టార్ట్/ధృవీకరణ, కొనసాగింపు మరియు రోల్బ్యాక్ వేర్వేరు చర్యలు. ఆరోగ్యకరమైన ప్రాసెస్ ఖచ్చితంగా సమీక్షించిన సోర్స్ రివిజన్ను నివేదించాలి.}
 ::msgcat::mcset te {A value is stored for %s — leave this empty to keep it.} {%s కోసం ఒక విలువ భద్రపరచబడి ఉంది — దాన్ని ఉంచుకోవడానికి దీన్ని ఖాళీగా వదలండి.}
 ::msgcat::mcset te {ACL: ban mask} {ACL: మాస్క్‌ను నిషేధించండి}
 ::msgcat::mcset te {ACL: grant admin} {ACL: admin అనుమతించండి}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset te {ACL: grant user} {ACL: user అనుమతించండి}
 ::msgcat::mcset te {ACL: revoke} {ACL: ఉపసంహరించండి}
 ::msgcat::mcset te {ACME account email} {ACME ఖాతా ఇమెయిల్}
+::msgcat::mcset te {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI assist నాలుగు స్థాయిల్లో పనిచేస్తుంది: డిజైన్ ప్రశ్న అడగండి (ఫైల్ అవసరం లేదు), ఈ ఫైల్‌ను మార్చండి, ఈ ఎక్స్‌టెన్షన్ యొక్క అనేక ఫైళ్లను మార్చండి, లేదా ప్రస్తుత డయాగ్నస్టిక్స్‌ను వివరించండి. New extension దాని ఉద్దేశం నుండి పూర్తి ఎక్స్‌టెన్షన్‌ను కూడా జనరేట్ చేయగలదు. ప్రతి రిక్వెస్ట్ టూల్స్ లేకుండా పంపబడుతుంది, అందులో నమోదైన రహస్యం లేదా క్రెడెన్షియల్ రూపంలో ఉన్న విలువ ఉంటే నిరాకరించబడుతుంది; మార్పులు డిఫ్స్‌గా చూపబడతాయి, మీరు వర్తింపజేసినప్పుడే రాయబడతాయి. మొదట ఎక్స్‌టెన్షన్ డిజైన్ అడగండి; తప్పిపోయిన API గుర్తించిన తర్వాతే కోర్ ప్యాచ్ అడగండి.}
+::msgcat::mcset te {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI సహాయం యూజర్ ఎక్స్టెన్షన్లను మాత్రమే సవరిస్తుంది, ఈ ఫైల్ వాటిలో భాగం కాదు. చాలా మార్పులు అప్గ్రేడ్లను తట్టుకునే ఎక్స్టెన్షన్కు (హుక్, టూల్, సర్వీస్ ఓవర్రైడ్ లేదా ప్రొవైడర్ డ్రైవర్) సరిపోతాయి; ఎక్స్టెన్షన్ API వ్యక్తపరచలేని వాటికి మాత్రమే కోర్ ప్యాచ్. బదులుగా ఈ మార్పు కోసం కొత్త ఎక్స్టెన్షన్ సృష్టించాలా? ఏదీ రాయడానికి ముందు దాని ఫైళ్లు ప్రివ్యూ చేయబడతాయి.}
+::msgcat::mcset te {AI assist…} {AI సహాయం…}
+::msgcat::mcset te {AI extension assistance} {AI ఎక్స్టెన్షన్ సహాయం}
 ::msgcat::mcset te {API calls} {API కాల్స్}
+::msgcat::mcset te {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {Anthropic రెఫరల్ నుండి API క్రెడిట్లు మీరు Max లేదా Ultra కొంటేనే ఇవ్వబడతాయి. ఆ సబ్స్క్రిప్షన్ను లాగిన్ లేదా API ప్రామాణీకరణగా వాడటానికి Veles మద్దతు ఇవ్వదు.}
 ::msgcat::mcset te {API key (hidden)} {API key (దాచబడింది)}
 ::msgcat::mcset te {API key env var name} {API కీ env వేరియబుల్ పేరు}
+::msgcat::mcset te {API reference} {API రెఫరెన్స్}
+::msgcat::mcset te {Abandon untouched operation} {తాకని ఆపరేషన్ను వదిలేయండి}
 ::msgcat::mcset te {Access control} {యాక్సెస్ నియంత్రణ}
 ::msgcat::mcset te {Access control (ACL)} {యాక్సెస్ నియంత్రణ (ACL)}
 ::msgcat::mcset te Add జోడించండి
 ::msgcat::mcset te {Add MCP server} {MCP సర్వర్ జోడించండి}
 ::msgcat::mcset te {Add instance} {ఇన్స్టాన్స్ జోడించండి}
 ::msgcat::mcset te {Add server…} {సర్వర్ జోడించండి…}
+::msgcat::mcset te {Adds selected extension sources. Review the branch diff and checks before merging.} {ఎంచుకున్న ఎక్స్టెన్షన్ సోర్సులను జోడిస్తుంది. విలీనం చేసే ముందు బ్రాంచ్ డిఫ్ మరియు తనిఖీలను సమీక్షించండి.}
 ::msgcat::mcset te Add… జోడించండి…
 ::msgcat::mcset te {Agent & engine} {ఏజెంట్ & ఇంజిన్}
 ::msgcat::mcset te {Alias %s} {అలియాస్ %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset te {Applies to} వర్తించేవి
 ::msgcat::mcset te Apply వర్తింపజేయండి
 ::msgcat::mcset te {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {వర్తింపజేయండి ప్రస్తుతం నడుస్తున్న సెషన్కు మాత్రమే మార్పులు చేస్తుంది. TOML కాపీ చేయండి అతికించడానికి బ్లాక్లను ఇస్తుంది. గ్లోబల్గా సేవ్ చేయండి వాటిని config.toml లోకి చేరుస్తుంది — failover విభాగాలు మాత్రమే మారతాయి, మిగతా ప్రతి లైన్ మరియు వ్యాఖ్య అలాగే ఉంటుంది, పాత ఫైల్ config.toml.bak గా భద్రమవుతుంది.}
+::msgcat::mcset te {Apply proposal…} {ప్రతిపాదనను వర్తింపజేయండి…}
+::msgcat::mcset te {Apply received} {అందుకున్నవి వర్తింపజేయండి}
+::msgcat::mcset te {Apply this AI proposal?} {ఈ AI ప్రతిపాదనను వర్తింపజేయాలా?}
+::msgcat::mcset te {Apply this change set?} {ఈ మార్పుల సెట్‌ను వర్తింపజేయాలా?}
 ::msgcat::mcset te {Apply to session} {సెషన్కు వర్తింపజేయండి}
+::msgcat::mcset te {Apply what this node received:} {ఈ నోడ్ స్వీకరించినది వర్తించండి:}
 ::msgcat::mcset te {Approval needed} {ఆమోదం అవసరం}
 ::msgcat::mcset te Apps యాప్‌లు
 ::msgcat::mcset te Archive ఆర్కైవ్
 ::msgcat::mcset te {Archive SHA-256} {ఆర్కైవ్ SHA-256}
+::msgcat::mcset te Ask అడగండి
+::msgcat::mcset te {Ask a design question} {డిజైన్ ప్రశ్న అడగండి}
+::msgcat::mcset te {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {ఎక్స్‌టెన్షన్ ఎలా నిర్మించాలో అడగండి: ఏ బౌండరీ, ఏ భాష, ఏ API. సోర్స్ ఏదీ పంపబడదు, ఏదీ రాయబడలేదు.}
 ::msgcat::mcset te {Ask the agent to change it} {దీన్ని మార్చమని ఏజెంట్‌ను అడగండి}
+::msgcat::mcset te {Asking %s…} {%s ను అడుగుతోంది…}
 ::msgcat::mcset te {Asking the provider for its models…} {ప్రొవైడర్ నుండి మోడల్స్ అడుగుతోంది…}
 ::msgcat::mcset te Attach {అటాచ్ చేయి}
 ::msgcat::mcset te {Attach to the next message} {తర్వాతి సందేశానికి జోడించు}
+::msgcat::mcset te {Author guide} {రచయిత మార్గదర్శి}
+::msgcat::mcset te {Automatically discovered from the attached gateway's cluster registry.} {జోడించబడిన గేట్‌వే యొక్క క్లస్టర్ రిజిస్ట్రీ నుండి ఆటోమాటిక్‌గా కనుగొనబడ్డాయి.}
 ::msgcat::mcset te Back వెనుకకు
 ::msgcat::mcset te {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {వెనుకకు పైన ఉన్నదాన్ని మూసివేస్తుంది: ఒక మెనూ, సెషన్ జాబితా, ఒక విండో. ఏదీ తెరిచి లేకపోతే veles నేపథ్యంలోకి వెళ్లి నడుస్తూనే ఉంటుంది.}
 ::msgcat::mcset te {Base URL} {Base URL}
+::msgcat::mcset te {Base branch} {బేస్ బ్రాంచ్}
 ::msgcat::mcset te {Bot token (hidden)} {బాట్ టోకెన్ (దాచబడింది)}
+::msgcat::mcset te Branch బ్రాంచ్
+::msgcat::mcset te {Branch and commit prepared; nothing has been pushed} {బ్రాంచ్ మరియు కమిట్ సిద్ధం చేయబడ్డాయి; ఏదీ పుష్ చేయబడలేదు}
+::msgcat::mcset te {Branch pushed and verified on origin} {బ్రాంచ్ పుష్ చేయబడింది మరియు ఆరిజిన్‌లో ధృవీకరించబడింది}
 ::msgcat::mcset te {Browse sessions} {సెషన్లను బ్రౌజ్ చేయి}
+::msgcat::mcset te {Build manifest + preflight} {బిల్డ్ మానిఫెస్ట్ + ప్రీఫ్లైట్}
+::msgcat::mcset te {Build: veles %1$s, revision %2$s (%3$s %4$s)} {బిల్డ్: veles %1$s, రివిజన్ %2$s (%3$s %4$s)}
 ::msgcat::mcset te {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e లైన్ చివరలు · C-b/C-f అక్షరం · M-b/M-f పదం · C-k EOL వరకు కిల్ · C-y yank · M-w కాపీ · C-w రీజన్ కిల్ · C-space మార్క్ సెట్ · C-/ undo}
 ::msgcat::mcset te {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g అన్నీ ఆపుతుంది · C-j కొత్త లైన్ · M-p/M-n చరిత్ర · Tab పూర్తి చేయి}
+::msgcat::mcset te {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s కోర్లు, లోడ్ %2$s / %3$s / %4$s (కోర్లలో %5$s%%)}
 ::msgcat::mcset te Cancel రద్దు
+::msgcat::mcset te {Cancel task} {టాస్క్ రద్దు చేయండి}
+::msgcat::mcset te {Cancel task %1$s? This cannot be undone.} {%1$s టాస్క్‌ను రద్దు చేయాలా? ఇది వెనక్కి తీసుకోలేరు.}
+::msgcat::mcset te {Cannot verify that %1$s is node %2$s: %3$s} {%1$s నోడ్ %2$s అని ధృవీకరించలేము: %3$s}
 ::msgcat::mcset te Capabilities సామర్థ్యాలు
 ::msgcat::mcset te {Change my app “%s” (%s): } {నా యాప్ “%s” (%s) ని మార్చు: }
+::msgcat::mcset te {Change this extension's files} {ఈ ఎక్స్‌టెన్షన్ ఫైళ్లను మార్చండి}
+::msgcat::mcset te {Change this file} {ఈ ఫైల్‌ను మార్చండి}
 ::msgcat::mcset te Change… మార్చండి…
 ::msgcat::mcset te {Channels (e.g. #veles #dev)} {ఛానెల్లు (ఉ. #veles #dev)}
 ::msgcat::mcset te Chat చాట్
 ::msgcat::mcset te {Chat — not attached; press Attach in the Instances tab} {చాట్ — జోడించబడలేదు; ఇన్స్టాన్స్లు ట్యాబ్లో Attach నొక్కండి}
 ::msgcat::mcset te {Check (lsp)} {తనిఖీ (lsp)}
+::msgcat::mcset te {Check again} {మళ్లీ చెక్ చేయండి}
+::msgcat::mcset te {Check files} {ఫైళ్లను తనిఖీ చేయండి}
 ::msgcat::mcset te Checkpoints చెక్‌పాయింట్లు
 ::msgcat::mcset te {Checkpoints (undo)} {చెక్‌పాయింట్లు (undo)}
+::msgcat::mcset te {Checks and next steps} {తనిఖీలు మరియు తదుపరి చర్యలు}
+::msgcat::mcset te {Checks run} {తనిఖీలు నడపబడ్డాయి}
 ::msgcat::mcset te {Choose BUNDLE-INFO.json in the managed install-sources directory} {నిర్వహణలో ఉన్న install-sources డైరెక్టరీలో BUNDLE-INFO.json ఎంచుకోండి}
 ::msgcat::mcset te {Choose a failover script} {ఫెయిలోవర్ స్క్రిప్ట్‌ను ఎంచుకోండి}
 ::msgcat::mcset te {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {తనిఖీ చేయడానికి ఒక మాడ్యూల్ లేదా ప్రాసెస్ ప్లగిన్ ఎంచుకోండి. డిస్కవరీ plugin.toml ను మాత్రమే చదువుతుంది; కాంపోనెంట్‌ను ఎంచుకుంటే దాని ప్రకటిత మానిఫెస్ట్ మరియు ఎంపికలను అభ్యర్థిస్తుంది. ఈ దశను తెరవడం వల్ల ఏదీ ఇన్‌స్టాల్ అవదు.}
+::msgcat::mcset te {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {పేరు, ఉద్దేశ్యం మరియు భాషను ఎంచుకుని, ఆ తర్వాత ఖచ్చితమైన ఫైళ్లను ప్రివ్యూ చేయండి. ఇంకా ఏదీ రాయబడలేదు.}
 ::msgcat::mcset te {Choose a user unit or a system service for the server profile. Neither starts a service.} {సర్వర్ ప్రొఫైల్ కోసం యూజర్ యూనిట్ లేదా సిస్టమ్ సర్వీస్ ఎంచుకోండి. ఏదీ సర్వీస్‌ను ప్రారంభించదు.}
 ::msgcat::mcset te {Choose core bundle…} {కోర్ బండిల్ ఎంచుకోండి…}
 ::msgcat::mcset te {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {ఇన్‌స్టాలేషన్ రూపాన్ని ఎంచుకోండి. లోకల్ ప్రొఫైల్స్ సమీక్షించిన ఇన్‌స్టాలర్‌ను వాడుతాయి. సిస్టమ్ మరియు కంటైనర్ ప్రొఫైల్స్ స్పష్టమైన CLI హ్యాండాఫ్ కోసం సంతకం చేసిన అభ్యర్థనను సిద్ధం చేస్తాయి. NixOS మాత్రమే మాడ్యూల్ స్నిప్పెట్‌ను ఇస్తుంది.}
+::msgcat::mcset te {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {అత్యంత సన్నని ఎల్లను ఎంచుకోండి: Tool ఒక model-callable సామర్థ్యాన్ని చేరుస్తుంది; Hook ఒక lifecycle ఈవెంట్‌ను గమనిస్తుంది లేదా దాన్ని సవరిస్తుంది; Service లేదా override point ఒక named నిర్ణయాన్ని చుట్టుముడుతుంది; Provider driver ఒక provider wire ను చేరుస్తుంది; Core patch ప్రచురించబడిన extension API ఆ మార్పును వ్యక్తపరచలేనప్పుడే మాత్రమే సరైనది.}
 ::msgcat::mcset te {Choose typed container-host options JSON} {టైప్ చేసిన కంటైనర్ హోస్ట్ ఆప్షన్ల JSON ఎంచుకోండి}
 ::msgcat::mcset te {Choose typed container-host options…} {టైప్ చేసిన కంటైనర్ హోస్ట్ ఆప్షన్లు ఎంచుకోండి…}
 ::msgcat::mcset te Clear క్లియర్
 ::msgcat::mcset te {Clear composer} {కంపోజర్‌ను క్లియర్ చేయండి}
 ::msgcat::mcset te {Clear override} {ఓవర్రైడ్ క్లియర్ చేయండి}
 ::msgcat::mcset te {Click the picture where you would click on the page.} {పేజీపై మీరు క్లిక్ చేసే చోట చిత్రంపై క్లిక్ చేయండి.}
+::msgcat::mcset te {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {%1$s ను క్లోన్ చేసి, %2$s సృష్టించి, %3$s లోని సమీక్షించిన ఫైళ్లను మాత్రమే %4$s/<extension>/ కింద కాపీ చేయండి. ఆ ఫైళ్లు తనిఖీ చేయబడి కమిట్ అవుతాయి. ఇప్పుడు పుష్ లేదా పుల్ రిక్వెస్ట్ జరగదు.}
 ::msgcat::mcset te Close మూసివేయి
 ::msgcat::mcset te {Close (Esc)} {మూసివేయి (Esc)}
 ::msgcat::mcset te {Close the setup wizard? Nothing has been written yet.} {సెటప్ విజార్డ్ మూసివేయాలా? ఇంకా ఏమీ రాయలేదు.}
 ::msgcat::mcset te {Code actions} {కోడ్ యాక్షన్లు}
+::msgcat::mcset te Commit కమిట్
+::msgcat::mcset te {Commit ready for review. Push is a separate action.} {కమిట్ సమీక్షకు సిద్ధంగా ఉంది. పుష్ విడిగా చేయాల్సిన చర్య.}
 ::msgcat::mcset te {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {హ్యాండాఫ్‌ను ప్రివ్యూ చేసే ముందు, పిన్ చేసిన ఇమేజ్ డైజెస్ట్‌తో సహా ప్రతి PDS ఫీల్డ్‌ను పూర్తి చేయండి.}
 ::msgcat::mcset te {Complete every typed container-host field before previewing this profile.} {ఈ ప్రొఫైల్‌ను ప్రివ్యూ చేసే ముందు టైప్ చేసిన ప్రతి కంటైనర్-హోస్ట్ ఫీల్డ్‌ను పూర్తి చేయండి.}
 ::msgcat::mcset te {Component configuration returned an invalid result; nothing was accepted as applied.} {కాంపోనెంట్ కాన్ఫిగరేషన్ చెల్లని ఫలితాన్ని ఇచ్చింది; అనువర్తించినట్టుగా ఏదీ ఆమోదించబడలేదు.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset te {Component options changed. Review the new preview before applying.} {కాంపోనెంట్ ఎంపికలు మారాయి. వర్తింపజేసే ముందు కొత్త ప్రివ్యూను సమీక్షించండి.}
 ::msgcat::mcset te Components కాంపోనెంట్లు
 ::msgcat::mcset te {Composer preview} {కంపోజర్ ప్రివ్యూ}
+::msgcat::mcset te Config కాన్ఫిగ్
+::msgcat::mcset te {Config differs: %s} {కాన్ఫిగ్ భిన్నంగా ఉంది: %s}
+::msgcat::mcset te {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {కాన్ఫిగ్ లాగ్: ఆ నోడ్ వద్ద %1$s మార్పులు %3$s వరకు ఉన్నాయి, ఈ గేట్‌వే వద్ద %2$s వరకు}
+::msgcat::mcset te {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {కాన్ఫిగ్ లాగ్: ఈ గేట్‌వే వద్ద %1$s మార్పులు %2$s వరకు ఉన్నాయి, ఆ నోడ్ వద్ద %3$s వరకు}
+::msgcat::mcset te {Config only on that node: %s} {ఆ నోడ్ వద్ద మాత్రమే ఉన్న కాన్ఫిగ్: %s}
+::msgcat::mcset te {Config only on this gateway: %s} {ఈ గేట్‌వే వద్ద మాత్రమే ఉన్న కాన్ఫిగ్: %s}
 ::msgcat::mcset te Configure {కాన్ఫిగర్ చేయండి}
 ::msgcat::mcset te {Configure %s} {%s కాన్ఫిగర్ చేయండి}
+::msgcat::mcset te {Configure translator} {అనువాదకాన్ని కాన్ఫిగర్ చేయండి}
+::msgcat::mcset te {Configured desktop gateway} {కాన్ఫిగర్ చేసిన డెస్క్‌టాప్ గేట్‌వే}
 ::msgcat::mcset te Configure… {కాన్ఫిగర్ చేయండి…}
 ::msgcat::mcset te {Configuring %s} {%s కాన్ఫిగర్ చేస్తోంది}
 ::msgcat::mcset te {Confirm or discard the current signed review before starting another download.} {మరొక డౌన్‌లోడ్ ప్రారంభించడానికి ముందు ప్రస్తుత సంతకం చేసిన సమీక్షను నిర్ధారించండి లేదా వదిలించుకోండి.}
 ::msgcat::mcset te {Container host: typed host plan and privileged CLI handoff} {కంటైనర్ హోస్ట్: టైప్ చేసిన హోస్ట్ ప్లాన్ మరియు అడ్మిన్ హక్కులతో CLI హ్యాండ్‌ఆఫ్}
 ::msgcat::mcset te {Context window} {కాంటెక్స్T విండో}
+::msgcat::mcset te {Continue to next target} {తదుపరి లక్ష్యానికి కొనసాగండి}
+::msgcat::mcset te {Contribute extensions: %s} {ఎక్స్టెన్షన్లను సమర్పించండి: %s}
+::msgcat::mcset te Contribute… సహకరించండి…
+::msgcat::mcset te {Contribution branch} {సహకార బ్రాంచ్}
+::msgcat::mcset te {Contribution destination} {సహకార గమ్యం}
 ::msgcat::mcset te Copy కాపీ
 ::msgcat::mcset te {Copy TOML} {TOML కాపీ చేయండి}
+::msgcat::mcset te {Copy a bundled extension into your user plugin directory before preparing a contribution.} {సహకారం సిద్ధం చేసే ముందు బండిల్డ్ ఎక్స్టెన్షన్‌ను మీ యూజర్ ప్లగిన్ డైరెక్టరీలో కాపీ చేయండి.}
 ::msgcat::mcset te {Copy message} {సందేశాన్ని కాపీ చేయండి}
 ::msgcat::mcset te {Copy name} {పేరును కాపీ చేయండి}
 ::msgcat::mcset te {Copy nick} {నిక్‌ను కాపీ చేయండి}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset te {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {కాంపోనెంట్లను కనుగొనలేకపోయాం. ప్రొవైడర్ సెటప్ దశలు ఇప్పటికీ పనిచేస్తాయి; అవసరమైతే లక్ష్య మెషీన్‌పై CLI ద్వారా ఇన్‌స్టాల్ చేయండి.}
 ::msgcat::mcset te {Could not join: %s} {చేరలేకపోయాం: %s}
 ::msgcat::mcset te {Could not list the models (%s) — type the model's name.} {మోడల్స్ జాబితా చేయలేకపోయాం (%s) — మోడల్ పేరు టైప్ చేయండి.}
+::msgcat::mcset te {Create a PR in} {PR సృష్టించే రిపోజిటరీ}
+::msgcat::mcset te {Create extension} {ఎక్స్టెన్షన్ సృష్టించండి}
 ::msgcat::mcset te {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {@BotFather తో బాట్‌ను సృష్టించి, దాని టోకెన్‌ను కింద అతికించండి: అది ఎన్‌క్రిప్ట్ చేసిన లాకర్‌లోకి వెళ్తుంది, ఎప్పుడూ config.toml లోకి కాదు.}
+::msgcat::mcset te {Create this extension?} {ఈ ఎక్స్టెన్షన్‌ను సృష్టించాలా?}
+::msgcat::mcset te {Create this generated extension?} {ఈ జనరేట్ చేసిన ఎక్స్‌టెన్షన్‌ను సృష్టించాలా?}
+::msgcat::mcset te {Created and reloaded. Review and test the extension before publishing.} {సృష్టించబడింది మరియు మళ్లీ లోడ్ చేయబడింది. పబ్లిష్ చేసే ముందు ఎక్స్టెన్షన్‌ను సమీక్షించి పరీక్షించండి.}
+::msgcat::mcset te {Created, but reload failed} {సృష్టించబడింది, కానీ మళ్లీ లోడ్ చేయడం విఫలమైంది}
 ::msgcat::mcset te {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {%s/<name>/SKILL.md ను టెంప్లేట్ నుండి సృష్టించి తెరుస్తుంది. ఫ్రంట్మాటర్ వివరణ మాత్రమే ప్రాంప్ట్ ఇండెక్స్కు చేరుతుంది, కాబట్టి స్కిల్ను ఎప్పుడు వాడాలో చెప్పేలా రాయండి.}
 ::msgcat::mcset te {Cron history} {క్రాన్ చరిత్ర}
 ::msgcat::mcset te {Cron jobs} {క్రాన్ జాబ్లు}
 ::msgcat::mcset te {Curated — write the first owner entry} {క్యూరేటెడ్ — మొదటి owner ఎంట్రీ రాయండి}
 ::msgcat::mcset te Cut కత్తిరించండి
 ::msgcat::mcset te Decline తిరస్కరించు
+::msgcat::mcset te {Dedicated translator} {ప్రత్యేక అనువాదకం}
 ::msgcat::mcset te {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset te Default డిఫాల్ట్
 ::msgcat::mcset te {Default model} {డిఫాల్ట్ మోడల్}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset te {Delete user} {యూజర్ను తొలగించండి}
 ::msgcat::mcset te {Delete workspace?} {వర్క్స్పేస్ తొలగించాలా?}
 ::msgcat::mcset te Deop {op తీసివేయండి}
+::msgcat::mcset te {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {మార్పును వివరించండి. AI ఈ ఎక్స్‌టెన్షన్ యొక్క అనేక ఫైళ్లను మార్చవచ్చు లేదా జోడించవచ్చు. ప్రతి ఫైల్ డిఫ్‌గా చూపబడుతుంది, మీరు నిర్ధారించే వరకు ఏదీ రాయబడదు.}
+::msgcat::mcset te {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {మార్పును వివరించండి. AI భర్తీ ప్రతిపాదనను ఇవ్వవచ్చు, కానీ మీరు డిఫ్‌ను పరిశీలించి ధృవీకరించే వరకు దాన్ని రాయలేదు.}
+::msgcat::mcset te {Describe the requested extension change first.} {ముందు కోరిన ఎక్స్టెన్షన్ మార్పును వివరించండి.}
+::msgcat::mcset te Description వివరణ
 ::msgcat::mcset te {Desktop: local core, modules and process plugins} {డెస్క్‌టాప్: స్థానిక కోర్, మాడ్యూల్స్ మరియు ప్రాసెస్ ప్లగిన్లు}
 ::msgcat::mcset te Detach విడదీయి
+::msgcat::mcset te {Detach foreground} {ఫోర్‌గ్రౌండ్ విడదీయండి}
 ::msgcat::mcset te Dev దేవ్
 ::msgcat::mcset te {Dev pane (REPL + LSP)} {దేవ్ ఫలకం (REPL + LSP)}
 ::msgcat::mcset te {Dev: arm / disarm live patching} {దేవ్: లైవ్ ప్యాచింగ్ ఆన్ / ఆఫ్ చేయి}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset te Devoice {voice తీసివేయండి}
 ::msgcat::mcset te {Discard review} {సమీక్షను వదిలించుకోండి}
 ::msgcat::mcset te {Discard your changes to %s?} {%s లో మీ మార్పులను విస్మరించాలా?}
+::msgcat::mcset te {Disk: %1$s free of %2$s at %3$s} {డిస్క్: %3$s వద్ద %2$s లో %1$s ఖాళీ}
 ::msgcat::mcset te Done పూర్తయింది
 ::msgcat::mcset te {Done — config written} {పూర్తయింది — config రాయబడింది}
 ::msgcat::mcset te {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {ఇన్‌స్టాల్ చేయడానికి ముందు విడుదల మానిఫెస్ట్ మరియు హోస్ట్ ఆర్కైవ్‌ను డౌన్‌లోడ్ చేసి ధృవీకరించండి. ఐదు ఐడెంటిటీ ఫీల్డ్‌లు తప్పనిసరి. ప్రైవేట్‌గా స్టేజ్ చేసిన ఆర్కైవ్‌ను గేట్‌వే ఉంచుకుంటుంది; ఈ ప్రివ్యూ ఏదీ ఇన్‌స్టాల్ చేయదు.}
 ::msgcat::mcset te {Downloading and verifying the signed release…} {సంతకం చేసిన విడుదలను డౌన్‌లోడ్ చేసి ధృవీకరిస్తోంది…}
+::msgcat::mcset te {Draft this as an extension?} {దీన్ని ఎక్స్టెన్షన్గా డ్రాఫ్ట్ చేయాలా?}
 ::msgcat::mcset te {Drag to scroll; a quick swipe goes further.} {స్క్రోల్ చేయడానికి లాగండి; వేగంగా స్వైప్ చేస్తే ఇంకా దూరం వెళ్తుంది.}
+::msgcat::mcset te {Drift check failed: %s} {డ్రిఫ్ట్ చెక్ విఫలమైంది: %s}
+::msgcat::mcset te {Drift check: %s node(s) differ from this gateway.} {డ్రిఫ్ట్ చెక్: %s నోడ్(లు) ఈ గేట్‌వేకు భిన్నంగా ఉన్నాయి.}
+::msgcat::mcset te {Drift: built from revision %1$s, this gateway from %2$s} {డ్రిఫ్ట్: రివిజన్ %1$s నుండి బిల్డ్ అయింది, ఈ గేట్‌వే %2$s నుండి}
+::msgcat::mcset te {Drift: none — same version, revision and replicated config} {డ్రిఫ్ట్: లేదు — అదే వర్షన్, రివిజన్ మరియు రెప్లికేట్ చేసిన కాన్ఫిగ్}
+::msgcat::mcset te {Drift: not compared — %s} {డ్రిఫ్ట్: పోల్చలేదు — %s}
+::msgcat::mcset te {Drift: runs version %1$s, this gateway %2$s} {డ్రిఫ్ట్: వర్షన్ %1$s నడుపుతోంది, ఈ గేట్‌వే %2$s}
+::msgcat::mcset te Drift… డ్రిఫ్ట్…
 ::msgcat::mcset te {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset te {ESC %s is not bound} {ESC %s బైండ్ కాలేదు}
 ::msgcat::mcset te {ESC- … (Meta prefix)} {ESC- … (Meta ప్రిఫిక్స్)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset te Edit… సవరించండి…
 ::msgcat::mcset te {Enable / disable} {ప్రారంభించు / ఆపివేయి}
 ::msgcat::mcset te {Enable the Telegram adapter} {Telegram అడాప్టర్ని ప్రారంభించు}
+::msgcat::mcset te Endpoint ఎండ్‌పాయింట్
 ::msgcat::mcset te Engine ఇంజిన్
 ::msgcat::mcset te Eval→gw Eval→gw
 ::msgcat::mcset te {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {%s లో ప్రతి మార్పు కామిట్ అవుతుంది. పునరుద్ధరించడం మొత్తం డైరెక్టరీని ఆ కామిట్కు తిరిగి తీసుకెళ్తుంది — ముందుగా ప్రస్తుత స్థితిని స్నాప్షాట్ చేస్తుంది, కాబట్టి తిరిగి రావడానికి మార్గం ఉంది.}
 ::msgcat::mcset te {Every plugin file goes back to that commit. The current state is committed first.} {ప్రతి ప్లగిన్ ఫైల్ ఆ కామిట్కు తిరిగి వెళ్తుంది. ప్రస్తుత స్థితి ముందుగా కామిట్ చేయబడుతుంది.}
+::msgcat::mcset te {Exact commit} {ఖచ్చితమైన కమిట్}
+::msgcat::mcset te {Exact permission rule} {ఖచ్చితమైన అనుమతి నియమం}
+::msgcat::mcset te {Example: a hook} {ఉదాహరణ: hook}
+::msgcat::mcset te {Example: a provider driver} {ఉదాహరణ: ప్రొవైడర్ డ్రైవర్}
+::msgcat::mcset te {Example: a service override wrapping core} {ఉదాహరణ: core ను చుట్టుముడే service override}
+::msgcat::mcset te {Example: a tool} {ఉదాహరణ: టూల్}
 ::msgcat::mcset te {Existing shared container network} {ఇప్పటికే ఉన్న షేర్డ్ కంటైనర్ నెట్‌వర్క్}
+::msgcat::mcset te Explain వివరించండి
+::msgcat::mcset te {Explain the diagnostics} {డయాగ్నస్టిక్స్‌ను వివరించండి}
 ::msgcat::mcset te Export… {ఎగుమతి చేయండి…}
+::msgcat::mcset te {Extension API} {ఎక్స్టెన్షన్ API}
+::msgcat::mcset te {Extension development} {Extension అభివృద్ధి}
+::msgcat::mcset te {Extension guide} {Extension గైడ్}
+::msgcat::mcset te {Extension source} {ఎక్స్టెన్షన్ సోర్సు}
 ::msgcat::mcset te {Failover blueprint} {ఫెయిలోవర్ బ్లూప్రింట్}
 ::msgcat::mcset te {Failover blueprint (edit the route chain)} {ఫెయిలోవర్ బ్లూప్రింట్ (రూట్ చైన్ సవరించు)}
 ::msgcat::mcset te {Failover hook script (what `script` mode runs)} {ఫెయిలోవర్ హుక్ స్క్రిప్ట్ (`script` మోడ్ నడిచేది)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset te {Find in transcript} {ట్రాన్స్‌క్రిప్ట్‌లో వెతుకు}
 ::msgcat::mcset te {Find in transcript…} {ట్రాన్స్‌క్రిప్ట్‌లో వెతుకు…}
 ::msgcat::mcset te {Find references} {రిఫరెన్సులను కనుగొను}
+::msgcat::mcset te {Finish rollback} {రోల్బ్యాక్ పూర్తి చేయండి}
 ::msgcat::mcset te {First run: no config.toml yet.} {మొదటి రన్: ఇంకా config.toml లేదు.}
+::msgcat::mcset te {Fix the failed syntax checks before preparing a contribution.} {సహకారం సిద్ధం చేసే ముందు విఫలమైన సింటాక్స్ తనిఖీలను సరిచేయండి.}
+::msgcat::mcset te {Fleet deployment} {ఫ్లీట్ డిప్లాయ్మెంట్}
+::msgcat::mcset te {Fleet deployment runs from a desktop computer; it is not available on Android.} {ఫ్లీట్ డిప్లాయ్మెంట్ డెస్క్టాప్ కంప్యూటర్ నుండి నడుస్తుంది; Android లో అందుబాటులో లేదు.}
+::msgcat::mcset te {Fleet deploy…} {ఫ్లీట్ డిప్లాయ్…}
+::msgcat::mcset te {Fleet drift} {ఫ్లీట్ డ్రిఫ్ట్}
 ::msgcat::mcset te {Fold / unfold} {మడవు / విప్పు}
 ::msgcat::mcset te {Forget declaration} {ప్రకటనను మరచిపో}
+::msgcat::mcset te {Forget node %s?} {నోడ్ %s ను మర్చిపోవాలా?}
+::msgcat::mcset te {Forget node…} {నోడ్ను మర్చిపోవాలా…}
+::msgcat::mcset te {Forgetting %1$s failed: %2$s} {%1$s ను మర్చిపోవడం విఫలమైంది: %2$s}
+::msgcat::mcset te {Forgot node %s.} {నోడ్ %s మర్చిపోయాం.}
+::msgcat::mcset te {Forgotten fleet-wide (refused until they heartbeat again): %s} {ఫ్లీట్ మొత్తం మరచిపోయాం (అవి మళ్లీ హార్ట్‌బీట్ చేసే వరకు నిరాకరించబడతాయి): %s}
 ::msgcat::mcset te Fork {శాఖ చేయి}
 ::msgcat::mcset te {Free space} {ఖాళీ స్థలం}
 ::msgcat::mcset te {Full source commit SHA} {పూర్తి సోర్స్ కమిట్ SHA}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset te {Gateway image sha256 digest} {గేట్‌వే ఇమేజ్ sha256 డైజెస్ట్}
 ::msgcat::mcset te {Gateway quadlet name} {గేట్‌వే quadlet పేరు}
 ::msgcat::mcset te {Gateway status} {గేట్‌వే స్థితి}
+::msgcat::mcset te {Generate with AI…} {AI తో జనరేట్ చేయండి…}
+::msgcat::mcset te {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {%s జనరేట్ చేసింది - ఏదీ రాయబడలేదు. ప్రతి ఫైల్‌ను సమీక్షించండి, తర్వాత ఎక్స్‌టెన్షన్ సృష్టించే చర్య సరిగ్గా వాటినే రాస్తుంది.}
 ::msgcat::mcset te {Get a key at %s} {%s లో key పొందండి}
 ::msgcat::mcset te {GitHub release URL} {GitHub విడుదల URL}
+::msgcat::mcset te {Give the extension a name and describe what it should do (the purpose), then generate.} {ఎక్స్‌టెన్షన్‌కు పేరు ఇచ్చి, అది ఏమి చేయాలో (ఉద్దేశం) వివరించండి, తర్వాత జనరేట్ చేయండి.}
 ::msgcat::mcset te {Give up} వదిలిపెట్టు
 ::msgcat::mcset te Go వెళ్ళండి
 ::msgcat::mcset te {Go to definition} {నిర్వచనానికి వెళ్ళు}
+::msgcat::mcset te {Gossip failed: %s} {గాసిప్ విఫలమైంది: %s}
+::msgcat::mcset te {Gossip now} {ఇప్పుడే గాసిప్ చేయండి}
+::msgcat::mcset te {Gossip with %1$s: %2$s} {%1$s తో గాసిప్: %2$s}
+::msgcat::mcset te {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {గాసిప్: %2$s పీర్(ల)లో %1$s సమాధానమిచ్చాయి (%3$s).}
 ::msgcat::mcset te Grant అనుమతించండి
 ::msgcat::mcset te {Grant access} {యాక్సెస్ అనుమతించండి}
+::msgcat::mcset te {Granted at} {ఇవ్వబడిన సమయం}
 ::msgcat::mcset te Grant… అనుమతించండి…
 ::msgcat::mcset te {Guards — what the harness stops, and where it stands now} {Guards — హార్నెస్ ఏమి ఆపుతుంది, ఇప్పుడు ఎక్కడ ఉంది}
 ::msgcat::mcset te {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {హ్యాండ్లర్లు చూపిన క్రమంలో నడుస్తాయి; ఖాళీ కాని విలువను తిరిగి ఇచ్చే మొదటిది గెలుస్తుంది. ఒకదాన్ని ఆఫ్ చేస్తే అన్‌రిజిస్టర్ చేయకుండా దాటవేయబడుతుంది, మరియు ఎంపిక config.toml లో భద్రమవుతుంది కాబట్టి ప్లగిన్ రీలోడ్ దాన్ని నిశ్శబ్దంగా మళ్ళీ ఆన్ చేయదు.}
+::msgcat::mcset te Health ఆరోగ్యం
+::msgcat::mcset te {Health alerts (%s):} {హెల్త్ అలర్ట్లు (%s):}
+::msgcat::mcset te Heartbeat హార్ట్‌బీట్
+::msgcat::mcset te {Heartbeat age: %s s} {హార్ట్బీట్ వయస్సు: %s సె}
 ::msgcat::mcset te Help సహాయం
 ::msgcat::mcset te {Help & keys} {సహాయం & కీలు}
 ::msgcat::mcset te {Hide right panes} {కుడి ఫలకాలను దాచు}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset te {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {పట్టుకుని, వేలు ఎత్తే ముందు లాగండి: ఎంపిక పదం పదంగా మీ వేలిని అనుసరిస్తుంది, పై లేదా కింది అంచు వద్ద స్క్రోల్ అవుతూ.}
 ::msgcat::mcset te Hooks హుక్స్
 ::msgcat::mcset te {Hooks (what plugins run on)} {హుక్‌లు (ప్లగిన్‌లు నడిచేవి)}
+::msgcat::mcset te Host హోస్ట్
 ::msgcat::mcset te {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {పట్టుకోవడానికి ఎంత సమయం పడుతుందో Android యొక్క తాకి పట్టుకునే ఆలస్యం నిర్ణయిస్తుంది, దాని యాక్సెసిబిలిటీ సెట్టింగ్‌లలో.}
 ::msgcat::mcset te {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {KEK మరియు PLC రొటేషన్ కీని ఆఫ్‌లైన్‌లో బ్యాకప్ చేశాను; సమీక్షించిన TLS మరియు యాక్టివేషన్ హ్యాండ్‌ఆఫ్‌ను అనుమతించండి}
 ::msgcat::mcset te {I-search backward: type to search, C-r for previous} {I-search వెనక్కి: శోధించడానికి టైప్ చేయండి, మునుపటి కోసం C-r}
 ::msgcat::mcset te {I-search: type to search, C-s for next} {I-search: శోధించడానికి టైప్ చేయండి, తదుపరి కోసం C-s}
+::msgcat::mcset te {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {IO ఒత్తిడి: ఏదైనా టాస్క్ వేచి ఉన్న సమయం %1$s%% / %2$s%% / %3$s%% (10 సెకన్లు / 1 నిమిషం / 5 నిమిషాలు)}
 ::msgcat::mcset te IRC IRC
 ::msgcat::mcset te {IRC buffers} {IRC బఫర్లు}
 ::msgcat::mcset te {IRC composer} {IRC కంపోజర్}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset te {IRC split: %s} {IRC స్ప్లిట్: %s}
 ::msgcat::mcset te {IRC transcript} {IRC ట్రాన్స్క్రిప్ట్}
 ::msgcat::mcset te {IRC — nothing to show} {IRC — చూపించడానికి ఏమీ లేదు}
+::msgcat::mcset te {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {జరుగుతున్నవి: %1$s టర్న్(లు) %2$s, %3$s బ్యాక్‌గ్రౌండ్ టాస్క్(లు) %4$s}
 ::msgcat::mcset te {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {%s ను నిర్వహిత కాంపోనెంట్ స్టోర్‌లో ఇన్‌స్టాల్ చేయాలా? దాని మానిఫెస్ట్ చూపబడింది; ఇది ఏ సేవను ప్రారంభించదు.}
 ::msgcat::mcset te {Install component} {కాంపోనెంట్ ఇన్‌స్టాల్ చేయండి}
 ::msgcat::mcset te {Install components…} {కాంపోనెంట్లు ఇన్‌స్టాల్ చేయండి…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset te Instances ఇన్స్టాన్స్లు
 ::msgcat::mcset te {It becomes the current content, as a new revision — so the restore can be undone too.} {ఇది కొత్త మార్పుగా ప్రస్తుత కంటెంట్ అవుతుంది — కాబట్టి పునరుద్ధరణను కూడా రద్దు చేయవచ్చు.}
 ::msgcat::mcset te {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {ఇది ఈ మెషీన్‌లోని ఎన్‌క్రిప్ట్ చేసిన లాకర్‌లోకి వెళ్తుంది. ఏజెంట్ దీన్ని ఎప్పుడూ చూడదు: కమాండ్‌లలో $%s గా వాడటం, లేదా అనుమతించిన హోస్ట్‌లకు పంపడం మాత్రమే దానికి సాధ్యం.}
+::msgcat::mcset te {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {ఇది ఫ్లీట్ మొత్తం క్లస్టర్ రిజిస్ట్రీ నుండి తీసివేయబడుతుంది: తదుపరి గాసిప్ మార్పిడి ప్రతి 0.2.0 పీర్‌కు దాన్ని కూడా తీసివేయమని చెబుతుంది, వాటిలో ఏదీ దాన్ని తిరిగి విలీనం చేసుకోదు. 0.2.0 కంటే పాత పీర్ దాన్ని ఇప్పటికీ జాబితాలో చూపుతుంది. మెషిన్ తిరిగి వచ్చి హార్ట్‌బీట్ చేస్తే, అది మళ్లీ నమోదు చేయబడుతుంది. సింక్ పీర్లు మరియు సేవ్ చేసిన ఇన్‌స్టాన్స్‌లు మారవు.}
 ::msgcat::mcset te {It leaves memory now. Its history keeps every revision, and History… can restore it.} {ఇది ఇప్పుడు మెమరీ నుండి వెళ్లిపోతుంది. దాని చరిత్ర ప్రతి మార్పును ఉంచుతుంది, చరిత్ర… దాన్ని పునరుద్ధరించగలదు.}
 ::msgcat::mcset te Join చేరండి
 ::msgcat::mcset te {Join a pool} {యంత్రాల సమూహంలో చేరండి}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset te {Language (i18n)} {భాష (i18n)}
 ::msgcat::mcset te Language… భాష…
 ::msgcat::mcset te {Last active} {చివరిగా చురుకుగా}
+::msgcat::mcset te {Last probe: %1$s — %2$s} {చివరి ప్రోబ్: %1$s — %2$s}
 ::msgcat::mcset te {Leave %s?} {%s ను వదిలేయాలా?}
 ::msgcat::mcset te Leave… వదిలివేయండి…
 ::msgcat::mcset te {Legacy open — no [acl] section} {లెగసీ ఓపెన్ — [acl] విభాగం లేదు}
 ::msgcat::mcset te {Let %s:} {%s కు వీటిని అనుమతించండి:}
 ::msgcat::mcset te {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {అక్షరాలు, అంకెలు, - మరియు _. plugin.toml మరియు post_llm_call హుక్ను నమోదు చేసే plugin.tcl ను సృష్టించి, Dev పేన్లో తెరుస్తుంది.}
+::msgcat::mcset te Level స్థాయి
 ::msgcat::mcset te {Lift lockdown} {లాక్డౌన్ ఎత్తివేయి}
+::msgcat::mcset te Lines లైన్లు
 ::msgcat::mcset te {List the provider's models} {ప్రొవైడర్ మోడల్స్ జాబితా చేయండి}
+::msgcat::mcset te Load లోడ్
 ::msgcat::mcset te {Load more} {మరిన్ని లోడ్ చేయి}
 ::msgcat::mcset te {Loading discovered components…} {కనుగొన్న కాంపోనెంట్లను లోడ్ చేస్తోంది…}
 ::msgcat::mcset te {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {లోకల్ బండిల్ సమీక్షించబడింది. ఇన్స్టాలేషన్ నిర్ధారించడానికి Install selected component ఎంచుకోండి; ఇంకా ఏదీ ఇన్స్టాల్ కాలేదు.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset te {Lock down} {లాక్డౌన్ చేయి}
 ::msgcat::mcset te Log లాగ్
 ::msgcat::mcset te {Log (engine + status)} {లాగ్ (ఇంజన్ + స్థితి)}
+::msgcat::mcset te {Log of %s} {%s యొక్క లాగ్}
+::msgcat::mcset te Logs… లాగ్లు…
 ::msgcat::mcset te {M-g- (g: goto line)} {M-g- (g: లైన్కు వెళ్ళు)}
 ::msgcat::mcset te {M-p/M-n history · Tab complete} {M-p/M-n చరిత్ర · Tab పూర్తి చేయి}
 ::msgcat::mcset te {MCP server list} {MCP సర్వర్ జాబితా}
 ::msgcat::mcset te {MCP servers (from config.toml)} {MCP సర్వర్లు (config.toml నుండి)}
 ::msgcat::mcset te {Make default} {డిఫాల్ట్ చేయి}
 ::msgcat::mcset te {Make default (config.toml)} {డిఫాల్ట్ చేయి (config.toml)}
+::msgcat::mcset te {Manage extensions} {Extensions నిర్వహించండి}
 ::msgcat::mcset te {Manifest SHA-256} {మానిఫెస్ట్ SHA-256}
 ::msgcat::mcset te {Mark read} {చదివినట్లు గుర్తించు}
 ::msgcat::mcset te {Mechanisms (what the engine does on its own)} {యంత్రాంగాలు (ఇంజన్ తానే చేసేవి)}
 ::msgcat::mcset te {Mechanisms — what the engine does on its own, and how to stop it} {Mechanisms — ఇంజన్ స్వయంగా ఏమి చేస్తుంది, మరియు దాన్ని ఎలా ఆపాలి}
 ::msgcat::mcset te Memory మెమరీ
 ::msgcat::mcset te {Memory history} {మెమరీ చరిత్ర}
+::msgcat::mcset te {Memory: %1$s available of %2$s (%3$s%% used)} {మెమొరీ: %2$s లో %1$s అందుబాటులో (%3$s%% వాడబడింది)}
+::msgcat::mcset te {Merge the received %s into this node?} {స్వీకరించిన %s ను ఈ నోడ్లో విలీనం చేయాలా?}
 ::msgcat::mcset te Messages సందేశాలు
+::msgcat::mcset te Metrics మెట్రిక్స్
+::msgcat::mcset te {Metrics (asked %s):} {మెట్రిక్స్ (%s ను అడిగాం):}
+::msgcat::mcset te {Metrics of %1$s failed: %2$s} {%1$s మెట్రిక్స్ విఫలమైంది: %2$s}
+::msgcat::mcset te {Metrics of %s received.} {%s మెట్రిక్స్ అందాయి.}
+::msgcat::mcset te {Metrics: not asked yet — use Metrics.} {మెట్రిక్స్: ఇంకా అడగలేదు — మెట్రిక్స్ వాడండి.}
 ::msgcat::mcset te Model మోడల్
 ::msgcat::mcset te {Model for this session} {ఈ సెషన్కు మోడల్}
 ::msgcat::mcset te {Models & settings} {మోడల్లు & సెట్టింగ్లు}
+::msgcat::mcset te Monitors మానిటర్లు
+::msgcat::mcset te Name పేరు
+::msgcat::mcset te {Need an account? Optional sign-up links (open in your browser):} {ఖాతా కావాలా? ఐచ్ఛిక నమోదు లింక్‌లు (మీ బ్రౌజర్‌లో తెరుచుకుంటాయి):}
 ::msgcat::mcset te Network నెట్‌వర్క్
 ::msgcat::mcset te {New alias} {కొత్త అలియాస్}
+::msgcat::mcset te {New branch name} {కొత్త బ్రాంచ్ పేరు}
 ::msgcat::mcset te {New cron job} {కొత్త క్రాన్ జాబ్}
+::msgcat::mcset te {New extension} {కొత్త extension}
 ::msgcat::mcset te {New memory file} {కొత్త మెమరీ ఫైల్}
 ::msgcat::mcset te {New plugin} {కొత్త ప్లగిన్}
 ::msgcat::mcset te {New session} {కొత్త సెషన్}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset te Next తదుపరి
 ::msgcat::mcset te Nickname నిక్నేమ్
 ::msgcat::mcset te {NixOS: emit a module snippet; do not edit host declarations} {NixOS: మాడ్యూల్ స్నిప్పెట్‌ను జారీ చేయండి; హోస్ట్ డిక్లరేషన్లను సవరించవద్దు}
+::msgcat::mcset te {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {ఈ నోడ్ కోసం SSH lifecycle target కాన్ఫిగర్ చేయబడలేదు. దాన్ని డిప్లాయ్ చేయడానికి లేదా రీస్టార్ట్ చేయడానికి స్పష్టంగా ఒక instance ను జోడించండి.}
+::msgcat::mcset te {No additional push happens.} {అదనపు పుష్ ఏదీ జరగదు.}
 ::msgcat::mcset te {No apps yet. Ask the agent to make one: “make me an app that…”} {ఇంకా యాప్‌లు లేవు. ఒకటి తయారు చేయమని ఏజెంట్‌ను అడగండి: “నాకు … చేసే యాప్ తయారు చేయి”}
 ::msgcat::mcset te {No code in the picture. Hold the phone closer, straight on, and scan again.} {చిత్రంలో కోడ్ లేదు. ఫోన్‌ను దగ్గరగా, నిటారుగా పట్టుకుని మళ్లీ స్కాన్ చేయండి.}
 ::msgcat::mcset te {No configuration snapshot will be restored.} {ఏ కాన్ఫిగరేషన్ స్నాప్‌షాట్ కూడా పునరుద్ధరించబడదు.}
+::msgcat::mcset te {No configured sync peer for this node.} {ఈ నోడ్కు కాన్ఫిగర్ చేసిన సింక్ పీర్ లేదు.}
+::msgcat::mcset te {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {ప్రత్యేక అనువాదకం కాన్ఫిగర్ చేయబడలేదు. దాని ప్రొవైడర్, మోడల్ మరియు లక్ష్య భాషను ఎంచుకోవడానికి అనువాదకాన్ని కాన్ఫిగర్ చేయండి ఆప్షన్ ఉపయోగించండి.}
+::msgcat::mcset te {No deployment started.} {ఏ డిప్లాయ్మెంట్ ప్రారంభం కాలేదు.}
+::msgcat::mcset te {No diagnostics reported by the current LSP document.} {ప్రస్తుత LSP డాక్యుమెంట్ ఏ డయాగ్నోస్టిక్స్‌నూ నివేదించలేదు.}
+::msgcat::mcset te {No explicitly configured desktop gateway is bound to this node.} {ఈ నోడ్‌కు స్పష్టంగా కాన్ఫిగర్ చేసిన డెస్క్‌టాప్ గేట్‌వే ఏదీ బైండ్ చేయబడలేదు.}
+::msgcat::mcset te {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {ఈ నోడ్‌కు స్పష్టంగా కాన్ఫిగర్ చేసిన గేట్‌వే ఏదీ బైండ్ చేయబడలేదు. ముందు గేట్‌వేను జోడించండి; దాని రిజిస్ట్రీ ఎండ్‌పాయింట్ డెస్క్‌టాప్ URL గా వాడబడదు.}
+::msgcat::mcset te {No file is open. Ask a design question, or open an extension file for help with its code.} {ఏ ఫైల్ తెరిచి లేదు. డిజైన్ ప్రశ్న అడగండి, లేదా దాని కోడ్ గురించి సహాయం కోసం ఎక్స్‌టెన్షన్ ఫైల్‌ను తెరవండి.}
+::msgcat::mcset te {No files have been written. Review the exact manifest and source, then confirm creation.} {ఏ ఫైళ్లూ రాయబడలేదు. ఖచ్చితమైన మానిఫెస్ట్ మరియు సోర్సును సమీక్షించి, తర్వాత సృష్టిని ధృవీకరించండి.}
 ::msgcat::mcset te {No modules or process plugins were discovered. The provider setup steps can still continue.} {మాడ్యూల్లు లేదా ప్రాసెస్ ప్లగిన్‌లు ఏవీ కనుగొనబడలేదు. ప్రొవైడర్ సెటప్ దశలు ఇప్పటికీ కొనసాగవచ్చు.}
+::msgcat::mcset te {No other registered node to compare with.} {పోల్చడానికి వేరే నమోదైన నోడ్ లేదు.}
 ::msgcat::mcset te {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {ఏ ప్రొఫైల్ కూడా ఈ విజార్డ్ నుండి సర్వీస్‌ను ప్రారంభించదు, నిర్వాహక హక్కులతో నడిచే స్క్రిప్ట్‌ను అమలు చేయదు. నడపడానికి ముందు ప్లాన్‌ను మరియు ఏదైనా హ్యాండాఫ్‌ను సమీక్షించండి.}
+::msgcat::mcset te {No proposal has been requested. Nothing will be written automatically.} {ఏ ప్రతిపాదననూ కోరలేదు. ఏదీ ఆటోమేటిక్‌గా రాయబడదు.}
+::msgcat::mcset te {No proposal. Nothing was written.} {ప్రతిపాదన లేదు. ఏదీ రాయబడలేదు.}
 ::msgcat::mcset te {No routes configured.} {రూట్లు కాన్ఫిగర్ చేయబడలేదు.}
 ::msgcat::mcset te {No session selected — pick one in the sidebar or start a new one} {సెషన్ ఎంచుకోబడలేదు — సైడ్బార్లో ఒకటి ఎంచుకోండి లేదా కొత్తది ప్రారంభించండి}
 ::msgcat::mcset te {No swap target yet: pick a language and press “Set as swap target”.} {ఇంకా మార్పు భాష లేదు: ఒక భాష ఎంచుకుని “మార్పు భాషగా చేయి” నొక్కండి.}
 ::msgcat::mcset te {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {config.toml లో {[}acl{]} విభాగం లేదు: గేట్వేకు చేరే ప్రతి పంపినవాడు యజమానిగా పరిగణించబడతాడు, ACLకి ముందు ఉన్న ఒకే-యూజర్ ప్రవర్తన. అనుమతించడం మరియు ఉపసంహరించడం ఇప్పటికీ పనిచేస్తుంది మరియు {[}acl{]} ఉన్న క్షణం నుండి అమలులోకి వస్తుంది.}
+::msgcat::mcset te {Node id} {నోడ్ ID}
+::msgcat::mcset te {Non-evaluating syntax checks} {కోడ్‌ను అమలు చేయని సింటాక్స్ తనిఖీలు}
+::msgcat::mcset te {Not available: %s} {అందుబాటులో లేదు: %s}
+::msgcat::mcset te Note గమనిక
 ::msgcat::mcset te {Note for the agent (optional):} {ఏజెంట్ కోసం గమనిక (ఐచ్ఛికం):}
+::msgcat::mcset te {Nothing selected.} {ఏదీ ఎంచుకోలేదు.}
 ::msgcat::mcset te {Nothing typed yet.} {ఇంకా ఏమీ టైప్ చేయలేదు.}
+::msgcat::mcset te {Nothing was generated or written.} {ఏదీ జనరేట్ చేయలేదు, రాయలేదు.}
+::msgcat::mcset te {Nothing was prepared: the chosen repository already has these paths.} {ఏదీ సిద్ధం చేయలేదు: ఎంచుకున్న రిపాజిటరీలో ఇప్పటికే ఈ పాత్లు ఉన్నాయి.}
 ::msgcat::mcset te Notifications నోటిఫికేషన్‌లు
 ::msgcat::mcset te OK సరే
 ::msgcat::mcset te Off ఆఫ్
 ::msgcat::mcset te On ఆన్
+::msgcat::mcset te {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {సమీక్షించిన ఎక్స్టెన్షన్ బఫర్ మాత్రమే భర్తీ చేయబడుతుంది. ఈ ప్రివ్యూ తర్వాత జరిగిన మార్పుల నుంచి ఫైల్ ఇంకా రక్షించబడుతుంది. కమిట్, పుష్ లేదా PR ఏదీ జరగదు.}
+::msgcat::mcset te {Only this new branch is committed. Your ambient git identity is used.} {ఈ కొత్త బ్రాంచ్ మాత్రమే కమిట్ చేయబడుతుంది. మీ ప్రస్తుత git గుర్తింపు ఉపయోగించబడుతుంది.}
 ::msgcat::mcset te Op {op ఇవ్వండి}
 ::msgcat::mcset te Open తెరువు
+::msgcat::mcset te {Open PR…} {PR తెరవండి…}
 ::msgcat::mcset te {Open a window} {విండో తెరవు}
 ::msgcat::mcset te {Open in Dev} {Dev లో తెరువు}
 ::msgcat::mcset te {Open in browser} {బ్రౌజర్లో తెరువు}
 ::msgcat::mcset te {Open plugin} {ప్లగిన్ తెరువు}
 ::msgcat::mcset te {Open terminal} {టెర్మినల్ తెరువు}
+::msgcat::mcset te {Open this pull request?} {ఈ పుల్ రిక్వెస్ట్‌ను తెరవాలా?}
 ::msgcat::mcset te {Open veles in Android's settings} {Android సెట్టింగ్‌లలో veles తెరవండి}
 ::msgcat::mcset te {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {ఐచ్ఛికం: చేరాల్సిన IRC నెట్‌వర్క్. ఛానళ్లను స్పేస్‌లు లేదా కామాలతో వేరు చేసి రాయండి; .env లో IRC_CHANNELS సెట్ చేస్తే ఈ జాబితాను భర్తీ చేస్తుంది.}
 ::msgcat::mcset te {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {ఎంపికలు ఎంచుకున్న కాంపోనెంట్ మానిఫెస్ట్ నుండి వస్తాయి. రహస్యంగా కనిపించే ఫీల్డ్‌లు సెటప్/లాకర్ ప్రవాహంలోనే ఉంటాయి. ఖాళీగా ఉంచిన ఫీల్డ్‌లు ఆ ఎంపికను మార్చవు.}
 ::msgcat::mcset te {Or paste a ticket signed on another device} {లేదా మరొక పరికరంపై సంతకం చేయబడిన టికెట్‌ను అతికించండి}
 ::msgcat::mcset te {Or type an answer:} {లేదా సమాధానం టైప్ చేయండి:}
+::msgcat::mcset te Origin ఆరిజిన్
 ::msgcat::mcset te Other… ఇతర…
 ::msgcat::mcset te Outline అవుట్లైన్
+::msgcat::mcset te Output అవుట్‌పుట్
 ::msgcat::mcset te {Override for THIS session (leave blank to inherit the default)} {ఈ సెషన్కే ఓవర్రైడ్ (డిఫాల్ట్ను వారసత్వంగా పొందడానికి ఖాళీగా వదలండి)}
 ::msgcat::mcset te {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {యజమాని గుర్తింపు (telegram:123456, irc:account, లేదా nick!user@host మాస్క్)}
 ::msgcat::mcset te {PDS and handle domain} {PDS మరియు హ్యాండిల్ డొమైన్}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset te {Pause scheduler} {షెడ్యూలర్ పాజ్ చేయి}
 ::msgcat::mcset te {Peek (C-c C-p)} {Peek (C-c C-p)}
 ::msgcat::mcset te {Peek definition} {నిర్వచనం చూడు}
+::msgcat::mcset te {Permission grants} {అనుమతి గ్రాంట్లు}
+::msgcat::mcset te {Permission grants…} {అనుమతి గ్రాంట్లు…}
 ::msgcat::mcset te Phone ఫోన్
 ::msgcat::mcset te {Phone: permissions, battery, storage} {ఫోన్: అనుమతులు, బ్యాటరీ, నిల్వ}
 ::msgcat::mcset te {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {%s తయారు చేసిన ఫోన్‌లు తమంతట తాముగా కూడా యాప్‌లను ఆపేస్తాయి. veles యాప్ సెట్టింగ్‌లలో అది తనంతట తానుగా ప్రారంభం కావడానికి, బ్యాక్‌గ్రౌండ్‌లో నడవడానికి అనుమతించండి.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset te Port పోర్ట్
 ::msgcat::mcset te {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {ప్రిఫిక్స్ కీల కాంబినేషన్లు (C-x, M-o) ఆర్మ్ అయిన క్షణంలోనే which-key పాపప్ చూపుతుంది.}
 ::msgcat::mcset te {Prepare an own vlpds PDS through the signed CLI handoff} {సంతకం చేసిన CLI హ్యాండాఫ్ ద్వారా సొంత vlpds PDS సిద్ధం చేయండి}
+::msgcat::mcset te {Prepare branch…} {బ్రాంచ్ సిద్ధం చేయండి…}
+::msgcat::mcset te {Prepare this branch and commit?} {ఈ బ్రాంచ్ మరియు కమిట్‌ను సిద్ధం చేయాలా?}
 ::msgcat::mcset te Preview ప్రివ్యూ
+::msgcat::mcset te {Preview change set} {మార్పుల సెట్ ప్రివ్యూ}
+::msgcat::mcset te {Preview files} {ఫైళ్ల ప్రివ్యూ}
 ::msgcat::mcset te {Preview here} {ఇక్కడ ప్రివ్యూ}
 ::msgcat::mcset te {Preview pane} {ప్రివ్యూ పేన్}
+::msgcat::mcset te {Preview proposal} {ప్రతిపాదన ప్రివ్యూ}
+::msgcat::mcset te {Preview the changed name or language before creating it.} {సృష్టించే ముందు మార్చిన పేరు లేదా భాషను ప్రివ్యూ చేయండి.}
+::msgcat::mcset te Probe ప్రోబ్
+::msgcat::mcset te {Probe of %1$s failed: %2$s} {%1$s ప్రోబ్ విఫలమైంది: %2$s}
 ::msgcat::mcset te {Profile result} {ప్రొఫైల్ ఫలితం}
 ::msgcat::mcset te {Promote into config.toml} {config.toml లోకి ప్రమోట్ చేయండి}
 ::msgcat::mcset te Promote… {ప్రమోట్ చేయండి…}
 ::msgcat::mcset te Provider ప్రొవైడర్
+::msgcat::mcset te {Provider driver (plugin wire only)} {ప్రొవైడర్ డ్రైవర్ (ప్లగిన్ వైర్‌కు మాత్రమే)}
 ::msgcat::mcset te {Provider entry name} {ప్రొవైడర్ ఎంట్రీ పేరు}
 ::msgcat::mcset te {Provider for this session} {ఈ సెషన్కు ప్రొవైడర్}
 ::msgcat::mcset te Providers ప్రొవైడర్లు
 ::msgcat::mcset te {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {ప్రొవైడర్లు టేబుల్ల జాబితా: custom_providers.0.base_url, .0.api_mode, .0.key_env … ఇండెక్స్ క్రింద చూపిన క్రమం నుండే వస్తుంది.}
 ::msgcat::mcset te {Public HTTPS URL} {పబ్లిక్ HTTPS URL}
+::msgcat::mcset te {Pull request base} {పుల్ రిక్వెస్ట్ బేస్}
+::msgcat::mcset te {Pull request created} {పుల్ రిక్వెస్ట్ సృష్టించబడింది}
+::msgcat::mcset te {Pull request description} {పుల్ రిక్వెస్ట్ వివరణ}
+::msgcat::mcset te {Pull request opened.} {పుల్ రిక్వెస్ట్ తెరవబడింది.}
+::msgcat::mcset te {Pull request repository} {పుల్ రిక్వెస్ట్ రిపోజిటరీ}
+::msgcat::mcset te {Pull request title} {పుల్ రిక్వెస్ట్ శీర్షిక}
 ::msgcat::mcset te {Purge + delete files} {ప్రక్షాళన + ఫైళ్లను తొలగించు}
 ::msgcat::mcset te {Purge container} {కంటైనర్‌ను ప్రక్షాళన చేయి}
+::msgcat::mcset te Purpose ఉద్దేశ్యం
+::msgcat::mcset te Push పుష్
+::msgcat::mcset te {Push branch…} {బ్రాంచ్ పుష్ చేయండి…}
+::msgcat::mcset te {Push complete. No pull request has been opened.} {పుష్ పూర్తయింది. ఏ పుల్ రిక్వెస్ట్‌నూ తెరవలేదు.}
+::msgcat::mcset te {Push this branch?} {ఈ బ్రాంచ్‌ను పుష్ చేయాలా?}
+::msgcat::mcset te {Push to %s:} {%s కు పుష్ చేయండి:}
 ::msgcat::mcset te Question ప్రశ్న
 ::msgcat::mcset te Questions ప్రశ్నలు
 ::msgcat::mcset te Quit నిష్క్రమించు
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset te {Reading notifications, for triggers} {నోటిఫికేషన్‌లు చదవడం, ట్రిగ్గర్ల కోసం}
 ::msgcat::mcset te Reasoning రీజనింగ్
 ::msgcat::mcset te {Reasoning effort} {రీజనింగ్ ఎఫర్ట్}
+::msgcat::mcset te {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {స్వీకరించాం, వర్తించడానికి వేచి ఉంది: స్టోర్ %1$s · మెమొరీ %2$s · కాన్ఫిగ్ %3$s · వాల్ట్ %4$s}
+::msgcat::mcset te {Recommended checks} {సిఫార్సు చేసిన తనిఖీలు}
 ::msgcat::mcset te {Refetch this transcript from the store} {ఈ ట్రాన్స్‌క్రిప్ట్‌ను స్టోర్ నుండి మళ్ళీ తే}
 ::msgcat::mcset te Refresh రిఫ్రెష్
 ::msgcat::mcset te {Refresh preview} {ప్రివ్యూ రిఫ్రెష్ చేయి}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset te {Rename symbol} {చిహ్నం పేరు మార్చు}
 ::msgcat::mcset te Rename… {పేరు మార్చండి…}
 ::msgcat::mcset te Rendered {రెండర్ అయింది}
+::msgcat::mcset te {Replace existing repository files?} {ఉన్న రిపాజిటరీ ఫైళ్లను భర్తీ చేయాలా?}
+::msgcat::mcset te {Replace them in the new branch? Nothing else in the repository changes.} {కొత్త బ్రాంచ్లో వాటిని భర్తీ చేయాలా? రిపాజిటరీలో మిగతా ఏదీ మారదు.}
 ::msgcat::mcset te Repository రిపాజిటరీ
 ::msgcat::mcset te {Repository (owner/name)} {రిపాజిటరీ (యజమాని/పేరు)}
+::msgcat::mcset te {Repository directory} {రిపాజిటరీ డైరెక్టరీ}
+::msgcat::mcset te {Repository paths} {రిపాజిటరీ పాత్లు}
+::msgcat::mcset te {Request a new preview before trying again.} {మళ్లీ ప్రయత్నించే ముందు కొత్త ప్రివ్యూ కోరండి.}
 ::msgcat::mcset te {Reset to default} {డిఫాల్ట్‌కు మార్చండి}
 ::msgcat::mcset te {Reset to template} {టెంప్లేట్కు రీసెట్ చేయండి}
 ::msgcat::mcset te Restart పునఃప్రారంభించు
+::msgcat::mcset te {Restart + verify canary} {కెనరీని రీస్టార్ట్ + ధృవీకరించండి}
 ::msgcat::mcset te {Restore hidden windows} {దాచిన విండోలను పునరుద్ధరించు}
 ::msgcat::mcset te {Restore plugins to %s?} {ప్లగిన్లను %s కి పునరుద్ధరించాలా?}
 ::msgcat::mcset te {Restore revision r%1$s of %2$s?} {%2$s యొక్క మార్పు r%1$s ను పునరుద్ధరించాలా?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset te {Restore this commit} {ఈ కామిట్ పునరుద్ధరించండి}
 ::msgcat::mcset te {Restore this revision} {ఈ మార్పును పునరుద్ధరించండి}
 ::msgcat::mcset te {Resume scheduler} {షెడ్యూలర్ కొనసాగించు}
+::msgcat::mcset te {Resume unfinished operation} {అసంపూర్ణ ఆపరేషన్ను కొనసాగించండి}
 ::msgcat::mcset te Revert రివర్ట్
 ::msgcat::mcset te {Revert %s to HEAD? Uncommitted changes in this file are lost.} {%s ను HEAD కి రివర్ట్ చేయాలా? ఈ ఫైల్‌లోని కమిట్ చేయని మార్పులు పోతాయి.}
 ::msgcat::mcset te Revert… రివర్ట్…
 ::msgcat::mcset te Review రివ్యూ
 ::msgcat::mcset te {Review (git) pane} {రివ్యూ (git) పేన్}
+::msgcat::mcset te {Review deployment} {డిప్లాయ్మెంట్ను సమీక్షించండి}
+::msgcat::mcset te {Review extension contribution} {ఎక్స్టెన్షన్ సహకారాన్ని సమీక్షించండి}
 ::msgcat::mcset te {Review managed local bundle…} {నిర్వహణలో ఉన్న లోకల్ బండిల్‌ను సమీక్షించండి…}
 ::msgcat::mcset te {Review rollback} {రోల్‌బ్యాక్‌ను సమీక్షించండి}
+::msgcat::mcset te {Review selected files} {ఎంచుకున్న ఫైళ్లను సమీక్షించండి}
 ::msgcat::mcset te {Review the component options on the summary screen before applying.} {వర్తింపజేసే ముందు సారాంశం స్క్రీన్‌పై కాంపోనెంట్ ఎంపికలను సమీక్షించండి.}
 ::msgcat::mcset te {Review the component preview before applying. No component configuration has been written.} {వర్తింపజేసే ముందు కాంపోనెంట్ ప్రివ్యూను సమీక్షించండి. ఏ కాంపోనెంట్ కాన్ఫిగరేషన్ రాయబడలేదు.}
+::msgcat::mcset te {Review the selected files and remove credential findings before preparing.} {సిద్ధం చేసే ముందు ఎంచుకున్న ఫైళ్లను సమీక్షించి, గుర్తించిన క్రెడెన్షియల్స్‌ను తొలగించండి.}
 ::msgcat::mcset te {Reviewed core bundle in the managed install-sources directory} {నిర్వహించే install-sources డైరెక్టరీలో సమీక్షించిన కోర్ బండిల్}
+::msgcat::mcset te {Reviewed fleet deployment} {సమీక్షించిన ఫ్లీట్ డిప్లాయ్మెంట్}
 ::msgcat::mcset te {Reviewed local bundle} {సమీక్షించిన లోకల్ బండిల్}
 ::msgcat::mcset te {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {సమీక్షించిన లోకల్ బండిల్ ఇన్స్టాల్ అయింది. ఇది సంతకం చేసిన డౌన్‌లోడ్‌తో ధృవీకరించబడలేదు. కొత్త కోర్ వాడే ముందు రీస్టార్ట్ అవసరం.}
 ::msgcat::mcset te Revision రివిజన్
 ::msgcat::mcset te Revoke ఉపసంహరించండి
+::msgcat::mcset te {Revoke selected} {ఎంచుకున్నవి ఉపసంహరించండి}
 ::msgcat::mcset te Roles పాత్రలు
 ::msgcat::mcset te {Roll back %1$s from %2$s to %3$s?} {%1$s ను %2$s నుండి %3$s కు రోల్ బ్యాక్ చేయాలా?}
+::msgcat::mcset te {Roll back selected target} {ఎంచుకున్న లక్ష్యాన్ని రోల్ బ్యాక్ చేయండి}
 ::msgcat::mcset te {Rollback completed. Reload the component or restart as requested by the report.} {రోల్‌బ్యాక్ పూర్తయింది. రిపోర్టు కోరినట్టుగా కాంపోనెంట్‌ను రీలోడ్ చేయండి లేదా రీస్టార్ట్ చేయండి.}
 ::msgcat::mcset te {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {రోల్‌బ్యాక్ సమీక్షించబడింది. పునరుద్ధరణ నిర్ధారించడానికి Install selected component ఎంచుకోండి; ఇంకా ఏదీ పునరుద్ధరించబడలేదు.}
 ::msgcat::mcset te Run నడపండి
 ::msgcat::mcset te {Run the wizard again} {విజార్డ్ని మళ్ళీ రన్ చేయండి}
 ::msgcat::mcset te {Running in the background} {బ్యాక్‌గ్రౌండ్‌లో నడవడం}
-::msgcat::mcset te {Running tasks} {నడుస్తున్న టాస్క్లు}
-::msgcat::mcset te {Running tasks (subagents, shells, monitors)} {నడుస్తున్న టాస్క్‌లు (subagents, shells, monitors)}
 ::msgcat::mcset te {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {రన్టైమ్ గ్రాంట్లు మరియు యూజర్లు స్టోర్లో ఉంటాయి, మరియు స్టోర్ రీసెట్ వాటిని తీసివేస్తుంది. ప్రమోట్ చేయడం స్టోర్ నిర్ణయించిన వాటిని config.toml కి జోడిస్తుంది — ఫైల్ యొక్క వ్యాఖ్యలు మరియు కీ క్రమం అలాగే ఉంటాయి, పక్కన బ్యాకప్ రాయబడుతుంది, స్టోర్ కాపీలు తీసివేయబడతాయి — మరియు ఫైల్లో ఇప్పటికే అభిప్రాయం ఉన్న చోట ఊహించి రాయకుండా నిరాకరిస్తుంది.}
 ::msgcat::mcset te {S3 HTTPS endpoint} {S3 HTTPS ఎండ్‌పాయింట్}
 ::msgcat::mcset te {S3 bucket} {S3 బకెట్}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset te {Save as default} {డిఫాల్ట్గా సేవ్ చేయండి}
 ::msgcat::mcset te {Save attachment as} {అటాచ్‌మెంట్ ను సేవ్ చేయి}
 ::msgcat::mcset te {Save globally} {గ్లోబల్గా సేవ్ చేయండి}
+::msgcat::mcset te {Save or revert the open buffer before applying a change set.} {మార్పుల సెట్‌ను వర్తింపజేసే ముందు తెరిచి ఉన్న బఫర్‌ను సేవ్ చేయండి లేదా రివర్ట్ చేయండి.}
 ::msgcat::mcset te Scan {స్కాన్ చేయండి}
 ::msgcat::mcset te {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {ఈ ఫోన్‌ను ఆహ్వానించిన యంత్రం నుండి veles కోడ్‌ను స్కాన్ చేయండి. అది ముందుగా WireGuard కోడ్ చూపిస్తే, దీనికి ముందు దాన్ని WireGuard యాప్‌తో స్కాన్ చేయండి.}
 ::msgcat::mcset te {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {షెడ్యూల్: ఒక విరామం ("30m", "every 2h"), క్రాన్ నమూనా ("0 9 * * 1"), లేదా ఒకేసారి కోసం ISO టైమ్స్టాంప్. పై లైన్ ఇంజన్ దాన్ని ఎలా చదువుతుందో చూపిస్తుంది. పంపిణీ: "local" అవుట్పుట్ను లాగ్లో ఉంచుతుంది — వెనుక ఎటువంటి చాట్ ప్లాట్ఫారమ్ లేని డెస్క్టాప్ నుండి ఇదే నిజాయితీగల డిఫాల్ట్ — లేదా "platform:chat_id". సెషన్ మేల్కొలుపు: తాజా సెషన్లో నడపడానికి ఖాళీగా వదలండి; ఆ సెషన్ను పూర్తి చరిత్రతో కొనసాగించడానికి సెషన్ ఐడి (లేదా ప్రత్యేక ప్రిఫిక్స్) ఇవ్వండి — బిజీ సెషన్ ప్రాంప్ట్ను దాని తదుపరి టర్న్ సరిహద్దులో తీసుకుంటుంది.}
+::msgcat::mcset te Scope పరిధి
 ::msgcat::mcset te {Scroll to end} {చివరికి స్క్రోల్ చేయి}
 ::msgcat::mcset te {Search commands and sessions…} {కమాండ్లు మరియు సెషన్లను వెతకండి…}
 ::msgcat::mcset te {Search message text} {సందేశ పాఠ్యంలో వెతుకు}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset te Section విభాగం
 ::msgcat::mcset te {Select a component first. No component options will be changed if you skip this step.} {మొదట ఒక కాంపోనెంట్‌ను ఎంచుకోండి. ఈ దశను దాటవేస్తే ఏ కాంపోనెంట్ ఎంపికలూ మారవు.}
 ::msgcat::mcset te {Select all} {అన్నీ ఎంచుకోండి}
+::msgcat::mcset te {Select all extensions} {అన్ని ఎక్స్టెన్షన్లను ఎంచుకోండి}
+::msgcat::mcset te {Select at least one source file.} {కనీసం ఒక సోర్సు ఫైల్‌ను ఎంచుకోండి.}
+::msgcat::mcset te {Select none} {ఏదీ ఎంచుకోవద్దు}
+::msgcat::mcset te {Select text to translate first.} {ముందు అనువదించడానికి టెక్స్ట్ ఎంచుకోండి.}
+::msgcat::mcset te {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {సమర్పించాల్సిన ఎక్స్టెన్షన్లు, ఫైళ్లను ఎంచుకోండి. అవి ఒకే బ్రాంచ్లో, ఒకే పుల్ రిక్వెస్ట్లోకి వెళ్తాయి, ప్రతి ఎక్స్టెన్షన్ దాని సొంత డైరెక్టరీలో. సమీక్షించి, ఏదీ అమలు చేయని తనిఖీలను నడిపించి, తర్వాత వేరుచేసిన బ్రాంచ్ను సిద్ధం చేసి కమిట్ చేయండి. పుష్ చేయడం, పుల్ రిక్వెస్ట్ సృష్టించడం వేర్వేరు నిర్ధారిత చర్యలు.}
 ::msgcat::mcset te Send పంపు
+::msgcat::mcset te {Send %s to the peer?} {%s ను పీర్కు పంపాలా?}
 ::msgcat::mcset te {Send a %d-line message to the channel?} {ఛానెల్కి %d-లైను సందేశాన్ని పంపాలా?}
 ::msgcat::mcset te {Send raw line to the server? (%s)} {సర్వర్కి ముడి లైన్ను పంపాలా? (%s)}
 ::msgcat::mcset te {Server (empty = no IRC)} {సర్వర్ (ఖాళీ = IRC లేదు)}
 ::msgcat::mcset te {Server: gateway configuration and a reviewed user unit} {సర్వర్: గేట్‌వే కాన్ఫిగరేషన్ మరియు సమీక్షించిన యూజర్ యూనిట్}
 ::msgcat::mcset te {Server: install a user unit and prepare the separate linger handoff} {సర్వర్: యూజర్ యూనిట్ ఇన్‌స్టాల్ చేసి, విడిగా linger హ్యాండ్‌ఆఫ్‌ను సిద్ధం చేయండి}
 ::msgcat::mcset te {Server: use a system service and prepare a privileged CLI request} {సర్వర్: సిస్టమ్ సర్వీస్ వాడి, అడ్మిన్ హక్కులతో CLI అభ్యర్థనను సిద్ధం చేయండి}
+::msgcat::mcset te Session సెషన్
 ::msgcat::mcset te {Session id} {సెషన్ ఐడి}
 ::msgcat::mcset te {Session id…} {సెషన్ ఐడి…}
 ::msgcat::mcset te Sessions సెషన్లు
 ::msgcat::mcset te {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {ఈ అలియాస్కి ప్రస్తుతం ఓవర్రైడ్ అయిన సెషన్లు తాము పొందిన మార్గాన్నే ఉంచుకుంటాయి; కొత్త ఓవర్రైడ్లు ఈ పేరును కనుగొనవు.}
+::msgcat::mcset te {Sessions served} {సేవ చేసిన సెషన్లు}
 ::msgcat::mcset te Set {సెట్ చేయి}
 ::msgcat::mcset te {Set [model] provider/default in config.toml.} {[model] ప్రొవైడర్/డిఫాల్ట్ను config.toml లో సెట్ చేయి.}
 ::msgcat::mcset te {Set as swap target} {మార్పు భాషగా చేయి}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset te {Setup — summary} {సెటప్ — సారాంశం}
 ::msgcat::mcset te {Setup — welcome} {సెటప్ — స్వాగతం}
 ::msgcat::mcset te {Shared container network} {షేర్డ్ కంటైనర్ నెట్‌వర్క్}
+::msgcat::mcset te Shells షెల్లు
+::msgcat::mcset te {Shells and monitors} {షెల్లు మరియు మానిటర్లు}
+::msgcat::mcset te {Shells and monitors (subagents, shells, monitors)} {షెల్లు మరియు మానిటర్లు (సబ్‌ఏజెంట్లు, షెల్లు, మానిటర్లు)}
 ::msgcat::mcset te {Show diff} {తేడాలు చూపించు}
 ::msgcat::mcset te {Show every key} {అన్ని కీలు చూపించు}
 ::msgcat::mcset te Sign సంతకం
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset te Solved పరిష్కరించబడింది
 ::msgcat::mcset te Source మూలం
 ::msgcat::mcset te {Source commit} {సోర్స్ కమిట్}
+::msgcat::mcset te {Source text} {మూల వచనం}
 ::msgcat::mcset te {Source→app (C-c C-c)} {మూలం→యాప్ (C-c C-c)}
 ::msgcat::mcset te Stage {స్టేజ్ చేయి}
+::msgcat::mcset te {Stage canary} {కెనరీని స్టేజ్ చేయండి}
+::msgcat::mcset te Stale పాతబడిన
+::msgcat::mcset te {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {స్థిరమైన అనుమతులు తర్వాతి టూల్ కాల్స్ను మళ్లీ అడగకుండా అనుమతిస్తాయి. సెషన్ గ్రాంట్లను ప్రతి సర్ఫేస్ (డెస్క్టాప్, Telegram, IRC, …) పై నడుస్తున్న సెషన్లు ఉంచుకుంటాయి; గ్లోబల్ గ్రాంట్లు శాశ్వతంగా ఉంటాయి; config.toml లోని [approvals] అనుమతి జాబితా ఎంట్రీలు రీడ్-ఓన్లీగా చూపబడతాయి. ఒకదాన్ని ఉపసంహరించడం మిగతా గ్రాంట్లను ఎప్పుడూ మార్చదు.}
 ::msgcat::mcset te Start ప్రారంభించు
+::msgcat::mcset te {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {మీ యూజర్ ప్లగిన్ డైరెక్టరీలోని ఎక్స్టెన్షన్‌తో ప్రారంభించండి. అది అప్‌గ్రేడ్ల తర్వాతా నిలుస్తుంది మరియు గేట్‌వే రీబిల్డ్ అవసరం లేదు. కొత్త ఎక్స్టెన్షన్ రాసే ముందు ఖచ్చితమైన మానిఫెస్ట్ మరియు సోర్సును ప్రివ్యూ చేస్తుంది. మద్దతు ఉన్న భాష మరియు API వెర్షన్‌ను ఎంచుకుని, ఫైళ్లను సమీక్షించి, తర్వాత ఎక్స్టెన్షన్‌ను విడివిడిగా పరీక్షించండి.}
 ::msgcat::mcset te {Start with the phone} {ఫోన్‌తో పాటు ప్రారంభం}
+::msgcat::mcset te {Static IP} {స్థిర IP}
 ::msgcat::mcset te Status స్థితి
 ::msgcat::mcset te Steer {దారి చూపు}
 ::msgcat::mcset te {Step %1$d of %2$d} {దశ %1$d / %2$d}
 ::msgcat::mcset te {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {ఇంకా సెట్ చేయాల్సినవి: %s — ఇక్కడ /secret set NAME అని టైప్ చేయండి, లేదా గేట్‌వే మెషీన్‌పై veles secret set NAME నడపండి.}
 ::msgcat::mcset te Stop ఆపు
 ::msgcat::mcset te {Storage root} {స్టోరేజ్ రూట్}
+::msgcat::mcset te Store స్టోర్
 ::msgcat::mcset te {Store a secret: %s} {రహస్యాన్ని భద్రపరచండి: %s}
 ::msgcat::mcset te {Store it} భద్రపరచు
+::msgcat::mcset te {Store replica} {స్టోర్ రెప్లికా}
 ::msgcat::mcset te Subagents సబ్‌ఏజెంట్లు
 ::msgcat::mcset te {Subagents (/agents)} {సబ్‌ఏజెంట్లు (/agents)}
 ::msgcat::mcset te Summary సారాంశం
+::msgcat::mcset te Surface సర్ఫేస్
 ::msgcat::mcset te {Swap ⇄} {మార్చు ⇄}
+::msgcat::mcset te {Sync cancelled.} {సింక్ రద్దు చేయబడింది.}
+::msgcat::mcset te {Sync complete.} {సింక్ పూర్తయింది.}
+::msgcat::mcset te {Sync now} {ఇప్పుడే సింక్ చేయండి}
 ::msgcat::mcset te {TOML copied — paste it into config.toml} {TOML కాపీ అయింది — config.toml లో అతికించండి}
 ::msgcat::mcset te Tag ట్యాగ్
 ::msgcat::mcset te {Tap a link to open it, or a block's header to open or close the block.} {లింక్‌ను తెరవడానికి దాన్ని ట్యాప్ చేయండి, లేదా బ్లాక్‌ను తెరవడానికి లేదా మూసివేయడానికి దాని శీర్షికను ట్యాప్ చేయండి.}
 ::msgcat::mcset te {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {టైప్ చేయడానికి కింది పెట్టెను ట్యాప్ చేయండి. పంపు పంపుతుంది, ఆపు టర్న్‌ను ముగిస్తుంది, విడదీయి నడుస్తున్న కమాండ్‌ను నేపథ్యంలోకి జరుపుతుంది.}
 ::msgcat::mcset te {Tap the text to clear the selection.} {ఎంపికను తొలగించడానికి టెక్స్ట్‌ను ట్యాప్ చేయండి.}
+::msgcat::mcset te {Target language:} {లక్ష్య భాష:}
+::msgcat::mcset te {Target node IDs (canary first, comma separated)} {లక్ష్య నోడ్ IDలు (కెనరీ మొదట, కామాతో వేరు చేయండి)}
 ::msgcat::mcset te {Task list} {టాస్క్ జాబితా}
 ::msgcat::mcset te {Task list (right pane)} {టాస్క్ జాబితా (కుడి పేన్)}
 ::msgcat::mcset te Tasks టాస్క్‌లు
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset te {That is not a ticket.} {అది టికెట్ కాదు.}
 ::msgcat::mcset te {That is not a veles pool code.} {అది veles సమూహ కోడ్ కాదు.}
 ::msgcat::mcset te {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {అది WireGuard కోడ్: దాన్ని WireGuard యాప్‌తో స్కాన్ చేయండి. veles కోడ్ రెండవది.}
+::msgcat::mcset te {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {సమీక్షించిన %d ఫైల్(లు) మీ యూజర్ ప్లగిన్ డైరెక్టరీలో కొత్త డైరెక్టరీకి రాయబడతాయి, veles ఎక్స్‌టెన్షన్‌ను లోడ్ చేయడానికి ప్రయత్నిస్తుంది. ప్రివ్యూ తర్వాత అదే పేరుతో డైరెక్టరీ ఏర్పడి ఉంటే, ఏదీ రాయబడదు. ఈ చర్యలో ప్రచురణ ఉండదు.}
 ::msgcat::mcset te {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {Dev పేన్ యొక్క REPL లైవ్ యాప్‌లో అమలవుతుంది — UI అంతటి దానంతట అదే lisp.}
 ::msgcat::mcset te {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {[mcp_servers.<name>] పట్టిక config.toml నుండి తొలగించబడుతుంది. పాత ఫైలు config.toml.bak గా ఉంచబడుతుంది.}
 ::msgcat::mcset te {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {అడాప్టర్ అల్లౌలిస్ట్లు (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) నమ్మకపు సరిహద్దు, మరియు ప్రతి అనుమతించబడిన పంపినవాడు owner గా పరిగణించబడతాడు. ఇది ACLకి ముందున్న భంగిమ.}
 ::msgcat::mcset te {The agent asks for a secret: %s} {ఏజెంట్ ఒక రహస్యం అడుగుతోంది: %s}
+::msgcat::mcset te {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {ఇప్పటికే పుష్ చేసిన బ్రాంచ్ PR హెడ్గా వాడబడుతుంది. మీ ఫోర్క్లోని బ్రాంచ్ స్వయంచాలకంగా owner:branch గా పేరు పొందుతుంది.}
+::msgcat::mcset te {The author asks} {రచయిత అడుగుతున్నారు}
+::msgcat::mcset te {The buffer changed. Request a new proposal before applying.} {బఫర్ మారింది. వర్తింపజేసే ముందు కొత్త ప్రతిపాదనను కోరండి.}
 ::msgcat::mcset te {The bundle operation returned an invalid result. Verify the installation before retrying.} {బండిల్ ఆపరేషన్ చెల్లని ఫలితాన్ని ఇచ్చింది. మళ్లీ ప్రయత్నించే ముందు ఇన్స్టాలేషన్‌ను ధృవీకరించండి.}
 ::msgcat::mcset te {The bundle preview was malformed; nothing was installed.} {బండిల్ ప్రివ్యూ తప్పుగా ఉంది; ఏదీ ఇన్స్టాల్ కాలేదు.}
 ::msgcat::mcset te {The camera did not open; paste the code instead.} {కెమెరా తెరుచుకోలేదు; బదులుగా కోడ్‌ను అతికించండి.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset te {The component manifest is still loading. Wait for it or choose another component.} {కాంపోనెంట్ మానిఫెస్ట్ ఇంకా లోడ్ అవుతోంది. దాని కోసం వేచి ఉండండి లేదా వేరే కాంపోనెంట్‌ను ఎంచుకోండి.}
 ::msgcat::mcset te {The component preview is not ready yet. Refresh it and review the result before applying.} {కాంపోనెంట్ ప్రివ్యూ ఇంకా సిద్ధంగా లేదు. దాన్ని రిఫ్రెష్ చేసి, వర్తింపజేసే ముందు ఫలితాన్ని సమీక్షించండి.}
 ::msgcat::mcset te {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {కాంపోనెంట్ ప్రివ్యూ ఇంకా లోడ్ అవుతోంది. మిళిత మార్పులను సమీక్షించే ముందు జవాబు కోసం వేచి ఉండండి.}
+::msgcat::mcset te {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {ప్రస్తుత డయాగ్నస్టిక్స్ (లాంగ్వేజ్ సర్వర్ నుండి లేదా చెక్ నుండి) ఈ ఫైల్‌తో పాటు పంపబడతాయి. ఐచ్ఛికంగా ఒక ప్రశ్న జోడించండి. సమాధానం టెక్స్ట్ మాత్రమే; ఏదీ రాయబడలేదు.}
 ::msgcat::mcset te {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {ఈ డైరెక్టరీ దానిలోని ప్రతిదీ తొలగించబడుతుంది. ఇది వెనక్కి తిరిగి రాదు — ప్రాంప్ట్ నుండి తీసేయాలని మాత్రమే అనుకుంటే దాన్ని ఆపేయండి.}
 ::msgcat::mcset te {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {డైరెక్టరీ తొలగించబడుతుంది. ప్లగిన్ ఫోల్డర్ ఒక గిట్ రిపోజిటరీ, ముందుగా స్నాప్షాట్ కమిట్ చేయబడుతుంది, కాబట్టి History… దాన్ని తిరిగి తెస్తుంది.}
+::msgcat::mcset te {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {ఎడిటర్ గేట్‌వే ఫైళ్లను, రిమోట్ ఇన్‌స్టాన్స్‌లతో సహా, తెరుస్తుంది మరియు ఫైల్ భాష కోసం గేట్‌వేపై లాంగ్వేజ్ సర్వర్‌ను నడుపుతుంది: tcl-lsp, typescript-language-server (TypeScript మరియు JavaScript), rust-analyzer (Rust ప్లగిన్ క్రేట్ లేదా మాడ్యూల్), clangd (C), racket-langserver మరియు ఒక Common Lisp సర్వర్. గేట్‌వేలో సర్వర్ ఉన్న ప్రతి భాషకూ హోవర్, డెఫినిషన్‌కు వెళ్లడం, కాంప్లీషన్ మరియు లైవ్ డయాగ్నస్టిక్స్ పనిచేస్తాయి; ఏదీ లేకపోతే, అక్కడ ఏ ప్రోగ్రామ్ ఇన్‌స్టాల్ చేయాలో ఎడిటర్ చెబుతుంది మరియు సింటాక్స్ హైలైటింగ్ అలాగే ఉంటుంది. చెక్ గేట్‌వేపై సరిపోలే చెకర్‌ను నడుపుతుంది: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, లేదా Racket మరియు Lisp రీడర్లు. సేవ్ చేయండి, Manage extensions లో రీలోడ్ చేయండి, లోకల్ స్టేట్‌ను ప్రచురించకుండా ఎక్స్‌టెన్షన్‌ను పరీక్షించండి.}
 ::msgcat::mcset te {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {మొదటి హ్యాండాఫ్ రహస్యాలు, పిన్ చేసిన ఇమేజ్ మరియు రన్‌టైమ్ ఫైల్స్‌ను సిద్ధం చేస్తుంది, కానీ PDS ను ప్రారంభించదు. KEK మరియు PLC రొటేషన్ కీని ఆఫ్‌లైన్‌లో బ్యాకప్ చేసుకోండి, తర్వాత బ్యాకప్ నిర్ధారణతో కొత్తగా సమీక్షించిన రిక్వెస్ట్ చేసి HTTP-01 TLS మరియు యాక్టివేషన్ సెటప్ చేయండి. DNS రికార్డ్లు నేరుగా ఈ హోస్ట్‌కు చూపించాలి; veles ఎలాంటి CDN ప్రాక్సీ లేదా DNS మార్పులు చేయదు.}
+::msgcat::mcset te {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {ఎక్స్‌టెన్షన్ జనరేట్ అయిన తర్వాత ఫారం మారింది. మళ్లీ జనరేట్ చేయండి, లేదా సాధారణ స్కాఫోల్డ్‌ను ప్రివ్యూ చేయండి.}
 ::msgcat::mcset te {The gateway itself is untouched.} {గేట్వే మాత్రం మారదు.}
 ::msgcat::mcset te {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {గేట్‌వే కాన్ఫిగ్‌ను మళ్లీ లోడ్ చేసింది, కాబట్టి కొత్త సెషన్‌లు ఇప్పటినుంచే దాన్ని వాడతాయి, లాకర్‌లో భద్రపరిచిన key తర్వాతి అభ్యర్థనలో వాడబడుతుంది. Telegram, IRC గేట్‌వే తర్వాతి పునఃప్రారంభంలో మొదలవుతాయి: veles gateway restart.}
 ::msgcat::mcset te {The installed component no longer matches the selected manifest. Review the component list again.} {ఇన్‌స్టాల్ అయిన కాంపోనెంట్ ఇప్పుడు ఎంచుకున్న మానిఫెస్ట్‌తో సరిపోలడం లేదు. కాంపోనెంట్ జాబితాను మళ్లీ సమీక్షించండి.}
 ::msgcat::mcset te {The installer preview has no verification signatures; apply is disabled.} {ఇన్‌స్టాలర్ ప్రివ్యూలో ధృవీకరణ సంతకాలు లేవు; వర్తింపజేయడం నిలిపివేయబడింది.}
 ::msgcat::mcset te {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {జాబ్ దాని రన్ చరిత్ర తొలగించబడతాయి. ఇది వెనక్కి రాదు — ఆపాలని మాత్రమే ఉంటే పాజ్ చేయండి.}
+::msgcat::mcset te {The log could not be read: %s} {లాగ్ చదవలేకపోయాం: %s}
 ::msgcat::mcset te {The manifest belongs to another component; its reply was discarded.} {మానిఫెస్ట్ మరో కాంపోనెంట్‌కు చెందినది; దాని జవాబు పరిగణనలోకి తీసుకోబడలేదు.}
 ::msgcat::mcset te {The profile changed. Review the fresh plan before applying it.} {ప్రొఫైల్ మారింది. అమలు చేసే ముందు కొత్త ప్లాన్‌ను సమీక్షించండి.}
 ::msgcat::mcset te {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {రిపోజిటరీకి దాని రూట్లో లేదా ఒక కేటగిరీ లోతున SKILL.md ఉండాలి. అది %s లో పెట్టబడుతుంది.}
 ::msgcat::mcset te {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {రిపోజిటరీ రూట్లో plugin.toml ఉండాలి. ఇది మానిఫెస్ట్ పేరుతో %s లోకి క్లోన్ చేయబడుతుంది.}
+::msgcat::mcset te {The reviewed change set was applied (%d files). Review and test it before publishing.} {సమీక్షించిన మార్పుల సెట్ వర్తింపజేయబడింది (%d ఫైళ్లు). ప్రచురించే ముందు దాన్ని సమీక్షించి పరీక్షించండి.}
 ::msgcat::mcset te {The reviewed configuration snapshot will also be restored.} {సమీక్షించిన కాన్ఫిగరేషన్ స్నాప్‌షాట్ కూడా పునరుద్ధరించబడుతుంది.}
+::msgcat::mcset te {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {సమీక్షించిన ఫైళ్లు మీ యూజర్ ప్లగిన్ డైరెక్టరీలో రాయబడతాయి. Veles లోకల్ రికవరీ స్నాప్‌షాట్‌ను సేవ్ చేసి, ఎక్స్టెన్షన్‌ను మళ్లీ లోడ్ చేయడానికి ప్రయత్నిస్తుంది; పబ్లిష్ చేయడం ఈ చర్యలో భాగం కాదు.}
+::msgcat::mcset te {The reviewed proposal was applied locally. Review and test it before publishing.} {సమీక్షించిన ప్రతిపాదన లోకల్‌గా వర్తింపజేయబడింది. పబ్లిష్ చేసే ముందు దాన్ని సమీక్షించి పరీక్షించండి.}
 ::msgcat::mcset te {The rollback preview was malformed or named another component; nothing was restored.} {రోల్‌బ్యాక్ ప్రివ్యూ తప్పుగా ఉంది లేదా మరో కాంపోనెంట్‌ను సూచించింది; ఏదీ పునరుద్ధరించబడలేదు.}
 ::msgcat::mcset te {The rollback returned an invalid result. Verify the installation before retrying.} {రోల్‌బ్యాక్ చెల్లని ఫలితాన్ని ఇచ్చింది. మళ్లీ ప్రయత్నించే ముందు ఇన్స్టాలేషన్‌ను ధృవీకరించండి.}
 ::msgcat::mcset te {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {కొత్త సెషన్లు మొదలయ్యే మార్గం. /model మరియు మోడల్స్ ఓవర్లే దాన్ని తర్వాత మారుస్తాయి, ప్రతి సెషన్కి లేదా కొత్త డిఫాల్ట్గా.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset te {The signed download discard returned an invalid response; no installation was requested.} {సంతకం చేసిన డౌన్‌లోడ్‌ను వదిలించుకోవడం చెల్లని ప్రతిస్పందన ఇచ్చింది; ఇన్‌స్టాలేషన్ అభ్యర్థించలేదు.}
 ::msgcat::mcset te {The signed installation returned an invalid result. Verify the installation before retrying.} {సంతకం చేసిన ఇన్‌స్టాలేషన్ చెల్లని ఫలితం ఇచ్చింది. మళ్లీ ప్రయత్నించే ముందు ఇన్‌స్టాలేషన్‌ను ధృవీకరించండి.}
 ::msgcat::mcset te {The signed release preview was malformed; nothing was installed.} {సంతకం చేసిన విడుదల ప్రివ్యూ తప్పుగా ఉంది; ఏదీ ఇన్‌స్టాల్ చేయలేదు.}
+::msgcat::mcset te {The source buffer changed. Request a new proposal before applying.} {సోర్సు బఫర్ మారింది. వర్తింపజేసే ముందు కొత్త ప్రతిపాదనను కోరండి.}
 ::msgcat::mcset te {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {స్టోర్ ఒక రివిజన్ వెనక్కి వెళ్తుంది. రోల్బ్యాక్ కూడా ఒక రివిజనే, కాబట్టి దాన్ని కూడా వెనక్కి తీయవచ్చు.}
+::msgcat::mcset te {The translator returned no text.} {అనువాదకం ఎటువంటి టెక్స్ట్‌నూ ఇవ్వలేదు.}
 ::msgcat::mcset te {The verification reply was malformed; no integrity result was accepted.} {ధృవీకరణ ప్రతిస్పందన తప్పుగా ఉంది; ఏ సమగ్రతా ఫలితం ఆమోదించబడలేదు.}
 ::msgcat::mcset te Themes థీమ్‌లు
+::msgcat::mcset te {These paths already exist in the chosen repository:} {ఎంచుకున్న రిపాజిటరీలో ఈ పాత్లు ఇప్పటికే ఉన్నాయి:}
 ::msgcat::mcset te {They have not been saved.} {అవి సేవ్ చేయబడలేదు.}
+::msgcat::mcset te {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {ఈ బఫర్‌కు వివరించడానికి డయాగ్నస్టిక్స్ లేవు. చెక్ నడపండి, లేదా లాంగ్వేజ్ సర్వర్ కోసం వేచి ఉండండి.}
 ::msgcat::mcset te {This challenge is over.} {ఈ సవాలు ముగిసింది.}
 ::msgcat::mcset te {This code has expired. Ask for a new one.} {ఈ కోడ్ గడువు ముగిసింది. కొత్తది అడగండి.}
 ::msgcat::mcset te {This does not start a service or claim signed-download verification.} {ఇది సర్వీస్‌ను ప్రారంభించదు, సంతకం చేసిన డౌన్‌లోడ్ ధృవీకరణను చెప్పుకోదు.}
 ::msgcat::mcset te {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {ఈ గేట్‌వే ఈ మెషీన్ నుంచి రహస్య విలువలను స్వీకరించదు: అక్కడే veles secret set %s తో నమోదు చేయండి, లేదా ఈ నెట్‌వర్క్‌ను దాని [vault] trusted_networks లో చేర్చండి}
 ::msgcat::mcset te {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {ఇది ఖచ్చితంగా రాయబడేది — ఇంజిన్ సొంత బైట్లు, లైవ్గా తెచ్చినవి. ఇంకా డిస్క్ని ఏమీ తాకలేదు.}
+::msgcat::mcset te {This node is not a configured sync peer for any kind.} {ఈ నోడ్ ఏ రకం సింక్కు కాన్ఫిగర్ చేసిన పీర్ కాదు.}
+::msgcat::mcset te {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {ఈ ప్లగిన్ బండిల్ చేయబడింది, రీడ్-ఓన్లీ. బండిల్డ్ కాపీని వాడాలంటే అదే పేరుతో ఉన్న యూజర్ కాపీని తొలగించండి.}
+::msgcat::mcset te {This publishes the commit; no pull request is created yet.} {ఇది కమిట్‌ను పబ్లిష్ చేస్తుంది; ఇంకా పుల్ రిక్వెస్ట్ సృష్టించబడదు.}
 ::msgcat::mcset te {This review expires after %s seconds. Closing or cancelling discards its private staging.} {ఈ సమీక్ష %s సెకన్ల తర్వాత గడువు ముగుస్తుంది. మూసివేయడం లేదా రద్దు చేయడం దాని ప్రైవేట్ స్టేజింగ్‌ను వదిలించుకుంటుంది.}
 ::msgcat::mcset te {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {ఈ విజార్డ్ config.toml ను రాస్తుంది, మీరు ఇచ్చే keys ను ఎన్‌క్రిప్ట్ చేసిన లాకర్‌లో పెడుతుంది. ప్రతి దశను దాటవేయవచ్చు: దాటవేసిన దశ కొత్త కాన్ఫిగ్‌లో ఉండదు, ఇప్పటికే ఉన్న కాన్ఫిగ్‌లో ఉన్నది ఉన్నట్లే ఉంటుంది. ఇప్పటికే ఉన్న config.toml అదే చోట సవరించబడుతుంది — మీరు సమాధానమిచ్చే విభాగాలు మాత్రమే మారతాయి, మిగతావన్నీ, వ్యాఖ్యలతో సహా, అలాగే ఉంటాయి.}
 ::msgcat::mcset te {Ticket needed} {టికెట్ అవసరం}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset te {Topic for %s} {%s కోసం అంశం}
 ::msgcat::mcset te {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {మెనూను తెరవడానికి ఒక సెషన్‌ను, లేదా మెనూ ఉన్న ఇంకేదైనా తాకి పట్టుకోండి. దాని బయట ఒక ట్యాప్, లేదా వెనుకకు, దాన్ని మూసివేస్తుంది.}
 ::msgcat::mcset te {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {ఒక పదాన్ని ఎంచుకోవడానికి దాన్ని తాకి పట్టుకోండి. వేలు ఎత్తినప్పుడు దాని మెనూ తెరుచుకుంటుంది, పైన కాపీ ఉంటుంది.}
+::msgcat::mcset te Translate అనువదించండి
+::msgcat::mcset te {Translate selection} {ఎంపికను అనువదించండి}
+::msgcat::mcset te Translating… అనువదిస్తోంది…
+::msgcat::mcset te {Translation cancelled.} {అనువాదం రద్దు చేయబడింది.}
+::msgcat::mcset te {Translation copied.} {అనువాదం కాపీ చేయబడింది.}
+::msgcat::mcset te {Translation failed} {అనువాదం విఫలమైంది}
+::msgcat::mcset te {Translation result} {అనువాద ఫలితం}
+::msgcat::mcset te {Translator configuration unavailable} {అనువాదక కాన్ఫిగరేషన్ అందుబాటులో లేదు}
 ::msgcat::mcset te {Trigger history} {ట్రిగ్గర్ చరిత్ర}
 ::msgcat::mcset te Triggers ట్రిగ్గర్లు
 ::msgcat::mcset te {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {ట్రిగ్గర్లు టర్న్ లేకుండానే ఛానెల్ ఈవెంట్లకు స్పందిస్తాయి. slopdrop ఈవెంట్ను బ్రిడ్జికి ఫార్వర్డ్ చేసి సమాధానాన్ని రిలే చేస్తుంది; vision కూల్డౌన్, అవర్లీ క్యాప్ లోపల ఉన్న ఇమేజ్ URL ను వివరిస్తుంది. [triggers] కాన్ఫిగ్ స్విచ్ మరియు ఉత్పన్న మాస్క్ రెండూ అనుమతించిన చోటే ఈ రో పనిచేస్తుంది — ప్రత్యక్ష slopdrop బైండింగ్ల కింద #coven ఏమీ ఫార్వర్డ్ చేయదు.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset te {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {.env లోని IRC_ALLOWED_USERS మీ ఖాతాను పేర్కొనే వరకు, నెట్‌వర్క్‌లో ఎవరైనా బాట్‌తో మాట్లాడవచ్చు — [acl] విభాగం లేకుంటే యజమానిగా, అన్ని టూల్స్‌తో.}
 ::msgcat::mcset te {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {.env లోని TELEGRAM_ALLOWED_USERS మీ యూజర్ ఐడిని పేర్కొనే వరకు, బాట్‌ను కనుగొన్న ఎవరైనా దానితో మాట్లాడవచ్చు — [acl] విభాగం లేకుంటే యజమానిగా, అన్ని టూల్స్‌తో.}
 ::msgcat::mcset te Untitled {శీర్షిక లేనివి}
+::msgcat::mcset te {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {అప్స్ట్రీమ్ సమర్పణ ఒక స్పష్టమైన ప్రచురణ చర్య, స్వయంచాలక అప్లోడ్ కాదు. Manage extensions లో, Contribute ప్రతి యూజర్ ఎక్స్టెన్షన్ను జాబితా చేస్తుంది: ఎక్స్టెన్షన్లు, ఫైళ్లను ఎంచుకోండి, diff మరియు రహస్యాల స్కాన్ను పరిశీలించండి, తనిఖీలు నడిపించండి, తర్వాత మీరు ఎంచుకున్న git ఐడెంటిటీతో ఒక బ్రాంచ్, ఒక PR (డిఫాల్ట్గా veles కు) సృష్టించండి. ప్రతి ఎక్స్టెన్షన్ రిపాజిటరీలో దాని సొంత డైరెక్టరీ కిందకు వెళ్తుంది, అక్కడ ఇప్పటికే ఉన్న ఫైల్ వేరే నిర్ధారణ తర్వాతే భర్తీ చేయబడుతుంది. node.toml, లోకల్ క్రెడెన్షియల్స్, టోకెన్లు, ప్రైవేట్ ఎండ్పాయింట్లు లేదా సంబంధం లేని ప్లగిన్ స్టేట్ను ఎప్పుడూ ప్రచురించవద్దు. లోకల్ రికవరీ స్నాప్షాట్లు అప్స్ట్రీమ్ కమిట్ లేదా PR కావు.}
+::msgcat::mcset te {Upstream repository or fork URL} {అప్‌స్ట్రీమ్ రిపోజిటరీ లేదా ఫోర్క్ URL}
+::msgcat::mcset te {Uptime class} {అప్‌టైమ్ తరగతి}
+::msgcat::mcset te {Uptime: host %1$s, gateway %2$s} {అప్‌టైమ్: హోస్ట్ %1$s, గేట్‌వే %2$s}
 ::msgcat::mcset te Usage వినియోగం
 ::msgcat::mcset te {Usage & Quota} {వినియోగం & కోటా}
 ::msgcat::mcset te {Use TLS} {TLS వాడండి}
 ::msgcat::mcset te {Use now} {ఇప్పుడే వాడు}
+::msgcat::mcset te {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {వాస్తవ కాంట్రాక్టుల కోసం రచయిత మార్గదర్శి మరియు API రెఫరెన్స్ బటన్లు ఉపయోగించండి. ప్లగిన్ల ఓవర్‌లే ప్రస్తుత హుక్స్‌ను జాబితా చేస్తుంది; సర్వీసులు మరియు ఓవర్‌రైడ్ పాయింట్లు ఈ మార్గదర్శిలో కాపీ చేసిన జాబితా నుంచి కాకుండా గేట్‌వే స్వంత రిజిస్ట్రీ నుంచి వస్తాయి.}
 ::msgcat::mcset te {Use this ticket} {ఈ టికెట్‌ను ఉపయోగించండి}
+::msgcat::mcset te {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {veles కే పుష్ చేయగలిగితే తప్ప మీ ఫోర్క్ (https://github.com/<you>/veles.git లేదా git@github.com:<you>/veles.git) వాడండి. ఎంచుకున్న రిపాజిటరీ వేరుచేసిన వర్క్ట్రీలో క్లోన్ చేయబడుతుంది. ఏదీ పుష్ చేయబడదు.}
 ::msgcat::mcset te {Users — one role across networks and platforms} {వినియోగదారులు — అన్ని నెట్‌వర్క్లు, ప్లాట్‌ఫారమ్లలో ఒకే పాత్ర}
 ::msgcat::mcset te {Using the phone, for the agent} {ఫోన్ వాడకం, ఏజెంట్ కోసం}
 ::msgcat::mcset te {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {సాధారణంగా ప్రొవైడర్ ఎంట్రీ పేరు లాంటిదే. Skip ఎంపికలో రెండూ ఖాళీగా వదలండి — సగం నిండిన జత రూట్ అవ్వదు.}
 ::msgcat::mcset te {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {విలువలు TOML లో ఉంటాయి: కోట్ చేసిన స్ట్రింగ్లు, సంఖ్యలు, లేదా జాబితాలు. [mcp_servers.<name>] లోకి రాయబడతాయి — మీ వ్యాఖ్యలు, మిగతా విభాగాలు అలాగే ఉంటాయి.}
+::msgcat::mcset te Vault వాల్ట్
 ::msgcat::mcset te {Verified signed bundle installed. Restart the gateway before using the new core.} {ధృవీకరించిన సంతకం చేసిన బండిల్ ఇన్‌స్టాల్ చేయబడింది. కొత్త కోర్‌ను వాడే ముందు గేట్‌వేను మళ్లీ ప్రారంభించండి.}
 ::msgcat::mcset te {Verified signed release — not installed yet} {ధృవీకరించిన సంతకం చేసిన విడుదల — ఇంకా ఇన్‌స్టాల్ చేయలేదు}
 ::msgcat::mcset te {Verify and review release…} {విడుదలను ధృవీకరించి సమీక్షించండి…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset te {Verify signed release} {సంతకం చేసిన విడుదలను ధృవీకరించండి}
 ::msgcat::mcset te {Verify signed release…} {సంతకం చేసిన విడుదలను ధృవీకరించండి…}
 ::msgcat::mcset te Version వెర్షన్
+::msgcat::mcset te {Version %1$s: %2$s} {వర్షన్ %1$s: %2$s}
+::msgcat::mcset te {Version drift in the registry: %s} {రిజిస్ట్రీలో వర్షన్ డ్రిఫ్ట్: %s}
 ::msgcat::mcset te View వీక్షణ
 ::msgcat::mcset te {View markdown source} {మార్క్‌డౌన్ సోర్స్ చూడు}
 ::msgcat::mcset te {View source / rendered} {మూలం / రెండర్ అయిన రూపం}
 ::msgcat::mcset te Voice {voice ఇవ్వండి}
+::msgcat::mcset te {Waiting for the model…} {మోడల్ కోసం వేచి ఉంది…}
+::msgcat::mcset te {Waiting for the model… Nothing has been written.} {మోడల్ కోసం వేచి ఉంది… ఏదీ రాయబడలేదు.}
 ::msgcat::mcset te {Welcome to veles} {veles కు స్వాగతం}
 ::msgcat::mcset te {What the agent can do here} {ఏజెంట్ ఇక్కడ ఏమి చేయగలదు}
 ::msgcat::mcset te {What veles may do on this phone. Each button opens the Android setting that changes it.} {ఈ ఫోన్‌లో veles ఏమి చేయవచ్చు. ప్రతి బటన్ దాన్ని మార్చే Android సెట్టింగ్‌ను తెరుస్తుంది.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset te {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {veles నేపథ్యంలో ఉన్నప్పుడు ఏజెంట్ ప్రశ్న లేదా పూర్తైన టర్న్ నోటిఫికేషన్‌గా వస్తుంది; సెషన్‌ను తెరవడానికి దాన్ని ట్యాప్ చేయండి.}
 ::msgcat::mcset te {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {బాట్తో ఎవరు మాట్లాడవచ్చు. ఈ ఎంపిక config.toml లో [acl] విభాగం ఉంటుందా లేదా అని నిర్ణయిస్తుంది — మరియు అది మొత్తం భంగిమను మారుస్తుంది.}
 ::msgcat::mcset te Whois Whois
-::msgcat::mcset te {Wire protocol (chat_completions or responses)} {వైర్ ప్రోటోకాల్ (chat_completions లేదా responses)}
+::msgcat::mcset te {Wire protocol (chat_completions, responses or plugin)} {వైర్ ప్రోటోకాల్ (chat_completions, responses లేదా plugin)}
 ::msgcat::mcset te {With a keyboard attached, every key works as on a laptop.} {కీబోర్డ్ జోడించినప్పుడు ప్రతి కీ ల్యాప్‌టాప్‌లో లాగే పనిచేస్తుంది.}
 ::msgcat::mcset te {Workflow SHA} {వర్క్‌ఫ్లో SHA}
+::msgcat::mcset te {Workflow commit} {వర్క్ఫ్లో కమిట్}
+::msgcat::mcset te Worktree వర్క్‌ట్రీ
 ::msgcat::mcset te {Write it} రాయండి
+::msgcat::mcset te {Write the design question first.} {మొదట డిజైన్ ప్రశ్న రాయండి.}
 ::msgcat::mcset te {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {ఏ ప్రొవైడర్ని రాయదు. [[custom_providers]] ఎంట్రీ మరియు [model] జత ఉండే వరకు gateway ఒక టర్న్ని రూట్ చేయదు.}
 ::msgcat::mcset te {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {ఏ [acl] కీని రాసినా ఈ గేట్‌వే క్యూరేటెడ్ మోడ్‌కు మారుతుంది: డిఫాల్ట్ పాత్ర guest (fail-closed) అవుతుంది, అనుమతి జాబితాలు ఇక సరిహద్దు కావు. మీరు నమ్మే యజమాని గుర్తింపు ఉంటేనే దీన్ని ఎంచుకోండి.}
 ::msgcat::mcset te {[model] provider} {[model] ప్రొవైడర్}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset te {also list hooks with no handler} {హ్యాండ్లర్ లేని హుక్లను కూడా జాబితా చేయి}
 ::msgcat::mcset te {also write grants that still have an expiry} {గడువు ఉన్న గ్రాంట్లను కూడా రాయండి}
 ::msgcat::mcset te {also write runtime users} {రన్‌టైమ్ వినియోగదారులను కూడా రాయండి}
+::msgcat::mcset te {an allowlist entry is removed by editing config.toml} {అనుమతి జాబితా ఎంట్రీని config.toml సవరించి తీసివేయాలి}
 ::msgcat::mcset te {an allowlist is in force: a plugin not on it stays off} {అనుమతి జాబితా అమలులో ఉంది: దానిలో లేని ప్లగిన్ ఆఫ్‌గానే ఉంటుంది}
 ::msgcat::mcset te {answer failed: %s} {సమాధానం విఫలమైంది: %s}
+::msgcat::mcset te {answer only, nothing to apply} {సమాధానం మాత్రమే, వర్తింపజేయడానికి ఏదీ లేదు}
 ::msgcat::mcset te {append these rules to config.toml} {ఈ నియమాలను config.toml కి జోడించండి}
 ::msgcat::mcset te {apply failed: %s} {అప్లై విఫలమైంది: %s}
 ::msgcat::mcset te {apply to:} వర్తింపజేయండి:
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset te {ask the agent} {ఏజెంట్‌ను అడగడం}
 ::msgcat::mcset te {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset te {asked by: %s} {అడిగినది: %s}
+::msgcat::mcset te {asking %s for its metrics…} {%s నుండి దాని మెట్రిక్స్ అడుగుతోంది…}
 ::msgcat::mcset te {attach a file} {ఫైల్ జోడించండి}
 ::msgcat::mcset te {attach an image or file} {చిత్రం లేదా ఫైల్ జోడించు}
 ::msgcat::mcset te {attach failed: %1$s} {అటాచ్ విఫలమైంది: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset te {attached %1$s (%2$s pending)} {%1$s అటాచ్ అయింది (%2$s పెండింగ్‌లో ఉన్నాయి)}
 ::msgcat::mcset te {attached to %s} {%s కి అటాచ్ అయింది}
 ::msgcat::mcset te {attached to child session %1$s} {చైల్డ్ సెషన్ %1$s కి అటాచ్ అయింది}
+::msgcat::mcset te automatic స్వయంచాలకం
 ::msgcat::mcset te {aux model} {aux మోడల్}
 ::msgcat::mcset te {aux provider} {aux ప్రొవైడర్}
+::msgcat::mcset te available {అందుబాటులో ఉంది}
 ::msgcat::mcset te {available components} {అందుబాటులో ఉన్న కాంపోనెంట్లు}
 ::msgcat::mcset te {back up N user turns} {వాడుకరి N టర్న్‌లు వెనక్కి వెళ్లు}
 ::msgcat::mcset te {backed up the previous config to %s} {మునుపటి config ని %s కి బ్యాకప్ చేసాం}
 ::msgcat::mcset te {background shells; /shells output|kill <id>} {బ్యాక్‌గ్రౌండ్ షెల్లు; /shells output|kill <id>}
+::msgcat::mcset te {backing off: %1$s failure(s), next automatic try in %2$s s} {వెనక్కి తగ్గుతోంది: %1$s వైఫల్యం(లు), తదుపరి స్వయంచాలక ప్రయత్నం %2$s సె తర్వాత}
 ::msgcat::mcset te {bad host for %1$s: %2$s} {%1$s కి చెడ్డ హోస్ట్: %2$s}
 ::msgcat::mcset te {bad unit for %1$s: %2$s} {%1$s కి చెడ్డ యూనిట్: %2$s}
 ::msgcat::mcset te {bare display off} {బేర్ డిస్ప్లే ఆఫ్}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset te {browse the filesystem} {ఫైల్ సిస్టమ్ చూడు}
 ::msgcat::mcset te {browse the repo's files} {రిపో ఫైళ్లను బ్రౌజ్ చేయి}
 ::msgcat::mcset te {builtin (%s):} {బిల్ట్-ఇన్ (%s):}
+::msgcat::mcset te bundled బండిల్డ్
+::msgcat::mcset te {bundled, read-only} {బండిల్డ్, రీడ్-ఓన్లీ}
 ::msgcat::mcset te by ఎవరు
 ::msgcat::mcset te {by plan — all sessions} {ప్లాన్ ప్రకారం — అన్ని సెషన్లు}
 ::msgcat::mcset te {by plan — this session} {ప్లాన్ ప్రకారం — ఈ సెషన్}
 ::msgcat::mcset te {by tool} {టూల్ ప్రకారం}
 ::msgcat::mcset te {cancel failed: %1$s} {క్యాన్సిల్ విఫలమైంది: %1$s}
 ::msgcat::mcset te {cancel the running turn} {నడుస్తున్న టర్న్‌ను రద్దు చేయండి}
+::msgcat::mcset te {cancel the selected task} {ఎంచుకున్న టాస్క్‌ను రద్దు చేయండి}
 ::msgcat::mcset te {cancelled task %1$s} {టాస్క్ %1$s క్యాన్సిల్ చేయబడింది}
 ::msgcat::mcset te {cannot list scripts (gateway offline?)} {స్క్రిప్ట్లను జాబితా చేయలేము (గేట్వే ఆఫ్‌లైన్‌లో ఉందా?)}
 ::msgcat::mcset te {cannot reach the gateway: %s} {gateway చేరుకోలేకపోతున్నాం: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset te commit కమిట్
 ::msgcat::mcset te {compacting %s messages in the background — the transcript reloads when it finishes} {నేపథ్యంలో %s సందేశాలు కుదిస్తోంది — పూర్తయినప్పుడు ట్రాన్స్‌క్రిప్ట్ రీలోడ్ అవుతుంది}
 ::msgcat::mcset te compacting… {కంపాక్ట్ అవుతోంది…}
+::msgcat::mcset te {comparing the nodes' versions and config…} {నోడ్ల వర్షన్లు మరియు కాన్ఫిగ్‌ను పోలుస్తోంది…}
 ::msgcat::mcset te {completion tokens} {పూర్తయింపు టోకెన్లు}
 ::msgcat::mcset te {component options and declared actions} {కాంపోనెంట్ ఎంపికలు మరియు ప్రకటిత చర్యలు}
 ::msgcat::mcset te composer కంపోజర్
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset te {could not open %s} {%s ని తెరవలేకపోయాం}
 ::msgcat::mcset te {could not open %s (no working browser opener)} {%s ని తెరవలేకపోయాం (పనిచేసే బ్రౌజర్ ఓపెనర్ లేదు)}
 ::msgcat::mcset te {could not open %{url}: %{e}} {%{url} ని తెరవలేకపోయాం: %{e}}
+::msgcat::mcset te {could not open the optional referral link: %s} {ఐచ్ఛిక సూచనా లింక్‌ను తెరవలేకపోయాం: %s}
 ::msgcat::mcset te {could not read %s: %s} {%s చదవలేకపోయాం: %s}
 ::msgcat::mcset te {could not read the current route} {ప్రస్తుత మార్గాన్ని చదవలేకపోయాం}
 ::msgcat::mcset te {could not save this session's language: %{e}} {ఈ సెషన్ భాషను సేవ్ చేయలేకపోయాం: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset te {ctxmenu: no widget %s (attached too early?)} {ctxmenu: విడ్జెట్ %s లేదు (ముందుగా అటాచ్ అయిందా?)}
 ::msgcat::mcset te {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {క్యూరేటెడ్ యాక్సెస్ ఎంచుకున్నారు కానీ యజమాని గుర్తింపు ఇవ్వలేదు, కాబట్టి [acl] నిష్క్రియంగానే ఉంటుంది — దాన్ని ప్రారంభించడానికి telegram:123456 లేదా irc:account వంటిది ఇవ్వండి}
 ::msgcat::mcset te {current theme: %{name} · /theme <name>} {ప్రస్తుత థీమ్: %{name} · /theme <name>}
+::msgcat::mcset te {cursor %1$s of %2$s (%3$s behind)} {కర్సర్ %1$s / %2$s (%3$s వెనుక)}
 ::msgcat::mcset te {custom command /%s…} {కస్టమ్ కమాండ్ /%s…}
 ::msgcat::mcset te {custom commands (.veles/commands/) and config aliases} {కస్టమ్ కమాండ్లు (.veles/commands/) మరియు కాన్ఫిగ్ మారుపేర్లు}
 ::msgcat::mcset te {cycle ends} {చక్రం ముగుస్తుంది}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset te doctor_resident {ప్రతి ప్రాంప్ట్‌లో స్థిరంగా: %{total} అక్షరాల్లో %{shown} (~%{tokens} టోకెన్లు) — మిగతాది అవసరమైనప్పుడు దీనితో లోడ్ అవుతుంది: memory action=read path=%{path}}
 ::msgcat::mcset te doctor_title {మెమరీ పరీక్ష}
 ::msgcat::mcset te doctor_total {మొత్తం: %{files} ఫైళ్లలో %{chars} అక్షరాలు (~%{tokens} టోకెన్లు)}
+::msgcat::mcset te {documentation is not in this source checkout: %s} {ఈ సోర్సు చెక్‌అవుట్‌లో డాక్యుమెంటేషన్ లేదు: %s}
 ::msgcat::mcset te done పూర్తయింది
 ::msgcat::mcset te {done · %1$s/%2$s} {పూర్తయింది · %1$s/%2$s}
 ::msgcat::mcset te {done, but the model returned no text} {పూర్తయింది, కానీ మోడల్ టెక్స్ట్ ఏమీ ఇవ్వలేదు}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset te {evaluate Tcl and answer with the result — no model turn} {Tcl ను అమలు చేసి ఫలితంతో జవాబివ్వు — మోడల్ టర్న్ లేదు}
 ::msgcat::mcset te everyone అందరూ
 ::msgcat::mcset te everywhere ప్రతిచోటా
+::msgcat::mcset te {exchanging registry gossip…} {రిజిస్ట్రీ గాసిప్ మార్పిడి చేస్తోంది…}
 ::msgcat::mcset te exit నిష్క్రమించు
 ::msgcat::mcset te {exit veles-desktop} {veles-desktop నుండి నిష్క్రమించు}
 ::msgcat::mcset te {export failed: %s} {ఎక్స్‌పోర్ట్ విఫలమైంది: %s}
 ::msgcat::mcset te {export session} {సెషన్‌ను ఎగుమతి చేయి}
 ::msgcat::mcset te {exported to %s} {%s కు ఎక్స్‌పోర్ట్ అయింది}
+::msgcat::mcset te {extension architecture, examples and LSP help} {extension ఆర్కిటెక్చర్, ఉదాహరణలు మరియు LSP సహాయం}
+::msgcat::mcset te {extension development guide} {extension అభివృద్ధి గైడ్}
+::msgcat::mcset te failed విఫలమైంది
 ::msgcat::mcset te {failed to load history: %s} {చరిత్రను లోడ్ చేయడంలో విఫలం: %s}
 ::msgcat::mcset te {failed to paint cached history: %s} {కాష్ చేసిన చరిత్రను చిత్రీకరించడంలో విఫలం: %s}
 ::msgcat::mcset te {failed to paint replayed history: %s} {పునఃప్రదర్శించిన చరిత్రను చిత్రీకరించడంలో విఫలం: %s}
 ::msgcat::mcset te {failed: %s} {విఫలమైంది: %s}
+::msgcat::mcset te {failing — heartbeating, but a sync push or the last probe failed} {వైఫల్యం — హార్ట్బీట్ ఉంది, కానీ సింక్ పుష్ లేదా చివరి ప్రోబ్ విఫలమైంది}
 ::msgcat::mcset te {failover blueprint: cannot reach the gateway} {ఫెయిలోవర్ బ్లూప్రింట్: గేట్‌వే చేరుకోలేకపోతున్నాం}
 ::msgcat::mcset te {failover graph unavailable: %1$s} {ఫెయిలోవర్ గ్రాఫ్ అందుబాటులో లేదు: %1$s}
 ::msgcat::mcset te {failover script: cannot reach the gateway} {ఫెయిలోవర్ స్క్రిప్ట్: గేట్‌వే చేరుకోలేకపోతున్నాం}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset te {fire the Tcl hook} {Tcl హుక్‌ను అమలు చేయి}
 ::msgcat::mcset te {fires for %s:} {%s కోసం అమలవుతుంది:}
 ::msgcat::mcset te {fires per hour} {గంటకు అమలవుతుంది}
+::msgcat::mcset te {fleet drift} {ఫ్లీట్ డ్రిఫ్ట్}
 ::msgcat::mcset te {focus composer} {కంపోజర్‌పై ఫోకస్}
 ::msgcat::mcset te {focus failed: %{e}} {ఫోకస్ విఫలం: %{e}}
 ::msgcat::mcset te {focus next region} {తర్వాతి ప్రాంతంపై ఫోకస్}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset te {four splits is the maximum} {గరిష్టం నాలుగు స్ప్లిట్లు}
 ::msgcat::mcset te {fresh session} {కొత్త సెషన్}
 ::msgcat::mcset te {fresh session (Ctrl-N too)} {కొత్త సెషన్ (Ctrl-N కూడా)}
+::msgcat::mcset te {fresh — heartbeating, sync passing} {తాజా — హార్ట్బీట్ ఉంది, సింక్ సరిగ్గా ఉంది}
+::msgcat::mcset te from నుండి
 ::msgcat::mcset te {from node %{node}} {నోడ్ %{node} నుండి}
 ::msgcat::mcset te {gateway     v%1$s · up %2$s} {గేట్‌వే     v%1$s · %2$s నుంచి నడుస్తోంది}
 ::msgcat::mcset te {gateway unreachable — is `veles gateway run` up?} {గేట్‌వే అందుబాటులో లేదు — `veles gateway run` నడుస్తోందా?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset te {in %s} {%s లో}
 ::msgcat::mcset te {insert the next key literally (^B bold, ^C colour, ^O reset)} {తర్వాతి కీని సాహిత్యంగా చేర్చు (^B బోల్డ్, ^C రంగు, ^O రీసెట్)}
 ::msgcat::mcset te {inserted %s} {%s చేర్చబడింది}
+::msgcat::mcset te {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {క్లస్టర్‌ను పరిశీలించండి; స్టోర్, మెమొరీ, కాన్ఫిగ్ లేదా వాల్ట్ సింక్‌ను స్పష్టంగా పుష్/వర్తింపజేయండి; పాత నోడ్‌ను ఫ్లీట్ మొత్తం మరచిపోండి; నోడ్ యొక్క లాగ్ చివర లేదా మెట్రిక్స్ చదవండి; వర్షన్లు మరియు కాన్ఫిగ్‌ను పోల్చండి; ఇప్పుడే గాసిప్ చేయండి}
 ::msgcat::mcset te {inspector — app internals · core state · gw plugins} {ఇన్‌స్పెక్టర్ — యాప్ ఇంటర్నల్స్ · కోర్ స్టేట్ · gw ప్లగిన్స్}
 ::msgcat::mcset te {install a plugin from a git URL} {git URL నుండి ప్లగిన్ ఇన్‌స్టాల్ చేయండి}
 ::msgcat::mcset te {install a skill from a git URL} {git URL నుండి స్కిల్ ఇన్‌స్టాల్ చేయండి}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset te instance ఇన్‌స్టెన్స్
 ::msgcat::mcset te {instance controls} {ఇన్‌స్టెన్స్ నియంత్రణలు}
 ::msgcat::mcset te {instance detail} {ఇన్‌స్టెన్స్ వివరాలు}
+::msgcat::mcset te {instance names may not start with "cluster:" or "g:": %s} {ఇన్స్టాన్స్ పేర్లు "cluster:" లేదా "g:" తో ప్రారంభం కాకూడదు: %s}
 ::msgcat::mcset te {instance needs a name} {ఇన్‌స్టెన్స్‌కు పేరు అవసరం}
 ::msgcat::mcset te {instance unreachable} {ఇన్‌స్టెన్స్ అందుబాటులో లేదు}
 ::msgcat::mcset te instances ఇన్‌స్టెన్సులు
 ::msgcat::mcset te interrupting… ఆపుతున్నాం…
+::msgcat::mcset te into లోకి
 ::msgcat::mcset te {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset te {irc: %s} {irc: %s}
 ::msgcat::mcset te {irc: %s failed — %s} {irc: %s విఫలమైంది — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset te {language list} {భాషల జాబితా}
 ::msgcat::mcset te {language picker (the swap for THIS window)} {భాష ఎంపిక (ఈ విండో కోసం మార్పు)}
 ::msgcat::mcset te {language saved: %s} {భాష సేవ్ అయింది: %s}
+::msgcat::mcset te {language server} {లాంగ్వేజ్ సర్వర్}
+::msgcat::mcset te {language server: event stream unavailable: %s} {లాంగ్వేజ్ సర్వర్: ఈవెంట్ స్ట్రీమ్ అందుబాటులో లేదు: %s}
+::msgcat::mcset te {language server: not started on the gateway — %s} {లాంగ్వేజ్ సర్వర్: గేట్‌వేపై ప్రారంభం కాలేదు — %s}
+::msgcat::mcset te {language server: the gateway would not start one: %s} {లాంగ్వేజ్ సర్వర్: గేట్‌వే ఒకదాన్ని ప్రారంభించలేదు: %s}
 ::msgcat::mcset te {language swapped: %1$s ⇄ %2$s} {భాష మార్చబడింది: %1$s ⇄ %2$s}
 ::msgcat::mcset te {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {భాష → %1$s (మునుపు %2$s) · నడుస్తున్న విండోకు మాత్రమే — Save as default config.toml‌ను రాస్తుంది}
 ::msgcat::mcset te {language: %s} {భాష: %s}
 ::msgcat::mcset te {last error} {చివరి లోపం}
+::msgcat::mcset te {last pass %1$s at %2$s: %3$s} {చివరి పాస్ %1$s, సమయం %2$s: %3$s}
 ::msgcat::mcset te {last reply copied (%s chars)} {చివరి రిప్లై కాపీ అయింది (%s అక్షరాలు)}
 ::msgcat::mcset te {layout not saved: %s} {లేఅవుట్ సేవ్ కాలేదు: %s}
 ::msgcat::mcset te {leave (cancels a running turn first)} {నిష్క్రమించు (ముందుగా నడుస్తున్న టర్న్‌ను రద్దు చేస్తుంది)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset te {list sessions} {సెషన్‌ల జాబితా}
 ::msgcat::mcset te {list skills} {స్కిల్‌ల జాబితా}
 ::msgcat::mcset te {list tools} {టూల్స్ జాబితా}
+::msgcat::mcset te {listed here only; [notify] fleet_alerts is off} {ఇక్కడ మాత్రమే చూపబడుతోంది; [notify] fleet_alerts ఆఫ్ ఉంది}
 ::msgcat::mcset te {live patching ARMED} {లైవ్ ప్యాచింగ్ ARMED}
 ::msgcat::mcset te {live patching ARMED — an agent can now redefine procs in this window} {లైవ్ ప్యాచింగ్ ARMED — ఇప్పుడు ఏజెంట్ ఈ విండోలో procs ను మళ్లీ నిర్వచించవచ్చు}
 ::msgcat::mcset te {live patching disarmed} {లైవ్ ప్యాచింగ్ ఆఫ్ చేయబడింది}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset te {log pane shown} {లాగ్ పేన్ చూపబడింది}
 ::msgcat::mcset te {log: %s} {లాగ్: %s}
 ::msgcat::mcset te {make media: image/video/audio, route = comfyui or provider[/model]} {మీడియా తయారు చేయి: image/video/audio, రూట్ = comfyui లేదా provider[/model]}
+::msgcat::mcset te {managed via %s} {%s ద్వారా నిర్వహించబడుతుంది}
+::msgcat::mcset te {manual only} {మాన్యువల్ మాత్రమే}
 ::msgcat::mcset te {mark set} {మార్క్ పెట్టబడింది}
 ::msgcat::mcset te {mark whole buffer (emacs select-all)} {మొత్తం బఫర్‌ను గుర్తించు (emacs సెలెక్ట్-ఆల్)}
 ::msgcat::mcset te {markdown preview of the composer} {కంపోజర్ యొక్క మార్క్‌డౌన్ ప్రివ్యూ}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset te model మోడల్
 ::msgcat::mcset te {model aliases} {మోడల్ అలియాస్లు}
 ::msgcat::mcset te {monitor %1$s fired} {మానిటర్ %1$s ట్రిగ్గర్ అయింది}
-::msgcat::mcset te monitors మానిటర్లు
 ::msgcat::mcset te monitors_header మానిటర్లు:
 ::msgcat::mcset te monitors_none {(మానిటర్లు లేవు — మోడల్ వీటిని monitor tool తో ప్రారంభిస్తుంది)}
 ::msgcat::mcset te {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {ఒక సెషన్‌ను (దాని సబ్‌ట్రీతో సహా) టర్న్ సరిహద్దులో మరొక పూల్ నోడ్‌కు తరలించండి; పార్క్ చేసిన హ్యాండ్‌ఆఫ్‌ను పూర్తి/రద్దు చేయండి; సెషన్ ఎవరి సొంతమో అడగండి (admin)}
 ::msgcat::mcset te {move the running foreground command to the background} {నడుస్తున్న ముందుభాగ కమాండ్‌ను బ్యాక్‌గ్రౌండ్‌కు తరలించు}
 ::msgcat::mcset te {move the running foreground command to the background (keeps running)} {నడుస్తున్న ఫోర్‌గ్రౌండ్ కమాండ్‌ను బ్యాక్‌గ్రౌండ్‌కు పంపండి (నడుస్తూనే ఉంటుంది)}
+::msgcat::mcset te {move this session's running foreground command to a background shell; keeps running} {ఈ సెషన్‌లో పనిచేస్తున్న ఫోర్‌గ్రౌండ్ కమాండ్‌ను బ్యాక్‌గ్రౌండ్ షెల్‌కు తరలించండి; అది పనిచేస్తూనే ఉంటుంది}
 ::msgcat::mcset te {moving around} {అటూ ఇటూ వెళ్లడం}
 ::msgcat::mcset te name పేరు
 ::msgcat::mcset te {name a key first} {ముందు కీకి పేరు పెట్టండి}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset te {neon impressionism} {నియాన్ ఇంప్రెషనిజం}
 ::msgcat::mcset te {network (optional — e.g. libera; empty = any)} {నెట్‌వర్క్ (ఐచ్ఛికం — ఉదా. libera; ఖాళీ = ఏదైనా)}
 ::msgcat::mcset te {network to scope the grant to} {గ్రాంట్‌ను పరిమితం చేయాల్సిన నెట్‌వర్క్}
+::msgcat::mcset te new కొత్తది
 ::msgcat::mcset te {new buffer} {కొత్త బఫర్}
 ::msgcat::mcset te {new entry — replace this text, then Save} {కొత్త ఎంట్రీ — ఈ టెక్స్ట్‌ను మార్చండి, తర్వాత Save నొక్కండి}
 ::msgcat::mcset te {new name for %s} {%s కోసం కొత్త పేరు}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset te {no IRC buffer selected} {IRC బఫర్ ఎంచుకోలేదు}
 ::msgcat::mcset te {no MCP servers configured — Add server… writes one into config.toml} {MCP సర్వర్లు కాన్ఫిగర్ కాలేదు — Add server… config.toml లో ఒకటి రాస్తుంది}
 ::msgcat::mcset te {no URLs in this buffer} {ఈ బఫర్‌లో URLలు లేవు}
+::msgcat::mcset te {no [a2a_agents] entry — this peer cannot be dialed} {[a2a_agents] ఎంట్రీ లేదు — ఈ పీర్కు డయల్ చేయలేము}
 ::msgcat::mcset te {no alias /%s} {/%s అలియాస్ లేదు}
 ::msgcat::mcset te {no background refresh} {నేపథ్య రిఫ్రెష్ లేదు}
 ::msgcat::mcset te {no buffer %s} {%s బఫర్ లేదు}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset te {no code block in the last reply} {చివరి రిప్లైలో కోడ్ బ్లాక్ లేదు}
 ::msgcat::mcset te {no cron jobs} {క్రాన్ జాబ్స్ లేవు}
 ::msgcat::mcset te {no cron jobs — New… creates one} {క్రాన్ జాబ్స్ లేవు — New… ఒకటి సృష్టిస్తుంది}
+::msgcat::mcset te {no exchange yet} {ఇంకా మార్పిడి జరగలేదు}
 ::msgcat::mcset te {no file — pick a guts file or type a path} {ఫైల్ లేదు — guts ఫైల్ ఎంచుకోండి లేదా పాత్ టైప్ చేయండి}
 ::msgcat::mcset te {no handler} {హ్యాండ్లర్ లేదు}
+::msgcat::mcset te {no heartbeat for %{mins} min} {%{mins} నిమిషాలుగా హార్ట్‌బీట్ లేదు}
+::msgcat::mcset te {no heartbeat within the threshold} {థ్రెషోల్డ్ లోపు హార్ట్‌బీట్ లేదు}
 ::msgcat::mcset te {no history yet} {చరిత్ర ఇంకా లేదు}
 ::msgcat::mcset te {no host configured for this instance} {ఈ ఇన్‌స్టెన్స్ కోసం హోస్ట్ కాన్ఫిగర్ కాలేదు}
 ::msgcat::mcset te {no instance selected} {ఇన్‌స్టెన్స్ ఎంచుకోలేదు}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset te {no program to open URLs} {URLలు తెరవడానికి ప్రోగ్రామ్ లేదు}
 ::msgcat::mcset te {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {ఏ ప్రొవైడర్ కాన్ఫిగర్ చేయబడలేదు — ఒక టర్న్ నడిపే ముందు [[custom_providers]] ఎంట్రీని జోడించి [model] జతను సెట్ చేయండి}
 ::msgcat::mcset te {no reading yet — press Refresh} {ఇంకా చదవలేదు — Refresh నొక్కండి}
-::msgcat::mcset te {no running tasks} {నడుస్తున్న టాస్క్లు లేవు}
 ::msgcat::mcset te {no sample available} {నమూనా అందుబాటులో లేదు}
 ::msgcat::mcset te {no search bar on this surface} {ఈ సర్ఫేస్‌లో శోధన పట్టీ లేదు}
 ::msgcat::mcset te {no session matching %s} {%s తో సరిపోలే సెషన్ లేదు}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset te {no session open — switch the scope to the default, or open a session} {సెషన్ తెరవలేదు — స్కోప్‌ను డిఫాల్ట్‌కు మార్చండి, లేదా సెషన్ తెరవండి}
 ::msgcat::mcset te {no session open — the catalogue needs one; the default scope still works from config.toml} {సెషన్ తెరవలేదు — కేటలాగ్‌కు ఒకటి అవసరం; డిఫాల్ట్ స్కోప్ config.toml నుండి ఇంకా పనిచేస్తుంది}
 ::msgcat::mcset te {no setting %s — try filter or bare} {%s సెట్టింగ్ లేదు — filter లేదా bare ప్రయత్నించండి}
+::msgcat::mcset te {no shells or monitors to show} {చూపించడానికి షెల్లు లేదా మానిటర్లు లేవు}
 ::msgcat::mcset te {no skills found} {స్కిల్స్ కనుగొనబడలేదు}
 ::msgcat::mcset te {no such URL — /urls lists them} {అలాంటి URL లేదు — /urls వాటిని జాబితా చేస్తుంది}
 ::msgcat::mcset te {no such file: %s} {అలాంటి ఫైల్ లేదు: %s}
 ::msgcat::mcset te {no swap target yet — set one with /locale secondary <id>} {ఇంకా మార్పు భాష లేదు — /locale secondary <id> తో సెట్ చేయండి}
+::msgcat::mcset te {no task selected} {ఏ టాస్క్ ఎంచుకోలేదు}
 ::msgcat::mcset te {no triggers} {ట్రిగ్గర్లు లేవు}
 ::msgcat::mcset te {no triggers — New… creates one} {ట్రిగ్గర్లు లేవు — New… ఒకటి సృష్టిస్తుంది}
 ::msgcat::mcset te {no upstream reading for %s} {%s కు అప్‌స్ట్రీమ్ రీడింగ్ లేదు}
 ::msgcat::mcset te {no word match} {పద సరిపోలిక లేదు}
 ::msgcat::mcset te {no xdg-open — path copied instead} {xdg-open లేదు — పాత్ కాపీ అయింది}
+::msgcat::mcset te {node log} {నోడ్ లాగ్}
 ::msgcat::mcset te {none loaded} {ఏదీ లోడ్ కాలేదు}
 ::msgcat::mcset te {none recorded} {ఏవీ నమోదు కాలేదు}
+::msgcat::mcset te {none since this gateway started} {ఈ గేట్‌వే ప్రారంభమైనప్పటి నుండి ఏదీ లేదు}
 ::msgcat::mcset te {none yet} {ఇంకా లేదు}
 ::msgcat::mcset te {normie is pure Ctrl — no emacs prefix chords.} {normie పూర్తిగా Ctrl మాత్రమే — emacs ప్రీఫిక్స్ కార్డ్‌లు లేవు.}
 ::msgcat::mcset te {normie: select all · emacs: start of line} {normie: ఆల్ సెలెక్ట్ · emacs: లైన్ ప్రారంభం}
 ::msgcat::mcset te {not a channel} {ఛానెల్ కాదు}
 ::msgcat::mcset te {not a key = value line: %s} {కీ = విలువ లైన్ కాదు: %s}
+::msgcat::mcset te {not a node in the attached gateway's cluster registry: %s} {జోడించిన గేట్వే క్లస్టర్ రిజిస్ట్రీలో నోడ్ కాదు: %s}
 ::msgcat::mcset te {not a number} {సంఖ్య కాదు}
 ::msgcat::mcset te {not a valid http(s) url: %s} {చెల్లుబాటి అయ్యే http(s) url కాదు: %s}
 ::msgcat::mcset te {not a valid ssh host: %s} {చెల్లుబాటి అయ్యే ssh హోస్ట్ కాదు: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset te {not attached to a gateway} {గేట్‌వేకు అటాచ్ కాలేదు}
 ::msgcat::mcset te {not configured} {కాన్ఫిగర్ కాలేదు}
 ::msgcat::mcset te {not ignoring %s} {%s ను విస్మరించడం లేదు}
+::msgcat::mcset te {not installed} {ఇన్‌స్టాల్ చేయబడలేదు}
 ::msgcat::mcset te {not reported} నివేదించలేదు
 ::msgcat::mcset te {not running} {నడవడం లేదు}
 ::msgcat::mcset te {not set in config.toml — the built-in default applies. %s} {config.toml లో సెట్ చేయలేదు — అంతర్నిర్మిత డిఫాల్ట్ వర్తిస్తుంది. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset te off ఆఫ్
 ::msgcat::mcset te {off (the default)} {ఆఫ్ (డిఫాల్ట్)}
 ::msgcat::mcset te offline ఆఫ్‌లైన్
+::msgcat::mcset te ok సరే
 ::msgcat::mcset te on ఆన్
 ::msgcat::mcset te {on (the default)} {ఆన్ (డిఫాల్ట్)}
 ::msgcat::mcset te {on failure} విఫలమైతే
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset te {open links} {లింక్‌లు తెరవడం}
 ::msgcat::mcset te {open the engine log} {ఇంజిన్ లాగ్ తెరువు}
 ::msgcat::mcset te {open the joined session before /leave (on %s)} {/leave చేయడానికి ముందు చేరిన సెషన్ను తెరవండి (%s లో)}
+::msgcat::mcset te {open the selected child session} {ఎంచుకున్న చైల్డ్ సెషన్‌ను తెరవండి}
 ::msgcat::mcset te {open the selected skill in the Dev editor} {ఎంచుకున్న స్కిల్‌ను Dev ఎడిటర్‌లో తెరవండి}
 ::msgcat::mcset te {open the setup wizard (re-runnable; edits config.toml in place)} {సెటప్ విజార్డ్ తెరవండి (మళ్లీ నడపవచ్చు; config.toml ను అదే స్థానంలో సవరిస్తుంది)}
 ::msgcat::mcset te {open the share sheet} {షేర్ షీట్ తెరవడం}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset te {override cleared — the default applies} {ఓవర్‌రైడ్ తొలగించబడింది — డిఫాల్ట్ వర్తిస్తుంది}
 ::msgcat::mcset te {override failed: %s} {ఓవర్‌రైడ్ విఫలమైంది: %s}
 ::msgcat::mcset te {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {యజమాని గుర్తింపు %{id} ను ACL సరిపోల్చలేదు — telegram:<సంఖ్యా ఐడి>, irc:<services ఖాతా>, లేదా nick!user@host మాస్క్ ఉపయోగించండి}
+::msgcat::mcset te owner/repository యజమాని/రిపోజిటరీ
 ::msgcat::mcset te {owners: %s} {యజమానులు: %s}
 ::msgcat::mcset te {pair a desktop with this agent} {ఈ ఏజెంట్‌తో డెస్క్‌టాప్‌ను జత చేయి}
 ::msgcat::mcset te {partly failed: %s} {పాక్షికంగా విఫలమైంది: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset te plugin ప్లగిన్
 ::msgcat::mcset te {plugin directory git history} {ప్లగిన్ డైరెక్టరీ git చరిత్ర}
 ::msgcat::mcset te {plugin list} {ప్లగిన్ జాబితా}
+::msgcat::mcset te {plugin provider driver} {ప్లగిన్ ప్రొవైడర్ డ్రైవర్}
 ::msgcat::mcset te {plugins reloaded on %s} {ప్లగిన్లు %s ద్వారా మళ్లీ లోడయ్యాయి}
 ::msgcat::mcset te {pop %s out into its own window} {%s ని వేరే విండోలో తెరవండి}
 ::msgcat::mcset te {pop the buffer out into its own window} {బఫర్‌ను దాని సొంత విండోకు తీసుకెళ్లు}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset te {prefix: window & dock commands} {ప్రీఫిక్స్: విండో & డాక్ కమాండ్‌లు}
 ::msgcat::mcset te {press Attach in the Instances tab} {Instances ట్యాబ్లో Attach నొక్కండి}
 ::msgcat::mcset te preview ముందుజూపు
+::msgcat::mcset te {preview an AI extension change and explicitly apply its diff} {AI ఎక్స్టెన్షన్ మార్పును ప్రివ్యూ చేసి, దాని డిఫ్‌ను స్పష్టంగా వర్తింపజేయండి}
 ::msgcat::mcset te {preview failed: %s} {ముందుజూపు విఫలం: %s}
 ::msgcat::mcset te {previous buffer} {మునుపటి బఫర్}
 ::msgcat::mcset te {previous command was not a yank} {మునుపటి ఆదేశం yank కాదు}
 ::msgcat::mcset te {previous match} {మునుపటి దొరికినది}
 ::msgcat::mcset te {previous session} {మునుపటి సెషన్}
+::msgcat::mcset te {probing %s…} {%s ను ప్రోబ్ చేస్తోంది…}
 ::msgcat::mcset te {proc body} {proc బాడీ}
 ::msgcat::mcset te {profile unavailable: %s} {ప్రొఫైల్ అందుబాటులో లేదు: %s}
 ::msgcat::mcset te profiles: ప్రొఫైల్‌లు:
 ::msgcat::mcset te prompt ప్రాంప్ట్
 ::msgcat::mcset te {prompt breakdown} {ప్రాంప్ట్ విభజన}
 ::msgcat::mcset te {prompt tokens} {ప్రాంప్ట్ టోకెన్లు}
+::msgcat::mcset te {proposal only, not applied} {ప్రతిపాదన మాత్రమే, వర్తింపజేయబడలేదు}
 ::msgcat::mcset te provider ప్రొవైడర్
 ::msgcat::mcset te {provider / model} {ప్రొవైడర్ / మోడల్}
 ::msgcat::mcset te {provider base URL} {ప్రొవైడర్ base URL}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset te {re-sync the slopdrop state mirror} {slopdrop స్టేట్ మిర్రర్‌ను మళ్లీ సమకాలీకరించండి}
 ::msgcat::mcset te {read and set the clipboard} {క్లిప్‌బోర్డ్ చదవడం, సెట్ చేయడం}
 ::msgcat::mcset te {read text aloud} {వచనాన్ని గట్టిగా చదవడం}
+::msgcat::mcset te {read-only: [approvals] allowlist} {రీడ్-ఓన్లీ: [approvals] అనుమతి జాబితా}
 ::msgcat::mcset te {read-only: this session lives on %1$s (as read at %2$s)} {చదవడానికే: ఈ సెషన్ %1$s లో ఉంది (%2$s కి చదివినట్లు)}
 ::msgcat::mcset te {read-only: this skill comes from the %s library} {చదవడానికే: ఈ స్కిల్ %s లైబ్రరీ నుండి వచ్చింది}
 ::msgcat::mcset te reasoning రీజనింగ్
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset te {refused to open %s (only http, https, mailto)} {%s తెరవడానికి నిరాకరించాం (http, https, mailto మాత్రమే)}
 ::msgcat::mcset te {refused: %s} {నిరాకరించాం: %s}
 ::msgcat::mcset te {region copied} {ప్రాంతం కాపీ అయింది}
+::msgcat::mcset te registered {నమోదు చేయబడింది}
 ::msgcat::mcset te {registry not saved: %s} {రిజిస్ట్రీ సేవ్ కాలేదు: %s}
 ::msgcat::mcset te {reload on %1$s failed: %2$s} {%1$sపై రీలోడ్ విఫలం: %2$s}
 ::msgcat::mcset te {reload the mechanisms} {విధానాలను రీలోడ్ చేయి}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset te {resume a session (prefix ok)} {సెషన్‌ను కొనసాగించు (ఉపసర్గ చాలు)}
 ::msgcat::mcset te {retry failed: %s} {పునఃప్రయత్నం విఫలమైంది: %s}
 ::msgcat::mcset te {retrying last prompt…} {చివరి ప్రాంప్ట్ని మళ్లీ ప్రయత్నిస్తున్నాం…}
+::msgcat::mcset te {review files for an explicit upstream contribution} {స్పష్టమైన అప్‌స్ట్రీమ్ సహకారం కోసం ఫైళ్లను సమీక్షించండి}
+::msgcat::mcset te {review standing global and session tool permissions} {స్థిరమైన గ్లోబల్ మరియు సెషన్ టూల్ అనుమతులను సమీక్షించండి}
 ::msgcat::mcset te revision మార్పు
 ::msgcat::mcset te {revision history} {మార్పుల చరిత్ర}
+::msgcat::mcset te {revoke refused} {ఉపసంహరణ నిరాకరించబడింది}
 ::msgcat::mcset te {revoke the selected identity's grant} {ఎంచుకున్న అనుకరణ యొక్క గ్రాంట్ను ఉపసంహరించు}
 ::msgcat::mcset te role పాత్ర
 ::msgcat::mcset te {role to grant} {ఇచ్చే పాత్ర}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset te {saved to %s} {%sకు సేవ్ అయింది}
 ::msgcat::mcset te saved. {సేవ్ అయింది.}
 ::msgcat::mcset te {scaffold a new plugin} {కొత్త ప్లగిన్ స్కాఫోల్డ్ చేయి}
+::msgcat::mcset te {scaffold a user plugin and open it in this editor} {ఒక user plugin ను scaffold చేసి ఈ ఎడిటర్‌లో తెరవండి}
 ::msgcat::mcset te {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {షెడ్యూల్ చేసిన పనులు; /crons add "<sched>" [session=<id>] <prompt> (మారుపేరు /cron)}
 ::msgcat::mcset te scope పరిధి
 ::msgcat::mcset te script స్క్రిప్ట్
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset te {select %s first} {ముందు %s ఎంచుకోండి}
 ::msgcat::mcset te {select a checkpoint first} {ముందు ఒక చెక్పాయింట్ ఎంచుకోండి}
 ::msgcat::mcset te {select a file, or New… to create one} {ఫైల్‌ను ఎంచుకోండి, లేదా సృష్టించడానికి కొత్త…}
+::msgcat::mcset te {select a grant first} {మొదట ఒక గ్రాంట్ను ఎంచుకోండి}
 ::msgcat::mcset te {select a handler first} {ముందు ఒక హ్యాండ్లర్ ఎంచుకోండి}
 ::msgcat::mcset te {select a member first} {ముందు ఒక సభ్యుణ్ణి ఎంచుకోండి}
 ::msgcat::mcset te {select a route} {ఒక రూట్ ఎంచుకోండి}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset te {select an assignment first} {ముందు ఒక అసైన్మెంట్ ఎంచుకోండి}
 ::msgcat::mcset te {select an entry first} {ముందు ఒక ఎంట్రీ ఎంచుకోండి}
 ::msgcat::mcset te {select an identity first} {ముందు ఒక అనుకరణ ఎంచుకోండి}
+::msgcat::mcset te {selected task details and shell output} {ఎంచుకున్న టాస్క్ వివరాలు మరియు షెల్ అవుట్‌పుట్}
 ::msgcat::mcset te {selected: %s} {ఎంచుకున్నది: %s}
 ::msgcat::mcset te {send clipboard as prompt} {క్లిప్‌బోర్డ్‌ను ప్రాంప్ట్‌గా పంపు}
 ::msgcat::mcset te {send failed: %s} {పంపడం విఫలమైంది: %s}
 ::msgcat::mcset te {send the message; while a turn runs, queue it as steering} {సందేశం పంపండి; టర్న్ నడుస్తున్నప్పుడు, దాన్ని steering గా వరుసలో పెట్టండి}
+::msgcat::mcset te sent పంపబడింది
+::msgcat::mcset te {sent to the owner's home chat} {యజమాని హోమ్ చాట్‌కు పంపబడింది}
 ::msgcat::mcset te server సర్వర్
 ::msgcat::mcset te {server buffers merged} {సర్వర్ బఫర్లు విలీనమయ్యాయి}
 ::msgcat::mcset te {server buffers separate} {సర్వర్ బఫర్లు విడిగా}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset te {settings, one key = value per line} {సెట్టింగ్లు, ఒక్కో లైన్లో ఒక key = value}
 ::msgcat::mcset te {setup_done marker NOT saved: %s} {setup_done మార్కర్ సేవ్ కాలేదు: %s}
 ::msgcat::mcset te {shell %1$s finished} {షెల్ %1$s ముగిసింది}
-::msgcat::mcset te shells షెల్లు
+::msgcat::mcset te {shells, monitors and subagents} {షెల్లు, మానిటర్లు మరియు సబ్‌ఏజెంట్లు}
 ::msgcat::mcset te shells_header {బ్యాక్గ్రౌండ్ షెల్లు:}
 ::msgcat::mcset te shells_none {(బ్యాక్గ్రౌండ్ షెల్లు లేవు — /background <cmd> ఒకటి ప్రారంభిస్తుంది)}
 ::msgcat::mcset te {show current configuration} {ప్రస్తుత కాన్ఫిగరేషన్ చూపించు}
 ::msgcat::mcset te {show every key in this mode} {ఈ మోడ్‌లోని ప్రతి కీని చూపించు}
 ::msgcat::mcset te {show or hide the session list} {సెషన్ జాబితాను చూపించు లేదా దాచు}
 ::msgcat::mcset te {show or switch model (alias | model@provider | custom:<prov>)} {మోడల్‌ను చూపు లేదా మార్చు (alias | model@provider | custom:<prov>)}
+::msgcat::mcset te {show selected shell output} {ఎంచుకున్న షెల్ అవుట్‌పుట్ చూపించండి}
 ::msgcat::mcset te {show short messages} {చిన్న సందేశాలు చూపించడం}
 ::msgcat::mcset te {show the model's reasoning blocks (same as /reasoning)} {మోడల్ రీజనింగ్ బ్లాక్‌లను చూపించు (/reasoning మాదిరిగా)}
 ::msgcat::mcset te {show unclaimed} {యజమానిలేనివి చూపించు}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset te spend వినియోగం
 ::msgcat::mcset te {split: %s} {స్ప్లిట్: %s}
 ::msgcat::mcset te {ssh to %1$s failed: %2$s} {%1$sకు ssh విఫలం: %2$s}
+::msgcat::mcset te {stale — no heartbeat within the threshold} {పాతబడింది — పరిమితిలోపు హార్ట్బీట్ లేదు}
+::msgcat::mcset te {standing global and session permission grants} {స్థిరమైన గ్లోబల్ మరియు సెషన్ అనుమతి గ్రాంట్లు}
 ::msgcat::mcset te state స్థితి
 ::msgcat::mcset te {state       never reached} {స్థితి       ఎప్పుడూ చేరలేదు}
 ::msgcat::mcset te {state       reachable} {స్థితి       చేరుకోగలం}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset te {stored in the encrypted vault (%1$s): %2$s} {ఎన్‌క్రిప్ట్ చేసిన లాకర్‌లో భద్రపరిచాం (%1$s): %2$s}
 ::msgcat::mcset te {stream handler: %s} {స్ట్రీమ్ హ్యాండ్లర్: %s}
 ::msgcat::mcset te {subagent %1$s finished} {సబ్ఏజెంట్ %1$s ముగిసింది}
-::msgcat::mcset te subagents సబ్ఏజెంట్లు
 ::msgcat::mcset te subagents_header {నడుస్తున్న సబ్ఏజెంట్లు:}
 ::msgcat::mcset te subagents_none {(నడుస్తున్న సబ్ఏజెంట్లు లేవు — /btw <prompt> ఒకటి ప్రారంభిస్తుంది, లేదా మోడల్ delegate_task వాడుతుంది)}
 ::msgcat::mcset te {suspend failed: %{e}} {నిలిపివేత విఫలం: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset te {switch the selected skill off} {ఎంచుకున్న స్కిల్ను ఆఫ్ చేయి}
 ::msgcat::mcset te {switch the selected skill on} {ఎంచుకున్న స్కిల్ను ఆన్ చేయి}
 ::msgcat::mcset te {switch to the %s tab} {%s ట్యాబ్కు మారు}
+::msgcat::mcset te {sync requested: %s} {సింక్ కోరబడింది: %s}
 ::msgcat::mcset te {tab 1} {ట్యాబ్ 1}
 ::msgcat::mcset te {tab 2} {ట్యాబ్ 2}
 ::msgcat::mcset te {tab 3} {ట్యాబ్ 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset te tasks_none {(నడుస్తున్న పనులు లేవు)}
 ::msgcat::mcset te tasks_not_found {అటువంటి పని లేదు: %{id}}
 ::msgcat::mcset te tasks_not_running {పని %{id} ఇప్పటికే ముగిసింది}
-::msgcat::mcset te {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset te {tcl-lsp: event stream unavailable: %s} {tcl-lsp: ఈవెంట్ స్ట్రీమ్ అందుబాటులో లేదు: %s}
-::msgcat::mcset te {tcl-lsp: gateway would not start it: %s} {tcl-lsp: గేట్వే దీన్ని మొదలుపెట్టలేదు: %s}
-::msgcat::mcset te {tcl-lsp: not started on the gateway — %s} {tcl-lsp: గేట్వేపై మొదలుపెట్టలేదు — %s}
 ::msgcat::mcset te {that buffer is not split} {ఆ బఫర్ స్ప్లిట్ కాలేదు}
 ::msgcat::mcset te {the %s plan} {%s ప్రణాళిక}
 ::msgcat::mcset te {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {API key ఫీల్డ్‌లో env వేరియబుల్ పేరు (ఉదా. %{example}) రాయాలి, key కాదు — key దాచిన ఫీల్డ్‌లో వెళ్తుంది}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset te {the gateway answered without a report} {గేట్వే రిపోర్ట్ లేకుండా సమాధానమిచ్చింది}
 ::msgcat::mcset te {the model/provider pair is incomplete — the gateway will not route until both are present} {మోడల్/ప్రొవైడర్ జత అసంపూర్ణంగా ఉంది — రెండూ ఉండే వరకు గేట్‌వే రూట్ చేయదు}
 ::msgcat::mcset te {the options changed, so that is a fresh preview — press “Write it” again to write it} {ఎంపికలు మారాయి, కాబట్టి అది కొత్త ప్రివ్యూ — రాయాలంటే “Write it” మళ్లీ నొక్కండి}
+::msgcat::mcset te {the peer has not been sent this vault yet} {ఈ వాల్ట్ ఇంకా పీర్కు పంపలేదు}
+::msgcat::mcset te {the peer holds this vault} {ఈ వాల్ట్ పీర్ వద్ద ఉంది}
 ::msgcat::mcset te {the primary route is \[model\] provider/default — change it there, not here} {ప్రాథమిక రూట్ \[model\] provider/default — అక్కడే మార్చండి, ఇక్కడ కాదు}
 ::msgcat::mcset te {the provider/model route this session sends to} {ఈ సెషన్ పంపే provider/model మార్గం}
 ::msgcat::mcset te {the same, on the privileged path (owner only)} {అదే, ప్రత్యేక అధికార మార్గంలో (owner మాత్రమే)}
 ::msgcat::mcset te {the selected entry (edit, then Save)} {ఎంచుకున్న ఎంట్రీ (సవరించండి, ఆపై Save)}
+::msgcat::mcset te {the server stopped: %s} {సర్వర్ ఆగిపోయింది: %s}
 ::msgcat::mcset te {the synthwave splash} {synthwave స్వాగత తెర}
 ::msgcat::mcset te {the text after the name was NOT sent anywhere — type the value into the masked field} {పేరు తర్వాతి వచనం ఎక్కడికీ పంపబడలేదు — విలువను దాచిన ఫీల్డ్‌లో టైప్ చేయండి}
 ::msgcat::mcset te {the transcript} ట్రాన్స్‌క్రిప్ట్
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset te thinking… ఆలోచిస్తున్నాం…
 ::msgcat::mcset te {thinking… (%s)} {ఆలోచిస్తున్నాం… (%s)}
 ::msgcat::mcset te {this file's revisions, their diffs, and restore} {ఈ ఫైల్ మార్పులు, వాటి తేడాలు, పునరుద్ధరణ}
+::msgcat::mcset te {this gateway} {ఈ గేట్వే}
 ::msgcat::mcset te {this gateway has no Tcl interpreter} {ఈ గేట్వేకి Tcl ఇంటర్ప్రెటర్ లేదు}
 ::msgcat::mcset te {this list} {ఈ జాబితా}
+::msgcat::mcset te {this node has no vault} {ఈ నోడ్కు వాల్ట్ లేదు}
 ::msgcat::mcset te {this route} {ఈ రూట్}
 ::msgcat::mcset te {this session} {ఈ సెషన్}
 ::msgcat::mcset te {this session follows the default language again (%{def})} {ఈ సెషన్ మళ్లీ డిఫాల్ట్ భాషను అనుసరిస్తోంది (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset te {transcript finalization failed: %s} {ట్రాన్స్క్రిప్ట్ పూర్తి చేయడం విఫలమైంది: %s}
 ::msgcat::mcset te {transcript refetched} {ట్రాన్స్క్రిప్ట్ మళ్లీ తెచ్చాం}
 ::msgcat::mcset te {transcript — arrows to read, %s for composer} {ట్రాన్స్క్రిప్ట్ — చదవడానికి బాణాలు, కంపోజర్కి %s}
+::msgcat::mcset te {translate text with the dedicated translation model, without an agent turn} {ఏజెంట్ టర్న్ లేకుండా, ప్రత్యేక అనువాద మోడల్తో టెక్స్ట్ను అనువదించండి}
+::msgcat::mcset te {translation result} {అనువాద ఫలితం}
 ::msgcat::mcset te {trigger %1$s %2$sd} {ట్రిగ్గర్ %1$s %2$sd}
 ::msgcat::mcset te {trigger created} {ట్రిగ్గర్ సృష్టించాం}
 ::msgcat::mcset te {trigger updated} {ట్రిగ్గర్ నవీకరించాం}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset te {usage: /steer <instruction>} {వాడకం: /steer <instruction>}
 ::msgcat::mcset te used వాడినది
 ::msgcat::mcset te user వినియోగదారుడు
+::msgcat::mcset te {user copy} {యూజర్ కాపీ}
 ::msgcat::mcset te {user identities, one per line} {వినియోగదారు అనుకరణలు, ఒక్కో లైన్లో ఒకటి}
 ::msgcat::mcset te {user name} {వినియోగదారు పేరు}
 ::msgcat::mcset te {user profile} {వినియోగదారు ప్రొఫైల్}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset te {value (TOML: 5, true, "text", ["a","b"])} {విలువ (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset te veles veles
 ::msgcat::mcset te {veles editor} {veles ఎడిటర్}
+::msgcat::mcset te {veles fleet: node %{node} is failing — %{detail}} {veles ఫ్లీట్: నోడ్ %{node} విఫలమవుతోంది — %{detail}}
+::msgcat::mcset te {veles fleet: node %{node} is stale — %{detail}} {veles ఫ్లీట్: నోడ్ %{node} పాతబడింది — %{detail}}
+::msgcat::mcset te {veles fleet: node %{node} recovered (it was %{was})} {veles ఫ్లీట్: నోడ్ %{node} కోలుకుంది (అంతకుముందు %{was})}
 ::msgcat::mcset te {veles · keyboard help (bindings: %s)} {veles · కీబోర్డు సహాయం (బైండింగ్లు: %s)}
 ::msgcat::mcset te {veles · touch help} {veles · స్పర్శ సహాయం}
 ::msgcat::mcset te {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset te widgets విడ్జెట్లు
 ::msgcat::mcset te {will be stored in the encrypted vault} {ఎన్‌క్రిప్ట్ చేసిన లాకర్‌లో భద్రపరచబడుతుంది}
 ::msgcat::mcset te {wire protocol} {వైర్ ప్రోటోకాల్}
+::msgcat::mcset te {without force to} {ఫోర్స్ చేయకుండా పుష్ చేయాల్సిన గమ్యం}
 ::msgcat::mcset te {wizard language} {విజార్డ్ భాష}
 ::msgcat::mcset te {wizard language: %s} {విజార్డ్ భాష: %s}
 ::msgcat::mcset te {write failed: %s} {రాయడం విఫలం: %s}
 ::msgcat::mcset te {write grants that still expire (the expiry is dropped — a config line cannot expire)} {ఇంకా గడువు ఉన్న గ్రాంట్లను రాయండి (గడువు పడేస్తాం — కాన్ఫిగ్ లైన్కు గడువు ఉండదు)}
 ::msgcat::mcset te {write the entries back} {ఎంట్రీలను తిరిగి రాయండి}
 ::msgcat::mcset te {write the store's runtime rules into config.toml} {స్టోర్ రన్టైమ్ రూల్స్ను config.tomlలో రాయండి}
+::msgcat::mcset te {write the whole extension from its purpose, as a reviewed preview} {దాని ఉద్దేశం ఆధారంగా పూర్తి ఎక్స్‌టెన్షన్‌ను సమీక్షించిన ప్రివ్యూగా రాయండి}
 ::msgcat::mcset te {write these values into config.toml as the defaults} {ఈ విలువలను డిఫాల్ట్లుగా config.tomlలో రాయండి}
 ::msgcat::mcset te writing రాయడం
 ::msgcat::mcset te {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {మొదటి [acl] యజమానిని రాయడం ఈ గేట్‌వేను క్యూరేటెడ్ మోడ్‌కు మారుస్తుంది: డిఫాల్ట్ పాత్ర guest (fail-closed) అవుతుంది, అడాప్టర్ అనుమతి జాబితా ఇక నమ్మకపు సరిహద్దు కాదు}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset te {▲ VELES — neon impressionism} {▲ VELES — neon impressionism}
 ::msgcat::mcset te {▲ earlier} {▲ మునుపటివి}
 ::msgcat::mcset te {▼ later} {▼ తర్వాతివి}
+::msgcat::mcset te {▾ Cluster registry} {▾ క్లస్టర్ రిజిస్ట్రీ}
 ::msgcat::mcset te {▾ new output — follow} {▾ కొత్త అవుట్పుట్ — ఫాలో}
 ::msgcat::mcset te {○ unattached} {○ అనుసంధానం కాలేదు}
 ::msgcat::mcset te {● %1$s — %2$s} {● %1$s — %2$s}

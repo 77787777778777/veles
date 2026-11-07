@@ -100,6 +100,11 @@
             ./docs/extension-api.json
             ./docs/extension-api-changes.md
             ./docs/extending.md
+            # extension_assist.rs `include_str!`s the plugin author guide
+            # into the design-question and generate prompts (dev-ext-10).
+            ./docs/plugins.md
+            # setup.rs pins the install guide to the shared referral registry.
+            ./docs/install.md
             # veles-install `include_str!`s the reviewed WireGuard peer helper:
             # the pool-hub host component installs the same bytes the VPS
             # runbook and scripts/test-wg-peers.sh pin.
@@ -108,6 +113,10 @@
             # `failover-example` copies it into a scratch plugins dir and
             # loads it through the real JS host (PLAN-extension-api.md E2).
             ./examples
+            # browserextension.rs's test `include_str!`s the extension's
+            # manifest (its version is pinned to the workspace's); without
+            # it the sandbox's clippy and tests did not compile veles-core.
+            ./browser-extension/manifest.json
           ];
         };
 
@@ -130,10 +139,20 @@
             ./Cargo.lock
             (pkgs.lib.fileset.difference ./crates ./crates/veles-core/locales)
             ./crates/veles-core/locales/en.yml
+            # extension_assist.rs embeds the extension authoring guide
+            # and the plugin author guide.
+            ./docs/extending.md
+            ./docs/plugins.md
             # tclrt.rs `include_str!`s it (sync_api_stub).
             ./plugins/veles_api.tcl
+            # plugins.rs `include_str!`s the lang-js host's typed
+            # declaration (the TypeScript scaffold's veles.d.ts).
+            ./plugins/veles.d.ts
             # veles-install `include_str!`s it (pool-hub host component).
             ./deploy/vps/wg/veles-wg-peers.sh
+            # browserextension.rs `include_str!`s it (the extension's
+            # version is pinned to the workspace's).
+            ./browser-extension/manifest.json
             ./vendor
           ];
         };
@@ -611,7 +630,7 @@
         # both packages.default and the OCI image below can reference it.
         velesPkg = pkgs.rustPlatform.buildRustPackage rec {
           pname = "veles-agent";
-          version = "0.1.6";
+          version = "0.2.0";
           src = rustSrc;
           cargoLock = {
             lockFile = ./Cargo.lock;
@@ -635,6 +654,9 @@
             # The gateway and the modules NEED libveles_runtime.so and
             # libstd-*.so; both are installed in $out/lib (postInstall).
             RUSTFLAGS = buildEnv.RUSTFLAGS + " -C link-arg=-Wl,-rpath,$ORIGIN/../lib";
+            # /api/health distinguishes the selected bundle from the
+            # running source. Dirty builds are honestly not a release SHA.
+            VELES_SOURCE_REVISION = self.rev or "unreported-dirty-build";
             BINDGEN_EXTRA_CLANG_ARGS = "-I${clangResourceInclude}";
             # tests/plugin_so.rs loads the REAL out-of-tree cdylib. With
             # this unset the test SKIPS when it cannot find the artifact,
@@ -695,6 +717,7 @@
             fi
             mkdir -p $out/share/veles
             cp -r ${./crates/veles-core/locales} $out/share/veles/locales
+            cp -r ${./browser-extension} $out/share/veles/browser-extension
             # The bundled skills, one up from bin/ where
             # config::beside_binary("skills") looks (PLAN-windows.md §6).
             cp -r ${./skills} $out/skills
@@ -900,6 +923,7 @@
               pkgs.xorg.xvfb
               pkgs.tclPackages.tcllib
               pkgs.tclPackages.tclcurl
+              pkgs.nodejs
               pkgs.tclPackages.tkimg
             ] ++ imageDecoders;
           }
@@ -909,7 +933,12 @@
             # the generator also uses) through ../../scripts — the suites
             # expect desktop/ and scripts/ as siblings, like the repo.
             cp -r ${./scripts} scripts
-            chmod -R u+w desktop scripts
+            cp -r ${./browser-extension} browser-extension
+            chmod -R u+w desktop scripts browser-extension
+            node --check browser-extension/background.js
+            node --check browser-extension/popup.js
+            node browser-extension/popup-test.cjs
+            node browser-extension/background-test.cjs
             # uitest.tcl reads the engine's slash-command table straight
             # out of the Rust tree to pin the desktop docs against it, AND
             # the i18n key set, which walks the whole `crates/` tree: the
@@ -928,6 +957,11 @@
             # since 2026-09-28; the key walk and the table pin need both.
             cp -r ${./crates/veles-frontends/src} crates/veles-frontends/src
             cp -r ${./crates/veles-core/locales} crates/veles-core/locales
+            # androidtest.tcl verifies both the GNSS patch (GpsStatus APIs
+            # are blocked for targetSdk >= 31) and the flake's application.
+            mkdir -p android/androwish
+            cp ${./android/androwish/gnss-status.patch} android/androwish/gnss-status.patch
+            cp ${./flake.nix} flake.nix
             # The sandbox has no /etc/fonts: every suite used to log
             # "Fontconfig error" and run on whatever fallback metrics
             # libfontconfig improvises — geometry assertions like
@@ -965,7 +999,7 @@
             # `wish` exits 0 even when the script fails, and the output is
             # piped into tee — so assert on each suite's reported tally,
             # not on $?.
-            for suite in i18ntest i18nkeysetest pathtest jointest mdtest mdspectest transcriptspectest uitest listtest emacstest titletest sessiontest texttest rendertest lsptest fgtest devtest mediatest chrometest statetest coachtest whichkeytest comptest tabtest irctest apittest insttest installtest sectest acltest setuptest cmdstest sandboxtest lspstarttest tiptest tipzonetest statustest statusbuildtest quotatest taskstest asktest panetest sidebartest sessionswintest overlaytest responsivitytest memfilestest streamtest androidtest cmdtreetest devicetest phonetest settingsformtest appstest; do
+            for suite in exporttest granttest fleetdeploytest fleetexecutortest fleetworkertest fleetjournaltest fleetdeployuitest fleetobstest i18ntest i18nkeysetest pathtest jointest mdtest mdspectest transcriptspectest uitest listtest emacstest titletest sessiontest texttest translatetest contributetest extensionassisttest rendertest lsptest fgtest devtest mediatest chrometest statetest coachtest whichkeytest comptest tabtest irctest apittest insttest installtest sectest acltest setuptest cmdstest sandboxtest lspstarttest tiptest tipzonetest statustest statusbuildtest quotatest taskstest asktest panetest sidebartest sessionswintest overlaytest responsivitytest memfilestest streamtest androidtest cmdtreetest devicetest phonetest settingsformtest appstest; do
               wish desktop/lib/$suite.tcl | tee $suite.log
               grep -qE "^$suite: [0-9]+ passed, 0 failed" $suite.log \
                 || { echo "FAIL: $suite did not report a clean tally" >&2; exit 1; }
@@ -1007,6 +1041,16 @@
         # developer runs, with overflow checks and debug assertions on.
         testsCheck = velesPkg.overrideAttrs (old: {
           pname = "veles-agent-tests";
+          # Contribution tests run real, isolated git repositories and
+          # non-evaluating Tcl syntax checks. These are CHECK inputs only,
+          # not production package additions: the release wrapper already
+          # supplies the corresponding runtime programs. /bin/sh is absent
+          # in the clean sandbox, so the fixture hooks need bash as well.
+          nativeBuildInputs = old.nativeBuildInputs ++ [
+            pkgs.bash
+            pkgs.git
+            pkgs.tcl-8_6
+          ];
           env = old.env // {
             VELES_CHECK_AFTER = "${clippyCheck}";
             # An absolute TZif path works in the build sandbox; Chrono
@@ -1015,6 +1059,11 @@
           };
           buildPhase = ''
             runHook preBuild
+            # velesPkg's fixed build PATH excludes these check-only tools
+            # even when nativeBuildInputs supplies them. Name their Nix
+            # package paths explicitly so real git/tclsh fixtures cannot
+            # silently depend on the developer's host PATH.
+            export PATH="${pkgs.lib.makeBinPath [pkgs.git pkgs.tcl-8_6 pkgs.bash]}:$PATH"
             # cargo gives no build-order guarantee for a sibling cdylib
             # with no dependency edge, so build the ones tests/plugin_so.rs
             # loads first. scripts/precommit.sh does the same.
@@ -1082,7 +1131,7 @@
         androidMinSdk = "26";
         # Raised by hand for each release a store sees; a sideloaded
         # reinstall of the same code keeps it.
-        androidVersionCode = "7";
+        androidVersionCode = "8";
         androidSdk =
           (androidHost.androidenv.composeAndroidPackages {
             platformVersions = [ androidTargetSdk ];
@@ -1555,6 +1604,7 @@
                 androwish-${androwishVersion}/{license.terms,src,shortcut26/src} \
                 androwish-${androwishVersion}/jni/{Android.mk,tcl,SDL2,freetype,sdl2tk,libsonivox,src}
               patch -d $out -p1 < ${./android/androwish/platform-apis.patch}
+              patch -d $out -p1 < ${./android/androwish/gnss-status.patch}
               patch -d $out -p1 < ${./android/androwish/font-fallback.patch}
               patch -d $out -p1 < ${./android/androwish/clipboard.patch}
               patch -d $out -p1 < ${./android/androwish/touch.patch}
@@ -1564,6 +1614,12 @@
               patch -d $out -p1 < ${./android/androwish/pendingintent-flags.patch}
               patch -d $out -p1 < ${./android/androwish/sdl-textinput-split.patch}
               patch -d $out/jni/sdl2tk -p1 < ${./nix/tk-kinsoku.patch}
+              # targetSdk >= 31: a GpsStatus registration throws at onCreate,
+              # and the GpsStatus.NmeaListener overload registers nothing.
+              if grep -q 'addGpsStatusListener\|GpsStatus\.NmeaListener' $out/src/tk/tcl/wish/AndroWish.java; then
+                echo "AndroWish.java still uses GpsStatus APIs (gnss-status.patch)" >&2
+                exit 1
+              fi
             '';
         androidNdk = "${
           (androidHost.androidenv.composeAndroidPackages {
@@ -1744,6 +1800,8 @@
               cp -r ${androwish}/jni/tcl/library payload/assets/tcl8.6
               cp -r ${androwish}/jni/sdl2tk/library payload/assets/sdl2tk8.6
               cp -r ${pkgs.tclPackages.tcllib}/lib/tcllib*/json payload/assets/json
+              # tcllib's sha256 implementation lives in its sha1 directory.
+              cp -r ${pkgs.tclPackages.tcllib}/lib/tcllib*/sha1 payload/assets/sha1
               cp -r ${./veles-desktop} payload/assets/veles-desktop
               mkdir -p payload/assets/app
               cp ${./android/desktop.tcl} payload/assets/app/main.tcl
@@ -2294,7 +2352,7 @@
 
         # The image's tag names the commit it was built from, so the VPS
         # can say which one it runs.
-        imageTag = "0.1.6-${self.shortRev or self.dirtyShortRev or "dirty"}";
+        imageTag = "0.2.0-${self.shortRev or self.dirtyShortRev or "dirty"}";
         imageRevision = self.rev or self.dirtyRev or "dirty";
         # The release builder overrides only this label. Published images
         # must be rejected if their source does not name the authenticated
@@ -2755,7 +2813,7 @@
         #     bind-mount owner on the host.
         #   - Entrypoint is the wrapped `veles` binary; Cmd defaults to
         #     `gateway run` but any subcommand works:
-        #     `podman run --rm veles-agent:0.1.4 status` etc.
+        #     `podman run --rm veles-agent:0.2.0 status` etc.
         #   - No s6 / entrypoint.sh — veles' own lifecycle code (pid file,
         #     crash-loop guard, graceful SIGTERM, shutdown log) IS the init
         #     story; PID 1 is `veles` itself. `--restart unless-stopped` on
@@ -2902,6 +2960,21 @@
           ];
           TK_LIBRARY = "${tkDesktop}/lib/tk8.6";
           VELES_TEST_COSIGN = buildEnv.VELES_TEST_COSIGN;
+          # The Dev pane's language servers and checkers, for the real-
+          # server tests (veles-core lsp_proxy live tests, dev_check):
+          # they look on PATH and here, without putting these on the
+          # shell's PATH. VELES_TEST_LSP_REQUIRE turns a missing one into
+          # a failure instead of a skip, so this shell cannot go green by
+          # not having them. rust-analyzer is on PATH (packages above);
+          # tcl-lsp is the operator's own, so it is not required.
+          VELES_TEST_LSP_PATH = nixpkgs.lib.makeBinPath [
+            pkgs.typescript-language-server
+            pkgs.typescript
+            pkgs.racket-minimal
+            pkgs.ecl
+            pkgs.llvmPackages.clang-unwrapped
+          ];
+          VELES_TEST_LSP_REQUIRE = "clangd,rust-analyzer,typescript-language-server,tsc,racket,ecl,cargo,clang";
 
           inherit (buildEnv)
             PKG_CONFIG_PATH

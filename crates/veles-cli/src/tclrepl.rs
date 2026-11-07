@@ -153,17 +153,34 @@ pub fn reload() -> Result<String, String> {
 
 /// One-shot eval (veles tcl eval '<code>').
 pub fn run_eval(code: &str) -> anyhow::Result<()> {
-    match eval(code) {
-        Ok(out) => {
-            if !out.is_empty() {
-                println!("{out}");
-            }
-            Ok(())
+    let body = serde_json::json!({"code": code}).to_string();
+    let (status, resp) =
+        http_request("POST", "/api/tcl/eval", Some(&body)).map_err(|e| anyhow::anyhow!(e))?;
+    let v: serde_json::Value = serde_json::from_str(&resp)
+        .map_err(|e| anyhow::anyhow!("bad JSON from API: {e}: {resp}"))?;
+    if let Some(gateway) = v.get("gateway") {
+        let name = json_str(gateway, "node_name");
+        let node = json_str(gateway, "node");
+        let endpoint = json_str(gateway, "endpoint");
+        let pid = gateway["pid"].as_u64().unwrap_or(0);
+        eprintln!(
+            "gateway: {} at {endpoint} (pid {pid}, node {node})",
+            if name.is_empty() { "unnamed" } else { &name }
+        );
+    }
+    if status != 200 {
+        eprintln!("error: {}", describe(status, &resp));
+        std::process::exit(1);
+    }
+    let result = json_str(&v, "result");
+    if v["ok"].as_bool().unwrap_or(false) {
+        if !result.is_empty() {
+            println!("{result}");
         }
-        Err(e) => {
-            eprintln!("error: {e}");
-            std::process::exit(1);
-        }
+        Ok(())
+    } else {
+        eprintln!("error: {result}");
+        std::process::exit(1);
     }
 }
 

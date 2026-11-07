@@ -58,6 +58,24 @@ pub fn lint_file(path: &str, timeout_secs: u64) -> Result<Vec<String>, String> {
 /// can drive a deliberately mute server without touching a global
 /// PATH (which would race the other tests in the same process).
 fn lint_file_cmd(cmd: &str, path: &str, timeout_secs: u64) -> Result<Vec<String>, String> {
+    Ok(lint_rows(cmd, path, timeout_secs)?
+        .into_iter()
+        .map(|(line, col, sev, message)| format!("{path}:{line}:{col} {sev} {message}"))
+        .collect())
+}
+
+/// One file's diagnostics as `(line 1-based, column 0-based in
+/// characters, severity, message)` — the Dev pane's Check reads these.
+///
+/// The column is CHARACTERS, converted from the UTF-8 byte offsets
+/// tcl-lsp negotiates (it answers `positionEncoding: "utf-8"` and means
+/// bytes: on `set s "éé€"; proc foo {} {}` it puts `proc` at 17, the
+/// byte offset, not 13). The Tk editor counts characters.
+pub fn lint_rows(
+    cmd: &str,
+    path: &str,
+    timeout_secs: u64,
+) -> Result<Vec<(u64, u64, &'static str, String)>, String> {
     let text = std::fs::read_to_string(path).map_err(|e| format!("cannot read {path}: {e}"))?;
     let root = std::path::Path::new(path)
         .parent()
@@ -76,17 +94,25 @@ fn lint_file_cmd(cmd: &str, path: &str, timeout_secs: u64) -> Result<Vec<String>
         "jsonrpc": "2.0", "id": 1, "method": "initialize",
         "params": {"processId": null,
                    "rootUri": format!("file://{}", root.display()),
-                   "capabilities": {}}
+                   "capabilities": {"general": {"positionEncodings": ["utf-8"]}}}
     }));
     // Wait for the initialize response before didOpen — the reference
     // driver sequences the same way.
-    session.wait_id(1, timeout_secs, deadline)?;
+    let negotiated = session.wait_id(1, timeout_secs, deadline)?;
+    let bytes = negotiated["result"]["capabilities"]["positionEncoding"] == "utf-8";
     session.send(&json!({"jsonrpc": "2.0", "method": "initialized", "params": {}}));
     session.send(&json!({
         "jsonrpc": "2.0", "method": "textDocument/didOpen",
         "params": {"textDocument": {"uri": uri, "languageId": "tcl",
                                     "version": 1, "text": text}}
     }));
+    let to_chars = |line0: u64, col: u64| -> u64 {
+        if bytes {
+            crate::dev_check::byte_col_to_char(&text, line0 + 1, col)
+        } else {
+            col
+        }
+    };
 
     let mut out = Vec::new();
     while Instant::now() < deadline {
@@ -101,17 +127,22 @@ fn lint_file_cmd(cmd: &str, path: &str, timeout_secs: u64) -> Result<Vec<String>
             .cloned()
             .unwrap_or_default();
         for d in &diags {
-            let line = d["range"]["start"]["line"].as_u64().unwrap_or(0) + 1;
-            let col = d["range"]["start"]["character"].as_u64().unwrap_or(0);
+            let line0 = d["range"]["start"]["line"].as_u64().unwrap_or(0);
+            let col = to_chars(
+                line0,
+                d["range"]["start"]["character"].as_u64().unwrap_or(0),
+            );
             let sev = match d["severity"].as_u64().unwrap_or(1) {
                 1 => "ERROR",
                 2 => "WARNING",
                 3 => "INFO",
                 _ => "HINT",
             };
-            out.push(format!(
-                "{path}:{line}:{col} {sev} {}",
-                d["message"].as_str().unwrap_or("?")
+            out.push((
+                line0 + 1,
+                col,
+                sev,
+                d["message"].as_str().unwrap_or("?").to_string(),
             ));
         }
         break;
@@ -319,10 +350,10 @@ impl Session {
         }
     }
 
-    fn wait_id(&self, id: u64, timeout_secs: u64, deadline: Instant) -> Result<(), String> {
+    fn wait_id(&self, id: u64, timeout_secs: u64, deadline: Instant) -> Result<Value, String> {
         while Instant::now() < deadline {
             match self.next_msg(timeout_secs, deadline)? {
-                Some(m) if m.get("id").and_then(Value::as_u64) == Some(id) => return Ok(()),
+                Some(m) if m.get("id").and_then(Value::as_u64) == Some(id) => return Ok(m),
                 Some(_) => continue,
                 None => return Err("tcl-lsp closed the pipe".into()),
             }

@@ -189,6 +189,11 @@ let
             here=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
             root=$(CDPATH= cd -- "$here/.." && pwd -P)
         fi
+        # The binary inside sees only the closure's /nix: tell it where the
+        # bundle is, for paths that outside programs run (the browser tab
+        # bridge's native host, BX-8).
+        VELES_BUNDLE_ROOT=$root
+        export VELES_BUNDLE_ROOT
         chroot="$root/nix/store/${baseNameOf nixUserChroot}/bin/nix-user-chroot"
         [ -x "$chroot" ] || { echo "veles bundle: missing launcher $chroot" >&2; exit 1; }
         # No local podman on a clean host: use the remote-only client. It still

@@ -3,11 +3,11 @@
 # Source build only. veles links libtcl through bindgen, so the binary
 # is bound to the Tcl the host has — a -bin package would be a lie.
 pkgname=veles-agent
-pkgver=0.1.6
+pkgver=0.2.0
 pkgrel=1
 pkgdesc="Rust core + Tcl scripting AI agent framework"
 arch=('x86_64' 'aarch64')
-url="https://github.com/veles-agent/veles-agent"
+url="https://github.com/77787777778777/veles"
 license=('AGPL3')
 depends=('tcl' 'tcllib' 'openssl' 'zlib' 'sqlite')
 optdepends=(

@@ -877,13 +877,14 @@ file delete -force $scratch
 
 puts "── the APK carries every package the desktop requires"
 # The APK's assets are AndroWish's Tcl and Tk libraries plus tcllib's
-# json (flake.nix, the android payload). Anything else a boot-time file
+# json and sha256 are tcllib's json and sha2 packages (flake.nix).
+# Anything else a boot-time file
 # `package require`s ends the desktop with "can't find package" before a
 # window maps: install.tcl's `package require uuid` did that to v0.1.0
 # on every phone, and no suite saw it, because they run with the
 # laptop's whole tcllib. An optional package is required inside a catch,
 # which this does not match.
-set _shipped {Tcl Tk http msgcat json}
+set _shipped {Tcl Tk http msgcat json sha256}
 set _missing {}
 foreach f [concat [list [file join $_dir .. main.tcl]] [glob [file join $_dir *.tcl]]] {
     if {[string match *test.tcl $f]} { continue }
@@ -900,6 +901,52 @@ foreach f [concat [list [file join $_dir .. main.tcl]] [glob [file join $_dir *.
 }
 ok "every package a boot-time file requires is one the APK ships" {[llength $_missing] == 0}
 if {[llength $_missing]} { puts "      not in the APK: $_missing" }
+
+puts "── AndroWish uses the GNSS APIs a targetSdk >= 31 app may call"
+# Real phone, Android 16, 2026-11-03: location permission is granted, so
+# AndroWish.onCreate called addGpsStatusListener before any veles Tcl ran.
+# The activity died with UnsupportedOperationException: for an app that
+# targets API 31 or higher (this APK targets 36) the GpsStatus APIs
+# throw, on any Android 12+ device, not only Android 16. The patch uses
+# the supported GnssStatus callback and the status supplied to it, and
+# OnNmeaMessageListener for NMEA (the GpsStatus.NmeaListener overload
+# registers nothing on Android 11+).
+set _patch [read_file [file join $_dir .. .. android androwish gnss-status.patch]]
+set _flake [read_file [file join $_dir .. .. flake.nix]]
+# The APPLICATION line, inside the AndroWish source derivation and after
+# platform-apis.patch (the hunks are made against that tree). A plain
+# substring match also hit the line that copies the patch for this very
+# check, so it passed with the application deleted (review TSG-5).
+set _apply_platform [regexp -indices -line \
+    {^\s*patch -d \$out -p1 < \$\{\./android/androwish/platform-apis\.patch\}\s*$} $_flake _platform_at]
+set _apply_gnss [regexp -indices -line \
+    {^\s*patch -d \$out -p1 < \$\{\./android/androwish/gnss-status\.patch\}\s*$} $_flake _gnss_at]
+ok "the GNSS compatibility patch is applied by the APK build" {
+    $_apply_platform && $_apply_gnss
+    && [lindex $_gnss_at 0] > [lindex $_platform_at 0]
+}
+ok "the build fails if the patched source still holds GpsStatus calls" {
+    [string first {grep -q 'addGpsStatusListener\|GpsStatus\.NmeaListener'} $_flake] >= 0
+}
+ok "NMEA uses OnNmeaMessageListener, not the no-op GpsStatus overload" {
+    [string first {+class NmeaInfo implements OnNmeaMessageListener} $_patch] >= 0
+    && [string first {+    public void onNmeaMessage(String nmea, long time)} $_patch] >= 0
+    && ![regexp -line {^\+.*GpsStatus\.NmeaListener} $_patch]
+}
+ok "the patch names the real cause (target SDK), not an Android 16 removal" {
+    [string match -nocase "*targetSdk*31*" [lindex [split $_patch \n] 0]]
+}
+ok "legacy GpsStatus registration is not reintroduced" {
+    ![regexp -line {^\+[^+].*(?:addGpsStatusListener|removeGpsStatusListener)} $_patch]
+}
+ok "modern registration and teardown are present" {
+    [string first {registerGnssStatusCallback(mGpsInfo)} $_patch] >= 0
+    && [string first {unregisterGnssStatusCallback(mGpsInfo)} $_patch] >= 0
+}
+ok "satellite data comes from the callback's GnssStatus" {
+    [string first {onSatelliteStatusChanged(GnssStatus status)} $_patch] >= 0
+    && [string first {getSatelliteCount()} $_patch] >= 0
+}
 
 puts "\nandroidtest: $passed passed, $failed failed"
 exit [expr {$failed > 0 ? 1 : 0}]

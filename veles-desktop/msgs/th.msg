@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset th {%1$s %2$s failed: %3$s} {%1$s %2$s ล้มเหลว: %3$s}
 ::msgcat::mcset th {%1$s %2$s over ssh…} {%1$s %2$s ผ่าน ssh…}
 ::msgcat::mcset th {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset th {%1$s (%2$s waiting)} {%1$s (%2$s กำลังรอ)}
 ::msgcat::mcset th {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  reasoning %3$s}
 ::msgcat::mcset th {%1$s = %2$s here} {%1$s = %2$s ที่นี่}
 ::msgcat::mcset th {%1$s NOT saved: %2$s} {%1$s ไม่ได้บันทึก: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset th {%1$s every cron job on %2$s?} {%1$s งาน cron ทั้งหมดบน %2$s?}
 ::msgcat::mcset th {%1$s failed: %2$s} {%1$s ล้มเหลว: %2$s}
 ::msgcat::mcset th {%1$s in / %2$s out / %3$s calls} {%1$s เข้า / %2$s ออก / %3$s ครั้ง}
+::msgcat::mcset th {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s เป็นโหนด %2$s ไม่ใช่ %3$s แก้ node id ของมันใน Edit…}
 ::msgcat::mcset th {%1$s is not a whole number} {%1$s ไม่ใช่จำนวนเต็ม}
+::msgcat::mcset th {%1$s is reachable (%2$s ms).} {%1$s เชื่อมต่อได้ (%2$s มิลลิวินาที)}
 ::msgcat::mcset th {%1$s is set to something this box cannot edit (%2$s)} {%1$s ตั้งค่าเป็นสิ่งที่เครื่องนี้แก้ไม่ได้ (%2$s)}
+::msgcat::mcset th {%1$s is unreachable: %2$s} {%1$s เชื่อมต่อไม่ได้: %2$s}
 ::msgcat::mcset th {%1$s of %2$s characters} {%1$s จาก %2$s ตัวอักษร}
 ::msgcat::mcset th {%1$s of %2$s sessions} {%1$s จาก %2$s เซสชัน}
 ::msgcat::mcset th {%1$s of %2$s skills reach the prompt} {%1$s จาก %2$s สกิลถึงพรอมต์}
 ::msgcat::mcset th {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s บน %2$s: สำเร็จ %3$d, ล้มเหลว %4$d}
+::msgcat::mcset th {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s ไม่ได้รายงาน identity ของโหนดในคลัสเตอร์ จึงยืนยันไม่ได้ว่าเป็น %2$s}
+::msgcat::mcset th {%1$s sync failed: %2$s} {ซิงก์ %1$s ล้มเหลว: %2$s}
+::msgcat::mcset th {%1$s sync with %2$s (%3$s)} {%1$s ซิงก์กับ %2$s (%3$s)}
+::msgcat::mcset th {%1$s sync: %2$s} {%1$s ซิงก์: %2$s}
 ::msgcat::mcset th {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset th {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter เพื่อไป, Esc เพื่อปิด}
 ::msgcat::mcset th {%1$s — revision r%2$s} {%1$s — รีวิชัน r%2$s}
 ::msgcat::mcset th {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset th {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset th {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset th {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset th {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: %2$s จาก %3$s บรรทัดล่าสุดที่เกตเวย์ของมันเก็บไว้ในหน่วยความจำ โดยปิดความลับบนโหนดนั้น}
 ::msgcat::mcset th {%d MCP server(s) configured} {ตั้งค่า MCP server แล้ว %d รายการ}
 ::msgcat::mcset th {%d entries} {%d รายการ}
+::msgcat::mcset th {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {ไฟล์ %d ไฟล์ของส่วนขยายจะถูกเขียนตามที่ตรวจทานไว้ทุกประการ หากไฟล์ใดเปลี่ยนไปตั้งแต่การดูตัวอย่าง จะไม่มีการเขียนใด ๆ ทั้งสิ้น ไม่มีการคอมมิต พุช หรือ PR}
 ::msgcat::mcset th {%d handler(s) registered} {ลงทะเบียน handler แล้ว %d ตัว}
 ::msgcat::mcset th {%d identities · %d users} {identity %d ราย · ผู้ใช้ %d ราย}
 ::msgcat::mcset th {%d models — pick one from the list or type a name.} {โมเดล %d ตัว — เลือกจากรายการหรือพิมพ์ชื่อโมเดล}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset th {%d shown} {แสดง %d}
 ::msgcat::mcset th {%s %s%%} {%s %s%%}
 ::msgcat::mcset th {%s (%s)} {%s (%s)}
+::msgcat::mcset th {%s (referral)} {%s (ชวนสมัคร)}
+::msgcat::mcset th {%s (stale)} {%s (ค้างเก่า)}
 ::msgcat::mcset th {%s (this session)} {%s (เซสชันนี้)}
 ::msgcat::mcset th {%s GB free of %s GB} {ว่าง %s GB จาก %s GB}
 ::msgcat::mcset th {%s already exists — open it from the list} {มี %s อยู่แล้ว — เปิดจากรายการ}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset th {%s comes from config.toml [acl] — edit there} {%s มาจาก config.toml [acl] — แก้ที่นั่น}
 ::msgcat::mcset th {%s config change(s) wait for you — /configsync} {การเปลี่ยนแปลงการตั้งค่า %s รายการรอคุณอยู่ — /configsync}
 ::msgcat::mcset th {%s did not become healthy within 30s} {%s ไม่พร้อมใช้งานใน 30 วินาที}
+::msgcat::mcset th {%s done} {%s เสร็จแล้ว}
 ::msgcat::mcset th {%s failed: %s} {%s ล้มเหลว: %s}
 ::msgcat::mcset th {%s is already split} {%s ถูกแยกอยู่แล้ว}
 ::msgcat::mcset th {%s is the language in use — pick another one to swap with} {%s คือภาษาที่ใช้อยู่ — เลือกภาษาอื่นเป็นภาษาที่จะสลับไป}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset th {%s opens the command palette in %s.} {%s เปิดแผงคำสั่งใน %s}
 ::msgcat::mcset th {%s session(s)} {เซสชัน %s}
 ::msgcat::mcset th {%s skill(s):} {สกิล %s รายการ:}
+::msgcat::mcset th {%s standing grants} {สิทธิ์ถาวร %s รายการ}
 ::msgcat::mcset th {%s takes no completable arguments} {%s ไม่รับอาร์กิวเมนต์ที่เติมได้}
 ::msgcat::mcset th {%s takes on or off} {%s รับค่า on หรือ off}
 ::msgcat::mcset th {%s —} {%s —}
+::msgcat::mcset th {%s — changes data, asks to confirm} {%s — เปลี่ยนข้อมูล ต้องยืนยันก่อน}
 ::msgcat::mcset th {%s — deleted; History… can restore it} {%s — ลบแล้ว ประวัติ… กู้คืนได้}
 ::msgcat::mcset th {%s — new: type, then Save} {%s — ใหม่: พิมพ์ แล้วบันทึก}
 ::msgcat::mcset th {%s — not attached; press Attach in the Instances tab} {%s — ยังไม่ได้แนบ; กด Attach ในแท็บ Instances}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset th {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} เปิดใช้อยู่โดยไม่มีส่วน [acl]: จนกว่า %{var} ใน .env จะระบุว่าใครคุยกับบอตได้ ใครก็ตามที่เข้าถึงบอตได้จะถือเป็นเจ้าของ และใช้เครื่องมือได้ทุกอย่าง}
 ::msgcat::mcset th (%{route}) (%{route})
 ::msgcat::mcset th {(CLI redraws automatically)} {(CLI วาดใหม่เอง)}
+::msgcat::mcset th {(binary; not publishable)} {(ไบนารี; เผยแพร่ไม่ได้)}
 ::msgcat::mcset th {(clipboard empty or no clipboard tool)} (คลิปบอร์ดว่างหรือไม่มีเครื่องมือคลิปบอร์ด)
 ::msgcat::mcset th (deleted) (ลบแล้ว)
 ::msgcat::mcset th (empty) (ว่าง)
 ::msgcat::mcset th {(no sessions)} (ไม่มีเซสชัน)
+::msgcat::mcset th {(not a memsync peer of this gateway: config is not synced with it)} {(ไม่ใช่เพียร์ memsync ของเกตเวย์นี้: การตั้งค่าไม่ได้ซิงก์กับมัน)}
 ::msgcat::mcset th {(nothing to reload — read from disk per use)} {(ไม่มีอะไรต้องโหลดใหม่ — อ่านจากดิสก์ทุกครั้งที่ใช้)}
 ::msgcat::mcset th {(retrying last prompt…)} (กำลังลองพรอมต์ล่าสุดซ้ำ…)
 ::msgcat::mcset th {(route did not resolve: %{e})} {(ไม่พบ route: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset th {/url needs a number from /urls} {/url ต้องระบุตัวเลขจาก /urls}
 ::msgcat::mcset th {/whois needs a nick} {/whois ต้องระบุ nick}
 ::msgcat::mcset th {; could not save the cleared return view: %s} {; บันทึกมุมมองกลับที่ล้างแล้วไม่ได้: %s}
+::msgcat::mcset th {; shadows bundled} {; ทับตัวที่มาในชุด}
+::msgcat::mcset th {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {ข้อเสนอ config เปลี่ยนการตั้งค่าได้ และข้อเสนอ vault รวมความลับเข้าด้วยกัน; การเปลี่ยนส่วนความปลอดภัยยังต้องรอเจ้าของอนุมัติ}
 ::msgcat::mcset th {A failing plugin may drop hooks mid-turn.} {plugin ที่ล้มเหลวอาจทำให้ hook หลุดกลางเทิร์น}
 ::msgcat::mcset th {A local server: no key is needed unless you set one up.} {เซิร์ฟเวอร์ในเครื่อง: ไม่จำเป็นต้องมีคีย์ เว้นแต่คุณตั้งค่าไว้เอง}
+::msgcat::mcset th {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {รีลีสที่ลงนามแล้วจะถูกจัดเตรียมหลังจาก preflight เท่านั้น การรีสตาร์ท/ตรวจสอบ การดำเนินการต่อ และการย้อนกลับเป็นการกระทำแยกกัน โปรเซสที่พร้อมใช้งานต้องรายงานรีวิชันซอร์สที่ตรวจสอบแล้วตรงตามจริง}
 ::msgcat::mcset th {A value is stored for %s — leave this empty to keep it.} {มีค่าที่เก็บไว้สำหรับ %s แล้ว — เว้นว่างไว้เพื่อคงค่าเดิม}
 ::msgcat::mcset th {ACL: ban mask} {ACL: แบนมาสก์}
 ::msgcat::mcset th {ACL: grant admin} {ACL: ให้สิทธิ์ admin}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset th {ACL: grant user} {ACL: ให้สิทธิ์ user}
 ::msgcat::mcset th {ACL: revoke} {ACL: เพิกถอน}
 ::msgcat::mcset th {ACME account email} {อีเมลของบัญชี ACME}
+::msgcat::mcset th {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI assist ทำงานได้สี่ระดับ: ถามคำถามเชิงออกแบบ (ไม่ต้องใช้ไฟล์), เปลี่ยนไฟล์นี้, เปลี่ยนหลายไฟล์ของส่วนขยายนี้ หรืออธิบายไดแอกโนสติกส์ปัจจุบัน ส่วน New extension ยังสร้างส่วนขยายทั้งชุดจากจุดประสงค์ได้ด้วย ทุกคำขอถูกส่งโดยไม่ใช้เครื่องมือ และจะถูกปฏิเสธหากมีข้อมูลลับที่ลงทะเบียนไว้หรือค่าที่มีลักษณะเป็นข้อมูลรับรอง การเปลี่ยนแปลงจะแสดงเป็นดิฟและเขียนลงก็ต่อเมื่อคุณกดใช้ ควรขอแบบของส่วนขยายก่อน แล้วจึงขอแพตช์ของแกนหลักหลังจากระบุ API ที่ขาดหายไปได้แล้ว}
+::msgcat::mcset th {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {ความช่วยเหลือจาก AI แก้ได้เฉพาะส่วนขยายของผู้ใช้ และไฟล์นี้ไม่ได้อยู่ในส่วนขยายใด การเปลี่ยนแปลงส่วนใหญ่ทำได้ในส่วนขยาย (hook, tool, service override หรือ provider driver) ซึ่งอยู่รอดข้ามการอัปเกรด; core patch ใช้สำหรับสิ่งที่ extension API แสดงออกไม่ได้ ให้สร้างส่วนขยายใหม่สำหรับการเปลี่ยนแปลงนี้แทนหรือไม่? ไฟล์ของมันจะถูกพรีวิวก่อนเขียนอะไรลงไป}
+::msgcat::mcset th {AI assist…} {ให้ AI ช่วย…}
+::msgcat::mcset th {AI extension assistance} {ความช่วยเหลือส่วนขยายด้วย AI}
 ::msgcat::mcset th {API calls} {การเรียก API}
+::msgcat::mcset th {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {เครดิต API จากโปรแกรมแนะนำของ Anthropic จะได้ก็ต่อเมื่อคุณซื้อ Max หรือ Ultra เท่านั้น veles ไม่รองรับการใช้การสมัครสมาชิกนั้นเป็นวิธีเข้าสู่ระบบหรือยืนยันตัวตนกับ API}
 ::msgcat::mcset th {API key (hidden)} {คีย์ API (ซ่อน)}
 ::msgcat::mcset th {API key env var name} {ชื่อ env var ของ API key}
+::msgcat::mcset th {API reference} {เอกสารอ้างอิง API}
+::msgcat::mcset th {Abandon untouched operation} ละทิ้งการดำเนินการที่ยังไม่แตะ
 ::msgcat::mcset th {Access control} ควบคุมการเข้าถึง
 ::msgcat::mcset th {Access control (ACL)} {ควบคุมการเข้าถึง (ACL)}
 ::msgcat::mcset th Add เพิ่ม
 ::msgcat::mcset th {Add MCP server} {เพิ่ม MCP server}
 ::msgcat::mcset th {Add instance} เพิ่มอินสแตนซ์
 ::msgcat::mcset th {Add server…} เพิ่มเซิร์ฟเวอร์…
+::msgcat::mcset th {Adds selected extension sources. Review the branch diff and checks before merging.} {เพิ่มซอร์สของส่วนขยายที่เลือก ตรวจสอบ diff และผลการตรวจของบรานช์ก่อนรวม}
 ::msgcat::mcset th Add… เพิ่ม…
 ::msgcat::mcset th {Agent & engine} เอเจนต์และเอนจิน
 ::msgcat::mcset th {Alias %s} {Alias %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset th {Applies to} ใช้กับ
 ::msgcat::mcset th Apply ใช้
 ::msgcat::mcset th {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {ใช้การเปลี่ยนแปลงกับเซสชันที่กำลังรันเท่านั้น Copy TOML ให้บล็อกสำหรับนำไปวาง Save globally แทรกเข้า config.toml — แก้เฉพาะส่วน failover บรรทัดและคอมเมนต์อื่นไม่แตะ และเก็บไฟล์เดิมไว้เป็น config.toml.bak}
+::msgcat::mcset th {Apply proposal…} ใช้ข้อเสนอ…
+::msgcat::mcset th {Apply received} นำข้อมูลที่ได้รับมาใช้
+::msgcat::mcset th {Apply this AI proposal?} {ใช้ข้อเสนอของ AI นี้หรือไม่}
+::msgcat::mcset th {Apply this change set?} ใช้ชุดการเปลี่ยนแปลงนี้หรือไม่
 ::msgcat::mcset th {Apply to session} ใช้กับเซสชัน
+::msgcat::mcset th {Apply what this node received:} นำสิ่งที่โหนดนี้ได้รับไปใช้:
 ::msgcat::mcset th {Approval needed} ต้องขออนุมัติ
 ::msgcat::mcset th Apps แอป
 ::msgcat::mcset th Archive อาร์ไคฟ์
 ::msgcat::mcset th {Archive SHA-256} {SHA-256 ของอาร์ไคฟ์}
+::msgcat::mcset th Ask ถาม
+::msgcat::mcset th {Ask a design question} ถามคำถามเชิงออกแบบ
+::msgcat::mcset th {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {ถามวิธีสร้างส่วนขยาย: ขอบเขตใด ภาษาใด API ใด จะไม่มีการส่งซอร์สโค้ด และไม่มีอะไรถูกเขียนได้}
 ::msgcat::mcset th {Ask the agent to change it} ขอให้เอเจนต์แก้แอปนี้
+::msgcat::mcset th {Asking %s…} {กำลังถาม %s…}
 ::msgcat::mcset th {Asking the provider for its models…} กำลังขอรายการโมเดลจากผู้ให้บริการ…
 ::msgcat::mcset th Attach แนบ
 ::msgcat::mcset th {Attach to the next message} แนบไปกับข้อความถัดไป
+::msgcat::mcset th {Author guide} คู่มือผู้พัฒนา
+::msgcat::mcset th {Automatically discovered from the attached gateway's cluster registry.} {ค้นพบอัตโนมัติจาก cluster registry ของเกตเวย์ที่แนบอยู่}
 ::msgcat::mcset th Back ย้อนกลับ
 ::msgcat::mcset th {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {ย้อนกลับจะปิดสิ่งที่อยู่บนสุด: เมนู รายการเซสชัน หน้าต่าง ถ้าไม่มีอะไรเปิดอยู่ veles จะไปทำงานเบื้องหลังและยังทำงานต่อ}
 ::msgcat::mcset th {Base URL} {Base URL}
+::msgcat::mcset th {Base branch} บรานช์ฐาน
 ::msgcat::mcset th {Bot token (hidden)} {โทเค็นบอท (ซ่อน)}
+::msgcat::mcset th Branch บรานช์
+::msgcat::mcset th {Branch and commit prepared; nothing has been pushed} {เตรียมบรานช์และคอมมิตแล้ว ยังไม่ได้พุชอะไร}
+::msgcat::mcset th {Branch pushed and verified on origin} พุชบรานช์และตรวจสอบบนออริจินแล้ว
 ::msgcat::mcset th {Browse sessions} เรียกดูเซสชัน
+::msgcat::mcset th {Build manifest + preflight} {สร้าง manifest + preflight}
+::msgcat::mcset th {Build: veles %1$s, revision %2$s (%3$s %4$s)} {บิลด์: veles %1$s, รีวิชัน %2$s (%3$s %4$s)}
 ::msgcat::mcset th {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e ต้น/ท้ายบรรทัด · C-b/C-f ตัวอักษร · M-b/M-f คำ · C-k ลบถึงท้ายบรรทัด · C-y วาง · M-w คัดลอก · C-w ลบบริเวณ · C-space ตั้ง mark · C-/ ย้อนกลับ}
 ::msgcat::mcset th {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g ยกเลิกทั้งหมด · C-j ขึ้นบรรทัดใหม่ · M-p/M-n ประวัติ · Tab เติมคำ}
+::msgcat::mcset th {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s คอร์, โหลด %2$s / %3$s / %4$s (%5$s%% ของคอร์)}
 ::msgcat::mcset th Cancel ยกเลิก
+::msgcat::mcset th {Cancel task} ยกเลิกงาน
+::msgcat::mcset th {Cancel task %1$s? This cannot be undone.} {ยกเลิกงาน %1$s? การนี้ไม่สามารถย้อนกลับได้}
+::msgcat::mcset th {Cannot verify that %1$s is node %2$s: %3$s} {ยืนยันไม่ได้ว่า %1$s เป็นโหนด %2$s: %3$s}
 ::msgcat::mcset th Capabilities ความสามารถ
 ::msgcat::mcset th {Change my app “%s” (%s): } {แก้แอป “%s” (%s) ของฉัน: }
+::msgcat::mcset th {Change this extension's files} เปลี่ยนไฟล์ของส่วนขยายนี้
+::msgcat::mcset th {Change this file} เปลี่ยนไฟล์นี้
 ::msgcat::mcset th Change… เปลี่ยน…
 ::msgcat::mcset th {Channels (e.g. #veles #dev)} {ช่อง (เช่น #veles #dev)}
 ::msgcat::mcset th Chat แชท
 ::msgcat::mcset th {Chat — not attached; press Attach in the Instances tab} {Chat — ยังไม่ได้แนบ; กด Attach ในแท็บ Instances}
 ::msgcat::mcset th {Check (lsp)} {ตรวจสอบ (lsp)}
+::msgcat::mcset th {Check again} ตรวจอีกครั้ง
+::msgcat::mcset th {Check files} ตรวจสอบไฟล์
 ::msgcat::mcset th Checkpoints จุดกู้คืน
 ::msgcat::mcset th {Checkpoints (undo)} {จุดกู้คืน (ย้อนกลับ)}
+::msgcat::mcset th {Checks and next steps} การตรวจสอบและขั้นตอนถัดไป
+::msgcat::mcset th {Checks run} รันการตรวจสอบแล้ว
 ::msgcat::mcset th {Choose BUNDLE-INFO.json in the managed install-sources directory} {เลือกไฟล์ BUNDLE-INFO.json ในไดเรกทอรี install-sources ที่ระบบจัดการไว้}
 ::msgcat::mcset th {Choose a failover script} {เลือกสคริปต์ failover}
 ::msgcat::mcset th {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {เลือกโมดูลหรือปลั๊กอินแบบโปรเซสที่จะตรวจสอบ การค้นพบอ่านเพียงไฟล์ plugin.toml เท่านั้น เมื่อเลือกคอมโพเนนต์ ระบบจะเรียกขอ manifest และตัวเลือกที่มันประกาศไว้ การเปิดขั้นตอนนี้ไม่ได้ติดตั้งสิ่งใด}
+::msgcat::mcset th {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {เลือกชื่อ วัตถุประสงค์ และภาษา แล้วดูตัวอย่างไฟล์ที่แน่นอน ยังไม่ได้เขียนไฟล์ใด}
 ::msgcat::mcset th {Choose a user unit or a system service for the server profile. Neither starts a service.} {เลือก user unit หรือ system service สำหรับโปรไฟล์ Server ไม่มีแบบใดเริ่มบริการ}
 ::msgcat::mcset th {Choose core bundle…} เลือกชุดคอร์…
 ::msgcat::mcset th {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {เลือกรูปแบบการติดตั้ง โปรไฟล์แบบ Local ใช้ตัวติดตั้งที่ผ่านการตรวจสอบแล้ว โปรไฟล์แบบ System และ container จะเตรียมคำขอที่เซ็นรับรองไว้เพื่อส่งต่อไปยัง CLI อย่างชัดแจ้ง ส่วน NixOS จะสร้างเพียงชิ้นส่วนโมดูล}
+::msgcat::mcset th {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {เลือกขอบเขตที่แคบที่สุด: Tool เพิ่มความสามารถที่โมเดลเรียกใช้ได้; Hook สังเกตหรือแก้ไขเหตุการณ์ในวงจรชีวิต; Service หรือจุด override ครอบการตัดสินใจที่มีชื่อ; Provider driver เพิ่มช่องทางของผู้ให้บริการ; Core patch เหมาะสมเฉพาะเมื่อ API ของส่วนขยายที่เผยแพร่แล้วไม่สามารถแสดงการเปลี่ยนแปลงนั้นได้}
 ::msgcat::mcset th {Choose typed container-host options JSON} {เลือก JSON ออปชันโฮสต์คอนเทนเนอร์แบบมีโครงสร้าง}
 ::msgcat::mcset th {Choose typed container-host options…} เลือกออปชันโฮสต์คอนเทนเนอร์แบบมีโครงสร้าง…
 ::msgcat::mcset th Clear ล้าง
 ::msgcat::mcset th {Clear composer} ล้างกล่องเขียนข้อความ
 ::msgcat::mcset th {Clear override} ล้างการแทนที่
 ::msgcat::mcset th {Click the picture where you would click on the page.} คลิกที่รูปภาพตรงจุดที่คุณจะคลิกบนหน้าเว็บจริง
+::msgcat::mcset th {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {โคลน %1$s สร้าง %2$s และคัดลอกเฉพาะไฟล์ของ %3$s ที่ตรวจสอบแล้วไปไว้ใต้ %4$s/<extension>/ ไฟล์จะถูกตรวจและคอมมิต ตอนนี้ยังไม่มีการพุชหรือสร้าง pull request}
 ::msgcat::mcset th Close ปิด
 ::msgcat::mcset th {Close (Esc)} {ปิด (Esc)}
 ::msgcat::mcset th {Close the setup wizard? Nothing has been written yet.} {ปิดวิซาร์ดการตั้งค่า? ยังไม่ได้เขียนอะไรเลย}
 ::msgcat::mcset th {Code actions} การดำเนินการกับโค้ด
+::msgcat::mcset th Commit คอมมิต
+::msgcat::mcset th {Commit ready for review. Push is a separate action.} {คอมมิตพร้อมให้ตรวจสอบแล้ว การพุชเป็นการกระทำแยกต่างหาก}
 ::msgcat::mcset th {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {กรอกทุกฟิลด์ของ PDS ให้ครบ รวมถึง digest ของ image ที่ล็อกเวอร์ชันไว้ ก่อนดูตัวอย่าง handoff}
 ::msgcat::mcset th {Complete every typed container-host field before previewing this profile.} {กรอกฟิลด์แบบกำหนดชนิดของ Container host ให้ครบทุกช่องก่อนดูตัวอย่างโปรไฟล์นี้}
 ::msgcat::mcset th {Component configuration returned an invalid result; nothing was accepted as applied.} {การตั้งค่าของคอมโพเนนต์คืนค่าที่ไม่ถูกต้อง ไม่มีสิ่งใดได้รับการยอมรับว่าถูกนำไปใช้}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset th {Component options changed. Review the new preview before applying.} {ตัวเลือกของคอมโพเนนต์เปลี่ยนไปแล้ว ทบทวนพรีวิวใหม่ก่อนนำไปใช้}
 ::msgcat::mcset th Components คอมโพเนนต์
 ::msgcat::mcset th {Composer preview} ตัวอย่างกล่องเขียนข้อความ
+::msgcat::mcset th Config การตั้งค่า
+::msgcat::mcset th {Config differs: %s} {การตั้งค่าแตกต่าง: %s}
+::msgcat::mcset th {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {บันทึกการตั้งค่า: โหนดนั้นมีการเปลี่ยนแปลงของ %1$s ถึง %3$s ส่วนเกตเวย์นี้ถึง %2$s}
+::msgcat::mcset th {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {บันทึกการตั้งค่า: เกตเวย์นี้มีการเปลี่ยนแปลงของ %1$s ถึง %2$s ส่วนโหนดนั้นถึง %3$s}
+::msgcat::mcset th {Config only on that node: %s} {การตั้งค่าที่มีเฉพาะบนโหนดนั้น: %s}
+::msgcat::mcset th {Config only on this gateway: %s} {การตั้งค่าที่มีเฉพาะบนเกตเวย์นี้: %s}
 ::msgcat::mcset th Configure ตั้งค่า
 ::msgcat::mcset th {Configure %s} {ตั้งค่า %s}
+::msgcat::mcset th {Configure translator} ตั้งค่าตัวแปล
+::msgcat::mcset th {Configured desktop gateway} เกตเวย์เดสก์ท็อปที่ตั้งค่าไว้
 ::msgcat::mcset th Configure… ตั้งค่า…
 ::msgcat::mcset th {Configuring %s} {กำลังตั้งค่า %s}
 ::msgcat::mcset th {Confirm or discard the current signed review before starting another download.} ยืนยันหรือละทิ้งการตรวจสอบเวอร์ชันที่ลงลายเซ็นปัจจุบันก่อนเริ่มการดาวน์โหลดครั้งใหม่
 ::msgcat::mcset th {Container host: typed host plan and privileged CLI handoff} {โฮสต์คอนเทนเนอร์: แผนโฮสต์แบบมีโครงสร้างและการส่งต่อ CLI ที่ต้องใช้สิทธิ์ผู้ดูแลระบบ}
 ::msgcat::mcset th {Context window} หน้าต่างบริบท
+::msgcat::mcset th {Continue to next target} ดำเนินการต่อยังเป้าหมายถัดไป
+::msgcat::mcset th {Contribute extensions: %s} {ส่งส่วนขยายขึ้นต้นน้ำ: %s}
+::msgcat::mcset th Contribute… ร่วมพัฒนา…
+::msgcat::mcset th {Contribution branch} บรานช์ร่วมพัฒนา
+::msgcat::mcset th {Contribution destination} ปลายทางการร่วมพัฒนา
 ::msgcat::mcset th Copy คัดลอก
 ::msgcat::mcset th {Copy TOML} {คัดลอก TOML}
+::msgcat::mcset th {Copy a bundled extension into your user plugin directory before preparing a contribution.} คัดลอกส่วนขยายที่มาพร้อมชุดไปยังไดเรกทอรีปลั๊กอินของผู้ใช้ก่อนเตรียมการร่วมพัฒนา
 ::msgcat::mcset th {Copy message} คัดลอกข้อความ
 ::msgcat::mcset th {Copy name} คัดลอกชื่อ
 ::msgcat::mcset th {Copy nick} คัดลอกชื่อเล่น
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset th {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {ค้นหาคอมโพเนนต์ไม่สำเร็จ ขั้นตอนตั้งค่า provider ยังทำต่อได้ หากจำเป็นให้ติดตั้งผ่าน CLI บนเครื่องเป้าหมาย}
 ::msgcat::mcset th {Could not join: %s} {เข้าร่วมไม่ได้: %s}
 ::msgcat::mcset th {Could not list the models (%s) — type the model's name.} {ระบุรายการโมเดลไม่ได้ (%s) — พิมพ์ชื่อโมเดลเอง}
+::msgcat::mcset th {Create a PR in} {สร้าง PR ใน}
+::msgcat::mcset th {Create extension} สร้างส่วนขยาย
 ::msgcat::mcset th {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {สร้างบอทด้วย @BotFather แล้ววางโทเค็นของมันด้านล่าง: โทเค็นจะเข้าไปอยู่ในตู้นิรภัยที่เข้ารหัส ไม่มีวันเข้าไปใน config.toml}
+::msgcat::mcset th {Create this extension?} สร้างส่วนขยายนี้หรือไม่
+::msgcat::mcset th {Create this generated extension?} สร้างส่วนขยายที่สร้างขึ้นนี้หรือไม่
+::msgcat::mcset th {Created and reloaded. Review and test the extension before publishing.} {สร้างและโหลดใหม่แล้ว ตรวจสอบและทดสอบส่วนขยายก่อนเผยแพร่}
+::msgcat::mcset th {Created, but reload failed} {สร้างแล้ว แต่โหลดใหม่ล้มเหลว}
 ::msgcat::mcset th {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {สร้าง %s/<name>/SKILL.md จากเทมเพลตแล้วเปิดขึ้นมา ส่วน frontmatter description เท่านั้นที่ถึงดัชนีพรอมต์ ดังนั้นเขียนให้บอกว่าเมื่อใดควรใช้สกิลนี้}
 ::msgcat::mcset th {Cron history} {ประวัติ Cron}
 ::msgcat::mcset th {Cron jobs} {งาน cron}
 ::msgcat::mcset th {Curated — write the first owner entry} {คัดสรร — เขียนรายการเจ้าของคนแรก}
 ::msgcat::mcset th Cut ตัด
 ::msgcat::mcset th Decline ปฏิเสธ
+::msgcat::mcset th {Dedicated translator} โมเดลแปลเฉพาะ
 ::msgcat::mcset th {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset th Default ค่าเริ่มต้น
 ::msgcat::mcset th {Default model} โมเดลเริ่มต้น
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset th {Delete user} ลบผู้ใช้
 ::msgcat::mcset th {Delete workspace?} ลบเวิร์กสเปซ?
 ::msgcat::mcset th Deop {ถอด op}
+::msgcat::mcset th {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {อธิบายการเปลี่ยนแปลง AI อาจเปลี่ยนหรือเพิ่มหลายไฟล์ของส่วนขยายนี้ ทุกไฟล์จะแสดงเป็นดิฟ และจะไม่มีการเขียนใด ๆ ก่อนที่คุณจะยืนยัน}
+::msgcat::mcset th {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {อธิบายการเปลี่ยนแปลง AI อาจเสนอการแก้ไขทดแทน แต่จะเขียนการเปลี่ยนแปลงนั้นไม่ได้จนกว่าคุณจะตรวจสอบและยืนยัน diff}
+::msgcat::mcset th {Describe the requested extension change first.} อธิบายการเปลี่ยนแปลงส่วนขยายที่ต้องการก่อน
+::msgcat::mcset th Description คำอธิบาย
 ::msgcat::mcset th {Desktop: local core, modules and process plugins} {เดสก์ท็อป: คอร์ในเครื่อง โมดูล และ plugin ของโปรเซส}
 ::msgcat::mcset th Detach ปลด
+::msgcat::mcset th {Detach foreground} แยกคำสั่งหน้าไปพื้นหลัง
 ::msgcat::mcset th Dev Dev
 ::msgcat::mcset th {Dev pane (REPL + LSP)} {แผง Dev (REPL + LSP)}
 ::msgcat::mcset th {Dev: arm / disarm live patching} {Dev: เปิด/ปิดการแพตช์สด}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset th Devoice {ถอด voice}
 ::msgcat::mcset th {Discard review} ละทิ้งการตรวจสอบ
 ::msgcat::mcset th {Discard your changes to %s?} {ทิ้งการเปลี่ยนแปลงของคุณใน %s หรือไม่}
+::msgcat::mcset th {Disk: %1$s free of %2$s at %3$s} {ดิสก์: ว่าง %1$s จาก %2$s ที่ %3$s}
 ::msgcat::mcset th Done เสร็จ
 ::msgcat::mcset th {Done — config written} {เสร็จสิ้น — เขียนคอนฟิกแล้ว}
 ::msgcat::mcset th {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {ดาวน์โหลดและตรวจสอบไฟล์แสดงรายการของเวอร์ชัน (manifest) และอาร์ไคฟ์ของเครื่องโฮสต์ก่อนติดตั้ง ต้องกรอกข้อมูลระบุตัวตนให้ครบทั้งห้าช่อง เกตเวย์จะเก็บริเวอร์ชันชั่วคราวที่แยกเป็นส่วนตัวไว้ ยังไม่มีการติดตั้งใด ๆ จากการดูตัวอย่างนี้}
 ::msgcat::mcset th {Downloading and verifying the signed release…} กำลังดาวน์โหลดและตรวจสอบเวอร์ชันที่ลงลายเซ็น…
+::msgcat::mcset th {Draft this as an extension?} ร่างสิ่งนี้เป็นส่วนขยายหรือไม่?
 ::msgcat::mcset th {Drag to scroll; a quick swipe goes further.} {ลากเพื่อเลื่อน ปัดเร็วๆ จะเลื่อนไปได้ไกลกว่า}
+::msgcat::mcset th {Drift check failed: %s} {การตรวจดริฟต์ล้มเหลว: %s}
+::msgcat::mcset th {Drift check: %s node(s) differ from this gateway.} {การตรวจดริฟต์: มี %s โหนดที่แตกต่างจากเกตเวย์นี้}
+::msgcat::mcset th {Drift: built from revision %1$s, this gateway from %2$s} {ดริฟต์: บิลด์จากรีวิชัน %1$s ส่วนเกตเวย์นี้จาก %2$s}
+::msgcat::mcset th {Drift: none — same version, revision and replicated config} {ดริฟต์: ไม่มี — เวอร์ชัน รีวิชัน และการตั้งค่าที่จำลองมาเหมือนกัน}
+::msgcat::mcset th {Drift: not compared — %s} {ดริฟต์: ไม่ได้เปรียบเทียบ — %s}
+::msgcat::mcset th {Drift: runs version %1$s, this gateway %2$s} {ดริฟต์: รันเวอร์ชัน %1$s ส่วนเกตเวย์นี้ %2$s}
+::msgcat::mcset th Drift… ดริฟต์…
 ::msgcat::mcset th {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset th {ESC %s is not bound} {ESC %s ยังไม่ได้ผูก}
 ::msgcat::mcset th {ESC- … (Meta prefix)} {ESC- … (คำนำหน้า Meta)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset th Edit… แก้ไข…
 ::msgcat::mcset th {Enable / disable} {เปิด / ปิด}
 ::msgcat::mcset th {Enable the Telegram adapter} {เปิดใช้งานแอดแดปเตอร์ Telegram}
+::msgcat::mcset th Endpoint ปลายทาง
 ::msgcat::mcset th Engine เอนจิน
 ::msgcat::mcset th Eval→gw Eval→gw
 ::msgcat::mcset th {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {ทุกการเปลี่ยนแปลงของ %s ถูกคอมมิต การกู้คืนจะคืนทั้งไดเรกทอรีกลับไปที่คอมมิตนั้น — และสแนปช็อตสถานะปัจจุบันก่อนเสมอ จึงไม่ใช่ทางเดียว}
 ::msgcat::mcset th {Every plugin file goes back to that commit. The current state is committed first.} {ไฟล์ plugin ทั้งหมดกลับไปที่คอมมิตนั้น โดยคอมมิตสถานะปัจจุบันก่อน}
+::msgcat::mcset th {Exact commit} คอมมิตที่แน่นอน
+::msgcat::mcset th {Exact permission rule} กฎสิทธิ์แบบตรงตัว
+::msgcat::mcset th {Example: a hook} {ตัวอย่าง: hook}
+::msgcat::mcset th {Example: a provider driver} {ตัวอย่าง: ไดรเวอร์ผู้ให้บริการ}
+::msgcat::mcset th {Example: a service override wrapping core} {ตัวอย่าง: service override ที่ครอบ core}
+::msgcat::mcset th {Example: a tool} {ตัวอย่าง: เครื่องมือ}
 ::msgcat::mcset th {Existing shared container network} เครือข่ายคอนเทนเนอร์ร่วมที่มีอยู่
+::msgcat::mcset th Explain อธิบาย
+::msgcat::mcset th {Explain the diagnostics} อธิบายไดแอกโนสติกส์
 ::msgcat::mcset th Export… ส่งออก…
+::msgcat::mcset th {Extension API} {API ส่วนขยาย}
+::msgcat::mcset th {Extension development} การพัฒนาส่วนขยาย
+::msgcat::mcset th {Extension guide} คู่มือส่วนขยาย
+::msgcat::mcset th {Extension source} ซอร์สของส่วนขยาย
 ::msgcat::mcset th {Failover blueprint} {พิมพ์เขียว Failover}
 ::msgcat::mcset th {Failover blueprint (edit the route chain)} {พิมพ์เขียว Failover (แก้ไขลำดับเส้นทาง)}
 ::msgcat::mcset th {Failover hook script (what `script` mode runs)} {สคริปต์ hook Failover (สิ่งที่โหมด `script` รัน)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset th {Find in transcript} ค้นหาในบทสนทนา
 ::msgcat::mcset th {Find in transcript…} ค้นหาในบทสนทนา…
 ::msgcat::mcset th {Find references} ค้นหาการอ้างอิง
+::msgcat::mcset th {Finish rollback} ย้อนกลับให้เสร็จ
 ::msgcat::mcset th {First run: no config.toml yet.} {รันครั้งแรก: ยังไม่มี config.toml}
+::msgcat::mcset th {Fix the failed syntax checks before preparing a contribution.} แก้ไขข้อผิดพลาดจากการตรวจสอบไวยากรณ์ที่ไม่ผ่านก่อนเตรียมการร่วมพัฒนา
+::msgcat::mcset th {Fleet deployment} การดีพลอยฟลีต
+::msgcat::mcset th {Fleet deployment runs from a desktop computer; it is not available on Android.} {การดีพลอยทั้งฟลีตทำได้จากคอมพิวเตอร์เดสก์ท็อปเท่านั้น ไม่มีบน Android}
+::msgcat::mcset th {Fleet deploy…} ดีพลอยฟลีต…
+::msgcat::mcset th {Fleet drift} ดริฟต์ของฟลีต
 ::msgcat::mcset th {Fold / unfold} {พับ / กาง}
 ::msgcat::mcset th {Forget declaration} ลืมการประกาศ
+::msgcat::mcset th {Forget node %s?} {ลืมโหนด %s หรือไม่?}
+::msgcat::mcset th {Forget node…} ลืมโหนด…
+::msgcat::mcset th {Forgetting %1$s failed: %2$s} {ลืม %1$s ไม่สำเร็จ: %2$s}
+::msgcat::mcset th {Forgot node %s.} {ลืมโหนด %s แล้ว}
+::msgcat::mcset th {Forgotten fleet-wide (refused until they heartbeat again): %s} {ลืมทั้งฟลีตแล้ว (จะถูกปฏิเสธจนกว่าจะส่งฮาร์ตบีตกลับมา): %s}
 ::msgcat::mcset th Fork แตกแขนง
 ::msgcat::mcset th {Free space} พื้นที่ว่าง
 ::msgcat::mcset th {Full source commit SHA} {SHA แบบเต็มของคอมมิตซอร์ส}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset th {Gateway image sha256 digest} {ไดเจสต์ sha256 ของอิมเมจเกตเวย์}
 ::msgcat::mcset th {Gateway quadlet name} {ชื่อ quadlet ของเกตเวย์}
 ::msgcat::mcset th {Gateway status} สถานะเกตเวย์
+::msgcat::mcset th {Generate with AI…} {สร้างด้วย AI…}
+::msgcat::mcset th {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {สร้างโดย %s - ยังไม่มีการเขียนใด ๆ ตรวจทานทุกไฟล์ แล้ว Create extension จะเขียนตามนั้นทุกประการ}
 ::msgcat::mcset th {Get a key at %s} {ขอคีย์ได้ที่ %s}
 ::msgcat::mcset th {GitHub release URL} {URL ของเวอร์ชันที่เผยแพร่บน GitHub}
+::msgcat::mcset th {Give the extension a name and describe what it should do (the purpose), then generate.} {ตั้งชื่อส่วนขยายและอธิบายว่ามันควรทำอะไร (จุดประสงค์) แล้วกดสร้าง}
 ::msgcat::mcset th {Give up} ยอมแพ้
 ::msgcat::mcset th Go ไป
 ::msgcat::mcset th {Go to definition} ไปที่นิยาม
+::msgcat::mcset th {Gossip failed: %s} {การกอสซิปล้มเหลว: %s}
+::msgcat::mcset th {Gossip now} กอสซิปเลย
+::msgcat::mcset th {Gossip with %1$s: %2$s} {กอสซิปกับ %1$s: %2$s}
+::msgcat::mcset th {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {กอสซิป: เพียร์ตอบกลับ %1$s จาก %2$s ราย (%3$s)}
 ::msgcat::mcset th Grant ให้สิทธิ์
 ::msgcat::mcset th {Grant access} ให้สิทธิ์เข้าถึง
+::msgcat::mcset th {Granted at} ให้สิทธิ์เมื่อ
 ::msgcat::mcset th Grant… ให้สิทธิ์…
 ::msgcat::mcset th {Guards — what the harness stops, and where it stands now} {Guards — สิ่งที่ harness สกัดกั้น และตอนนี้อยู่จุดไหน}
 ::msgcat::mcset th {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handlers ทำงานตามลำดับที่แสดง ตัวแรกที่คืนค่าที่ไม่ว่างเป็นผู้ชนะ การปิดตัวหนึ่งจะข้ามมันโดยไม่ยกเลิกการลงทะเบียน และตัวเลือกถูกเก็บไว้ใน config.toml เพื่อให้การโหลด plugin ใหม่ไม่เปิดมันกลับมาอย่างเงียบๆ}
+::msgcat::mcset th Health สุขภาพ
+::msgcat::mcset th {Health alerts (%s):} {การแจ้งเตือนสุขภาพ (%s):}
+::msgcat::mcset th Heartbeat สัญญาณชีพ
+::msgcat::mcset th {Heartbeat age: %s s} {อายุ heartbeat: %s วินาที}
 ::msgcat::mcset th Help ช่วยเหลือ
 ::msgcat::mcset th {Help & keys} ช่วยเหลือและปุ่มลัด
 ::msgcat::mcset th {Hide right panes} ซ่อนแผงด้านขวา
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset th {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {แตะค้าง แล้วลากก่อนยกนิ้ว: ส่วนที่เลือกจะตามนิ้วไปทีละคำ และเลื่อนเมื่อถึงขอบบนหรือขอบล่าง}
 ::msgcat::mcset th Hooks Hooks
 ::msgcat::mcset th {Hooks (what plugins run on)} {Hooks (สิ่งที่ปลั๊กอินรันบน)}
+::msgcat::mcset th Host โฮสต์
 ::msgcat::mcset th {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {เวลาที่ต้องแตะค้างกำหนดโดยการหน่วงเวลาแตะค้างของ Android ในการตั้งค่าการช่วยเหลือพิเศษ}
 ::msgcat::mcset th {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {ฉันสำรอง KEK และคีย์โรเตชัน PLC แบบออฟไลน์แล้ว ยอมรับการส่งมอบ TLS และการเปิดใช้งานที่ตรวจสอบแล้ว}
 ::msgcat::mcset th {I-search backward: type to search, C-r for previous} {I-search ย้อนหลัง: พิมพ์เพื่อค้นหา, C-r หารายการก่อนหน้า}
 ::msgcat::mcset th {I-search: type to search, C-s for next} {I-search: พิมพ์เพื่อค้นหา, C-s หารายการถัดไป}
+::msgcat::mcset th {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {แรงกดดัน IO: มีงานรอ %1$s%% / %2$s%% / %3$s%% ของเวลา (10 วินาที / 1 นาที / 5 นาที)}
 ::msgcat::mcset th IRC IRC
 ::msgcat::mcset th {IRC buffers} {บัฟเฟอร์ IRC}
 ::msgcat::mcset th {IRC composer} {คอมโพเซอร์ IRC}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset th {IRC split: %s} {IRC split: %s}
 ::msgcat::mcset th {IRC transcript} {บันทึกสนทนา IRC}
 ::msgcat::mcset th {IRC — nothing to show} {IRC — ไม่มีอะไรให้แสดง}
+::msgcat::mcset th {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {กำลังทำงาน: %1$s เทิร์น %2$s, งานเบื้องหลัง %3$s รายการ %4$s}
 ::msgcat::mcset th {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {ติดตั้ง %s ลงในคลังคอมโพเนนต์ที่ระบบดูแลหรือไม่? manifest ของมันถูกแสดงแล้ว การนี้ไม่ได้เริ่มบริการใด}
 ::msgcat::mcset th {Install component} ติดตั้งคอมโพเนนต์
 ::msgcat::mcset th {Install components…} ติดตั้งคอมโพเนนต์…
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset th Instances อินสแตนซ์
 ::msgcat::mcset th {It becomes the current content, as a new revision — so the restore can be undone too.} {จะกลายเป็นเนื้อหาปัจจุบันเป็นรีวิชันใหม่ — จึงยกเลิกการกู้คืนได้เช่นกัน}
 ::msgcat::mcset th {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {มันจะเข้าไปอยู่ในตู้นิรภัยที่เข้ารหัสบนเครื่องนี้ เอเจนต์ไม่มีวันเห็นมัน: ทำได้เพียงใช้มันเป็น $%s ในคำสั่ง หรือส่งไปยังโฮสต์ที่อนุญาต}
+::msgcat::mcset th {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {มันถูกลบออกจากรีจิสทรีของคลัสเตอร์ทั้งฟลีต: การแลกเปลี่ยนกอสซิปครั้งถัดไปจะบอกเพียร์ 0.2.0 ทุกตัวให้ทิ้งมันไปด้วย และจะไม่มีตัวใดรวมมันกลับมา เพียร์ที่เก่ากว่า 0.2.0 จะยังคงแสดงมันอยู่ หากเครื่องกลับมาและส่งฮาร์ตบีต มันจะถูกลงทะเบียนอีกครั้ง เพียร์ที่ซิงก์และอินสแตนซ์ที่บันทึกไว้จะไม่ถูกแตะต้อง}
 ::msgcat::mcset th {It leaves memory now. Its history keeps every revision, and History… can restore it.} {ไฟล์นี้จะออกจากความจำตอนนี้ ประวัติยังเก็บทุกรีวิชัน และประวัติ… กู้คืนได้}
 ::msgcat::mcset th Join เข้าร่วม
 ::msgcat::mcset th {Join a pool} เข้าร่วมกลุ่มเครื่อง
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset th {Language (i18n)} {ภาษา (i18n)}
 ::msgcat::mcset th Language… ภาษา…
 ::msgcat::mcset th {Last active} ใช้งานล่าสุด
+::msgcat::mcset th {Last probe: %1$s — %2$s} {ตรวจล่าสุด: %1$s — %2$s}
 ::msgcat::mcset th {Leave %s?} {ออกจาก %s?}
 ::msgcat::mcset th Leave… ออก…
 ::msgcat::mcset th {Legacy open — no [acl] section} {เปิดแบบเดิม — ไม่มีส่วน [acl]}
 ::msgcat::mcset th {Let %s:} {อนุญาตให้ %s:}
 ::msgcat::mcset th {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {ตัวอักษร ตัวเลข - และ _ สร้าง plugin.toml และ plugin.tcl ที่ลงทะเบียน hook post_llm_call แล้วเปิดในแผง Dev}
+::msgcat::mcset th Level ระดับ
 ::msgcat::mcset th {Lift lockdown} ปลดล็อกดาวน์
+::msgcat::mcset th Lines บรรทัด
 ::msgcat::mcset th {List the provider's models} ขอรายการโมเดลของผู้ให้บริการ
+::msgcat::mcset th Load โหลด
 ::msgcat::mcset th {Load more} โหลดเพิ่ม
 ::msgcat::mcset th {Loading discovered components…} กำลังโหลดคอมโพเนนต์ที่ค้นพบ…
 ::msgcat::mcset th {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {รีวิวบันเดิลในเครื่องแล้ว เลือก Install selected component เพื่อยืนยันการติดตั้ง ยังไม่ได้ติดตั้งสิ่งใด}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset th {Lock down} ล็อกดาวน์
 ::msgcat::mcset th Log บันทึก
 ::msgcat::mcset th {Log (engine + status)} {บันทึก (เอนจิน + สถานะ)}
+::msgcat::mcset th {Log of %s} {บันทึกของ %s}
+::msgcat::mcset th Logs… บันทึก…
 ::msgcat::mcset th {M-g- (g: goto line)} {M-g- (g: ไปที่บรรทัด)}
 ::msgcat::mcset th {M-p/M-n history · Tab complete} {M-p/M-n ดูประวัติ · Tab เติมอัตโนมัติ}
 ::msgcat::mcset th {MCP server list} {รายการ MCP server}
 ::msgcat::mcset th {MCP servers (from config.toml)} {MCP servers (จาก config.toml)}
 ::msgcat::mcset th {Make default} ตั้งเป็นค่าเริ่มต้น
 ::msgcat::mcset th {Make default (config.toml)} {ตั้งเป็นค่าเริ่มต้น (config.toml)}
+::msgcat::mcset th {Manage extensions} จัดการส่วนขยาย
 ::msgcat::mcset th {Manifest SHA-256} {SHA-256 ของไฟล์แสดงรายการเวอร์ชัน}
 ::msgcat::mcset th {Mark read} ทำเครื่องหมายว่าอ่านแล้ว
 ::msgcat::mcset th {Mechanisms (what the engine does on its own)} {กลไก (สิ่งที่เอนจินทำเอง)}
 ::msgcat::mcset th {Mechanisms — what the engine does on its own, and how to stop it} {กลไก — สิ่งที่เอนจินทำเอง และวิธีหยุดมัน}
 ::msgcat::mcset th Memory ความจำ
 ::msgcat::mcset th {Memory history} ประวัติความจำ
+::msgcat::mcset th {Memory: %1$s available of %2$s (%3$s%% used)} {หน่วยความจำ: ใช้ได้ %1$s จาก %2$s (ใช้ไป %3$s%%)}
+::msgcat::mcset th {Merge the received %s into this node?} {รวม %s ที่ได้รับเข้ากับโหนดนี้หรือไม่?}
 ::msgcat::mcset th Messages ข้อความ
+::msgcat::mcset th Metrics เมตริก
+::msgcat::mcset th {Metrics (asked %s):} {เมตริก (ถามเมื่อ %s):}
+::msgcat::mcset th {Metrics of %1$s failed: %2$s} {เมตริกของ %1$s ล้มเหลว: %2$s}
+::msgcat::mcset th {Metrics of %s received.} {ได้รับเมตริกของ %s แล้ว}
+::msgcat::mcset th {Metrics: not asked yet — use Metrics.} {เมตริก: ยังไม่ได้ถาม — ใช้ Metrics}
 ::msgcat::mcset th Model โมเดล
 ::msgcat::mcset th {Model for this session} โมเดลสำหรับเซสชันนี้
 ::msgcat::mcset th {Models & settings} โมเดลและการตั้งค่า
+::msgcat::mcset th Monitors ตัวเฝ้าระวัง
+::msgcat::mcset th Name ชื่อ
+::msgcat::mcset th {Need an account? Optional sign-up links (open in your browser):} {ยังไม่มีบัญชี? ลิงก์สมัคร (ไม่บังคับ จะเปิดในเบราว์เซอร์ของคุณ):}
 ::msgcat::mcset th Network เครือข่าย
 ::msgcat::mcset th {New alias} {alias ใหม่}
+::msgcat::mcset th {New branch name} ชื่อบรานช์ใหม่
 ::msgcat::mcset th {New cron job} {งาน cron ใหม่}
+::msgcat::mcset th {New extension} ส่วนขยายใหม่
 ::msgcat::mcset th {New memory file} ไฟล์ความจำใหม่
 ::msgcat::mcset th {New plugin} {plugin ใหม่}
 ::msgcat::mcset th {New session} เซสชันใหม่
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset th Next ถัดไป
 ::msgcat::mcset th Nickname {ชื่อ nick}
 ::msgcat::mcset th {NixOS: emit a module snippet; do not edit host declarations} {NixOS: สร้างโค้ดโมดูลแบบย่อ ไม่แก้ไขการประกาศของโฮสต์}
+::msgcat::mcset th {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {ยังไม่ได้ตั้งค่าเป้าหมายวงจรชีวิต SSH สำหรับโหนดนี้ เพิ่มอินสแตนซ์เองเพื่อติดตั้งใช้งานหรือรีสตาร์ท}
+::msgcat::mcset th {No additional push happens.} จะไม่มีการพุชเพิ่มเติม
 ::msgcat::mcset th {No apps yet. Ask the agent to make one: “make me an app that…”} {ยังไม่มีแอป ขอให้เอเจนต์สร้างให้: “ช่วยสร้างแอปที่…”}
 ::msgcat::mcset th {No code in the picture. Hold the phone closer, straight on, and scan again.} {ไม่มีโค้ดในภาพ ถือโทรศัพท์ให้ใกล้และตรง แล้วสแกนอีกครั้ง}
 ::msgcat::mcset th {No configuration snapshot will be restored.} {จะไม่กู้คืนสแนปช็อตการตั้งค่าใด ๆ}
+::msgcat::mcset th {No configured sync peer for this node.} โหนดนี้ไม่มีพีร์ซิงก์ที่ตั้งค่าไว้
+::msgcat::mcset th {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {ยังไม่ได้ตั้งค่าตัวแปลโดยเฉพาะ ใช้เมนูตั้งค่าตัวแปลเพื่อเลือกผู้ให้บริการ โมเดล และภาษาเป้าหมาย}
+::msgcat::mcset th {No deployment started.} ยังไม่เริ่มการดีพลอย
+::msgcat::mcset th {No diagnostics reported by the current LSP document.} {เอกสาร LSP ปัจจุบันไม่ได้รายงานข้อมูลวินิจฉัย}
+::msgcat::mcset th {No explicitly configured desktop gateway is bound to this node.} ไม่มีเกตเวย์เดสก์ท็อปที่ตั้งค่าไว้อย่างชัดเจนผูกกับโหนดนี้
+::msgcat::mcset th {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {ไม่มีเกตเวย์ที่ตั้งค่าไว้อย่างชัดเจนผูกกับโหนดนี้ เพิ่มเกตเวย์ก่อน เอนด์พอยต์รีจิสทรีของเกตเวย์จะไม่ถูกใช้เป็น URL ของเดสก์ท็อป}
+::msgcat::mcset th {No file is open. Ask a design question, or open an extension file for help with its code.} {ยังไม่ได้เปิดไฟล์ ถามคำถามเชิงออกแบบ หรือเปิดไฟล์ส่วนขยายเพื่อขอความช่วยเหลือเกี่ยวกับโค้ด}
+::msgcat::mcset th {No files have been written. Review the exact manifest and source, then confirm creation.} {ยังไม่ได้เขียนไฟล์ใด ตรวจสอบไฟล์ manifest และซอร์สที่แน่นอน แล้วยืนยันการสร้าง}
 ::msgcat::mcset th {No modules or process plugins were discovered. The provider setup steps can still continue.} {ไม่พบโมดูลหรือปลั๊กอินแบบโปรเซสใด ยังทำขั้นตอนตั้งค่า provider ต่อได้}
+::msgcat::mcset th {No other registered node to compare with.} ไม่มีโหนดอื่นที่ลงทะเบียนไว้ให้เปรียบเทียบ
 ::msgcat::mcset th {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {ไม่มีโปรไฟล์ใดเริ่มบริการหรือรันสคริปต์ที่ต้องใช้สิทธิ์ผู้ดูแลระบบจากตัวช่วยติดตั้งนี้ โปรดตรวจสอบแผนและการส่งต่อใด ๆ ก่อนนำไปรัน}
+::msgcat::mcset th {No proposal has been requested. Nothing will be written automatically.} {ยังไม่ได้ขอข้อเสนอ จะไม่มีการเขียนอะไรโดยอัตโนมัติ}
+::msgcat::mcset th {No proposal. Nothing was written.} {ไม่มีข้อเสนอ ไม่มีอะไรถูกเขียน}
 ::msgcat::mcset th {No routes configured.} {ยังไม่ได้ตั้งค่า route}
 ::msgcat::mcset th {No session selected — pick one in the sidebar or start a new one} {ยังไม่ได้เลือกเซสชัน — เลือกจากแถบด้านข้างหรือเริ่มใหม่}
 ::msgcat::mcset th {No swap target yet: pick a language and press “Set as swap target”.} {ยังไม่มีภาษาที่จะสลับไป: เลือกภาษาแล้วกด “ตั้งเป็นภาษาที่จะสลับไป”}
 ::msgcat::mcset th {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {ไม่มีส่วน {[}acl{]} ใน config.toml: ผู้ส่งทุกคนที่ถึงเกตเวย์ถือเป็นเจ้าของ เป็นพฤติกรรมผู้ใช้เดียวแบบก่อน ACL การให้และเพิกถอนสิทธิ์ยังใช้ได้และมีผลทันทีที่มี {[}acl{]}}
+::msgcat::mcset th {Node id} {ID โหนด}
+::msgcat::mcset th {Non-evaluating syntax checks} การตรวจสอบไวยากรณ์โดยไม่รันโค้ด
+::msgcat::mcset th {Not available: %s} {ไม่พร้อมใช้งาน: %s}
+::msgcat::mcset th Note หมายเหตุ
 ::msgcat::mcset th {Note for the agent (optional):} {หมายเหตุถึงเอเจนต์ (ไม่บังคับ):}
+::msgcat::mcset th {Nothing selected.} ยังไม่ได้เลือกอะไร
 ::msgcat::mcset th {Nothing typed yet.} ยังไม่ได้พิมพ์อะไรเลย
+::msgcat::mcset th {Nothing was generated or written.} ไม่มีอะไรถูกสร้างหรือเขียน
+::msgcat::mcset th {Nothing was prepared: the chosen repository already has these paths.} {ไม่ได้จัดเตรียมอะไร: รีโพซิทอรีที่เลือกมีพาธเหล่านี้อยู่แล้ว}
 ::msgcat::mcset th Notifications การแจ้งเตือน
 ::msgcat::mcset th OK ตกลง
 ::msgcat::mcset th Off ปิด
 ::msgcat::mcset th On เปิด
+::msgcat::mcset th {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {จะแทนที่เฉพาะบัฟเฟอร์ส่วนขยายที่ตรวจสอบแล้ว ไฟล์ยังคงได้รับการป้องกันจากการเปลี่ยนแปลงที่เกิดหลังตัวอย่างนี้ จะไม่มีการคอมมิต พุช หรือสร้าง PR}
+::msgcat::mcset th {Only this new branch is committed. Your ambient git identity is used.} {ระบบจะคอมมิตเฉพาะบรานช์ใหม่นี้ และใช้ตัวตน git ในสภาพแวดล้อมปัจจุบันของคุณ}
 ::msgcat::mcset th Op {ให้ op}
 ::msgcat::mcset th Open เปิด
+::msgcat::mcset th {Open PR…} {เปิด PR…}
 ::msgcat::mcset th {Open a window} เปิดหน้าต่าง
 ::msgcat::mcset th {Open in Dev} {เปิดใน Dev}
 ::msgcat::mcset th {Open in browser} เปิดในเบราว์เซอร์
 ::msgcat::mcset th {Open plugin} {เปิด plugin}
 ::msgcat::mcset th {Open terminal} เปิดเทอร์มินัล
+::msgcat::mcset th {Open this pull request?} เปิดคำขอพูลนี้หรือไม่
 ::msgcat::mcset th {Open veles in Android's settings} {เปิด veles ในการตั้งค่า Android}
 ::msgcat::mcset th {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {ไม่บังคับ: เครือข่าย IRC ที่เข้า ร่วมช่องคั่นด้วยช่องว่างหรือจุลภาค; หากตั้งค่า IRC_CHANNELS ใน .env จะใช้รายการนั้นแทน}
 ::msgcat::mcset th {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {ตัวเลือกมาจาก manifest ของคอมโพเนนต์ที่เลือก ฟิลด์ที่ดูเป็นความลับยังคงอยู่ในโฟลว์การตั้งค่า/ตู้นิรภัย การเว้นว่างฟิลด์จะคงตัวเลือกนั้นไว้ตามเดิม}
 ::msgcat::mcset th {Or paste a ticket signed on another device} หรือวางตั๋วที่ลงนามจากอุปกรณ์อื่น
 ::msgcat::mcset th {Or type an answer:} หรือพิมพ์คำตอบ:
+::msgcat::mcset th Origin ออริจิน
 ::msgcat::mcset th Other… {อื่น ๆ…}
 ::msgcat::mcset th Outline โครงร่าง
+::msgcat::mcset th Output ผลลัพธ์
 ::msgcat::mcset th {Override for THIS session (leave blank to inherit the default)} {แทนที่สำหรับเซสชันนี้ (เว้นว่างเพื่อใช้ค่าเริ่มต้น)}
 ::msgcat::mcset th {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {ตัวตนของเจ้าของ (telegram:123456, irc:account หรือมาสก์ nick!user@host)}
 ::msgcat::mcset th {PDS and handle domain} {โดเมนของ PDS และ handle}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset th {Pause scheduler} หยุดตัวจัดคิวชั่วคราว
 ::msgcat::mcset th {Peek (C-c C-p)} {ดูตัวอย่าง (C-c C-p)}
 ::msgcat::mcset th {Peek definition} ดูนิยามแบบเร็ว
+::msgcat::mcset th {Permission grants} การให้สิทธิ์
+::msgcat::mcset th {Permission grants…} การให้สิทธิ์…
 ::msgcat::mcset th Phone โทรศัพท์
 ::msgcat::mcset th {Phone: permissions, battery, storage} {โทรศัพท์: สิทธิ์ แบตเตอรี่ พื้นที่เก็บข้อมูล}
 ::msgcat::mcset th {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {โทรศัพท์ของ %s ยังหยุดแอปเองด้วย ในการตั้งค่าแอปของ veles ให้อนุญาตให้เริ่มทำงานเองและทำงานเบื้องหลัง}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset th Port พอร์ต
 ::msgcat::mcset th {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {คอร์ดคำนำหน้า (C-x, M-o) จะแสดงป๊อปอัป which-key ทันทีที่กด}
 ::msgcat::mcset th {Prepare an own vlpds PDS through the signed CLI handoff} {เตรียม vlpds PDS ของคุณเองผ่าน handoff บน CLI ที่ลงนามแล้ว}
+::msgcat::mcset th {Prepare branch…} เตรียมบรานช์…
+::msgcat::mcset th {Prepare this branch and commit?} เตรียมบรานช์และคอมมิตนี้หรือไม่
 ::msgcat::mcset th Preview พรีวิว
+::msgcat::mcset th {Preview change set} ดูตัวอย่างชุดการเปลี่ยนแปลง
+::msgcat::mcset th {Preview files} ดูตัวอย่างไฟล์
 ::msgcat::mcset th {Preview here} พรีวิวที่นี่
 ::msgcat::mcset th {Preview pane} บานหน้าต่างพรีวิว
+::msgcat::mcset th {Preview proposal} ดูตัวอย่างข้อเสนอ
+::msgcat::mcset th {Preview the changed name or language before creating it.} ดูตัวอย่างชื่อหรือภาษาที่เปลี่ยนก่อนสร้างส่วนขยาย
+::msgcat::mcset th Probe ตรวจสอบ
+::msgcat::mcset th {Probe of %1$s failed: %2$s} {ตรวจสอบ %1$s ล้มเหลว: %2$s}
 ::msgcat::mcset th {Profile result} ผลลัพธ์ของโปรไฟล์
 ::msgcat::mcset th {Promote into config.toml} {ยกระดับเข้า config.toml}
 ::msgcat::mcset th Promote… ยกระดับ…
 ::msgcat::mcset th Provider ผู้ให้บริการ
+::msgcat::mcset th {Provider driver (plugin wire only)} {ตัวขับผู้ให้บริการ (เฉพาะ wire แบบ plugin)}
 ::msgcat::mcset th {Provider entry name} {ชื่อรายการ provider}
 ::msgcat::mcset th {Provider for this session} {provider สำหรับเซสชันนี้}
 ::msgcat::mcset th Providers Providers
 ::msgcat::mcset th {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {Providers เป็นรายการตาราง: custom_providers.0.base_url, .0.api_mode, .0.key_env … ไล่ตามลำดับที่แสดงด้านล่าง}
 ::msgcat::mcset th {Public HTTPS URL} {URL สาธารณะแบบ HTTPS}
+::msgcat::mcset th {Pull request base} บรานช์ฐานของคำขอพูล
+::msgcat::mcset th {Pull request created} สร้างคำขอพูลแล้ว
+::msgcat::mcset th {Pull request description} คำอธิบายคำขอพูล
+::msgcat::mcset th {Pull request opened.} เปิดคำขอพูลแล้ว
+::msgcat::mcset th {Pull request repository} รีพอซิทอรีของคำขอพูล
+::msgcat::mcset th {Pull request title} ชื่อคำขอพูล
 ::msgcat::mcset th {Purge + delete files} {ล้าง + ลบไฟล์}
 ::msgcat::mcset th {Purge container} ล้างคอนเทนเนอร์
+::msgcat::mcset th Purpose วัตถุประสงค์
+::msgcat::mcset th Push พุช
+::msgcat::mcset th {Push branch…} พุชบรานช์…
+::msgcat::mcset th {Push complete. No pull request has been opened.} {พุชเสร็จแล้ว ยังไม่ได้เปิดคำขอพูล}
+::msgcat::mcset th {Push this branch?} พุชบรานช์นี้หรือไม่
+::msgcat::mcset th {Push to %s:} {พุชไปยัง %s:}
 ::msgcat::mcset th Question คำถาม
 ::msgcat::mcset th Questions คำถาม
 ::msgcat::mcset th Quit ออก
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset th {Reading notifications, for triggers} {การอ่านการแจ้งเตือน สำหรับทริกเกอร์}
 ::msgcat::mcset th Reasoning การให้เหตุผล
 ::msgcat::mcset th {Reasoning effort} {ระดับ reasoning}
+::msgcat::mcset th {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {ได้รับแล้ว รอการนำไปใช้: store %1$s · memory %2$s · config %3$s · vault %4$s}
+::msgcat::mcset th {Recommended checks} การตรวจสอบที่แนะนำ
 ::msgcat::mcset th {Refetch this transcript from the store} ดึงบทสนทนานี้จากร้านค้าใหม่
 ::msgcat::mcset th Refresh รีเฟรช
 ::msgcat::mcset th {Refresh preview} รีเฟรชพรีวิว
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset th {Rename symbol} เปลี่ยนชื่อสัญลักษณ์
 ::msgcat::mcset th Rename… เปลี่ยนชื่อ…
 ::msgcat::mcset th Rendered แสดงผลแล้ว
+::msgcat::mcset th {Replace existing repository files?} แทนที่ไฟล์ที่มีอยู่แล้วในรีโพซิทอรีหรือไม่?
+::msgcat::mcset th {Replace them in the new branch? Nothing else in the repository changes.} {แทนที่ในสาขาใหม่หรือไม่? ไม่มีอย่างอื่นในรีโพซิทอรีเปลี่ยน}
 ::msgcat::mcset th Repository รีโพซิทอรี
 ::msgcat::mcset th {Repository (owner/name)} {รีโพซิทอรี (เจ้าของ/ชื่อ)}
+::msgcat::mcset th {Repository directory} ไดเรกทอรีรีโพซิทอรี
+::msgcat::mcset th {Repository paths} พาธในรีโพซิทอรี
+::msgcat::mcset th {Request a new preview before trying again.} ขอตัวอย่างใหม่ก่อนลองอีกครั้ง
 ::msgcat::mcset th {Reset to default} คืนค่าเริ่มต้น
 ::msgcat::mcset th {Reset to template} รีเซ็ตเป็นเทมเพลต
 ::msgcat::mcset th Restart รีสตาร์ท
+::msgcat::mcset th {Restart + verify canary} {รีสตาร์ท + ตรวจสอบ canary}
 ::msgcat::mcset th {Restore hidden windows} กู้คืนหน้าต่างที่ซ่อนไว้
 ::msgcat::mcset th {Restore plugins to %s?} {กู้คืน plugins ไปที่ %s?}
 ::msgcat::mcset th {Restore revision r%1$s of %2$s?} {กู้คืนรีวิชัน r%1$s ของ %2$s หรือไม่}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset th {Restore this commit} กู้คืนคอมมิตนี้
 ::msgcat::mcset th {Restore this revision} กู้คืนรีวิชันนี้
 ::msgcat::mcset th {Resume scheduler} เรียกตัวจัดคิวต่อ
+::msgcat::mcset th {Resume unfinished operation} ดำเนินการต่อจากที่ค้างไว้
 ::msgcat::mcset th Revert ย้อนกลับ
 ::msgcat::mcset th {Revert %s to HEAD? Uncommitted changes in this file are lost.} {ย้อน %s กลับไปที่ HEAD? การเปลี่ยนแปลงที่ยังไม่บันทึกในไฟล์นี้จะหายไป}
 ::msgcat::mcset th Revert… ย้อนกลับ…
 ::msgcat::mcset th Review ตรวจทาน
 ::msgcat::mcset th {Review (git) pane} {บานหน้าต่าง Review (git)}
+::msgcat::mcset th {Review deployment} ตรวจดูการดีพลอย
+::msgcat::mcset th {Review extension contribution} ตรวจสอบการร่วมพัฒนาส่วนขยาย
 ::msgcat::mcset th {Review managed local bundle…} รีวิวบันเดิลในเครื่องที่ระบบจัดการไว้…
 ::msgcat::mcset th {Review rollback} รีวิวการย้อนกลับ
+::msgcat::mcset th {Review selected files} ตรวจสอบไฟล์ที่เลือก
 ::msgcat::mcset th {Review the component options on the summary screen before applying.} ทบทวนตัวเลือกของคอมโพเนนต์บนหน้าสรุปก่อนนำไปใช้
 ::msgcat::mcset th {Review the component preview before applying. No component configuration has been written.} {ทบทวนพรีวิวของคอมโพเนนต์ก่อนนำไปใช้ ยังไม่ได้เขียนการกำหนดค่าของคอมโพเนนต์ใดลงไฟล์}
+::msgcat::mcset th {Review the selected files and remove credential findings before preparing.} ตรวจสอบไฟล์ที่เลือกและลบข้อมูลประจำตัวที่ตรวจพบก่อนเตรียมการร่วมพัฒนา
 ::msgcat::mcset th {Reviewed core bundle in the managed install-sources directory} ชุดคอร์ที่ตรวจสอบแล้วในไดเรกทอรีแหล่งติดตั้งที่จัดการโดยผู้ดูแลระบบ
+::msgcat::mcset th {Reviewed fleet deployment} การดีพลอยฟลีตที่ตรวจสอบแล้ว
 ::msgcat::mcset th {Reviewed local bundle} บันเดิลในเครื่องที่รีวิวแล้ว
 ::msgcat::mcset th {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {ติดตั้งบันเดิลในเครื่องที่รีวิวแล้ว ไม่ได้ผ่านการตรวจสอบแบบ signed-download ต้องรีสตาร์ทก่อนใช้คอร์ใหม่}
 ::msgcat::mcset th Revision รีวิชัน
 ::msgcat::mcset th Revoke เพิกถอน
+::msgcat::mcset th {Revoke selected} เพิกถอนรายการที่เลือก
 ::msgcat::mcset th Roles บทบาท
 ::msgcat::mcset th {Roll back %1$s from %2$s to %3$s?} {ย้อนกลับ %1$s จาก %2$s ไปเป็น %3$s?}
+::msgcat::mcset th {Roll back selected target} ย้อนกลับเป้าหมายที่เลือก
 ::msgcat::mcset th {Rollback completed. Reload the component or restart as requested by the report.} {ย้อนกลับเสร็จแล้ว โหลดคอมโพเนนต์ใหม่หรือรีสตาร์ทตามที่รายงานกำหนด}
 ::msgcat::mcset th {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {รีวิวการย้อนกลับแล้ว เลือก Install selected component เพื่อยืนยันการกู้คืน ยังไม่ได้กู้คืนสิ่งใด}
 ::msgcat::mcset th Run รัน
 ::msgcat::mcset th {Run the wizard again} รันวิซาร์ดอีกครั้ง
 ::msgcat::mcset th {Running in the background} การทำงานเบื้องหลัง
-::msgcat::mcset th {Running tasks} งานที่กำลังรัน
-::msgcat::mcset th {Running tasks (subagents, shells, monitors)} {งานที่กำลังทำงาน (subagents, shells, monitors)}
 ::msgcat::mcset th {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {สิทธิ์และผู้ใช้ขณะรันเก็บในสโตร์ และการรีเซ็ตสโตร์จะกวาดมันทิ้ง Promote ต่อท้ายรายการที่สโตร์ตัดสินใจลง config.toml — คงคอมเมนต์และลำดับคีย์ของไฟล์ เขียนแบ็คอัปไว้ข้างๆ ลบสำเนาในสโตร์ทิ้ง — และปฏิเสธแทนที่จะเดาในจุดที่ไฟล์ระบุค่าไว้แล้ว}
 ::msgcat::mcset th {S3 HTTPS endpoint} {endpoint แบบ HTTPS ของ S3}
 ::msgcat::mcset th {S3 bucket} {บักเก็ต S3}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset th {Save as default} บันทึกเป็นค่าเริ่มต้น
 ::msgcat::mcset th {Save attachment as} บันทึกไฟล์แนบเป็น
 ::msgcat::mcset th {Save globally} บันทึกทั้งระบบ
+::msgcat::mcset th {Save or revert the open buffer before applying a change set.} บันทึกหรือย้อนกลับบัฟเฟอร์ที่เปิดอยู่ก่อนใช้ชุดการเปลี่ยนแปลง
 ::msgcat::mcset th Scan สแกน
 ::msgcat::mcset th {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {สแกนโค้ด veles จากเครื่องที่เชิญโทรศัพท์เครื่องนี้ ถ้าเครื่องนั้นแสดงโค้ด WireGuard ก่อน ให้สแกนโค้ดนั้นด้วยแอป WireGuard ก่อน}
 ::msgcat::mcset th {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {Schedule: ช่วงเวลา ("30m", "every 2h"), รูปแบบ cron ("0 9 * * 1"), หรือ ISO timestamp สำหรับครั้งเดียว บรรทัดด้านบนแสดงวิธีที่เอนจินอ่านค่า Deliver: "local" เก็บผลลัพธ์ในล็อก — ค่าเริ่มต้นที่ตรงไปตรงมาเดียวจากเดสก์ท็อปซึ่งไม่มีแพลตฟอร์มแชทอยู่เบื้องหลัง — หรือ "platform:chat_id" Wake session: เว้นว่างเพื่อรันในเซสชันใหม่ ใส่ session id (หรือคำนำหน้าเฉพาะ) เพื่อกลับมาที่เซสชันนั้นพร้อมประวัติเต็ม — เซสชันที่ยุ่งจะรับพรอมต์ที่ขอบเทิร์นถัดไปแทน · past its ttl, a refresh is due}
+::msgcat::mcset th Scope ขอบเขต
 ::msgcat::mcset th {Scroll to end} เลื่อนไปท้ายสุด
 ::msgcat::mcset th {Search commands and sessions…} ค้นหาคำสั่งและเซสชัน…
 ::msgcat::mcset th {Search message text} ค้นหาในเนื้อหาข้อความ
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset th Section หมวด
 ::msgcat::mcset th {Select a component first. No component options will be changed if you skip this step.} {เลือกคอมโพเนนต์ก่อน ถ้าข้ามขั้นตอนนี้จะไม่มีตัวเลือกของคอมโพเนนต์ใดถูกเปลี่ยน}
 ::msgcat::mcset th {Select all} เลือกทั้งหมด
+::msgcat::mcset th {Select all extensions} เลือกส่วนขยายทั้งหมด
+::msgcat::mcset th {Select at least one source file.} เลือกไฟล์ซอร์สอย่างน้อยหนึ่งไฟล์
+::msgcat::mcset th {Select none} ไม่เลือกเลย
+::msgcat::mcset th {Select text to translate first.} เลือกข้อความที่จะแปลก่อน
+::msgcat::mcset th {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {เลือกส่วนขยายและไฟล์ที่จะส่งขึ้นต้นน้ำ ทั้งหมดจะไปอยู่ในสาขาเดียวและ pull request เดียว โดยแต่ละส่วนขยายอยู่คนละไดเรกทอรี ตรวจดู รันการตรวจที่ไม่ประเมินโค้ด แล้วจัดเตรียมสาขาแยกและคอมมิต การพุชและการสร้าง pull request เป็นการกระทำแยกที่ต้องยืนยัน}
 ::msgcat::mcset th Send ส่ง
+::msgcat::mcset th {Send %s to the peer?} {ส่ง %s ไปให้พีร์หรือไม่?}
 ::msgcat::mcset th {Send a %d-line message to the channel?} {ส่งข้อความ %d บรรทัดไปยังช่อง?}
 ::msgcat::mcset th {Send raw line to the server? (%s)} {ส่งบรรทัดดิบไปยังเซิร์ฟเวอร์? (%s)}
 ::msgcat::mcset th {Server (empty = no IRC)} {เซิร์ฟเวอร์ (ว่าง = ไม่ใช้ IRC)}
 ::msgcat::mcset th {Server: gateway configuration and a reviewed user unit} {เซิร์ฟเวอร์: การตั้งค่าเกตเวย์และ user unit ที่ตรวจสอบแล้ว}
 ::msgcat::mcset th {Server: install a user unit and prepare the separate linger handoff} {เซิร์ฟเวอร์: ติดตั้ง user unit และเตรียมการส่งต่อ linger แยกต่างหาก}
 ::msgcat::mcset th {Server: use a system service and prepare a privileged CLI request} {เซิร์ฟเวอร์: ใช้บริการระดับระบบและเตรียมคำขอ CLI ที่ต้องใช้สิทธิ์ผู้ดูแลระบบ}
+::msgcat::mcset th Session เซสชัน
 ::msgcat::mcset th {Session id} รหัสเซสชัน
 ::msgcat::mcset th {Session id…} รหัสเซสชัน…
 ::msgcat::mcset th Sessions เซสชัน
 ::msgcat::mcset th {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {เซสชันที่โอเวอร์ไรด์เป็น alias นี้อยู่จะยังใช้เส้นทางที่ resolve ไว้; โอเวอร์ไรด์ใหม่จะไม่พบชื่อนี้}
+::msgcat::mcset th {Sessions served} เซสชันที่ให้บริการ
 ::msgcat::mcset th Set ตั้งค่า
 ::msgcat::mcset th {Set [model] provider/default in config.toml.} {ตั้งค่า provider/ค่าเริ่มต้นของ [model] ใน config.toml}
 ::msgcat::mcset th {Set as swap target} ตั้งเป็นภาษาที่จะสลับไป
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset th {Setup — summary} {การตั้งค่า — สรุป}
 ::msgcat::mcset th {Setup — welcome} {การตั้งค่า — ยินดีต้อนรับ}
 ::msgcat::mcset th {Shared container network} เครือข่ายคอนเทนเนอร์ที่ใช้ร่วมกัน
+::msgcat::mcset th Shells เชลล์
+::msgcat::mcset th {Shells and monitors} เชลล์และตัวเฝ้าระวัง
+::msgcat::mcset th {Shells and monitors (subagents, shells, monitors)} {เชลล์และตัวเฝ้าระวัง (เอเจนต์ย่อย เชลล์ ตัวเฝ้าระวัง)}
 ::msgcat::mcset th {Show diff} แสดงความแตกต่าง
 ::msgcat::mcset th {Show every key} แสดงทุกปุ่ม
 ::msgcat::mcset th Sign ลงนาม
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset th Solved แก้เสร็จแล้ว
 ::msgcat::mcset th Source ต้นทาง
 ::msgcat::mcset th {Source commit} คอมมิตซอร์ส
+::msgcat::mcset th {Source text} ข้อความต้นฉบับ
 ::msgcat::mcset th {Source→app (C-c C-c)} {ต้นทาง→แอป (C-c C-c)}
 ::msgcat::mcset th Stage เพิ่ม
+::msgcat::mcset th {Stage canary} {จัดเตรียม canary}
+::msgcat::mcset th Stale เก่า
+::msgcat::mcset th {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {สิทธิ์ถาวรช่วยให้การเรียกเครื่องมือครั้งต่อ ๆ ไปไม่ต้องถามซ้ำ การให้สิทธิ์ระดับเซสชันถูกถือไว้โดยเซสชันที่เปิดอยู่ในทุกหน้าจอ (เดสก์ท็อป, Telegram, IRC, …); สิทธิ์ระดับ global คงอยู่ถาวร; รายการ allowlist ใน [approvals] จาก config.toml แสดงแบบอ่านอย่างเดียว การเพิกถอนรายการหนึ่งไม่เคยเปลี่ยนสิทธิ์อื่น}
 ::msgcat::mcset th Start เริ่ม
+::msgcat::mcset th {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {เริ่มจากส่วนขยายในไดเรกทอรีปลั๊กอินของผู้ใช้ ส่วนขยายนี้จะยังอยู่หลังการอัปเกรดและไม่ต้องสร้างเกตเวย์ใหม่ เมนูส่วนขยายใหม่จะแสดงตัวอย่าง manifest และซอร์สที่แน่นอนก่อนเขียน เลือกภาษาและเวอร์ชัน API ที่รองรับ ตรวจสอบไฟล์ แล้วทดสอบส่วนขยายแบบแยกอิสระ}
 ::msgcat::mcset th {Start with the phone} เริ่มพร้อมโทรศัพท์
+::msgcat::mcset th {Static IP} {IP แบบคงที่}
 ::msgcat::mcset th Status สถานะ
 ::msgcat::mcset th Steer กำกับทิศทาง
 ::msgcat::mcset th {Step %1$d of %2$d} {ขั้นตอนที่ %1$d จาก %2$d}
 ::msgcat::mcset th {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {ยังต้องตั้งค่า: %s — พิมพ์ /secret set NAME ที่นี่ หรือรัน veles secret set NAME บนเครื่องของเกตเวย์}
 ::msgcat::mcset th Stop หยุด
 ::msgcat::mcset th {Storage root} รูตการจัดเก็บ
+::msgcat::mcset th Store ที่เก็บ
 ::msgcat::mcset th {Store a secret: %s} {เก็บความลับ: %s}
 ::msgcat::mcset th {Store it} เก็บไว้
+::msgcat::mcset th {Store replica} รีพลิก้าของที่เก็บข้อมูล
 ::msgcat::mcset th Subagents Subagents
 ::msgcat::mcset th {Subagents (/agents)} {Subagents (/agents)}
 ::msgcat::mcset th Summary สรุป
+::msgcat::mcset th Surface หน้าจอ
 ::msgcat::mcset th {Swap ⇄} {สลับ ⇄}
+::msgcat::mcset th {Sync cancelled.} ยกเลิกการซิงก์แล้ว
+::msgcat::mcset th {Sync complete.} ซิงก์เสร็จแล้ว
+::msgcat::mcset th {Sync now} ซิงก์ตอนนี้
 ::msgcat::mcset th {TOML copied — paste it into config.toml} {คัดลอก TOML แล้ว — วางลงใน config.toml}
 ::msgcat::mcset th Tag แท็ก
 ::msgcat::mcset th {Tap a link to open it, or a block's header to open or close the block.} {แตะลิงก์เพื่อเปิด หรือแตะหัวของบล็อกเพื่อเปิดหรือปิดบล็อกนั้น}
 ::msgcat::mcset th {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {แตะกล่องด้านล่างเพื่อพิมพ์ ส่งจะส่งข้อความ หยุดจะจบรอบ และปลดจะย้ายคำสั่งที่กำลังทำงานไปไว้เบื้องหลัง}
 ::msgcat::mcset th {Tap the text to clear the selection.} แตะที่ข้อความเพื่อล้างส่วนที่เลือก
+::msgcat::mcset th {Target language:} ภาษาเป้าหมาย:
+::msgcat::mcset th {Target node IDs (canary first, comma separated)} {ID โหนดเป้าหมาย (canary ก่อน คั่นด้วยจุลภาค)}
 ::msgcat::mcset th {Task list} รายการงาน
 ::msgcat::mcset th {Task list (right pane)} {รายการงาน (บานหน้าต่างขวา)}
 ::msgcat::mcset th Tasks งาน
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset th {That is not a ticket.} นี่ไม่ใช่ตั๋ว
 ::msgcat::mcset th {That is not a veles pool code.} {นั่นไม่ใช่โค้ดกลุ่มของ veles}
 ::msgcat::mcset th {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {นั่นคือโค้ด WireGuard ให้สแกนด้วยแอป WireGuard โค้ด veles คืออันที่สอง}
+::msgcat::mcset th {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {ไฟล์ %d ไฟล์ที่ตรวจทานแล้วจะถูกเขียนลงไดเรกทอรีใหม่ในไดเรกทอรี plugin ของผู้ใช้ของคุณ และ veles จะพยายามโหลดส่วนขยาย หากมีไดเรกทอรีชื่อนั้นปรากฏขึ้นตั้งแต่การดูตัวอย่าง จะไม่มีการเขียนใด ๆ การเผยแพร่ไม่ใช่ส่วนหนึ่งของการกระทำนี้}
 ::msgcat::mcset th {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {REPL ของบานหน้าต่าง Dev ประมวลผลในแอปที่กำลังทำงานจริง — UI คือ lisp ของตัวเอง}
 ::msgcat::mcset th {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {ตาราง [mcp_servers.<name>] ถูกลบจาก config.toml แล้ว ไฟล์เดิมถูกเก็บไว้เป็น config.toml.bak}
 ::msgcat::mcset th {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {รายการอนุญาตของแอดแดปเตอร์ (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) คือเส้นแบ่งความไว้ใจ และผู้ส่งที่ได้รับอนุญาตทุกคนถูกมองเป็นเจ้าของ นี่คือแนวทางแบบก่อน ACL}
 ::msgcat::mcset th {The agent asks for a secret: %s} {เอเจนต์ขอความลับ: %s}
+::msgcat::mcset th {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {สาขาที่พุชไปแล้วจะถูกใช้เป็นหัวของ PR สาขาบนฟอร์กของคุณจะตั้งชื่อเป็น owner:branch โดยอัตโนมัติ}
+::msgcat::mcset th {The author asks} ผู้เขียนถาม
+::msgcat::mcset th {The buffer changed. Request a new proposal before applying.} {บัฟเฟอร์เปลี่ยนไปแล้ว ขอข้อเสนอใหม่ก่อนนำไปใช้}
 ::msgcat::mcset th {The bundle operation returned an invalid result. Verify the installation before retrying.} {การดำเนินการกับบันเดิลคืนค่าที่ไม่ถูกต้อง ตรวจสอบการติดตั้งก่อนลองใหม่}
 ::msgcat::mcset th {The bundle preview was malformed; nothing was installed.} {ตัวอย่างบันเดิลมีรูปแบบไม่ถูกต้อง ไม่มีสิ่งใดถูกติดตั้ง}
 ::msgcat::mcset th {The camera did not open; paste the code instead.} {เปิดกล้องไม่ได้ ให้วางโค้ดแทน}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset th {The component manifest is still loading. Wait for it or choose another component.} {manifest ของคอมโพเนนต์ยังโหลดอยู่ รอให้โหลดเสร็จหรือเลือกคอมโพเนนต์อื่น}
 ::msgcat::mcset th {The component preview is not ready yet. Refresh it and review the result before applying.} {พรีวิวของคอมโพเนนต์ยังไม่พร้อม รีเฟรชแล้วทบทวนผลลัพธ์ก่อนนำไปใช้}
 ::msgcat::mcset th {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {พรีวิวของคอมโพเนนต์ยังโหลดอยู่ รอคำตอบกลับก่อนทบทวนการเปลี่ยนแปลงทั้งหมดรวมกัน}
+::msgcat::mcset th {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {ไดแอกโนสติกส์ปัจจุบัน (จาก language server หรือ Check) จะถูกส่งไปพร้อมไฟล์นี้ คุณสามารถเพิ่มคำถามได้ตามต้องการ คำตอบเป็นข้อความเท่านั้น ไม่มีอะไรถูกเขียนได้}
 ::msgcat::mcset th {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {ไดเรกทอรีและทุกอย่างในนั้นจะถูกลบ รายการนี้เลิกทำไม่ได้ — ใช้การปิดแทนถ้าต้องการแค่เอาออกจากพรอมต์}
 ::msgcat::mcset th {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {ไดเรกทอรีจะถูกลบ โฟลเดอร์ปลั๊กอินเป็น git repository และสแนปชอตจะถูกคอมมิตก่อน ดังนั้น History… จึงเรียกคืนได้}
+::msgcat::mcset th {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {เอดิเตอร์เปิดไฟล์ของเกตเวย์ รวมถึงอินสแตนซ์ระยะไกล และรัน language server สำหรับภาษาของไฟล์นั้นบนเกตเวย์: tcl-lsp, typescript-language-server (TypeScript และ JavaScript), rust-analyzer (crate หรือโมดูล plugin ของ Rust), clangd (C), racket-langserver และเซิร์ฟเวอร์ Common Lisp การวางเมาส์ค้าง ไปยังนิยาม การเติมข้อความอัตโนมัติ และไดแอกโนสติกส์สด ทำงานได้ทุกภาษาที่เกตเวย์มีเซิร์ฟเวอร์รองรับ เมื่อไม่มี เอดิเตอร์จะบอกว่าต้องติดตั้งโปรแกรมใดที่นั่น และยังคงไฮไลต์ไวยากรณ์ไว้ Check จะรันตัวตรวจที่ตรงกันบนเกตเวย์: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only หรือตัวอ่าน Racket และ Lisp บันทึก โหลดใหม่ใน Manage extensions และทดสอบส่วนขยายได้โดยไม่เผยแพร่สถานะภายในเครื่อง}
 ::msgcat::mcset th {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {handoff ครั้งแรกจะเตรียมค่าความลับ image ที่ล็อกเวอร์ชัน และไฟล์รันไทม์ไว้ แต่จะยังไม่เริ่มทำงาน PDS สำรอง KEK และคีย์หมุนเวียน PLC ไว้แบบออฟไลน์ จากนั้นส่งคำขอที่ผ่านการรีวิวใหม่พร้อมยืนยันว่าสำรองข้อมูลแล้ว เพื่อตั้งค่า TLS แบบ HTTP-01 และการเปิดใช้งาน เรกคอร์ด DNS ต้องชี้มาที่โฮสต์นี้โดยตรง veles จะไม่ตั้งค่าพร็อกซี CDN และไม่เปลี่ยนแปลง DNS แต่อย่างใด}
+::msgcat::mcset th {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {แบบฟอร์มเปลี่ยนไปตั้งแต่สร้างส่วนขยาย สร้างอีกครั้ง หรือดูตัวอย่างโครงร่างเปล่า}
 ::msgcat::mcset th {The gateway itself is untouched.} ตัวเกตเวย์เองไม่ถูกแตะต้อง
 ::msgcat::mcset th {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {เกตเวย์โหลดการตั้งค่าใหม่แล้ว เซสชันใหม่จึงใช้มันทันที และคีย์ที่เก็บในตู้นิรภัยจะถูกใช้ในคำขอถัดไป Telegram และ IRC จะเริ่มเมื่อรีสตาร์ตเกตเวย์ครั้งถัดไป: veles gateway restart}
 ::msgcat::mcset th {The installed component no longer matches the selected manifest. Review the component list again.} {คอมโพเนนต์ที่ติดตั้งแล้วไม่ตรงกับ manifest ที่เลือกอีกต่อไป โปรดทบทวนรายการคอมโพเนนต์อีกครั้ง}
 ::msgcat::mcset th {The installer preview has no verification signatures; apply is disabled.} {พรีวิวของตัวติดตั้งไม่มีลายเซ็นการตรวจสอบ จึงปิดปุ่มนำไปใช้ไว้}
 ::msgcat::mcset th {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {งานและประวัติการรันจะถูกลบ รายการนี้เลิกทำไม่ได้ — ใช้การหยุดชั่วคราวแทนถ้าต้องการแค่ให้หยุด}
+::msgcat::mcset th {The log could not be read: %s} {อ่านบันทึกไม่ได้: %s}
 ::msgcat::mcset th {The manifest belongs to another component; its reply was discarded.} {manifest เป็นของคอมโพเนนต์อื่น คำตอบกลับของมันจึงถูกทิ้ง}
 ::msgcat::mcset th {The profile changed. Review the fresh plan before applying it.} {โปรไฟล์เปลี่ยนไปแล้ว โปรดตรวจสอบแผนฉบับล่าสุดก่อนนำไปใช้}
 ::msgcat::mcset th {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {repository ต้องมี SKILL.md ที่รากหรือลึกหนึ่งหมวดหมู่ มันจะไปอยู่ที่ %s}
 ::msgcat::mcset th {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {รากของ repository ต้องมี plugin.toml มันจะถูกโคลนไปที่ %s ภายใต้ชื่อของ manifest}
+::msgcat::mcset th {The reviewed change set was applied (%d files). Review and test it before publishing.} {ใช้ชุดการเปลี่ยนแปลงที่ตรวจทานแล้ว (%d ไฟล์) ตรวจทานและทดสอบก่อนเผยแพร่}
 ::msgcat::mcset th {The reviewed configuration snapshot will also be restored.} สแนปช็อตการตั้งค่าที่รีวิวแล้วจะถูกกู้คืนด้วย
+::msgcat::mcset th {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {ไฟล์ที่ตรวจสอบแล้วจะถูกเขียนลงในไดเรกทอรีปลั๊กอินของผู้ใช้ veles จะบันทึกสแนปช็อตสำหรับกู้คืนในเครื่องและพยายามโหลดส่วนขยายใหม่ การเผยแพร่ไม่รวมอยู่ในการกระทำนี้}
+::msgcat::mcset th {The reviewed proposal was applied locally. Review and test it before publishing.} {ใช้ข้อเสนอที่ตรวจสอบแล้วในเครื่องแล้ว ตรวจสอบและทดสอบก่อนเผยแพร่}
 ::msgcat::mcset th {The rollback preview was malformed or named another component; nothing was restored.} {ตัวอย่างการย้อนกลับมีรูปแบบไม่ถูกต้องหรืออ้างถึงคอมโพเนนต์อื่น ไม่มีสิ่งใดถูกกู้คืน}
 ::msgcat::mcset th {The rollback returned an invalid result. Verify the installation before retrying.} {การย้อนกลับคืนค่าที่ไม่ถูกต้อง ตรวจสอบการติดตั้งก่อนลองใหม่}
 ::msgcat::mcset th {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {เส้นทางที่เซสชันใหม่เริ่มต้น /model และโอเวอร์เลย์ models เปลี่ยนทีหลังได้ ต่อเซสชันหรือเป็นค่าเริ่มต้นใหม่}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset th {The signed download discard returned an invalid response; no installation was requested.} {การละทิ้งการดาวน์โหลดที่ลงลายเซ็นได้ผลตอบกลับที่ไม่ถูกต้อง ไม่มีการขอติดตั้งใด ๆ}
 ::msgcat::mcset th {The signed installation returned an invalid result. Verify the installation before retrying.} {การติดตั้งเวอร์ชันที่ลงลายเซ็นได้ผลตอบกลับที่ไม่ถูกต้อง โปรดยืนยันผลการติดตั้งก่อนลองอีกครั้ง}
 ::msgcat::mcset th {The signed release preview was malformed; nothing was installed.} {การดูตัวอย่างเวอร์ชันที่ลงลายเซ็นมีข้อมูลที่เสียหาย ยังไม่ได้ติดตั้งสิ่งใด}
+::msgcat::mcset th {The source buffer changed. Request a new proposal before applying.} {บัฟเฟอร์ซอร์สเปลี่ยนไปแล้ว ขอข้อเสนอใหม่ก่อนนำไปใช้}
 ::msgcat::mcset th {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {store ย้อนกลับหนึ่งรีวิชัน การโรลแบ็กเป็นรีวิชันหนึ่งเอง ดังนั้นจึงเลิกทำต่อได้อีก}
+::msgcat::mcset th {The translator returned no text.} ตัวแปลไม่ได้ส่งข้อความกลับมา
 ::msgcat::mcset th {The verification reply was malformed; no integrity result was accepted.} {คำตอบจากการตรวจสอบมีรูปแบบไม่ถูกต้อง ไม่มีผลลัพธ์ด้านความสมบูรณ์ที่ได้รับการยอมรับ}
 ::msgcat::mcset th Themes ธีม
+::msgcat::mcset th {These paths already exist in the chosen repository:} พาธเหล่านี้มีอยู่แล้วในรีโพซิทอรีที่เลือก:
 ::msgcat::mcset th {They have not been saved.} ยังไม่ได้บันทึก
+::msgcat::mcset th {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {บัฟเฟอร์นี้ไม่มีไดแอกโนสติกส์ให้อธิบาย รัน Check หรือรอ language server}
 ::msgcat::mcset th {This challenge is over.} ความท้าทายนี้สิ้นสุดแล้ว
 ::msgcat::mcset th {This code has expired. Ask for a new one.} {โค้ดนี้หมดอายุแล้ว ขอโค้ดใหม่}
 ::msgcat::mcset th {This does not start a service or claim signed-download verification.} {สิ่งนี้ไม่ได้เริ่มบริการใด และไม่ถือเป็นการตรวจสอบแบบ signed-download}
 ::msgcat::mcset th {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {เกตเวย์นี้ไม่รับค่าความลับจากเครื่องนี้: ให้ป้อนที่นั่นด้วย veles secret set %s หรือเพิ่มเครือข่ายนี้ลงใน [vault] trusted_networks ของมัน}
 ::msgcat::mcset th {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {นี่คือสิ่งที่จะถูกเขียนจริง — ไบต์ของเอ็นจินเอง ดึงมาแบบสด ยังไม่มีอะไรแตะดิสก์}
+::msgcat::mcset th {This node is not a configured sync peer for any kind.} โหนดนี้ไม่ได้เป็นพีร์ซิงก์ที่ตั้งค่าไว้สำหรับชนิดข้อมูลใดเลย
+::msgcat::mcset th {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {plugin นี้มาในชุดและอ่านอย่างเดียว ลบสำเนาของผู้ใช้ที่มีชื่อเดียวกันออกเพื่อกลับไปใช้สำเนาที่มาในชุดแทน}
+::msgcat::mcset th {This publishes the commit; no pull request is created yet.} {การกระทำนี้จะเผยแพร่คอมมิต ยังไม่มีการสร้างคำขอพูล}
 ::msgcat::mcset th {This review expires after %s seconds. Closing or cancelling discards its private staging.} {การตรวจสอบนี้จะหมดอายุหลังจากผ่านไป %s วินาที การปิดหรือยกเลิกจะละทิ้งพื้นที่เก็บชั่วคราวที่เป็นส่วนตัวของการตรวจสอบนี้}
 ::msgcat::mcset th {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {ตัวช่วยนี้เขียน config.toml และนำคีย์ที่คุณให้ไปเก็บในตู้นิรภัยที่เข้ารหัส ทุกขั้นตอนข้ามได้: ขั้นตอนที่ข้ามจะไม่อยู่ในการตั้งค่าใหม่ และจะคงเดิมทุกอย่างในการตั้งค่าที่มีอยู่ config.toml ที่มีอยู่จะถูกแก้ไขในที่ — เปลี่ยนเฉพาะส่วนที่คุณตอบ ส่วนอื่นทั้งหมด รวมถึงคอมเมนต์ จะคงอยู่}
 ::msgcat::mcset th {Ticket needed} ต้องมีตั๋ว
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset th {Topic for %s} {หัวข้อสำหรับ %s}
 ::msgcat::mcset th {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {แตะค้างที่เซสชัน หรือสิ่งอื่นใดที่มีเมนู เพื่อเปิดเมนู แตะนอกเมนูหรือกดย้อนกลับเพื่อปิด}
 ::msgcat::mcset th {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {แตะค้างที่คำเพื่อเลือกคำนั้น เมื่อยกนิ้วขึ้น เมนูของคำจะเปิดขึ้น โดยมีคัดลอกอยู่บนสุด}
+::msgcat::mcset th Translate แปล
+::msgcat::mcset th {Translate selection} แปลข้อความที่เลือก
+::msgcat::mcset th Translating… กำลังแปล…
+::msgcat::mcset th {Translation cancelled.} ยกเลิกการแปลแล้ว
+::msgcat::mcset th {Translation copied.} คัดลอกคำแปลแล้ว
+::msgcat::mcset th {Translation failed} การแปลล้มเหลว
+::msgcat::mcset th {Translation result} ผลการแปล
+::msgcat::mcset th {Translator configuration unavailable} การตั้งค่าตัวแปลไม่พร้อมใช้งาน
 ::msgcat::mcset th {Trigger history} ประวัติการเรียกใช้
 ::msgcat::mcset th Triggers ทริกเกอร์
 ::msgcat::mcset th {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {ทริกเกอร์ตอบสนองต่อเหตุการณ์ในช่องโดยไม่ต้องใช้เทิร์น slopdrop ส่งต่อเหตุการณ์ไปยังบริดจ์และถ่ายทอดคำตอบ; vision อธิบาย URL รูปภาพภายใต้คูลดาวน์และเพดานรายชั่วโมง แถวจะทำงานก็ต่อเมื่อสวิตช์คอนฟิก [triggers] และแมสก์ที่คำนวณได้อนุญาตพร้อมกัน — #coven ไม่ส่งต่อสิ่งใดภายใต้ bindings slopdrop ที่ใช้งานอยู่}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset th {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {จนกว่า IRC_ALLOWED_USERS ใน .env จะระบุบัญชีของคุณ ใครก็ได้ในเครือข่ายคุยกับบอตได้ — และถ้าไม่มีส่วน [acl] ก็ในฐานะเจ้าของ พร้อมเครื่องมือทุกอย่าง}
 ::msgcat::mcset th {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {จนกว่า TELEGRAM_ALLOWED_USERS ใน .env จะระบุ ID ผู้ใช้ของคุณ ใครก็ตามที่พบบอตคุยกับมันได้ — และถ้าไม่มีส่วน [acl] ก็ในฐานะเจ้าของ พร้อมเครื่องมือทุกอย่าง}
 ::msgcat::mcset th Untitled ไม่มีชื่อ
+::msgcat::mcset th {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {การส่งขึ้นต้นน้ำเป็นการเผยแพร่ที่ต้องสั่งเอง ไม่ใช่การอัปโหลดอัตโนมัติ ใน Manage extensions คำสั่ง Contribute จะแสดงส่วนขยายของผู้ใช้ทั้งหมด: เลือกส่วนขยายและไฟล์ ตรวจดู diff และการสแกนหาความลับ รันการตรวจ แล้วสร้างสาขาเดียวและ PR เดียว (ไปที่ veles เป็นค่าเริ่มต้น) ด้วย git identity ที่คุณเลือก แต่ละส่วนขยายจะอยู่ใต้ไดเรกทอรีของตัวเองในรีโพซิทอรี และไฟล์ที่มีอยู่แล้วจะถูกแทนที่ก็ต่อเมื่อยืนยันแยกอีกครั้ง ห้ามเผยแพร่ node.toml, ข้อมูลรับรองในเครื่อง, โทเค็น, ปลายทางส่วนตัว หรือสถานะของปลั๊กอินที่ไม่เกี่ยวข้อง สแนปช็อตกู้คืนในเครื่องไม่ใช่คอมมิตขึ้นต้นน้ำหรือ PR}
+::msgcat::mcset th {Upstream repository or fork URL} {URL ของรีพอซิทอรีต้นทางหรือฟอร์ก}
+::msgcat::mcset th {Uptime class} ระดับเวลาทำงาน
+::msgcat::mcset th {Uptime: host %1$s, gateway %2$s} {เวลาทำงาน: โฮสต์ %1$s, เกตเวย์ %2$s}
 ::msgcat::mcset th Usage การใช้งาน
 ::msgcat::mcset th {Usage & Quota} การใช้งานและโควตา
 ::msgcat::mcset th {Use TLS} {ใช้ TLS}
 ::msgcat::mcset th {Use now} ใช้เลย
+::msgcat::mcset th {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {ใช้ปุ่มคู่มือผู้พัฒนาและเอกสารอ้างอิง API เพื่อดูข้อกำหนดที่แท้จริง โอเวอร์เลย์ปลั๊กอินจะแสดงฮุกที่ใช้งานอยู่ ส่วนบริการและจุดเขียนทับมาจากรีจิสทรีของเกตเวย์เอง ไม่ใช่รายการที่คัดลอกไว้ในคู่มือนี้}
 ::msgcat::mcset th {Use this ticket} ใช้ตั๋วนี้
+::msgcat::mcset th {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {ใช้ฟอร์กของคุณ (https://github.com/<you>/veles.git หรือ git@github.com:<you>/veles.git) เว้นแต่คุณจะพุชไปที่ veles เองได้ รีโพซิทอรีที่เลือกจะถูกโคลนเข้า worktree แยก ไม่มีการพุชใด ๆ}
 ::msgcat::mcset th {Users — one role across networks and platforms} {ผู้ใช้ — บทบาทเดียวทั่วเครือข่ายและแพลตฟอร์ม}
 ::msgcat::mcset th {Using the phone, for the agent} {การใช้โทรศัพท์ สำหรับเอเจนต์}
 ::msgcat::mcset th {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {ปกติเหมือนชื่อรายการ provider ถ้าเลือก Skip ปล่อยทั้งคู่ว่างไว้ — คู่ที่ตั้งครึ่งเดียวจะไม่ถูกใช้เป็นเส้นทาง}
 ::msgcat::mcset th {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {ค่าเป็น TOML: สตริงในเครื่องหมายคำพูด ตัวเลข หรือลิสต์ เขียนลงใน [mcp_servers.<name>] — คอมเมนต์และส่วนอื่น ๆ ของคุณจะไม่ถูกแตะต้อง}
+::msgcat::mcset th Vault ตู้นิรภัย
 ::msgcat::mcset th {Verified signed bundle installed. Restart the gateway before using the new core.} {ติดตั้งชุดไฟล์เวอร์ชันที่ลงลายเซ็นซึ่งตรวจสอบแล้วเรียบร้อย โปรดยรีสตาร์ทเกตเวย์ก่อนใช้คอร์ใหม่}
 ::msgcat::mcset th {Verified signed release — not installed yet} {เวอร์ชันที่ลงลายเซ็นซึ่งตรวจสอบแล้ว — ยังไม่ได้ติดตั้ง}
 ::msgcat::mcset th {Verify and review release…} ตรวจสอบและรีวิวเวอร์ชัน…
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset th {Verify signed release} ตรวจสอบเวอร์ชันที่ลงลายเซ็น
 ::msgcat::mcset th {Verify signed release…} ตรวจสอบเวอร์ชันที่ลงลายเซ็น…
 ::msgcat::mcset th Version เวอร์ชัน
+::msgcat::mcset th {Version %1$s: %2$s} {เวอร์ชัน %1$s: %2$s}
+::msgcat::mcset th {Version drift in the registry: %s} {ดริฟต์เวอร์ชันในรีจิสทรี: %s}
 ::msgcat::mcset th View มุมมอง
 ::msgcat::mcset th {View markdown source} {ดูซอร์ส markdown}
 ::msgcat::mcset th {View source / rendered} {ต้นฉบับ / แสดงผล}
 ::msgcat::mcset th Voice {ให้ voice}
+::msgcat::mcset th {Waiting for the model…} กำลังรอโมเดล…
+::msgcat::mcset th {Waiting for the model… Nothing has been written.} {กำลังรอโมเดล… ยังไม่มีการเขียนใด ๆ}
 ::msgcat::mcset th {Welcome to veles} {ยินดีต้อนรับสู่ veles}
 ::msgcat::mcset th {What the agent can do here} สิ่งที่เอเจนต์ทำได้ที่นี่
 ::msgcat::mcset th {What veles may do on this phone. Each button opens the Android setting that changes it.} {สิ่งที่ veles ทำได้บนโทรศัพท์เครื่องนี้ แต่ละปุ่มจะเปิดการตั้งค่า Android ที่ใช้เปลี่ยนสิ่งนั้น}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset th {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {ขณะที่ veles อยู่เบื้องหลัง คำถามจากเอเจนต์หรือรอบที่เสร็จแล้วจะมาเป็นการแจ้งเตือน แตะเพื่อเปิดเซสชันนั้น}
 ::msgcat::mcset th {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {ใครคุยกับบอทได้ ตัวเลือกนี้ตัดสินว่า config.toml จะมีส่วน [acl] หรือไม่ — และนั่นพลิกแนวทางทั้งหมด}
 ::msgcat::mcset th Whois Whois
-::msgcat::mcset th {Wire protocol (chat_completions or responses)} {โปรโตคอล wire (chat_completions หรือ responses)}
+::msgcat::mcset th {Wire protocol (chat_completions, responses or plugin)} {โพรโทคอล wire (chat_completions, responses หรือ plugin)}
 ::msgcat::mcset th {With a keyboard attached, every key works as on a laptop.} {เมื่อต่อแป้นพิมพ์ ทุกปุ่มจะทำงานเหมือนบนแล็ปท็อป}
 ::msgcat::mcset th {Workflow SHA} {SHA ของ workflow}
+::msgcat::mcset th {Workflow commit} {คอมมิตของ workflow}
+::msgcat::mcset th Worktree เวิร์กทรี
 ::msgcat::mcset th {Write it} เขียนเลย
+::msgcat::mcset th {Write the design question first.} เขียนคำถามเชิงออกแบบก่อน
 ::msgcat::mcset th {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {ไม่เขียน provider เกตเวย์จะไม่จับเส้นทางเทิร์นจนกว่าจะมีรายการ [[custom_providers]] และคู่ [model] ครบ}
 ::msgcat::mcset th {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {การเขียนคีย์ [acl] ใดก็ตามจะเปลี่ยนเกตเวย์นี้เป็นโหมดคัดสรร: บทบาทเริ่มต้นเป็น guest (fail-closed) และรายการอนุญาตไม่ใช่ขอบเขตอีกต่อไป เลือกข้อนี้เฉพาะเมื่อมีตัวตนของเจ้าของที่คุณไว้ใจ}
 ::msgcat::mcset th {[model] provider} {provider ของ [model]}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset th {also list hooks with no handler} {แสดง hooks ที่ไม่มี handler ด้วย}
 ::msgcat::mcset th {also write grants that still have an expiry} {เขียน grants ที่ยังมีวันหมดอายุด้วย}
 ::msgcat::mcset th {also write runtime users} เขียนผู้ใช้รันไทม์ด้วย
+::msgcat::mcset th {an allowlist entry is removed by editing config.toml} {รายการ allowlist ลบได้โดยแก้ config.toml}
 ::msgcat::mcset th {an allowlist is in force: a plugin not on it stays off} {มีรายการอนุญาตบังคับ: ปลั๊กอินที่ไม่อยู่ในรายการจะปิดอยู่}
 ::msgcat::mcset th {answer failed: %s} {ตอบไม่สำเร็จ: %s}
+::msgcat::mcset th {answer only, nothing to apply} {ตอบเท่านั้น ไม่มีอะไรต้องใช้}
 ::msgcat::mcset th {append these rules to config.toml} {ต่อกฎเหล่านี้ลงใน config.toml}
 ::msgcat::mcset th {apply failed: %s} {ใช้ไม่สำเร็จ: %s}
 ::msgcat::mcset th {apply to:} ใช้กับ:
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset th {ask the agent} ถามเอเจนต์
 ::msgcat::mcset th {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset th {asked by: %s} {ถามโดย: %s}
+::msgcat::mcset th {asking %s for its metrics…} {กำลังถามเมตริกจาก %s…}
 ::msgcat::mcset th {attach a file} แนบไฟล์
 ::msgcat::mcset th {attach an image or file} แนบรูปภาพหรือไฟล์
 ::msgcat::mcset th {attach failed: %1$s} {แนบไม่สำเร็จ: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset th {attached %1$s (%2$s pending)} {แนบ %1$s แล้ว (%2$s รออยู่)}
 ::msgcat::mcset th {attached to %s} {แนบกับ %s แล้ว}
 ::msgcat::mcset th {attached to child session %1$s} {แนบกับเซสชันย่อย %1$s แล้ว}
+::msgcat::mcset th automatic อัตโนมัติ
 ::msgcat::mcset th {aux model} โมเดลเสริม
 ::msgcat::mcset th {aux provider} ผู้ให้บริการเสริม
+::msgcat::mcset th available พร้อมใช้งาน
 ::msgcat::mcset th {available components} คอมโพเนนต์ที่ติดตั้งได้
 ::msgcat::mcset th {back up N user turns} {ย้อนกลับ N เทิร์นของผู้ใช้}
 ::msgcat::mcset th {backed up the previous config to %s} {สำรองคอนฟิกก่อนหน้าไปที่ %s แล้ว}
 ::msgcat::mcset th {background shells; /shells output|kill <id>} {เชลล์เบื้องหลัง; /shells output|kill <id>}
+::msgcat::mcset th {backing off: %1$s failure(s), next automatic try in %2$s s} {พักรอ: ล้มเหลว %1$s ครั้ง จะลองอัตโนมัติอีกครั้งใน %2$s วินาที}
 ::msgcat::mcset th {bad host for %1$s: %2$s} {host ผิดสำหรับ %1$s: %2$s}
 ::msgcat::mcset th {bad unit for %1$s: %2$s} {unit ผิดสำหรับ %1$s: %2$s}
 ::msgcat::mcset th {bare display off} {ปิด bare display}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset th {browse the filesystem} เรียกดูระบบไฟล์
 ::msgcat::mcset th {browse the repo's files} {เรียกดูไฟล์ของ repo}
 ::msgcat::mcset th {builtin (%s):} {inbuilt (%s):}
+::msgcat::mcset th bundled มาในชุด
+::msgcat::mcset th {bundled, read-only} {มาในชุด, อ่านอย่างเดียว}
 ::msgcat::mcset th by โดย
 ::msgcat::mcset th {by plan — all sessions} {ตามแผน — ทุกเซสชัน}
 ::msgcat::mcset th {by plan — this session} {ตามแผน — เซสชันนี้}
 ::msgcat::mcset th {by tool} ตามเครื่องมือ
 ::msgcat::mcset th {cancel failed: %1$s} {ยกเลิกไม่สำเร็จ: %1$s}
 ::msgcat::mcset th {cancel the running turn} ยกเลิกเทิร์นที่กำลังรัน
+::msgcat::mcset th {cancel the selected task} ยกเลิกงานที่เลือก
 ::msgcat::mcset th {cancelled task %1$s} {ยกเลิกงาน %1$s แล้ว}
 ::msgcat::mcset th {cannot list scripts (gateway offline?)} {แสดงรายการสคริปต์ไม่ได้ (เกตเวย์ออฟไลน์?)}
 ::msgcat::mcset th {cannot reach the gateway: %s} {เข้าถึงเกตเวย์ไม่ได้: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset th commit คอมมิต
 ::msgcat::mcset th {compacting %s messages in the background — the transcript reloads when it finishes} {กำลังบีบอัด %s ข้อความในเบื้องหลัง — บทสนทนาจะโหลดใหม่เมื่อเสร็จ}
 ::msgcat::mcset th compacting… กำลังบีบอัด…
+::msgcat::mcset th {comparing the nodes' versions and config…} กำลังเปรียบเทียบเวอร์ชันและการตั้งค่าของโหนด…
 ::msgcat::mcset th {completion tokens} {completion tokens}
 ::msgcat::mcset th {component options and declared actions} ตัวเลือกของคอมโพเนนต์และแอ็กชันที่ประกาศไว้
 ::msgcat::mcset th composer composer
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset th {could not open %s} {เปิด %s ไม่ได้}
 ::msgcat::mcset th {could not open %s (no working browser opener)} {เปิด %s ไม่ได้ (ไม่มีตัวเปิดเบราว์เซอร์)}
 ::msgcat::mcset th {could not open %{url}: %{e}} {เปิด %{url} ไม่ได้: %{e}}
+::msgcat::mcset th {could not open the optional referral link: %s} {เปิดลิงก์ชวนสมัคร (ที่ไม่บังคับ) ไม่ได้: %s}
 ::msgcat::mcset th {could not read %s: %s} {อ่าน %s ไม่ได้: %s}
 ::msgcat::mcset th {could not read the current route} อ่านเส้นทางปัจจุบันไม่ได้
 ::msgcat::mcset th {could not save this session's language: %{e}} {บันทึกภาษาของเซสชันนี้ไม่ได้: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset th {ctxmenu: no widget %s (attached too early?)} {ctxmenu: ไม่พบวิดเจ็ต %s (แนบเร็วเกินไป?)}
 ::msgcat::mcset th {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {เลือกการเข้าถึงแบบคัดสรรแต่ไม่มีตัวตนของเจ้าของ [acl] จึงยังไม่ทำงาน — ระบุหนึ่งอย่าง เช่น telegram:123456 หรือ irc:account เพื่อเปิดใช้}
 ::msgcat::mcset th {current theme: %{name} · /theme <name>} {ธีมปัจจุบัน: %{name} · /theme <name>}
+::msgcat::mcset th {cursor %1$s of %2$s (%3$s behind)} {เคอร์เซอร์ %1$s จาก %2$s (ตามหลัง %3$s)}
 ::msgcat::mcset th {custom command /%s…} {คำสั่งกำหนดเอง /%s…}
 ::msgcat::mcset th {custom commands (.veles/commands/) and config aliases} {คำสั่งที่กำหนดเอง (.veles/commands/) และนามแฝงจากคอนฟิก}
 ::msgcat::mcset th {cycle ends} จบรอบ
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset th doctor_resident {อยู่ในทุกพรอมต์: %{shown} จาก %{total} อักขระ (~%{tokens} โทเค็น) — ส่วนที่เหลือโหลดเมื่อต้องการด้วย: memory action=read path=%{path}}
 ::msgcat::mcset th doctor_title ตรวจสุขภาพหน่วยความจำ
 ::msgcat::mcset th doctor_total {รวม: %{chars} อักขระใน %{files} ไฟล์ (~%{tokens} โทเค็น)}
+::msgcat::mcset th {documentation is not in this source checkout: %s} {ไม่มีเอกสารในซอร์สที่เช็กเอาต์นี้: %s}
 ::msgcat::mcset th done เสร็จ
 ::msgcat::mcset th {done · %1$s/%2$s} {เสร็จ · %1$s/%2$s}
 ::msgcat::mcset th {done, but the model returned no text} {เสร็จ แต่โมเดลไม่คืนข้อความ}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset th {evaluate Tcl and answer with the result — no model turn} {ประเมิน Tcl แล้วตอบด้วยผลลัพธ์ — ไม่ใช้เทิร์นของโมเดล}
 ::msgcat::mcset th everyone ทุกคน
 ::msgcat::mcset th everywhere ทุกที่
+::msgcat::mcset th {exchanging registry gossip…} กำลังแลกเปลี่ยนกอสซิปของรีจิสทรี…
 ::msgcat::mcset th exit ออก
 ::msgcat::mcset th {exit veles-desktop} {ออกจาก veles-desktop}
 ::msgcat::mcset th {export failed: %s} {ส่งออกล้มเหลว: %s}
 ::msgcat::mcset th {export session} ส่งออกเซสชัน
 ::msgcat::mcset th {exported to %s} {ส่งออกไปที่ %s แล้ว}
+::msgcat::mcset th {extension architecture, examples and LSP help} {สถาปัตยกรรมส่วนขยาย ตัวอย่าง และความช่วยเหลือ LSP}
+::msgcat::mcset th {extension development guide} คู่มือการพัฒนาส่วนขยาย
+::msgcat::mcset th failed ล้มเหลว
 ::msgcat::mcset th {failed to load history: %s} {โหลดประวัติล้มเหลว: %s}
 ::msgcat::mcset th {failed to paint cached history: %s} {แสดงผลประวัติที่แคชไว้ล้มเหลว: %s}
 ::msgcat::mcset th {failed to paint replayed history: %s} {แสดงผลประวัติที่รีเพลย์ล้มเหลว: %s}
 ::msgcat::mcset th {failed: %s} {ล้มเหลว: %s}
+::msgcat::mcset th {failing — heartbeating, but a sync push or the last probe failed} {มีปัญหา — ยังส่ง heartbeat อยู่ แต่การพุชซิงก์หรือการตรวจครั้งล่าสุดล้มเหลว}
 ::msgcat::mcset th {failover blueprint: cannot reach the gateway} {failover blueprint: เข้าถึงเกตเวย์ไม่ได้}
 ::msgcat::mcset th {failover graph unavailable: %1$s} {กราฟ failover ไม่พร้อมใช้งาน: %1$s}
 ::msgcat::mcset th {failover script: cannot reach the gateway} {failover script: เข้าถึงเกตเวย์ไม่ได้}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset th {fire the Tcl hook} {ยิง Tcl hook}
 ::msgcat::mcset th {fires for %s:} {ทำงานเมื่อ %s:}
 ::msgcat::mcset th {fires per hour} ทำงานต่อชั่วโมง
+::msgcat::mcset th {fleet drift} ดริฟต์ของฟลีต
 ::msgcat::mcset th {focus composer} {โฟกัส composer}
 ::msgcat::mcset th {focus failed: %{e}} {โฟกัสไม่สำเร็จ: %{e}}
 ::msgcat::mcset th {focus next region} โฟกัสพื้นที่ถัดไป
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset th {four splits is the maximum} แยกได้สูงสุดสี่ช่อง
 ::msgcat::mcset th {fresh session} เซสชันใหม่
 ::msgcat::mcset th {fresh session (Ctrl-N too)} {เซสชันใหม่ (กด Ctrl-N ก็ได้)}
+::msgcat::mcset th {fresh — heartbeating, sync passing} {สดใหม่ — ส่ง heartbeat อยู่ ซิงก์ผ่าน}
+::msgcat::mcset th from จาก
 ::msgcat::mcset th {from node %{node}} {จากโหนด %{node}}
 ::msgcat::mcset th {gateway     v%1$s · up %2$s} {gateway     v%1$s · ออนไลน์ %2$s}
 ::msgcat::mcset th {gateway unreachable — is `veles gateway run` up?} {เกตเวย์เข้าไม่ถึง — `veles gateway run` รันอยู่ไหม?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset th {in %s} {ใน %s}
 ::msgcat::mcset th {insert the next key literally (^B bold, ^C colour, ^O reset)} {ใส่คีย์ถัดไปแบบตรงตัว (^B ตัวหนา, ^C สี, ^O รีเซ็ต)}
 ::msgcat::mcset th {inserted %s} {ใส่ %s แล้ว}
+::msgcat::mcset th {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {ตรวจดูคลัสเตอร์; พุช/ใช้การซิงก์ store, memory, config หรือ vault อย่างชัดเจน; ลืมโหนดที่ค้างเก่าทั้งฟลีต; อ่านบันทึกท้ายไฟล์หรือเมตริกของโหนด; เปรียบเทียบเวอร์ชันและการตั้งค่า; กอสซิปเลย}
 ::msgcat::mcset th {inspector — app internals · core state · gw plugins} {อินสเปกเตอร์ — ภายในแอป · สถานะคอร์ · ปลั๊กอิน gw}
 ::msgcat::mcset th {install a plugin from a git URL} {ติดตั้งปลั๊กอินจาก URL git}
 ::msgcat::mcset th {install a skill from a git URL} {ติดตั้งสกิลจาก URL git}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset th instance อินสแตนซ์
 ::msgcat::mcset th {instance controls} การควบคุมอินสแตนซ์
 ::msgcat::mcset th {instance detail} รายละเอียดอินสแตนซ์
+::msgcat::mcset th {instance names may not start with "cluster:" or "g:": %s} {ชื่ออินสแตนซ์ต้องไม่ขึ้นต้นด้วย "cluster:" หรือ "g:": %s}
 ::msgcat::mcset th {instance needs a name} อินสแตนซ์ต้องมีชื่อ
 ::msgcat::mcset th {instance unreachable} เข้าไม่ถึงอินสแตนซ์
 ::msgcat::mcset th instances อินสแตนซ์
 ::msgcat::mcset th interrupting… กำลังขัดจังหวะ…
+::msgcat::mcset th into ไปยัง
 ::msgcat::mcset th {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset th {irc: %s} {irc: %s}
 ::msgcat::mcset th {irc: %s failed — %s} {irc: %s ล้มเหลว — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset th {language list} รายการภาษา
 ::msgcat::mcset th {language picker (the swap for THIS window)} {ตัวเลือกภาษา (สลับเฉพาะหน้าต่างนี้)}
 ::msgcat::mcset th {language saved: %s} {บันทึกภาษาแล้ว: %s}
+::msgcat::mcset th {language server} {language server}
+::msgcat::mcset th {language server: event stream unavailable: %s} {language server: สตรีมเหตุการณ์ไม่พร้อมใช้งาน: %s}
+::msgcat::mcset th {language server: not started on the gateway — %s} {language server: ยังไม่เริ่มบนเกตเวย์ — %s}
+::msgcat::mcset th {language server: the gateway would not start one: %s} {language server: เกตเวย์ไม่ยอมเริ่มให้: %s}
 ::msgcat::mcset th {language swapped: %1$s ⇄ %2$s} {สลับภาษาแล้ว: %1$s ⇄ %2$s}
 ::msgcat::mcset th {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {ภาษา → %1$s (เดิม %2$s) · เฉพาะหน้าต่างที่รัน — Save as default เขียน config.toml}
 ::msgcat::mcset th {language: %s} {ภาษา: %s}
 ::msgcat::mcset th {last error} ข้อผิดพลาดล่าสุด
+::msgcat::mcset th {last pass %1$s at %2$s: %3$s} {รอบล่าสุด %1$s เมื่อ %2$s: %3$s}
 ::msgcat::mcset th {last reply copied (%s chars)} {คัดลอกคำตอบล่าสุดแล้ว (%s ตัวอักษร)}
 ::msgcat::mcset th {layout not saved: %s} {ยังไม่ได้บันทึกเลย์เอาต์: %s}
 ::msgcat::mcset th {leave (cancels a running turn first)} {ออก (ยกเลิกเทิร์นที่กำลังรันก่อน)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset th {list sessions} แสดงรายการเซสชัน
 ::msgcat::mcset th {list skills} แสดงรายการสกิล
 ::msgcat::mcset th {list tools} แสดงรายการเครื่องมือ
+::msgcat::mcset th {listed here only; [notify] fleet_alerts is off} {แสดงที่นี่เท่านั้น; [notify] fleet_alerts ปิดอยู่}
 ::msgcat::mcset th {live patching ARMED} {live patching พร้อมทำงาน}
 ::msgcat::mcset th {live patching ARMED — an agent can now redefine procs in this window} {live patching พร้อม — เอเจนต์นิยาม proc ใหม่ในหน้าต่างนี้ได้แล้ว}
 ::msgcat::mcset th {live patching disarmed} {ปิด live patching แล้ว}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset th {log pane shown} แสดงแผงล็อก
 ::msgcat::mcset th {log: %s} {ล็อก: %s}
 ::msgcat::mcset th {make media: image/video/audio, route = comfyui or provider[/model]} {สร้างสื่อ: image/video/audio, เส้นทาง = comfyui หรือ provider[/model]}
+::msgcat::mcset th {managed via %s} {จัดการผ่าน %s}
+::msgcat::mcset th {manual only} ทำเองเท่านั้น
 ::msgcat::mcset th {mark set} ตั้งมาร์กแล้ว
 ::msgcat::mcset th {mark whole buffer (emacs select-all)} {มาร์กทั้งบัฟเฟอร์ (เลือกทั้งหมดแบบ emacs)}
 ::msgcat::mcset th {markdown preview of the composer} {ตัวอย่าง markdown ของกรอบเขียนข้อความ}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset th model โมเดล
 ::msgcat::mcset th {model aliases} ชื่อย่อโมเดล
 ::msgcat::mcset th {monitor %1$s fired} {มอนิเตอร์ %1$s ทำงานแล้ว}
-::msgcat::mcset th monitors มอนิเตอร์
 ::msgcat::mcset th monitors_header มอนิเตอร์:
 ::msgcat::mcset th monitors_none {(ไม่มีมอนิเตอร์ — โมเดลเริ่มสิ่งเหล่านี้ด้วย monitor tool)}
 ::msgcat::mcset th {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {ย้ายเซสชัน (และเซสชันย่อยทั้งหมด) ไปยังโหนดพูลอื่นที่จุดเปลี่ยนเทิร์น; จบ/ยกเลิกการส่งต่อที่พักไว้; ถามว่าใครเป็นเจ้าของเซสชัน (ผู้ดูแลระบบ)}
 ::msgcat::mcset th {move the running foreground command to the background} ย้ายคำสั่งเบื้องหน้าที่กำลังรันไปทำงานเบื้องหลัง
 ::msgcat::mcset th {move the running foreground command to the background (keeps running)} {ย้ายคำสั่งที่กำลังรันอยู่เบื้องหน้าไปไว้เบื้องหลัง (ยังรันต่อ)}
+::msgcat::mcset th {move this session's running foreground command to a background shell; keeps running} {ย้ายคำสั่งที่กำลังรันอยู่เบื้องหน้าของเซสชันนี้ไปยังเชลล์เบื้องหลัง โดยยังรันต่อไป}
 ::msgcat::mcset th {moving around} การไปมา
 ::msgcat::mcset th name ชื่อ
 ::msgcat::mcset th {name a key first} ตั้งชื่อคีย์ก่อน
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset th {neon impressionism} นีออนอิมเพรสชันนิสม์
 ::msgcat::mcset th {network (optional — e.g. libera; empty = any)} {เครือข่าย (ไม่บังคับ — เช่น libera; ว่าง = ใดก็ได้)}
 ::msgcat::mcset th {network to scope the grant to} เครือข่ายจำกัดขอบเขตการให้สิทธิ์
+::msgcat::mcset th new ใหม่
 ::msgcat::mcset th {new buffer} บัฟเฟอร์ใหม่
 ::msgcat::mcset th {new entry — replace this text, then Save} {รายการใหม่ — แทนที่ข้อความนี้ แล้ว Save}
 ::msgcat::mcset th {new name for %s} {ชื่อใหม่สำหรับ %s}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset th {no IRC buffer selected} {ยังไม่ได้เลือกบัฟเฟอร์ IRC}
 ::msgcat::mcset th {no MCP servers configured — Add server… writes one into config.toml} {ยังไม่ได้ตั้งค่าเซิร์ฟเวอร์ MCP — Add server… เขียนหนึ่งรายการลง config.toml}
 ::msgcat::mcset th {no URLs in this buffer} {ไม่มี URL ในบัฟเฟอร์นี้}
+::msgcat::mcset th {no [a2a_agents] entry — this peer cannot be dialed} {ไม่มีรายการ [a2a_agents] — ติดต่อพีร์นี้ไม่ได้}
 ::msgcat::mcset th {no alias /%s} {ไม่มี alias /%s}
 ::msgcat::mcset th {no background refresh} ไม่รีเฟรชพื้นหลัง
 ::msgcat::mcset th {no buffer %s} {ไม่มีบัฟเฟอร์ %s}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset th {no code block in the last reply} ไม่มีบล็อกโค้ดในคำตอบล่าสุด
 ::msgcat::mcset th {no cron jobs} {ไม่มีงาน cron}
 ::msgcat::mcset th {no cron jobs — New… creates one} {ไม่มีงาน cron — New… สร้างหนึ่งงาน}
+::msgcat::mcset th {no exchange yet} ยังไม่มีการแลกเปลี่ยน
 ::msgcat::mcset th {no file — pick a guts file or type a path} {ไม่มีไฟล์ — เลือกไฟล์ guts หรือพิมพ์เส้นทาง}
 ::msgcat::mcset th {no handler} ไม่มีแฮนเดิลเลอร์
+::msgcat::mcset th {no heartbeat for %{mins} min} {ไม่มีฮาร์ตบีต %{mins} นาที}
+::msgcat::mcset th {no heartbeat within the threshold} ไม่มีฮาร์ตบีตภายในเกณฑ์ที่กำหนด
 ::msgcat::mcset th {no history yet} ยังไม่มีประวัติ
 ::msgcat::mcset th {no host configured for this instance} ยังไม่ได้ตั้งค่าโฮสต์สำหรับอินสแตนซ์นี้
 ::msgcat::mcset th {no instance selected} ยังไม่ได้เลือกอินสแตนซ์
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset th {no program to open URLs} {ไม่มีโปรแกรมเปิด URL}
 ::msgcat::mcset th {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {ยังไม่ได้ตั้งค่าผู้ให้บริการ — เพิ่มรายการ [[custom_providers]] และตั้งคู่ [model] ก่อนรันเทิร์น}
 ::msgcat::mcset th {no reading yet — press Refresh} {ยังไม่ได้อ่าน — กด Refresh}
-::msgcat::mcset th {no running tasks} ไม่มีงานที่กำลังรัน
 ::msgcat::mcset th {no sample available} ไม่มีตัวอย่าง
 ::msgcat::mcset th {no search bar on this surface} พื้นผิวนี้ไม่มีแถบค้นหา
 ::msgcat::mcset th {no session matching %s} {ไม่มีเซสชันที่ตรงกับ %s}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset th {no session open — switch the scope to the default, or open a session} {ยังไม่มีเซสชันเปิด — สลับขอบเขตเป็นค่าเริ่มต้น หรือเปิดเซสชัน}
 ::msgcat::mcset th {no session open — the catalogue needs one; the default scope still works from config.toml} {ยังไม่มีเซสชันเปิด — แคตตาล็อกต้องมี; ขอบเขตค่าเริ่มต้นยังทำงานจาก config.toml}
 ::msgcat::mcset th {no setting %s — try filter or bare} {ไม่มีการตั้งค่า %s — ลอง filter หรือ bare}
+::msgcat::mcset th {no shells or monitors to show} ไม่มีเชลล์หรือตัวเฝ้าระวังให้แสดง
 ::msgcat::mcset th {no skills found} {ไม่พบ skills}
 ::msgcat::mcset th {no such URL — /urls lists them} {ไม่มี URL เช่นนั้น — /urls แสดงรายการ}
 ::msgcat::mcset th {no such file: %s} {ไม่มีไฟล์ดังกล่าว: %s}
 ::msgcat::mcset th {no swap target yet — set one with /locale secondary <id>} {ยังไม่มีภาษาที่จะสลับไป — ตั้งด้วย /locale secondary <id>}
+::msgcat::mcset th {no task selected} ยังไม่ได้เลือกงาน
 ::msgcat::mcset th {no triggers} ไม่มีทริกเกอร์
 ::msgcat::mcset th {no triggers — New… creates one} {ไม่มีทริกเกอร์ — New… สร้างหนึ่งตัว}
 ::msgcat::mcset th {no upstream reading for %s} {ไม่มีการอ่านอัปสตรีมสำหรับ %s}
 ::msgcat::mcset th {no word match} ไม่พบคำตรงกัน
 ::msgcat::mcset th {no xdg-open — path copied instead} {ไม่มี xdg-open — คัดลอกเส้นทางแทน}
+::msgcat::mcset th {node log} บันทึกของโหนด
 ::msgcat::mcset th {none loaded} ยังไม่ได้โหลด
 ::msgcat::mcset th {none recorded} ไม่มีรายการบันทึก
+::msgcat::mcset th {none since this gateway started} ไม่มีเลยตั้งแต่เกตเวย์นี้เริ่มทำงาน
 ::msgcat::mcset th {none yet} ยังไม่มี
 ::msgcat::mcset th {normie is pure Ctrl — no emacs prefix chords.} {normie เป็น Ctrl ล้วน — ไม่มีคอร์ดนำหน้าแบบ emacs}
 ::msgcat::mcset th {normie: select all · emacs: start of line} {normie: เลือกทั้งหมด · emacs: ต้นบรรทัด}
 ::msgcat::mcset th {not a channel} ไม่ใช่แชนเนล
 ::msgcat::mcset th {not a key = value line: %s} {ไม่ใช่บรรทัด คีย์ = ค่า: %s}
+::msgcat::mcset th {not a node in the attached gateway's cluster registry: %s} {ไม่ใช่โหนดในทะเบียนคลัสเตอร์ของเกตเวย์ที่แนบอยู่: %s}
 ::msgcat::mcset th {not a number} ไม่ใช่ตัวเลข
 ::msgcat::mcset th {not a valid http(s) url: %s} {URL http(s) ไม่ถูกต้อง: %s}
 ::msgcat::mcset th {not a valid ssh host: %s} {โฮสต์ ssh ไม่ถูกต้อง: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset th {not attached to a gateway} ยังไม่ได้แนบกับเกตเวย์
 ::msgcat::mcset th {not configured} ยังไม่ได้ตั้งค่า
 ::msgcat::mcset th {not ignoring %s} {ไม่ละเว้น %s}
+::msgcat::mcset th {not installed} ยังไม่ได้ติดตั้ง
 ::msgcat::mcset th {not reported} ไม่ได้รายงาน
 ::msgcat::mcset th {not running} ไม่ได้รัน
 ::msgcat::mcset th {not set in config.toml — the built-in default applies. %s} {ไม่ได้ตั้งค่าใน config.toml — ใช้ค่าเริ่มต้นในตัว %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset th off ปิด
 ::msgcat::mcset th {off (the default)} {ปิด (ค่าเริ่มต้น)}
 ::msgcat::mcset th offline ออฟไลน์
+::msgcat::mcset th ok ปกติ
 ::msgcat::mcset th on เปิด
 ::msgcat::mcset th {on (the default)} {เปิด (ค่าเริ่มต้น)}
 ::msgcat::mcset th {on failure} เมื่อล้มเหลว
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset th {open links} เปิดลิงก์
 ::msgcat::mcset th {open the engine log} {เปิด log ของเอนจิน}
 ::msgcat::mcset th {open the joined session before /leave (on %s)} {เปิดเซสชันที่เข้าร่วมก่อน แล้วค่อย /leave (บน %s)}
+::msgcat::mcset th {open the selected child session} เปิดเซสชันลูกที่เลือก
 ::msgcat::mcset th {open the selected skill in the Dev editor} {เปิดสกิลที่เลือกในเอดิเตอร์ Dev}
 ::msgcat::mcset th {open the setup wizard (re-runnable; edits config.toml in place)} {เปิดวิซาร์ดการตั้งค่า (รันซ้ำได้; แก้ไข config.toml ในที่)}
 ::msgcat::mcset th {open the share sheet} เปิดเมนูแชร์
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset th {override cleared — the default applies} {ล้างการแทนค่าแล้ว — ใช้ค่าเริ่มต้น}
 ::msgcat::mcset th {override failed: %s} {การแทนค่าล้มเหลว: %s}
 ::msgcat::mcset th {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {ACL จับคู่ตัวตนของเจ้าของ %{id} ไม่ได้ — ใช้ telegram:<ID ตัวเลข>, irc:<บัญชี services> หรือมาสก์ nick!user@host}
+::msgcat::mcset th owner/repository เจ้าของ/รีพอซิทอรี
 ::msgcat::mcset th {owners: %s} {เจ้าของ: %s}
 ::msgcat::mcset th {pair a desktop with this agent} จับคู่เดสก์ท็อปกับเอเจนต์นี้
 ::msgcat::mcset th {partly failed: %s} {ล้มเหลวบางส่วน: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset th plugin ปลั๊กอิน
 ::msgcat::mcset th {plugin directory git history} {ประวัติ git ของโฟลเดอร์ปลั๊กอิน}
 ::msgcat::mcset th {plugin list} รายการปลั๊กอิน
+::msgcat::mcset th {plugin provider driver} {ตัวขับผู้ให้บริการแบบ plugin}
 ::msgcat::mcset th {plugins reloaded on %s} {โหลดปลั๊กอินใหม่บน %s แล้ว}
 ::msgcat::mcset th {pop %s out into its own window} {แยก %s ออกเป็นหน้าต่างของตัวเอง}
 ::msgcat::mcset th {pop the buffer out into its own window} ดึงบัฟเฟอร์ออกไปหน้าต่างของตัวเอง
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset th {prefix: window & dock commands} {prefix: คำสั่งหน้าต่างและ dock}
 ::msgcat::mcset th {press Attach in the Instances tab} {กดปุ่มเชื่อมต่อในแท็บ Instances}
 ::msgcat::mcset th preview ดูตัวอย่าง
+::msgcat::mcset th {preview an AI extension change and explicitly apply its diff} {ดูตัวอย่างการเปลี่ยนแปลงส่วนขยายที่ AI เสนอ และนำ diff มาใช้อย่างชัดเจน}
 ::msgcat::mcset th {preview failed: %s} {ดูตัวอย่างไม่สำเร็จ: %s}
 ::msgcat::mcset th {previous buffer} บัฟเฟอร์ก่อนหน้า
 ::msgcat::mcset th {previous command was not a yank} {คำสั่งก่อนหน้าไม่ใช่ yank}
 ::msgcat::mcset th {previous match} ผลก่อนหน้า
 ::msgcat::mcset th {previous session} เซสชันก่อนหน้า
+::msgcat::mcset th {probing %s…} {กำลังตรวจ %s…}
 ::msgcat::mcset th {proc body} {เนื้อความ proc}
 ::msgcat::mcset th {profile unavailable: %s} {profile ใช้ไม่ได้: %s}
 ::msgcat::mcset th profiles: profiles:
 ::msgcat::mcset th prompt พรอมต์
 ::msgcat::mcset th {prompt breakdown} รายละเอียดพรอมต์
 ::msgcat::mcset th {prompt tokens} {prompt tokens}
+::msgcat::mcset th {proposal only, not applied} {เป็นข้อเสนอเท่านั้น ยังไม่ได้นำไปใช้}
 ::msgcat::mcset th provider ผู้ให้บริการ
 ::msgcat::mcset th {provider / model} {ผู้ให้บริการ / โมเดล}
 ::msgcat::mcset th {provider base URL} {base URL ของ provider}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset th {re-sync the slopdrop state mirror} {รีซิงก์มิเรอร์สถานะของ slopdrop}
 ::msgcat::mcset th {read and set the clipboard} อ่านและตั้งค่าคลิปบอร์ด
 ::msgcat::mcset th {read text aloud} อ่านข้อความออกเสียง
+::msgcat::mcset th {read-only: [approvals] allowlist} {อ่านอย่างเดียว: allowlist ใน [approvals]}
 ::msgcat::mcset th {read-only: this session lives on %1$s (as read at %2$s)} {อ่านอย่างเดียว: เซสชันนี้อยู่บน %1$s (ตามที่อ่านเมื่อ %2$s)}
 ::msgcat::mcset th {read-only: this skill comes from the %s library} {อ่านอย่างเดียว: สกิลนี้มาจากไลบรารี %s}
 ::msgcat::mcset th reasoning การใช้เหตุผล
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset th {refused to open %s (only http, https, mailto)} {ปฏิเสธการเปิด %s (อนุญาตแค่ http, https, mailto)}
 ::msgcat::mcset th {refused: %s} {ถูกปฏิเสธ: %s}
 ::msgcat::mcset th {region copied} คัดลอกพื้นที่แล้ว
+::msgcat::mcset th registered ลงทะเบียนแล้ว
 ::msgcat::mcset th {registry not saved: %s} {บันทึกเรจิสทรีไม่สำเร็จ: %s}
 ::msgcat::mcset th {reload on %1$s failed: %2$s} {รีโหลดบน %1$s ไม่สำเร็จ: %2$s}
 ::msgcat::mcset th {reload the mechanisms} รีโหลดกลไกทั้งหมด
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset th {resume a session (prefix ok)} {กลับไปทำเซสชันต่อ (ใช้คำนำหน้าได้)}
 ::msgcat::mcset th {retry failed: %s} {ลองใหม่ล้มเหลว: %s}
 ::msgcat::mcset th {retrying last prompt…} กำลังลองพรอมต์ล่าสุดอีกครั้ง…
+::msgcat::mcset th {review files for an explicit upstream contribution} ตรวจสอบไฟล์เพื่อส่งการร่วมพัฒนาต้นทางอย่างชัดเจน
+::msgcat::mcset th {review standing global and session tool permissions} {ตรวจดูสิทธิ์เครื่องมือระดับ global และระดับเซสชันที่บันทึกไว้}
 ::msgcat::mcset th revision รีวิชัน
 ::msgcat::mcset th {revision history} ประวัติการแก้ไข
+::msgcat::mcset th {revoke refused} การเพิกถอนถูกปฏิเสธ
 ::msgcat::mcset th {revoke the selected identity's grant} เพิกถอนสิทธิ์ของข้อมูลประจำตัวที่เลือก
 ::msgcat::mcset th role บทบาท
 ::msgcat::mcset th {role to grant} บทบาทที่จะให้
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset th {saved to %s} {บันทึกไปที่ %s แล้ว}
 ::msgcat::mcset th saved. บันทึกแล้ว.
 ::msgcat::mcset th {scaffold a new plugin} สร้างปลั๊กอินใหม่
+::msgcat::mcset th {scaffold a user plugin and open it in this editor} สร้างโครงปลั๊กอินของผู้ใช้และเปิดในเอดิเตอร์นี้
 ::msgcat::mcset th {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {งานตามกำหนดเวลา; /crons add "<sched>" [session=<id>] <prompt> (นามแฝง /cron)}
 ::msgcat::mcset th scope ขอบเขต
 ::msgcat::mcset th script สคริปต์
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset th {select %s first} {เลือก %s ก่อน}
 ::msgcat::mcset th {select a checkpoint first} เลือกเช็คพอยต์ก่อน
 ::msgcat::mcset th {select a file, or New… to create one} {เลือกไฟล์ หรือกด ใหม่… เพื่อสร้าง}
+::msgcat::mcset th {select a grant first} เลือกสิทธิ์ก่อน
 ::msgcat::mcset th {select a handler first} เลือกแฮนเดิลก่อน
 ::msgcat::mcset th {select a member first} เลือกสมาชิกก่อน
 ::msgcat::mcset th {select a route} เลือกเส้นทาง
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset th {select an assignment first} เลือกงานที่มอบหมายก่อน
 ::msgcat::mcset th {select an entry first} เลือกรายการก่อน
 ::msgcat::mcset th {select an identity first} เลือกข้อมูลประจำตัวก่อน
+::msgcat::mcset th {selected task details and shell output} รายละเอียดงานที่เลือกและผลลัพธ์ของเชลล์
 ::msgcat::mcset th {selected: %s} {ที่เลือก: %s}
 ::msgcat::mcset th {send clipboard as prompt} ส่งคลิปบอร์ดเป็นพรอมต์
 ::msgcat::mcset th {send failed: %s} {ส่งล้มเหลว: %s}
 ::msgcat::mcset th {send the message; while a turn runs, queue it as steering} {ส่งข้อความ; ถ้าเทิร์นกำลังรัน จะเข้าคิวเป็น steering}
+::msgcat::mcset th sent ส่งแล้ว
+::msgcat::mcset th {sent to the owner's home chat} ส่งไปยังแชทหลักของเจ้าของแล้ว
 ::msgcat::mcset th server เซิร์ฟเวอร์
 ::msgcat::mcset th {server buffers merged} รวมบัฟเฟอร์เซิร์ฟเวอร์แล้ว
 ::msgcat::mcset th {server buffers separate} แยกบัฟเฟอร์เซิร์ฟเวอร์
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset th {settings, one key = value per line} {การตั้งค่า หนึ่ง key = value ต่อบรรทัด}
 ::msgcat::mcset th {setup_done marker NOT saved: %s} {ไม่ได้บันทึก marker setup_done: %s}
 ::msgcat::mcset th {shell %1$s finished} {เชลล์ %1$s เสร็จสิ้น}
-::msgcat::mcset th shells เชลล์
+::msgcat::mcset th {shells, monitors and subagents} {เชลล์ ตัวเฝ้าระวัง และเอเจนต์ย่อย}
 ::msgcat::mcset th shells_header เชลล์พื้นหลัง:
 ::msgcat::mcset th shells_none {(ไม่มีเชลล์พื้นหลัง — /background <cmd> เริ่มหนึ่งตัว)}
 ::msgcat::mcset th {show current configuration} แสดงการตั้งค่าปัจจุบัน
 ::msgcat::mcset th {show every key in this mode} แสดงทุกคีย์ในโหมดนี้
 ::msgcat::mcset th {show or hide the session list} แสดงหรือซ่อนรายการเซสชัน
 ::msgcat::mcset th {show or switch model (alias | model@provider | custom:<prov>)} {แสดงหรือสลับโมเดล (alias | model@provider | custom:<prov>)}
+::msgcat::mcset th {show selected shell output} แสดงผลลัพธ์ของเชลล์ที่เลือก
 ::msgcat::mcset th {show short messages} แสดงข้อความสั้นๆ
 ::msgcat::mcset th {show the model's reasoning blocks (same as /reasoning)} {แสดงบล็อกการใช้เหตุผลของโมเดล (เหมือน /reasoning)}
 ::msgcat::mcset th {show unclaimed} แสดงที่ยังไม่ถูกอ้าง
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset th spend ยอดใช้
 ::msgcat::mcset th {split: %s} {แยก: %s}
 ::msgcat::mcset th {ssh to %1$s failed: %2$s} {ssh ไป %1$s ไม่สำเร็จ: %2$s}
+::msgcat::mcset th {stale — no heartbeat within the threshold} {ค้างเก่า — ไม่มี heartbeat ภายในเกณฑ์}
+::msgcat::mcset th {standing global and session permission grants} {การให้สิทธิ์ระดับ global และระดับเซสชันที่บันทึกไว้}
 ::msgcat::mcset th state สถานะ
 ::msgcat::mcset th {state       never reached} {สถานะ       ไม่เคยถึง}
 ::msgcat::mcset th {state       reachable} {สถานะ       เข้าถึงได้}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset th {stored in the encrypted vault (%1$s): %2$s} {เก็บไว้ในตู้นิรภัยที่เข้ารหัสแล้ว (%1$s): %2$s}
 ::msgcat::mcset th {stream handler: %s} {แฮนเดิลสตรีม: %s}
 ::msgcat::mcset th {subagent %1$s finished} {เอเจนต์ย่อย %1$s เสร็จสิ้น}
-::msgcat::mcset th subagents เอเจนต์ย่อย
 ::msgcat::mcset th subagents_header เอเจนต์ย่อยที่กำลังรัน:
 ::msgcat::mcset th subagents_none {(ไม่มีเอเจนต์ย่อยที่กำลังรัน — /btw <prompt> เริ่มหนึ่งตัว หรือโมเดลใช้ delegate_task)}
 ::msgcat::mcset th {suspend failed: %{e}} {หยุดชั่วคราวไม่สำเร็จ: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset th {switch the selected skill off} ปิดสกิลที่เลือก
 ::msgcat::mcset th {switch the selected skill on} เปิดสกิลที่เลือก
 ::msgcat::mcset th {switch to the %s tab} {สลับไปแท็บ %s}
+::msgcat::mcset th {sync requested: %s} {ขอซิงก์แล้ว: %s}
 ::msgcat::mcset th {tab 1} {แท็บ 1}
 ::msgcat::mcset th {tab 2} {แท็บ 2}
 ::msgcat::mcset th {tab 3} {แท็บ 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset th tasks_none (ไม่มีงานที่กำลังทำงาน)
 ::msgcat::mcset th tasks_not_found {ไม่มีงานนี้: %{id}}
 ::msgcat::mcset th tasks_not_running {งาน %{id} เสร็จไปแล้ว}
-::msgcat::mcset th {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset th {tcl-lsp: event stream unavailable: %s} {tcl-lsp: สตรีมเหตุการณ์ไม่พร้อมใช้งาน: %s}
-::msgcat::mcset th {tcl-lsp: gateway would not start it: %s} {tcl-lsp: gateway ไม่ยอมเริ่มทำงาน: %s}
-::msgcat::mcset th {tcl-lsp: not started on the gateway — %s} {tcl-lsp: ยังไม่ได้เริ่มบน gateway — %s}
 ::msgcat::mcset th {that buffer is not split} บัฟเฟอร์นั้นไม่ได้แยกออก
 ::msgcat::mcset th {the %s plan} {แผน %s}
 ::msgcat::mcset th {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {ช่อง API key รับ ชื่อ ของ env var (เช่น %{example}) ไม่ใช่ตัวคีย์ — ตัวคีย์ใส่ในช่องที่ซ่อน}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset th {the gateway answered without a report} {gateway ตอบกลับโดยไม่มีรายงาน}
 ::msgcat::mcset th {the model/provider pair is incomplete — the gateway will not route until both are present} {คู่โมเดล/ผู้ให้บริการยังไม่ครบ — เกตเวย์จะไม่กำหนดเส้นทางจนกว่าจะมีทั้งสองอย่าง}
 ::msgcat::mcset th {the options changed, so that is a fresh preview — press “Write it” again to write it} {ตัวเลือกเปลี่ยนไป นี่คือตัวอย่างใหม่ — กด “Write it” อีกครั้งเพื่อเขียน}
+::msgcat::mcset th {the peer has not been sent this vault yet} ยังไม่ได้ส่งตู้นิรภัยนี้ให้พีร์
+::msgcat::mcset th {the peer holds this vault} พีร์มีตู้นิรภัยนี้อยู่
 ::msgcat::mcset th {the primary route is \[model\] provider/default — change it there, not here} {เส้นทางหลักคือ \[model\] provider/default — ไปเปลี่ยนที่นั่น ไม่ใช่ที่นี่}
 ::msgcat::mcset th {the provider/model route this session sends to} {เส้นทาง provider/model ที่เซสชันนี้ส่งไป}
 ::msgcat::mcset th {the same, on the privileged path (owner only)} {เหมือนกัน แต่ผ่านเส้นทางสิทธิ์พิเศษ (owner เท่านั้น)}
 ::msgcat::mcset th {the selected entry (edit, then Save)} {รายการที่เลือก (แก้ไข แล้วกด Save)}
+::msgcat::mcset th {the server stopped: %s} {เซิร์ฟเวอร์หยุดทำงาน: %s}
 ::msgcat::mcset th {the synthwave splash} {หน้าจอเปิดแบบ synthwave}
 ::msgcat::mcset th {the text after the name was NOT sent anywhere — type the value into the masked field} {ข้อความหลังชื่อไม่ได้ถูกส่งไปที่ไหนเลย — ให้พิมพ์ค่าในช่องที่ปิดบังไว้}
 ::msgcat::mcset th {the transcript} บทสนทนา
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset th thinking… กำลังคิด…
 ::msgcat::mcset th {thinking… (%s)} {กำลังคิด… (%s)}
 ::msgcat::mcset th {this file's revisions, their diffs, and restore} {รีวิชันของไฟล์นี้ ความแตกต่าง และการกู้คืน}
+::msgcat::mcset th {this gateway} เกตเวย์นี้
 ::msgcat::mcset th {this gateway has no Tcl interpreter} {gateway นี้ไม่มีอินเทอร์พรีเตอร์ Tcl}
 ::msgcat::mcset th {this list} รายการนี้
+::msgcat::mcset th {this node has no vault} โหนดนี้ไม่มีตู้นิรภัย
 ::msgcat::mcset th {this route} เส้นทางนี้
 ::msgcat::mcset th {this session} เซสชันนี้
 ::msgcat::mcset th {this session follows the default language again (%{def})} {เซสชันนี้กลับไปใช้ภาษาเริ่มต้นแล้ว (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset th {transcript finalization failed: %s} {ปิดท้ายทรานสคริปต์ล้มเหลว: %s}
 ::msgcat::mcset th {transcript refetched} ดึงทรานสคริปต์ใหม่แล้ว
 ::msgcat::mcset th {transcript — arrows to read, %s for composer} {ทรานสคริปต์ — ลูกศรเลื่อนอ่าน, %s สำหรับช่องพิมพ์}
+::msgcat::mcset th {translate text with the dedicated translation model, without an agent turn} {แปลข้อความด้วยโมเดลแปลโดยเฉพาะ โดยไม่ใช้เทิร์นของเอเจนต์}
+::msgcat::mcset th {translation result} ผลลัพธ์การแปล
 ::msgcat::mcset th {trigger %1$s %2$sd} {ทริกเกอร์ %1$s ทุก %2$s วัน}
 ::msgcat::mcset th {trigger created} สร้างทริกเกอร์แล้ว
 ::msgcat::mcset th {trigger updated} อัปเดตทริกเกอร์แล้ว
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset th {usage: /steer <instruction>} {วิธีใช้: /steer <instruction>}
 ::msgcat::mcset th used ใช้ไป
 ::msgcat::mcset th user ผู้ใช้
+::msgcat::mcset th {user copy} สำเนาของผู้ใช้
 ::msgcat::mcset th {user identities, one per line} {ข้อมูลประจำตัวผู้ใช้ หนึ่งรายการต่อบรรทัด}
 ::msgcat::mcset th {user name} ชื่อผู้ใช้
 ::msgcat::mcset th {user profile} โปรไฟล์ผู้ใช้
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset th {value (TOML: 5, true, "text", ["a","b"])} {ค่า (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset th veles veles
 ::msgcat::mcset th {veles editor} {veles editor}
+::msgcat::mcset th {veles fleet: node %{node} is failing — %{detail}} {veles fleet: โหนด %{node} กำลังมีปัญหา — %{detail}}
+::msgcat::mcset th {veles fleet: node %{node} is stale — %{detail}} {veles fleet: โหนด %{node} ค้างเก่า — %{detail}}
+::msgcat::mcset th {veles fleet: node %{node} recovered (it was %{was})} {veles fleet: โหนด %{node} กลับมาปกติแล้ว (ก่อนหน้านี้คือ %{was})}
 ::msgcat::mcset th {veles · keyboard help (bindings: %s)} {veles · คู่มือคีย์บอร์ด (คีย์ลัด: %s)}
 ::msgcat::mcset th {veles · touch help} {veles · วิธีใช้แบบสัมผัส}
 ::msgcat::mcset th {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset th widgets วิดเจ็ต
 ::msgcat::mcset th {will be stored in the encrypted vault} จะถูกเก็บในตู้นิรภัยที่เข้ารหัส
 ::msgcat::mcset th {wire protocol} {โปรโตคอล wire}
+::msgcat::mcset th {without force to} โดยไม่บังคับไปยัง
 ::msgcat::mcset th {wizard language} ภาษาของวิซาร์ด
 ::msgcat::mcset th {wizard language: %s} {ภาษาของวิซาร์ด: %s}
 ::msgcat::mcset th {write failed: %s} {เขียนไม่สำเร็จ: %s}
 ::msgcat::mcset th {write grants that still expire (the expiry is dropped — a config line cannot expire)} {เขียนสิทธิ์ที่ยังหมดอายุ (ตัดวันหมดอายุทิ้ง — บรรทัด config หมดอายุไม่ได้)}
 ::msgcat::mcset th {write the entries back} เขียนรายการกลับไป
 ::msgcat::mcset th {write the store's runtime rules into config.toml} {เขียนกฎ runtime ของที่เก็บลงใน config.toml}
+::msgcat::mcset th {write the whole extension from its purpose, as a reviewed preview} {เขียนส่วนขยายทั้งชุดจากจุดประสงค์ เป็นตัวอย่างที่ตรวจทานได้}
 ::msgcat::mcset th {write these values into config.toml as the defaults} {เขียนค่าเหล่านี้ลงใน config.toml เป็นค่าเริ่มต้น}
 ::msgcat::mcset th writing การเขียน
 ::msgcat::mcset th {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {การเขียนเจ้าของ [acl] คนแรกจะเปลี่ยนเกตเวย์นี้เป็นโหมดคัดสรร: บทบาทเริ่มต้นเป็น guest (fail-closed) และรายการอนุญาตของอะแดปเตอร์ไม่ใช่ขอบเขตความเชื่อถืออีกต่อไป}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset th {▲ VELES — neon impressionism} {▲ VELES — neon impressionism}
 ::msgcat::mcset th {▲ earlier} {▲ ก่อนหน้า}
 ::msgcat::mcset th {▼ later} {▼ ถัดไป}
+::msgcat::mcset th {▾ Cluster registry} {▾ ทะเบียนคลัสเตอร์}
 ::msgcat::mcset th {▾ new output — follow} {▾ ผลลัพธ์ใหม่ — ติดตาม}
 ::msgcat::mcset th {○ unattached} {○ ยังไม่เชื่อม}
 ::msgcat::mcset th {● %1$s — %2$s} {● %1$s — %2$s}

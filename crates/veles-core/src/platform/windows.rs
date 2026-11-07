@@ -13,9 +13,9 @@ use std::io::{Read, Write};
 use std::os::windows::io::FromRawHandle;
 use std::path::{Path, PathBuf};
 use windows_sys::Win32::Foundation::{
-    CloseHandle, GetLastError, LocalFree, ERROR_ACCESS_DENIED, ERROR_MOD_NOT_FOUND,
-    ERROR_PIPE_BUSY, ERROR_PIPE_CONNECTED, GENERIC_READ, GENERIC_WRITE, HANDLE, HMODULE,
-    INVALID_HANDLE_VALUE, STILL_ACTIVE,
+    CloseHandle, GetLastError, LocalFree, ERROR_ACCESS_DENIED, ERROR_FILE_NOT_FOUND,
+    ERROR_MOD_NOT_FOUND, ERROR_MORE_DATA, ERROR_PIPE_BUSY, ERROR_PIPE_CONNECTED, ERROR_SUCCESS,
+    GENERIC_READ, GENERIC_WRITE, HANDLE, HMODULE, INVALID_HANDLE_VALUE, STILL_ACTIVE,
 };
 use windows_sys::Win32::Security::Authorization::{
     ConvertSidToStringSidW, ConvertStringSecurityDescriptorToSecurityDescriptorW,
@@ -47,8 +47,13 @@ use windows_sys::Win32::System::Pipes::{
     PIPE_REJECT_REMOTE_CLIENTS, PIPE_TYPE_BYTE, PIPE_UNLIMITED_INSTANCES, PIPE_WAIT,
 };
 use windows_sys::Win32::System::ProcessStatus::{K32GetModuleInformation, MODULEINFO};
+use windows_sys::Win32::System::Registry::{
+    RegCloseKey, RegCreateKeyExW, RegDeleteKeyW, RegDeleteTreeW, RegGetValueW, RegOpenKeyExW,
+    RegQueryInfoKeyW, RegSetValueExW, HKEY, HKEY_CURRENT_USER, KEY_READ, KEY_SET_VALUE,
+    REG_OPTION_NON_VOLATILE, REG_SZ, RRF_RT_REG_SZ,
+};
 use windows_sys::Win32::System::Threading::{
-    GetCurrentProcess, GetExitCodeProcess, OpenProcess, OpenProcessToken,
+    GetCurrentProcess, GetExitCodeProcess, GetProcessTimes, OpenProcess, OpenProcessToken,
     QueryFullProcessImageNameW, TerminateProcess, CREATE_NEW_PROCESS_GROUP, CREATE_NO_WINDOW,
     PROCESS_NAME_WIN32, PROCESS_QUERY_LIMITED_INFORMATION, PROCESS_SET_QUOTA, PROCESS_TERMINATE,
 };
@@ -106,6 +111,46 @@ pub fn pid_alive(pid: u32) -> bool {
     let mut code = 0u32;
     // SAFETY: h is an open process handle; code is an out-param.
     unsafe { GetExitCodeProcess(h.0, &mut code) != 0 && code == STILL_ACTIVE as u32 }
+}
+
+/// Creation time identifies this process lifetime, unlike a bare PID.
+///
+/// An exited process has none: its kernel object (and so its creation
+/// time) lives on for as long as anyone holds a handle — the launcher
+/// that started the gateway, a `std::process::Child` — and a dead owner
+/// would otherwise look alive to restart recovery forever.
+pub fn process_start_id(pid: u32) -> Option<String> {
+    let h = open_process(PROCESS_QUERY_LIMITED_INFORMATION, pid)?;
+    let mut code = 0u32;
+    // SAFETY: h is an open process handle; code is an out-param.
+    let running = unsafe { GetExitCodeProcess(h.0, &mut code) != 0 && code == STILL_ACTIVE as u32 };
+    if !running {
+        return None;
+    }
+    let mut created = std::mem::MaybeUninit::zeroed();
+    let mut exited = std::mem::MaybeUninit::zeroed();
+    let mut kernel = std::mem::MaybeUninit::zeroed();
+    let mut user = std::mem::MaybeUninit::zeroed();
+    // SAFETY: all four pointers refer to writable FILETIME storage and
+    // `h` is a live handle held for the duration of the call.
+    let ok = unsafe {
+        GetProcessTimes(
+            h.0,
+            created.as_mut_ptr(),
+            exited.as_mut_ptr(),
+            kernel.as_mut_ptr(),
+            user.as_mut_ptr(),
+        )
+    };
+    if ok == 0 {
+        return None;
+    }
+    // SAFETY: GetProcessTimes initialized the creation timestamp.
+    let created = unsafe { created.assume_init() };
+    Some(format!(
+        "{}:{}",
+        created.dwHighDateTime, created.dwLowDateTime
+    ))
 }
 
 /// The process's executable is `veles.exe`: the nearest thing to
@@ -403,6 +448,188 @@ pub fn replace_file(staged: &Path, destination: &Path) -> std::io::Result<()> {
         Err(last_error())
     } else {
         Ok(())
+    }
+}
+
+// ── the per-user registry ──────────────────────────────────────────
+//
+// Only what the browser tab bridge needs (browserextension.rs, BX-9):
+// Chrome, Chromium, Edge and Firefox find a native messaging host by the
+// default value of `HKCU\Software\<vendor>\NativeMessagingHosts\<name>`.
+
+fn registry_error(rc: u32) -> std::io::Error {
+    std::io::Error::from_raw_os_error(rc as i32)
+}
+
+/// `HKCU\<key>`'s default value, or `None` when the key or the value is
+/// not there. A default value that is not a string is an error.
+pub fn user_registry_default(key: &str) -> std::io::Result<Option<String>> {
+    let name = wide(key);
+    for _ in 0..4 {
+        let mut bytes = 0u32;
+        // SAFETY: a size query: no type out-param and no buffer.
+        let rc = unsafe {
+            RegGetValueW(
+                HKEY_CURRENT_USER,
+                name.as_ptr(),
+                std::ptr::null(),
+                RRF_RT_REG_SZ,
+                std::ptr::null_mut(),
+                std::ptr::null_mut(),
+                &mut bytes,
+            )
+        };
+        match rc {
+            ERROR_SUCCESS => {}
+            ERROR_FILE_NOT_FOUND => return Ok(None),
+            rc => return Err(registry_error(rc)),
+        }
+        let mut buf = vec![0u16; (bytes as usize).div_ceil(2).max(1)];
+        let mut len = (buf.len() * 2) as u32;
+        // SAFETY: buf holds `len` bytes, the size the query asked for.
+        let rc = unsafe {
+            RegGetValueW(
+                HKEY_CURRENT_USER,
+                name.as_ptr(),
+                std::ptr::null(),
+                RRF_RT_REG_SZ,
+                std::ptr::null_mut(),
+                buf.as_mut_ptr() as *mut c_void,
+                &mut len,
+            )
+        };
+        match rc {
+            ERROR_SUCCESS => {
+                buf.truncate(len as usize / 2);
+                while buf.last() == Some(&0) {
+                    buf.pop();
+                }
+                return Ok(Some(String::from_utf16_lossy(&buf)));
+            }
+            ERROR_FILE_NOT_FOUND => return Ok(None),
+            // It grew between the two calls: ask again.
+            ERROR_MORE_DATA => continue,
+            rc => return Err(registry_error(rc)),
+        }
+    }
+    Err(registry_error(ERROR_MORE_DATA))
+}
+
+/// Create `HKCU\<key>` (and the keys above it) when missing and set its
+/// default value to `value`, a `REG_SZ`.
+pub fn user_registry_set_default(key: &str, value: &str) -> std::io::Result<()> {
+    let name = wide(key);
+    let mut opened: HKEY = std::ptr::null_mut();
+    // SAFETY: a NUL-terminated subkey; `opened` is an out-param.
+    let rc = unsafe {
+        RegCreateKeyExW(
+            HKEY_CURRENT_USER,
+            name.as_ptr(),
+            0,
+            std::ptr::null(),
+            REG_OPTION_NON_VOLATILE,
+            KEY_SET_VALUE,
+            std::ptr::null(),
+            &mut opened,
+            std::ptr::null_mut(),
+        )
+    };
+    if rc != ERROR_SUCCESS {
+        return Err(registry_error(rc));
+    }
+    let data = wide(value);
+    // SAFETY: `opened` is the key just created; data holds the string and
+    // its NUL, `data.len() * 2` bytes.
+    let rc = unsafe {
+        RegSetValueExW(
+            opened,
+            std::ptr::null(),
+            0,
+            REG_SZ,
+            data.as_ptr() as *const u8,
+            (data.len() * 2) as u32,
+        )
+    };
+    // SAFETY: opened above and not used after this.
+    unsafe { RegCloseKey(opened) };
+    if rc != ERROR_SUCCESS {
+        return Err(registry_error(rc));
+    }
+    Ok(())
+}
+
+/// Delete `HKCU\<key>` and everything under it; `false` when it was not
+/// there. The keys above it stay.
+pub fn user_registry_delete(key: &str) -> std::io::Result<bool> {
+    let name = wide(key);
+    // SAFETY: a NUL-terminated subkey of HKCU.
+    match unsafe { RegDeleteTreeW(HKEY_CURRENT_USER, name.as_ptr()) } {
+        ERROR_SUCCESS => Ok(true),
+        ERROR_FILE_NOT_FOUND => Ok(false),
+        rc => Err(registry_error(rc)),
+    }
+}
+
+/// Delete `HKCU\<key>` if it holds no subkey and no value; `true` when it
+/// did. Uninstall walks up from a registration with this, so the
+/// `NativeMessagingHosts` (and vendor) keys an install created go with it
+/// and a key anything else uses stays.
+pub fn user_registry_delete_if_empty(key: &str) -> std::io::Result<bool> {
+    let name = wide(key);
+    let mut opened: HKEY = std::ptr::null_mut();
+    // SAFETY: a NUL-terminated subkey; `opened` is an out-param.
+    match unsafe { RegOpenKeyExW(HKEY_CURRENT_USER, name.as_ptr(), 0, KEY_READ, &mut opened) } {
+        ERROR_SUCCESS => {}
+        ERROR_FILE_NOT_FOUND => return Ok(false),
+        rc => return Err(registry_error(rc)),
+    }
+    let (mut subkeys, mut values) = (0u32, 0u32);
+    // SAFETY: `opened` is open; every pointer but the two counts is null,
+    // which the call allows.
+    let rc = unsafe {
+        RegQueryInfoKeyW(
+            opened,
+            std::ptr::null_mut(),
+            std::ptr::null_mut(),
+            std::ptr::null(),
+            &mut subkeys,
+            std::ptr::null_mut(),
+            std::ptr::null_mut(),
+            &mut values,
+            std::ptr::null_mut(),
+            std::ptr::null_mut(),
+            std::ptr::null_mut(),
+            std::ptr::null_mut(),
+        )
+    };
+    // SAFETY: opened above and not used after this.
+    unsafe { RegCloseKey(opened) };
+    if rc != ERROR_SUCCESS {
+        return Err(registry_error(rc));
+    }
+    if subkeys != 0 || values != 0 {
+        return Ok(false);
+    }
+    // SAFETY: a NUL-terminated subkey of HKCU.
+    match unsafe { RegDeleteKeyW(HKEY_CURRENT_USER, name.as_ptr()) } {
+        ERROR_SUCCESS => Ok(true),
+        ERROR_FILE_NOT_FOUND => Ok(false),
+        rc => Err(registry_error(rc)),
+    }
+}
+
+/// Whether `HKCU\<key>` exists, with or without a value.
+pub fn user_registry_key_exists(key: &str) -> bool {
+    let name = wide(key);
+    let mut opened: HKEY = std::ptr::null_mut();
+    // SAFETY: a NUL-terminated subkey; `opened` is an out-param.
+    let rc = unsafe { RegOpenKeyExW(HKEY_CURRENT_USER, name.as_ptr(), 0, KEY_READ, &mut opened) };
+    if rc == ERROR_SUCCESS {
+        // SAFETY: opened above.
+        unsafe { RegCloseKey(opened) };
+        true
+    } else {
+        false
     }
 }
 
@@ -815,6 +1042,80 @@ mod tests {
         let out = String::from_utf16_lossy(unsafe { std::slice::from_raw_parts(text, len) });
         unsafe { LocalFree(text.cast()) };
         out
+    }
+
+    /// The real HKCU calls the browser bridge registers with (BX-9), under
+    /// a root of their own that the test removes whole.
+    #[test]
+    fn a_user_registry_default_value_round_trips_and_is_deleted() {
+        struct Root(String);
+        impl Drop for Root {
+            fn drop(&mut self) {
+                let _ = user_registry_delete(&self.0);
+            }
+        }
+        let root = Root(format!(
+            r"Software\veles-test-{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ));
+        let key = format!(r"{}\Mozilla\NativeMessagingHosts\veles_browser", root.0);
+        assert!(!user_registry_key_exists(&key));
+        assert_eq!(user_registry_default(&key).unwrap(), None);
+        let value =
+            r"C:\Users\Ђорђе\AppData\Local\veles\browser-extension\veles_browser.firefox.json";
+        user_registry_set_default(&key, value).unwrap();
+        assert!(user_registry_key_exists(&key));
+        assert_eq!(user_registry_default(&key).unwrap().as_deref(), Some(value));
+        user_registry_set_default(&key, "shorter").unwrap();
+        assert_eq!(
+            user_registry_default(&key).unwrap().as_deref(),
+            Some("shorter")
+        );
+        assert!(user_registry_delete(&key).unwrap());
+        assert!(!user_registry_key_exists(&key));
+        assert!(
+            user_registry_key_exists(&format!(r"{}\Mozilla\NativeMessagingHosts", root.0)),
+            "the keys above stay"
+        );
+        assert!(!user_registry_delete(&key).unwrap(), "already gone");
+        // Only an empty key is pruned: not one with a subkey or a value.
+        let hosts = format!(r"{}\Mozilla\NativeMessagingHosts", root.0);
+        let vendor = format!(r"{}\Mozilla", root.0);
+        user_registry_set_default(&format!(r"{hosts}\other_host"), "x").unwrap();
+        assert!(
+            !user_registry_delete_if_empty(&hosts).unwrap(),
+            "it has a subkey"
+        );
+        assert!(user_registry_delete(&format!(r"{hosts}\other_host")).unwrap());
+        user_registry_set_default(&hosts, "a value of its own").unwrap();
+        assert!(
+            !user_registry_delete_if_empty(&hosts).unwrap(),
+            "it has a value"
+        );
+        user_registry_set_default(&vendor, "keeps the vendor key").unwrap();
+        assert!(user_registry_delete(&hosts).unwrap());
+        user_registry_set_default(&hosts, "").unwrap();
+        assert!(
+            !user_registry_delete_if_empty(&hosts).unwrap(),
+            "an empty string is a value"
+        );
+        assert!(user_registry_delete(&hosts).unwrap());
+        let empty = format!(r"{}\Chromium\NativeMessagingHosts", root.0);
+        user_registry_set_default(&format!(r"{empty}\h"), "x").unwrap();
+        assert!(user_registry_delete(&format!(r"{empty}\h")).unwrap());
+        assert!(user_registry_delete_if_empty(&empty).unwrap());
+        assert!(!user_registry_key_exists(&empty));
+        assert!(
+            !user_registry_delete_if_empty(&empty).unwrap(),
+            "already gone"
+        );
+        assert!(!user_registry_delete_if_empty(&vendor).unwrap());
+        assert!(user_registry_delete(&root.0).unwrap());
+        assert!(!user_registry_key_exists(&root.0));
     }
 
     #[test]

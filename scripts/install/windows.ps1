@@ -310,6 +310,20 @@ function Install-BundledTclPlugins([string]$root) {
     }
 }
 
+# The browser tab bridge's unpacked extension, at <root>\browser-extension
+# beside bin\: `veles browser-extension install` finds it there, copies it
+# to %LOCALAPPDATA%\veles\browser-extension\extension and registers the
+# native host for Chrome, Chromium, Edge and Firefox (BX-9). The node tests
+# beside it are not shipped.
+function Install-BrowserExtension([string]$root) {
+    $dest = Join-Path $root 'browser-extension'
+    if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }
+    New-Item -ItemType Directory -Force $dest | Out-Null
+    Get-ChildItem (Join-Path $Repo 'browser-extension') -File | Where-Object { $_.Name -notlike '*-test.cjs' } |
+        ForEach-Object { Copy-Item $_.FullName $dest }
+    if (-not (Test-Path (Join-Path $dest 'manifest.json'))) { Die "the browser extension did not stage in $dest" }
+}
+
 # The prebuilt Windows artifact (PLAN-windows.md §10, "Prebuilt Windows
 # bundle"): the same build, laid out so nothing has to be installed.
 # Tcl's own install layout is the trick: tcl86t.dll in bin\ finds its
@@ -378,6 +392,7 @@ function New-PortableZip([string]$zipPath) {
     Copy-Item (Join-Path $Repo 'veles-desktop') (Join-Path $stage 'veles-desktop') -Recurse
     Copy-Item (Join-Path $Repo 'skills') (Join-Path $stage 'skills') -Recurse
     Install-BundledTclPlugins $stage
+    Install-BrowserExtension $stage
     Copy-Item (Join-Path $Repo 'packaging\veles.svg') $stage -ErrorAction SilentlyContinue
     foreach ($f in 'LICENSE', 'THIRD_PARTY_LICENSES.md') {
         if (Test-Path (Join-Path $Repo $f)) { Copy-Item (Join-Path $Repo $f) $stage }
@@ -392,6 +407,9 @@ Run bin\veles.exe from anywhere; nothing else needs installing.
   bin\veles.exe setup     pick a provider and model
   bin\veles.exe gui       the desktop app
   bin\veles.exe doctor    check the install
+  bin\veles.exe browser-extension install
+                          the browser tab bridge for Chrome, Edge and Firefox
+                          (browser-extension\README.md)
 
 scripts/install/install.ps1 installs this under %LOCALAPPDATA%\Programs\veles
 and puts veles on PATH. Configuration lives in %APPDATA%\veles.
@@ -423,6 +441,13 @@ function Test-PortableZip([string]$zipPath) {
     if ($LASTEXITCODE -ne 0) { Die "could not unpack $zipPath" }
     $exe = Get-ChildItem "$probe\unpacked\*\bin\veles.exe" | Select-Object -First 1
     if (-not $exe) { Die "the zip has no <root>\bin\veles.exe" }
+    # Not run here: `browser-extension install` writes HKCU, which no
+    # fresh APPDATA isolates. The files are what the install copies.
+    foreach ($f in 'manifest.json', 'background.js', 'popup.html', 'popup.js') {
+        if (-not (Test-Path (Join-Path $exe.Directory.Parent.FullName "browser-extension\$f"))) { Die "the zip has no <root>\browser-extension\$f" }
+    }
+    if (Get-ChildItem (Join-Path $exe.Directory.Parent.FullName 'browser-extension') -Filter '*-test.cjs') { Die "the zip ships the extension's node tests" }
+    Note "the unpacked zip carries browser-extension\"
     $saved = @{ Path = $env:Path; APPDATA = $env:APPDATA; LOCALAPPDATA = $env:LOCALAPPDATA;
         TCL_LIBRARY = $env:TCL_LIBRARY; TK_LIBRARY = $env:TK_LIBRARY; VELES_TCLSH = $env:VELES_TCLSH; WISH = $env:WISH }
     try {
@@ -539,6 +564,9 @@ Note "installed $Prefix\skills"
 # The bundled Tcl plugins, at bin\..\share\veles\plugins.
 Install-BundledTclPlugins $Prefix
 Note "installed $Prefix\share\veles\plugins"
+# The browser tab bridge's extension, at bin\..\browser-extension.
+Install-BrowserExtension $Prefix
+Note "installed $Prefix\browser-extension (veles browser-extension install registers it)"
 
 $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
 if (($userPath -split ';') -notcontains $Bin) {

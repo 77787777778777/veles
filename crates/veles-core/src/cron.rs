@@ -1302,6 +1302,18 @@ pub fn next_fire(
     bail!("unknown schedule form: {schedule}");
 }
 
+/// The first fire of `job` once its schedule has just been edited at
+/// `now`. The stored `next_run_at` belongs to the old schedule, and the
+/// last run is no anchor for the new one (a '0 18' pattern anchored on
+/// yesterday's 09:00 run would be due at once). An edit schedules like a
+/// creation: the first match after the edit, never retroactively.
+pub fn next_fire_after_edit(job: &CronJob, now: DateTime<Utc>) -> Result<Option<DateTime<Utc>>> {
+    let mut probe = job.clone();
+    probe.next_run_at = None;
+    probe.last_run_at = Some(now.format("%Y-%m-%d %H:%M:%S").to_string());
+    next_fire(&probe.schedule, &probe, now)
+}
+
 /// Decide whether the built-in dream schedule is due, reusing the same
 /// normalized-schedule + `due_slot` math as every cron job. `last_run`
 /// is the stored anchor in sqlite-UTC text; `None` means never run,
@@ -1705,6 +1717,120 @@ mod tests {
         }
     }
 
+    /// An edited schedule takes effect at the edit. The stored slot
+    /// belongs to the OLD schedule: keeping it fired a '0 9' job one more
+    /// time at 09:00 after it was moved to 18:00, and a weekly job moved
+    /// to hourly waited out the week. Clearing it is not enough either:
+    /// the new schedule anchored on the last run would fire a retroactive
+    /// catch-up the moment the edit lands. Platform-neutral on purpose
+    /// (no TZ fixture), so the Windows gate runs it.
+    #[test]
+    fn an_edited_schedule_replaces_the_stored_slot_from_the_edit_onward() {
+        let _env = crate::testenv::guard();
+        let dir = tempfile::tempdir().unwrap();
+        let store = Store::open(&dir.path().join("t.db")).unwrap();
+        let ago = |h: i64| {
+            (Utc::now() - chrono::Duration::hours(h))
+                .format("%Y-%m-%d %H:%M:%S")
+                .to_string()
+        };
+        let stale = (Utc::now() + chrono::Duration::days(6))
+            .with_nanosecond(0)
+            .unwrap();
+        let j = job("every:604800", &ago(48), Some(&ago(24)), None);
+        store.cron_upsert(&j).unwrap();
+        store.cron_set_next("j", Some(&stale.to_rfc3339())).unwrap();
+
+        let before = Utc::now();
+        let edited = store
+            .cron_update(
+                "j",
+                None,
+                Some("every:3600"),
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+            )
+            .unwrap()
+            .unwrap();
+        let after = Utc::now();
+        let stored = store.cron_get("j").unwrap().unwrap();
+        assert_eq!(
+            stored.next_run_at, edited.next_run_at,
+            "row and reply agree"
+        );
+        let next = next_fire(&stored.schedule, &stored, after)
+            .unwrap()
+            .unwrap();
+        assert!(
+            next >= before.with_nanosecond(0).unwrap() + chrono::Duration::seconds(3600)
+                && next <= after + chrono::Duration::seconds(3600),
+            "one new interval after the edit, not the old weekly slot: {next}"
+        );
+        assert_eq!(due_slot(&stored, after).unwrap(), None, "no catch-up fire");
+
+        // A calendar pattern: the old slot is gone and the new one is a
+        // real match of the new pattern, after the edit, not yet due.
+        let edited = store
+            .cron_update(
+                "j",
+                None,
+                Some("cron:7 3 * * *"),
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+            )
+            .unwrap()
+            .unwrap();
+        let next = next_fire(&edited.schedule, &edited, Utc::now())
+            .unwrap()
+            .unwrap();
+        let local = next.with_timezone(&chrono::Local);
+        assert_eq!((local.hour(), local.minute()), (3, 7), "{local}");
+        assert!(
+            next > after && next <= after + chrono::Duration::hours(25),
+            "{next}"
+        );
+        assert_eq!(due_slot(&edited, Utc::now()).unwrap(), None);
+
+        // Re-saving the SAME schedule (the desktop editor posts the whole
+        // form) keeps the slot: nothing about the timing changed.
+        let kept = edited.next_run_at.clone();
+        let resaved = store
+            .cron_update(
+                "j",
+                Some("renamed"),
+                Some("cron:7 3 * * *"),
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+            )
+            .unwrap()
+            .unwrap();
+        assert_eq!(resaved.next_run_at, kept);
+    }
+
     /// What a phone's stopped engine is started again for
     /// (`device_events::write_wake`): the earliest ENABLED job.
     #[test]
@@ -1900,6 +2026,64 @@ mod tests {
         let now = Utc.with_ymd_and_hms(2026, 8, 9, 12, 0, 0).unwrap();
         let slot = due_slot(&j, now).unwrap();
         assert_eq!(slot, Some("20260802T130000Z".into()));
+    }
+
+    /// The first 09:00 on this machine's wall clock strictly after `t`,
+    /// worked out by hand from chrono::Local rather than by croner.
+    fn first_local_nine_after(t: DateTime<Utc>) -> DateTime<Utc> {
+        let local = t.with_timezone(&chrono::Local);
+        let mut day = local.date_naive();
+        if local.time() >= chrono::NaiveTime::from_hms_opt(9, 0, 0).unwrap() {
+            day = day.succ_opt().unwrap();
+        }
+        chrono::Local
+            .from_local_datetime(&day.and_hms_opt(9, 0, 0).unwrap())
+            .earliest()
+            .unwrap()
+            .with_timezone(&Utc)
+    }
+
+    /// The first-fire and catch-up rules without a TZ fixture: the
+    /// tests above pin TZ to a TZif path, which Windows' chrono::Local
+    /// ignores, so they are unix-only. These read whatever zone the
+    /// machine has (the Windows gate's Win32 zone included) and only
+    /// assert the rule: local 09:00, after the anchor, never before.
+    #[test]
+    fn cron_first_fire_and_catch_up_follow_the_machine_zone() {
+        let _env = crate::testenv::guard();
+        let created = Utc.with_ymd_and_hms(2026, 8, 9, 10, 0, 0).unwrap();
+        let j = job(
+            "cron:0 9 * * *",
+            &created.format("%Y-%m-%d %H:%M:%S").to_string(),
+            None,
+            None,
+        );
+        let expected = first_local_nine_after(created);
+        let just_before = expected - chrono::Duration::minutes(1);
+        assert_eq!(
+            next_fire(&j.schedule, &j, just_before).unwrap(),
+            Some(expected)
+        );
+        assert_eq!(due_slot(&j, just_before).unwrap(), None, "not due yet");
+        let slot = expected.format("%Y%m%dT%H%M%SZ").to_string();
+        let at = expected + chrono::Duration::seconds(5);
+        assert_eq!(due_slot(&j, at).unwrap(), Some(slot.clone()));
+
+        // Down for a week after a run: ONE catch-up, for the first
+        // missed slot, not one per missed day and not 'now'.
+        let last = expected + chrono::Duration::seconds(5);
+        let ran = job(
+            "cron:0 9 * * *",
+            "2026-07-01 00:00:00",
+            Some(&last.format("%Y-%m-%d %H:%M:%S").to_string()),
+            None,
+        );
+        let week_later = last + chrono::Duration::days(7);
+        let missed = first_local_nine_after(last);
+        assert_eq!(
+            due_slot(&ran, week_later).unwrap(),
+            Some(missed.format("%Y%m%dT%H%M%SZ").to_string())
+        );
     }
 
     #[test]

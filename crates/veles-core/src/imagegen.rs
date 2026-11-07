@@ -949,13 +949,19 @@ async fn generate_video_via_dashscope_timed(
     }
 }
 
+/// What `generate_video` answers when no provider route is configured.
+pub const NO_VIDEO_ROUTE: &str =
+    "generate_video error: no video route is configured — nothing was generated. \
+     Set [videogen] provider (and api = \"dashscope\") to a video-capable endpoint, \
+     or pass provider=<name> for one call. Local ComfyUI video workflows are not supported.";
+
 #[async_trait]
 impl Tool for VideoGenTool {
     fn name(&self) -> &str {
         "generate_video"
     }
     fn description(&self) -> &str {
-        "Generate a short video: routed to a configured provider endpoint when one is set ([videogen], DashScope async task — happyhorse t2v/i2v models; the i2v/r2v models take input_image as a public URL), otherwise the local ComfyUI workflow placeholder. Returns a MEDIA: path."
+        "Generate a short video through a configured provider endpoint ([videogen], DashScope async task — happyhorse t2v/i2v models; the i2v/r2v models take input_image as a public URL). Without a configured route it fails and generates nothing. Returns a MEDIA: path."
     }
     fn schema(&self) -> Value {
         serde_json::json!({
@@ -963,13 +969,11 @@ impl Tool for VideoGenTool {
             "properties": {
                 "prompt": {"type": "string", "description": "Text prompt for video"},
                 "input_image": {"type": "string", "description": "Public http(s) URL of a starting frame (for the i2v models)"},
-                "provider": {"type": "string", "description": "Route this one call to a configured provider by name (default: [videogen].provider; unset = comfyui)"},
+                "provider": {"type": "string", "description": "Route this one call to a configured provider by name (default: [videogen].provider; unset = no route, the call fails)"},
                 "model": {"type": "string", "description": "Video model id (default: [videogen].model)"},
                 "duration": {"type": "integer", "description": "Seconds of video (provider-bounded)"},
                 "width": {"type": "integer", "description": "Width"},
-                "height": {"type": "integer", "description": "Height"},
-                "frames": {"type": "integer", "description": "Number of frames (comfyui route only)"},
-                "fps": {"type": "integer", "description": "Frames per second (comfyui route only)"}
+                "height": {"type": "integer", "description": "Height"}
             },
             "required": ["prompt"]
         })
@@ -991,13 +995,11 @@ impl Tool for VideoGenTool {
             args["model"].as_str(),
             Some("comfyui"),
         ) {
-            Ok(None) => format!(
-                "Video generation on the local ComfyUI needs a workflow JSON. \
-                 Please load a video workflow (AnimateDiff, SVD, etc.) \
-                 via ComfyUI directly, or configure [videogen] to route the \
-                 prompt to a video-capable provider endpoint.\n\n\
-                 Prompt received: {prompt}"
-            ),
+            // No route: there is no local video renderer. This used to
+            // come back as an ordinary result ("needs a workflow JSON …
+            // Prompt received: …"), which a model relayed as if something
+            // had happened. It is an error, and says what would fix it.
+            Ok(None) => NO_VIDEO_ROUTE.to_string(),
             Ok(Some((entry, model, api))) => match api {
                 EndpointApi::Openai => "generate_video error: the OpenAI-compatible shape has no video route — set [videogen].api = \"dashscope\" for providers that speak video natively".into(),
                 EndpointApi::Dashscope => {
@@ -1016,6 +1018,19 @@ impl Tool for VideoGenTool {
 mod route_tests {
     use super::*;
     use crate::config::{GenSection, ProviderEntry, VelesConfig};
+
+    /// No [videogen] route is a failure, not a success-shaped note that a
+    /// model relays as if a video were on its way.
+    #[tokio::test]
+    async fn video_without_a_route_is_an_error_that_generates_nothing() {
+        let (_home, _g) = crate::testenv::scratch_home();
+        let out = VideoGenTool
+            .call(serde_json::json!({"prompt": "a cat"}))
+            .await;
+        assert_eq!(out, NO_VIDEO_ROUTE);
+        assert!(out.starts_with("generate_video error:"), "{out}");
+        assert!(!out.contains("Prompt received"), "{out}");
+    }
 
     fn cfg(provider: Option<&str>, model: Option<&str>) -> VelesConfig {
         VelesConfig {

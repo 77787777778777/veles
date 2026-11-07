@@ -111,5 +111,36 @@ update idletasks
 ok "…and hiding it gives the previous message back" \
     {[.statusbar.msg cget -text] eq "gateway up 3s"}
 
+# A poll refreshes the accessible DESCRIPTION on an existing widget. It
+# must not append another copy of the tooltip handlers each time: before
+# the object-identity guard, 11 hours of polls left 5 418 _show_tip calls
+# on .statusbar.quota, and one real pointer Enter ran all of them.
+for {set i 0} {$i < 100} {incr i} {
+    ::va11y::name .statusbar.quota "plan usage, refresh $i"
+}
+set enter_script [bind .statusbar.quota <Enter>]
+set leave_script [bind .statusbar.quota <Leave>]
+ok "repeated naming leaves exactly one Enter tooltip handler" \
+    {[regexp -all -- {_show_tip %W} $enter_script] == 1}
+ok "repeated naming leaves exactly one Leave tooltip handler" \
+    {[regexp -all -- {::va11y::_hide_tip} $leave_script] == 1}
+ok "the cursor handler installed after the tooltip is still present" \
+    {[string first {configure -cursor hand2} $enter_script] >= 0}
+ok "repeated naming still refreshes the description" \
+    {[::va11y::describe .statusbar.quota] eq "plan usage, refresh 99"}
+
+# Tk reuses a path after destroy/rebuild. A path-only bound($w) flag
+# would suppress bindings on the NEW object, so identity is part of the
+# guard. Keep this on a scratch widget: the status bar itself stays up.
+set original_quota [winfo id .statusbar.quota]
+destroy .statusbar.quota
+ttk::label .statusbar.quota -text "replacement"
+ok "a rebuilt widget has a new Tk identity" \
+    {[winfo id .statusbar.quota] ne $original_quota}
+::va11y::name .statusbar.quota "replacement plan usage"
+set replacement_enter [bind .statusbar.quota <Enter>]
+ok "a rebuilt widget gets its tooltip handler despite the reused path" \
+    {[regexp -all -- {_show_tip %W} $replacement_enter] == 1}
+
 puts "\nstatusbuildtest: $passed passed, $failed failed"
 exit [expr {$failed > 0 ? 1 : 0}]

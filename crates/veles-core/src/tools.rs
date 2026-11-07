@@ -201,6 +201,7 @@ fn session_tool(
         name: tool.name().to_string(),
         description: tool.description().to_string(),
         schema: tool.schema(),
+        tcl_proc: tool.tcl_proc().map(str::to_string),
         session_id: session_id.to_string(),
     })
 }
@@ -209,6 +210,7 @@ struct LateBoundTool {
     name: String,
     description: String,
     schema: Value,
+    tcl_proc: Option<String>,
     session_id: String,
 }
 
@@ -232,6 +234,13 @@ impl Tool for LateBoundTool {
         };
         let tool = tool.for_session(&self.session_id).unwrap_or(tool);
         tool.call(args).await
+    }
+    fn tcl_proc(&self) -> Option<&str> {
+        // Owner-tagging must not hide a Tcl implementation from the
+        // bridge's same-interpreter fast path. This is stable metadata,
+        // like the schema; call() still resolves the implementation on
+        // every invocation so reloads remain late-bound.
+        self.tcl_proc.as_deref()
     }
 }
 
@@ -2519,6 +2528,18 @@ pub fn base_registry(
         }),
         Tier::Core,
     );
+    r.register_tiered(
+        Arc::new(crate::browserextension::BrowserExtensionTool {
+            session_id: session_id.into(),
+        }),
+        Tier::Deferred,
+    );
+    r.register_tiered(
+        Arc::new(crate::nodes_tool::NodesTool {
+            store: store.clone(),
+        }),
+        Tier::Deferred,
+    );
     // `sessions`: list the live sessions on this machine and mail one
     // (crate::mail). DEFERRED — the core tier has no headroom, and the
     // model reaches for another session rarely and on purpose. Here in
@@ -3673,8 +3694,22 @@ mod tests {
         // authority check is one the model will not spend a discovery
         // round-trip on mid-argument. The schema is a no-property object
         // plus a description stripped to its trigger words.
+        //
+        // 20,300 since 2026-11-07, for delegate_task's `workload` and one
+        // sentence that the fan-out is the model's call (owner ask
+        // 306787.b: "something for sessions to be able to divide work
+        // across the available compute so that we don't bottleneck so
+        // much on cpu and disk io"). The array stood at ~19,690 — no
+        // headroom — and the first draft (a full splitting paragraph in
+        // the description) took it to 20,404. Cut to what has to be
+        // resident: the `workload` enum, which is a capability (`any`
+        // cannot know a child is disk-bound unless told, and without it
+        // IO work lands on the node whose disk is already stalling), and
+        // the one sentence that splitting is the model's job. The long
+        // guidance lives where it costs no schema bytes: the stable
+        // prompt block (cached) and the deferred `nodes` description.
         assert!(
-            bytes < 19_700,
+            bytes < 20_300,
             "core schema array grew to {bytes} bytes — a core tool must stay cheap"
         );
         // Sanity: the discovery trio is always resident, whatever the
@@ -4735,6 +4770,9 @@ mod tests {
             fn schema(&self) -> Value {
                 serde_json::json!({"type": "object"})
             }
+            fn tcl_proc(&self) -> Option<&str> {
+                Some("lb_tcl_probe")
+            }
             async fn call(&self, _: Value) -> String {
                 self.0.to_string()
             }
@@ -4754,6 +4792,7 @@ mod tests {
             .expect("registered");
         assert_eq!(who, Some(owner));
         let handle = session_tool(tool, who, "sess-lb");
+        assert_eq!(handle.tcl_proc(), Some("lb_tcl_probe"));
         let args = serde_json::json!({});
         assert_eq!(handle.call(args.clone()).await, "v1");
 

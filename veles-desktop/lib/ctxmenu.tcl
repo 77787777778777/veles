@@ -50,6 +50,11 @@ proc ::vctx::attach {w entries} {
     # the enable predicates each time it opens.
     set ::vctx::spec($m) $entries
     bind $w <Button-3> [list ::vctx::_popup $w $m %x %y %X %Y]
+    # No Entry/TEntry bindtag here any more. One used to break Button-3
+    # on the premise that the Entry class clears the selection first; it
+    # has no Button-3 binding (Tk 8.6, X11), nothing binds Button-3 on
+    # `all`, and translatetest now drives the real event and menu entry.
+    # The class fallback below steps aside for a widget bound here.
     # On a phone a long press on text selects before the menu opens
     # (lib/android.tcl).
     if {[winfo class $w] eq "Text" && [llength [info commands ::vandroid::hold_bind]]} {
@@ -101,6 +106,13 @@ proc ::vctx::_rebuild {m} {
     # (USER 2026-10-01: "select arbitrary parts of the transcript and
     # copy"). Editable text has its own Copy, and so may a view.
     set w [winfo parent $m]
+    if {[winfo class $w] in {Text Entry TEntry}
+            && [llength [info commands ::vtranslate::for_selection]]
+            && [::vtranslate::for_selection $w]} {
+        $m add command -label [::vi18n::mc {Translate selection}] \
+            -command [list ::vtranslate::popup $w]
+        $m add separator
+    }
     if {[winfo class $w] eq "Text"
             && [llength [info commands ::vtext::is_readonly]] && [::vtext::is_readonly $w]
             && [llength [$w tag ranges sel]]
@@ -136,6 +148,62 @@ proc ::vctx::_rebuild {m} {
             -command [list ::vctx::_run $m $command]
     }
 }
+
+# ── text with no menu of its own ─────────────────────────────────────
+#
+# "Translate selection" was offered only by widgets passed to attach,
+# about a dozen of the ~130 Text/Entry widgets: the overlays, ask
+# dialogs, help, task panel, settings and setup had no right-click at
+# all, while the docs said "right-click any selected text". A class
+# binding reaches every Text, Entry and ttk::entry. It runs after the
+# widget's own bindings and leaves any widget with a Button-3 binding
+# alone (attach, Android's long press), so one click is one menu.
+proc ::vctx::selected_text {w} {
+    if {![winfo exists $w]} { return "" }
+    switch -- [winfo class $w] {
+        Text {
+            if {[catch { $w get sel.first sel.last } text]} { return "" }
+            return $text
+        }
+        Entry - TEntry {
+            if {[catch { $w selection present } on] || !$on} { return "" }
+            if {[catch { $w index sel.first } a] || [catch { $w index sel.last } b]} { return "" }
+            return [string range [$w get] $a [expr {$b - 1}]]
+        }
+    }
+    return ""
+}
+
+proc ::vctx::_fallback {w sx sy} {
+    if {![winfo exists $w] || [bind $w <Button-3>] ne ""} { return }
+    if {[selected_text $w] eq ""} { return }
+    set m .vctxfallback
+    if {![winfo exists $m]} { menu $m -tearoff 0 }
+    $m delete 0 end
+    if {[llength [info commands ::vtranslate::popup]]} {
+        $m add command -label [::vi18n::mc {Translate selection}] \
+            -command [list ::vtranslate::popup $w]
+    }
+    $m add command -label [::vi18n::mc {Copy}] -command [list ::vctx::copy_text $w]
+    set ::vctx::widget $w
+    tk_popup $m $sx $sy
+}
+
+proc ::vctx::copy_text {w} {
+    set text [selected_text $w]
+    if {$text eq ""} { return 0 }
+    clipboard clear
+    clipboard append $text
+    return 1
+}
+
+apply {{} {
+    foreach class {Text Entry TEntry} {
+        if {[string first ::vctx::_fallback [bind $class <Button-3>]] < 0} {
+            bind $class <Button-3> {+::vctx::_fallback %W %X %Y}
+        }
+    }
+}}
 
 # The selection of read-only text, onto the clipboard.
 proc ::vctx::copy_selection {w} {

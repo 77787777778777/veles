@@ -237,6 +237,13 @@ else
 fi
 install_app
 a shell pm grant "$pkg" android.permission.POST_NOTIFICATIONS
+# Location too, as a person who allowed it has: AndroWish registers its
+# GNSS status and NMEA listeners in onCreate only when location is held,
+# so without the grant the desktop checks below never ran that code. On
+# a real Android 16 phone it killed DesktopActivity at start
+# (android/androwish/gnss-status.patch).
+a shell pm grant "$pkg" android.permission.ACCESS_FINE_LOCATION
+a shell pm grant "$pkg" android.permission.ACCESS_COARSE_LOCATION
 echo "APK $(app_size), installed $(stopped_flag)"
 # A package nobody has opened is "stopped": Android delivers it no
 # broadcasts, BOOT_COMPLETED and MY_PACKAGE_REPLACED included. Opening
@@ -363,6 +370,10 @@ check desktop-seeds-the-registry seeded
 check desktop-attached attached
 check desktop-one-engine one_engine
 check desktop-no-crash no_crash
+# With location held, onCreate registered the GNSS callbacks: a
+# GpsStatus call would have thrown here ("GpsStatus APIs not supported").
+no_gpsstatus() { ! sh_ logcat -d | grep -q 'GpsStatus APIs not supported'; }
+check desktop-gnss-registration-is-supported no_gpsstatus
 echo "desktop RSS: $(sh_ ps -o RSS -p "$(desk_pid)" | tail -1) KiB"
 
 echo "== device"
@@ -399,6 +410,17 @@ if ! device_notified; then
     sh_ logcat -d | grep -i -E 'notif|AndroWish|borg|Exception|FLAG_(IM)?MUTABLE' | grep -i -E "$pkg|AndroWish|channel|borg|Exception|MUTABLE" | tail -25 || true
     sh_ dumpsys notification --noredact | grep -i -E "$pkg|borg" | head -15 || true
 fi
+# A location fix through the device op, with the GNSS listeners live.
+# The emulator console's `geo fix` feeds the GPS provider; it is
+# repeated while the op waits, because a fix sent before `borg location
+# start` subscribed reaches nobody.
+( for _ in $(seq 1 20); do a emu geo fix 13.4050 52.5200 >/dev/null 2>&1 || true; sleep 1; done ) &
+geo_feeder=$!
+loc=$(dcall '{"device":"phone","action":"location","args":{"wait":20}}')
+kill "$geo_feeder" 2>/dev/null || true
+wait "$geo_feeder" 2>/dev/null || true
+echo "device location: $(head -c 300 <<<"$loc")"
+check device-location-fix grep -q -E '52\.5(2|19)' <<<"$loc"
 
 echo "== phone page"
 # DesktopActivity writes what only Java can see (notification and battery
@@ -414,6 +436,8 @@ phone_status_written() {
         && grep -q '^free=[0-9][0-9]*$' <<<"$pstatus"
 }
 check phone-status-written phone_status_written
+# The grant above took: the GNSS registration really ran in this run.
+check phone-status-location-granted grep -q '^location=precise$' <<<"$pstatus"
 
 echo "== ripgrep"
 # Read the rg the engine was TOLD about out of the running process's own

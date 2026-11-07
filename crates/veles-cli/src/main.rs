@@ -135,8 +135,38 @@ enum InstallAction {
     },
     Verify,
     History,
+}
+
+#[derive(Subcommand)]
+enum BrowserExtensionAction {
+    /// Write the per-user token and the Chrome, Chromium, Edge (Windows) and
+    /// Firefox native host registrations: manifests on Linux and macOS, plus
+    /// HKCU registry keys on Windows.
+    Install {
+        /// Replace native host registrations already written for these browsers.
+        #[arg(long)]
+        overwrite: bool,
+        /// Register under another native host name. For tests: the shipped
+        /// extension connects to `veles_browser`.
+        #[arg(long, hide = true, default_value = veles_core::browserextension::NATIVE_NAME)]
+        native_name: String,
+    },
+    /// Remove the native host registrations, the launcher, the extension
+    /// copy and the token that install wrote.
+    Uninstall {
+        #[arg(long, hide = true, default_value = veles_core::browserextension::NATIVE_NAME)]
+        native_name: String,
+    },
+    /// Show whether the bridge is installed and a tab is connected.
+    Status,
+    /// Browser-launched native-messaging process. Never a user command.
     #[command(hide = true)]
-    Serve,
+    Host {
+        /// What the browser passes (its origin, or Firefox's manifest path
+        /// and extension id). Accepted and ignored.
+        #[arg(trailing_var_arg = true, allow_hyphen_values = true, hide = true)]
+        browser_args: Vec<String>,
+    },
 }
 
 #[derive(Subcommand)]
@@ -367,6 +397,11 @@ enum Command {
         /// `veles chat -q`, and it names the step.
         #[arg(long)]
         full: bool,
+    },
+    /// Optional Chrome/Firefox tab bridge through native messaging.
+    BrowserExtension {
+        #[command(subcommand)]
+        action: BrowserExtensionAction,
     },
     /// Tool residency: what rides in every prompt vs what is
     /// discoverable on demand, with each schema's byte cost
@@ -3510,6 +3545,9 @@ fn nodes_family(action: Option<NodesAction>) -> anyhow::Result<()> {
             Some(l) => format!("  load={l}"),
             None => "  load=?".to_string(),
         };
+        // 306787.b: what placement weighs besides load ('?' = the node
+        // does not report it: an older build, or no PSI to read).
+        let load = format!("{load}{}", veles_core::placement::row_metrics(n));
         let served = format!("  served={}", n.sessions_served);
         // T2 (PLAN-phone-userland.md): what the node has, as it
         // advertised it — what automatic homes and `needs` route on. A
@@ -3674,8 +3712,14 @@ fn nodes_family(action: Option<NodesAction>) -> anyhow::Result<()> {
         }
         NodesAction::Forget { id } => {
             let target = resolve_node(&store, &id)?;
-            if store.node_forget(&target.id)? {
-                println!("forgot node {} ({})", target.id, target.name);
+            // Fleet-wide: the tombstone this leaves rides the next gossip
+            // exchange, so a peer that still lists the node drops it
+            // instead of gossiping it back (FLEET-6 forget propagation).
+            if store.node_forget_everywhere(&target.id)? {
+                println!(
+                    "forgot node {} ({}) — peers drop it on the next gossip exchange",
+                    target.id, target.name
+                );
             }
             Ok(())
         }
@@ -4079,14 +4123,29 @@ fn run_install(action: InstallAction) -> anyhow::Result<()> {
     };
     match action {
         InstallAction::State => println!("{}", serde_json::to_string_pretty(&service.state()?)?),
-        InstallAction::Preview { source } => println!("{}", serde_json::to_string_pretty(&service.preview_bundle(&source)?.review())?),
+        InstallAction::Preview { source } => println!(
+            "{}",
+            serde_json::to_string_pretty(&service.preview_bundle(&source)?.review())?
+        ),
         InstallAction::Bundle { source, yes } => {
             let plan = service.preview_bundle(&source)?;
             println!("{}", serde_json::to_string_pretty(&plan.review())?);
             confirm(yes)?;
-            println!("{}", serde_json::to_string_pretty(&service.install_local_bundle(&source, &plan.plan_sig)?)?);
+            println!(
+                "{}",
+                serde_json::to_string_pretty(
+                    &service.install_local_bundle(&source, &plan.plan_sig)?
+                )?
+            );
         }
-        InstallAction::Download { release, repository, tag, commit, workflow_sha, yes } => {
+        InstallAction::Download {
+            release,
+            repository,
+            tag,
+            commit,
+            workflow_sha,
+            yes,
+        } => {
             let request = veles_runtime::veles_install::ReleaseRequest {
                 release_url: release,
                 repository,
@@ -4102,7 +4161,12 @@ fn run_install(action: InstallAction) -> anyhow::Result<()> {
             let result = service.apply_signed_bundle(plan)?;
             println!("{}", serde_json::to_string_pretty(&result)?);
         }
-        InstallAction::Configure { name, answers, instance, yes } => {
+        InstallAction::Configure {
+            name,
+            answers,
+            instance,
+            yes,
+        } => {
             let text = if answers == std::path::Path::new("-") {
                 use std::io::Read;
                 let mut text = String::new();
@@ -4116,26 +4180,44 @@ fn run_install(action: InstallAction) -> anyhow::Result<()> {
                 .get("options")
                 .unwrap_or(&body)
                 .as_object()
-                .ok_or_else(|| anyhow::anyhow!("answers must be a JSON object or contain an options object"))?
+                .ok_or_else(|| {
+                    anyhow::anyhow!("answers must be a JSON object or contain an options object")
+                })?
                 .iter()
                 .map(|(k, v)| (k.clone(), v.clone()))
                 .collect();
             let plan = service.preview_config(&name, &instance, &values)?;
             println!("{}", serde_json::to_string_pretty(&plan.review())?);
             if yes {
-                println!("{}", serde_json::to_string_pretty(&service.apply_config(&plan)?)?);
+                println!(
+                    "{}",
+                    serde_json::to_string_pretty(&service.apply_config(&plan)?)?
+                );
             }
         }
-        InstallAction::Profile { answers, template, core, yes } => {
+        InstallAction::Profile {
+            answers,
+            template,
+            core,
+            yes,
+        } => {
             use veles_runtime::veles_install::{NamedProfile, ProfileRequest, ServiceScope};
             if let Some(name) = template {
-                print!("{}", veles_runtime::veles_install::templates::profile_template(&name)?);
+                print!(
+                    "{}",
+                    veles_runtime::veles_install::templates::profile_template(&name)?
+                );
                 return Ok(());
             }
-            let answers = answers.context("--answers <file> (or --template <profile> to print one)")?;
+            let answers =
+                answers.context("--answers <file> (or --template <profile> to print one)")?;
             let answers: veles_runtime::veles_install::ProfileAnswers =
-                veles_runtime::veles_install::templates::parse_answers(&std::fs::read_to_string(&answers)?)?;
-            let host_scope = (answers.profile == NamedProfile::Server && answers.host.scope == ServiceScope::System) || answers.profile == NamedProfile::ContainerHost;
+                veles_runtime::veles_install::templates::parse_answers(&std::fs::read_to_string(
+                    &answers,
+                )?)?;
+            let host_scope = (answers.profile == NamedProfile::Server
+                && answers.host.scope == ServiceScope::System)
+                || answers.profile == NamedProfile::ContainerHost;
             let request = if host_scope {
                 let container = answers.profile == NamedProfile::ContainerHost;
                 anyhow::ensure!(container || core.is_some(), "a system server requires --core <unpacked bundle dir>; only container-host has no native core");
@@ -4147,7 +4229,8 @@ fn run_install(action: InstallAction) -> anyhow::Result<()> {
             } else if answers.profile == NamedProfile::Nixos {
                 ProfileRequest::local(answers, std::path::PathBuf::new())?
             } else {
-                let core = core.context("a native local profile requires --core <unpacked bundle dir>")?;
+                let core =
+                    core.context("a native local profile requires --core <unpacked bundle dir>")?;
                 ProfileRequest::local(answers, std::path::absolute(core)?)?
             };
             let plan = service.preview_profile(request.clone())?;
@@ -4160,60 +4243,139 @@ fn run_install(action: InstallAction) -> anyhow::Result<()> {
                 } else {
                     prompt_profile_secrets(plan.review()["secrets"].as_array())?
                 };
-                println!("{}", serde_json::to_string_pretty(&service.apply_profile(request, &plan.base_sig, &plan.plan_sig, &secrets)?)?);
+                println!(
+                    "{}",
+                    serde_json::to_string_pretty(&service.apply_profile(
+                        request,
+                        &plan.base_sig,
+                        &plan.plan_sig,
+                        &secrets
+                    )?)?
+                );
             }
         }
-        InstallAction::HostComponent { answers, template, yes } => {
-            use veles_runtime::veles_install::{templates, NamedProfile, ProfileAnswers, ProfileRequest};
+        InstallAction::HostComponent {
+            answers,
+            template,
+            yes,
+        } => {
+            use veles_runtime::veles_install::{
+                templates, NamedProfile, ProfileAnswers, ProfileRequest,
+            };
             if let Some(name) = template {
                 print!("{}", templates::component_template(&name)?);
                 return Ok(());
             }
-            let answers = answers.context("--answers <file> (or --template <component> to print one)")?;
+            let answers =
+                answers.context("--answers <file> (or --template <component> to print one)")?;
             let parsed: templates::HostComponentAnswers =
                 templates::parse_answers(&std::fs::read_to_string(&answers)?)?;
-            anyhow::ensure!(!parsed.component.is_empty(), "the answers file names no [[component]]");
+            anyhow::ensure!(
+                !parsed.component.is_empty(),
+                "the answers file names no [[component]]"
+            );
             let mut profile = ProfileAnswers {
                 profile: NamedProfile::Desktop,
                 ..Default::default()
             };
-            profile.setup.skipped = veles_core::setup::SECTIONS.iter().map(|s| s.to_string()).collect();
+            profile.setup.skipped = veles_core::setup::SECTIONS
+                .iter()
+                .map(|s| s.to_string())
+                .collect();
             profile.host.host_components = parsed.component;
             let request = ProfileRequest::local(profile, std::path::PathBuf::new())?;
             let plan = service.preview_profile(request.clone())?;
             println!("{}", serde_json::to_string_pretty(&plan.review())?);
             if yes {
-                println!("{}", serde_json::to_string_pretty(&service.apply_profile(request, &plan.base_sig, &plan.plan_sig, &Default::default())?)?);
+                println!(
+                    "{}",
+                    serde_json::to_string_pretty(&service.apply_profile(
+                        request,
+                        &plan.base_sig,
+                        &plan.plan_sig,
+                        &Default::default()
+                    )?)?
+                );
             }
         }
-        InstallAction::ContainerHost { answers, storage_root, gateway_user, sandbox_user, network, gateway_image, gateway_image_digest, gateway_name, yes } => {
-            use veles_runtime::veles_install::{container_host as ch, NamedProfile, ProfileAnswers, ProfileRequest};
-            let mut answers: ProfileAnswers = veles_runtime::veles_install::templates::parse_answers(&std::fs::read_to_string(&answers)?)?;
-            anyhow::ensure!(answers.profile == NamedProfile::ContainerHost, "--answers must select container-host");
+        InstallAction::ContainerHost {
+            answers,
+            storage_root,
+            gateway_user,
+            sandbox_user,
+            network,
+            gateway_image,
+            gateway_image_digest,
+            gateway_name,
+            yes,
+        } => {
+            use veles_runtime::veles_install::{
+                container_host as ch, NamedProfile, ProfileAnswers, ProfileRequest,
+            };
+            let mut answers: ProfileAnswers =
+                veles_runtime::veles_install::templates::parse_answers(&std::fs::read_to_string(
+                    &answers,
+                )?)?;
+            anyhow::ensure!(
+                answers.profile == NamedProfile::ContainerHost,
+                "--answers must select container-host"
+            );
             let gateway = ch::RootlessUser::system(&gateway_user, storage_root.join(&gateway_user));
             let sandbox = ch::RootlessUser::system(&sandbox_user, storage_root.join(&sandbox_user));
             let image = ch::PinnedImage::new(&gateway_image, &gateway_image_digest)?;
-            let mut options = ch::ContainerHostOptions::new(ch::StorageOptions::new(storage_root), gateway, sandbox);
+            let mut options = ch::ContainerHostOptions::new(
+                ch::StorageOptions::new(storage_root),
+                gateway,
+                sandbox,
+            );
             options.network = Some(network);
-            options.quadlets.push(ch::QuadletSpec { user:gateway_user.clone(), name:gateway_name, container:ch::ContainerSpec { description:"veles gateway; configure its runtime separately".into(), image:image.clone(), extra:Vec::new() } });
-            options.images.push(ch::PullRequest { user:gateway_user.clone(), image });
+            options.quadlets.push(ch::QuadletSpec {
+                user: gateway_user.clone(),
+                name: gateway_name,
+                container: ch::ContainerSpec {
+                    description: "veles gateway; configure its runtime separately".into(),
+                    image: image.clone(),
+                    extra: Vec::new(),
+                },
+            });
+            options.images.push(ch::PullRequest {
+                user: gateway_user.clone(),
+                image,
+            });
             answers.host.container = Some(options);
             let request = ProfileRequest::host(answers)?;
             let plan = service.preview_profile(request.clone())?;
             println!("{}", serde_json::to_string_pretty(&plan.review())?);
             if yes {
-                println!("{}", serde_json::to_string_pretty(&service.apply_profile(request, &plan.base_sig, &plan.plan_sig, &Default::default())?)?);
+                println!(
+                    "{}",
+                    serde_json::to_string_pretty(&service.apply_profile(
+                        request,
+                        &plan.base_sig,
+                        &plan.plan_sig,
+                        &Default::default()
+                    )?)?
+                );
             }
         }
         InstallAction::ProfileHandoff { request, yes } => {
-            let handoff: veles_runtime::veles_install::ProfileHandoff = serde_json::from_slice(&std::fs::read(&request)?)?;
+            let handoff: veles_runtime::veles_install::ProfileHandoff =
+                serde_json::from_slice(&std::fs::read(&request)?)?;
             let request_for_review = handoff.request_for_cli();
             let plan = service.preview_profile(request_for_review)?;
-            anyhow::ensure!(plan.plan_sig == handoff.plan_sig && plan.base_sig == handoff.base_sig, "profile request, target state or artifact changed after preview; refusing handoff");
+            anyhow::ensure!(
+                plan.plan_sig == handoff.plan_sig && plan.base_sig == handoff.base_sig,
+                "profile request, target state or artifact changed after preview; refusing handoff"
+            );
             println!("{}", serde_json::to_string_pretty(&plan.review())?);
             confirm(yes)?;
             let secrets = prompt_profile_secrets(plan.review()["secrets"].as_array())?;
-            println!("{}", serde_json::to_string_pretty(&veles_runtime::veles_install::privileged_handoff(&handoff, &secrets)?)?);
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&veles_runtime::veles_install::privileged_handoff(
+                    &handoff, &secrets
+                )?)?
+            );
         }
         InstallAction::Component { name, yes } => {
             let plan = service.preview_component(&name)?;
@@ -4222,29 +4384,49 @@ fn run_install(action: InstallAction) -> anyhow::Result<()> {
             let signature = plan["plan_sig"]
                 .as_str()
                 .ok_or_else(|| anyhow::anyhow!("artifact preview lacks its plan signature"))?;
-            println!("{}", serde_json::to_string_pretty(&service.install_component(&name, Some(signature))?)?);
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&service.install_component(&name, Some(signature))?)?
+            );
         }
         InstallAction::Rollback { name, yes } => {
             let plan = service.preview_rollback(&name)?;
             println!("{}", serde_json::to_string_pretty(&plan)?);
             confirm(yes)?;
-            let sig = plan["plan_sig"].as_str().context("rollback preview has no plan_sig")?;
-            println!("{}", serde_json::to_string_pretty(&service.rollback(&name, sig)?)?);
+            let sig = plan["plan_sig"]
+                .as_str()
+                .context("rollback preview has no plan_sig")?;
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&service.rollback(&name, sig)?)?
+            );
         }
         InstallAction::Verify => {
             let result = service.verify()?;
             println!("{}", serde_json::to_string_pretty(&result)?);
-            anyhow::ensure!(result["ok"] == serde_json::Value::Bool(true), "component integrity verification failed");
+            anyhow::ensure!(
+                result["ok"] == serde_json::Value::Bool(true),
+                "component integrity verification failed"
+            );
         }
-        InstallAction::History => println!("{}", serde_json::to_string_pretty(&service.record()?.history)?),
-        InstallAction::Serve => anyhow::bail!("the standalone installer server is not implemented; use the authenticated gateway API or the CLI"),
+        InstallAction::History => println!(
+            "{}",
+            serde_json::to_string_pretty(&service.record()?.history)?
+        ),
     }
     Ok(())
 }
 
 fn main() -> anyhow::Result<()> {
     use std::io::IsTerminal;
-    let cli = Cli::parse();
+    // A browser starting the tab bridge's native host runs the binary with
+    // its own argv (BX-1). The installed launcher says `browser-extension
+    // host`; a manifest that names the binary itself still works.
+    let mut argv: Vec<std::ffi::OsString> = std::env::args_os().collect();
+    if veles_core::browserextension::is_browser_launch(&argv) {
+        argv.splice(1..1, ["browser-extension".into(), "host".into()]);
+    }
+    let cli = Cli::parse_from(argv);
     // --profile sets VELES_PROFILE BEFORE anything reads config or the
     // store: profiles::active_profile consults the env first, so every
     // downstream surface agrees on the profile.
@@ -4656,6 +4838,35 @@ fn main() -> anyhow::Result<()> {
             yes,
         }) => recover_cmd(invite, as_node, from, skip, yes),
         Some(Command::Migrate) => veles_cli::run_migrate(),
+        Some(Command::BrowserExtension { action }) => match action {
+            BrowserExtensionAction::Install {
+                overwrite,
+                native_name,
+            } => {
+                println!(
+                    "{}",
+                    veles_core::browserextension::install_extension(overwrite, &native_name)?
+                );
+                Ok(())
+            }
+            BrowserExtensionAction::Uninstall { native_name } => {
+                println!(
+                    "{}",
+                    veles_core::browserextension::uninstall_extension(&native_name)?
+                );
+                Ok(())
+            }
+            BrowserExtensionAction::Status => {
+                println!("{}", veles_core::browserextension::status());
+                Ok(())
+            }
+            BrowserExtensionAction::Host { .. } => {
+                veles_core::browserextension::run_host_with_channels(
+                    std::io::stdin(),
+                    std::io::stdout(),
+                )
+            }
+        },
         Some(Command::Tool { name, args, full }) => veles_cli::run_tool(&name, &args, full),
         Some(Command::Tools { action }) => match action.unwrap_or(ToolsAction::List) {
             ToolsAction::List => veles_frontends::cli::tools_list(),

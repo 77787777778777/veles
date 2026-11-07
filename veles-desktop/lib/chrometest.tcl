@@ -194,6 +194,9 @@ namespace eval ::vapi {
     }
     proc post {args} { return "{}" }
     proc json_escape {s} { return $s }
+    # The Dev pane URL-encodes the path of a file request (dev-ext-13);
+    # the identity keeps the path-keyed stub above reading plain paths.
+    proc urlencode {s} { return $s }
 }
 namespace eval ::json { proc json2dict {s} { return [dict create] } }
 namespace eval ::vpanes { variable R .root }

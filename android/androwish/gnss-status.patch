@@ -1,0 +1,163 @@
+GNSS status and NMEA on the callbacks a targetSdk >= 31 app may use.
+
+AndroWish registers these listeners in onCreate whenever location permission
+is held, before any veles Tcl runs. For an app targeting API 31 or higher (this
+APK targets 36) LocationManager.addGpsStatusListener throws
+UnsupportedOperationException ("GpsStatus APIs not supported"), so on any
+Android 12+ device with location granted DesktopActivity died at start. The
+GpsStatus.NmeaListener overload of addNmeaListener does not throw, but since
+Android 11 it registers nothing and returns false, so NMEA never arrived.
+Both move to their API 24 replacements (minSdk is 26): GnssStatus.Callback for
+start/stop/first-fix/satellites, OnNmeaMessageListener for NMEA sentences.
+The hunks are made against the tree after platform-apis.patch.
+--- a/src/tk/tcl/wish/AndroWish.java
++++ b/src/tk/tcl/wish/AndroWish.java
+@@ -122,7 +122,7 @@
+ 		getSystemService(Context.LOCATION_SERVICE);
+ 	    if (mLocationMgr != null) {
+ 		mGpsInfo = new GpsInfo(this);
+-		mLocationMgr.addGpsStatusListener(mGpsInfo);
++		mLocationMgr.registerGnssStatusCallback(mGpsInfo);
+ 		mNmeaInfo = new NmeaInfo(this);
+ 		mLocationMgr.addNmeaListener(mNmeaInfo);
+ 	    }
+@@ -350,7 +350,7 @@
+ 	    mBDRecvr = null;
+ 	}
+ 	if (mGpsInfo != null) {
+-	    mLocationMgr.removeGpsStatusListener(mGpsInfo);
++	    mLocationMgr.unregisterGnssStatusCallback(mGpsInfo);
+ 	    mGpsInfo = null;
+ 	}
+ 	if (mNmeaInfo != null) {
+@@ -4030,12 +4030,12 @@
+  * GPS status handling
+  */
+ 
+-class GpsInfo implements GpsStatus.Listener {
++class GpsInfo extends GnssStatus.Callback {
+ 
+     AndroWish mAW;
+     boolean mStarted;
+     int mFirstFix;
+-    GpsStatus mGpsStatus;
++    GnssStatus mGpsStatus;
+ 
+     public GpsInfo(AndroWish aw) {
+ 	mStarted = false;
+@@ -4045,42 +4045,38 @@
+     }
+ 
+     @Override
+-    public void onGpsStatusChanged(int event) {
+-	boolean trigger = false;
++    public void onStarted() {
++	mStarted = true;
++	mAW.nativeTriggerGpsUpdate();
++    }
++
++    @Override
++    public void onStopped() {
+ 	synchronized (this) {
+-	    switch (event) {
+-	    case GpsStatus.GPS_EVENT_STARTED:
+-		mGpsStatus = mAW.mLocationMgr.getGpsStatus(mGpsStatus);
+-		if (mGpsStatus != null) {
+-		    mFirstFix = mGpsStatus.getTimeToFirstFix();
+-		}
+-		mStarted = true;
+-		trigger = true;
+-		break;
+-	    case GpsStatus.GPS_EVENT_STOPPED:
+-		mGpsStatus = null;
+-		mStarted = false;
+-		mFirstFix = 0;
+-		trigger = true;
+-		break;
+-	    case GpsStatus.GPS_EVENT_FIRST_FIX:
+-	    case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+-		mGpsStatus = mAW.mLocationMgr.getGpsStatus(mGpsStatus);
+-		if (mGpsStatus != null) {
+-		    mFirstFix = mGpsStatus.getTimeToFirstFix();
+-		    trigger = true;
+-		}
+-		break;
+-	    }
++	    mStarted = false;
++	    mGpsStatus = null;
++	    mFirstFix = 0;
+ 	}
+-	if (event == GpsStatus.GPS_EVENT_STOPPED) {
+-	    if (mAW.mNmeaInfo != null) {
+-		mAW.mNmeaInfo.clear();
+-	    }
++	if (mAW.mNmeaInfo != null) {
++	    mAW.mNmeaInfo.clear();
+ 	}
+-	if (trigger) {
+-	    mAW.nativeTriggerGpsUpdate();
++	mAW.nativeTriggerGpsUpdate();
++    }
++
++    @Override
++    public void onFirstFix(int ttffMillis) {
++	synchronized (this) {
++	    mFirstFix = ttffMillis;
++	}
++	mAW.nativeTriggerGpsUpdate();
++    }
++
++    @Override
++    public void onSatelliteStatusChanged(GnssStatus status) {
++	synchronized (this) {
++	    mGpsStatus = status;
+ 	}
++	mAW.nativeTriggerGpsUpdate();
+     }
+ 
+     public String getInfo() {
+@@ -4097,18 +4093,18 @@
+ 	synchronized (this) {
+ 	    if (mGpsStatus != null) {
+ 		int n = 0;
+-		for (GpsSatellite s : mGpsStatus.getSatellites()) {
++		for (int i = 0; i < mGpsStatus.getSatelliteCount(); i++) {
+ 		    if (n > 0) {
+ 			sb.append(" ");
+ 		    }
+ 		    sb.append(n).append(" {index ").append(n);
+-		    sb.append(" azimuth ").append(s.getAzimuth());
+-		    sb.append(" elevation ").append(s.getElevation());
+-		    sb.append(" prn ").append(s.getPrn());
+-		    sb.append(" snr ").append(s.getSnr());
+-		    sb.append(" almanac ").append(s.hasAlmanac() ? 1 : 0);
+-		    sb.append(" ephemeris ").append(s.hasEphemeris() ? 1 : 0);
+-		    sb.append(" infix ").append(s.usedInFix() ? 1 : 0);
++		    sb.append(" azimuth ").append(mGpsStatus.getAzimuthDegrees(i));
++		    sb.append(" elevation ").append(mGpsStatus.getElevationDegrees(i));
++		    sb.append(" prn ").append(mGpsStatus.getSvid(i));
++		    sb.append(" snr ").append(mGpsStatus.getCn0DbHz(i));
++		    sb.append(" almanac ").append(mGpsStatus.hasAlmanacData(i) ? 1 : 0);
++		    sb.append(" ephemeris ").append(mGpsStatus.hasEphemerisData(i) ? 1 : 0);
++		    sb.append(" infix ").append(mGpsStatus.usedInFix(i) ? 1 : 0);
+ 		    sb.append("}");
+ 		    n++;
+ 		}
+@@ -4122,7 +4118,7 @@
+  * NMEA sentence handling
+  */
+ 
+-class NmeaInfo implements GpsStatus.NmeaListener {
++class NmeaInfo implements OnNmeaMessageListener {
+ 
+     AndroWish mAW;
+     long mTime0, mTime1;
+@@ -4138,7 +4134,7 @@
+     }
+ 
+     @Override
+-    public void onNmeaReceived(long time, String nmea) {
++    public void onNmeaMessage(String nmea, long time) {
+ 	boolean trigger = false;
+ 	time = time / 1000;
+ 	synchronized (this) {

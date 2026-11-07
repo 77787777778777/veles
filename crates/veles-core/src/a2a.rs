@@ -790,6 +790,62 @@ impl A2AClient {
         Ok(inner)
     }
 
+    /// One JSON-RPC call of a method that is not `message/send`: the
+    /// node-to-node calls whose answer is data, not a Task (`veles/fleet`,
+    /// the command center's per-node logs and metrics). Returns the
+    /// `result` object as sent. A JSON-RPC error is an `Err` that keeps
+    /// the peer's code in its text (`peer RPC error -32601: …`), so a
+    /// caller can say "this node is older than the method" rather than
+    /// "unreachable".
+    ///
+    /// Not `message/send` on purpose: a peer that does not know a
+    /// marker-framed text runs it as an LLM TURN, which is how the first
+    /// memory sync spent a peer's whole context on base64. An unknown
+    /// METHOD is answered "method not found" by every veles A2A server
+    /// (HANDOFF pitfall 105).
+    pub async fn rpc(
+        &self,
+        base_url: &str,
+        bearer: Option<&str>,
+        method: &str,
+        params: Value,
+    ) -> anyhow::Result<Value> {
+        let rpc = json!({
+            "jsonrpc": "2.0",
+            "id": uuid::Uuid::new_v4().to_string(),
+            "method": method,
+            "params": params,
+        });
+        let mut req = self
+            .http
+            .post(base_url.trim_end_matches('/'))
+            .header("Content-Type", "application/json")
+            .json(&rpc);
+        if let Some(tok) = bearer {
+            req = req.header("Authorization", format!("Bearer {tok}"));
+        }
+        let resp = req.send().await?;
+        let status = resp.status();
+        let raw = resp.text().await?;
+        let body: Value = match serde_json::from_str(&raw) {
+            Ok(v) => v,
+            Err(_) => {
+                let head: String = raw.chars().take(200).collect();
+                anyhow::bail!("HTTP {status}, not a JSON-RPC reply: {head}");
+            }
+        };
+        if let Some(err) = body.get("error") {
+            anyhow::bail!(
+                "peer RPC error {}: {}",
+                err["code"],
+                err["message"].as_str().unwrap_or("?")
+            );
+        }
+        body.get("result")
+            .cloned()
+            .ok_or_else(|| anyhow::anyhow!("no result in response (HTTP {status})"))
+    }
+
     /// JSON-RPC tasks/cancel — the wire leg of a remote-task cancel.
     ///
     /// Returns the task state the peer reported: `TASK_STATE_CANCELED`

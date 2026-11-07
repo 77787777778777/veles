@@ -34,7 +34,22 @@
 //! node's peers saw it arrive from, over days, is the evidence for
 //! whether its uplink is static.
 
-use crate::store::GossipNodeRow;
+//!
+//! ## Forgetting a node fleet-wide
+//!
+//! A forget used to delete one store's row, and the next exchange with
+//! any peer that still listed the node merged it straight back. A
+//! forget now leaves a tombstone (`store::NodeTombstone`: id,
+//! forgotten_at), and both the message and the reply carry this node's
+//! tombstones in a list of their own. The receiver folds them BEFORE the
+//! rows: a tombstone drops the row unless the node has heartbeat since
+//! the forget, and the merge then refuses every copy that is not newer
+//! than it ([`crate::store::Store::node_merge_from_gossip`]). The list is
+//! an added field, absent when empty: a peer before 0.2.0 ignores it (no
+//! `deny_unknown_fields` anywhere on this wire) and keeps listing the
+//! node, and one that sends no list reads as an empty one here.
+
+use crate::store::{GossipNodeRow, NodeTombstone};
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 
@@ -61,6 +76,10 @@ pub struct GossipMessage {
     pub from_node: String,
     /// The sender's registry rows (observations already dropped).
     pub rows: Vec<GossipNodeRow>,
+    /// The nodes the sender forgot fleet-wide. Absent from the wire
+    /// when empty, and ignored by a peer before 0.2.0.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub tombstones: Vec<NodeTombstone>,
 }
 
 /// The answer to one gossip exchange.
@@ -75,6 +94,33 @@ pub struct GossipReply {
     pub merged_new: usize,
     /// Rows we already knew (for logging).
     pub merged_known: usize,
+    /// The answerer's tombstones (see [`GossipMessage::tombstones`]).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub tombstones: Vec<NodeTombstone>,
+}
+
+/// Fold tombstones, then rows, into `store` (inside the caller's
+/// transaction). Returns (rows merged, rows a tombstone dropped).
+fn fold(
+    store: &crate::store::Store,
+    tombstones: &[NodeTombstone],
+    rows: &[GossipNodeRow],
+) -> (usize, usize) {
+    let mut forgotten = 0usize;
+    for t in tombstones {
+        match store.node_tombstone_merge(t) {
+            Ok(true) => forgotten += 1,
+            Ok(false) => {}
+            Err(e) => tracing::warn!("gossip: tombstone {} failed to merge: {e:#}", t.id),
+        }
+    }
+    let mut merged = 0usize;
+    for row in rows {
+        if store.node_merge_from_gossip(row).is_ok() {
+            merged += 1;
+        }
+    }
+    (merged, forgotten)
 }
 
 // ── encode/decode (the memsync marker+sha+base64 shape) ─────────────
@@ -231,6 +277,11 @@ pub fn receive_gossip(
     // holder: in the week to 2026-10-13 it had 2,953 holds over 100 ms,
     // 70 over 5 s, and the longest was 20 s. It made five commits.
     let tx = store.write_tx()?;
+    // Tombstones first, so a row they cover is refused below.
+    let (_, forgotten) = fold(store, &msg.tombstones, &[]);
+    if forgotten > 0 {
+        tracing::info!("gossip: {peer} forgot {forgotten} node(s) fleet-wide — dropped here too");
+    }
     let mut merged_new = 0usize;
     let mut merged_known = 0usize;
     for row in &msg.rows {
@@ -255,12 +306,14 @@ pub fn receive_gossip(
         .iter()
         .map(GossipNodeRow::from_row)
         .collect();
+    let tombstones = store.node_tombstones()?;
     tx.commit()?;
     let reply = GossipReply {
         rows,
         you_appear_as: client_addr.to_string(),
         merged_new,
         merged_known,
+        tombstones,
     };
     let json = serde_json::to_string(&reply)?;
     let sha = crate::memory::MemoryStore::content_sha(&json);
@@ -271,6 +324,17 @@ pub fn receive_gossip(
     ))
 }
 
+/// What one outbound exchange did here.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct ReplyFold {
+    /// Rows from the reply that merged.
+    pub merged: usize,
+    /// Rows the reply's tombstones dropped here.
+    pub forgotten: usize,
+    /// The address the peer saw us arrive from.
+    pub you_appear_as: String,
+}
+
 /// Fold a gossip REPLY (the answer to our exchange) into our store, and
 /// record the echo against the peer that reported it. Returns
 /// (rows merged, the address we appear as).
@@ -279,18 +343,23 @@ pub fn receive_gossip_reply(
     peer_name: &str,
     raw: &str,
 ) -> Result<(usize, String)> {
+    let f = fold_gossip_reply(store, peer_name, raw)?;
+    Ok((f.merged, f.you_appear_as))
+}
+
+/// [`receive_gossip_reply`], with the tombstones it applied counted.
+pub fn fold_gossip_reply(
+    store: &crate::store::Store,
+    peer_name: &str,
+    raw: &str,
+) -> Result<ReplyFold> {
     let (sha, b64) = fenced_payload(raw, FENCE_B64)?;
     let json = String::from_utf8(b64_decode(&b64)?)?;
     check_sha(&json, &sha)?;
     let reply: GossipReply = serde_json::from_str(&json).context("not a gossip reply")?;
     // One commit for the whole fold, as in `receive_gossip`.
     let tx = store.write_tx()?;
-    let mut merged = 0usize;
-    for row in &reply.rows {
-        if store.node_merge_from_gossip(row).is_ok() {
-            merged += 1;
-        }
-    }
+    let (merged, forgotten) = fold(store, &reply.tombstones, &reply.rows);
     // The echo: THIS node, as the peer sees us. Evidence about OUR
     // uplink, recorded against the peer that reported it.
     if !reply.you_appear_as.is_empty() {
@@ -299,7 +368,11 @@ pub fn receive_gossip_reply(
         }
     }
     tx.commit()?;
-    Ok((merged, reply.you_appear_as))
+    Ok(ReplyFold {
+        merged,
+        forgotten,
+        you_appear_as: reply.you_appear_as,
+    })
 }
 
 /// One outbound gossip exchange with a peer: send ours, fold the reply.
@@ -312,15 +385,21 @@ pub async fn exchange_with_peer(
 ) -> Result<String> {
     // Only the registry read needs the store; the identity file and the
     // encoding come after the lock is released.
-    let rows: Vec<GossipNodeRow> = crate::store::lock_timed(store, "gossip::exchange")
-        .nodes_list()?
-        .iter()
-        .map(GossipNodeRow::from_row)
-        .collect();
+    let (rows, tombstones) = {
+        let s = crate::store::lock_timed(store, "gossip::exchange");
+        let rows: Vec<GossipNodeRow> = s
+            .nodes_list()?
+            .iter()
+            .map(GossipNodeRow::from_row)
+            .collect();
+        (rows, s.node_tombstones()?)
+    };
+    let sent_tombstones = tombstones.len();
     let me = crate::node::NodeIdentity::load_or_create(&crate::config::config_dir())?.id;
     let text = encode_message(&GossipMessage {
         from_node: me.clone(),
         rows,
+        tombstones,
     })?;
     let client = crate::a2a::A2AClient::shared();
     let ctx = crate::a2a::new_context_id();
@@ -332,14 +411,23 @@ pub async fn exchange_with_peer(
     {
         anyhow::bail!("{peer_name} did not answer gossip with a gossip reply");
     }
-    let (merged, echo) = {
+    let f = {
         let s = crate::store::lock_timed(store, "gossip::exchange_reply");
-        receive_gossip_reply(&s, peer_name, &reply_text)?
+        fold_gossip_reply(&s, peer_name, &reply_text)?
     };
+    // The exchange crossed the peer's token and trusted-list gates, the
+    // ones a placed child crosses: as good as a passed route probe.
+    crate::routeprobe::record(peer_url, bearer, crate::routeprobe::Probe::Ok);
     let _ = me;
-    Ok(format!(
-        "{peer_name}: merged {merged} row(s); we appear as {echo}"
-    ))
+    let mut line = format!("{peer_name}: merged {} row(s)", f.merged);
+    if f.forgotten > 0 {
+        line.push_str(&format!(", dropped {} forgotten", f.forgotten));
+    }
+    if sent_tombstones > 0 {
+        line.push_str(&format!(", sent {sent_tombstones} tombstone(s)"));
+    }
+    line.push_str(&format!("; we appear as {}", f.you_appear_as));
+    Ok(line)
 }
 
 #[cfg(test)]
@@ -363,6 +451,12 @@ mod tests {
             sessions_served: 0,
             registered_at: "2026-09-27 00:00:00".into(),
             heartbeat_at: "2026-09-27 00:00:00".into(),
+            cores: None,
+            io_some: None,
+            io_full: None,
+            children: None,
+            queued: None,
+            children_from: None,
         }
     }
 
@@ -370,6 +464,7 @@ mod tests {
         encode_message(&GossipMessage {
             from_node: "aaaa".into(),
             rows: vec![row("aaaa", "vps"), row("bbbb", "laptop")],
+            tombstones: Vec::new(),
         })
         .unwrap()
     }
@@ -517,5 +612,139 @@ mod tests {
             one < many,
             "one commit writes {one} frames, separate ones {many}"
         );
+    }
+
+    fn wire_row(id: &str, heartbeat_at: &str) -> GossipNodeRow {
+        serde_json::from_value(serde_json::json!({
+            "id": id, "name": id, "host": "h", "version": "0.2.0",
+            "uptime_class": "ephemeral",
+            "registered_at": "2026-11-01 00:00:00",
+            "heartbeat_at": heartbeat_at,
+        }))
+        .unwrap()
+    }
+
+    fn ago(secs: i64) -> String {
+        (chrono::Utc::now() - chrono::Duration::seconds(secs))
+            .format("%Y-%m-%d %H:%M:%S")
+            .to_string()
+    }
+
+    /// FLEET-6 forget propagation: a node forgotten on one gateway is
+    /// dropped by the peer it gossips with, in both directions of one
+    /// exchange, and a third peer that still lists it (a 0.1.6 node
+    /// that ignores tombstones) cannot merge it back on either side.
+    #[test]
+    fn a_forget_travels_both_ways_and_a_relayed_copy_stays_out() {
+        let (_cfg_dir, _data, _guard) = crate::testenv::scratch_xdg();
+        let open = |name: &str| {
+            let dir = tempfile::tempdir().unwrap();
+            let store = crate::store::Store::open(&dir.path().join(name)).unwrap();
+            (dir, store)
+        };
+        let (_a_dir, a) = open("a.db");
+        let (_b_dir, b) = open("b.db");
+        for s in [&a, &b] {
+            s.node_merge_from_gossip(&wire_row("retired-x", &ago(7200)))
+                .unwrap();
+            s.node_merge_from_gossip(&wire_row("retired-y", &ago(7200)))
+                .unwrap();
+        }
+        // A forgets X, B forgets Y.
+        a.node_forget_everywhere("retired-x").unwrap();
+        b.node_forget_everywhere("retired-y").unwrap();
+        let rows = |s: &crate::store::Store| -> Vec<GossipNodeRow> {
+            s.nodes_list()
+                .unwrap()
+                .iter()
+                .map(GossipNodeRow::from_row)
+                .collect()
+        };
+        let msg = encode_message(&GossipMessage {
+            from_node: "node-a".into(),
+            rows: rows(&a),
+            tombstones: a.node_tombstones().unwrap(),
+        })
+        .unwrap();
+        let mut cfg = crate::config::VelesConfig::default();
+        cfg.cluster.memsync_peers = vec!["a".to_string()];
+        let reply = receive_gossip(&b, &cfg, "a", "10.0.30.2:4000", &msg).unwrap();
+        assert!(
+            b.node_get("retired-x").unwrap().is_none(),
+            "the peer drops the node the sender forgot"
+        );
+        let folded = fold_gossip_reply(&a, "b", &reply).unwrap();
+        assert_eq!(folded.forgotten, 1, "{folded:?}");
+        assert!(
+            a.node_get("retired-y").unwrap().is_none(),
+            "and the sender drops the one the peer forgot, from the reply"
+        );
+        // A third, older peer still lists both, with their old heartbeats,
+        // and sends no tombstones at all.
+        let old_peer = encode_message(&GossipMessage {
+            from_node: "node-c".into(),
+            rows: vec![
+                wire_row("retired-x", &ago(7100)),
+                wire_row("retired-y", &ago(7100)),
+            ],
+            tombstones: Vec::new(),
+        })
+        .unwrap();
+        cfg.cluster.memsync_peers.push("c".into());
+        for s in [&a, &b] {
+            receive_gossip(s, &cfg, "c", "10.0.30.3:4000", &old_peer).unwrap();
+            assert!(s.node_get("retired-x").unwrap().is_none());
+            assert!(s.node_get("retired-y").unwrap().is_none());
+        }
+    }
+
+    /// The tombstone list is an ADDED field, so a 0.1.6 peer and a 0.2.0
+    /// one still read each other: nothing forgotten sends exactly the old
+    /// payload, an old payload reads as no tombstones, and the old structs
+    /// (no such field, no `deny_unknown_fields`) read a new payload.
+    #[test]
+    fn the_wire_stays_readable_both_ways_with_a_0_1_6_peer() {
+        #[derive(Deserialize)]
+        struct OldMessage {
+            from_node: String,
+            rows: Vec<GossipNodeRow>,
+        }
+        #[derive(Deserialize)]
+        struct OldReply {
+            rows: Vec<GossipNodeRow>,
+            you_appear_as: String,
+        }
+        let quiet = GossipMessage {
+            from_node: "n".into(),
+            rows: vec![row("aaaa", "vps")],
+            tombstones: Vec::new(),
+        };
+        let json = serde_json::to_string(&quiet).unwrap();
+        assert!(!json.contains("tombstones"), "{json}");
+        let back = decode_message(&encode_message(&quiet).unwrap()).unwrap();
+        assert!(back.tombstones.is_empty());
+
+        let t = NodeTombstone {
+            id: "gone".into(),
+            forgotten_at: "2026-11-07 10:00:00".into(),
+        };
+        let loud = GossipMessage {
+            tombstones: vec![t.clone()],
+            ..quiet
+        };
+        let old: OldMessage = serde_json::from_str(&serde_json::to_string(&loud).unwrap())
+            .expect("a 0.1.6 peer reads a message with tombstones");
+        assert_eq!((old.from_node.as_str(), old.rows.len()), ("n", 1));
+        let reply = GossipReply {
+            rows: vec![row("bbbb", "laptop")],
+            you_appear_as: "10.0.0.1:1".into(),
+            merged_new: 0,
+            merged_known: 1,
+            tombstones: vec![t],
+        };
+        let old: OldReply = serde_json::from_str(&serde_json::to_string(&reply).unwrap())
+            .expect("a 0.1.6 peer reads a reply with tombstones");
+        assert_eq!(old.rows.len(), 1);
+        assert_eq!(old.you_appear_as, "10.0.0.1:1");
     }
 }

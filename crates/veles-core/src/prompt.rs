@@ -355,7 +355,15 @@ returns a task id at once — inspect or stop it later with the `shell` tool. To
 when a condition nothing else reports holds, use `monitor`. Completions arrive by \
 themselves as [BACKGROUND … COMPLETE] / [MONITOR FIRED] rows — keep working or end your \
 turn; never sleep or poll to wait (`shell` action `wait` blocks when you need a result \
-inside the turn).\n",
+inside the turn).\n\
+To talk to the user's other live sessions on this machine or another pool node, use the `sessions` tool (list/send/check); for actual compute names, capabilities and load before dividing independent work, use `nodes` and `delegate_task` backend/needs.\n\
+SPLITTING HEAVY WORK ACROSS THE POOL is your call — nothing splits a job for you. When \
+a job has independent parts that each take minutes (crates to build or test, files to \
+encode, trees or datasets to scan, dumps to copy), `nodes` shows every node's cores, \
+load per core, disk IO pressure and the children already counted there; send the parts \
+as one `delegate_task` `tasks` batch with backend='any' and workload='cpu' or 'io' so \
+they run on the least-loaded nodes instead of queueing on this machine's CPU and disk. \
+Keep short, sequential or same-file work here.\n",
     );
 
     // The reply attachment convention, stated once so the model stops
@@ -798,7 +806,14 @@ mod tests {
             .find("WORKING IN PARALLEL AND IN THE BACKGROUND")
             .map(|i| &p[i..])
             .expect("the awareness block");
-        for tool in ["delegate_task", "terminal", "shell", "monitor"] {
+        for tool in [
+            "delegate_task",
+            "terminal",
+            "shell",
+            "monitor",
+            "sessions",
+            "nodes",
+        ] {
             assert!(
                 section.contains(tool),
                 "the awareness line must name `{tool}`: {section}"
@@ -808,6 +823,17 @@ mod tests {
             section.contains("background:true"),
             "and say how to hand work to the background: {section}"
         );
+        // 306787.b: the model is the splitter, and is told so, with the
+        // knobs that make a split spread (backend='any', workload) and
+        // where to see the load first.
+        for words in [
+            "SPLITTING HEAVY WORK ACROSS THE POOL is your call",
+            "backend='any'",
+            "workload='cpu' or 'io'",
+            "disk IO pressure",
+        ] {
+            assert!(section.contains(words), "missing {words:?}: {section}");
+        }
         // It is STABLE: it must precede the context tier (the runtime
         // line), or a per-session/per-machine fact would evict it from the
         // cacheable prefix for no reason.

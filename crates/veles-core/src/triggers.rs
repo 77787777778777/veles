@@ -482,6 +482,37 @@ pub const NO_FORWARDER: &str = "no plugin provides `triggers.forward` on this no
 
 /// The event as `triggers.forward` carries it.
 pub fn event_wire(ev: &Event<'_>) -> veles_types::plugin::TriggerEvent {
+    // Fill the roster from the IRC tap so the bridge's `[names]` /
+    // `[name]` procs see the room, not an empty context. The tap is
+    // the same source `context_from` uses for ordinary chat evals.
+    let members = if ev.platform == "irc" && !ev.channel.is_empty() {
+        let want_net = ev.network.to_lowercase();
+        let want_chan = ev.channel.to_lowercase();
+        crate::irc_tap::states()
+            .iter()
+            .find(|st| st.network.to_lowercase() == want_net)
+            .and_then(|st| {
+                st.rosters
+                    .iter()
+                    .find(|(k, _)| k.to_lowercase() == want_chan)
+                    .map(|(_, roster)| {
+                        roster
+                            .iter()
+                            .map(|n| {
+                                let no_prefix =
+                                    n.trim_start_matches(['@', '+', '%', '~', '&', '!']);
+                                match no_prefix.split_once('!') {
+                                    Some((nick, _)) => nick.to_string(),
+                                    None => no_prefix.to_string(),
+                                }
+                            })
+                            .collect()
+                    })
+            })
+            .or(Some(Vec::new())) // real channel, roster not yet arrived
+    } else {
+        None // DM or non-IRC
+    };
     veles_types::plugin::TriggerEvent {
         platform: ev.platform.to_string(),
         network: ev.network.to_string(),
@@ -491,6 +522,7 @@ pub fn event_wire(ev: &Event<'_>) -> veles_types::plugin::TriggerEvent {
         mask: ev.mask.to_string(),
         text: ev.text.to_string(),
         role: ev.role.map(|r| r.as_str().to_string()),
+        members,
     }
 }
 
@@ -903,6 +935,42 @@ pub fn validate_action(s: &str) -> Result<String, String> {
     }
 }
 
+/// Will anything RUN this row's action? The enum round-trips every
+/// action, but only some have an executor: a device event
+/// (NOTIFICATION/POWER, `device_events`) runs `prompt` rows and nothing
+/// else, the IRC and Bluesky hooks run slopdrop/vision/bluesky on their
+/// own events and record `prompt` and `command` as "unsupported", and
+/// `command` has no executor anywhere. A row that can never fire is
+/// refused when it is written (and when an edit changes its action or
+/// event), rather than accepted and logged as unsupported on every match.
+///
+/// `platform` is the row's glob (`None` = any): a `prompt` row must be
+/// able to match the device platform at all.
+pub fn validate_action_on(action: &str, event: &str, platform: Option<&str>) -> Result<(), String> {
+    let device_event =
+        crate::device_events::EVENTS.contains(&event.trim().to_ascii_uppercase().as_str());
+    let device_scope = platform.is_none_or(|p| glob_match(p, crate::device_events::PLATFORM));
+    match ActionKind::parse(action.trim()) {
+        Some(ActionKind::Command) => Err(
+            "action=command is not implemented on any surface — nothing would run (use action=prompt on a device event, or slopdrop|vision|bluesky on a channel)"
+                .into(),
+        ),
+        Some(ActionKind::Prompt) if !(device_event && device_scope) => Err(format!(
+            "action=prompt runs only for device events ({} on platform={}); a {} row on platform={} would never run",
+            crate::device_events::EVENTS.join("/"),
+            crate::device_events::PLATFORM,
+            event.trim(),
+            platform.unwrap_or("*")
+        )),
+        Some(a) if device_event && a != ActionKind::Prompt => Err(format!(
+            "a device event runs action=prompt only; action={} would never run on {}",
+            a.as_str(),
+            event.trim()
+        )),
+        _ => Ok(()),
+    }
+}
+
 /// Canonicalise a minimum role. The one field whose typo fails OPEN:
 /// `evaluate` resolves an unparseable floor to `Guest`, which every
 /// sender that reaches the hook is already at or above.
@@ -1174,6 +1242,34 @@ mod tests {
         let dir = tempfile::tempdir().expect("tempdir");
         let store = Store::open(&dir.path().join("t.db")).expect("store");
         (dir, store)
+    }
+
+    /// A row that no surface would ever run is refused when it is written:
+    /// `command` has no executor at all, `prompt` runs only for device
+    /// events, and a device event runs nothing but `prompt`.
+    #[test]
+    fn an_action_with_no_executor_is_refused_where_it_would_never_run() {
+        let device = Some(crate::device_events::PLATFORM);
+        assert!(validate_action_on("command", "TEXT", Some("irc")).is_err());
+        assert!(validate_action_on("command", "NOTIFICATION", device).is_err());
+        assert!(validate_action_on("prompt", "TEXT", Some("irc")).is_err());
+        // A channel event never reaches the device runner, whatever the glob.
+        assert!(validate_action_on("prompt", "TEXT", None).is_err());
+        assert!(validate_action_on("prompt", "NOTIFICATION", Some("irc")).is_err());
+        assert!(validate_action_on("prompt", "NOTIFICATION", device).is_ok());
+        assert!(validate_action_on("prompt", "power", device).is_ok());
+        // A glob that matches the device platform is a device row.
+        assert!(validate_action_on("prompt", "NOTIFICATION", None).is_ok());
+        assert!(validate_action_on("prompt", "NOTIFICATION", Some("*")).is_ok());
+        assert!(validate_action_on("slopdrop", "NOTIFICATION", device).is_err());
+        assert!(validate_action_on("vision", "POWER", None).is_err());
+        for live in ["slopdrop", "vision", "bluesky"] {
+            assert!(
+                validate_action_on(live, "TEXT", Some("irc")).is_ok(),
+                "{live}"
+            );
+        }
+        assert!(validate_action_on("slopdrop", "MENTION", Some("atproto")).is_ok());
     }
 
     /// A3 — the enumerated fields have ONE answer, and it is not

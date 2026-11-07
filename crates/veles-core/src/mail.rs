@@ -202,15 +202,21 @@ pub fn send(store: &Arc<Mutex<Store>>, from: &Sender, to: &str, text: &str) -> R
     send_with(store, from, to, text, deliver)
 }
 
-/// A line the owner typed while joined to session `to` (`crate::join`):
-/// queued like mail and claimed at the same point, but run with the
-/// OWNER's rights ([`MailTurn::join`]), with provenance that names the
-/// owner as a second person in the conversation, not as a program.
+/// A line typed by someone joined to session `to` (`crate::join`):
+/// queued like mail and claimed at the same point, with provenance that
+/// names the writer as a second person in the conversation, not as a
+/// program.
 ///
-/// Only the owner may send one, and the gateway's `/join` is the only
-/// caller: the sessions tool sends [`KIND_MAIL`], and so does every send
-/// relayed from another node, so neither a model nor a peer can raise a
-/// turn this way.
+/// The OWNER's line runs with the owner's rights ([`MailTurn::join`]).
+/// Anyone else needs [`Cap::SessionJoin`] (`/grant … session-join`), and
+/// their line runs as mail does: with the LOWER of their rights and the
+/// session's ([`turn_principal`]), its questions asked of them alone. A
+/// grant lets a person speak in a conversation; it never lends them the
+/// rights of the session they speak in.
+///
+/// The gateway's `/join` is the only caller: the sessions tool sends
+/// [`KIND_MAIL`], and so does every send relayed from another node, so
+/// neither a model nor a peer can raise a turn this way.
 pub fn send_join(
     store: &Arc<Mutex<Store>>,
     owner: &Principal,
@@ -229,8 +235,11 @@ fn send_join_with(
     text: &str,
     deliver: impl Fn(&str) -> Delivery,
 ) -> Result<Sent> {
-    if !is_owner(owner) {
-        bail!("only the owner can write into a session they joined");
+    if !owner.has(Cap::SessionJoin) {
+        bail!(
+            "writing into a session you joined needs the {} capability",
+            Cap::SessionJoin.as_str()
+        );
     }
     let from = Sender {
         session: None,
@@ -438,10 +447,17 @@ pub fn claim(store: &Store, session_id: &str, user_text: &str) -> Claim {
                 && row.via_peer.is_none()
                 && sender.as_ref().is_some_and(is_owner);
             if row.kind == KIND_JOIN && !join {
-                tracing::warn!(
-                    "mail {}: a join line that is not the owner's own runs as ordinary mail",
-                    row.id
-                );
+                // A granted participant's line (`session-join`) is
+                // exactly this, by design. A peer's is not expected.
+                if row.via_peer.is_some() {
+                    tracing::warn!("mail {}: a relayed join line runs as ordinary mail", row.id);
+                } else {
+                    tracing::info!(
+                        "mail {}: a participant's line runs with the lower of their rights \
+                         and the session's",
+                        row.id
+                    );
+                }
             }
             Claim::Mail(Box::new(MailTurn {
                 text: text.to_string(),
@@ -553,6 +569,39 @@ pub fn join_origin_line(row: &MailRow, user: Option<&str>) -> String {
         "[origin] {owner}, the owner of this agent, has joined this conversation and wrote \
          the next message; {user} did not write it. This turn runs with the owner's rights. \
          Your answer appears in this chat, where {user} reads it, and the owner sees it too."
+    )
+}
+
+/// A line written HERE by someone who joined the session and is not the
+/// owner (`session-join`): a [`KIND_JOIN`] row that [`claim`] did not
+/// raise. Its turn is clamped like mail, but it is a person speaking.
+pub fn is_participant_line(row: &MailRow) -> bool {
+    row.kind == KIND_JOIN
+        && row.via_peer.is_none()
+        && !row
+            .from_principal
+            .as_deref()
+            .and_then(|j| serde_json::from_str::<Principal>(j).ok())
+            .is_some_and(|p| is_owner(&p))
+}
+
+/// The origin row of a participant's line ([`is_participant_line`]):
+/// who wrote it, that they are NOT the owner, and that the turn has no
+/// more than their rights.
+pub fn participant_origin_line(row: &MailRow, user: Option<&str>) -> String {
+    let who = row
+        .from_title
+        .as_deref()
+        .filter(|t| !t.trim().is_empty())
+        .unwrap_or("another participant");
+    let user = user
+        .filter(|u| !u.trim().is_empty())
+        .unwrap_or("the person this conversation belongs to");
+    format!(
+        "[origin] {who} has joined this conversation and wrote the next message; {user} did \
+         not write it. {who} is not the owner of this agent: this turn runs with no more than \
+         {who}'s own rights, and any question it asks goes to {who}. Your answer appears in \
+         this chat, where {user} reads it."
     )
 }
 
@@ -1125,6 +1174,39 @@ mod tests {
         (format!("http://{addr}/v1"), seen)
     }
 
+    /// A mail turn's checkpoint is labelled "mail", whatever surface its
+    /// agent serves: restart recovery resumes only "desktop" turns and
+    /// has no mail clamp, so an interrupted mail into a desktop session
+    /// must not come back with the desktop owner's rights.
+    #[tokio::test]
+    async fn a_mail_turn_is_never_a_desktop_recovery_candidate() {
+        let (_home, _g) = crate::testenv::scratch_home();
+        let target = "mail-recovery-target";
+        let agent = crate::testenv::mock_agent("http://127.0.0.1:0/unused", target);
+        agent.set_turn_surface(Some("desktop"));
+        let st = agent.store.clone();
+        {
+            let s = st.lock_ok();
+            let _ = s.create_session(target);
+            let _ = s.create_session("mail-recovery-sender");
+        }
+        let from = Sender {
+            session: Some("mail-recovery-sender".into()),
+            title: Some("a guest".into()),
+            principal: Some(Principal::known("irc:guest", Role::Guest)),
+        };
+        send(&st, &from, target, "delete everything").unwrap();
+        let item = st.lock_ok().queue_take_next(target).unwrap().unwrap();
+        let mut history = Vec::new();
+        let _ = agent.run_turn(&mut history, &item.body, None, |_| {}).await;
+        let checkpoint = st.lock_ok().turn_checkpoint(target).unwrap().unwrap();
+        assert_eq!(checkpoint.surface, "mail");
+        // An ordinary turn on the same agent is still a desktop turn.
+        let _ = agent.run_turn(&mut history, "plain", None, |_| {}).await;
+        let checkpoint = st.lock_ok().turn_checkpoint(target).unwrap().unwrap();
+        assert_eq!(checkpoint.surface, "desktop");
+    }
+
     /// The whole turn, through `Agent::run_turn` against a real wire: an
     /// ADMIN session gets mail from a USER-level sender, so the turn
     /// must run as the user (the prompt the provider is sent says so),
@@ -1439,8 +1521,11 @@ mod tests {
         assert!(!m.join, "mail, even the owner's, is not a joined line");
     }
 
+    /// Without `session-join` nobody but the owner writes a join line;
+    /// WITH it a participant does, and the row is claimed as mail (the
+    /// lower of the two rights), never raised, and named as theirs.
     #[test]
-    fn only_the_owner_writes_a_join_line() {
+    fn a_join_line_needs_the_grant_and_a_participants_is_never_raised() {
         let (st, _dir) = store();
         st.lock_ok().create_session("join-c").unwrap();
         for p in [
@@ -1451,10 +1536,32 @@ mod tests {
         ] {
             let mut p = p;
             p.caps.remove(&Cap::All);
+            p.caps.remove(&Cap::SessionJoin);
             let e = join_send(&st, &p, "join-c", "hi").unwrap_err();
-            assert!(e.to_string().contains("only the owner"), "{e}");
+            assert!(e.to_string().contains("session-join"), "{e}");
         }
         assert!(st.lock_ok().queue_take_next("join-c").unwrap().is_none());
+
+        let mut bob = Principal::known("irc:bob", Role::Trusted);
+        bob.caps.insert(Cap::SessionJoin);
+        let sent =
+            send_join_with(&st, &bob, "bob", "join-c", "hi alice", |_| Delivery::Queued).unwrap();
+        let row = st.lock_ok().mail_get(&sent.id).unwrap().unwrap();
+        assert_eq!(row.kind, KIND_JOIN);
+        assert!(is_participant_line(&row));
+        let item = st.lock_ok().queue_take_next("join-c").unwrap().unwrap();
+        let Claim::Mail(m) = claim(&st.lock_ok(), "join-c", &item.body) else {
+            panic!("a participant's line is claimed like mail");
+        };
+        assert!(!m.join, "a participant's line is never raised");
+        let l = participant_origin_line(&m.row, Some("alice"));
+        assert!(l.starts_with("[origin] bob has joined"), "{l}");
+        assert!(l.contains("bob is not the owner of this agent"), "{l}");
+        assert!(l.contains("alice did not write it"), "{l}");
+        // The owner's own line is not a participant's.
+        let sent = join_send(&st, &owner(), "join-c", "x").unwrap();
+        let row = st.lock_ok().mail_get(&sent.id).unwrap().unwrap();
+        assert!(!is_participant_line(&row));
     }
 
     /// The raise is the row's, and only a row the owner wrote HERE earns
@@ -1555,6 +1662,7 @@ mod tests {
             crate::join::Joined {
                 owner_name: "wrath".into(),
                 asker: rec.clone(),
+                owner: true,
             },
         );
         join_send(&st, &owner(), target, "alice, try it again").unwrap();

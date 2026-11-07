@@ -668,6 +668,51 @@ ok "deselecting every permission preserves an explicit empty selection" \
      && [dict get $got answered] eq [list q2]}
 catch { destroy .ask }
 
+# Return in the note box of a multi-permission approval is OK, not a
+# bare note. It used to post {"choice":"","text":note} — a refusal —
+# discarding the scope already picked, and the toplevel's own Return
+# then ran _commit on the destroyed dialog (a bgerror). Review
+# finding approvals-1.
+set ::posted {}
+set ::_bgerr {}
+proc ::bgerror {m} { lappend ::_bgerr $m }
+::vask::show [dict replace $ap id ask-permissions-note]
+update idletasks
+update
+event generate .ask.body.c.inner.chq1_2.l <Button-1>
+update
+.ask.btns.e insert end "go ahead, session"
+focus -force .ask.btns.e
+update
+event generate .ask.btns.e <Return>
+update
+set got {}
+catch { set got [::_last_body] }
+ok "Return in the note box commits the picked scope with the note" \
+    {[llength $::posted] == 1 && [dict exists $got answers]
+     && [dict get [dict get [dict get $got answers] q1] selected] eq [list session]
+     && [dict get [dict get [dict get $got answers] q1] text] eq "go ahead, session"
+     && [dict get [dict get [dict get $got answers] q2] selected]
+        eq [list terminal:recursive-delete terminal:remote-code-execution]}
+ok "…and raises no background error" {[llength $::_bgerr] == 0}
+catch { destroy .ask }
+# Without a scope the same Return keeps the dialog open: a stray Enter
+# is neither a refusal nor a grant.
+set ::posted {}
+::vask::show [dict replace $ap id ask-permissions-note2]
+update idletasks
+update
+.ask.btns.e insert end "hmm"
+focus -force .ask.btns.e
+update
+event generate .ask.btns.e <Return>
+update
+ok "Return in the note box without a scope sends nothing" \
+    {[llength $::posted] == 0 && [winfo exists .ask]
+     && [llength $::_bgerr] == 0}
+catch { destroy .ask }
+rename ::bgerror {}
+
 # ONE question of three answered: still keyed by its question. The
 # parity round took the single-question shortcut whenever ONE answer
 # was present, posting a bare {"choice":"c2"} that the engine files

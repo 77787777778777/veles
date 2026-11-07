@@ -260,7 +260,7 @@ impl TclHandle {
         let (tx, rx) = oneshot::channel();
         self.tx
             .send(TclRequest::Eval {
-                code: "set ::veles_ready 1".to_string(),
+                code: "if {$::veles_plugin_load_error ne \"\"} {error $::veles_plugin_load_error}; set ::veles_ready 1".to_string(),
                 reply: tx,
             })
             .map_err(|_| "tcl thread dead".to_string())?;
@@ -340,6 +340,7 @@ pub fn spawn(home: PathBuf) -> Result<TclHandle> {
                 }
             };
             register_bridge_commands(&mut interp, home.clone());
+            interp.set("::veles_plugin_load_error", "");
 
             // Native FFI bridge: real engine capabilities as Tcl
             // commands. Built whenever config loads — routes resolve
@@ -360,6 +361,7 @@ pub fn spawn(home: PathBuf) -> Result<TclHandle> {
 
             if let Err(e) = load_plugins(&mut interp) {
                 tracing::error!("plugin load failed: {e}");
+                interp.set("::veles_plugin_load_error", e.to_string());
             }
             publish_hook_registry(&mut interp);
 
@@ -584,6 +586,11 @@ fn load_plugins(interp: &mut tcl::Interpreter) -> Result<()> {
     // anyone saved a plugin file.
     apply_hook_overrides(interp, &cfg.hooks.disabled);
     crate::rustplugins::load_rust_manifests(&discovered);
+    // One plugin that fails to source (a typo, a half-saved edit, an old
+    // broken scaffold) must not keep every plugin discovered after it
+    // out of the interpreter. Each failure is logged and reported
+    // together once the loop is done (dev-ext-7).
+    let mut failures = Vec::new();
     for p in &discovered {
         if p.manifest.kind != "tcl" {
             continue; // kind = "rust" is handled by load_rust_manifests
@@ -592,7 +599,10 @@ fn load_plugins(interp: &mut tcl::Interpreter) -> Result<()> {
             tracing::info!("plugin {}: unloaded; not sourced", p.manifest.name);
             continue;
         }
-        source_plugin(interp, p)?;
+        if let Err(e) = source_plugin(interp, p) {
+            tracing::error!("plugin {} failed to load: {e:#}", p.manifest.name);
+            failures.push(format!("{}: {e:#}", p.manifest.name));
+        }
     }
     if let Ok(dirs) = std::env::var("VELES_PLUGIN_DIRS") {
         for d in dirs.split(',') {
@@ -603,10 +613,21 @@ fn load_plugins(interp: &mut tcl::Interpreter) -> Result<()> {
             let dir = std::path::Path::new(d);
             let entry = dir.join("plugin.tcl");
             if entry.exists() {
-                interp
-                    .source(&entry)
-                    .map_err(|e| anyhow::anyhow!("{}: {e}", entry.display()))?;
-                tracing::info!("loaded dev plugin: {}", entry.display());
+                let name = dir
+                    .file_name()
+                    .map(|n| n.to_string_lossy().into_owned())
+                    .unwrap_or_else(|| "dev-tcl-plugin".to_string());
+                let tag = owner_tag_for(&name);
+                interp.set("::veles::plugin_current", name.as_str());
+                let sourced = crate::lifecycle::with_thread_owner(tag, || interp.source(&entry));
+                interp.set("::veles::plugin_current", "");
+                match sourced {
+                    Ok(_) => tracing::info!("loaded dev plugin: {}", entry.display()),
+                    Err(e) => {
+                        tracing::error!("dev plugin {} failed to load: {e}", entry.display());
+                        failures.push(format!("{}: {e}", entry.display()));
+                    }
+                }
                 continue;
             }
             // Dev-override parity for Phase B: a dir with plugin.so (and
@@ -624,6 +645,9 @@ fn load_plugins(interp: &mut tcl::Interpreter) -> Result<()> {
                 }
             }
         }
+    }
+    if !failures.is_empty() {
+        anyhow::bail!("{}", failures.join("\n"));
     }
     Ok(())
 }
@@ -648,7 +672,11 @@ fn source_plugin(interp: &mut tcl::Interpreter, p: &crate::plugins::LoadedPlugin
     let tag = owner_tag_for(&p.manifest.name);
     crate::plugins::declare_services(p);
     interp.set("::veles::plugin_current", p.manifest.name.as_str());
-    let sourced = crate::lifecycle::with_thread_owner(tag, || interp.source(&entry));
+    let sourced = crate::lifecycle::with_thread_owner(tag, || {
+        crate::lifecycle::with_plugin_provenance(crate::plugins::provenance(p), || {
+            interp.source(&entry)
+        })
+    });
     interp.set("::veles::plugin_current", "");
     sourced.map_err(|e| anyhow::anyhow!("{}: {e}", entry.display()))?;
     tracing::info!("loaded plugin: {}", p.manifest.name);
@@ -1532,6 +1560,49 @@ mod tests {
         );
     }
 
+    /// dev-ext-7: the Dev "New extension" scaffold must actually load
+    /// (it once defined `proc ::name::handle` before its namespace
+    /// existed: "unknown namespace"), and one plugin that fails to source
+    /// must not stop the plugins discovered after it.
+    #[test]
+    fn the_tcl_scaffold_loads_and_a_broken_plugin_does_not_stop_later_ones() {
+        let (home, _guard) = crate::testenv::scratch_home();
+        std::fs::write(home.path().join("config.toml"), "").expect("config");
+        std::env::remove_var("VELES_PLUGIN_DIRS");
+        let plugins = home.path().join("plugins");
+        let broken = plugins.join("aaa-broken");
+        std::fs::create_dir_all(&broken).expect("mkdir broken");
+        std::fs::write(broken.join("plugin.toml"), "name = \"aaa-broken\"\n").expect("toml");
+        std::fs::write(broken.join("plugin.tcl"), "error {deliberately broken}\n").expect("tcl");
+        crate::plugins::scaffold("bbb-scaffold", "the default Tcl scaffold").expect("scaffold");
+        let later = plugins.join("zzz-later");
+        std::fs::create_dir_all(&later).expect("mkdir later");
+        std::fs::write(later.join("plugin.toml"), "name = \"zzz-later\"\n").expect("toml");
+        std::fs::write(
+            later.join("plugin.tcl"),
+            "namespace eval ::zzz_later {}\nproc ::zzz_later::loaded {} { return yes }\n",
+        )
+        .expect("tcl");
+        let handle = spawn(home.path().to_path_buf()).expect("spawn");
+        let hooks = handle.eval("::veles::hooks_list").expect("hooks_list");
+        assert!(
+            hooks.contains("::bbb_scaffold::handle"),
+            "the scaffold's hook must be registered: {hooks}"
+        );
+        assert_eq!(
+            handle.eval("::zzz_later::loaded").expect("later plugin"),
+            "yes",
+            "a plugin after a broken one must still load"
+        );
+        let error = handle
+            .eval("set ::veles_plugin_load_error")
+            .expect("load error");
+        assert!(
+            error.contains("aaa-broken") && !error.contains("bbb-scaffold"),
+            "the broken plugin, and only it, is reported: {error}"
+        );
+    }
+
     /// The bundled tier through the REAL boot path (0.1.2): a fresh
     /// config dir with no plugins of its own, and the Anthropic driver
     /// in a bundled root — laid out the way the release artifacts lay
@@ -1563,6 +1634,15 @@ mod tests {
                 .map(|d| d.name.clone())
                 .collect::<Vec<_>>()
         );
+        let registered = crate::providers::driver("anthropic-messages").expect("registered");
+        assert_eq!(registered.plugin, "tcl:tcl-anthropic-driver");
+        assert_eq!(registered.provenance.root.as_deref(), Some(dst.as_path()));
+        let expected = crate::plugins::source_digest(&dst).expect("hash");
+        assert_eq!(
+            registered.provenance.hash.as_deref(),
+            Some(expected.as_str())
+        );
+        assert!(crate::providers::driver("tcl:tcl-anthropic-driver:anthropic-messages").is_some());
         let user = crate::plugins::plugins_dir();
         assert!(!user.join("tcl-anthropic-driver").exists());
         let tracked = std::process::Command::new("git")

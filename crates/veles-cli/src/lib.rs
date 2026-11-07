@@ -1112,8 +1112,13 @@ pub fn run_setup() -> anyhow::Result<()> {
     };
 
     // ── 1. provider ─────────────────────────────────────────────────
-    use veles_core::setup::{preset, PROVIDER_PRESETS};
+    use veles_core::setup::{preset, ANTHROPIC_REFERRAL_NOTE, PROVIDER_PRESETS, REFERRAL_LINKS};
     println!("\n1. LLM provider");
+    println!("   Need an account? Optional sign-up links:");
+    for link in REFERRAL_LINKS {
+        println!("   {} (referral): {}", link.provider, link.url);
+    }
+    println!("   {ANTHROPIC_REFERRAL_NOTE}");
     for (i, p) in PROVIDER_PRESETS.iter().enumerate() {
         if p.key_url.is_empty() {
             println!("   {}) {}", i + 1, p.label);

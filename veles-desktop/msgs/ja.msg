@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset ja {%1$s %2$s failed: %3$s} {%1$s %2$s 失敗: %3$s}
 ::msgcat::mcset ja {%1$s %2$s over ssh…} {%1$s %2$s を ssh で実行中…}
 ::msgcat::mcset ja {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset ja {%1$s (%2$s waiting)} {%1$s (%2$s 待機中)}
 ::msgcat::mcset ja {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  推論 %3$s}
 ::msgcat::mcset ja {%1$s = %2$s here} {ここでは %1$s = %2$s}
 ::msgcat::mcset ja {%1$s NOT saved: %2$s} {%1$s は保存されていません：%2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset ja {%1$s every cron job on %2$s?} {%1$s: %2$s の全 cron ジョブ？}
 ::msgcat::mcset ja {%1$s failed: %2$s} {%1$s 失敗: %2$s}
 ::msgcat::mcset ja {%1$s in / %2$s out / %3$s calls} {%1$s 入力 / %2$s 出力 / %3$s コール}
+::msgcat::mcset ja {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s はノード %2$s であり、%3$s ではありません。編集… でノード ID を修正してください。}
 ::msgcat::mcset ja {%1$s is not a whole number} {%1$s は整数ではありません}
+::msgcat::mcset ja {%1$s is reachable (%2$s ms).} {%1$s に到達可能 (%2$s ms)。}
 ::msgcat::mcset ja {%1$s is set to something this box cannot edit (%2$s)} {%1$s はこのマシンでは編集できない値に設定されています (%2$s)}
+::msgcat::mcset ja {%1$s is unreachable: %2$s} {%1$s に到達できません: %2$s}
 ::msgcat::mcset ja {%1$s of %2$s characters} {%1$s / %2$s 文字}
 ::msgcat::mcset ja {%1$s of %2$s sessions} {%2$s 件中 %1$s 件のセッション}
 ::msgcat::mcset ja {%1$s of %2$s skills reach the prompt} {%1$s/%2$s のスキルがプロンプトに到達}
 ::msgcat::mcset ja {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s (%2$s): %3$d 成功、%4$d 失敗}
+::msgcat::mcset ja {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s はクラスターノードの識別情報を報告しないため、%2$s として検証できません。}
+::msgcat::mcset ja {%1$s sync failed: %2$s} {%1$s の同期に失敗: %2$s}
+::msgcat::mcset ja {%1$s sync with %2$s (%3$s)} {%1$s と %2$s の同期 (%3$s)}
+::msgcat::mcset ja {%1$s sync: %2$s} {%1$s 同期: %2$s}
 ::msgcat::mcset ja {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset ja {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter で移動、Esc で閉じる}
 ::msgcat::mcset ja {%1$s — revision r%2$s} {%1$s — リビジョン r%2$s}
 ::msgcat::mcset ja {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset ja {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset ja {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset ja {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset ja {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: そのノードのゲートウェイがメモリに保持する %3$s 行のうち直近の %2$s。シークレットはそのノードで伏字化されます。}
 ::msgcat::mcset ja {%d MCP server(s) configured} {MCP サーバー %d 個設定済み}
 ::msgcat::mcset ja {%d entries} {%d 件}
+::msgcat::mcset ja {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {拡張機能の %d 個のファイルが、レビューしたとおりに書き込まれます。プレビュー以降に 1 つでも変更されていれば、何も書き込まれません。コミット、プッシュ、PR は行いません。}
 ::msgcat::mcset ja {%d handler(s) registered} {%d ハンドラー登録済み}
 ::msgcat::mcset ja {%d identities · %d users} {%d アイデンティティ · %d ユーザー}
 ::msgcat::mcset ja {%d models — pick one from the list or type a name.} {%d 個のモデル — リストから選ぶか、名前を入力してください。}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset ja {%d shown} {%d 件表示中}
 ::msgcat::mcset ja {%s %s%%} {%s %s%%}
 ::msgcat::mcset ja {%s (%s)} {%s (%s)}
+::msgcat::mcset ja {%s (referral)} %s（紹介リンク）
+::msgcat::mcset ja {%s (stale)} {%s (古い)}
 ::msgcat::mcset ja {%s (this session)} {%s (このセッション)}
 ::msgcat::mcset ja {%s GB free of %s GB} {空き %s GB / %s GB}
 ::msgcat::mcset ja {%s already exists — open it from the list} {%s はすでに存在します — 一覧から開いてください}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset ja {%s comes from config.toml [acl] — edit there} {%s は config.toml [acl] で設定されています — そこを編集してください}
 ::msgcat::mcset ja {%s config change(s) wait for you — /configsync} {設定変更 %s 件が確認待ちです — /configsync}
 ::msgcat::mcset ja {%s did not become healthy within 30s} {%s は 30 秒以内に正常になりませんでした}
+::msgcat::mcset ja {%s done} {%s 完了}
 ::msgcat::mcset ja {%s failed: %s} {%s に失敗しました: %s}
 ::msgcat::mcset ja {%s is already split} {%s はすでに分割されています}
 ::msgcat::mcset ja {%s is the language in use — pick another one to swap with} {%s は使用中の言語です — 切り替え先には別の言語を選んでください}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset ja {%s opens the command palette in %s.} {%s で %s のコマンドパレットを開きます。}
 ::msgcat::mcset ja {%s session(s)} {%s セッション}
 ::msgcat::mcset ja {%s skill(s):} {%s 個のスキル:}
+::msgcat::mcset ja {%s standing grants} {%s 件の常時付与}
 ::msgcat::mcset ja {%s takes no completable arguments} {%s は補完可能な引数を受け付けません}
 ::msgcat::mcset ja {%s takes on or off} {%s には on か off を指定します}
 ::msgcat::mcset ja {%s —} {%s —}
+::msgcat::mcset ja {%s — changes data, asks to confirm} {%s — データを変更し、確認を求めます}
 ::msgcat::mcset ja {%s — deleted; History… can restore it} {%s — 削除済み。履歴… から復元できます}
 ::msgcat::mcset ja {%s — new: type, then Save} {%s — 新規: 入力してから保存}
 ::msgcat::mcset ja {%s — not attached; press Attach in the Instances tab} {%s — 未接続。インスタンスタブの「接続」を押してください}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset ja {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} が [acl] セクションなしで有効です: .env の %{var} でボットと話せる相手を指定するまで、ボットに届いた誰もがオーナーとして扱われ、すべてのツールを使えます}
 ::msgcat::mcset ja (%{route}) (%{route})
 ::msgcat::mcset ja {(CLI redraws automatically)} {（CLI は自動で再描画されます）}
+::msgcat::mcset ja {(binary; not publishable)} (バイナリ。公開できません)
 ::msgcat::mcset ja {(clipboard empty or no clipboard tool)} (クリップボードが空か、クリップボードツールがありません)
 ::msgcat::mcset ja (deleted) (削除済み)
 ::msgcat::mcset ja (empty) (空)
 ::msgcat::mcset ja {(no sessions)} （セッションなし）
+::msgcat::mcset ja {(not a memsync peer of this gateway: config is not synced with it)} {(このゲートウェイの memsync ピアではありません: 設定は同期されません)}
 ::msgcat::mcset ja {(nothing to reload — read from disk per use)} {（再読み込みは不要 — 使うたびにディスクから読みます）}
 ::msgcat::mcset ja {(retrying last prompt…)} (直前のプロンプトを再試行中…)
 ::msgcat::mcset ja {(route did not resolve: %{e})} {(ルートを解決できませんでした: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset ja {/url needs a number from /urls} {/url には /urls の番号が必要です}
 ::msgcat::mcset ja {/whois needs a nick} {/whois にはニックネームが必要です}
 ::msgcat::mcset ja {; could not save the cleared return view: %s} {; クリアした復帰ビューを保存できませんでした: %s}
+::msgcat::mcset ja {; shadows bundled} {; 同梱版を上書き中}
+::msgcat::mcset ja {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} 設定の提案は設定を変更でき、保管庫の提案はシークレットをマージします。ただしセキュリティセクションへの変更は引き続きオーナーの確認待ちです。
 ::msgcat::mcset ja {A failing plugin may drop hooks mid-turn.} プラグインが失敗すると、ターン途中でフックが失われることがあります
 ::msgcat::mcset ja {A local server: no key is needed unless you set one up.} {ローカルサーバー: 自分で設定しない限りキーは不要です。}
+::msgcat::mcset ja {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} 署名付きリリースは、プリフライト後にのみステージングされます。再起動・検証、継続、ロールバックは個別の操作です。正常なプロセスは、確認済みのソースリビジョンと完全に一致するリビジョンを報告する必要があります。
 ::msgcat::mcset ja {A value is stored for %s — leave this empty to keep it.} {%s には値が保存されています — そのままにするには空欄のままにしてください。}
 ::msgcat::mcset ja {ACL: ban mask} {ACL: マスクを禁止}
 ::msgcat::mcset ja {ACL: grant admin} {ACL: admin を付与}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset ja {ACL: grant user} {ACL: user を付与}
 ::msgcat::mcset ja {ACL: revoke} {ACL: 取り消し}
 ::msgcat::mcset ja {ACME account email} {ACME アカウントのメールアドレス}
+::msgcat::mcset ja {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI アシストは 4 つのレベルで動作します: 設計について質問する (ファイル不要)、このファイルを変更する、この拡張機能の複数ファイルを変更する、現在の診断を説明する。新規拡張機能では、目的から拡張機能全体を生成することもできます。どのリクエストもツールなしで送信され、登録済みのシークレットや資格情報らしき値が含まれる場合は拒否されます。変更は差分として表示され、適用したときにだけ書き込まれます。まず拡張機能の設計を依頼し、コアへのパッチは不足している API を特定してから依頼してください。}
+::msgcat::mcset ja {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI アシスタントはユーザー拡張機能のみを編集でき、このファイルはその一部ではありません。ほとんどの変更は、アップグレード後も残る拡張機能 (フック、ツール、サービスオーバーライド、プロバイダードライバー) に収まります。core パッチは拡張 API で表現できない内容のためのものです。代わりにこの変更用の新しい拡張機能を作成しますか？ファイルは書き込む前にプレビューされます。}
+::msgcat::mcset ja {AI assist…} {AI アシスト…}
+::msgcat::mcset ja {AI extension assistance} {AI 拡張機能アシスト}
 ::msgcat::mcset ja {API calls} {API 呼び出し}
+::msgcat::mcset ja {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {Anthropic の紹介による API クレジットは、Max または Ultra を購入した場合にのみ付与されます。Veles はそのサブスクリプションをログインや API 認証として使うことをサポートしていません。}
 ::msgcat::mcset ja {API key (hidden)} {API キー（非表示）}
 ::msgcat::mcset ja {API key env var name} APIキー環境変数名
+::msgcat::mcset ja {API reference} {API リファレンス}
+::msgcat::mcset ja {Abandon untouched operation} 未着手の操作を破棄
 ::msgcat::mcset ja {Access control} アクセス制御
 ::msgcat::mcset ja {Access control (ACL)} {アクセス制御 (ACL)}
 ::msgcat::mcset ja Add 追加
 ::msgcat::mcset ja {Add MCP server} {MCP サーバーを追加}
 ::msgcat::mcset ja {Add instance} インスタンスを追加
 ::msgcat::mcset ja {Add server…} サーバーを追加…
+::msgcat::mcset ja {Adds selected extension sources. Review the branch diff and checks before merging.} 選択した拡張機能のソースを追加します。マージ前にブランチの差分とチェック結果を確認してください。
 ::msgcat::mcset ja Add… 追加…
 ::msgcat::mcset ja {Agent & engine} エージェントとエンジン
 ::msgcat::mcset ja {Alias %s} {エイリアス %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset ja {Applies to} 適用先
 ::msgcat::mcset ja Apply 適用
 ::msgcat::mcset ja {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {「適用」は実行中のセッションにのみ反映されます。「TOML をコピー」で貼り付け用のブロックを取得します。「グローバルに保存」はそれらを config.toml に埋め込みます — 触られるのはフェイルオーバーセクションだけ、他の行とコメントはすべてそのまま残り、旧ファイルは config.toml.bak として保持されます。}
+::msgcat::mcset ja {Apply proposal…} 提案を適用…
+::msgcat::mcset ja {Apply received} 受信分を適用
+::msgcat::mcset ja {Apply this AI proposal?} {この AI の提案を適用しますか？}
+::msgcat::mcset ja {Apply this change set?} この変更セットを適用しますか？
 ::msgcat::mcset ja {Apply to session} セッションに適用
+::msgcat::mcset ja {Apply what this node received:} このノードが受け取った内容を適用:
 ::msgcat::mcset ja {Approval needed} 承認が必要
 ::msgcat::mcset ja Apps アプリ
 ::msgcat::mcset ja Archive アーカイブ
 ::msgcat::mcset ja {Archive SHA-256} {アーカイブ SHA-256}
+::msgcat::mcset ja Ask 質問
+::msgcat::mcset ja {Ask a design question} 設計について質問
+::msgcat::mcset ja {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {拡張機能の作り方を質問: どの境界か、どの言語か、どの API か。ソースは送信されず、何も書き込めません。}
 ::msgcat::mcset ja {Ask the agent to change it} エージェントに変更を頼む
+::msgcat::mcset ja {Asking %s…} {%s に質問中…}
 ::msgcat::mcset ja {Asking the provider for its models…} プロバイダーにモデルを問い合わせています…
 ::msgcat::mcset ja Attach 添付
 ::msgcat::mcset ja {Attach to the next message} 次のメッセージに添付
+::msgcat::mcset ja {Author guide} 作成者ガイド
+::msgcat::mcset ja {Automatically discovered from the attached gateway's cluster registry.} 接続中のゲートウェイのクラスタレジストリから自動検出されました。
 ::msgcat::mcset ja Back 戻る
 ::msgcat::mcset ja {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} 「戻る」は一番上のものを閉じます：メニュー、セッション一覧、ウィンドウ。何も開いていなければvelesはバックグラウンドに移り、動き続けます。
 ::msgcat::mcset ja {Base URL} {Base URL}
+::msgcat::mcset ja {Base branch} ベースブランチ
 ::msgcat::mcset ja {Bot token (hidden)} ボットトークン（非表示）
+::msgcat::mcset ja Branch ブランチ
+::msgcat::mcset ja {Branch and commit prepared; nothing has been pushed} ブランチとコミットを準備しました。まだプッシュされていません
+::msgcat::mcset ja {Branch pushed and verified on origin} ブランチをプッシュし、オリジンで確認しました
 ::msgcat::mcset ja {Browse sessions} セッションを一覧
+::msgcat::mcset ja {Build manifest + preflight} {ビルドマニフェスト + プリフライト}
+::msgcat::mcset ja {Build: veles %1$s, revision %2$s (%3$s %4$s)} {ビルド: veles %1$s、リビジョン %2$s (%3$s %4$s)}
 ::msgcat::mcset ja {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e 行頭行末 · C-b/C-f 文字移動 · M-b/M-f 単語移動 · C-k 行末まで削除 · C-y ペースト · M-w コピー · C-w 領域削除 · C-space マーク設定 · C-/ 元に戻す}
 ::msgcat::mcset ja {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g すべて中止 · C-j 改行 · M-p/M-n 履歴 · Tab 補完}
+::msgcat::mcset ja {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s コア、負荷 %2$s / %3$s / %4$s (コアの %5$s%%)}
 ::msgcat::mcset ja Cancel キャンセル
+::msgcat::mcset ja {Cancel task} タスクを中止
+::msgcat::mcset ja {Cancel task %1$s? This cannot be undone.} {タスク %1$s を中止しますか？ 元に戻せません。}
+::msgcat::mcset ja {Cannot verify that %1$s is node %2$s: %3$s} {%1$s がノード %2$s であることを検証できません: %3$s}
 ::msgcat::mcset ja Capabilities 機能
 ::msgcat::mcset ja {Change my app “%s” (%s): } {アプリ「%s」(%s) を変更して: }
+::msgcat::mcset ja {Change this extension's files} この拡張機能のファイルを変更
+::msgcat::mcset ja {Change this file} このファイルを変更
 ::msgcat::mcset ja Change… 変更…
 ::msgcat::mcset ja {Channels (e.g. #veles #dev)} {チャンネル（例: #veles #dev）}
 ::msgcat::mcset ja Chat チャット
 ::msgcat::mcset ja {Chat — not attached; press Attach in the Instances tab} {チャット — 未接続。インスタンスタブの「接続」を押してください}
 ::msgcat::mcset ja {Check (lsp)} {チェック (lsp)}
+::msgcat::mcset ja {Check again} 再チェック
+::msgcat::mcset ja {Check files} ファイルをチェック
 ::msgcat::mcset ja Checkpoints チェックポイント
 ::msgcat::mcset ja {Checkpoints (undo)} {チェックポイント (元に戻す)}
+::msgcat::mcset ja {Checks and next steps} チェック結果と次の手順
+::msgcat::mcset ja {Checks run} チェックを実行
 ::msgcat::mcset ja {Choose BUNDLE-INFO.json in the managed install-sources directory} {管理対象の install-sources ディレクトリから BUNDLE-INFO.json を選択してください}
 ::msgcat::mcset ja {Choose a failover script} フェイルオーバースクリプトを選択
 ::msgcat::mcset ja {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {確認するモジュールまたはプロセスプラグインを選んでください。検出では plugin.toml のみを読み取り、コンポーネントを選択すると宣言されているマニフェストとオプションを要求します。このステップを開いても何もインストールされません。}
+::msgcat::mcset ja {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} 名前、目的、言語を選び、作成されるファイルをプレビューしてください。まだ何も書き込まれていません。
 ::msgcat::mcset ja {Choose a user unit or a system service for the server profile. Neither starts a service.} サーバープロファイルではユーザー単位かシステムサービスを選択してください。どちらもサービスを起動しません。
 ::msgcat::mcset ja {Choose core bundle…} コアバンドルを選択…
 ::msgcat::mcset ja {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {インストール形態を選択してください。ローカルプロファイルはレビュー済みインストーラーを使用します。システムプロファイルとコンテナープロファイルは、明示的な CLI 引き継ぎ用の署名付きリクエストを作成します。NixOS はモジュールスニペットのみを出力します。}
+::msgcat::mcset ja {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {最も狭い境界を選んでください: Tool はモデルから呼び出せる機能を追加します; Hook はライフサイクルイベントを観察・修正します; Service または override point は名前付きの判定をラップします; Provider driver はプロバイダーの接続を追加します; Core patch は公開されている拡張 API で表現できない場合のみ適切です。}
 ::msgcat::mcset ja {Choose typed container-host options JSON} 型付きコンテナホストオプションJSONを選択
 ::msgcat::mcset ja {Choose typed container-host options…} 型付きコンテナホストオプションを選択…
 ::msgcat::mcset ja Clear クリア
 ::msgcat::mcset ja {Clear composer} コンポーザーをクリア
 ::msgcat::mcset ja {Clear override} 上書きをクリア
 ::msgcat::mcset ja {Click the picture where you would click on the page.} 実際のページでクリックする位置を画像上でクリックしてください。
+::msgcat::mcset ja {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {%1$s をクローンし、%2$s を作成して、%3$s のうち確認済みのファイルだけを %4$s/<extension>/ にコピーします。ファイルは検査されてコミットされます。今はプッシュもプルリクエストも行われません。}
 ::msgcat::mcset ja Close 閉じる
 ::msgcat::mcset ja {Close (Esc)} {閉じる (Esc)}
 ::msgcat::mcset ja {Close the setup wizard? Nothing has been written yet.} セットアップウィザードを閉じますか？まだ何も書き込まれていません。
 ::msgcat::mcset ja {Code actions} コードアクション
+::msgcat::mcset ja Commit コミット
+::msgcat::mcset ja {Commit ready for review. Push is a separate action.} コミットを確認できます。プッシュは別の操作です。
 ::msgcat::mcset ja {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {ハンドオフをプレビューする前に、固定したイメージダイジェストを含むすべての PDS 項目を入力してください。}
 ::msgcat::mcset ja {Complete every typed container-host field before previewing this profile.} {このプロファイルをプレビューする前に、入力済みの container-host 項目をすべて完了してください。}
 ::msgcat::mcset ja {Component configuration returned an invalid result; nothing was accepted as applied.} コンポーネント設定が無効な結果を返しました。適用として受け入れられたものはありません。
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset ja {Component options changed. Review the new preview before applying.} コンポーネントオプションが変更されました。適用前に新しいプレビューを確認してください。
 ::msgcat::mcset ja Components コンポーネント
 ::msgcat::mcset ja {Composer preview} コンポーザープレビュー
+::msgcat::mcset ja Config 設定
+::msgcat::mcset ja {Config differs: %s} {設定が異なります: %s}
+::msgcat::mcset ja {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {設定ログ: そのノードは %3$s 時点までの %1$s の変更を保持、このゲートウェイは %2$s 時点まで}
+::msgcat::mcset ja {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {設定ログ: このゲートウェイは %2$s 時点までの %1$s の変更を保持、そのノードは %3$s 時点まで}
+::msgcat::mcset ja {Config only on that node: %s} {そのノードにのみある設定: %s}
+::msgcat::mcset ja {Config only on this gateway: %s} {このゲートウェイにのみある設定: %s}
 ::msgcat::mcset ja Configure 設定
 ::msgcat::mcset ja {Configure %s} {%s を設定}
+::msgcat::mcset ja {Configure translator} 翻訳機能を設定
+::msgcat::mcset ja {Configured desktop gateway} 設定済みのデスクトップゲートウェイ
 ::msgcat::mcset ja Configure… 設定…
 ::msgcat::mcset ja {Configuring %s} {%s を設定中}
 ::msgcat::mcset ja {Confirm or discard the current signed review before starting another download.} 別のダウンロードを開始する前に、現在の署名付き確認を確定または破棄してください。
 ::msgcat::mcset ja {Container host: typed host plan and privileged CLI handoff} {コンテナホスト: 型付きホストプランと管理者権限が必要なCLI引き継ぎ}
 ::msgcat::mcset ja {Context window} コンテキストウィンドウ
+::msgcat::mcset ja {Continue to next target} 次のターゲットへ進む
+::msgcat::mcset ja {Contribute extensions: %s} {拡張機能を提供: %s}
+::msgcat::mcset ja Contribute… コントリビュート…
+::msgcat::mcset ja {Contribution branch} コントリビューション用ブランチ
+::msgcat::mcset ja {Contribution destination} コントリビューション先
 ::msgcat::mcset ja Copy コピー
 ::msgcat::mcset ja {Copy TOML} {TOML をコピー}
+::msgcat::mcset ja {Copy a bundled extension into your user plugin directory before preparing a contribution.} コントリビューションを準備する前に、同梱の拡張機能をユーザープラグインディレクトリにコピーしてください。
 ::msgcat::mcset ja {Copy message} メッセージをコピー
 ::msgcat::mcset ja {Copy name} 名前をコピー
 ::msgcat::mcset ja {Copy nick} ニックネームをコピー
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset ja {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {コンポーネントを検出できませんでした。プロバイダーのセットアップ手順は引き続き機能します。必要に応じて対象マシンで CLI からインストールしてください。}
 ::msgcat::mcset ja {Could not join: %s} {参加できませんでした: %s}
 ::msgcat::mcset ja {Could not list the models (%s) — type the model's name.} {モデルを一覧できませんでした (%s) — モデル名を入力してください。}
+::msgcat::mcset ja {Create a PR in} {PR の作成先}
+::msgcat::mcset ja {Create extension} 拡張機能を作成
 ::msgcat::mcset ja {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {@BotFather でボットを作成し、そのトークンを下に貼り付けてください。トークンは暗号化された保管庫に入り、config.toml には決して書かれません。}
+::msgcat::mcset ja {Create this extension?} この拡張機能を作成しますか？
+::msgcat::mcset ja {Create this generated extension?} この生成された拡張機能を作成しますか？
+::msgcat::mcset ja {Created and reloaded. Review and test the extension before publishing.} 作成して再読み込みしました。公開前に拡張機能を確認・テストしてください。
+::msgcat::mcset ja {Created, but reload failed} 作成しましたが、再読み込みに失敗しました
 ::msgcat::mcset ja {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {テンプレートから %s/<name>/SKILL.md を作成して開きます。フロントマターの description だけがプロンプトインデックスに反映されるので、スキルを「いつ」使うかを書いてください。}
 ::msgcat::mcset ja {Cron history} {Cron 履歴}
 ::msgcat::mcset ja {Cron jobs} {Cron ジョブ}
 ::msgcat::mcset ja {Curated — write the first owner entry} {キュレーテッド — 最初のオーナーエントリを書き込む}
 ::msgcat::mcset ja Cut 切り取り
 ::msgcat::mcset ja Decline 断る
+::msgcat::mcset ja {Dedicated translator} 専用翻訳モデル
 ::msgcat::mcset ja {Def (M-.)} {定義 (M-.)}
 ::msgcat::mcset ja Default デフォルト
 ::msgcat::mcset ja {Default model} デフォルトモデル
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset ja {Delete user} ユーザーを削除
 ::msgcat::mcset ja {Delete workspace?} ワークスペースを削除しますか？
 ::msgcat::mcset ja Deop オペレーター権限を外す
+::msgcat::mcset ja {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {変更内容を記述してください。AI はこの拡張機能の複数ファイルを変更または追加する場合があります。各ファイルは差分として表示され、確認するまで何も書き込まれません。}
+::msgcat::mcset ja {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {変更内容を記述してください。AI は置き換え案を提案できますが、差分を確認・承認するまでは書き込めません。}
+::msgcat::mcset ja {Describe the requested extension change first.} まず、拡張機能に必要な変更内容を記述してください。
+::msgcat::mcset ja Description 説明
 ::msgcat::mcset ja {Desktop: local core, modules and process plugins} {デスクトップ: ローカルコア、モジュール、プロセスプラグイン}
 ::msgcat::mcset ja Detach 切り離す
+::msgcat::mcset ja {Detach foreground} バックグラウンドシェルへ移動
 ::msgcat::mcset ja Dev 開発
 ::msgcat::mcset ja {Dev pane (REPL + LSP)} {開発ペイン(REPL + LSP)}
 ::msgcat::mcset ja {Dev: arm / disarm live patching} 開発:ライブパッチの有効化/無効化
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset ja Devoice 発言権を外す
 ::msgcat::mcset ja {Discard review} 確認を破棄
 ::msgcat::mcset ja {Discard your changes to %s?} {%s への変更を破棄しますか?}
+::msgcat::mcset ja {Disk: %1$s free of %2$s at %3$s} {ディスク: 空き %1$s / %2$s (%3$s)}
 ::msgcat::mcset ja Done 完了
 ::msgcat::mcset ja {Done — config written} {完了 — 設定を書き込みました}
 ::msgcat::mcset ja {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {インストール前にリリースマニフェストとホストアーカイブをダウンロードして検証してください。5 つのアイデンティティ項目はすべて必須です。ゲートウェイはプライベートなステージングアーカイブを保持します。このプレビューでは何もインストールされません。}
 ::msgcat::mcset ja {Downloading and verifying the signed release…} 署名付きリリースをダウンロードして検証中…
+::msgcat::mcset ja {Draft this as an extension?} これを拡張機能として下書きしますか？
 ::msgcat::mcset ja {Drag to scroll; a quick swipe goes further.} ドラッグでスクロールします。素早くスワイプするとさらに遠くまで進みます。
+::msgcat::mcset ja {Drift check failed: %s} {ドリフト検査に失敗: %s}
+::msgcat::mcset ja {Drift check: %s node(s) differ from this gateway.} {ドリフト検査: %s 個のノードがこのゲートウェイと異なります。}
+::msgcat::mcset ja {Drift: built from revision %1$s, this gateway from %2$s} {ドリフト: リビジョン %1$s からビルド、このゲートウェイは %2$s から}
+::msgcat::mcset ja {Drift: none — same version, revision and replicated config} {ドリフト: なし — バージョン、リビジョン、複製された設定が同一}
+::msgcat::mcset ja {Drift: not compared — %s} {ドリフト: 未比較 — %s}
+::msgcat::mcset ja {Drift: runs version %1$s, this gateway %2$s} {ドリフト: バージョン %1$s を実行中、このゲートウェイは %2$s}
+::msgcat::mcset ja Drift… ドリフト…
 ::msgcat::mcset ja {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset ja {ESC %s is not bound} {ESC %s はバインドされていません}
 ::msgcat::mcset ja {ESC- … (Meta prefix)} {ESC- … (Meta プレフィックス)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset ja Edit… 編集…
 ::msgcat::mcset ja {Enable / disable} {有効 / 無効}
 ::msgcat::mcset ja {Enable the Telegram adapter} Telegramアダプタを有効にする
+::msgcat::mcset ja Endpoint エンドポイント
 ::msgcat::mcset ja Engine エンジン
 ::msgcat::mcset ja Eval→gw Eval→gw
 ::msgcat::mcset ja {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {%s へのすべての変更はコミットされます。復元すると、まず現在の状態をスナップショットしてからディレクトリ全体をそのコミットに戻すので、一方通行ではありません。}
 ::msgcat::mcset ja {Every plugin file goes back to that commit. The current state is committed first.} すべてのプラグインファイルはそのコミットに戻ります。現在の状態が先にコミットされます。
+::msgcat::mcset ja {Exact commit} 正確なコミット
+::msgcat::mcset ja {Exact permission rule} 正確な権限ルール
+::msgcat::mcset ja {Example: a hook} {例: hook}
+::msgcat::mcset ja {Example: a provider driver} {例: プロバイダードライバー}
+::msgcat::mcset ja {Example: a service override wrapping core} {例: core をラップする service override}
+::msgcat::mcset ja {Example: a tool} {例: ツール}
 ::msgcat::mcset ja {Existing shared container network} 既存の共有コンテナネットワーク
+::msgcat::mcset ja Explain 説明
+::msgcat::mcset ja {Explain the diagnostics} 診断を説明
 ::msgcat::mcset ja Export… エクスポート…
+::msgcat::mcset ja {Extension API} {拡張機能 API}
+::msgcat::mcset ja {Extension development} 拡張機能の開発
+::msgcat::mcset ja {Extension guide} 拡張ガイド
+::msgcat::mcset ja {Extension source} 拡張機能のソース
 ::msgcat::mcset ja {Failover blueprint} フェイルオーバーブループリント
 ::msgcat::mcset ja {Failover blueprint (edit the route chain)} フェイルオーバーブループリント(ルートチェーンを編集)
 ::msgcat::mcset ja {Failover hook script (what `script` mode runs)} {フェイルオーバーフックスクリプト(`script` モードが実行するもの)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset ja {Find in transcript} トランスクリプト内を検索
 ::msgcat::mcset ja {Find in transcript…} トランスクリプト内を検索…
 ::msgcat::mcset ja {Find references} 参照を検索
+::msgcat::mcset ja {Finish rollback} ロールバックを完了
 ::msgcat::mcset ja {First run: no config.toml yet.} {初回起動: config.toml はまだありません。}
+::msgcat::mcset ja {Fix the failed syntax checks before preparing a contribution.} コントリビューションを準備する前に、失敗した構文チェックを修正してください。
+::msgcat::mcset ja {Fleet deployment} フリート配備
+::msgcat::mcset ja {Fleet deployment runs from a desktop computer; it is not available on Android.} {フリート配備はデスクトップコンピューターから実行します。Android では利用できません。}
+::msgcat::mcset ja {Fleet deploy…} フリート配備…
+::msgcat::mcset ja {Fleet drift} フリートのドリフト
 ::msgcat::mcset ja {Fold / unfold} {折りたたみ / 展開}
 ::msgcat::mcset ja {Forget declaration} 宣言を破棄
+::msgcat::mcset ja {Forget node %s?} {ノード %s を忘れますか？}
+::msgcat::mcset ja {Forget node…} ノードを忘れる…
+::msgcat::mcset ja {Forgetting %1$s failed: %2$s} {%1$s を忘れる処理に失敗: %2$s}
+::msgcat::mcset ja {Forgot node %s.} {ノード %s を忘れました。}
+::msgcat::mcset ja {Forgotten fleet-wide (refused until they heartbeat again): %s} {フリート全体で忘れました (再びハートビートするまで拒否します): %s}
 ::msgcat::mcset ja Fork 分岐
 ::msgcat::mcset ja {Free space} 空き容量
 ::msgcat::mcset ja {Full source commit SHA} {ソースコミット SHA（完全）}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset ja {Gateway image sha256 digest} ゲートウェイイメージのsha256ダイジェスト
 ::msgcat::mcset ja {Gateway quadlet name} ゲートウェイquadlet名
 ::msgcat::mcset ja {Gateway status} ゲートウェイ状態
+::msgcat::mcset ja {Generate with AI…} {AI で生成…}
+::msgcat::mcset ja {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {%s が生成しました - 何も書き込まれていません。すべてのファイルを確認してください。その後 拡張機能を作成 を押すと、これらがそのまま書き込まれます。}
 ::msgcat::mcset ja {Get a key at %s} {%s でキーを取得できます}
 ::msgcat::mcset ja {GitHub release URL} {GitHub リリース URL}
+::msgcat::mcset ja {Give the extension a name and describe what it should do (the purpose), then generate.} {拡張機能に名前を付け、何をするものか (目的) を記述してから生成してください。}
 ::msgcat::mcset ja {Give up} 諦める
 ::msgcat::mcset ja Go 実行
 ::msgcat::mcset ja {Go to definition} 定義へ移動
+::msgcat::mcset ja {Gossip failed: %s} {ゴシップに失敗: %s}
+::msgcat::mcset ja {Gossip now} 今すぐゴシップ
+::msgcat::mcset ja {Gossip with %1$s: %2$s} {%1$s とのゴシップ: %2$s}
+::msgcat::mcset ja {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {ゴシップ: %2$s ピア中 %1$s が応答 (%3$s)。}
 ::msgcat::mcset ja Grant 付与
 ::msgcat::mcset ja {Grant access} アクセスを付与
+::msgcat::mcset ja {Granted at} 付与日時
 ::msgcat::mcset ja Grant… 付与…
 ::msgcat::mcset ja {Guards — what the harness stops, and where it stands now} {ガード — ハーネスが止めるものと現在の状態}
 ::msgcat::mcset ja {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {ハンドラーは表示順に実行され、最初に空でない値を返したものが採用されます。オフにしたハンドラーは登録解除せずにスキップされ、選択は config.toml に保存されるため、プラグインのリロードでこっそりオンに戻ることはありません。}
+::msgcat::mcset ja Health ヘルス
+::msgcat::mcset ja {Health alerts (%s):} {ヘルスアラート (%s):}
+::msgcat::mcset ja Heartbeat ハートビート
+::msgcat::mcset ja {Heartbeat age: %s s} {ハートビート経過: %s 秒}
 ::msgcat::mcset ja Help ヘルプ
 ::msgcat::mcset ja {Help & keys} ヘルプとキー
 ::msgcat::mcset ja {Hide right panes} 右ペインを非表示
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset ja {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} 長押ししたまま、指を離す前にドラッグ：選択範囲が単語単位で指を追い、上端や下端ではスクロールします。
 ::msgcat::mcset ja Hooks フック
 ::msgcat::mcset ja {Hooks (what plugins run on)} フック(プラグインの実行対象)
+::msgcat::mcset ja Host ホスト
 ::msgcat::mcset ja {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} 長押しに必要な時間は、Androidのユーザー補助設定にある「長押しの時間」で決まります。
 ::msgcat::mcset ja {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {KEK および PLC ローテーションキーをオフラインにバックアップしました; レビュー済みの TLS とアクティベーション引き継ぎを許可します}
 ::msgcat::mcset ja {I-search backward: type to search, C-r for previous} {I-search 逆方向: 入力で検索、C-r で前へ}
 ::msgcat::mcset ja {I-search: type to search, C-s for next} {I-search: 入力で検索、C-s で次へ}
+::msgcat::mcset ja {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {IO 圧迫: タスクが待機していた時間の割合 %1$s%% / %2$s%% / %3$s%% (10 秒 / 1 分 / 5 分)}
 ::msgcat::mcset ja IRC IRC
 ::msgcat::mcset ja {IRC buffers} {IRC バッファ}
 ::msgcat::mcset ja {IRC composer} {IRC 入力欄}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset ja {IRC split: %s} {IRC 分割: %s}
 ::msgcat::mcset ja {IRC transcript} {IRC トランスクリプト}
 ::msgcat::mcset ja {IRC — nothing to show} {IRC — 表示するものがありません}
+::msgcat::mcset ja {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {実行中: %1$s ターン %2$s、%3$s バックグラウンドタスク %4$s}
 ::msgcat::mcset ja {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {%s を管理対象のコンポーネントストアにインストールしますか？マニフェストは表示済みです。これによりサービスは開始されません。}
 ::msgcat::mcset ja {Install component} コンポーネントをインストール
 ::msgcat::mcset ja {Install components…} コンポーネントをインストール…
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset ja Instances インスタンス
 ::msgcat::mcset ja {It becomes the current content, as a new revision — so the restore can be undone too.} {新しいリビジョンとして現在の内容になります — そのため、復元も取り消せます。}
 ::msgcat::mcset ja {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {このマシンの暗号化された保管庫に入ります。エージェントがそれを見ることはありません。コマンドの中で $%s として使うか、許可されたホストへ送ることしかできません。}
+::msgcat::mcset ja {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {クラスターレジストリからフリート全体で削除されます: 次のゴシップ交換で 0.2.0 の全ピアに削除が伝わり、どのピアも元に戻しません。0.2.0 より古いピアは一覧に残し続けます。マシンが復帰してハートビートを送れば、再び登録されます。同期ピアと保存済みインスタンスは変更されません。}
 ::msgcat::mcset ja {It leaves memory now. Its history keeps every revision, and History… can restore it.} {これでメモリから外れます。履歴にはすべてのリビジョンが残り、履歴… から復元できます。}
 ::msgcat::mcset ja Join 参加
 ::msgcat::mcset ja {Join a pool} マシングループに参加
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset ja {Language (i18n)} 言語(i18n)
 ::msgcat::mcset ja Language… 言語…
 ::msgcat::mcset ja {Last active} 最終アクティブ
+::msgcat::mcset ja {Last probe: %1$s — %2$s} {最終プローブ: %1$s — %2$s}
 ::msgcat::mcset ja {Leave %s?} {%s から退出しますか？}
 ::msgcat::mcset ja Leave… 退出…
 ::msgcat::mcset ja {Legacy open — no [acl] section} {レガシーオープン — [acl] セクションなし}
 ::msgcat::mcset ja {Let %s:} {%s に次を許可:}
 ::msgcat::mcset ja {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {英数字と - _ が使えます。plugin.toml と post_llm_call フックを登録する plugin.tcl を作成し、Dev ペインで開きます。}
+::msgcat::mcset ja Level レベル
 ::msgcat::mcset ja {Lift lockdown} ロックダウンを解除
+::msgcat::mcset ja Lines 行数
 ::msgcat::mcset ja {List the provider's models} プロバイダーのモデルを一覧表示
+::msgcat::mcset ja Load 負荷
 ::msgcat::mcset ja {Load more} さらに読み込む
 ::msgcat::mcset ja {Loading discovered components…} 検出したコンポーネントを読み込み中…
 ::msgcat::mcset ja {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} ローカルバンドルを確認しました。インストールを確定するには「選択したコンポーネントをインストール」を選択してください。まだ何もインストールされていません。
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset ja {Lock down} ロックダウン
 ::msgcat::mcset ja Log ログ
 ::msgcat::mcset ja {Log (engine + status)} {ログ(エンジン + 状態)}
+::msgcat::mcset ja {Log of %s} {%s のログ}
+::msgcat::mcset ja Logs… ログ…
 ::msgcat::mcset ja {M-g- (g: goto line)} {M-g- (g: 行へ移動)}
 ::msgcat::mcset ja {M-p/M-n history · Tab complete} {M-p/M-n 履歴 · Tab 補完}
 ::msgcat::mcset ja {MCP server list} {MCP サーバー一覧}
 ::msgcat::mcset ja {MCP servers (from config.toml)} {MCP サーバー (config.toml 由来)}
 ::msgcat::mcset ja {Make default} デフォルトにする
 ::msgcat::mcset ja {Make default (config.toml)} デフォルトにする（config.toml）
+::msgcat::mcset ja {Manage extensions} 拡張機能を管理
 ::msgcat::mcset ja {Manifest SHA-256} {マニフェスト SHA-256}
 ::msgcat::mcset ja {Mark read} 既読にする
 ::msgcat::mcset ja {Mechanisms (what the engine does on its own)} メカニズム(エンジンが自律的に行うこと)
 ::msgcat::mcset ja {Mechanisms — what the engine does on its own, and how to stop it} {メカニズム — エンジンが自動で行うことと停止方法}
 ::msgcat::mcset ja Memory メモリ
 ::msgcat::mcset ja {Memory history} メモリ履歴
+::msgcat::mcset ja {Memory: %1$s available of %2$s (%3$s%% used)} {メモリ: %2$s 中 %1$s 空き (%3$s%% 使用中)}
+::msgcat::mcset ja {Merge the received %s into this node?} {受信した %s をこのノードにマージしますか？}
 ::msgcat::mcset ja Messages メッセージ数
+::msgcat::mcset ja Metrics メトリクス
+::msgcat::mcset ja {Metrics (asked %s):} {メトリクス (%s に要求):}
+::msgcat::mcset ja {Metrics of %1$s failed: %2$s} {%1$s のメトリクス取得に失敗: %2$s}
+::msgcat::mcset ja {Metrics of %s received.} {%s のメトリクスを受信しました。}
+::msgcat::mcset ja {Metrics: not asked yet — use Metrics.} {メトリクス: まだ要求していません — メトリクス を使用してください。}
 ::msgcat::mcset ja Model モデル
 ::msgcat::mcset ja {Model for this session} このセッションのモデル
 ::msgcat::mcset ja {Models & settings} モデルと設定
+::msgcat::mcset ja Monitors モニター
+::msgcat::mcset ja Name 名前
+::msgcat::mcset ja {Need an account? Optional sign-up links (open in your browser):} {アカウントが必要ですか？ 任意のサインアップリンク（ブラウザで開きます）:}
 ::msgcat::mcset ja Network ネットワーク
 ::msgcat::mcset ja {New alias} 新規エイリアス
+::msgcat::mcset ja {New branch name} 新しいブランチ名
 ::msgcat::mcset ja {New cron job} {新規 cron ジョブ}
+::msgcat::mcset ja {New extension} 新規拡張機能
 ::msgcat::mcset ja {New memory file} 新しいメモリファイル
 ::msgcat::mcset ja {New plugin} 新規プラグイン
 ::msgcat::mcset ja {New session} 新規セッション
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset ja Next 次へ
 ::msgcat::mcset ja Nickname ニックネーム
 ::msgcat::mcset ja {NixOS: emit a module snippet; do not edit host declarations} {NixOS: モジュールスニペットを出力; ホスト宣言は編集しない}
+::msgcat::mcset ja {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {このノードには SSH ライフサイクルターゲットが設定されていません。デプロイや再起動を行うには、明示的にインスタンスを追加してください。}
+::msgcat::mcset ja {No additional push happens.} 追加のプッシュは行われません。
 ::msgcat::mcset ja {No apps yet. Ask the agent to make one: “make me an app that…”} まだアプリはありません。エージェントに作ってもらいましょう:「…するアプリを作って」
 ::msgcat::mcset ja {No code in the picture. Hold the phone closer, straight on, and scan again.} 写真にコードがありません。スマートフォンを近づけ、まっすぐ構えてもう一度スキャンしてください。
 ::msgcat::mcset ja {No configuration snapshot will be restored.} 設定スナップショットは復元されません。
+::msgcat::mcset ja {No configured sync peer for this node.} このノードに設定された同期ピアはありません。
+::msgcat::mcset ja {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} 専用の翻訳機能が設定されていません。「翻訳機能を設定」でプロバイダー、モデル、翻訳先言語を選択してください。
+::msgcat::mcset ja {No deployment started.} 配備は開始されていません。
+::msgcat::mcset ja {No diagnostics reported by the current LSP document.} {現在の LSP ドキュメントから診断情報は報告されていません。}
+::msgcat::mcset ja {No explicitly configured desktop gateway is bound to this node.} このノードには明示的に設定されたデスクトップゲートウェイが関連付けられていません。
+::msgcat::mcset ja {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {このノードには明示的に設定されたゲートウェイが関連付けられていません。先にゲートウェイを追加してください。レジストリエンドポイントはデスクトップ URL として使用されません。}
+::msgcat::mcset ja {No file is open. Ask a design question, or open an extension file for help with its code.} ファイルが開かれていません。設計について質問するか、拡張機能のファイルを開いてコードの支援を受けてください。
+::msgcat::mcset ja {No files have been written. Review the exact manifest and source, then confirm creation.} まだファイルは書き込まれていません。実際のマニフェストとソースを確認してから、作成を確定してください。
 ::msgcat::mcset ja {No modules or process plugins were discovered. The provider setup steps can still continue.} モジュールまたはプロセスプラグインが検出されませんでした。プロバイダーのセットアップ手順は引き続き続行できます。
+::msgcat::mcset ja {No other registered node to compare with.} 比較できる他の登録済みノードがありません。
 ::msgcat::mcset ja {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} どのプロファイルもこのウィザードからサービスを起動したり、管理者権限が必要なスクリプトを実行したりしません。実行前にプランと引き継ぎを確認してください。
+::msgcat::mcset ja {No proposal has been requested. Nothing will be written automatically.} 提案はまだ要求されていません。自動で書き込まれることはありません。
+::msgcat::mcset ja {No proposal. Nothing was written.} 提案はありません。何も書き込まれていません。
 ::msgcat::mcset ja {No routes configured.} ルートが設定されていません。
 ::msgcat::mcset ja {No session selected — pick one in the sidebar or start a new one} {セッション未選択 — サイドバーで選ぶか、新規作成}
 ::msgcat::mcset ja {No swap target yet: pick a language and press “Set as swap target”.} 切り替え先がまだありません：言語を選んで「切り替え先にする」を押してください。
 ::msgcat::mcset ja {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {config.toml に {[}acl{]} セクションがありません: ゲートウェイに届く送信者はすべてオーナーとして扱われます (ACL 以前のシングルユーザー動作)。付与と剥奪は引き続き機能し、{[}acl{]} が存在した時点で効果が現れます。}
+::msgcat::mcset ja {Node id} {ノード ID}
+::msgcat::mcset ja {Non-evaluating syntax checks} コードを実行しない構文チェック
+::msgcat::mcset ja {Not available: %s} {利用できません: %s}
+::msgcat::mcset ja Note メモ
 ::msgcat::mcset ja {Note for the agent (optional):} エージェントへのメモ（任意）:
+::msgcat::mcset ja {Nothing selected.} 何も選択されていません。
 ::msgcat::mcset ja {Nothing typed yet.} まだ何も入力されていません。
+::msgcat::mcset ja {Nothing was generated or written.} 何も生成・書き込みされていません。
+::msgcat::mcset ja {Nothing was prepared: the chosen repository already has these paths.} {何も準備されませんでした: 選択したリポジトリには既にこれらのパスがあります。}
 ::msgcat::mcset ja Notifications 通知
 ::msgcat::mcset ja OK OK
 ::msgcat::mcset ja Off オフ
 ::msgcat::mcset ja On オン
+::msgcat::mcset ja {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {確認済みの拡張機能バッファのみが置き換えられます。プレビュー後にファイルが変更された場合の保護も有効です。コミット、プッシュ、PR の作成は行われません。}
+::msgcat::mcset ja {Only this new branch is committed. Your ambient git identity is used.} {コミットされるのはこの新しいブランチのみです。現在の環境の Git アイデンティティが使用されます。}
 ::msgcat::mcset ja Op オペレーター権限を与える
 ::msgcat::mcset ja Open 開く
+::msgcat::mcset ja {Open PR…} {PR を開く…}
 ::msgcat::mcset ja {Open a window} ウィンドウを開く
 ::msgcat::mcset ja {Open in Dev} {Dev で開く}
 ::msgcat::mcset ja {Open in browser} ブラウザで開く
 ::msgcat::mcset ja {Open plugin} プラグインを開く
 ::msgcat::mcset ja {Open terminal} ターミナルを開く
+::msgcat::mcset ja {Open this pull request?} このプルリクエストを開きますか？
 ::msgcat::mcset ja {Open veles in Android's settings} {Android の設定で veles を開く}
 ::msgcat::mcset ja {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {任意: 参加する IRC ネットワーク。チャンネルはスペースまたはカンマで区切ってください。.env の IRC_CHANNELS が設定されている場合は、このリストを置き換えます。}
 ::msgcat::mcset ja {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} オプションは選択したコンポーネントのマニフェストから取得されます。シークレットと思われるフィールドはセットアップ/保管庫のフローに残り、空欄のフィールドはそのオプションを変更しません。
 ::msgcat::mcset ja {Or paste a ticket signed on another device} または別のデバイスで署名されたチケットを貼り付け
 ::msgcat::mcset ja {Or type an answer:} または回答を入力:
+::msgcat::mcset ja Origin オリジン
 ::msgcat::mcset ja Other… その他…
 ::msgcat::mcset ja Outline アウトライン
+::msgcat::mcset ja Output 出力
 ::msgcat::mcset ja {Override for THIS session (leave blank to inherit the default)} {このセッション限定の上書き (空欄でデフォルトを継承)}
 ::msgcat::mcset ja {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {オーナー ID（telegram:123456、irc:account、または nick!user@host マスク）}
 ::msgcat::mcset ja {PDS and handle domain} {PDS とハンドルドメイン}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset ja {Pause scheduler} スケジューラを一時停止
 ::msgcat::mcset ja {Peek (C-c C-p)} {ピーク (C-c C-p)}
 ::msgcat::mcset ja {Peek definition} 定義をプレビュー
+::msgcat::mcset ja {Permission grants} 権限の付与
+::msgcat::mcset ja {Permission grants…} 権限の付与…
 ::msgcat::mcset ja Phone スマートフォン
 ::msgcat::mcset ja {Phone: permissions, battery, storage} スマートフォン：権限、バッテリー、ストレージ
 ::msgcat::mcset ja {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {%s 製のスマートフォンは、アプリを独自に停止することもあります。veles のアプリ設定で、自動起動とバックグラウンドでの実行を許可してください。}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset ja Port ポート
 ::msgcat::mcset ja {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {プレフィックスキー (C-x, M-o) は押した瞬間に which-key ポップアップを表示します。}
 ::msgcat::mcset ja {Prepare an own vlpds PDS through the signed CLI handoff} {署名付き CLI ハンドオフで独自の vlpds PDS を準備}
+::msgcat::mcset ja {Prepare branch…} ブランチを準備…
+::msgcat::mcset ja {Prepare this branch and commit?} このブランチとコミットを準備しますか？
 ::msgcat::mcset ja Preview プレビュー
+::msgcat::mcset ja {Preview change set} 変更セットをプレビュー
+::msgcat::mcset ja {Preview files} ファイルをプレビュー
 ::msgcat::mcset ja {Preview here} ここでプレビュー
 ::msgcat::mcset ja {Preview pane} プレビューペイン
+::msgcat::mcset ja {Preview proposal} 提案をプレビュー
+::msgcat::mcset ja {Preview the changed name or language before creating it.} 作成前に、変更後の名前または言語をプレビューしてください。
+::msgcat::mcset ja Probe プローブ
+::msgcat::mcset ja {Probe of %1$s failed: %2$s} {%1$s のプローブに失敗: %2$s}
 ::msgcat::mcset ja {Profile result} プロファイル結果
 ::msgcat::mcset ja {Promote into config.toml} {config.toml に反映}
 ::msgcat::mcset ja Promote… 反映…
 ::msgcat::mcset ja Provider プロバイダー
+::msgcat::mcset ja {Provider driver (plugin wire only)} {プロバイダードライバー（plugin wire のみ）}
 ::msgcat::mcset ja {Provider entry name} プロバイダエントリ名
 ::msgcat::mcset ja {Provider for this session} このセッションのプロバイダー
 ::msgcat::mcset ja Providers プロバイダー
 ::msgcat::mcset ja {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {プロバイダーはテーブルのリストです: custom_providers.0.base_url、.0.api_mode、.0.key_env … インデックスは下に表示されている順序です。}
 ::msgcat::mcset ja {Public HTTPS URL} {公開 HTTPS URL}
+::msgcat::mcset ja {Pull request base} プルリクエストのベースブランチ
+::msgcat::mcset ja {Pull request created} プルリクエストを作成しました
+::msgcat::mcset ja {Pull request description} プルリクエストの説明
+::msgcat::mcset ja {Pull request opened.} プルリクエストを開きました。
+::msgcat::mcset ja {Pull request repository} プルリクエストのリポジトリ
+::msgcat::mcset ja {Pull request title} プルリクエストのタイトル
 ::msgcat::mcset ja {Purge + delete files} {消去 + ファイルを削除}
 ::msgcat::mcset ja {Purge container} コンテナを消去
+::msgcat::mcset ja Purpose 目的
+::msgcat::mcset ja Push プッシュ
+::msgcat::mcset ja {Push branch…} ブランチをプッシュ…
+::msgcat::mcset ja {Push complete. No pull request has been opened.} プッシュが完了しました。プルリクエストはまだ作成されていません。
+::msgcat::mcset ja {Push this branch?} このブランチをプッシュしますか？
+::msgcat::mcset ja {Push to %s:} {%s へプッシュ:}
 ::msgcat::mcset ja Question 質問
 ::msgcat::mcset ja Questions 質問
 ::msgcat::mcset ja Quit 終了
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset ja {Reading notifications, for triggers} 通知の読み取り（トリガー用）
 ::msgcat::mcset ja Reasoning 推論
 ::msgcat::mcset ja {Reasoning effort} 推論レベル
+::msgcat::mcset ja {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {受信済み、適用待ち: ストア %1$s · メモリ %2$s · 設定 %3$s · 保管庫 %4$s}
+::msgcat::mcset ja {Recommended checks} 推奨チェック
 ::msgcat::mcset ja {Refetch this transcript from the store} このトランスクリプトをストアから再取得
 ::msgcat::mcset ja Refresh 更新
 ::msgcat::mcset ja {Refresh preview} プレビューを更新
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset ja {Rename symbol} シンボル名を変更
 ::msgcat::mcset ja Rename… 名前を変更…
 ::msgcat::mcset ja Rendered 描画済み
+::msgcat::mcset ja {Replace existing repository files?} 既存のリポジトリファイルを置き換えますか？
+::msgcat::mcset ja {Replace them in the new branch? Nothing else in the repository changes.} 新しいブランチでそれらを置き換えますか？リポジトリの他の部分は変更されません。
 ::msgcat::mcset ja Repository リポジトリ
 ::msgcat::mcset ja {Repository (owner/name)} リポジトリ（owner/name）
+::msgcat::mcset ja {Repository directory} リポジトリディレクトリ
+::msgcat::mcset ja {Repository paths} リポジトリのパス
+::msgcat::mcset ja {Request a new preview before trying again.} 再試行前に新しいプレビューを要求してください。
 ::msgcat::mcset ja {Reset to default} 既定値に戻す
 ::msgcat::mcset ja {Reset to template} テンプレートにリセット
 ::msgcat::mcset ja Restart 再起動
+::msgcat::mcset ja {Restart + verify canary} カナリアを再起動して検証
 ::msgcat::mcset ja {Restore hidden windows} 非表示ウィンドウを復元
 ::msgcat::mcset ja {Restore plugins to %s?} {プラグインを %s に復元しますか？}
 ::msgcat::mcset ja {Restore revision r%1$s of %2$s?} {%2$s のリビジョン r%1$s を復元しますか?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset ja {Restore this commit} このコミットを復元
 ::msgcat::mcset ja {Restore this revision} このリビジョンを復元
 ::msgcat::mcset ja {Resume scheduler} スケジューラを再開
+::msgcat::mcset ja {Resume unfinished operation} 未完了の操作を再開
 ::msgcat::mcset ja Revert リバート
 ::msgcat::mcset ja {Revert %s to HEAD? Uncommitted changes in this file are lost.} {%s を HEAD に戻しますか？このファイルの未コミットの変更は失われます。}
 ::msgcat::mcset ja Revert… リバート…
 ::msgcat::mcset ja Review レビュー
 ::msgcat::mcset ja {Review (git) pane} {レビュー (git) ペイン}
+::msgcat::mcset ja {Review deployment} 配備を確認
+::msgcat::mcset ja {Review extension contribution} 拡張機能のコントリビューションを確認
 ::msgcat::mcset ja {Review managed local bundle…} 管理対象のローカルバンドルを確認…
 ::msgcat::mcset ja {Review rollback} ロールバックを確認
+::msgcat::mcset ja {Review selected files} 選択したファイルを確認
 ::msgcat::mcset ja {Review the component options on the summary screen before applying.} 適用前にサマリー画面でコンポーネントオプションを確認してください。
 ::msgcat::mcset ja {Review the component preview before applying. No component configuration has been written.} 適用前にコンポーネントのプレビューを確認してください。コンポーネント設定はまだ書き込まれていません。
+::msgcat::mcset ja {Review the selected files and remove credential findings before preparing.} 準備する前に選択したファイルを確認し、検出された認証情報を削除してください。
 ::msgcat::mcset ja {Reviewed core bundle in the managed install-sources directory} 管理対象のinstall-sourcesディレクトリ内のレビュー済みコアバンドル
+::msgcat::mcset ja {Reviewed fleet deployment} 確認済みのフリート配備
 ::msgcat::mcset ja {Reviewed local bundle} 確認済みのローカルバンドル
 ::msgcat::mcset ja {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} 確認済みのローカルバンドルをインストールしました。署名付きダウンロードの検証は行われていません。新しいコアを使用するには再起動が必要です。
 ::msgcat::mcset ja Revision リビジョン
 ::msgcat::mcset ja Revoke 取り消し
+::msgcat::mcset ja {Revoke selected} 選択項目を取り消す
 ::msgcat::mcset ja Roles ロール
 ::msgcat::mcset ja {Roll back %1$s from %2$s to %3$s?} {%1$s を %2$s から %3$s にロールバックしますか？}
+::msgcat::mcset ja {Roll back selected target} 選択したターゲットをロールバック
 ::msgcat::mcset ja {Rollback completed. Reload the component or restart as requested by the report.} ロールバックが完了しました。レポートの指示に従い、コンポーネントを再読み込みするか再起動してください。
 ::msgcat::mcset ja {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} ロールバックを確認しました。復元を確定するには「選択したコンポーネントをインストール」を選択してください。まだ何も復元されていません。
 ::msgcat::mcset ja Run 実行
 ::msgcat::mcset ja {Run the wizard again} ウィザードをもう一度実行
 ::msgcat::mcset ja {Running in the background} バックグラウンドでの実行
-::msgcat::mcset ja {Running tasks} 実行中のタスク
-::msgcat::mcset ja {Running tasks (subagents, shells, monitors)} {実行中のタスク (サブエージェント、シェル、モニター)}
 ::msgcat::mcset ja {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {ランタイム時の付与とユーザーはストアにあり、ストアのリセットで消えます。「反映」はストアが決定した分を config.toml に追記します — ファイルのコメントとキー順はそのまま、隣にバックアップを作成し、ストア側のコピーは破棄します — ファイルに既に指定がある箇所は推測せず拒否します。}
 ::msgcat::mcset ja {S3 HTTPS endpoint} {S3 HTTPS エンドポイント}
 ::msgcat::mcset ja {S3 bucket} {S3 バケット}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset ja {Save as default} デフォルトとして保存
 ::msgcat::mcset ja {Save attachment as} 添付ファイルに名前を付けて保存
 ::msgcat::mcset ja {Save globally} グローバルに保存
+::msgcat::mcset ja {Save or revert the open buffer before applying a change set.} 変更セットを適用する前に、開いているバッファを保存するか元に戻してください。
 ::msgcat::mcset ja Scan スキャン
 ::msgcat::mcset ja {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {このスマートフォンを招待したマシンの veles コードをスキャンしてください。先に WireGuard のコードが表示された場合は、その前にそれを WireGuard アプリでスキャンしてください。}
 ::msgcat::mcset ja {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {スケジュール: 間隔 ("30m"、"every 2h")、cron パターン ("0 9 * * 1")、または一回限りの ISO タイムスタンプ。上の行にエンジンが読み取った内容が表示されます。配信: "local" は出力をログに保持します — 背後にチャットプラットフォームのないデスクトップで唯一誠実なデフォルト — または "platform:chat_id"。セッション復帰: 空欄なら新しいセッションで実行。セッション ID (または一意のプレフィックス) を指定すると、そのセッションの全履歴を引き継いで再開します — ビジーなセッションでは代わりに次のターン境界でプロンプトを受け取ります。}
+::msgcat::mcset ja Scope スコープ
 ::msgcat::mcset ja {Scroll to end} 末尾までスクロール
 ::msgcat::mcset ja {Search commands and sessions…} コマンドとセッションを検索…
 ::msgcat::mcset ja {Search message text} メッセージ本文を検索
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset ja Section セクション
 ::msgcat::mcset ja {Select a component first. No component options will be changed if you skip this step.} 先にコンポーネントを選択してください。このステップをスキップしてもコンポーネントオプションは変更されません。
 ::msgcat::mcset ja {Select all} すべて選択
+::msgcat::mcset ja {Select all extensions} すべての拡張機能を選択
+::msgcat::mcset ja {Select at least one source file.} {ソースファイルを少なくとも 1 つ選択してください。}
+::msgcat::mcset ja {Select none} 選択を解除
+::msgcat::mcset ja {Select text to translate first.} まず翻訳するテキストを選択してください。
+::msgcat::mcset ja {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {提供する拡張機能とファイルを選択してください。それらは 1 つのブランチと 1 つのプルリクエストにまとめられ、各拡張機能はそれぞれのディレクトリに入ります。内容を確認し、評価を伴わないチェックを実行してから、分離されたブランチを準備してコミットします。プッシュとプルリクエストの作成は、それぞれ別に確認が必要な操作です。}
 ::msgcat::mcset ja Send 送信
+::msgcat::mcset ja {Send %s to the peer?} {%s をピアに送信しますか？}
 ::msgcat::mcset ja {Send a %d-line message to the channel?} {チャンネルに %d 行のメッセージを送信しますか？}
 ::msgcat::mcset ja {Send raw line to the server? (%s)} サーバーに生の行を送信しますか？(%s)
 ::msgcat::mcset ja {Server (empty = no IRC)} {サーバー（空 = IRC なし）}
 ::msgcat::mcset ja {Server: gateway configuration and a reviewed user unit} {サーバー: ゲートウェイ設定とレビュー済みのユーザーユニット}
 ::msgcat::mcset ja {Server: install a user unit and prepare the separate linger handoff} {サーバー: ユーザーユニットをインストールし、別のlinger引き継ぎを準備}
 ::msgcat::mcset ja {Server: use a system service and prepare a privileged CLI request} {サーバー: システムサービスを使用し、管理者権限が必要なCLI要求を準備}
+::msgcat::mcset ja Session セッション
 ::msgcat::mcset ja {Session id} セッションID
 ::msgcat::mcset ja {Session id…} セッションID…
 ::msgcat::mcset ja Sessions セッション
 ::msgcat::mcset ja {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} このエイリアスに上書き中のセッションは解決済みのルートを維持します。新しい上書きではこの名前は見つかりません。
+::msgcat::mcset ja {Sessions served} 処理セッション数
 ::msgcat::mcset ja Set 適用
 ::msgcat::mcset ja {Set [model] provider/default in config.toml.} {config.toml で [model] の provider/default を設定します。}
 ::msgcat::mcset ja {Set as swap target} 切り替え先にする
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset ja {Setup — summary} {セットアップ — サマリー}
 ::msgcat::mcset ja {Setup — welcome} {セットアップ — ウェルカム}
 ::msgcat::mcset ja {Shared container network} 共有コンテナネットワーク
+::msgcat::mcset ja Shells シェル
+::msgcat::mcset ja {Shells and monitors} シェルとモニター
+::msgcat::mcset ja {Shells and monitors (subagents, shells, monitors)} シェルとモニター（サブエージェント、シェル、モニター）
 ::msgcat::mcset ja {Show diff} 差分を表示
 ::msgcat::mcset ja {Show every key} すべてのキーを表示
 ::msgcat::mcset ja Sign 署名
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset ja Solved 解決済み
 ::msgcat::mcset ja Source ソース
 ::msgcat::mcset ja {Source commit} ソースコミット
+::msgcat::mcset ja {Source text} 原文
 ::msgcat::mcset ja {Source→app (C-c C-c)} {ソース→アプリ (C-c C-c)}
 ::msgcat::mcset ja Stage ステージ
+::msgcat::mcset ja {Stage canary} カナリアをステージング
+::msgcat::mcset ja Stale 古い（Stale）
+::msgcat::mcset ja {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {常時権限があると、以降のツール呼び出しで再確認を求めません。セッション付与は各サーフェス (デスクトップ、Telegram、IRC など) の実行中セッションが保持します。グローバル付与は永続します。config.toml の [approvals] 許可リストの項目は読み取り専用で表示されます。1 つを取り消しても他の付与は変わりません。}
 ::msgcat::mcset ja Start 開始
+::msgcat::mcset ja {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {ユーザープラグインディレクトリ内の拡張機能から始めてください。アップグレード後も保持され、ゲートウェイの再ビルドは不要です。新しい拡張機能の作成では、書き込み前に実際のマニフェストとソースをプレビューできます。対応する言語と API バージョンを選び、ファイルを確認してから、拡張機能を分離環境でテストしてください。}
 ::msgcat::mcset ja {Start with the phone} スマートフォンと一緒に起動
+::msgcat::mcset ja {Static IP} {固定 IP}
 ::msgcat::mcset ja Status ステータス
 ::msgcat::mcset ja Steer ステア
 ::msgcat::mcset ja {Step %1$d of %2$d} {ステップ %1$d / %2$d}
 ::msgcat::mcset ja {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {未設定: %s — ここで /secret set NAME と入力するか、ゲートウェイのマシンで veles secret set NAME を実行してください。}
 ::msgcat::mcset ja Stop 停止
 ::msgcat::mcset ja {Storage root} ストレージルート
+::msgcat::mcset ja Store ストア
 ::msgcat::mcset ja {Store a secret: %s} {シークレットを保存: %s}
 ::msgcat::mcset ja {Store it} 保存する
+::msgcat::mcset ja {Store replica} ストアレプリカ
 ::msgcat::mcset ja Subagents サブエージェント
 ::msgcat::mcset ja {Subagents (/agents)} {サブエージェント (/agents)}
 ::msgcat::mcset ja Summary サマリー
+::msgcat::mcset ja Surface サーフェス
 ::msgcat::mcset ja {Swap ⇄} {入れ替え ⇄}
+::msgcat::mcset ja {Sync cancelled.} 同期はキャンセルされました。
+::msgcat::mcset ja {Sync complete.} 同期が完了しました。
+::msgcat::mcset ja {Sync now} 今すぐ同期
 ::msgcat::mcset ja {TOML copied — paste it into config.toml} {TOML をコピーしました — config.toml に貼り付けてください}
 ::msgcat::mcset ja Tag タグ
 ::msgcat::mcset ja {Tap a link to open it, or a block's header to open or close the block.} リンクをタップすると開きます。ブロックの見出しをタップするとブロックを開閉します。
 ::msgcat::mcset ja {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} 下のボックスをタップして入力します。「送信」で送信、「停止」でターンを終了、「切り離す」で実行中のコマンドをバックグラウンドに移します。
 ::msgcat::mcset ja {Tap the text to clear the selection.} テキストをタップすると選択が解除されます。
+::msgcat::mcset ja {Target language:} 対象言語:
+::msgcat::mcset ja {Target node IDs (canary first, comma separated)} {ターゲットのノード ID (カナリアを先頭に、カンマ区切り)}
 ::msgcat::mcset ja {Task list} タスクリスト
 ::msgcat::mcset ja {Task list (right pane)} {タスクリスト (右ペイン)}
 ::msgcat::mcset ja Tasks タスク
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset ja {That is not a ticket.} チケットではありません。
 ::msgcat::mcset ja {That is not a veles pool code.} {それは veles のグループのコードではありません。}
 ::msgcat::mcset ja {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {それは WireGuard のコードです。WireGuard アプリでスキャンしてください。veles のコードは2つ目です。}
+::msgcat::mcset ja {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {レビューした %d 個のファイルがユーザープラグインディレクトリ内の新しいディレクトリに書き込まれ、veles が拡張機能の読み込みを試みます。プレビュー以降に同名のディレクトリが現れていた場合は、何も書き込まれません。公開はこの操作に含まれません。}
 ::msgcat::mcset ja {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {開発ペインの REPL は稼働中のアプリで評価されます — UI はそれ自体が lisp です。}
 ::msgcat::mcset ja {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {config.toml から [mcp_servers.<name>] テーブルが削除されます。以前のファイルは config.toml.bak として保持されます。}
 ::msgcat::mcset ja {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} アダプタのallowリスト（IRC_ALLOWED_USERS、TELEGRAM_ALLOWED_USERS）が信頼境界となり、許可された送信者はすべてオーナーとして扱われます。ACL導入前の姿勢です。
 ::msgcat::mcset ja {The agent asks for a secret: %s} {エージェントがシークレットを求めています: %s}
+::msgcat::mcset ja {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {既にプッシュされたブランチが PR の head として使用されます。フォーク上のブランチは owner:branch として自動的に命名されます。}
+::msgcat::mcset ja {The author asks} 作者からの質問
+::msgcat::mcset ja {The buffer changed. Request a new proposal before applying.} バッファが変更されました。適用前に新しい提案を要求してください。
 ::msgcat::mcset ja {The bundle operation returned an invalid result. Verify the installation before retrying.} バンドル操作が無効な結果を返しました。再試行前にインストールを確認してください。
 ::msgcat::mcset ja {The bundle preview was malformed; nothing was installed.} バンドルのプレビューが不正でした。何もインストールされていません。
 ::msgcat::mcset ja {The camera did not open; paste the code instead.} カメラを開けませんでした。代わりにコードを貼り付けてください。
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset ja {The component manifest is still loading. Wait for it or choose another component.} コンポーネントのマニフェストはまだ読み込み中です。完了を待つか、別のコンポーネントを選んでください。
 ::msgcat::mcset ja {The component preview is not ready yet. Refresh it and review the result before applying.} コンポーネントのプレビューはまだ準備できていません。更新して結果を確認してから適用してください。
 ::msgcat::mcset ja {The component preview is still loading. Wait for the reply before reviewing the combined changes.} コンポーネントのプレビューはまだ読み込み中です。統合された変更を確認する前に応答を待ってください。
+::msgcat::mcset ja {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {現在の診断 (ランゲージサーバーまたはチェックによるもの) がこのファイルとともに送信されます。必要なら質問も追加できます。回答はテキストのみで、何も書き込めません。}
 ::msgcat::mcset ja {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} ディレクトリとその中身はすべて削除されます。取り消しはできません。プロンプトから外したいだけなら無効にしてください。
 ::msgcat::mcset ja {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {ディレクトリは削除されます。プラグインフォルダはgitリポジトリで、先にスナップショットがコミットされるので History… で復元できます。}
+::msgcat::mcset ja {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {エディターはリモートインスタンスを含むゲートウェイのファイルを開き、そのファイルの言語に対応するランゲージサーバーをゲートウェイ上で実行します: tcl-lsp、typescript-language-server (TypeScript と JavaScript)、rust-analyzer (Rust プラグインのクレートまたはモジュール)、clangd (C)、racket-langserver、Common Lisp サーバー。ゲートウェイにサーバーがある言語では、ホバー、定義へ移動、補完、リアルタイム診断が機能します。サーバーがない場合は、そこに導入すべきプログラムをエディターが示し、シンタックスハイライトは維持されます。チェックはゲートウェイ上で対応するチェッカーを実行します: tcl-lsp、tsc --noEmit、node --check、cargo check、clang -fsyntax-only、または Racket と Lisp のリーダー。保存、拡張機能の管理での再読み込み、ローカル状態を公開しない拡張機能のテストができます。}
 ::msgcat::mcset ja {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {最初のハンドオフでは、シークレット、固定したイメージ、ランタイムファイルを準備しますが、PDS は起動しません。KEK と PLC ローテーションキーをオフラインでバックアップし、バックアップ確認付きの新たなレビュー済みリクエストを作成して、HTTP-01 TLS と有効化を設定してください。DNS レコードはこのホストに直接向ける必要があります。CDN プロキシや DNS の変更は veles では行いません。}
+::msgcat::mcset ja {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} 拡張機能の生成後にフォームが変更されました。もう一度生成するか、素のスキャフォールドをプレビューしてください。
 ::msgcat::mcset ja {The gateway itself is untouched.} ゲートウェイ自体は変更されません。
 ::msgcat::mcset ja {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {ゲートウェイが設定を再読み込みしたので、新しいセッションはすぐにそれを使い、保管庫に保存したキーは次のリクエストから使われます。Telegram と IRC は次回のゲートウェイ再起動で開始します: veles gateway restart。}
 ::msgcat::mcset ja {The installed component no longer matches the selected manifest. Review the component list again.} インストール済みのコンポーネントが選択したマニフェストと一致しなくなりました。コンポーネント一覧を再度確認してください。
 ::msgcat::mcset ja {The installer preview has no verification signatures; apply is disabled.} インストーラーのプレビューに検証署名がありません。適用は無効です。
 ::msgcat::mcset ja {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} ジョブとその実行履歴が削除されます。取り消しはできません。止めたいだけなら一時停止してください。
+::msgcat::mcset ja {The log could not be read: %s} {ログを読み取れませんでした: %s}
 ::msgcat::mcset ja {The manifest belongs to another component; its reply was discarded.} マニフェストは別のコンポーネントに属しています。その応答は破棄されました。
 ::msgcat::mcset ja {The profile changed. Review the fresh plan before applying it.} プロファイルが変更されました。適用する前に新しいプランを確認してください。
 ::msgcat::mcset ja {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {リポジトリのルートまたは1カテゴリ下に SKILL.md が必要です。%s に配置されます。}
 ::msgcat::mcset ja {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {リポジトリのルートに plugin.toml が必要です。マニフェストの名前で %s にクローンされます。}
+::msgcat::mcset ja {The reviewed change set was applied (%d files). Review and test it before publishing.} {レビューした変更セットを適用しました (%d ファイル)。公開する前に確認とテストを行ってください。}
 ::msgcat::mcset ja {The reviewed configuration snapshot will also be restored.} 確認済みの設定スナップショットも復元されます。
+::msgcat::mcset ja {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {確認済みのファイルがユーザープラグインディレクトリに書き込まれます。Veles はローカルの復元用スナップショットを保存し、拡張機能の再読み込みを試みます。この操作で公開は行われません。}
+::msgcat::mcset ja {The reviewed proposal was applied locally. Review and test it before publishing.} 確認済みの提案をローカルに適用しました。公開前に内容を確認・テストしてください。
 ::msgcat::mcset ja {The rollback preview was malformed or named another component; nothing was restored.} ロールバックのプレビューが不正か、別のコンポーネントが指定されていました。何も復元されていません。
 ::msgcat::mcset ja {The rollback returned an invalid result. Verify the installation before retrying.} ロールバックが無効な結果を返しました。再試行前にインストールを確認してください。
 ::msgcat::mcset ja {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {新規セッションが最初に使うルートです。/model とモデル一覧オーバーレイで後から変更できます。セッション単位でも、新しいデフォルトとしても変更可能。}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset ja {The signed download discard returned an invalid response; no installation was requested.} 署名付きダウンロードの破棄が無効な応答を返しました。インストールは要求されていません。
 ::msgcat::mcset ja {The signed installation returned an invalid result. Verify the installation before retrying.} 署名付きインストールが無効な結果を返しました。再試行する前にインストールを確認してください。
 ::msgcat::mcset ja {The signed release preview was malformed; nothing was installed.} 署名付きリリースのプレビューが不正でした。何もインストールされていません。
+::msgcat::mcset ja {The source buffer changed. Request a new proposal before applying.} ソースバッファが変更されました。適用前に新しい提案を要求してください。
 ::msgcat::mcset ja {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} ストアは1リビジョン戻ります。ロールバック自体もリビジョンなので、さらに取り消せます。
+::msgcat::mcset ja {The translator returned no text.} 翻訳モデルはテキストを返しませんでした。
 ::msgcat::mcset ja {The verification reply was malformed; no integrity result was accepted.} 検証応答が不正でした。整合性の結果はいずれも受け入れられませんでした。
 ::msgcat::mcset ja Themes テーマ
+::msgcat::mcset ja {These paths already exist in the chosen repository:} これらのパスは選択したリポジトリに既に存在します:
 ::msgcat::mcset ja {They have not been saved.} 保存されていません。
+::msgcat::mcset ja {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} このバッファには説明できる診断がありません。チェックを実行するか、ランゲージサーバーを待ってください。
 ::msgcat::mcset ja {This challenge is over.} このチャレンジは終了しました。
 ::msgcat::mcset ja {This code has expired. Ask for a new one.} このコードは期限切れです。新しいものを依頼してください。
 ::msgcat::mcset ja {This does not start a service or claim signed-download verification.} これはサービスを開始せず、署名付きダウンロードの検証を保証するものでもありません。
 ::msgcat::mcset ja {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {このゲートウェイはこのマシンからのシークレットの値を受け付けません。そのマシンで veles secret set %s を使って入力するか、このネットワークをゲートウェイの [vault] trusted_networks に追加してください}
 ::msgcat::mcset ja {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {これが書き込まれる内容そのものです — エンジン自身が生成したバイト列をライブで取得しています。まだディスクには何も触れていません。}
+::msgcat::mcset ja {This node is not a configured sync peer for any kind.} このノードはどの種類についても設定された同期ピアではありません。
+::msgcat::mcset ja {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} このプラグインは同梱版で読み取り専用です。同梱版を使うには、同じ名前のユーザー複製を削除してください。
+::msgcat::mcset ja {This publishes the commit; no pull request is created yet.} この操作はコミットを公開します。プルリクエストはまだ作成されません。
 ::msgcat::mcset ja {This review expires after %s seconds. Closing or cancelling discards its private staging.} {この確認は %s 秒後に期限切れになります。閉じるかキャンセルするとプライベートなステージングが破棄されます。}
 ::msgcat::mcset ja {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {このウィザードは config.toml を書き込み、渡されたキーを暗号化された保管庫に入れます。どのステップもスキップできます。スキップしたステップは新しい設定には含まれず、既存の設定ではそのまま残ります。既存の config.toml はその場で編集されます — 変わるのは答えたセクションだけで、コメントを含むそれ以外はすべて残ります。}
 ::msgcat::mcset ja {Ticket needed} チケットが必要です
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset ja {Topic for %s} {%s のトピック}
 ::msgcat::mcset ja {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} セッション、またはメニューのある何かを長押しするとメニューが開きます。メニューの外をタップするか「戻る」で閉じます。
 ::msgcat::mcset ja {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} 単語を長押しすると選択されます。指を離すとメニューが開き、一番上に「コピー」があります。
+::msgcat::mcset ja Translate 翻訳
+::msgcat::mcset ja {Translate selection} 選択範囲を翻訳
+::msgcat::mcset ja Translating… 翻訳中…
+::msgcat::mcset ja {Translation cancelled.} 翻訳をキャンセルしました。
+::msgcat::mcset ja {Translation copied.} 翻訳結果をコピーしました。
+::msgcat::mcset ja {Translation failed} 翻訳に失敗しました
+::msgcat::mcset ja {Translation result} 翻訳結果
+::msgcat::mcset ja {Translator configuration unavailable} 翻訳機能の設定を利用できません
 ::msgcat::mcset ja {Trigger history} トリガー履歴
 ::msgcat::mcset ja Triggers トリガー
 ::msgcat::mcset ja {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {トリガーはターンなしでチャンネルイベントに反応します。slopdrop はイベントをブリッジに転送して返信を中継し、vision はクールダウンと時間あたり上限の範囲内で画像URLを説明します。行は [triggers] 設定スイッチと派生マスクの両方が許可した場合のみ発火します — 現在の slopdrop バインディングでは #coven は何も転送しません。}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset ja {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {.env の IRC_ALLOWED_USERS にあなたのアカウントを指定するまで、ネットワーク上の誰でもボットと話せます — [acl] セクションがなければオーナーとして、すべてのツールを使えます。}
 ::msgcat::mcset ja {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {.env の TELEGRAM_ALLOWED_USERS にあなたのユーザー ID を指定するまで、ボットを見つけた誰でも話しかけられます — [acl] セクションがなければオーナーとして、すべてのツールを使えます。}
 ::msgcat::mcset ja Untitled タイトルなし
+::msgcat::mcset ja {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {アップストリームへの提供は明示的な公開操作であり、自動アップロードではありません。拡張機能の管理の「提供」には、すべてのユーザー拡張機能が一覧表示されます。拡張機能とファイルを選び、差分とシークレットスキャンを確認し、チェックを実行してから、選択した git アイデンティティで 1 つのブランチと 1 つの PR (既定では veles 宛) を作成します。各拡張機能はリポジトリ内の専用ディレクトリに入り、そこに既存のファイルがある場合は別途確認した後にのみ置き換えられます。node.toml、ローカルの認証情報、トークン、プライベートなエンドポイント、無関係なプラグイン状態は決して公開しないでください。ローカルの復旧スナップショットは、アップストリームのコミットでも PR でもありません。}
+::msgcat::mcset ja {Upstream repository or fork URL} {アップストリームリポジトリまたはフォークの URL}
+::msgcat::mcset ja {Uptime class} 稼働時間クラス
+::msgcat::mcset ja {Uptime: host %1$s, gateway %2$s} {稼働時間: ホスト %1$s、ゲートウェイ %2$s}
 ::msgcat::mcset ja Usage 使用量
 ::msgcat::mcset ja {Usage & Quota} 使用量とクォータ
 ::msgcat::mcset ja {Use TLS} {TLS を使用}
 ::msgcat::mcset ja {Use now} 今すぐ使う
+::msgcat::mcset ja {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {実際の仕様については、「作成者ガイド」と「API リファレンス」ボタンを参照してください。「プラグイン」オーバーレイには現在有効なフックが一覧表示されます。サービスとオーバーライドポイントは、このガイドにコピーされた一覧ではなく、ゲートウェイ自身のレジストリから取得されます。}
 ::msgcat::mcset ja {Use this ticket} このチケットを使用
+::msgcat::mcset ja {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {veles 本体にプッシュできる場合を除き、ご自身のフォーク (https://github.com/<you>/veles.git または git@github.com:<you>/veles.git) を使用してください。選択したリポジトリは分離されたワークツリーにクローンされます。何もプッシュされません。}
 ::msgcat::mcset ja {Users — one role across networks and platforms} {ユーザー — ネットワーク/プラットフォーム共通の単一ロール}
 ::msgcat::mcset ja {Using the phone, for the agent} スマートフォンの操作（エージェント用）
 ::msgcat::mcset ja {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {通常はプロバイダエントリ名と同じです。スキップを選ぶ場合は両方空のままにしてください — 片方だけ設定されたペアではルーティングされません。}
 ::msgcat::mcset ja {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {値はTOMLです: 引用符付き文字列、数値、またはリスト。[mcp_servers.<name>] に書き込まれます — コメントと他のセクションは変更されません。}
+::msgcat::mcset ja Vault 保管庫
 ::msgcat::mcset ja {Verified signed bundle installed. Restart the gateway before using the new core.} 検証済みの署名付きバンドルをインストールしました。新しいコアを使用する前にゲートウェイを再起動してください。
 ::msgcat::mcset ja {Verified signed release — not installed yet} {検証済みの署名付きリリース — まだインストールされていません}
 ::msgcat::mcset ja {Verify and review release…} リリースを検証して確認…
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset ja {Verify signed release} 署名付きリリースを検証
 ::msgcat::mcset ja {Verify signed release…} 署名付きリリースを検証中…
 ::msgcat::mcset ja Version バージョン
+::msgcat::mcset ja {Version %1$s: %2$s} {バージョン %1$s: %2$s}
+::msgcat::mcset ja {Version drift in the registry: %s} {レジストリ内のバージョンドリフト: %s}
 ::msgcat::mcset ja View 表示
 ::msgcat::mcset ja {View markdown source} Markdownソースを表示
 ::msgcat::mcset ja {View source / rendered} {ソース / 描画表示}
 ::msgcat::mcset ja Voice 発言権を与える
+::msgcat::mcset ja {Waiting for the model…} モデルの応答を待機中…
+::msgcat::mcset ja {Waiting for the model… Nothing has been written.} {モデルの応答を待機中… 何も書き込まれていません。}
 ::msgcat::mcset ja {Welcome to veles} {veles へようこそ}
 ::msgcat::mcset ja {What the agent can do here} エージェントがここでできること
 ::msgcat::mcset ja {What veles may do on this phone. Each button opens the Android setting that changes it.} {このスマートフォンで veles に許可されていること。各ボタンで、それを変更する Android の設定が開きます。}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset ja {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} velesがバックグラウンドにある間、エージェントからの質問や終了したターンは通知になります。タップするとそのセッションが開きます。
 ::msgcat::mcset ja {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {誰がボットと会話できるか。この選択で、config.toml に [acl] セクションを入れるかどうかが決まり — それが姿勢全体を切り替えます。}
 ::msgcat::mcset ja Whois Whois
-::msgcat::mcset ja {Wire protocol (chat_completions or responses)} {ワイヤプロトコル（chat_completions または responses）}
+::msgcat::mcset ja {Wire protocol (chat_completions, responses or plugin)} ワイヤープロトコル（chat_completions、responses、plugin）
 ::msgcat::mcset ja {With a keyboard attached, every key works as on a laptop.} キーボードを接続すると、すべてのキーがノートPCと同じように動作します。
 ::msgcat::mcset ja {Workflow SHA} {ワークフロー SHA}
+::msgcat::mcset ja {Workflow commit} ワークフローコミット
+::msgcat::mcset ja Worktree ワークツリー
 ::msgcat::mcset ja {Write it} 書き込む
+::msgcat::mcset ja {Write the design question first.} まず設計についての質問を入力してください。
 ::msgcat::mcset ja {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {プロバイダは書き込みません。[[custom_providers]] エントリと [model] のペアが揃うまで、ゲートウェイはターンをルーティングしません。}
 ::msgcat::mcset ja {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {[acl] のキーを 1 つでも書き込むと、このゲートウェイはキュレーテッドモードに切り替わります: 既定のロールは guest（fail-closed）になり、許可リストは境界ではなくなります。信頼できるオーナー ID がある場合にだけ選んでください。}
 ::msgcat::mcset ja {[model] provider} {[model] プロバイダ}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset ja {also list hooks with no handler} ハンドラのないフックも一覧表示
 ::msgcat::mcset ja {also write grants that still have an expiry} 有効期限が残っている付与も書き込む
 ::msgcat::mcset ja {also write runtime users} ランタイムユーザーも書き込む
+::msgcat::mcset ja {an allowlist entry is removed by editing config.toml} {許可リストの項目は config.toml の編集で削除されます}
 ::msgcat::mcset ja {an allowlist is in force: a plugin not on it stays off} {許可リストが有効です: リストにないプラグインはオフのまま}
 ::msgcat::mcset ja {answer failed: %s} {応答に失敗: %s}
+::msgcat::mcset ja {answer only, nothing to apply} 回答のみ、適用するものはありません
 ::msgcat::mcset ja {append these rules to config.toml} {これらのルールを config.toml に追記}
 ::msgcat::mcset ja {apply failed: %s} {適用に失敗: %s}
 ::msgcat::mcset ja {apply to:} 適用先:
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset ja {ask the agent} エージェントに質問する
 ::msgcat::mcset ja {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset ja {asked by: %s} {質問者: %s}
+::msgcat::mcset ja {asking %s for its metrics…} {%s にメトリクスを要求中…}
 ::msgcat::mcset ja {attach a file} ファイルを添付
 ::msgcat::mcset ja {attach an image or file} 画像やファイルを添付
 ::msgcat::mcset ja {attach failed: %1$s} {接続に失敗しました: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset ja {attached %1$s (%2$s pending)} {%1$s に接続（%2$s 保留中）}
 ::msgcat::mcset ja {attached to %s} {%s に接続しました}
 ::msgcat::mcset ja {attached to child session %1$s} {子セッション %1$s に接続しました}
+::msgcat::mcset ja automatic 自動
 ::msgcat::mcset ja {aux model} 補助モデル
 ::msgcat::mcset ja {aux provider} 補助プロバイダー
+::msgcat::mcset ja available 利用可能
 ::msgcat::mcset ja {available components} 利用可能なコンポーネント
 ::msgcat::mcset ja {back up N user turns} {ユーザーのターンを N 回分さかのぼる}
 ::msgcat::mcset ja {backed up the previous config to %s} {以前の設定を %s にバックアップしました}
 ::msgcat::mcset ja {background shells; /shells output|kill <id>} {バックグラウンドのシェル；/shells output|kill <id>}
+::msgcat::mcset ja {backing off: %1$s failure(s), next automatic try in %2$s s} {バックオフ中: 失敗 %1$s 回、次回の自動試行は %2$s 秒後}
 ::msgcat::mcset ja {bad host for %1$s: %2$s} {%1$s のホストが不正: %2$s}
 ::msgcat::mcset ja {bad unit for %1$s: %2$s} {%1$s のユニットが不正: %2$s}
 ::msgcat::mcset ja {bare display off} {簡素表示 オフ}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset ja {browse the filesystem} ファイルシステムを閲覧
 ::msgcat::mcset ja {browse the repo's files} リポジトリのファイルを閲覧
 ::msgcat::mcset ja {builtin (%s):} {ビルトイン (%s):}
+::msgcat::mcset ja bundled 同梱版
+::msgcat::mcset ja {bundled, read-only} 同梱版、読み取り専用
 ::msgcat::mcset ja by 変更者
 ::msgcat::mcset ja {by plan — all sessions} {プラン別 — 全セッション}
 ::msgcat::mcset ja {by plan — this session} {プラン別 — このセッション}
 ::msgcat::mcset ja {by tool} ツール別
 ::msgcat::mcset ja {cancel failed: %1$s} {キャンセルに失敗: %1$s}
 ::msgcat::mcset ja {cancel the running turn} 実行中のターンをキャンセル
+::msgcat::mcset ja {cancel the selected task} 選択したタスクを中止
 ::msgcat::mcset ja {cancelled task %1$s} {タスク %1$s をキャンセルしました}
 ::msgcat::mcset ja {cannot list scripts (gateway offline?)} スクリプトを一覧表示できません（ゲートウェイがオフライン？）
 ::msgcat::mcset ja {cannot reach the gateway: %s} {ゲートウェイに接続できません: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset ja commit コミット
 ::msgcat::mcset ja {compacting %s messages in the background — the transcript reloads when it finishes} {%s件のメッセージをバックグラウンドで圧縮中 — 完了するとトランスクリプトが再読み込みされます}
 ::msgcat::mcset ja compacting… 圧縮中…
+::msgcat::mcset ja {comparing the nodes' versions and config…} ノードのバージョンと設定を比較中…
 ::msgcat::mcset ja {completion tokens} 補完トークン
 ::msgcat::mcset ja {component options and declared actions} コンポーネントオプションと宣言済みアクション
 ::msgcat::mcset ja composer コンポーザー
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset ja {could not open %s} {%s を開けませんでした}
 ::msgcat::mcset ja {could not open %s (no working browser opener)} {%s を開けませんでした（動作するブラウザオープナーがありません）}
 ::msgcat::mcset ja {could not open %{url}: %{e}} {%{url} を開けませんでした: %{e}}
+::msgcat::mcset ja {could not open the optional referral link: %s} {任意の紹介リンクを開けませんでした: %s}
 ::msgcat::mcset ja {could not read %s: %s} {%s を読み込めませんでした: %s}
 ::msgcat::mcset ja {could not read the current route} 現在のルートを読み取れませんでした
 ::msgcat::mcset ja {could not save this session's language: %{e}} このセッションの言語を保存できませんでした：%{e}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset ja {ctxmenu: no widget %s (attached too early?)} {ctxmenu: ウィジェット %s がありません（接続が早すぎ？）}
 ::msgcat::mcset ja {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {キュレーテッドアクセスが選ばれましたがオーナー ID がないため、[acl] は無効のままです — 有効にするには telegram:123456 や irc:account のように指定してください}
 ::msgcat::mcset ja {current theme: %{name} · /theme <name>} {現在のテーマ: %{name} · /theme <name>}
+::msgcat::mcset ja {cursor %1$s of %2$s (%3$s behind)} {カーソル %1$s / %2$s (%3$s 遅れ)}
 ::msgcat::mcset ja {custom command /%s…} {カスタムコマンド /%s…}
 ::msgcat::mcset ja {custom commands (.veles/commands/) and config aliases} カスタムコマンド（.veles/commands/）と設定のエイリアス
 ::msgcat::mcset ja {cycle ends} サイクル終了
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset ja doctor_resident {毎回のプロンプトに常駐：%{total} 文字中 %{shown} 文字（約 %{tokens} トークン）— 残りは必要時に読み込み：memory action=read path=%{path}}
 ::msgcat::mcset ja doctor_title メモリ診断
 ::msgcat::mcset ja doctor_total {合計：%{chars} 文字、%{files} ファイル（約 %{tokens} トークン）}
+::msgcat::mcset ja {documentation is not in this source checkout: %s} {ドキュメントはこのソースチェックアウトに含まれていません: %s}
 ::msgcat::mcset ja done 完了
 ::msgcat::mcset ja {done · %1$s/%2$s} {完了 · %1$s/%2$s}
 ::msgcat::mcset ja {done, but the model returned no text} 完了しましたが、モデルがテキストを返しませんでした
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset ja {evaluate Tcl and answer with the result — no model turn} {Tcl を評価して結果で答える — モデルのターンなし}
 ::msgcat::mcset ja everyone 全員
 ::msgcat::mcset ja everywhere どこでも
+::msgcat::mcset ja {exchanging registry gossip…} レジストリのゴシップを交換中…
 ::msgcat::mcset ja exit 終了
 ::msgcat::mcset ja {exit veles-desktop} {veles-desktop を終了}
 ::msgcat::mcset ja {export failed: %s} {エクスポート失敗: %s}
 ::msgcat::mcset ja {export session} セッションをエクスポート
 ::msgcat::mcset ja {exported to %s} {%s にエクスポートしました}
+::msgcat::mcset ja {extension architecture, examples and LSP help} {拡張アーキテクチャ、例、LSP ヘルプ}
+::msgcat::mcset ja {extension development guide} 拡張機能開発ガイド
+::msgcat::mcset ja failed 失敗
 ::msgcat::mcset ja {failed to load history: %s} {履歴の読み込みに失敗: %s}
 ::msgcat::mcset ja {failed to paint cached history: %s} {キャッシュ済み履歴の描画に失敗: %s}
 ::msgcat::mcset ja {failed to paint replayed history: %s} {再生履歴の描画に失敗: %s}
 ::msgcat::mcset ja {failed: %s} {失敗: %s}
+::msgcat::mcset ja {failing — heartbeating, but a sync push or the last probe failed} {異常 — ハートビートはあるが、同期プッシュまたは最後のプローブが失敗}
 ::msgcat::mcset ja {failover blueprint: cannot reach the gateway} {フェイルオーバーブループリント: ゲートウェイに到達できません}
 ::msgcat::mcset ja {failover graph unavailable: %1$s} {フェイルオーバーグラフを開けません: %1$s}
 ::msgcat::mcset ja {failover script: cannot reach the gateway} {フェイルオーバースクリプト: ゲートウェイに到達できません}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset ja {fire the Tcl hook} {Tcl フックを起動}
 ::msgcat::mcset ja {fires for %s:} {%s で発火:}
 ::msgcat::mcset ja {fires per hour} 1時間あたりの発火数
+::msgcat::mcset ja {fleet drift} フリートのドリフト
 ::msgcat::mcset ja {focus composer} コンポーザーにフォーカス
 ::msgcat::mcset ja {focus failed: %{e}} {フォーカス失敗: %{e}}
 ::msgcat::mcset ja {focus next region} 次の領域にフォーカス
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset ja {four splits is the maximum} {分割は最大 4 つまで}
 ::msgcat::mcset ja {fresh session} 新しいセッション
 ::msgcat::mcset ja {fresh session (Ctrl-N too)} {新しいセッション（Ctrl-N でも）}
+::msgcat::mcset ja {fresh — heartbeating, sync passing} {正常 — ハートビートあり、同期成功}
+::msgcat::mcset ja from から
 ::msgcat::mcset ja {from node %{node}} {ノード %{node} から}
 ::msgcat::mcset ja {gateway     v%1$s · up %2$s} {gateway     v%1$s · 稼働 %2$s}
 ::msgcat::mcset ja {gateway unreachable — is `veles gateway run` up?} {ゲートウェイに到達できません — `veles gateway run` は動作していますか?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset ja {in %s} {%s 後}
 ::msgcat::mcset ja {insert the next key literally (^B bold, ^C colour, ^O reset)} {次のキーをリテラル入力 (^B 太字、^C 色、^O リセット)}
 ::msgcat::mcset ja {inserted %s} {%s を挿入しました}
+::msgcat::mcset ja {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {クラスタを調査する; ストア、メモリ、設定、保管庫の同期を明示的にプッシュ/適用する; 古いノードをフリート全体で忘れる; ノードのログ末尾やメトリクスを読む; バージョンと設定を比較する; 今すぐゴシップ}
 ::msgcat::mcset ja {inspector — app internals · core state · gw plugins} {インスペクター — アプリ内部 · コア状態 · gw プラグイン}
 ::msgcat::mcset ja {install a plugin from a git URL} {git URL からプラグインをインストール}
 ::msgcat::mcset ja {install a skill from a git URL} {git URL からスキルをインストール}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset ja instance インスタンス
 ::msgcat::mcset ja {instance controls} インスタンス操作
 ::msgcat::mcset ja {instance detail} インスタンス詳細
+::msgcat::mcset ja {instance names may not start with "cluster:" or "g:": %s} {インスタンス名は "cluster:" や "g:" で始めることはできません: %s}
 ::msgcat::mcset ja {instance needs a name} インスタンスには名前が必要です
 ::msgcat::mcset ja {instance unreachable} インスタンスに到達できません
 ::msgcat::mcset ja instances インスタンス
 ::msgcat::mcset ja interrupting… 中断中…
+::msgcat::mcset ja into へ
 ::msgcat::mcset ja {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset ja {irc: %s} {irc: %s}
 ::msgcat::mcset ja {irc: %s failed — %s} {irc: %s 失敗 — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset ja {language list} 言語一覧
 ::msgcat::mcset ja {language picker (the swap for THIS window)} {言語ピッカー (このウィンドウのみ切替)}
 ::msgcat::mcset ja {language saved: %s} {言語を保存しました: %s}
+::msgcat::mcset ja {language server} ランゲージサーバー
+::msgcat::mcset ja {language server: event stream unavailable: %s} {ランゲージサーバー: イベントストリームを利用できません: %s}
+::msgcat::mcset ja {language server: not started on the gateway — %s} {ランゲージサーバー: ゲートウェイ上で起動していません — %s}
+::msgcat::mcset ja {language server: the gateway would not start one: %s} {ランゲージサーバー: ゲートウェイが起動を拒否しました: %s}
 ::msgcat::mcset ja {language swapped: %1$s ⇄ %2$s} {言語を入れ替えました: %1$s ⇄ %2$s}
 ::msgcat::mcset ja {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {言語 → %1$s (以前は %2$s) · 実行中のウィンドウのみ — 既定として保存すると config.toml に書き込まれます}
 ::msgcat::mcset ja {language: %s} {言語: %s}
 ::msgcat::mcset ja {last error} 最後のエラー
+::msgcat::mcset ja {last pass %1$s at %2$s: %3$s} {前回の成功 %1$s (%2$s): %3$s}
 ::msgcat::mcset ja {last reply copied (%s chars)} {最後の返信をコピーしました (%s 文字)}
 ::msgcat::mcset ja {layout not saved: %s} {レイアウトを保存できませんでした: %s}
 ::msgcat::mcset ja {leave (cancels a running turn first)} 終了（実行中のターンを先にキャンセル）
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset ja {list sessions} セッション一覧
 ::msgcat::mcset ja {list skills} スキル一覧
 ::msgcat::mcset ja {list tools} ツール一覧
+::msgcat::mcset ja {listed here only; [notify] fleet_alerts is off} {ここに表示のみ; [notify] fleet_alerts がオフです}
 ::msgcat::mcset ja {live patching ARMED} {ライブパッチ: 有効}
 ::msgcat::mcset ja {live patching ARMED — an agent can now redefine procs in this window} {ライブパッチ: 有効 — エージェントがこのウィンドウのプロシージャを再定義できます}
 ::msgcat::mcset ja {live patching disarmed} ライブパッチを無効化しました
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset ja {log pane shown} ログペインを表示
 ::msgcat::mcset ja {log: %s} {ログ: %s}
 ::msgcat::mcset ja {make media: image/video/audio, route = comfyui or provider[/model]} {メディアを生成：image/video/audio、ルート = comfyui または provider[/model]}
+::msgcat::mcset ja {managed via %s} {%s 経由で管理}
+::msgcat::mcset ja {manual only} 手動のみ
 ::msgcat::mcset ja {mark set} マークを設定しました
 ::msgcat::mcset ja {mark whole buffer (emacs select-all)} {バッファ全体をマーク (emacs の select-all)}
 ::msgcat::mcset ja {markdown preview of the composer} コンポーザーのマークダウンプレビュー
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset ja model モデル
 ::msgcat::mcset ja {model aliases} モデルエイリアス
 ::msgcat::mcset ja {monitor %1$s fired} {モニター %1$s が発火しました}
-::msgcat::mcset ja monitors モニター
 ::msgcat::mcset ja monitors_header モニター:
 ::msgcat::mcset ja monitors_none {(モニターはありません — モデルが monitor tool で開始)}
 ::msgcat::mcset ja {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} ターン境界でセッション(とそのサブツリー)を別のプールノードに移動。一時停止中のハンドオフを完了/取り消し。セッションの所有者を問い合わせ(admin)
 ::msgcat::mcset ja {move the running foreground command to the background} 実行中のフォアグラウンドのコマンドをバックグラウンドへ
 ::msgcat::mcset ja {move the running foreground command to the background (keeps running)} 実行中のコマンドをバックグラウンドへ移動（実行は継続）
+::msgcat::mcset ja {move this session's running foreground command to a background shell; keeps running} このセッションで実行中のフォアグラウンドコマンドをバックグラウンドシェルに移動し、実行を継続します
 ::msgcat::mcset ja {moving around} 移動
 ::msgcat::mcset ja name 名前
 ::msgcat::mcset ja {name a key first} 先にキーの名前を付けてください
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset ja {neon impressionism} {neon impressionism}
 ::msgcat::mcset ja {network (optional — e.g. libera; empty = any)} {ネットワーク (任意 — 例: libera; 空 = すべて)}
 ::msgcat::mcset ja {network to scope the grant to} 付与の対象ネットワーク
+::msgcat::mcset ja new 新規
 ::msgcat::mcset ja {new buffer} 新規バッファ
 ::msgcat::mcset ja {new entry — replace this text, then Save} {新しいエントリ — このテキストを置き換えてから保存}
 ::msgcat::mcset ja {new name for %s} {%s の新しい名前}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset ja {no IRC buffer selected} {IRC バッファが選択されていません}
 ::msgcat::mcset ja {no MCP servers configured — Add server… writes one into config.toml} {MCP サーバーが設定されていません — 「サーバー追加…」で config.toml に 1 件書き込まれます}
 ::msgcat::mcset ja {no URLs in this buffer} {このバッファに URL はありません}
+::msgcat::mcset ja {no [a2a_agents] entry — this peer cannot be dialed} {[a2a_agents] のエントリがありません — このピアには接続できません}
 ::msgcat::mcset ja {no alias /%s} {エイリアス /%s はありません}
 ::msgcat::mcset ja {no background refresh} バックグラウンド更新なし
 ::msgcat::mcset ja {no buffer %s} {バッファ %s はありません}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset ja {no code block in the last reply} 最後の返信にコードブロックがありません
 ::msgcat::mcset ja {no cron jobs} {cron ジョブはありません}
 ::msgcat::mcset ja {no cron jobs — New… creates one} {cron ジョブはありません — 新規作成… で作成できます}
+::msgcat::mcset ja {no exchange yet} まだ交換なし
 ::msgcat::mcset ja {no file — pick a guts file or type a path} {ファイルがありません — 内部ファイルを選ぶかパスを入力してください}
 ::msgcat::mcset ja {no handler} ハンドラーなし
+::msgcat::mcset ja {no heartbeat for %{mins} min} {%{mins} 分間ハートビートなし}
+::msgcat::mcset ja {no heartbeat within the threshold} しきい値内にハートビートなし
 ::msgcat::mcset ja {no history yet} 履歴はまだありません
 ::msgcat::mcset ja {no host configured for this instance} このインスタンスにホストが設定されていません
 ::msgcat::mcset ja {no instance selected} インスタンス未選択
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset ja {no program to open URLs} {URL を開くプログラムがありません}
 ::msgcat::mcset ja {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {プロバイダーが設定されていません — ターンを実行する前に [[custom_providers]] エントリを追加し、[model] の組を設定してください}
 ::msgcat::mcset ja {no reading yet — press Refresh} {まだ読み込みがありません — 「更新」を押してください}
-::msgcat::mcset ja {no running tasks} 実行中のタスクはありません
 ::msgcat::mcset ja {no sample available} サンプルはありません
 ::msgcat::mcset ja {no search bar on this surface} このサーフェスには検索バーがありません
 ::msgcat::mcset ja {no session matching %s} {%s に一致するセッションはありません}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset ja {no session open — switch the scope to the default, or open a session} {セッションが開いていません — スコープを既定に切り替えるか、セッションを開いてください}
 ::msgcat::mcset ja {no session open — the catalogue needs one; the default scope still works from config.toml} {セッションが開いていません — カタログにはセッションが必要です; 既定スコープは config.toml から引き続き機能します}
 ::msgcat::mcset ja {no setting %s — try filter or bare} {設定 %s はありません — filter か bare を試してください}
+::msgcat::mcset ja {no shells or monitors to show} 表示するシェルやモニターがありません
 ::msgcat::mcset ja {no skills found} スキルが見つかりません
 ::msgcat::mcset ja {no such URL — /urls lists them} {その URL はありません — /urls で一覧できます}
 ::msgcat::mcset ja {no such file: %s} {そのようなファイルはありません: %s}
 ::msgcat::mcset ja {no swap target yet — set one with /locale secondary <id>} {切り替え先がまだありません — /locale secondary <id> で設定してください}
+::msgcat::mcset ja {no task selected} タスクが選択されていません
 ::msgcat::mcset ja {no triggers} トリガーはありません
 ::msgcat::mcset ja {no triggers — New… creates one} {トリガーはありません — 新規作成… で作成できます}
 ::msgcat::mcset ja {no upstream reading for %s} {%s の上流からの読み込みはありません}
 ::msgcat::mcset ja {no word match} 一致する単語がありません
 ::msgcat::mcset ja {no xdg-open — path copied instead} {xdg-open がないため、代わりにパスをコピーしました}
+::msgcat::mcset ja {node log} ノードログ
 ::msgcat::mcset ja {none loaded} 何も読み込まれていません
 ::msgcat::mcset ja {none recorded} 記録なし
+::msgcat::mcset ja {none since this gateway started} このゲートウェイの起動以降はなし
 ::msgcat::mcset ja {none yet} まだなし
 ::msgcat::mcset ja {normie is pure Ctrl — no emacs prefix chords.} {normie は純粋な Ctrl のみ — emacs のプレフィックスコードはなし。}
 ::msgcat::mcset ja {normie: select all · emacs: start of line} {normie: すべて選択 · emacs: 行頭へ}
 ::msgcat::mcset ja {not a channel} チャンネルではありません
 ::msgcat::mcset ja {not a key = value line: %s} {key = value 形式の行ではありません: %s}
+::msgcat::mcset ja {not a node in the attached gateway's cluster registry: %s} {接続中のゲートウェイのクラスターレジストリに存在しないノードです: %s}
 ::msgcat::mcset ja {not a number} 数値ではありません
 ::msgcat::mcset ja {not a valid http(s) url: %s} {有効な http(s) URL ではありません: %s}
 ::msgcat::mcset ja {not a valid ssh host: %s} {有効な ssh ホストではありません: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset ja {not attached to a gateway} ゲートウェイに未接続
 ::msgcat::mcset ja {not configured} 未設定
 ::msgcat::mcset ja {not ignoring %s} {%s を無視していません}
+::msgcat::mcset ja {not installed} 未インストール
 ::msgcat::mcset ja {not reported} 未報告
 ::msgcat::mcset ja {not running} 実行されていません
 ::msgcat::mcset ja {not set in config.toml — the built-in default applies. %s} {config.toml に設定されていません — 組み込みの既定値が適用されます. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset ja off オフ
 ::msgcat::mcset ja {off (the default)} {オフ (既定)}
 ::msgcat::mcset ja offline オフライン
+::msgcat::mcset ja ok 正常
 ::msgcat::mcset ja on オン
 ::msgcat::mcset ja {on (the default)} {オン (既定)}
 ::msgcat::mcset ja {on failure} 失敗時
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset ja {open links} リンクを開く
 ::msgcat::mcset ja {open the engine log} エンジンログを開く
 ::msgcat::mcset ja {open the joined session before /leave (on %s)} {%s 上で /leave する前に参加中のセッションを開いてください}
+::msgcat::mcset ja {open the selected child session} 選択した子セッションを開く
 ::msgcat::mcset ja {open the selected skill in the Dev editor} {選択したスキルを Dev エディターで開く}
 ::msgcat::mcset ja {open the setup wizard (re-runnable; edits config.toml in place)} {セットアップウィザードを開く（再実行可能。config.toml をその場で編集）}
 ::msgcat::mcset ja {open the share sheet} 共有シートを開く
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset ja {override cleared — the default applies} {上書きをクリアしました — 既定値が適用されます}
 ::msgcat::mcset ja {override failed: %s} {上書き失敗: %s}
 ::msgcat::mcset ja {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {オーナー ID %{id} は ACL が照合できる形式ではありません — telegram:<数値 ID>、irc:<services アカウント>、または nick!user@host マスクを使ってください}
+::msgcat::mcset ja owner/repository オーナー/リポジトリ
 ::msgcat::mcset ja {owners: %s} {所有者: %s}
 ::msgcat::mcset ja {pair a desktop with this agent} デスクトップをこのエージェントとペアリング
 ::msgcat::mcset ja {partly failed: %s} {一部失敗: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset ja plugin プラグイン
 ::msgcat::mcset ja {plugin directory git history} プラグインディレクトリのGit履歴
 ::msgcat::mcset ja {plugin list} プラグイン一覧
+::msgcat::mcset ja {plugin provider driver} プラグインプロバイダードライバー
 ::msgcat::mcset ja {plugins reloaded on %s} {プラグイン再読込 (%s)}
 ::msgcat::mcset ja {pop %s out into its own window} {%s を別ウィンドウへ切り離す}
 ::msgcat::mcset ja {pop the buffer out into its own window} バッファを独立ウィンドウに取り出す
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset ja {prefix: window & dock commands} {プレフィックス: ウィンドウとドックのコマンド}
 ::msgcat::mcset ja {press Attach in the Instances tab} インスタンスタブでアタッチを押す
 ::msgcat::mcset ja preview プレビュー
+::msgcat::mcset ja {preview an AI extension change and explicitly apply its diff} {AI による拡張機能の変更をプレビューし、その差分を明示的に適用します}
 ::msgcat::mcset ja {preview failed: %s} {プレビュー失敗: %s}
 ::msgcat::mcset ja {previous buffer} 前のバッファ
 ::msgcat::mcset ja {previous command was not a yank} 直前のコマンドはヤンクではない
 ::msgcat::mcset ja {previous match} 前の候補
 ::msgcat::mcset ja {previous session} 前のセッション
+::msgcat::mcset ja {probing %s…} {%s をプローブ中…}
 ::msgcat::mcset ja {proc body} {proc 本体}
 ::msgcat::mcset ja {profile unavailable: %s} {プロファイル利用不可: %s}
 ::msgcat::mcset ja profiles: プロファイル:
 ::msgcat::mcset ja prompt プロンプト
 ::msgcat::mcset ja {prompt breakdown} プロンプトの内訳
 ::msgcat::mcset ja {prompt tokens} プロンプトトークン
+::msgcat::mcset ja {proposal only, not applied} 提案のみ（未適用）
 ::msgcat::mcset ja provider プロバイダ
 ::msgcat::mcset ja {provider / model} {プロバイダ / モデル}
 ::msgcat::mcset ja {provider base URL} {プロバイダの Base URL}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset ja {re-sync the slopdrop state mirror} {slopdrop 状態ミラーを再同期}
 ::msgcat::mcset ja {read and set the clipboard} クリップボードの読み書き
 ::msgcat::mcset ja {read text aloud} テキストを読み上げる
+::msgcat::mcset ja {read-only: [approvals] allowlist} {読み取り専用: [approvals] 許可リスト}
 ::msgcat::mcset ja {read-only: this session lives on %1$s (as read at %2$s)} {読み取り専用: このセッションは %1$s 上にあります（%2$s 時点の内容）}
 ::msgcat::mcset ja {read-only: this skill comes from the %s library} {読み取り専用: このスキルは %s ライブラリ由来}
 ::msgcat::mcset ja reasoning 推論
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset ja {refused to open %s (only http, https, mailto)} {%s を開くのを拒否 (http, https, mailto のみ)}
 ::msgcat::mcset ja {refused: %s} {拒否: %s}
 ::msgcat::mcset ja {region copied} 領域をコピー
+::msgcat::mcset ja registered 登録済み
 ::msgcat::mcset ja {registry not saved: %s} {レジストリ未保存: %s}
 ::msgcat::mcset ja {reload on %1$s failed: %2$s} {%1$s の再読込失敗: %2$s}
 ::msgcat::mcset ja {reload the mechanisms} メカニズムを再読込
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset ja {resume a session (prefix ok)} セッションを再開（前方一致可）
 ::msgcat::mcset ja {retry failed: %s} {再試行失敗: %s}
 ::msgcat::mcset ja {retrying last prompt…} 直前のプロンプトを再試行中…
+::msgcat::mcset ja {review files for an explicit upstream contribution} 明示的なアップストリームコントリビューションのためにファイルを確認します
+::msgcat::mcset ja {review standing global and session tool permissions} 常時のグローバルおよびセッションのツール権限を確認
 ::msgcat::mcset ja revision リビジョン
 ::msgcat::mcset ja {revision history} リビジョン履歴
+::msgcat::mcset ja {revoke refused} 取り消しは拒否されました
 ::msgcat::mcset ja {revoke the selected identity's grant} 選択したアイデンティティの付与を取り消す
 ::msgcat::mcset ja role ロール
 ::msgcat::mcset ja {role to grant} 付与するロール
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset ja {saved to %s} {%s に保存}
 ::msgcat::mcset ja saved. 保存した。
 ::msgcat::mcset ja {scaffold a new plugin} 新規プラグインの雛形を作成
+::msgcat::mcset ja {scaffold a user plugin and open it in this editor} ユーザー・プラグインの雛形を作成し、このエディタで開く
 ::msgcat::mcset ja {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {スケジュールされたジョブ；/crons add "<sched>" [session=<id>] <prompt>（別名 /cron）}
 ::msgcat::mcset ja scope スコープ
 ::msgcat::mcset ja script スクリプト
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset ja {select %s first} {先に %s を選択}
 ::msgcat::mcset ja {select a checkpoint first} 先にチェックポイントを選択
 ::msgcat::mcset ja {select a file, or New… to create one} {ファイルを選択するか、新規… で作成してください}
+::msgcat::mcset ja {select a grant first} 先に付与を選択してください
 ::msgcat::mcset ja {select a handler first} 先にハンドラを選択
 ::msgcat::mcset ja {select a member first} 先にメンバーを選択
 ::msgcat::mcset ja {select a route} ルートを選択
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset ja {select an assignment first} 先に割り当てを選択
 ::msgcat::mcset ja {select an entry first} 先にエントリを選択
 ::msgcat::mcset ja {select an identity first} 先にアイデンティティを選択
+::msgcat::mcset ja {selected task details and shell output} 選択したタスクの詳細とシェル出力
 ::msgcat::mcset ja {selected: %s} {選択中: %s}
 ::msgcat::mcset ja {send clipboard as prompt} クリップボードをプロンプトとして送信
 ::msgcat::mcset ja {send failed: %s} {送信失敗: %s}
 ::msgcat::mcset ja {send the message; while a turn runs, queue it as steering} {メッセージを送信; ターン実行中はステアリングとしてキューに追加}
+::msgcat::mcset ja sent 送信済み
+::msgcat::mcset ja {sent to the owner's home chat} オーナーのホームチャットに送信済み
 ::msgcat::mcset ja server サーバ
 ::msgcat::mcset ja {server buffers merged} サーババッファを統合
 ::msgcat::mcset ja {server buffers separate} サーババッファを分離
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset ja {settings, one key = value per line} {設定: 1行に key = value を1つ}
 ::msgcat::mcset ja {setup_done marker NOT saved: %s} {setup_done マーカーを保存できませんでした: %s}
 ::msgcat::mcset ja {shell %1$s finished} {シェル %1$s が終了}
-::msgcat::mcset ja shells シェル
+::msgcat::mcset ja {shells, monitors and subagents} シェル、モニター、サブエージェント
 ::msgcat::mcset ja shells_header バックグラウンドシェル:
 ::msgcat::mcset ja shells_none {(バックグラウンドシェルはありません — /background <cmd> で開始)}
 ::msgcat::mcset ja {show current configuration} 現在の設定を表示
 ::msgcat::mcset ja {show every key in this mode} このモードのすべてのキーを表示
 ::msgcat::mcset ja {show or hide the session list} セッション一覧を表示／非表示
 ::msgcat::mcset ja {show or switch model (alias | model@provider | custom:<prov>)} {モデルを表示または切り替え（alias | model@provider | custom:<prov>）}
+::msgcat::mcset ja {show selected shell output} 選択したシェルの出力を表示
 ::msgcat::mcset ja {show short messages} 短いメッセージを表示する
 ::msgcat::mcset ja {show the model's reasoning blocks (same as /reasoning)} {モデルの推論ブロックを表示 (/reasoning と同じ)}
 ::msgcat::mcset ja {show unclaimed} 未割り当てを表示
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset ja spend 消費
 ::msgcat::mcset ja {split: %s} {分割: %s}
 ::msgcat::mcset ja {ssh to %1$s failed: %2$s} {%1$s への ssh が失敗: %2$s}
+::msgcat::mcset ja {stale — no heartbeat within the threshold} {古い — しきい値内にハートビートなし}
+::msgcat::mcset ja {standing global and session permission grants} 常時のグローバルおよびセッションの権限付与
 ::msgcat::mcset ja state 状態
 ::msgcat::mcset ja {state       never reached} {状態       未到達}
 ::msgcat::mcset ja {state       reachable} {状態       到達可}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset ja {stored in the encrypted vault (%1$s): %2$s} {暗号化された保管庫に保存しました（%1$s）: %2$s}
 ::msgcat::mcset ja {stream handler: %s} {ストリームハンドラ: %s}
 ::msgcat::mcset ja {subagent %1$s finished} {サブエージェント %1$s が終了}
-::msgcat::mcset ja subagents サブエージェント
 ::msgcat::mcset ja subagents_header 実行中のサブエージェント:
 ::msgcat::mcset ja subagents_none {(実行中のサブエージェントはありません — /btw <prompt> で開始、またはモデルが delegate_task を使用)}
 ::msgcat::mcset ja {suspend failed: %{e}} {一時停止失敗: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset ja {switch the selected skill off} 選択したスキルをオフ
 ::msgcat::mcset ja {switch the selected skill on} 選択したスキルをオン
 ::msgcat::mcset ja {switch to the %s tab} {%s タブに切替}
+::msgcat::mcset ja {sync requested: %s} {同期を要求しました: %s}
 ::msgcat::mcset ja {tab 1} {タブ 1}
 ::msgcat::mcset ja {tab 2} {タブ 2}
 ::msgcat::mcset ja {tab 3} {タブ 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset ja tasks_none （実行中のタスクはありません）
 ::msgcat::mcset ja tasks_not_found そのタスクはありません：%{id}
 ::msgcat::mcset ja tasks_not_running {タスク %{id} はすでに終了しています}
-::msgcat::mcset ja {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset ja {tcl-lsp: event stream unavailable: %s} {tcl-lsp: イベントストリーム利用不可: %s}
-::msgcat::mcset ja {tcl-lsp: gateway would not start it: %s} {tcl-lsp: ゲートウェイが起動しなかった: %s}
-::msgcat::mcset ja {tcl-lsp: not started on the gateway — %s} {tcl-lsp: ゲートウェイで未起動 — %s}
 ::msgcat::mcset ja {that buffer is not split} そのバッファは分割されていない
 ::msgcat::mcset ja {the %s plan} {%s プラン}
 ::msgcat::mcset ja {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {API キーの欄には (%{example} のような) 環境変数の名前を入力します。キーそのものではありません — キーは非表示の欄に入力します}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset ja {the gateway answered without a report} ゲートウェイがレポートなしで応答
 ::msgcat::mcset ja {the model/provider pair is incomplete — the gateway will not route until both are present} {モデルとプロバイダーの組が不完全です — 両方がそろうまでゲートウェイはルーティングしません}
 ::msgcat::mcset ja {the options changed, so that is a fresh preview — press “Write it” again to write it} {オプションが変わったので新規プレビュー — 「書き込む」を再度押して}
+::msgcat::mcset ja {the peer has not been sent this vault yet} この保管庫はまだピアに送信されていません
+::msgcat::mcset ja {the peer holds this vault} ピアがこの保管庫を保持しています
 ::msgcat::mcset ja {the primary route is \[model\] provider/default — change it there, not here} {主要ルートは \[model\] provider/default — 変更するならそちらで}
 ::msgcat::mcset ja {the provider/model route this session sends to} このセッションのプロバイダ/モデル送信先
 ::msgcat::mcset ja {the same, on the privileged path (owner only)} {同じもの、特権経路で（owner のみ）}
 ::msgcat::mcset ja {the selected entry (edit, then Save)} {選択したエントリ (編集してから保存)}
+::msgcat::mcset ja {the server stopped: %s} {サーバーが停止しました: %s}
 ::msgcat::mcset ja {the synthwave splash} {synthwave のスプラッシュ画面}
 ::msgcat::mcset ja {the text after the name was NOT sent anywhere — type the value into the masked field} {名前の後ろのテキストはどこにも送信されていません — 値はマスクされた入力欄に入力してください}
 ::msgcat::mcset ja {the transcript} トランスクリプト
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset ja thinking… 思考中…
 ::msgcat::mcset ja {thinking… (%s)} {思考中… (%s)}
 ::msgcat::mcset ja {this file's revisions, their diffs, and restore} このファイルのリビジョン、その差分、復元
+::msgcat::mcset ja {this gateway} このゲートウェイ
 ::msgcat::mcset ja {this gateway has no Tcl interpreter} {このゲートウェイには Tcl インタプリタがない}
 ::msgcat::mcset ja {this list} このリスト
+::msgcat::mcset ja {this node has no vault} このノードには保管庫がありません
 ::msgcat::mcset ja {this route} このルート
 ::msgcat::mcset ja {this session} このセッション
 ::msgcat::mcset ja {this session follows the default language again (%{def})} このセッションはデフォルトの言語に戻りました（%{def}）
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset ja {transcript finalization failed: %s} {トランスクリプトの確定に失敗しました: %s}
 ::msgcat::mcset ja {transcript refetched} トランスクリプト再取得済み
 ::msgcat::mcset ja {transcript — arrows to read, %s for composer} {トランスクリプト — 矢印で閲覧、%s でコンポーザ}
+::msgcat::mcset ja {translate text with the dedicated translation model, without an agent turn} エージェントのターンを介さず、専用の翻訳モデルでテキストを翻訳
+::msgcat::mcset ja {translation result} 翻訳結果
 ::msgcat::mcset ja {trigger %1$s %2$sd} {トリガー %1$s %2$sd}
 ::msgcat::mcset ja {trigger created} トリガー作成済み
 ::msgcat::mcset ja {trigger updated} トリガー更新済み
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset ja {usage: /steer <instruction>} {使い方: /steer <instruction>}
 ::msgcat::mcset ja used 使用
 ::msgcat::mcset ja user ユーザー
+::msgcat::mcset ja {user copy} ユーザー複製
 ::msgcat::mcset ja {user identities, one per line} {ユーザーアイデンティティ: 1行に1つ}
 ::msgcat::mcset ja {user name} ユーザー名
 ::msgcat::mcset ja {user profile} ユーザープロフィール
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset ja {value (TOML: 5, true, "text", ["a","b"])} {値 (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset ja veles veles
 ::msgcat::mcset ja {veles editor} {veles エディタ}
+::msgcat::mcset ja {veles fleet: node %{node} is failing — %{detail}} {veles フリート: ノード %{node} が障害中 — %{detail}}
+::msgcat::mcset ja {veles fleet: node %{node} is stale — %{detail}} {veles フリート: ノード %{node} が古い — %{detail}}
+::msgcat::mcset ja {veles fleet: node %{node} recovered (it was %{was})} {veles フリート: ノード %{node} が復旧しました (以前は %{was})}
 ::msgcat::mcset ja {veles · keyboard help (bindings: %s)} {veles · キーボードヘルプ (キーバインド: %s)}
 ::msgcat::mcset ja {veles · touch help} {veles · タッチ操作のヘルプ}
 ::msgcat::mcset ja {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset ja widgets ウィジェット
 ::msgcat::mcset ja {will be stored in the encrypted vault} 暗号化された保管庫に保存されます
 ::msgcat::mcset ja {wire protocol} ワイヤプロトコル
+::msgcat::mcset ja {without force to} 強制せずにプッシュする先:
 ::msgcat::mcset ja {wizard language} ウィザードの言語
 ::msgcat::mcset ja {wizard language: %s} {ウィザードの言語: %s}
 ::msgcat::mcset ja {write failed: %s} {書き込み失敗: %s}
 ::msgcat::mcset ja {write grants that still expire (the expiry is dropped — a config line cannot expire)} {まだ期限のある付与を書き込む (有効期限は破棄 — 設定行は期限切れにならない)}
 ::msgcat::mcset ja {write the entries back} エントリを書き戻す
 ::msgcat::mcset ja {write the store's runtime rules into config.toml} {ストアの実行時ルールを config.toml に書き込む}
+::msgcat::mcset ja {write the whole extension from its purpose, as a reviewed preview} 目的から拡張機能全体を、レビュー済みプレビューとして書き出す
 ::msgcat::mcset ja {write these values into config.toml as the defaults} {この値をデフォルトとして config.toml に書き込む}
 ::msgcat::mcset ja writing 入力
 ::msgcat::mcset ja {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {最初の [acl] オーナーを書き込むと、このゲートウェイはキュレーテッドモードに切り替わります: 既定のロールは guest（fail-closed）になり、アダプターの許可リストは信頼の境界ではなくなります}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset ja {▲ VELES — neon impressionism} {▲ VELES — ネオン印象主義}
 ::msgcat::mcset ja {▲ earlier} {▲ 前へ}
 ::msgcat::mcset ja {▼ later} {▼ 後へ}
+::msgcat::mcset ja {▾ Cluster registry} {▾ クラスタレジストリ}
 ::msgcat::mcset ja {▾ new output — follow} {▾ 新しい出力 — 追従}
 ::msgcat::mcset ja {○ unattached} {○ 未接続}
 ::msgcat::mcset ja {● %1$s — %2$s} {● %1$s — %2$s}

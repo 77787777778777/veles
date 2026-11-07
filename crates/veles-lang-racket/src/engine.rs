@@ -825,8 +825,10 @@ mod tests {
                 entry: "plugin.rkt".into(),
                 description: String::new(),
                 api: None,
+                version: None,
             },
             dir: d,
+            digest: String::new(),
         }
     }
 

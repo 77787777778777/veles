@@ -53,6 +53,7 @@ namespace eval ::voverlay {
 proc ::voverlay::open {which} {
     set w .ov_$which
     if {[winfo exists $w]} {
+        if {$which eq "settings"} { ::vsettings::load $w }
         wm deiconify $w
         raise $w
         focus $w
@@ -73,6 +74,7 @@ proc ::voverlay::open {which} {
         hooks   { _hooks $w }
         tools   { _tools $w }
         acl     { ::vacl::build $w }
+        grants  { ::vgrants::build $w }
         sessions { ::vsessions::build $w }
         sandbox { ::vsandbox::build $w }
         phone   { ::vphone::build $w }
@@ -1263,189 +1265,7 @@ proc ::voverlay::_guards_fill {w} {
     }
 }
 
-# ── cron ─────────────────────────────────────────────────────────────
-# ── Tasks: running subagents, background shells and monitors ──────────
-#
-# The 2026-09-02 audit found this state was tracked and displayed
-# NOWHERE: the registry was written on every delegate call and read by
-# nothing. This panel is the desktop half of fixing that, and it follows
-# the cron overlay exactly — a tagged text widget with inline [action]
-# links per row, because each row needs its own verbs.
-proc ::voverlay::_tasks {w} {
-    ::vmanage::window $w [::vi18n::mc {Running tasks}] 820x520 {420 300}
-    ::vmanage::button $w.bar reload [::vi18n::mc {Reload}] \
-        [list ::voverlay::_tasks_fill $w] [::vi18n::mc {refresh the list}]
-
-    ttk::frame $w.main
-    text $w.main.t -wrap word -background $::vt::T(bg_input) -foreground $::vt::T(fg) \
-        -highlightthickness 0 -relief flat -font {monospace 10}
-    # Section headers (subagents / shells / monitors): with the taxonomy
-    # split, the KIND is the primary fact, so headers get the accent +
-    # bold treatment the mechanism panel's `gh` uses.
-    $w.main.t tag configure thead -foreground $::vt::T(accent) -font {TkDefaultFont 10 bold}
-    ttk::scrollbar $w.main.sb -orient vertical -command [list $w.main.t yview]
-    $w.main.t configure -yscrollcommand [list $w.main.sb set]
-    pack $w.main.sb -side right -fill y
-    pack $w.main.t -side left -fill both -expand 1
-    pack $w.main -fill both -expand 1 -padx 8 -pady {0 8}
-
-    _tasks_fill $w
-    # Live state goes stale while you look at it; poll only while the
-    # window is up, and stop on destroy (the instances pane's rule).
-    _tasks_poll $w
-    bind $w <Destroy> [list ::voverlay::_tasks_stop %W $w]
-}
-
-proc ::voverlay::_tasks_stop {which w} {
-    variable tasks_after
-    if {$which ne $w} { return }
-    if {[info exists tasks_after] && $tasks_after ne ""} {
-        after cancel $tasks_after
-        set tasks_after ""
-    }
-}
-
-proc ::voverlay::_tasks_poll {w} {
-    variable tasks_after
-    if {![winfo exists $w]} { set tasks_after ""; return }
-    catch { ::voverlay::_tasks_fill $w }
-    set tasks_after [after 3000 [list ::voverlay::_tasks_poll $w]]
-}
-
-proc ::voverlay::_tasks_fill {w} {
-    if {![winfo exists $w.main.t]} { return }
-    set t $w.main.t
-    # Keep the scroll position: a 3s poll that jumps you to the top
-    # while you are reading is worse than no refresh.
-    set yview [lindex [$t yview] 0]
-    $t configure -state normal
-    $t delete 1.0 end
-    if {[catch {::vapi::get_json /api/tasks} resp]} {
-        $t insert end "tasks unavailable: [::vmanage::_reason $resp]\n"
-        $t configure -state disabled
-        return
-    }
-    set tasks [dict get $resp tasks]
-    # Keep only what is running, bucketed by kind. The USER taxonomy
-    # (2026-09-17) made these three things SEPARATE concepts, so the
-    # panel shows them as sections — "subagent" vs "shell" vs "monitor"
-    # is the first thing you want to see, not a column to scan.
-    set by_kind {subagents {} shells {} monitors {}}
-    set live 0
-    foreach task $tasks {
-        if {[dict get $task status] ne "running"} { continue }
-        incr live
-        set k [dict get $task kind]
-        set key [_tasks_kind_key $k]
-        dict set by_kind $key [list {*}[dict get $by_kind $key] $task]
-    }
-    if {!$live} {
-        $t insert end [::vi18n::mc {no running tasks}]
-        $t insert end "\n"
-    } else {
-        foreach {key tasks_of_kind} $by_kind {
-            if {![llength $tasks_of_kind]} { continue }
-            $t insert end "[_tasks_kind_title $key]\n" thead
-            foreach task $tasks_of_kind { _tasks_row $t $task }
-            $t insert end "\n"
-        }
-    }
-    $t configure -state disabled
-    catch { $t yview moveto $yview }
-}
-
-# Registry kind → section key. The registry says "subagent" (singular);
-# the sections read as plural group names. Unknown kinds land in
-# "shells" — a conservative default: they get [cancel] and, if the
-# engine ever gives them output, nothing breaks.
-proc ::voverlay::_tasks_kind_key {kind} {
-    switch -- $kind {
-        subagent { return subagents }
-        monitor  { return monitors }
-        default  { return shells }
-    }
-}
-
-# Translated section header. The `mc` calls carry LITERAL keys (not a
-# variable) on purpose: uitest scans the sources for every mc key and
-# cross-checks en.msg in both directions, and a computed key is
-# invisible to it.
-proc ::voverlay::_tasks_kind_title {key} {
-    switch -- $key {
-        subagents { return [::vi18n::mc {subagents}] }
-        monitors  { return [::vi18n::mc {monitors}] }
-        default   { return [::vi18n::mc {shells}] }
-    }
-}
-
-proc ::voverlay::_tasks_row {t task} {
-    set id [dict get $task id]
-    set kind [dict get $task kind]
-    set label [dict get $task label]
-    set secs [dict get $task elapsed_s]
-    # The section already names the kind; repeating it per row is noise.
-    $t insert end [format "  \[%s\] %ss  %s" $id $secs $label]
-    # A shell is the only kind with captured output to show.
-    if {$kind eq "shell"} {
-        _tasks_link $t $id output
-    }
-    # A subagent IS a session (USER taxonomy, 2026-09-17): attach
-    # means switch the chat to the child session and review it.
-    set csession [::vapi::field $task child_session]
-    if {$csession ne ""} {
-        _tasks_link $t $id "attach:$csession"
-    }
-    _tasks_link $t $id cancel
-    $t insert end "\n"
-}
-
-proc ::voverlay::_tasks_link {t id action} {
-    set tag "btn_${id}_${action}"
-    # An action can carry an argument as "verb:arg" (attach:<session>);
-    # the label is the verb alone, the whole string is what the click
-    # handler receives.
-    set verb [lindex [split $action ":"] 0]
-    $t insert end "  \[$verb\]" $tag
-    $t tag configure $tag -foreground $::vt::T(accent) -underline 1
-    $t tag bind $tag <Button-1> [list ::voverlay::_tasks_action $t $id $action]
-}
-
-proc ::voverlay::_tasks_action {t id action} {
-    set w [winfo toplevel $t]
-    set verb [lindex [split $action ":"] 0]
-    set arg  [lindex [split $action ":"] 1]
-    switch -- $verb {
-        attach {
-            # Switch the chat to the child session and close the overlay:
-            # "attach and review" is a navigation act, not a listing one.
-            if {$arg eq ""} { return }
-            catch { destroy $w }
-            if {[catch { ::vchat::open_session $arg } attach_err]} {
-                ::vstatus::set_msg [format [::vi18n::mc {attach failed: %1$s}] $attach_err]
-                return
-            }
-            ::vstatus::set_msg [format [::vi18n::mc {attached to child session %1$s}] $arg]
-            return
-        }
-        cancel {
-            if {[catch {::vapi::post "/api/tasks/$id/cancel" ""} e]} {
-                ::vstatus::set_msg [format [::vi18n::mc {cancel failed: %1$s}] [::vmanage::_reason $e]]
-                return
-            }
-            ::vstatus::set_msg [format [::vi18n::mc {cancelled task %1$s}] $id]
-        }
-        output {
-            if {[catch {::vapi::get_json "/api/tasks/$id/output"} r]} {
-                ::vstatus::set_msg [format [::vi18n::mc {no output for task %1$s}] $id]
-                return
-            }
-            $t configure -state normal
-            $t insert end "\n--- task $id output ---\n[dict get $r output]\n"
-            $t configure -state disabled
-        }
-    }
-    after 400 [list catch [list ::voverlay::_tasks_fill $w]]
-}
+# The task manager lives in taskpanel.tcl, loaded after this file.
 
 proc ::voverlay::_cron {w} {
     ::vmanage::window $w [::vi18n::mc {Cron jobs}] 820x520 {420 300}
@@ -2633,6 +2453,8 @@ proc ::voverlay::_plugins {w} {
         [list ::voverlay::_plugin_toggle $w] [::vi18n::mc {switch the selected plugin on or off}]
     ::vmanage::button $w.bar open    [::vi18n::mc {Open in Dev}] \
         [list ::voverlay::_plugin_open $w] [::vi18n::mc {edit the selected plugin's script}]
+    ::vmanage::button $w.bar contribute [::vi18n::mc {Contribute…}] \
+        [list ::voverlay::_plugin_contribute $w] [::vi18n::mc {review files for an explicit upstream contribution}]
     ::vmanage::separator $w.bar sep1
     ::vmanage::button $w.bar new     [::vi18n::mc {New…}] \
         [list ::voverlay::_plugin_new $w] [::vi18n::mc {scaffold a new plugin}]
@@ -2651,10 +2473,10 @@ proc ::voverlay::_plugins {w} {
     ttk::panedwindow $w.split -orient vertical
     pack $w.split -fill both -expand 1 -padx 8 -pady 6
     set t [::vmanage::tree $w.split list \
-        {name state kind hooks entry} \
+        {name state kind source hooks entry} \
         [list [::vi18n::mc {plugin}] [::vi18n::mc {state}] [::vi18n::mc {kind}] \
-              [::vi18n::mc {hooks}] [::vi18n::mc {entry}]] \
-        {200 130 60 220 220}]
+              [::vi18n::mc {source}] [::vi18n::mc {hooks}] [::vi18n::mc {entry}]] \
+        {160 130 60 90 190 200}]
     $w.split add $t -weight 3
     catch { ::va11y::name $t.t [::vi18n::mc {plugin list}] }
 
@@ -2697,8 +2519,12 @@ proc ::voverlay::_plugins_fill {w} {
         } else {
             set state [::vi18n::mc {not allowlisted}]
         }
+        set source [expr {[dict get $p bundled] ? [::vi18n::mc {bundled}] : [::vi18n::mc {user}]}]
+        if {[dict exists $p shadow] && [dict get $p shadow] ne ""} {
+            append source [::vi18n::mc {; shadows bundled}]
+        }
         $t insert {} end -id $name -values [list $name $state [dict get $p kind] \
-            [join [dict get $p hooks] ", "] [dict get $p entry]]
+            $source [join [dict get $p hooks] ", "] [dict get $p entry]]
     }
     if {$keep ne "" && [$t exists $keep]} {
         $t selection set $keep
@@ -2706,6 +2532,8 @@ proc ::voverlay::_plugins_fill {w} {
     set n [llength [dict get $resp plugins]]
     if {$n == 0} {
         ::vmanage::say $w [::vi18n::mc {no plugins yet — New… scaffolds one}]
+    } elseif {[dict exists $resp shadows] && [llength [dict get $resp shadows]] > 0} {
+        ::vmanage::say $w [join [dict get $resp shadows] "\n"] warn
     } elseif {$allowlist} {
         ::vmanage::say $w [::vi18n::mc {an allowlist is in force: a plugin not on it stays off}] warn
     } else {
@@ -2735,10 +2563,347 @@ proc ::voverlay::_plugin_detail {w} {
     lappend lines [dict get $p description]
     lappend lines ""
     lappend lines "[::vi18n::mc {script}]: [dict get $p path]"
+    lappend lines "[::vi18n::mc {source}]: [expr {[dict get $p bundled] ? [::vi18n::mc {bundled, read-only}] : [::vi18n::mc {user copy}]}]"
+    if {[dict exists $p sha256]} {
+        lappend lines "sha256: [dict get $p sha256]"
+    }
+    if {[dict exists $p shadow] && [dict get $p shadow] ne ""} {
+        lappend lines ""
+        lappend lines [dict get $p shadow]
+    }
     if {[llength [dict get $p hooks]]} {
         lappend lines "[::vi18n::mc {declares hooks}]: [join [dict get $p hooks] ", "]"
     }
     ::vtext::set_text $t [join $lines "\n"]
+}
+
+# ── contribution: one or more extensions into ONE branch and PR ──────
+#
+# Every user extension is offered; each lands under
+# <directory>/<name>/ in the chosen repository (never at its root), so
+# all of them can travel in one branch and one pull request to veles.
+# Review, prepare, push and PR stay separate, separately confirmed
+# actions, and a path that already exists upstream is replaced only
+# after its own confirmation.
+namespace eval ::voverlay {
+    variable contribution_upstream_repo 77787777778777/veles
+    variable contribution_upstream_url https://github.com/77787777778777/veles.git
+    variable contribution_directory_default plugins/examples
+}
+
+proc ::voverlay::_plugin_contribute {w} {
+    variable plugins_data
+    set user {}
+    foreach name [lsort [dict keys $plugins_data]] {
+        if {![dict get [dict get $plugins_data $name] bundled]} { lappend user $name }
+    }
+    if {![llength $user]} {
+        ::vmanage::say $w [::vi18n::mc {Copy a bundled extension into your user plugin directory before preparing a contribution.}] warn
+        return
+    }
+    # The selected user extension alone, or every user extension when
+    # nothing (or a bundled one) is selected.
+    set only [lindex [[_plugins_tree $w] selection] 0]
+    if {$only ni $user} { set only "" }
+    _contribution_dialog $user $only
+}
+
+proc ::voverlay::_contribution_dialog {extensions {only ""}} {
+    variable contribution_directory_default
+    set c .plugin_contribute
+    if {[winfo exists $c]} { destroy $c }
+    ::vmanage::window $c [::vi18n::mc {Review extension contribution}] 900x700 {600 460}
+    set ::contribution_extensions $extensions
+    set ::contribution_directory $contribution_directory_default
+    set ::contribution_review {}
+    set ::contribution_checks {}
+    set ::contribution_prepared {}
+    set ::contribution_published {}
+    set ::contribution_rows {}
+    array unset ::contribution_file
+    array unset ::contribution_suggested
+    ttk::label $c.hint -wraplength 860 -justify left -text [::vi18n::mc {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.}]
+    pack $c.hint -fill x -padx 10 -pady 6
+    ttk::frame $c.dir
+    pack $c.dir -fill x -padx 10
+    ttk::label $c.dir.l -text [::vi18n::mc {Repository directory}]
+    ttk::entry $c.dir.e -textvariable ::contribution_directory -width 40
+    catch { ::va11y::name $c.dir.e [::vi18n::mc {Repository directory}] }
+    bind $c.dir.e <KeyRelease> ::voverlay::_contribution_selection_changed
+    pack $c.dir.l -side left
+    pack $c.dir.e -side left -fill x -expand 1 -padx 6
+    ttk::frame $c.pick
+    pack $c.pick -fill x -padx 10 -pady 4
+    ttk::button $c.pick.all -text [::vi18n::mc {Select all extensions}] \
+        -command {::voverlay::_contribution_select_all 1}
+    ttk::button $c.pick.none -text [::vi18n::mc {Select none}] \
+        -command {::voverlay::_contribution_select_all 0}
+    pack $c.pick.all $c.pick.none -side left -padx {0 6}
+    set inner [::vmanage::scrollframe $c files]
+    $c.files.c configure -height 220
+    pack $c.files -fill x -padx 10
+    set heading 0
+    foreach name $extensions {
+        set response [::vmanage::get $c "/api/plugins/$name/contribution/files"]
+        ttk::label $inner.h[incr heading] -text $name
+        pack $inner.h$heading -anchor w -pady {6 0}
+        if {![llength $response]} { continue }
+        foreach file [dict get $response files] {
+            set path [dict get $file path]
+            set text 1
+            set suggested 1
+            catch { set text [dict get $file text] }
+            catch { set suggested [dict get $file suggested] }
+            if {!$text} { set suggested 0 }
+            set index [llength $::contribution_rows]
+            lappend ::contribution_rows [list $name $path]
+            set ::contribution_suggested($index) $suggested
+            set ::contribution_file($index) [expr {$suggested && ($only eq "" || $only eq $name)}]
+            set label $path
+            if {!$text} { append label "  " [::vi18n::mc {(binary; not publishable)}] }
+            ttk::checkbutton $inner.f$index -text $label \
+                -variable ::contribution_file($index) \
+                -command ::voverlay::_contribution_selection_changed
+            if {!$text} {
+                set ::contribution_file($index) 0
+                $inner.f$index state disabled
+            }
+            pack $inner.f$index -anchor w -padx {16 0}
+        }
+    }
+    ::vmanage::button $c.bar review [::vi18n::mc {Review selected files}] \
+        [list ::voverlay::_contribution_review $c]
+    ::vmanage::button $c.bar checks [::vi18n::mc {Check files}] \
+        [list ::voverlay::_contribution_checks $c]
+    ::vmanage::button $c.bar prepare [::vi18n::mc {Prepare branch…}] \
+        [list ::voverlay::_contribution_prepare $c]
+    set publish [::vmanage::button $c.bar publish [::vi18n::mc {Push branch…}] \
+        [list ::voverlay::_contribution_publish $c]]
+    $publish state disabled
+    set pr [::vmanage::button $c.bar pr [::vi18n::mc {Open PR…}] \
+        [list ::voverlay::_contribution_pr $c]]
+    $pr state disabled
+    text $c.preview -wrap word -background $::vt::T(bg_input) -foreground $::vt::T(fg)
+    pack $c.preview -fill both -expand 1 -padx 10 -pady 8
+    ::vtext::readonly $c.preview
+    if {[llength [_contribution_selected]]} { _contribution_review $c }
+}
+
+# "All" is every extension's suggested sources (manifest, code, README);
+# state and data files stay a deliberate per-file choice.
+proc ::voverlay::_contribution_select_all {on} {
+    foreach index [array names ::contribution_file] {
+        set ::contribution_file($index) [expr {$on && $::contribution_suggested($index)}]
+    }
+    _contribution_selection_changed
+}
+
+proc ::voverlay::_contribution_selection_changed {} {
+    set ::contribution_review {}
+    set ::contribution_checks {}
+    set ::contribution_prepared {}
+    set ::contribution_published {}
+    catch { .plugin_contribute.bar.publish state disabled }
+    catch { .plugin_contribute.bar.pr state disabled }
+}
+
+# The selected {extension path} pairs, in a deterministic order.
+proc ::voverlay::_contribution_selected {} {
+    set out {}
+    set index 0
+    foreach row $::contribution_rows {
+        if {[info exists ::contribution_file($index)] && $::contribution_file($index)} {
+            lappend out $row
+        }
+        incr index
+    }
+    # lsort is a stable merge sort: by path, then by extension.
+    return [lsort -index 0 [lsort -index 1 $out]]
+}
+
+proc ::voverlay::_contribution_names {} {
+    set names {}
+    foreach row [_contribution_selected] {
+        set name [lindex $row 0]
+        if {$name ni $names} { lappend names $name }
+    }
+    return $names
+}
+
+# [{"name": ..., "files": [...]}, ...] as a raw JSON array.
+proc ::voverlay::_contribution_extensions_json {} {
+    set parts {}
+    foreach name [_contribution_names] {
+        set files {}
+        foreach row [_contribution_selected] {
+            if {[lindex $row 0] eq $name} {
+                lappend files "\"[::vapi::json_escape [lindex $row 1]]\""
+            }
+        }
+        lappend parts "\173\"name\": \"[::vapi::json_escape $name]\", \"files\": \[[join $files ", "]\]\175"
+    }
+    return [::vapi::json_raw "\[[join $parts ", "]\]"]
+}
+
+proc ::voverlay::_contribution_body {args} {
+    return [dict create extensions [_contribution_extensions_json] \
+        directory [::vapi::json_string [string trim $::contribution_directory]] {*}$args]
+}
+
+proc ::voverlay::_contribution_review {w} {
+    if {![llength [_contribution_selected]]} {
+        ::vmanage::say $w [::vi18n::mc {Select at least one source file.}] warn
+        return
+    }
+    set response [::vmanage::post $w /api/plugins/contribution/review [_contribution_body]]
+    if {![llength $response]} { return }
+    set ::contribution_review $response
+    set ::contribution_checks {}
+    set ::contribution_prepared {}
+    set ::contribution_published {}
+    catch { $w.bar.publish state disabled }
+    catch { $w.bar.pr state disabled }
+    set text "[dict get $response diff_base]\n\n[::vi18n::mc {Repository paths}]\n"
+    foreach row [dict get $response files] {
+        append text "[dict get $row extension]/[dict get $row path] → [dict get $row destination]\n"
+    }
+    append text "\n[dict get $response diff]\n\n[::vi18n::mc {Checks and next steps}]\n"
+    foreach check [dict get $response checks] {
+        append text "[dict get $check destination]: [dict get $check method] - "
+        append text [expr {[dict get $check available] ? [::vi18n::mc {available}] : [::vi18n::mc {not installed}]}]
+        append text "\n"
+    }
+    foreach finding [dict get $response findings] { append text "\n[::vi18n::mc $finding]\n" }
+    append text "\n[dict get $response next]\n"
+    ::vtext::set_text $w.preview $text
+}
+
+proc ::voverlay::_contribution_checks {w} {
+    set ::contribution_checks_failed 1
+    set response [::vmanage::post $w /api/plugins/contribution/checks [_contribution_body]]
+    if {![llength $response]} {
+        set ::contribution_checks_failed 1
+        return
+    }
+    set ::contribution_checks $response
+    set text "[::vi18n::mc {Non-evaluating syntax checks}]\n\n"
+    set failed 0
+    foreach check [dict get $response checks] {
+        set where [dict get $check path]
+        catch { set where [dict get $check destination] }
+        append text "$where: [dict get $check status]\n"
+        if {[dict get $check status] eq "failed"} { incr failed }
+        if {[dict exists $check note]} { append text "[dict get $check note]\n" }
+        if {[dict exists $check output] && [dict get $check output] ne ""} {
+            append text "[dict get $check output]\n"
+        }
+    }
+    ::vtext::set_text $w.preview $text
+    set ::contribution_checks_failed $failed
+}
+
+proc ::voverlay::_contribution_prepare {w} {
+    variable contribution_upstream_url
+    if {![llength $::contribution_review] || ![dict get $::contribution_review prepare_allowed]} {
+        ::vmanage::say $w [::vi18n::mc {Review the selected files and remove credential findings before preparing.}] warn
+        return
+    }
+    _contribution_checks $w
+    if {[info exists ::contribution_checks_failed] && $::contribution_checks_failed > 0} {
+        ::vmanage::say $w [::vi18n::mc {Fix the failed syntax checks before preparing a contribution.}] warn
+        return
+    }
+    set destination [::vmanage::ask $w [::vi18n::mc {Contribution destination}] \
+        [::vi18n::mc {Upstream repository or fork URL}] $contribution_upstream_url \
+        [::vi18n::mc {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.}]]
+    if {[string trim $destination] eq ""} { return }
+    set branch [::vmanage::ask $w [::vi18n::mc {Contribution branch}] \
+        [::vi18n::mc {New branch name}] veles-extension-contribution \
+        [::vi18n::mc {Only this new branch is committed. Your ambient git identity is used.}]]
+    if {[string trim $branch] eq ""} { return }
+    set names [join [_contribution_names] ", "]
+    set dir [string trim $::contribution_directory]
+    if {![::vmanage::confirm $w [::vi18n::mc {Prepare this branch and commit?}] \
+        [format [::vi18n::mc {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.}] $destination $branch $names $dir]]} {
+        return
+    }
+    set body [_contribution_body destination [::vapi::json_string $destination] \
+        branch [::vapi::json_string $branch]]
+    set response [::vmanage::post $w /api/plugins/contribution/prepare $body]
+    if {![llength $response]} { return }
+    if {[dict exists $response prepared] && ![dict get $response prepared]} {
+        set existing [join [dict get $response existing] "\n"]
+        if {![::vmanage::confirm $w [::vi18n::mc {Replace existing repository files?}] \
+            "[::vi18n::mc {These paths already exist in the chosen repository:}]\n$existing\n\n[::vi18n::mc {Replace them in the new branch? Nothing else in the repository changes.}]"]} {
+            ::vmanage::say $w [::vi18n::mc {Nothing was prepared: the chosen repository already has these paths.}] warn
+            return
+        }
+        dict set body replace_existing [::vapi::json_bool 1]
+        set response [::vmanage::post $w /api/plugins/contribution/prepare $body]
+        if {![llength $response]} { return }
+    }
+    set ::contribution_prepared $response
+    $w.bar.publish state !disabled
+    set text "[::vi18n::mc {Branch and commit prepared; nothing has been pushed}]\n\n"
+    append text "[::vi18n::mc {Origin}]: [dict get $response origin]\n"
+    append text "[::vi18n::mc {Branch}]: [dict get $response branch]\n"
+    append text "[::vi18n::mc {Commit}]: [dict get $response commit]\n"
+    append text "[::vi18n::mc {Worktree}]: [dict get $response worktree]\n\n"
+    append text "[dict get $response diff]\n\n[dict get $response next]\n"
+    ::vtext::set_text $w.preview $text
+    ::vmanage::say $w [::vi18n::mc {Commit ready for review. Push is a separate action.}] ok
+}
+
+proc ::voverlay::_contribution_publish {w} {
+    if {![llength $::contribution_prepared]} { return }
+    set origin [dict get $::contribution_prepared origin]
+    set branch [dict get $::contribution_prepared branch]
+    set commit [dict get $::contribution_prepared commit]
+    if {![::vmanage::confirm $w [::vi18n::mc {Push this branch?}] \
+        "[::vi18n::mc {Push}] $branch ($commit) [::vi18n::mc {without force to}] $origin. [::vi18n::mc {This publishes the commit; no pull request is created yet.}]"]} {
+        return
+    }
+    set response [::vmanage::post $w /api/plugins/contribution/publish \
+        [dict create worktree [::vapi::json_string [dict get $::contribution_prepared worktree]]]]
+    if {![llength $response]} { return }
+    dict set response worktree [dict get $::contribution_prepared worktree]
+    set ::contribution_published $response
+    $w.bar.pr state !disabled
+    set text "[::vi18n::mc {Branch pushed and verified on origin}]\n\n"
+    append text "[::vi18n::mc {Origin}]: [dict get $response origin]\n"
+    append text "[::vi18n::mc {Branch}]: [dict get $response branch]\n"
+    append text "[::vi18n::mc {Commit}]: [dict get $response commit]\n\n"
+    append text "[dict get $response next]\n"
+    ::vtext::set_text $w.preview $text
+    ::vmanage::say $w [::vi18n::mc {Push complete. No pull request has been opened.}] ok
+}
+
+proc ::voverlay::_contribution_pr {w} {
+    variable contribution_upstream_repo
+    if {![llength $::contribution_published]} { return }
+    set repo [::vmanage::ask $w [::vi18n::mc {Pull request repository}] \
+        [::vi18n::mc {owner/repository}] $contribution_upstream_repo \
+        [::vi18n::mc {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.}]]
+    if {[string trim $repo] eq ""} { return }
+    set base [::vmanage::ask $w [::vi18n::mc {Pull request base}] \
+        [::vi18n::mc {Base branch}] master]
+    if {[string trim $base] eq ""} { return }
+    set title [::vmanage::ask $w [::vi18n::mc {Pull request title}] \
+        [::vi18n::mc {Title}] [format [::vi18n::mc {Contribute extensions: %s}] [join [_contribution_names] ", "]]]
+    if {[string trim $title] eq ""} { return }
+    set body [::vmanage::ask $w [::vi18n::mc {Pull request description}] \
+        [::vi18n::mc {Description}] [::vi18n::mc {Adds selected extension sources. Review the branch diff and checks before merging.}]]
+    if {![::vmanage::confirm $w [::vi18n::mc {Open this pull request?}] \
+        "[::vi18n::mc {Create a PR in}] $repo [::vi18n::mc {from}] [dict get $::contribution_published branch] [::vi18n::mc {into}] $base. [::vi18n::mc {No additional push happens.}]"]} {
+        return
+    }
+    set response [::vmanage::post $w /api/plugins/contribution/pr [dict create \
+        worktree [::vapi::json_string [dict get $::contribution_published worktree]] \
+        repo [::vapi::json_string $repo] base [::vapi::json_string $base] \
+        title [::vapi::json_string $title] body [::vapi::json_string $body]]]
+    if {![llength $response]} { return }
+    ::vtext::set_text $w.preview "[::vi18n::mc {Pull request created}]\n\n[dict get $response url]"
+    ::vmanage::say $w [::vi18n::mc {Pull request opened.}] ok
 }
 
 # Enable ⇄ disable. The API writes config.toml and reloads the plugin
@@ -2789,6 +2954,10 @@ proc ::voverlay::_plugin_remove {w} {
     set p [_plugin_selected $w]
     if {$p eq ""} { return }
     set name [dict get $p name]
+    if {[dict get $p bundled]} {
+        ::vmanage::say $w [::vi18n::mc {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.}] warn
+        return
+    }
     if {![::vmanage::confirm $w [format [::vi18n::mc {Remove plugin %s?}] $name] \
         [::vi18n::mc {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.}]]} {
         return
@@ -4020,7 +4189,7 @@ proc ::voverlay::_trigger_dialog {w {name ""}} {
     set choices {
         event {TEXT JOIN PART QUIT KICK NICK}
         match_kind {always contains regex url imageurl bluesky}
-        action {slopdrop vision bluesky prompt command}
+        action {slopdrop vision bluesky prompt}
         min_role {{} guest user trusted admin owner}
     }
     foreach {field label} {

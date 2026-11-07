@@ -236,12 +236,21 @@ impl InstallService {
         } else {
             unsupported.push("signed-download-bootstrap");
         }
+        // The digest preview_rollback reports as current_artifact_sha256,
+        // readable without a retained previous component. Fleet staging
+        // records it as the rollback baseline; a rollback preview refuses
+        // a node's first managed install, which made it unstageable.
+        let mut current_artifacts = serde_json::Map::new();
+        for component in &installed {
+            current_artifacts.insert(component.name.clone(), json!(signature(component)?));
+        }
         Ok(json!({
             "schema": record.schema, "profile": record.profile,
             "install_root": self.paths.install_root,
             "config_path": self.paths.config_path(),
             "record_path": self.paths.record_path(),
             "installed": installed,
+            "current_artifacts": current_artifacts,
             "configured_only": configured,
             "available": self.components(false)?,
             "history": record.history,
@@ -941,10 +950,14 @@ impl InstallService {
             .then(|| std::fs::read(self.paths.config_path()))
             .transpose()?;
         let sig = signature(&(name, &current, &restore, before.as_deref()))?;
+        let previous_artifact_sha256 = current.previous.as_ref().map(signature).transpose()?;
+        let current_artifact_sha256 = signature(&current)?;
         Ok(json!({
             "preview": true, "confirm_required": true, "component": name,
             "from_version": current.version, "to_version": current.previous.as_ref().map(|c| &c.version),
             "restores_config_snapshot": restore.is_some(), "plan_sig": sig,
+            "current_artifact_sha256": current_artifact_sha256,
+            "previous_artifact_sha256": previous_artifact_sha256,
             "note": "restores a verified retained payload and any applicable private config snapshot; never a running-service claim",
         }))
     }

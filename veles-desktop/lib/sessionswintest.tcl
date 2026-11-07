@@ -146,6 +146,104 @@ ok "a titled row shows its title" {[lindex [[tree] item s-0004 -values] 0] eq "t
 ok "a pinned session carries the star" {[string match "★ *" [lindex [[tree] item s-0002 -values] 0]]}
 ok "a running session says so" {[lindex [[tree] item s-0007 -values] 3] ne ""}
 
+puts "\nparent-linked sessions form a tree"
+set ::all_fixture $::fixture
+namespace eval ::vapi {
+    proc answer {path} {
+        if {[string match "/api/sessions/*/head*" $path]} {
+            return [dict create messages [list \
+                [dict create role user content "hello there"] \
+                [dict create role assistant content "general kenobi"]]]
+        }
+        if {[dict exists $::fixture $path]} { return [dict get $::fixture $path] }
+        set off [_arg $path offset 0]
+        set lim [_arg $path limit 100]
+        set rows [lrange $::fixture $off [expr {$off + $lim - 1}]]
+        return [dict create sessions $rows total [llength $::fixture] offset $off]
+    }
+}
+set ::fixture [dict create {*}[::vsessions::_query 0] [dict create sessions [list \
+    [dict create id child-first title "subagent: review" preview "" parent parent-1 \
+        created_at "2026-10-03 10:00:00" updated_at "2026-10-03 12:03:00" message_count 3 running false] \
+    [dict create id parent-1 title "review workflows" preview "" parent "" \
+        created_at "2026-10-03 10:00:00" updated_at "2026-10-03 12:02:00" message_count 4 running false] \
+    [dict create id orphan title "subagent: older page" preview "" parent missing-parent \
+        created_at "2026-10-03 10:00:00" updated_at "2026-10-03 12:01:00" message_count 2 running false]] total 3 offset 0]]
+::vsessions::load 0
+settle
+ok "a child is nested even when it arrives before its parent" \
+    {[[tree] parent child-first] eq "parent-1"}
+ok "a child is visibly marked" \
+    {[string match "↳ *" [lindex [[tree] item child-first -values] 0]]}
+ok "an orphan stays visible at the root during paging or filtering" \
+    {[[tree] parent orphan] eq "" && [string match "↳ *" [lindex [[tree] item orphan -values] 0]]}
+set ::fixture [dict create {*}[::vsessions::_query 0] [dict create sessions [list \
+    [dict create id cycle-a title "cycle a" preview "" parent cycle-b \
+        created_at "2026-10-03 10:00:00" updated_at "2026-10-03 12:01:00" message_count 1 running false] \
+    [dict create id cycle-b title "cycle b" preview "" parent cycle-a \
+        created_at "2026-10-03 10:00:00" updated_at "2026-10-03 12:00:00" message_count 1 running false]] total 2 offset 0]]
+::vsessions::load 0
+settle
+ok "an invalid parent cycle never hides either session" \
+    {[llength [[tree] children {}]] == 2 && [[tree] exists cycle-a] && [[tree] exists cycle-b]}
+set ::fixture [dict create {*}[::vsessions::_query 0] [dict create sessions [list \
+    [dict create id parent-1 title "review workflows" preview "" parent "" \
+        created_at "2026-10-03 10:00:00" updated_at "2026-10-03 12:02:00" message_count 4 running false]] total 2 offset 0]]
+::vsessions::load 0
+settle
+set ::fixture [dict create {*}[::vsessions::_query 1] [dict create sessions [list \
+    [dict create id child-later title "subagent: later page" preview "" parent parent-1 \
+        created_at "2026-10-03 10:00:00" updated_at "2026-10-03 12:03:00" message_count 3 running false]] total 2 offset 1]]
+::vsessions::load 1
+settle
+ok "a child arriving on a later page joins its loaded parent" \
+    {[[tree] parent child-later] eq "parent-1" && [llength [[tree] children {}]] == 1}
+
+set ::fixture [dict create {*}[::vsessions::_query 0] [dict create sessions [list \
+    [dict create id child-early title "subagent: early page" preview "" parent parent-later \
+        created_at "2026-10-03 10:00:00" updated_at "2026-10-03 12:03:00" message_count 3 running false]] total 2 offset 0]]
+::vsessions::load 0
+settle
+ok "a child whose parent is not loaded stays visible at the root" \
+    {[[tree] parent child-early] eq "" && [[tree] exists child-early]}
+set ::fixture [dict create {*}[::vsessions::_query 1] [dict create sessions [list \
+    [dict create id parent-later title "parent on a later page" preview "" parent null \
+        created_at "2026-10-03 10:00:00" updated_at "2026-10-03 12:02:00" message_count 4 running false]] total 2 offset 1]]
+::vsessions::load 1
+settle
+ok "a later-arriving parent adopts the already loaded orphan" \
+    {[[tree] parent child-early] eq "parent-later" && [llength [[tree] children {}]] == 1}
+
+set ::fixture [dict create {*}[::vsessions::_query 0] [dict create sessions [list \
+    [dict create id paged-child title "subagent: supplied ancestor" preview "" parent paged-parent \
+        created_at "2026-10-03 10:00:00" updated_at "2026-10-03 12:03:00" message_count 3 running false]] \
+    total 1 offset 0 parents [list \
+    [dict create id paged-parent title "supplied ancestor" preview "" parent null \
+        created_at "2026-10-03 10:00:00" updated_at "2026-10-03 12:02:00" message_count 4 running false]]]]
+::vsessions::load 0
+settle
+ok "the separate ancestor context places a child without changing the page total" \
+    {[[tree] parent paged-child] eq "paged-parent" && $::vsessions::offset == 1}
+
+# SI-6: the PARENT is on the page; its child ranks far past it and comes
+# as downward context (`children`), which must nest under it.
+set ::fixture [dict create {*}[::vsessions::_query 0] [dict create sessions [list \
+    [dict create id onpage-parent title "a visible parent" preview "" parent null \
+        created_at "2026-10-03 10:00:00" updated_at "2026-10-03 12:05:00" message_count 4 running false]] \
+    total 900 offset 0 parents {} children [list \
+    [dict create id offpage-child title "subagent: ranked 922" preview "" parent onpage-parent \
+        created_at "2026-10-01 10:00:00" updated_at "2026-10-01 10:01:00" message_count 2 running false \
+        context_only true]]]]
+::vsessions::load 0
+settle
+ok "a child beyond the page arrives as context and nests under its on-page parent" \
+    {[[tree] exists offpage-child] && [[tree] parent offpage-child] eq "onpage-parent"
+     && $::vsessions::offset == 1}
+
+set ::fixture $::all_fixture
+
+::vsessions::load 0
+settle
 ::vsessions::load 1
 settle
 ok "Load more appends the rest" {[llength [[tree] children {}]] == 250}

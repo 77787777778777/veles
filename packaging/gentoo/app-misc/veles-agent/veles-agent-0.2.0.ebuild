@@ -6,7 +6,7 @@ EAPI=8
 inherit cargo
 
 DESCRIPTION="Rust core + Tcl scripting AI agent framework"
-HOMEPAGE="https://github.com/veles-agent/veles-agent"
+HOMEPAGE="https://github.com/77787777778777/veles"
 
 LICENSE="AGPL-3"
 SLOT="0"

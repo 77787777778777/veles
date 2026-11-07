@@ -1064,6 +1064,14 @@ pub fn refuses(tool: &str, args: &Value, plan_path: Option<&str>) -> Option<Stri
                 _ => Some("it would make a device do something".into()),
             }
         }
+        // The tab bridge acts on the owner's real, logged-in tab (BX-7).
+        "browser_extension" => {
+            let action = args.get("action").and_then(Value::as_str).unwrap_or("");
+            match action {
+                "status" | "snapshot" => None,
+                _ => Some("it would act on the connected browser tab".into()),
+            }
+        }
         _ => None,
     }
 }
@@ -1987,6 +1995,30 @@ mod tests {
             "browser_type",
         ] {
             assert!(refuses(t, &json!({}), None).is_some(), "must refuse: {t}");
+        }
+    }
+
+    /// BX-7: the tab bridge acts on the owner's real, logged-in tab.
+    /// Plan mode may look at it and may not change it.
+    #[test]
+    fn the_browser_tab_bridge_may_look_but_not_act() {
+        for action in ["status", "snapshot"] {
+            assert!(
+                refuses("browser_extension", &json!({"action": action}), None).is_none(),
+                "plan mode may {action}"
+            );
+        }
+        for args in [
+            json!({"action": "click", "ref": "1"}),
+            json!({"action": "fill", "ref": "1", "text": "x"}),
+            json!({"action": "navigate", "url": "https://example.org"}),
+            json!({"action": "something-new"}),
+            json!({}),
+        ] {
+            assert!(
+                refuses("browser_extension", &args, None).is_some(),
+                "plan mode must refuse {args}"
+            );
         }
     }
 

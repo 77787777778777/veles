@@ -406,10 +406,13 @@ puts "\nexec with substituted arguments"
 array set exec_reviewed {
     {exec which $term}
         "the loop variable, from a literal list of terminal names"
-    {exec $tclsh $driver $path}
-        "interpreter, driver and buffer path are all local"
     {exec {*}$cmd 2>@1}
         "media converter argv; its IN/OUT words go through ::vsafe::arg"
+    {exec {*}$argv 2>@1}
+        "F1 fleet restart: argv is a LIST from instpane::ssh_argv;
+         BatchMode and the literal systemctl verb are fixed, and the
+         configured host and unit pass through ::vsafe::arg. There is no
+         shell or remote command string to inject."
     {exec $exe {*}$words << "$pass\n" 2>@1}
         "the ticket-signer child (ask.tcl _ticket_sign): $exe is this
          machine's `veles` from auto_execok, $words is a literal

@@ -306,6 +306,11 @@ pub fn run(resume: bool, ov: &veles_core::agent::ModelOverrides) -> Result<()> {
                     if st.busy {
                         st.spinner = (st.spinner + 1) % SPINNER.len();
                     }
+                    if st.tasks.as_ref().is_some_and(|t| {
+                        !t.confirming && t.refreshed.elapsed() >= Duration::from_secs(3)
+                    }) {
+                        refresh_task_browser(&mut st);
+                    }
                     draw(&mut terminal, &mut st)?;
                 }
                 Ok(UiEvent::Paste(text)) => {
@@ -485,6 +490,12 @@ pub fn run(resume: bool, ov: &veles_core::agent::ModelOverrides) -> Result<()> {
                     if key.kind != KeyEventKind::Press {
                         continue;
                     }
+                    // Task management is a modal browser, not a chat dump.
+                    if st.tasks.is_some() {
+                        task_modal_key(&mut st, key.code);
+                        draw(&mut terminal, &mut st)?;
+                        continue;
+                    }
                     // A modal is on screen: keys answer it, nothing else.
                     if st.confirm_delete.is_some() {
                         match key.code {
@@ -608,25 +619,7 @@ pub fn run(resume: bool, ov: &veles_core::agent::ModelOverrides) -> Result<()> {
                     }
                     // Detail pager (a View picker row): scroll, Esc/q closes.
                     if st.detail.is_some() {
-                        match key.code {
-                            KeyCode::Esc | KeyCode::Char('q') => st.detail = None,
-                            KeyCode::Up | KeyCode::Char('k') => {
-                                st.detail.as_mut().unwrap().scroll =
-                                    st.detail.as_ref().unwrap().scroll.saturating_sub(1);
-                            }
-                            KeyCode::Down | KeyCode::Char('j') => {
-                                st.detail.as_mut().unwrap().scroll += 1;
-                            }
-                            KeyCode::PageUp => {
-                                st.detail.as_mut().unwrap().scroll =
-                                    st.detail.as_ref().unwrap().scroll.saturating_sub(14);
-                            }
-                            KeyCode::PageDown => {
-                                st.detail.as_mut().unwrap().scroll += 14;
-                            }
-                            KeyCode::Home => st.detail.as_mut().unwrap().scroll = 0,
-                            _ => {}
-                        }
+                        detail_pager_key(&mut st, key.code);
                         draw(&mut terminal, &mut st)?;
                         continue;
                     }
@@ -1042,6 +1035,178 @@ struct UiState {
     detail: Option<DetailView>,
     /// The handle local slash commands read (see `AgentHandle`).
     agent_snapshot: Option<AgentHandle>,
+    /// Registry-backed shell/monitor browser. Only ids and selection
+    /// live here; the shared task registry remains authoritative.
+    tasks: Option<TaskBrowser>,
+    confirm_task_cancel: Option<u32>,
+}
+
+struct TaskBrowser {
+    rows: Vec<veles_core::tasks::TaskRecord>,
+    selected: u32,
+    confirming: bool,
+    refreshed: std::time::Instant,
+}
+
+fn refresh_task_browser(st: &mut UiState) {
+    let session = st.session.clone();
+    let selected = st.tasks.as_ref().map(|t| t.selected);
+    let mut rows: Vec<_> = veles_core::tasks::all()
+        .into_iter()
+        .filter(|t| veles_core::shells::may_reach(&session, &t.session))
+        .collect();
+    // Sections in the desktop panel's order: shells, monitors, subagents.
+    rows.sort_by_key(|t| (task_section(t.kind), t.id));
+    let selected = selected
+        .filter(|id| rows.iter().any(|t| t.id == *id))
+        .or_else(|| rows.first().map(|t| t.id))
+        .unwrap_or(0);
+    st.tasks = Some(TaskBrowser {
+        rows,
+        selected,
+        confirming: false,
+        refreshed: std::time::Instant::now(),
+    });
+}
+
+/// The status line shown when the task browser opens.
+const TASK_BROWSER_HINT: &str =
+    "shells/monitors/subagents — ↑/↓ select, Enter details, c cancel, b detach foreground, F5 refresh, Esc closes";
+
+fn task_section(kind: veles_core::tasks::TaskKind) -> (u8, &'static str) {
+    match kind {
+        veles_core::tasks::TaskKind::Shell => (0, "shells"),
+        veles_core::tasks::TaskKind::Monitor => (1, "monitors"),
+        veles_core::tasks::TaskKind::Subagent => (2, "subagents"),
+    }
+}
+
+fn selected_task(st: &UiState) -> Option<veles_core::tasks::TaskRecord> {
+    let browser = st.tasks.as_ref()?;
+    veles_core::tasks::all().into_iter().find(|t| {
+        t.id == browser.selected && veles_core::shells::may_reach(&st.session, &t.session)
+    })
+}
+
+fn inspect_selected_task(st: &mut UiState) {
+    let Some(task) = selected_task(st) else {
+        return;
+    };
+    let detail = if task.kind == veles_core::tasks::TaskKind::Shell {
+        veles_core::shells::detail_for(task.id, &st.session)
+            .map(|v| {
+                serde_json::to_string_pretty(&v).unwrap_or_else(|_| "invalid shell detail".into())
+            })
+            .unwrap_or_else(|| "no such reachable shell".into())
+    } else {
+        veles_core::tasks::detail_for(task.id, &st.session)
+            .map(|v| {
+                serde_json::to_string_pretty(&v)
+                    .unwrap_or_else(|_| format!("invalid {} detail", task.kind.as_str()))
+            })
+            .unwrap_or_else(|| format!("no such reachable {}", task.kind.as_str()))
+    };
+    st.detail = Some(DetailView {
+        title: format!("{} {}", task.kind.as_str(), task.id),
+        text: detail,
+        scroll: 0,
+    });
+}
+
+/// Keys while the task browser is open. A detail opened FROM it is drawn
+/// on top, so it has the keys first: Esc closes the detail and returns
+/// to the browser (TSG-3).
+fn task_modal_key(st: &mut UiState, key: KeyCode) {
+    if st.detail.is_some() {
+        detail_pager_key(st, key);
+    } else {
+        task_browser_key(st, key);
+    }
+}
+
+/// The detail pager: scroll, Esc/q closes.
+fn detail_pager_key(st: &mut UiState, key: KeyCode) {
+    let Some(detail) = st.detail.as_mut() else {
+        return;
+    };
+    match key {
+        KeyCode::Esc | KeyCode::Char('q') => st.detail = None,
+        KeyCode::Up | KeyCode::Char('k') => detail.scroll = detail.scroll.saturating_sub(1),
+        KeyCode::Down | KeyCode::Char('j') => detail.scroll += 1,
+        KeyCode::PageUp => detail.scroll = detail.scroll.saturating_sub(14),
+        KeyCode::PageDown => detail.scroll += 14,
+        KeyCode::Home => detail.scroll = 0,
+        _ => {}
+    }
+}
+
+fn task_browser_key(st: &mut UiState, key: KeyCode) {
+    if st.confirm_task_cancel.is_none() && key == KeyCode::Char('b') {
+        // The session's running foreground command, not the selected
+        // row: same flag and wording as `/detach`. The adopted shell
+        // shows on the next refresh.
+        let msg = crate::commands::detach_reply(&st.session);
+        st.push_msg_status(msg.to_string());
+        return;
+    }
+    if st.confirm_task_cancel.is_some() {
+        match key {
+            KeyCode::Enter | KeyCode::Char('y') | KeyCode::Char('Y') => {
+                let id = st.confirm_task_cancel.take().unwrap();
+                let msg = if veles_core::tasks::cancel_for(id, &st.session) {
+                    format!("cancel requested for task {id}")
+                } else {
+                    format!("task {id} is finished, unknown, or not reachable from this session")
+                };
+                refresh_task_browser(st);
+                st.push_msg_status(msg);
+            }
+            KeyCode::Esc | KeyCode::Char('n') | KeyCode::Char('N') => {
+                st.confirm_task_cancel = None;
+                if let Some(t) = st.tasks.as_mut() {
+                    t.confirming = false;
+                }
+            }
+            _ => {}
+        }
+        return;
+    }
+    let Some(task) = selected_task(st) else {
+        if matches!(key, KeyCode::Esc | KeyCode::Char('q')) {
+            st.tasks = None;
+        }
+        return;
+    };
+    match key {
+        KeyCode::Esc | KeyCode::Char('q') => st.tasks = None,
+        KeyCode::Up | KeyCode::Char('k') => {
+            if let Some(t) = st.tasks.as_mut() {
+                if let Some(i) = t.rows.iter().position(|r| r.id == t.selected) {
+                    if i > 0 {
+                        t.selected = t.rows[i - 1].id;
+                    }
+                }
+            }
+        }
+        KeyCode::Down | KeyCode::Char('j') => {
+            if let Some(t) = st.tasks.as_mut() {
+                if let Some(i) = t.rows.iter().position(|r| r.id == t.selected) {
+                    if i + 1 < t.rows.len() {
+                        t.selected = t.rows[i + 1].id;
+                    }
+                }
+            }
+        }
+        KeyCode::Enter | KeyCode::Char('d') | KeyCode::Char('o') => inspect_selected_task(st),
+        KeyCode::Char('r') | KeyCode::F(5) => refresh_task_browser(st),
+        KeyCode::Char('c') if task.status == veles_core::tasks::TaskStatus::Running => {
+            st.confirm_task_cancel = Some(task.id);
+            if let Some(t) = st.tasks.as_mut() {
+                t.confirming = true;
+            }
+        }
+        _ => {}
+    }
 }
 
 impl UiState {
@@ -1105,6 +1270,8 @@ impl UiState {
             picker: None,
             detail: None,
             agent_snapshot: None,
+            tasks: None,
+            confirm_task_cancel: None,
         }
     }
 
@@ -1974,6 +2141,16 @@ fn send_current(
                     &[("msg", msg.to_string())],
                 ));
             }
+            return;
+        }
+        // Bare /shells and /monitors open the task browser mid-turn too:
+        // a running turn is when its `b` (detach the foreground command)
+        // has anything to act on. With arguments they stay shared below.
+        if matches!(st.input.trim(), "/shells" | "/monitors") {
+            st.input.clear();
+            st.caret = 0;
+            refresh_task_browser(st);
+            st.push_msg_status(TASK_BROWSER_HINT.to_string());
             return;
         }
         // The rest of mid-turn input (R4.6): shared commands still
@@ -2957,7 +3134,7 @@ fn files_picker(path: &str) -> Picker {
                 }],
                 sel: 0,
                 kind: PickerAction::View,
-            }
+            };
         }
     };
     entries.sort_by_key(|e| {
@@ -4058,6 +4235,9 @@ fn draw(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>, st: &mut UiState)
         if st.picker.is_some() {
             draw_picker(f, st, &st.theme);
         }
+        if st.tasks.is_some() {
+            draw_task_browser(f, st, &st.theme);
+        }
         if st.detail.is_some() {
             draw_detail(f, st, &st.theme);
         }
@@ -4071,6 +4251,7 @@ fn draw(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>, st: &mut UiState)
             && !st.show_help
             && st.palette.is_none()
             && st.picker.is_none()
+            && st.tasks.is_none()
             && st.detail.is_none()
         {
             if let Some(area) = st.input_area.filter(|a| a.width >= 4 && a.height >= 2) {
@@ -5326,6 +5507,72 @@ fn draw_detail(f: &mut ratatui::Frame<'_>, st: &UiState, t: &veles_core::theme::
     f.render_widget(p, area);
 }
 
+fn draw_task_browser(f: &mut ratatui::Frame<'_>, st: &UiState, t: &veles_core::theme::Theme) {
+    let Some(browser) = &st.tasks else { return };
+    let area = centered_rect(84, 76, f.size());
+    let width = area.width.saturating_sub(4) as usize;
+    let mut lines = vec![
+        Line::from(Span::styled(
+            "shells, monitors and subagents · running and recently finished",
+            Style::default().fg(t.cyan()).add_modifier(Modifier::BOLD),
+        )),
+        Line::from(""),
+    ];
+    let mut last_kind = None;
+    for task in &browser.rows {
+        if last_kind != Some(task.kind) {
+            lines.push(Line::from(Span::styled(
+                task_section(task.kind).1,
+                Style::default().fg(t.purple()).add_modifier(Modifier::BOLD),
+            )));
+            last_kind = Some(task.kind);
+        }
+        let selected = task.id == browser.selected;
+        let line = format!(
+            "{}[{}] {:<9} {:>5}s  {}",
+            if selected { "▸ " } else { "  " },
+            task.id,
+            task.status.as_str(),
+            task.elapsed_secs(),
+            task.label,
+        );
+        lines.push(Line::from(Span::styled(
+            line.chars().take(width).collect::<String>(),
+            if selected {
+                Style::default().fg(t.bg()).bg(t.pink())
+            } else {
+                Style::default().fg(t.text())
+            },
+        )));
+    }
+    if browser.rows.is_empty() {
+        lines.push(Line::from("no shells, monitors or subagents to show"));
+    }
+    lines.push(Line::from(""));
+    lines.push(Line::from(Span::styled(
+        "↑↓ select · Enter/d detail · c cancel · b detach foreground · F5/r refresh · Esc close",
+        Style::default().fg(t.dim()),
+    )));
+    if browser.confirming {
+        lines.push(Line::from(Span::styled(
+            format!(
+                "Cancel task {}? Enter/y confirm · Esc/n keep running",
+                browser.selected
+            ),
+            Style::default().fg(t.red()).add_modifier(Modifier::BOLD),
+        )));
+    }
+    let popup = Paragraph::new(lines).block(
+        Block::default()
+            .borders(Borders::ALL)
+            .border_style(Style::default().fg(t.purple()))
+            .title(" shells, monitors and subagents ")
+            .style(Style::default().bg(t.panel())),
+    );
+    f.render_widget(Clear, area);
+    f.render_widget(popup, area);
+}
+
 fn centered_rect(pct_x: u16, pct_y: u16, r: Rect) -> Rect {
     let v = Layout::default()
         .direction(Direction::Vertical)
@@ -6096,6 +6343,10 @@ fn local_command(
     // picker instead of prose. A specific argument (`/model <name>`,
     // `/diff staged`) still reaches the shared dispatcher below.
     match head {
+        "/shells" | "/monitors" if rest.is_empty() => {
+            refresh_task_browser(st);
+            return Some(TASK_BROWSER_HINT.into());
+        }
         "/model" if rest.is_empty() => {
             st.picker = Some(model_picker(agent));
             return Some("pick a model (↑/↓, Enter, Esc)".into());
@@ -7324,7 +7575,11 @@ and a bare https://example.com/y, plus a list:\n- one\n- two\n\n```rust\nfn main
     #[test]
     fn gfm_tables_have_aligned_columns_and_inline_links() {
         let th = veles_core::theme::synthwave();
-        let rows = md_lines_tracked("| Name | Result | State |\n|:---|:---:|---:|\n| Ada | [works](https://x.dev/a) | yes |", &th, 120);
+        let rows = md_lines_tracked(
+            "| Name | Result | State |\n|:---|:---:|---:|\n| Ada | [works](https://x.dev/a) | yes |",
+            &th,
+            120,
+        );
         let texts: Vec<String> = rows
             .iter()
             .map(|(spans, _)| spans.iter().map(|s| s.content.as_ref()).collect())
@@ -7387,7 +7642,11 @@ and a bare https://example.com/y, plus a list:\n- one\n- two\n\n```rust\nfn main
     #[test]
     fn a_long_cell_wraps_without_losing_column_starts() {
         let th = veles_core::theme::synthwave();
-        let rows = md_lines_tracked("| Name | Notes |\n|---|---|\n| Ada | one two three four five six seven eight nine ten |", &th, 36);
+        let rows = md_lines_tracked(
+            "| Name | Notes |\n|---|---|\n| Ada | one two three four five six seven eight nine ten |",
+            &th,
+            36,
+        );
         let texts: Vec<String> = rows
             .iter()
             .map(|(spans, _)| spans.iter().map(|s| s.content.as_ref()).collect())
@@ -7831,6 +8090,7 @@ and a bare https://example.com/y, plus a list:\n- one\n- two\n\n```rust\nfn main
             api_version: None,
             max_output_tokens: None,
             cache_ttl: None,
+            message_threads: None,
         }];
         let cfg = Arc::new(cfg);
         store.lock().unwrap().create_session("s1").unwrap();
@@ -7888,6 +8148,7 @@ and a bare https://example.com/y, plus a list:\n- one\n- two\n\n```rust\nfn main
             api_version: None,
             max_output_tokens: None,
             cache_ttl: None,
+            message_threads: None,
         }];
         let cfg = Arc::new(cfg);
         store.lock().unwrap().create_session("s1").unwrap();
@@ -8363,6 +8624,228 @@ and a bare https://example.com/y, plus a list:\n- one\n- two\n\n```rust\nfn main
         assert!(
             screen.contains(&head),
             "the description must be rendered beside the name ({head:?}):\n{screen}"
+        );
+    }
+
+    // ── R4.8c: the /model picker ("editors, not dumps") ───────────────
+
+    #[test]
+    fn task_browser_retains_finished_work_and_scopes_to_the_session() {
+        let (agent, history, _home, _env) = dummy_agent();
+        let mut st = UiState::new("tui-task-scope".into());
+        veles_core::acl::set_session_principal(
+            &st.session,
+            veles_core::acl::Principal::known("irc:tui-task-user", veles_core::acl::Role::User),
+        );
+        let (running, _) = veles_core::tasks::start(
+            veles_core::tasks::TaskKind::Monitor,
+            "wait for a build marker",
+            "tui-task-scope",
+        );
+        let (finished, _) = veles_core::tasks::start(
+            veles_core::tasks::TaskKind::Shell,
+            "completed command",
+            "tui-task-scope",
+        );
+        veles_core::tasks::finish(finished, true);
+        let (foreign, _) = veles_core::tasks::start(
+            veles_core::tasks::TaskKind::Shell,
+            "another session's command",
+            "tui-task-foreign",
+        );
+        let out = local_command(&mut st, &agent, &history, "/monitors");
+        assert!(out.is_some() && st.tasks.is_some());
+        let browser = st.tasks.as_ref().unwrap();
+        assert!(browser.rows.iter().any(|t| t.id == running));
+        assert!(browser.rows.iter().any(|t| t.id == finished));
+        assert!(!browser.rows.iter().any(|t| t.id == foreign));
+        assert!(selected_task(&st).is_some());
+        st.tasks.as_mut().unwrap().selected = running;
+        task_browser_key(&mut st, KeyCode::Enter);
+        assert_eq!(
+            st.detail.as_ref().unwrap().title,
+            format!("monitor {running}")
+        );
+        assert!(st
+            .detail
+            .as_ref()
+            .unwrap()
+            .text
+            .contains("wait for a build marker"));
+        veles_core::acl::clear_session_principal("tui-task-scope");
+    }
+
+    #[test]
+    fn task_browser_cancellation_requires_confirmation_and_rechecks_reach() {
+        let _guard = veles_core::testenv::lock();
+        let mut st = UiState::new("tui-cancel-owner".into());
+        veles_core::acl::set_session_principal(
+            &st.session,
+            veles_core::acl::Principal::known("irc:tui-cancel-owner", veles_core::acl::Role::User),
+        );
+        let (id, token) = veles_core::tasks::start(
+            veles_core::tasks::TaskKind::Monitor,
+            "watched condition",
+            "tui-cancel-owner",
+        );
+        refresh_task_browser(&mut st);
+        st.tasks.as_mut().unwrap().selected = id;
+        task_browser_key(&mut st, KeyCode::Char('c'));
+        assert_eq!(st.confirm_task_cancel, Some(id));
+        assert!(
+            !token.is_cancelled(),
+            "opening confirmation does not cancel"
+        );
+        task_browser_key(&mut st, KeyCode::Esc);
+        assert!(!token.is_cancelled(), "declining does not cancel");
+        task_browser_key(&mut st, KeyCode::Char('c'));
+        task_browser_key(&mut st, KeyCode::Enter);
+        assert!(
+            token.is_cancelled(),
+            "confirming reaches the shared cancel path"
+        );
+        st.session = "tui-cancel-other".into();
+        veles_core::acl::set_session_principal(
+            &st.session,
+            veles_core::acl::Principal::known("irc:tui-cancel-other", veles_core::acl::Role::User),
+        );
+        assert!(!veles_core::tasks::cancel_for(id, &st.session));
+        veles_core::acl::clear_session_principal("tui-cancel-owner");
+        veles_core::acl::clear_session_principal("tui-cancel-other");
+    }
+
+    /// TSG-3: a detail opened FROM the browser is drawn on top of it, so
+    /// it must also have the keys. Every key used to go to the hidden
+    /// browser: PgDn moved its selection instead of scrolling, Esc
+    /// closed the browser behind the popup, and `c` armed a cancel
+    /// prompt drawn under it.
+    #[test]
+    fn task_browser_detail_has_the_keys_while_it_is_open() {
+        let _guard = veles_core::testenv::lock();
+        let mut st = UiState::new("tui-task-detail-keys".into());
+        let (first, first_token) = veles_core::tasks::start(
+            veles_core::tasks::TaskKind::Monitor,
+            "first watched condition",
+            "tui-task-detail-keys",
+        );
+        let (_second, _) = veles_core::tasks::start(
+            veles_core::tasks::TaskKind::Monitor,
+            "second watched condition",
+            "tui-task-detail-keys",
+        );
+        refresh_task_browser(&mut st);
+        st.tasks.as_mut().unwrap().selected = first;
+        task_modal_key(&mut st, KeyCode::Enter);
+        assert!(st.detail.is_some(), "Enter opens the detail");
+        task_modal_key(&mut st, KeyCode::PageDown);
+        assert_eq!(
+            st.detail.as_ref().unwrap().scroll,
+            14,
+            "PgDn scrolls the detail"
+        );
+        task_modal_key(&mut st, KeyCode::Down);
+        assert_eq!(
+            st.detail.as_ref().unwrap().scroll,
+            15,
+            "Down scrolls the detail"
+        );
+        assert_eq!(
+            st.tasks.as_ref().unwrap().selected,
+            first,
+            "the hidden browser's selection does not move"
+        );
+        task_modal_key(&mut st, KeyCode::Char('c'));
+        assert_eq!(
+            st.confirm_task_cancel, None,
+            "no cancel prompt under the popup"
+        );
+        task_modal_key(&mut st, KeyCode::Enter);
+        assert!(!first_token.is_cancelled(), "nothing cancelled blind");
+        task_modal_key(&mut st, KeyCode::Esc);
+        assert!(st.detail.is_none(), "Esc closes the detail");
+        assert!(st.tasks.is_some(), "…and returns to the browser");
+        task_modal_key(&mut st, KeyCode::Esc);
+        assert!(st.tasks.is_none(), "a second Esc closes the browser");
+        veles_core::tasks::cancel(first);
+        veles_core::tasks::cancel(_second);
+    }
+
+    /// TSG-4: the TUI browser lists the session's subagents next to its
+    /// shells and monitors (as the desktop panel does), and `b` moves
+    /// the running turn's foreground command to a background shell with
+    /// the same three honest outcomes as `/detach`.
+    #[test]
+    fn task_browser_lists_subagents_and_detaches_the_foreground_command() {
+        let _guard = veles_core::testenv::lock();
+        let session = "tui-task-detach";
+        let mut st = UiState::new(session.into());
+        let (child, _) = veles_core::tasks::start(
+            veles_core::tasks::TaskKind::Subagent,
+            "audit the loader",
+            session,
+        );
+        refresh_task_browser(&mut st);
+        assert!(
+            st.tasks
+                .as_ref()
+                .unwrap()
+                .rows
+                .iter()
+                .any(|t| t.id == child),
+            "a subagent is listed in the browser"
+        );
+        let said = |st: &UiState, needle: &str| {
+            st.transcript.blocks.iter().any(|b| b.body.contains(needle))
+        };
+        task_modal_key(&mut st, KeyCode::Char('b'));
+        assert!(said(&st, "nothing running in this session"));
+        let tok = veles_core::providers::CancelToken::new();
+        veles_core::agent::register_turn_for_test(session, tok);
+        task_modal_key(&mut st, KeyCode::Char('b'));
+        assert!(said(&st, "not inside a foreground terminal command"));
+        assert!(!veles_core::agent::detach_requested(session));
+        veles_core::agent::mark_fg_command(session, true);
+        task_modal_key(&mut st, KeyCode::Char('b'));
+        assert!(said(&st, "keeps running as a background shell"));
+        assert!(
+            veles_core::agent::detach_requested(session),
+            "the terminal tool's next poll sees the flag"
+        );
+        assert!(
+            st.tasks.is_some(),
+            "the browser stays open to show the new shell"
+        );
+        veles_core::agent::mark_fg_command(session, false);
+        veles_core::agent::clear_turn_for_test(session);
+        veles_core::tasks::cancel(child);
+    }
+
+    /// TSG-4: `b` only has something to detach while a turn runs, and
+    /// mid-turn input used to send a bare `/shells` to the shared
+    /// dispatcher (a text dump), so the browser could not be opened
+    /// then. Bare opens the browser mid-turn; arguments stay shared.
+    #[test]
+    fn bare_shells_opens_the_task_browser_mid_turn() {
+        let (agent, history, _home, _env) = dummy_agent();
+        let (ui_tx, _ui_rx) = mpsc::channel::<UiEvent>();
+        let mut st = UiState::new("s1".into());
+        st.busy = true;
+        st.agent_snapshot = Some(agent.clone());
+        st.input = "/shells".into();
+        st.caret = st.input.len();
+        send_current(&mut st, &agent, &history, &ui_tx);
+        assert!(
+            st.tasks.is_some(),
+            "bare /shells opens the browser mid-turn"
+        );
+        assert!(st.input.is_empty());
+        st.tasks = None;
+        st.input = "/monitors list".into();
+        st.caret = st.input.len();
+        send_current(&mut st, &agent, &history, &ui_tx);
+        assert!(
+            st.tasks.is_none(),
+            "with arguments it stays the shared command"
         );
     }
 

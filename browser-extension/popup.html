@@ -1,0 +1,15 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>veles tab bridge</title>
+<style>
+body { min-width: 280px; padding: 16px; background: #111126; color: #eee; font: 14px sans-serif; }
+input { width: 100%; box-sizing: border-box; margin: 8px 0 12px; padding: 7px; }
+button { padding: 8px 12px; margin-right: 6px; }
+#status { margin-top: 14px; white-space: pre-wrap; }
+</style>
+<label for="token">Local bridge token</label>
+<input id="token" type="password" autocomplete="off" required>
+<button id="connect">Connect this tab</button>
+<button id="disconnect">Disconnect</button>
+<p id="status">No tab is connected. veles cannot read this tab until you connect it.</p>
+<script type="module" src="popup.js"></script>

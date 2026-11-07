@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset or {%1$s %2$s failed: %3$s} {%1$s %2$s ବିଫଳ: %3$s}
 ::msgcat::mcset or {%1$s %2$s over ssh…} {%1$s %2$s ssh ମାଧ୍ୟମରେ…}
 ::msgcat::mcset or {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset or {%1$s (%2$s waiting)} {%1$s (%2$s ଅପେକ୍ଷାରେ)}
 ::msgcat::mcset or {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  ଚିନ୍ତନ %3$s}
 ::msgcat::mcset or {%1$s = %2$s here} {ଏଠାରେ %1$s = %2$s}
 ::msgcat::mcset or {%1$s NOT saved: %2$s} {%1$s ସଞ୍ଚିତ ହେଲା ନାହିଁ: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset or {%1$s every cron job on %2$s?} {%1$s — %2$s ର ସବୁ cron କାର୍ଯ୍ୟ?}
 ::msgcat::mcset or {%1$s failed: %2$s} {%1$s ବିଫଳ: %2$s}
 ::msgcat::mcset or {%1$s in / %2$s out / %3$s calls} {%1$s ଇନପୁଟ / %2$s ଆଉଟପୁଟ / %3$s କଲ୍}
+::msgcat::mcset or {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s ହେଉଛି ନୋଡ୍ %2$s, %3$s ନୁହେଁ। Edit… ରେ ଏହାର ନୋଡ୍ ଆଇଡି ସଠିକ୍ କରନ୍ତୁ।}
 ::msgcat::mcset or {%1$s is not a whole number} {%1$s ଏକ ପୂର୍ଣ୍ଣ ସଂଖ୍ୟା ନୁହେଁ}
+::msgcat::mcset or {%1$s is reachable (%2$s ms).} {%1$s ପହଞ୍ଚଣାଯୋଗ୍ୟ (%2$s ms)।}
 ::msgcat::mcset or {%1$s is set to something this box cannot edit (%2$s)} {%1$s ଏପରି କିଛିରେ ସେଟ ଅଛି ଯାହାକୁ ଏହି ମେସିନ ଏଡିଟ୍ କରିପାରିବ ନାହିଁ (%2$s)}
+::msgcat::mcset or {%1$s is unreachable: %2$s} {%1$s ପହଞ୍ଚଣାଯୋଗ୍ୟ ନୁହେଁ: %2$s}
 ::msgcat::mcset or {%1$s of %2$s characters} {%1$s (%2$s ଅକ୍ଷର ମଧ୍ୟରୁ)}
 ::msgcat::mcset or {%1$s of %2$s sessions} {%2$sଟିରୁ %1$sଟି ସେସନ୍}
 ::msgcat::mcset or {%1$s of %2$s skills reach the prompt} {%1$s (%2$s ଦକ୍ଷତା ମଧ୍ୟରୁ) ପ୍ରମ୍ପ୍ଟରେ ପହଞ୍ଚୁଛି}
 ::msgcat::mcset or {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s %2$s ରେ: %3$dଟି ସଫଳ, %4$dଟି ବିଫଳ}
+::msgcat::mcset or {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s କୌଣସି କ୍ଲଷ୍ଟର ନୋଡ୍ ପରିଚୟ ଜଣାଉନାହିଁ, ତେଣୁ ଏହାକୁ %2$s ଭାବେ ଯାଞ୍ଚ କରାଯାଇପାରିବ ନାହିଁ।}
+::msgcat::mcset or {%1$s sync failed: %2$s} {%1$s ସିଙ୍କ୍ ବିଫଳ: %2$s}
+::msgcat::mcset or {%1$s sync with %2$s (%3$s)} {%2$s ସହ %1$s ସିଙ୍କ୍ (%3$s)}
+::msgcat::mcset or {%1$s sync: %2$s} {%1$s ସିଙ୍କ୍: %2$s}
 ::msgcat::mcset or {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset or {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · ଯିବାକୁ Enter, ବନ୍ଦ କରିବାକୁ Esc}
 ::msgcat::mcset or {%1$s — revision r%2$s} {%1$s — ସଂସ୍କରଣ r%2$s}
 ::msgcat::mcset or {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset or {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset or {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset or {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset or {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: ଏହାର ଗେଟୱେ ମେମୋରୀରେ ରଖୁଥିବା %3$s ଧାଡ଼ିର ଶେଷ %2$s, ସେହି ନୋଡରେ ଗୋପନ ତଥ୍ୟ ଲୁଚାଯାଇଛି।}
 ::msgcat::mcset or {%d MCP server(s) configured} {%dଟି MCP ସର୍ଭର କନଫିଗର ହୋଇଛି}
 ::msgcat::mcset or {%d entries} {%dଟି ଏଣ୍ଟ୍ରି}
+::msgcat::mcset or {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {ଏକ୍ସଟେନସନର %d ଫାଇଲ ସମୀକ୍ଷା କରାଯାଇଥିବା ପରି ଠିକ୍ ଭାବେ ଲେଖାଯିବ। ପ୍ରିଭ୍ୟୁ ପରଠାରୁ ସେଥିମଧ୍ୟରୁ କୌଣସିଟି ବଦଳିଥିଲେ କିଛି ଲେଖାଯିବ ନାହିଁ। କୌଣସି commit, push କିମ୍ବା PR ହୁଏ ନାହିଁ।}
 ::msgcat::mcset or {%d handler(s) registered} {%dଟି ହ୍ୟାଣ୍ଡଲର ପଞ୍ଜୀକୃତ}
 ::msgcat::mcset or {%d identities · %d users} {%dଟି ଆଇଡେଣ୍ଟିଟି · %dଜଣ ଉପଭୋକ୍ତା}
 ::msgcat::mcset or {%d models — pick one from the list or type a name.} {%dଟି ମଡେଲ୍ — ତାଲିକାରୁ ଗୋଟିଏ ବାଛନ୍ତୁ କିମ୍ବା ନାମ ଟାଇପ୍ କରନ୍ତୁ।}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset or {%d shown} {%dଟି ଦେଖାଯାଉଛି}
 ::msgcat::mcset or {%s %s%%} {%s %s%%}
 ::msgcat::mcset or {%s (%s)} {%s (%s)}
+::msgcat::mcset or {%s (referral)} {%s (ରେଫରାଲ୍)}
+::msgcat::mcset or {%s (stale)} {%s (ପୁରୁଣା)}
 ::msgcat::mcset or {%s (this session)} {%s (ଏହି ଅଧିବେଶନ)}
 ::msgcat::mcset or {%s GB free of %s GB} {%s GB ଖାଲି, ମୋଟ %s GB}
 ::msgcat::mcset or {%s already exists — open it from the list} {%s ପୂର୍ବରୁ ଅଛି — ତାଲିକାରୁ ଏହାକୁ ଖୋଲନ୍ତୁ}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset or {%s comes from config.toml [acl] — edit there} {%s config.toml [acl] ରୁ ଆସିଛି — ସେଠାରେ ଏଡିଟ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {%s config change(s) wait for you — /configsync} {%s ଟି କନଫିଗ ପରିବର୍ତ୍ତନ ଆପଣଙ୍କ ପାଇଁ ଅପେକ୍ଷା କରୁଛି — /configsync}
 ::msgcat::mcset or {%s did not become healthy within 30s} {%s 30 ସେକେଣ୍ଡ ଭିତରେ ସୁସ୍ଥ ହେଲା ନାହିଁ}
+::msgcat::mcset or {%s done} {%s ସରିଲା}
 ::msgcat::mcset or {%s failed: %s} {%s ବିଫଳ ହେଲା: %s}
 ::msgcat::mcset or {%s is already split} {%s ଆଗରୁ ବିଭକ୍ତ ହୋଇଛି}
 ::msgcat::mcset or {%s is the language in use — pick another one to swap with} {%s ବର୍ତ୍ତମାନ ବ୍ୟବହୃତ ଭାଷା — ବଦଳ ପାଇଁ ଅନ୍ୟ ଏକ ଭାଷା ବାଛ}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset or {%s opens the command palette in %s.} {%s, %s ରେ କମାଣ୍ଡ ପ୍ୟାଲେଟ୍ ଖୋଲେ।}
 ::msgcat::mcset or {%s session(s)} {%sଟି ଅଧିବେଶନ}
 ::msgcat::mcset or {%s skill(s):} {%s କୌଶଲ(s):}
+::msgcat::mcset or {%s standing grants} {%sଟି ସ୍ଥାୟୀ ଅନୁମତି}
 ::msgcat::mcset or {%s takes no completable arguments} {%s କୌଣସି ସମ୍ପୂରଣଯୋଗ୍ୟ ଆର୍ଗୁମେଣ୍ଟ ନିଏ ନାହିଁ}
 ::msgcat::mcset or {%s takes on or off} {%s on କିମ୍ବା off ନିଏ}
 ::msgcat::mcset or {%s —} {%s —}
+::msgcat::mcset or {%s — changes data, asks to confirm} {%s — ଡାଟା ବଦଳାଏ, ନିଶ୍ଚିତ କରିବାକୁ ପଚାରେ}
 ::msgcat::mcset or {%s — deleted; History… can restore it} {%s — ଡିଲିଟ୍ ହେଲା; ଇତିହାସ… ଏହାକୁ ଫେରାଇ ଆଣିପାରେ}
 ::msgcat::mcset or {%s — new: type, then Save} {%s — ନୂଆ: ଟାଇପ୍ କରନ୍ତୁ, ତା'ପରେ ସେଭ କରନ୍ତୁ}
 ::msgcat::mcset or {%s — not attached; press Attach in the Instances tab} {%s — ସଂଯୁକ୍ତ ନୁହେଁ; Instances ଟାବରେ Attach ଦବାନ୍ତୁ}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset or {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} [acl] ବିଭାଗ ବିନା ସକ୍ରିୟ ଅଛି: .env ରେ %{var} ବଟ୍ ସହ କିଏ କଥା ହୋଇପାରିବ ତାହା ନ ଜଣାଇବା ପର୍ଯ୍ୟନ୍ତ, ଏହା ପାଖରେ ପହଞ୍ଚୁଥିବା ଯେକୌଣସି ବ୍ୟକ୍ତିଙ୍କୁ ମାଲିକ ଭାବେ ଧରାଯାଏ, ସମସ୍ତ ଟୁଲ୍ ସହ}
 ::msgcat::mcset or (%{route}) (%{route})
 ::msgcat::mcset or {(CLI redraws automatically)} {(CLI ନିଜେ ପୁଣି ଆଙ୍କେ)}
+::msgcat::mcset or {(binary; not publishable)} {(ବାଇନାରୀ; ପ୍ରକାଶନଯୋଗ୍ୟ ନୁହେଁ)}
 ::msgcat::mcset or {(clipboard empty or no clipboard tool)} {(କ୍ଲିପବୋର୍ଡ ଖାଲି କିମ୍ବା କ୍ଲିପବୋର୍ଡ ଟୁଲ ନାହିଁ)}
 ::msgcat::mcset or (deleted) {(ଡିଲିଟ୍ ହୋଇଛି)}
 ::msgcat::mcset or (empty) (ଖାଲି)
 ::msgcat::mcset or {(no sessions)} {(କୌଣସି ସେସନ ନାହିଁ)}
+::msgcat::mcset or {(not a memsync peer of this gateway: config is not synced with it)} {(ଏହି ଗେଟୱେର memsync ସାଥୀ ନୁହେଁ: ଏହା ସହ କନଫିଗ ସିଙ୍କ୍ ହୋଇନାହିଁ)}
 ::msgcat::mcset or {(nothing to reload — read from disk per use)} {(ପୁଣି ଲୋଡ୍ କରିବାକୁ କିଛି ନାହିଁ — ପ୍ରତି ବ୍ୟବହାରରେ ଡିସ୍କରୁ ପଢ଼ାଯାଏ)}
 ::msgcat::mcset or {(retrying last prompt…)} {(ଶେଷ ପ୍ରମ୍ପ୍ଟ ପୁଣି ଚେଷ୍ଟା କରୁଛି…)}
 ::msgcat::mcset or {(route did not resolve: %{e})} {(ରାଉଟ ମିଳିଲା ନାହିଁ: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset or {/url needs a number from /urls} {/url ପାଇଁ /urls ରୁ ଏକ ସଂଖ୍ୟା ଦରକାର}
 ::msgcat::mcset or {/whois needs a nick} {/whois ପାଇଁ ଏକ nick ଦରକାର}
 ::msgcat::mcset or {; could not save the cleared return view: %s} {; ସଫା ହୋଇଥିବା ଫେରିବା-ଭ୍ୟୁ ସଞ୍ଚିତ କରିହେଲା ନାହିଁ: %s}
+::msgcat::mcset or {; shadows bundled} {; ବଣ୍ଡଲ୍ ହୋଇଥିବା ପ୍ଲଗିନ୍ ଉପରେ ପ୍ରାଧାନ୍ୟ}
+::msgcat::mcset or {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {କନଫିଗ ଅଫର ସେଟିଂ ବଦଳାଇପାରେ ଏବଂ ଭଲ୍ଟ ଅଫର ଗୋପନ ତଥ୍ୟ ମିଶାଏ; ସୁରକ୍ଷା ବିଭାଗରେ ପରିବର୍ତ୍ତନ ତଥାପି ମାଲିକଙ୍କ ଅପେକ୍ଷା କରେ।}
 ::msgcat::mcset or {A failing plugin may drop hooks mid-turn.} {ବିଫଳ ହେଉଥିବା ପ୍ଲଗିନ କାର୍ଯ୍ୟ ମଝିରେ hooks ଛାଡ଼ିଦେଇପାରେ।}
 ::msgcat::mcset or {A local server: no key is needed unless you set one up.} {ଏକ ଲୋକାଲ୍ ସର୍ଭର: ଆପଣ ନିଜେ key ସେଟ୍ ଅପ୍ ନ କଲେ କୌଣସି key ଦରକାର ନାହିଁ।}
+::msgcat::mcset or {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {ସ୍ୱାକ୍ଷରିତ ରିଲିଜ୍ କେବଳ ପ୍ରିଫ୍ଲାଇଟ୍ ପରେ ଷ୍ଟେଜ୍ ହୁଏ। ରିଷ୍ଟାର୍ଟ/ଯାଞ୍ଚ, ଆଗକୁ ବଢ଼ିବା ଏବଂ ରୋଲବ୍ୟାକ୍ ପୃଥକ୍ ପୃଥକ୍ କାର୍ଯ୍ୟ। ଏକ ସୁସ୍ଥ ପ୍ରୋସେସ୍ ସଠିକ୍ ସମୀକ୍ଷିତ ସୋର୍ସ ରିଭିଜନ୍ ରିପୋର୍ଟ କରିବା ଆବଶ୍ୟକ।}
 ::msgcat::mcset or {A value is stored for %s — leave this empty to keep it.} {%s ପାଇଁ ଏକ ମୂଲ୍ୟ ରଖାଯାଇଛି — ତାହା ରଖିବାକୁ ଏହାକୁ ଖାଲି ଛାଡ଼ନ୍ତୁ।}
 ::msgcat::mcset or {ACL: ban mask} {ACL: ମାସ୍କ ନିଷେଧ କରନ୍ତୁ}
 ::msgcat::mcset or {ACL: grant admin} {ACL: admin ଅନୁମତି ଦିଅନ୍ତୁ}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset or {ACL: grant user} {ACL: user ଅନୁମତି ଦିଅନ୍ତୁ}
 ::msgcat::mcset or {ACL: revoke} {ACL: ଫେରାଇ ନିଅନ୍ତୁ}
 ::msgcat::mcset or {ACME account email} {ACME ଏକାଉଣ୍ଟର ଇମେଲ}
+::msgcat::mcset or {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI ସହାୟତା ଚାରି ସ୍ତରରେ କାମ କରେ: ଏକ ଡିଜାଇନ୍ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ (ଫାଇଲ ଦରକାର ନାହିଁ), ଏହି ଫାଇଲ ବଦଳାନ୍ତୁ, ଏହି ଏକ୍ସଟେନସନର ଅନେକ ଫାଇଲ ବଦଳାନ୍ତୁ, କିମ୍ବା ବର୍ତ୍ତମାନର ଡାଇଗ୍ନୋଷ୍ଟିକ୍ସ ବୁଝାନ୍ତୁ। New extension ଏହାର ଉଦ୍ଦେଶ୍ୟରୁ ପୂରା ଏକ୍ସଟେନସନ ମଧ୍ୟ ଜେନେରେଟ୍ କରିପାରେ। ପ୍ରତ୍ୟେକ ଅନୁରୋଧ ଟୁଲ ବିନା ପଠାଯାଏ ଏବଂ ଏଥିରେ ପଞ୍ଜୀକୃତ ଗୋପନ ତଥ୍ୟ କିମ୍ବା ପରିଚୟପତ୍ର-ଭଳି ମୂଲ୍ୟ ଥିଲେ ତାହା ମନା କରାଯାଏ; ପରିବର୍ତ୍ତନଗୁଡ଼ିକ diff ଭାବେ ଦେଖାଯାଏ ଏବଂ ଆପଣ ଲଗାଇଲେ ହିଁ ଲେଖାଯାଏ। ପ୍ରଥମେ ଏକ ଏକ୍ସଟେନସନ ଡିଜାଇନ୍ ମାଗନ୍ତୁ; ଅନୁପସ୍ଥିତ API ଚିହ୍ନଟ କରିବା ପରେ ହିଁ କୋର୍ ପ୍ୟାଚ୍ ମାଗନ୍ତୁ।}
+::msgcat::mcset or {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI ସହାୟତା କେବଳ ଉପଭୋକ୍ତା ଏକ୍ସଟେନସନ ଏଡିଟ୍ କରେ, ଏବଂ ଏହି ଫାଇଲ କୌଣସି ଏକ୍ସଟେନସନର ଅଂଶ ନୁହେଁ। ଅଧିକାଂଶ ପରିବର୍ତ୍ତନ ଅପଗ୍ରେଡ୍ ସହ ବଞ୍ଚି ରହୁଥିବା ଏକ ଏକ୍ସଟେନସନ (hook, ଟୁଲ୍, ସର୍ଭିସ ଓଭରରାଇଡ୍ କିମ୍ବା ପ୍ରୋଭାଇଡର ଡ୍ରାଇଭର) ଭିତରେ ଫିଟ୍ ହୁଏ; core ପ୍ୟାଚ୍ ସେତିକି ପାଇଁ ଯାହା ଏକ୍ସଟେନସନ API ପ୍ରକାଶ କରିପାରେ ନାହିଁ। ଏହି ପରିବର୍ତ୍ତନ ପାଇଁ ବରଂ ଏକ ନୂଆ ଏକ୍ସଟେନସନ ସୃଷ୍ଟି କରିବେ? କିଛି ଲେଖାଯିବା ପୂର୍ବରୁ ଏହାର ଫାଇଲଗୁଡ଼ିକ ପୂର୍ବାବଲୋକନ କରାଯାଏ।}
+::msgcat::mcset or {AI assist…} {AI ସହାୟତା…}
+::msgcat::mcset or {AI extension assistance} {AI ଏକ୍ସଟେନସନ ସହାୟତା}
 ::msgcat::mcset or {API calls} {API କଲ୍}
+::msgcat::mcset or {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {Anthropic ରେଫରାଲ୍‌ରୁ API କ୍ରେଡିଟ୍ କେବଳ ଆପଣ Max କିମ୍ବା Ultra କିଣିଲେ ମିଳେ। ସେହି ସବସ୍କ୍ରିପସନକୁ ଲଗଇନ୍ କିମ୍ବା API ପ୍ରମାଣୀକରଣ ଭାବେ ବ୍ୟବହାର କରିବା Veles ସମର୍ଥନ କରେ ନାହିଁ।}
 ::msgcat::mcset or {API key (hidden)} {API key (ଲୁଚାଯାଇଥିବା)}
 ::msgcat::mcset or {API key env var name} {API କି ପାଇଁ env ଭେରିଏବଲ୍ ନାମ}
+::msgcat::mcset or {API reference} {API ସନ୍ଦର୍ଭ}
+::msgcat::mcset or {Abandon untouched operation} {ଅସ୍ପୃଷ୍ଟ କାର୍ଯ୍ୟ ପରିତ୍ୟାଗ କରନ୍ତୁ}
 ::msgcat::mcset or {Access control} {ପ୍ରବେଶ ନିୟନ୍ତ୍ରଣ}
 ::msgcat::mcset or {Access control (ACL)} {ପ୍ରବେଶ ନିୟନ୍ତ୍ରଣ (ACL)}
 ::msgcat::mcset or Add ଯୋଡ଼ନ୍ତୁ
 ::msgcat::mcset or {Add MCP server} {MCP ସର୍ଭର ଯୋଡ଼ନ୍ତୁ}
 ::msgcat::mcset or {Add instance} {ଇନ୍ସଟାନ୍ସ ଯୋଡ଼ନ୍ତୁ}
 ::msgcat::mcset or {Add server…} {ସର୍ଭର ଯୋଡ଼ନ୍ତୁ…}
+::msgcat::mcset or {Adds selected extension sources. Review the branch diff and checks before merging.} {ଚୟନିତ ଏକ୍ସଟେନସନ ସୋର୍ସଗୁଡ଼ିକୁ ଯୋଡ଼ାଯାଏ। ମିଶାଇବା ପୂର୍ବରୁ ବ୍ରାଞ୍ଚ ଡିଫ୍ ଓ ଯାଞ୍ଚଗୁଡ଼ିକୁ ସମୀକ୍ଷା କରନ୍ତୁ।}
 ::msgcat::mcset or Add… ଯୋଡ଼ନ୍ତୁ…
 ::msgcat::mcset or {Agent & engine} {ଏଜେଣ୍ଟ ଓ ଇଞ୍ଜିନ୍}
 ::msgcat::mcset or {Alias %s} {ଆଲିଆସ %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset or {Applies to} ପ୍ରଯୁଜ୍ୟ
 ::msgcat::mcset or Apply {ପ୍ରୟୋଗ କରନ୍ତୁ}
 ::msgcat::mcset or {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Apply କେବଳ ଚାଲୁଥିବା ଅଧିବେଶନରେ ପରିବର୍ତ୍ତନ କରେ। Copy TOML ପେଷ୍ଟ କରିବାକୁ ବ୍ଲକ୍ ଦିଏ। Save globally ସେଗୁଡ଼ିକୁ config.toml ରେ ଯୋଡ଼ିଦିଏ — କେବଳ failover ଅଂଶ ସ୍ପର୍ଶ ହୁଏ, ଅନ୍ୟ ପ୍ରତ୍ୟେକ ଧାଡ଼ି ଓ ମନ୍ତବ୍ୟ ଅବିକଳ ରହେ, ଏବଂ ପୁରୁଣା ଫାଇଲ config.toml.bak ଭାବେ ରଖାଯାଏ।}
+::msgcat::mcset or {Apply proposal…} {ପ୍ରସ୍ତାବ ଲାଗୁ କରନ୍ତୁ…}
+::msgcat::mcset or {Apply received} {ପ୍ରାପ୍ତ ସିଙ୍କ୍ ଲାଗୁ କରନ୍ତୁ}
+::msgcat::mcset or {Apply this AI proposal?} {ଏହି AI ପ୍ରସ୍ତାବ ଲାଗୁ କରିବେ?}
+::msgcat::mcset or {Apply this change set?} {ଏହି ପରିବର୍ତ୍ତନ ସେଟ୍ ଲାଗୁ କରିବେ?}
 ::msgcat::mcset or {Apply to session} {ଅଧିବେଶନରେ ପ୍ରୟୋଗ କରନ୍ତୁ}
+::msgcat::mcset or {Apply what this node received:} {ଏହି ନୋଡ୍ ଯାହା ପାଇଛି ତାହା ଆପ୍ଲାଏ କରନ୍ତୁ:}
 ::msgcat::mcset or {Approval needed} {ଅନୁମୋଦନ ଆବଶ୍ୟକ}
 ::msgcat::mcset or Apps ଆପ୍
 ::msgcat::mcset or Archive ଆର୍କାଇଭ୍
 ::msgcat::mcset or {Archive SHA-256} {ଆର୍କାଇଭ୍ SHA-256}
+::msgcat::mcset or Ask ପଚାରନ୍ତୁ
+::msgcat::mcset or {Ask a design question} {ଡିଜାଇନ୍ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ}
+::msgcat::mcset or {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {ଏକ୍ସଟେନସନ କିପରି ତିଆରି କରିବେ ପଚାରନ୍ତୁ: କେଉଁ ସୀମା, କେଉଁ ଭାଷା, କେଉଁ API। କୌଣସି ସୋର୍ସ ପଠାଯାଏ ନାହିଁ, ଏବଂ କିଛି ଲେଖାଯାଇପାରିବ ନାହିଁ।}
 ::msgcat::mcset or {Ask the agent to change it} {ଏଜେଣ୍ଟଙ୍କୁ ଏହା ବଦଳାଇବାକୁ କୁହନ୍ତୁ}
+::msgcat::mcset or {Asking %s…} {%s କୁ ପଚାରୁଛି…}
 ::msgcat::mcset or {Asking the provider for its models…} {ପ୍ରୋଭାଇଡରଠାରୁ ମଡେଲ୍ ତାଲିକା ମାଗୁଛି…}
 ::msgcat::mcset or Attach {ସଂଲଗ୍ନ କରନ୍ତୁ}
 ::msgcat::mcset or {Attach to the next message} {ପରବର୍ତ୍ତୀ ମେସେଜ୍ ସହ ସଂଲଗ୍ନ କରନ୍ତୁ}
+::msgcat::mcset or {Author guide} {ଲେଖକ ମାର୍ଗଦର୍ଶିକା}
+::msgcat::mcset or {Automatically discovered from the attached gateway's cluster registry.} {ସଂଯୁକ୍ତ ଗେଟୱେର କ୍ଲଷ୍ଟର ରେଜିଷ୍ଟ୍ରିରୁ ସ୍ୱୟଂଚାଳିତ ଭାବେ ଆବିଷ୍କୃତ।}
 ::msgcat::mcset or Back ପଛକୁ
 ::msgcat::mcset or {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {ପଛକୁ ଉପରେ ଥିବାକୁ ବନ୍ଦ କରେ: ଏକ ମେନୁ, ସେସନ ତାଲିକା, ଏକ ୱିଣ୍ଡୋ। କିଛି ଖୋଲା ନଥିଲେ veles ପୃଷ୍ଠଭୂମିକୁ ଯାଏ ଏବଂ ଚାଲୁ ରହେ।}
 ::msgcat::mcset or {Base URL} {Base URL}
+::msgcat::mcset or {Base branch} {ମୂଳ ବ୍ରାଞ୍ଚ}
 ::msgcat::mcset or {Bot token (hidden)} {ବଟ ଟୋକେନ (ଲୁଚାଯାଇଥିବା)}
+::msgcat::mcset or Branch ବ୍ରାଞ୍ଚ
+::msgcat::mcset or {Branch and commit prepared; nothing has been pushed} {ବ୍ରାଞ୍ଚ ଓ କମିଟ୍ ପ୍ରସ୍ତୁତ ହୋଇଛି; କିଛି ପୁଶ୍ କରାଯାଇନାହିଁ}
+::msgcat::mcset or {Branch pushed and verified on origin} {ବ୍ରାଞ୍ଚ ପୁଶ୍ ହୋଇ origin ରେ ଯାଞ୍ଚ ହୋଇଛି}
 ::msgcat::mcset or {Browse sessions} {ସେସନଗୁଡ଼ିକ ବ୍ରାଉଜ୍ କରନ୍ତୁ}
+::msgcat::mcset or {Build manifest + preflight} {ବିଲ୍ଡ ମାନିଫେଷ୍ଟ + ପ୍ରିଫ୍ଲାଇଟ୍}
+::msgcat::mcset or {Build: veles %1$s, revision %2$s (%3$s %4$s)} {ବିଲ୍ଡ: veles %1$s, ରିଭିଜନ %2$s (%3$s %4$s)}
 ::msgcat::mcset or {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e ଲାଇନ୍ ଶେଷ · C-b/C-f ଅକ୍ଷର · M-b/M-f ଶବ୍ଦ · C-k EOL ପର୍ଯ୍ୟନ୍ତ କାଟ · C-y yank · M-w କପି · C-w ରିଜିଅନ୍ କାଟ · C-space ମାର୍କ ସେଟ୍ · C-/ undo}
 ::msgcat::mcset or {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g ସବୁ ବନ୍ଦ · C-j ନୂଆ ଲାଇନ୍ · M-p/M-n ହିଷ୍ଟ୍ରି · Tab ସମ୍ପୂର୍ଣ୍ଣ}
+::msgcat::mcset or {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s କୋର, ଲୋଡ %2$s / %3$s / %4$s (କୋରର %5$s%%)}
 ::msgcat::mcset or Cancel ବାତିଲ
+::msgcat::mcset or {Cancel task} {କାର୍ଯ୍ୟ ବାତିଲ}
+::msgcat::mcset or {Cancel task %1$s? This cannot be undone.} {କାର୍ଯ୍ୟ %1$s ବାତିଲ କରନ୍ତୁ? ଏହାକୁ ଫେରାଇ ହେବ ନାହିଁ।}
+::msgcat::mcset or {Cannot verify that %1$s is node %2$s: %3$s} {%1$s କି ନୋଡ୍ %2$s, ତାହା ଯାଞ୍ଚ କରିହେଉନାହିଁ: %3$s}
 ::msgcat::mcset or Capabilities କ୍ଷମତା
 ::msgcat::mcset or {Change my app “%s” (%s): } {ମୋ ଆପ୍ “%s” (%s) ବଦଳାଅ: }
+::msgcat::mcset or {Change this extension's files} {ଏହି ଏକ୍ସଟେନସନର ଫାଇଲ ବଦଳାନ୍ତୁ}
+::msgcat::mcset or {Change this file} {ଏହି ଫାଇଲ ବଦଳାନ୍ତୁ}
 ::msgcat::mcset or Change… ବଦଳାନ୍ତୁ…
 ::msgcat::mcset or {Channels (e.g. #veles #dev)} {ଚ୍ୟାନେଲ୍ (ଯଥା: #veles #dev)}
 ::msgcat::mcset or Chat ଚାଟ
 ::msgcat::mcset or {Chat — not attached; press Attach in the Instances tab} {ଚାଟ — ସଂଯୁକ୍ତ ନୁହେଁ; Instances ଟାବରେ Attach ଦବାନ୍ତୁ}
 ::msgcat::mcset or {Check (lsp)} {ଯାଞ୍ଚ (lsp)}
+::msgcat::mcset or {Check again} {ପୁଣି ଯାଞ୍ଚ କରନ୍ତୁ}
+::msgcat::mcset or {Check files} {ଫାଇଲଗୁଡ଼ିକୁ ଯାଞ୍ଚ କରନ୍ତୁ}
 ::msgcat::mcset or Checkpoints ଚେକପଏଣ୍ଟ୍
 ::msgcat::mcset or {Checkpoints (undo)} {ଚେକପଏଣ୍ଟ୍ (undo)}
+::msgcat::mcset or {Checks and next steps} {ଯାଞ୍ଚ ଏବଂ ପରବର୍ତ୍ତୀ ପଦକ୍ଷେପ}
+::msgcat::mcset or {Checks run} {ଯାଞ୍ଚ ଚଲାଯାଇଛି}
 ::msgcat::mcset or {Choose BUNDLE-INFO.json in the managed install-sources directory} {ପରିଚାଳିତ install-sources ଡିରେକ୍ଟରୀରେ BUNDLE-INFO.json ବାଛନ୍ତୁ}
 ::msgcat::mcset or {Choose a failover script} {ଏକ ଫେଲ୍ଓଭର୍ ସ୍କ୍ରିପ୍ଟ୍ ବାଛନ୍ତୁ}
 ::msgcat::mcset or {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {ଯାଞ୍ଚ କରିବାକୁ ଏକ ମଡ୍ୟୁଲ କିମ୍ବା ପ୍ରୋସେସ୍ ପ୍ଲଗିନ ବାଛନ୍ତୁ। ଆବିଷ୍କାର କେବଳ plugin.toml ପଢ଼େ; ଏକ କମ୍ପୋନେଣ୍ଟ ବାଛିଲେ ତାହାର ଘୋଷିତ ମାନିଫେଷ୍ଟ ଓ ବିକଳ୍ପ ଅନୁରୋଧ ହୁଏ। ଏହି ପଦକ୍ଷେପ ଖୋଲିବା ଦ୍ୱାରା କିଛି ଇନଷ୍ଟଲ ହୁଏ ନାହିଁ।}
+::msgcat::mcset or {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {ଏକ ନାମ, ଉଦ୍ଦେଶ୍ୟ ଓ ଭାଷା ବାଛନ୍ତୁ, ତାପରେ ପ୍ରକୃତ ଫାଇଲଗୁଡ଼ିକର ପୂର୍ବାବଲୋକନ କରନ୍ତୁ। କିଛି ଲେଖାଯାଇନାହିଁ।}
 ::msgcat::mcset or {Choose a user unit or a system service for the server profile. Neither starts a service.} {ସର୍ଭର ପ୍ରୋଫାଇଲ୍ ପାଇଁ ଏକ ୟୁଜର ୟୁନିଟ୍ କିମ୍ବା ସିଷ୍ଟମ୍ ସର୍ଭିସ୍ ବାଛନ୍ତୁ। ଦୁଇଟି ମଧ୍ୟ କୌଣସି ସର୍ଭିସ୍ ଆରମ୍ଭ କରେ ନାହିଁ।}
 ::msgcat::mcset or {Choose core bundle…} {କୋର୍ ବଣ୍ଡଲ୍ ବାଛନ୍ତୁ…}
 ::msgcat::mcset or {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {ସ୍ଥାପନା ରୂପ ବାଛନ୍ତୁ। ଲୋକାଲ୍ ପ୍ରୋଫାଇଲ୍‌ଗୁଡ଼ିକ ସମୀକ୍ଷିତ ଇନ୍‌ଷ୍ଟଲର୍ ବ୍ୟବହାର କରନ୍ତି। ସିଷ୍ଟମ୍ ଓ କଣ୍ଟେନର ପ୍ରୋଫାଇଲ୍‌ଗୁଡ଼ିକ ସ୍ପଷ୍ଟ CLI ହ୍ୟାଣ୍ଡଅଫ୍ ପାଇଁ ଏକ ସ୍ୱାକ୍ଷରିତ ଅନୁରୋଧ ପ୍ରସ୍ତୁତ କରନ୍ତି। NixOS କେବଳ ଏକ ମଡ୍ୟୁଲ୍ ସ୍ନିପେଟ୍ ସୃଷ୍ଟି କରେ।}
+::msgcat::mcset or {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {ସବୁଠାରୁ ସଂକୀର୍ଣ୍ଣ ସୀମା ବାଛନ୍ତୁ: ଏକ Tool ମଡେଲ୍ କଲ୍ କରିପାରୁଥିବା ସାମର୍ଥ୍ୟ ଯୋଡ଼େ; ଏକ Hook ଲାଇଫସାଇକଲ୍ ଘଟଣା ଦେଖେ କିମ୍ବା ସଂଶୋଧନ କରେ; ଏକ Service କିମ୍ବା override point ଏକ ନାମିତ ନିର୍ଣ୍ଣୟ ଘେରେ; ଏକ Provider driver ଏକ ପ୍ରୋଭାଇଡର ୱାୟର ଯୋଡ଼େ; ପ୍ରକାଶିତ ଏକ୍ସଟେନସନ API ସେହି ପରିବର୍ତ୍ତନ ପ୍ରକାଶ କରିପାରିବ ନାହିଁ ବୋଲି ଜଣାପଡ଼ିଲେ ହିଁ Core patch ଉପଯୁକ୍ତ।}
 ::msgcat::mcset or {Choose typed container-host options JSON} {ଟାଇପ୍‌କୃତ କଣ୍ଟେନର-ହୋଷ୍ଟ ବିକଳ୍ପ JSON ବାଛନ୍ତୁ}
 ::msgcat::mcset or {Choose typed container-host options…} {ଟାଇପ୍‌କୃତ କଣ୍ଟେନର-ହୋଷ୍ଟ ବିକଳ୍ପ ବାଛନ୍ତୁ…}
 ::msgcat::mcset or Clear {ସଫା କରନ୍ତୁ}
 ::msgcat::mcset or {Clear composer} {କମ୍ପୋଜର୍ ସଫା କରନ୍ତୁ}
 ::msgcat::mcset or {Clear override} {ଅଧିକ୍ରମଣ ସଫା କରନ୍ତୁ}
 ::msgcat::mcset or {Click the picture where you would click on the page.} {ପୃଷ୍ଠାରେ ଯେଉଁଠି କ୍ଲିକ୍ କରିବେ, ସେହି ସ୍ଥାନରେ ଚିତ୍ରରେ କ୍ଲିକ୍ କରନ୍ତୁ।}
+::msgcat::mcset or {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {%1$s କ୍ଲୋନ୍ କରନ୍ତୁ, %2$s ସୃଷ୍ଟି କରନ୍ତୁ, ଏବଂ %3$s ର କେବଳ ସମୀକ୍ଷିତ ଫାଇଲଗୁଡ଼ିକ %4$s/<extension>/ ତଳେ କପି କରନ୍ତୁ। ଫାଇଲଗୁଡ଼ିକ ଯାଞ୍ଚ କରି କମିଟ୍ କରାଯାଏ। ବର୍ତ୍ତମାନ କୌଣସି ପୁଶ୍ କିମ୍ବା ପୁଲ୍ ରିକ୍ୱେଷ୍ଟ ହୁଏ ନାହିଁ।}
 ::msgcat::mcset or Close ବନ୍ଦ
 ::msgcat::mcset or {Close (Esc)} {ବନ୍ଦ (Esc)}
 ::msgcat::mcset or {Close the setup wizard? Nothing has been written yet.} {Setup ର୍ବିଜାର୍ଡ ବନ୍ଦ କରିବେ? ଏପର୍ଯ୍ୟନ୍ତ କିଛି ଲେଖାଯାଇନାହିଁ।}
 ::msgcat::mcset or {Code actions} {କୋଡ୍ ଆକ୍ସନ୍}
+::msgcat::mcset or Commit କମିଟ୍
+::msgcat::mcset or {Commit ready for review. Push is a separate action.} {କମିଟ୍ ସମୀକ୍ଷା ପାଇଁ ପ୍ରସ୍ତୁତ। ପୁଶ୍ ଏକ ପୃଥକ୍ କାର୍ଯ୍ୟ।}
 ::msgcat::mcset or {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {ହ୍ୟାଣ୍ଡଅଫ୍‌ର ପ୍ରିଭ୍ୟୁ କରିବା ପୂର୍ବରୁ ସ୍ଥିର କରାଥିବା ଇମେଜ ଡାଇଜେଷ୍ଟ ସମେତ ସମସ୍ତ PDS ଫିଲ୍ଡ ପୂରଣ କରନ୍ତୁ।}
 ::msgcat::mcset or {Complete every typed container-host field before previewing this profile.} {ଏହି ପ୍ରୋଫାଇଲ୍‌ର ପୂର୍ବାବଲୋକନ କରିବା ପୂର୍ବରୁ ପ୍ରତ୍ୟେକ ଟାଇପ୍-ନିର୍ଦ୍ଧାରିତ କଣ୍ଟେନର-ହୋଷ୍ଟ ଫିଲ୍ଡ ପୂରଣ କରନ୍ତୁ।}
 ::msgcat::mcset or {Component configuration returned an invalid result; nothing was accepted as applied.} {କମ୍ପୋନେଣ୍ଟର କନଫିଗରୁ ଅବୈଧ ଫଳ ମିଳିଲା; ପ୍ରୟୋଗ ହୋଇଥିବା ଭାବେ କିଛି ସ୍ୱୀକାର ହେଲା ନାହିଁ।}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset or {Component options changed. Review the new preview before applying.} {କମ୍ପୋନେଣ୍ଟ ବିକଳ୍ପ ବଦଳିଲା। ପ୍ରୟୋଗ ପୂର୍ବରୁ ନୂଆ ପ୍ରିଭ୍ୟୁ ଦେଖନ୍ତୁ।}
 ::msgcat::mcset or Components କମ୍ପୋନେଣ୍ଟଗୁଡ଼ିକ
 ::msgcat::mcset or {Composer preview} {କମ୍ପୋଜର୍ ପ୍ରିଭ୍ୟୁ}
+::msgcat::mcset or Config କନଫିଗ
+::msgcat::mcset or {Config differs: %s} {କନଫିଗ ଅଲଗା: %s}
+::msgcat::mcset or {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {କନଫିଗ ଲଗ୍: ସେହି ନୋଡରେ %1$s ର ପରିବର୍ତ୍ତନ %3$s ପର୍ଯ୍ୟନ୍ତ ଅଛି, ଏହି ଗେଟୱେରେ %2$s ପର୍ଯ୍ୟନ୍ତ}
+::msgcat::mcset or {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {କନଫିଗ ଲଗ୍: ଏହି ଗେଟୱେରେ %1$s ର ପରିବର୍ତ୍ତନ %2$s ପର୍ଯ୍ୟନ୍ତ ଅଛି, ସେହି ନୋଡରେ %3$s ପର୍ଯ୍ୟନ୍ତ}
+::msgcat::mcset or {Config only on that node: %s} {କେବଳ ସେହି ନୋଡରେ କନଫିଗ: %s}
+::msgcat::mcset or {Config only on this gateway: %s} {କେବଳ ଏହି ଗେଟୱେରେ କନଫିଗ: %s}
 ::msgcat::mcset or Configure {କନଫିଗର କରନ୍ତୁ}
 ::msgcat::mcset or {Configure %s} {%s କନଫିଗର କରନ୍ତୁ}
+::msgcat::mcset or {Configure translator} {ଅନୁବାଦକ କନଫିଗର୍ କରନ୍ତୁ}
+::msgcat::mcset or {Configured desktop gateway} {କନଫିଗର୍ କରାଯାଇଥିବା ଡେସ୍କଟପ୍ ଗେଟୱେ}
 ::msgcat::mcset or Configure… କନଫିଗର…
 ::msgcat::mcset or {Configuring %s} {%s କନଫିଗ କରୁଛି}
 ::msgcat::mcset or {Confirm or discard the current signed review before starting another download.} {ଆଉ ଏକ ଡାଉନଲୋଡ୍ ଆରମ୍ଭ କରିବା ପୂର୍ବରୁ ବର୍ତ୍ତମାନର ସ୍ୱାକ୍ଷରିତ ସମୀକ୍ଷାକୁ ନିଶ୍ଚିତ କରନ୍ତୁ ବା ଛଡ଼ିଦିଅନ୍ତୁ।}
 ::msgcat::mcset or {Container host: typed host plan and privileged CLI handoff} {କଣ୍ଟେନର ହୋଷ୍ଟ: ଟାଇପ୍‌କୃତ ହୋଷ୍ଟ ପ୍ଲାନ୍ ଓ ଆଡମିନ୍ ଅଧିକାରଯୁକ୍ତ CLI ହସ୍ତାନ୍ତର}
 ::msgcat::mcset or {Context window} {କଣ୍ଟେକ୍ସ୍ଟ୍ ୱିଣ୍ଡୋ}
+::msgcat::mcset or {Continue to next target} {ପରବର୍ତ୍ତୀ ଟାର୍ଗେଟକୁ ଜାରି ରଖନ୍ତୁ}
+::msgcat::mcset or {Contribute extensions: %s} {ଏକ୍ସଟେନସନ ଯୋଗଦାନ କରନ୍ତୁ: %s}
+::msgcat::mcset or Contribute… {ଅବଦାନ ରଖନ୍ତୁ…}
+::msgcat::mcset or {Contribution branch} {ଅବଦାନ ବ୍ରାଞ୍ଚ}
+::msgcat::mcset or {Contribution destination} {ଅବଦାନର ଗନ୍ତବ୍ୟ}
 ::msgcat::mcset or Copy {କପି କରନ୍ତୁ}
 ::msgcat::mcset or {Copy TOML} {TOML କପି କରନ୍ତୁ}
+::msgcat::mcset or {Copy a bundled extension into your user plugin directory before preparing a contribution.} {ଅବଦାନ ପ୍ରସ୍ତୁତ କରିବା ପୂର୍ବରୁ ବଣ୍ଡଲ୍ ହୋଇଥିବା ଏକ ଏକ୍ସଟେନସନକୁ ଆପଣଙ୍କ ଉପଭୋକ୍ତା ପ୍ଲଗିନ୍ ଡିରେକ୍ଟରୀରେ କପି କରନ୍ତୁ।}
 ::msgcat::mcset or {Copy message} {ବାର୍ତ୍ତା କପି କରନ୍ତୁ}
 ::msgcat::mcset or {Copy name} {ନାମ କପି କରନ୍ତୁ}
 ::msgcat::mcset or {Copy nick} {ନିକ୍ କପି କରନ୍ତୁ}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset or {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {କମ୍ପୋନେଣ୍ଟ ଆବିଷ୍କାର କରିହେଲା ନାହିଁ। ପ୍ରୋଭାଇଡର setup ପଦକ୍ଷେପଗୁଡ଼ିକ ତଥାପି କାମ କରନ୍ତି; ଆବଶ୍ୟକ ହେଲେ ଲକ୍ଷ୍ୟ ମେସିନରେ CLI ମାଧ୍ୟମରେ ଇନଷ୍ଟଲ କରନ୍ତୁ।}
 ::msgcat::mcset or {Could not join: %s} {ଯୋଗ ଦେଇହେଲା ନାହିଁ: %s}
 ::msgcat::mcset or {Could not list the models (%s) — type the model's name.} {ମଡେଲ୍‌ଗୁଡ଼ିକର ତାଲିକା କରିହେଲା ନାହିଁ (%s) — ମଡେଲ୍‌ର ନାମ ଟାଇପ୍ କରନ୍ତୁ।}
+::msgcat::mcset or {Create a PR in} {PR ସୃଷ୍ଟି କରିବା ସ୍ଥାନ}
+::msgcat::mcset or {Create extension} {ଏକ୍ସଟେନସନ ସୃଷ୍ଟି କରନ୍ତୁ}
 ::msgcat::mcset or {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {@BotFather ଦ୍ୱାରା ବଟ ତିଆରି କରନ୍ତୁ, ତା'ପରେ ଏହାର ଟୋକେନ ତଳେ ପେଷ୍ଟ କରନ୍ତୁ: ଏହା ଏନକ୍ରିପ୍ଟ ହୋଇଥିବା ଭଲ୍ଟକୁ ଯାଏ, କେବେ ବି config.tomlକୁ ନୁହେଁ।}
+::msgcat::mcset or {Create this extension?} {ଏହି ଏକ୍ସଟେନସନ ସୃଷ୍ଟି କରିବେ?}
+::msgcat::mcset or {Create this generated extension?} {ଏହି ଜେନେରେଟ୍ ହୋଇଥିବା ଏକ୍ସଟେନସନ ତିଆରି କରିବେ?}
+::msgcat::mcset or {Created and reloaded. Review and test the extension before publishing.} {ସୃଷ୍ଟି ହୋଇ ପୁଣି ଲୋଡ୍ ହୋଇଛି। ପ୍ରକାଶନ ପୂର୍ବରୁ ଏକ୍ସଟେନସନକୁ ସମୀକ୍ଷା ଓ ପରୀକ୍ଷା କରନ୍ତୁ।}
+::msgcat::mcset or {Created, but reload failed} {ସୃଷ୍ଟି ହୋଇଛି, କିନ୍ତୁ ପୁଣି ଲୋଡ୍ ବିଫଳ ହୋଇଛି}
 ::msgcat::mcset or {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {ଟେମ୍ପଲେଟରୁ %s/<name>/SKILL.md ତିଆରି କରି ଖୋଲେ। frontmatter ବର୍ଣ୍ଣନା ହିଁ କେବଳ prompt ସୂଚୀକରେ ପହଞ୍ଚେ, ତେଣୁ ସେଥିରେ ଦକ୍ଷତାଟି କେବେ ବ୍ୟବହାର କରାଯିବ ଲେଖନ୍ତୁ।}
 ::msgcat::mcset or {Cron history} {Cron ହିଷ୍ଟ୍ରି}
 ::msgcat::mcset or {Cron jobs} {Cron କାର୍ଯ୍ୟ}
 ::msgcat::mcset or {Curated — write the first owner entry} {କ୍ୟୁରେଟେଡ୍ — ପ୍ରଥମ owner ଏଣ୍ଟ୍ରି ଲେଖ}
 ::msgcat::mcset or Cut କାଟନ୍ତୁ
 ::msgcat::mcset or Decline {ପ୍ରତ୍ୟାଖ୍ୟାନ କରନ୍ତୁ}
+::msgcat::mcset or {Dedicated translator} {ନିର୍ଦ୍ଦିଷ୍ଟ ଅନୁବାଦକ}
 ::msgcat::mcset or {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset or Default ଡିଫଲ୍ଟ
 ::msgcat::mcset or {Default model} {ଡିଫଲ୍ଟ ମଡେଲ}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset or {Delete user} {ଉପଭୋକ୍ତା ଡିଲିଟ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {Delete workspace?} {ୱାର୍କସ୍ପେସ ଡିଲିଟ୍ କରିବେ?}
 ::msgcat::mcset or Deop {ଅପ୍ ହଟାନ୍ତୁ}
+::msgcat::mcset or {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {ପରିବର୍ତ୍ତନ ବର୍ଣ୍ଣନା କରନ୍ତୁ। AI ଏହି ଏକ୍ସଟେନସନର ଅନେକ ଫାଇଲ ବଦଳାଇପାରେ କିମ୍ବା ଯୋଡ଼ିପାରେ। ପ୍ରତ୍ୟେକ ଫାଇଲ diff ଭାବେ ଦେଖାଯାଏ, ଏବଂ ଆପଣ ନିଶ୍ଚିତ କରିବା ପୂର୍ବରୁ କିଛି ଲେଖାଯାଏ ନାହିଁ।}
+::msgcat::mcset or {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {ପରିବର୍ତ୍ତନଟି ବର୍ଣ୍ଣନା କରନ୍ତୁ। AI ଏକ ପ୍ରତିସ୍ଥାପନ ପ୍ରସ୍ତାବ ଦେଇପାରେ, କିନ୍ତୁ ଆପଣ ଡିଫ୍ ଯାଞ୍ଚ କରି ନିଶ୍ଚିତ ନ କରିବା ପର୍ଯ୍ୟନ୍ତ ତାହା ଲେଖିପାରିବ ନାହିଁ।}
+::msgcat::mcset or {Describe the requested extension change first.} {ପ୍ରଥମେ ଆବଶ୍ୟକ ଏକ୍ସଟେନସନ ପରିବର୍ତ୍ତନଟି ବର୍ଣ୍ଣନା କରନ୍ତୁ।}
+::msgcat::mcset or Description ବର୍ଣ୍ଣନା
 ::msgcat::mcset or {Desktop: local core, modules and process plugins} {ଡେସ୍କଟପ୍: ସ୍ଥାନୀୟ କୋର୍, ମଡ୍ୟୁଲ ଓ ପ୍ରୋସେସ୍ ପ୍ଲଗିନ୍}
 ::msgcat::mcset or Detach {ଅଲଗା କରନ୍ତୁ}
+::msgcat::mcset or {Detach foreground} {ଅଗ୍ରଭୂମି ଅଲଗା କରନ୍ତୁ}
 ::msgcat::mcset or Dev ଡିଭ୍
 ::msgcat::mcset or {Dev pane (REPL + LSP)} {ଡିଭ୍ ପ୍ୟାନ୍ (REPL + LSP)}
 ::msgcat::mcset or {Dev: arm / disarm live patching} {ଡିଭ୍: ଲାଇଭ୍ ପ୍ୟାଚିଂ ସକ୍ରିୟ/ନିଷ୍କ୍ରିୟ କରନ୍ତୁ}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset or Devoice {ଭଏସ୍ ହଟାନ୍ତୁ}
 ::msgcat::mcset or {Discard review} {ସମୀକ୍ଷା ଛଡ଼ିଦିଅନ୍ତୁ}
 ::msgcat::mcset or {Discard your changes to %s?} {%s ରେ ଆପଣଙ୍କ ପରିବର୍ତ୍ତନ ବାତିଲ କରିବେ?}
+::msgcat::mcset or {Disk: %1$s free of %2$s at %3$s} {ଡିସ୍କ: %3$s ରେ %2$s ମଧ୍ୟରୁ %1$s ଖାଲି}
 ::msgcat::mcset or Done ହୋଇଗଲା
 ::msgcat::mcset or {Done — config written} {ସରିଲା — config ଲେଖାଗଲା}
 ::msgcat::mcset or {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {ଇନ୍ସଟଲ୍ କରିବା ପୂର୍ବରୁ ରିଲିଜ୍ ମାନିଫେଷ୍ଟ୍ ଓ ହୋଷ୍ଟ ଆର୍କାଇଭ୍ ଡାଉନଲୋଡ୍ କରି ଯାଞ୍ଚ କରନ୍ତୁ। ସମସ୍ତ ପାଞ୍ଚଟି ପରିଚୟ କ୍ଷେତ୍ର ଆବଶ୍ୟକ। ଗେଟୱେ ଷ୍ଟେଜ୍ କରାଯାଇଥିବା ଆର୍କାଇଭ୍କୁ ନିଜସ୍ୱ ଗୋପନ ସ୍ଥାନରେ ରଖେ; ଏହି ପ୍ରିଭ୍ୟୁ ଦ୍ୱାରା କିଛି ଇନ୍ସଟଲ୍ ହୁଏ ନାହିଁ।}
 ::msgcat::mcset or {Downloading and verifying the signed release…} {ସ୍ୱାକ୍ଷରିତ ରିଲିଜ୍ ଡାଉନଲୋଡ୍ ଓ ଯାଞ୍ଚ କରାଯାଉଛି…}
+::msgcat::mcset or {Draft this as an extension?} {ଏହାକୁ ଏକ ଏକ୍ସଟେନସନ ଭାବେ ଡ୍ରାଫ୍ଟ କରିବେ?}
 ::msgcat::mcset or {Drag to scroll; a quick swipe goes further.} {ସ୍କ୍ରୋଲ୍ କରିବାକୁ ଟାଣନ୍ତୁ; ଶୀଘ୍ର ସ୍ୱାଇପ୍ ଆହୁରି ଦୂର ନିଏ।}
+::msgcat::mcset or {Drift check failed: %s} {ଡ୍ରିଫ୍ଟ ଯାଞ୍ଚ ବିଫଳ: %s}
+::msgcat::mcset or {Drift check: %s node(s) differ from this gateway.} {ଡ୍ରିଫ୍ଟ ଯାଞ୍ଚ: %s ନୋଡ ଏହି ଗେଟୱେଠାରୁ ଅଲଗା।}
+::msgcat::mcset or {Drift: built from revision %1$s, this gateway from %2$s} {ଡ୍ରିଫ୍ଟ: ରିଭିଜନ %1$s ରୁ ବିଲ୍ଡ ହୋଇଛି, ଏହି ଗେଟୱେ %2$s ରୁ}
+::msgcat::mcset or {Drift: none — same version, revision and replicated config} {ଡ୍ରିଫ୍ଟ: କିଛି ନାହିଁ — ସମାନ ସଂସ୍କରଣ, ରିଭିଜନ ଓ ପ୍ରତିଲିପି କନଫିଗ}
+::msgcat::mcset or {Drift: not compared — %s} {ଡ୍ରିଫ୍ଟ: ତୁଳନା ହୋଇନାହିଁ — %s}
+::msgcat::mcset or {Drift: runs version %1$s, this gateway %2$s} {ଡ୍ରିଫ୍ଟ: ସଂସ୍କରଣ %1$s ଚଲାଉଛି, ଏହି ଗେଟୱେ %2$s}
+::msgcat::mcset or Drift… ଡ୍ରିଫ୍ଟ…
 ::msgcat::mcset or {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset or {ESC %s is not bound} {ESC %s ବନ୍ଧା ହୋଇନାହିଁ}
 ::msgcat::mcset or {ESC- … (Meta prefix)} {ESC- … (Meta ଉପସର୍ଗ)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset or Edit… ଏଡିଟ୍…
 ::msgcat::mcset or {Enable / disable} {ସକ୍ଷମ / ଅକ୍ଷମ}
 ::msgcat::mcset or {Enable the Telegram adapter} {Telegram ଆଡାପ୍ଟର୍ ସକ୍ଷମ କର}
+::msgcat::mcset or Endpoint ଏଣ୍ଡପଏଣ୍ଟ
 ::msgcat::mcset or Engine ଇଞ୍ଜିନ୍
 ::msgcat::mcset or Eval→gw Eval→gw
 ::msgcat::mcset or {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {%s ର ପ୍ରତ୍ୟେକ ପରିବର୍ତ୍ତନ commit ହୁଏ। ପୁନରୁଦ୍ଧାର କଲେ ପୂରା ଡିରେକ୍ଟରୀ ସେହି commit କୁ ଫେରିଯାଏ — ଏବଂ ପ୍ରଥମେ ବର୍ତ୍ତମାନ ସ୍ଥିତିର ସ୍ନାପଶଟ ନିଏ, ତେଣୁ ଏହା ଏକତରଫା ଦ୍ୱାର ନୁହେଁ।}
 ::msgcat::mcset or {Every plugin file goes back to that commit. The current state is committed first.} {ସବୁ ପ୍ଲଗିନ ଫାଇଲ ସେହି commit କୁ ଫେରିଯାଏ। ବର୍ତ୍ତମାନ ସ୍ଥିତି ପ୍ରଥମେ commit ହୁଏ।}
+::msgcat::mcset or {Exact commit} {ସଠିକ୍ କମିଟ୍}
+::msgcat::mcset or {Exact permission rule} {ସଠିକ୍ ଅନୁମତି ନିୟମ}
+::msgcat::mcset or {Example: a hook} {ଉଦାହରଣ: ଏକ hook}
+::msgcat::mcset or {Example: a provider driver} {ଉଦାହରଣ: ଏକ ପ୍ରୋଭାଇଡର ଡ୍ରାଇଭର}
+::msgcat::mcset or {Example: a service override wrapping core} {ଉଦାହରଣ: core ଘେରିଥିବା service override}
+::msgcat::mcset or {Example: a tool} {ଉଦାହରଣ: ଏକ ଟୁଲ୍}
 ::msgcat::mcset or {Existing shared container network} {ଉପସ୍ଥିତ ସେୟାର୍ଡ କଣ୍ଟେନର ନେଟୱାର୍କ}
+::msgcat::mcset or Explain ବୁଝାନ୍ତୁ
+::msgcat::mcset or {Explain the diagnostics} {ଡାଇଗ୍ନୋଷ୍ଟିକ୍ସ ବୁଝାନ୍ତୁ}
 ::msgcat::mcset or Export… {ରପ୍ତାନି କରନ୍ତୁ…}
+::msgcat::mcset or {Extension API} {ଏକ୍ସଟେନସନ API}
+::msgcat::mcset or {Extension development} {ଏକ୍ସଟେନସନ ବିକାଶ}
+::msgcat::mcset or {Extension guide} {ଏକ୍ସଟେନସନ ଗାଇଡ୍}
+::msgcat::mcset or {Extension source} {ଏକ୍ସଟେନସନ ସୋର୍ସ}
 ::msgcat::mcset or {Failover blueprint} {ଫେଲୋଭର୍ ବ୍ଲୁପ୍ରିଣ୍ଟ}
 ::msgcat::mcset or {Failover blueprint (edit the route chain)} {ଫେଲୋଭର୍ ବ୍ଲୁପ୍ରିଣ୍ଟ (ରାଉଟ୍ ଚେଇନ୍ ସମ୍ପାଦନ କରନ୍ତୁ)}
 ::msgcat::mcset or {Failover hook script (what `script` mode runs)} {ଫେଲୋଭର୍ ହୁକ୍ ସ୍କ୍ରିପ୍ଟ (`script` ମୋଡ୍ କ’ଣ ଚଲାଏ)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset or {Find in transcript} {ଟ୍ରାନ୍ସକ୍ରିପ୍ଟରେ ଖୋଜନ୍ତୁ}
 ::msgcat::mcset or {Find in transcript…} {ଟ୍ରାନ୍ସକ୍ରିପ୍ଟରେ ଖୋଜନ୍ତୁ…}
 ::msgcat::mcset or {Find references} {ରେଫରେନ୍ସ ଖୋଜନ୍ତୁ}
+::msgcat::mcset or {Finish rollback} {ରୋଲବ୍ୟାକ୍ ସମାପ୍ତ କରନ୍ତୁ}
 ::msgcat::mcset or {First run: no config.toml yet.} {ପ୍ରଥମ ଚାଲିବା: ଏପର୍ଯ୍ୟନ୍ତ config.toml ନାହିଁ।}
+::msgcat::mcset or {Fix the failed syntax checks before preparing a contribution.} {ଅବଦାନ ପ୍ରସ୍ତୁତ କରିବା ପୂର୍ବରୁ ବିଫଳ ହୋଇଥିବା ସିଣ୍ଟାକ୍ସ ଯାଞ୍ଚଗୁଡ଼ିକୁ ଠିକ୍ କରନ୍ତୁ।}
+::msgcat::mcset or {Fleet deployment} {ଫ୍ଲିଟ୍ ଡିପ୍ଲୟମେଣ୍ଟ}
+::msgcat::mcset or {Fleet deployment runs from a desktop computer; it is not available on Android.} {ଫ୍ଲିଟ୍ ଡିପ୍ଲୟମେଣ୍ଟ ଏକ ଡେସ୍କଟପ୍ କମ୍ପ୍ୟୁଟରରୁ ଚାଲେ; ଏହା Android ରେ ଉପଲବ୍ଧ ନାହିଁ।}
+::msgcat::mcset or {Fleet deploy…} {ଫ୍ଲିଟ୍ ଡିପ୍ଲୟ…}
+::msgcat::mcset or {Fleet drift} {ଫ୍ଲିଟ୍ ଡ୍ରିଫ୍ଟ}
 ::msgcat::mcset or {Fold / unfold} {ଫୋଲ୍ଡ୍ / ଅନ୍‌ଫୋଲ୍ଡ୍}
 ::msgcat::mcset or {Forget declaration} {ଘୋଷଣା ଭୁଲିଯାଆନ୍ତୁ}
+::msgcat::mcset or {Forget node %s?} {ନୋଡ୍ %s ଭୁଲିଯିବେ?}
+::msgcat::mcset or {Forget node…} {ନୋଡ୍ ଭୁଲିଯାଆନ୍ତୁ…}
+::msgcat::mcset or {Forgetting %1$s failed: %2$s} {%1$s ଭୁଲିବା ବିଫଳ ହେଲା: %2$s}
+::msgcat::mcset or {Forgot node %s.} {ନୋଡ୍ %s ଭୁଲିଗଲା।}
+::msgcat::mcset or {Forgotten fleet-wide (refused until they heartbeat again): %s} {ପୁରା ଫ୍ଲିଟରେ ଭୁଲାଗଲା (ପୁଣି ହାର୍ଟବିଟ୍ ନ ଦେବା ପର୍ଯ୍ୟନ୍ତ ମନା): %s}
 ::msgcat::mcset or Fork {ଶାଖା କରନ୍ତୁ}
 ::msgcat::mcset or {Free space} {ଖାଲି ସ୍ଥାନ}
 ::msgcat::mcset or {Full source commit SHA} {ସମ୍ପୂର୍ଣ୍ଣ ସୋର୍ସ କମିଟ୍ SHA}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset or {Gateway image sha256 digest} {ଗେଟୱେ ଇମେଜ୍‌ର sha256 ଡାଇଜେଷ୍ଟ}
 ::msgcat::mcset or {Gateway quadlet name} {ଗେଟୱେ quadlet ନାମ}
 ::msgcat::mcset or {Gateway status} {ଗେଟୱେ ସ୍ଥିତି}
+::msgcat::mcset or {Generate with AI…} {AI ସହ ଜେନେରେଟ୍ କରନ୍ତୁ…}
+::msgcat::mcset or {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {%s ଦ୍ୱାରା ଜେନେରେଟ୍ — କିଛି ଲେଖାଯାଇନାହିଁ। ପ୍ରତ୍ୟେକ ଫାଇଲ ସମୀକ୍ଷା କରନ୍ତୁ, ତା'ପରେ Create extension ଠିକ୍ ଏହିଗୁଡ଼ିକ ଲେଖିବ।}
 ::msgcat::mcset or {Get a key at %s} {%s ଠାରେ key ପାଆନ୍ତୁ}
 ::msgcat::mcset or {GitHub release URL} {GitHub ରିଲିଜ୍ URL}
+::msgcat::mcset or {Give the extension a name and describe what it should do (the purpose), then generate.} {ଏକ୍ସଟେନସନକୁ ଏକ ନାମ ଦିଅନ୍ତୁ ଏବଂ ଏହା କଣ କରିବ (ଉଦ୍ଦେଶ୍ୟ) ବର୍ଣ୍ଣନା କରନ୍ତୁ, ତା'ପରେ ଜେନେରେଟ୍ କରନ୍ତୁ।}
 ::msgcat::mcset or {Give up} {ଛାଡ଼ି ଦିଅନ୍ତୁ}
 ::msgcat::mcset or Go ଯାଅ
 ::msgcat::mcset or {Go to definition} {ଡେଫିନିସନକୁ ଯାଆନ୍ତୁ}
+::msgcat::mcset or {Gossip failed: %s} {ଗସିପ୍ ବିଫଳ: %s}
+::msgcat::mcset or {Gossip now} {ଏବେ ଗସିପ୍ କରନ୍ତୁ}
+::msgcat::mcset or {Gossip with %1$s: %2$s} {%1$s ସହ ଗସିପ୍: %2$s}
+::msgcat::mcset or {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {ଗସିପ୍: %2$s ସାଥୀ ମଧ୍ୟରୁ %1$s ଉତ୍ତର ଦେଲେ (%3$s)।}
 ::msgcat::mcset or Grant {ଅନୁମତି ଦିଅନ୍ତୁ}
 ::msgcat::mcset or {Grant access} {ପ୍ରବେଶ ଅନୁମତି ଦିଅନ୍ତୁ}
+::msgcat::mcset or {Granted at} {ଦିଆଯାଇଥିବା ସମୟ}
 ::msgcat::mcset or Grant… {ଅନୁମତି ଦିଅନ୍ତୁ…}
 ::msgcat::mcset or {Guards — what the harness stops, and where it stands now} {Guards — ହାର୍ନେସ କ'ଣ ଅଟକାଏ, ଏବଂ ବର୍ତ୍ତମାନ କେଉଁ ସ୍ଥିତିରେ ଅଛି}
 ::msgcat::mcset or {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {ହ୍ୟାଣ୍ଡଲରଗୁଡ଼ିକ ଦେଖାଯାଇଥିବା କ୍ରମରେ ଚାଲନ୍ତି; ପ୍ରଥମେ ଯିଏ ଅଣ-ଖାଲି ମୂଲ୍ୟ ଫେରାଏ ସେ ଜିତେ। ଗୋଟିକୁ ବନ୍ଦ କଲେ ତାହା ଅନପଞ୍ଜୀକୃତ ହୋଇ ଛାଡ଼ି ଦିଆଯାଏ, ଏବଂ ପସନ୍ଦ config.toml ରେ ରଖାଯାଏ ତେଣୁ ପ୍ଲଗିନ ରିଲୋଡ୍ ତାହାକୁ ଚୁପ୍ଚାପ୍ ପୁଣି ଚଲାଇ ଦେଇପାରିବ ନାହିଁ।}
+::msgcat::mcset or Health ସ୍ୱାସ୍ଥ୍ୟ
+::msgcat::mcset or {Health alerts (%s):} {ସ୍ୱାସ୍ଥ୍ୟ ସତର୍କତା (%s):}
+::msgcat::mcset or Heartbeat ହାର୍ଟବିଟ୍
+::msgcat::mcset or {Heartbeat age: %s s} {ହାର୍ଟବିଟ୍ ବୟସ: %s s}
 ::msgcat::mcset or Help ସହାୟତା
 ::msgcat::mcset or {Help & keys} {ସହାୟତା ଓ କି}
 ::msgcat::mcset or {Hide right panes} {ଡାହାଣ ପ୍ୟାନ୍‌ଗୁଡ଼ିକ ଲୁଚାନ୍ତୁ}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset or {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {ଧରି ରଖନ୍ତୁ, ତା'ପରେ ଆଙ୍ଗୁଠି ଉଠାଇବା ପୂର୍ବରୁ ଟାଣନ୍ତୁ: ଚୟନ ଶବ୍ଦ ପରେ ଶବ୍ଦ ଆପଣଙ୍କ ଆଙ୍ଗୁଠିକୁ ଅନୁସରଣ କରେ, ଉପର ବା ତଳ ଧାରରେ ସ୍କ୍ରୋଲ୍ କରି।}
 ::msgcat::mcset or Hooks Hooks
 ::msgcat::mcset or {Hooks (what plugins run on)} {ହୁକ୍‌ଗୁଡ଼ିକ (ପ୍ଲଗଇନ୍‌ଗୁଡ଼ିକ କ’ଣ ଚଲାନ୍ତି)}
+::msgcat::mcset or Host ହୋଷ୍ଟ
 ::msgcat::mcset or {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {ଧରି ରଖିବାକୁ କେତେ ସମୟ ଲାଗେ ତାହା Android ର ଛୁଇଁ ଧରି ରଖିବା ବିଳମ୍ବ, ଏହାର ଆକ୍ସେସିବିଲିଟି ସେଟିଂରେ।}
 ::msgcat::mcset or {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {ମୁଁ KEK ଏବଂ PLC ରୋଟେସନ୍ କି ଅଫଲାଇନ୍‌ରେ ବ୍ୟାକପ୍ କରିଛି; ପରୀକ୍ଷିତ TLS ଓ ସକ୍ରିୟକରଣ ହାଣ୍ଡଅଫ୍‌କୁ ଅନୁମତି ଦିଅନ୍ତୁ}
 ::msgcat::mcset or {I-search backward: type to search, C-r for previous} {I-search ପଛକୁ: ଖୋଜିବାକୁ ଟାଇପ କରନ୍ତୁ, ପୂର୍ବ ପାଇଁ C-r}
 ::msgcat::mcset or {I-search: type to search, C-s for next} {I-search: ଖୋଜିବାକୁ ଟାଇପ କରନ୍ତୁ, ପରବର୍ତ୍ତୀ ପାଇଁ C-s}
+::msgcat::mcset or {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {IO ଚାପ: ସମୟର %1$s%% / %2$s%% / %3$s%% କୌଣସି କାର୍ଯ୍ୟ ଅପେକ୍ଷା କରିଛି (10 ସେ / 1 ମି / 5 ମି)}
 ::msgcat::mcset or IRC IRC
 ::msgcat::mcset or {IRC buffers} {IRC ବଫର}
 ::msgcat::mcset or {IRC composer} {IRC କମ୍ପୋଜର}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset or {IRC split: %s} {IRC ବିଭକ୍ତ: %s}
 ::msgcat::mcset or {IRC transcript} {IRC ଟ୍ରାନ୍ସକ୍ରିପ୍ଟ}
 ::msgcat::mcset or {IRC — nothing to show} {IRC — ଦେଖାଇବାକୁ କିଛି ନାହିଁ}
+::msgcat::mcset or {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {ଚାଲୁଛି: %1$s ଟର୍ନ %2$s, %3$s ବ୍ୟାକଗ୍ରାଉଣ୍ଡ କାର୍ଯ୍ୟ %4$s}
 ::msgcat::mcset or {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {ପରିଚାଳିତ କମ୍ପୋନେଣ୍ଟ ଷ୍ଟୋରରେ %s ଇନଷ୍ଟଲ କରିବେ? ଏହାର ମାନିଫେଷ୍ଟ ଦେଖାଇ ଦିଆଯାଇଛି; ଏହା କୌଣସି ସେବା ଆରମ୍ଭ କରେ ନାହିଁ।}
 ::msgcat::mcset or {Install component} {କମ୍ପୋନେଣ୍ଟ ଇନଷ୍ଟଲ କରନ୍ତୁ}
 ::msgcat::mcset or {Install components…} {କମ୍ପୋନେଣ୍ଟଗୁଡ଼ିକ ଇନଷ୍ଟଲ କରନ୍ତୁ…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset or Instances ଇନ୍ସଟାନ୍ସ
 ::msgcat::mcset or {It becomes the current content, as a new revision — so the restore can be undone too.} {ଏହା ନୂଆ ସଂସ୍କରଣ ଭାବେ ବର୍ତ୍ତମାନର ବିଷୟବସ୍ତୁ ହେବ — ତେଣୁ ପୁନରୁଦ୍ଧାରକୁ ମଧ୍ୟ ପୂର୍ବବତ୍ କରାଯାଇପାରିବ।}
 ::msgcat::mcset or {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {ଏହା ଏହି ମେସିନର ଏନକ୍ରିପ୍ଟ ହୋଇଥିବା ଭଲ୍ଟକୁ ଯାଏ। ଏଜେଣ୍ଟ ଏହାକୁ କେବେ ଦେଖେ ନାହିଁ: ସେ ଏହାକୁ କେବଳ କମାଣ୍ଡରେ $%s ଭାବେ ବ୍ୟବହାର କରିପାରେ, କିମ୍ବା ଅନୁମତିପ୍ରାପ୍ତ ହୋଷ୍ଟକୁ ପଠାଇପାରେ।}
+::msgcat::mcset or {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {ଏହା ପୁରା ଫ୍ଲିଟରେ କ୍ଲଷ୍ଟର ରେଜିଷ୍ଟ୍ରୀରୁ ହଟାଯାଏ: ପରବର୍ତ୍ତୀ ଗସିପ୍ ବିନିମୟ ପ୍ରତ୍ୟେକ 0.2.0 ସାଥୀକୁ ମଧ୍ୟ ଏହା ଛାଡ଼ିବାକୁ କହେ, ଏବଂ ସେମାନଙ୍କ ମଧ୍ୟରୁ କେହି ଏହାକୁ ପୁଣି ମିଶାଏ ନାହିଁ। 0.2.0 ଠାରୁ ପୁରୁଣା ସାଥୀ ଏହାକୁ ତାଲିକାରେ ରଖେ। ମେସିନ ଫେରି ଆସି ହାର୍ଟବିଟ୍ ଦେଲେ, ଏହା ପୁଣି ପଞ୍ଜୀକୃତ ହୁଏ। ସିଙ୍କ୍ ସାଥୀ ଓ ସଞ୍ଚିତ ଇନଷ୍ଟାନ୍ସ ଅସ୍ପୃଷ୍ଟ ରହେ।}
 ::msgcat::mcset or {It leaves memory now. Its history keeps every revision, and History… can restore it.} {ଏହା ଏବେ ମେମୋରିରୁ ଚାଲିଯିବ। ଏହାର ଇତିହାସ ପ୍ରତ୍ୟେକ ସଂସ୍କରଣ ରଖେ, ଏବଂ ଇତିହାସ… ଏହାକୁ ଫେରାଇ ଆଣିପାରେ।}
 ::msgcat::mcset or Join {ଯୋଗ ଦିଅନ୍ତୁ}
 ::msgcat::mcset or {Join a pool} {ମେସିନ୍‌ର ଦଳରେ ଯୋଗ ଦିଅନ୍ତୁ}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset or {Language (i18n)} {ଭାଷା (i18n)}
 ::msgcat::mcset or Language… ଭାଷା…
 ::msgcat::mcset or {Last active} {ଶେଷ ସକ୍ରିୟ}
+::msgcat::mcset or {Last probe: %1$s — %2$s} {ଶେଷ ପ୍ରୋବ୍: %1$s — %2$s}
 ::msgcat::mcset or {Leave %s?} {%s ଛାଡ଼ିବେ?}
 ::msgcat::mcset or Leave… ଛାଡ଼ନ୍ତୁ…
 ::msgcat::mcset or {Legacy open — no [acl] section} {ଲେଗାସି ଓପନ୍ — [acl] ଅଂଶ ନାହିଁ}
 ::msgcat::mcset or {Let %s:} {%s କୁ ଏସବୁ କରିବାକୁ ଦିଅନ୍ତୁ:}
 ::msgcat::mcset or {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {ଅକ୍ଷର, ଅଙ୍କ, - ଓ _। ଏକ plugin.toml ଓ plugin.tcl ତିଆରି କରେ ଯାହା post_llm_call hook ପଞ୍ଜୀକୃତ କରିଥାଏ, ତା'ପରେ Dev ପେନରେ ଖୋଲେ।}
+::msgcat::mcset or Level ସ୍ତର
 ::msgcat::mcset or {Lift lockdown} {ଲକଡାଉନ ଉଠାନ୍ତୁ}
+::msgcat::mcset or Lines ଧାଡ଼ି
 ::msgcat::mcset or {List the provider's models} {ପ୍ରୋଭାଇଡରର ମଡେଲ୍ ତାଲିକା ଦେଖାନ୍ତୁ}
+::msgcat::mcset or Load ଲୋଡ୍
 ::msgcat::mcset or {Load more} {ଆହୁରି ଲୋଡ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {Loading discovered components…} {ଆବିଷ୍କୃତ କମ୍ପୋନେଣ୍ଟଗୁଡ଼ିକ ଲୋଡ୍ ହେଉଛି…}
 ::msgcat::mcset or {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {ସ୍ଥାନୀୟ ବଣ୍ଡଲ ସମୀକ୍ଷା ହେଲା। ଇନଷ୍ଟଲ ନିଶ୍ଚିତ କରିବାକୁ Install selected component ବାଛନ୍ତୁ; ଏପର୍ଯ୍ୟନ୍ତ କିଛି ଇନଷ୍ଟଲ ହୋଇନାହିଁ।}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset or {Lock down} {ଲକଡାଉନ କରନ୍ତୁ}
 ::msgcat::mcset or Log ଲଗ୍
 ::msgcat::mcset or {Log (engine + status)} {ଲଗ୍ (ଇଞ୍ଜିନ୍ + ସ୍ଥିତି)}
+::msgcat::mcset or {Log of %s} {%s ର ଲଗ୍}
+::msgcat::mcset or Logs… ଲଗ୍…
 ::msgcat::mcset or {M-g- (g: goto line)} {M-g- (g: ଧାଡ଼ିକୁ ଯାଅ)}
 ::msgcat::mcset or {M-p/M-n history · Tab complete} {M-p/M-n ହିଷ୍ଟୋରୀ · Tab ସମ୍ପୂର୍ଣ୍ଣ}
 ::msgcat::mcset or {MCP server list} {MCP ସର୍ଭର ତାଲିକା}
 ::msgcat::mcset or {MCP servers (from config.toml)} {MCP ସର୍ଭର (config.toml ରୁ)}
 ::msgcat::mcset or {Make default} {ଡିଫଲ୍ଟ କର}
 ::msgcat::mcset or {Make default (config.toml)} {ଡିଫଲ୍ଟ କର (config.toml)}
+::msgcat::mcset or {Manage extensions} {ଏକ୍ସଟେନସନ ପରିଚାଳନା}
 ::msgcat::mcset or {Manifest SHA-256} {ମାନିଫେଷ୍ଟ୍ SHA-256}
 ::msgcat::mcset or {Mark read} {ପଢ଼ାଯାଇଛି ବୋଲି ଚିହ୍ନିତ କରନ୍ତୁ}
 ::msgcat::mcset or {Mechanisms (what the engine does on its own)} {ଯନ୍ତ୍ରବିଧିଗୁଡ଼ିକ (ଇଞ୍ଜିନ୍ ନିଜେ କ’ଣ କରେ)}
 ::msgcat::mcset or {Mechanisms — what the engine does on its own, and how to stop it} {Mechanisms — ଇଞ୍ଜିନ ନିଜେ କ'ଣ କରେ ଏବଂ ତାହାକୁ କିପରି ଅଟକାଇବେ}
 ::msgcat::mcset or Memory ମେମୋରି
 ::msgcat::mcset or {Memory history} {ମେମୋରି ଇତିହାସ}
+::msgcat::mcset or {Memory: %1$s available of %2$s (%3$s%% used)} {ମେମୋରୀ: %2$s ମଧ୍ୟରୁ %1$s ଉପଲବ୍ଧ (%3$s%% ବ୍ୟବହୃତ)}
+::msgcat::mcset or {Merge the received %s into this node?} {ପ୍ରାପ୍ତ %s କୁ ଏହି ନୋଡ୍‌ରେ ମିଶାଇବେ?}
 ::msgcat::mcset or Messages ମେସେଜ୍
+::msgcat::mcset or Metrics ମେଟ୍ରିକ୍ସ
+::msgcat::mcset or {Metrics (asked %s):} {ମେଟ୍ରିକ୍ସ (%s କୁ ପଚରାଯାଇଛି):}
+::msgcat::mcset or {Metrics of %1$s failed: %2$s} {%1$s ର ମେଟ୍ରିକ୍ସ ବିଫଳ: %2$s}
+::msgcat::mcset or {Metrics of %s received.} {%s ର ମେଟ୍ରିକ୍ସ ମିଳିଲା।}
+::msgcat::mcset or {Metrics: not asked yet — use Metrics.} {ମେଟ୍ରିକ୍ସ: ଏପର୍ଯ୍ୟନ୍ତ ପଚରାଯାଇନାହିଁ — Metrics ବ୍ୟବହାର କରନ୍ତୁ।}
 ::msgcat::mcset or Model ମଡେଲ୍
 ::msgcat::mcset or {Model for this session} {ଏହି ଅଧିବେଶନ ପାଇଁ ମଡେଲ}
 ::msgcat::mcset or {Models & settings} {ମଡେଲ ଓ ସେଟିଂ}
+::msgcat::mcset or Monitors ମନିଟର
+::msgcat::mcset or Name ନାମ
+::msgcat::mcset or {Need an account? Optional sign-up links (open in your browser):} {ଏକାଉଣ୍ଟ ଦରକାର? ବୈକଳ୍ପିକ ସାଇନ୍-ଅପ୍ ଲିଙ୍କ୍ (ଆପଣଙ୍କ ବ୍ରାଉଜରରେ ଖୋଲିବ):}
 ::msgcat::mcset or Network ନେଟୱର୍କ
 ::msgcat::mcset or {New alias} {ନୂଆ ଆଲିଆସ}
+::msgcat::mcset or {New branch name} {ନୂଆ ବ୍ରାଞ୍ଚର ନାମ}
 ::msgcat::mcset or {New cron job} {ନୂଆ cron କାର୍ଯ୍ୟ}
+::msgcat::mcset or {New extension} {ନୂଆ ଏକ୍ସଟେନସନ}
 ::msgcat::mcset or {New memory file} {ନୂଆ ମେମୋରି ଫାଇଲ}
 ::msgcat::mcset or {New plugin} {ନୂଆ ପ୍ଲଗିନ}
 ::msgcat::mcset or {New session} {ନୂଆ ସେସନ୍}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset or Next ପରବର୍ତ୍ତୀ
 ::msgcat::mcset or Nickname ନିକ୍ନେମ୍
 ::msgcat::mcset or {NixOS: emit a module snippet; do not edit host declarations} {NixOS: ଏକ ମଡ୍ୟୁଲ୍ ଖଣ୍ଡ ତିଆରି କରନ୍ତୁ; ହୋଷ୍ଟ ଘୋଷଣା ଏଡିଟ୍ କରନ୍ତୁ ନାହିଁ}
+::msgcat::mcset or {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {ଏହି ନୋଡ୍ ପାଇଁ କୌଣସି SSH ଲାଇଫସାଇକଲ୍ ଟାର୍ଗେଟ କନଫିଗର ହୋଇନାହିଁ। ଡିପ୍ଲୟ କିମ୍ବା ପୁନଃଆରମ୍ଭ କରିବା ପାଇଁ ସ୍ପଷ୍ଟ ଭାବେ ଏକ ଇନସ୍ଟାନ୍ସ ଯୋଡ଼ନ୍ତୁ।}
+::msgcat::mcset or {No additional push happens.} {କୌଣସି ଅତିରିକ୍ତ ପୁଶ୍ ହୁଏ ନାହିଁ।}
 ::msgcat::mcset or {No apps yet. Ask the agent to make one: “make me an app that…”} {ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ଆପ୍ ନାହିଁ। ଏଜେଣ୍ଟଙ୍କୁ ଗୋଟିଏ ତିଆରି କରିବାକୁ କୁହନ୍ତୁ: “ମୋ ପାଇଁ ଏପରି ଏକ ଆପ୍ ତିଆରି କର ଯାହା…”}
 ::msgcat::mcset or {No code in the picture. Hold the phone closer, straight on, and scan again.} {ଛବିରେ କୌଣସି କୋଡ୍ ନାହିଁ। ଫୋନକୁ ପାଖରେ, ସିଧା ଧରି ପୁଣି ସ୍କାନ୍ କରନ୍ତୁ।}
 ::msgcat::mcset or {No configuration snapshot will be restored.} {କୌଣସି କନଫିଗ ସ୍ନାପଶଟ୍ ଫେରାଇ ଆଣାଯିବ ନାହିଁ।}
+::msgcat::mcset or {No configured sync peer for this node.} {ଏହି ନୋଡ୍ ପାଇଁ କୌଣସି ସିଙ୍କ୍ ପିଅର୍ କନଫିଗର ହୋଇନାହିଁ।}
+::msgcat::mcset or {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {କୌଣସି ସ୍ୱତନ୍ତ୍ର ଅନୁବାଦକ କନଫିଗର୍ ହୋଇନାହିଁ। ଏହାର ପ୍ରୋଭାଇଡର, ମଡେଲ୍ ଓ ଲକ୍ଷ୍ୟ ଭାଷା ବାଛିବା ପାଇଁ ଅନୁବାଦକ କନଫିଗର୍ କରନ୍ତୁ ବ୍ୟବହାର କରନ୍ତୁ।}
+::msgcat::mcset or {No deployment started.} {କୌଣସି ଡିପ୍ଲୟମେଣ୍ଟ ଆରମ୍ଭ ହୋଇନାହିଁ।}
+::msgcat::mcset or {No diagnostics reported by the current LSP document.} {ବର୍ତ୍ତମାନର LSP ଡକ୍ୟୁମେଣ୍ଟ କୌଣସି ଡାଇଗ୍ନୋଷ୍ଟିକ୍ସ ରିପୋର୍ଟ କରିନାହିଁ।}
+::msgcat::mcset or {No explicitly configured desktop gateway is bound to this node.} {ଏହି ନୋଡ୍ ସହ କୌଣସି ସ୍ପଷ୍ଟ ଭାବେ କନଫିଗର୍ କରାଯାଇଥିବା ଡେସ୍କଟପ୍ ଗେଟୱେ ଯୋଡ଼ାଯାଇନାହିଁ।}
+::msgcat::mcset or {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {ଏହି ନୋଡ୍ ସହ କୌଣସି ସ୍ପଷ୍ଟ ଭାବେ କନଫିଗର୍ କରାଯାଇଥିବା ଗେଟୱେ ଯୋଡ଼ାଯାଇନାହିଁ। ପ୍ରଥମେ ଗେଟୱେ ଯୋଡ଼ନ୍ତୁ; ଏହାର ରେଜିଷ୍ଟ୍ରି ଏଣ୍ଡପଏଣ୍ଟକୁ ଡେସ୍କଟପ୍ URL ଭାବେ ବ୍ୟବହାର କରାଯାଏ ନାହିଁ।}
+::msgcat::mcset or {No file is open. Ask a design question, or open an extension file for help with its code.} {କୌଣସି ଫାଇଲ ଖୋଲା ନାହିଁ। ଏକ ଡିଜାଇନ୍ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ, କିମ୍ବା ଏହାର କୋଡ୍ ପାଇଁ ସାହାଯ୍ୟ ନେବାକୁ ଏକ ଏକ୍ସଟେନସନ ଫାଇଲ ଖୋଲନ୍ତୁ।}
+::msgcat::mcset or {No files have been written. Review the exact manifest and source, then confirm creation.} {କୌଣସି ଫାଇଲ ଲେଖାଯାଇନାହିଁ। ପ୍ରକୃତ ମାନିଫେଷ୍ଟ ଓ ସୋର୍ସ ସମୀକ୍ଷା କରନ୍ତୁ, ତାପରେ ସୃଷ୍ଟି ନିଶ୍ଚିତ କରନ୍ତୁ।}
 ::msgcat::mcset or {No modules or process plugins were discovered. The provider setup steps can still continue.} {କୌଣସି ମଡ୍ୟୁଲ କିମ୍ବା ପ୍ରୋସେସ୍ ପ୍ଲଗିନ ଆବିଷ୍କାର ହେଲା ନାହିଁ। ପ୍ରୋଭାଇଡର setup ପଦକ୍ଷେପଗୁଡ଼ିକ ତଥାପି ଜାରି ରଖିହେବ।}
+::msgcat::mcset or {No other registered node to compare with.} {ତୁଳନା କରିବାକୁ ଅନ୍ୟ କୌଣସି ପଞ୍ଜୀକୃତ ନୋଡ ନାହିଁ।}
 ::msgcat::mcset or {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {ଏହି ୱିଜାର୍ଡ୍‌ରୁ କୌଣସି ପ୍ରୋଫାଇଲ୍ ସର୍ଭିସ୍ ଆରମ୍ଭ କରେ ନାହିଁ କିମ୍ବା ଆଡମିନ୍ ଅଧିକାରଯୁକ୍ତ ସ୍କ୍ରିପ୍ଟ ଚଲାଏ ନାହିଁ। ଚଳାଇବା ପୂର୍ବରୁ ଯୋଜନା ଓ ଯେକୌଣସି ହ୍ୟାଣ୍ଡଅଫ୍ ସମୀକ୍ଷା କରନ୍ତୁ।}
+::msgcat::mcset or {No proposal has been requested. Nothing will be written automatically.} {କୌଣସି ପ୍ରସ୍ତାବ ମାଗାଯାଇନାହିଁ। ସ୍ୱତଃ କିଛି ଲେଖାଯିବ ନାହିଁ।}
+::msgcat::mcset or {No proposal. Nothing was written.} {କୌଣସି ପ୍ରସ୍ତାବ ନାହିଁ। କିଛି ଲେଖାଯାଇନାହିଁ।}
 ::msgcat::mcset or {No routes configured.} {କୌଣସି ରାଉଟ କନଫିଗର ହୋଇନାହିଁ।}
 ::msgcat::mcset or {No session selected — pick one in the sidebar or start a new one} {କୌଣସି ଅଧିବେଶନ ବଛାଯାଇନାହିଁ — ସାଇଡବାରରୁ ଗୋଟିଏ ବାଛନ୍ତୁ କିମ୍ବା ନୂଆ ଆରମ୍ଭ କରନ୍ତୁ}
 ::msgcat::mcset or {No swap target yet: pick a language and press “Set as swap target”.} {ଏପର୍ଯ୍ୟନ୍ତ ବଦଳ ଭାଷା ନାହିଁ: ଗୋଟିଏ ଭାଷା ବାଛି “ବଦଳ ଭାଷା କର” ଦବାଅ।}
 ::msgcat::mcset or {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {config.toml ରେ କୌଣସି {[}acl{]} ଅଂଶ ନାହିଁ: ଗେଟଓ୍ୟେ ପର୍ଯ୍ୟନ୍ତ ପହଞ୍ଚୁଥିବା ପ୍ରତ୍ୟେକ ପ୍ରେରକ ମାଲିକ ଭାବେ ବିବେଚିତ ହୁଅନ୍ତି — ACL ପୂର୍ବର ଏକକ-ଉପଭୋକ୍ତା ବ୍ୟବହାର। ଅନୁମତି ଦେବା ଓ ଫେରାଇ ନେବା ତଥାପି କାମ କରେ ଏବଂ {[}acl{]} ଥିବା ମାତ୍ରେ ପ୍ରଭାବୀ ହୁଏ।}
+::msgcat::mcset or {Node id} {ନୋଡ୍ id}
+::msgcat::mcset or {Non-evaluating syntax checks} {କୋଡ୍ ନ ଚଲାଇ ସିଣ୍ଟାକ୍ସ ଯାଞ୍ଚ}
+::msgcat::mcset or {Not available: %s} {ଉପଲବ୍ଧ ନାହିଁ: %s}
+::msgcat::mcset or Note ଟିପ୍ପଣୀ
 ::msgcat::mcset or {Note for the agent (optional):} {ଏଜେଣ୍ଟ ପାଇଁ ନୋଟ୍ (ଇଚ୍ଛାଧୀନ):}
+::msgcat::mcset or {Nothing selected.} {କିଛି ଚୟନ ହୋଇନାହିଁ।}
 ::msgcat::mcset or {Nothing typed yet.} {ଏପର୍ଯ୍ୟନ୍ତ କିଛି ଟାଇପ୍ କରାଯାଇନାହିଁ।}
+::msgcat::mcset or {Nothing was generated or written.} {କିଛି ଜେନେରେଟ୍ କିମ୍ବା ଲେଖାଯାଇନାହିଁ।}
+::msgcat::mcset or {Nothing was prepared: the chosen repository already has these paths.} {କିଛି ପ୍ରସ୍ତୁତ ହେଲା ନାହିଁ: ବଛାଯାଇଥିବା ରିପୋଜିଟରୀରେ ଏହି ପଥଗୁଡ଼ିକ ଆଗରୁ ଅଛି।}
 ::msgcat::mcset or Notifications ବିଜ୍ଞପ୍ତି
 ::msgcat::mcset or OK ଠିକ୍
 ::msgcat::mcset or Off ବନ୍ଦ
 ::msgcat::mcset or On ଚାଲୁ
+::msgcat::mcset or {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {କେବଳ ସମୀକ୍ଷିତ ଏକ୍ସଟେନସନ ବଫର ପ୍ରତିସ୍ଥାପିତ ହେବ। ଏହି ପୂର୍ବାବଲୋକନ ପରେ ହୋଇଥିବା ପରିବର୍ତ୍ତନଗୁଡ଼ିକ ଠାରୁ ଫାଇଲଟି ଏବେ ବି ସୁରକ୍ଷିତ। କୌଣସି କମିଟ୍, ପୁଶ୍ କିମ୍ବା PR ହୁଏ ନାହିଁ।}
+::msgcat::mcset or {Only this new branch is committed. Your ambient git identity is used.} {କେବଳ ଏହି ନୂଆ ବ୍ରାଞ୍ଚ କମିଟ୍ କରାଯାଏ। ଆପଣଙ୍କ ବିଦ୍ୟମାନ git ପରିଚୟ ବ୍ୟବହାର ହୁଏ।}
 ::msgcat::mcset or Op {ଅପ୍ ଦିଅନ୍ତୁ}
 ::msgcat::mcset or Open ଖୋଲନ୍ତୁ
+::msgcat::mcset or {Open PR…} {PR ଖୋଲନ୍ତୁ…}
 ::msgcat::mcset or {Open a window} {ଏକ ୱିଣ୍ଡୋ ଖୋଲନ୍ତୁ}
 ::msgcat::mcset or {Open in Dev} {Dev ରେ ଖୋଲନ୍ତୁ}
 ::msgcat::mcset or {Open in browser} {ବ୍ରାଉଜରରେ ଖୋଲନ୍ତୁ}
 ::msgcat::mcset or {Open plugin} {ପ୍ଲଗିନ ଖୋଲନ୍ତୁ}
 ::msgcat::mcset or {Open terminal} {ଟର୍ମିନାଲ ଖୋଲନ୍ତୁ}
+::msgcat::mcset or {Open this pull request?} {ଏହି ପୁଲ୍ ରିକ୍ୱେଷ୍ଟ ଖୋଲିବେ?}
 ::msgcat::mcset or {Open veles in Android's settings} {Android ସେଟିଂରେ veles ଖୋଲନ୍ତୁ}
 ::msgcat::mcset or {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {ଐଚ୍ଛିକ: ଯୋଗ ଦେବାର IRC ନେଟୱର୍କ। ଚ୍ୟାନେଲଗୁଡ଼ିକୁ ସ୍ପେସ୍ କିମ୍ବା କମା ଦ୍ୱାରା ଅଲଗା କରି ତାଲିକାଭୁକ୍ତ କରନ୍ତୁ; .env ରେ IRC_CHANNELS ସେଟ୍ ଥିଲେ ଏହା ଏହି ତାଲିକାକୁ ବଦଳାଇଦେବ।}
 ::msgcat::mcset or {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {ଚୟନିତ କମ୍ପୋନେଣ୍ଟ ମାନିଫେଷ୍ଟରୁ ବିକଳ୍ପଗୁଡ଼ିକ ଆସେ। ଗୋପନ ଲାଗୁଥିବା କ୍ଷେତ୍ରଗୁଡ଼ିକ setup/ଭଲ୍ଟ ପ୍ରକ୍ରିୟାରେ ରୁହନ୍ତି। ଖାଲି କ୍ଷେତ୍ର ସେହି ବିକଳ୍ପକୁ ଅପରିବର୍ତ୍ତିତ ରଖେ।}
 ::msgcat::mcset or {Or paste a ticket signed on another device} {ଅଥବା ଅନ୍ୟ ଡିଭାଇସ୍‌ରେ ସାଇନ୍ ହୋଇଥିବା ଟିକେଟ୍ ପେଷ୍ଟ କରନ୍ତୁ}
 ::msgcat::mcset or {Or type an answer:} {କିମ୍ବା ଉତ୍ତର ଟାଇପ୍ କରନ୍ତୁ:}
+::msgcat::mcset or Origin {ମୂଳ ରିମୋଟ୍}
 ::msgcat::mcset or Other… ଅନ୍ୟ…
 ::msgcat::mcset or Outline ଆଉଟଲାଇନ
+::msgcat::mcset or Output ଆଉଟପୁଟ୍
 ::msgcat::mcset or {Override for THIS session (leave blank to inherit the default)} {ଏହି ଅଧିବେଶନ ପାଇଁ ଅଧିକ୍ରମଣ (ଡିଫଲ୍ଟ ଉତ୍ତରାଧିକାରୀ ହେବାକୁ ଖାଲି ଛାଡ଼ନ୍ତୁ)}
 ::msgcat::mcset or {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {ମାଲିକଙ୍କ ପରିଚୟ (telegram:123456, irc:account, କିମ୍ବା nick!user@host ମାସ୍କ)}
 ::msgcat::mcset or {PDS and handle domain} {PDS ଓ ହ୍ୟାଣ୍ଡଲ୍ ଡୋମେନ}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset or {Pause scheduler} {ସିଡ୍ୟୁଲର୍ ବିରାମ}
 ::msgcat::mcset or {Peek (C-c C-p)} {ଝଲକ (C-c C-p)}
 ::msgcat::mcset or {Peek definition} {ସଂଜ୍ଞା ଦେଖନ୍ତୁ}
+::msgcat::mcset or {Permission grants} {ଅନୁମତି ପ୍ରଦାନ}
+::msgcat::mcset or {Permission grants…} {ଅନୁମତି ପ୍ରଦାନ…}
 ::msgcat::mcset or Phone ଫୋନ୍
 ::msgcat::mcset or {Phone: permissions, battery, storage} {ଫୋନ୍: ଅନୁମତି, ବ୍ୟାଟେରୀ, ଷ୍ଟୋରେଜ୍}
 ::msgcat::mcset or {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {%s ତିଆରି ଫୋନଗୁଡ଼ିକ ନିଜେ ମଧ୍ୟ ଆପ୍ ବନ୍ଦ କରିଦିଅନ୍ତି। veles ର ଆପ୍ ସେଟିଂରେ ଏହାକୁ ନିଜେ ଆରମ୍ଭ ହେବାକୁ ଓ ପୃଷ୍ଠଭୂମିରେ ଚାଲିବାକୁ ଅନୁମତି ଦିଅନ୍ତୁ।}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset or Port ପୋର୍ଟ
 ::msgcat::mcset or {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {ପ୍ରିଫିକ୍ସ କର୍ଡ (C-x, M-o) ଆର୍ମ ହେବା ମାତ୍ରେ ଏକ which-key ପପ୍‌ଅପ୍ ଦେଖାଯାଏ।}
 ::msgcat::mcset or {Prepare an own vlpds PDS through the signed CLI handoff} {ସ୍ୱାକ୍ଷରିତ CLI ହ୍ୟାଣ୍ଡଅଫ୍ ମାଧ୍ୟମରେ ନିଜସ୍ୱ vlpds PDS ପ୍ରସ୍ତୁତ କରନ୍ତୁ}
+::msgcat::mcset or {Prepare branch…} {ବ୍ରାଞ୍ଚ ପ୍ରସ୍ତୁତ କରନ୍ତୁ…}
+::msgcat::mcset or {Prepare this branch and commit?} {ଏହି ବ୍ରାଞ୍ଚ ଓ କମିଟ୍ ପ୍ରସ୍ତୁତ କରିବେ?}
 ::msgcat::mcset or Preview ପ୍ରିଭ୍ୟୁ
+::msgcat::mcset or {Preview change set} {ପରିବର୍ତ୍ତନ ସେଟ୍ ପ୍ରିଭ୍ୟୁ କରନ୍ତୁ}
+::msgcat::mcset or {Preview files} {ଫାଇଲଗୁଡ଼ିକର ପୂର୍ବାବଲୋକନ କରନ୍ତୁ}
 ::msgcat::mcset or {Preview here} {ଏଠାରେ ପ୍ରିଭ୍ୟୁ}
 ::msgcat::mcset or {Preview pane} {ପ୍ରିଭ୍ୟୁ ପେନ୍}
+::msgcat::mcset or {Preview proposal} {ପ୍ରସ୍ତାବର ପୂର୍ବାବଲୋକନ କରନ୍ତୁ}
+::msgcat::mcset or {Preview the changed name or language before creating it.} {ଏହାକୁ ସୃଷ୍ଟି କରିବା ପୂର୍ବରୁ ପରିବର୍ତ୍ତିତ ନାମ କିମ୍ବା ଭାଷାର ପୂର୍ବାବଲୋକନ କରନ୍ତୁ।}
+::msgcat::mcset or Probe ପ୍ରୋବ୍
+::msgcat::mcset or {Probe of %1$s failed: %2$s} {%1$s ର ପ୍ରୋବ୍ ବିଫଳ: %2$s}
 ::msgcat::mcset or {Profile result} {ପ୍ରୋଫାଇଲ୍ ଫଳାଫଳ}
 ::msgcat::mcset or {Promote into config.toml} {config.toml ରେ ପ୍ରୋମୋଟ କରନ୍ତୁ}
 ::msgcat::mcset or Promote… ପ୍ରୋମୋଟ…
 ::msgcat::mcset or Provider ପ୍ରଦାତା
+::msgcat::mcset or {Provider driver (plugin wire only)} {ପ୍ରୋଭାଇଡର୍ ଡ୍ରାଇଭର (କେବଳ ପ୍ଲଗିନ୍ ୱାୟର)}
 ::msgcat::mcset or {Provider entry name} {ପ୍ରୋଭାଇଡର୍ ଏଣ୍ଟ୍ରି ନାମ}
 ::msgcat::mcset or {Provider for this session} {ଏହି ଅଧିବେଶନ ପାଇଁ ପ୍ରୋଭାଇଡର}
 ::msgcat::mcset or Providers ପ୍ରୋଭାଇଡର
 ::msgcat::mcset or {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {ପ୍ରୋଭାଇଡରଗୁଡ଼ିକ ଟେବୁଲର ତାଲିକା: custom_providers.0.base_url, .0.api_mode, .0.key_env … ନିମ୍ନରେ ଥିବା କ୍ରମରୁ ଇଣ୍ଡେକ୍ସ।}
 ::msgcat::mcset or {Public HTTPS URL} {ପ୍ରକାଶ୍ୟ HTTPS URL}
+::msgcat::mcset or {Pull request base} {ପୁଲ୍ ରିକ୍ୱେଷ୍ଟର ମୂଳ ବ୍ରାଞ୍ଚ}
+::msgcat::mcset or {Pull request created} {ପୁଲ୍ ରିକ୍ୱେଷ୍ଟ ସୃଷ୍ଟି ହୋଇଛି}
+::msgcat::mcset or {Pull request description} {ପୁଲ୍ ରିକ୍ୱେଷ୍ଟ ବର୍ଣ୍ଣନା}
+::msgcat::mcset or {Pull request opened.} {ପୁଲ୍ ରିକ୍ୱେଷ୍ଟ ଖୋଲାଯାଇଛି।}
+::msgcat::mcset or {Pull request repository} {ପୁଲ୍ ରିକ୍ୱେଷ୍ଟ ରିପୋଜିଟରୀ}
+::msgcat::mcset or {Pull request title} {ପୁଲ୍ ରିକ୍ୱେଷ୍ଟ ଶୀର୍ଷକ}
 ::msgcat::mcset or {Purge + delete files} {ପର୍ଜ + ଫାଇଲ ଡିଲିଟ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {Purge container} {କଣ୍ଟେନର ପର୍ଜ କରନ୍ତୁ}
+::msgcat::mcset or Purpose ଉଦ୍ଦେଶ୍ୟ
+::msgcat::mcset or Push ପୁଶ୍
+::msgcat::mcset or {Push branch…} {ବ୍ରାଞ୍ଚ ପୁଶ୍ କରନ୍ତୁ…}
+::msgcat::mcset or {Push complete. No pull request has been opened.} {ପୁଶ୍ ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି। କୌଣସି ପୁଲ୍ ରିକ୍ୱେଷ୍ଟ ଖୋଲାଯାଇନାହିଁ।}
+::msgcat::mcset or {Push this branch?} {ଏହି ବ୍ରାଞ୍ଚ ପୁଶ୍ କରିବେ?}
+::msgcat::mcset or {Push to %s:} {%s କୁ ପୁଶ୍ କରନ୍ତୁ:}
 ::msgcat::mcset or Question ପ୍ରଶ୍ନ
 ::msgcat::mcset or Questions ପ୍ରଶ୍ନଗୁଡ଼ିକ
 ::msgcat::mcset or Quit ବିଦାୟ
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset or {Reading notifications, for triggers} {ବିଜ୍ଞପ୍ତି ପଢ଼ିବା, ଟ୍ରିଗର୍ସ ପାଇଁ}
 ::msgcat::mcset or Reasoning ଯୁକ୍ତି
 ::msgcat::mcset or {Reasoning effort} {ଚିନ୍ତନ ପ୍ରୟାସ}
+::msgcat::mcset or {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {ଗ୍ରହଣ ହେଲା, ଆପ୍ଲାଏ ଅପେକ୍ଷାରେ: ଷ୍ଟୋର %1$s · ମେମରୀ %2$s · କନଫିଗ %3$s · ଭଲ୍ଟ %4$s}
+::msgcat::mcset or {Recommended checks} {ସୁପାରିଶିତ ଯାଞ୍ଚ}
 ::msgcat::mcset or {Refetch this transcript from the store} {ଏହି ଟ୍ରାନ୍ସକ୍ରିପ୍ଟ୍ ଷ୍ଟୋରରୁ ପୁଣି ଆଣନ୍ତୁ}
 ::msgcat::mcset or Refresh ରିଫ୍ରେସ
 ::msgcat::mcset or {Refresh preview} {ପ୍ରିଭ୍ୟୁ ରିଫ୍ରେସ୍ କର}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset or {Rename symbol} {ସଙ୍କେତର ନାମ ବଦଳାନ୍ତୁ}
 ::msgcat::mcset or Rename… {ନାମ ବଦଳାନ୍ତୁ…}
 ::msgcat::mcset or Rendered {ରେଣ୍ଡର ହୋଇଛି}
+::msgcat::mcset or {Replace existing repository files?} {ବିଦ୍ୟମାନ ରିପୋଜିଟରୀ ଫାଇଲ ବଦଳାଇବେ?}
+::msgcat::mcset or {Replace them in the new branch? Nothing else in the repository changes.} {ନୂଆ ବ୍ରାଞ୍ଚରେ ସେଗୁଡ଼ିକ ବଦଳାଇବେ? ରିପୋଜିଟରୀରେ ଆଉ କିଛି ବଦଳେ ନାହିଁ।}
 ::msgcat::mcset or Repository ରିପୋଜିଟରୀ
 ::msgcat::mcset or {Repository (owner/name)} {ରିପୋଜିଟରୀ (owner/name)}
+::msgcat::mcset or {Repository directory} {ରିପୋଜିଟରୀ ଡିରେକ୍ଟରୀ}
+::msgcat::mcset or {Repository paths} {ରିପୋଜିଟରୀ ପଥ}
+::msgcat::mcset or {Request a new preview before trying again.} {ପୁଣି ଚେଷ୍ଟା କରିବା ପୂର୍ବରୁ ଏକ ନୂଆ ପୂର୍ବାବଲୋକନ ମାଗନ୍ତୁ।}
 ::msgcat::mcset or {Reset to default} {ଡିଫଲ୍ଟକୁ ଫେରାନ୍ତୁ}
 ::msgcat::mcset or {Reset to template} {ଟେମ୍ପଲେଟକୁ ରିସେଟ କରନ୍ତୁ}
 ::msgcat::mcset or Restart ପୁନରାରମ୍ଭ
+::msgcat::mcset or {Restart + verify canary} {କାନାରୀ ରିଷ୍ଟାର୍ଟ + ଯାଞ୍ଚ କରନ୍ତୁ}
 ::msgcat::mcset or {Restore hidden windows} {ଲୁଚାଇଥିବା ୱିଣ୍ଡୋ ପୁନରୁଦ୍ଧାର କରନ୍ତୁ}
 ::msgcat::mcset or {Restore plugins to %s?} {ପ୍ଲଗିନଗୁଡ଼ିକୁ %s କୁ ପୁନରୁଦ୍ଧାର କରିବେ?}
 ::msgcat::mcset or {Restore revision r%1$s of %2$s?} {%2$s ର ସଂସ୍କରଣ r%1$s ପୁନରୁଦ୍ଧାର କରିବେ?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset or {Restore this commit} {ଏହି commit ପୁନରୁଦ୍ଧାର କରନ୍ତୁ}
 ::msgcat::mcset or {Restore this revision} {ଏହି ସଂସ୍କରଣ ପୁନରୁଦ୍ଧାର କରନ୍ତୁ}
 ::msgcat::mcset or {Resume scheduler} {ସିଡ୍ୟୁଲର୍ ପୁନରାରମ୍ଭ}
+::msgcat::mcset or {Resume unfinished operation} {ଅସମ୍ପୂର୍ଣ୍ଣ କାର୍ଯ୍ୟ ଜାରି ରଖନ୍ତୁ}
 ::msgcat::mcset or Revert ଫେରାନ୍ତୁ
 ::msgcat::mcset or {Revert %s to HEAD? Uncommitted changes in this file are lost.} {%s କୁ HEAD କୁ ଫେରାଇବେ? ଏହି ଫାଇଲରେ କରାଯାଇଥିବା କମିଟ୍ ନ ହୋଇଥିବା ପରିବର୍ତ୍ତନ ହଜିଯିବ।}
 ::msgcat::mcset or Revert… ଫେରାନ୍ତୁ…
 ::msgcat::mcset or Review ସମୀକ୍ଷା
 ::msgcat::mcset or {Review (git) pane} {Review (git) ପେନ୍}
+::msgcat::mcset or {Review deployment} {ଡିପ୍ଲୟମେଣ୍ଟ ସମୀକ୍ଷା କରନ୍ତୁ}
+::msgcat::mcset or {Review extension contribution} {ଏକ୍ସଟେନସନ ଅବଦାନ ସମୀକ୍ଷା କରନ୍ତୁ}
 ::msgcat::mcset or {Review managed local bundle…} {ପରିଚାଳିତ ସ୍ଥାନୀୟ ବଣ୍ଡଲ ସମୀକ୍ଷା କରନ୍ତୁ…}
 ::msgcat::mcset or {Review rollback} {ରୋଲବ୍ୟାକ୍ ସମୀକ୍ଷା କରନ୍ତୁ}
+::msgcat::mcset or {Review selected files} {ଚୟନିତ ଫାଇଲଗୁଡ଼ିକୁ ସମୀକ୍ଷା କରନ୍ତୁ}
 ::msgcat::mcset or {Review the component options on the summary screen before applying.} {ପ୍ରୟୋଗ ପୂର୍ବରୁ ସାରାଂଶ ସ୍କ୍ରିନରେ କମ୍ପୋନେଣ୍ଟ ବିକଳ୍ପ ସମୀକ୍ଷା କରନ୍ତୁ।}
 ::msgcat::mcset or {Review the component preview before applying. No component configuration has been written.} {ପ୍ରୟୋଗ ପୂର୍ବରୁ କମ୍ପୋନେଣ୍ଟ ପ୍ରିଭ୍ୟୁ ସମୀକ୍ଷା କରନ୍ତୁ। କୌଣସି କମ୍ପୋନେଣ୍ଟ କନଫିଗ ଲେଖାଯାଇ ନାହିଁ।}
+::msgcat::mcset or {Review the selected files and remove credential findings before preparing.} {ପ୍ରସ୍ତୁତ କରିବା ପୂର୍ବରୁ ଚୟନିତ ଫାଇଲଗୁଡ଼ିକୁ ସମୀକ୍ଷା କରନ୍ତୁ ଏବଂ ଚିହ୍ନଟ ହୋଇଥିବା ଗୋପନ ପ୍ରବେଶ ସୂଚନା କାଢ଼ି ଦିଅନ୍ତୁ।}
 ::msgcat::mcset or {Reviewed core bundle in the managed install-sources directory} {ନିୟନ୍ତ୍ରିତ ଇନ୍‌ଷ୍ଟଲ୍-ସୋର୍ସ ଡିରେକ୍ଟରୀରେ ଥିବା ପରୀକ୍ଷିତ କୋର୍ ବଣ୍ଡଲ୍}
+::msgcat::mcset or {Reviewed fleet deployment} {ସମୀକ୍ଷିତ ଫ୍ଲିଟ୍ ଡିପ୍ଲୟମେଣ୍ଟ}
 ::msgcat::mcset or {Reviewed local bundle} {ସମୀକ୍ଷିତ ସ୍ଥାନୀୟ ବଣ୍ଡଲ}
 ::msgcat::mcset or {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {ସମୀକ୍ଷିତ ସ୍ଥାନୀୟ ବଣ୍ଡଲ ଇନଷ୍ଟଲ ହେଲା। ଏହାର ସ୍ୱାକ୍ଷରିତ ଡାଉନ୍‌ଲୋଡ୍ ଯାଞ୍ଚ ହୋଇନାହିଁ। ନୂଆ କୋର୍ ବ୍ୟବହାର କରିବା ପୂର୍ବରୁ ରିଷ୍ଟାର୍ଟ ଆବଶ୍ୟକ।}
 ::msgcat::mcset or Revision ସଂସ୍କରଣ
 ::msgcat::mcset or Revoke {ଫେରାଇ ନିଅନ୍ତୁ}
+::msgcat::mcset or {Revoke selected} {ଚୟିତ ଫେରାଇ ନିଅନ୍ତୁ}
 ::msgcat::mcset or Roles ଭୂମିକା
 ::msgcat::mcset or {Roll back %1$s from %2$s to %3$s?} {%1$sକୁ %2$sରୁ %3$sକୁ ଫେରାଇବେ?}
+::msgcat::mcset or {Roll back selected target} {ଚୟିତ ଟାର୍ଗେଟ୍ ରୋଲବ୍ୟାକ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {Rollback completed. Reload the component or restart as requested by the report.} {ରୋଲବ୍ୟାକ୍ ସରିଲା। କମ୍ପୋନେଣ୍ଟ ରିଲୋଡ୍ କରନ୍ତୁ, କିମ୍ବା ରିପୋର୍ଟ ଚାହିଁଲେ ରିଷ୍ଟାର୍ଟ କରନ୍ତୁ।}
 ::msgcat::mcset or {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {ରୋଲବ୍ୟାକ୍ ସମୀକ୍ଷା ହେଲା। ପୁନଃସ୍ଥାପନ ନିଶ୍ଚିତ କରିବାକୁ Install selected component ବାଛନ୍ତୁ; ଏପର୍ଯ୍ୟନ୍ତ କିଛି ଫେରାଇ ଆଣାଯାଇନାହିଁ।}
 ::msgcat::mcset or Run ଚଲାନ୍ତୁ
 ::msgcat::mcset or {Run the wizard again} {ୱିଜାର୍ଡ ପୁଣି ଚଲାଅ}
 ::msgcat::mcset or {Running in the background} {ପୃଷ୍ଠଭୂମିରେ ଚାଲିବା}
-::msgcat::mcset or {Running tasks} {ଚାଲୁଥିବା କାର୍ଯ୍ୟ}
-::msgcat::mcset or {Running tasks (subagents, shells, monitors)} {ଚାଲୁଥିବା କାର୍ଯ୍ୟ (ସବ୍‌ଏଜେଣ୍ଟ, ଶେଲ୍, ମନିଟର)}
 ::msgcat::mcset or {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {ରନ୍‌ଟାଇମ ଅନୁମତି ଓ ଉପଭୋକ୍ତା ଷ୍ଟୋରରେ ରୁହନ୍ତି, ଏବଂ ଷ୍ଟୋର ରିସେଟ ସେଗୁଡ଼ିକୁ ନେଇଯାଏ। Promote ଷ୍ଟୋର ସ୍ଥିର କରିଥିବା ସେଗୁଡ଼ିକୁ config.toml ରେ ଯୋଡ଼େ — ଫାଇଲର ମନ୍ତବ୍ୟ ଓ କି କ୍ରମ ରଖାଯାଏ, ପାଖରେ ବ୍ୟାକଅପ ଲେଖାଯାଏ, ଷ୍ଟୋର କପି ହଟାଯାଏ — ଏବଂ ଫାଇଲରେ ଆଗରୁ ମତ ଥିଲେ ଅନୁମାନ କରିବା ବଦଳରେ ମନା କରେ।}
 ::msgcat::mcset or {S3 HTTPS endpoint} {S3 HTTPS ଏଣ୍ଡପଏଣ୍ଟ}
 ::msgcat::mcset or {S3 bucket} {S3 ବକେଟ}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset or {Save as default} {ଡିଫଲ୍ଟ ଭାବେ ସେଭ କରନ୍ତୁ}
 ::msgcat::mcset or {Save attachment as} {ଆଟାଚମେଣ୍ଟ ଏଠାରେ ସେଭ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {Save globally} {ସବୁଠାରେ ସେଭ କରନ୍ତୁ}
+::msgcat::mcset or {Save or revert the open buffer before applying a change set.} {ପରିବର୍ତ୍ତନ ସେଟ୍ ଲଗାଇବା ପୂର୍ବରୁ ଖୋଲା ବଫର ସେଭ୍ କରନ୍ତୁ କିମ୍ବା ଫେରାନ୍ତୁ।}
 ::msgcat::mcset or Scan {ସ୍କାନ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {ଏହି ଫୋନକୁ ନିମନ୍ତ୍ରଣ କରିଥିବା ମେସିନ୍‌ର veles କୋଡ୍ ସ୍କାନ୍ କରନ୍ତୁ। ଯଦି ଏହା ପ୍ରଥମେ ଏକ WireGuard କୋଡ୍ ଦେଖାଇଥିଲା, ତେବେ ଏହା ପୂର୍ବରୁ ତାହାକୁ WireGuard ଆପ୍ ଦ୍ୱାରା ସ୍କାନ୍ କରନ୍ତୁ।}
 ::msgcat::mcset or {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {ସମୟସୂଚୀ: ଏକ ବ୍ୟବଧାନ ("30m", "every 2h"), ଏକ cron ଢାଞ୍ଚା ("0 9 * * 1"), କିମ୍ବା ଏକଥର ପାଇଁ ଏକ ISO ସମୟମୁଦ୍ରା। ଉପର ଧାଡ଼ି ଦେଖାଏ ଇଞ୍ଜିନ ଏହାକୁ କ'ଣ ଭାବେ ପଢ଼େ। ବିତରଣ: "local" ଆଉଟପୁଟକୁ ଲଗ୍ରେ ରଖେ — ଡେସ୍କଟପ ପାଇଁ ଏକମାତ୍ର ସଚ୍ଚୋଟ ଡିଫଲ୍ଟ, ଯାହାର ପଛରେ କୌଣସି ଚାଟ ପ୍ଲାଟଫର୍ମ ନାହିଁ — କିମ୍ବା "platform:chat_id"। ଅଧିବେଶନ ଜାଗ୍ରତ: ନୂଆ ଅଧିବେଶନରେ ଚଲାଇବାକୁ ଖାଲି ଛାଡ଼ନ୍ତୁ; ସେହି ଅଧିବେଶନକୁ ପୂରା ଇତିହାସ ସହ ଜାରି ରଖିବାକୁ ଗୋଟିଏ session id (କିମ୍ବା ଅନନ୍ୟ ଉପସର୍ଗ) ଦିଅନ୍ତୁ — ବ୍ୟସ୍ତ ଅଧିବେଶନ ପ୍ରମ୍ପ୍ଟକୁ ତା'ର ପରବର୍ତ୍ତୀ ପାଳି ସୀମାରେ ନେବ।}
+::msgcat::mcset or Scope ପରିସର
 ::msgcat::mcset or {Scroll to end} {ଶେଷ ପର୍ଯ୍ୟନ୍ତ ସ୍କ୍ରୋଲ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {Search commands and sessions…} {କମାଣ୍ଡ ଓ ସେସନ ଖୋଜନ୍ତୁ…}
 ::msgcat::mcset or {Search message text} {ମେସେଜ୍ ଲେଖା ଖୋଜନ୍ତୁ}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset or Section ବିଭାଗ
 ::msgcat::mcset or {Select a component first. No component options will be changed if you skip this step.} {ପ୍ରଥମେ ଏକ କମ୍ପୋନେଣ୍ଟ ବାଛନ୍ତୁ। ଏହି ପଦକ୍ଷେପ ଛାଡ଼ିଲେ କୌଣସି କମ୍ପୋନେଣ୍ଟ ବିକଳ୍ପ ବଦଳିବ ନାହିଁ।}
 ::msgcat::mcset or {Select all} {ସବୁ ବାଛନ୍ତୁ}
+::msgcat::mcset or {Select all extensions} {ସବୁ ଏକ୍ସଟେନସନ ଚୟନ କରନ୍ତୁ}
+::msgcat::mcset or {Select at least one source file.} {ଅତି କମରେ ଗୋଟିଏ ସୋର୍ସ ଫାଇଲ ବାଛନ୍ତୁ।}
+::msgcat::mcset or {Select none} {କିଛି ଚୟନ କରନ୍ତୁ ନାହିଁ}
+::msgcat::mcset or {Select text to translate first.} {ଅନୁବାଦ କରିବା ପାଇଁ ପ୍ରଥମେ ଟେକ୍ସଟ ଚୟନ କରନ୍ତୁ।}
+::msgcat::mcset or {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {ଯୋଗଦାନ କରିବାକୁ ଏକ୍ସଟେନସନ ଓ ଫାଇଲ ଚୟନ କରନ୍ତୁ। ସେଗୁଡ଼ିକ ଏକ ବ୍ରାଞ୍ଚ ଓ ଏକ ପୁଲ୍ ରିକ୍ୱେଷ୍ଟରେ ଯାଏ, ପ୍ରତ୍ୟେକ ଏକ୍ସଟେନସନ ନିଜ ଡିରେକ୍ଟରୀରେ। ସମୀକ୍ଷା କରନ୍ତୁ, ଅଣ-ମୂଲ୍ୟାଙ୍କନକାରୀ ଯାଞ୍ଚ ଚଲାନ୍ତୁ, ତା'ପରେ ଏକ ପୃଥକ୍ ବ୍ରାଞ୍ଚ ପ୍ରସ୍ତୁତ କରି କମିଟ୍ କରନ୍ତୁ। ପୁଶ୍ ଓ ପୁଲ୍ ରିକ୍ୱେଷ୍ଟ ସୃଷ୍ଟି ଅଲଗା ଅଲଗା ନିଶ୍ଚିତ କରାଯାଉଥିବା କାର୍ଯ୍ୟ।}
 ::msgcat::mcset or Send ପଠାଅ
+::msgcat::mcset or {Send %s to the peer?} {%s କୁ ପିଅର୍ ପାଖକୁ ପଠାଇବେ?}
 ::msgcat::mcset or {Send a %d-line message to the channel?} {%d ଧାଡ଼ିର ବାର୍ତ୍ତା ଚ୍ୟାନେଲକୁ ପଠାଇବେ?}
 ::msgcat::mcset or {Send raw line to the server? (%s)} {କଞ୍ଚା ଲାଇନ୍ ସର୍ଭରକୁ ପଠାଇବେ? (%s)}
 ::msgcat::mcset or {Server (empty = no IRC)} {ସର୍ଭର (ଖାଲି = IRC ନାହିଁ)}
 ::msgcat::mcset or {Server: gateway configuration and a reviewed user unit} {ସର୍ଭର: ଗେଟୱେ କନଫିଗରେସନ୍ ଓ ଏକ ପରୀକ୍ଷିତ ୟୁଜର ୟୁନିଟ୍}
 ::msgcat::mcset or {Server: install a user unit and prepare the separate linger handoff} {ସର୍ଭର: ୟୁଜର ୟୁନିଟ୍ ଇନ୍‌ଷ୍ଟଲ୍ କରନ୍ତୁ ଓ ଅଲଗା linger ହସ୍ତାନ୍ତର ପ୍ରସ୍ତୁତ କରନ୍ତୁ}
 ::msgcat::mcset or {Server: use a system service and prepare a privileged CLI request} {ସର୍ଭର: ଏକ ସିଷ୍ଟମ ସର୍ଭିସ ବ୍ୟବହାର କରନ୍ତୁ ଓ ଆଡମିନ୍ ଅଧିକାରଯୁକ୍ତ CLI ଅନୁରୋଧ ପ୍ରସ୍ତୁତ କରନ୍ତୁ}
+::msgcat::mcset or Session ସେସନ
 ::msgcat::mcset or {Session id} {ସେସନ୍ ଆଇଡି}
 ::msgcat::mcset or {Session id…} {ସେସନ୍ ଆଇଡି…}
 ::msgcat::mcset or Sessions ସେସନଗୁଡ଼ିକ
 ::msgcat::mcset or {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {ଏହି ଆଲିଅସ୍ରେ ଓଭରରାଇଡ୍ ହୋଇଥିବା ସେସନ୍ଗୁଡ଼ିକ ନିଜେ ସ୍ଥିର ହୋଇଥିବା ରୁଟ୍ ରଖନ୍ତି; ନୂଆ ଓଭରରାଇଡ୍ ଏହି ନାମ ପାଇବ ନାହିଁ।}
+::msgcat::mcset or {Sessions served} {ପରିବେଷିତ ସେସନ}
 ::msgcat::mcset or Set {ସେଟ୍ କର}
 ::msgcat::mcset or {Set [model] provider/default in config.toml.} {config.tomlରେ [model] provider/default ସେଟ୍ କର।}
 ::msgcat::mcset or {Set as swap target} {ବଦଳ ଭାଷା କର}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset or {Setup — summary} {ସେଟଅପ୍ — ସାରାଂଶ}
 ::msgcat::mcset or {Setup — welcome} {ସେଟଅପ୍ — ସ୍ବାଗତ}
 ::msgcat::mcset or {Shared container network} {ସେୟାର୍ଡ କଣ୍ଟେନର ନେଟୱାର୍କ}
+::msgcat::mcset or Shells ସେଲ୍
+::msgcat::mcset or {Shells and monitors} {ସେଲ୍ ଓ ମନିଟର}
+::msgcat::mcset or {Shells and monitors (subagents, shells, monitors)} {ସେଲ୍ ଓ ମନିଟର (ସବ୍-ଏଜେଣ୍ଟ, ସେଲ୍, ମନିଟର)}
 ::msgcat::mcset or {Show diff} {ଡିଫ୍ ଦେଖାନ୍ତୁ}
 ::msgcat::mcset or {Show every key} {ସବୁ କି ଦେଖାନ୍ତୁ}
 ::msgcat::mcset or Sign {ସାଇନ୍ କରନ୍ତୁ}
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset or Solved {ସମାଧାନ ହୋଇଗଲା}
 ::msgcat::mcset or Source ଉତ୍ସ
 ::msgcat::mcset or {Source commit} {ସୋର୍ସ କମିଟ୍}
+::msgcat::mcset or {Source text} {ମୂଳ ପାଠ୍ୟ}
 ::msgcat::mcset or {Source→app (C-c C-c)} {Source→app (C-c C-c)}
 ::msgcat::mcset or Stage {ଷ୍ଟେଜ୍ କର}
+::msgcat::mcset or {Stage canary} {କାନାରୀ ଷ୍ଟେଜ୍ କରନ୍ତୁ}
+::msgcat::mcset or Stale ପୁରୁଣା
+::msgcat::mcset or {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {ସ୍ଥାୟୀ ଅନୁମତି ପରବର୍ତ୍ତୀ ଟୁଲ୍ କଲ୍‌କୁ ଆଉ ଥରେ ନ ପଚାରି ସମ୍ମତି ଦିଏ। ସେସନ ଅନୁମତି ସବୁ ସର୍ଫେସ୍ (desktop, Telegram, IRC, …) ର ଚାଲୁଥିବା ସେସନ ପାଖରେ ରହେ; ଗ୍ଲୋବାଲ ଅନୁମତି ସ୍ଥାୟୀ ରହେ; config.toml ର [approvals] allowlist ଏଣ୍ଟ୍ରିଗୁଡ଼ିକ କେବଳ-ପଠନୀୟ ଭାବେ ଦେଖାଯାଏ। ଗୋଟିଏ ଫେରାଇ ନେଲେ ଅନ୍ୟ ଅନୁମତି କେବେ ବଦଳେ ନାହିଁ।}
 ::msgcat::mcset or Start ଆରମ୍ଭ
+::msgcat::mcset or {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {ଆପଣଙ୍କ ଉପଭୋକ୍ତା ପ୍ଲଗିନ୍ ଡିରେକ୍ଟରୀରେ ଥିବା ଏକ ଏକ୍ସଟେନସନରୁ ଆରମ୍ଭ କରନ୍ତୁ। ଅପଗ୍ରେଡ୍ ପରେ ବି ଏହା ରହେ ଏବଂ ଗେଟୱେ ପୁଣି ବିଲ୍ଡ୍ କରିବାର ଆବଶ୍ୟକ ହୁଏ ନାହିଁ। ଲେଖିବା ପୂର୍ବରୁ ନୂଆ ଏକ୍ସଟେନସନ ପ୍ରକୃତ ମାନିଫେଷ୍ଟ ଓ ସୋର୍ସର ପୂର୍ବାବଲୋକନ କରାଏ। ସମର୍ଥିତ ଭାଷା ଓ API ସଂସ୍କରଣ ବାଛନ୍ତୁ, ଫାଇଲଗୁଡ଼ିକୁ ସମୀକ୍ଷା କରନ୍ତୁ, ତାପରେ ଏକ୍ସଟେନସନକୁ ସ୍ୱତନ୍ତ୍ର ଭାବେ ପରୀକ୍ଷା କରନ୍ତୁ।}
 ::msgcat::mcset or {Start with the phone} {ଫୋନ୍ ସହ ଆରମ୍ଭ ହେବା}
+::msgcat::mcset or {Static IP} {ସ୍ଥିର IP}
 ::msgcat::mcset or Status ଅବସ୍ଥା
 ::msgcat::mcset or Steer ଷ୍ଟିଅର୍
 ::msgcat::mcset or {Step %1$d of %2$d} {ପଦକ୍ଷେପ %1$d / %2$d}
 ::msgcat::mcset or {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {ଏବେ ବି ସେଟ୍ କରିବାକୁ ବାକି: %s — ଏଠାରେ /secret set NAME ଟାଇପ୍ କରନ୍ତୁ, କିମ୍ବା ଗେଟୱେର ମେସିନରେ veles secret set NAME ଚଲାନ୍ତୁ।}
 ::msgcat::mcset or Stop {ବନ୍ଦ କର}
 ::msgcat::mcset or {Storage root} {ଷ୍ଟୋରେଜ୍ ରୁଟ୍}
+::msgcat::mcset or Store ଷ୍ଟୋର
 ::msgcat::mcset or {Store a secret: %s} {ଗୋପନ କଥା ରଖନ୍ତୁ: %s}
 ::msgcat::mcset or {Store it} ରଖନ୍ତୁ
+::msgcat::mcset or {Store replica} {ଷ୍ଟୋର ରେପ୍ଲିକା}
 ::msgcat::mcset or Subagents ସବ୍‌ଏଜେଣ୍ଟ
 ::msgcat::mcset or {Subagents (/agents)} {ସବ୍‌ଏଜେଣ୍ଟ (/agents)}
 ::msgcat::mcset or Summary ସାରାଂଶ
+::msgcat::mcset or Surface ସର୍ଫେସ୍
 ::msgcat::mcset or {Swap ⇄} {ବଦଳ ⇄}
+::msgcat::mcset or {Sync cancelled.} {ସିଙ୍କ୍ ବାତିଲ୍ ହେଲା।}
+::msgcat::mcset or {Sync complete.} {ସିଙ୍କ୍ ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି।}
+::msgcat::mcset or {Sync now} {ଏବେ ସିଙ୍କ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {TOML copied — paste it into config.toml} {TOML କପି ହେଲା — config.tomlରେ ପେଷ୍ଟ କର}
 ::msgcat::mcset or Tag ଟ୍ୟାଗ୍
 ::msgcat::mcset or {Tap a link to open it, or a block's header to open or close the block.} {ଲିଙ୍କ ଖୋଲିବାକୁ ସେଥିରେ ଟ୍ୟାପ୍ କରନ୍ତୁ, କିମ୍ବା ବ୍ଲକ୍ ଖୋଲିବା ବା ବନ୍ଦ କରିବାକୁ ତାହାର ଶୀର୍ଷକରେ ଟ୍ୟାପ୍ କରନ୍ତୁ।}
 ::msgcat::mcset or {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {ଟାଇପ୍ କରିବାକୁ ତଳ ବାକ୍ସରେ ଟ୍ୟାପ୍ କରନ୍ତୁ। ପଠାଅ ପଠାଏ, ବନ୍ଦ କର ଟର୍ନ ଶେଷ କରେ, ଏବଂ ଅଲଗା କରନ୍ତୁ ଚାଲୁଥିବା କମାଣ୍ଡକୁ ପୃଷ୍ଠଭୂମିକୁ ଘୁଞ୍ଚାଏ।}
 ::msgcat::mcset or {Tap the text to clear the selection.} {ଚୟନ ହଟାଇବାକୁ ଲେଖାରେ ଟ୍ୟାପ୍ କରନ୍ତୁ।}
+::msgcat::mcset or {Target language:} {ଲକ୍ଷ୍ୟ ଭାଷା:}
+::msgcat::mcset or {Target node IDs (canary first, comma separated)} {ଟାର୍ଗେଟ୍ ନୋଡ୍ ଆଇଡି (ପ୍ରଥମେ କାନାରୀ, କମା ଦ୍ୱାରା ଅଲଗା)}
 ::msgcat::mcset or {Task list} {କାର୍ଯ୍ୟ ତାଲିକା}
 ::msgcat::mcset or {Task list (right pane)} {କାର୍ଯ୍ୟ ତାଲିକା (ଡାହାଣ ପେନ୍)}
 ::msgcat::mcset or Tasks କାର୍ଯ୍ୟ
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset or {That is not a ticket.} {ଏହା ଟିକେଟ୍ ନୁହେଁ।}
 ::msgcat::mcset or {That is not a veles pool code.} {ତାହା veles ଦଳର କୋଡ୍ ନୁହେଁ।}
 ::msgcat::mcset or {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {ତାହା WireGuard କୋଡ୍: ଏହାକୁ WireGuard ଆପ୍ ଦ୍ୱାରା ସ୍କାନ୍ କରନ୍ତୁ। veles କୋଡ୍ ଦ୍ୱିତୀୟଟି।}
+::msgcat::mcset or {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {ସମୀକ୍ଷିତ %d ଫାଇଲ ଆପଣଙ୍କ ୟୁଜର ପ୍ଲଗିନ ଡିରେକ୍ଟରୀରେ ଏକ ନୂଆ ଡିରେକ୍ଟରୀକୁ ଲେଖାଯିବ, ଏବଂ veles ଏକ୍ସଟେନସନ ଲୋଡ୍ କରିବାକୁ ଚେଷ୍ଟା କରେ। ପ୍ରିଭ୍ୟୁ ପରଠାରୁ ସେହି ନାମର ଏକ ଡିରେକ୍ଟରୀ ଦେଖାଗଲେ କିଛି ଲେଖାଯାଏ ନାହିଁ। ପ୍ରକାଶନ ଏହି କାର୍ଯ୍ୟର ଅଂଶ ନୁହେଁ।}
 ::msgcat::mcset or {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {Dev ପେନ୍‌ର REPL ଲାଇଭ୍ ଆପରେ ମୂଲ୍ୟାଙ୍କନ କରେ — UI ନିଜେ ଏକ lisp ଅଟେ।}
 ::msgcat::mcset or {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {[mcp_servers.<name>] ଟେବୁଲ୍ config.tomlରୁ ବିଲୋପ ହେଲା। ପୂର୍ବ ଫାଇଲ୍ config.toml.bak ଭାବେ ରଖାଯାଇଛି।}
 ::msgcat::mcset or {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {ଆଡାପ୍ଟର୍ ଅନୁମତି ତାଲିକା (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) ହେଉଛି ବିଶ୍ୱାସ ସୀମା, ଏବଂ ପ୍ରତ୍ୟେକ ଅନୁମତିପ୍ରାପ୍ତ ପ୍ରେରକ owner ଭାବେ ଗଣାଯାଏ। ଏହା ACL ପୂର୍ବର ସ୍ଥିତି।}
 ::msgcat::mcset or {The agent asks for a secret: %s} {ଏଜେଣ୍ଟ ଏକ ଗୋପନ କଥା ମାଗୁଛି: %s}
+::msgcat::mcset or {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {ଆଗରୁ ପୁଶ୍ ହୋଇଥିବା ବ୍ରାଞ୍ଚ PR ହେଡ୍ ଭାବେ ବ୍ୟବହାର ହେବ। ଆପଣଙ୍କ ଫୋର୍କର ବ୍ରାଞ୍ଚ ସ୍ୱୟଂଚାଳିତ ଭାବେ owner:branch ନାମ ପାଏ।}
+::msgcat::mcset or {The author asks} {ଲେଖକ ପଚାରୁଛନ୍ତି}
+::msgcat::mcset or {The buffer changed. Request a new proposal before applying.} {ବଫର ପରିବର୍ତ୍ତିତ ହୋଇଛି। ଲାଗୁ କରିବା ପୂର୍ବରୁ ଏକ ନୂଆ ପ୍ରସ୍ତାବ ମାଗନ୍ତୁ।}
 ::msgcat::mcset or {The bundle operation returned an invalid result. Verify the installation before retrying.} {ବଣ୍ଡଲ କାର୍ଯ୍ୟରୁ ଅବୈଧ ଫଳ ମିଳିଲା। ପୁଣି ଚେଷ୍ଟା କରିବା ପୂର୍ବରୁ ଇନଷ୍ଟଲ ଯାଞ୍ଚ କରନ୍ତୁ।}
 ::msgcat::mcset or {The bundle preview was malformed; nothing was installed.} {ବଣ୍ଡଲ ପ୍ରିଭ୍ୟୁ ବ୍ୟାକ୍ରଣଗତ ଭୁଲ୍ ଥିଲା; କିଛି ଇନଷ୍ଟଲ ହେଲା ନାହିଁ।}
 ::msgcat::mcset or {The camera did not open; paste the code instead.} {କ୍ୟାମେରା ଖୋଲିଲା ନାହିଁ; ବଦଳରେ କୋଡ୍ ପେଷ୍ଟ କରନ୍ତୁ।}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset or {The component manifest is still loading. Wait for it or choose another component.} {କମ୍ପୋନେଣ୍ଟ ମାନିଫେଷ୍ଟ ତଥାପି ଲୋଡ୍ ହେଉଛି। ଏହା ପାଇଁ ଅପେକ୍ଷା କରନ୍ତୁ କିମ୍ବା ଅନ୍ୟ ଏକ କମ୍ପୋନେଣ୍ଟ ବାଛନ୍ତୁ।}
 ::msgcat::mcset or {The component preview is not ready yet. Refresh it and review the result before applying.} {କମ୍ପୋନେଣ୍ଟ ପ୍ରିଭ୍ୟୁ ଏବେ ପ୍ରସ୍ତୁତ ନାହିଁ। ପ୍ରୟୋଗ ପୂର୍ବରୁ ଏହାକୁ ରିଫ୍ରେସ୍ କରି ଫଳାଫଳ ସମୀକ୍ଷା କରନ୍ତୁ।}
 ::msgcat::mcset or {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {କମ୍ପୋନେଣ୍ଟ ପ୍ରିଭ୍ୟୁ ତଥାପି ଲୋଡ୍ ହେଉଛି। ମିଳିତ ପରିବର୍ତ୍ତନ ସମୀକ୍ଷା କରିବା ପୂର୍ବରୁ ଉତ୍ତର ପାଇଁ ଅପେକ୍ଷା କରନ୍ତୁ।}
+::msgcat::mcset or {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {ବର୍ତ୍ତମାନର ଡାଇଗ୍ନୋଷ୍ଟିକ୍ସ (ଭାଷା ସର୍ଭର କିମ୍ବା Check ରୁ) ଏହି ଫାଇଲ ସହ ପଠାଯାଏ। ଇଚ୍ଛା ହେଲେ ଏକ ପ୍ରଶ୍ନ ଯୋଡ଼ନ୍ତୁ। ଉତ୍ତର କେବଳ ଟେକ୍ସଟ; କିଛି ଲେଖାଯାଇପାରିବ ନାହିଁ।}
 ::msgcat::mcset or {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {ଡିରେକ୍ଟରି ଓ ତା'ର ସବୁ ବିଲୋପ ହେବ। ଏହାକୁ ପୂର୍ବବତ୍ କରାଯାଇ ପାରିବ ନାହିଁ — କେବଳ ପ୍ରମ୍ପ୍ଟରୁ ବାହାର କରିବାକୁ ହେଲେ ବନ୍ଦ କରିଦିଅ।}
 ::msgcat::mcset or {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {ଡିରେକ୍ଟରି ବିଲୋପ ହେଲା। ପ୍ଲଗିନ୍ ଫୋଲ୍ଡର୍ ଏକ git ରିପୋଜିଟରି, ପ୍ରଥମେ ସ୍ନାପସଟ୍ କମିଟ୍ ହୁଏ, ତେଣୁ History… ଏହାକୁ ଫେରାଇ ଆଣିପାରିବ।}
+::msgcat::mcset or {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {ଏଡିଟର ଗେଟୱେ ଫାଇଲ ଖୋଲେ, ଦୂର ଇନଷ୍ଟାନ୍ସ ସହିତ, ଏବଂ ଗେଟୱେରେ ଫାଇଲର ଭାଷା ପାଇଁ ଭାଷା ସର୍ଭର ଚଲାଏ: tcl-lsp, typescript-language-server (TypeScript ଓ JavaScript), rust-analyzer (ଏକ Rust ପ୍ଲଗିନ କ୍ରେଟ୍ କିମ୍ବା ମଡ୍ୟୁଲ), clangd (C), racket-langserver ଏବଂ ଏକ Common Lisp ସର୍ଭର। ଗେଟୱେରେ ଯେଉଁ ଭାଷା ପାଇଁ ସର୍ଭର ଅଛି ସେହି ସବୁ ପାଇଁ ହୋଭର, ପରିଭାଷାକୁ ଯିବା, ସମ୍ପୂରଣ ଓ ଲାଇଭ୍ ଡାଇଗ୍ନୋଷ୍ଟିକ୍ସ କାମ କରେ; ନଥିଲେ ଏଡିଟର ସେଠାରେ କେଉଁ ପ୍ରୋଗ୍ରାମ ଇନଷ୍ଟଲ୍ କରିବାକୁ କହେ ଏବଂ ସିନ୍ଟାକ୍ସ ହାଇଲାଇଟିଂ ରଖେ। Check ଗେଟୱେରେ ମେଳ ଖାଉଥିବା ଚେକର ଚଲାଏ: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, କିମ୍ବା Racket ଓ Lisp ରିଡର। ସ୍ଥାନୀୟ ସ୍ଥିତି ପ୍ରକାଶ ନ କରି ସେଭ୍ କରନ୍ତୁ, Manage extensions ରେ ରିଲୋଡ୍ କରନ୍ତୁ, ଏବଂ ଏକ୍ସଟେନସନ ପରୀକ୍ଷା କରନ୍ତୁ।}
 ::msgcat::mcset or {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {ପ୍ରଥମ ହ୍ୟାଣ୍ଡଅଫ୍ ଗୋପନ ଚାବି, ସ୍ଥିର କରାଥିବା ଇମେଜ ଓ ରନ୍‌ଟାଇମ ଫାଇଲ ପ୍ରସ୍ତୁତ କରେ, କିନ୍ତୁ PDS ଆରମ୍ଭ କରେ ନାହିଁ। KEK ଓ PLC ରୋଟେସନ୍ ଚାବିର ଅଫ୍‌ଲାଇନ୍ ବ୍ୟାକଅପ୍ ନିଅନ୍ତୁ, ତା'ପରେ "ବ୍ୟାକଅପ୍ ନେଇଛି" ବୋଲି ସ୍ୱୀକାର କରି ନୂଆ କରି ସମୀକ୍ଷିତ ଅନୁରୋଧ କରି HTTP-01 TLS ଓ ସକ୍ରିୟକରଣ ସଜାଡ଼ନ୍ତୁ। DNS ରେକର୍ଡ ସିଧା ଏହି ହୋଷ୍ଟକୁ ଦେଖାଇବାକୁ ହେବ; veles କୌଣସି CDN ପ୍ରକ୍ସି ବା DNS ପରିବର୍ତ୍ତନ କରେ ନାହିଁ।}
+::msgcat::mcset or {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {ଏକ୍ସଟେନସନ ଜେନେରେଟ୍ ହେବା ପରଠାରୁ ଫର୍ମ ବଦଳିଛି। ପୁଣି ଜେନେରେଟ୍ କରନ୍ତୁ, କିମ୍ବା ସାଧାରଣ ସ୍କାଫୋଲ୍ଡ ପ୍ରିଭ୍ୟୁ କରନ୍ତୁ।}
 ::msgcat::mcset or {The gateway itself is untouched.} {ଗେଟୱେ ନିଜେ ଅପରିବର୍ତ୍ତିତ।}
 ::msgcat::mcset or {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {ଗେଟୱେ କନଫିଗ୍ ପୁଣି ଲୋଡ୍ କଲା, ତେଣୁ ନୂଆ ସେସନଗୁଡ଼ିକ ଏବେଠାରୁ ଏହାକୁ ବ୍ୟବହାର କରନ୍ତି, ଏବଂ ଭଲ୍ଟରେ ରଖାଯାଇଥିବା key ପରବର୍ତ୍ତୀ ଅନୁରୋଧରେ ବ୍ୟବହୃତ ହେବ। Telegram ଏବଂ IRC ଗେଟୱେର ପରବର୍ତ୍ତୀ ରିଷ୍ଟାର୍ଟରେ ଆରମ୍ଭ ହେବ: veles gateway restart।}
 ::msgcat::mcset or {The installed component no longer matches the selected manifest. Review the component list again.} {ଇନଷ୍ଟଲ ହୋଇଥିବା କମ୍ପୋନେଣ୍ଟ ଚୟନିତ ମାନିଫେଷ୍ଟ ସହ ଆଉ ମେଳ ଖାଏ ନାହିଁ। କମ୍ପୋନେଣ୍ଟ ତାଲିକା ପୁଣି ସମୀକ୍ଷା କରନ୍ତୁ।}
 ::msgcat::mcset or {The installer preview has no verification signatures; apply is disabled.} {ଇନଷ୍ଟଲର ପ୍ରିଭ୍ୟୁରେ କୌଣସି ଯାଞ୍ଚ ସ୍ୱାକ୍ଷର ନାହିଁ; ପ୍ରୟୋଗ ଅଚଳ।}
 ::msgcat::mcset or {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {କାର୍ଯ୍ୟ ଓ ତା'ର ରନ୍ ଇତିହାସ ବିଲୋପ ହେବ। ଏହାକୁ ପୂର୍ବବତ୍ କରାଯାଇ ପାରିବ ନାହିଁ — କେବଳ ବନ୍ଦ କରିବାକୁ ଚାହିଁଲେ ବିରାମ ଦିଅ।}
+::msgcat::mcset or {The log could not be read: %s} {ଲଗ୍ ପଢ଼ାଯାଇପାରିଲା ନାହିଁ: %s}
 ::msgcat::mcset or {The manifest belongs to another component; its reply was discarded.} {ମାନିଫେଷ୍ଟ ଅନ୍ୟ ଏକ କମ୍ପୋନେଣ୍ଟର ଅଟେ; ଏହାର ଉତ୍ତର ବାତିଲ ହେଲା।}
 ::msgcat::mcset or {The profile changed. Review the fresh plan before applying it.} {ପ୍ରୋଫାଇଲ୍ ବଦଳିଯାଇଛି। ପ୍ରୟୋଗ କରିବା ପୂର୍ବରୁ ନୂଆ ଯୋଜନାଟି ସମୀକ୍ଷା କରନ୍ତୁ।}
 ::msgcat::mcset or {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {ରିପୋଜିଟରିର ମୂଳରେ କିମ୍ବା ଗୋଟିଏ ବର୍ଗ ଭିତରେ SKILL.md ଦରକାର। ଏହା %s ରେ ରଖାଯିବ।}
 ::msgcat::mcset or {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {ରିପୋଜିଟରି ମୂଳରେ plugin.toml ଥିବା ଆବଶ୍ୟକ। ମାନିଫେଷ୍ଟ୍ ନାମରେ ଏହା %s ରେ କ୍ଲୋନ୍ ହେବ।}
+::msgcat::mcset or {The reviewed change set was applied (%d files). Review and test it before publishing.} {ସମୀକ୍ଷିତ ପରିବର୍ତ୍ତନ ସେଟ୍ ଲାଗୁ ହେଲା (%d ଫାଇଲ)। ପ୍ରକାଶ କରିବା ପୂର୍ବରୁ ଏହା ସମୀକ୍ଷା ଓ ପରୀକ୍ଷା କରନ୍ତୁ।}
 ::msgcat::mcset or {The reviewed configuration snapshot will also be restored.} {ସମୀକ୍ଷିତ କନଫିଗ ସ୍ନାପଶଟ୍ ମଧ୍ୟ ଫେରାଇ ଆଣାଯିବ।}
+::msgcat::mcset or {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {ସମୀକ୍ଷିତ ଫାଇଲଗୁଡ଼ିକୁ ଆପଣଙ୍କ ଉପଭୋକ୍ତା ପ୍ଲଗିନ୍ ଡିରେକ୍ଟରୀରେ ଲେଖାଯିବ। veles ଏକ ସ୍ଥାନୀୟ ପୁନରୁଦ୍ଧାର ସ୍ନାପସଟ୍ ସଞ୍ଚୟ କରେ ଏବଂ ଏକ୍ସଟେନସନ ପୁଣି ଲୋଡ୍ କରିବାକୁ ଚେଷ୍ଟା କରେ; ପ୍ରକାଶନ ଏହି କାର୍ଯ୍ୟର ଅଂଶ ନୁହେଁ।}
+::msgcat::mcset or {The reviewed proposal was applied locally. Review and test it before publishing.} {ସମୀକ୍ଷିତ ପ୍ରସ୍ତାବ ସ୍ଥାନୀୟ ଭାବେ ଲାଗୁ କରାଯାଇଛି। ପ୍ରକାଶନ ପୂର୍ବରୁ ଏହାକୁ ସମୀକ୍ଷା ଓ ପରୀକ୍ଷା କରନ୍ତୁ।}
 ::msgcat::mcset or {The rollback preview was malformed or named another component; nothing was restored.} {ରୋଲବ୍ୟାକ୍ ପ୍ରିଭ୍ୟୁ ବ୍ୟାକ୍ରଣଗତ ଭୁଲ୍ ଥିଲା କିମ୍ବା ଅନ୍ୟ କମ୍ପୋନେଣ୍ଟର ନାମ ନେଇଥିଲା; କିଛି ଫେରାଇ ଆଣାଯାଇନାହିଁ।}
 ::msgcat::mcset or {The rollback returned an invalid result. Verify the installation before retrying.} {ରୋଲବ୍ୟାକ୍‌ରୁ ଅବୈଧ ଫଳ ମିଳିଲା। ପୁଣି ଚେଷ୍ଟା କରିବା ପୂର୍ବରୁ ଇନଷ୍ଟଲ ଯାଞ୍ଚ କରନ୍ତୁ।}
 ::msgcat::mcset or {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {ନୂଆ ସେସନ୍ ଯେଉଁ ରୁଟରେ ଆରମ୍ଭ ହୁଅନ୍ତି। /model ଓ ମଡେଲ୍ ଓଭରଲେ ପରେ ଏହାକୁ ବଦଳାନ୍ତି — ପ୍ରତି ସେସନ୍ ପାଇଁ କିମ୍ବା ନୂଆ ଡିଫଲ୍ଟ ଭାବେ।}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset or {The signed download discard returned an invalid response; no installation was requested.} {ସ୍ୱାକ୍ଷରିତ ଡାଉନଲୋଡ୍ ଛଡ଼ିବା ଅବୈଧ ପ୍ରତିଉତ୍ତର ଦେଇଛି; କୌଣସି ଇନ୍ସଟଲ୍ ନିବେଦନ କରାଯାଇନାହିଁ।}
 ::msgcat::mcset or {The signed installation returned an invalid result. Verify the installation before retrying.} {ସ୍ୱାକ୍ଷରିତ ଇନ୍ସଟଲ୍ ଅବୈଧ ଫଳାଫଳ ଦେଇଛି। ପୁଣି ଚେଷ୍ଟା କରିବା ପୂର୍ବରୁ ଇନ୍ସଟଲ୍କୁ ଯାଞ୍ଚ କରନ୍ତୁ।}
 ::msgcat::mcset or {The signed release preview was malformed; nothing was installed.} {ସ୍ୱାକ୍ଷରିତ ରିଲିଜ୍ ପ୍ରିଭ୍ୟୁର ଗଠନ ଭ୍ରାନ୍ତ ଥିଲା; କିଛି ଇନ୍ସଟଲ୍ ହୋଇନାହିଁ।}
+::msgcat::mcset or {The source buffer changed. Request a new proposal before applying.} {ସୋର୍ସ ବଫର ପରିବର୍ତ୍ତିତ ହୋଇଛି। ଲାଗୁ କରିବା ପୂର୍ବରୁ ଏକ ନୂଆ ପ୍ରସ୍ତାବ ମାଗନ୍ତୁ।}
 ::msgcat::mcset or {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {ଷ୍ଟୋର୍ ଗୋଟିଏ ରିଭିଜନ୍ ପଛକୁ ଯିବ। ରୋଲ୍‌ବ୍ୟାକ୍ ନିଜେ ଏକ ରିଭିଜନ୍, ତେଣୁ ଏହାକୁ ମଧ୍ୟ ପୂର୍ବବତ୍ କରାଯାଇପାରିବ।}
+::msgcat::mcset or {The translator returned no text.} {ଅନୁବାଦକ କୌଣସି ଟେକ୍ସଟ ଫେରାଇଲା ନାହିଁ।}
 ::msgcat::mcset or {The verification reply was malformed; no integrity result was accepted.} {ଯାଞ୍ଚର ଉତ୍ତର ବ୍ୟାକ୍ରଣଗତ ଭୁଲ୍ ଥିଲା; କୌଣସି ସଂପୂର୍ଣ୍ଣତା ଫଳ ସ୍ୱୀକାର ହେଲା ନାହିଁ।}
 ::msgcat::mcset or Themes ଥିମ୍
+::msgcat::mcset or {These paths already exist in the chosen repository:} {ବଛାଯାଇଥିବା ରିପୋଜିଟରୀରେ ଏହି ପଥଗୁଡ଼ିକ ଆଗରୁ ଅଛି:}
 ::msgcat::mcset or {They have not been saved.} {ସେଗୁଡ଼ିକ ସେଭ ହୋଇନାହିଁ।}
+::msgcat::mcset or {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {ଏହି ବଫରରେ ବୁଝାଇବାକୁ କୌଣସି ଡାଇଗ୍ନୋଷ୍ଟିକ୍ସ ନାହିଁ। Check ଚଲାନ୍ତୁ, କିମ୍ବା ଭାଷା ସର୍ଭର ପାଇଁ ଅପେକ୍ଷା କରନ୍ତୁ।}
 ::msgcat::mcset or {This challenge is over.} {ଏହି ଚ୍ୟାଲେଞ୍ଜ ଶେଷ ହୋଇଛି।}
 ::msgcat::mcset or {This code has expired. Ask for a new one.} {ଏହି କୋଡ୍‌ର ଅବଧି ଶେଷ ହୋଇଛି। ନୂଆ ଗୋଟିଏ ମାଗନ୍ତୁ।}
 ::msgcat::mcset or {This does not start a service or claim signed-download verification.} {ଏହା କୌଣସି ସେବା ଆରମ୍ଭ କରେ ନାହିଁ ଏବଂ ସ୍ୱାକ୍ଷରିତ ଡାଉନ୍‌ଲୋଡ୍ ଯାଞ୍ଚର ଦାବି ମଧ୍ୟ କରେ ନାହିଁ।}
 ::msgcat::mcset or {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {ଏହି ଗେଟୱେ ଏହି ମେସିନରୁ ଗୋପନ ମୂଲ୍ୟ ନିଏ ନାହିଁ: ସେଠାରେ veles secret set %s ଦ୍ୱାରା ଦିଅନ୍ତୁ, କିମ୍ବା ଏହି ନେଟୱର୍କକୁ ଏହାର [vault] trusted_networksରେ ଯୋଗ କରନ୍ତୁ}
 ::msgcat::mcset or {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {ଏହା ଠିକ୍ ସେହି ଯାହା ଲେଖାଯିବ — ଇଞ୍ଜିନ୍ର ନିଜ ବାଇଟ୍, ଲାଇଭ୍ ଆଣାଯାଇଥିବା। ଏପର୍ଯ୍ୟନ୍ତ ଡିସ୍କକୁ କିଛି ଛୁଇଁନାହିଁ।}
+::msgcat::mcset or {This node is not a configured sync peer for any kind.} {ଏହି ନୋଡ୍ କୌଣସି ପ୍ରକାର ପାଇଁ ସିଙ୍କ୍ ପିଅର୍ ଭାବେ କନଫିଗର ହୋଇନାହିଁ।}
+::msgcat::mcset or {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {ଏହି ପ୍ଲଗିନ୍ ବଣ୍ଡଲ୍ ହୋଇଛି ଏବଂ କେବଳ-ପଠନୀୟ। ସମାନ ନାମର ଏକ ରୂପାନ୍ତରକାରୀ କପି ଅପସାରଣ କଲେ ଏହା ବଦଳରେ ବଣ୍ଡଲ୍ ହୋଇଥିବା କପି ବ୍ୟବହୃତ ହେବ।}
+::msgcat::mcset or {This publishes the commit; no pull request is created yet.} {ଏହା କମିଟ୍ ପ୍ରକାଶ କରେ; ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ପୁଲ୍ ରିକ୍ୱେଷ୍ଟ ସୃଷ୍ଟି ହୁଏ ନାହିଁ।}
 ::msgcat::mcset or {This review expires after %s seconds. Closing or cancelling discards its private staging.} {ଏହି ସମୀକ୍ଷା %s ସେକେଣ୍ଡ ପରେ ମୁଦାଇଯିବ। ବନ୍ଦ କରିବା କିମ୍ବା ବାତିଲ୍ କଲେ ଏହାର ନିଜସ୍ୱ ଗୋପନ ଷ୍ଟେଜିଂ ଛଡ଼ାଯିବ।}
 ::msgcat::mcset or {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {ଏହି ଉଇଜାର୍ଡ config.toml ଲେଖେ, ଏବଂ ଆପଣ ଦେଇଥିବା keys ଏନକ୍ରିପ୍ଟ ହୋଇଥିବା ଭଲ୍ଟରେ ରଖେ। ପ୍ରତ୍ୟେକ ପଦକ୍ଷେପ ଛାଡ଼ିହେବ: ଛାଡ଼ିଥିବା ପଦକ୍ଷେପ ନୂଆ କନଫିଗରେ ରହେ ନାହିଁ, ଏବଂ ବିଦ୍ୟମାନ କନଫିଗରେ ଯେପରି ଅଛି ସେପରି ରହେ। ବିଦ୍ୟମାନ config.toml ସେହି ସ୍ଥାନରେ ସମ୍ପାଦିତ ହୁଏ — କେବଳ ଆପଣ ଉତ୍ତର ଦେଇଥିବା ବିଭାଗଗୁଡ଼ିକ ବଦଳେ, ଏବଂ ବାକି ସବୁକିଛି, ମନ୍ତବ୍ୟ ସହିତ, ରହେ।}
 ::msgcat::mcset or {Ticket needed} {ଟିକେଟ୍ ଆବଶ୍ୟକ}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset or {Topic for %s} {%s ପାଇଁ ଟପିକ୍}
 ::msgcat::mcset or {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {ମେନୁ ଖୋଲିବାକୁ ଏକ ସେସନ, କିମ୍ବା ମେନୁ ଥିବା ଅନ୍ୟ ଯେକୌଣସି ଜିନିଷକୁ ଛୁଇଁ ଧରି ରଖନ୍ତୁ। ତାହା ବାହାରେ ଟ୍ୟାପ୍, କିମ୍ବା ପଛକୁ, ଏହାକୁ ବନ୍ଦ କରେ।}
 ::msgcat::mcset or {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {ଏକ ଶବ୍ଦ ବାଛିବାକୁ ତାହାକୁ ଛୁଇଁ ଧରି ରଖନ୍ତୁ। ଆଙ୍ଗୁଠି ଉଠାଇଲେ ତାହାର ମେନୁ ଖୋଲେ, ସବୁଠାରୁ ଉପରେ କପି କରନ୍ତୁ ସହିତ।}
+::msgcat::mcset or Translate {ଅନୁବାଦ କରନ୍ତୁ}
+::msgcat::mcset or {Translate selection} {ଚୟନ ଅନୁବାଦ କରନ୍ତୁ}
+::msgcat::mcset or Translating… {ଅନୁବାଦ ହେଉଛି…}
+::msgcat::mcset or {Translation cancelled.} {ଅନୁବାଦ ବାତିଲ କରାଯାଇଛି।}
+::msgcat::mcset or {Translation copied.} {ଅନୁବାଦ କପି ହେଲା।}
+::msgcat::mcset or {Translation failed} {ଅନୁବାଦ ବିଫଳ ହେଲା}
+::msgcat::mcset or {Translation result} {ଅନୁବାଦ ଫଳାଫଳ}
+::msgcat::mcset or {Translator configuration unavailable} {ଅନୁବାଦକ କନଫିଗରେସନ ଉପଲବ୍ଧ ନାହିଁ}
 ::msgcat::mcset or {Trigger history} {ଟ୍ରିଗର ହିଷ୍ଟ୍ରୀ}
 ::msgcat::mcset or Triggers ଟ୍ରିଗର୍ସ
 ::msgcat::mcset or {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {ଟ୍ରିଗର୍ସ ଟର୍ଣ୍ଣ ବିନା ଚ୍ୟାନେଲ୍ ଘଟଣାରେ ପ୍ରତିକ୍ରିୟା ଦିଅନ୍ତି। slopdrop ଘଟଣାକୁ ବ୍ରିଜ୍କୁ ପଠାଏ ଓ ଉତ୍ତର ଫେରାଏ; vision କୁଲ୍ଡାଉନ୍ ଓ ଘଣ୍ଟା ସୀମା ଭିତରେ ଏକ ଇମେଜ୍ URL ବର୍ଣ୍ଣନା କରେ। ରୋ କେବଳ ସେଠାରେ ଚାଲେ ଯେଉଠି [triggers] କନଫିଗ୍ ସୁଇଚ୍ ଏବଂ ଡେରାଇଭ୍ ମାସ୍କ ଅନୁମତି ଦିଅନ୍ତି — ଜୀବନ୍ତ slopdrop ବାଇଣ୍ଡିଂରେ #coven କିଛି ପଠାଏ ନାହିଁ।}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset or {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {.env ରେ IRC_ALLOWED_USERS ଆପଣଙ୍କ ଆକାଉଣ୍ଟ ନ ଜଣାଇବା ପର୍ଯ୍ୟନ୍ତ, ନେଟୱର୍କର ଯେକେହି ବଟ୍ ସହ କଥା ହୋଇପାରିବେ — ଏବଂ [acl] ବିଭାଗ ନ ଥିଲେ ମାଲିକ ଭାବେ, ସମସ୍ତ ଟୁଲ୍ ସହ।}
 ::msgcat::mcset or {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {.env ରେ TELEGRAM_ALLOWED_USERS ଆପଣଙ୍କ ୟୁଜର୍ ଆଇଡି ନ ଜଣାଇବା ପର୍ଯ୍ୟନ୍ତ, ବଟ୍‌କୁ ଖୋଜି ପାଇଥିବା ଯେକେହି ଏହା ସହ କଥା ହୋଇପାରିବେ — ଏବଂ [acl] ବିଭାଗ ନ ଥିଲେ ମାଲିକ ଭାବେ, ସମସ୍ତ ଟୁଲ୍ ସହ।}
 ::msgcat::mcset or Untitled {ଶୀର୍ଷକ ନଥିବା}
+::msgcat::mcset or {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {ଅପଷ୍ଟ୍ରିମ୍ ଯୋଗଦାନ ଏକ ସ୍ପଷ୍ଟ ପ୍ରକାଶନ କାର୍ଯ୍ୟ, ସ୍ୱୟଂଚାଳିତ ଅପଲୋଡ୍ ନୁହେଁ। Manage extensions ରେ, Contribute ପ୍ରତ୍ୟେକ ଉପଭୋକ୍ତା ଏକ୍ସଟେନସନ ତାଲିକାଭୁକ୍ତ କରେ: ଏକ୍ସଟେନସନ ଓ ଫାଇଲ ଚୟନ କରନ୍ତୁ, ଡିଫ୍ ଓ ସିକ୍ରେଟ୍ ସ୍କାନ୍ ଯାଞ୍ଚ କରନ୍ତୁ, ଯାଞ୍ଚ ଚଲାନ୍ତୁ, ତା'ପରେ ଆପଣଙ୍କ ବଛା git ପରିଚୟ ସହ ଏକ ବ୍ରାଞ୍ଚ ଓ ଏକ PR (ଡିଫଲ୍ଟରେ veles କୁ) ସୃଷ୍ଟି କରନ୍ତୁ। ପ୍ରତ୍ୟେକ ଏକ୍ସଟେନସନ ରିପୋଜିଟରୀରେ ନିଜ ଡିରେକ୍ଟରୀ ତଳେ ଯାଏ, ଏବଂ ସେଠାରେ ଥିବା ଏକ ବିଦ୍ୟମାନ ଫାଇଲ ଅଲଗା ନିଶ୍ଚିତତା ପରେ ହିଁ ବଦଳାଯାଏ। node.toml, ସ୍ଥାନୀୟ କ୍ରେଡେନସିଆଲ୍, ଟୋକେନ, ବ୍ୟକ୍ତିଗତ ଏଣ୍ଡପଏଣ୍ଟ କିମ୍ବା ଅସମ୍ପୃକ୍ତ ପ୍ଲଗିନ୍ ସ୍ଥିତି କେବେ ପ୍ରକାଶ କରନ୍ତୁ ନାହିଁ। ସ୍ଥାନୀୟ ରିକଭରୀ ସ୍ନାପସଟ୍ ଅପଷ୍ଟ୍ରିମ୍ କମିଟ୍ କିମ୍ବା PR ନୁହେଁ।}
+::msgcat::mcset or {Upstream repository or fork URL} {ଅପଷ୍ଟ୍ରିମ୍ ରିପୋଜିଟରୀ କିମ୍ବା ଫର୍କ୍ URL}
+::msgcat::mcset or {Uptime class} {ଅପଟାଇମ ଶ୍ରେଣୀ}
+::msgcat::mcset or {Uptime: host %1$s, gateway %2$s} {ଅପଟାଇମ୍: ହୋଷ୍ଟ %1$s, ଗେଟୱେ %2$s}
 ::msgcat::mcset or Usage ବ୍ୟବହାର
 ::msgcat::mcset or {Usage & Quota} {ବ୍ୟବହାର ଓ କୋଟା}
 ::msgcat::mcset or {Use TLS} {TLS ବ୍ୟବହାର କର}
 ::msgcat::mcset or {Use now} {ଏବେ ବ୍ୟବହାର କର}
+::msgcat::mcset or {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {ପ୍ରକୃତ କଣ୍ଟ୍ରାକ୍ଟଗୁଡ଼ିକ ପାଇଁ ଲେଖକ ମାର୍ଗଦର୍ଶିକା ଓ API ସନ୍ଦର୍ଭ ବଟନ୍ ବ୍ୟବହାର କରନ୍ତୁ। Plugins ଓଭରଲେ ଲାଇଭ୍ hooks ତାଲିକା ଦେଖାଏ; ସର୍ଭିସ ଓ ଓଭରରାଇଡ୍ ପଏଣ୍ଟଗୁଡ଼ିକ ଗେଟୱେର ନିଜ ରେଜିଷ୍ଟ୍ରିରୁ ଆସେ, ଏହି ମାର୍ଗଦର୍ଶିକାରେ କପି କରାଯାଇଥିବା ତାଲିକାରୁ ନୁହେଁ।}
 ::msgcat::mcset or {Use this ticket} {ଏହି ଟିକେଟ୍ ବ୍ୟବହାର କରନ୍ତୁ}
+::msgcat::mcset or {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {ଆପଣ ସିଧା veles କୁ ପୁଶ୍ କରିପାରିବେ ନାହିଁ ତେବେ ନିଜ ଫୋର୍କ ବ୍ୟବହାର କରନ୍ତୁ (https://github.com/<you>/veles.git କିମ୍ବା git@github.com:<you>/veles.git)। ବଛାଯାଇଥିବା ରିପୋଜିଟରୀ ଏକ ପୃଥକ୍ ୱାର୍କଟ୍ରୀରେ କ୍ଲୋନ୍ ହୁଏ। କିଛି ପୁଶ୍ ହୁଏ ନାହିଁ।}
 ::msgcat::mcset or {Users — one role across networks and platforms} {ବ୍ୟବହାରକାରୀ — ନେଟୱାର୍କ ଓ ପ୍ଲାଟଫର୍ମ ଆଡ଼େ ଗୋଟିଏ ଭୂମିକା}
 ::msgcat::mcset or {Using the phone, for the agent} {ଫୋନ୍ ବ୍ୟବହାର, ଏଜେଣ୍ଟଙ୍କ ପାଇଁ}
 ::msgcat::mcset or {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {ସାଧାରଣତଃ ପ୍ରୋଭାଇଡର୍ ଏଣ୍ଟ୍ରି ନାମ ସହ ସମାନ। Skip ବିକଳ୍ପରେ ଦୁଇଟିକୁ ଖାଲି ଛାଡ଼ — ଅଧା ଭରା ଯୋଡ଼ା ରୁଟ୍ ହୁଏ ନାହିଁ।}
 ::msgcat::mcset or {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {ମୂଲ୍ୟଗୁଡ଼ିକ TOML: କୋଟେସନ୍ ଷ୍ଟ୍ରିଙ୍ଗ୍, ସଂଖ୍ୟା କିମ୍ବା ତାଲିକା। [mcp_servers.<name>] ରେ ଲେଖାଯିବ — ଆପଣଙ୍କ ମନ୍ତବ୍ୟ ଓ ଅନ୍ୟ ସବୁ ବିଭାଗ ଅପରିବର୍ତ୍ତିତ ରହିବ।}
+::msgcat::mcset or Vault ଭଲ୍ଟ
 ::msgcat::mcset or {Verified signed bundle installed. Restart the gateway before using the new core.} {ଯାଞ୍ଚିତ ସ୍ୱାକ୍ଷରିତ ବାଣ୍ଡଲ୍ ଇନ୍ସଟଲ୍ ହୋଇଛି। ନୂଆ କୋର୍ ବ୍ୟବହାର କରିବା ପୂର୍ବରୁ ଗେଟୱେକୁ ପୁଣି ଆରମ୍ଭ କରନ୍ତୁ।}
 ::msgcat::mcset or {Verified signed release — not installed yet} {ଯାଞ୍ଚିତ ସ୍ୱାକ୍ଷରିତ ରିଲିଜ୍ — ଏପର୍ଯ୍ୟନ୍ତ ଇନ୍ସଟଲ୍ ହୋଇନାହିଁ}
 ::msgcat::mcset or {Verify and review release…} {ରିଲିଜ୍ ଯାଞ୍ଚ ଓ ସମୀକ୍ଷା କରନ୍ତୁ…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset or {Verify signed release} {ସ୍ୱାକ୍ଷରିତ ରିଲିଜ୍ ଯାଞ୍ଚ କରନ୍ତୁ}
 ::msgcat::mcset or {Verify signed release…} {ସ୍ୱାକ୍ଷରିତ ରିଲିଜ୍ ଯାଞ୍ଚ କରନ୍ତୁ…}
 ::msgcat::mcset or Version ଭର୍ସନ୍
+::msgcat::mcset or {Version %1$s: %2$s} {ସଂସ୍କରଣ %1$s: %2$s}
+::msgcat::mcset or {Version drift in the registry: %s} {ରେଜିଷ୍ଟ୍ରୀରେ ସଂସ୍କରଣ ଡ୍ରିଫ୍ଟ: %s}
 ::msgcat::mcset or View ଦୃଶ୍ୟ
 ::msgcat::mcset or {View markdown source} {ମାର୍କଡାଉନ୍ ସୋର୍ସ ଦେଖନ୍ତୁ}
 ::msgcat::mcset or {View source / rendered} {ଉତ୍ସ / ରେଣ୍ଡର ହୋଇଥିବା}
 ::msgcat::mcset or Voice {ଭଏସ୍ ଦିଅନ୍ତୁ}
+::msgcat::mcset or {Waiting for the model…} {ମଡେଲ ପାଇଁ ଅପେକ୍ଷା…}
+::msgcat::mcset or {Waiting for the model… Nothing has been written.} {ମଡେଲ ପାଇଁ ଅପେକ୍ଷା… କିଛି ଲେଖାଯାଇନାହିଁ।}
 ::msgcat::mcset or {Welcome to veles} {veles କୁ ସ୍ବାଗତ}
 ::msgcat::mcset or {What the agent can do here} {ଏଜେଣ୍ଟ ଏଠାରେ କ'ଣ କରିପାରିବ}
 ::msgcat::mcset or {What veles may do on this phone. Each button opens the Android setting that changes it.} {ଏହି ଫୋନରେ veles କ'ଣ କରିପାରିବ। ପ୍ରତ୍ୟେକ ବଟନ୍ ତାହା ବଦଳାଉଥିବା Android ସେଟିଂ ଖୋଲେ।}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset or {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {veles ପୃଷ୍ଠଭୂମିରେ ଥିବା ବେଳେ ଏଜେଣ୍ଟର ପ୍ରଶ୍ନ ବା ସମାପ୍ତ ଟର୍ନ ଏକ ବିଜ୍ଞପ୍ତି ହୁଏ; ସେସନ ଖୋଲିବାକୁ ସେଥିରେ ଟ୍ୟାପ୍ କରନ୍ତୁ।}
 ::msgcat::mcset or {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {ବଟ୍ ସହ କିଏ କଥା ହେଇପାରେ। ଏହି ପସନ୍ଦ ସ୍ଥିର କରେ config.toml ରେ [acl] ଅଂଶ ଅଛି କି ନାହିଁ — ଏବଂ ତାହା ସମ୍ପୂର୍ଣ୍ଣ ସ୍ଥିତିକୁ ବଦଳାଇଦିଏ।}
 ::msgcat::mcset or Whois Whois
-::msgcat::mcset or {Wire protocol (chat_completions or responses)} {Wire ପ୍ରୋଟୋକଲ୍ (chat_completions କିମ୍ବା responses)}
+::msgcat::mcset or {Wire protocol (chat_completions, responses or plugin)} {Wire ପ୍ରୋଟୋକଲ୍ (chat_completions, responses କିମ୍ବା plugin)}
 ::msgcat::mcset or {With a keyboard attached, every key works as on a laptop.} {କିବୋର୍ଡ ଲାଗିଥିଲେ ପ୍ରତ୍ୟେକ କି ଲାପଟପ୍ ପରି କାମ କରେ।}
 ::msgcat::mcset or {Workflow SHA} {ୱାର୍କଫ୍ଲୋ SHA}
+::msgcat::mcset or {Workflow commit} {ୱାର୍କଫ୍ଲୋ କମିଟ୍}
+::msgcat::mcset or Worktree ୱର୍କଟ୍ରି
 ::msgcat::mcset or {Write it} ଲେଖ
+::msgcat::mcset or {Write the design question first.} {ପ୍ରଥମେ ଡିଜାଇନ୍ ପ୍ରଶ୍ନ ଲେଖନ୍ତୁ।}
 ::msgcat::mcset or {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {କୌଣସି ପ୍ରୋଭାଇଡର୍ ଲେଖେ ନାହିଁ। [[custom_providers]] ଏଣ୍ଟ୍ରି ଓ [model] ଯୋଡ଼ା ନ ଥିଲା ପର୍ଯ୍ୟନ୍ତ ଗେଟଓ୍ୟେ କୌଣସି ଟର୍ଣ୍ଣ ରୁଟ୍ କରିବ ନାହିଁ।}
 ::msgcat::mcset or {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {ଯେକୌଣସି [acl] କି ଲେଖିଲେ ଏହି ଗେଟୱେ କ୍ୟୁରେଟେଡ୍ ମୋଡ୍‌କୁ ଯାଏ: ଡିଫଲ୍ଟ ଭୂମିକା guest (fail-closed) ହୁଏ ଏବଂ ଅନୁମତି ତାଲିକା ଆଉ ସୀମା ରହେ ନାହିଁ। ବିଶ୍ୱସ୍ତ ମାଲିକ ପରିଚୟ ଥିଲେ ହିଁ ଏହା ବାଛନ୍ତୁ।}
 ::msgcat::mcset or {[model] provider} {[model] ପ୍ରୋଭାଇଡର୍}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset or {also list hooks with no handler} {ହ୍ୟାଣ୍ଡଲର୍ ନଥିବା ହୁକ୍ ମଧ୍ୟ ତାଲିକାଭୁକ୍ତ କର}
 ::msgcat::mcset or {also write grants that still have an expiry} {ଯେଉଁ ଅନୁମତିର ମିଆଦ ଅଛି ସେଗୁଡ଼ିକ ମଧ୍ୟ ଲେଖ}
 ::msgcat::mcset or {also write runtime users} {ରନ୍‌ଟାଇମ୍ ବ୍ୟବହାରକାରୀ ମଧ୍ୟ ଲେଖ}
+::msgcat::mcset or {an allowlist entry is removed by editing config.toml} {config.toml ଏଡିଟ୍ କରି ଏକ allowlist ଏଣ୍ଟ୍ରି ହଟାଯାଏ}
 ::msgcat::mcset or {an allowlist is in force: a plugin not on it stays off} {ଏକ ଅନୁମତି ତାଲିକା ପ୍ରବର୍ତ୍ତିତ: ତାଲିକାରେ ନଥିବା ପ୍ଲଗିନ୍ ବନ୍ଦ ରହେ}
 ::msgcat::mcset or {answer failed: %s} {ଉତ୍ତର ବିଫଳ: %s}
+::msgcat::mcset or {answer only, nothing to apply} {କେବଳ ଉତ୍ତର, ଲଗାଇବାକୁ କିଛି ନାହିଁ}
 ::msgcat::mcset or {append these rules to config.toml} {ଏହି ନିୟମଗୁଡ଼ିକ config.tomlରେ ଯୋଡ଼}
 ::msgcat::mcset or {apply failed: %s} {ପ୍ରୟୋଗ ବିଫଳ: %s}
 ::msgcat::mcset or {apply to:} {ପ୍ରୟୋଗ କର:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset or {ask the agent} {ଏଜେଣ୍ଟଙ୍କୁ ପଚାରିବା}
 ::msgcat::mcset or {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset or {asked by: %s} {ପଚାରିଥିଲେ: %s}
+::msgcat::mcset or {asking %s for its metrics…} {%s କୁ ଏହାର ମେଟ୍ରିକ୍ସ ପାଇଁ ପଚାରୁଛି…}
 ::msgcat::mcset or {attach a file} {ଫାଇଲ୍ ଯୋଡ଼ନ୍ତୁ}
 ::msgcat::mcset or {attach an image or file} {ଛବି କିମ୍ବା ଫାଇଲ ସଂଲଗ୍ନ କର}
 ::msgcat::mcset or {attach failed: %1$s} {ସଂଲଗ୍ନ ବିଫଳ: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset or {attached %1$s (%2$s pending)} {%1$s ସଂଲଗ୍ନ (%2$s ବାକି)}
 ::msgcat::mcset or {attached to %s} {%s ସହ ସଂଲଗ୍ନ}
 ::msgcat::mcset or {attached to child session %1$s} {ଶିଶୁ ସେସନ୍ %1$s ସହ ସଂଲଗ୍ନ}
+::msgcat::mcset or automatic ସ୍ୱୟଂଚାଳିତ
 ::msgcat::mcset or {aux model} {aux ମଡେଲ୍}
 ::msgcat::mcset or {aux provider} {aux ପ୍ରଦାତା}
+::msgcat::mcset or available ଉପଲବ୍ଧ
 ::msgcat::mcset or {available components} {ଉପଲବ୍ଧ କମ୍ପୋନେଣ୍ଟଗୁଡ଼ିକ}
 ::msgcat::mcset or {back up N user turns} {ଉପଯୋଗକର୍ତ୍ତାଙ୍କ N ଟର୍ଣ୍ଣ ପଛକୁ ଯାଅ}
 ::msgcat::mcset or {backed up the previous config to %s} {ପୂର୍ବ config %s ରେ ସେଭ୍ ହେଲା}
 ::msgcat::mcset or {background shells; /shells output|kill <id>} {ପୃଷ୍ଠଭୂମି ଶେଲ; /shells output|kill <id>}
+::msgcat::mcset or {backing off: %1$s failure(s), next automatic try in %2$s s} {ପଛକୁ ହଟୁଛି: %1$s ବିଫଳତା, ପରବର୍ତ୍ତୀ ସ୍ୱୟଂଚାଳିତ ଚେଷ୍ଟା %2$s s ପରେ}
 ::msgcat::mcset or {bad host for %1$s: %2$s} {%1$s ପାଇଁ ଭୁଲ ହୋଷ୍ଟ: %2$s}
 ::msgcat::mcset or {bad unit for %1$s: %2$s} {%1$s ପାଇଁ ଭୁଲ ୟୁନିଟ୍: %2$s}
 ::msgcat::mcset or {bare display off} {ବେୟାର ଡିସ୍ପ୍ଲେ ବନ୍ଦ}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset or {browse the filesystem} {ଫାଇଲ ସିଷ୍ଟମ ଦେଖ}
 ::msgcat::mcset or {browse the repo's files} {ରେପୋର ଫାଇଲ୍ ବ୍ରାଉଜ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {builtin (%s):} {ବିଲ୍ଟ-ଇନ୍ (%s):}
+::msgcat::mcset or bundled ବଣ୍ଡଲ୍
+::msgcat::mcset or {bundled, read-only} {ବଣ୍ଡଲ୍, କେବଳ-ପଠନୀୟ}
 ::msgcat::mcset or by ଦ୍ୱାରା
 ::msgcat::mcset or {by plan — all sessions} {ପ୍ଲାନ୍ ଅନୁସାରେ — ସବୁ ସେସନ୍}
 ::msgcat::mcset or {by plan — this session} {ପ୍ଲାନ୍ ଅନୁସାରେ — ଏହି ସେସନ୍}
 ::msgcat::mcset or {by tool} {ଟୁଲ୍ ଅନୁସାରେ}
 ::msgcat::mcset or {cancel failed: %1$s} {ବାତିଲ ବିଫଳ: %1$s}
 ::msgcat::mcset or {cancel the running turn} {ଚାଲୁଥିବା ଟର୍ନ୍ ବାତିଲ୍ କରନ୍ତୁ}
+::msgcat::mcset or {cancel the selected task} {ଚୟନିତ କାର୍ଯ୍ୟ ବାତିଲ କରନ୍ତୁ}
 ::msgcat::mcset or {cancelled task %1$s} {କାର୍ଯ୍ୟ %1$s ବାତିଲ ହେଲା}
 ::msgcat::mcset or {cannot list scripts (gateway offline?)} {ସ୍କ୍ରିପ୍ଟ ତାଲିକା କରିହେଲା ନାହିଁ (ଗେଟୱେ ଅଫ୍‌ଲାଇନ୍?)}
 ::msgcat::mcset or {cannot reach the gateway: %s} {ଗେଟଓ୍ୟେରେ ପହଞ୍ଚିପାରୁନାହିଁ: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset or commit କମିଟ୍
 ::msgcat::mcset or {compacting %s messages in the background — the transcript reloads when it finishes} {ପୃଷ୍ଠଭୂମିରେ %s ମେସେଜ୍ କମ୍ପାକ୍ଟ ହେଉଛି — ସମାପ୍ତ ହେଲେ ଟ୍ରାନ୍ସକ୍ରିପ୍ଟ ରିଲୋଡ୍ ହେବ}
 ::msgcat::mcset or compacting… {କମ୍ପାକ୍ଟ ହେଉଛି…}
+::msgcat::mcset or {comparing the nodes' versions and config…} {ନୋଡଗୁଡ଼ିକର ସଂସ୍କରଣ ଓ କନଫିଗ ତୁଳନା କରୁଛି…}
 ::msgcat::mcset or {completion tokens} {କମ୍ପ୍ଲିସନ୍ ଟୋକନ୍}
 ::msgcat::mcset or {component options and declared actions} {କମ୍ପୋନେଣ୍ଟ ବିକଳ୍ପ ଏବଂ ଘୋଷିତ କାର୍ଯ୍ୟଗୁଡ଼ିକ}
 ::msgcat::mcset or composer କମ୍ପୋଜର୍
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset or {could not open %s} {ଖୋଲିପାରିଲା ନାହିଁ %s}
 ::msgcat::mcset or {could not open %s (no working browser opener)} {ଖୋଲିପାରିଲା ନାହିଁ %s (କାମ କରୁଥିବା ବ୍ରାଉଜର ଓପନର୍ ନାହିଁ)}
 ::msgcat::mcset or {could not open %{url}: %{e}} {ଖୋଲିପାରିଲା ନାହିଁ %{url}: %{e}}
+::msgcat::mcset or {could not open the optional referral link: %s} {ବୈକଳ୍ପିକ ରେଫରାଲ୍ ଲିଙ୍କ୍ ଖୋଲିହେଲା ନାହିଁ: %s}
 ::msgcat::mcset or {could not read %s: %s} {%s ପଢ଼ିହେଲା ନାହିଁ: %s}
 ::msgcat::mcset or {could not read the current route} {ବର୍ତ୍ତମାନର ରୁଟ୍ ପଢ଼ିପାରିଲା ନାହିଁ}
 ::msgcat::mcset or {could not save this session's language: %{e}} {ଏହି ସେସନର ଭାଷା ସଞ୍ଚୟ କରିହେଲା ନାହିଁ: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset or {ctxmenu: no widget %s (attached too early?)} {ctxmenu: ୱିଜେଟ୍ %s ନାହିଁ (ଆଗରୁ ଆଟାଚ୍ ହେଲା?)}
 ::msgcat::mcset or {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {କ୍ୟୁରେଟେଡ୍ ପ୍ରବେଶ ବଛାଗଲା କିନ୍ତୁ ମାଲିକଙ୍କ ପରିଚୟ ଦିଆଗଲା ନାହିଁ, ତେଣୁ [acl] ନିଷ୍କ୍ରିୟ ରହେ — ଏହାକୁ ସକ୍ରିୟ କରିବାକୁ telegram:123456 କିମ୍ବା irc:account ଭଳି ପରିଚୟ ଦିଅନ୍ତୁ}
 ::msgcat::mcset or {current theme: %{name} · /theme <name>} {ବର୍ତ୍ତମାନ ଥିମ: %{name} · /theme <name>}
+::msgcat::mcset or {cursor %1$s of %2$s (%3$s behind)} {କର୍ସର %1$s / %2$s (%3$s ପଛରେ)}
 ::msgcat::mcset or {custom command /%s…} {କଷ୍ଟମ୍ କମାଣ୍ଡ୍ /%s…}
 ::msgcat::mcset or {custom commands (.veles/commands/) and config aliases} {ନିଜସ୍ୱ କମାଣ୍ଡ (.veles/commands/) ଓ କନଫିଗର ଉପନାମ}
 ::msgcat::mcset or {cycle ends} {ଚକ୍ର ସରେ}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset or doctor_resident {ପ୍ରତି ପ୍ରମ୍ପ୍ଟରେ ସ୍ଥାୟୀ: %{total} ଅକ୍ଷରରୁ %{shown} (~%{tokens} ଟୋକେନ୍) — ବାକି ଆବଶ୍ୟକ ହେଲେ ଏହା ଦ୍ୱାରା ଲୋଡ୍ ହୁଏ: memory action=read path=%{path}}
 ::msgcat::mcset or doctor_title {ମେମୋରି ଯାଞ୍ଚ}
 ::msgcat::mcset or doctor_total {ମୋଟ: %{files} ଫାଇଲରେ %{chars} ଅକ୍ଷର (~%{tokens} ଟୋକେନ୍)}
+::msgcat::mcset or {documentation is not in this source checkout: %s} {ଏହି ସୋର୍ସ ଚେକ୍ଆଉଟ୍‌ରେ ଡକ୍ୟୁମେଣ୍ଟେସନ ନାହିଁ: %s}
 ::msgcat::mcset or done ସରିଲା
 ::msgcat::mcset or {done · %1$s/%2$s} {ସରିଲା · %1$s/%2$s}
 ::msgcat::mcset or {done, but the model returned no text} {ସରିଲା, କିନ୍ତୁ ମଡେଲ୍ କିଛି ଲେଖା ଦେଲା ନାହିଁ}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset or {evaluate Tcl and answer with the result — no model turn} {Tcl ଚଲାଇ ଫଳାଫଳରେ ଉତ୍ତର ଦିଅ — ମଡେଲ ଟର୍ଣ୍ଣ ବିନା}
 ::msgcat::mcset or everyone ସମସ୍ତେ
 ::msgcat::mcset or everywhere ସବୁଆଡ଼େ
+::msgcat::mcset or {exchanging registry gossip…} {ରେଜିଷ୍ଟ୍ରୀ ଗସିପ୍ ବିନିମୟ କରୁଛି…}
 ::msgcat::mcset or exit ବାହାରିଯାଅ
 ::msgcat::mcset or {exit veles-desktop} {veles-desktop ବାହାରକୁ ଯାଆନ୍ତୁ}
 ::msgcat::mcset or {export failed: %s} {ଏକ୍ସପୋର୍ଟ ବିଫଳ: %s}
 ::msgcat::mcset or {export session} {ସେସନ ରପ୍ତାନି କର}
 ::msgcat::mcset or {exported to %s} {%s କୁ ଏକ୍ସପୋର୍ଟ ହେଲା}
+::msgcat::mcset or {extension architecture, examples and LSP help} {ଏକ୍ସଟେନସନ ସ୍ଥାପତ୍ୟ, ଉଦାହରଣ ଓ LSP ସହାୟତା}
+::msgcat::mcset or {extension development guide} {ଏକ୍ସଟେନସନ ବିକାଶ ଗାଇଡ୍}
+::msgcat::mcset or failed ବିଫଳ
 ::msgcat::mcset or {failed to load history: %s} {ହିଷ୍ଟ୍ରି ଲୋଡ୍ ବିଫଳ: %s}
 ::msgcat::mcset or {failed to paint cached history: %s} {କ୍ୟାସ୍ଡ ହିଷ୍ଟ୍ରି ଦେଖାଇବା ବିଫଳ: %s}
 ::msgcat::mcset or {failed to paint replayed history: %s} {ରିପ୍ଲେ ହୋଇଥିବା ହିଷ୍ଟ୍ରି ଦେଖାଇବା ବିଫଳ: %s}
 ::msgcat::mcset or {failed: %s} {ବିଫଳ: %s}
+::msgcat::mcset or {failing — heartbeating, but a sync push or the last probe failed} {ବିଫଳ ହେଉଛି — ହାର୍ଟବିଟ୍ ଚାଲିଛି, କିନ୍ତୁ ସିଙ୍କ୍ ପୁଶ୍ କିମ୍ବା ଶେଷ ପ୍ରୋବ୍ ବିଫଳ ହେଲା}
 ::msgcat::mcset or {failover blueprint: cannot reach the gateway} {ଫେଲ୍ଓଭର୍ ବ୍ଲୁପ୍ରିଣ୍ଟ: ଗେଟୱେରେ ପହଞ୍ଚିପାରୁନାହିଁ}
 ::msgcat::mcset or {failover graph unavailable: %1$s} {ଫେଲୋଭର୍ ଗ୍ରାଫ ଉପଲବ୍ଧ ନାହିଁ: %1$s}
 ::msgcat::mcset or {failover script: cannot reach the gateway} {ଫେଲ୍ଓଭର୍ ସ୍କ୍ରିପ୍ଟ: ଗେଟୱେରେ ପହଞ୍ଚିପାରୁନାହିଁ}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset or {fire the Tcl hook} {Tcl ହୁକ୍ ଚଲାନ୍ତୁ}
 ::msgcat::mcset or {fires for %s:} {%s ପାଇଁ ଚାଲେ:}
 ::msgcat::mcset or {fires per hour} {ଘଣ୍ଟାପ୍ରତି ଚାଲେ}
+::msgcat::mcset or {fleet drift} {ଫ୍ଲିଟ୍ ଡ୍ରିଫ୍ଟ}
 ::msgcat::mcset or {focus composer} {କମ୍ପୋଜର୍‌କୁ ଫୋକସ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {focus failed: %{e}} {ଫୋକସ୍ ବିଫଳ: %{e}}
 ::msgcat::mcset or {focus next region} {ପରବର୍ତ୍ତୀ ଅଞ୍ଚଳକୁ ଫୋକସ୍ କରନ୍ତୁ}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset or {four splits is the maximum} {ଚାରିଟି ସ୍ପ୍ଲିଟ୍ ସର୍ବାଧିକ}
 ::msgcat::mcset or {fresh session} {ନୂଆ ସେସନ}
 ::msgcat::mcset or {fresh session (Ctrl-N too)} {ନୂଆ ସେସନ (Ctrl-N ମଧ୍ୟ)}
+::msgcat::mcset or {fresh — heartbeating, sync passing} {ତାଜା — ହାର୍ଟବିଟ୍ ଚାଲିଛି, ସିଙ୍କ୍ ପାସ୍ ହେଉଛି}
+::msgcat::mcset or from ରୁ
 ::msgcat::mcset or {from node %{node}} {ନୋଡ୍ %{node} ରୁ}
 ::msgcat::mcset or {gateway     v%1$s · up %2$s} {ଗେଟୱେ     v%1$s · ଚାଲିଛି %2$s}
 ::msgcat::mcset or {gateway unreachable — is `veles gateway run` up?} {ଗେଟୱେ ଉପଲବ୍ଧ ନୁହେଁ — `veles gateway run` ଚାଲିଛି କି?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset or {in %s} {%s ରେ}
 ::msgcat::mcset or {insert the next key literally (^B bold, ^C colour, ^O reset)} {ପରବର୍ତ୍ତୀ କି ସାହସିକଭାବେ ଭରଣ କରନ୍ତୁ (^B ବୋଲ୍ଡ, ^C ରଙ୍ଗ, ^O ରିସେଟ୍)}
 ::msgcat::mcset or {inserted %s} {%s ସନ୍ନିବେଶିତ ହେଲା}
+::msgcat::mcset or {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {କ୍ଲଷ୍ଟର ନିରୀକ୍ଷଣ କରନ୍ତୁ; ସ୍ପଷ୍ଟ ଭାବେ store, memory, config କିମ୍ବା vault ସିଙ୍କ୍ push/apply କରନ୍ତୁ; ପୁରା ଫ୍ଲିଟରେ ଏକ ପୁରୁଣା ନୋଡ ଭୁଲନ୍ତୁ; ଏକ ନୋଡର ଲଗ୍ ଟେଲ୍ କିମ୍ବା ମେଟ୍ରିକ୍ସ ପଢ଼ନ୍ତୁ; ସଂସ୍କରଣ ଓ କନଫିଗ ତୁଳନା କରନ୍ତୁ; ଏବେ ଗସିପ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {inspector — app internals · core state · gw plugins} {ଇନ୍ସପେକ୍ଟର — ଆପ୍‌ର ଭିତର · କୋର୍ ସ୍ଥିତି · gw ପ୍ଲଗିନ୍}
 ::msgcat::mcset or {install a plugin from a git URL} {ଏକ git URL ରୁ ପ୍ଲଗିନ୍ ଇନଷ୍ଟଲ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {install a skill from a git URL} {ଏକ git URL ରୁ ସ୍କିଲ୍ ଇନଷ୍ଟଲ୍ କରନ୍ତୁ}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset or instance ଇନ୍ସ୍ଟାନ୍ସ
 ::msgcat::mcset or {instance controls} {ଇନ୍ସ୍ଟାନ୍ସ ନିୟନ୍ତ୍ରଣ}
 ::msgcat::mcset or {instance detail} {ଇନ୍ସ୍ଟାନ୍ସ ବିବରଣୀ}
+::msgcat::mcset or {instance names may not start with "cluster:" or "g:": %s} {ଇନଷ୍ଟାନ୍ସ ନାମ "cluster:" କିମ୍ବା "g:" ରେ ଆରମ୍ଭ ହୋଇପାରିବ ନାହିଁ: %s}
 ::msgcat::mcset or {instance needs a name} {ଇନ୍ସ୍ଟାନ୍ସର ନାମ ଆବଶ୍ୟକ}
 ::msgcat::mcset or {instance unreachable} {ଇନ୍ସ୍ଟାନ୍ସ ଉପଲବ୍ଧ ନୁହେଁ}
 ::msgcat::mcset or instances ଇନ୍ସ୍ଟାନ୍ସଗୁଡ଼ିକ
 ::msgcat::mcset or interrupting… {ବିରତ କରୁଛି…}
+::msgcat::mcset or into ରେ
 ::msgcat::mcset or {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset or {irc: %s} {irc: %s}
 ::msgcat::mcset or {irc: %s failed — %s} {irc: %s ବିଫଳ — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset or {language list} {ଭାଷା ତାଲିକା}
 ::msgcat::mcset or {language picker (the swap for THIS window)} {ଭାଷା ଚୟନକାରୀ (ଏହି ୱିଣ୍ଡୋ ପାଇଁ ବଦଳ)}
 ::msgcat::mcset or {language saved: %s} {ଭାଷା ସଞ୍ଚୟ ହେଲା: %s}
+::msgcat::mcset or {language server} {ଭାଷା ସର୍ଭର}
+::msgcat::mcset or {language server: event stream unavailable: %s} {ଭାଷା ସର୍ଭର: ଇଭେଣ୍ଟ ଷ୍ଟ୍ରିମ ଉପଲବ୍ଧ ନାହିଁ: %s}
+::msgcat::mcset or {language server: not started on the gateway — %s} {ଭାଷା ସର୍ଭର: ଗେଟୱେରେ ଆରମ୍ଭ ହୋଇନାହିଁ — %s}
+::msgcat::mcset or {language server: the gateway would not start one: %s} {ଭାଷା ସର୍ଭର: ଗେଟୱେ ଏହା ଆରମ୍ଭ କରିବ ନାହିଁ: %s}
 ::msgcat::mcset or {language swapped: %1$s ⇄ %2$s} {ଭାଷା ବଦଳିଲା: %1$s ⇄ %2$s}
 ::msgcat::mcset or {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {ଭାଷା → %1$s (ଆଗରୁ %2$s) · କେବଳ ଚାଲୁଥିବା ୱିଣ୍ଡୋ — Save as default config.toml ରେ ଲେଖିଦିଏ}
 ::msgcat::mcset or {language: %s} {ଭାଷା: %s}
 ::msgcat::mcset or {last error} {ଶେଷ ତ୍ରୁଟି}
+::msgcat::mcset or {last pass %1$s at %2$s: %3$s} {ଶେଷ ପାସ୍ %1$s, %2$s ରେ: %3$s}
 ::msgcat::mcset or {last reply copied (%s chars)} {ଶେଷ ଉତ୍ତର କପି ହେଲା (%s ଅକ୍ଷର)}
 ::msgcat::mcset or {layout not saved: %s} {ଲେଆଉଟ୍ ସଞ୍ଚୟ ହୋଇନାହିଁ: %s}
 ::msgcat::mcset or {leave (cancels a running turn first)} {ବାହାରିଯାଅ (ପ୍ରଥମେ ଚାଲୁଥିବା ଟର୍ଣ୍ଣ ବାତିଲ କରେ)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset or {list sessions} {ସେସନ ତାଲିକା}
 ::msgcat::mcset or {list skills} {ସ୍କିଲ ତାଲିକା}
 ::msgcat::mcset or {list tools} {ଟୁଲ ତାଲିକା}
+::msgcat::mcset or {listed here only; [notify] fleet_alerts is off} {କେବଳ ଏଠାରେ ତାଲିକାଭୁକ୍ତ; [notify] fleet_alerts ବନ୍ଦ ଅଛି}
 ::msgcat::mcset or {live patching ARMED} {ଲାଇଭ୍ ପ୍ୟାଚିଂ ସକ୍ରିୟ}
 ::msgcat::mcset or {live patching ARMED — an agent can now redefine procs in this window} {ଲାଇଭ୍ ପ୍ୟାଚିଂ ସକ୍ରିୟ — ଏବେ ଏଜେଣ୍ଟ ଏହି ୱିଣ୍ଡୋରେ proc ପୁନଃପରିଭାଷିତ କରିପାରିବ}
 ::msgcat::mcset or {live patching disarmed} {ଲାଇଭ୍ ପ୍ୟାଚିଂ ନିଷ୍କ୍ରିୟ}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset or {log pane shown} {ଲଗ୍ ପ୍ୟାନ୍ ଦର୍ଶାଗଲା}
 ::msgcat::mcset or {log: %s} {ଲଗ୍: %s}
 ::msgcat::mcset or {make media: image/video/audio, route = comfyui or provider[/model]} {ମିଡିଆ ତିଆରି କର: image/video/audio, ରୁଟ = comfyui କିମ୍ବା provider[/model]}
+::msgcat::mcset or {managed via %s} {%s ମାଧ୍ୟମରେ ପରିଚାଳିତ}
+::msgcat::mcset or {manual only} {କେବଳ ମାନୁଆଲ୍}
 ::msgcat::mcset or {mark set} {ମାର୍କ ସେଟ୍ ହେଲା}
 ::msgcat::mcset or {mark whole buffer (emacs select-all)} {ପୂରା ବଫର୍ ଚିହ୍ନଟ କରନ୍ତୁ (emacs select-all)}
 ::msgcat::mcset or {markdown preview of the composer} {କମ୍ପୋଜରର markdown ପ୍ରିଭ୍ୟୁ}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset or model ମଡେଲ୍
 ::msgcat::mcset or {model aliases} {ମଡେଲ୍ ଉପନାମ}
 ::msgcat::mcset or {monitor %1$s fired} {ମନିଟର %1$s ଚାଲିଲା}
-::msgcat::mcset or monitors ମନିଟରଗୁଡ଼ିକ
 ::msgcat::mcset or monitors_header ମନିଟର:
 ::msgcat::mcset or monitors_none {(କୌଣସି ମନିଟର ନାହିଁ — ମଡେଲ ଏଗୁଡ଼ିକୁ monitor tool ଦ୍ୱାରା ଆରମ୍ଭ କରେ)}
 ::msgcat::mcset or {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {ଏକ ସେସନକୁ (ଏବଂ ଏହାର ସବଟ୍ରି) ଟର୍ଣ୍ଣ ସୀମାରେ ଅନ୍ୟ ପୁଲ ନୋଡକୁ ଘୁଞ୍ଚାନ୍ତୁ; ପାର୍କ କରାଯାଇଥିବା ହ୍ୟାଣ୍ଡଅଫ୍ ସମାପ୍ତ/ପୂର୍ବବତ୍ କରନ୍ତୁ; ଏକ ସେସନର ମାଲିକ କିଏ ପଚାରନ୍ତୁ (ଆଡମିନ୍)}
 ::msgcat::mcset or {move the running foreground command to the background} {ଚାଲୁଥିବା ଆଗଭାଗ କମାଣ୍ଡକୁ ପୃଷ୍ଠଭୂମିକୁ ନିଅ}
 ::msgcat::mcset or {move the running foreground command to the background (keeps running)} {ଚାଲୁଥିବା ଫୋରଗ୍ରାଉଣ୍ଡ କମାଣ୍ଡ୍ ବ୍ୟାକଗ୍ରାଉଣ୍ଡକୁ ନିଅନ୍ତୁ (ଚାଲୁ ରହିବ)}
+::msgcat::mcset or {move this session's running foreground command to a background shell; keeps running} {ଏହି ସେସନ୍‌ର ଚାଲୁଥିବା ଅଗ୍ରଭୂମି କମାଣ୍ଡକୁ ପୃଷ୍ଠଭୂମି ସେଲ୍କୁ ସ୍ଥାନାନ୍ତରିତ କରନ୍ତୁ; ଚାଲୁ ରହିବ}
 ::msgcat::mcset or {moving around} {ଏଣେତେଣେ ଯିବା}
 ::msgcat::mcset or name ନାମ
 ::msgcat::mcset or {name a key first} {ପ୍ରଥମେ କୀଟିକୁ ନାମ ଦିଅନ୍ତୁ}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset or {neon impressionism} {neon impressionism}
 ::msgcat::mcset or {network (optional — e.g. libera; empty = any)} {ନେଟୱର୍କ (ଇଚ୍ଛାଧୀନ — ଯଥା libera; ଖାଲି = ଯେକୌଣସି)}
 ::msgcat::mcset or {network to scope the grant to} {ଗ୍ରାଣ୍ଟ ସୀମିତ କରିବା ନେଟୱର୍କ}
+::msgcat::mcset or new ନୂଆ
 ::msgcat::mcset or {new buffer} {ନୂଆ ବଫର୍}
 ::msgcat::mcset or {new entry — replace this text, then Save} {ନୂଆ ଏଣ୍ଟ୍ରି — ଏହି ପାଠ୍ୟ ବଦଳାନ୍ତୁ, ତାପରେ Save}
 ::msgcat::mcset or {new name for %s} {%s ପାଇଁ ନୂଆ ନାମ}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset or {no IRC buffer selected} {କୌଣସି IRC ବଫର୍ ଚୟନ ହୋଇନାହିଁ}
 ::msgcat::mcset or {no MCP servers configured — Add server… writes one into config.toml} {କୌଣସି MCP ସର୍ଭର ବିନ୍ୟାସିତ ନାହିଁ — Add server… ଗୋଟିଏ config.toml ରେ ଲେଖିଦିଏ}
 ::msgcat::mcset or {no URLs in this buffer} {ଏହି ବଫରରେ କୌଣସି URL ନାହିଁ}
+::msgcat::mcset or {no [a2a_agents] entry — this peer cannot be dialed} {[a2a_agents] ଏଣ୍ଟ୍ରି ନାହିଁ — ଏହି ପିଅର୍‌କୁ ଡାଏଲ୍ କରାଯାଇପାରିବ ନାହିଁ}
 ::msgcat::mcset or {no alias /%s} {ଆଲିଆସ୍ /%s ନାହିଁ}
 ::msgcat::mcset or {no background refresh} {ପୃଷ୍ଠଭୂମି ରିଫ୍ରେସ୍ ନାହିଁ}
 ::msgcat::mcset or {no buffer %s} {ବଫର୍ %s ନାହିଁ}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset or {no code block in the last reply} {ଶେଷ ଉତ୍ତରରେ କୌଣସି କୋଡ୍ ବ୍ଲକ୍ ନାହିଁ}
 ::msgcat::mcset or {no cron jobs} {କୌଣସି cron କାର୍ଯ୍ୟ ନାହିଁ}
 ::msgcat::mcset or {no cron jobs — New… creates one} {କୌଣସି cron କାର୍ଯ୍ୟ ନାହିଁ — New… ଗୋଟିଏ ସୃଷ୍ଟି କରେ}
+::msgcat::mcset or {no exchange yet} {ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ବିନିମୟ ନାହିଁ}
 ::msgcat::mcset or {no file — pick a guts file or type a path} {କୌଣସି ଫାଇଲ୍ ନାହିଁ — ଏକ guts ଫାଇଲ୍ ବାଛନ୍ତୁ କିମ୍ବା ଏକ ପାଥ୍ ଲେଖନ୍ତୁ}
 ::msgcat::mcset or {no handler} {କୌଣସି ହ୍ୟାଣ୍ଡଲର୍ ନାହିଁ}
+::msgcat::mcset or {no heartbeat for %{mins} min} {%{mins} ମିନିଟ୍ ଧରି ହାର୍ଟବିଟ୍ ନାହିଁ}
+::msgcat::mcset or {no heartbeat within the threshold} {ଥ୍ରେଶହୋଲ୍ଡ ଭିତରେ ହାର୍ଟବିଟ୍ ନାହିଁ}
 ::msgcat::mcset or {no history yet} {ଏପର୍ଯ୍ୟନ୍ତ ଇତିହାସ ନାହିଁ}
 ::msgcat::mcset or {no host configured for this instance} {ଏହି ଇନ୍ସ୍ଟାନ୍ସ ପାଇଁ କୌଣସି ହୋଷ୍ଟ ବିନ୍ୟାସିତ ନାହିଁ}
 ::msgcat::mcset or {no instance selected} {କୌଣସି ଇନ୍ସ୍ଟାନ୍ସ ଚୟନ ହୋଇନାହିଁ}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset or {no program to open URLs} {URL ଖୋଲିବାକୁ କୌଣସି ପ୍ରୋଗ୍ରାମ ନାହିଁ}
 ::msgcat::mcset or {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {କୌଣସି ପ୍ରୋଭାଇଡର୍ କନଫିଗର୍ କରାଯାଇନାହିଁ — ଏକ ଟର୍ନ ଚଳାଇବା ପୂର୍ବରୁ [[custom_providers]] ଏଣ୍ଟ୍ରି ଯୋଡ଼ନ୍ତୁ ଏବଂ [model] ଯୋଡ଼ି ସେଟ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {no reading yet — press Refresh} {ଏପର୍ଯ୍ୟନ୍ତ କିଛି ପଢ଼ାଯାଇ ନାହିଁ — Refresh ଦବାନ୍ତୁ}
-::msgcat::mcset or {no running tasks} {କୌଣସି ଚାଲୁଥିବା କାର୍ଯ୍ୟ ନାହିଁ}
 ::msgcat::mcset or {no sample available} {କୌଣସି ନମୁନା ଉପଲବ୍ଧ ନାହିଁ}
 ::msgcat::mcset or {no search bar on this surface} {ଏହି ସର୍ଫେସରେ କୌଣସି ସର୍ଚ୍ଚ ବାର୍ ନାହିଁ}
 ::msgcat::mcset or {no session matching %s} {%s ସହ ମେଳ ଖାଉଥିବା କୌଣସି ସେସନ୍ ନାହିଁ}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset or {no session open — switch the scope to the default, or open a session} {କୌଣସି ସେସନ୍ ଖୋଲା ନାହିଁ — ସ୍କୋପ୍‌କୁ ଡିଫଲ୍ଟକୁ ବଦଳାନ୍ତୁ, କିମ୍ବା ଏକ ସେସନ୍ ଖୋଲନ୍ତୁ}
 ::msgcat::mcset or {no session open — the catalogue needs one; the default scope still works from config.toml} {କୌଣସି ସେସନ୍ ଖୋଲା ନାହିଁ — କାଟାଲଗ୍ ପାଇଁ ଗୋଟିଏ ଆବଶ୍ୟକ; ଡିଫଲ୍ଟ ସ୍କୋପ୍ config.toml ରୁ ତଥାପି କାମ କରେ}
 ::msgcat::mcset or {no setting %s — try filter or bare} {ସେଟିଂ %s ନାହିଁ — filter କିମ୍ବା bare ଚେଷ୍ଟା କରନ୍ତୁ}
+::msgcat::mcset or {no shells or monitors to show} {ଦେଖାଇବାକୁ କୌଣସି ସେଲ୍ କିମ୍ବା ମନିଟର ନାହିଁ}
 ::msgcat::mcset or {no skills found} {କୌଣସି skill ମିଳିଲା ନାହିଁ}
 ::msgcat::mcset or {no such URL — /urls lists them} {ଏପରି କୌଣସି URL ନାହିଁ — /urls ସେଗୁଡ଼ିକ ତାଲିକାଭୁକ୍ତ କରେ}
 ::msgcat::mcset or {no such file: %s} {ଏପରି କୌଣସି ଫାଇଲ୍ ନାହିଁ: %s}
 ::msgcat::mcset or {no swap target yet — set one with /locale secondary <id>} {ଏପର୍ଯ୍ୟନ୍ତ ବଦଳ ଭାଷା ନାହିଁ — /locale secondary <id> ଦ୍ୱାରା ସେଟ୍ କର}
+::msgcat::mcset or {no task selected} {କୌଣସି କାର୍ଯ୍ୟ ଚୟନ ହୋଇନାହିଁ}
 ::msgcat::mcset or {no triggers} {କୌଣସି ଟ୍ରିଗର ନାହିଁ}
 ::msgcat::mcset or {no triggers — New… creates one} {କୌଣସି ଟ୍ରିଗର ନାହିଁ — New… ଗୋଟିଏ ସୃଷ୍ଟି କରେ}
 ::msgcat::mcset or {no upstream reading for %s} {%s ପାଇଁ କୌଣସି ଅପଷ୍ଟ୍ରିମ୍ ପଠନ ନାହିଁ}
 ::msgcat::mcset or {no word match} {କୌଣସି ଶବ୍ଦ ମେଳ ନାହିଁ}
 ::msgcat::mcset or {no xdg-open — path copied instead} {କୌଣସି xdg-open ନାହିଁ — ବଦଳରେ ପାଥ୍ କପି ହେଲା}
+::msgcat::mcset or {node log} {ନୋଡ ଲଗ୍}
 ::msgcat::mcset or {none loaded} {କିଛି ବି ଲୋଡ୍ ହୋଇ ନାହିଁ}
 ::msgcat::mcset or {none recorded} {କିଛି ଲିପିବଦ୍ଧ ନାହିଁ}
+::msgcat::mcset or {none since this gateway started} {ଏହି ଗେଟୱେ ଆରମ୍ଭ ହେବା ପରଠାରୁ କିଛି ନାହିଁ}
 ::msgcat::mcset or {none yet} {ଏପର୍ଯ୍ୟନ୍ତ ନାହିଁ}
 ::msgcat::mcset or {normie is pure Ctrl — no emacs prefix chords.} {normie ପୂରାପୁରି Ctrl — କୌଣସି emacs ପ୍ରିଫିକ୍ସ୍ କର୍ଡ୍ ନାହିଁ।}
 ::msgcat::mcset or {normie: select all · emacs: start of line} {normie: ସବୁ ବାଛନ୍ତୁ · emacs: ଲାଇନ୍ ଆରମ୍ଭ}
 ::msgcat::mcset or {not a channel} {ଚ୍ୟାନେଲ୍ ନୁହେଁ}
 ::msgcat::mcset or {not a key = value line: %s} {ଏହା ଏକ କୀ = ମୂଲ୍ୟ ଧାଡ଼ି ନୁହେଁ: %s}
+::msgcat::mcset or {not a node in the attached gateway's cluster registry: %s} {ସଂଯୁକ୍ତ ଗେଟୱେର କ୍ଲଷ୍ଟର ରେଜିଷ୍ଟ୍ରିରେ ନୋଡ୍ ନୁହେଁ: %s}
 ::msgcat::mcset or {not a number} {ସଂଖ୍ୟା ନୁହେଁ}
 ::msgcat::mcset or {not a valid http(s) url: %s} {ବୈଧ http(s) url ନୁହେଁ: %s}
 ::msgcat::mcset or {not a valid ssh host: %s} {ବୈଧ ssh ହୋଷ୍ଟ ନୁହେଁ: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset or {not attached to a gateway} {କୌଣସି ଗେଟୱେ ସହ ସଂଲଗ୍ନ ନୁହେଁ}
 ::msgcat::mcset or {not configured} {ବିନ୍ୟାସିତ ନୁହେଁ}
 ::msgcat::mcset or {not ignoring %s} {%s କୁ ଅଣଦେଖା କରୁନାହିଁ}
+::msgcat::mcset or {not installed} {ଇନଷ୍ଟଲ୍ ହୋଇନାହିଁ}
 ::msgcat::mcset or {not reported} {ରିପୋର୍ଟ ହୋଇନାହିଁ}
 ::msgcat::mcset or {not running} ଚାଲୁନାହିଁ
 ::msgcat::mcset or {not set in config.toml — the built-in default applies. %s} {config.toml ରେ ସେଟ୍ ହୋଇନାହିଁ — ଅନ୍ତର୍ନିହିତ ଡିଫଲ୍ଟ ଲାଗୁ ହୁଏ. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset or off ବନ୍ଦ
 ::msgcat::mcset or {off (the default)} {ବନ୍ଦ (ଡିଫଲ୍ଟ)}
 ::msgcat::mcset or offline ଅଫଲାଇନ୍
+::msgcat::mcset or ok ଠିକ୍
 ::msgcat::mcset or on ଚାଲୁ
 ::msgcat::mcset or {on (the default)} {ଚାଲୁ (ଡିଫଲ୍ଟ)}
 ::msgcat::mcset or {on failure} ବିଫଳତାରେ
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset or {open links} {ଲିଙ୍କ ଖୋଲିବା}
 ::msgcat::mcset or {open the engine log} {ଇଞ୍ଜିନ୍ ଲଗ୍ ଖୋଲନ୍ତୁ}
 ::msgcat::mcset or {open the joined session before /leave (on %s)} {/leave କରିବା ପୂର୍ବରୁ ଯୋଗ ଦେଇଥିବା ସେସନ୍ ଖୋଲନ୍ତୁ (%s ରେ)}
+::msgcat::mcset or {open the selected child session} {ଚୟନିତ ଶିଶୁ ଅଧିବେଶନ ଖୋଲନ୍ତୁ}
 ::msgcat::mcset or {open the selected skill in the Dev editor} {ଚୟନିତ ସ୍କିଲ୍‌କୁ Dev ଏଡିଟରରେ ଖୋଲନ୍ତୁ}
 ::msgcat::mcset or {open the setup wizard (re-runnable; edits config.toml in place)} {ସେଟଅପ୍ ୱିଜାର୍ଡ ଖୋଲନ୍ତୁ (ପୁଣି ଚଳାଇହେବ; config.toml ସେହି ସ୍ଥାନରେ ସମ୍ପାଦନ କରେ)}
 ::msgcat::mcset or {open the share sheet} {ସେୟାର ସିଟ୍ ଖୋଲିବା}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset or {override cleared — the default applies} {ଓଭରରାଇଡ୍ ହଟାଗଲା — ଡିଫଲ୍ଟ ପ୍ରଯୁଜ୍ୟ}
 ::msgcat::mcset or {override failed: %s} {ଓଭରରାଇଡ୍ ବିଫଳ: %s}
 ::msgcat::mcset or {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {ମାଲିକଙ୍କ ପରିଚୟ %{id} କୁ ACL ମେଳାଇପାରିବ ନାହିଁ — telegram:<ସାଂଖ୍ୟିକ ଆଇଡି>, irc:<services ଆକାଉଣ୍ଟ>, କିମ୍ବା nick!user@host ମାସ୍କ ବ୍ୟବହାର କରନ୍ତୁ}
+::msgcat::mcset or owner/repository ମାଲିକ/ରିପୋଜିଟରୀ
 ::msgcat::mcset or {owners: %s} {ମାଲିକ: %s}
 ::msgcat::mcset or {pair a desktop with this agent} {ଏହି ଏଜେଣ୍ଟ ସହ ଏକ ଡେସ୍କଟପ ଯୋଡ଼}
 ::msgcat::mcset or {partly failed: %s} {ଆଂଶିକ ବିଫଳ: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset or plugin ପ୍ଲଗଇନ
 ::msgcat::mcset or {plugin directory git history} {ପ୍ଲଗଇନ ଡିରେକ୍ଟରିର git ଇତିହାସ}
 ::msgcat::mcset or {plugin list} {ପ୍ଲଗଇନ ତାଲିକା}
+::msgcat::mcset or {plugin provider driver} {ପ୍ଲଗିନ୍ ପ୍ରୋଭାଇଡର୍ ଡ୍ରାଇଭର}
 ::msgcat::mcset or {plugins reloaded on %s} {%s ରେ ପ୍ଲଗଇନ ପୁଣି ଲୋଡ଼ ହେଲା}
 ::msgcat::mcset or {pop %s out into its own window} {%s କୁ ନିଜ ଉଇଣ୍ଡୋରେ ଖୋଲନ୍ତୁ}
 ::msgcat::mcset or {pop the buffer out into its own window} {ବଫରକୁ ନିଜସ୍ୱ ୱିଣ୍ଡୋରେ ଖୋଲନ୍ତୁ}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset or {prefix: window & dock commands} {ପ୍ରିଫିକ୍ସ୍: ୱିଣ୍ଡୋ ଓ ଡକ୍ କମାଣ୍ଡ}
 ::msgcat::mcset or {press Attach in the Instances tab} {Instances ଟ୍ୟାବରେ Attach ଦବାଅ}
 ::msgcat::mcset or preview ପୂର୍ବାବଲୋକନ
+::msgcat::mcset or {preview an AI extension change and explicitly apply its diff} {AI ଏକ୍ସଟେନସନ ପରିବର୍ତ୍ତନର ପୂର୍ବାବଲୋକନ କରନ୍ତୁ ଏବଂ ଏହାର ଡିଫ୍କୁ ସ୍ପଷ୍ଟ ଭାବେ ଲାଗୁ କରନ୍ତୁ}
 ::msgcat::mcset or {preview failed: %s} {ପୂର୍ବାବଲୋକନ ବିଫଳ: %s}
 ::msgcat::mcset or {previous buffer} {ପୂର୍ବବର୍ତ୍ତୀ ବଫର୍}
 ::msgcat::mcset or {previous command was not a yank} {ପୂର୍ବ କମାଣ୍ଡ yank ନୁହେଁ}
 ::msgcat::mcset or {previous match} {ପୂର୍ବ ମେଳ}
 ::msgcat::mcset or {previous session} {ପୂର୍ବ ସେସନ୍}
+::msgcat::mcset or {probing %s…} {%s ପ୍ରୋବ୍ କରୁଛି…}
 ::msgcat::mcset or {proc body} {proc ବଡି}
 ::msgcat::mcset or {profile unavailable: %s} {ପ୍ରୋଫାଇଲ୍ ଉପଲବ୍ଧ ନାହିଁ: %s}
 ::msgcat::mcset or profiles: {ପ୍ରୋଫାଇଲ୍ ଗୁଡ଼ିକ:}
 ::msgcat::mcset or prompt ପ୍ରମ୍ପ୍ଟ
 ::msgcat::mcset or {prompt breakdown} {ପ୍ରମ୍ପ୍ଟର ବିଶ୍ଳେଷଣ}
 ::msgcat::mcset or {prompt tokens} {ପ୍ରମ୍ପ୍ଟ ଟୋକନ୍}
+::msgcat::mcset or {proposal only, not applied} {କେବଳ ପ୍ରସ୍ତାବ, ଲାଗୁ କରାଯାଇନାହିଁ}
 ::msgcat::mcset or provider ପ୍ରୋଭାଇଡର
 ::msgcat::mcset or {provider / model} {ପ୍ରୋଭାଇଡର / ମଡେଲ}
 ::msgcat::mcset or {provider base URL} {ପ୍ରୋଭାଇଡର୍ base URL}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset or {re-sync the slopdrop state mirror} {slopdrop ଷ୍ଟେଟ୍ ମିରର୍ ପୁଣି ସିଙ୍କ କରନ୍ତୁ}
 ::msgcat::mcset or {read and set the clipboard} {କ୍ଲିପବୋର୍ଡ ପଢ଼ିବା ଓ ସେଟ୍ କରିବା}
 ::msgcat::mcset or {read text aloud} {ଲେଖା ଜୋରରେ ପଢ଼ିବା}
+::msgcat::mcset or {read-only: [approvals] allowlist} {କେବଳ-ପଠନୀୟ: [approvals] allowlist}
 ::msgcat::mcset or {read-only: this session lives on %1$s (as read at %2$s)} {ପଢ଼ା-ମାତ୍ର: ଏହି ସେସନ %1$s ରେ ଅଛି (%2$s ରେ ପଢ଼ାଯାଇଥିବା ଅନୁସାରେ)}
 ::msgcat::mcset or {read-only: this skill comes from the %s library} {ପଢ଼ା-ମାତ୍ର: ଏହି ସ୍କିଲ %s ଲାଇବ୍ରେରୀରୁ ଆସିଛି}
 ::msgcat::mcset or reasoning ରିଜନିଂ
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset or {refused to open %s (only http, https, mailto)} {%s ଖୋଲିବାକୁ ମନା (କେବଳ http, https, mailto)}
 ::msgcat::mcset or {refused: %s} {ଅସ୍ୱୀକୃତ: %s}
 ::msgcat::mcset or {region copied} {ଅଞ୍ଚଳ କପି ହେଲା}
+::msgcat::mcset or registered ପଞ୍ଜୀକୃତ
 ::msgcat::mcset or {registry not saved: %s} {ରେଜିଷ୍ଟ୍ରି ସେଭ ହେଲାନି: %s}
 ::msgcat::mcset or {reload on %1$s failed: %2$s} {%1$s ରେ ରିଲୋଡ଼ ବିଫଳ: %2$s}
 ::msgcat::mcset or {reload the mechanisms} {ମେକାନିଜମ ପୁଣି ଲୋଡ଼ କର}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset or {resume a session (prefix ok)} {ଏକ ସେସନ ପୁଣି ଆରମ୍ଭ କର (ଉପସର୍ଗ ଯଥେଷ୍ଟ)}
 ::msgcat::mcset or {retry failed: %s} {ପୁନଃପ୍ରାପ୍ତି ବିଫଳ: %s}
 ::msgcat::mcset or {retrying last prompt…} {ଶେଷ ପ୍ରମ୍ପ୍ଟ ପୁଣି ଚେଷ୍ଟା…}
+::msgcat::mcset or {review files for an explicit upstream contribution} {ସ୍ପଷ୍ଟ ଅପଷ୍ଟ୍ରିମ୍ ଅବଦାନ ପାଇଁ ଫାଇଲଗୁଡ଼ିକୁ ସମୀକ୍ଷା କରନ୍ତୁ}
+::msgcat::mcset or {review standing global and session tool permissions} {ସ୍ଥାୟୀ ଗ୍ଲୋବାଲ ଓ ସେସନ ଟୁଲ୍ ଅନୁମତି ସମୀକ୍ଷା କରନ୍ତୁ}
 ::msgcat::mcset or revision ସଂସ୍କରଣ
 ::msgcat::mcset or {revision history} {ସଂସ୍କରଣ ଇତିହାସ}
+::msgcat::mcset or {revoke refused} {ଫେରାଇ ନେବା ମନା ହେଲା}
 ::msgcat::mcset or {revoke the selected identity's grant} {ଚୟନିତ ପରିଚୟର ଅନୁମତି ପ୍ରତ୍ୟାହାର କର}
 ::msgcat::mcset or role ଭୂମିକା
 ::msgcat::mcset or {role to grant} {ଦେବାକୁ ଥିବା ଭୂମିକା}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset or {saved to %s} {%s ରେ ସେଭ ହେଲା}
 ::msgcat::mcset or saved. {ସେଭ ହେଲା।}
 ::msgcat::mcset or {scaffold a new plugin} {ନୂଆ ପ୍ଲଗଇନ scaffold କର}
+::msgcat::mcset or {scaffold a user plugin and open it in this editor} {ଏକ ୟୁଜର ପ୍ଲଗଇନ୍ ସ୍କାଫୋଲ୍ଡ କରି ଏହି ଏଡିଟରରେ ଖୋଲନ୍ତୁ}
 ::msgcat::mcset or {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {ନିର୍ଦ୍ଧାରିତ କାମ; /crons add "<sched>" [session=<id>] <prompt> (ଉପନାମ /cron)}
 ::msgcat::mcset or scope ସ୍କୋପ
 ::msgcat::mcset or script ସ୍କ୍ରିପ୍ଟ
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset or {select %s first} {ପ୍ରଥମେ %s ଚୟନ କର}
 ::msgcat::mcset or {select a checkpoint first} {ପ୍ରଥମେ ଗୋଟିଏ checkpoint ଚୟନ କର}
 ::msgcat::mcset or {select a file, or New… to create one} {ଏକ ଫାଇଲ ଚୟନ କରନ୍ତୁ, କିମ୍ବା ତିଆରି କରିବାକୁ ନୂଆ…}
+::msgcat::mcset or {select a grant first} {ପ୍ରଥମେ ଏକ ଅନୁମତି ଚୟନ କରନ୍ତୁ}
 ::msgcat::mcset or {select a handler first} {ପ୍ରଥମେ ଗୋଟିଏ handler ଚୟନ କର}
 ::msgcat::mcset or {select a member first} {ପ୍ରଥମେ ଗୋଟିଏ ସଦସ୍ୟ ଚୟନ କର}
 ::msgcat::mcset or {select a route} {ଗୋଟିଏ ରୁଟ ଚୟନ କର}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset or {select an assignment first} {ପ୍ରଥମେ ଗୋଟିଏ ଆସାଇନମେଣ୍ଟ ଚୟନ କର}
 ::msgcat::mcset or {select an entry first} {ପ୍ରଥମେ ଗୋଟିଏ ଏଣ୍ଟ୍ରି ଚୟନ କର}
 ::msgcat::mcset or {select an identity first} {ପ୍ରଥମେ ଗୋଟିଏ ପରିଚୟ ଚୟନ କର}
+::msgcat::mcset or {selected task details and shell output} {ଚୟନିତ କାର୍ଯ୍ୟର ବିବରଣୀ ଓ ସେଲ୍ ଆଉଟପୁଟ୍}
 ::msgcat::mcset or {selected: %s} {ଚୟନିତ: %s}
 ::msgcat::mcset or {send clipboard as prompt} {କ୍ଲିପବୋର୍ଡକୁ ପ୍ରମ୍ପ୍ଟ ଭାବେ ପଠାଅ}
 ::msgcat::mcset or {send failed: %s} {ପଠାଇବା ବିଫଳ: %s}
 ::msgcat::mcset or {send the message; while a turn runs, queue it as steering} {ମେସେଜ୍ ପଠାନ୍ତୁ; ଟର୍ନ୍ ଚାଲୁଥିଲେ ଏହାକୁ ଷ୍ଟିୟରିଂ ଭାବେ କ୍ୟୁ କରନ୍ତୁ}
+::msgcat::mcset or sent ପଠାଗଲା
+::msgcat::mcset or {sent to the owner's home chat} {ମାଲିକଙ୍କ ମୂଳ ଚାଟକୁ ପଠାଗଲା}
 ::msgcat::mcset or server ସର୍ଭର
 ::msgcat::mcset or {server buffers merged} {ସର୍ଭର ବଫର ମିଶିଗଲା}
 ::msgcat::mcset or {server buffers separate} {ସର୍ଭର ବଫର ଅଲଗା}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset or {settings, one key = value per line} {ସେଟିଂ, ପ୍ରତି ଧାଡ଼ିରେ ଗୋଟିଏ key = value}
 ::msgcat::mcset or {setup_done marker NOT saved: %s} {setup_done ମାର୍କର୍ ସେଭ୍ ହେଲା ନାହିଁ: %s}
 ::msgcat::mcset or {shell %1$s finished} {ଶେଲ %1$s ସରିଲା}
-::msgcat::mcset or shells ଶେଲ
+::msgcat::mcset or {shells, monitors and subagents} {ସେଲ୍, ମନିଟର ଓ ସବ୍-ଏଜେଣ୍ଟ}
 ::msgcat::mcset or shells_header {ପୃଷ୍ଠଭୂମି ଶେଲ:}
 ::msgcat::mcset or shells_none {(କୌଣସି ପୃଷ୍ଠଭୂମି ଶେଲ ନାହିଁ — /background <cmd> ଗୋଟିଏ ଆରମ୍ଭ କରେ)}
 ::msgcat::mcset or {show current configuration} {ବର୍ତ୍ତମାନର ବିନ୍ୟାସ ଦେଖାନ୍ତୁ}
 ::msgcat::mcset or {show every key in this mode} {ଏହି ମୋଡ୍‌ର ପ୍ରତ୍ୟେକ କି ଦେଖାନ୍ତୁ}
 ::msgcat::mcset or {show or hide the session list} {ସେସନ ତାଲିକା ଦେଖାଅ ବା ଲୁଚାଅ}
 ::msgcat::mcset or {show or switch model (alias | model@provider | custom:<prov>)} {ମଡେଲ୍ ଦେଖାଅ କିମ୍ବା ବଦଳାଅ (alias | model@provider | custom:<prov>)}
+::msgcat::mcset or {show selected shell output} {ଚୟନିତ ସେଲ୍ ଆଉଟପୁଟ୍ ଦେଖାନ୍ତୁ}
 ::msgcat::mcset or {show short messages} {ଛୋଟ ବାର୍ତ୍ତା ଦେଖାଇବା}
 ::msgcat::mcset or {show the model's reasoning blocks (same as /reasoning)} {ମଡେଲର ରିଜନିଂ ବ୍ଲକ୍ ଦେଖାନ୍ତୁ (/reasoning ସହ ସମାନ)}
 ::msgcat::mcset or {show unclaimed} {ଅଦାଖଲ ଦେଖାଅ}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset or spend ଖର୍ଚ୍ଚ
 ::msgcat::mcset or {split: %s} {ସ୍ପ୍ଲିଟ: %s}
 ::msgcat::mcset or {ssh to %1$s failed: %2$s} {%1$s କୁ ssh ବିଫଳ: %2$s}
+::msgcat::mcset or {stale — no heartbeat within the threshold} {ପୁରୁଣା — ସୀମା ଭିତରେ କୌଣସି ହାର୍ଟବିଟ୍ ନାହିଁ}
+::msgcat::mcset or {standing global and session permission grants} {ସ୍ଥାୟୀ ଗ୍ଲୋବାଲ ଓ ସେସନ ଅନୁମତି ପ୍ରଦାନ}
 ::msgcat::mcset or state ସ୍ଥିତି
 ::msgcat::mcset or {state       never reached} {ସ୍ଥିତି       କେବେ ପହଞ୍ଚିଲା ନାହିଁ}
 ::msgcat::mcset or {state       reachable} {ସ୍ଥିତି       ପହଞ୍ଚିହେବା ଯୋଗ୍ୟ}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset or {stored in the encrypted vault (%1$s): %2$s} {ଏନକ୍ରିପ୍ଟ ହୋଇଥିବା ଭଲ୍ଟରେ ରଖାଗଲା (%1$s): %2$s}
 ::msgcat::mcset or {stream handler: %s} {ଷ୍ଟ୍ରିମ handler: %s}
 ::msgcat::mcset or {subagent %1$s finished} {ସବଏଜେଣ୍ଟ %1$s ସରିଲା}
-::msgcat::mcset or subagents ସବଏଜେଣ୍ଟ
 ::msgcat::mcset or subagents_header {ଚାଲୁଥିବା ସବଏଜେଣ୍ଟ:}
 ::msgcat::mcset or subagents_none {(କୌଣସି ଚାଲୁଥିବା ସବଏଜେଣ୍ଟ ନାହିଁ — /btw <prompt> ଗୋଟିଏ ଆରମ୍ଭ କରେ, କିମ୍ବା ମଡେଲ delegate_task ବ୍ୟବହାର କରେ)}
 ::msgcat::mcset or {suspend failed: %{e}} {ସସପେଣ୍ଡ ବିଫଳ: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset or {switch the selected skill off} {ଚୟନିତ ସ୍କିଲ ବନ୍ଦ କର}
 ::msgcat::mcset or {switch the selected skill on} {ଚୟନିତ ସ୍କିଲ ଚଲାଅ}
 ::msgcat::mcset or {switch to the %s tab} {%s ଟ୍ୟାବକୁ ଯାଅ}
+::msgcat::mcset or {sync requested: %s} {ସିଙ୍କ୍ ଅନୁରୋଧିତ: %s}
 ::msgcat::mcset or {tab 1} {tab 1}
 ::msgcat::mcset or {tab 2} {tab 2}
 ::msgcat::mcset or {tab 3} {tab 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset or tasks_none {(କୌଣସି ଚାଲୁଥିବା କାର୍ଯ୍ୟ ନାହିଁ)}
 ::msgcat::mcset or tasks_not_found {ଏପରି କାର୍ଯ୍ୟ ନାହିଁ: %{id}}
 ::msgcat::mcset or tasks_not_running {କାର୍ଯ୍ୟ %{id} ପୂର୍ବରୁ ଶେଷ ହୋଇସାରିଛି}
-::msgcat::mcset or {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset or {tcl-lsp: event stream unavailable: %s} {tcl-lsp: ଇଭେଣ୍ଟ ଷ୍ଟ୍ରିମ ଉପଲବ୍ଧ ନାହିଁ: %s}
-::msgcat::mcset or {tcl-lsp: gateway would not start it: %s} {tcl-lsp: gateway ଏହାକୁ ଆରମ୍ଭ କଲା ନାହିଁ: %s}
-::msgcat::mcset or {tcl-lsp: not started on the gateway — %s} {tcl-lsp: gateway ରେ ଆରମ୍ଭ ହୋଇ ନାହିଁ — %s}
 ::msgcat::mcset or {that buffer is not split} {ସେହି ବଫର ସ୍ପ୍ଲିଟ ନୁହେଁ}
 ::msgcat::mcset or {the %s plan} {%s ଯୋଜନା}
 ::msgcat::mcset or {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {API key ଫିଲ୍ଡଟି ଏକ env ଭେରିଏବଲ୍‌ର ନାମ ନିଏ (%{example} ପରି), ପ୍ରକୃତ key ନୁହେଁ — key ଲୁଚାଯାଇଥିବା ଫିଲ୍ଡରେ ଦିଅନ୍ତୁ}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset or {the gateway answered without a report} {gateway ରିପୋର୍ଟ ବିନା ଉତ୍ତର ଦେଲା}
 ::msgcat::mcset or {the model/provider pair is incomplete — the gateway will not route until both are present} {ମଡେଲ୍/ପ୍ରୋଭାଇଡର୍ ଯୋଡ଼ି ଅସମ୍ପୂର୍ଣ୍ଣ — ଉଭୟ ନ ଥିବା ପର୍ଯ୍ୟନ୍ତ ଗେଟୱେ ରୁଟ୍ କରିବ ନାହିଁ}
 ::msgcat::mcset or {the options changed, so that is a fresh preview — press “Write it” again to write it} {ବିକଳ୍ପ ବଦଳିଲେ, ତେଣୁ ଏହା ନୂଆ ପୂର୍ବାବଲୋକନ — ଲେଖିବାକୁ “Write it” ପୁଣି ଦବାଅ}
+::msgcat::mcset or {the peer has not been sent this vault yet} {ଏହି ଭଲ୍ଟ ଏପର୍ଯ୍ୟନ୍ତ ପିଅର୍‌କୁ ପଠାଯାଇନାହିଁ}
+::msgcat::mcset or {the peer holds this vault} {ପିଅର୍ ପାଖରେ ଏହି ଭଲ୍ଟ ଅଛି}
 ::msgcat::mcset or {the primary route is \[model\] provider/default — change it there, not here} {ମୁଖ୍ୟ ରୁଟ ହେଉଛି \[model\] provider/default — ସେଠାରେ ବଦଳାଅ, ଏଠାରେ ନୁହେଁ}
 ::msgcat::mcset or {the provider/model route this session sends to} {ଏହି ସେସନ୍ ପଠାଉଥିବା ପ୍ରୋଭାଇଡର୍/ମଡେଲ୍ ରୁଟ୍}
 ::msgcat::mcset or {the same, on the privileged path (owner only)} {ସେହିଟା, ବିଶେଷାଧିକାର ପଥରେ (କେବଳ owner)}
 ::msgcat::mcset or {the selected entry (edit, then Save)} {ଚୟନିତ ଏଣ୍ଟ୍ରି (ସମ୍ପାଦନ, ତା'ପରେ Save)}
+::msgcat::mcset or {the server stopped: %s} {ସର୍ଭର ବନ୍ଦ ହେଲା: %s}
 ::msgcat::mcset or {the synthwave splash} {synthwave ସ୍ୱାଗତ ସ୍କ୍ରିନ}
 ::msgcat::mcset or {the text after the name was NOT sent anywhere — type the value into the masked field} {ନାମ ପରର ଲେଖା କୁଆଡ଼େ ପଠାଯାଇନାହିଁ — ମୂଲ୍ୟଟି ଲୁଚାଯାଇଥିବା ଘରେ ଟାଇପ୍ କରନ୍ତୁ}
 ::msgcat::mcset or {the transcript} ଟ୍ରାନ୍ସକ୍ରିପ୍ଟ
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset or thinking… ଭାବୁଛି…
 ::msgcat::mcset or {thinking… (%s)} {ଭାବୁଛି… (%s)}
 ::msgcat::mcset or {this file's revisions, their diffs, and restore} {ଏହି ଫାଇଲର ସଂସ୍କରଣ, ସେଗୁଡ଼ିକର ପାର୍ଥକ୍ୟ, ଏବଂ ପୁନରୁଦ୍ଧାର}
+::msgcat::mcset or {this gateway} {ଏହି ଗେଟୱେ}
 ::msgcat::mcset or {this gateway has no Tcl interpreter} {ଏହି gateway ରେ Tcl ଇଣ୍ଟରପ୍ରେଟର ନାହିଁ}
 ::msgcat::mcset or {this list} {ଏହି ତାଲିକା}
+::msgcat::mcset or {this node has no vault} {ଏହି ନୋଡ୍ ପାଖରେ କୌଣସି ଭଲ୍ଟ ନାହିଁ}
 ::msgcat::mcset or {this route} {ଏହି ରୁଟ}
 ::msgcat::mcset or {this session} {ଏହି ସେସନ}
 ::msgcat::mcset or {this session follows the default language again (%{def})} {ଏହି ସେସନ ପୁଣି ଡିଫଲ୍ଟ ଭାଷା ଅନୁସରଣ କରୁଛି (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset or {transcript finalization failed: %s} {ପ୍ରତିଲିପି ସମାପ୍ତି ବିଫଳ ହେଲା: %s}
 ::msgcat::mcset or {transcript refetched} {ଟ୍ରାନ୍ସକ୍ରିପ୍ଟ ପୁଣି ଆଣିଲା}
 ::msgcat::mcset or {transcript — arrows to read, %s for composer} {ଟ୍ରାନ୍ସକ୍ରିପ୍ଟ — ପଢ଼ିବାକୁ ତୀର, composer ପାଇଁ %s}
+::msgcat::mcset or {translate text with the dedicated translation model, without an agent turn} {ଏକ ଏଜେଣ୍ଟ ଟର୍ନ ବିନା, ସମର୍ପିତ ଅନୁବାଦ ମଡେଲ୍ ସହ ଟେକ୍ସଟ ଅନୁବାଦ କରନ୍ତୁ}
+::msgcat::mcset or {translation result} {ଅନୁବାଦ ଫଳାଫଳ}
 ::msgcat::mcset or {trigger %1$s %2$sd} {%1$s ଟ୍ରିଗର %2$sd}
 ::msgcat::mcset or {trigger created} {ଟ୍ରିଗର ତିଆରି ହେଲା}
 ::msgcat::mcset or {trigger updated} {ଟ୍ରିଗର ଅପଡେଟ ହେଲା}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset or {usage: /steer <instruction>} {ବ୍ୟବହାର: /steer <instruction>}
 ::msgcat::mcset or used ବ୍ୟବହୃତ
 ::msgcat::mcset or user ଉପଭୋକ୍ତା
+::msgcat::mcset or {user copy} {ରୂପାନ୍ତରକାରୀ କପି}
 ::msgcat::mcset or {user identities, one per line} {ଉପଭୋକ୍ତା ପରିଚୟ, ପ୍ରତି ଧାଡ଼ିରେ ଗୋଟିଏ}
 ::msgcat::mcset or {user name} {ଉପଭୋକ୍ତା ନାମ}
 ::msgcat::mcset or {user profile} {ଉପଯୋଗକର୍ତ୍ତା ପ୍ରୋଫାଇଲ}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset or {value (TOML: 5, true, "text", ["a","b"])} {value (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset or veles veles
 ::msgcat::mcset or {veles editor} {veles ସମ୍ପାଦକ}
+::msgcat::mcset or {veles fleet: node %{node} is failing — %{detail}} {veles ଫ୍ଲିଟ୍: ନୋଡ %{node} ବିଫଳ ହେଉଛି — %{detail}}
+::msgcat::mcset or {veles fleet: node %{node} is stale — %{detail}} {veles ଫ୍ଲିଟ୍: ନୋଡ %{node} ପୁରୁଣା ହୋଇଗଲା — %{detail}}
+::msgcat::mcset or {veles fleet: node %{node} recovered (it was %{was})} {veles ଫ୍ଲିଟ୍: ନୋଡ %{node} ପୁନରୁଦ୍ଧାର ହେଲା (ପୂର୍ବେ %{was} ଥିଲା)}
 ::msgcat::mcset or {veles · keyboard help (bindings: %s)} {veles · କିବୋର୍ଡ ସହାୟତା (bindings: %s)}
 ::msgcat::mcset or {veles · touch help} {veles · ସ୍ପର୍ଶ ସହାୟତା}
 ::msgcat::mcset or {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset or widgets ୱିଜେଟ୍
 ::msgcat::mcset or {will be stored in the encrypted vault} {ଏନକ୍ରିପ୍ଟ ହୋଇଥିବା ଭଲ୍ଟରେ ରଖାଯିବ}
 ::msgcat::mcset or {wire protocol} {wire ପ୍ରୋଟୋକଲ୍}
+::msgcat::mcset or {without force to} {ଫୋର୍ସ୍ ବିନା ପୁଶ୍ କରିବା ଗନ୍ତବ୍ୟ}
 ::msgcat::mcset or {wizard language} {ୱିଜାର୍ଡ ଭାଷା}
 ::msgcat::mcset or {wizard language: %s} {ୱିଜାର୍ଡ ଭାଷା: %s}
 ::msgcat::mcset or {write failed: %s} {ଲେଖା ବିଫଳ: %s}
 ::msgcat::mcset or {write grants that still expire (the expiry is dropped — a config line cannot expire)} {ଯେଉଁ ଅନୁମତି ଏବେ ବି ଅବଧି ଶେଷ ହୁଏ ସେଗୁଡ଼ିକ ଲେଖ (ଅବଧି ବାଦ ଦିଆଯାଏ — config ଧାଡ଼ିର ଅବଧି ଶେଷ ହୁଏ ନାହିଁ)}
 ::msgcat::mcset or {write the entries back} {ଏଣ୍ଟ୍ରିଗୁଡ଼ିକ ଫେରାଇ ଲେଖ}
 ::msgcat::mcset or {write the store's runtime rules into config.toml} {ଷ୍ଟୋରର runtime ନିୟମ config.toml ରେ ଲେଖ}
+::msgcat::mcset or {write the whole extension from its purpose, as a reviewed preview} {ଏହାର ଉଦ୍ଦେଶ୍ୟରୁ ପୂରା ଏକ୍ସଟେନସନ ଲେଖନ୍ତୁ, ସମୀକ୍ଷିତ ପ୍ରିଭ୍ୟୁ ଭାବେ}
 ::msgcat::mcset or {write these values into config.toml as the defaults} {ଏହି ମୂଲ୍ୟଗୁଡ଼ିକ config.toml ରେ ଡିଫଲ୍ଟ ଭାବେ ଲେଖ}
 ::msgcat::mcset or writing ଲେଖିବା
 ::msgcat::mcset or {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {ପ୍ରଥମ [acl] ମାଲିକ ଲେଖିଲେ ଏହି ଗେଟୱେ କ୍ୟୁରେଟେଡ୍ ମୋଡ୍‌କୁ ଯାଏ: ଡିଫଲ୍ଟ ଭୂମିକା guest (fail-closed) ହୁଏ ଏବଂ ଆଡାପ୍ଟରର ଅନୁମତି ତାଲିକା ଆଉ ବିଶ୍ୱାସର ସୀମା ରହେ ନାହିଁ}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset or {▲ VELES — neon impressionism} {▲ VELES — ନିଅନ୍ ଇମ୍ପ୍ରେସନିଜିମ୍}
 ::msgcat::mcset or {▲ earlier} {▲ ଆଗରୁ}
 ::msgcat::mcset or {▼ later} {▼ ପରେ}
+::msgcat::mcset or {▾ Cluster registry} {▾ କ୍ଲଷ୍ଟର ରେଜିଷ୍ଟ୍ରି}
 ::msgcat::mcset or {▾ new output — follow} {▾ ନୂଆ ଆଉଟପୁଟ — ଅନୁସରଣ କର}
 ::msgcat::mcset or {○ unattached} {○ ଅଲଗା}
 ::msgcat::mcset or {● %1$s — %2$s} {● %1$s — %2$s}

@@ -35,7 +35,7 @@ engine `include_str!`s a file `engineSrc` leaves out.
 | `lib/arm64-v8a/libtclsh.so` | `tclsh`, for the execute_code tool (`VELES_TCLSH`) |
 | `assets/runtime.zip` | Tcl's script library, the engine's 47 catalogs, and the bundled Tcl plugins (`plugins/tcl-anthropic-driver`) |
 | `lib/arm64-v8a/lib{tcl,tk,SDL2,freetype,main}.so` | the desktop's Tcl/Tk: AndroWish's, built from source |
-| `assets/tcl8.6`, `assets/sdl2tk8.6`, `assets/json` | their script libraries, and tcllib's `json` |
+| `assets/tcl8.6`, `assets/sdl2tk8.6`, `assets/json`, `assets/sha1` | their script libraries, and tcllib's `json` and `sha256` (its `sha1` directory) |
 | `assets/veles-desktop`, `assets/app/main.tcl` | the desktop, and `android/desktop.tcl`, which starts it |
 | `classes.dex` | the six Java classes below, and AndroWish's |
 | `lib/arm64-v8a/libulsh.so` | `ulsh`, the shell that runs a script in the userland package's Alpine (below); `VELES_SHELL` when that package answers |

@@ -376,12 +376,17 @@ async fn run(
                     }
                 }
                 Outcome::Prompt(_) | Outcome::Command(_) => {
-                    // Future work: these actions need a session, which
-                    // is the gateway's, not the adapter's. Recorded so
-                    // the log says why nothing happened.
+                    // These actions need a session, which is the
+                    // gateway's, not the adapter's. New rows are refused
+                    // at write time (`triggers::validate_action_on`);
+                    // one written before that is recorded so the log
+                    // says why nothing happened and what to do.
                     (
                         "unsupported".to_string(),
-                        Some("prompt/command actions are not wired yet".into()),
+                        Some(
+                            "prompt/command actions never run on a channel; edit the trigger's action or remove it"
+                                .into(),
+                        ),
                     )
                 }
             },

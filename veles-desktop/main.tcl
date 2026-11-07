@@ -58,6 +58,7 @@ source [file join $_script_dir lib vlist.tcl]
 source [file join $_script_dir lib place.tcl]
 # Right-click menus, one implementation.
 source [file join $_script_dir lib ctxmenu.tcl]
+source [file join $_script_dir lib translate.tcl]
 # Real emacs editing for text widgets (kill ring, mark, undo stack).
 source [file join $_script_dir lib emacs.tcl]
 # In-app window controls, so the native title bar can be turned off.
@@ -94,6 +95,8 @@ source [file join $_script_dir lib instances.tcl]
 # ::vapp::epoch).
 source [file join $_script_dir lib attach.tcl]
 source [file join $_script_dir lib instpane.tcl]
+source [file join $_script_dir lib fleetobs.tcl]
+source [file join $_script_dir lib fleetdeployui.tcl]
 source [file join $_script_dir lib statusbar.tcl]
 source [file join $_script_dir lib media.tcl]
 source [file join $_script_dir lib markdown.tcl]
@@ -106,6 +109,7 @@ source [file join $_script_dir lib cmds.tcl]
 source [file join $_script_dir lib complete.tcl]
 source [file join $_script_dir lib editline.tcl]
 source [file join $_script_dir lib dev.tcl]
+source [file join $_script_dir lib extensionguide.tcl]
 # The device bridge: what this window can do for the agent (a phone's
 # borg, a laptop's clipboard), announced to the gateway and answered here.
 source [file join $_script_dir lib device.tcl]
@@ -121,7 +125,9 @@ source [file join $_script_dir lib findbar.tcl]
 # overlays that use it — and after ctxmenu/place/a11y, which it calls.
 source [file join $_script_dir lib manage.tcl]
 source [file join $_script_dir lib overlays.tcl]
+source [file join $_script_dir lib taskpanel.tcl]
 source [file join $_script_dir lib acl.tcl]
+source [file join $_script_dir lib grants.tcl]
 # sessions.tcl: the Sessions window (search, paging, every session
 # action). After manage/overlays (its chrome) and sidebar/chat (it calls
 # their open/pin/export procs at run time).

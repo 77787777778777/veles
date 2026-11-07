@@ -165,6 +165,7 @@ fn main() {
             replay_reasoning: false,
             cache_mode: veles_core::providers::CacheMode::Auto,
             extra_body: None,
+            thread: None,
         };
 
         let t0 = Instant::now();

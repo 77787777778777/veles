@@ -121,6 +121,7 @@ async fn main() -> anyhow::Result<()> {
             extra_body: None,
             tools: vec![],
             reasoning_effort: None,
+            thread: None,
         };
         // We expect a parse error (the echo body isn't an OpenAI
         // completion) — but the REQUEST already hit the wire, which is

@@ -15,9 +15,12 @@
 # passes through the desktop is already translatable on arrival.
 #
 # The engine catalogs (crates/veles-core/locales/*.yml) use the same
-# keys under a `_version: 1` header; this script reports their drift
-# against the same key set but does NOT rewrite them — a YAML rewrite
-# needs to preserve comments, which is the next round's problem.
+# keys under a `_version: 1` header. A row the .msg translates and the
+# engine can reach is carried into the locale's .yml by
+# scripts/i18n-msg2yml.tcl (header kept, rows added or updated, and a
+# row no surface uses any more dropped),
+# and --check fails while one is missing: the 2026-11 rounds translated
+# /translate and /fleet in every .msg and left the .yml English.
 #
 # Usage:
 #   bash scripts/i18n-sync.sh            # rewrite en.msg + locale .msgs
@@ -102,9 +105,12 @@ foreach f [lsort [glob [file join $msgs *.msg]]] {
 }
 exit $fail
 TCL
-    run_tcl "$CHK" "$KEYS" "$MSGS"
-    fail=$?
+    seam=0
+    run_tcl "$ROOT/scripts/i18n-msg2yml.tcl" "$ROOT" --check || seam=1
+    fail=0
+    run_tcl "$CHK" "$KEYS" "$MSGS" || fail=1
     rm -f "$KEYS" "$CHK"
+    [ "$seam" = 0 ] || fail=1
     exit $fail
 fi
 
@@ -197,6 +203,9 @@ for f in "$MSGS"/*.msg; do
     rm -f "$tmp"
     echo "$id.msg: $n keys (translations preserved)"
 done
+
+# ─ the engine catalogs: carry what the desktop translated ───────────
+run_tcl "$ROOT/scripts/i18n-msg2yml.tcl" "$ROOT"
 
 # ─ en.yml: NOT regenerated here, deliberately ─────────────────────────
 #

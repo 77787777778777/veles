@@ -34,6 +34,7 @@ pub async fn summarize_title(cfg: &VelesConfig, prompt: &str) -> Option<String> 
         replay_reasoning: false,
         cache_mode: crate::providers::CacheMode::Auto,
         extra_body: None,
+        thread: None,
     };
     match route.client.chat(&req, &route.provider).await {
         Ok(c) => {

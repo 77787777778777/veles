@@ -70,11 +70,13 @@ namespace eval ::vchat  {
 set ::opens 0
 namespace eval ::vapi {
     variable sessions {}
+    variable parents {}
+    variable children {}
     # COUNTED: mark_current must cost NO round trip (refresh blocks on
     # this call, and a session switch is meant to be one `pack`).
     variable gets 0
     proc unattached {} { return 0 }
-    proc get_json {path} { incr ::vapi::gets ; return [dict create sessions $::vapi::sessions] }
+    proc get_json {path} { incr ::vapi::gets ; return [dict create sessions $::vapi::sessions parents $::vapi::parents children $::vapi::children] }
     proc post {p b} { return {} }
     proc delete {p} { return {} }
     proc json_escape {s} { return $s }
@@ -521,6 +523,64 @@ ok "refresh survived a cycle" {$rc == 0}
 ok "…and emitted each session once" \
     {[llength [lsearch -all -glob [body] "*loop a*"]] == 1
      && [llength [lsearch -all -glob [body] "*loop b*"]] == 1}
+
+# The page boundary is not a parent boundary. A busy batch can push its
+# parent past the newest 100; an older parent may also sit in a collapsed
+# archive. The separate ancestors field supplies placement context without
+# changing the page's offset, total or row count.
+puts "\nparents outside the current page and the collapsed archive"
+set now [clock seconds]
+set ts [clock format $now -format "%Y-%m-%d %H:%M:%S" -gmt 1]
+set old [clock format [expr {$now - 30*86400}] -format "%Y-%m-%d %H:%M:%S" -gmt 1]
+set ::vsidebar::pins {}
+set ::vsidebar::filter ""
+set ::vsidebar::archive_collapsed 1
+set ::vchat::session ""
+set ::vapi::parents {}
+set ::vapi::sessions [list \
+    [dict create id offpage-child title "child of an off-page parent" message_count 3 parent offpage-parent \
+        created_at $ts updated_at $ts] \
+    [dict create id archived-child title "child of an archived parent" message_count 2 parent archived-parent \
+        created_at $ts updated_at $ts]]
+::vsidebar::refresh
+ok "a child without its parent is still visible, marked as an orphan" \
+    {[string match "*↳*child of an off-page parent*" [rowat "*off-page parent*"]]}
+set ::vapi::parents [list \
+    [dict create id offpage-parent title "off-page parent" message_count 5 parent null \
+        created_at $old updated_at $old] \
+    [dict create id archived-parent title "archived parent" message_count 4 parent null \
+        created_at $old updated_at $old]]
+::vsidebar::refresh
+ok "the supplied off-page parent is placed directly above its child" \
+    {[rowidx "*off-page parent*"] + 1 == [rowidx "*child of an off-page parent*"]}
+proc session_row_index {id} { return [lsearch -exact $::vsidebar::rows $id] }
+ok "a recent child does not disappear into its archived parent's collapsed bucket" \
+    {[session_row_index archived-parent] > [rowidx "*TODAY*"]
+     && [session_row_index archived-child] == [session_row_index archived-parent] + 1
+     && [lsearch -glob [body] "*ARCHIVE*"] < 0}
+ok "the parent context does not add duplicate child rows" \
+    {[llength [lsearch -all -glob [body] "*child of an off-page parent*"]] == 1
+     && [llength [lsearch -all -glob [body] "*child of an archived parent*"]] == 1}
+set ::vapi::parents {}
+
+# SI-6, the other direction: the parent IS on the page and its subagent
+# children rank far past it (a flood of newer anonymous sessions). The
+# listing's `children` context must put them under it.
+puts "\nchildren outside the current page"
+set ::vsidebar::archive_collapsed 1
+set ::vapi::sessions [list \
+    [dict create id visible-parent title "visible parent" message_count 5 parent null \
+        created_at $ts updated_at $ts]]
+set ::vapi::children [list \
+    [dict create id far-child title "subagent: far down" message_count 2 parent visible-parent \
+        created_at $old updated_at $old context_only true]]
+::vsidebar::refresh
+ok "a child beyond the page is placed directly under its visible parent" \
+    {[session_row_index far-child] == [session_row_index visible-parent] + 1
+     && [string match "*↳*subagent: far down*" [rowat "*far down*"]]}
+ok "…once, and the collapsed archive does not swallow it" \
+    {[llength [lsearch -all -glob [body] "*subagent: far down*"]] == 1}
+set ::vapi::children {}
 
 # ── events refresh asynchronously, once per burst ─────────────────
 #

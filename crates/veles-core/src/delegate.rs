@@ -69,10 +69,16 @@ impl DelegateTaskTool {
     ///
     /// `needs` (the call's `needs` array, PLAN-phone-userland.md T2):
     /// programs the chosen node must advertise; empty constrains nothing.
+    /// `workload` (306787.b) is how `gpu`/`any` weigh CPU against IO.
+    ///
+    /// A remote node is reachable for `gpu`/`any` only with an
+    /// `[a2a_agents]` entry AND a standing passed auth probe
+    /// (`routeprobe`; the caller refreshes them first).
     fn resolve_backend(
         &self,
         spec: Option<&crate::placement::BackendSpec>,
         needs: &[String],
+        workload: crate::placement::Workload,
     ) -> Result<Option<crate::placement::Placement>, String> {
         let Some(spec) = spec else { return Ok(None) };
         let home = crate::config::veles_home();
@@ -87,12 +93,19 @@ impl DelegateTaskTool {
             .ok()
             .flatten()
             .map(|i| i.id);
-        let routable = |n: &crate::store::NodeRow| {
-            me.as_deref() == Some(n.id.as_str()) || remote_target_for(n).is_some()
-        };
-        crate::placement::resolve_needing(&store, spec, me.as_deref(), stale, &routable, needs)
-            .map(Some)
-            .map_err(|e| format!("{e:#}"))
+        let routable =
+            |n: &crate::store::NodeRow| crate::routeprobe::route(n, me.as_deref()).routable();
+        crate::placement::resolve_workload(
+            &store,
+            spec,
+            me.as_deref(),
+            stale,
+            &routable,
+            needs,
+            workload,
+        )
+        .map(Some)
+        .map_err(|e| format!("{e:#}"))
     }
 
     /// B4: run one child on its placed node. Local placements (and no
@@ -104,13 +117,14 @@ impl DelegateTaskTool {
         &self,
         spec: Option<&crate::placement::BackendSpec>,
         needs: &[String],
+        workload: crate::placement::Workload,
         goal: &str,
         ctx: &str,
         model: Option<&str>,
         provider: Option<&str>,
         reasoning: Option<&str>,
     ) -> Result<Option<Value>, String> {
-        let placement = match self.resolve_backend(spec, needs)? {
+        let placement = match self.resolve_backend(spec, needs, workload)? {
             Some(p) => p,
             // No placement ask: local path, nothing to do here.
             None => return Ok(None),
@@ -134,6 +148,7 @@ impl DelegateTaskTool {
         // C3: a foreground delegate runs inside a turn, so the Stop
         // button (agent::cancel_turn on THIS session) is the watch.
         let watch = crate::remotetask::CancelWatch::turn(&self.session_id);
+        let _claim = crate::placement::claim(&placement.node.id);
         run_on_placed(&placement, &ask, watch).await.map(Some)
     }
 
@@ -710,7 +725,7 @@ fn reap_empty_child(child: Option<&str>) {
 /// blocking std::process, no nested runtime).
 #[cfg(all(test, unix))]
 fn run_child(goal: &str, context: &str, cancel: Option<CancelToken>) -> Value {
-    run_child_routed(goal, context, None, None, None, "", None, cancel)
+    run_child_routed(goal, context, None, None, None, "", None, cancel, None)
 }
 
 /// Run a REMOTE peer's child locally (B4 placement): the a2a_server's
@@ -722,6 +737,7 @@ fn run_child(goal: &str, context: &str, cancel: Option<CancelToken>) -> Value {
 /// that ran it, and its id rides back as `remote_child_session` so
 /// the sender's verdict names something real instead of a pointer
 /// into a store it cannot read (until B5 replicates it).
+#[allow(clippy::too_many_arguments)]
 pub fn run_remote_child(
     goal: &str,
     context: &str,
@@ -741,6 +757,11 @@ pub fn run_remote_child(
     // handle (an ask from an older sender); the child then runs to its
     // own cap exactly as B4 shipped it.
     cancel: Option<CancelToken>,
+    // 306787.b: the node that placed this child (`RemoteTaskAsk::
+    // from_node`). The child counts here, under that origin, in this
+    // node's heartbeat — which is how the placer's next ranking knows
+    // the child already arrived and does not count it twice.
+    origin: &str,
 ) -> Value {
     if let Some(p) = principal {
         if let Err(e) = serde_json::from_str::<crate::acl::Principal>(p) {
@@ -769,6 +790,7 @@ pub fn run_remote_child(
         principal.map(str::to_string),
         child_session.as_deref(),
         cancel,
+        crate::placement::ChildOf::Peer(origin),
     );
     if let Some(cs) = &child_session {
         v["remote_child_session"] = json!(cs);
@@ -847,6 +869,10 @@ fn run_child_routed(
     // Flipped by `/subagents cancel` or the API; the poll loop below
     // turns it into a real kill.
     cancel: Option<CancelToken>,
+    // The claim an `any`/`gpu` placement on this node holds for THIS
+    // child (306787.b): its process takes the claim's row over, so the
+    // child is counted once. None for a child nothing placed.
+    claim: Option<&crate::placement::Claim>,
 ) -> Value {
     // The child must answer to the SAME principal as the caller. A bare
     // `veles chat` IS the owner surface (that is what the CLI is: the
@@ -868,6 +894,7 @@ fn run_child_routed(
         principal_env,
         child_session,
         cancel,
+        crate::placement::ChildOf::Here(claim),
     )
 }
 
@@ -876,6 +903,11 @@ fn run_child_routed(
 /// takes the one that travelled with the ask — the caller's, from the
 /// node that placed the work. `None` = the caller had no principal (an
 /// owner surface).
+///
+/// `of` (306787.b): whose child this is for the work count, one of this
+/// node's own sessions (with the placement's claim, if any) or a peer's
+/// remote task. Every child is counted on this node while its process
+/// runs (`placement::child_started`), whatever path started it.
 #[allow(clippy::too_many_arguments)]
 fn run_child_as(
     goal: &str,
@@ -886,6 +918,7 @@ fn run_child_as(
     principal_env: Option<String>,
     child_session: Option<&str>,
     cancel: Option<CancelToken>,
+    of: crate::placement::ChildOf<'_>,
 ) -> Value {
     let bin = match veles_binary() {
         Ok(b) => b,
@@ -935,6 +968,10 @@ fn run_child_as(
             return json!({"status": "error", "error": format!("spawn failed: {e}")});
         }
     };
+    // Counted on this node from now until the child is reaped below; the
+    // row is bounded by the CHILD's pid, so a gateway restart while it
+    // runs keeps counting it (306787.b).
+    let _counted = crate::placement::child_started(of, child.id());
 
     // Drain both pipes on helper threads so a chatty child can't deadlock
     // on a full pipe buffer while we wait.
@@ -1070,6 +1107,9 @@ pub(crate) fn spawn_background(
     parent: String,
     fork_history: bool,
     hooks: Option<std::sync::Arc<crate::hooks::HookBus>>,
+    // A `backend='any'` child placed on THIS node (SI-7): held until it
+    // finishes, so the next placement sees it here.
+    claim: Option<crate::placement::Claim>,
 ) -> u32 {
     let (child_id, cancel) = crate::tasks::start(TaskKind::Subagent, &goal, &parent);
     // Mint + stamp SYNCHRONOUSLY, before returning the task id: the
@@ -1106,6 +1146,7 @@ pub(crate) fn spawn_background(
                 &p,
                 cs_for_run.as_deref(),
                 Some(cancel),
+                claim.as_ref(),
             )
         })
         .await
@@ -1186,6 +1227,7 @@ pub fn spawn_background_child(goal: &str, parent_session: &str) -> u32 {
         parent_session.to_string(),
         true,
         crate::hooks::default_bus(),
+        None,
     )
 }
 
@@ -1210,7 +1252,11 @@ impl crate::tools::Tool for DelegateTaskTool {
          model`), NOT on this session's — a delegate is not a continuation of this \
          conversation, and inheriting a rate-limited route would take a parallel \
          batch down with it. Pass 'model'/'provider'/'reasoning' to route one \
-         explicitly, or 'agent' to run a defined subagent with its own routing."
+         explicitly, or 'agent' to run a defined subagent with its own routing. \
+         SPLITTING heavy work is your call (nothing splits for you): independent \
+         parts of minutes each (builds, tests, encodes, scans) go out as one 'tasks' \
+         batch with backend='any' + 'workload'; keep short, sequential or same-file \
+         work here."
     }
     fn schema(&self) -> Value {
         json!({
@@ -1223,6 +1269,7 @@ impl crate::tools::Tool for DelegateTaskTool {
                 "provider": {"type": "string", "description": "Route this child's provider"},
                 "reasoning": {"type": "string", "description": "Reasoning effort for this child"},
                 "backend": {"type": "string", "description": "WHERE the child runs (compute pool): 'local', a node name/id from /nodes, 'gpu' (any live GPU node), or 'any' (least-loaded, self included). Default: this node. Honest error if unreachable."},
+                "workload": {"type": "string", "enum": ["cpu", "io"], "description": "any/gpu ranking: cpu- or io-heavy (io avoids busy disks); omit if mixed"},
                 "needs": {"type": "array", "items": {"type": "string"}, "description": "Programs the child's node must have, e.g. [\"rg\"] (/nodes lists them). Alone: any node with them."},
                 "background": {"type": "boolean", "description": "Return immediately; the child's summary arrives as a [BACKGROUND CHILD COMPLETE] message when it finishes (use for long tasks you don't need to block on)"},
                 "tasks": {
@@ -1233,7 +1280,8 @@ impl crate::tools::Tool for DelegateTaskTool {
                         "properties": {
                             "goal": {"type": "string"},
                             "context": {"type": "string"},
-                            "backend": {"type": "string", "description": "Per-task WHERE (same spellings)"}
+                            "backend": {"type": "string", "description": "Per-task WHERE (same spellings)"},
+                            "workload": {"type": "string", "enum": ["cpu", "io"]}
                         },
                         "required": ["goal"]
                     }
@@ -1293,6 +1341,35 @@ impl crate::tools::Tool for DelegateTaskTool {
             None if !needs.is_empty() => Some(crate::placement::BackendSpec::Any),
             b => b,
         };
+        // 306787.b: what the child mostly spends, for `gpu`/`any`
+        // ranking. An unknown word is an error, like an unknown backend.
+        let workload = match crate::placement::Workload::parse(
+            args["workload"].as_str().unwrap_or_default(),
+        ) {
+            Ok(w) => w,
+            Err(e) => return format!("error: {e:#}"),
+        };
+        // `gpu`/`any` choose among nodes that answer: refresh the auth
+        // probe of every live peer first (cached; only expired routes
+        // are dialed, all at once, each within routeprobe's budget).
+        let pooled = |s: &str| {
+            matches!(
+                crate::placement::BackendSpec::parse(s),
+                Ok(Some(
+                    crate::placement::BackendSpec::Any | crate::placement::BackendSpec::Gpu
+                ))
+            )
+        };
+        let any_task_pooled = args["tasks"]
+            .as_array()
+            .is_some_and(|ts| ts.iter().any(|t| t["backend"].as_str().is_some_and(pooled)));
+        if matches!(
+            backend,
+            Some(crate::placement::BackendSpec::Any | crate::placement::BackendSpec::Gpu)
+        ) || any_task_pooled
+        {
+            crate::routeprobe::refresh_pool().await;
+        }
         if backend.is_some() && args["agent"].as_str().is_some_and(|a| !a.trim().is_empty()) {
             return "error: 'agent' presets run with the parent's placement — \
                     combine 'backend' with an explicit model/provider instead"
@@ -1376,7 +1453,7 @@ impl crate::tools::Tool for DelegateTaskTool {
             // through the SAME background-event + wake path a local
             // background child uses — one arrival shape, local or
             // remote.
-            let placement = match self.resolve_backend(backend.as_ref(), &needs) {
+            let placement = match self.resolve_backend(backend.as_ref(), &needs, workload) {
                 Ok(p) => p,
                 Err(e) => return format!("error: {e}"),
             };
@@ -1412,7 +1489,9 @@ impl crate::tools::Tool for DelegateTaskTool {
                 let bus = self.bus();
                 let parent2 = parent.clone();
                 let watch = crate::remotetask::CancelWatch::token(cancel);
+                let claim = crate::placement::claim(&placement.node.id);
                 crate::bg::spawn(async move {
+                    let _claim = claim;
                     let v = run_on_placed(&placement, &ask, watch)
                         .await
                         .unwrap_or_else(|e| json!({"status": "error", "error": e}));
@@ -1470,6 +1549,10 @@ impl crate::tools::Tool for DelegateTaskTool {
                 parent,
                 false,
                 self.bus(),
+                // Placed here by `any`/`gpu`: counted on this node while
+                // it runs, or a run of background children all pile onto
+                // the node whose heartbeat looked idlest (SI-7).
+                placement.map(|p| crate::placement::claim(&p.node.id)),
             );
             return json!({
                 "status": "started",
@@ -1512,11 +1595,28 @@ impl crate::tools::Tool for DelegateTaskTool {
                     Ok(s) => s,
                     Err(e) => return format!("error: {e:#}"),
                 };
-                let placement = match self.resolve_backend(task_spec.as_ref(), &needs) {
-                    Ok(p) => p.filter(|p| !crate::placement::is_local(p, me.as_deref())),
-                    Err(e) => return format!("error: {e}"),
+                // A task may say its own workload; unset inherits.
+                let task_workload = match t["workload"].as_str() {
+                    Some(w) => match crate::placement::Workload::parse(w) {
+                        Ok(w) => w,
+                        Err(e) => return format!("error: {e:#}"),
+                    },
+                    None => workload,
                 };
-                planned.push((goal, ctx, placement));
+                let placement =
+                    match self.resolve_backend(task_spec.as_ref(), &needs, task_workload) {
+                        Ok(p) => p,
+                        Err(e) => return format!("error: {e}"),
+                    };
+                // Counted on its node BEFORE the next member resolves
+                // (SI-7): a batch of `any` children spreads over the
+                // pool instead of piling onto one snapshot's idlest
+                // node. Held until the member finishes, local or not.
+                let claim = placement
+                    .as_ref()
+                    .map(|p| crate::placement::claim(&p.node.id));
+                let placement = placement.filter(|p| !crate::placement::is_local(p, me.as_deref()));
+                planned.push((goal, ctx, placement, claim));
             }
             // Each member is STARTED here — a blocking child on the
             // blocking pool, a remote hop as a task — and only then
@@ -1525,7 +1625,7 @@ impl crate::tools::Tool for DelegateTaskTool {
             // the batch ran its children in SERIES, each holding a
             // runtime worker for up to 900 s.
             let mut handles: Vec<tokio::task::JoinHandle<Value>> = Vec::new();
-            for (goal, ctx, placement) in planned {
+            for (goal, ctx, placement, claim) in planned {
                 let (child_id, cancel) =
                     crate::tasks::start(TaskKind::Subagent, &goal, &self.session_id);
                 // Each LOCAL member is its own titled, parent-linked
@@ -1560,6 +1660,7 @@ impl crate::tools::Tool for DelegateTaskTool {
                     let ask = self.remote_ask(&goal, &ctx, model, provider, reasoning);
                     let watch = crate::remotetask::CancelWatch::token(cancel);
                     handles.push(crate::rt::spawn(async move {
+                        let _claim = claim;
                         let v = run_on_placed(&p, &ask, watch)
                             .await
                             .unwrap_or_else(|e| json!({"status": "error", "error": e}));
@@ -1569,6 +1670,8 @@ impl crate::tools::Tool for DelegateTaskTool {
                 } else {
                     let parent = self.session_id.clone();
                     handles.push(crate::rt::spawn_blocking(move || {
+                        // Held until the member ends; its child takes the
+                        // claim's row over while it runs.
                         let v = run_child_routed(
                             &goal,
                             &ctx,
@@ -1578,7 +1681,9 @@ impl crate::tools::Tool for DelegateTaskTool {
                             &parent,
                             cs.as_deref(),
                             Some(cancel),
+                            claim.as_ref(),
                         );
+                        drop(claim);
                         crate::tasks::finish(child_id, v["status"].as_str() == Some("ok"));
                         v
                     }));
@@ -1611,6 +1716,7 @@ impl crate::tools::Tool for DelegateTaskTool {
             .run_remote_if_placed(
                 backend.as_ref(),
                 &needs,
+                workload,
                 &goal,
                 &ctx,
                 ex_m.as_deref(),
@@ -1673,6 +1779,7 @@ impl crate::tools::Tool for DelegateTaskTool {
                 &parent,
                 cs_for_run.as_deref(),
                 Some(cancel),
+                None,
             );
             let ok = v["status"].as_str() == Some("ok");
             crate::tasks::finish(child_id, ok);
@@ -1699,6 +1806,59 @@ mod tests {
     use super::*;
     use crate::tools::Tool;
 
+    /// Spawn a just-copied executable. std::fs::copy opens the copy for
+    /// writing, and a child that a SIBLING test forks in that window
+    /// inherits the fd until its own exec (O_CLOEXEC closes at exec, not
+    /// at fork). Exec of the copy then fails with ETXTBSY, "Text file
+    /// busy", for as long as that sibling takes to exec: the race
+    /// lsp_check.rs already met on the gate (2026-10-14). Retry it.
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    fn spawn_fresh_copy(cmd: &mut std::process::Command) -> std::process::Child {
+        const ETXTBSY: i32 = 26;
+        let mut tries = 0;
+        loop {
+            match cmd.spawn() {
+                Ok(child) => return child,
+                Err(e) if e.raw_os_error() == Some(ETXTBSY) && tries < 300 => {
+                    tries += 1;
+                    std::thread::sleep(std::time::Duration::from_millis(10));
+                }
+                Err(e) => panic!("spawn {cmd:?}: {e}"),
+            }
+        }
+    }
+
+    /// The ETXTBSY window, made deterministic: while anything holds the
+    /// copy open for writing, exec refuses it; the spawn goes through
+    /// once the holder lets go.
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    #[test]
+    fn a_fresh_copy_still_open_for_writing_is_spawned_once_released() {
+        let dir = tempfile::tempdir().unwrap();
+        let copy = dir.path().join("busy-veles-test");
+        std::fs::copy(std::env::current_exe().unwrap(), &copy).unwrap();
+        let holder = std::fs::OpenOptions::new().write(true).open(&copy).unwrap();
+        let listing = |cmd: &mut std::process::Command| {
+            cmd.env_remove("VELES_BINARY")
+                .arg("--list")
+                .stdout(std::process::Stdio::null())
+                .stderr(std::process::Stdio::null());
+        };
+        let mut direct = std::process::Command::new(&copy);
+        listing(&mut direct);
+        let busy = direct.spawn().expect_err("exec of a file open for writing");
+        assert_eq!(busy.raw_os_error(), Some(26), "{busy}");
+        let release = std::thread::spawn(move || {
+            std::thread::sleep(std::time::Duration::from_millis(150));
+            drop(holder);
+        });
+        let mut retried = std::process::Command::new(&copy);
+        listing(&mut retried);
+        let mut child = spawn_fresh_copy(&mut retried);
+        assert!(child.wait().unwrap().success());
+        release.join().unwrap();
+    }
+
     /// A development rebuild replaces target/debug/veles while the old
     /// gateway is still running it. The child's executable must still
     /// resolve to the LIVE process image, not the removed pathname.
@@ -1709,19 +1869,19 @@ mod tests {
         let copy = dir.path().join("deleted-veles-test");
         std::fs::copy(std::env::current_exe().unwrap(), &copy).unwrap();
         let marker = dir.path().join("spawned");
-        let mut child = std::process::Command::new(&copy)
-            // VELES_BINARY is process-global in the parallel suite; this
-            // regression is specifically about the automatic live-image
-            // fallback, so no sibling's override may enter the harness.
-            .env_remove("VELES_BINARY")
-            .env("VELES_DELETED_EXE_TEST_MARKER", &marker)
-            .arg("--exact")
-            .arg("delegate::tests::a_deleted_executable_path_does_not_prevent_spawning_child")
-            .arg("--ignored")
-            .arg("--nocapture")
-            .arg("--test-threads=1")
-            .spawn()
-            .unwrap();
+        let mut child = spawn_fresh_copy(
+            std::process::Command::new(&copy)
+                // VELES_BINARY is process-global in the parallel suite; this
+                // regression is specifically about the automatic live-image
+                // fallback, so no sibling's override may enter the harness.
+                .env_remove("VELES_BINARY")
+                .env("VELES_DELETED_EXE_TEST_MARKER", &marker)
+                .arg("--exact")
+                .arg("delegate::tests::a_deleted_executable_path_does_not_prevent_spawning_child")
+                .arg("--ignored")
+                .arg("--nocapture")
+                .arg("--test-threads=1"),
+        );
         std::fs::remove_file(&copy).unwrap();
         assert_eq!(child.wait().unwrap().code(), Some(0));
         assert_eq!(std::fs::read_to_string(marker).unwrap(), "spawned");
@@ -1738,15 +1898,15 @@ mod tests {
         let copy = dir.path().join("replaced-veles-test");
         std::fs::copy(std::env::current_exe().unwrap(), &copy).unwrap();
         let marker = dir.path().join("spawned-replaced");
-        let mut child = std::process::Command::new(&copy)
-            .env_remove("VELES_BINARY")
-            .env("VELES_DELETED_EXE_TEST_MARKER", &marker)
-            .arg("--exact")
-            .arg("delegate::tests::a_deleted_executable_path_does_not_prevent_spawning_child")
-            .arg("--ignored")
-            .arg("--test-threads=1")
-            .spawn()
-            .unwrap();
+        let mut child = spawn_fresh_copy(
+            std::process::Command::new(&copy)
+                .env_remove("VELES_BINARY")
+                .env("VELES_DELETED_EXE_TEST_MARKER", &marker)
+                .arg("--exact")
+                .arg("delegate::tests::a_deleted_executable_path_does_not_prevent_spawning_child")
+                .arg("--ignored")
+                .arg("--test-threads=1"),
+        );
         let replacement = dir.path().join("replacement");
         std::fs::write(&replacement, b"a new build occupies this path").unwrap();
         std::fs::rename(replacement, &copy).unwrap();
@@ -2349,7 +2509,17 @@ mod tests {
             },
         );
 
-        let v = run_child_routed("echo the env", "", None, None, None, &sess, None, None);
+        let v = run_child_routed(
+            "echo the env",
+            "",
+            None,
+            None,
+            None,
+            &sess,
+            None,
+            None,
+            None,
+        );
         let s = v.to_string();
         assert!(
             s.contains("PRINCIPAL=[{"),
@@ -2425,6 +2595,7 @@ mod tests {
             "reap-parent",
             Some(&empty),
             None,
+            None,
         );
         assert_eq!(v["status"], "error", "the spawn failed: {v}");
         let store = crate::store::Store::open(&db).expect("scratch store");
@@ -2448,6 +2619,7 @@ mod tests {
             None,
             "reap-parent",
             Some(&spoke),
+            None,
             None,
         );
         assert_eq!(v["status"], "error", "this spawn failed too: {v}");
@@ -2643,7 +2815,17 @@ mod tests {
         // it was meant to pin. The parent has to COMPUTE the target.
         std::env::remove_var(crate::relay::RELAY_ENV);
 
-        let _ = run_child_routed("goal", "", None, None, None, "relay-parent", None, None);
+        let _ = run_child_routed(
+            "goal",
+            "",
+            None,
+            None,
+            None,
+            "relay-parent",
+            None,
+            None,
+            None,
+        );
 
         std::env::remove_var("VELES_BINARY");
         let recorded = std::fs::read_to_string(&log).unwrap_or_default();
@@ -2814,5 +2996,370 @@ mod tests {
             out.starts_with("error:") && out.contains("a2a_agents"),
             "the default backend resolves the same way an explicit one does: {out}"
         );
+    }
+
+    /// SI-7: a `backend='any'` batch DIVIDES the work. Each member is
+    /// counted on its node before the next resolves, so three children
+    /// go vps (load 5), zerg (15 < 5+25), vps (30 < 15+25) — not three
+    /// onto vps, which is what one shared heartbeat snapshot gave. The
+    /// peers are fake A2A servers that pass the auth probe and refuse
+    /// the task, so each verdict is an honest error that names where the
+    /// member was sent; every claim is released when its member ends.
+    #[tokio::test]
+    async fn an_any_batch_spreads_its_children_over_the_pool() {
+        let (home, _env, t) = backend_tool("vps", "peer-0002");
+        let store =
+            crate::store::Store::open(&crate::config::veles_home().join("state.db")).unwrap();
+        store
+            .node_register(
+                "peer-0003",
+                "zerg",
+                "h",
+                "0",
+                "always-on",
+                None,
+                None,
+                None,
+                None,
+            )
+            .unwrap();
+        store.node_heartbeat("peer-0003", Some(15)).unwrap();
+        drop(store);
+        let vps = crate::routeprobe::tests::fake_peer("vps", None).await;
+        let zerg = crate::routeprobe::tests::fake_peer("zerg", None).await;
+        std::fs::write(
+            home.path().join("config.toml"),
+            format!(
+                "[a2a_agents.vps]\nurl = \"{vps}\"\n\
+                 [a2a_agents.zerg]\nurl = \"{zerg}\"\n"
+            ),
+        )
+        .unwrap();
+        let out = t
+            .call(json!({
+                "backend": "any",
+                "tasks": [{"goal": "one"}, {"goal": "two"}, {"goal": "three"}]
+            }))
+            .await;
+        let v: Value = serde_json::from_str(&out).unwrap_or_else(|_| panic!("{out}"));
+        let sent: Vec<String> = v["results"]
+            .as_array()
+            .unwrap_or_else(|| panic!("{out}"))
+            .iter()
+            .map(|r| r["error"].as_str().unwrap_or_default().to_string())
+            .collect();
+        assert_eq!(sent.len(), 3, "{out}");
+        assert!(sent[0].starts_with("remote backend vps:"), "{sent:?}");
+        assert!(sent[1].starts_with("remote backend zerg:"), "{sent:?}");
+        assert!(sent[2].starts_with("remote backend vps:"), "{sent:?}");
+        assert_eq!(crate::placement::in_flight("peer-0002"), 0);
+        assert_eq!(crate::placement::in_flight("peer-0003"), 0);
+    }
+
+    /// SI-7, the background half: a `backend='any'` child that lands on
+    /// THIS node counts here while it runs. Without that, a run of
+    /// background delegates all piled onto whichever node's heartbeat
+    /// looked idlest (here the laptop itself: load 10 < vps 20), which
+    /// is the bottleneck the owner asked to avoid. The local child is a
+    /// fake `veles` that sleeps until cancelled, so it is observably in
+    /// flight; the next `any` child then goes to the vps (10+25 > 20).
+    #[cfg(unix)]
+    #[tokio::test]
+    async fn a_background_any_child_placed_here_counts_while_it_runs() {
+        let (home, _env) = crate::testenv::scratch_home();
+        std::fs::write(
+            home.path().join("node.toml"),
+            "id = \"si7bg-self\"\nname = \"laptop\"\n",
+        )
+        .unwrap();
+        let vps = crate::routeprobe::tests::fake_peer("vps", None).await;
+        std::fs::write(
+            home.path().join("config.toml"),
+            format!("[a2a_agents.vps]\nurl = \"{vps}\"\n"),
+        )
+        .unwrap();
+        let store =
+            crate::store::Store::open(&crate::config::veles_home().join("state.db")).unwrap();
+        for (id, name, load) in [("si7bg-self", "laptop", 10), ("si7bg-vps", "vps", 20)] {
+            store
+                .node_register(id, name, "h", "0", "always-on", None, None, None, None)
+                .unwrap();
+            store.node_heartbeat(id, Some(load)).unwrap();
+        }
+        drop(store);
+        let script = home.path().join("veles");
+        std::fs::write(&script, "#!/bin/sh\nexec sleep 30\n").unwrap();
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let mut perm = std::fs::metadata(&script).unwrap().permissions();
+            perm.set_mode(0o755);
+            std::fs::set_permissions(&script, perm).unwrap();
+        }
+        std::env::set_var("VELES_BINARY", &script);
+        let t = DelegateTaskTool {
+            session_id: "si7bg-parent".into(),
+            hooks: None,
+        };
+        let out = t
+            .call(json!({"goal": "one", "backend": "any", "background": true}))
+            .await;
+        let v: Value = serde_json::from_str(&out).unwrap_or_else(|_| panic!("{out}"));
+        let local = v["child_id"].as_u64().unwrap_or_else(|| panic!("{out}")) as u32;
+        assert!(
+            !out.contains("REMOTE"),
+            "the idlest node is this one: {out}"
+        );
+        assert_eq!(
+            crate::placement::in_flight("si7bg-self"),
+            1,
+            "the running local child counts here"
+        );
+        let out = t
+            .call(json!({"goal": "two", "backend": "any", "background": true}))
+            .await;
+        assert!(
+            out.contains("REMOTE"),
+            "the next child goes elsewhere, not onto the busy laptop: {out}"
+        );
+        assert!(crate::tasks::cancel(local));
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
+        while crate::placement::in_flight("si7bg-self") > 0 {
+            assert!(
+                std::time::Instant::now() < deadline,
+                "the claim is released when the child ends"
+            );
+            tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+        }
+        std::env::remove_var("VELES_BINARY");
+    }
+
+    /// 306787.b: a peer's remote task is counted on THIS node, under the
+    /// node that placed it, while its process runs. The placer reads that
+    /// origin count off this node's heartbeat and subtracts it from its
+    /// own claims, so the child is not counted twice there. The row ends
+    /// with the child.
+    #[cfg(unix)]
+    #[test]
+    fn a_remote_child_counts_here_under_its_origin() {
+        let (home, _env) = crate::testenv::scratch_home();
+        std::fs::write(
+            home.path().join("node.toml"),
+            "id = \"rc-self\"\nname = \"vps\"\n",
+        )
+        .unwrap();
+        let db = crate::config::veles_home().join("state.db");
+        let store = crate::store::Store::open(&db).unwrap();
+        let script = home.path().join("veles");
+        std::fs::write(&script, "#!/bin/sh\nsleep 2\necho remote-done\n").unwrap();
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let mut perm = std::fs::metadata(&script).unwrap().permissions();
+            perm.set_mode(0o755);
+            std::fs::set_permissions(&script, perm).unwrap();
+        }
+        std::env::set_var("VELES_BINARY", &script);
+        let run = std::thread::spawn(|| {
+            run_remote_child("part", "", None, None, None, None, None, "rc-laptop")
+        });
+        let report = || crate::placement::own_report(store.conn(), "rc-self").unwrap();
+        let deadline = std::time::Instant::now() + Duration::from_secs(10);
+        while report().running == 0 {
+            assert!(
+                std::time::Instant::now() < deadline,
+                "the remote child never counted here"
+            );
+            std::thread::sleep(Duration::from_millis(20));
+        }
+        let seen = report();
+        assert_eq!(seen.running, 1);
+        assert_eq!(seen.from.get("rc-laptop"), Some(&1), "{seen:?}");
+        assert!(!seen.from.contains_key("rc-self"), "not ours: {seen:?}");
+        let v = run.join().unwrap();
+        assert_eq!(v["status"], "ok", "{v}");
+        assert_eq!(report(), crate::placement::WorkReport::default());
+        std::env::remove_var("VELES_BINARY");
+    }
+
+    /// 306787.b: the resident schema offers `workload` (top level and per
+    /// task, the two values placement knows) and says the fan-out is the
+    /// model's call, with the knobs that make a split spread.
+    #[test]
+    fn the_schema_offers_workload_and_says_splitting_is_the_models_call() {
+        let t = DelegateTaskTool {
+            session_id: "s".into(),
+            hooks: None,
+        };
+        let s = t.schema();
+        assert_eq!(s["properties"]["workload"]["enum"], json!(["cpu", "io"]));
+        assert_eq!(
+            s["properties"]["tasks"]["items"]["properties"]["workload"]["enum"],
+            json!(["cpu", "io"])
+        );
+        let d = t.description();
+        for words in [
+            "SPLITTING heavy work is your call",
+            "backend='any'",
+            "'workload'",
+        ] {
+            assert!(d.contains(words), "missing {words:?}: {d}");
+        }
+        for w in ["cpu", "io"] {
+            assert!(crate::placement::Workload::parse(w).is_ok(), "{w}");
+        }
+    }
+
+    /// Where each member of an `any` batch went: the peer it was sent to
+    /// (a fake peer's refusal names it) or "laptop" for one that ran
+    /// here (the fake `veles` answers).
+    #[cfg(unix)]
+    fn landed(out: &str) -> Vec<String> {
+        let v: Value = serde_json::from_str(out).unwrap_or_else(|_| panic!("{out}"));
+        v["results"]
+            .as_array()
+            .unwrap_or_else(|| panic!("{out}"))
+            .iter()
+            .map(|r| {
+                if r["status"] == "ok" {
+                    return "laptop".to_string();
+                }
+                let e = r["error"].as_str().unwrap_or_default();
+                e.strip_prefix("remote backend ")
+                    .and_then(|t| t.split(':').next())
+                    .unwrap_or(e)
+                    .to_string()
+            })
+            .collect()
+    }
+
+    /// 306787.b, end to end over three fake peers and this node. The
+    /// laptop (this node: 16 cores, load 50%, IO 2%), the vps (2 cores,
+    /// load 10%, but its heartbeat reports a child ANOTHER node placed
+    /// there), zerg (8 cores, load 20%, disk at 45% IO pressure) and the
+    /// phone (idle, but its token was rotated — the live auth probe is
+    /// refused). Per-core weights, cross-node visibility, IO avoidance
+    /// and the probe all decide:
+    ///
+    /// - io work: zerg is avoided (high IO), the phone unreachable; the
+    ///   laptop (50+2·2=54) and the vps (10+50 for the other node's
+    ///   child = 60) share it: laptop, vps, laptop.
+    /// - cpu work: zerg's idle 8 cores win despite the disk (2·20+45=85
+    ///   against laptop 102 and vps 120): zerg, laptop, zerg.
+    ///
+    /// Without the vps's report its 10% would win the io batch outright;
+    /// the laptop's own child counts a sixteenth of it (6 points), not
+    /// the old fixed 25.
+    #[cfg(unix)]
+    #[tokio::test]
+    async fn an_any_batch_weighs_cores_io_other_nodes_work_and_the_auth_probe() {
+        let (home, _env) = crate::testenv::scratch_home();
+        std::fs::write(
+            home.path().join("node.toml"),
+            "id = \"cw-self\"\nname = \"laptop\"\n",
+        )
+        .unwrap();
+        let vps = crate::routeprobe::tests::fake_peer("vps", Some("t-vps")).await;
+        let zerg = crate::routeprobe::tests::fake_peer("zerg", Some("t-zerg")).await;
+        let phone = crate::routeprobe::tests::fake_peer("phone", Some("t-phone-new")).await;
+        std::fs::write(
+            home.path().join("config.toml"),
+            format!(
+                "[a2a_agents.vps]\nurl = \"{vps}\"\n[a2a_agents.vps.auth]\ntoken = \"t-vps\"\n\
+                 [a2a_agents.zerg]\nurl = \"{zerg}\"\n[a2a_agents.zerg.auth]\ntoken = \"t-zerg\"\n\
+                 [a2a_agents.phone]\nurl = \"{phone}\"\n\
+                 [a2a_agents.phone.auth]\ntoken = \"t-phone-old\"\n"
+            ),
+        )
+        .unwrap();
+        let store =
+            crate::store::Store::open(&crate::config::veles_home().join("state.db")).unwrap();
+        let io = |s: u8| {
+            Some(crate::node::IoPressure {
+                some: Some(s),
+                full: Some(0),
+            })
+        };
+        for (id, name, load, cores, io_some, work) in [
+            ("cw-self", "laptop", 50, 16, 2, None),
+            (
+                "cw-vps",
+                "vps",
+                10,
+                2,
+                0,
+                Some(crate::placement::WorkReport {
+                    running: 1,
+                    queued: 0,
+                    from: [("cw-elsewhere".to_string(), 1)].into(),
+                }),
+            ),
+            ("cw-zerg", "zerg", 20, 8, 45, None),
+            ("cw-phone", "phone", 0, 8, 0, None),
+        ] {
+            store
+                .node_register(id, name, "h", "0", "always-on", None, None, None, None)
+                .unwrap();
+            store
+                .node_heartbeat_sample(
+                    id,
+                    &crate::store::HeartbeatSample {
+                        load1: Some(load),
+                        cores: Some(cores),
+                        io: io(io_some),
+                        work,
+                    },
+                )
+                .unwrap();
+        }
+        drop(store);
+        let script = home.path().join("veles");
+        std::fs::write(&script, "#!/bin/sh\necho local-done\n").unwrap();
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let mut perm = std::fs::metadata(&script).unwrap().permissions();
+            perm.set_mode(0o755);
+            std::fs::set_permissions(&script, perm).unwrap();
+        }
+        std::env::set_var("VELES_BINARY", &script);
+        let t = DelegateTaskTool {
+            session_id: "cw-parent".into(),
+            hooks: None,
+        };
+        let batch = |workload: &str| {
+            json!({
+                "backend": "any",
+                "workload": workload,
+                "tasks": [{"goal": "part one"}, {"goal": "part two"}, {"goal": "part three"}]
+            })
+        };
+        let io_out = t.call(batch("io")).await;
+        assert_eq!(landed(&io_out), ["laptop", "vps", "laptop"], "{io_out}");
+        let cpu_out = t.call(batch("cpu")).await;
+        assert_eq!(landed(&cpu_out), ["zerg", "laptop", "zerg"], "{cpu_out}");
+        // The refused phone never took a member, and says why.
+        let phone_row = {
+            let s =
+                crate::store::Store::open(&crate::config::veles_home().join("state.db")).unwrap();
+            s.node_get("cw-phone").unwrap().unwrap()
+        };
+        let route = crate::routeprobe::route(&phone_row, Some("cw-self"));
+        assert!(!route.routable());
+        assert!(route.describe().contains("401"), "{}", route.describe());
+        // A per-task workload overrides the batch's, and a bad one is an
+        // error before anything starts.
+        let out = t
+            .call(json!({
+                "backend": "any", "workload": "cpu",
+                "tasks": [{"goal": "a", "workload": "io"}]
+            }))
+            .await;
+        assert_eq!(landed(&out), ["laptop"], "{out}");
+        let out = t
+            .call(json!({"backend": "any", "workload": "gpu", "goal": "g"}))
+            .await;
+        assert!(out.starts_with("error: workload 'gpu'"), "{out}");
+        for id in ["cw-self", "cw-vps", "cw-zerg", "cw-phone"] {
+            assert_eq!(crate::placement::in_flight(id), 0, "{id} released");
+        }
+        std::env::remove_var("VELES_BINARY");
     }
 }

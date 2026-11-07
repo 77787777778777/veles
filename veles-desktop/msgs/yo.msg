@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset yo {%1$s %2$s failed: %3$s} {%1$s %2$s kùnà: %3$s}
 ::msgcat::mcset yo {%1$s %2$s over ssh…} {%1$s %2$s lórí ssh…}
 ::msgcat::mcset yo {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset yo {%1$s (%2$s waiting)} {%1$s (%2$s ń dúró)}
 ::msgcat::mcset yo {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  ìrònú %3$s}
 ::msgcat::mcset yo {%1$s = %2$s here} {%1$s = %2$s níhìn-ín}
 ::msgcat::mcset yo {%1$s NOT saved: %2$s} {a kò fi %1$s pamọ́: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset yo {%1$s every cron job on %2$s?} {%1$s gbogbo iṣẹ́ cron lórí %2$s?}
 ::msgcat::mcset yo {%1$s failed: %2$s} {%1$s kùnà: %2$s}
 ::msgcat::mcset yo {%1$s in / %2$s out / %3$s calls} {%1$s wọlé / %2$s jáde / %3$s ìpè}
+::msgcat::mcset yo {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s jẹ́ node %2$s, kì í ṣe %3$s. Ṣàtúnṣe id node rẹ̀ nínú Edit….}
 ::msgcat::mcset yo {%1$s is not a whole number} {%1$s kì í ṣe nọ́mbà odidi}
+::msgcat::mcset yo {%1$s is reachable (%2$s ms).} {A lè dé ọ̀dọ̀ %1$s (%2$s ms).}
 ::msgcat::mcset yo {%1$s is set to something this box cannot edit (%2$s)} {%1$s ti ṣètò sí ohun tí ẹ̀rọ yìí kò lè ṣàtúnṣe (%2$s)}
+::msgcat::mcset yo {%1$s is unreachable: %2$s} {A kò lè dé ọ̀dọ̀ %1$s: %2$s}
 ::msgcat::mcset yo {%1$s of %2$s characters} {%1$s nínú %2$s lẹ́tà}
 ::msgcat::mcset yo {%1$s of %2$s sessions} {%1$s nínú ìpàdé %2$s}
 ::msgcat::mcset yo {%1$s of %2$s skills reach the prompt} {%1$s nínú %2$s skill ló wọ inú ìtọ́ni}
 ::msgcat::mcset yo {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s lórí %2$s: %3$d dára, %4$d kùnà}
+::msgcat::mcset yo {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s kò jábọ́ ìdánimọ̀ node cluster, nítorí náà a kò lè fìdí rẹ̀ múlẹ̀ gẹ́gẹ́ bí %2$s.}
+::msgcat::mcset yo {%1$s sync failed: %2$s} {Sync %1$s kùnà: %2$s}
+::msgcat::mcset yo {%1$s sync with %2$s (%3$s)} {Sync %1$s pẹ̀lú %2$s (%3$s)}
+::msgcat::mcset yo {%1$s sync: %2$s} {Sync %1$s: %2$s}
 ::msgcat::mcset yo {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset yo {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter láti fò síbẹ̀, Esc láti ti í}
 ::msgcat::mcset yo {%1$s — revision r%2$s} {%1$s — àtúnyẹ̀wò r%2$s}
 ::msgcat::mcset yo {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset yo {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset yo {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset yo {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset yo {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: %2$s tó gbẹ̀yìn nínú àwọn ìlà %3$s tí gateway rẹ̀ ń pa mọ́ nínú ìrántí, a sì yọ àwọn àṣírí kúrò lórí node yẹn.}
 ::msgcat::mcset yo {%d MCP server(s) configured} {%d MCP sérfà tí a ṣètò}
 ::msgcat::mcset yo {%d entries} {%d àkọsílẹ̀}
+::msgcat::mcset yo {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {A ó kọ fáìlì %d ti extension náà gẹ́gẹ́ bí a ti ṣàyẹ̀wò rẹ̀. Tí ọ̀kan nínú wọn bá yípadà láti ìgbà ìwòràwọ̀, a kò ní kọ nǹkan kan. Kò sí commit, push tàbí PR tó máa ṣẹlẹ̀.}
 ::msgcat::mcset yo {%d handler(s) registered} {%d handler tí a forúkọ sílẹ̀}
 ::msgcat::mcset yo {%d identities · %d users} {%d ìdánimọ̀ · %d olùṣàmúlò}
 ::msgcat::mcset yo {%d models — pick one from the list or type a name.} {Àwọn mọ́dẹ́ẹ̀lì %d — yan ọ̀kan láti inú àkójọ tàbí kọ orúkọ kan.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset yo {%d shown} {%d tí a fihàn}
 ::msgcat::mcset yo {%s %s%%} {%s %s%%}
 ::msgcat::mcset yo {%s (%s)} {%s (%s)}
+::msgcat::mcset yo {%s (referral)} {%s (ìtọ́kàtọ́)}
+::msgcat::mcset yo {%s (stale)} {%s (ó ti pẹ́)}
 ::msgcat::mcset yo {%s (this session)} {%s (ìpàdé yìí)}
 ::msgcat::mcset yo {%s GB free of %s GB} {%s GB ṣófo nínú %s GB}
 ::msgcat::mcset yo {%s already exists — open it from the list} {%s ti wà tẹ́lẹ̀ — ṣí i láti inú àkójọ}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset yo {%s comes from config.toml [acl] — edit there} {%s wá láti inú config.toml [acl] — ṣàtúnṣe níbẹ̀}
 ::msgcat::mcset yo {%s config change(s) wait for you — /configsync} {àyípadà ìṣètò %s ń dúró dè ọ́ — /configsync}
 ::msgcat::mcset yo {%s did not become healthy within 30s} {%s kò di aláìlera láàárín ìṣẹ́jú àáyá 30}
+::msgcat::mcset yo {%s done} {%s parí}
 ::msgcat::mcset yo {%s failed: %s} {%s kùnà: %s}
 ::msgcat::mcset yo {%s is already split} {%s ti pín tẹ́lẹ̀}
 ::msgcat::mcset yo {%s is the language in use — pick another one to swap with} {%s ni èdè tí a ń lò — yan èdè mìíràn fún yíyí padà}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset yo {%s opens the command palette in %s.} {%s ṣí palette àṣẹ ní %s.}
 ::msgcat::mcset yo {%s session(s)} {%s ìpàdé}
 ::msgcat::mcset yo {%s skill(s):} {%s skill(ì) kan:}
+::msgcat::mcset yo {%s standing grants} {%s àwọn àṣẹ tí ó dúró}
 ::msgcat::mcset yo {%s takes no completable arguments} {%s kò gba àwọn argument tí a lè parí}
 ::msgcat::mcset yo {%s takes on or off} {%s gba on tàbí off}
 ::msgcat::mcset yo {%s —} {%s —}
+::msgcat::mcset yo {%s — changes data, asks to confirm} {%s — ń yí data padà, ń béèrè ìfọwọ́sí}
 ::msgcat::mcset yo {%s — deleted; History… can restore it} {%s — a ti pa á rẹ́; Ìtàn… lè dá a padà}
 ::msgcat::mcset yo {%s — new: type, then Save} {%s — tuntun: tẹ̀ ẹ́, lẹ́yìn náà Fipamọ́}
 ::msgcat::mcset yo {%s — not attached; press Attach in the Instances tab} {%s — kò ṣopọ̀; tẹ Attach nínú tàbù àwọn ẹ̀dà}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset yo {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {A ti tan %{platform} láìsí abala [acl]: títí %{var} nínú .env yóò fi dárúkọ ẹni tí ó lè bá bot sọ̀rọ̀, ẹnikẹ́ni tí ó bá dé ọ̀dọ̀ rẹ̀ ni a ó kà sí olówó, pẹ̀lú gbogbo irinṣẹ́}
 ::msgcat::mcset yo (%{route}) (%{route})
 ::msgcat::mcset yo {(CLI redraws automatically)} {(CLI ń tún ara rẹ̀ yà fúnra rẹ̀)}
+::msgcat::mcset yo {(binary; not publishable)} {(binary; kò ṣeé tẹ̀ jáde)}
 ::msgcat::mcset yo {(clipboard empty or no clipboard tool)} {(kílípíbọ́ọ̀dì ṣófo tàbí kò sí irinṣẹ́ rẹ̀)}
 ::msgcat::mcset yo (deleted) {(a ti pa á rẹ́)}
 ::msgcat::mcset yo (empty) (òfo)
 ::msgcat::mcset yo {(no sessions)} {(kò sí ìpàdé)}
+::msgcat::mcset yo {(not a memsync peer of this gateway: config is not synced with it)} {(kì í ṣe ẹlẹ́gbẹ́ memsync ti gateway yìí: a kò ṣe sync ìṣètò pẹ̀lú rẹ̀)}
 ::msgcat::mcset yo {(nothing to reload — read from disk per use)} {(kò sí nǹkan láti tún gbéwọlé — a ń kà á láti disk ní gbogbo ìlò)}
 ::msgcat::mcset yo {(retrying last prompt…)} {(à ń tún gbìyànjú àṣẹ tó gbẹ̀yìn…)}
 ::msgcat::mcset yo {(route did not resolve: %{e})} {(ọ̀nà kò yanjú: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset yo {/url needs a number from /urls} {/url nílò nọ́mbà kan láti inú /urls}
 ::msgcat::mcset yo {/whois needs a nick} {/whois nílò orúkọ}
 ::msgcat::mcset yo {; could not save the cleared return view: %s} {; a kò lè fi ìwò ìpadà tí a pa pamọ́: %s}
+::msgcat::mcset yo {; shadows bundled} {; ó ń borí bundled}
+::msgcat::mcset yo {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Ìfúnni ìṣètò lè yí àwọn ìtòlẹ́sẹẹsẹ padà, ìfúnni àpótí ààbò sì ń darapọ̀ àwọn àṣírí; àwọn àyípadà sí abala ààbò ṣì ń dúró de olówó.}
 ::msgcat::mcset yo {A failing plugin may drop hooks mid-turn.} {Plugin tó kùnà lè jẹ́ kí hooks pàdánù ní àárín turn kan.}
 ::msgcat::mcset yo {A local server: no key is needed unless you set one up.} {Sérfà àdúgbò: kò sí kọ́kọ́rọ́ tí a nílò àyàfi tí o bá ṣètò kan.}
+::msgcat::mcset yo {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Àtúnyẹ̀wò tó ní ẹ̀tọ́ ni a máa ń gbé kalẹ̀ lẹ́yìn ìṣàyẹ̀wò àkọ́kọ́ nìkan. Àtúnbẹ̀rẹ̀/ìfìdí múlẹ̀, ìtẹ̀síwájú àti ìpadàṣẹ́ jẹ́ ìṣe pàtọ̀pàtọ̀. Ìlànà tó ṣiṣẹ́ dáadáa gbọ́dọ̀ jábọ́ àtúnyẹ̀wò orísun tí a ti ṣàyẹ̀wò gangan.}
 ::msgcat::mcset yo {A value is stored for %s — leave this empty to keep it.} {Iye kan ti wà ní ìpamọ́ fún %s — fi èyí sílẹ̀ ní òfo láti pa á mọ́.}
 ::msgcat::mcset yo {ACL: ban mask} {ACL: dí mask}
 ::msgcat::mcset yo {ACL: grant admin} {ACL: fún ní admin}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset yo {ACL: grant user} {ACL: fún ní user}
 ::msgcat::mcset yo {ACL: revoke} {ACL: yọ àṣẹ kúrò}
 ::msgcat::mcset yo {ACME account email} {Ìmeèlì àkọ̀ọ́lẹ̀ ACME}
+::msgcat::mcset yo {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI assist ń ṣiṣẹ́ ní ìpele mẹ́rin: bèèrè ìbéèrè nípa ìṣàpẹẹrẹ (kò nílò fáìlì), yí fáìlì yìí padà, yí fáìlì mélòó kan ti extension yìí padà, tàbí ṣàlàyé àwọn àwárí tó wà báyìí. New extension tún lè ṣẹ̀dá gbogbo extension láti inú èrò rẹ̀. A ń rán gbogbo ìbéèrè láìsí irinṣẹ́, a sì kọ̀ ọ́ tí ó bá gbé àṣírí tí a forúkọ sílẹ̀ tàbí iye tó dàbí ẹ̀rí ìdánimọ̀; a ń fi àwọn àyípadà hàn gẹ́gẹ́ bí diff, a sì kọ wọ́n nìkan nígbà tí o bá lò wọ́n. Kọ́kọ́ béèrè fún ìṣàpẹẹrẹ extension; béèrè àtúnṣe core nìkan lẹ́yìn tí o ti dá API tó ṣèé ṣe mọ̀.}
+::msgcat::mcset yo {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {Ìrànlọ́wọ́ AI ń ṣàtúnṣe àwọn extension olùṣàmúlò nìkan, fáìlì yìí kò sì jẹ́ apá kan ọ̀kan. Ọ̀pọ̀ àyípadà wà nínú extension kan (hook, irinṣẹ́, àtúnṣe service tàbí driver olùpèsè) tí ó ń gbé já àwọn ìgbésíge; core patch ni fún ohun tí extension API kò lè sọ. Ṣẹ̀dá extension tuntun fún àyípadà yìí? A máa ń ṣàfihàn àwọn fáìlì rẹ̀ kí a tó kọ nǹkan kan.}
+::msgcat::mcset yo {AI assist…} {Ìrànlọ́wọ́ AI…}
+::msgcat::mcset yo {AI extension assistance} {Ìrànlọ́wọ́ AI fún àfikún}
 ::msgcat::mcset yo {API calls} {Àwọn ìpè API}
+::msgcat::mcset yo {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {A kì í fúnni ní credit API láti ìtọ́kàtọ́ Anthropic àyàfi tí o bá ra Max tàbí Ultra. Veles kò ṣe àtìlẹ́yìn fún lílo subscription yẹn gẹ́gẹ́ bí login tàbí ìfìdí API múlẹ̀.}
 ::msgcat::mcset yo {API key (hidden)} {API key (ní ìpamọ́)}
 ::msgcat::mcset yo {API key env var name} {Orúkọ env var tó ní API key}
+::msgcat::mcset yo {API reference} {Ìtọ́kasi API}
+::msgcat::mcset yo {Abandon untouched operation} {Fi ìṣe tí a kò fọwọ́ kàn sílẹ̀}
 ::msgcat::mcset yo {Access control} {Ìṣàkóso ààyè}
 ::msgcat::mcset yo {Access control (ACL)} {Ìṣàkóso ààyè (ACL)}
 ::msgcat::mcset yo Add Fikún
 ::msgcat::mcset yo {Add MCP server} {Fikún MCP sérfà}
 ::msgcat::mcset yo {Add instance} {Fikún ẹ̀dà}
 ::msgcat::mcset yo {Add server…} {Fikún sérfà…}
+::msgcat::mcset yo {Adds selected extension sources. Review the branch diff and checks before merging.} {Ó ń fi àwọn orísun àfikún tí a yàn kún. Ṣàyẹ̀wò ìyàtọ̀ ẹ̀ka àti àwọn àyẹ̀wò kí o tó dà á pọ̀.}
 ::msgcat::mcset yo Add… Fikún…
 ::msgcat::mcset yo {Agent & engine} {Aṣojú àti ẹ̀rọ}
 ::msgcat::mcset yo {Alias %s} {Inagijẹ %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset yo {Applies to} {Ó kan}
 ::msgcat::mcset yo Apply {Fi sílò}
 ::msgcat::mcset yo {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {Fi sílò yí ìpàdé tó ń ṣiṣẹ́ nísinsìnyí nìkan padà. Copy TOML fún ọ ní àwọn ẹ̀yà tí o lè lẹ̀ mọ́. Fi pamọ́ ní gbogbogbòò dà wọ́n mọ́ inú config.toml — àwọn apá failover nìkan ni a kàn, gbogbo ìlà àti àṣọyé mìíràn ni a fi sílẹ̀, a sì tọ́jú fáìlì àtijọ́ bí config.toml.bak.}
+::msgcat::mcset yo {Apply proposal…} {Apply àbá…}
+::msgcat::mcset yo {Apply received} {Apply tí a gbà}
+::msgcat::mcset yo {Apply this AI proposal?} {Ṣé kí a gbà àbá AI yìí?}
+::msgcat::mcset yo {Apply this change set?} {Ṣé kí a lo ìṣètò àyípadà yìí?}
 ::msgcat::mcset yo {Apply to session} {Fi sílò fún ìpàdé}
+::msgcat::mcset yo {Apply what this node received:} {Lo ohun tí node yìí gbà:}
 ::msgcat::mcset yo {Approval needed} {Ìfọwọ́sí ṣeé ṣe}
 ::msgcat::mcset yo Apps {Àwọn áàpù}
 ::msgcat::mcset yo Archive Àkójọpọ̀
 ::msgcat::mcset yo {Archive SHA-256} {SHA-256 àkójọpọ̀}
+::msgcat::mcset yo Ask Bèèrè
+::msgcat::mcset yo {Ask a design question} {Bèèrè ìbéèrè nípa ìṣàpẹẹrẹ}
+::msgcat::mcset yo {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {Bèèrè bí a ṣe ń kọ́ extension: ààlà wo, èdè wo, API wo. A kò fi orísun ránṣẹ́, kò sì sí nǹkan tí a lè kọ.}
 ::msgcat::mcset yo {Ask the agent to change it} {Ní kí aṣojú yí i padà}
+::msgcat::mcset yo {Asking %s…} {À ń béèrè %s…}
 ::msgcat::mcset yo {Asking the provider for its models…} {À ń béèrè láti ọ̀dọ̀ olùpèsè fún àwọn mọ́dẹ́ẹ̀lì rẹ̀…}
 ::msgcat::mcset yo Attach {Ìní mọ́}
 ::msgcat::mcset yo {Attach to the next message} {Sọ mọ́ ìfiránṣẹ́ tó kàn}
+::msgcat::mcset yo {Author guide} {Ìtọ́nà olùkọ̀wé}
+::msgcat::mcset yo {Automatically discovered from the attached gateway's cluster registry.} {Wọ́n rí i ní ìfọwọ́síyelé láti inú àkọsílẹ àgùn gateway tó sopọ̀.}
 ::msgcat::mcset yo Back Ṣẹ́yìn
 ::msgcat::mcset yo {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {Padà ń pa ohun tí ó wà lókè dé: àkójọ àṣàyàn, àkójọ ìpàdé, fèrèsé kan. Bí kò bá sí ohun tí ó ṣí, veles ń lọ sí abẹ́lẹ̀ ó sì ń bá iṣẹ́ lọ.}
 ::msgcat::mcset yo {Base URL} {Base URL}
+::msgcat::mcset yo {Base branch} {Ẹ̀ka ìpìlẹ̀}
 ::msgcat::mcset yo {Bot token (hidden)} {Tókìnì bot (ní ìpamọ́)}
+::msgcat::mcset yo Branch Ẹ̀ka
+::msgcat::mcset yo {Branch and commit prepared; nothing has been pushed} {A ti ṣètò ẹ̀ka àti kọ́mítì; kò sí ohun tí a ti tì}
+::msgcat::mcset yo {Branch pushed and verified on origin} {A ti tì ẹ̀ka náà, a sì ti ṣàyẹ̀wò rẹ̀ lórí orísun}
 ::msgcat::mcset yo {Browse sessions} {Wo àwọn ìpàdé}
+::msgcat::mcset yo {Build manifest + preflight} {Manifest ìkọ́ + ìṣàyẹ̀wò àkọ́kọ́}
+::msgcat::mcset yo {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Ìkọ́lé: veles %1$s, àtúnyẹ̀wò %2$s (%3$s %4$s)}
 ::msgcat::mcset yo {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e orí ìlà · C-b/C-f lẹ́tà · M-b/M-f ọ̀rọ̀ · C-k pa sí EOL · C-y yank · M-w dàkọ · C-w pa agbègbè · C-space ṣetò àmì · C-/ dápadà}
 ::msgcat::mcset yo {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g fagilé gbogbo nǹkan · C-j ìlà tuntun · M-p/M-n ìtàn · Tab parí}
+::msgcat::mcset yo {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: kọ́ọ̀ %1$s, ẹrù iṣẹ́ %2$s / %3$s / %4$s (%5$s%% nínú àwọn kọ́ọ̀)}
 ::msgcat::mcset yo Cancel Fagilé
+::msgcat::mcset yo {Cancel task} {Fagilé iṣẹ́}
+::msgcat::mcset yo {Cancel task %1$s? This cannot be undone.} {Fagilé iṣẹ́ %1$s? Èyí kò lè ṣeé ṣẹ́ padà.}
+::msgcat::mcset yo {Cannot verify that %1$s is node %2$s: %3$s} {A kò lè fìdí rẹ̀ múlẹ̀ pé %1$s ni node %2$s: %3$s}
 ::msgcat::mcset yo Capabilities {Àwọn agbára}
 ::msgcat::mcset yo {Change my app “%s” (%s): } {Yí áàpù mi “%s” (%s) padà: }
+::msgcat::mcset yo {Change this extension's files} {Yí àwọn fáìlì extension yìí padà}
+::msgcat::mcset yo {Change this file} {Yí fáìlì yìí padà}
 ::msgcat::mcset yo Change… {Yí padà…}
 ::msgcat::mcset yo {Channels (e.g. #veles #dev)} {Àwọn ikanni (bíi #veles #dev)}
 ::msgcat::mcset yo Chat Ìfọ̀rọ̀wérọ̀
 ::msgcat::mcset yo {Chat — not attached; press Attach in the Instances tab} {Ìfọ̀rọ̀wérọ̀ — kò ṣopọ̀; tẹ Attach nínú tàbù àwọn ẹ̀dà}
 ::msgcat::mcset yo {Check (lsp)} {Ṣàyẹ̀wò (lsp)}
+::msgcat::mcset yo {Check again} {Àyẹ̀wò lẹ́ẹ̀kan sí i}
+::msgcat::mcset yo {Check files} {Ṣàyẹ̀wò àwọn fáìlì}
 ::msgcat::mcset yo Checkpoints {Àwọn aaye ìpadabọ̀}
 ::msgcat::mcset yo {Checkpoints (undo)} {Àwọn aaye ìpadabọ̀ (dápadà)}
+::msgcat::mcset yo {Checks and next steps} {Àwọn àyẹ̀wò àti ìgbésẹ̀ tó kàn}
+::msgcat::mcset yo {Checks run} {A ti ṣe àwọn àyẹ̀wò}
 ::msgcat::mcset yo {Choose BUNDLE-INFO.json in the managed install-sources directory} {Yan BUNDLE-INFO.json nínú àdírẹ́sì install-sources tí a ṣàkóso}
 ::msgcat::mcset yo {Choose a failover script} {Yan ìwé eré ìpadabọ̀}
 ::msgcat::mcset yo {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {Yan mọ́dúùlù tàbí plugin ìlànà kan láti ṣàyẹ̀wò. Ìṣàwárí kì í ka ohunkóhun ju plugin.toml lọ; yíyan kọ̀mpónẹ́ńtì kan ń béèrè mánìfẹ́sítì àti àwọn àṣàyàn tí a kéde rẹ̀. Ṣíṣí ìgbésẹ̀ yìí kò fi ohunkóhun sórí ẹ̀rọ.}
+::msgcat::mcset yo {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {Yan orúkọ, èrèdí àti èdè, lẹ́yìn náà wo àwọn fáìlì gangan. A kò tíì kọ nǹkan kankan.}
 ::msgcat::mcset yo {Choose a user unit or a system service for the server profile. Neither starts a service.} {Yan ẹ̀ka olùṣàmúlò tàbí service ètò fún profil sẹ́fà. Èyíkéyìí kò bẹ̀rẹ̀ service kankan.}
 ::msgcat::mcset yo {Choose core bundle…} {Yàn àpò core…}
 ::msgcat::mcset yo {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {Yan ìrísí ìṣàgbékalẹ̀. Àwọn profil agbègbè ń lo olùṣàgbékalẹ̀ tí a ṣàtúnyẹ̀wò. Àwọn profil ètò àti container ń pèsè ìbéèrè tí a fọwọ́sí fún ìgbéwọ́ CLI pàtó. NixOS nìkan ni ó ń mú ìkọ̀wé module kúkúrú jáde.}
+::msgcat::mcset yo {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {Yan ààbò tó le jùlọ: Tool ń fi agbára tó lè pè mọ́dẹ́ẹ̀lì kún; Hook ń wo tàbí ń ṣàtúnṣe ìṣẹ̀lẹ̀ ìgbà-ayé; Service tàbí override point ń gbé ìpinnu kan; Provider driver ń fi ohun-ini provider kún; Core patch yẹ kí o lò nìkan tí extension API kò lè fi ìyípadà hàn.}
 ::msgcat::mcset yo {Choose typed container-host options JSON} {Yàn JSON àwọn àṣàyàn container-host tí ó ní irú}
 ::msgcat::mcset yo {Choose typed container-host options…} {Yàn àwọn àṣàyàn container-host tí ó ní irú…}
 ::msgcat::mcset yo Clear {Nu kúrò}
 ::msgcat::mcset yo {Clear composer} {Nu àpótí ìkọ̀wé}
 ::msgcat::mcset yo {Clear override} {Nu àyípadà kúrò}
 ::msgcat::mcset yo {Click the picture where you would click on the page.} {Tẹ àwòrán náà níbi tí o ì bá tẹ̀ lójú ewé náà.}
+::msgcat::mcset yo {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {Ṣe clone %1$s, ṣẹ̀dá %2$s, kí o sì dà kìkì àwọn fáìlì tí a ṣàyẹ̀wò ti %3$s sínú %4$s/<extension>/. A ń ṣàyẹ̀wò àwọn fáìlì kí a sì ṣe commit. Kò sí push tàbí pull request tí yóò ṣẹlẹ̀ báyìí.}
 ::msgcat::mcset yo Close Ti
 ::msgcat::mcset yo {Close (Esc)} {Ti (Esc)}
 ::msgcat::mcset yo {Close the setup wizard? Nothing has been written yet.} {Ṣé ó dáa ká ti wizard ìṣètò? Kò sí ohun tí a kọ sìbẹ̀.}
 ::msgcat::mcset yo {Code actions} {Ìṣe kóòdù}
+::msgcat::mcset yo Commit Kọ́mítì
+::msgcat::mcset yo {Commit ready for review. Push is a separate action.} {Kọ́mítì ti ṣetán fún àyẹ̀wò. Títì jẹ́ ìgbésẹ̀ ọ̀tọ̀.}
 ::msgcat::mcset yo {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Parí gbogbo pápá PDS, pẹ̀lú digest àwòrán tí a so, kí o tó ṣàgbéyẹ̀wò handoff.}
 ::msgcat::mcset yo {Complete every typed container-host field before previewing this profile.} {Parí gbogbo pápá container-host tí a tẹ́ sí i kí o tó ṣe ìwò ṣáájú profil yìí.}
 ::msgcat::mcset yo {Component configuration returned an invalid result; nothing was accepted as applied.} {Ìṣètò component dá ìyọrísí tí kò tọ́ padà; a kò gbà ohunkóhun pé ó ti lò.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset yo {Component options changed. Review the new preview before applying.} {Àwọn àṣàyàn kọ̀mpónẹ́ńtì ti yípadà. Ṣàyẹ̀wò ìwò ṣáájú tuntun kí o tó fi ṣiṣẹ́.}
 ::msgcat::mcset yo Components {Àwọn kọ̀mpónẹ́ńtì}
 ::msgcat::mcset yo {Composer preview} {Àbójúde olùkọ̀ọ́n}
+::msgcat::mcset yo Config Ìṣètò
+::msgcat::mcset yo {Config differs: %s} {Ìṣètò yàtọ̀: %s}
+::msgcat::mcset yo {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Àkọsílẹ̀ ìṣètò: node yẹn ní àwọn àyípadà %1$s títí dé %3$s, gateway yìí títí dé %2$s}
+::msgcat::mcset yo {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Àkọsílẹ̀ ìṣètò: gateway yìí ní àwọn àyípadà %1$s títí dé %2$s, node yẹn títí dé %3$s}
+::msgcat::mcset yo {Config only on that node: %s} {Ìṣètò lórí node yẹn nìkan: %s}
+::msgcat::mcset yo {Config only on this gateway: %s} {Ìṣètò lórí gateway yìí nìkan: %s}
 ::msgcat::mcset yo Configure Ṣètò
 ::msgcat::mcset yo {Configure %s} {Ṣètò %s}
+::msgcat::mcset yo {Configure translator} {Ṣètò olùtúmọ̀}
+::msgcat::mcset yo {Configured desktop gateway} {Gateway desktop tí a ṣètò}
 ::msgcat::mcset yo Configure… Ṣètò…
 ::msgcat::mcset yo {Configuring %s} {Ìṣètò %s}
 ::msgcat::mcset yo {Confirm or discard the current signed review before starting another download.} {Dájú tàbí fi àtúnyẹ̀wò tí a fọwọ́ sí pa rẹ́ kí o tó bẹ̀rẹ̀ ìgbà mìíràn.}
 ::msgcat::mcset yo {Container host: typed host plan and privileged CLI handoff} {Container host: ètò host tí ó ní irú àti ìfàsílẹ̀ CLI tó nílò àṣẹ olùṣàkóso}
 ::msgcat::mcset yo {Context window} {Fúnrà ìfẹ́hàn}
+::msgcat::mcset yo {Continue to next target} {Tẹ̀síwájú sí àfojúsùn tó ń bọ̀}
+::msgcat::mcset yo {Contribute extensions: %s} {Ìtọrẹ àwọn extension: %s}
+::msgcat::mcset yo Contribute… {Ṣe àfikún…}
+::msgcat::mcset yo {Contribution branch} {Ẹ̀ka àfikún}
+::msgcat::mcset yo {Contribution destination} {Ibùdó àfikún}
 ::msgcat::mcset yo Copy {Dà á pọ̀}
 ::msgcat::mcset yo {Copy TOML} {Dà á pọ̀ TOML}
+::msgcat::mcset yo {Copy a bundled extension into your user plugin directory before preparing a contribution.} {Da àfikún tí ó wà pẹ̀lú app kọ sínú àpótí plugin olùṣàmúlò rẹ kí o tó ṣètò àfikún.}
 ::msgcat::mcset yo {Copy message} {Dà ìfiránṣẹ́ pọ̀}
 ::msgcat::mcset yo {Copy name} {Dà orúkọ pọ̀}
 ::msgcat::mcset yo {Copy nick} {Dà nick pọ̀}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset yo {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {A kò lè ṣàwárí àwọn kọ̀mpónẹ́ńtì. Àwọn ìgbésẹ̀ ìṣètò olùpèsè ṣì ń ṣiṣẹ́; ṣàgbékalẹ̀ nípasẹ̀ CLI lórí ẹ̀rọ ìfojúsùn bí ó bá pọn dandan.}
 ::msgcat::mcset yo {Could not join: %s} {Kò lè darapọ̀: %s}
 ::msgcat::mcset yo {Could not list the models (%s) — type the model's name.} {A kò lè ṣàkójọ àwọn mọ́dẹ́ẹ̀lì (%s) — kọ orúkọ mọ́dẹ́ẹ̀lì náà.}
+::msgcat::mcset yo {Create a PR in} {Ṣí PR nínú}
+::msgcat::mcset yo {Create extension} {Ṣẹ̀dá àfikún}
 ::msgcat::mcset yo {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Ṣẹ̀dá bot náà pẹ̀lú @BotFather, lẹ́yìn náà lẹ tókìnì rẹ̀ sí ìsàlẹ̀: ó ń lọ sínú àpótí ààbò tí a fi kóòdù pa, kò jẹ́ lọ sínú config.toml láé.}
+::msgcat::mcset yo {Create this extension?} {Ṣé kí a ṣẹ̀dá àfikún yìí?}
+::msgcat::mcset yo {Create this generated extension?} {Ṣé kí a dá extension tí a ṣẹ̀dá yìí?}
+::msgcat::mcset yo {Created and reloaded. Review and test the extension before publishing.} {A ti ṣẹ̀dá, a sì ti tún gbé wọlé. Ṣàyẹ̀wò àfikún náà kí o sì dán an wò kí o tó tẹ̀ ẹ́ jáde.}
+::msgcat::mcset yo {Created, but reload failed} {A ti ṣẹ̀dá, ṣùgbọ́n àtúngbéwọlé kùnà}
 ::msgcat::mcset yo {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Ó dá %s/<name>/SKILL.md láti inú àwòkọ́ṣe, ó sì ṣí i. Àpèjúwe frontmatter ni ohun tó dé inú àtòkọ ìtọ́ni nìkan, nítorí náà mú kí ó sọ ìgbà wo ni a ó lo skill náà.}
 ::msgcat::mcset yo {Cron history} {Ìtàn Cron}
 ::msgcat::mcset yo {Cron jobs} {Àwọn iṣẹ́ Cron}
 ::msgcat::mcset yo {Curated — write the first owner entry} {Curated — kọ ìkọ̀wé olówó àkọ́kọ́}
 ::msgcat::mcset yo Cut Gé
 ::msgcat::mcset yo Decline {Kọ̀ ọ́}
+::msgcat::mcset yo {Dedicated translator} {Oníìtumọ̀ pàtó}
 ::msgcat::mcset yo {Def (M-.)} {Ìtumọ̀ (M-.)}
 ::msgcat::mcset yo Default Àṣàyàn
 ::msgcat::mcset yo {Default model} {Mọ́dẹ̀ẹ̀lì àṣàyàn}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset yo {Delete user} {Pa olùṣàmúlò rẹ́}
 ::msgcat::mcset yo {Delete workspace?} {Pa ààyè iṣẹ́ rẹ́ bí?}
 ::msgcat::mcset yo Deop {Yọ op kúrò}
+::msgcat::mcset yo {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Ṣàpèjúwe àyípadà náà. AI lè yí fáìlì mélòó kan padà tàbí fi kún extension yìí. A ń fi gbogbo fáìlì hàn gẹ́gẹ́ bí diff, kò sì sí nǹkan tí a kọ kí o tó fọwọ́sí.}
+::msgcat::mcset yo {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Ṣàpèjúwe ìyípadà náà. AI lè dábàá àròpo, ṣùgbọ́n kò lè kọ ọ́ kí o tó ṣàyẹ̀wò diff náà kí o sì fọwọ́ sí i.}
+::msgcat::mcset yo {Describe the requested extension change first.} {Kọ́kọ́ ṣàpèjúwe ìyípadà àfikún tí o béèrè.}
+::msgcat::mcset yo Description Àpèjúwe
 ::msgcat::mcset yo {Desktop: local core, modules and process plugins} {Desktop: core àdúgbò, àwọn módúlì àti àwọn plugin ilànà}
 ::msgcat::mcset yo Detach {Yà kúrò}
+::msgcat::mcset yo {Detach foreground} {Yà àṣẹ ojú-ìtàgé kúrò}
 ::msgcat::mcset yo Dev {Iṣẹ́ ìdàgbàsókè}
 ::msgcat::mcset yo {Dev pane (REPL + LSP)} {Pání ìdàgbàsókè (REPL + LSP)}
 ::msgcat::mcset yo {Dev: arm / disarm live patching} {Ìdàgbàsókè: ṣetán / nu live patching kúrò}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset yo Devoice {Yọ voice kúrò}
 ::msgcat::mcset yo {Discard review} {Fi àtúnyẹ̀wò pa rẹ́}
 ::msgcat::mcset yo {Discard your changes to %s?} {Jù àwọn àyípadà rẹ sí %s nù?}
+::msgcat::mcset yo {Disk: %1$s free of %2$s at %3$s} {Disk: %1$s ṣófo nínú %2$s ní %3$s}
 ::msgcat::mcset yo Done {Ó ti parí}
 ::msgcat::mcset yo {Done — config written} {Ó parí — a ti kọ config}
 ::msgcat::mcset yo {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Gbà kí o sì jẹ́rìí àkójó àti àkójọpọ̀ agbalejo kí o tó fi síbẹ̀. Gbogbo pápá ìdánimọ̀ márùn-ún ni a nílò. Gateway ni ó fi àkójọpọ̀ àdáni pamọ́; kò sí ohun tí àwòrán yìí fi síbẹ̀.}
 ::msgcat::mcset yo {Downloading and verifying the signed release…} {À ń gbà, à ń sì jẹ́rìí release tí a fọwọ́ sí…}
+::msgcat::mcset yo {Draft this as an extension?} {Ṣe kí a kọ èyí gẹ́gẹ́ bí extension?}
 ::msgcat::mcset yo {Drag to scroll; a quick swipe goes further.} {Fà á láti yí i; fífi ìka gbá kíákíá ń lọ jìnnà sí i.}
+::msgcat::mcset yo {Drift check failed: %s} {Àyẹ̀wò ìyàtọ̀ kùnà: %s}
+::msgcat::mcset yo {Drift check: %s node(s) differ from this gateway.} {Àyẹ̀wò ìyàtọ̀: node %s yàtọ̀ sí gateway yìí.}
+::msgcat::mcset yo {Drift: built from revision %1$s, this gateway from %2$s} {Ìyàtọ̀: a kọ́ ọ láti àtúnyẹ̀wò %1$s, gateway yìí láti %2$s}
+::msgcat::mcset yo {Drift: none — same version, revision and replicated config} {Ìyàtọ̀: kò sí — ẹ̀dà kan náà, àtúnyẹ̀wò àti ìṣètò tí a ṣe àdàkọ}
+::msgcat::mcset yo {Drift: not compared — %s} {Ìyàtọ̀: a kò fi wé — %s}
+::msgcat::mcset yo {Drift: runs version %1$s, this gateway %2$s} {Ìyàtọ̀: ó ń lo ẹ̀dà %1$s, gateway yìí %2$s}
+::msgcat::mcset yo Drift… Ìyàtọ̀…
 ::msgcat::mcset yo {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset yo {ESC %s is not bound} {ESC %s kò ní ìdè}
 ::msgcat::mcset yo {ESC- … (Meta prefix)} {ESC- … (ìṣáájú Meta)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset yo Edit… Ṣàtúnṣe…
 ::msgcat::mcset yo {Enable / disable} {Ṣí / pa}
 ::msgcat::mcset yo {Enable the Telegram adapter} {Mú adapter Telegram ṣiṣẹ́}
+::msgcat::mcset yo Endpoint Ojú-ìbòrí
 ::msgcat::mcset yo Engine Engine
 ::msgcat::mcset yo Eval→gw Eval→gw
 ::msgcat::mcset yo {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Gbogbo ìyípadà sí %s ni a ṣe commit. Ìmúpadàbọ̀ yóò fi gbogbo àpòtí náà padà sí commit yẹn — ó sì tọ́jú ipò lọ́wọ́lọ́wọ́ lóòtó kí ó tó, nítorí náà kì í ṣe ilẹ̀kùn tí kò ní padà.}
 ::msgcat::mcset yo {Every plugin file goes back to that commit. The current state is committed first.} {Gbogbo fáìlì plugin yóò padà sí commit yẹn. A kọ́kọ́ ṣe commit ipò tó wà lọ́wọ́lọ́wọ́.}
+::msgcat::mcset yo {Exact commit} {Commit gangan}
+::msgcat::mcset yo {Exact permission rule} {Òfin àṣẹ gangan}
+::msgcat::mcset yo {Example: a hook} {Àpẹẹrẹ: hook}
+::msgcat::mcset yo {Example: a provider driver} {Àpẹẹrẹ: driver olùpèsè}
+::msgcat::mcset yo {Example: a service override wrapping core} {Àpẹẹrẹ: service override tó gbé core}
+::msgcat::mcset yo {Example: a tool} {Àpẹẹrẹ: irinṣẹ́ kan}
 ::msgcat::mcset yo {Existing shared container network} {Nẹ́tíwọ́ọ̀kì container tí a pín tó ti wà}
+::msgcat::mcset yo Explain Ṣàlàyé
+::msgcat::mcset yo {Explain the diagnostics} {Ṣàlàyé àwọn àwárí}
 ::msgcat::mcset yo Export… {Gbé jáde…}
+::msgcat::mcset yo {Extension API} {API àfikún}
+::msgcat::mcset yo {Extension development} {Ìdàgbàsókè plugin}
+::msgcat::mcset yo {Extension guide} {Ìtọ́nisẹ́ plugin}
+::msgcat::mcset yo {Extension source} {Orísun àfikún}
 ::msgcat::mcset yo {Failover blueprint} {Étì ìpàdàbọ̀}
 ::msgcat::mcset yo {Failover blueprint (edit the route chain)} {Étì ìpàdàbọ̀ (ṣàtúnṣe òpó onírúú̀tọ́)}
 ::msgcat::mcset yo {Failover hook script (what `script` mode runs)} {Ìwé àmì ìpàdàbọ̀ (ohun tí ìpò `script` ń ṣiṣẹ́)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset yo {Find in transcript} {Rí nínú ìtumọ̀ ìtànkálẹ̀}
 ::msgcat::mcset yo {Find in transcript…} {Wá nínú àkọsílẹ̀…}
 ::msgcat::mcset yo {Find references} {Wá àwọn ìtọ́kasí}
+::msgcat::mcset yo {Finish rollback} {Parí ìpadàṣẹ́yìn}
 ::msgcat::mcset yo {First run: no config.toml yet.} {Ìgbà àkọ́kọ́: kò sí config.toml sìbẹ̀.}
+::msgcat::mcset yo {Fix the failed syntax checks before preparing a contribution.} {Tún àwọn àyẹ̀wò syntax tó kùnà ṣe kí o tó ṣètò àfikún.}
+::msgcat::mcset yo {Fleet deployment} {Ìgbékalẹ̀ fleet}
+::msgcat::mcset yo {Fleet deployment runs from a desktop computer; it is not available on Android.} {Ìgbékalẹ̀ fleet ń ṣiṣẹ́ láti kọ̀mpútà desktop; kò sí lórí Android.}
+::msgcat::mcset yo {Fleet deploy…} {Ìgbékalẹ̀ fleet…}
+::msgcat::mcset yo {Fleet drift} {Ìyàtọ̀ àkójọ ẹ̀rọ}
 ::msgcat::mcset yo {Fold / unfold} {Ká / tú}
 ::msgcat::mcset yo {Forget declaration} {Gbàgbé ìkéde}
+::msgcat::mcset yo {Forget node %s?} {Gbàgbé node %s?}
+::msgcat::mcset yo {Forget node…} {Gbàgbé node…}
+::msgcat::mcset yo {Forgetting %1$s failed: %2$s} {Gbígbàgbé %1$s kùnà: %2$s}
+::msgcat::mcset yo {Forgot node %s.} {A ti gbàgbé node %s.}
+::msgcat::mcset yo {Forgotten fleet-wide (refused until they heartbeat again): %s} {A gbàgbé wọn káàkiri àkójọ ẹ̀rọ (a kò ní gbà wọ́n títí wọ́n yóò fi tún heartbeat): %s}
 ::msgcat::mcset yo Fork {Ṣẹ̀dá ẹ̀ka}
 ::msgcat::mcset yo {Free space} {Àyè tó ṣófo}
 ::msgcat::mcset yo {Full source commit SHA} {SHA commit orísun kíkún}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset yo {Gateway image sha256 digest} {Digest sha256 àwòrán gateway}
 ::msgcat::mcset yo {Gateway quadlet name} {Orúkọ quadlet gateway}
 ::msgcat::mcset yo {Gateway status} {Ìpò Gateway}
+::msgcat::mcset yo {Generate with AI…} {Ṣẹ̀dá pẹ̀lú AI…}
+::msgcat::mcset yo {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {%s ló ṣẹ̀dá rẹ̀ - a kò kọ nǹkan kan. Ṣàyẹ̀wò gbogbo fáìlì, lẹ́yìn náà Dá extension yóò kọ gbogbo èyí gan-an.}
 ::msgcat::mcset yo {Get a key at %s} {Mú kọ́kọ́rọ́ kan ní %s}
 ::msgcat::mcset yo {GitHub release URL} {URL ìtú jáde GitHub}
+::msgcat::mcset yo {Give the extension a name and describe what it should do (the purpose), then generate.} {Fún extension náà ní orúkọ kí o sì ṣàpèjúwe ohun tí ó yẹ kí ó ṣe (èrò rẹ̀), lẹ́yìn náà ṣẹ̀dá.}
 ::msgcat::mcset yo {Give up} Jáwọ́
 ::msgcat::mcset yo Go Lọ
 ::msgcat::mcset yo {Go to definition} {Lọ sí ìtumọ̀}
+::msgcat::mcset yo {Gossip failed: %s} {Gossip kùnà: %s}
+::msgcat::mcset yo {Gossip now} {Gossip báyìí}
+::msgcat::mcset yo {Gossip with %1$s: %2$s} {Gossip pẹ̀lú %1$s: %2$s}
+::msgcat::mcset yo {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {Gossip: %1$s nínú ẹlẹ́gbẹ́ %2$s ló dáhùn (%3$s).}
 ::msgcat::mcset yo Grant {Fún ní àṣẹ}
 ::msgcat::mcset yo {Grant access} {Fún ní ààyè}
+::msgcat::mcset yo {Granted at} {Ìgbà tí a fún un}
 ::msgcat::mcset yo Grant… {Fún ní àṣẹ…}
 ::msgcat::mcset yo {Guards — what the harness stops, and where it stands now} {Guards — ohun tí harness ń dá dúró, àti ibi tó wà nísinsìnyí}
 ::msgcat::mcset yo {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Àwọn handler ń ṣiṣẹ́ ní ìtòlẹ́sẹ̀ tí a fihàn; ẹni tó kọ́kọ́ dá àbájáde tí kì í ṣe òfo padà ló borí. Pípa ọ̀kan pa ń ṣàfojúdi rẹ̀ láìyọ ọ́ kúrò nínú ìforúkọsílẹ̀, àti pé àṣàyàn náà wà nínú config.toml, nítorí náà àtúnyọ́ plugin kò lè tún un ṣí lọ́nà ìkọ̀kọ̀.}
+::msgcat::mcset yo Health Ìlera
+::msgcat::mcset yo {Health alerts (%s):} {Ìkìlọ̀ ìlera (%s):}
+::msgcat::mcset yo Heartbeat {Ìpí ọkàn}
+::msgcat::mcset yo {Heartbeat age: %s s} {Ìgbà heartbeat: %s s}
 ::msgcat::mcset yo Help Ìrànlọ́wọ́
 ::msgcat::mcset yo {Help & keys} {Ìrànlọ́wọ́ àti bọtìnnì}
 ::msgcat::mcset yo {Hide right panes} {Fi àwọn pání ọ̀tún pamọ́}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset yo {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {Dì í mú, lẹ́yìn náà fà á kí o tó gbé ìka sókè: àṣàyàn náà ń tẹ̀lé ìka rẹ ní ọ̀rọ̀ kan lẹ́yìn òmíràn, ó ń yí ní etí òkè tàbí ìsàlẹ̀.}
 ::msgcat::mcset yo Hooks {Àwọn hooks}
 ::msgcat::mcset yo {Hooks (what plugins run on)} {Àwọn Hooks (ohun tí àwọn plugins ń fi ṣiṣẹ́)}
+::msgcat::mcset yo Host Olùfisọ́nì
 ::msgcat::mcset yo {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {Bí dídìmú ṣe ń pẹ́ tó jẹ́ ìdádúró fọwọ́kàn-kí-o-dìmú ti Android, nínú ètò ìráyè rẹ̀.}
 ::msgcat::mcset yo {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {Mo ti fi KEK àti bọ́tìnì ìyíyí PLC pamọ́ ní ìta lílọ́já; gba ìjáwọ́ TLS àti ìmúṣẹ́ tí a yẹ̀wò kí ó lè dà sí lọ́wọ́}
 ::msgcat::mcset yo {I-search backward: type to search, C-r for previous} {I-search sẹ́yìn: tẹ láti wá, C-r fún èyí tó kọ́já}
 ::msgcat::mcset yo {I-search: type to search, C-s for next} {I-search: tẹ láti wá, C-s fún èyí tó ń bọ̀}
+::msgcat::mcset yo {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {Ìpá IO: %1$s%% / %2$s%% / %3$s%% nínú àkókó tí iṣẹ́ kan dúró (10 s / 1 min / 5 min)}
 ::msgcat::mcset yo IRC IRC
 ::msgcat::mcset yo {IRC buffers} {Àwọn buffer IRC}
 ::msgcat::mcset yo {IRC composer} {Composer IRC}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset yo {IRC split: %s} {Ìpín IRC: %s}
 ::msgcat::mcset yo {IRC transcript} {Ìtẹ̀jáde IRC}
 ::msgcat::mcset yo {IRC — nothing to show} {IRC — kò sí ohun láti fihàn}
+::msgcat::mcset yo {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {Ní ìlọ́wọ́lọ́wọ́: turn %1$s %2$s, iṣẹ́ ẹ̀yìn %3$s %4$s}
 ::msgcat::mcset yo {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {Ṣàgbékalẹ̀ %s sínú ìpamọ́ kọ̀mpónẹ́ńtì tí a ń ṣàkóso? A ti fi mánìfẹ́sítì rẹ̀ hàn; èyí kò dá sérfìsì kankan.}
 ::msgcat::mcset yo {Install component} {Ṣàgbékalẹ̀ kọ̀mpónẹ́ńtì}
 ::msgcat::mcset yo {Install components…} {Ṣàgbékalẹ̀ àwọn kọ̀mpónẹ́ńtì…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset yo Instances {Àwọn ẹ̀dà}
 ::msgcat::mcset yo {It becomes the current content, as a new revision — so the restore can be undone too.} {Yóò di àkóónú lọ́wọ́lọ́wọ́, gẹ́gẹ́ bí àtúnyẹ̀wò tuntun — nítorí náà a lè fagi lé ìdápadà náà pẹ̀lú.}
 ::msgcat::mcset yo {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Ó ń lọ sínú àpótí ààbò tí a fi kóòdù pa lórí ẹ̀rọ yìí. Aṣojú kò rí i láé: ó lè lò ó nìkan gẹ́gẹ́ bí $%s nínú àwọn àṣẹ, tàbí fi ránṣẹ́ sí àwọn olùgbàlejò tí a gbà láàyè.}
+::msgcat::mcset yo {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {A yọ ọ́ kúrò nínú registry cluster káàkiri àkójọ ẹ̀rọ: pàṣípààrọ̀ gossip tó kàn yóò sọ fún gbogbo ẹlẹ́gbẹ́ 0.2.0 pé kí wọ́n náà fi í sílẹ̀, kò sì sí ọ̀kan nínú wọn tó máa darapọ̀ mọ̀ ọ́ padà. Ẹlẹ́gbẹ́ tó dàgbà ju 0.2.0 lọ ń tẹ̀síwájú láti tò ó. Tí ẹ̀rọ náà bá padà wá tí ó sì heartbeat, a tún forúkọ rẹ̀ sílẹ̀. A kò fi ọwọ́ kan àwọn ẹlẹ́gbẹ́ sync àti àwọn instance tí a fipamọ́.}
 ::msgcat::mcset yo {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Ó ń kúrò nínú ìrántí báyìí. Ìtàn rẹ̀ ń pa gbogbo àtúnyẹ̀wò mọ́, Ìtàn… sì lè dá a padà.}
 ::msgcat::mcset yo Join Darapọ̀
 ::msgcat::mcset yo {Join a pool} {Darapọ̀ mọ́ ẹgbẹ́ ẹ̀rọ kan}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset yo {Language (i18n)} {Èdè (i18n)}
 ::msgcat::mcset yo Language… Èdè…
 ::msgcat::mcset yo {Last active} {Ìgbà tó ṣiṣẹ́ kẹ́yìn}
+::msgcat::mcset yo {Last probe: %1$s — %2$s} {Ìṣàyẹ̀wò tó gbẹ̀yìn: %1$s — %2$s}
 ::msgcat::mcset yo {Leave %s?} {Fi %s sílẹ̀?}
 ::msgcat::mcset yo Leave… {Fi sílẹ̀…}
 ::msgcat::mcset yo {Legacy open — no [acl] section} {Legacy open — kò sí apá [acl]}
 ::msgcat::mcset yo {Let %s:} {Gba %s láàyè láti:}
 ::msgcat::mcset yo {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {Àwọn lẹ́tà, nọ́mbà, - àti _. Ó dá plugin.toml àti plugin.tcl tí ó forúkọ sílẹ̀ fún hook post_llm_call, ó sì ṣí i nínú pẹpẹ Dev.}
+::msgcat::mcset yo Level Ìpele
 ::msgcat::mcset yo {Lift lockdown} {Ṣí ìdìde}
+::msgcat::mcset yo Lines {Àwọn ìlà}
 ::msgcat::mcset yo {List the provider's models} {Ṣàkójọ àwọn mọ́dẹ́ẹ̀lì olùpèsè náà}
+::msgcat::mcset yo Load Ìwúrà
 ::msgcat::mcset yo {Load more} {Gbé síi wọlé}
 ::msgcat::mcset yo {Loading discovered components…} {À ń kó àwọn kọ̀mpónẹ́ńtì tí a ṣàwárí…}
 ::msgcat::mcset yo {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {A ti yẹ bundle àdúgbò wò. Yan Install selected component láti fi ìfíṣílẹ̀ múlẹ̀; kò sí ohun tí a fi sílẹ̀.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset yo {Lock down} {Dì í mọ́}
 ::msgcat::mcset yo Log {Ìwé ìṣírí}
 ::msgcat::mcset yo {Log (engine + status)} {Ìwé ìṣírí (ẹ̀rọ + ìpò)}
+::msgcat::mcset yo {Log of %s} {Àkọsílẹ̀ %s}
+::msgcat::mcset yo Logs… {Àwọn àkọsílẹ̀…}
 ::msgcat::mcset yo {M-g- (g: goto line)} {M-g- (g: lọ sí ìlà)}
 ::msgcat::mcset yo {M-p/M-n history · Tab complete} {M-p/M-n itàn · Tábù párà}
 ::msgcat::mcset yo {MCP server list} {Àkójọ MCP sérfà}
 ::msgcat::mcset yo {MCP servers (from config.toml)} {MCP sérfà (láti inú config.toml)}
 ::msgcat::mcset yo {Make default} {Sọ di àṣàyàn}
 ::msgcat::mcset yo {Make default (config.toml)} {Ṣé á ṣe á ní àṣàyàn (config.toml)}
+::msgcat::mcset yo {Manage extensions} {Ṣàkóso àwọn plugin}
 ::msgcat::mcset yo {Manifest SHA-256} {SHA-256 àkójó}
 ::msgcat::mcset yo {Mark read} {Sàmì sí bí a ti kà á}
 ::msgcat::mcset yo {Mechanisms (what the engine does on its own)} {Àwọn ìgbésẹ̀ (ohun tí ẹ̀rọ ń ṣe ní ti ara)}
 ::msgcat::mcset yo {Mechanisms — what the engine does on its own, and how to stop it} {Àwọn ìṣiṣẹ́ — ohun tí engine ṣe fún ara rẹ̀, àti bí a ṣe lè dá a dúró}
 ::msgcat::mcset yo Memory Ìrántí
 ::msgcat::mcset yo {Memory history} {Ìtàn ìrántí}
+::msgcat::mcset yo {Memory: %1$s available of %2$s (%3$s%% used)} {Ìrántí: %1$s wà nínú %2$s (%3$s%% ló ti lò)}
+::msgcat::mcset yo {Merge the received %s into this node?} {Darapọ̀ %s tí a gbà mọ́ node yìí?}
 ::msgcat::mcset yo Messages {Àwọn ìfiránṣẹ́}
+::msgcat::mcset yo Metrics Métíríìkì
+::msgcat::mcset yo {Metrics (asked %s):} {Métíríìkì (a béèrè %s):}
+::msgcat::mcset yo {Metrics of %1$s failed: %2$s} {Métíríìkì %1$s kùnà: %2$s}
+::msgcat::mcset yo {Metrics of %s received.} {A ti gba métíríìkì %s.}
+::msgcat::mcset yo {Metrics: not asked yet — use Metrics.} {Métíríìkì: a kò tíì béèrè — lo Métíríìkì.}
 ::msgcat::mcset yo Model Mọ́dẹ̀ẹ̀lì
 ::msgcat::mcset yo {Model for this session} {Mọ́dẹ̀ẹ̀lì fún ìpàdé yìí}
 ::msgcat::mcset yo {Models & settings} {Àwọn mọ́dẹ̀ẹ̀lì & ìtòlẹ́sẹ̀}
+::msgcat::mcset yo Monitors {Àwọn mọ́nitọ̀}
+::msgcat::mcset yo Name Orúkọ
+::msgcat::mcset yo {Need an account? Optional sign-up links (open in your browser):} {Ṣé o nílò àkọọ́lẹ̀? Àwọn ìtọ́kàtọ́ àsàyàn láti forúkọ sílẹ̀ (ó ṣí nínú afẹ̀wébùsì rẹ):}
 ::msgcat::mcset yo Network Nẹ́tíwọ̀ọ̀kì
 ::msgcat::mcset yo {New alias} {Inagijẹ tuntun}
+::msgcat::mcset yo {New branch name} {Orúkọ ẹ̀ka tuntun}
 ::msgcat::mcset yo {New cron job} {Iṣẹ́ Cron tuntun}
+::msgcat::mcset yo {New extension} {Plugin tuntun}
 ::msgcat::mcset yo {New memory file} {Fáìlì ìrántí tuntun}
 ::msgcat::mcset yo {New plugin} {Plugin tuntun}
 ::msgcat::mcset yo {New session} {Igbaradi tuntun}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset yo Next Síwájú
 ::msgcat::mcset yo Nickname Orúkọ-ẹ̀yẹ
 ::msgcat::mcset yo {NixOS: emit a module snippet; do not edit host declarations} {NixOS: tú àdin módúlì jáde; má ṣe ṣàtúnṣe àwọn ìkéde host}
+::msgcat::mcset yo {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Kò sí ìfojúsùn ìgbà-ayé SSH tí a ṣètò fún ẹ̀dà yìí. Fikún ẹ̀dà pàtó láti fi sílẹ̀ tàbí láti tún bẹ̀rẹ̀.}
+::msgcat::mcset yo {No additional push happens.} {Kò sí títì mìíràn tí yóò ṣẹlẹ̀.}
 ::msgcat::mcset yo {No apps yet. Ask the agent to make one: “make me an app that…”} {Kò sí áàpù kankan síbẹ̀. Ní kí aṣojú ṣe ọ̀kan: “ṣe áàpù kan fún mi tí yóò…”}
 ::msgcat::mcset yo {No code in the picture. Hold the phone closer, straight on, and scan again.} {Kò sí kóòdù nínú àwòrán náà. Mú fóònù sún mọ́, tààrà, kí o sì tún ṣàyẹ̀wò.}
 ::msgcat::mcset yo {No configuration snapshot will be restored.} {A kò ní mú àwòrán ipò ìṣètò kankan padà.}
+::msgcat::mcset yo {No configured sync peer for this node.} {Kò sí peer sync tí a ṣètò fún node yìí.}
+::msgcat::mcset yo {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {A kò ṣètò olùtúmọ̀ àkànṣe kankan. Lo Ṣètò olùtúmọ̀ láti yan olùpèsè rẹ̀, mọ́dẹ́ẹ̀lì àti èdè àfojúsùn.}
+::msgcat::mcset yo {No deployment started.} {A kò bẹ̀rẹ̀ ìgbékalẹ̀ kan.}
+::msgcat::mcset yo {No diagnostics reported by the current LSP document.} {Dókúméńtì LSP tí ó wà báyìí kò ròyìn àyẹ̀wò kankan.}
+::msgcat::mcset yo {No explicitly configured desktop gateway is bound to this node.} {Kò sí gateway desktop tí a ṣètò ní gbangba tí ó so mọ́ node yìí.}
+::msgcat::mcset yo {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {Kò sí gateway tí a ṣètò ní gbangba tí ó so mọ́ node yìí. Kọ́kọ́ fi gateway náà kún; a kì í lo endpoint registry rẹ̀ gẹ́gẹ́ bí URL desktop.}
+::msgcat::mcset yo {No file is open. Ask a design question, or open an extension file for help with its code.} {Kò sí fáìlì tó ṣí. Bèèrè ìbéèrè nípa ìṣàpẹẹrẹ, tàbí ṣí fáìlì extension fún ìrànlọ́wọ́ lórí kóòdù rẹ̀.}
+::msgcat::mcset yo {No files have been written. Review the exact manifest and source, then confirm creation.} {A kò tíì kọ fáìlì kankan. Ṣàyẹ̀wò manifest àti orísun gangan, lẹ́yìn náà fọwọ́ sí ṣíṣẹ̀dá.}
 ::msgcat::mcset yo {No modules or process plugins were discovered. The provider setup steps can still continue.} {A kò ṣàwárí mọ́dúùlù tàbí plugin ìlànà kankan. Àwọn ìgbésẹ̀ ìṣètò olùpèsè ṣì lè tẹ̀síwájú.}
+::msgcat::mcset yo {No other registered node to compare with.} {Kò sí node mìíràn tí a forúkọ sílẹ̀ láti fi wé.}
 ::msgcat::mcset yo {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {Kò sí profil kankan tó ń bẹ̀rẹ̀ service tàbí tí ń ṣe script àǹfààní láti wizard yìí. Ṣàtúnyẹ̀wò ètò àti èyíkéyìí ìgbéwọ́ kí o tó ṣe é.}
+::msgcat::mcset yo {No proposal has been requested. Nothing will be written automatically.} {A kò béèrè àbá kankan. A kì yóò kọ nǹkan kankan fúnra rẹ̀.}
+::msgcat::mcset yo {No proposal. Nothing was written.} {Kò sí àbá. A kò kọ nǹkan kan.}
 ::msgcat::mcset yo {No routes configured.} {Kò sí ọ̀nà tí a ṣètò.}
 ::msgcat::mcset yo {No session selected — pick one in the sidebar or start a new one} {Kò sí ìpàdé tí a yàn — yàn ọ̀kan nínú pẹpẹ ẹ̀gbẹ́ tàbí bẹ̀rẹ̀ àtuntun}
 ::msgcat::mcset yo {No swap target yet: pick a language and press “Set as swap target”.} {Kò sí èdè ìyípadà síbẹ̀: yan èdè kan kí o sì tẹ “Sọ di èdè ìyípadà”.}
 ::msgcat::mcset yo {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {Kò sí apá {[}acl{]} nínú config.toml: gbogbo olùfiranṣẹ́ tó dé ọ̀dọ̀ gateway ni a kà sí olówó, ìwà olùṣàmúlò-ọ̀kan tí ó ti wà ṣáájú ACL. Fífún àti yíyọ àṣẹ padà ṣì ń ṣiṣẹ́, ó sì máa ń gba ipa lọ́gán tí {[}acl{]} bá wà.}
+::msgcat::mcset yo {Node id} {Id ẹ̀dà}
+::msgcat::mcset yo {Non-evaluating syntax checks} {Àwọn àyẹ̀wò syntax tí kì í mú kóòdù ṣiṣẹ́}
+::msgcat::mcset yo {Not available: %s} {Kò sí: %s}
+::msgcat::mcset yo Note Àkíyèsí
 ::msgcat::mcset yo {Note for the agent (optional):} {Àkíyèsí fún aṣojú (kì í ṣe dandan):}
+::msgcat::mcset yo {Nothing selected.} {A kò yan nǹkan kan.}
 ::msgcat::mcset yo {Nothing typed yet.} {Kò sí nǹkan tí a tẹ̀ síbẹ̀.}
+::msgcat::mcset yo {Nothing was generated or written.} {A kò ṣẹ̀dá tàbí kọ nǹkan kan.}
+::msgcat::mcset yo {Nothing was prepared: the chosen repository already has these paths.} {A kò mú nǹkan kan ṣetán: àwọn ipa ọ̀nà wọ̀nyí ti wà nínú repository tí o yàn tẹ́lẹ̀.}
 ::msgcat::mcset yo Notifications Ìfitónilétí
 ::msgcat::mcset yo OK Dáradára
 ::msgcat::mcset yo Off Pá
 ::msgcat::mcset yo On Ṣí
+::msgcat::mcset yo {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {Buffer àfikún tí a ṣàyẹ̀wò nìkan ni a ó rọ́pò. Fáìlì náà ṣì ní ààbò lórí àwọn ìyípadà tí a bá ṣe lẹ́yìn àfojúsùn yìí. Kò sí kọ́mítì, títì tàbí PR kankan.}
+::msgcat::mcset yo {Only this new branch is committed. Your ambient git identity is used.} {Ẹ̀ka tuntun yìí nìkan ni a ó kọ́mítì. A ń lo ìdánimọ̀ git tí ó wà lórí ẹ̀rọ rẹ.}
 ::msgcat::mcset yo Op {Fún ní op}
 ::msgcat::mcset yo Open Ṣí
+::msgcat::mcset yo {Open PR…} {Ṣí PR…}
 ::msgcat::mcset yo {Open a window} {Ṣí fèrèsé kan}
 ::msgcat::mcset yo {Open in Dev} {Ṣí nínú Dev}
 ::msgcat::mcset yo {Open in browser} {Ṣí nínú browser}
 ::msgcat::mcset yo {Open plugin} {Ṣí plugin}
 ::msgcat::mcset yo {Open terminal} {Ṣí terminal}
+::msgcat::mcset yo {Open this pull request?} {Ṣé kí a ṣí PR yìí?}
 ::msgcat::mcset yo {Open veles in Android's settings} {Ṣí veles nínú ètò Android}
 ::msgcat::mcset yo {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {Yànpẹ̀: nẹ́tìwọ́ọ̀kì IRC láti dàpọ̀ sí. Kọ àwọn ikanni tí a fi àlàyé ọ̀rọ̀ tàbí kọ́mà yapa; IRC_CHANNELS nínú .env, tí a bá ṣètò rẹ̀, ń rọ́pò àkójọ yìí.}
 ::msgcat::mcset yo {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {Àwọn àṣàyàn wá láti inú mánìfẹ́sítì kọ̀mpónẹ́ńtì tí a yàn. Àwọn pápá tí ó dàbí àṣírí wà nínú ìlànà ìṣètò/àpótí ààbò. Àwọn pápá òfo ń fi àṣàyàn yẹn sílẹ̀ bí ó ti wà.}
 ::msgcat::mcset yo {Or paste a ticket signed on another device} {Tàbí lẹ mọ tìkèti tí a ti fọwọ́sí lórí irọ̀sẹ̀ míràn}
 ::msgcat::mcset yo {Or type an answer:} {Tàbí tẹ ìdáhùn sílẹ̀:}
+::msgcat::mcset yo Origin Orísun
 ::msgcat::mcset yo Other… Òmíràn…
 ::msgcat::mcset yo Outline Àgbékalẹ̀
+::msgcat::mcset yo Output Èsì
 ::msgcat::mcset yo {Override for THIS session (leave blank to inherit the default)} {Àyípadà fún ìpàdé YÌÍ (fi sí òfo láti jogún àṣàyàn)}
 ::msgcat::mcset yo {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {Ìdánimọ̀ olówó (telegram:123456, irc:account, tàbí ìbòjú nick!user@host)}
 ::msgcat::mcset yo {PDS and handle domain} {PDS àti domain handle}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset yo {Pause scheduler} {Dúró scheduler}
 ::msgcat::mcset yo {Peek (C-c C-p)} {Yọ́jú (C-c C-p)}
 ::msgcat::mcset yo {Peek definition} {Wo ìtumọ̀ kíákíá}
+::msgcat::mcset yo {Permission grants} {Àwọn àṣẹ tí a fún}
+::msgcat::mcset yo {Permission grants…} {Àwọn àṣẹ tí a fún…}
 ::msgcat::mcset yo Phone Fóònù
 ::msgcat::mcset yo {Phone: permissions, battery, storage} {Fóònù: àṣẹ, bátìrì, ibi ìpamọ́}
 ::msgcat::mcset yo {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Àwọn fóònù tí %s ṣe náà máa ń dá àwọn áàpù dúró fúnra wọn. Nínú ètò áàpù veles, gbà á láàyè láti bẹ̀rẹ̀ fúnra rẹ̀ àti láti ṣiṣẹ́ lẹ́yìn.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset yo Port Port
 ::msgcat::mcset yo {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {Prefix chords (C-x, M-o) fi which-keypopup hàn lẹ́sẹ̀kẹsẹ̀ nígbà tí wọ́n bá tàn án.}
 ::msgcat::mcset yo {Prepare an own vlpds PDS through the signed CLI handoff} {Ṣèmúra vlpds PDS ti ìwọ fúnra rẹ nípasẹ̀ handoff CLI tí a fọwọ́ sí}
+::msgcat::mcset yo {Prepare branch…} {Ṣètò ẹ̀ka…}
+::msgcat::mcset yo {Prepare this branch and commit?} {Ṣé kí a ṣètò ẹ̀ka yìí àti kọ́mítì?}
 ::msgcat::mcset yo Preview {Ìwò ṣáájú}
+::msgcat::mcset yo {Preview change set} {Wo ìṣètò àyípadà ṣáájú}
+::msgcat::mcset yo {Preview files} {Wo àwọn fáìlì}
 ::msgcat::mcset yo {Preview here} {Ìwò ṣáájú níbí}
 ::msgcat::mcset yo {Preview pane} {Páíni àyẹ̀wò}
+::msgcat::mcset yo {Preview proposal} {Wo àbá}
+::msgcat::mcset yo {Preview the changed name or language before creating it.} {Wo orúkọ tàbí èdè tí a yí padà kí o tó ṣẹ̀dá rẹ̀.}
+::msgcat::mcset yo Probe Ṣàyẹ̀wò
+::msgcat::mcset yo {Probe of %1$s failed: %2$s} {Ìṣàyẹ̀wò %1$s kùnà: %2$s}
 ::msgcat::mcset yo {Profile result} {Àbájáde ìsọ́rí}
 ::msgcat::mcset yo {Promote into config.toml} {Gbé sí inú config.toml}
 ::msgcat::mcset yo Promote… {Gbé sí inú…}
 ::msgcat::mcset yo Provider Onpínètí
+::msgcat::mcset yo {Provider driver (plugin wire only)} {Drivá olùpèsè (plugin nìkan)}
 ::msgcat::mcset yo {Provider entry name} {Orúkọ ìkọ̀wé olùpèsè}
 ::msgcat::mcset yo {Provider for this session} {Olùpèsè fún ìpàdé yìí}
 ::msgcat::mcset yo Providers {Àwọn olùpèsè}
 ::msgcat::mcset yo {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {Àwọn olùpèsè jẹ́ àkójọ àwọn tábìlì: custom_providers.0.base_url, .0.api_mode, .0.key_env … Yàn ní ìbámu pẹ̀lú ìtòlẹ́sẹ̀ tí a fihàn nísàlẹ̀.}
 ::msgcat::mcset yo {Public HTTPS URL} {URL HTTPS gbanibani}
+::msgcat::mcset yo {Pull request base} {Ìpìlẹ̀ PR}
+::msgcat::mcset yo {Pull request created} {A ti ṣẹ̀dá PR}
+::msgcat::mcset yo {Pull request description} {Àpèjúwe PR}
+::msgcat::mcset yo {Pull request opened.} {A ti ṣí PR.}
+::msgcat::mcset yo {Pull request repository} {Àpótí kóòdù PR}
+::msgcat::mcset yo {Pull request title} {Àkọ́lé PR}
 ::msgcat::mcset yo {Purge + delete files} {Fọ mọ́ + pa àwọn fáìlì rẹ́}
 ::msgcat::mcset yo {Purge container} {Fọ container mọ́}
+::msgcat::mcset yo Purpose Èrèdí
+::msgcat::mcset yo Push Tì
+::msgcat::mcset yo {Push branch…} {Tì ẹ̀ka…}
+::msgcat::mcset yo {Push complete. No pull request has been opened.} {Títì ti parí. A kò tíì ṣí PR kankan.}
+::msgcat::mcset yo {Push this branch?} {Ṣé kí a tì ẹ̀ka yìí?}
+::msgcat::mcset yo {Push to %s:} {Fi ránṣẹ́ sí %s:}
 ::msgcat::mcset yo Question Ìbéèrè
 ::msgcat::mcset yo Questions {Àwọn ìbéèrè}
 ::msgcat::mcset yo Quit Jáde
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset yo {Reading notifications, for triggers} {Kíka ìfitónilétí, fún àwọn ìmúṣẹ}
 ::msgcat::mcset yo Reasoning {Ìròyìn ìrọ̀rùn}
 ::msgcat::mcset yo {Reasoning effort} {Ìsapá ìrònú}
+::msgcat::mcset yo {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {A gbà á, ń dúró láti fi sílẹ̀: store %1$s · memory %2$s · config %3$s · vault %4$s}
+::msgcat::mcset yo {Recommended checks} {Àwọn àyẹ̀wò tí a dábàá}
 ::msgcat::mcset yo {Refetch this transcript from the store} {Tún gba transcript yìí láti store}
 ::msgcat::mcset yo Refresh {Tún ṣe}
 ::msgcat::mcset yo {Refresh preview} {Tún wo ìṣàfihàn}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset yo {Rename symbol} {Tún orúkọ àmì ṣe}
 ::msgcat::mcset yo Rename… {Tún orúkọ…}
 ::msgcat::mcset yo Rendered {Àṣàyàn wò}
+::msgcat::mcset yo {Replace existing repository files?} {Rọ́pò àwọn fáìlì repository tó wà tẹ́lẹ̀?}
+::msgcat::mcset yo {Replace them in the new branch? Nothing else in the repository changes.} {Rọ́pò wọ́n nínú branch tuntun? Kò sí nǹkan mìíràn nínú repository tí yóò yí padà.}
 ::msgcat::mcset yo Repository Ìpamọ́
 ::msgcat::mcset yo {Repository (owner/name)} {Ìpamọ́ (olówó/orúkọ)}
+::msgcat::mcset yo {Repository directory} {Àkójọ fáìlì repository}
+::msgcat::mcset yo {Repository paths} {Àwọn ipa ọ̀nà repository}
+::msgcat::mcset yo {Request a new preview before trying again.} {Béèrè àfojúsùn tuntun kí o tó tún gbìyànjú.}
 ::msgcat::mcset yo {Reset to default} {Dá a padà sí ti àtilẹ̀wá}
 ::msgcat::mcset yo {Reset to template} {Mú padà sí àwòkọ́ṣe}
 ::msgcat::mcset yo Restart {Tún bẹ̀rẹ̀}
+::msgcat::mcset yo {Restart + verify canary} {Tún bẹ̀rẹ̀ + fìdí canary múlẹ̀}
 ::msgcat::mcset yo {Restore hidden windows} {Tún àwọn window tí a fi pamọ́ padà}
 ::msgcat::mcset yo {Restore plugins to %s?} {Mú àwọn plugin padà sí %s?}
 ::msgcat::mcset yo {Restore revision r%1$s of %2$s?} {Dá àtúnyẹ̀wò r%1$s ti %2$s padà?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset yo {Restore this commit} {Mú commit yìí padà}
 ::msgcat::mcset yo {Restore this revision} {Dá àtúnyẹ̀wò yìí padà}
 ::msgcat::mcset yo {Resume scheduler} {Tún scheduler bẹ̀rẹ̀}
+::msgcat::mcset yo {Resume unfinished operation} {Tẹ̀síwájú ìṣe tí kò parí}
 ::msgcat::mcset yo Revert {Dá padà}
 ::msgcat::mcset yo {Revert %s to HEAD? Uncommitted changes in this file are lost.} {Padà %s sí HEAD? Àwọn àyípadà tí a kò fi sílẹ̀ nínú fáìlì yìí lè nu kúrò.}
 ::msgcat::mcset yo Revert… {Dá padà…}
 ::msgcat::mcset yo Review Àtúnyẹ̀wò
 ::msgcat::mcset yo {Review (git) pane} {Páíni àtúnyẹ̀wò (git)}
+::msgcat::mcset yo {Review deployment} {Ṣàyẹ̀wò ìgbékalẹ̀}
+::msgcat::mcset yo {Review extension contribution} {Ṣàyẹ̀wò ìkópa àfikún}
 ::msgcat::mcset yo {Review managed local bundle…} {Yẹ bundle àdúgbò tí a ṣàkóso wò…}
 ::msgcat::mcset yo {Review rollback} {Yẹ ìpadàsẹ́yìn wò}
+::msgcat::mcset yo {Review selected files} {Ṣàyẹ̀wò àwọn fáìlì tí a yàn}
 ::msgcat::mcset yo {Review the component options on the summary screen before applying.} {Ṣàyẹ̀wò àwọn àṣàyàn kọ̀mpónẹ́ńtì lórí ojú-ìwé àkópọ̀ kí o tó fi ṣiṣẹ́.}
 ::msgcat::mcset yo {Review the component preview before applying. No component configuration has been written.} {Ṣàyẹ̀wò ìwò ṣáájú kọ̀mpónẹ́ńtì kí o tó fi ṣiṣẹ́. A kò tí ì kọ ìṣètò kọ̀mpónẹ́ńtì kankan.}
+::msgcat::mcset yo {Review the selected files and remove credential findings before preparing.} {Ṣàyẹ̀wò àwọn fáìlì tí a yàn, yọ àwọn àwárí ẹ̀rí ìdánimọ̀ kúrò kí o tó ṣètò.}
 ::msgcat::mcset yo {Reviewed core bundle in the managed install-sources directory} {Àpò core tí a ṣàtúnyẹ̀wò nínú àtòkọ install-sources tí a ṣàkóso}
+::msgcat::mcset yo {Reviewed fleet deployment} {Ìgbékalẹ̀ fleet tí a ṣàyẹ̀wò}
 ::msgcat::mcset yo {Reviewed local bundle} {Bundle àdúgbò tí a yẹ wò}
 ::msgcat::mcset yo {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {A ti fi bundle àdúgbò tí a yẹ wò sílẹ̀. A kò dánilójú pé ìsọ̀kalẹ̀ àfọwọ́sí. A ní láti tún bẹ̀rẹ̀ kí a tó lo core tuntun.}
 ::msgcat::mcset yo Revision Àtúnyẹ̀wò
 ::msgcat::mcset yo Revoke {Yọ àṣẹ kúrò}
+::msgcat::mcset yo {Revoke selected} {Yọ èyí tí a yàn kúrò}
 ::msgcat::mcset yo Roles {Àwọn ipa}
 ::msgcat::mcset yo {Roll back %1$s from %2$s to %3$s?} {Yí %1$s padà láti %2$s sí %3$s bí?}
+::msgcat::mcset yo {Roll back selected target} {Padà sẹ́yìn àfojúsùn tí a yàn}
 ::msgcat::mcset yo {Rollback completed. Reload the component or restart as requested by the report.} {Ìpadàsẹ́yìn parí. Tún kó component náà padà tàbí tún bẹ̀rẹ̀ bí ìròyìn náà ti béèrè.}
 ::msgcat::mcset yo {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {A ti yẹ ìpadàsẹ́yìn wò. Yan Install selected component láti fi ìmúpadà múlẹ̀; kò sí ohun tí a mú padà.}
 ::msgcat::mcset yo Run {Mú ṣiṣẹ́}
 ::msgcat::mcset yo {Run the wizard again} {Tún wizard náà ṣiṣẹ́}
 ::msgcat::mcset yo {Running in the background} {Ṣíṣiṣẹ́ lẹ́yìn}
-::msgcat::mcset yo {Running tasks} {Àwọn iṣẹ́ tó ń ṣiṣẹ́}
-::msgcat::mcset yo {Running tasks (subagents, shells, monitors)} {Àwọn iṣẹ́ tí ń ṣiṣẹ́ (subagents, shells, monitors)}
 ::msgcat::mcset yo {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {Àwọn ìfúnni-àṣẹ àti olùṣàmúlò ìgbà-ìṣiṣẹ́ wà nínú store, àti pé resẹ́tì store yóò pa wọ́n rẹ́. Promote fi àwọn tí store yàn kún inú config.toml — a pa àṣọyé àti ìtòlẹ́sẹ̀ kọ́kọ́rọ́ fáìlì náà mọ́, a kọ backup sí ẹ̀gbẹ́ rẹ̀, a sì yọ àwọn ẹ̀dà store kúrò — ó sì kọ̀ ju kí ó máa ṣàfojúdi níbi tí fáìlì náà ti ní èrò tẹ́lẹ̀.}
 ::msgcat::mcset yo {S3 HTTPS endpoint} {Endpoint HTTPS S3}
 ::msgcat::mcset yo {S3 bucket} {Bucket S3}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset yo {Save as default} {Fipamọ́ gẹ́gẹ́ bí àṣàyàn}
 ::msgcat::mcset yo {Save attachment as} {Fipá àtẹ̀yìnwò sí ipò}
 ::msgcat::mcset yo {Save globally} {Fipamọ́ fún gbogbo}
+::msgcat::mcset yo {Save or revert the open buffer before applying a change set.} {Fi buffer tó ṣí pamọ́ tàbí dá a padà kí o tó lo ìṣètò àyípadà.}
 ::msgcat::mcset yo Scan Ṣàyẹ̀wò
 ::msgcat::mcset yo {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {Ṣàyẹ̀wò kóòdù veles láti ọ̀dọ̀ ẹ̀rọ tó pe fóònù yìí. Tí ó bá kọ́kọ́ fi kóòdù WireGuard hàn, kọ́kọ́ ṣàyẹ̀wò rẹ̀ pẹ̀lú áàpù WireGuard ṣáájú èyí.}
 ::msgcat::mcset yo {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {Schedule: àárín ìgbà ("30m", "every 2h"), àpẹẹrẹ cron ("0 9 * * 1"), tàbí àkókò ISO fún ẹ̀ẹ̀kan ṣoṣo. Ìlà tó wà lókè fi ohun tí engine kà á sí hàn. Deliver: "local" yóò pa àbájáde mọ́ nínú log — àṣàyàn òtítọ́ kan ṣoṣo látọ̀dọ̀ desktop, tí kò ní pẹpẹ chat ní ẹ̀yìn — tàbí "platform:chat_id". Wake session: fi sí òfo láti ṣiṣẹ́ nínú ìpàdé tuntun; fi ìdámọ̀ ìpàdé (tàbí ìpẹ̀ẹ̀kùn àrà ọ̀tọ̀) láti tún ìpàdé yẹn bẹ̀rẹ̀ pẹ̀lú gbogbo ìtàn rẹ̀ — ìpàdé tó dí yóò gba àṣẹ náà ní ìbẹ̀rẹ̀ turn tó ń bọ̀.}
+::msgcat::mcset yo Scope Ààlà
 ::msgcat::mcset yo {Scroll to end} {Yí lọ sí òpin}
 ::msgcat::mcset yo {Search commands and sessions…} {Wá àṣẹ àti ìpàdé…}
 ::msgcat::mcset yo {Search message text} {Wá nínú ọ̀rọ̀ ìfiránṣẹ́}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset yo Section Abala
 ::msgcat::mcset yo {Select a component first. No component options will be changed if you skip this step.} {Kọ́kọ́ yan kọ̀mpónẹ́ńtì kan. A kò ní yí àṣàyàn kọ̀mpónẹ́ńtì kankan padà bí o bá fojú fo ìgbésẹ̀ yìí.}
 ::msgcat::mcset yo {Select all} {Yan gbogbo}
+::msgcat::mcset yo {Select all extensions} {Yan gbogbo extension}
+::msgcat::mcset yo {Select at least one source file.} {Yan ó kéré tán fáìlì orísun kan.}
+::msgcat::mcset yo {Select none} {Má yan ọ̀kan}
+::msgcat::mcset yo {Select text to translate first.} {Yan ọ̀rọ̀ láti túmọ̀ sí tẹ́lẹ̀.}
+::msgcat::mcset yo {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {Yan àwọn extension àti fáìlì tí kí o fi ṣe ìtọrẹ. Wọ́n lọ sínú branch kan àti pull request kan, extension kọ̀ọ̀kan nínú àkójọ fáìlì rẹ̀. Ṣàyẹ̀wò, ṣe àwọn àyẹ̀wò tí kò ń dájọ́, lẹ́yìn náà mú branch àti commit tí ó ṣọ̀tọ̀ ṣetán. Push àti ṣíṣẹ̀dá pull request jẹ́ ìṣe tí a fọwọ́sí lọ́tọ̀ọ̀tọ̀.}
 ::msgcat::mcset yo Send Ránṣẹ́
+::msgcat::mcset yo {Send %s to the peer?} {Fi %s ránṣẹ́ sí peer?}
 ::msgcat::mcset yo {Send a %d-line message to the channel?} {Rán ifiranṣẹ́ onílà %d sí ikanni?}
 ::msgcat::mcset yo {Send raw line to the server? (%s)} {Rán ìlà àìṣàtúnṣe sí olùpèsè? (%s)}
 ::msgcat::mcset yo {Server (empty = no IRC)} {Olùpèsè (òfo = kò sí IRC)}
 ::msgcat::mcset yo {Server: gateway configuration and a reviewed user unit} {Server: ìṣètò gateway àti ẹ̀yà olùmúlò tí a ṣàtúnyẹ̀wò}
 ::msgcat::mcset yo {Server: install a user unit and prepare the separate linger handoff} {Server: fi ẹ̀yà olùmúlò sílẹ̀ àti múra ìfàsílẹ̀ linger tó yàtọ̀ sílẹ̀}
 ::msgcat::mcset yo {Server: use a system service and prepare a privileged CLI request} {Server: lo iṣẹ́ ẹ̀rọ àti múra ìbéèrè CLI tó nílò àṣẹ olùṣàkóso}
+::msgcat::mcset yo Session Ìpàdé
 ::msgcat::mcset yo {Session id} {Ìdánimọ̀ ìgbà}
 ::msgcat::mcset yo {Session id…} {Ìdánimọ̀ ìgbà…}
 ::msgcat::mcset yo Sessions {Àwọn ìpàdé}
 ::msgcat::mcset yo {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Àwọn ìgbà tí wọ́n fi alias yìí ṣe àkóso lọ́wọ́lọ́wọ́ ń dúró ní ọ̀nà wọn; àkóso tuntun kò ní rí orúkọ náà.}
+::msgcat::mcset yo {Sessions served} {Ìpàdé tí a ti pèsè}
 ::msgcat::mcset yo Set Ṣàtò
 ::msgcat::mcset yo {Set [model] provider/default in config.toml.} {Ṣàtò olùpèsè/àìyàn [model] nínú config.toml.}
 ::msgcat::mcset yo {Set as swap target} {Sọ di èdè ìyípadà}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset yo {Setup — summary} {Ìṣètò — àkótán}
 ::msgcat::mcset yo {Setup — welcome} {Ìṣètò — káàbọ̀}
 ::msgcat::mcset yo {Shared container network} {Nẹ́tíwọ́ọ̀kì container tí a pín}
+::msgcat::mcset yo Shells {Àwọn shẹ́ẹ̀lù}
+::msgcat::mcset yo {Shells and monitors} {Àwọn shẹ́ẹ̀lù àti àwọn mọ́nitọ̀}
+::msgcat::mcset yo {Shells and monitors (subagents, shells, monitors)} {Àwọn shẹ́ẹ̀lù àti àwọn mọ́nitọ̀ (àwọn subagent, shẹ́ẹ̀lù, mọ́nitọ̀)}
 ::msgcat::mcset yo {Show diff} {Fi ìyàtọ̀ hàn}
 ::msgcat::mcset yo {Show every key} {Fi gbogbo bọtìnnì hàn}
 ::msgcat::mcset yo Sign Fọwọ́sí
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset yo Solved {Ó ti yanjú}
 ::msgcat::mcset yo Source Orísun
 ::msgcat::mcset yo {Source commit} {Commit orísun}
+::msgcat::mcset yo {Source text} {Ọ̀rọ̀ orísun}
 ::msgcat::mcset yo {Source→app (C-c C-c)} {Orísun→app (C-c C-c)}
 ::msgcat::mcset yo Stage {Gbé sí ìpele}
+::msgcat::mcset yo {Stage canary} {Gbé canary kalẹ̀}
+::msgcat::mcset yo Stale {Tí ó ti kọjá}
+::msgcat::mcset yo {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {Àwọn àṣẹ tí ó dúró ń jẹ́ kí àwọn ìpè irinṣẹ́ tó ń bọ̀ ṣiṣẹ́ láì béèrè lẹ́ẹ̀kan sí i. Àwọn ìpàdé tó wà lórí ojú-ìpele kọ̀ọ̀kan (desktop, Telegram, IRC, …) ni ó di àwọn àṣẹ ìpàdé mú; àwọn àṣẹ gbogbo ayé ń wà pẹ́; a kọ àwọn àkọsílẹ̀ allowlist [approvals] láti config.toml gẹ́gẹ́ bí àkọ́kà nìkan. Yíyọ ọ̀kan kúrò kì í yí àwọn àṣẹ mìíràn padà.}
 ::msgcat::mcset yo Start Bẹ̀rẹ̀
+::msgcat::mcset yo {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {Bẹ̀rẹ̀ pẹ̀lú àfikún kan nínú àpótí plugin olùṣàmúlò rẹ. Ó ń dúró kọjá àwọn àtúnṣe, kò sì nílò àtúntò gateway. Àfikún tuntun ń fi manifest àti orísun gangan hàn kí ó tó kọ̀wé. Yan èdè àti ẹ̀yà API tí a ń ṣèrànwọ́ fún, ṣàyẹ̀wò àwọn fáìlì, lẹ́yìn náà dán àfikún náà wò ní àyọkà.}
 ::msgcat::mcset yo {Start with the phone} {Bíbẹ̀rẹ̀ pẹ̀lú fóònù}
+::msgcat::mcset yo {Static IP} {IP aláìyípadà}
 ::msgcat::mcset yo Status Ipò
 ::msgcat::mcset yo Steer Ṣàtúnṣe
 ::msgcat::mcset yo {Step %1$d of %2$d} {Ìgbésẹ̀ %1$d nínú %2$d}
 ::msgcat::mcset yo {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {Ó ṣì kù láti ṣètò: %s — tẹ /secret set NAME síbí, tàbí ṣiṣẹ́ veles secret set NAME lórí ẹ̀rọ gateway.}
 ::msgcat::mcset yo Stop Dúró
 ::msgcat::mcset yo {Storage root} {Gbòǹgbò ìtọ́jú}
+::msgcat::mcset yo Store Ìpamọ́
 ::msgcat::mcset yo {Store a secret: %s} {Fi àṣírí pamọ́: %s}
 ::msgcat::mcset yo {Store it} {Fi pamọ́}
+::msgcat::mcset yo {Store replica} {Àwòdì ìpamọ́}
 ::msgcat::mcset yo Subagents {Àwọn Subagents}
 ::msgcat::mcset yo {Subagents (/agents)} {Àwọn Subagents (/agents)}
 ::msgcat::mcset yo Summary Àkótán
+::msgcat::mcset yo Surface Ojú-ìpele
 ::msgcat::mcset yo {Swap ⇄} {Yí pa dà ⇄}
+::msgcat::mcset yo {Sync cancelled.} {A fagilé sync.}
+::msgcat::mcset yo {Sync complete.} {Sync ti parí.}
+::msgcat::mcset yo {Sync now} {Sync báyìí}
 ::msgcat::mcset yo {TOML copied — paste it into config.toml} {TOML ti dá kọ́pá — lẹ̀ ẹ́ sínú config.toml}
 ::msgcat::mcset yo Tag Ààmì
 ::msgcat::mcset yo {Tap a link to open it, or a block's header to open or close the block.} {Tẹ ìjápọ̀ láti ṣí i, tàbí orí búlọ́ọ̀kù kan láti ṣí tàbí pa búlọ́ọ̀kù náà dé.}
 ::msgcat::mcset yo {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {Tẹ àpótí ìsàlẹ̀ láti tẹ̀wé. Ránṣẹ́ ń firánṣẹ́, Dúró ń parí àyè náà, Yà kúrò sì ń gbé àṣẹ tí ó ń ṣiṣẹ́ lọ sí abẹ́lẹ̀.}
 ::msgcat::mcset yo {Tap the text to clear the selection.} {Tẹ ọ̀rọ̀ náà láti pa àṣàyàn rẹ́.}
+::msgcat::mcset yo {Target language:} {Èdè ìfojúsùn:}
+::msgcat::mcset yo {Target node IDs (canary first, comma separated)} {ID node àfojúsùn (canary ní àkọ́kọ́, pẹ̀lú kọma)}
 ::msgcat::mcset yo {Task list} {Àtòjò iṣẹ́}
 ::msgcat::mcset yo {Task list (right pane)} {Àtòjò iṣẹ́ (páíni ọ̀tún)}
 ::msgcat::mcset yo Tasks {Àwọn iṣẹ́}
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset yo {That is not a ticket.} {Èyí kì í ṣe tìkèti.}
 ::msgcat::mcset yo {That is not a veles pool code.} {Ìyẹn kì í ṣe kóòdù ẹgbẹ́ veles.}
 ::msgcat::mcset yo {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {Ìyẹn ni kóòdù WireGuard: ṣàyẹ̀wò rẹ̀ pẹ̀lú áàpù WireGuard. Kóòdù veles ni èkejì.}
+::msgcat::mcset yo {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {A ó kọ fáìlì %d tí a ṣàyẹ̀wò sínú àpò tuntun nínú àpò plugin olùṣàmúlò rẹ, veles yóò sì gbìyànjú láti gbé extension náà wọlé. Tí àpò tó ní orúkọ yẹn bá fara hàn láti ìgbà ìwòràwọ̀, a kò ní kọ nǹkan kan. Ìtẹ̀jáde kì í ṣe apá kan iṣẹ́ yìí.}
 ::msgcat::mcset yo {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {REPL páíni Dev ṣe ìṣirò nínú app LIVE — UI jẹ́ lisp ti ara rẹ̀.}
 ::msgcat::mcset yo {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {A pa tábìlì [mcp_servers.<name>] kúrò nínú config.toml. Fáìlì àtẹ̀yìnwá wà ní config.toml.bak.}
 ::msgcat::mcset yo {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {Àwọn àkójọ-ọ̀fẹ́ adapter (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) ni ààlà ìgbẹ́kẹ̀lé — gbogbo olùfiranṣẹ́ tí a gbà ni a kà sí olówó. Èyí ni ìwà tó ń ṣiṣẹ́ ṣáájú ACL.}
 ::msgcat::mcset yo {The agent asks for a secret: %s} {Aṣojú ń béèrè fún àṣírí kan: %s}
+::msgcat::mcset yo {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {A ó lo branch tí a ti tì tẹ́lẹ̀ gẹ́gẹ́ bí orí PR. A ń dárúkọ branch lórí fork rẹ gẹ́gẹ́ bí owner:branch fúnra rẹ̀.}
+::msgcat::mcset yo {The author asks} {Olùdá náà ń béèrè}
+::msgcat::mcset yo {The buffer changed. Request a new proposal before applying.} {Buffer náà ti yípadà. Béèrè àbá tuntun kí o tó gbà.}
 ::msgcat::mcset yo {The bundle operation returned an invalid result. Verify the installation before retrying.} {Ìṣiṣẹ́ bundle dá ìyọrísí tí kò tọ́ padà. Dánilójú ìfíṣílẹ̀ kí o tó tún gbìyànjú.}
 ::msgcat::mcset yo {The bundle preview was malformed; nothing was installed.} {Àsọtẹ́lẹ̀ bundle kò ṣe déédé; kò sí ohun tí a fi sílẹ̀.}
 ::msgcat::mcset yo {The camera did not open; paste the code instead.} {Kámẹ́rà kò ṣí; lẹ kóòdù náà dípò.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset yo {The component manifest is still loading. Wait for it or choose another component.} {Mánìfẹ́sítì kọ̀mpónẹ́ńtì ṣì ń kó. Dúró dè é tàbí yan kọ̀mpónẹ́ńtì òmíràn.}
 ::msgcat::mcset yo {The component preview is not ready yet. Refresh it and review the result before applying.} {Ìwò ṣáájú kọ̀mpónẹ́ńtì kò tí ì ṣetán. Sọ ọ́ di tuntun kí o sì ṣàyẹ̀wò àbájáde kí o tó fi ṣiṣẹ́.}
 ::msgcat::mcset yo {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {Ìwò ṣáájú kọ̀mpónẹ́ńtì ṣì ń kó. Dúró de ìdáhùn kí o tó ṣàyẹ̀wò àwọn àyípadà àpapọ̀.}
+::msgcat::mcset yo {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {A ń rán àwọn àwárí tó wà báyìí (láti sérfà èdè tàbí Check) pẹ̀lú fáìlì yìí. O lè fi ìbéèrè kún un tí o bá fẹ́. Ọ̀rọ̀ nìkan ni ìdáhùn; kò sí nǹkan tí a lè kọ.}
 ::msgcat::mcset yo {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {A ó pa àkójọpọ̀ náà àti ohun gbogbo inú rẹ̀ run. Kò sí ọ̀nà láti sẹ́yìn padà — pa á ní ẹ̀yìn dípò bí o bá kàn fẹ́ kó o jáde nínú ìbéèrè.}
 ::msgcat::mcset yo {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {A pa àkójọpọ̀ náà run. Àkójọpọ̀ plugin jẹ́ ibùdó git, a sì kọ snapshot sílẹ̀ kí ó tó, nítorí náà History… lè mú un padà.}
+::msgcat::mcset yo {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Olùṣàtúnṣe náà ń ṣí àwọn fáìlì gateway, pẹ̀lú àwọn instance ọ̀nà jíjìn, ó sì ń mú sérfà èdè fún èdè fáìlì náà ṣiṣẹ́ lórí gateway: tcl-lsp, typescript-language-server (TypeScript àti JavaScript), rust-analyzer (crate tàbí module plugin Rust), clangd (C), racket-langserver àti sérfà Common Lisp. Àlàyé lórí àmì, lílọ sí ìtumọ̀, ìparí ọ̀rọ̀ àti àwọn àwárí alààyè ń ṣiṣẹ́ fún gbogbo èdè tí gateway ní sérfà fún; nígbà tí kò bá ní ọ̀kan, olùṣàtúnṣe náà ń sọ ètò tí a gbọ́dọ̀ fi sórí ẹ̀rọ náà, ó sì ń pa ìṣàfihàn àmì èdè mọ́. Check ń mú olùṣàyẹ̀wò tó bá a mu ṣiṣẹ́ lórí gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, tàbí àwọn olùkà Racket àti Lisp. Fipamọ́, tún gbéwọlé nínú Manage extensions, kí o sì dán extension náà wò láì tẹ ipò àdúgbò jáde.}
 ::msgcat::mcset yo {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Handoff àkọ́kọ́ ni ń múra àwọn àṣírí, àwòrán tí a so àti fáìlì runtime ṣùgbọ́n kò bẹ̀rẹ̀ PDS. Fi KEK àti kọ́kọ́rọ́ yíyí PLC pamọ́ lọ́nà òfìí, nígbàtí ìyẹn parí, ṣe ìbéèrè tuntun tí a ti ṣàtúnyẹ̀wò pẹ̀lú ìfọwọ́si àkójọpamọ́ láti ṣètò HTTP-01 TLS àti ìmúṣiṣẹ́. Àwọn àkọsílẹ̀ DNS gbọ́dọ̀ tọ́ka tààrà sí host yìí; veles kì í ṣe àyípadà proxy CDN tàbí DNS kankan.}
+::msgcat::mcset yo {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Fọ́ọ̀mù náà ti yípadà láti ìgbà tí a ṣẹ̀dá extension náà. Tún ṣẹ̀dá, tàbí wo ìpìlẹ̀ pẹlẹbẹ náà ṣáájú.}
 ::msgcat::mcset yo {The gateway itself is untouched.} {Gateway fúnra rẹ̀ kò ní kàn án.}
 ::msgcat::mcset yo {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Gateway ti tún ìṣètò gbé, nítorí náà àwọn ìpàdé tuntun ń lò ó báyìí, kọ́kọ́rọ́ tí a fi pamọ́ sínú àpótí ààbò sì ni ìbéèrè tó kàn yóò lò. Telegram àti IRC yóò bẹ̀rẹ̀ nígbà tí a bá tún gateway bẹ̀rẹ̀ lẹ́ẹ̀kan sí i: veles gateway restart.}
 ::msgcat::mcset yo {The installed component no longer matches the selected manifest. Review the component list again.} {Kọ̀mpónẹ́ńtì tí a ṣàgbékalẹ̀ kò bá mánìfẹ́sítì tí a yàn mọ́. Tún àkójọ kọ̀mpónẹ́ńtì ṣàyẹ̀wò.}
 ::msgcat::mcset yo {The installer preview has no verification signatures; apply is disabled.} {Ìwò ṣáájú olùṣàgbékalẹ̀ kò ní ìbuwọ́lù ìjẹ́rìí; a pá fífi ṣiṣẹ́.}
 ::msgcat::mcset yo {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {A ó pa iṣẹ́ náà àti ìtàn ìṣiṣẹ́ rẹ̀ run. Kò sí ọ̀nà láti sẹ́yìn padà — dá a dúró dípò bí o bá fẹ́ kó dáwọ́ dúró.}
+::msgcat::mcset yo {The log could not be read: %s} {A kò lè ka àkọsílẹ̀ náà: %s}
 ::msgcat::mcset yo {The manifest belongs to another component; its reply was discarded.} {Mánìfẹ́sítì jẹ́ ti kọ̀mpónẹ́ńtì mìíràn; a kọ̀ ìdáhùn rẹ̀ nù.}
 ::msgcat::mcset yo {The profile changed. Review the fresh plan before applying it.} {Profil náà ti yí padà. Ṣàtúnyẹ̀wò ètò tuntun kí o tó fi í sílò.}
 ::msgcat::mcset yo {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {Ibudó náà nílò SKILL.md ní gbòǹgbò rẹ̀ tàbí ní ìpele ẹ̀ka kan. Yóò gbé sí %s.}
 ::msgcat::mcset yo {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {Gbòǹgbò ibùdó gbọ́dọ̀ ní plugin.toml. A ó ṣe clone rẹ̀ sí %s lábẹ́ orúkọ manifest.}
+::msgcat::mcset yo {The reviewed change set was applied (%d files). Review and test it before publishing.} {A ti lo ìṣètò àyípadà tí a ṣàyẹ̀wò (fáìlì %d). Ṣàyẹ̀wò kí o sì dán an wò kí o tó tẹ̀ ẹ́ jáde.}
 ::msgcat::mcset yo {The reviewed configuration snapshot will also be restored.} {A ó tún mú àwòrán ìṣètò tí a yẹ wò padà.}
+::msgcat::mcset yo {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {A ó kọ àwọn fáìlì tí a ṣàyẹ̀wò sínú àpótí plugin olùṣàmúlò rẹ. Veles ń fi àdàkọ ìmúpadà àdúgbò pamọ́, ó sì gbìyànjú láti tún àfikún náà gbé wọlé; títẹ̀ jáde kì í ṣe apá kan ìgbésẹ̀ yìí.}
+::msgcat::mcset yo {The reviewed proposal was applied locally. Review and test it before publishing.} {A ti gbà àbá tí a ṣàyẹ̀wò ní àdúgbò. Ṣàyẹ̀wò rẹ̀ kí o sì dán an wò kí o tó tẹ̀ ẹ́ jáde.}
 ::msgcat::mcset yo {The rollback preview was malformed or named another component; nothing was restored.} {Àsọtẹ́lẹ̀ ìpadàsẹ́yìn kò ṣe déédé tàbí ó fi orúkọ component mìíràn; kò sí ohun tí a mú padà.}
 ::msgcat::mcset yo {The rollback returned an invalid result. Verify the installation before retrying.} {Ìpadàsẹ́yìn dá ìyọrísí tí kò tọ́ padà. Dánilójú ìfíṣílẹ̀ kí o tó tún gbìyànjú.}
 ::msgcat::mcset yo {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {Ọ̀nà tí àwọn ìpàdé tuntun gbẹ̀rẹ̀. /model àti àgbékọ́jọ àwọn mọ́dẹ̀ẹ̀lì máa yí i padà lẹ́yìnrẹ̀ — fún ìpàdé kọ̀ọ̀kan, tàbí gẹ́gẹ́ bí àṣàyàn tuntun.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset yo {The signed download discard returned an invalid response; no installation was requested.} {Fífi download tí a fọwọ́ sí pa rẹ́ dá ìdáhùn tí kò tọ́ padà; kò sí fífi síbẹ̀ tí a béèrè.}
 ::msgcat::mcset yo {The signed installation returned an invalid result. Verify the installation before retrying.} {Fífi síbẹ̀ tí a fọwọ́ sí dá àbájáde tí kò tọ́ padà. Jẹ́rìí fífi síbẹ̀ kí o tó tún gbìyànjú.}
 ::msgcat::mcset yo {The signed release preview was malformed; nothing was installed.} {Àwòrán release tí a fọwọ́ sí kò ṣeé lò; kò sí ohun tí a fi síbẹ̀.}
+::msgcat::mcset yo {The source buffer changed. Request a new proposal before applying.} {Buffer orísun náà ti yípadà. Béèrè àbá tuntun kí o tó gbà.}
 ::msgcat::mcset yo {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Ibi ìpamọ́ ń padà sí àtúnyẹ̀wò kan ṣáájú. Yíyí padà fúnra rẹ̀ jẹ́ àtúnyẹ̀wò, nítorí a lè sẹ́yìn padà rẹ̀.}
+::msgcat::mcset yo {The translator returned no text.} {Oníìtumọ̀ kò padà pẹ̀lú ọ̀rọ̀ kankan.}
 ::msgcat::mcset yo {The verification reply was malformed; no integrity result was accepted.} {Ìdáhùn ìdánilójú kò ṣe déédé; a kò gba ìyọrísí ìmúṣẹ́ èyíkéyìí.}
 ::msgcat::mcset yo Themes {Àwọn àmìọ̀rọ̀}
+::msgcat::mcset yo {These paths already exist in the chosen repository:} {Àwọn ipa ọ̀nà wọ̀nyí ti wà tẹ́lẹ̀ nínú repository tí o yàn:}
 ::msgcat::mcset yo {They have not been saved.} {A kò tíì fi wọ́n pamọ́.}
+::msgcat::mcset yo {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {Buffer yìí kò ní àwárí láti ṣàlàyé. Ṣe Check, tàbí dúró de sérfà èdè.}
 ::msgcat::mcset yo {This challenge is over.} {Ìdánwò yìí ti parí.}
 ::msgcat::mcset yo {This code has expired. Ask for a new one.} {Kóòdù yìí ti parí. Béèrè fún tuntun.}
 ::msgcat::mcset yo {This does not start a service or claim signed-download verification.} {Èyí kò bẹ̀rẹ̀ service kankan tàbí fi ìdánilójú àfọwọ́sí ìsọ̀kalẹ̀ múlẹ̀.}
 ::msgcat::mcset yo {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Gateway yìí kì í gba àwọn iye àṣírí láti ẹ̀rọ yìí: tẹ̀ ẹ́ síbẹ̀ pẹ̀lú veles secret set %s, tàbí fi nẹ́tíwọ̀ọ̀kì yìí kún [vault] trusted_networks rẹ̀}
 ::msgcat::mcset yo {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Èyí gan-an ni ohun tí a ó kọ — àwọn bytes engine fúnra rẹ̀, tí a gbà látààyè. Kò sí ohun tí ó kan disk sìbẹ̀.}
+::msgcat::mcset yo {This node is not a configured sync peer for any kind.} {Node yìí kì í ṣe peer sync tí a ṣètò fún irú kan.}
+::msgcat::mcset yo {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Plugin yìí ti wà nínú veles àti pé kò ṣeé ṣàtúnṣe. Yọ ẹ̀dà olùṣàmúlò tí ó ní orúkọ kan náà kúrò láti lò ẹ̀dà veles dípò.}
+::msgcat::mcset yo {This publishes the commit; no pull request is created yet.} {Èyí ń tẹ̀ kọ́mítì náà jáde; a kò tíì ṣẹ̀dá PR kankan.}
 ::msgcat::mcset yo {This review expires after %s seconds. Closing or cancelling discards its private staging.} {Àtúnyẹ̀wò yìí yóò tán lẹ́yìn %s àáyá. Pípá tàbí fífagilé ń fi ìpamọ́ àdáni rẹ̀ pa rẹ́.}
 ::msgcat::mcset yo {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {Olùrànlọ́wọ́ yìí ń kọ config.toml, ó sì ń fi àwọn kọ́kọ́rọ́ tí o fún un sínú àpótí ààbò tí a fi kóòdù pa. A lè fo ìgbésẹ̀ kọ̀ọ̀kan: ìgbésẹ̀ tí a fò kò ní wà nínú ìṣètò tuntun, a ó sì fi sílẹ̀ bí ó ti wà gan-an nínú èyí tó ti wà. A ń ṣàtúnṣe config.toml tó ti wà ní ààyè rẹ̀ — àwọn apá tí o dáhùn nìkan ló ń yí padà, gbogbo nǹkan mìíràn nínú rẹ̀, pẹ̀lú àwọn àlàyé, sì wà bẹ́ẹ̀.}
 ::msgcat::mcset yo {Ticket needed} {Tìkèti ni ṣiṣe}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset yo {Topic for %s} {Kókó fún %s}
 ::msgcat::mcset yo {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {Fọwọ́ kan ìpàdé kan, tàbí ohunkóhun mìíràn tí ó ní àkójọ àṣàyàn, kí o sì dì í mú láti ṣí àkójọ àṣàyàn náà. Ìtẹ̀ lẹ́yìn òde rẹ̀, tàbí Padà, ń pa á dé.}
 ::msgcat::mcset yo {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {Fọwọ́ kan ọ̀rọ̀ kan kí o sì dì í mú láti yàn án. Nígbà tí o bá gbé ìka rẹ sókè, àkójọ àṣàyàn rẹ̀ ń ṣí, pẹ̀lú Dà á pọ̀ lókè pátápátá.}
+::msgcat::mcset yo Translate Túmọ̀
+::msgcat::mcset yo {Translate selection} {Túmọ̀ àyànfẹ́}
+::msgcat::mcset yo Translating… {Ò ń túmọ̀…}
+::msgcat::mcset yo {Translation cancelled.} {A ti fagilé ìtúmọ̀.}
+::msgcat::mcset yo {Translation copied.} {A ti dà ìtumọ̀ pọ̀.}
+::msgcat::mcset yo {Translation failed} {Ìtumọ̀ kùnà}
+::msgcat::mcset yo {Translation result} {Èsì ìtúmọ̀}
+::msgcat::mcset yo {Translator configuration unavailable} {Ìṣètò olùtúmọ̀ kò sí}
 ::msgcat::mcset yo {Trigger history} {Ìtàn ìfọ̀kànṣẹ́}
 ::msgcat::mcset yo Triggers {Àwọn ìmúṣẹ}
 ::msgcat::mcset yo {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {Àwọn ìmúṣẹ ń fèsì sí ìṣẹ̀lẹ̀ ikanni láìlo ìpè. slopdrop ń gbé ìṣẹ̀lẹ̀ náà lọ sí bridge, ó sì ń gbé èsì padà; vision ń ṣàpèjúwe URL àwòrán nínú cooldown àti ààlà wákàtí. Ìlà náà kì í ṣiṣẹ́ àyàfi níbi tí ìgbòkègbodò [triggers] àti mask tí a mú jáde bá gbà á — #coven kò fi ohun kankan ránṣẹ́ lábẹ́ àwọn ìsopọ̀ slopdrop tó ń ṣiṣẹ́.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset yo {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Títí IRC_ALLOWED_USERS nínú .env yóò fi dárúkọ àkántì rẹ, ẹnikẹ́ni lórí nẹ́tíwọ̀ọ̀kì lè bá bot sọ̀rọ̀ — tí kò bá sì sí abala [acl], gẹ́gẹ́ bí olówó, pẹ̀lú gbogbo irinṣẹ́.}
 ::msgcat::mcset yo {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Títí TELEGRAM_ALLOWED_USERS nínú .env yóò fi dárúkọ ID oníṣe rẹ, ẹnikẹ́ni tí ó bá rí bot lè bá a sọ̀rọ̀ — tí kò bá sì sí abala [acl], gẹ́gẹ́ bí olówó, pẹ̀lú gbogbo irinṣẹ́.}
 ::msgcat::mcset yo Untitled {Láìsí àkọlé}
+::msgcat::mcset yo {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Ìtọrẹ sí upstream jẹ́ ìṣe ìtẹ̀jáde tí a ṣe pọ̀ọ́n, kì í ṣe ìgbéwọlé aládàáṣe. Nínú Manage extensions, Ìtọrẹ ń tọ́ka gbogbo extension olùṣàmúlò: yan àwọn extension àti fáìlì, ṣàyẹ̀wò diff àti ìṣàyẹ̀wò àṣírí, ṣe àwọn àyẹ̀wò, lẹ́yìn náà ṣẹ̀dá branch kan àti PR kan (sí veles ní àkọ́kọ́) pẹ̀lú ìdánimọ̀ git tí o yàn. Extension kọ̀ọ̀kan ń lọ sábẹ́ àkójọ fáìlì rẹ̀ nínú repository, a sì ń rọ́pò fáìlì tó wà níbẹ̀ nìkan lẹ́yìn ìfọwọ́sí tí ó ṣọ̀tọ̀. Má ṣe tẹ̀ jáde node.toml, àwọn ẹ̀rí àdúgbò, token, endpoint àdáni tàbí ipò plugin tí kò ní í ṣe. Àwọn àwòrán ìmúpadà àdúgbò kì í ṣe commit upstream tàbí PR.}
+::msgcat::mcset yo {Upstream repository or fork URL} {URL àpótí kóòdù sókè tàbí fork}
+::msgcat::mcset yo {Uptime class} {Ìpele àkókò ìṣiṣẹ́}
+::msgcat::mcset yo {Uptime: host %1$s, gateway %2$s} {Àkókó ìṣiṣẹ́: host %1$s, gateway %2$s}
 ::msgcat::mcset yo Usage Lílò
 ::msgcat::mcset yo {Usage & Quota} {Ìlò & Àyè}
 ::msgcat::mcset yo {Use TLS} {Lo TLS}
 ::msgcat::mcset yo {Use now} {Lò ní báyìí}
+::msgcat::mcset yo {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {Lo àwọn bọ́tìnì Ìtọ́nà olùkọ̀wé àti Ìtọ́kasi API fún àwọn àdéhùn gangan. Àkópọ̀ Plugins ń fi àwọn hook tí ń ṣiṣẹ́ hàn; àwọn service àti ibi àtúnṣe wá láti inú registry gateway fúnra rẹ̀, kì í ṣe àkójọ tí a dà kọ sínú ìtọ́nà yìí.}
 ::msgcat::mcset yo {Use this ticket} {Lo tìkèti yìí}
+::msgcat::mcset yo {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {Lo fork rẹ (https://github.com/<you>/veles.git tàbí git@github.com:<you>/veles.git) àyàfi tí o bá lè tì sí veles fúnra rẹ̀. A ń ṣe clone repository tí o yàn sínú worktree tí ó ṣọ̀tọ̀. A kò tì nǹkan kan.}
 ::msgcat::mcset yo {Users — one role across networks and platforms} {Àwọn olùmúlò — ipá kan ní gbogbo nẹ́tìwọ́ọ̀kì àti àwọn pẹ̀tẹ́lẹ̀}
 ::msgcat::mcset yo {Using the phone, for the agent} {Lílo fóònù, fún aṣojú}
 ::msgcat::mcset yo {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Sábà ó jẹ́ ọ̀kan náà pẹ̀lú orúkọ ìkọ̀wé olùpèsè. Fi àwọn méjèèjì sí òfo nígbà tí o bá yan Fo — kànnàkànnà tó kún ní ìdajì kì í gba ọ̀nà.}
 ::msgcat::mcset yo {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Àwọn ìye jẹ́ TOML: àwọn ọ̀rọ̀ tí a fi ìṣàmì, nọ́ńbà, tàbí àwọn àkójọ. A ó kọ wọ́n sínú [mcp_servers.<name>] — àwọn àlàyé rẹ àti gbogbo abala yòókù kò ní kàn wọ́n.}
+::msgcat::mcset yo Vault {Àpótí ààbò}
 ::msgcat::mcset yo {Verified signed bundle installed. Restart the gateway before using the new core.} {A ti fi ìdìpọ̀ tí a jẹ́rìí, tí a fọwọ́ sí síbẹ̀. Tún gateway bẹ̀rẹ̀ kí o tó lo ìpìlẹ̀ tuntun.}
 ::msgcat::mcset yo {Verified signed release — not installed yet} {Release tí a jẹ́rìí, tí a fọwọ́ sí — kò tíì fi síbẹ̀}
 ::msgcat::mcset yo {Verify and review release…} {Jẹ́rìí kí o sì ṣàtúnyẹ̀wò release…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset yo {Verify signed release} {Jẹ́rìí release tí a fọwọ́ sí}
 ::msgcat::mcset yo {Verify signed release…} {Jẹ́rìí release tí a fọwọ́ sí…}
 ::msgcat::mcset yo Version Ẹ̀yà
+::msgcat::mcset yo {Version %1$s: %2$s} {Ẹ̀dà %1$s: %2$s}
+::msgcat::mcset yo {Version drift in the registry: %s} {Ìyàtọ̀ ẹ̀dà nínú registry: %s}
 ::msgcat::mcset yo View Ìwò
 ::msgcat::mcset yo {View markdown source} {Wo orísun markdown}
 ::msgcat::mcset yo {View source / rendered} {Orísun / àfihàn}
 ::msgcat::mcset yo Voice {Fún ní voice}
+::msgcat::mcset yo {Waiting for the model…} {À ń dúró de mọ́dẹ́ẹ̀lì…}
+::msgcat::mcset yo {Waiting for the model… Nothing has been written.} {À ń dúró de mọ́dẹ́ẹ̀lì… A kò kọ nǹkan kan.}
 ::msgcat::mcset yo {Welcome to veles} {Káàbọ̀ sí veles}
 ::msgcat::mcset yo {What the agent can do here} {Ohun tí aṣojú náà lè ṣe níbí}
 ::msgcat::mcset yo {What veles may do on this phone. Each button opens the Android setting that changes it.} {Ohun tí veles lè ṣe lórí fóònù yìí. Bọ́tìnnì kọ̀ọ̀kan ń ṣí ètò Android tó ń yí i padà.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset yo {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {Nígbà tí veles bá wà ní abẹ́lẹ̀, ìbéèrè aṣojú tàbí àyè tí ó ti parí ń di ìfitónilétí; tẹ̀ ẹ́ láti ṣí ìpàdé náà.}
 ::msgcat::mcset yo {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {Ẹni tó lè bá bot náà sọ̀rọ̀. Ìyàn yìí ni yóò pinnu bóyá config.toml yóò ní apá [acl] rárá — èyí sì ni yóò yí gbogbo ìwà náà padà.}
 ::msgcat::mcset yo Whois Whois
-::msgcat::mcset yo {Wire protocol (chat_completions or responses)} {Ìlànà asopọ̀ (chat_completions tàbí responses)}
+::msgcat::mcset yo {Wire protocol (chat_completions, responses or plugin)} {Eledè-okun (chat_completions, responses tàbí plugin)}
 ::msgcat::mcset yo {With a keyboard attached, every key works as on a laptop.} {Nígbà tí a bá so pátákó ìtẹ̀wé mọ́, gbogbo bọ́tìnnì ń ṣiṣẹ́ bí ti orí kọ̀ǹpútà alágbèéká.}
 ::msgcat::mcset yo {Workflow SHA} {SHA Workflow}
+::msgcat::mcset yo {Workflow commit} {Commit workflow}
+::msgcat::mcset yo Worktree {Igi iṣẹ́}
 ::msgcat::mcset yo {Write it} {Kọ ọ́}
+::msgcat::mcset yo {Write the design question first.} {Kọ́kọ́ kọ ìbéèrè nípa ìṣàpẹẹrẹ.}
 ::msgcat::mcset yo {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Kì í kọ olùpèsè kankan. Gateway kò ní gba turn lọ̀nà kan kọ̀kọ́ títí ìkọ̀wé [[custom_providers]] àti ọ̀nà méjì [model] yóò fi wà.}
 ::msgcat::mcset yo {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Kíkọ kọ́kọ́rọ́ [acl] KANKAN ń yí gateway yìí sí ipò curated: ipa àìyípadà di guest (fail-closed), àwọn àkójọ ìyọ̀ǹda kò sì jẹ́ ààlà mọ́. Yan èyí nìkan tí o bá ní ìdánimọ̀ olówó tí o gbẹ́kẹ̀lé.}
 ::msgcat::mcset yo {[model] provider} {Olùpèsè [model]}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset yo {also list hooks with no handler} {tún ṣàkọ́jọ àwọn hook tí kò ní olùmúṣe}
 ::msgcat::mcset yo {also write grants that still have an expiry} {tún kọ àwọn ìfúnniláṣẹ tí ó ní àkókò ìparí sílẹ̀}
 ::msgcat::mcset yo {also write runtime users} {tún kọ àwọn olùmúlò àsìkò sílẹ̀}
+::msgcat::mcset yo {an allowlist entry is removed by editing config.toml} {a ń yọ àkọsílẹ̀ allowlist kúrò nípa ṣíṣàtúnṣe config.toml}
 ::msgcat::mcset yo {an allowlist is in force: a plugin not on it stays off} {àkójọ ààyè ń ṣiṣẹ́: plugin tí kò sí nínú rẹ̀ yóò dúró pa}
 ::msgcat::mcset yo {answer failed: %s} {èsì kùnà: %s}
+::msgcat::mcset yo {answer only, nothing to apply} {ìdáhùn nìkan, kò sí nǹkan láti lò}
 ::msgcat::mcset yo {append these rules to config.toml} {fi àwọn òfin wọ̀nyí kún config.toml}
 ::msgcat::mcset yo {apply failed: %s} {ìlò kùnà: %s}
 ::msgcat::mcset yo {apply to:} {lo sí:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset yo {ask the agent} {bi aṣojú léèrè}
 ::msgcat::mcset yo {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset yo {asked by: %s} {tí %s béèrè:}
+::msgcat::mcset yo {asking %s for its metrics…} {À ń béèrè métíríìkì rẹ̀ lọ́wọ́ %s…}
 ::msgcat::mcset yo {attach a file} {so fáìlì mọ́}
 ::msgcat::mcset yo {attach an image or file} {so àwòrán tàbí fáìlì pọ̀}
 ::msgcat::mcset yo {attach failed: %1$s} {Attach kùnà: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset yo {attached %1$s (%2$s pending)} {a so %1$s mọ́ (%2$s ń dúró)}
 ::msgcat::mcset yo {attached to %s} {a so mọ́ %s}
 ::msgcat::mcset yo {attached to child session %1$s} {a so mọ́ ìgbà ọmọ %1$s}
+::msgcat::mcset yo automatic aládàáṣe
 ::msgcat::mcset yo {aux model} {àfihàn módéùl}
 ::msgcat::mcset yo {aux provider} {asèfìnnì aux}
+::msgcat::mcset yo available {ó wà}
 ::msgcat::mcset yo {available components} {àwọn kọ̀mpónẹ́ńtì tó wà}
 ::msgcat::mcset yo {back up N user turns} {padà sẹ́yìn ìyípo olùlò N}
 ::msgcat::mcset yo {backed up the previous config to %s} {da kọ́pí config àtijọ́ sí %s}
 ::msgcat::mcset yo {background shells; /shells output|kill <id>} {àwọn shell ẹ̀yìn; /shells output|kill <id>}
+::msgcat::mcset yo {backing off: %1$s failure(s), next automatic try in %2$s s} {ìpadàsẹ́yìn: ìkùnà %1$s, ìgbìyànjú aládàáṣe tó ń bọ̀ ní %2$s s}
 ::msgcat::mcset yo {bad host for %1$s: %2$s} {host tí kò dára fún %1$s: %2$s}
 ::msgcat::mcset yo {bad unit for %1$s: %2$s} {unit tí kò dára fún %1$s: %2$s}
 ::msgcat::mcset yo {bare display off} {ìṣàfihàn kìkì pa}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset yo {browse the filesystem} {ṣàwárí ètò fáìlì}
 ::msgcat::mcset yo {browse the repo's files} {wíwá ọ inú àwọn fáìlì repo}
 ::msgcat::mcset yo {builtin (%s):} {abíṣò nípasẹ̀ (%s):}
+::msgcat::mcset yo bundled {ti wà nínú veles}
+::msgcat::mcset yo {bundled, read-only} {nínú veles, kò ṣeé ṣàtúnṣe}
 ::msgcat::mcset yo by {láti ọwọ́}
 ::msgcat::mcset yo {by plan — all sessions} {nípa ètò — gbogbo àwọn ìgbà}
 ::msgcat::mcset yo {by plan — this session} {nípa ètò — ìgbà yìí}
 ::msgcat::mcset yo {by tool} {nípa irinṣẹ́}
 ::msgcat::mcset yo {cancel failed: %1$s} {ìfagilé kùnà: %1$s}
 ::msgcat::mcset yo {cancel the running turn} {fagilé ìyí tó ń lọ}
+::msgcat::mcset yo {cancel the selected task} {fagilé iṣẹ́ tí a yàn}
 ::msgcat::mcset yo {cancelled task %1$s} {iṣẹ́ %1$s ti fagilé}
 ::msgcat::mcset yo {cannot list scripts (gateway offline?)} {kò le ṣàkọ́jọ àwọn script (gateway kò wà lórí?)}
 ::msgcat::mcset yo {cannot reach the gateway: %s} {kò lè dé ọ̀dọ̀ gateway: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset yo commit {Fi sílẹ̀}
 ::msgcat::mcset yo {compacting %s messages in the background — the transcript reloads when it finishes} {ń dín àwọn ìfirán %s kù lórí ẹ̀yìn — ìtàn yió padà wá nígbà tí ó bá parí}
 ::msgcat::mcset yo compacting… {ń dín kù…}
+::msgcat::mcset yo {comparing the nodes' versions and config…} {À ń fi àwọn ẹ̀dà àti ìṣètò àwọn node wé…}
 ::msgcat::mcset yo {completion tokens} {àmì tokens ìparí}
 ::msgcat::mcset yo {component options and declared actions} {àwọn àṣàyàn kọ̀mpónẹ́ńtì àti àwọn ìgbésẹ̀ tí a kéde}
 ::msgcat::mcset yo composer {oníṣe akótán}
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset yo {could not open %s} {kò le ṣí %s}
 ::msgcat::mcset yo {could not open %s (no working browser opener)} {kò le ṣí %s (kò sí ìṣí biráúsà tó ṣiṣẹ́)}
 ::msgcat::mcset yo {could not open %{url}: %{e}} {kò le ṣí %{url}: %{e}}
+::msgcat::mcset yo {could not open the optional referral link: %s} {a kò lè ṣí ìtọ́kàtọ́ àsàyàn: %s}
 ::msgcat::mcset yo {could not read %s: %s} {kò lè ka %s: %s}
 ::msgcat::mcset yo {could not read the current route} {kò le kà ọ̀nà lọ́wọ́lọ́wọ́}
 ::msgcat::mcset yo {could not save this session's language: %{e}} {a kò lè fi èdè ìpàdé yìí pamọ́: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset yo {ctxmenu: no widget %s (attached too early?)} {ctxmenu: kò sí ẹ̀rọ %s (a so ọ́ mọ́ kí ó tó?)}
 ::msgcat::mcset yo {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {a yan ìwọlé curated láìsí ìdánimọ̀ olówó, nítorí náà [acl] ṣì wà ní àìṣiṣẹ́ — pèsè ọ̀kan, bí telegram:123456 tàbí irc:account, láti tàn án}
 ::msgcat::mcset yo {current theme: %{name} · /theme <name>} {ìrísí tó ń lò: %{name} · /theme <name>}
+::msgcat::mcset yo {cursor %1$s of %2$s (%3$s behind)} {cursor %1$s nínú %2$s (%3$s sẹ́yìn)}
 ::msgcat::mcset yo {custom command /%s…} {àṣẹ àṣà /%s…}
 ::msgcat::mcset yo {custom commands (.veles/commands/) and config aliases} {àwọn àṣẹ àdáni (.veles/commands/) àti àwọn orúkọ àfidípò ìṣètò}
 ::msgcat::mcset yo {cycle ends} {yíyí padà parí}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset yo doctor_resident {wà nínú gbogbo ìbéèrè: %{shown} nínú àmì %{total} (~tokens %{tokens}) — èyí tó kù ń gbéwọlé nígbà tí a bá nílò rẹ̀ pẹ̀lú: memory action=read path=%{path}}
 ::msgcat::mcset yo doctor_title {àyẹ̀wò ìrántí}
 ::msgcat::mcset yo doctor_total {àpapọ̀: àmì %{chars} nínú fáìlì %{files} (~tokens %{tokens})}
+::msgcat::mcset yo {documentation is not in this source checkout: %s} {ìtọ́nisẹ́ kò sí nínú checkout orísun yìí: %s}
 ::msgcat::mcset yo done parí
 ::msgcat::mcset yo {done · %1$s/%2$s} {parí · %1$s/%2$s}
 ::msgcat::mcset yo {done, but the model returned no text} {parí, ṣùgbọ́n mọ́dẹ̀lì kò dá ọ̀rọ̀ padà}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset yo {evaluate Tcl and answer with the result — no model turn} {ṣe Tcl kí o sì fi èsì dáhùn — láìsí ìyípo awoṣe}
 ::msgcat::mcset yo everyone {gbogbo ẹni}
 ::msgcat::mcset yo everywhere {ní gbogbo ibi}
+::msgcat::mcset yo {exchanging registry gossip…} {À ń ṣe pàṣípààrọ̀ gossip registry…}
 ::msgcat::mcset yo exit jáde
 ::msgcat::mcset yo {exit veles-desktop} {jáde veles-desktop}
 ::msgcat::mcset yo {export failed: %s} {ìkójáde kùnà: %s}
 ::msgcat::mcset yo {export session} {gbé ìpàdé jáde}
 ::msgcat::mcset yo {exported to %s} {ìkójáde sí %s}
+::msgcat::mcset yo {extension architecture, examples and LSP help} {Àtẹ́jú plugin, àpẹẹrẹ àti ìrànlọ́wọ́ LSP}
+::msgcat::mcset yo {extension development guide} {Ìtọ́nisẹ́ ìdàgbàsókè plugin}
+::msgcat::mcset yo failed kùnà
 ::msgcat::mcset yo {failed to load history: %s} {ìgbésílẹ̀ ìtàn kùnà: %s}
 ::msgcat::mcset yo {failed to paint cached history: %s} {fífún ìtàn tí a fipamọ́ ránsẹ́ kùnà: %s}
 ::msgcat::mcset yo {failed to paint replayed history: %s} {fífún ìtàn tí a fi padà ṣeré ránsẹ́ kùnà: %s}
 ::msgcat::mcset yo {failed: %s} {kùnà: %s}
+::msgcat::mcset yo {failing — heartbeating, but a sync push or the last probe failed} {ń kùnà — heartbeat ń ṣiṣẹ́, ṣùgbọ́n push sync tàbí ìṣàyẹ̀wò tó gbẹ̀yìn kùnà}
 ::msgcat::mcset yo {failover blueprint: cannot reach the gateway} {failover blueprint: kò lè dé ọ̀dọ̀ gateway}
 ::msgcat::mcset yo {failover graph unavailable: %1$s} {Failover graph kò sí: %1$s}
 ::msgcat::mcset yo {failover script: cannot reach the gateway} {failover script: kò lè dé ọ̀dọ̀ gateway}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset yo {fire the Tcl hook} {tan àmì Tcl hook}
 ::msgcat::mcset yo {fires for %s:} {o ń tan fún %s:}
 ::msgcat::mcset yo {fires per hour} {o ń tan lẹ́ẹ̀kan ní ààyá}
+::msgcat::mcset yo {fleet drift} {ìyàtọ̀ àkójọ ẹ̀rọ}
 ::msgcat::mcset yo {focus composer} {dáanjú composer}
 ::msgcat::mcset yo {focus failed: %{e}} {fọ́kúsì kùnà: %{e}}
 ::msgcat::mcset yo {focus next region} {dáanjú agbègbè tó ń bọ̀}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset yo {four splits is the maximum} {ìpín mẹ́rin ni ó pọ̀ jù}
 ::msgcat::mcset yo {fresh session} {ìpàdé tuntun}
 ::msgcat::mcset yo {fresh session (Ctrl-N too)} {ìpàdé tuntun (Ctrl-N pẹ̀lú)}
+::msgcat::mcset yo {fresh — heartbeating, sync passing} {tó ṣẹ̀ṣẹ̀ — heartbeat ń ṣiṣẹ́, sync ń kọjá}
+::msgcat::mcset yo from láti
 ::msgcat::mcset yo {from node %{node}} {láti node %{node}}
 ::msgcat::mcset yo {gateway     v%1$s · up %2$s} {gateway     v%1$s · ó ti ṣiṣẹ́ fún %2$s}
 ::msgcat::mcset yo {gateway unreachable — is `veles gateway run` up?} {gateway kò ṣeé dé — `veles gateway run` ń ṣiṣẹ́ bí?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset yo {in %s} {ní %s}
 ::msgcat::mcset yo {insert the next key literally (^B bold, ^C colour, ^O reset)} {fikọ́ bọtìnní tó kàn sílẹ̀ lédè létẹrẹ̀ (^B bold, ^C àwọ̀, ^O ìtúnsẹ̀)}
 ::msgcat::mcset yo {inserted %s} {a fi %s sí i}
+::msgcat::mcset yo {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {ṣàyẹ̀wò cluster; tì/lo sync store, ìrántí, ìṣètò tàbí àpótí ààbò ní kedere; gbàgbé node tó ti pẹ́ káàkiri àkójọ ẹ̀rọ; ka ìlà ìparí àkọsílẹ̀ tàbí métíríìkì node; fi àwọn ẹ̀dà àti ìṣètò wé; gossip báyìí}
 ::msgcat::mcset yo {inspector — app internals · core state · gw plugins} {inspector — ohun inú app · ipò core · àwọn plugin gw}
 ::msgcat::mcset yo {install a plugin from a git URL} {Ṣàgbéwọlé plugin kan láti git URL}
 ::msgcat::mcset yo {install a skill from a git URL} {Ṣàgbéwọlé skill kan láti git URL}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset yo instance instance
 ::msgcat::mcset yo {instance controls} {àwọn àkóso instance}
 ::msgcat::mcset yo {instance detail} {àlàyé instance}
+::msgcat::mcset yo {instance names may not start with "cluster:" or "g:": %s} {orúkọ instance kò gbọ́dọ̀ bẹ̀rẹ̀ pẹ̀lú "cluster:" tàbí "g:": %s}
 ::msgcat::mcset yo {instance needs a name} {instance nílò orúkọ}
 ::msgcat::mcset yo {instance unreachable} {instance kò ṣeé dé}
 ::msgcat::mcset yo instances {àwọn instance}
 ::msgcat::mcset yo interrupting… {ń dáwọ́ dúró…}
+::msgcat::mcset yo into sínú
 ::msgcat::mcset yo {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset yo {irc: %s} {irc: %s}
 ::msgcat::mcset yo {irc: %s failed — %s} {irc: %s kùnà — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset yo {language list} {àkójọ èdè}
 ::msgcat::mcset yo {language picker (the swap for THIS window)} {àyọkà èdè (tíróṣẹ́ fún WINDOW YÌÍ)}
 ::msgcat::mcset yo {language saved: %s} {ti fipamọ́ èdè: %s}
+::msgcat::mcset yo {language server} {sérfà èdè}
+::msgcat::mcset yo {language server: event stream unavailable: %s} {sérfà èdè: ìṣàn ìṣẹ̀lẹ̀ kò sí: %s}
+::msgcat::mcset yo {language server: not started on the gateway — %s} {sérfà èdè: a kò tíì bẹ̀rẹ̀ rẹ̀ lórí gateway — %s}
+::msgcat::mcset yo {language server: the gateway would not start one: %s} {sérfà èdè: gateway kò bẹ̀rẹ̀ ọ̀kan: %s}
 ::msgcat::mcset yo {language swapped: %1$s ⇄ %2$s} {Ṣe pààrọ̀ èdè: %1$s ⇄ %2$s}
 ::msgcat::mcset yo {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {èdè → %1$s (tẹ́lẹ̀ ni %2$s) · window tó ń lọ nìkan — Save as default ń kọ sí config.toml}
 ::msgcat::mcset yo {language: %s} {èdè: %s}
 ::msgcat::mcset yo {last error} {àṣìṣe ìgbà tí ó kọjá}
+::msgcat::mcset yo {last pass %1$s at %2$s: %3$s} {ìkọjá tó gbẹ̀yìn %1$s ní %2$s: %3$s}
 ::msgcat::mcset yo {last reply copied (%s chars)} {a dákoṣe èsì tó kẹ́yìn (%s lẹ́tà)}
 ::msgcat::mcset yo {layout not saved: %s} {layout kò ṣe fipamọ́: %s}
 ::msgcat::mcset yo {leave (cancels a running turn first)} {jáde (ń fagilé ìyípo tó ń lọ lọ́wọ́ lákọ̀ọ́kọ́)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset yo {list sessions} {ṣe àkójọ àwọn ìpàdé}
 ::msgcat::mcset yo {list skills} {ṣe àkójọ àwọn ọgbọ́n}
 ::msgcat::mcset yo {list tools} {ṣe àkójọ àwọn irinṣẹ́}
+::msgcat::mcset yo {listed here only; [notify] fleet_alerts is off} {a tò ó níbí nìkan; [notify] fleet_alerts ti pa}
 ::msgcat::mcset yo {live patching ARMED} {live patching ARMED}
 ::msgcat::mcset yo {live patching ARMED — an agent can now redefine procs in this window} {live patching ARMED — agent lè tún procs ṣètò nínú window yìí}
 ::msgcat::mcset yo {live patching disarmed} {a ti pa live patching}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset yo {log pane shown} {panẹlì log ti hàn}
 ::msgcat::mcset yo {log: %s} {log: %s}
 ::msgcat::mcset yo {make media: image/video/audio, route = comfyui or provider[/model]} {ṣẹ̀dá mídíà: image/video/audio, ipa-ọ̀nà = comfyui tàbí provider[/model]}
+::msgcat::mcset yo {managed via %s} {a ń ṣàkóso rẹ̀ nípasẹ̀ %s}
+::msgcat::mcset yo {manual only} {ọwọ́ nìkan}
 ::msgcat::mcset yo {mark set} {mark ti ṣètò}
 ::msgcat::mcset yo {mark whole buffer (emacs select-all)} {àmì lórí bọ́fà gbogbo rẹ̀ (emacs yàní select-all)}
 ::msgcat::mcset yo {markdown preview of the composer} {ìwò markdown ti composer}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset yo model awoṣe
 ::msgcat::mcset yo {model aliases} {àwọn àmì-orúkọ awoṣe}
 ::msgcat::mcset yo {monitor %1$s fired} {monitor %1$s ti ṣiṣẹ́}
-::msgcat::mcset yo monitors {àwọn monitor}
 ::msgcat::mcset yo monitors_header {Àwọn monitor:}
 ::msgcat::mcset yo monitors_none {(kò sí àwọn monitor — awoṣe ń bẹ̀rẹ̀ wọ́n pẹ̀lú tool monitor)}
 ::msgcat::mcset yo {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {fi sísọn kan (àti ewé ẹni rẹ̀ síbi ibi isẹ́) padà sí ojú iṣẹ́ elétì kan ní Àlà ìyí kàn; parí/fagillé ìfi ọwọ́ sílẹ̀ tí a ti dé; bẹ́èrè nípa olówó sísọn kan (àlàgbára)}
 ::msgcat::mcset yo {move the running foreground command to the background} {gbé àṣẹ iwájú tó ń ṣiṣẹ́ lọ sí ẹ̀yìn}
 ::msgcat::mcset yo {move the running foreground command to the background (keeps running)} {gbe àṣẹ tó ń lọ níwájú lọ sí ẹ̀yìn (ó ṣì ń lọ)}
+::msgcat::mcset yo {move this session's running foreground command to a background shell; keeps running} {Àṣẹ tó ń lò ní ojú-ìtàgé ìpàdé yìí a ó yà ọ́ kúrò lọ sí àpáti abẹ́lẹ̀; ó sì ń bá iṣẹ́ lọ}
 ::msgcat::mcset yo {moving around} ìrìnkiri
 ::msgcat::mcset yo name orúkọ
 ::msgcat::mcset yo {name a key first} {Fi orúkọ key kọ́kọ́}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset yo {neon impressionism} {neon impressionism}
 ::msgcat::mcset yo {network (optional — e.g. libera; empty = any)} {network (ààyàn — bí àpẹẹrẹ̀: libera; tó bá ṣófo = èyíkéyìí)}
 ::msgcat::mcset yo {network to scope the grant to} {network tí ìfúnni yóò gbà sí}
+::msgcat::mcset yo new tuntun
 ::msgcat::mcset yo {new buffer} {búfà tuntun}
 ::msgcat::mcset yo {new entry — replace this text, then Save} {ìkọ̀wé tuntun — pa ọ̀rọ̀ yìí rọ́pò, lẹ́yìn náà tẹ Save}
 ::msgcat::mcset yo {new name for %s} {orúkọ tuntun fún %s}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset yo {no IRC buffer selected} {kò sí IRC buffer tí a yàn}
 ::msgcat::mcset yo {no MCP servers configured — Add server… writes one into config.toml} {kò sí MCP servers tí a ṣètò — Add server… ń kọ ọ̀kan sí inú config.toml}
 ::msgcat::mcset yo {no URLs in this buffer} {kò sí URLs nínú buffer yìí}
+::msgcat::mcset yo {no [a2a_agents] entry — this peer cannot be dialed} {kò sí àkọsílẹ̀ [a2a_agents] — a kò lè pè peer yìí}
 ::msgcat::mcset yo {no alias /%s} {kò sí alias /%s}
 ::msgcat::mcset yo {no background refresh} {kò sí background refresh}
 ::msgcat::mcset yo {no buffer %s} {kò sí buffer %s}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset yo {no code block in the last reply} {kò sí code block nínú èsì tó kẹ́yìn}
 ::msgcat::mcset yo {no cron jobs} {kò sí cron jobs}
 ::msgcat::mcset yo {no cron jobs — New… creates one} {kò sí cron jobs — New… ń dá ọ̀kan}
+::msgcat::mcset yo {no exchange yet} {kò sí pàṣípààrọ̀ síbẹ̀}
 ::msgcat::mcset yo {no file — pick a guts file or type a path} {kò sí fáìlì — yàn guts file kan tàbí tẹ ọ̀nà kan}
 ::msgcat::mcset yo {no handler} {kò sí handler}
+::msgcat::mcset yo {no heartbeat for %{mins} min} {kò sí heartbeat fún %{mins} min}
+::msgcat::mcset yo {no heartbeat within the threshold} {kò sí heartbeat nínú ààlà náà}
 ::msgcat::mcset yo {no history yet} {kò sí ìtàn rárá}
 ::msgcat::mcset yo {no host configured for this instance} {a ò ṣètò host fún instance yìí}
 ::msgcat::mcset yo {no instance selected} {a ò yan instance kankan}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset yo {no program to open URLs} {kò sí àmúlò láti ṣí URLs}
 ::msgcat::mcset yo {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {a kò tí ì ṣètò olùpèsè kankan — ṣàfikún ìkọ̀wé [[custom_providers]] kí o sì ṣètò méjì [model] kí o tó ṣe ìyípo kan}
 ::msgcat::mcset yo {no reading yet — press Refresh} {kò sí ìkàwé sìbẹ̀ — tẹ Refresh}
-::msgcat::mcset yo {no running tasks} {kò sí àwọn iṣẹ́ tó ń lọ}
 ::msgcat::mcset yo {no sample available} {kò sí àpẹẹrẹ̀}
 ::msgcat::mcset yo {no search bar on this surface} {kò sí ọ̀pá ìṣàwárí lórí surface yìí}
 ::msgcat::mcset yo {no session matching %s} {kò sí ìpàdé tó bá %s mu}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset yo {no session open — switch the scope to the default, or open a session} {kò sí session tó ṣí sílẹ̀ — yí scope padà sí défọ́ọ̀lù, tàbí ṣí session kan}
 ::msgcat::mcset yo {no session open — the catalogue needs one; the default scope still works from config.toml} {kò sí session tó ṣí sílẹ̀ — catalogue nílò ọ̀kan; scope défọ́ọ̀lù ṣì ń ṣiṣẹ́ láti config.toml}
 ::msgcat::mcset yo {no setting %s — try filter or bare} {kò sí ìṣètò %s — gbìyànjú filter tàbí bare}
+::msgcat::mcset yo {no shells or monitors to show} {kò sí shẹ́ẹ̀lù tàbí mọ́nitọ̀ láti fihàn}
 ::msgcat::mcset yo {no skills found} {kò sí skills tí a rí}
 ::msgcat::mcset yo {no such URL — /urls lists them} {kò sí URL bẹ́ẹ̀ — /urls ń fi wọ́n hàn}
 ::msgcat::mcset yo {no such file: %s} {kò sí fáìlì bẹ́ẹ̀: %s}
 ::msgcat::mcset yo {no swap target yet — set one with /locale secondary <id>} {kò sí èdè ìyípadà síbẹ̀ — ṣètò rẹ̀ pẹ̀lú /locale secondary <id>}
+::msgcat::mcset yo {no task selected} {kò sí iṣẹ́ tí a yàn}
 ::msgcat::mcset yo {no triggers} {kò sí triggers}
 ::msgcat::mcset yo {no triggers — New… creates one} {kò sí triggers — New… ń dá ọ̀kan}
 ::msgcat::mcset yo {no upstream reading for %s} {kò sí ìkàwé upstream fún %s}
 ::msgcat::mcset yo {no word match} {kò sí ìbámu ọ̀rọ̀}
 ::msgcat::mcset yo {no xdg-open — path copied instead} {kò sí xdg-open — a dákoṣe ọ̀nà dípò ẹ̀}
+::msgcat::mcset yo {node log} {àkọsílẹ̀ node}
 ::msgcat::mcset yo {none loaded} {a ò gbé ìkankan wọ}
 ::msgcat::mcset yo {none recorded} {kò sí èyíkéyìí tí a gba sílẹ̀}
+::msgcat::mcset yo {none since this gateway started} {kò sí ọ̀kan láti ìgbà tí gateway yìí ti bẹ̀rẹ̀}
 ::msgcat::mcset yo {none yet} {kò sí síbẹ̀}
 ::msgcat::mcset yo {normie is pure Ctrl — no emacs prefix chords.} {normie jẹ́ Ctrl fúnra rẹ̀ — kò sí emacs àmì ìwájú chíọ̀dù.}
 ::msgcat::mcset yo {normie: select all · emacs: start of line} {normie: yàgbé gbogbo rẹ̀ · emacs: ìbẹ̀rẹ̀ ilà}
 ::msgcat::mcset yo {not a channel} {kì í ṣe channel}
 ::msgcat::mcset yo {not a key = value line: %s} {kì í ṣe ìlà key = value: %s}
+::msgcat::mcset yo {not a node in the attached gateway's cluster registry: %s} {kì í ṣe node nínú àkọ́lẹ̀ cluster gateway tí a so pọ̀: %s}
 ::msgcat::mcset yo {not a number} {kì í ṣe nọ́mbà}
 ::msgcat::mcset yo {not a valid http(s) url: %s} {kì í ṣe http(s) url tó wúlò: %s}
 ::msgcat::mcset yo {not a valid ssh host: %s} {kì í ṣe ssh host tó wúlò: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset yo {not attached to a gateway} {kò so mọ́ gateway kankan}
 ::msgcat::mcset yo {not configured} {a kò tíì ṣètò}
 ::msgcat::mcset yo {not ignoring %s} {kò ṣàìkà sí %s}
+::msgcat::mcset yo {not installed} {a kò tíì fi sínú}
 ::msgcat::mcset yo {not reported} {a ò ròyìn}
 ::msgcat::mcset yo {not running} {kò ṣiṣẹ́}
 ::msgcat::mcset yo {not set in config.toml — the built-in default applies. %s} {a ò ṣètò rẹ̀ sí config.toml — défọ́ọ̀lù inú ń wúlò. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset yo off Pa
 ::msgcat::mcset yo {off (the default)} {Pa (défọ́ọ̀lù)}
 ::msgcat::mcset yo offline {kò sí lórí ayélujára}
+::msgcat::mcset yo ok dára
 ::msgcat::mcset yo on Ṣí
 ::msgcat::mcset yo {on (the default)} {Ṣí (défọ́ọ̀lù)}
 ::msgcat::mcset yo {on failure} {nígbà tí ó bá kùnà}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset yo {open links} {ṣí àwọn ìjápọ̀}
 ::msgcat::mcset yo {open the engine log} {ṣí ìwòye log tí ẹ̀rọ ayárabíota}
 ::msgcat::mcset yo {open the joined session before /leave (on %s)} {ṣí ìpàdé tí a dàpọ̀ sí kí o tó /leave (lórí %s)}
+::msgcat::mcset yo {open the selected child session} {ṣí ìpàdé ọmọ tí a yàn}
 ::msgcat::mcset yo {open the selected skill in the Dev editor} {Ṣí skill tí a yàn nínú Dev editor}
 ::msgcat::mcset yo {open the setup wizard (re-runnable; edits config.toml in place)} {ṣí wizard ìṣètò (a lè tún un ṣe; ń ṣàtúnṣe config.toml ní ààyè rẹ̀)}
 ::msgcat::mcset yo {open the share sheet} {ṣí ojú-ìwé pínpín}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset yo {override cleared — the default applies} {a ti pa override rẹ̀ — défọ́ọ̀lù ń wúlò}
 ::msgcat::mcset yo {override failed: %s} {override kùnà: %s}
 ::msgcat::mcset yo {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {ACL kò lè bá ìdánimọ̀ olówó %{id} mu — lo telegram:<ID oní-nọ́mbà>, irc:<àkántì services>, tàbí ìbòjú nick!user@host}
+::msgcat::mcset yo owner/repository {olùní/àpótí kóòdù}
 ::msgcat::mcset yo {owners: %s} {àwọn olówó: %s}
 ::msgcat::mcset yo {pair a desktop with this agent} {so tábìlì kọ̀ǹpútà pọ̀ mọ́ aṣojú yìí}
 ::msgcat::mcset yo {partly failed: %s} {kùnà ní apá kan: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset yo plugin Àfíkún
 ::msgcat::mcset yo {plugin directory git history} {Ìtàn git àdírẹ́kítì àfíkún}
 ::msgcat::mcset yo {plugin list} {Àkójọ àfíkún}
+::msgcat::mcset yo {plugin provider driver} {drivá olùpèsè plugin}
 ::msgcat::mcset yo {plugins reloaded on %s} {Àwọn àfíkún ti túndá lórí %s}
 ::msgcat::mcset yo {pop %s out into its own window} {yọ %s jáde sínú fèrèsé tirẹ̀}
 ::msgcat::mcset yo {pop the buffer out into its own window} {mú buffer jáde sí fèrèsé tirẹ̀}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset yo {prefix: window & dock commands} {àmì ìwájú: àṣẹ fún window & dock}
 ::msgcat::mcset yo {press Attach in the Instances tab} {Tẹ Attach nínú tàbì Instances}
 ::msgcat::mcset yo preview {Ìwò ṣáájú}
+::msgcat::mcset yo {preview an AI extension change and explicitly apply its diff} {wo ìyípadà àfikún AI kí o sì gbà diff rẹ̀ ní gbangba}
 ::msgcat::mcset yo {preview failed: %s} {Ìwò ṣáájú kùnà: %s}
 ::msgcat::mcset yo {previous buffer} {buffer tí ó ti kọjá}
 ::msgcat::mcset yo {previous command was not a yank} {Àṣẹ tó ṣáájú kì í ṣe yank}
 ::msgcat::mcset yo {previous match} {Ìbámu tó ṣáájú}
 ::msgcat::mcset yo {previous session} {ìgborahàn tó ti kọjá}
+::msgcat::mcset yo {probing %s…} {ń ṣàyẹ̀wò %s…}
 ::msgcat::mcset yo {proc body} {ara proc}
 ::msgcat::mcset yo {profile unavailable: %s} {profil kò sí: %s}
 ::msgcat::mcset yo profiles: {àwọn profil:}
 ::msgcat::mcset yo prompt Ìbéèrè
 ::msgcat::mcset yo {prompt breakdown} {ìtúpalẹ̀ ìbéèrè}
 ::msgcat::mcset yo {prompt tokens} {prompt tokens}
+::msgcat::mcset yo {proposal only, not applied} {àbá nìkan, a kò gbà á}
 ::msgcat::mcset yo provider Olùpèsè
 ::msgcat::mcset yo {provider / model} {Olùpèsè / awoṣe}
 ::msgcat::mcset yo {provider base URL} {base URL olùpèsè}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset yo {re-sync the slopdrop state mirror} {tún mú ẹ̀dá ipò slopdrop padà sí ìbámu}
 ::msgcat::mcset yo {read and set the clipboard} {ka àti ṣètò pátákó ẹ̀dà}
 ::msgcat::mcset yo {read text aloud} {ka ọ̀rọ̀ sókè}
+::msgcat::mcset yo {read-only: [approvals] allowlist} {àkọ́kà nìkan: allowlist [approvals]}
 ::msgcat::mcset yo {read-only: this session lives on %1$s (as read at %2$s)} {Ìkà-nìkan: ìgbà yìí wà lórí %1$s (bí a ṣe kà á ní %2$s)}
 ::msgcat::mcset yo {read-only: this skill comes from the %s library} {Ìkà-nìkan: ìmọ̀ yìí wá láti ilé-ìkàwé %s}
 ::msgcat::mcset yo reasoning Ìrònú
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset yo {refused to open %s (only http, https, mailto)} {A kọ̀ láti ṣí %s (http, https, mailto nìkan)}
 ::msgcat::mcset yo {refused: %s} {Tí a kọ̀: %s}
 ::msgcat::mcset yo {region copied} {Àgbègbè ti kọ́pí}
+::msgcat::mcset yo registered {forúkọ sílẹ̀}
 ::msgcat::mcset yo {registry not saved: %s} {A kò fipamọ́ ìforúkọsílẹ̀: %s}
 ::msgcat::mcset yo {reload on %1$s failed: %2$s} {Ìtúndá lórí %1$s kùnà: %2$s}
 ::msgcat::mcset yo {reload the mechanisms} {Túndá àwọn ìlànà}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset yo {resume a session (prefix ok)} {tẹ̀síwájú ìpàdé kan (ìbẹ̀rẹ̀ ti tó)}
 ::msgcat::mcset yo {retry failed: %s} {atunṣe kúna: %s}
 ::msgcat::mcset yo {retrying last prompt…} {A ń tún gbìyànjú ìbéèrè tó kẹ́yìn…}
+::msgcat::mcset yo {review files for an explicit upstream contribution} {ṣàyẹ̀wò àwọn fáìlì fún ìkópa sókè tí a fọwọ́ sí ní gbangba}
+::msgcat::mcset yo {review standing global and session tool permissions} {ṣàyẹ̀wò àwọn àṣẹ irinṣẹ́ gbogbo ayé àti ìpàdé tí ó dúró}
 ::msgcat::mcset yo revision àtúnyẹ̀wò
 ::msgcat::mcset yo {revision history} {Ìtàn àtúnyẹ̀wò}
+::msgcat::mcset yo {revoke refused} {a kọ yíyọ kúrò}
 ::msgcat::mcset yo {revoke the selected identity's grant} {Fagilé ẹ̀bùn ìdánimọ̀ tí a yàn}
 ::msgcat::mcset yo role Ipò
 ::msgcat::mcset yo {role to grant} {Ipò láti fún ní}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset yo {saved to %s} {A fipamọ́ sí %s}
 ::msgcat::mcset yo saved. {A fipamọ́.}
 ::msgcat::mcset yo {scaffold a new plugin} {Ṣàgbékalẹ̀ àfíkún tuntun}
+::msgcat::mcset yo {scaffold a user plugin and open it in this editor} {Ṣẹ̀dá plugin olùṣàmúlò kí o sì ṣí i nínú olootu yìí}
 ::msgcat::mcset yo {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {àwọn iṣẹ́ tí a ṣètò àkókò; /crons add "<sched>" [session=<id>] <prompt> (orúkọ àfidípò /cron)}
 ::msgcat::mcset yo scope Ààyè
 ::msgcat::mcset yo script Síkírìptì
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset yo {select %s first} {Kọ́kọ́ yan %s}
 ::msgcat::mcset yo {select a checkpoint first} {Kọ́kọ́ yan checkpoint kan}
 ::msgcat::mcset yo {select a file, or New… to create one} {yan fáìlì kan, tàbí Tuntun… láti ṣẹ̀dá ọ̀kan}
+::msgcat::mcset yo {select a grant first} {yan àṣẹ kan kí o tó bẹ̀rẹ̀}
 ::msgcat::mcset yo {select a handler first} {Kọ́kọ́ yan handler kan}
 ::msgcat::mcset yo {select a member first} {Kọ́kọ́ yan ọmọ ẹgbẹ́ kan}
 ::msgcat::mcset yo {select a route} {Yan ipa-ọ̀nà kan}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset yo {select an assignment first} {Kọ́kọ́ yan iṣẹ́ ìyànfún kan}
 ::msgcat::mcset yo {select an entry first} {Kọ́kọ́ yan nǹkan kan}
 ::msgcat::mcset yo {select an identity first} {Kọ́kọ́ yan ìdánimọ̀ kan}
+::msgcat::mcset yo {selected task details and shell output} {àkúnwọ́lẹ̀ iṣẹ́ tí a yàn àti èsì shẹ́ẹ̀lù}
 ::msgcat::mcset yo {selected: %s} {Tí a yàn: %s}
 ::msgcat::mcset yo {send clipboard as prompt} {fi pátákó ẹ̀dà ránṣẹ́ gẹ́gẹ́ bí ìbéèrè}
 ::msgcat::mcset yo {send failed: %s} {fifíránṣẹ́ kúna: %s}
 ::msgcat::mcset yo {send the message; while a turn runs, queue it as steering} {fi ìsọ̀rọ̀ ránṣẹ́; nígbà tí ìyí bá ń lọ, kó o sí ìdarí}
+::msgcat::mcset yo sent {a ránṣẹ́}
+::msgcat::mcset yo {sent to the owner's home chat} {a ránṣẹ́ sí ìjíròrò ilé olówó}
 ::msgcat::mcset yo server Sẹ́fà
 ::msgcat::mcset yo {server buffers merged} {Buffer sẹ́fà ti dàpọ̀}
 ::msgcat::mcset yo {server buffers separate} {Buffer sẹ́fà ti yàtọ̀}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset yo {settings, one key = value per line} {Àwọn ètò, ọ̀kan key = value fún ìlà kọ̀ọ̀kan}
 ::msgcat::mcset yo {setup_done marker NOT saved: %s} {a kò fipamọ́ àmì setup_done: %s}
 ::msgcat::mcset yo {shell %1$s finished} {Shell %1$s ti parí}
-::msgcat::mcset yo shells {Àwọn shell}
+::msgcat::mcset yo {shells, monitors and subagents} {àwọn shẹ́ẹ̀lù, àwọn mọ́nitọ̀ àti àwọn subagent}
 ::msgcat::mcset yo shells_header {Àwọn shell ní ẹ̀yìn:}
 ::msgcat::mcset yo shells_none {(kò sí àwọn shell ní ẹ̀yìn — /background <cmd> ń bẹ̀rẹ̀ ọ̀kan)}
 ::msgcat::mcset yo {show current configuration} {fi àtànpàkò ìṣètò àgbáyé hàn}
 ::msgcat::mcset yo {show every key in this mode} {fi gbogbo bọtìì nínú ọ̀nà yìí hàn}
 ::msgcat::mcset yo {show or hide the session list} {Fi àkójọ ìpàdé hàn tàbí fi pamọ́}
 ::msgcat::mcset yo {show or switch model (alias | model@provider | custom:<prov>)} {fihàn tàbí yí awoṣe padà (alias | model@provider | custom:<prov>)}
+::msgcat::mcset yo {show selected shell output} {fihàn èsì shẹ́ẹ̀lù tí a yàn}
 ::msgcat::mcset yo {show short messages} {fi àwọn ìfiránṣẹ́ kúkúrú hàn}
 ::msgcat::mcset yo {show the model's reasoning blocks (same as /reasoning)} {fi àwọn búlọ́ọ̀kù ìṣirò mọ́dẹ̀lì hàn (bákannáà pẹ̀lú /reasoning)}
 ::msgcat::mcset yo {show unclaimed} {Ṣàfihàn àwọn tí a kò gbà}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset yo spend Ìnáwó
 ::msgcat::mcset yo {split: %s} {Pín: %s}
 ::msgcat::mcset yo {ssh to %1$s failed: %2$s} {Ssh sí %1$s kùnà: %2$s}
+::msgcat::mcset yo {stale — no heartbeat within the threshold} {tí kò ṣẹ́ — kò sí heartbeat nínú ààlà}
+::msgcat::mcset yo {standing global and session permission grants} {àwọn àṣẹ gbogbo ayé àti ìpàdé tí ó dúró}
 ::msgcat::mcset yo state Ìpò
 ::msgcat::mcset yo {state       never reached} {Ìpò       kò tíì dé}
 ::msgcat::mcset yo {state       reachable} {Ìpò       ó ṣeé dé}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset yo {stored in the encrypted vault (%1$s): %2$s} {a ti fi pamọ́ sínú àpótí ààbò tí a fi kóòdù pa (%1$s): %2$s}
 ::msgcat::mcset yo {stream handler: %s} {alámójútó sísàn: %s}
 ::msgcat::mcset yo {subagent %1$s finished} {aláṣojú alábẹ́ %1$s ti parí}
-::msgcat::mcset yo subagents {àwọn aláṣojú alábẹ́}
 ::msgcat::mcset yo subagents_header {Àwọn aláṣojú alábẹ́ tó ń ṣiṣẹ́:}
 ::msgcat::mcset yo subagents_none {(kò sí àwọn aláṣojú alábẹ́ tó ń ṣiṣẹ́ — /btw <prompt> ń bẹ̀rẹ̀ ọ̀kan, tàbí awoṣe ń lo delegate_task)}
 ::msgcat::mcset yo {suspend failed: %{e}} {ìdádúró kùnà: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset yo {switch the selected skill off} {pa ọgbọ́n tí a yàn}
 ::msgcat::mcset yo {switch the selected skill on} {tan ọgbọ́n tí a yàn sí i}
 ::msgcat::mcset yo {switch to the %s tab} {tàbì %s}
+::msgcat::mcset yo {sync requested: %s} {a béèrè sync: %s}
 ::msgcat::mcset yo {tab 1} {tab 1}
 ::msgcat::mcset yo {tab 2} {tab 2}
 ::msgcat::mcset yo {tab 3} {tab 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset yo tasks_none {(kò sí iṣẹ́ tó ń ṣiṣẹ́)}
 ::msgcat::mcset yo tasks_not_found {kò sí irú iṣẹ́ bẹ́ẹ̀: %{id}}
 ::msgcat::mcset yo tasks_not_running {iṣẹ́ %{id} ti parí tẹ́lẹ̀}
-::msgcat::mcset yo {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset yo {tcl-lsp: event stream unavailable: %s} {tcl-lsp: sísàn ìṣẹ̀lẹ̀ kò sí lọ́wọ́: %s}
-::msgcat::mcset yo {tcl-lsp: gateway would not start it: %s} {tcl-lsp: ẹnu-bodè kò jẹ́ kí ó bẹ̀rẹ̀: %s}
-::msgcat::mcset yo {tcl-lsp: not started on the gateway — %s} {tcl-lsp: kò bẹ̀rẹ̀ lórí ẹnu-bodè — %s}
 ::msgcat::mcset yo {that buffer is not split} {a kò pín búfà yẹn}
 ::msgcat::mcset yo {the %s plan} {ètò %s}
 ::msgcat::mcset yo {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {pápá API key ń gba ORÚKỌ env variable kan (bíi %{example}), kì í ṣe kọ́kọ́rọ́ fúnrarẹ̀ — kọ́kọ́rọ́ náà ní ń lọ sínú pápá ìpamọ́}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset yo {the gateway answered without a report} {ẹnu-bodè fèsì láìsí àbá}
 ::msgcat::mcset yo {the model/provider pair is incomplete — the gateway will not route until both are present} {méjì model/olùpèsè kò pé — gateway kò ní darí títí àwọn méjèèjì yóò fi wà}
 ::msgcat::mcset yo {the options changed, so that is a fresh preview — press “Write it” again to write it} {àwọn àṣàyàn yípadà, nítorí náà àwòrán-ṣáájú yìí ni ó tuntun — tẹ “Kọ ọ́” lẹ́ẹ̀kan sí i láti fi kọ ọ́}
+::msgcat::mcset yo {the peer has not been sent this vault yet} {a kò tíì fi àpótí ààbò yìí ránṣẹ́ sí peer}
+::msgcat::mcset yo {the peer holds this vault} {peer ní àpótí ààbò yìí}
 ::msgcat::mcset yo {the primary route is \[model\] provider/default — change it there, not here} {ọ̀nà pàtàkì ni \[model\] provider/default — yí i padà níbẹ̀, kì í ṣe níbí}
 ::msgcat::mcset yo {the provider/model route this session sends to} {ọ̀nà provider/model tí ìgbà yìí ń ránṣẹ́ sí}
 ::msgcat::mcset yo {the same, on the privileged path (owner only)} {bákan náà, nípasẹ̀ ọ̀nà àǹfààní (owner nìkan)}
 ::msgcat::mcset yo {the selected entry (edit, then Save)} {àkọsílẹ̀ tí a yàn (ṣàtúnṣe, lẹ́yìn náà Fipamọ́)}
+::msgcat::mcset yo {the server stopped: %s} {sérfà náà dúró: %s}
 ::msgcat::mcset yo {the synthwave splash} {ojú-ìwé ìbẹ̀rẹ̀ synthwave}
 ::msgcat::mcset yo {the text after the name was NOT sent anywhere — type the value into the masked field} {a KÒ fi ọ̀rọ̀ tó wà lẹ́yìn orúkọ náà ránṣẹ́ sí ibikíbi — tẹ iye náà sínú àyè tí a bò}
 ::msgcat::mcset yo {the transcript} {ìtàn ìjíròrò}
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset yo thinking… {ń ronú…}
 ::msgcat::mcset yo {thinking… (%s)} {ń ronú… (%s)}
 ::msgcat::mcset yo {this file's revisions, their diffs, and restore} {àwọn àtúnyẹ̀wò fáìlì yìí, ìyàtọ̀ wọn, àti ìdápadà}
+::msgcat::mcset yo {this gateway} {gateway yìí}
 ::msgcat::mcset yo {this gateway has no Tcl interpreter} {kò sí olùtumọ̀ Tcl nínú ẹnu-bodè yìí}
 ::msgcat::mcset yo {this list} {àkójọ yìí}
+::msgcat::mcset yo {this node has no vault} {node yìí kò ní àpótí ààbò}
 ::msgcat::mcset yo {this route} {ọ̀nà yìí}
 ::msgcat::mcset yo {this session} {ìgbà yìí}
 ::msgcat::mcset yo {this session follows the default language again (%{def})} {ìpàdé yìí tún ń tẹ̀lé èdè àṣàyàn (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset yo {transcript finalization failed: %s} {ìparí transcript kùnà: %s}
 ::msgcat::mcset yo {transcript refetched} {a tún gba gbédègbẹ́yọ̀ padà}
 ::msgcat::mcset yo {transcript — arrows to read, %s for composer} {gbédègbẹ́yọ̀ — àwọn ọfà láti kà á, %s fún olùkọ̀wé}
+::msgcat::mcset yo {translate text with the dedicated translation model, without an agent turn} {túmọ̀ ọ̀rọ̀ pẹ̀lú mọ́dẹ́ẹ̀lì ìtúmọ̀ àkànṣe, láìsí turn agent}
+::msgcat::mcset yo {translation result} {Ìyọrísí ìtumọ̀}
 ::msgcat::mcset yo {trigger %1$s %2$sd} {ṣe ìbẹ̀rẹ̀ %1$s %2$sd}
 ::msgcat::mcset yo {trigger created} {a dá ìbẹ̀rẹ̀}
 ::msgcat::mcset yo {trigger updated} {a ṣe ìbẹ̀rẹ̀ dédé}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset yo {usage: /steer <instruction>} {òǹkà: /steer <instruction>}
 ::msgcat::mcset yo used {tí a lò}
 ::msgcat::mcset yo user olùṣàmúlò
+::msgcat::mcset yo {user copy} {ẹ̀dà olùṣàmúlò}
 ::msgcat::mcset yo {user identities, one per line} {ìdánimọ̀ olùṣàmúlò, ọ̀kan lójú ìlà}
 ::msgcat::mcset yo {user name} {orúkọ olùṣàmúlò}
 ::msgcat::mcset yo {user profile} {àkọsílẹ̀ oníṣe}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset yo {value (TOML: 5, true, "text", ["a","b"])} {iye (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset yo veles veles
 ::msgcat::mcset yo {veles editor} {òṣèré veles}
+::msgcat::mcset yo {veles fleet: node %{node} is failing — %{detail}} {veles àkójọ ẹ̀rọ: node %{node} ń kùnà — %{detail}}
+::msgcat::mcset yo {veles fleet: node %{node} is stale — %{detail}} {veles àkójọ ẹ̀rọ: node %{node} ti pẹ́ — %{detail}}
+::msgcat::mcset yo {veles fleet: node %{node} recovered (it was %{was})} {veles àkójọ ẹ̀rọ: node %{node} ti gbà padà (ó ti jẹ́ %{was})}
 ::msgcat::mcset yo {veles · keyboard help (bindings: %s)} {veles · ìrànwọ́ àwọn bọ̀tà (àwọn ìdè bọ̀tà: %s)}
 ::msgcat::mcset yo {veles · touch help} {veles · ìrànlọ́wọ́ ìfọwọ́kàn}
 ::msgcat::mcset yo {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset yo widgets {àwọn widget}
 ::msgcat::mcset yo {will be stored in the encrypted vault} {a ó fi pamọ́ sínú àpótí ààbò tí a fi kóòdù pa}
 ::msgcat::mcset yo {wire protocol} {ìlànà asopọ̀}
+::msgcat::mcset yo {without force to} {láì lo fipá sí}
 ::msgcat::mcset yo {wizard language} {èdè wizard}
 ::msgcat::mcset yo {wizard language: %s} {èdè wizard: %s}
 ::msgcat::mcset yo {write failed: %s} {kíkọ kùnà: %s}
 ::msgcat::mcset yo {write grants that still expire (the expiry is dropped — a config line cannot expire)} {kọ àwọn ìyọ̀ǹda tí ó ṣì ń parí (a á yọ ìparí náà kúrò — ìlà ìtòlẹ́sẹ̀ kò lè parí)}
 ::msgcat::mcset yo {write the entries back} {kọ àwọn àkọsílẹ̀ padà}
 ::msgcat::mcset yo {write the store's runtime rules into config.toml} {kọ àwọn ìlànà ìgbà-ṣiṣẹ́ ìpamọ́ sínú config.toml}
+::msgcat::mcset yo {write the whole extension from its purpose, as a reviewed preview} {kọ gbogbo extension náà láti inú èrò rẹ̀, gẹ́gẹ́ bí ìwòràwọ̀ tí a ṣàyẹ̀wò}
 ::msgcat::mcset yo {write these values into config.toml as the defaults} {kọ àwọn iye wọ̀nyí sínú config.toml gẹ́gẹ́ bí àwọn ìpààánì}
 ::msgcat::mcset yo writing kíkọ
 ::msgcat::mcset yo {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {kíkọ olówó [acl] àkọ́kọ́ ń yí gateway yìí sí ipò CURATED: ipa àìyípadà di guest (fail-closed), àkójọ ìyọ̀ǹda adapter kò sì jẹ́ ààlà ìgbẹ́kẹ̀lé mọ́}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset yo {▲ VELES — neon impressionism} {▲ VELES — àpèjúwe neon}
 ::msgcat::mcset yo {▲ earlier} {▲ sẹ́yìn}
 ::msgcat::mcset yo {▼ later} {▼ nígbà mìíràn}
+::msgcat::mcset yo {▾ Cluster registry} {▾ Àkọsílẹ àgùn}
 ::msgcat::mcset yo {▾ new output — follow} {▾ àbájáde tuntun — tẹ̀lé}
 ::msgcat::mcset yo {○ unattached} {○ kò ṣoṣo}
 ::msgcat::mcset yo {● %1$s — %2$s} {● %1$s — %2$s}

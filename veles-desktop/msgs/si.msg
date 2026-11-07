@@ -35,6 +35,7 @@ package require msgcat
 ::msgcat::mcset si {%1$s %2$s failed: %3$s} {%1$s %2$s අසමත්: %3$s}
 ::msgcat::mcset si {%1$s %2$s over ssh…} {%1$s %2$s ssh හරහා…}
 ::msgcat::mcset si {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
+::msgcat::mcset si {%1$s (%2$s waiting)} {%1$s (%2$s රැඳී සිටී)}
 ::msgcat::mcset si {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  තර්කනය %3$s}
 ::msgcat::mcset si {%1$s = %2$s here} {%1$s = %2$s මෙතන}
 ::msgcat::mcset si {%1$s NOT saved: %2$s} {%1$s සුරැකුණේ නැත: %2$s}
@@ -43,19 +44,30 @@ package require msgcat
 ::msgcat::mcset si {%1$s every cron job on %2$s?} {%1$s %2$s හි සෑම cron කාර්යයක්මද?}
 ::msgcat::mcset si {%1$s failed: %2$s} {%1$s අසමත්: %2$s}
 ::msgcat::mcset si {%1$s in / %2$s out / %3$s calls} {%1$s ඇතුළු / %2$s පිටත / %3$s ඇමතුම්}
+::msgcat::mcset si {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s යනු නෝඩය %2$s ය, %3$s නොවේ. එහි නෝඩ් හැඳුනුම සංස්කරණය… තුළ නිවැරදි කරන්න.}
 ::msgcat::mcset si {%1$s is not a whole number} {%1$s යනු පූර්ණ සංඛ්යාවක් නොවේ}
+::msgcat::mcset si {%1$s is reachable (%2$s ms).} {%1$s වෙත ළඟා විය හැක (%2$s ms).}
 ::msgcat::mcset si {%1$s is set to something this box cannot edit (%2$s)} {%1$s සකසා ඇත්තේ මෙම පරිගණකයට සංස්කරණය කළ නොහැකි දෙයකටයි (%2$s)}
+::msgcat::mcset si {%1$s is unreachable: %2$s} {%1$s වෙත ළඟා විය නොහැක: %2$s}
 ::msgcat::mcset si {%1$s of %2$s characters} {%1$s / %2$s අක්ෂර}
 ::msgcat::mcset si {%1$s of %2$s sessions} {සැසි %2$s න් %1$s}
 ::msgcat::mcset si {%1$s of %2$s skills reach the prompt} {%1$s / %2$s කුසලතා ප්රොම්ප්ටයට ළඟා වේ}
 ::msgcat::mcset si {%1$s on %2$s: %3$d ok, %4$d failed} {%1$s %2$s මත: %3$d සාර්ථක, %4$d අසමත්}
+::msgcat::mcset si {%1$s reports no cluster node identity, so it cannot be verified as %2$s.} {%1$s ක්ලස්ටර නෝඩ් අනන්‍යතාවක් වාර්තා නොකරයි, එබැවින් එය %2$s ලෙස තහවුරු කළ නොහැක.}
+::msgcat::mcset si {%1$s sync failed: %2$s} {%1$s සමමුහුර්තකරණය අසමත්: %2$s}
+::msgcat::mcset si {%1$s sync with %2$s (%3$s)} {%1$s, %2$s සමඟ සමමුහුර්තකරණය (%3$s)}
+::msgcat::mcset si {%1$s sync: %2$s} {%1$s සමමුහුර්තකරණය: %2$s}
 ::msgcat::mcset si {%1$s — %2$s} {%1$s — %2$s}
 ::msgcat::mcset si {%1$s — %2$s · Enter to jump, Esc to close} {%1$s — %2$s · Enter එබූ විට පනියි, Esc වැසීමට}
 ::msgcat::mcset si {%1$s — revision r%2$s} {%1$s — සංශෝධනය r%2$s}
 ::msgcat::mcset si {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset si {%1$s/%2$s} {%1$s/%2$s}
+::msgcat::mcset si {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset si {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset si {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: එහි gateway මතකයේ තබා ගන්නා පේළි %3$s න් අවසන් %2$s, එම නෝඩයේ රහස් ඉවත් කර ඇත.}
 ::msgcat::mcset si {%d MCP server(s) configured} {%d MCP සේවාදායකය(යන්) වින්යාස කර ඇත}
 ::msgcat::mcset si {%d entries} {%d අයිතම}
+::msgcat::mcset si {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {දිගුවේ ගොනු %d ක් සමාලෝචනය කළ පරිදිම ලියනු ලැබේ. පෙරදසුනෙන් පසු ඒවායින් කිසිවක් වෙනස් වී ඇත්නම්, කිසිවක් ලියන්නේ නැත. commit, push හෝ PR සිදු නොවේ.}
 ::msgcat::mcset si {%d handler(s) registered} {%d හැන්ඩ්ලර්(යන්) ලියාපදිංචි වී ඇත}
 ::msgcat::mcset si {%d identities · %d users} {%d අනන්යතා · %d පරිශීලකයන්}
 ::msgcat::mcset si {%d models — pick one from the list or type a name.} {මාදිලි %d — ලැයිස්තුවෙන් එකක් තෝරන්න හෝ නමක් ටයිප් කරන්න.}
@@ -63,6 +75,8 @@ package require msgcat
 ::msgcat::mcset si {%d shown} {%d පෙන්වා ඇත}
 ::msgcat::mcset si {%s %s%%} {%s %s%%}
 ::msgcat::mcset si {%s (%s)} {%s (%s)}
+::msgcat::mcset si {%s (referral)} {%s (යොමුව)}
+::msgcat::mcset si {%s (stale)} {%s (යාවත්කාලීන නොවූ)}
 ::msgcat::mcset si {%s (this session)} {%s (මෙම සැසිය)}
 ::msgcat::mcset si {%s GB free of %s GB} {%s GB නිදහස්, මුළු %s GB}
 ::msgcat::mcset si {%s already exists — open it from the list} {%s දැනටමත් පවතී — එය ලැයිස්තුවෙන් විවෘත කරන්න}
@@ -72,6 +86,7 @@ package require msgcat
 ::msgcat::mcset si {%s comes from config.toml [acl] — edit there} {%s එන්නේ config.toml [acl] වෙතින් — එතැනදී සංස්කරණය කරන්න}
 ::msgcat::mcset si {%s config change(s) wait for you — /configsync} {වින්‍යාස වෙනස්කම් %s ක් ඔබ එනතුරු සිටී — /configsync}
 ::msgcat::mcset si {%s did not become healthy within 30s} {%s තත්පර 30ක් ඇතුළත සූදානම් නොවීය}
+::msgcat::mcset si {%s done} {%s ඉවරයි}
 ::msgcat::mcset si {%s failed: %s} {%s අසාර්ථක විය: %s}
 ::msgcat::mcset si {%s is already split} {%s දැනටමත් බෙදිලා}
 ::msgcat::mcset si {%s is the language in use — pick another one to swap with} {%s දැනට භාවිත වන භාෂාවයි — මාරු කිරීමට වෙනත් භාෂාවක් තෝරන්න}
@@ -82,9 +97,11 @@ package require msgcat
 ::msgcat::mcset si {%s opens the command palette in %s.} {%s මගින් %s හි විධාන ඵලකය විවෘත වේ.}
 ::msgcat::mcset si {%s session(s)} {%s සැසිය(යන්)}
 ::msgcat::mcset si {%s skill(s):} {%s කුසලතා (skill):}
+::msgcat::mcset si {%s standing grants} {%s ස්ථිර ලබාදීම්}
 ::msgcat::mcset si {%s takes no completable arguments} {%s ට සම්පූර්ණ කළ හැකි තර්ක නොමැත}
 ::msgcat::mcset si {%s takes on or off} {%s on හෝ off ගනී}
 ::msgcat::mcset si {%s —} {%s —}
+::msgcat::mcset si {%s — changes data, asks to confirm} {%s — දත්ත වෙනස් කරයි, තහවුරු කිරීම ඉල්ලයි}
 ::msgcat::mcset si {%s — deleted; History… can restore it} {%s — මකා ඇත; ඉතිහාසය…ට එය ප්‍රතිසාධනය කළ හැක}
 ::msgcat::mcset si {%s — new: type, then Save} {%s — අලුත්: ටයිප් කර, පසුව සුරකින්න}
 ::msgcat::mcset si {%s — not attached; press Attach in the Instances tab} {%s — අමුණා නැත; අවස්ථා ටැබයේ අමුණන්න ඔබන්න}
@@ -100,10 +117,12 @@ package require msgcat
 ::msgcat::mcset si {%{platform} is enabled with no [acl] section: until %{var} in .env names who may talk to the bot, anyone who reaches it is treated as owner, with every tool} {%{platform} [acl] කොටසක් නොමැතිව සක්‍රීයයි: .env හි %{var} බොට් සමඟ කතා කළ හැක්කේ කාටද යන්න නම් කරන තෙක්, එයට ළඟා වන ඕනෑම අයෙකු හිමිකරු ලෙස සලකනු ලැබේ, සියලු මෙවලම් සමඟ}
 ::msgcat::mcset si (%{route}) (%{route})
 ::msgcat::mcset si {(CLI redraws automatically)} {(CLI ස්වයංක්‍රීයව නැවත අඳියි)}
+::msgcat::mcset si {(binary; not publishable)} {(ද්විමය; ප්‍රකාශයට පත් කළ නොහැක)}
 ::msgcat::mcset si {(clipboard empty or no clipboard tool)} {(ක්ලිප්බෝඩ් එක හිස්ය හෝ ක්ලිප්බෝඩ් මෙවලමක් නැත)}
 ::msgcat::mcset si (deleted) {(මකා ඇත)}
 ::msgcat::mcset si (empty) (හිස්)
 ::msgcat::mcset si {(no sessions)} {(සැසි නැත)}
+::msgcat::mcset si {(not a memsync peer of this gateway: config is not synced with it)} {(මෙම gateway හි memsync සහකරුවෙක් නොවේ: වින්‍යාසය එය සමඟ සමමුහුර්ත නොවේ)}
 ::msgcat::mcset si {(nothing to reload — read from disk per use)} {(නැවත පූරණය කිරීමට කිසිවක් නැත — සෑම භාවිතයකදීම තැටියෙන් කියවේ)}
 ::msgcat::mcset si {(retrying last prompt…)} {(අවසන් ප්රොම්ප්ටය නැවත උත්සාහ කරමින්…)}
 ::msgcat::mcset si {(route did not resolve: %{e})} {(මාර්ගය විසඳුණේ නැත: %{e})}
@@ -127,8 +146,11 @@ package require msgcat
 ::msgcat::mcset si {/url needs a number from /urls} {/url සඳහා /urls වෙතින් අංකයක් අවශ්යයි}
 ::msgcat::mcset si {/whois needs a nick} {/whois සඳහා නික් එකක් අවශ්යයි}
 ::msgcat::mcset si {; could not save the cleared return view: %s} {; ඉවත් කළ නැවත පැමිණීමේ දර්ශනය සුරැකීමට නොහැකි විය: %s}
+::msgcat::mcset si {; shadows bundled} {; නැව්ගත පිටපත වසයි}
+::msgcat::mcset si {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {වින්‍යාස ඉදිරිපත් කිරීමකට සැකසුම් වෙනස් කළ හැකි අතර සුරක්ෂිතාගාර ඉදිරිපත් කිරීමක් රහස් ඒකාබද්ධ කරයි; ආරක්ෂක කොටසකට කරන වෙනස්කම් තවමත් හිමිකරු එනතුරු රැඳී සිටී.}
 ::msgcat::mcset si {A failing plugin may drop hooks mid-turn.} {අසමත් වන ප්ලගිනයක් වටය මැදදී හූක් අතහැර දැමිය හැකිය.}
 ::msgcat::mcset si {A local server: no key is needed unless you set one up.} {දේශීය සේවාදායකයක්: ඔබ එකක් සකස් නොකරන තෙක් key එකක් අවශ්ය නැත.}
+::msgcat::mcset si {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {අත්සන් කළ නිකුතුවක් පූර්ව පරීක්ෂාවෙන් පසුව පමණක් යොදවීමට සකස් වේ. නැවත ආරම්භ කිරීම/තහවුරු කිරීම, ඉදිරියට යාම සහ පෙර තත්ත්වයට ආපසු හැරවීම වෙනම ක්‍රියා වේ. සෞඛ්‍ය සම්පන්න ක්‍රියාවලියක් සමාලෝචනය කළ නිවැරදි මූලාශ්‍ර සංශෝධනයම වාර්තා කළ යුතුය.}
 ::msgcat::mcset si {A value is stored for %s — leave this empty to keep it.} {%s සඳහා අගයක් ගබඩා කර ඇත — එය තබා ගැනීමට මෙය හිස්ව තබන්න.}
 ::msgcat::mcset si {ACL: ban mask} {ACL: mask තහනම් කරන්න}
 ::msgcat::mcset si {ACL: grant admin} {ACL: admin ලබා දෙන්න}
@@ -137,15 +159,23 @@ package require msgcat
 ::msgcat::mcset si {ACL: grant user} {ACL: user ලබා දෙන්න}
 ::msgcat::mcset si {ACL: revoke} {ACL: ආපසු ගන්න}
 ::msgcat::mcset si {ACME account email} {ACME ගිණුම් ඊමේල් ලිපිනය}
+::msgcat::mcset si {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.} {AI සහාය මට්ටම් හතරකින් ක්‍රියා කරයි: නිර්මාණ ප්‍රශ්නයක් විමසන්න (ගොනුවක් අවශ්‍ය නැත), මෙම ගොනුව වෙනස් කරන්න, මෙම දිගුවේ ගොනු කිහිපයක් වෙනස් කරන්න, නැතහොත් වත්මන් දෝෂ නිර්ණය පැහැදිලි කරන්න. අලුත් දිගුව මගින් එහි අරමුණින් මුළු දිගුවක්ම උත්පාදනය කළ හැකිය. සෑම ඉල්ලීමක්ම මෙවලම් නොමැතිව යවනු ලබන අතර, ලියාපදිංචි රහසක් හෝ අක්තපත්‍රයක හැඩය ගත් අගයක් එහි ඇත්නම් එය ප්‍රතික්ෂේප වේ; වෙනස්කම් diff ලෙස පෙන්වන අතර ඔබ ඒවා යෙදූ විට පමණක් ලියනු ලැබේ. පළමුව දිගු නිර්මාණයක් ඉල්ලන්න; අතුරුදහන් API හඳුනා ගැනීමෙන් පසුව පමණක් core patch එකක් ඉල්ලන්න.}
+::msgcat::mcset si {AI assistance edits user extensions only, and this file is not part of one. Most changes fit an extension (a hook, tool, service override or provider driver) that survives upgrades; a core patch is for what the extension API cannot express. Create a new extension for this change instead? Its files are previewed before anything is written.} {AI සහාය සංස්කරණය කරන්නේ පරිශීලක දිගු පමණි, මෙම ගොනුව එවැන්නක කොටසක් නොවේ. බොහෝ වෙනස්කම් උත්ශ්‍රේණි කිරීම්වලට ඔරොත්තු දෙන දිගුවකට (හූක්, මෙවලම, සේවා අභිබවා යාමක් හෝ සපයන්නාගේ driver එකක්) ගැළපේ; මූල පැච් එකක් වන්නේ දිගු API ට ප්‍රකාශ කළ නොහැකි දෙයටයි. ඒ වෙනුවට මෙම වෙනස සඳහා අලුත් දිගුවක් සාදන්නද? කිසිවක් ලියැවීමට පෙර එහි ගොනු පෙරදසුන් කෙරේ.}
+::msgcat::mcset si {AI assist…} {AI සහාය…}
+::msgcat::mcset si {AI extension assistance} {AI දිගු සහාය}
 ::msgcat::mcset si {API calls} {API ඇමතුම්}
+::msgcat::mcset si {API credits from the Anthropic referral are granted only if you buy Max or Ultra. Veles does not support using that subscription as login or API authentication.} {Anthropic යොමුවෙන් ලැබෙන API ක්‍රෙඩිට් ලැබෙන්නේ ඔබ Max හෝ Ultra මිලදී ගත් විට පමණි. එම දායකත්වය පිවිසුමක් හෝ API සත්‍යාපනයක් ලෙස භාවිත කිරීම Veles සහාය නොදක්වයි.}
 ::msgcat::mcset si {API key (hidden)} {API key (සඟවා ඇත)}
 ::msgcat::mcset si {API key env var name} {API යතුරේ env විචල්ය නාමය}
+::msgcat::mcset si {API reference} {API යොමුව}
+::msgcat::mcset si {Abandon untouched operation} {ස්පර්ශ නොකළ ක්‍රියාකාරකම අත්හරින්න}
 ::msgcat::mcset si {Access control} {ප්රවේශ පාලනය}
 ::msgcat::mcset si {Access control (ACL)} {ප්රවේශ පාලනය (ACL)}
 ::msgcat::mcset si Add {එක් කරන්න}
 ::msgcat::mcset si {Add MCP server} {MCP සේවාදායකයක් එක් කරන්න}
 ::msgcat::mcset si {Add instance} {අවස්ථාවක් එක් කරන්න}
 ::msgcat::mcset si {Add server…} {සේවාදායකයක් එක් කරන්න…}
+::msgcat::mcset si {Adds selected extension sources. Review the branch diff and checks before merging.} {තෝරාගත් දිගු මූලාශ්‍ර එක් කරයි. ඒකාබද්ධ කිරීමට පෙර ශාඛාවේ වෙනස්කම් සහ පරීක්ෂණ සමාලෝචනය කරන්න.}
 ::msgcat::mcset si Add… {එක් කරන්න…}
 ::msgcat::mcset si {Agent & engine} {නියෝජිතයා සහ එන්ජිම}
 ::msgcat::mcset si {Alias %s} {අන්වර්ථය %s}
@@ -159,48 +189,80 @@ package require msgcat
 ::msgcat::mcset si {Applies to} {අදාළ වන්නේ}
 ::msgcat::mcset si Apply යොදන්න
 ::msgcat::mcset si {Apply changes the RUNNING session only. Copy TOML gives you the blocks to paste. Save globally splices them into config.toml — only the failover sections are touched, every other line and comment is left alone, and the old file is kept as config.toml.bak.} {යොදන්න ක්රියාත්මක වන සැසියට පමණක් වෙනස්කම් කරයි. TOML පිටපත් කරන්න ඇලවීමට බ්ලොක් ලබා දෙයි. ගෝලීයව සුරකින්න ඒවා config.toml තුළට මුසු කරයි — failover කොටස් පමණක් ස්පර්ශ වේ, අනෙක් සෑම පේළියක්ම සහ පරිකථනයක්ම එලෙසින්ම ඉතිරි වේ, පැරණි ගොනුව config.toml.bak ලෙස තබා ගැනේ.}
+::msgcat::mcset si {Apply proposal…} {යෝජනාව යොදන්න…}
+::msgcat::mcset si {Apply received} {ලැබුණු දෑ යොදන්න}
+::msgcat::mcset si {Apply this AI proposal?} {මෙම AI යෝජනාව යොදන්නද?}
+::msgcat::mcset si {Apply this change set?} {මෙම වෙනස්කම් කට්ටලය යොදන්නද?}
 ::msgcat::mcset si {Apply to session} {සැසියට යොදන්න}
+::msgcat::mcset si {Apply what this node received:} {මෙම නෝඩයට ලැබුණු දේ යොදන්න:}
 ::msgcat::mcset si {Approval needed} {අනුමැතිය අවශ්‍යයි}
 ::msgcat::mcset si Apps යෙදුම්
 ::msgcat::mcset si Archive සංරක්ෂිතය
 ::msgcat::mcset si {Archive SHA-256} {සංරක්ෂිතය SHA-256}
+::msgcat::mcset si Ask විමසන්න
+::msgcat::mcset si {Ask a design question} {නිර්මාණ ප්‍රශ්නයක් විමසන්න}
+::msgcat::mcset si {Ask how to build an extension: which boundary, which language, which API. No source is sent, and nothing can be written.} {දිගුවක් ගොඩනගන්නේ කෙසේදැයි විමසන්න: කුමන සීමාව, කුමන භාෂාව, කුමන API. මූලාශ්‍ර යවන්නේ නැත, කිසිවක් ලිවිය නොහැක.}
 ::msgcat::mcset si {Ask the agent to change it} {මෙය වෙනස් කරන ලෙස නියෝජිතයාගෙන් ඉල්ලන්න}
+::msgcat::mcset si {Asking %s…} {%s වෙතින් විමසමින්…}
 ::msgcat::mcset si {Asking the provider for its models…} {එහි මාදිලි සඳහා සැපයුම්කරුගෙන් ඉල්ලමින්…}
 ::msgcat::mcset si Attach ඇමිණීම
 ::msgcat::mcset si {Attach to the next message} {ඊළඟ පණිවිඩයට ඇමුණුම් කරන්න}
+::msgcat::mcset si {Author guide} {කතෘ මාර්ගෝපදේශය}
+::msgcat::mcset si {Automatically discovered from the attached gateway's cluster registry.} {ආසන්න gateway එකේ කාණ්ඩ ලේඛනාගාරයෙන් ස්වයංක්‍රීයව සොයාගන්නා ලදී.}
 ::msgcat::mcset si Back ආපසු
 ::msgcat::mcset si {Back closes what is on top: a menu, the session list, a window. With nothing open, veles goes to the background and keeps running.} {ආපසු ඉහළින් ඇති දේ වසයි: මෙනුවක්, සැසි ලැයිස්තුව, කවුළුවක්. කිසිවක් විවෘත නැති විට veles පසුබිමට ගොස් දිගටම ක්‍රියා කරයි.}
 ::msgcat::mcset si {Base URL} {Base URL}
+::msgcat::mcset si {Base branch} {මූලික ශාඛාව}
 ::msgcat::mcset si {Bot token (hidden)} {බොට් ටෝකනය (සඟවා ඇත)}
+::msgcat::mcset si Branch ශාඛාව
+::msgcat::mcset si {Branch and commit prepared; nothing has been pushed} {ශාඛාව සහ කොමිට් එක සකස් කර ඇත; කිසිවක් පුෂ් කර නැත}
+::msgcat::mcset si {Branch pushed and verified on origin} {ශාඛාව ඔරිජින් වෙත පුෂ් කර සත්‍යාපනය කර ඇත}
 ::msgcat::mcset si {Browse sessions} {සැසි පිරික්සන්න}
+::msgcat::mcset si {Build manifest + preflight} {ඉදිකිරීම් මැනිෆෙස්ටය + පූර්ව පරීක්ෂාව}
+::msgcat::mcset si {Build: veles %1$s, revision %2$s (%3$s %4$s)} {ගොඩනැගීම: veles %1$s, සංශෝධනය %2$s (%3$s %4$s)}
 ::msgcat::mcset si {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e පේළි අන්ත · C-b/C-f අකුරු · M-b/M-f වචන · C-k EOL දක්වා මකන්න · C-y yank · M-w පිටපත් · C-w කලාපය මකන්න · C-space සලකුණ සකසන්න · C-/ undo}
 ::msgcat::mcset si {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g සියල්ල අවලංගු කරයි · C-j නව පේළිය · M-p/M-n ඉතිහාසය · Tab සම්පූර්ණ කිරීම}
+::msgcat::mcset si {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: කෝර් %1$s, භාරය %2$s / %3$s / %4$s (කෝර්වලින් %5$s%%)}
 ::msgcat::mcset si Cancel {අවලංගු කරන්න}
+::msgcat::mcset si {Cancel task} {කාර්යය අවලංගු කරන්න}
+::msgcat::mcset si {Cancel task %1$s? This cannot be undone.} {කාර්යය %1$s අවලංගු කරන්නද? මෙය ආපසු හැරවිය නොහැකිය.}
+::msgcat::mcset si {Cannot verify that %1$s is node %2$s: %3$s} {%1$s යනු නෝඩය %2$s බව තහවුරු කළ නොහැක: %3$s}
 ::msgcat::mcset si Capabilities හැකියාවන්
 ::msgcat::mcset si {Change my app “%s” (%s): } {මගේ යෙදුම “%s” (%s) වෙනස් කරන්න: }
+::msgcat::mcset si {Change this extension's files} {මෙම දිගුවේ ගොනු වෙනස් කරන්න}
+::msgcat::mcset si {Change this file} {මෙම ගොනුව වෙනස් කරන්න}
 ::msgcat::mcset si Change… {වෙනස් කරන්න…}
 ::msgcat::mcset si {Channels (e.g. #veles #dev)} {නාලිකා (උදා. #veles #dev)}
 ::msgcat::mcset si Chat කතාබස්
 ::msgcat::mcset si {Chat — not attached; press Attach in the Instances tab} {කතාබස් — අමුණා නැත; අවස්ථා ටැබයේ අමුණන්න ඔබන්න}
 ::msgcat::mcset si {Check (lsp)} {පරීක්ෂා කරන්න (lsp)}
+::msgcat::mcset si {Check again} {නැවත පරීක්ෂා කරන්න}
+::msgcat::mcset si {Check files} {ගොනු පරීක්ෂා කරන්න}
 ::msgcat::mcset si Checkpoints චෙක්පොයින්ට්
 ::msgcat::mcset si {Checkpoints (undo)} {චෙක්පොයින්ට් (undo)}
+::msgcat::mcset si {Checks and next steps} {පරීක්ෂණ සහ ඊළඟ පියවර}
+::msgcat::mcset si {Checks run} {පරීක්ෂණ ක්‍රියාත්මක විය}
 ::msgcat::mcset si {Choose BUNDLE-INFO.json in the managed install-sources directory} {BUNDLE-INFO.json කළමනාකරණය කළ ස්ථාපන-මූලාශ්ර නාමාවලියෙන් තෝරන්න}
 ::msgcat::mcset si {Choose a failover script} {failover ස්ක්‍රිප්ට් එකක් තෝරන්න}
 ::msgcat::mcset si {Choose a module or process plugin to inspect. Discovery only reads plugin.toml; selecting a component requests its declared manifest and options. Nothing is installed by opening this step.} {පරීක්ෂා කිරීමට මොඩියුලයක් හෝ process ප්ලගිනයක් තෝරන්න. Discovery කියවන්නේ plugin.toml පමණි; සංරචකයක් තේරීම එහි ප්රකාශිත manifest සහ විකල්ප ඉල්ලයි. මෙම පියවර විවෘත කිරීමෙන් කිසිවක් ස්ථාපනය නොවේ.}
+::msgcat::mcset si {Choose a name, purpose and language, then preview the exact files. Nothing has been written.} {නමක්, අරමුණක් සහ භාෂාවක් තෝරා, ඉන්පසු නියම ගොනු පෙරදසුනෙන් බලන්න. කිසිවක් ලියා නැත.}
 ::msgcat::mcset si {Choose a user unit or a system service for the server profile. Neither starts a service.} {සේවාදායක පැතිකඩ සඳහා පරිශීලක ඒකකයක් හෝ පද්ධති සේවාවක් තෝරන්න. කිසිවක් සේවාවක් ආරම්භ නොකරයි.}
 ::msgcat::mcset si {Choose core bundle…} {Core bundle එක තෝරන්න…}
 ::msgcat::mcset si {Choose the installation shape. Local profiles use the reviewed installer. System and container profiles prepare a signed request for the explicit CLI handoff. NixOS only emits a module snippet.} {ස්ථාපන හැඩය තෝරන්න. දේශීය පැතිකඩ සමාලෝචිත ස්ථාපකය භාවිතා කරයි. පද්ධති සහ කන්ටේනර පැතිකඩ පැහැදිලි CLI භාරදීම සඳහා අත්සන් කළ ඉල්ලීමක් සකසයි. NixOS ලබා දෙන්නේ module කොටසක් පමණි.}
+::msgcat::mcset si {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.} {නිවැරදිම මායිම තෝරන්න: Tool එකක් model-callable හැකියාවක් එක් කරයි; Hook එකක් ජීවන චක්‍ර සිදුවීමක් නිරීක්ෂණය හෝ සංශෝධනය කරයි; Service හෝ override point එකක් නම් කළ තීරණයක් ඔතාගනී; Provider driver එකක් provider wire එකක් එක් කරයි; Core patch එකක් සුදුසු වන්නේ ප්‍රකාශිත extension API එකෙන් වෙනස ප්‍රකාශ කළ නොහැකි විට පමණි.}
 ::msgcat::mcset si {Choose typed container-host options JSON} {ටයිප් කළ container-host විකල්ප JSON එක තෝරන්න}
 ::msgcat::mcset si {Choose typed container-host options…} {ටයිප් කළ container-host විකල්ප තෝරන්න…}
 ::msgcat::mcset si Clear {හිස් කරන්න}
 ::msgcat::mcset si {Clear composer} {composer හිස් කරන්න}
 ::msgcat::mcset si {Clear override} {උඩරයිඩ් ඉවත් කරන්න}
 ::msgcat::mcset si {Click the picture where you would click on the page.} {පිටුවේ ඔබ ක්ලික් කරන ස්ථානයේ පින්තූරය ක්ලික් කරන්න.}
+::msgcat::mcset si {Clone %1$s, create %2$s, and copy only the reviewed files of %3$s under %4$s/<extension>/. The files are checked and committed. No push or pull request happens now.} {%1$s ක්ලෝන කර, %2$s සාදා, %3$s හි සමාලෝචනය කළ ගොනු පමණක් %4$s/<extension>/ යටතට පිටපත් කරන්න. ගොනු පරීක්ෂා කර commit කෙරේ. දැන් push එකක් හෝ pull request එකක් සිදු නොවේ.}
 ::msgcat::mcset si Close වසන්න
 ::msgcat::mcset si {Close (Esc)} {වසන්න (Esc)}
 ::msgcat::mcset si {Close the setup wizard? Nothing has been written yet.} {සැකසුම් විශාරදයා වසන්නද? තවම කිසිවක් ලියා නැත.}
 ::msgcat::mcset si {Code actions} {code ක්‍රියා}
+::msgcat::mcset si Commit කොමිට්
+::msgcat::mcset si {Commit ready for review. Push is a separate action.} {කොමිට් එක සමාලෝචනයට සූදානම්. පුෂ් කිරීම වෙනම ක්‍රියාවකි.}
 ::msgcat::mcset si {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Handoff එක පෙරදසුනට පෙර, image digest එක ඇතුළු සියලු PDS ක්ෂේත්‍ර පුරවන්න.}
 ::msgcat::mcset si {Complete every typed container-host field before previewing this profile.} {මෙම පැතිකඩ පෙරදසුන් කිරීමට පෙර සියලු ටයිප් කළ container-host ක්ෂේත්ර සම්පූර්ණ කරන්න.}
 ::msgcat::mcset si {Component configuration returned an invalid result; nothing was accepted as applied.} {සංරචක වින්යාසය වලංගු නොවන ප්රතිඵලයක් ආපසු ලබා දුන්නේය; කිසිවක් යොදන ලද ලෙස පිළිගැනුණේ නැත.}
@@ -210,15 +272,29 @@ package require msgcat
 ::msgcat::mcset si {Component options changed. Review the new preview before applying.} {සංරචක විකල්ප වෙනස් විය. යෙදීමට පෙර නව පෙරදසුන සමාලෝචනය කරන්න.}
 ::msgcat::mcset si Components සංරචක
 ::msgcat::mcset si {Composer preview} {Composer පෙරදසුන}
+::msgcat::mcset si Config වින්‍යාසය
+::msgcat::mcset si {Config differs: %s} {වින්‍යාසය වෙනස්: %s}
+::msgcat::mcset si {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {වින්‍යාස ලොගය: එම නෝඩයට %1$s හි වෙනස්කම් %3$s දක්වා ඇත, මෙම gateway ට %2$s දක්වා}
+::msgcat::mcset si {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {වින්‍යාස ලොගය: මෙම gateway ට %1$s හි වෙනස්කම් %2$s දක්වා ඇත, එම නෝඩයට %3$s දක්වා}
+::msgcat::mcset si {Config only on that node: %s} {වින්‍යාසය එම නෝඩයේ පමණි: %s}
+::msgcat::mcset si {Config only on this gateway: %s} {වින්‍යාසය මෙම gateway හි පමණි: %s}
 ::msgcat::mcset si Configure {වින්යාස කරන්න}
 ::msgcat::mcset si {Configure %s} {%s වින්යාස කරන්න}
+::msgcat::mcset si {Configure translator} {පරිවර්තකය වින්‍යාස කරන්න}
+::msgcat::mcset si {Configured desktop gateway} {වින්‍යාස කළ ඩෙස්ක්ටොප් ගේට්වේ}
 ::msgcat::mcset si Configure… {වින්යාස කරන්න…}
 ::msgcat::mcset si {Configuring %s} {%s වින්යාස කරමින්}
 ::msgcat::mcset si {Confirm or discard the current signed review before starting another download.} {තවත් බාගැනීමක් ආරම්භ කිරීමට පෙර වත්මන් අත්සන් කළ සමාලෝචනය තහවුරු කරන්න හෝ ඉවත ලන්න.}
 ::msgcat::mcset si {Container host: typed host plan and privileged CLI handoff} {Container host: ටයිප් කළ host සැලැස්ම සහ ප්‍රිවිලිජ් CLI handoff එකක්}
 ::msgcat::mcset si {Context window} {සන්දර්භ කවුළුව}
+::msgcat::mcset si {Continue to next target} {ඊළඟ ඉලක්කයට ඉදිරියට යන්න}
+::msgcat::mcset si {Contribute extensions: %s} {දිගු දායක කරන්න: %s}
+::msgcat::mcset si Contribute… {දායක වන්න…}
+::msgcat::mcset si {Contribution branch} {දායකත්ව ශාඛාව}
+::msgcat::mcset si {Contribution destination} {දායකත්ව ගමනාන්තය}
 ::msgcat::mcset si Copy {පිටපත් කරන්න}
 ::msgcat::mcset si {Copy TOML} {TOML පිටපත් කරන්න}
+::msgcat::mcset si {Copy a bundled extension into your user plugin directory before preparing a contribution.} {දායකත්වයක් සකස් කිරීමට පෙර, ඇසුරුම් දිගුවක් ඔබගේ පරිශීලක ප්ලගින නාමාවලියට පිටපත් කරන්න.}
 ::msgcat::mcset si {Copy message} {පණිවිඩය පිටපත් කරන්න}
 ::msgcat::mcset si {Copy name} {නම පිටපත් කරන්න}
 ::msgcat::mcset si {Copy nick} {nick පිටපත් කරන්න}
@@ -227,13 +303,20 @@ package require msgcat
 ::msgcat::mcset si {Could not discover components. The provider setup steps still work; install through the CLI on the target machine if needed.} {සංරචක සොයා ගැනීමට නොහැකි විය. Provider සැකසුම් පියවර තවමත් ක්රියා කරයි; අවශ්ය නම් ඉලක්ක යන්ත්රයේ CLI හරහා ස්ථාපනය කරන්න.}
 ::msgcat::mcset si {Could not join: %s} {එක්විය නොහැකි විය: %s}
 ::msgcat::mcset si {Could not list the models (%s) — type the model's name.} {මාදිලි ලැයිස්තුගත කළ නොහැකි විය (%s) — මාදිලියේ නම ටයිප් කරන්න.}
+::msgcat::mcset si {Create a PR in} {PR එකක් සාදන ගබඩාව}
+::msgcat::mcset si {Create extension} {දිගුවක් සාදන්න}
 ::msgcat::mcset si {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {@BotFather මගින් බොට් සාදා, එහි ටෝකනය පහතින් අලවන්න: එය සංකේතනය කළ සුරක්ෂිතාගාරයට යයි, කිසිදා config.toml වෙත නොවේ.}
+::msgcat::mcset si {Create this extension?} {මෙම දිගුව සාදන්නද?}
+::msgcat::mcset si {Create this generated extension?} {උත්පාදිත මෙම දිගුව සාදන්නද?}
+::msgcat::mcset si {Created and reloaded. Review and test the extension before publishing.} {සාදා නැවත පූරණය කර ඇත. ප්‍රකාශනයට පෙර දිගුව සමාලෝචනය කර පරීක්ෂා කරන්න.}
+::msgcat::mcset si {Created, but reload failed} {සාදා ඇත, නමුත් නැවත පූරණය අසාර්ථක විය}
 ::msgcat::mcset si {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {අච්චුවකින් %s/<name>/SKILL.md නිර්මාණය කර එය විවෘත කරයි. Frontmatter විස්තරය පමණයි ප්රොම්ප්ට් දර්ශකයට ළඟා වන්නේ, ඒ නිසා එය කුසලතාව භාවිතා කළ යුත්තේ කවදාද කියා කියන ලෙස සකසන්න.}
 ::msgcat::mcset si {Cron history} {Cron ඉතිහාසය}
 ::msgcat::mcset si {Cron jobs} {Cron කාර්යයන්}
 ::msgcat::mcset si {Curated — write the first owner entry} {තෝරාගත් — පළමු හිමිකරු ඇතුළත් කිරීම ලියන්න}
 ::msgcat::mcset si Cut කපන්න
 ::msgcat::mcset si Decline {ප්‍රතික්ෂේප කරන්න}
+::msgcat::mcset si {Dedicated translator} {වෙන් කළ පරිවර්තකයා}
 ::msgcat::mcset si {Def (M-.)} {Def (M-.)}
 ::msgcat::mcset si Default පෙරනිමිය
 ::msgcat::mcset si {Default model} {පෙරනිමි මාදිලිය}
@@ -250,8 +333,13 @@ package require msgcat
 ::msgcat::mcset si {Delete user} {පරිශීලකයා මකන්න}
 ::msgcat::mcset si {Delete workspace?} {වැඩබිම මකන්නද?}
 ::msgcat::mcset si Deop {op ඉවත් කරන්න}
+::msgcat::mcset si {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {වෙනස විස්තර කරන්න. AI මෙම දිගුවේ ගොනු කිහිපයක් වෙනස් කිරීමට හෝ එක් කිරීමට හැකිය. සෑම ගොනුවක්ම diff එකක් ලෙස පෙන්වන අතර, ඔබ තහවුරු කිරීමට පෙර කිසිවක් ලියන්නේ නැත.}
+::msgcat::mcset si {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {වෙනස විස්තර කරන්න. AI ආදේශනයක් යෝජනා කළ හැක, නමුත් ඔබ වෙනස්කම් පරීක්ෂා කර තහවුරු කරන තෙක් එය ලිවිය නොහැක.}
+::msgcat::mcset si {Describe the requested extension change first.} {පළමුව අවශ්‍ය දිගු වෙනස විස්තර කරන්න.}
+::msgcat::mcset si Description විස්තරය
 ::msgcat::mcset si {Desktop: local core, modules and process plugins} {Desktop: දේශීය core එක, මොඩියුල සහ ක්‍රියාවලි ප්ලගින}
 ::msgcat::mcset si Detach {වෙන් කරන්න}
+::msgcat::mcset si {Detach foreground} {ඉදිරිපස වෙන් කරන්න}
 ::msgcat::mcset si Dev ඩෙව්
 ::msgcat::mcset si {Dev pane (REPL + LSP)} {ඩෙව් පැනලය (REPL + LSP)}
 ::msgcat::mcset si {Dev: arm / disarm live patching} {ඩෙව්: live patching සක්‍රීය / අක්‍රීය කරන්න}
@@ -270,11 +358,20 @@ package require msgcat
 ::msgcat::mcset si Devoice {voice ඉවත් කරන්න}
 ::msgcat::mcset si {Discard review} {සමාලෝචනය ඉවත ලන්න}
 ::msgcat::mcset si {Discard your changes to %s?} {%s හි ඔබේ වෙනස්කම් ඉවත දමන්නද?}
+::msgcat::mcset si {Disk: %1$s free of %2$s at %3$s} {තැටිය: %3$s හි, %2$s න් %1$s නිදහස්}
 ::msgcat::mcset si Done නිමයි
 ::msgcat::mcset si {Done — config written} {අවසන් — config ලියා ඇත}
 ::msgcat::mcset si {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {ස්ථාපනය කිරීමට පෙර නිකුතු මැනිෆෙස්ටය සහ ධාරක සංරක්ෂිතය බාගන්න සහ තහවුරු කරන්න. අනන්‍යතා ක්ෂේත්‍ර පහම අවශ්‍ය වේ. gateway එක පුද්ගලිකව අදියරගත කළ සංරක්ෂිතය තබා ගනී; මෙම පෙරදසුනෙන් කිසිවක් ස්ථාපනය නොකෙරේ.}
 ::msgcat::mcset si {Downloading and verifying the signed release…} {අත්සන් කළ නිකුතුව බාගනිමින් සහ තහවුරු කරමින්…}
+::msgcat::mcset si {Draft this as an extension?} {මෙය දිගුවක් ලෙස කෙටුම්පත් කරන්නද?}
 ::msgcat::mcset si {Drag to scroll; a quick swipe goes further.} {අනුචලනය කිරීමට අදින්න; ඉක්මන් ස්වයිප් එකක් තවත් දුරට යයි.}
+::msgcat::mcset si {Drift check failed: %s} {අපගමන පරීක්ෂාව අසමත්: %s}
+::msgcat::mcset si {Drift check: %s node(s) differ from this gateway.} {අපගමන පරීක්ෂාව: නෝඩ %s ක් මෙම gateway ට වඩා වෙනස්.}
+::msgcat::mcset si {Drift: built from revision %1$s, this gateway from %2$s} {අපගමනය: ගොඩනගා ඇත්තේ සංශෝධනය %1$s න්, මෙම gateway %2$s න්}
+::msgcat::mcset si {Drift: none — same version, revision and replicated config} {අපගමනය: නැත — එකම අනුවාදය, සංශෝධනය සහ පිටපත් කළ වින්‍යාසය}
+::msgcat::mcset si {Drift: not compared — %s} {අපගමනය: සසඳා නැත — %s}
+::msgcat::mcset si {Drift: runs version %1$s, this gateway %2$s} {අපගමනය: ධාවනය වන්නේ අනුවාදය %1$s, මෙම gateway %2$s}
+::msgcat::mcset si Drift… අපගමනය…
 ::msgcat::mcset si {ESC %1$s — %2$s} {ESC %1$s — %2$s}
 ::msgcat::mcset si {ESC %s is not bound} {ESC %s බැඳී නැත}
 ::msgcat::mcset si {ESC- … (Meta prefix)} {ESC- … (Meta උපසර්ගය)}
@@ -289,12 +386,25 @@ package require msgcat
 ::msgcat::mcset si Edit… {සංස්කරණය කරන්න…}
 ::msgcat::mcset si {Enable / disable} {සක්රීය / අක්රීය කරන්න}
 ::msgcat::mcset si {Enable the Telegram adapter} {Telegram ඇඩැප්ටරය සක්රීය කරන්න}
+::msgcat::mcset si Endpoint {අන්ත ලක්ෂ්‍යය}
 ::msgcat::mcset si Engine එන්ජිම
 ::msgcat::mcset si Eval→gw Eval→gw
 ::msgcat::mcset si {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {%s හි සෑම වෙනසක්ම commit වේ. ප්රතිස්ථාපනය මුළු නාමාවලියම එම commit එකට ආපසු ගෙන යයි — වත්මන් තත්ත්වය පළමුව ස්නැප්ෂොට් කරන නිසා එය එක්-මාර්ග දොරක් නොවේ.}
 ::msgcat::mcset si {Every plugin file goes back to that commit. The current state is committed first.} {සෑම ප්ලගින ගොනුවක්ම එම commit එකට ආපසු යයි. වත්මන් තත්ත්වය පළමුව commit වේ.}
+::msgcat::mcset si {Exact commit} {හරියටම commit}
+::msgcat::mcset si {Exact permission rule} {හරියටම අවසර නීතිය}
+::msgcat::mcset si {Example: a hook} {උදාහරණය: හූක් එකක්}
+::msgcat::mcset si {Example: a provider driver} {උදාහරණය: සපයන්නාගේ ධාවකයක්}
+::msgcat::mcset si {Example: a service override wrapping core} {උදාහරණය: core එක ඔතාගත් service override එකක්}
+::msgcat::mcset si {Example: a tool} {උදාහරණය: මෙවලමක්}
 ::msgcat::mcset si {Existing shared container network} {පවතින හවුල් කන්ටේනර දැල}
+::msgcat::mcset si Explain {පැහැදිලි කරන්න}
+::msgcat::mcset si {Explain the diagnostics} {දෝෂ නිර්ණය පැහැදිලි කරන්න}
 ::msgcat::mcset si Export… {අපනයනය කරන්න…}
+::msgcat::mcset si {Extension API} {දිගු API}
+::msgcat::mcset si {Extension development} {දිගු සංවර්ධනය}
+::msgcat::mcset si {Extension guide} {දිගු මාර්ගෝපදේශය}
+::msgcat::mcset si {Extension source} {දිගු මූලාශ්‍රය}
 ::msgcat::mcset si {Failover blueprint} {Failover blueprint}
 ::msgcat::mcset si {Failover blueprint (edit the route chain)} {Failover blueprint (route දාමය සංස්කරණය කරන්න)}
 ::msgcat::mcset si {Failover hook script (what `script` mode runs)} {Failover hook script (`script` mode එකේදී ධාවනය වන්නේ)}
@@ -306,9 +416,20 @@ package require msgcat
 ::msgcat::mcset si {Find in transcript} {transcript තුළ සොයන්න}
 ::msgcat::mcset si {Find in transcript…} {transcript තුළ සොයන්න…}
 ::msgcat::mcset si {Find references} {යොමු සොයන්න}
+::msgcat::mcset si {Finish rollback} {පෙර තත්ත්වයට හැරවීම අවසන් කරන්න}
 ::msgcat::mcset si {First run: no config.toml yet.} {පළමු ධාවනය: තවම config.toml නැත.}
+::msgcat::mcset si {Fix the failed syntax checks before preparing a contribution.} {දායකත්වයක් සකස් කිරීමට පෙර අසාර්ථක වාක්‍ය ඛණ්ඩ පරීක්ෂණ නිවැරදි කරන්න.}
+::msgcat::mcset si {Fleet deployment} {කණ්ඩායම් යෙදවීම}
+::msgcat::mcset si {Fleet deployment runs from a desktop computer; it is not available on Android.} {කණ්ඩායම් යෙදවීම ක්‍රියාත්මක වන්නේ ඩෙස්ක්ටොප් පරිගණකයකින්; එය Android හි නොමැත.}
+::msgcat::mcset si {Fleet deploy…} {කණ්ඩායම් යෙදවීම…}
+::msgcat::mcset si {Fleet drift} {ෆ්ලීට් අපගමනය}
 ::msgcat::mcset si {Fold / unfold} {නවන්න / දිගහරින්න}
 ::msgcat::mcset si {Forget declaration} {ප්‍රකාශනය අමතක කරන්න}
+::msgcat::mcset si {Forget node %s?} {නෝඩය %s අමතක කරන්නද?}
+::msgcat::mcset si {Forget node…} {නෝඩය අමතක කරන්න…}
+::msgcat::mcset si {Forgetting %1$s failed: %2$s} {%1$s අමතක කිරීම අසමත්: %2$s}
+::msgcat::mcset si {Forgot node %s.} {නෝඩය %s අමතක කළා.}
+::msgcat::mcset si {Forgotten fleet-wide (refused until they heartbeat again): %s} {ෆ්ලීට් පුරා අමතක කරන ලදී (නැවත හෘද ස්පන්දනයක් ලබා දෙන තෙක් ප්‍රතික්ෂේප වේ): %s}
 ::msgcat::mcset si Fork {ශාඛාවක් සාදන්න}
 ::msgcat::mcset si {Free space} {නිදහස් ඉඩ}
 ::msgcat::mcset si {Full source commit SHA} {සම්පූර්ණ මූලාශ්‍ර කමිටු SHA}
@@ -317,16 +438,28 @@ package require msgcat
 ::msgcat::mcset si {Gateway image sha256 digest} {Gateway image sha256 digest එක}
 ::msgcat::mcset si {Gateway quadlet name} {Gateway quadlet නම}
 ::msgcat::mcset si {Gateway status} {Gateway තත්‍ත්වය}
+::msgcat::mcset si {Generate with AI…} {AI මගින් උත්පාදනය කරන්න…}
+::msgcat::mcset si {Generated by %s - nothing has been written. Review every file, then Create extension writes exactly these.} {%s මගින් උත්පාදනය කරන ලදී - කිසිවක් ලියා නැත. සෑම ගොනුවක්ම සමාලෝචනය කරන්න, ඉන්පසු දිගුව සාදන්න මගින් හරියටම මේවා ලියයි.}
 ::msgcat::mcset si {Get a key at %s} {%s හිදී key එකක් ලබා ගන්න}
 ::msgcat::mcset si {GitHub release URL} {GitHub නිකුතු URL}
+::msgcat::mcset si {Give the extension a name and describe what it should do (the purpose), then generate.} {දිගුවට නමක් දී එය කළ යුත්තේ කුමක්ද (අරමුණ) විස්තර කර, පසුව උත්පාදනය කරන්න.}
 ::msgcat::mcset si {Give up} {අත් අරන්න}
 ::msgcat::mcset si Go යන්න
 ::msgcat::mcset si {Go to definition} {අර්ථ දැක්වීමට යන්න}
+::msgcat::mcset si {Gossip failed: %s} {gossip අසමත්: %s}
+::msgcat::mcset si {Gossip now} {දැන් gossip කරන්න}
+::msgcat::mcset si {Gossip with %1$s: %2$s} {%1$s සමඟ gossip: %2$s}
+::msgcat::mcset si {Gossip: %1$s of %2$s peer(s) answered (%3$s).} {gossip: සහකරු %2$s න් %1$s ක් පිළිතුරු දුන්නේය (%3$s).}
 ::msgcat::mcset si Grant {ලබා දෙන්න}
 ::msgcat::mcset si {Grant access} {ප්රවේශය ලබා දෙන්න}
+::msgcat::mcset si {Granted at} {ලබා දුන් වේලාව}
 ::msgcat::mcset si Grant… {ලබා දෙන්න…}
 ::msgcat::mcset si {Guards — what the harness stops, and where it stands now} {ආරක්ෂක — harness නවත්වන දේ සහ එහි වත්මන් තත්ත්වය}
 ::msgcat::mcset si {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {හැන්ඩ්ලර් පෙන්වා ඇති අනුපිළිවෙලට ක්රියාත්මක වේ; හිස් නොවන අගයක් ලබා දෙන පළමුවැන්නා දිනයි. එකක් අක්රීය කිරීම එය ලියාපදිංචියෙන් ඉවත් නොකර මඟ හරියි, තේරීම config.toml හි තබා ගැනේ — ඒ නිසා ප්ලගිනයක් නැවත පූරණය කිරීමෙන් එය නිහඬව නැවත සක්රීය කළ නොහැක.}
+::msgcat::mcset si Health සෞඛ්‍යය
+::msgcat::mcset si {Health alerts (%s):} {සෞඛ්‍ය ඇඟවීම් (%s):}
+::msgcat::mcset si Heartbeat {හෘද ස්පන්දනය}
+::msgcat::mcset si {Heartbeat age: %s s} {හෘද ස්පන්දන වයස: %s s}
 ::msgcat::mcset si Help උදව්
 ::msgcat::mcset si {Help & keys} {උදව් සහ යතුරු}
 ::msgcat::mcset si {Hide right panes} {දකුණු පැනල සඟවන්න}
@@ -338,10 +471,12 @@ package require msgcat
 ::msgcat::mcset si {Hold, then drag before you lift: the selection follows your finger a word at a time, scrolling at the top or bottom edge.} {අල්ලාගෙන සිට, ඇඟිල්ල ඔසවන්නට පෙර අදින්න: තේරීම වචනයෙන් වචනය ඔබේ ඇඟිල්ල අනුගමනය කරයි, ඉහළ හෝ පහළ දාරයේදී අනුචලනය වෙමින්.}
 ::msgcat::mcset si Hooks හූක්
 ::msgcat::mcset si {Hooks (what plugins run on)} {Hooks (plugins ධාවනය වන දේ)}
+::msgcat::mcset si Host ධාරකය
 ::msgcat::mcset si {How long a hold takes is Android's touch and hold delay, in its accessibility settings.} {අල්ලාගෙන සිටීමට කොපමණ කාලයක් ගතවේද යන්න Android හි ස්පර්ශ කර අල්ලා ගැනීමේ ප්‍රමාදයයි, එහි ප්‍රවේශ්‍යතා සැකසීම්වල.}
 ::msgcat::mcset si {I backed up the KEK and PLC rotation key offline; allow the reviewed TLS and activation handoff} {මම KEK සහ PLC භ්‍රමණ යතුර offline ලෙස උපස්ථ කළෙමි; සමාලෝචනය කළ TLS සහ සක්‍රිය කිරීමේ handoff සඳහා ඉඩ දෙන්න}
 ::msgcat::mcset si {I-search backward: type to search, C-r for previous} {I-search පසුපසට: සෙවීමට ටයිප් කරන්න, පෙර එකට C-r}
 ::msgcat::mcset si {I-search: type to search, C-s for next} {I-search: සෙවීමට ටයිප් කරන්න, ඊළඟ එකට C-s}
+::msgcat::mcset si {IO pressure: %1$s%% / %2$s%% / %3$s%% of the time some task waited (10 s / 1 min / 5 min)} {IO පීඩනය: කිසියම් කාර්යයක් රැඳී සිටි කාලයෙන් %1$s%% / %2$s%% / %3$s%% (තත්පර 10 / මිනිත්තු 1 / මිනිත්තු 5)}
 ::msgcat::mcset si IRC IRC
 ::msgcat::mcset si {IRC buffers} {IRC බෆර}
 ::msgcat::mcset si {IRC composer} {IRC සම්පාදකය}
@@ -352,6 +487,7 @@ package require msgcat
 ::msgcat::mcset si {IRC split: %s} {IRC බෙදීම: %s}
 ::msgcat::mcset si {IRC transcript} {IRC සංවාද සටහන}
 ::msgcat::mcset si {IRC — nothing to show} {IRC — පෙන්වීමට කිසිවක් නැත}
+::msgcat::mcset si {In flight: %1$s turn(s) %2$s, %3$s background task(s) %4$s} {ක්‍රියාත්මක: වාරය(න්) %1$s %2$s, පසුබිම් කාර්යය(න්) %3$s %4$s}
 ::msgcat::mcset si {Install %s into the managed component store? Its manifest has been shown; this does not start a service.} {%s කළමනාකරණ සංරචක ගබඩාවට ස්ථාපනය කරන්නද? එහි manifest පෙන්වා ඇත; මෙය සේවාවක් ආරම්භ නොකරයි.}
 ::msgcat::mcset si {Install component} {සංරචකය ස්ථාපනය කරන්න}
 ::msgcat::mcset si {Install components…} {සංරචක ස්ථාපනය කරන්න…}
@@ -369,6 +505,7 @@ package require msgcat
 ::msgcat::mcset si Instances අවස්ථා
 ::msgcat::mcset si {It becomes the current content, as a new revision — so the restore can be undone too.} {එය නව සංශෝධනයක් ලෙස වත්මන් අන්තර්ගතය බවට පත්වේ — එබැවින් ප්‍රතිසාධනයද අහෝසි කළ හැක.}
 ::msgcat::mcset si {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {එය මෙම යන්ත්‍රයේ සංකේතනය කළ සුරක්ෂිතාගාරයට යයි. නියෝජිතයා එය කිසිදා නොදකී: එයට එය විධානවල $%s ලෙස භාවිත කිරීමට, හෝ අවසර ලත් සත්කාරකයන් වෙත යැවීමට පමණක් හැක.}
+::msgcat::mcset si {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {එය ෆ්ලීට් පුරා ක්ලස්ටර ලේඛනාගාරයෙන් ඉවත් කර ඇත: ඊළඟ gossip හුවමාරුව සෑම 0.2.0 සහකරුවෙකුටත් එය ද ඉවත් කරන ලෙස පවසන අතර, ඔවුන්ගෙන් කිසිවෙක් එය නැවත ඒකාබද්ධ නොකරයි. 0.2.0 ට වඩා පැරණි සහකරුවෙක් එය දිගටම ලැයිස්තුගත කරයි. යන්ත්‍රය නැවත පැමිණ හෘද ස්පන්දනයක් ලබා දුන්නොත්, එය නැවත ලියාපදිංචි වේ. සමමුහුර්ත සහකරුවන් සහ සුරකින ලද අවස්ථා ස්පර්ශ නොවේ.}
 ::msgcat::mcset si {It leaves memory now. Its history keeps every revision, and History… can restore it.} {එය දැන් මතකයෙන් ඉවත් වේ. එහි ඉතිහාසය සෑම සංශෝධනයක්ම තබා ගනී, ඉතිහාසය…ට එය ප්‍රතිසාධනය කළ හැක.}
 ::msgcat::mcset si Join එක්වන්න
 ::msgcat::mcset si {Join a pool} {යන්ත්‍ර කණ්ඩායමකට එක්වන්න}
@@ -387,13 +524,17 @@ package require msgcat
 ::msgcat::mcset si {Language (i18n)} {භාෂාව (i18n)}
 ::msgcat::mcset si Language… භාෂාව…
 ::msgcat::mcset si {Last active} {අවසන් ක්‍රියාකාරිත්වය}
+::msgcat::mcset si {Last probe: %1$s — %2$s} {අවසන් පරීක්ෂාව: %1$s — %2$s}
 ::msgcat::mcset si {Leave %s?} {%s හැර යන්නද?}
 ::msgcat::mcset si Leave… {හැර යන්න…}
 ::msgcat::mcset si {Legacy open — no [acl] section} {පැරණි විවෘත — [acl] කොටසක් නැත}
 ::msgcat::mcset si {Let %s:} {%s ට මේවා කිරීමට ඉඩ දෙන්න:}
 ::msgcat::mcset si {Letters, digits, - and _. Creates plugin.toml and a plugin.tcl that registers a post_llm_call hook, then opens it in the Dev pane.} {අකුරු, ඉලක්කම්, - සහ _. plugin.toml සහ post_llm_call හූක් එකක් ලියාපදිංචි කරන plugin.tcl නිර්මාණය කර, ඉන්පසු Dev තලයේ එය විවෘත කරයි.}
+::msgcat::mcset si Level මට්ටම
 ::msgcat::mcset si {Lift lockdown} {අගුළු ඉවත් කරන්න}
+::msgcat::mcset si Lines පේළි
 ::msgcat::mcset si {List the provider's models} {සැපයුම්කරුගේ මාදිලි ලැයිස්තුගත කරන්න}
+::msgcat::mcset si Load පැටවුම
 ::msgcat::mcset si {Load more} {තවත් පූරණය කරන්න}
 ::msgcat::mcset si {Loading discovered components…} {සොයාගත් සංරචක පූරණය වෙමින්…}
 ::msgcat::mcset si {Local bundle reviewed. Select Install selected component to confirm installation; nothing has been installed.} {දේශීය බණ්ඩලය සමාලෝචනය කරන ලදී. ස්ථාපනය තහවුරු කිරීමට තෝරාගත් සංරචකය ස්ථාපනය කරන්න තෝරන්න; කිසිවක් ස්ථාපනය කර නැත.}
@@ -401,25 +542,40 @@ package require msgcat
 ::msgcat::mcset si {Lock down} {අගුළු දමන්න}
 ::msgcat::mcset si Log ලොග්
 ::msgcat::mcset si {Log (engine + status)} {ලොග් (engine + status)}
+::msgcat::mcset si {Log of %s} {%s හි ලොගය}
+::msgcat::mcset si Logs… ලොග…
 ::msgcat::mcset si {M-g- (g: goto line)} {M-g- (g: පේළියට යන්න)}
 ::msgcat::mcset si {M-p/M-n history · Tab complete} {M-p/M-n ඉතිහාසය · Tab සම්පූර්ණ කිරීම}
 ::msgcat::mcset si {MCP server list} {MCP සේවාදායක ලැයිස්තුව}
 ::msgcat::mcset si {MCP servers (from config.toml)} {MCP සේවාදායකයන් (config.toml වෙතින්)}
 ::msgcat::mcset si {Make default} {පෙරනිමිය කරන්න}
 ::msgcat::mcset si {Make default (config.toml)} {පෙරනිමිය කරන්න (config.toml)}
+::msgcat::mcset si {Manage extensions} {දිගු කළමනාකරණය කරන්න}
 ::msgcat::mcset si {Manifest SHA-256} {මැනිෆෙස්ටය SHA-256}
 ::msgcat::mcset si {Mark read} {කියවූ ලෙස සලකුණු කරන්න}
 ::msgcat::mcset si {Mechanisms (what the engine does on its own)} {යාන්ත්‍රණ (engine එක තනිවම කරන දේ)}
 ::msgcat::mcset si {Mechanisms — what the engine does on its own, and how to stop it} {යාන්ත්රණ — එන්ජිම තනිවම කරන දේ සහ එය නවත්වන්නේ කෙසේද}
 ::msgcat::mcset si Memory මතකය
 ::msgcat::mcset si {Memory history} {මතක ඉතිහාසය}
+::msgcat::mcset si {Memory: %1$s available of %2$s (%3$s%% used)} {මතකය: %2$s න් %1$s ලබා ගත හැක (%3$s%% භාවිතයේ)}
+::msgcat::mcset si {Merge the received %s into this node?} {ලැබුණු %s මෙම නෝඩයට ඒකාබද්ධ කරන්නද?}
 ::msgcat::mcset si Messages පණිවිඩ
+::msgcat::mcset si Metrics මිනුම්
+::msgcat::mcset si {Metrics (asked %s):} {මිනුම් (%s විමසා ඇත):}
+::msgcat::mcset si {Metrics of %1$s failed: %2$s} {%1$s හි මිනුම් අසමත්: %2$s}
+::msgcat::mcset si {Metrics of %s received.} {%s හි මිනුම් ලැබුණි.}
+::msgcat::mcset si {Metrics: not asked yet — use Metrics.} {මිනුම්: තවම විමසා නැත — මිනුම් භාවිතා කරන්න.}
 ::msgcat::mcset si Model ආකෘතිය
 ::msgcat::mcset si {Model for this session} {මෙම සැසිය සඳහා මාදිලිය}
 ::msgcat::mcset si {Models & settings} {මාදිලි සහ සැකසුම්}
+::msgcat::mcset si Monitors නිරීක්ෂක
+::msgcat::mcset si Name නම
+::msgcat::mcset si {Need an account? Optional sign-up links (open in your browser):} {ගිණුමක් අවශ්‍යද? විකල්ප ලේඛනගත වීමේ යොමු (ඔබගේ බ්‍රවුසරයේ විවෘත වේ):}
 ::msgcat::mcset si Network ජාලය
 ::msgcat::mcset si {New alias} {අලුත් අන්වර්ථය}
+::msgcat::mcset si {New branch name} {නව ශාඛා නම}
 ::msgcat::mcset si {New cron job} {අලුත් cron කාර්යය}
+::msgcat::mcset si {New extension} {නව දිගුවක්}
 ::msgcat::mcset si {New memory file} {නව මතක ගොනුව}
 ::msgcat::mcset si {New plugin} {අලුත් ප්ලගිනය}
 ::msgcat::mcset si {New session} {නව සැසිය}
@@ -432,35 +588,61 @@ package require msgcat
 ::msgcat::mcset si Next ඊළඟ
 ::msgcat::mcset si Nickname {අන්වර්ථ නාමය}
 ::msgcat::mcset si {NixOS: emit a module snippet; do not edit host declarations} {NixOS: module කැබැල්ලක් නිකුත් කරන්න; host ප්‍රකාශන සංස්කරණය නොකරන්න}
+::msgcat::mcset si {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {මෙම node එක සඳහා SSH ජීවන චක්‍ර ඉලක්කයක් වින්‍යාස කර නැත. යොදවීමට හෝ නැවත ආරම්භ කිරීමට අවස්ථාවක් පැහැදිලිව එක් කරන්න.}
+::msgcat::mcset si {No additional push happens.} {අමතර පුෂ් එකක් සිදු නොවේ.}
 ::msgcat::mcset si {No apps yet. Ask the agent to make one: “make me an app that…”} {තවම යෙදුම් නැත. එකක් සාදන ලෙස නියෝජිතයාගෙන් ඉල්ලන්න: “මට … කරන යෙදුමක් සාදන්න”}
 ::msgcat::mcset si {No code in the picture. Hold the phone closer, straight on, and scan again.} {පින්තූරයේ කේතයක් නැත. දුරකථනය ළඟට, කෙළින් අල්ලා නැවත ස්කෑන් කරන්න.}
 ::msgcat::mcset si {No configuration snapshot will be restored.} {කිසිදු වින්යාස ස්නැප්ෂොට් එකක් ප්රතිසාධනය නොකෙරේ.}
+::msgcat::mcset si {No configured sync peer for this node.} {මෙම නෝඩයට වින්‍යාස කළ සමමුහුර්ත සහකරුවෙකු නැත.}
+::msgcat::mcset si {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {වෙනම පරිවර්තකයක් වින්‍යාස කර නැත. එහි සපයන්නා, මාදිලිය සහ ඉලක්ක භාෂාව තේරීමට පරිවර්තකය වින්‍යාස කරන්න යොදන්න.}
+::msgcat::mcset si {No deployment started.} {යෙදවීමක් ආරම්භ නොකෙරිණි.}
+::msgcat::mcset si {No diagnostics reported by the current LSP document.} {වත්මන් LSP ලේඛනය රෝගනිදාන වාර්තා කර නැත.}
+::msgcat::mcset si {No explicitly configured desktop gateway is bound to this node.} {මෙම නෝඩයට පැහැදිලිව වින්‍යාස කළ ඩෙස්ක්ටොප් ගේට්වේ එකක් බැඳී නැත.}
+::msgcat::mcset si {No explicitly configured gateway is bound to this node. Add the gateway first; its registry endpoint is not used as a desktop URL.} {මෙම නෝඩයට පැහැදිලිව වින්‍යාස කළ ගේට්වේ එකක් බැඳී නැත. පළමුව ගේට්වේ එක එක් කරන්න; එහි ලේඛන අන්තබින්දුව ඩෙස්ක්ටොප් URL ලෙස භාවිත නොවේ.}
+::msgcat::mcset si {No file is open. Ask a design question, or open an extension file for help with its code.} {ගොනුවක් විවෘත නැත. නිර්මාණ ප්‍රශ්නයක් විමසන්න, නැතහොත් එහි කේතය ගැන උදව් සඳහා දිගු ගොනුවක් විවෘත කරන්න.}
+::msgcat::mcset si {No files have been written. Review the exact manifest and source, then confirm creation.} {කිසිම ගොනුවක් ලියා නැත. නියම මැනිෆෙස්ටය සහ මූලාශ්‍රය සමාලෝචනය කර, පසුව නිර්මාණය තහවුරු කරන්න.}
 ::msgcat::mcset si {No modules or process plugins were discovered. The provider setup steps can still continue.} {කිසිදු මොඩියුලයක් හෝ process ප්ලගිනයක් සොයා නොගැනිණි. Provider සැකසුම් පියවර තවමත් කරගෙන යා හැක.}
+::msgcat::mcset si {No other registered node to compare with.} {සසඳා බැලීමට වෙනත් ලියාපදිංචි නෝඩයක් නැත.}
 ::msgcat::mcset si {No profile starts a service or executes a privileged script from this wizard. Review the plan and any handoff before running it.} {කිසිදු පැතිකඩයක් මෙම විසාර්ඩ් මගින් සේවාවක් ආරම්භ නොකරයි, නැතහොත් පරිපාලක අයිතිවාසිකම් අවශ්ය ස්ක්රිප්ටයක් ක්රියාත්මක නොකරයි. එය ක්‍රියාත්මක කිරීමට පෙර සැලැස්ම සහ ඕනෑම භාරදීමක් සමාලෝචනය කරන්න.}
+::msgcat::mcset si {No proposal has been requested. Nothing will be written automatically.} {කිසිම යෝජනාවක් ඉල්ලා නැත. කිසිවක් ස්වයංක්‍රීයව ලිවීමට නැත.}
+::msgcat::mcset si {No proposal. Nothing was written.} {යෝජනාවක් නැත. කිසිවක් ලියා නැත.}
 ::msgcat::mcset si {No routes configured.} {මාර්ග වින්යාස වී නොමැත.}
 ::msgcat::mcset si {No session selected — pick one in the sidebar or start a new one} {සැසියක් තෝරා නැත — පැති තීරුවෙන් එකක් තෝරන්න හෝ අලුත් එකක් අරඹන්න}
 ::msgcat::mcset si {No swap target yet: pick a language and press “Set as swap target”.} {තවම මාරු භාෂාවක් නැත: භාෂාවක් තෝරා “මාරු භාෂාව කරන්න” ඔබන්න.}
 ::msgcat::mcset si {No {[}acl{]} section in config.toml: every sender that reaches the gateway is treated as owner, the pre-ACL single-user behaviour. Granting and revoking still works and takes effect the moment {[}acl{]} exists.} {config.toml හි {[}acl{]} කොටසක් නොමැත: gateway වෙත ළඟා වන සෑම යවන්නෙක්ම හිමිකරු ලෙස සැලකේ — ACL වලට පෙර තිබූ තනි-පරිශීලක හැසිරීම. අවසර දීම සහ ආපසු ගැනීම තවමත් ක්රියාත්මක වන අතර {[}acl{]} පවතින මොහොතේ සිටම බලපායි.}
+::msgcat::mcset si {Node id} {නෝඩ් හැඳුනුම}
+::msgcat::mcset si {Non-evaluating syntax checks} {කේතය ක්‍රියාත්මක නොකරන වාක්‍ය ඛණ්ඩ පරීක්ෂණ}
+::msgcat::mcset si {Not available: %s} {නොමැත: %s}
+::msgcat::mcset si Note සටහන
 ::msgcat::mcset si {Note for the agent (optional):} {නියෝජිතයාට සටහන (විකල්ප):}
+::msgcat::mcset si {Nothing selected.} {කිසිවක් තෝරා නැත.}
 ::msgcat::mcset si {Nothing typed yet.} {තවම කිසිවක් ටයිප් කර නැත.}
+::msgcat::mcset si {Nothing was generated or written.} {කිසිවක් උත්පාදනය හෝ ලියා නැත.}
+::msgcat::mcset si {Nothing was prepared: the chosen repository already has these paths.} {කිසිවක් සකස් නොකෙරිණි: තෝරාගත් ගබඩාවේ මෙම මාර්ග දැනටමත් ඇත.}
 ::msgcat::mcset si Notifications දැනුම්දීම්
 ::msgcat::mcset si OK හරි
 ::msgcat::mcset si Off අක්රීය
 ::msgcat::mcset si On සක්රීය
+::msgcat::mcset si {Only the reviewed extension buffer will be replaced. The file is still protected against changes made after this preview. No commit, push or PR happens.} {සමාලෝචනය කළ දිගු බෆරය පමණක් ආදේශ වේ. මෙම පෙරදසුනෙන් පසු සිදු කළ වෙනස්කම් වලින් ගොනුව තවමත් ආරක්ෂා වේ. කොමිට් එකක්, පුෂ් එකක් හෝ PR එකක් සිදු නොවේ.}
+::msgcat::mcset si {Only this new branch is committed. Your ambient git identity is used.} {මෙම නව ශාඛාවට පමණක් කොමිට් කරනු ලැබේ. ඔබගේ පවතින git අනන්‍යතාව භාවිත වේ.}
 ::msgcat::mcset si Op {op ලබා දෙන්න}
 ::msgcat::mcset si Open {විවෘත කරන්න}
+::msgcat::mcset si {Open PR…} {PR එක විවෘත කරන්න…}
 ::msgcat::mcset si {Open a window} {කවුළුවක් විවෘත කරන්න}
 ::msgcat::mcset si {Open in Dev} {Dev තුළ විවෘත කරන්න}
 ::msgcat::mcset si {Open in browser} {බ්රවුසරයේ විවෘත කරන්න}
 ::msgcat::mcset si {Open plugin} {ප්ලගිනය විවෘත කරන්න}
 ::msgcat::mcset si {Open terminal} {ටර්මිනලය විවෘත කරන්න}
+::msgcat::mcset si {Open this pull request?} {මෙම PR එක විවෘත කරන්නද?}
 ::msgcat::mcset si {Open veles in Android's settings} {Android සැකසුම් තුළ veles විවෘත කරන්න}
 ::msgcat::mcset si {Optional: the IRC network to join. List channels separated by spaces or commas; IRC_CHANNELS in .env, when set, replaces this list.} {විකල්ප: සම්බන්ධ වීමට IRC ජාලය. ඉඩයකින් හෝ කොමාවකින් වෙන් කළ නාලිකා ලැයිස්තුගත කරන්න; .env හි ඇති IRC_CHANNELS, සකසා ඇති විට, මෙම ලැයිස්තුව ප්රතිස්ථාපනය කරයි.}
 ::msgcat::mcset si {Options come from the selected component manifest. Secret-looking fields stay in the setup/vault flow. Empty fields leave that option unchanged.} {විකල්ප පැමිණෙන්නේ තෝරාගත් සංරචකයේ manifest වෙතින්. රහස් ලෙස පෙනෙන ක්ෂේත්ර setup/vault ගලායාමේ පවතී. හිස් ක්ෂේත්ර එම විකල්පය නොවෙනස්ව තබයි.}
 ::msgcat::mcset si {Or paste a ticket signed on another device} {හෝ වෙනත් උපාංගයක අත්සන් කළ ටිකට්පතක් ඇල්ලූ කරන්න}
 ::msgcat::mcset si {Or type an answer:} {හෝ පිළිතුරක් ටයිප් කරන්න:}
+::msgcat::mcset si Origin ඔරිජින්
 ::msgcat::mcset si Other… වෙනත්…
 ::msgcat::mcset si Outline {දළ සටහන}
+::msgcat::mcset si Output ප්‍රතිදානය
 ::msgcat::mcset si {Override for THIS session (leave blank to inherit the default)} {මෙම සැසියට පමණක් උඩරයිඩ් (හිස් තැබුවහොත් පෙරනිමිය උරුම වේ)}
 ::msgcat::mcset si {Owner identity (telegram:123456, irc:account, or a nick!user@host mask)} {හිමිකරුගේ අනන්‍යතාව (telegram:123456, irc:account, හෝ nick!user@host මාස්කයක්)}
 ::msgcat::mcset si {PDS and handle domain} {PDS සහ handle domain එක}
@@ -477,6 +659,8 @@ package require msgcat
 ::msgcat::mcset si {Pause scheduler} {කාලසටහන්කරු විරාම කරන්න}
 ::msgcat::mcset si {Peek (C-c C-p)} {බලන්න (C-c C-p)}
 ::msgcat::mcset si {Peek definition} {නිර්වචනය බලන්න}
+::msgcat::mcset si {Permission grants} {අවසර ලබාදීම්}
+::msgcat::mcset si {Permission grants…} {අවසර ලබාදීම්…}
 ::msgcat::mcset si Phone දුරකථනය
 ::msgcat::mcset si {Phone: permissions, battery, storage} {දුරකථනය: අවසර, බැටරිය, ගබඩාව}
 ::msgcat::mcset si {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {%s නිපදවූ දුරකථන තමන් විසින්ද යෙදුම් නවත්වයි. veles හි යෙදුම් සැකසුම් තුළ එයට තනිවම ආරම්භ වීමට සහ පසුබිමින් ධාවනය වීමට ඉඩ දෙන්න.}
@@ -487,20 +671,41 @@ package require msgcat
 ::msgcat::mcset si Port Port
 ::msgcat::mcset si {Prefix chords (C-x, M-o) show a which-key popup the moment they arm.} {Prefix chords (C-x, M-o) සක්‍රිය වූ ක්ෂණයේම which-key පොප්අප් එකක් පෙන්වයි.}
 ::msgcat::mcset si {Prepare an own vlpds PDS through the signed CLI handoff} {අත්සන් කළ CLI handoff එක හරහා ඔබේම vlpds PDS එකක් සකස් කරන්න}
+::msgcat::mcset si {Prepare branch…} {ශාඛාව සකස් කරන්න…}
+::msgcat::mcset si {Prepare this branch and commit?} {මෙම ශාඛාව සහ කොමිට් එක සකස් කරන්නද?}
 ::msgcat::mcset si Preview පෙරදසුන
+::msgcat::mcset si {Preview change set} {වෙනස්කම් කට්ටලය පෙරදසුන් කරන්න}
+::msgcat::mcset si {Preview files} {ගොනු පෙරදසුනෙන් බලන්න}
 ::msgcat::mcset si {Preview here} {මෙහි පෙරදසුන}
 ::msgcat::mcset si {Preview pane} {පෙරදසුන් පැනලය}
+::msgcat::mcset si {Preview proposal} {යෝජනාව පෙරදසුනෙන් බලන්න}
+::msgcat::mcset si {Preview the changed name or language before creating it.} {එය සෑදීමට පෙර වෙනස් කළ නම හෝ භාෂාව පෙරදසුනෙන් බලන්න.}
+::msgcat::mcset si Probe {පරීක්ෂා කරන්න}
+::msgcat::mcset si {Probe of %1$s failed: %2$s} {%1$s හි පරීක්ෂාව අසමත්: %2$s}
 ::msgcat::mcset si {Profile result} {Profile ප්‍රතිඵලය}
 ::msgcat::mcset si {Promote into config.toml} {config.toml තුළට ප්රවර්ධනය කරන්න}
 ::msgcat::mcset si Promote… {ප්රවර්ධනය කරන්න…}
 ::msgcat::mcset si Provider සැපයුම්කරු
+::msgcat::mcset si {Provider driver (plugin wire only)} {සැපයුම්කරු ධාවකය (ප්ලගින wire පමණි)}
 ::msgcat::mcset si {Provider entry name} {සැපයුම්කරු ඇතුළත් කිරීමේ නාමය}
 ::msgcat::mcset si {Provider for this session} {මෙම සැසිය සඳහා සැපයුම්කරු}
 ::msgcat::mcset si Providers සැපයුම්කරුවන්
 ::msgcat::mcset si {Providers are a list of tables: custom_providers.0.base_url, .0.api_mode, .0.key_env … Index from the order shown below.} {සැපයුම්කරුවන් යනු වගු ලැයිස්තුවකි: custom_providers.0.base_url, .0.api_mode, .0.key_env … පහත දැක්වෙන අනුපිළිවෙල අනුව දර්ශකගත කරන්න.}
 ::msgcat::mcset si {Public HTTPS URL} {පොදු HTTPS URL එක}
+::msgcat::mcset si {Pull request base} {PR එකේ පදනම}
+::msgcat::mcset si {Pull request created} {PR එක සාදා ඇත}
+::msgcat::mcset si {Pull request description} {PR විස්තරය}
+::msgcat::mcset si {Pull request opened.} {PR එක විවෘත කර ඇත.}
+::msgcat::mcset si {Pull request repository} {PR ගබඩාව}
+::msgcat::mcset si {Pull request title} {PR මාතෘකාව}
 ::msgcat::mcset si {Purge + delete files} {පවිත්‍ර කර + ගොනු මකන්න}
 ::msgcat::mcset si {Purge container} {container පවිත්‍ර කරන්න}
+::msgcat::mcset si Purpose අරමුණ
+::msgcat::mcset si Push {පුෂ් කරන්න}
+::msgcat::mcset si {Push branch…} {ශාඛාව පුෂ් කරන්න…}
+::msgcat::mcset si {Push complete. No pull request has been opened.} {පුෂ් කිරීම අවසන්. කිසිම PR එකක් විවෘත කර නැත.}
+::msgcat::mcset si {Push this branch?} {මෙම ශාඛාව පුෂ් කරන්නද?}
+::msgcat::mcset si {Push to %s:} {%s වෙත push කරන්න:}
 ::msgcat::mcset si Question ප්රශ්නය
 ::msgcat::mcset si Questions ප්රශ්න
 ::msgcat::mcset si Quit {ඉවත් වන්න}
@@ -510,6 +715,8 @@ package require msgcat
 ::msgcat::mcset si {Reading notifications, for triggers} {දැනුම්දීම් කියවීම, ප්රේරක සඳහා}
 ::msgcat::mcset si Reasoning තර්කනය
 ::msgcat::mcset si {Reasoning effort} {තර්කන ප්රයත්නය}
+::msgcat::mcset si {Received, waiting to apply: store %1$s · memory %2$s · config %3$s · vault %4$s} {ලැබුණි, යෙදීමට රැඳී සිටී: ගබඩාව %1$s · මතකය %2$s · වින්‍යාසය %3$s · සුරක්ෂිතාගාරය %4$s}
+::msgcat::mcset si {Recommended checks} {නිර්දේශිත පරීක්ෂණ}
 ::msgcat::mcset si {Refetch this transcript from the store} {මෙම සංඥාව සේවාවෙන් නැවත ලබා ගන්න}
 ::msgcat::mcset si Refresh {නැවුම් කරන්න}
 ::msgcat::mcset si {Refresh preview} {පෙරදසුන නැවුම් කරන්න}
@@ -532,11 +739,17 @@ package require msgcat
 ::msgcat::mcset si {Rename symbol} {සංකේතය යළි නම් කරන්න}
 ::msgcat::mcset si Rename… {යළි නම් කරන්න…}
 ::msgcat::mcset si Rendered {විදහා දක්වන ලදී}
+::msgcat::mcset si {Replace existing repository files?} {පවතින ගබඩා ගොනු ප්‍රතිස්ථාපනය කරන්නද?}
+::msgcat::mcset si {Replace them in the new branch? Nothing else in the repository changes.} {ඒවා අලුත් ශාඛාවේ ප්‍රතිස්ථාපනය කරන්නද? ගබඩාවේ වෙන කිසිවක් වෙනස් නොවේ.}
 ::msgcat::mcset si Repository ගබඩාව
 ::msgcat::mcset si {Repository (owner/name)} {ගබඩාව (හිමිකරු/නම)}
+::msgcat::mcset si {Repository directory} {ගබඩා නාමාවලිය}
+::msgcat::mcset si {Repository paths} {ගබඩා මාර්ග}
+::msgcat::mcset si {Request a new preview before trying again.} {නැවත උත්සාහ කිරීමට පෙර නව පෙරදසුනක් ඉල්ලන්න.}
 ::msgcat::mcset si {Reset to default} {පෙරනිමියට යළි සකසන්න}
 ::msgcat::mcset si {Reset to template} {අච්චුවට යළි සකසන්න}
 ::msgcat::mcset si Restart {නැවත ආරම්භය}
+::msgcat::mcset si {Restart + verify canary} {නැවත ආරම්භ + කැනරි තහවුරු කරන්න}
 ::msgcat::mcset si {Restore hidden windows} {සැඟවුණු කවුළු ප්‍රතිසාධනය කරන්න}
 ::msgcat::mcset si {Restore plugins to %s?} {%s තත්ත්වයට ප්ලගින ප්රතිස්ථාපනය කරන්නද?}
 ::msgcat::mcset si {Restore revision r%1$s of %2$s?} {%2$s හි සංශෝධනය r%1$s ප්‍රතිසාධනය කරන්නද?}
@@ -544,29 +757,35 @@ package require msgcat
 ::msgcat::mcset si {Restore this commit} {මෙම commit එක ප්රතිස්ථාපනය කරන්න}
 ::msgcat::mcset si {Restore this revision} {මෙම සංශෝධනය ප්‍රතිසාධනය කරන්න}
 ::msgcat::mcset si {Resume scheduler} {කාලසටහන්කරු නැවත අරඹන්න}
+::msgcat::mcset si {Resume unfinished operation} {අසම්පූර්ණ ක්‍රියාකාරකම නැවත අරඹන්න}
 ::msgcat::mcset si Revert {ආපසු හරවන්න}
 ::msgcat::mcset si {Revert %s to HEAD? Uncommitted changes in this file are lost.} {%s ස්ථානය HEAD වෙත ආපසු හැරවන්නද? මෙම ගොනුවේ යොමු නොකළ වෙනස්කම් නැති වේ.}
 ::msgcat::mcset si Revert… {ආපසු හරවන්න…}
 ::msgcat::mcset si Review සමාලෝචනය
 ::msgcat::mcset si {Review (git) pane} {Review (git) පැනලය}
+::msgcat::mcset si {Review deployment} {යෙදවීම සමාලෝචනය කරන්න}
+::msgcat::mcset si {Review extension contribution} {දිගු දායකත්වය සමාලෝචනය කරන්න}
 ::msgcat::mcset si {Review managed local bundle…} {කළමනාකරණය කළ දේශීය බණ්ඩලය සමාලෝචනය කරන්න…}
 ::msgcat::mcset si {Review rollback} {ප්රතිවර්තනය සමාලෝචනය කරන්න}
+::msgcat::mcset si {Review selected files} {තෝරාගත් ගොනු සමාලෝචනය කරන්න}
 ::msgcat::mcset si {Review the component options on the summary screen before applying.} {යෙදීමට පෙර සාරාංශ තිරයේ සංරචක විකල්ප සමාලෝචනය කරන්න.}
 ::msgcat::mcset si {Review the component preview before applying. No component configuration has been written.} {යෙදීමට පෙර සංරචක පෙරදසුන සමාලෝචනය කරන්න. කිසිදු සංරචක වින්යාසයක් ලියා නැත.}
+::msgcat::mcset si {Review the selected files and remove credential findings before preparing.} {සකස් කිරීමට පෙර තෝරාගත් ගොනු සමාලෝචනය කර, හමුවූ අක්තපත්‍ර ඉවත් කරන්න.}
 ::msgcat::mcset si {Reviewed core bundle in the managed install-sources directory} {කළමනාකරණය කළ install-sources නාමාවලියෙහි සමාලෝචිත core bundle එක}
+::msgcat::mcset si {Reviewed fleet deployment} {සමාලෝචිත කණ්ඩායම් යෙදවීම}
 ::msgcat::mcset si {Reviewed local bundle} {සමාලෝචනය කළ දේශීය බණ්ඩලය}
 ::msgcat::mcset si {Reviewed local bundle installed. It was not signed-download verified. Restart is required before using the new core.} {සමාලෝචනය කළ දේශීය බණ්ඩලය ස්ථාපනය කරන ලදී. එය අත්සන්-බාගැනීම් සත්යාපනය කර නොමැත. නව හරය භාවිතා කිරීමට පෙර නැවත ආරම්භ කිරීම අවශ්ය වේ.}
 ::msgcat::mcset si Revision සංශෝධනය
 ::msgcat::mcset si Revoke {ආපසු ගන්න}
+::msgcat::mcset si {Revoke selected} {තෝරාගත් දේ ආපසු ගන්න}
 ::msgcat::mcset si Roles භූමිකාවන්
 ::msgcat::mcset si {Roll back %1$s from %2$s to %3$s?} {%1$s %2$s සිට %3$s දක්වා ප්රතිවර්තනය කරන්නද?}
+::msgcat::mcset si {Roll back selected target} {තෝරාගත් ඉලක්කය පෙර තත්ත්වයට හරවන්න}
 ::msgcat::mcset si {Rollback completed. Reload the component or restart as requested by the report.} {ප්රතිවර්තනය සම්පූර්ණයි. වාර්තාව ඉල්ලූ පරිදි සංරචකය නැවත පූරණය කරන්න හෝ නැවත ආරම්භ කරන්න.}
 ::msgcat::mcset si {Rollback reviewed. Select Install selected component to confirm restoration; nothing has been restored.} {ප්රතිවර්තනය සමාලෝචනය කරන ලදී. ප්රතිස්ථාපනය තහවුරු කිරීමට තෝරාගත් සංරචකය ස්ථාපනය කරන්න තෝරන්න; කිසිවක් ප්රතිස්ථාපනය කර නැත.}
 ::msgcat::mcset si Run {ධාවනය කරන්න}
 ::msgcat::mcset si {Run the wizard again} {විශාරදයා නැවත ධාවනය කරන්න}
 ::msgcat::mcset si {Running in the background} {පසුබිමින් ධාවනය}
-::msgcat::mcset si {Running tasks} {ධාවනය වන කාර්යයන්}
-::msgcat::mcset si {Running tasks (subagents, shells, monitors)} {ධාවනය වන කාර්ය (subagents, shells, monitors)}
 ::msgcat::mcset si {Runtime grants and users live in the store, and a store reset takes them. Promote appends the ones the store decides to config.toml — the file's comments and key order kept, a backup written beside it, the store copies dropped — and refuses rather than guessing where the file already has an opinion.} {රනයිම් අවසර සහ පරිශීලකයන් ගබඩාවේ තිබේ, ගබඩාව යළි සැකසීම ඒවා ඉවත් කරයි. ප්රවර්ධනය ගබඩාව තීරණය කරන ඒවා config.toml ට එක් කරයි — ගොනුවේ පරිකථන සහ යතුරු අනුපිළිවෙල රඳවයි, ඊට යාබදව උපස්ථයක් ලියයි, ගබඩා පිටපත් ඉවත් කරයි — ගොනුව දැනටමත් අදහසක් දරන තැන අනුමාන කරනවාට වඩා ප්රතික්ෂේප කරයි.}
 ::msgcat::mcset si {S3 HTTPS endpoint} {S3 HTTPS endpoint එක}
 ::msgcat::mcset si {S3 bucket} {S3 bucket එක}
@@ -583,9 +802,11 @@ package require msgcat
 ::msgcat::mcset si {Save as default} {පෙරනිමි ලෙස සුරකින්න}
 ::msgcat::mcset si {Save attachment as} {ඇමුණුම සුරකින්න ලෙස}
 ::msgcat::mcset si {Save globally} {ගෝලීයව සුරකින්න}
+::msgcat::mcset si {Save or revert the open buffer before applying a change set.} {වෙනස්කම් කට්ටලයක් යෙදීමට පෙර විවෘත බෆරය සුරකින්න හෝ ආපසු හරවන්න.}
 ::msgcat::mcset si Scan {ස්කෑන් කරන්න}
 ::msgcat::mcset si {Scan the veles code from the machine that invited this phone. If it showed a WireGuard code first, scan that one with the WireGuard app before this.} {මෙම දුරකථනයට ආරාධනා කළ යන්ත්‍රයේ veles කේතය ස්කෑන් කරන්න. එය මුලින් WireGuard කේතයක් පෙන්වූයේ නම්, මීට පෙර එය WireGuard යෙදුමෙන් ස්කෑන් කරන්න.}
 ::msgcat::mcset si {Schedule: an interval ("30m", "every 2h"), a cron pattern ("0 9 * * 1"), or an ISO timestamp for a one-off. The line above shows what the engine reads it as. Deliver: "local" keeps the output in the log — the only honest default from the desktop, which has no chat platform behind it — or "platform:chat_id". Wake session: leave empty to run in a fresh session; set a session id (or unique prefix) to resume that session with its full history — a busy session takes the prompt at its next turn boundary instead.} {කාලසටහන: කාල පරතරයක් ("30m", "every 2h"), cron රටාවක් ("0 9 * * 1"), හෝ එක් වරක් සඳහා ISO කාල මුද්රාවක්. ඉහත පේළිය එන්ජිම එය කියවන ආකාරය පෙන්වයි. බෙදා හැරීම: "local" ප්රතිදානය ලොගයේ තබා ගනී — පිටුපස කතාබස් වේදිකාවක් නොමැති desktop එකෙහි ඇති එකම අවංක පෙරනිමිය — නැතහොත් "platform:chat_id". සැසිය අවදි කිරීම: නැවුම් සැසියක ධාවනයට හිස් තබන්න; එම සැසිය එහි සම්පූර්ණ ඉතිහාසය සමඟ යළි ආරම්භ කිරීමට සැසි id එකක් (හෝ අද්විතීය උපසර්ගයක්) සකසන්න — කාර්යබහුල සැසියක් ඊළඟ වාර මායිමේදී ප්රොම්ප්ටය ගනී.}
+::msgcat::mcset si Scope {විෂය පථය}
 ::msgcat::mcset si {Scroll to end} {අවසානයට අනුචලනය කරන්න}
 ::msgcat::mcset si {Search commands and sessions…} {විධාන සහ සැසි සොයන්න…}
 ::msgcat::mcset si {Search message text} {පණිවිඩ පෙළ සොයන්න}
@@ -594,17 +815,25 @@ package require msgcat
 ::msgcat::mcset si Section කොටස
 ::msgcat::mcset si {Select a component first. No component options will be changed if you skip this step.} {පළමුව සංරචකයක් තෝරන්න. ඔබ මෙම පියවර මඟ හැරියහොත් කිසිදු සංරචක විකල්පයක් වෙනස් නොවේ.}
 ::msgcat::mcset si {Select all} {සියල්ල තෝරන්න}
+::msgcat::mcset si {Select all extensions} {සියලු දිගු තෝරන්න}
+::msgcat::mcset si {Select at least one source file.} {අවම වශයෙන් මූලාශ්‍ර ගොනුවක්වත් තෝරන්න.}
+::msgcat::mcset si {Select none} {කිසිවක් තෝරන්නේ නැත}
+::msgcat::mcset si {Select text to translate first.} {පළමුව පරිවර්තනය කිරීමට පෙළ තෝරන්න.}
+::msgcat::mcset si {Select the extensions and files to contribute. They go into one branch and one pull request, each extension in its own directory. Review, run non-evaluating checks, then prepare an isolated branch and commit. Push and pull request creation are separate confirmed actions.} {දායක කිරීමට දිගු සහ ගොනු තෝරන්න. ඒවා එක් ශාඛාවකට සහ එක් pull request එකකට යයි, සෑම දිගුවක්ම එහිම නාමාවලියක. සමාලෝචනය කර, ඇගයීමක් නොකරන පරීක්ෂා ක්‍රියාත්මක කර, පසුව හුදකලා ශාඛාවක් සකස් කර commit කරන්න. Push කිරීම සහ pull request සෑදීම වෙන වෙනම තහවුරු කරන ක්‍රියා වේ.}
 ::msgcat::mcset si Send යවන්න
+::msgcat::mcset si {Send %s to the peer?} {%s සහකරුට යවන්නද?}
 ::msgcat::mcset si {Send a %d-line message to the channel?} {%d-පේළි පණිවිඩයක් නාලිකාවට යවන්නද?}
 ::msgcat::mcset si {Send raw line to the server? (%s)} {අමු පේළිය සර්වරයට යවන්නද? (%s)}
 ::msgcat::mcset si {Server (empty = no IRC)} {සේවාදායකය (හිස් = IRC නැත)}
 ::msgcat::mcset si {Server: gateway configuration and a reviewed user unit} {Server: gateway වින්‍යාසය සහ සමාලෝචිත user unit එකක්}
 ::msgcat::mcset si {Server: install a user unit and prepare the separate linger handoff} {Server: user unit එකක් ස්ථාපනය කර, වෙනම linger handoff එකක් සකස් කරන්න}
 ::msgcat::mcset si {Server: use a system service and prepare a privileged CLI request} {Server: පද්ධති සේවාවක් භාවිතා කර, ප්‍රිවිලිජ් CLI ඉල්ලීමක් සකස් කරන්න}
+::msgcat::mcset si Session සැසිය
 ::msgcat::mcset si {Session id} {සැසි හැඳුනුම}
 ::msgcat::mcset si {Session id…} {සැසි හැඳුනුම…}
 ::msgcat::mcset si Sessions සැසි
 ::msgcat::mcset si {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {මෙම විකල්ප නාමයට override වී ඇති සැසි ඒවාට ලැබුණු මාර්ගයම තබා ගනී; නව override එකකින් මෙම නම සොයා නොගැනේ.}
+::msgcat::mcset si {Sessions served} {සේවය කළ සැසි}
 ::msgcat::mcset si Set සකසන්න
 ::msgcat::mcset si {Set [model] provider/default in config.toml.} {config.toml තුළ [model] provider/පෙරනිමිය සකසන්න.}
 ::msgcat::mcset si {Set as swap target} {මාරු භාෂාව කරන්න}
@@ -627,6 +856,9 @@ package require msgcat
 ::msgcat::mcset si {Setup — summary} {සැකසුම — සාරාංශය}
 ::msgcat::mcset si {Setup — welcome} {සැකසුම — සාදරයෙන් පිළිගනිමු}
 ::msgcat::mcset si {Shared container network} {හවුල් කන්ටේනර දැල}
+::msgcat::mcset si Shells ෂෙල්
+::msgcat::mcset si {Shells and monitors} {ෂෙල් සහ නිරීක්ෂක}
+::msgcat::mcset si {Shells and monitors (subagents, shells, monitors)} {ෂෙල් සහ නිරීක්ෂක (උප නියෝජිතයන්, ෂෙල්, නිරීක්ෂක)}
 ::msgcat::mcset si {Show diff} {වෙනස්කම් පෙන්වන්න}
 ::msgcat::mcset si {Show every key} {සියලු යතුරු පෙන්වන්න}
 ::msgcat::mcset si Sign {අත්සන් කරන්න}
@@ -641,27 +873,41 @@ package require msgcat
 ::msgcat::mcset si Solved විසඳුණි
 ::msgcat::mcset si Source මූලාශ්රය
 ::msgcat::mcset si {Source commit} {මූලාශ්‍ර කමිටුව}
+::msgcat::mcset si {Source text} {මූල පෙළ}
 ::msgcat::mcset si {Source→app (C-c C-c)} {මූලාශ්රය→app (C-c C-c)}
 ::msgcat::mcset si Stage අදියරට
+::msgcat::mcset si {Stage canary} {කැනරි යොදවීමට සකස් කරන්න}
+::msgcat::mcset si Stale {පරණ වූ}
+::msgcat::mcset si {Standing permissions allow later tool calls without another ask. Session grants are held by live sessions on every surface (desktop, Telegram, IRC, …); global grants persist; [approvals] allowlist entries from config.toml are listed read-only. Revoking one never changes the other grants.} {ස්ථිර අවසර ලබාදීම් මගින් පසුව කරන මෙවලම් ඇමතුම් තවත් ඇසීමක් නොමැතිව සිදු වේ. සැසි ලබාදීම් සෑම මතුපිටකම (desktop, Telegram, IRC, …) ජීවමාන සැසි විසින් රඳවා ගනී; සාමාන්‍ය ලබාදීම් දිගටම පවතී; config.toml හි [approvals] allowlist අයිතම කියවීමට පමණක් ලෙස ලැයිස්තුගත වේ. එකක් ආපසු ගැනීමෙන් අනෙක් ලබාදීම් කිසිදා වෙනස් නොවේ.}
 ::msgcat::mcset si Start ආරම්භය
+::msgcat::mcset si {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.} {ඔබගේ පරිශීලක ප්ලගින නාමාවලියේ දිගුවකින් ආරම්භ කරන්න. එය යාවත්කාලීන වලින් පසුවත් පවතින අතර ගේට්වේ නැවත ගොඩනැගීමක් අවශ්‍ය නැත. නව දිගුව ලිවීමට පෙර නියම මැනිෆෙස්ටය සහ මූලාශ්‍රය පෙරදසුනෙන් පෙන්වයි. සහාය දක්වන භාෂාව සහ API අනුවාදය තෝරා, ගොනු සමාලෝචනය කර, පසුව දිගුව හුදෙකලාව පරීක්ෂා කරන්න.}
 ::msgcat::mcset si {Start with the phone} {දුරකථනය සමඟ ආරම්භ වීම}
+::msgcat::mcset si {Static IP} {ස්ථිර IP}
 ::msgcat::mcset si Status තත්ත්වය
 ::msgcat::mcset si Steer {අභිමානය යොමු කරන්න}
 ::msgcat::mcset si {Step %1$d of %2$d} {පියවර %1$d / %2$d}
 ::msgcat::mcset si {Still to set: %s — type /secret set NAME here, or run veles secret set NAME on the gateway's machine.} {තවම සැකසිය යුතු: %s — මෙහි /secret set NAME ටයිප් කරන්න, නැතහොත් ද්වාරයේ යන්ත්‍රයේ veles secret set NAME ධාවනය කරන්න.}
 ::msgcat::mcset si Stop නවත්වන්න
 ::msgcat::mcset si {Storage root} {Storage root එක}
+::msgcat::mcset si Store ගබඩාව
 ::msgcat::mcset si {Store a secret: %s} {රහසක් ගබඩා කරන්න: %s}
 ::msgcat::mcset si {Store it} {ගබඩා කරන්න}
+::msgcat::mcset si {Store replica} {ගබඩා ප්‍රතිරූපය}
 ::msgcat::mcset si Subagents උප-නියෝජිතයෝ
 ::msgcat::mcset si {Subagents (/agents)} {උප-නියෝජිතයෝ (/agents)}
 ::msgcat::mcset si Summary සාරාංශය
+::msgcat::mcset si Surface මතුපිට
 ::msgcat::mcset si {Swap ⇄} {මාරු කරන්න ⇄}
+::msgcat::mcset si {Sync cancelled.} {සමමුහුර්තකරණය අවලංගු කරන ලදී.}
+::msgcat::mcset si {Sync complete.} {සමමුහුර්ත කිරීම අවසන්.}
+::msgcat::mcset si {Sync now} {දැන් සමමුහුර්ත කරන්න}
 ::msgcat::mcset si {TOML copied — paste it into config.toml} {TOML පිටපත් විය — config.toml තුළට අලවන්න}
 ::msgcat::mcset si Tag ටැගය
 ::msgcat::mcset si {Tap a link to open it, or a block's header to open or close the block.} {සබැඳියක් විවෘත කිරීමට එය තට්ටු කරන්න, නැතහොත් කොටසක් විවෘත කිරීමට හෝ වැසීමට එහි ශීර්ෂය තට්ටු කරන්න.}
 ::msgcat::mcset si {Tap the box at the bottom to type. Send sends, Stop ends the turn, and Detach moves a running command to the background.} {ටයිප් කිරීමට පහළ කොටුව තට්ටු කරන්න. යවන්න යවයි, නවත්වන්න වාරය අවසන් කරයි, වෙන් කරන්න ක්‍රියාත්මක වන විධානයක් පසුබිමට ගෙනයයි.}
 ::msgcat::mcset si {Tap the text to clear the selection.} {තේරීම ඉවත් කිරීමට පෙළ තට්ටු කරන්න.}
+::msgcat::mcset si {Target language:} {ඉලක්ක භාෂාව:}
+::msgcat::mcset si {Target node IDs (canary first, comma separated)} {ඉලක්ක නෝඩ් හැඳුනුම් (කැනරි මුලින්, කොමාවෙන් වෙන් කර ඇත)}
 ::msgcat::mcset si {Task list} {කාර්ය ලැයිස්තුව}
 ::msgcat::mcset si {Task list (right pane)} {කාර්ය ලැයිස්තුව (දකුණු පැනලය)}
 ::msgcat::mcset si Tasks කාර්ය
@@ -673,10 +919,14 @@ package require msgcat
 ::msgcat::mcset si {That is not a ticket.} {එය ටිකට්පතක් නොවේ.}
 ::msgcat::mcset si {That is not a veles pool code.} {එය veles කණ්ඩායම් කේතයක් නොවේ.}
 ::msgcat::mcset si {That is the WireGuard code: scan it with the WireGuard app. The veles code is the second one.} {එය WireGuard කේතයයි: එය WireGuard යෙදුමෙන් ස්කෑන් කරන්න. veles කේතය දෙවැන්නයි.}
+::msgcat::mcset si {The %d reviewed file(s) will be written to a new directory in your user plugin directory, and veles attempts to load the extension. If a directory of that name appeared since the preview, nothing is written. Publishing is not part of this action.} {සමාලෝචිත ගොනු %d ක් ඔබේ පරිශීලක ප්ලගින් ඩිරෙක්ටරියේ නව ඩිරෙක්ටරියකට ලියනු ලබන අතර, veles දිගුව පූරණය කිරීමට උත්සාහ කරයි. පෙරදසුනෙන් පසු එම නමින් ඩිරෙක්ටරියක් පහළ වී ඇත්නම්, කිසිවක් ලියන්නේ නැත. ප්‍රකාශයට පත් කිරීම මෙම ක්‍රියාවට ඇතුළත් නොවේ.}
 ::msgcat::mcset si {The Dev pane's REPL evaluates in the LIVE app — the UI is its own lisp.} {Dev පැනලයේ REPL එක සජීවී යෙදුමෙහි ක්‍රියාත්මක වේ — UI එක එහිම ලිස්ප් එකකි.}
 ::msgcat::mcset si {The [mcp_servers.<name>] table is deleted from config.toml. The previous file is kept as config.toml.bak.} {[mcp_servers.<name>] වගුව config.toml වෙතින් මකා දමයි. පෙර ගොනුව config.toml.bak ලෙස තබා ගැනේ.}
 ::msgcat::mcset si {The adapter allowlists (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) are the trust boundary, and every allowed sender resolves as owner. This is the pre-ACL posture.} {ඇඩැප්ටර අවසර ලැයිස්තු (IRC_ALLOWED_USERS, TELEGRAM_ALLOWED_USERS) විශ්වාස මායිම වන අතර, අවසර දුන් සෑම යවන්නෙක්ම හිමිකරු ලෙස විසඳේ. මෙය ACL වලට පෙර තිබූ ප්රතිපත්තියයි.}
 ::msgcat::mcset si {The agent asks for a secret: %s} {නියෝජිතයා රහසක් ඉල්ලයි: %s}
+::msgcat::mcset si {The already-pushed branch will be used as the PR head. A branch on your fork is named as owner:branch automatically.} {දැනටමත් push කළ ශාඛාව PR හි මුල ලෙස භාවිත වේ. ඔබේ fork හි ශාඛාවක් ස්වයංක්‍රීයව owner:branch ලෙස නම් කෙරේ.}
+::msgcat::mcset si {The author asks} {කතෘ විමසයි}
+::msgcat::mcset si {The buffer changed. Request a new proposal before applying.} {බෆරය වෙනස් වී ඇත. යොදවීමට පෙර නව යෝජනාවක් ඉල්ලන්න.}
 ::msgcat::mcset si {The bundle operation returned an invalid result. Verify the installation before retrying.} {බණ්ඩල මෙහෙයුම වලංගු නොවන ප්රතිඵලයක් ආපසු ලබා දුන්නේය. නැවත උත්සාහ කිරීමට පෙර ස්ථාපනය සත්යාපනය කරන්න.}
 ::msgcat::mcset si {The bundle preview was malformed; nothing was installed.} {බණ්ඩල පෙරදසුන විකෘති විය; කිසිවක් ස්ථාපනය කර නැත.}
 ::msgcat::mcset si {The camera did not open; paste the code instead.} {කැමරාව විවෘත නොවීය; ඒ වෙනුවට කේතය අලවන්න.}
@@ -686,19 +936,26 @@ package require msgcat
 ::msgcat::mcset si {The component manifest is still loading. Wait for it or choose another component.} {සංරචක manifest තවමත් පූරණය වේ. ඒ සඳහා රැඳී සිටින්න හෝ වෙනත් සංරචකයක් තෝරන්න.}
 ::msgcat::mcset si {The component preview is not ready yet. Refresh it and review the result before applying.} {සංරචක පෙරදසුන තවම සූදානම් නැත. යෙදීමට පෙර එය නැවුම් කර ප්රතිඵලය සමාලෝචනය කරන්න.}
 ::msgcat::mcset si {The component preview is still loading. Wait for the reply before reviewing the combined changes.} {සංරචක පෙරදසුන තවමත් පූරණය වේ. ඒකාබද්ධ වෙනස්කම් සමාලෝචනය කිරීමට පෙර පිළිතුර එනතුරු රැඳී සිටින්න.}
+::msgcat::mcset si {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {වත්මන් දෝෂ නිර්ණය (භාෂා සේවාදායකයෙන් හෝ පරීක්ෂාවෙන්) මෙම ගොනුව සමඟ යවනු ලැබේ. අවශ්‍ය නම් ප්‍රශ්නයක් එක් කරන්න. පිළිතුර පෙළ පමණි; කිසිවක් ලිවිය නොහැක.}
 ::msgcat::mcset si {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {ඩිරෙක්ටරිය සහ එහි ඇති සියල්ල ඉවත් වේ. මෙය අහෝසි කළ නොහැක — prompt එකෙන් ඉවත් කිරීමට පමණක් අවශ්ය නම් වෙනුවට අක්රිය කරන්න.}
 ::msgcat::mcset si {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {ඩිරෙක්ටරිය මකා දමයි. ප්ලගින ෆෝල්ඩරය git ගබඩාවක් වන අතර පළමුව ස්නැප්ෂොට් එකක් commit වේ, ඒ නිසා History… එය නැවත ගෙන ඒමට පුළුවන.}
+::msgcat::mcset si {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {සංස්කාරකය gateway ගොනු විවෘත කරයි, දුරස්ථ අවස්ථා ඇතුළුව, සහ gateway මත ගොනුවේ භාෂාව සඳහා භාෂා සේවාදායකය ධාවනය කරයි: tcl-lsp, typescript-language-server (TypeScript සහ JavaScript), rust-analyzer (Rust ප්ලගින් crate හෝ මොඩියුලයක්), clangd (C), racket-langserver සහ Common Lisp සේවාදායකයක්. gateway සතුව සේවාදායකයක් ඇති සෑම භාෂාවකටම hover, අර්ථ දැක්වීමට යාම, සම්පූර්ණ කිරීම සහ සජීවී දෝෂ නිර්ණය ක්‍රියා කරයි; එයට කිසිවක් නොමැති විට, සංස්කාරකය එහි ස්ථාපනය කළ යුතු වැඩසටහන පවසන අතර කේත ඉස්මතු කිරීම දිගටම කරගෙන යයි. පරීක්ෂාව gateway මත ගැළපෙන පරීක්ෂකය ධාවනය කරයි: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, නැතහොත් Racket සහ Lisp කියවන. සුරකින්න, දිගු කළමනාකරණය තුළ නැවත පූරණය කරන්න, සහ දේශීය තත්ත්වය ප්‍රකාශයට පත් නොකර දිගුව පරීක්ෂා කරන්න.}
 ::msgcat::mcset si {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {පළමු handoff එක රහස්, pinned image එක සහ runtime ගොනු සකස් කරයි, නමුත් PDS එක ආරම්භ නොකරයි. KEK සහ PLC rotation key යන්නන් නොබැඳිව උපස්ථ කරගෙන, ඉන්පසු HTTP-01 TLS සක්‍රිය කිරීම සඳහා backup acknowledgement සහිතව නවතින් සමාලෝචනය කළ ඉල්ලීමක් කරන්න. DNS වාර්තා මෙම host එකට සෘජුවම යොමු විය යුතුය; veles විසින් CDN proxy හෝ DNS වෙනස් කිරීම් සිදු නොකෙරේ.}
+::msgcat::mcset si {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {දිගුව උත්පාදනය කළ පසු පෝරමය වෙනස් වී ඇත. නැවත උත්පාදනය කරන්න, නැතහොත් සරල ඇටසැකිල්ල පෙරදසුන් කරන්න.}
 ::msgcat::mcset si {The gateway itself is untouched.} {ගේට්වේ ම නොවෙනස්ව පවතී.}
 ::msgcat::mcset si {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {ද්වාරය වින්‍යාසය නැවත පූරණය කළා, එබැවින් නව සැසි දැන් සිටම එය භාවිත කරයි, සුරක්ෂිතාගාරයේ ගබඩා කළ key එක ඊළඟ ඉල්ලීමේදී භාවිත වේ. Telegram සහ IRC ද්වාරයේ ඊළඟ යළි ඇරඹීමේදී ආරම්භ වේ: veles gateway restart.}
 ::msgcat::mcset si {The installed component no longer matches the selected manifest. Review the component list again.} {ස්ථාපිත සංරචකය තෝරාගත් manifest සමඟ තවදුරටත් නොගැලපේ. සංරචක ලැයිස්තුව නැවත සමාලෝචනය කරන්න.}
 ::msgcat::mcset si {The installer preview has no verification signatures; apply is disabled.} {ස්ථාපක පෙරදසුනට සත්යාපන අත්සන් නොමැත; යොදන්න අක්රීයයි.}
 ::msgcat::mcset si {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {රැකියාව සහ එහි ධාවන ඉතිහාසය ඉවත් වේ. මෙය අහෝසි කළ නොහැක — නැවැත්වීමට පමණක් අවශ්ය නම් වෙනුවට විරාම කරන්න.}
+::msgcat::mcset si {The log could not be read: %s} {ලොගය කියවිය නොහැකි විය: %s}
 ::msgcat::mcset si {The manifest belongs to another component; its reply was discarded.} {manifest වෙනත් සංරචකයකට අයත්ය; එහි පිළිතුර ඉවත දමන ලදී.}
 ::msgcat::mcset si {The profile changed. Review the fresh plan before applying it.} {පැතිකඩ වෙනස් වී ඇත. එය යෙදීමට පෙර නව සැලැස්ම සමාලෝචනය කරන්න.}
 ::msgcat::mcset si {The repository needs a SKILL.md at its root or one category deep. It lands in %s.} {ගබඩාවේ මූලයේ හෝ එක් කාණ්ඩයක් ගැඹුරේ SKILL.md අවශ්ය වේ. එය %s තුළට පිවිසෙයි.}
 ::msgcat::mcset si {The repository root must contain plugin.toml. It is cloned into %s under the manifest's name.} {ගබඩා මූලයේ plugin.toml තිබිය යුතුය. එය මැනිෆෙස්ට් නාමය යටතේ %s තුළට clone වේ.}
+::msgcat::mcset si {The reviewed change set was applied (%d files). Review and test it before publishing.} {සමාලෝචිත වෙනස්කම් කට්ටලය යොදන ලදී (ගොනු %d). ප්‍රකාශයට පත් කිරීමට පෙර එය සමාලෝචනය කර පරීක්ෂා කරන්න.}
 ::msgcat::mcset si {The reviewed configuration snapshot will also be restored.} {සමාලෝචනය කළ වින්යාස ස්නැප්ෂොට් එකද ප්රතිසාධනය කෙරේ.}
+::msgcat::mcset si {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.} {සමාලෝචනය කළ ගොනු ඔබගේ පරිශීලක ප්ලගින නාමාවලියට ලියනු ලැබේ. Veles දේශීය ප්‍රතිසාධන ඡායාරූපයක් සුරකින අතර දිගුව නැවත පූරණය කිරීමට උත්සාහ කරයි; ප්‍රකාශනය මෙම ක්‍රියාවේ කොටසක් නොවේ.}
+::msgcat::mcset si {The reviewed proposal was applied locally. Review and test it before publishing.} {සමාලෝචනය කළ යෝජනාව දේශීයව යොදවා ඇත. ප්‍රකාශනයට පෙර එය සමාලෝචනය කර පරීක්ෂා කරන්න.}
 ::msgcat::mcset si {The rollback preview was malformed or named another component; nothing was restored.} {ප්රතිවර්තන පෙරදසුන විකෘති විය හෝ වෙනත් සංරචකයක් නම් කළේය; කිසිවක් ප්රතිසාධනය කර නැත.}
 ::msgcat::mcset si {The rollback returned an invalid result. Verify the installation before retrying.} {ප්රතිවර්තනය වලංගු නොවන ප්රතිඵලයක් ආපසු ලබා දුන්නේය. නැවත උත්සාහ කිරීමට පෙර ස්ථාපනය සත්යාපනය කරන්න.}
 ::msgcat::mcset si {The route new sessions start on. /model and the models overlay change it later, per session or as the new default.} {නව සැසි අරඹන මාර්ගය. /model සහ models තේරීම් පුවරුව පසුව එය වෙනස් කරයි — සැසියකට හෝ නව පෙරනිමිය ලෙස.}
@@ -709,15 +966,22 @@ package require msgcat
 ::msgcat::mcset si {The signed download discard returned an invalid response; no installation was requested.} {අත්සන් කළ බාගැනීම ඉවත ලැමේදී වලංගු නොවන ප්‍රතිචාරයක් ලැබුණි; ස්ථාපනයක් ඉල්ලා නැත.}
 ::msgcat::mcset si {The signed installation returned an invalid result. Verify the installation before retrying.} {අත්සන් කළ ස්ථාපනය වලංගු නොවන ප්‍රතිඵලයක් ලබා දුන්නේ ය. නැවත උත්සාහ කිරීමට පෙර ස්ථාපනය තහවුරු කරන්න.}
 ::msgcat::mcset si {The signed release preview was malformed; nothing was installed.} {අත්සන් කළ නිකුතු පෙරදසුන වැරදි වැඩූවක් විය; කිසිවක් ස්ථාපනය නොකෙරුණි.}
+::msgcat::mcset si {The source buffer changed. Request a new proposal before applying.} {මූලාශ්‍ර බෆරය වෙනස් වී ඇත. යොදවීමට පෙර නව යෝජනාවක් ඉල්ලන්න.}
 ::msgcat::mcset si {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {ගබඩාව rev එකක් පසුපසට යයි. ආපසු හැරවීම ම තවත් rev එකක් නිසා එය ද අහෝසි කළ හැක.}
+::msgcat::mcset si {The translator returned no text.} {පරිවර්තකයෙන් පෙළක් ලැබුණේ නැත.}
 ::msgcat::mcset si {The verification reply was malformed; no integrity result was accepted.} {සත්යාපන පිළිතුර විකෘති විය; කිසිදු අඛණ්ඩතා ප්රතිඵලයක් පිළිගැනුණේ නැත.}
 ::msgcat::mcset si Themes තේමාවන්
+::msgcat::mcset si {These paths already exist in the chosen repository:} {මෙම මාර්ග තෝරාගත් ගබඩාවේ දැනටමත් පවතී:}
 ::msgcat::mcset si {They have not been saved.} {ඒවා සුරැකී නැත.}
+::msgcat::mcset si {This buffer has no diagnostics to explain. Run Check, or wait for the language server.} {මෙම බෆරයට පැහැදිලි කිරීමට දෝෂ නිර්ණයක් නැත. පරීක්ෂාව ධාවනය කරන්න, නැතහොත් භාෂා සේවාදායකය එනතුරු රැඳී සිටින්න.}
 ::msgcat::mcset si {This challenge is over.} {මෙම අභියෝගය අවසන් විය.}
 ::msgcat::mcset si {This code has expired. Ask for a new one.} {මෙම කේතය කල් ඉකුත් වී ඇත. නව එකක් ඉල්ලන්න.}
 ::msgcat::mcset si {This does not start a service or claim signed-download verification.} {මෙය සේවාවක් ආරම්භ නොකරන අතර අත්සන්-බාගැනීම් සත්යාපනය කියා නොපවසයි.}
 ::msgcat::mcset si {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {මෙම ද්වාරය මෙම යන්ත්‍රයෙන් රහස් අගයන් නොගනී: එහිදීම veles secret set %s මගින් ඇතුළත් කරන්න, නැතහොත් මෙම ජාලය එහි [vault] trusted_networks වෙත එක් කරන්න}
 ::msgcat::mcset si {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {මෙය හරියටම ලියනු ලබන දෙයයි — එන්ජිමේ ම බයිට්, සජීවීව ගෙන එන ලද ඒවාය. තවම කිසිවක් තැටිය ස්පර්ශ කර නැත.}
+::msgcat::mcset si {This node is not a configured sync peer for any kind.} {මෙම නෝඩය කිසිදු වර්ගයක් සඳහා වින්‍යාස කළ සමමුහුර්ත සහකරුවෙකු නොවේ.}
+::msgcat::mcset si {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {මෙම ප්ලගිනය නැව්ගත කරන ලදී, කියවීමට පමණි. නැව්ගත පිටපත භාවිතා කිරීමට, එකම නමින් පරිශීලක පිටපතක් ඉවත් කරන්න.}
+::msgcat::mcset si {This publishes the commit; no pull request is created yet.} {මෙය කොමිට් එක ප්‍රකාශ කරයි; තවම PR එකක් සාදනු නොලැබේ.}
 ::msgcat::mcset si {This review expires after %s seconds. Closing or cancelling discards its private staging.} {මෙම සමාලෝචනය තත්පර %s කට පසු කල් ඉකුත් වේ. වැසීම හෝ අවලංගු කිරීම එහි පුද්ගලික අදියරගත කිරීම ඉවත ලයි.}
 ::msgcat::mcset si {This wizard writes config.toml, and puts the keys you give it into the encrypted vault. Every step can be skipped: a skipped step is left out of a new config, and left exactly as it is in an existing one. An existing config.toml is edited in place — only the sections you answer change, and everything else in it, comments included, stays.} {මෙම විශාරදයා config.toml ලියයි, ඔබ දෙන keys සංකේතනය කළ සුරක්ෂිතාගාරයට දමයි. සෑම පියවරක්ම මඟ හැරිය හැක: මඟ හැරි පියවර නව වින්‍යාසයට ඇතුළත් නොවේ, පවතින වින්‍යාසයේ තිබූ ආකාරයටම පවතී. පවතින config.toml එම ස්ථානයේම සංස්කරණය වේ — ඔබ පිළිතුරු දෙන කොටස් පමණක් වෙනස් වේ, අනෙක් සියල්ල, අදහස් ද ඇතුළුව, පවතී.}
 ::msgcat::mcset si {Ticket needed} {ටිකට්පතක් අවශ්‍යයි}
@@ -730,6 +994,14 @@ package require msgcat
 ::msgcat::mcset si {Topic for %s} {%s සඳහා මාතෘකාව}
 ::msgcat::mcset si {Touch and hold a session, or anything else that has a menu, to open the menu. A tap outside it, or Back, closes it.} {මෙනුව විවෘත කිරීමට සැසියක්, හෝ මෙනුවක් ඇති වෙනත් ඕනෑම දෙයක් ස්පර්ශ කර අල්ලාගෙන සිටින්න. එයින් පිටත තට්ටුවක්, හෝ ආපසු, එය වසයි.}
 ::msgcat::mcset si {Touch and hold a word to select it. When you lift your finger, its menu opens, with Copy at the top.} {වචනයක් තේරීමට එය ස්පර්ශ කර අල්ලාගෙන සිටින්න. ඇඟිල්ල ඔසවන විට එහි මෙනුව විවෘත වේ, ඉහළින්ම පිටපත් කරන්න සමඟ.}
+::msgcat::mcset si Translate {පරිවර්තනය කරන්න}
+::msgcat::mcset si {Translate selection} {තේරීම පරිවර්තනය කරන්න}
+::msgcat::mcset si Translating… {පරිවර්තනය කරමින්…}
+::msgcat::mcset si {Translation cancelled.} {පරිවර්තනය අවලංගු කර ඇත.}
+::msgcat::mcset si {Translation copied.} {පරිවර්තනය පිටපත් කරන ලදී.}
+::msgcat::mcset si {Translation failed} {පරිවර්තනය අසමත් විය}
+::msgcat::mcset si {Translation result} {පරිවර්තන ප්‍රතිඵලය}
+::msgcat::mcset si {Translator configuration unavailable} {පරිවර්තක වින්‍යාසය ලබා ගත නොහැක}
 ::msgcat::mcset si {Trigger history} {ට්‍රිගර් ඉතිහාසය}
 ::msgcat::mcset si Triggers ප්රේරක
 ::msgcat::mcset si {Triggers react to channel events without a turn. slopdrop forwards the event to the bridge and relays the reply; vision describes an image URL inside the cooldown and hourly cap. The row only fires where the [triggers] config switch AND the derived mask allow it — #coven forwards nothing under the live slopdrop bindings.} {ප්රේරක turn එකකින් තොරව නාලිකා සිදුවීම්වලට ප්රතික්රියා කරයි. slopdrop සිදුවීම bridge වෙත යවා පිළිතුර යළි හරවා යවයි; vision cooldown සහ පැයක සීමාව තුළ රූප URL එකක් විස්තර කරයි. [triggers] config ස්විචය සහ ව්යුත්පන්න mask යන දෙකම ඉඩ දෙන තැන පමණක් පේළිය ක්රියාත්මක වේ — live slopdrop බැඳීම් යටතේ #coven කිසිවක් ඉදිරියට යවන්නේ නැත.}
@@ -746,15 +1018,22 @@ package require msgcat
 ::msgcat::mcset si {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {.env හි IRC_ALLOWED_USERS ඔබේ ගිණුම නම් කරන තෙක්, ජාලයේ ඕනෑම අයෙකුට බොට් සමඟ කතා කළ හැක — [acl] කොටසක් නොමැති නම් හිමිකරු ලෙස, සියලු මෙවලම් සමඟ.}
 ::msgcat::mcset si {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {.env හි TELEGRAM_ALLOWED_USERS ඔබේ පරිශීලක හැඳුනුම නම් කරන තෙක්, බොට් සොයා ගන්නා ඕනෑම අයෙකුට එය සමඟ කතා කළ හැක — [acl] කොටසක් නොමැති නම් හිමිකරු ලෙස, සියලු මෙවලම් සමඟ.}
 ::msgcat::mcset si Untitled {මාතෘකා රහිත}
+::msgcat::mcset si {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Upstream දායකත්වය පැහැදිලි ප්‍රකාශන ක්‍රියාවකි, ස්වයංක්‍රීය උඩුගත කිරීමක් නොවේ. Manage extensions හි, Contribute සියලු පරිශීලක දිගු ලැයිස්තුගත කරයි: දිගු සහ ගොනු තෝරන්න, diff එක සහ රහස් ස්කෑනය පරීක්ෂා කරන්න, පරීක්ෂා ක්‍රියාත්මක කරන්න, පසුව ඔබ තෝරාගත් git අනන්‍යතාව සමඟ එක් ශාඛාවක් සහ එක් PR එකක් (පෙරනිමියෙන් veles වෙත) සාදන්න. සෑම දිගුවක්ම ගබඩාවේ එහිම නාමාවලියකට යයි, එහි පවතින ගොනුවක් ප්‍රතිස්ථාපනය වන්නේ වෙනම තහවුරු කිරීමකින් පසුව පමණි. node.toml, දේශීය අක්තපත්‍ර, ටෝකන, පෞද්ගලික endpoints හෝ අදාළ නොවන ප්ලගින් තත්ත්වය කිසිදා ප්‍රකාශයට පත් නොකරන්න. දේශීය ප්‍රතිසාධන ස්නැප්ෂොට් upstream commit එකක් හෝ PR එකක් නොවේ.}
+::msgcat::mcset si {Upstream repository or fork URL} {උඩුගංගා ගබඩාවේ හෝ ෆෝක් එකේ URL}
+::msgcat::mcset si {Uptime class} {ක්‍රියාකාල පන්තිය}
+::msgcat::mcset si {Uptime: host %1$s, gateway %2$s} {ක්‍රියාකාරී කාලය: සත්කාරකය %1$s, gateway %2$s}
 ::msgcat::mcset si Usage භාවිතය
 ::msgcat::mcset si {Usage & Quota} {භාවිතය සහ කෝටා}
 ::msgcat::mcset si {Use TLS} {TLS භාවිතා කරන්න}
 ::msgcat::mcset si {Use now} {දැන් භාවිත කරන්න}
+::msgcat::mcset si {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.} {සැබෑ කොන්ත්‍රාත්තු සඳහා කතෘ මාර්ගෝපදේශය සහ API යොමුව බොත්තම් භාවිත කරන්න. Plugins ආවරණය සජීවී හූක් ලැයිස්තුගත කරයි; සේවා සහ අභිබවා යාමේ ස්ථාන ලැබෙන්නේ ගේට්වේ එකේම ලේඛනයෙන් මිස මෙම මාර්ගෝපදේශයේ පිටපත් කළ ලැයිස්තුවකින් නොවේ.}
 ::msgcat::mcset si {Use this ticket} {මෙම ටිකට්පත භාවිතා කරන්න}
+::msgcat::mcset si {Use your fork (https://github.com/<you>/veles.git or git@github.com:<you>/veles.git) unless you can push to veles itself. The chosen repository is cloned into an isolated worktree. Nothing is pushed.} {veles වෙතම push කළ හැකි නොවේ නම් ඔබේ fork භාවිතා කරන්න (https://github.com/<you>/veles.git හෝ git@github.com:<you>/veles.git). තෝරාගත් ගබඩාව හුදකලා worktree එකකට ක්ලෝන කෙරේ. කිසිවක් push නොවේ.}
 ::msgcat::mcset si {Users — one role across networks and platforms} {පරිශීලකයින් — ජාල සහ වේදිකා හරහා එක් භූමිකාවක්}
 ::msgcat::mcset si {Using the phone, for the agent} {දුරකථනය භාවිතය, නියෝජිතයා සඳහා}
 ::msgcat::mcset si {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {සාමාන්යයෙන් සැපයුම්කරු ඇතුළත් කිරීමේ නාමයට සමානයි. Skip තේරීමේදී දෙකම හිස්ව තබන්න — අඩක් පුරවා ඇති යුගලයක් මාර්ගගත නොකරයි.}
 ::msgcat::mcset si {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {අගයන් TOML වේ: උපුටා දැක්වූ තන්තු, සංඛ්යා හෝ ලැයිස්තු. [mcp_servers.<name>] තුළට ලියයි — ඔබේ අදහස් සහ අනෙක් සෑම කොටසක් ම නොවෙනස්ව පවතී.}
+::msgcat::mcset si Vault සුරක්ෂිතාගාරය
 ::msgcat::mcset si {Verified signed bundle installed. Restart the gateway before using the new core.} {තහවුරු කළ අත්සන් කළ එකතුව ස්ථාපනය කර ඇත. නව මූලය භාවිතා කිරීමට පෙර gateway එක නැවත ආරම්භ කරන්න.}
 ::msgcat::mcset si {Verified signed release — not installed yet} {තහවුරු කළ අත්සන් කළ නිකුතුව — තවමත් ස්ථාපනය කර නැත}
 ::msgcat::mcset si {Verify and review release…} {නිකුතුව තහවුරු කර සමාලෝචනය කරන්න…}
@@ -762,10 +1041,14 @@ package require msgcat
 ::msgcat::mcset si {Verify signed release} {අත්සන් කළ නිකුතුව තහවුරු කරන්න}
 ::msgcat::mcset si {Verify signed release…} {අත්සන් කළ නිකුතුව තහවුරු කරමින්…}
 ::msgcat::mcset si Version අනුවාදය
+::msgcat::mcset si {Version %1$s: %2$s} {අනුවාදය %1$s: %2$s}
+::msgcat::mcset si {Version drift in the registry: %s} {ලේඛනාගාරයේ අනුවාද අපගමනය: %s}
 ::msgcat::mcset si View දසුන
 ::msgcat::mcset si {View markdown source} {markdown මූලාශ්‍රය බලන්න}
 ::msgcat::mcset si {View source / rendered} {මූලාශ්‍රය / විදහා දැක්වූ}
 ::msgcat::mcset si Voice {voice ලබා දෙන්න}
+::msgcat::mcset si {Waiting for the model…} {මාදිලිය එනතුරු රැඳී සිටී…}
+::msgcat::mcset si {Waiting for the model… Nothing has been written.} {මාදිලිය එනතුරු රැඳී සිටී… කිසිවක් ලියා නැත.}
 ::msgcat::mcset si {Welcome to veles} {veles වෙත සාදරයෙන් පිළිගනිමු}
 ::msgcat::mcset si {What the agent can do here} {නියෝජිතයාට මෙහි කළ හැකි දේ}
 ::msgcat::mcset si {What veles may do on this phone. Each button opens the Android setting that changes it.} {මෙම දුරකථනයේ veles කළ හැකි දේ. සෑම බොත්තමක්ම එය වෙනස් කරන Android සැකසුම විවෘත කරයි.}
@@ -773,10 +1056,13 @@ package require msgcat
 ::msgcat::mcset si {While veles is in the background, an agent's question or a finished turn is a notification; tap it to open the session.} {veles පසුබිමේ ඇති විට නියෝජිතයෙකුගේ ප්‍රශ්නයක් හෝ අවසන් වූ වාරයක් දැනුම්දීමක් වේ; සැසිය විවෘත කිරීමට එය තට්ටු කරන්න.}
 ::msgcat::mcset si {Who may talk to the bot. This choice decides whether config.toml carries an [acl] section at all — and that flips the whole posture.} {බොට් සමඟ කතා කළ හැක්කේ කාටද. මෙම තේරීම config.toml හි [acl] කොටසක් කිසිසේත් තිබේද යන්න තීරණය කරයි — එය සම්පූර්ණ ප්රතිපත්තියම පෙරළයි.}
 ::msgcat::mcset si Whois Whois
-::msgcat::mcset si {Wire protocol (chat_completions or responses)} {වයර් ප්රොටොකෝලය (chat_completions හෝ responses)}
+::msgcat::mcset si {Wire protocol (chat_completions, responses or plugin)} {Wire ප්‍රොටෝකෝලය (chat_completions, responses හෝ plugin):}
 ::msgcat::mcset si {With a keyboard attached, every key works as on a laptop.} {යතුරු පුවරුවක් සම්බන්ධ කළ විට සෑම යතුරක්ම ලැප්ටොප් එකක මෙන් ක්‍රියා කරයි.}
 ::msgcat::mcset si {Workflow SHA} {වැඩ ප්‍රවාහ SHA}
+::msgcat::mcset si {Workflow commit} {කාර්ය ප්‍රවාහ commit}
+::msgcat::mcset si Worktree වර්ක්ට්‍රී
 ::msgcat::mcset si {Write it} {එය ලියන්න}
+::msgcat::mcset si {Write the design question first.} {පළමුව නිර්මාණ ප්‍රශ්නය ලියන්න.}
 ::msgcat::mcset si {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {සැපයුම්කරුවෙකු ලියන්නේ නැත. [[custom_providers]] ඇතුළත් කිරීමක් සහ [model] යුගලය පවතින තුරු gateway ටර්න් එකක් මාර්ගගත නොකරයි.}
 ::msgcat::mcset si {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {ඕනෑම [acl] යතුරක් ලිවීම මෙම ද්වාරය තෝරාගත් ප්‍රකාරයට මාරු කරයි: පෙරනිමි භූමිකාව guest (fail-closed) වේ, සහ අවසර ලැයිස්තු තවදුරටත් සීමාව නොවේ. ඔබ විශ්වාස කරන හිමිකරු අනන්‍යතාවක් ඇත්නම් පමණක් මෙය තෝරන්න.}
 ::msgcat::mcset si {[model] provider} {[model] සැපයුම්කරු}
@@ -835,8 +1121,10 @@ package require msgcat
 ::msgcat::mcset si {also list hooks with no handler} {handler නැති hooks ද ලැයිස්තුගත කරන්න}
 ::msgcat::mcset si {also write grants that still have an expiry} {කල් ඉකුත්වීමක් ඇති grants ද ලියන්න}
 ::msgcat::mcset si {also write runtime users} {runtime පරිශීලකයින් ද ලියන්න}
+::msgcat::mcset si {an allowlist entry is removed by editing config.toml} {allowlist අයිතමයක් ඉවත් කරන්නේ config.toml සංස්කරණය කිරීමෙනි}
 ::msgcat::mcset si {an allowlist is in force: a plugin not on it stays off} {allowlist ක්රියාත්මකයි: එහි නැති ප්ලගිනයක් අක්රියව පවතී}
 ::msgcat::mcset si {answer failed: %s} {පිළිතුර අසමත්: %s}
+::msgcat::mcset si {answer only, nothing to apply} {පිළිතුර පමණි, යෙදීමට කිසිවක් නැත}
 ::msgcat::mcset si {append these rules to config.toml} {මෙම රීති config.toml වෙත අනුයුක්ත කරන්න}
 ::msgcat::mcset si {apply failed: %s} {apply අසමත්: %s}
 ::msgcat::mcset si {apply to:} {apply කරන්නේ:}
@@ -848,6 +1136,7 @@ package require msgcat
 ::msgcat::mcset si {ask the agent} {නියෝජිතයාගෙන් ඇසීම}
 ::msgcat::mcset si {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset si {asked by: %s} {අසන ලද්දේ: %s}
+::msgcat::mcset si {asking %s for its metrics…} {%s වෙතින් එහි මිනුම් විමසමින්…}
 ::msgcat::mcset si {attach a file} {ගොනුවක් අමුණන්න}
 ::msgcat::mcset si {attach an image or file} {රූපයක් හෝ ගොනුවක් අමුණන්න}
 ::msgcat::mcset si {attach failed: %1$s} {අමුණීම අසාර්ථක විය: %1$s}
@@ -855,12 +1144,15 @@ package require msgcat
 ::msgcat::mcset si {attached %1$s (%2$s pending)} {%1$s අමුණා ඇත (%2$s බලා සිටී)}
 ::msgcat::mcset si {attached to %s} {%s වෙත අමුණා ඇත}
 ::msgcat::mcset si {attached to child session %1$s} {ළමා සැසිය %1$s වෙත අමුණා ඇත}
+::msgcat::mcset si automatic ස්වයංක්‍රීය
 ::msgcat::mcset si {aux model} {aux ආකෘතිය}
 ::msgcat::mcset si {aux provider} {aux සැපයුම්කරු}
+::msgcat::mcset si available {ලබා ගත හැක}
 ::msgcat::mcset si {available components} {පවතින සංරචක}
 ::msgcat::mcset si {back up N user turns} {පරිශීලක වාර N ක් පසුපසට යන්න}
 ::msgcat::mcset si {backed up the previous config to %s} {පෙර config එක %s වෙත උපස්ථ කළා}
 ::msgcat::mcset si {background shells; /shells output|kill <id>} {පසුබිම් ෂෙල්; /shells output|kill <id>}
+::msgcat::mcset si {backing off: %1$s failure(s), next automatic try in %2$s s} {පසුබසිමින්: අසාර්ථකත්වය %1$s, ඊළඟ ස්වයංක්‍රීය උත්සාහය තත්පර %2$s කින්}
 ::msgcat::mcset si {bad host for %1$s: %2$s} {%1$s සඳහා වැරදි host: %2$s}
 ::msgcat::mcset si {bad unit for %1$s: %2$s} {%1$s සඳහා වැරදි unit: %2$s}
 ::msgcat::mcset si {bare display off} {bare display අක්රියයි}
@@ -871,12 +1163,15 @@ package require msgcat
 ::msgcat::mcset si {browse the filesystem} {ගොනු පද්ධතිය පිරික්සන්න}
 ::msgcat::mcset si {browse the repo's files} {repo ගොනු පිරික්සන්න}
 ::msgcat::mcset si {builtin (%s):} {builtin (%s):}
+::msgcat::mcset si bundled නැව්ගත
+::msgcat::mcset si {bundled, read-only} {නැව්ගත, කියවීමට පමණි}
 ::msgcat::mcset si by කළේ
 ::msgcat::mcset si {by plan — all sessions} {සැලැස්ම අනුව — සියලුම සැසි}
 ::msgcat::mcset si {by plan — this session} {සැලැස්ම අනුව — මෙම සැසිය}
 ::msgcat::mcset si {by tool} {මෙවලම අනුව}
 ::msgcat::mcset si {cancel failed: %1$s} {cancel අසමත්: %1$s}
 ::msgcat::mcset si {cancel the running turn} {ක්රියාත්මක turn එක අවලංගු කරන්න}
+::msgcat::mcset si {cancel the selected task} {තෝරාගත් කාර්යය අවලංගු කරන්න}
 ::msgcat::mcset si {cancelled task %1$s} {කාර්යය %1$s අවලංගු විය}
 ::msgcat::mcset si {cannot list scripts (gateway offline?)} {scripts ලැයිස්තුගත කළ නොහැක (gateway ක්රියා විරහිතද?)}
 ::msgcat::mcset si {cannot reach the gateway: %s} {gateway වෙත ළඟා විය නොහැක: %s}
@@ -922,6 +1217,7 @@ package require msgcat
 ::msgcat::mcset si commit {commit කරන්න}
 ::msgcat::mcset si {compacting %s messages in the background — the transcript reloads when it finishes} {පසුබිමේ %s පණිවිඩ compact කරමින් — අවසන් වූ පසු transcript නැවත පූරණය වේ}
 ::msgcat::mcset si compacting… {සම්පීඩනය වෙමින්…}
+::msgcat::mcset si {comparing the nodes' versions and config…} {නෝඩවල අනුවාද සහ වින්‍යාසය සසඳමින්…}
 ::msgcat::mcset si {completion tokens} {completion ටෝකන}
 ::msgcat::mcset si {component options and declared actions} {සංරචක විකල්ප සහ ප්රකාශිත ක්රියා}
 ::msgcat::mcset si composer composer
@@ -966,6 +1262,7 @@ package require msgcat
 ::msgcat::mcset si {could not open %s} {%s විවෘත කළ නොහැක}
 ::msgcat::mcset si {could not open %s (no working browser opener)} {%s විවෘත කළ නොහැක (ක්රියා කරන browser opener එකක් නැත)}
 ::msgcat::mcset si {could not open %{url}: %{e}} {%{url} විවෘත කළ නොහැක: %{e}}
+::msgcat::mcset si {could not open the optional referral link: %s} {විකල්ප යොමු සබැඳිය විවෘත කළ නොහැකි විය: %s}
 ::msgcat::mcset si {could not read %s: %s} {%s කියවිය නොහැකි විය: %s}
 ::msgcat::mcset si {could not read the current route} {වත්මන් මාර්ගය කියවිය නොහැක}
 ::msgcat::mcset si {could not save this session's language: %{e}} {මෙම සැසියේ භාෂාව සුරැකිය නොහැකි විය: %{e}}
@@ -985,6 +1282,7 @@ package require msgcat
 ::msgcat::mcset si {ctxmenu: no widget %s (attached too early?)} {ctxmenu: widget %s නැත (කලින් අමුණන ලද්දේද?)}
 ::msgcat::mcset si {curated access was chosen with no owner identity, so [acl] stays dormant — give one like telegram:123456 or irc:account to enable it} {තෝරාගත් ප්‍රවේශය තෝරා ඇති නමුත් හිමිකරු අනන්‍යතාවක් නැත, එබැවින් [acl] අක්‍රියව පවතී — එය සක්‍රීය කිරීමට telegram:123456 හෝ irc:account වැනි එකක් දෙන්න}
 ::msgcat::mcset si {current theme: %{name} · /theme <name>} {වත්මන් තේමාව: %{name} · /theme <name>}
+::msgcat::mcset si {cursor %1$s of %2$s (%3$s behind)} {කර්සරය %1$s / %2$s (%3$s පසුපසින්)}
 ::msgcat::mcset si {custom command /%s…} {අභිරුචි විධානය /%s…}
 ::msgcat::mcset si {custom commands (.veles/commands/) and config aliases} {අභිරුචි විධාන (.veles/commands/) සහ වින්‍යාස අන්වර්ථ}
 ::msgcat::mcset si {cycle ends} {චක්රය අවසන් වේ}
@@ -1024,6 +1322,7 @@ package require msgcat
 ::msgcat::mcset si doctor_resident {සෑම විමසුමකම ස්ථිරව: අක්ෂර %{total} න් %{shown} (~ටෝකන %{tokens}) — ඉතිරිය අවශ්‍ය විට මෙයින් පූරණය වේ: memory action=read path=%{path}}
 ::msgcat::mcset si doctor_title {මතක පරීක්ෂාව}
 ::msgcat::mcset si doctor_total {එකතුව: ගොනු %{files} ක අක්ෂර %{chars} (~ටෝකන %{tokens})}
+::msgcat::mcset si {documentation is not in this source checkout: %s} {ප්‍රලේඛනය මෙම මූලාශ්‍ර පිටපතේ නැත: %s}
 ::msgcat::mcset si done අවසන්
 ::msgcat::mcset si {done · %1$s/%2$s} {අවසන් · %1$s/%2$s}
 ::msgcat::mcset si {done, but the model returned no text} {අවසන්, නමුත් model එකෙන් පෙළක් ලැබුණේ නැත}
@@ -1056,15 +1355,20 @@ package require msgcat
 ::msgcat::mcset si {evaluate Tcl and answer with the result — no model turn} {Tcl ධාවනය කර ප්‍රතිඵලයෙන් පිළිතුරු දෙන්න — ආකෘති වාරයක් නැත}
 ::msgcat::mcset si everyone හැමෝම
 ::msgcat::mcset si everywhere හැමතැනම
+::msgcat::mcset si {exchanging registry gossip…} {ලේඛනාගාර gossip හුවමාරු කරමින්…}
 ::msgcat::mcset si exit පිටවන්න
 ::msgcat::mcset si {exit veles-desktop} {veles-desktop වලින් පිටවන්න}
 ::msgcat::mcset si {export failed: %s} {export කිරීම අසාර්ථක විය: %s}
 ::msgcat::mcset si {export session} {සැසිය අපනයනය කරන්න}
 ::msgcat::mcset si {exported to %s} {%s වෙත export කරන ලදී}
+::msgcat::mcset si {extension architecture, examples and LSP help} {දිගු ව්‍යුහය, උදාහරණ සහ LSP උපකාරය}
+::msgcat::mcset si {extension development guide} {දිගු සංවර්ධන මාර්ගෝපදේශය}
+::msgcat::mcset si failed අසමත්
 ::msgcat::mcset si {failed to load history: %s} {ඉතිහාසය පූරණය කිරීම අසාර්ථක විය: %s}
 ::msgcat::mcset si {failed to paint cached history: %s} {කෑෂ් කළ ඉතිහාසය පෙන්වීම අසාර්ථක විය: %s}
 ::msgcat::mcset si {failed to paint replayed history: %s} {replay කළ ඉතිහාසය පෙන්වීම අසාර්ථක විය: %s}
 ::msgcat::mcset si {failed: %s} {අසාර්ථකයි: %s}
+::msgcat::mcset si {failing — heartbeating, but a sync push or the last probe failed} {අසමත් වෙමින් — හෘද ස්පන්දන යවයි, නමුත් සමමුහුර්ත push එකක් හෝ අවසන් පරීක්ෂාව අසමත් විය}
 ::msgcat::mcset si {failover blueprint: cannot reach the gateway} {failover සැලැස්ම: ගේට්වේ වෙත ළඟා විය නොහැක}
 ::msgcat::mcset si {failover graph unavailable: %1$s} {failover ප්‍රස්ථාරය ලබා ගත නොහැක: %1$s}
 ::msgcat::mcset si {failover script: cannot reach the gateway} {failover ස්ක්‍රිප්ටය: ගේට්වේ වෙත ළඟා විය නොහැක}
@@ -1087,6 +1391,7 @@ package require msgcat
 ::msgcat::mcset si {fire the Tcl hook} {Tcl hook එක ක්‍රියාත්මක කරන්න}
 ::msgcat::mcset si {fires for %s:} {%s සඳහා ක්‍රියාත්මක වේ:}
 ::msgcat::mcset si {fires per hour} {පැයකට වෙඩි ගැසීම්}
+::msgcat::mcset si {fleet drift} {ෆ්ලීට් අපගමනය}
 ::msgcat::mcset si {focus composer} {උපකාරක (මෙම තිරය)}
 ::msgcat::mcset si {focus failed: %{e}} {අවධානය යොමු කිරීම අසමත්: %{e}}
 ::msgcat::mcset si {focus next region} {දකුණු panels සඟවන්න}
@@ -1106,6 +1411,8 @@ package require msgcat
 ::msgcat::mcset si {four splits is the maximum} {උපරිම split හතරකි}
 ::msgcat::mcset si {fresh session} {නව සැසිය}
 ::msgcat::mcset si {fresh session (Ctrl-N too)} {නව සැසිය (Ctrl-N ද)}
+::msgcat::mcset si {fresh — heartbeating, sync passing} {නැවුම් — හෘද ස්පන්දන යවයි, සමමුහුර්තකරණය සාර්ථක}
+::msgcat::mcset si from වෙතින්
 ::msgcat::mcset si {from node %{node}} {නෝඩ් %{node} වෙතින්}
 ::msgcat::mcset si {gateway     v%1$s · up %2$s} {ගේට්වේ     v%1$s · %2$s සිට ක්‍රියාත්මකයි}
 ::msgcat::mcset si {gateway unreachable — is `veles gateway run` up?} {ගේට්වේ වෙත ළඟා විය නොහැක — `veles gateway run` ක්‍රියාත්මකද?}
@@ -1148,6 +1455,7 @@ package require msgcat
 ::msgcat::mcset si {in %s} {%s තුළ}
 ::msgcat::mcset si {insert the next key literally (^B bold, ^C colour, ^O reset)} {ඊළඟ යතුර ලිටරල්ව ඇතුල් කරන්න (^B තද අකුරු, ^C වර්ණය, ^O යළි සැකසුම)}
 ::msgcat::mcset si {inserted %s} {%s ඇතුළත් කෙරිණි}
+::msgcat::mcset si {inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now} {ක්ලස්ටරය පරීක්ෂා කරන්න; ගබඩාව, මතකය, වින්‍යාසය හෝ සුරක්ෂිතාගාරය සමමුහුර්ත කිරීම පැහැදිලිව push/යොදන්න; යාවත්කාලීන නොවූ නෝඩයක් ෆ්ලීට් පුරා අමතක කරන්න; නෝඩයක ලොග අග කොටස හෝ මිනුම් කියවන්න; අනුවාද සහ වින්‍යාසය සසඳන්න; දැන් gossip කරන්න}
 ::msgcat::mcset si {inspector — app internals · core state · gw plugins} {පරීක්ෂක — යෙදුම් අභ්‍යන්තර · core තත්ත්වය · gw ප්ලගීන}
 ::msgcat::mcset si {install a plugin from a git URL} {git URL එකකින් ප්ලගිනයක් ස්ථාපනය කරන්න}
 ::msgcat::mcset si {install a skill from a git URL} {git URL එකකින් කුසලතාවයක් ස්ථාපනය කරන්න}
@@ -1155,10 +1463,12 @@ package require msgcat
 ::msgcat::mcset si instance instance
 ::msgcat::mcset si {instance controls} {instance පාලන}
 ::msgcat::mcset si {instance detail} {instance විස්තර}
+::msgcat::mcset si {instance names may not start with "cluster:" or "g:": %s} {අවස්ථා නාම "cluster:" හෝ "g:" වලින් ආරම්භ විය නොහැක: %s}
 ::msgcat::mcset si {instance needs a name} {instance එකට නමක් අවශ්‍යයි}
 ::msgcat::mcset si {instance unreachable} {instance වෙත ළඟා විය නොහැක}
 ::msgcat::mcset si instances instances
 ::msgcat::mcset si interrupting… නවත්වමින්…
+::msgcat::mcset si into වෙත
 ::msgcat::mcset si {irc: %1$s — %2$s} {irc: %1$s — %2$s}
 ::msgcat::mcset si {irc: %s} {irc: %s}
 ::msgcat::mcset si {irc: %s failed — %s} {irc: %s අසාර්ථකයි — %s}
@@ -1192,10 +1502,15 @@ package require msgcat
 ::msgcat::mcset si {language list} {භාෂා ලැයිස්තුව}
 ::msgcat::mcset si {language picker (the swap for THIS window)} {භාෂා තේරීම (මෙම කවුළුව සඳහා මාරුව)}
 ::msgcat::mcset si {language saved: %s} {භාෂාව සුරැකිණි: %s}
+::msgcat::mcset si {language server} {භාෂා සේවාදායකය}
+::msgcat::mcset si {language server: event stream unavailable: %s} {භාෂා සේවාදායකය: සිදුවීම් ධාරාව නොමැත: %s}
+::msgcat::mcset si {language server: not started on the gateway — %s} {භාෂා සේවාදායකය: gateway මත ආරම්භ කර නැත — %s}
+::msgcat::mcset si {language server: the gateway would not start one: %s} {භාෂා සේවාදායකය: gateway එකක් ආරම්භ කිරීමට ඉඩ දුන්නේ නැත: %s}
 ::msgcat::mcset si {language swapped: %1$s ⇄ %2$s} {භාෂා මාරු කෙරිණි: %1$s ⇄ %2$s}
 ::msgcat::mcset si {language → %1$s (was %2$s) · running window only — Save as default writes config.toml} {භාෂාව → %1$s (පෙර %2$s) · ධාවන කවුළුවට පමණයි — පෙරනිමිය ලෙස සුරැකීම config.toml ලියයි}
 ::msgcat::mcset si {language: %s} {භාෂාව: %s}
 ::msgcat::mcset si {last error} {අවසාන දෝෂය}
+::msgcat::mcset si {last pass %1$s at %2$s: %3$s} {අවසන් සමත්වීම %1$s, %2$s ට: %3$s}
 ::msgcat::mcset si {last reply copied (%s chars)} {අවසන් පිළිතුර පිටපත් කෙරිණි (%s අක්ෂර)}
 ::msgcat::mcset si {layout not saved: %s} {පිරිසැලසුම සුරැකුණේ නැත: %s}
 ::msgcat::mcset si {leave (cancels a running turn first)} {පිටවන්න (පළමුව ධාවනය වන වාරය අවලංගු කරයි)}
@@ -1213,6 +1528,7 @@ package require msgcat
 ::msgcat::mcset si {list sessions} {සැසි ලැයිස්තුව}
 ::msgcat::mcset si {list skills} {කුසලතා ලැයිස්තුව}
 ::msgcat::mcset si {list tools} {මෙවලම් ලැයිස්තුව}
+::msgcat::mcset si {listed here only; [notify] fleet_alerts is off} {මෙහි පෙන්වා ඇත පමණි; [notify] fleet_alerts ක්‍රියා විරහිතයි}
 ::msgcat::mcset si {live patching ARMED} {live patching සක්‍රීයයි}
 ::msgcat::mcset si {live patching ARMED — an agent can now redefine procs in this window} {live patching සක්‍රීයයි — agent කෙනෙකුට දැන් මෙම කවුළුවේ procs නැවත අර්ථ දැක්විය හැක}
 ::msgcat::mcset si {live patching disarmed} {live patching අක්‍රියයි}
@@ -1226,6 +1542,8 @@ package require msgcat
 ::msgcat::mcset si {log pane shown} {ලොග් පැනලය පෙන්වා ඇත}
 ::msgcat::mcset si {log: %s} {ලොගය: %s}
 ::msgcat::mcset si {make media: image/video/audio, route = comfyui or provider[/model]} {මාධ්‍ය සාදන්න: image/video/audio, මාර්ගය = comfyui හෝ provider[/model]}
+::msgcat::mcset si {managed via %s} {%s හරහා කළමනාකරණය වේ}
+::msgcat::mcset si {manual only} {අතින් පමණි}
 ::msgcat::mcset si {mark set} {සලකුණ සකසා ඇත}
 ::msgcat::mcset si {mark whole buffer (emacs select-all)} {සම්පූර්ණ buffer එක සලකුණු කරන්න (emacs select-all)}
 ::msgcat::mcset si {markdown preview of the composer} {සම්පාදකයේ markdown පෙරදසුන}
@@ -1254,12 +1572,12 @@ package require msgcat
 ::msgcat::mcset si model ආකෘතිය
 ::msgcat::mcset si {model aliases} {ආකෘති අන්වර්ථ}
 ::msgcat::mcset si {monitor %1$s fired} {මොනිටරය %1$s ක්‍රියාත්මක විය}
-::msgcat::mcset si monitors මොනිටර
 ::msgcat::mcset si monitors_header මොනිටර:
 ::msgcat::mcset si monitors_none {(මොනිටර නැත — මාදිලිය මේවා monitor tool එකෙන් ආරම්භ කරයි)}
 ::msgcat::mcset si {move a session (and its subtree) to another pool node at a turn boundary; finish/undo a parked handoff; ask who owns a session (admin)} {සැසියක් (සහ එහි උප-ගස) වෙනත් pool නෝඩ් එකකට turn සීමාවකදී ගෙනයන්න; පාක් කළ handoff එකක් අවසන් කරන්න/අවලංගු කරන්න; සැසියක හිමිකරු විමසන්න (admin)}
 ::msgcat::mcset si {move the running foreground command to the background} {ධාවනය වන පෙරබිම් විධානය පසුබිමට ගෙන යන්න}
 ::msgcat::mcset si {move the running foreground command to the background (keeps running)} {ක්රියාත්මක වන පෙරබිම් විධානය පසුබිමට ගෙන යන්න (ක්රියාත්මකව පවතී)}
+::msgcat::mcset si {move this session's running foreground command to a background shell; keeps running} {මෙම සැසියේ ධාවනය වන ඉදිරිපස විධානය පසුබිම් ෂෙල් එකකට ගෙනයයි; එය දිගටම ධාවනය වේ}
 ::msgcat::mcset si {moving around} {එහා මෙහා යාම}
 ::msgcat::mcset si name නම
 ::msgcat::mcset si {name a key first} {පළමුව යතුර නම් කරන්න}
@@ -1272,6 +1590,7 @@ package require msgcat
 ::msgcat::mcset si {neon impressionism} {neon impressionism}
 ::msgcat::mcset si {network (optional — e.g. libera; empty = any)} {ජාලය (විකල්ප — උදා: libera; හිස් = ඕනෑම)}
 ::msgcat::mcset si {network to scope the grant to} {අවසරය සීමා වන ජාලය}
+::msgcat::mcset si new අලුත්
 ::msgcat::mcset si {new buffer} {නව buffer}
 ::msgcat::mcset si {new entry — replace this text, then Save} {නව අයිතමය — මෙම පෙළ වෙනුවට ලියන්න, ඉන්පසු සුරකින්න}
 ::msgcat::mcset si {new name for %s} {%s සඳහා නව නම}
@@ -1285,6 +1604,7 @@ package require msgcat
 ::msgcat::mcset si {no IRC buffer selected} {IRC buffer එකක් තෝරාගෙන නැත}
 ::msgcat::mcset si {no MCP servers configured — Add server… writes one into config.toml} {MCP සේවාදායක කිසිවක් වින්‍යාස කර නැත — සේවාදායකය එක් කරන්න… එකක් config.toml තුළට ලියයි}
 ::msgcat::mcset si {no URLs in this buffer} {මෙම buffer එකේ URL නැත}
+::msgcat::mcset si {no [a2a_agents] entry — this peer cannot be dialed} {[a2a_agents] ඇතුළත් කිරීමක් නැත — මෙම සහකරුට ඇමතිය නොහැක}
 ::msgcat::mcset si {no alias /%s} {/%s අන්වර්ථයක් නැත}
 ::msgcat::mcset si {no background refresh} {පසුබිම් refresh නැත}
 ::msgcat::mcset si {no buffer %s} {%s buffer එකක් නැත}
@@ -1294,8 +1614,11 @@ package require msgcat
 ::msgcat::mcset si {no code block in the last reply} {අවසන් පිළිතුරේ කේත කොටසක් නැත}
 ::msgcat::mcset si {no cron jobs} {cron කාර්යයන් නැත}
 ::msgcat::mcset si {no cron jobs — New… creates one} {cron කාර්යයන් නැත — New… එකක් සාදයි}
+::msgcat::mcset si {no exchange yet} {තවම හුවමාරුවක් නැත}
 ::msgcat::mcset si {no file — pick a guts file or type a path} {ගොනුවක් නැත — guts ගොනුවක් තෝරන්න හෝ මාර්ගයක් ටයිප් කරන්න}
 ::msgcat::mcset si {no handler} {හැන්ඩ්ලරයක් නැත}
+::msgcat::mcset si {no heartbeat for %{mins} min} {මිනිත්තු %{mins} ක් තිස්සේ හෘද ස්පන්දනයක් නැත}
+::msgcat::mcset si {no heartbeat within the threshold} {සීමාව තුළ හෘද ස්පන්දනයක් නැත}
 ::msgcat::mcset si {no history yet} {තවම ඉතිහාසයක් නැත}
 ::msgcat::mcset si {no host configured for this instance} {මෙම instance සඳහා host එකක් වින්‍යාස කර නැත}
 ::msgcat::mcset si {no instance selected} {instance එකක් තෝරා නැත}
@@ -1320,7 +1643,6 @@ package require msgcat
 ::msgcat::mcset si {no program to open URLs} {URL විවෘත කිරීමට වැඩසටහනක් නැත}
 ::msgcat::mcset si {no provider is configured — add a [[custom_providers]] entry and set the [model] pair before running a turn} {කිසිදු සැපයුම්කරුවෙකු වින්‍යාස කර නැත — වාරයක් ධාවනය කිරීමට පෙර [[custom_providers]] ඇතුළත් කිරීමක් එක් කර [model] යුගලය සකසන්න}
 ::msgcat::mcset si {no reading yet — press Refresh} {තවම කියවීමක් නැත — Refresh ඔබන්න}
-::msgcat::mcset si {no running tasks} {ධාවන කාර්යයන් නැත}
 ::msgcat::mcset si {no sample available} {නියැදියක් නොමැත}
 ::msgcat::mcset si {no search bar on this surface} {මෙම අතුරුමුහුණතේ සෙවුම් තීරුවක් නැත}
 ::msgcat::mcset si {no session matching %s} {%s ට ගැළපෙන සැසියක් නැත}
@@ -1332,22 +1654,27 @@ package require msgcat
 ::msgcat::mcset si {no session open — switch the scope to the default, or open a session} {සැසියක් විවෘත නැත — scope එක පෙරනිමියට මාරු කරන්න, නැතහොත් සැසියක් විවෘත කරන්න}
 ::msgcat::mcset si {no session open — the catalogue needs one; the default scope still works from config.toml} {සැසියක් විවෘත නැත — නාමාවලියට එකක් අවශ්‍යයි; පෙරනිමි scope එක config.toml වෙතින් තවමත් ක්‍රියා කරයි}
 ::msgcat::mcset si {no setting %s — try filter or bare} {%s සැකසුමක් නැත — filter හෝ bare උත්සාහ කරන්න}
+::msgcat::mcset si {no shells or monitors to show} {පෙන්වීමට ෂෙල් හෝ නිරීක්ෂක නැත}
 ::msgcat::mcset si {no skills found} {හැකියා කිසිවක් හමු නොවීය}
 ::msgcat::mcset si {no such URL — /urls lists them} {එවැනි URL එකක් නැත — /urls ඒවා ලැයිස්තුගත කරයි}
 ::msgcat::mcset si {no such file: %s} {එවැනි ගොනුවක් නැත: %s}
 ::msgcat::mcset si {no swap target yet — set one with /locale secondary <id>} {තවම මාරු භාෂාවක් නැත — /locale secondary <id> මගින් සකසන්න}
+::msgcat::mcset si {no task selected} {කාර්යයක් තෝරා නැත}
 ::msgcat::mcset si {no triggers} {ට්‍රිගර නැත}
 ::msgcat::mcset si {no triggers — New… creates one} {ට්‍රිගර නැත — New… එකක් සාදයි}
 ::msgcat::mcset si {no upstream reading for %s} {%s සඳහා upstream කියවීමක් නැත}
 ::msgcat::mcset si {no word match} {වචන ගැලපීමක් නැත}
 ::msgcat::mcset si {no xdg-open — path copied instead} {xdg-open නැත — ඒ වෙනුවට මාර්ගය පිටපත් කෙරිණි}
+::msgcat::mcset si {node log} {නෝඩ් ලොගය}
 ::msgcat::mcset si {none loaded} {කිසිවක් පූරණය කර නැත}
 ::msgcat::mcset si {none recorded} {කිසිවක් සටහන් කර නැත}
+::msgcat::mcset si {none since this gateway started} {මෙම gateway ආරම්භ වූ පසු කිසිවක් නැත}
 ::msgcat::mcset si {none yet} {තවම නැත}
 ::msgcat::mcset si {normie is pure Ctrl — no emacs prefix chords.} {normie සම්පූර්ණයෙන් Ctrl — emacs උපසර්ග chords නැත.}
 ::msgcat::mcset si {normie: select all · emacs: start of line} {normie: සියල්ල තෝරන්න · emacs: පේළියේ ආරම්භය}
 ::msgcat::mcset si {not a channel} {නාලිකාවක් නොවේ}
 ::msgcat::mcset si {not a key = value line: %s} {key = value පේළියක් නොවේ: %s}
+::msgcat::mcset si {not a node in the attached gateway's cluster registry: %s} {අමුණා ඇති gateway හි ක්ලස්ටර ලේඛනයේ නෝඩයක් නොවේ: %s}
 ::msgcat::mcset si {not a number} {අංකයක් නොවේ}
 ::msgcat::mcset si {not a valid http(s) url: %s} {වලංගු http(s) url එකක් නොවේ: %s}
 ::msgcat::mcset si {not a valid ssh host: %s} {වලංගු ssh host එකක් නොවේ: %s}
@@ -1358,6 +1685,7 @@ package require msgcat
 ::msgcat::mcset si {not attached to a gateway} {gateway එකකට අමුණා නැත}
 ::msgcat::mcset si {not configured} {වින්‍යාස කර නැත}
 ::msgcat::mcset si {not ignoring %s} {%s නොසලකා හරින්නේ නැත}
+::msgcat::mcset si {not installed} {ස්ථාපනය කර නැත}
 ::msgcat::mcset si {not reported} {වාර්තා කර නැත}
 ::msgcat::mcset si {not running} {ධාවනය නොවේ}
 ::msgcat::mcset si {not set in config.toml — the built-in default applies. %s} {config.toml තුළ සකසා නැත — සාදන ලද පෙරනිමිය ක්‍රියාත්මක වේ. %s}
@@ -1384,6 +1712,7 @@ package require msgcat
 ::msgcat::mcset si off අක්‍රිය
 ::msgcat::mcset si {off (the default)} {අක්‍රිය (පෙරනිමිය)}
 ::msgcat::mcset si offline නොබැඳි
+::msgcat::mcset si ok හරි
 ::msgcat::mcset si on ක්‍රියාත්මක
 ::msgcat::mcset si {on (the default)} {ක්‍රියාත්මක (පෙරනිමිය)}
 ::msgcat::mcset si {on failure} {අසාර්ථක වූ විට}
@@ -1395,6 +1724,7 @@ package require msgcat
 ::msgcat::mcset si {open links} {සබැඳි විවෘත කිරීම}
 ::msgcat::mcset si {open the engine log} {එන්ජින් ලොගය විවෘත කරන්න}
 ::msgcat::mcset si {open the joined session before /leave (on %s)} {/leave කිරීමට පෙර සම්බන්ධිත සැසිය විවෘත කරන්න (%s මත)}
+::msgcat::mcset si {open the selected child session} {තෝරාගත් උප සැසිය විවෘත කරන්න}
 ::msgcat::mcset si {open the selected skill in the Dev editor} {තෝරාගත් කුසලතාව Dev සංස්කාරකයේ විවෘත කරන්න}
 ::msgcat::mcset si {open the setup wizard (re-runnable; edits config.toml in place)} {සැකසුම් විශාරදයා විවෘත කරන්න (නැවත ධාවනය කළ හැක; config.toml එම ස්ථානයේම සංස්කරණය කරයි)}
 ::msgcat::mcset si {open the share sheet} {බෙදාගැනීමේ පත්‍රය විවෘත කිරීම}
@@ -1407,6 +1737,7 @@ package require msgcat
 ::msgcat::mcset si {override cleared — the default applies} {override ඉවත් කෙරිණි — පෙරනිමිය ක්‍රියාත්මක වේ}
 ::msgcat::mcset si {override failed: %s} {override අසාර්ථකයි: %s}
 ::msgcat::mcset si {owner identity %{id} is not one the ACL can match — use telegram:<numeric id>, irc:<services account>, or a nick!user@host mask} {හිමිකරු අනන්‍යතාව %{id} ACL හට ගැළපිය නොහැක — telegram:<සංඛ්‍යාත්මක හැඳුනුම>, irc:<services ගිණුම>, හෝ nick!user@host මාස්කයක් භාවිත කරන්න}
+::msgcat::mcset si owner/repository හිමිකරු/ගබඩාව
 ::msgcat::mcset si {owners: %s} {හිමිකරුවන්: %s}
 ::msgcat::mcset si {pair a desktop with this agent} {මෙම නියෝජිතයා සමඟ ඩෙස්ක්ටොප් එකක් යුගල කරන්න}
 ::msgcat::mcset si {partly failed: %s} {අර්ධ වශයෙන් අසාර්ථකයි: %s}
@@ -1436,6 +1767,7 @@ package require msgcat
 ::msgcat::mcset si plugin ප්ලගිනය
 ::msgcat::mcset si {plugin directory git history} {ප්ලගින බහාලුමේ git ඉතිහාසය}
 ::msgcat::mcset si {plugin list} {ප්ලගින ලැයිස්තුව}
+::msgcat::mcset si {plugin provider driver} {ප්ලගින සැපයුම්කරු ධාවකය}
 ::msgcat::mcset si {plugins reloaded on %s} {ප්ලගින %s මත නැවත පූරණය කරන ලදී}
 ::msgcat::mcset si {pop %s out into its own window} {%s තමන්ගේම කවුළුවකට වෙන් කරන්න}
 ::msgcat::mcset si {pop the buffer out into its own window} {buffer එක වෙනම window එකකට ගන්න}
@@ -1446,17 +1778,20 @@ package require msgcat
 ::msgcat::mcset si {prefix: window & dock commands} {උපසර්ගය: කවුළු සහ dock විධාන}
 ::msgcat::mcset si {press Attach in the Instances tab} {Instances ටැබයේ Attach ඔබන්න}
 ::msgcat::mcset si preview පෙරදසුන
+::msgcat::mcset si {preview an AI extension change and explicitly apply its diff} {AI දිගු වෙනසක් පෙරදසුනෙන් බලා එහි වෙනස්කම් පැහැදිලිව යොදවන්න}
 ::msgcat::mcset si {preview failed: %s} {පෙරදසුන අසාර්ථකයි: %s}
 ::msgcat::mcset si {previous buffer} {පෙර buffer}
 ::msgcat::mcset si {previous command was not a yank} {පෙර විධානය yank එකක් නොවේ}
 ::msgcat::mcset si {previous match} {පෙර ගැළපීම}
 ::msgcat::mcset si {previous session} {පෙර සැසිය}
+::msgcat::mcset si {probing %s…} {%s පරීක්ෂා කරමින්…}
 ::msgcat::mcset si {proc body} {proc අන්තර්ගතය}
 ::msgcat::mcset si {profile unavailable: %s} {පැතිකඩ ලබාගත නොහැක: %s}
 ::msgcat::mcset si profiles: පැතිකඩන්:
 ::msgcat::mcset si prompt විමසුම
 ::msgcat::mcset si {prompt breakdown} {විමසුමේ විස්තරය}
 ::msgcat::mcset si {prompt tokens} {prompt tokens}
+::msgcat::mcset si {proposal only, not applied} {යෝජනාව පමණි, යොදවා නැත}
 ::msgcat::mcset si provider සැපයුම්කරු
 ::msgcat::mcset si {provider / model} {සැපයුම්කරු / මාදිලිය}
 ::msgcat::mcset si {provider base URL} {සැපයුම්කරුගේ base URL}
@@ -1470,6 +1805,7 @@ package require msgcat
 ::msgcat::mcset si {re-sync the slopdrop state mirror} {slopdrop state mirror එක නැවත සමමුහුර්ත කරන්න}
 ::msgcat::mcset si {read and set the clipboard} {පසුරු පුවරුව කියවීම සහ සැකසීම}
 ::msgcat::mcset si {read text aloud} {පෙළ හඬ නගා කියවීම}
+::msgcat::mcset si {read-only: [approvals] allowlist} {කියවීමට පමණි: [approvals] allowlist}
 ::msgcat::mcset si {read-only: this session lives on %1$s (as read at %2$s)} {කියවීමට පමණි: මෙම සැසිය %1$s මත ඇත (%2$s ට කියවූ පරිදි)}
 ::msgcat::mcset si {read-only: this skill comes from the %s library} {කියවීමට පමණි: මෙම කුසලතාව %s පුස්තකාලයෙන් ලැබේ}
 ::msgcat::mcset si reasoning තර්කනය
@@ -1490,6 +1826,7 @@ package require msgcat
 ::msgcat::mcset si {refused to open %s (only http, https, mailto)} {%s විවෘත කිරීම ප්රතික්ෂේප විය (http, https, mailto පමණි)}
 ::msgcat::mcset si {refused: %s} {ප්රතික්ෂේප විය: %s}
 ::msgcat::mcset si {region copied} {කලාපය පිටපත් කරන ලදී}
+::msgcat::mcset si registered ලියාපදිංචි
 ::msgcat::mcset si {registry not saved: %s} {රෙජිස්ට්රිය සුරැකුණේ නැත: %s}
 ::msgcat::mcset si {reload on %1$s failed: %2$s} {%1$s මත නැවත පූරණය අසාර්ථකයි: %2$s}
 ::msgcat::mcset si {reload the mechanisms} {යාන්ත්රණ නැවත පූරණය කරන්න}
@@ -1515,8 +1852,11 @@ package require msgcat
 ::msgcat::mcset si {resume a session (prefix ok)} {සැසියක් නැවත ආරම්භ කරන්න (උපසර්ගය ප්‍රමාණවත්)}
 ::msgcat::mcset si {retry failed: %s} {නැවත උත්සාහය අසාර්ථක විය: %s}
 ::msgcat::mcset si {retrying last prompt…} {අවසන් විමසුම නැවත උත්සාහ කරමින්…}
+::msgcat::mcset si {review files for an explicit upstream contribution} {පැහැදිලි උඩුගංගා දායකත්වයක් සඳහා ගොනු සමාලෝචනය කරන්න}
+::msgcat::mcset si {review standing global and session tool permissions} {ස්ථිර සාමාන්‍ය සහ සැසි මෙවලම් අවසර සමාලෝචනය කරන්න}
 ::msgcat::mcset si revision සංශෝධනය
 ::msgcat::mcset si {revision history} {සංශෝධන ඉතිහාසය}
+::msgcat::mcset si {revoke refused} {ආපසු ගැනීම ප්‍රතික්ෂේප විය}
 ::msgcat::mcset si {revoke the selected identity's grant} {තේරූ අනන්යතාවේ අවසරය ඉවත් කරන්න}
 ::msgcat::mcset si role භූමිකාව
 ::msgcat::mcset si {role to grant} {ලබා දිය යුතු භූමිකාව}
@@ -1551,6 +1891,7 @@ package require msgcat
 ::msgcat::mcset si {saved to %s} {%s වෙත සුරැකිණි}
 ::msgcat::mcset si saved. සුරැකිණි.
 ::msgcat::mcset si {scaffold a new plugin} {නව ප්ලගිනයක් සාදන්න}
+::msgcat::mcset si {scaffold a user plugin and open it in this editor} {පරිශීලක ප්ලගිනයකට scaffold එකක් සකසා මෙම සංස්කරකයේ විවෘත කරන්න}
 ::msgcat::mcset si {scheduled jobs; /crons add "<sched>" [session=<id>] <prompt> (alias /cron)} {කාලසටහන්ගත රැකියා; /crons add "<sched>" [session=<id>] <prompt> (අන්වර්ථය /cron)}
 ::msgcat::mcset si scope {විෂය පථය}
 ::msgcat::mcset si script ස්ක්රිප්ටය
@@ -1563,6 +1904,7 @@ package require msgcat
 ::msgcat::mcset si {select %s first} {මුලින් %s තෝරන්න}
 ::msgcat::mcset si {select a checkpoint first} {මුලින් checkpoint එකක් තෝරන්න}
 ::msgcat::mcset si {select a file, or New… to create one} {ගොනුවක් තෝරන්න, නැතහොත් සෑදීමට අලුත්…}
+::msgcat::mcset si {select a grant first} {පළමුව ලබාදීමක් තෝරන්න}
 ::msgcat::mcset si {select a handler first} {මුලින් handler එකක් තෝරන්න}
 ::msgcat::mcset si {select a member first} {මුලින් සාමාජිකයෙකු තෝරන්න}
 ::msgcat::mcset si {select a route} {මාර්ගයක් තෝරන්න}
@@ -1574,10 +1916,13 @@ package require msgcat
 ::msgcat::mcset si {select an assignment first} {මුලින් පැවරුමක් තෝරන්න}
 ::msgcat::mcset si {select an entry first} {මුලින් ඇතුළත් කිරීමක් තෝරන්න}
 ::msgcat::mcset si {select an identity first} {මුලින් අනන්යතාවක් තෝරන්න}
+::msgcat::mcset si {selected task details and shell output} {තෝරාගත් කාර්යයේ විස්තර සහ ෂෙල් ප්‍රතිදානය}
 ::msgcat::mcset si {selected: %s} {තේරූ: %s}
 ::msgcat::mcset si {send clipboard as prompt} {පසුරු පුවරුව විමසුමක් ලෙස යවන්න}
 ::msgcat::mcset si {send failed: %s} {යැවීම අසාර්ථක විය: %s}
 ::msgcat::mcset si {send the message; while a turn runs, queue it as steering} {පණිවිඩය යවන්න; turn එකක් ක්රියාත්මක වන විට එය steering ලෙස පෝලිම් කරන්න}
+::msgcat::mcset si sent {යවන ලදී}
+::msgcat::mcset si {sent to the owner's home chat} {හිමිකරුගේ මුල් කතාබස වෙත යවන ලදී}
 ::msgcat::mcset si server සේවාදායකය
 ::msgcat::mcset si {server buffers merged} {සේවාදායක බෆර ඒකාබද්ධ විය}
 ::msgcat::mcset si {server buffers separate} {සේවාදායක බෆර වෙන්}
@@ -1600,13 +1945,14 @@ package require msgcat
 ::msgcat::mcset si {settings, one key = value per line} {සැකසුම්, පේළියකට එක් key = value}
 ::msgcat::mcset si {setup_done marker NOT saved: %s} {setup_done සලකුණ සුරැකුවේ නැත: %s}
 ::msgcat::mcset si {shell %1$s finished} {%1$s ෂෙල් අවසන් විය}
-::msgcat::mcset si shells ෂෙල්
+::msgcat::mcset si {shells, monitors and subagents} {ෂෙල්, නිරීක්ෂක සහ උප නියෝජිතයන්}
 ::msgcat::mcset si shells_header {පසුබිම් ෂෙල්:}
 ::msgcat::mcset si shells_none {(පසුබිම් ෂෙල් නැත — /background <cmd> එකක් ආරම්භ කරයි)}
 ::msgcat::mcset si {show current configuration} {වර්තමාන වින්‍යාසය පෙන්වන්න}
 ::msgcat::mcset si {show every key in this mode} {මෙම ප්‍රකාරයේ සෑම යතුරක්ම පෙන්වන්න}
 ::msgcat::mcset si {show or hide the session list} {සැසි ලැයිස්තුව පෙන්වන්න හෝ සඟවන්න}
 ::msgcat::mcset si {show or switch model (alias | model@provider | custom:<prov>)} {ආකෘතිය පෙන්වන්න හෝ මාරු කරන්න (alias | model@provider | custom:<prov>)}
+::msgcat::mcset si {show selected shell output} {තෝරාගත් ෂෙල් ප්‍රතිදානය පෙන්වන්න}
 ::msgcat::mcset si {show short messages} {කෙටි පණිවිඩ පෙන්වීම}
 ::msgcat::mcset si {show the model's reasoning blocks (same as /reasoning)} {model එකේ reasoning කොටස් පෙන්වන්න (/reasoning ට සමානයි)}
 ::msgcat::mcset si {show unclaimed} {හිමිකම් නොකියූ ඒවා පෙන්වන්න}
@@ -1620,6 +1966,8 @@ package require msgcat
 ::msgcat::mcset si spend වියදම
 ::msgcat::mcset si {split: %s} {බෙදීම: %s}
 ::msgcat::mcset si {ssh to %1$s failed: %2$s} {%1$s වෙත ssh අසාර්ථකයි: %2$s}
+::msgcat::mcset si {stale — no heartbeat within the threshold} {යල් පැන ගිය — සීමාව තුළ හෘද ස්පන්දනයක් නැත}
+::msgcat::mcset si {standing global and session permission grants} {ස්ථිර සාමාන්‍ය සහ සැසි අවසර ලබාදීම්}
 ::msgcat::mcset si state තත්ත්වය
 ::msgcat::mcset si {state       never reached} {තත්ත්වය       කිසිදා ළඟා වී නැත}
 ::msgcat::mcset si {state       reachable} {තත්ත්වය       ළඟා විය හැක}
@@ -1641,7 +1989,6 @@ package require msgcat
 ::msgcat::mcset si {stored in the encrypted vault (%1$s): %2$s} {සංකේතනය කළ සුරක්ෂිතාගාරයේ ගබඩා කළා (%1$s): %2$s}
 ::msgcat::mcset si {stream handler: %s} {ප්රවාහ handler: %s}
 ::msgcat::mcset si {subagent %1$s finished} {%1$s උප නියෝජිත අවසන් විය}
-::msgcat::mcset si subagents {උප නියෝජිතයෝ}
 ::msgcat::mcset si subagents_header {ධාවනය වන උප නියෝජිතයෝ:}
 ::msgcat::mcset si subagents_none {(ධාවනය වන උප නියෝජිතයෝ නැත — /btw <prompt> එකක් ආරම්භ කරයි, නැතහොත් මාදිලිය delegate_task භාවිතා කරයි)}
 ::msgcat::mcset si {suspend failed: %{e}} {අත්හිටුවීම අසාර්ථකයි: %{e}}
@@ -1655,6 +2002,7 @@ package require msgcat
 ::msgcat::mcset si {switch the selected skill off} {තේරූ කුසලතාව අක්රිය කරන්න}
 ::msgcat::mcset si {switch the selected skill on} {තේරූ කුසලතාව සක්රිය කරන්න}
 ::msgcat::mcset si {switch to the %s tab} {%s ටැබයට මාරු වන්න}
+::msgcat::mcset si {sync requested: %s} {සමමුහුර්තකරණය ඉල්ලා ඇත: %s}
 ::msgcat::mcset si {tab 1} {ටැබ් 1}
 ::msgcat::mcset si {tab 2} {ටැබ් 2}
 ::msgcat::mcset si {tab 3} {ටැබ් 3}
@@ -1671,10 +2019,6 @@ package require msgcat
 ::msgcat::mcset si tasks_none {(ධාවනය වන කාර්ය නැත)}
 ::msgcat::mcset si tasks_not_found {එවැනි කාර්යයක් නැත: %{id}}
 ::msgcat::mcset si tasks_not_running {කාර්යය %{id} දැනටමත් අවසන්}
-::msgcat::mcset si {tcl-lsp: %s} {tcl-lsp: %s}
-::msgcat::mcset si {tcl-lsp: event stream unavailable: %s} {tcl-lsp: සිදුවීම් ප්රවාහය ලබාගත නොහැක: %s}
-::msgcat::mcset si {tcl-lsp: gateway would not start it: %s} {tcl-lsp: gateway එය අරඹන්නේ නැත: %s}
-::msgcat::mcset si {tcl-lsp: not started on the gateway — %s} {tcl-lsp: gateway මත අරඹා නොමැත — %s}
 ::msgcat::mcset si {that buffer is not split} {එම බෆරය බෙදී නැත}
 ::msgcat::mcset si {the %s plan} {%s සැලැස්ම}
 ::msgcat::mcset si {the API key field takes the NAME of an environment variable (like %{example}), not the key itself — the key goes into the hidden field} {API key ක්ෂේත්රය ගන්නේ පරිසර විචල්යයක නමයි (%{example} වැනි), key එකම නොවේ — key එක සඟවා ඇති ක්ෂේත්රයට යයි}
@@ -1692,10 +2036,13 @@ package require msgcat
 ::msgcat::mcset si {the gateway answered without a report} {gateway වාර්තාවක් නොමැතිව පිළිතුරු දුන්නේය}
 ::msgcat::mcset si {the model/provider pair is incomplete — the gateway will not route until both are present} {ආකෘති/සැපයුම්කරු යුගලය අසම්පූර්ණයි — දෙකම ඇති තෙක් ද්වාරය මාර්ගගත නොකරයි}
 ::msgcat::mcset si {the options changed, so that is a fresh preview — press “Write it” again to write it} {විකල්ප වෙනස් විය, එබැවින් එය නැවුම් පෙරදසුනකි — නැවත “Write it” ඔබා එය ලියන්න}
+::msgcat::mcset si {the peer has not been sent this vault yet} {මෙම සුරක්ෂිතාගාරය තවම සහකරුට යවා නැත}
+::msgcat::mcset si {the peer holds this vault} {සහකරු සතුව මෙම සුරක්ෂිතාගාරය ඇත}
 ::msgcat::mcset si {the primary route is \[model\] provider/default — change it there, not here} {මූලික මාර්ගය \[model\] provider/default වේ — එය එතැනදී වෙනස් කරන්න, මෙතැන නොවේ}
 ::msgcat::mcset si {the provider/model route this session sends to} {මෙම සැසිය යොමු කරන provider/model මාර්ගය}
 ::msgcat::mcset si {the same, on the privileged path (owner only)} {එයමයි, විශේෂාධිකාර මාර්ගයෙන් (owner පමණි)}
 ::msgcat::mcset si {the selected entry (edit, then Save)} {තේරූ ඇතුළත් කිරීම (සංස්කරණය කර, පසුව Save)}
+::msgcat::mcset si {the server stopped: %s} {සේවාදායකය නැවතුණි: %s}
 ::msgcat::mcset si {the synthwave splash} {synthwave පිළිගැනීමේ තිරය}
 ::msgcat::mcset si {the text after the name was NOT sent anywhere — type the value into the masked field} {නමට පසු පෙළ කොතැනකටවත් යැව්වේ නැත — අගය සඟවා ඇති ක්ෂේත්‍රයේ ටයිප් කරන්න}
 ::msgcat::mcset si {the transcript} {transcript එක}
@@ -1707,8 +2054,10 @@ package require msgcat
 ::msgcat::mcset si thinking… සිතමින්…
 ::msgcat::mcset si {thinking… (%s)} {සිතමින්… (%s)}
 ::msgcat::mcset si {this file's revisions, their diffs, and restore} {මෙම ගොනුවේ සංශෝධන, ඒවායේ වෙනස්කම්, සහ ප්‍රතිසාධනය}
+::msgcat::mcset si {this gateway} {මෙම gateway}
 ::msgcat::mcset si {this gateway has no Tcl interpreter} {මෙම gateway හි Tcl විග්රහකයක් නැත}
 ::msgcat::mcset si {this list} {මෙම ලැයිස්තුව}
+::msgcat::mcset si {this node has no vault} {මෙම නෝඩයට සුරක්ෂිතාගාරයක් නැත}
 ::msgcat::mcset si {this route} {මෙම මාර්ගය}
 ::msgcat::mcset si {this session} {මෙම සැසිය}
 ::msgcat::mcset si {this session follows the default language again (%{def})} {මෙම සැසිය නැවත පෙරනිමි භාෂාව අනුගමනය කරයි (%{def})}
@@ -1735,6 +2084,8 @@ package require msgcat
 ::msgcat::mcset si {transcript finalization failed: %s} {පිටපත අවසන් කිරීම අසමත් විය: %s}
 ::msgcat::mcset si {transcript refetched} {පිටපත නැවත ලබා ගන්නා ලදී}
 ::msgcat::mcset si {transcript — arrows to read, %s for composer} {පිටපත — කියවීමට ඊතල, කියවුම් කොටුවට %s}
+::msgcat::mcset si {translate text with the dedicated translation model, without an agent turn} {කැපවූ පරිවර්තන මාදිලිය සමඟ, agent වාරයක් නොමැතිව පෙළ පරිවර්තනය කරයි}
+::msgcat::mcset si {translation result} {පරිවර්තන ප්‍රතිඵලය}
 ::msgcat::mcset si {trigger %1$s %2$sd} {ප්රේරකය %1$s %2$sd}
 ::msgcat::mcset si {trigger created} {ප්රේරකය සාදන ලදී}
 ::msgcat::mcset si {trigger updated} {ප්රේරකය යාවත්කාලීන කරන ලදී}
@@ -1778,6 +2129,7 @@ package require msgcat
 ::msgcat::mcset si {usage: /steer <instruction>} {usage: /steer <instruction>}
 ::msgcat::mcset si used භාවිතය
 ::msgcat::mcset si user පරිශීලකයා
+::msgcat::mcset si {user copy} {පරිශීලක පිටපත}
 ::msgcat::mcset si {user identities, one per line} {පරිශීලක අනන්යතා, පේළියකට එක බැගින්}
 ::msgcat::mcset si {user name} {පරිශීලක නම}
 ::msgcat::mcset si {user profile} {පරිශීලක පැතිකඩ}
@@ -1785,6 +2137,9 @@ package require msgcat
 ::msgcat::mcset si {value (TOML: 5, true, "text", ["a","b"])} {අගය (TOML: 5, true, "text", ["a","b"])}
 ::msgcat::mcset si veles veles
 ::msgcat::mcset si {veles editor} {veles සංස්කාරකය}
+::msgcat::mcset si {veles fleet: node %{node} is failing — %{detail}} {veles ෆ්ලීට්: නෝඩය %{node} අසමත් වෙමින් — %{detail}}
+::msgcat::mcset si {veles fleet: node %{node} is stale — %{detail}} {veles ෆ්ලීට්: නෝඩය %{node} යාවත්කාලීන නොවේ — %{detail}}
+::msgcat::mcset si {veles fleet: node %{node} recovered (it was %{was})} {veles ෆ්ලීට්: නෝඩය %{node} යථා තත්ත්වයට පත් විය (පෙර තිබුණේ %{was})}
 ::msgcat::mcset si {veles · keyboard help (bindings: %s)} {veles · යතුරුපුවරු උදව් (බැඳීම්: %s)}
 ::msgcat::mcset si {veles · touch help} {veles · ස්පර්ශ උදව්}
 ::msgcat::mcset si {veles — %s} {veles — %s}
@@ -1818,12 +2173,14 @@ package require msgcat
 ::msgcat::mcset si widgets විජට්
 ::msgcat::mcset si {will be stored in the encrypted vault} {සංකේතනය කළ සුරක්ෂිතාගාරයේ ගබඩා කෙරේ}
 ::msgcat::mcset si {wire protocol} {වයර් ප්රොටොකෝලය}
+::msgcat::mcset si {without force to} {බලෙන් නොකර ඉලක්කය වෙත}
 ::msgcat::mcset si {wizard language} {විශාරද භාෂාව}
 ::msgcat::mcset si {wizard language: %s} {විශාරද භාෂාව: %s}
 ::msgcat::mcset si {write failed: %s} {ලිවීම අසාර්ථකයි: %s}
 ::msgcat::mcset si {write grants that still expire (the expiry is dropped — a config line cannot expire)} {කල් ඉකුත් වන අවසර ලියන්න (කල් ඉකුත්වීම ඉවත් කෙරේ — වින්යාස පේළියකට කල් ඉකුත් විය නොහැක)}
 ::msgcat::mcset si {write the entries back} {ඇතුළත් කිරීම් නැවත ලියන්න}
 ::msgcat::mcset si {write the store's runtime rules into config.toml} {ගබඩාවේ ධාවන නීති config.toml වෙත ලියන්න}
+::msgcat::mcset si {write the whole extension from its purpose, as a reviewed preview} {එහි අරමුණින් මුළු දිගුවම, සමාලෝචිත පෙරදසුනක් ලෙස ලියන්න}
 ::msgcat::mcset si {write these values into config.toml as the defaults} {මෙම අගයන් පෙරනිමි ලෙස config.toml වෙත ලියන්න}
 ::msgcat::mcset si writing ලිවීම
 ::msgcat::mcset si {writing the first [acl] owner switches this gateway into CURATED mode: the default role becomes guest (fail-closed) and the adapter allowlist is no longer the trust boundary} {පළමු [acl] හිමිකරු ලිවීම මෙම ද්වාරය තෝරාගත් ප්‍රකාරයට මාරු කරයි: පෙරනිමි භූමිකාව guest (fail-closed) වේ, සහ ඇඩැප්ටරයේ අවසර ලැයිස්තුව තවදුරටත් විශ්වාසයේ සීමාව නොවේ}
@@ -1851,6 +2208,7 @@ package require msgcat
 ::msgcat::mcset si {▲ VELES — neon impressionism} {▲ VELES — neon impressionism}
 ::msgcat::mcset si {▲ earlier} {▲ කලින්}
 ::msgcat::mcset si {▼ later} {▼ පසුව}
+::msgcat::mcset si {▾ Cluster registry} {▾ කාණ්ඩ ලේඛනාගාරය}
 ::msgcat::mcset si {▾ new output — follow} {▾ නව ප්රතිදානය — අනුගමනය කරන්න}
 ::msgcat::mcset si {○ unattached} {○ අමුණා නැත}
 ::msgcat::mcset si {● %1$s — %2$s} {● %1$s — %2$s}

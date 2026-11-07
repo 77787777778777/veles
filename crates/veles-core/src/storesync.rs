@@ -36,6 +36,7 @@
 //! configsync defense-in-depth rule; a withheld message leaves a hole
 //! the apply report names, rather than shipping a key in the clear.
 
+use crate::lockutil::LockOk;
 use crate::store::Store;
 use anyhow::{Context, Result};
 use rusqlite::Connection;
@@ -1827,6 +1828,11 @@ pub struct PendingRefusal {
 /// `PendingRefusal` carries enough for the receiver's reply to name
 /// what it needs.
 pub fn apply_inbox() -> (usize, Vec<PendingRefusal>) {
+    // One drain at a time per process: the gateway's loop and an
+    // explicit "Apply received" (desktop, `/fleet apply`) read the same
+    // pending listing, and two passes over it could open one offer twice
+    // and race its rename into `applied/`.
+    let _one = apply_guard();
     let dir = inbox_dir();
     let pending = match inbox_pending(&dir) {
         Ok(p) => p,
@@ -1926,6 +1932,151 @@ pub fn apply_inbox() -> (usize, Vec<PendingRefusal>) {
     (applied, refusals)
 }
 
+#[derive(Debug)]
+pub enum OperationError {
+    UnknownNode,
+    NotConfigured(String),
+    AlreadyRunning(String),
+    InvalidOperation(String),
+    /// The operation changes this node's (or a peer's) data and the
+    /// caller did not confirm it.
+    NeedsConfirmation(String),
+    /// The node's state forbids the operation (forgetting this node
+    /// itself, or one that is still heartbeating).
+    Refused(String),
+    Failed(anyhow::Error),
+}
+
+impl std::fmt::Display for OperationError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::UnknownNode => write!(f, "unknown registered node"),
+            Self::NotConfigured(error) | Self::AlreadyRunning(error) => f.write_str(error),
+            Self::InvalidOperation(error) => f.write_str(error),
+            Self::NeedsConfirmation(error) | Self::Refused(error) => f.write_str(error),
+            Self::Failed(error) => write!(f, "{error:#}"),
+        }
+    }
+}
+impl std::error::Error for OperationError {}
+
+/// One push pass to a peer, shared by the automatic loop and explicit
+/// `/fleet sync` / desktop operations. The cursor advances only after a
+/// successful pass; overlapping passes can therefore send the same rows
+/// twice or let an older response determine backoff after a newer one.
+pub struct PushInFlight(String);
+
+static PUSHES_IN_FLIGHT: std::sync::Mutex<std::collections::BTreeSet<String>> =
+    std::sync::Mutex::new(std::collections::BTreeSet::new());
+
+impl PushInFlight {
+    pub fn claim(peer: &str) -> Option<Self> {
+        let mut set = PUSHES_IN_FLIGHT.lock().unwrap_or_else(|p| p.into_inner());
+        set.insert(peer.to_string()).then(|| Self(peer.to_string()))
+    }
+}
+
+impl Drop for PushInFlight {
+    fn drop(&mut self) {
+        PUSHES_IN_FLIGHT
+            .lock()
+            .unwrap_or_else(|p| p.into_inner())
+            .remove(&self.0);
+    }
+}
+
+/// Shared, validated on-demand operation for the desktop and `/fleet`.
+/// Registry identity never becomes a caller-selected endpoint or token.
+pub async fn operate(
+    store: &std::sync::Arc<std::sync::Mutex<crate::store::Store>>,
+    cfg: &crate::config::VelesConfig,
+    requested: &str,
+    operation: &str,
+) -> Result<serde_json::Value, OperationError> {
+    match operation {
+        "apply" => {
+            // SQLite replica writes and renames: off the runtime's
+            // threads, like the automatic drain.
+            // The caller's directory override rides along: the inbox is
+            // this node's, not whatever the blocking thread resolves.
+            let dirs = crate::config::dirs();
+            let (applied, refusals) = crate::rt::spawn_blocking(move || {
+                let _dirs = crate::config::set_dirs(dirs);
+                apply_inbox()
+            })
+            .await
+            .map_err(|e| OperationError::Failed(anyhow::anyhow!("apply task failed: {e}")))?;
+            return Ok(serde_json::json!({
+                "operation": "apply",
+                "applied": applied,
+                "refusals": refusals.iter().map(|r| serde_json::json!({
+                    "node": r.sender_node, "error": r.msg,
+                })).collect::<Vec<_>>(),
+            }));
+        }
+        "push" => {}
+        other => {
+            return Err(OperationError::InvalidOperation(format!(
+                "operation must be push or apply, not {other}"
+            )))
+        }
+    }
+    let nodes = store
+        .lock_ok()
+        .nodes_list()
+        .map_err(OperationError::Failed)?;
+    let node = nodes
+        .into_iter()
+        .find(|node| node.id == requested || node.name == requested)
+        .ok_or(OperationError::UnknownNode)?;
+    let peer_name = cfg
+        .cluster
+        .storesync_peers
+        .iter()
+        .find(|peer| peer.as_str() == node.name || peer.as_str() == node.id)
+        .ok_or_else(|| OperationError::NotConfigured(
+            "node is not a configured storesync peer; add it to [cluster] storesync_peers first".into(),
+        ))?
+        .clone();
+    let _flight = PushInFlight::claim(&peer_name).ok_or_else(|| {
+        OperationError::AlreadyRunning(format!(
+            "a store push to {peer_name} is already running; wait for it to finish"
+        ))
+    })?;
+    let peer = cfg.a2a_agents.get(&peer_name).ok_or_else(|| {
+        OperationError::NotConfigured("sync peer has no [a2a_agents] endpoint configured".into())
+    })?;
+    let me = crate::node::resolve_self(cfg).map_err(OperationError::Failed)?;
+    let bearer = peer.bearer();
+    let result = push_incremental_to_peer(
+        store,
+        &me.identity.id,
+        &me.name,
+        &peer_name,
+        &peer.url,
+        bearer.as_deref(),
+        cfg.cluster.storesync_backfill_days,
+    )
+    .await;
+    // The automatic loop's backoff is told what an explicit push proved:
+    // a peer that just took a push is tried on the next tick again, and
+    // one that failed waits like any failed peer.
+    let key = format!("storesync:{peer_name}");
+    let backoff = crate::backoff::pool();
+    let result = match result {
+        Ok(line) => {
+            backoff.succeeded(&key);
+            line
+        }
+        Err(e) => {
+            let base = std::time::Duration::from_secs(cfg.cluster.gossip_interval_secs.max(1));
+            backoff.failed(&key, base, std::time::Instant::now());
+            return Err(OperationError::Failed(e));
+        }
+    };
+    Ok(serde_json::json!({"operation": "push", "node": node.id, "result": result}))
+}
+
 /// Per inbox directory, the last pass that applied nothing: its
 /// listing, what it refused, and when (see [`apply_inbox`]).
 type RefusedPass = std::collections::HashMap<
@@ -1939,6 +2090,12 @@ type RefusedPass = std::collections::HashMap<
 
 /// How long an all-refused pass is trusted without re-reading the inbox.
 const REFUSED_PASS_TTL: std::time::Duration = std::time::Duration::from_secs(600);
+
+/// The process-wide inbox drain lock ([`apply_inbox`]).
+fn apply_guard() -> std::sync::MutexGuard<'static, ()> {
+    static APPLY: std::sync::Mutex<()> = std::sync::Mutex::new(());
+    APPLY.lock().unwrap_or_else(|p| p.into_inner())
+}
 
 fn refused_pass() -> &'static std::sync::Mutex<RefusedPass> {
     static MEMO: std::sync::OnceLock<std::sync::Mutex<RefusedPass>> = std::sync::OnceLock::new();
@@ -2088,6 +2245,217 @@ mod tests {
         install_triggers(&store).unwrap();
         let _ = tag;
         (dir, store, guard)
+    }
+
+    #[test]
+    fn manual_push_shares_the_automatic_per_peer_in_flight_guard() {
+        let held = PushInFlight::claim("shared-fleet-peer").expect("first push owns the peer");
+        assert!(
+            PushInFlight::claim("shared-fleet-peer").is_none(),
+            "the explicit operation and the automatic loop contend on one guard"
+        );
+        drop(held);
+        let released = PushInFlight::claim("shared-fleet-peer").expect("drop releases the peer");
+        drop(released);
+    }
+
+    #[tokio::test]
+    async fn explicit_push_refuses_a_peer_already_running_in_the_shared_guard() {
+        let (_dir, store, _guard) = scratch_primary("manual-push-guard");
+        let store = std::sync::Arc::new(std::sync::Mutex::new(store));
+        store
+            .lock()
+            .unwrap()
+            .node_register(
+                "peer-id",
+                "peer",
+                "peer-host",
+                "test",
+                "ephemeral",
+                None,
+                None,
+                None,
+                None,
+            )
+            .unwrap();
+        let mut cfg = crate::config::VelesConfig::default();
+        cfg.cluster.storesync_peers = vec!["peer".into()];
+        cfg.a2a_agents.insert(
+            "peer".into(),
+            crate::config::A2APeer {
+                url: "http://127.0.0.1:0".into(),
+                ..Default::default()
+            },
+        );
+        let held = PushInFlight::claim("peer").expect("automatic pass owns the peer");
+        let error = operate(&store, &cfg, "peer-id", "push")
+            .await
+            .expect_err("manual operation must share the guard");
+        assert!(
+            matches!(error, OperationError::AlreadyRunning(_)),
+            "{error}"
+        );
+        drop(held);
+    }
+
+    /// A loopback A2A receiver that stores every offer and records the
+    /// request head (Host, Authorization) of each call it gets.
+    fn recording_receiver() -> (String, std::sync::Arc<std::sync::Mutex<Vec<String>>>) {
+        use std::io::{Read as _, Write as _};
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let url = format!("http://{}", listener.local_addr().unwrap());
+        let heads = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
+        let log = heads.clone();
+        std::thread::spawn(move || {
+            for sock in listener.incoming() {
+                let Ok(mut sock) = sock else { return };
+                let mut raw = Vec::new();
+                let mut buf = [0u8; 65536];
+                let mut need = None;
+                while need.is_none_or(|n| raw.len() < n) {
+                    let Ok(n) = sock.read(&mut buf) else { break };
+                    if n == 0 {
+                        break;
+                    }
+                    raw.extend_from_slice(&buf[..n]);
+                    if need.is_none() {
+                        if let Some(end) = raw.windows(4).position(|w| w == b"\r\n\r\n") {
+                            let head = String::from_utf8_lossy(&raw[..end]).to_lowercase();
+                            let len = head
+                                .split("content-length:")
+                                .nth(1)
+                                .and_then(|t| t.lines().next())
+                                .and_then(|t| t.trim().parse::<usize>().ok())
+                                .unwrap_or(0);
+                            need = Some(end + 4 + len);
+                        }
+                    }
+                }
+                let text = String::from_utf8_lossy(&raw).to_string();
+                let (head, body) = text.split_once("\r\n\r\n").unwrap_or((&text, ""));
+                log.lock().unwrap().push(head.to_string());
+                let rpc: serde_json::Value = serde_json::from_str(body).unwrap_or_default();
+                let reply = serde_json::json!({
+                    "jsonrpc": "2.0",
+                    "id": rpc["id"],
+                    "result": {"task": crate::a2a::build_task(
+                        "t", "c", crate::a2a::STATE_COMPLETED, "stored")},
+                })
+                .to_string();
+                let _ = write!(
+                    sock,
+                    "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\
+                     Content-Length: {}\r\nConnection: close\r\n\r\n{reply}",
+                    reply.len()
+                );
+            }
+        });
+        (url, heads)
+    }
+
+    /// FLEET-9/FLEET-10: "Sync now" dials the operator's [a2a_agents]
+    /// URL with the TRIMMED bearer — never the registry's self-reported
+    /// endpoint — and a success clears the automatic loop's backoff.
+    #[tokio::test]
+    async fn explicit_push_dials_the_configured_peer_with_a_trimmed_bearer() {
+        let (_dir, store, _guard) = scratch_primary("manual-push-target");
+        store
+            .conn()
+            .execute("INSERT OR IGNORE INTO sessions(id) VALUES('s1')", [])
+            .unwrap();
+        store
+            .conn()
+            .execute(
+                "INSERT INTO messages(session_id, role, content) VALUES('s1', 'user', 'hi')",
+                [],
+            )
+            .unwrap();
+        let (peer_url, peer_heads) = recording_receiver();
+        let (registry_url, registry_heads) = recording_receiver();
+        store
+            .node_register(
+                "push-peer-id",
+                "push-peer",
+                "peer-host",
+                "test",
+                "ephemeral",
+                None,
+                Some(registry_url.as_str()),
+                None,
+                None,
+            )
+            .unwrap();
+        let store = std::sync::Arc::new(std::sync::Mutex::new(store));
+        let mut cfg = crate::config::VelesConfig::default();
+        cfg.cluster.storesync_peers = vec!["push-peer".into()];
+        cfg.a2a_agents.insert(
+            "push-peer".into(),
+            crate::config::A2APeer {
+                url: peer_url,
+                auth: crate::config::A2APeerAuth {
+                    kind: "bearer".into(),
+                    token: "peer-secret\n".into(),
+                },
+            },
+        );
+        let pool = crate::backoff::pool();
+        pool.failed(
+            "storesync:push-peer",
+            std::time::Duration::from_secs(30),
+            std::time::Instant::now(),
+        );
+        let body = operate(&store, &cfg, "push-peer-id", "push")
+            .await
+            .expect("the push lands on the configured peer");
+        assert_eq!(body["node"], "push-peer-id", "{body}");
+        let heads = peer_heads.lock().unwrap().clone();
+        assert!(!heads.is_empty(), "the configured peer was dialed");
+        for head in &heads {
+            let auth = head
+                .lines()
+                .find(|l| l.to_ascii_lowercase().starts_with("authorization:"))
+                .unwrap_or("");
+            assert_eq!(
+                auth.trim_end(),
+                "authorization: Bearer peer-secret",
+                "{head}"
+            );
+        }
+        assert!(
+            registry_heads.lock().unwrap().is_empty(),
+            "the registry endpoint must never be dialed"
+        );
+        assert_eq!(
+            pool.status("storesync:push-peer", std::time::Instant::now()),
+            None,
+            "a proven-reachable peer is not left waiting out its backoff"
+        );
+    }
+
+    /// FLEET-8: the explicit drain and the automatic one never overlap.
+    #[test]
+    fn inbox_drains_are_serialized_across_callers() {
+        let (_dir, _store, _guard) = scratch_primary("apply-serial");
+        let held = apply_guard();
+        let (tx, rx) = std::sync::mpsc::channel();
+        // The override is per thread: carry it, or the worker would
+        // drain the live home's inbox.
+        let dirs = crate::config::dirs();
+        assert!(dirs.is_some(), "the scratch override is installed");
+        let worker = std::thread::spawn(move || {
+            let _dirs = crate::config::set_dirs(dirs);
+            let _ = apply_inbox();
+            tx.send(()).unwrap();
+        });
+        assert!(
+            rx.recv_timeout(std::time::Duration::from_millis(300))
+                .is_err(),
+            "a second drain waits while one is running"
+        );
+        drop(held);
+        rx.recv_timeout(std::time::Duration::from_secs(10))
+            .expect("the drain runs once the first is done");
+        worker.join().unwrap();
     }
 
     #[test]

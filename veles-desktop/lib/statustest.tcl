@@ -286,6 +286,25 @@ ok "an unavailable provider count is labelled as a budget estimate" \
 ok "the fallback invents neither a window percentage nor a token count" \
     {![string match "*ctx 82.8%*868,000*" $bareestimate]}
 
+# A compaction that ran after the last call outdates its count (review
+# DR-6): the gateway says so, and the bar falls back to the estimate
+# instead of a stale "(compaction due)" until the next call.
+puts "\na compaction since the last call retires its count"
+dict set measured last_call_prompt_tokens 455000
+dict set measured history_percent_of_budget 14.0
+dict set measured last_call_fresh false
+set barstale [tick $u $measured]
+ok "an outdated provider count is not shown as the fill" \
+    {[string match "*ctx est 14.0% of compaction bar*" $barstale]
+     && ![string match "*455,000*" $barstale]
+     && ![string match "*(compaction due)*" $barstale]}
+dict set measured last_call_fresh true
+ok "a fresh one is" \
+    {[string match "*455,000/1,048,576 tok (compaction due)*" [tick $u $measured]]}
+dict unset measured last_call_fresh
+ok "a gateway that does not say is trusted as before" \
+    {[string match "*455,000/1,048,576 tok*" [tick $u $measured]]}
+
 # The context endpoint being unreachable must not take the usage numbers
 # down with it: the session mean is still a real reading.
 puts "\nthe session mean survives a context fetch that fails"
