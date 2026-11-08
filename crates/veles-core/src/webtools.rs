@@ -96,6 +96,7 @@ impl Tool for WebSearchTool {
                 } => {
                     web.searxng_url = url;
                     web.searxng_wake_cmd = None;
+                    web.searxng_timeout_secs = web.others_searxng_timeout_secs;
                     backends = vec!["searxng".into()];
                 }
             }
@@ -559,6 +560,17 @@ impl Tool for WebExtractTool {
     }
 }
 
+/// A failure for which another Tor circuit can help. HTTP 403 is
+/// included: sites often refuse one exit while serving the same URL on
+/// another. DNS, URL and SSRF refusals are final, not retried.
+fn fetch_failure(message: String, retry: bool) -> (String, bool) {
+    (message, retry)
+}
+
+/// How many times a proxied fetch may try. A new client uses a new Tor
+/// SOCKS identity, but the identity remains derived from this session.
+const TOR_ATTEMPTS: usize = 2;
+
 /// The tool's text. Its first line is where the session's node looks for
 /// a challenge (`challenge::marked`): a challenge refusal keeps the
 /// marker there, and page text may not start with it — a plain-text page
@@ -582,6 +594,47 @@ async fn fetch_and_extract(
     max_chars: usize,
     proxy: Option<&str>,
 ) -> Result<String, String> {
+    let started = std::time::Instant::now();
+    let mut last = "no answer".to_string();
+    for attempt in 0..TOR_ATTEMPTS {
+        let attempt_proxy = match proxy {
+            Some(p) => {
+                let mut identity = crate::egress::others().unwrap_or_default();
+                if attempt > 0 {
+                    identity.push_str(&format!(":attempt:{attempt}"));
+                }
+                Some(crate::egress::proxy_for(p, &identity)?)
+            }
+            None => None,
+        };
+        let left = PAGE_SECS.saturating_sub(started.elapsed());
+        let budget = if proxy.is_some() && attempt == 0 {
+            // Most pages answer well inside this. A dead circuit gets
+            // one bounded probe; the second has the remaining 12s, not
+            // zero after the original 20s budget was consumed.
+            left.min(std::time::Duration::from_secs(8))
+        } else {
+            left
+        };
+        match fetch_once(url, max_chars, attempt_proxy.as_deref(), budget).await {
+            Ok(text) => return Ok(text),
+            Err((message, retry)) => {
+                last = message;
+                if proxy.is_none() || !retry {
+                    break;
+                }
+            }
+        }
+    }
+    Err(last)
+}
+
+async fn fetch_once(
+    url: &str,
+    max_chars: usize,
+    proxy: Option<&str>,
+    budget: std::time::Duration,
+) -> Result<String, (String, bool)> {
     // Guarded: `web_extract` takes a URL from the model, which takes it
     // from whoever is talking, and returns the page's text to them.
     // That is a read of anything the gateway can reach.
@@ -589,9 +642,9 @@ async fn fetch_and_extract(
     // longer to arrive (a 60 MB scan), so the client's whole-request
     // budget is FILE_SECS and the page's is kept by hand.
     let started = std::time::Instant::now();
-    let page_left = || PAGE_SECS.saturating_sub(started.elapsed());
+    let page_left = || budget.saturating_sub(started.elapsed());
     let resp = tokio::time::timeout(
-        PAGE_SECS,
+        budget,
         crate::urlguard::get_through(
             url,
             FILE_SECS,
@@ -600,7 +653,8 @@ async fn fetch_and_extract(
         ),
     )
     .await
-    .map_err(|_| format!("no answer within {}s", PAGE_SECS.as_secs()))??;
+    .map_err(|_| fetch_failure(format!("no answer within {}s", budget.as_secs()), true))?
+    .map_err(|e| fetch_failure(e, true))?;
     let status = resp.status().as_u16();
     let final_url = resp.url().to_string();
     let headers: Vec<(String, String)> = resp
@@ -615,16 +669,25 @@ async fn fetch_and_extract(
     if is_text_type(&header(&headers, "content-type")) {
         let body = tokio::time::timeout(page_left(), resp.text())
             .await
-            .map_err(|_| format!("the page did not arrive within {}s", PAGE_SECS.as_secs()))?
-            .map_err(|e| e.to_string())?;
-        return extract_response(url, status, &headers, body, max_chars);
+            .map_err(|_| {
+                fetch_failure(
+                    format!("the page did not arrive within {}s", budget.as_secs()),
+                    true,
+                )
+            })?
+            .map_err(|e| fetch_failure(e.to_string(), true))?;
+        return extract_response(url, status, &headers, body, max_chars)
+            .map_err(|e| fetch_failure(e, status == 403));
     }
-    let bytes = read_capped(resp, crate::downloads::MAX_BYTES).await?;
+    let bytes = read_capped(resp, crate::downloads::MAX_BYTES)
+        .await
+        .map_err(|e| fetch_failure(e, false))?;
     if (200..300).contains(&status) && crate::downloads::is_pdf(&bytes) {
-        return download_pdf(&final_url, &headers, &bytes);
+        return download_pdf(&final_url, &headers, &bytes).map_err(|e| fetch_failure(e, false));
     }
     let body = String::from_utf8_lossy(&bytes).into_owned();
     extract_response(url, status, &headers, body, max_chars)
+        .map_err(|e| fetch_failure(e, status == 403))
 }
 
 fn header(headers: &[(String, String)], name: &str) -> String {
@@ -1074,6 +1137,8 @@ mod tests {
         let d = crate::config::WebSection::default();
         assert_eq!(d.backends, vec!["searxng", "brave", "ddg"]);
         assert_eq!(d.searxng_url, "http://127.0.0.1:8888");
+        assert_eq!(d.searxng_timeout_secs, 10);
+        assert_eq!(d.others_searxng_timeout_secs, 30);
         assert_eq!(
             d.searxng_wake_cmd.as_deref(),
             Some("systemctl --user start searxng.service")

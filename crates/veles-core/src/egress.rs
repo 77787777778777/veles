@@ -532,6 +532,121 @@ mod tests {
         crate::acl::clear_session_principal("egress-search");
     }
 
+    /// A failed fetch retries once with a new SOCKS identity on a fresh
+    /// Tor circuit. The identity is derived from the same session, never
+    /// from another session's name. A page that stalls after its headers
+    /// gets the same second chance as one that never answered.
+    #[tokio::test]
+    async fn a_failed_tor_fetch_retries_once_on_a_fresh_circuit() {
+        let (home, _guard) = crate::testenv::scratch_home();
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = l.local_addr().unwrap();
+        let users = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
+        let log = users.clone();
+        crate::rt::spawn(async move {
+            let mut n = 0;
+            while let Ok((mut s, _)) = l.accept().await {
+                n += 1;
+                let log = log.clone();
+                crate::rt::spawn(async move {
+                    let mut hello = [0u8; 2];
+                    s.read_exact(&mut hello).await?;
+                    let mut methods = vec![0u8; hello[1] as usize];
+                    s.read_exact(&mut methods).await?;
+                    let mut user = String::new();
+                    if methods.contains(&2) {
+                        s.write_all(&[5, 2]).await?;
+                        let mut n = [0u8; 2];
+                        s.read_exact(&mut n).await?;
+                        let mut name = vec![0u8; n[1] as usize];
+                        s.read_exact(&mut name).await?;
+                        user = String::from_utf8_lossy(&name).into_owned();
+                        let mut pl = [0u8; 1];
+                        s.read_exact(&mut pl).await?;
+                        let mut pw = vec![0u8; pl[0] as usize];
+                        s.read_exact(&mut pw).await?;
+                        s.write_all(&[1, 0]).await?;
+                    } else {
+                        s.write_all(&[5, 0]).await?;
+                    }
+                    log.lock().unwrap().push(user);
+                    let mut head = [0u8; 4];
+                    s.read_exact(&mut head).await?;
+                    let host = match head[3] {
+                        1 => {
+                            let mut a = [0u8; 4];
+                            s.read_exact(&mut a).await?;
+                            std::net::Ipv4Addr::from(a).to_string()
+                        }
+                        3 => {
+                            let mut n = [0u8; 1];
+                            s.read_exact(&mut n).await?;
+                            let mut name = vec![0u8; n[0] as usize];
+                            s.read_exact(&mut name).await?;
+                            String::from_utf8_lossy(&name).into_owned()
+                        }
+                        _ => return Ok::<(), std::io::Error>(()),
+                    };
+                    let mut port = [0u8; 2];
+                    s.read_exact(&mut port).await?;
+                    assert_eq!(host, "example.com");
+                    s.write_all(&[5, 0, 0, 1, 0, 0, 0, 0, 0, 0]).await?;
+                    let mut req = [0u8; 4096];
+                    let _ = s.read(&mut req).await?;
+                    if n == 1 {
+                        s.write_all(
+                            b"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\
+                              Content-Length: 1000\r\nConnection: close\r\n\r\npartial",
+                        )
+                        .await?;
+                        // The headers are here; the connection dies
+                        // before the declared body has arrived.
+                        return Ok(());
+                    }
+                    let page = "<html><body><p>fresh circuit</p></body></html>";
+                    s.write_all(
+                        format!(
+                            "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\
+                             Content-Length: {}\r\nConnection: close\r\n\r\n{page}",
+                            page.len()
+                        )
+                        .as_bytes(),
+                    )
+                    .await?;
+                    Ok(())
+                });
+            }
+        });
+        let proxy = format!("socks5h://{addr}");
+        config(
+            &home,
+            &format!("[web]\nothers = \"proxy\"\nothers_proxy = \"{proxy}\"\n"),
+        );
+        let user = "egress-retry";
+        as_user(user);
+        let out = scope(
+            user,
+            false,
+            crate::webtools::WebExtractTool
+                .call(serde_json::json!({"url": "http://example.com/page"})),
+        )
+        .await;
+        assert!(out.contains("fresh circuit"), "{out}");
+        let users = users.lock().unwrap().clone();
+        let first = proxy_for(&proxy, user).unwrap();
+        let first = first.split("//").nth(1).unwrap().split(':').next().unwrap();
+        let second = proxy_for(&proxy, &format!("{user}:attempt:1")).unwrap();
+        let second = second
+            .split("//")
+            .nth(1)
+            .unwrap()
+            .split(':')
+            .next()
+            .unwrap();
+        assert_eq!(users, vec![first.to_string(), second.to_string()]);
+        crate::acl::clear_session_principal(user);
+    }
+
     /// The VPS: someone else's fetch goes through the proxy, under a user
     /// name of its session's own (its own Tor circuit), to the address
     /// the URL names; and without a proxy configured, not at all.
@@ -659,6 +774,57 @@ mod tests {
         );
         crate::acl::clear_session_principal(user);
         crate::acl::clear_session_principal(owner);
+    }
+
+    /// The upstream engine budget is 10s. The search client must still
+    /// be listening when that budget expires and SearXNG sends its page:
+    /// a client deadline equal to the server's turns a slow Tor answer
+    /// into "all backends failed" just before the answer would arrive.
+    #[tokio::test]
+    async fn a_searxng_answer_after_its_engine_budget_is_not_lost() {
+        let (home, _guard) = crate::testenv::scratch_home();
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = l.local_addr().unwrap();
+        crate::rt::spawn(async move {
+            let Ok((mut sock, _)) = l.accept().await else {
+                return;
+            };
+            let mut buf = [0u8; 4096];
+            let _ = sock.read(&mut buf).await;
+            tokio::time::sleep(std::time::Duration::from_millis(10_200)).await;
+            let body = r#"{"results":[{"title":"late but found","url":"https://example.org/late","content":"c"}]}"#;
+            let _ = sock
+                .write_all(
+                    format!(
+                        "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\
+                         Content-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                        body.len()
+                    )
+                    .as_bytes(),
+                )
+                .await;
+        });
+        config(
+            &home,
+            &format!(
+                "[web]\nothers = \"proxy\"\nothers_searxng_url = \"http://{addr}\"\n\
+                 others_proxy = \"socks5h://127.0.0.1:1\"\n"
+            ),
+        );
+        let dir = crate::testenv::kept_dir();
+        let store = std::sync::Arc::new(std::sync::Mutex::new(
+            crate::store::Store::open(&dir.join("state.db")).expect("store"),
+        ));
+        let user = "egress-slow-tor-search";
+        as_user(user);
+        let out = crate::tools::builtin_registry(store, None, user)
+            .dispatch(
+                "tool_call",
+                serde_json::json!({"name": "web_search", "arguments": {"query": "x"}}),
+            )
+            .await;
+        assert!(out.contains("late but found"), "{out}");
+        crate::acl::clear_session_principal(user);
     }
 
     /// `/egress`: the owner's session reports, chooses Tor, and comes

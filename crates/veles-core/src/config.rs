@@ -981,6 +981,12 @@ pub struct WebSection {
     pub searxng_url: String,
     /// Per-request timeout for the loopback searxng call, seconds.
     pub searxng_timeout_secs: u64,
+    /// A proxied SearXNG may reach its engines over Tor. Its upstream
+    /// request timeout is 10s and its maximum is 20s (deploy/vps): give
+    /// the aggregate response a budget beyond both rather than dropping
+    /// it at exactly the 10s engine deadline. The local budget above is
+    /// unchanged.
+    pub others_searxng_timeout_secs: u64,
     /// Per-request timeout for the internet backends, seconds.
     pub remote_timeout_secs: u64,
     /// Command that STARTS a stopped SearXNG, run once when the first
@@ -1044,6 +1050,7 @@ impl Default for WebSection {
             backends: vec!["searxng".into(), "brave".into(), "ddg".into()],
             searxng_url: "http://127.0.0.1:8888".into(),
             searxng_timeout_secs: 10,
+            others_searxng_timeout_secs: 30,
             remote_timeout_secs: 15,
             searxng_wake_cmd: default_searxng_wake_cmd(),
             browser_webdriver: false,

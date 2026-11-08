@@ -188,6 +188,7 @@ pub const NODE_KEYS: &[&str] = &[
     "web.others",
     "web.others_proxy",
     "web.others_searxng_url",
+    "web.others_searxng_timeout_secs",
     "web.others_via",
     // What fence THIS machine has and what it is made of: the backend
     // (native on a Windows node, podman on the hub), its image, kernel,
