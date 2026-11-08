@@ -145,6 +145,15 @@ ok "the source and result are independently readable" {
     [.vtranslate.sourceframe.text get 1.0 end-1c] eq "Hello," &&
     [winfo exists .vtranslate.text] && [winfo exists .vtranslate.bar.settings]
 }
+update
+ok "the result pane and its text have visible geometry" {
+    [lsearch -exact [.vtranslate.panes panes] .vtranslate.resultframe] >= 0 &&
+    [winfo ismapped .vtranslate.resultframe] &&
+    [winfo ismapped .vtranslate.resultframe.body] &&
+    [winfo ismapped .vtranslate.text] &&
+    [winfo height .vtranslate.resultframe] > 40 &&
+    [winfo height .vtranslate.text] > 20
+}
 ok "the popup is busy while a request is pending" {
     [.vtranslate.bar.retry instate disabled] && ![.vtranslate.bar.cancel instate disabled]
 }

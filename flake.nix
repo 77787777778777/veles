@@ -630,7 +630,7 @@
         # both packages.default and the OCI image below can reference it.
         velesPkg = pkgs.rustPlatform.buildRustPackage rec {
           pname = "veles-agent";
-          version = "0.2.0";
+          version = "0.2.1";
           src = rustSrc;
           cargoLock = {
             lockFile = ./Cargo.lock;

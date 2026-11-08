@@ -87,7 +87,9 @@ proc ::vtranslate::popup {w} {
     ttk::frame $window.resultframe
     ttk::label $window.resultframe.label -text [::vi18n::mc {Translation result}]
     pack $window.resultframe.label -anchor w
+    $window.panes add $window.resultframe -weight 1
     ttk::frame $window.resultframe.body
+    pack $window.resultframe.body -fill both -expand 1
     text $window.text -wrap word -undo 0 -background $::vt::T(bg_input) \
         -foreground $::vt::T(fg) -insertbackground $::vt::T(fg)
     ttk::scrollbar $window.sb -command [list $window.text yview]

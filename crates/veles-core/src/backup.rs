@@ -779,6 +779,17 @@ mod tests {
             // the notification poll reconciles the gap.
             "atproto-jetstream.cursor",
             "atproto-jetstream-v2.cursor",
+            // Owner-kept 0.2.0 recovery workpapers: diagnostic inputs,
+            // translation tables and command logs, not runtime state.
+            // They remain in place at the owner's explicit request.
+            "recovery-020-all-keys.txt",
+            "recovery-020-existing-af.tsv",
+            "recovery-020-logs",
+            "recovery-020-missing-103.txt",
+            "recovery-020-old-job-calls.txt",
+            "recovery-020-resume.md",
+            "recovery-020-tr2",
+            "recovery-020-translation-context.txt",
         ];
         let roots = [crate::config::config_dir(), crate::config::data_dir()];
         // No box to walk = no assertion to make. The hermetic build
