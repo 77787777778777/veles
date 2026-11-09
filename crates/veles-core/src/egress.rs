@@ -536,6 +536,9 @@ mod tests {
     /// Tor circuit. The identity is derived from the same session, never
     /// from another session's name. A page that stalls after its headers
     /// gets the same second chance as one that never answered.
+    /// A literal public address, not a hostname: the offline Nix sandbox
+    /// has no DNS, and urlguard deliberately resolves a hostname even
+    /// though the SOCKS proxy would do so itself.
     #[tokio::test]
     async fn a_failed_tor_fetch_retries_once_on_a_fresh_circuit() {
         let (home, _guard) = crate::testenv::scratch_home();
@@ -589,7 +592,7 @@ mod tests {
                     };
                     let mut port = [0u8; 2];
                     s.read_exact(&mut port).await?;
-                    assert_eq!(host, "example.com");
+                    assert_eq!(host, "93.184.216.34");
                     s.write_all(&[5, 0, 0, 1, 0, 0, 0, 0, 0, 0]).await?;
                     let mut req = [0u8; 4096];
                     let _ = s.read(&mut req).await?;
@@ -628,7 +631,7 @@ mod tests {
             user,
             false,
             crate::webtools::WebExtractTool
-                .call(serde_json::json!({"url": "http://example.com/page"})),
+                .call(serde_json::json!({"url": "http://93.184.216.34/page"})),
         )
         .await;
         assert!(out.contains("fresh circuit"), "{out}");
