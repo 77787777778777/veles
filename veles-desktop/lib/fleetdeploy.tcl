@@ -94,6 +94,42 @@ proc ::vfleetdeploy::_binding {id} {
     return [list $name $spec]
 }
 
+# The id of the `self` row in a parsed /api/fleet body, or "".
+proc ::vfleetdeploy::_self_id {inventory} {
+    if {[catch {dict get $inventory nodes} nodes]} { return "" }
+    foreach node $nodes {
+        if {[catch {dict get $node self} self] || $self ni {1 true}} { ::continue }
+        if {[catch {dict get $node id} id]} { return "" }
+        return $id
+    }
+    return ""
+}
+
+# Prove that the saved instance a target is bound to IS the selected
+# node, before anything is staged, installed or restarted through it
+# (FLEET-2). The binding is operator-typed text: matching the manifest's
+# node id against it, and the registry row's version against the
+# instance's health, proved nothing about the machine at that URL, so a
+# typo'd or stale node id staged a signed bundle on, and restarted, a
+# different host. The instance is asked over the link the deployment
+# itself uses (its own URL and token) which node it is; anything but a
+# `self` row naming the selected id refuses, with both ids named.
+proc ::vfleetdeploy::verify_identity {target} {
+    set id [dict get $target node_id]
+    set instance [dict get $target instance]
+    if {[catch {_call identity $target} inventory]} {
+        return -code error "node identity unverified: saved instance $instance could not be asked which node it is ($inventory); nothing was staged, installed or restarted"
+    }
+    set self [_self_id $inventory]
+    if {$self eq ""} {
+        return -code error "node identity unverified: saved instance $instance reports no cluster node identity, so it cannot be proven to be node $id; nothing was staged, installed or restarted"
+    }
+    if {$self ne $id} {
+        return -code error "node identity mismatch: saved instance $instance is node $self, not $id; nothing was staged, installed or restarted"
+    }
+    return $self
+}
+
 proc ::vfleetdeploy::_validate_release {release} {
     foreach key {repository tag commit workflow_sha} {
         if {[dict get $release $key] eq ""} {
@@ -366,6 +402,11 @@ proc ::vfleetdeploy::_transport {action target payload} {
         rollback-preview - rollback-confirm {
             return [_post_json $instance /api/install/rollback $payload 120000]
         }
+        identity {
+            # The gateway's own registry view: its `self` row names the
+            # node it is. The same instance link every installer call uses.
+            return [::vapi::with_instance $instance { ::vapi::get_json /api/fleet 5000 }]
+        }
         restart {
             set argv [::vinstpane::ssh_argv [dict get $target host] [dict get $target unit] restart]
             # LIST expansion: no shell, no interpolated remote command.
@@ -489,6 +530,11 @@ proc ::vfleetdeploy::_safe_error {error} {
     # only bounded, non-secret operational phrases; raw SSH/API output is
     # shown to the operator but never persisted in the journal.
     set text [string tolower $error]
+    # The identity refusal (verify_identity) changed nothing. Both ids are
+    # in the operator's diagnostic; the journal keeps only this phrase.
+    if {[string match "node identity *" $text]} {
+        return "the saved instance did not prove it is the selected node; nothing was changed"
+    }
     # Exact binding phrases only. A bare "manifest" match used to turn
     # "signed release preview lacks manifest_sha256" into a claimed
     # registry tampering (F1-11).
@@ -683,6 +729,11 @@ proc ::vfleetdeploy::stage {op id} {
          [dict get $op targets $id recovery_observed] ni {1 true})} {
         return -code error "staged target $id must be reconciled from its durable journal before a fresh preview"
     }
+    if {$before in {reviewed remaining staged}} {
+        # Refused before the target is touched: nothing is journaled as
+        # failed, and the operation can still be abandoned.
+        verify_identity [_target $op $id]
+    }
     if {[catch {_stage $op $id} result options]} {
         if {[dict get $options -errorcode] eq {VELES CANARY_BLOCKED}} {
             return -code error -errorcode {VELES CANARY_BLOCKED} $result
@@ -699,6 +750,11 @@ proc ::vfleetdeploy::stage {op id} {
 
 proc ::vfleetdeploy::verify {op id} {
     set before [_state $op $id]
+    if {$before eq "staged"} {
+        # The install confirmation and the restart follow. Refused here,
+        # the target stays staged and nothing is journaled as failed.
+        verify_identity [_target $op $id]
+    }
     if {[catch {_verify $op $id} value options]} {
         if {[dict get $options -errorcode] eq {VELES CANARY_BLOCKED}} {
             return -code error -errorcode {VELES CANARY_BLOCKED} $value
@@ -797,6 +853,10 @@ proc ::vfleetdeploy::rollback {op id} {
     if {![dict exists $op targets $id install_started] ||
         [dict get $op targets $id install_started] ni {1 true}} {
         return -code error "target $id has no recorded installation attempt; refusing to restart or restore it"
+    }
+    # A restore and a restart follow: the same proof as before an install.
+    if {$before ni {rolled-back completed}} {
+        verify_identity [_target $op $id]
     }
     if {[catch {_rollback $op $id} value options]} {
         if {$before ni {reviewed remaining staging staged restarting healthy failed rollback-preview rollback-staged rollback-restarting}} {

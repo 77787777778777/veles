@@ -425,9 +425,41 @@ once never leaves a dead entry behind."
               (t (push d keep)))))
     (setf *deadlines* keep)))
 
+;; Read every form of PATH with *READ-EVAL* off, in a scratch package that
+;; uses COMMON-LISP, and evaluate nothing: the Dev tab's Check when the
+;; gateway has no `ecl` program but runs this engine (SMOKE-23). The same
+;; read as the external check. Answers "" or {line, col, message}.
+(defun read-check-file (path)
+  (let ((pkg (or (find-package "VELES-READ-CHECK")
+                 (make-package "VELES-READ-CHECK" :use (list "COMMON-LISP")))))
+    (with-open-file (in path :external-format :utf-8)
+      (handler-case
+          (let ((*read-eval* nil)
+                (*package* pkg))
+            (loop for form = (read in nil in)
+                  until (eq form in))
+            "")
+        (error (e)
+          (let ((pos (or (ignore-errors (file-position in)) 0))
+                (line 1)
+                (col 0))
+            (with-open-file (again path :external-format :utf-8)
+              (loop repeat pos
+                    for ch = (read-char again nil nil)
+                    while ch
+                    do (if (char= ch #\Newline) (setf line (1+ line) col 0) (incf col))))
+            (json-string (obj "line" line "col" col
+                              "message" (substitute #\Space #\Newline (princ-to-string e))))))))))
+
+(defun do-read-check (m)
+  (let ((id (gethash "id" m)))
+    (handler-case (reply-ok id (read-check-file (gethash "path" m)))
+      (error (e) (reply-err id (princ-to-string e))))))
+
 (defun dispatch (m)
   (let ((tag (gethash "t" m "")))
     (cond
+      ((equal tag "read-check") (do-read-check m))
       ((equal tag "load")
        (mp:process-run-function (format nil "lisp-load:~a" (gethash "name" m)) (lambda () (do-load m))))
       ((equal tag "unload") (do-unload m))

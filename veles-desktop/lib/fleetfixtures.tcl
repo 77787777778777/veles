@@ -93,12 +93,15 @@ proc ::fleetfix::obs_gossip_json {} { return $::fleetfix::obs(gossip) }
 # `restarted_marker` (a file the PATH-shimmed ssh creates; once it
 # exists, health reports `after_revision`), `digest` (current core),
 # `pending` (the single pending signed plan id, as desktop_install.rs
-# keeps it), `log` (method path pairs). The signed preview and confirm
-# bodies carry the fields desktop_install.rs adds to the installer's
-# review; they cannot be captured without a published signed release.
+# keeps it), `log` (method path pairs), `self_id` (when set, GET
+# /api/fleet answers as THAT node: one self row, the shape the deploy's
+# identity proof reads; unset, the captured observation body). The
+# signed preview and confirm bodies carry the fields desktop_install.rs
+# adds to the installer's review; they cannot be captured without a
+# published signed release.
 namespace eval ::fleetfix {
     variable gw
-    array set gw {revision "" after_revision "" restarted_marker "" digest "" pending "" log {} release {} bodies {}}
+    array set gw {self_id "" revision "" after_revision "" restarted_marker "" digest "" pending "" log {} release {} bodies {}}
 }
 
 proc ::fleetfix::serve {} {
@@ -154,7 +157,12 @@ proc ::fleetfix::_route {method path body} {
     set request {}
     if {$body ne ""} { set request [::json::json2dict $body] }
     switch -- "$method $path" {
-        "GET /api/fleet" { return [list 200 [obs_fleet_json]] }
+        "GET /api/fleet" {
+            if {$gw(self_id) ne ""} {
+                return [list 200 [fleet_json [list [list $gw(self_id) self 0.1.6 false true]]]]
+            }
+            return [list 200 [obs_fleet_json]]
+        }
         "POST /api/fleet/metrics" { lappend gw(bodies) $request ; return [list 200 [obs_metrics_json]] }
         "POST /api/fleet/logs" { lappend gw(bodies) $request ; return [list 200 [obs_logs_json]] }
         "POST /api/fleet/drift" { lappend gw(bodies) $request ; return [list 200 [obs_drift_json]] }
@@ -190,6 +198,12 @@ proc ::fleetfix::_route {method path body} {
             if {$gw(pending) eq [dict get $request plan_id]} { set gw(pending) "" }
             return [list 200 [cancel_json]]
         }
+    }
+    # A suite may answer more routes (fleetmanagetest: the node-management
+    # routes, with bodies captured from a real gateway).
+    if {[llength [info commands ::fleetfix::manage_route]]} {
+        set reply [manage_route $method $path $request]
+        if {$reply ne ""} { return $reply }
     }
     return [list 404 {{"ok":false,"error":"not found"}}]
 }

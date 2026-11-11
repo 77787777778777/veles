@@ -32,6 +32,11 @@ ok "an operation begins as reviewed, not deployed" {
     [dict get $op plan_sig] eq [dict get $plan plan_sig] &&
     [regexp {^[A-Za-z0-9_-]+$} $id]
 }
+ok "on unix the journal stays owner-only" {
+    $::tcl_platform(platform) ne "unix" ||
+    (([scan [file attributes $root -permissions] %o] & 0777) == 0700 &&
+     ([scan [file attributes [file join $root "$id.json"] -permissions] %o] & 0777) == 0600)
+}
 ::vfleetjournal::transition $id node-a staging {signed download preview accepted}
 ::vfleetjournal::transition $id node-a staged {signed bundle selected}
 set rows [::vfleetjournal::all]
@@ -100,5 +105,36 @@ ok "journal serializer preserves prose and explicit containers" {
     [dict get $json_probe_decoded ok] in {1 true}
 }
 file delete -force $root
+# FLEET-1: Windows Tcl knows no `file attributes -permissions` (only
+# -archive -hidden -longname -readonly -shortname -system). The journal
+# used to call it unguarded, so every deployment on the Windows desktop
+# failed before its first stage. Emulate that Tcl here: the platform says
+# windows and the option is refused with Windows' own message.
+set win_root [file join /tmp veles-fleet-journal-win-[pid]-[clock clicks]]
+set saved_platform $::tcl_platform(platform)
+rename ::file ::_fleetjournaltest_file
+proc ::file {args} {
+    if {[lindex $args 0] eq "attributes" && "-permissions" in $args} {
+        return -code error {bad option "-permissions", must be -archive, -hidden, -longname, -readonly, -shortname, or -system}
+    }
+    return [uplevel 1 [list ::_fleetjournaltest_file {*}$args]]
+}
+set ::tcl_platform(platform) windows
+set win_configure [catch {::vfleetjournal::configure $win_root} win_configure_error]
+set win_begin 1
+set win_path ""
+if {!$win_configure} {
+    set win_begin [catch {::vfleetjournal::begin $plan} win_op]
+    if {!$win_begin} { set win_path [file join $win_root "[dict get $win_op id].json"] }
+}
+set ::tcl_platform(platform) $saved_platform
+rename ::file {}
+rename ::_fleetjournaltest_file ::file
+ok "the journal is written where file attributes has no -permissions" {
+    !$win_configure && !$win_begin && $win_path ne "" && [file exists $win_path]
+}
+if {$win_configure} { puts "    configure: $win_configure_error" }
+if {!$win_configure && $win_begin} { puts "    begin: $win_op" }
+file delete -force $win_root
 puts "fleetjournaltest: $pass passed, $fail failed"
 exit [expr {$fail ? 1 : 0}]

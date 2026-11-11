@@ -408,6 +408,64 @@ pub fn plugin_commands() -> Vec<PluginCommand> {
     plugin_commands_cell().values_cloned()
 }
 
+/// What a line typed into a chat surface is (the TUI, the REPL, the
+/// desktop composer through `POST /api/command`): one rule, so a line
+/// sends on one surface exactly when it sends on the others.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SlashLine<'a> {
+    /// Text for the model: the line as typed, or, for a line that opens
+    /// `//`, the line with that first slash taken off (`//usr is full`
+    /// sends `/usr is full`).
+    Text(&'a str),
+    /// A command: its word (`/name`, slash kept) and the rest of the
+    /// line. Whether anything knows it is the caller's next question;
+    /// one nothing knows is refused, never sent as text.
+    Command { head: &'a str, rest: &'a str },
+}
+
+/// The longest word [`slash_line`] takes for a command name.
+const COMMAND_NAME_MAX: usize = 40;
+
+/// Is `line` a command or text? Text unless it opens with `/` followed
+/// by a plausible command name: an ASCII letter, then letters, digits,
+/// `-` or `_`, up to [`COMMAND_NAME_MAX`]; or by a name this node knows
+/// in another shape (a `[model_aliases]` key such as `glm-5.2`, a custom
+/// command file's name). So a first word with a second slash
+/// (`/home/x/file fails`), a dot that names nothing (`/x.log is
+/// empty`) or anything else (`/ 5`, `/€`) is text, and `//` escapes a
+/// line that would be a command (SMOKE-19: `/usr is full` is refused as
+/// an unknown command, `//usr is full` sends `/usr is full`).
+pub fn slash_line(line: &str) -> SlashLine<'_> {
+    if line.starts_with("//") {
+        return SlashLine::Text(&line[1..]);
+    }
+    let Some(name) = line.strip_prefix('/') else {
+        return SlashLine::Text(line);
+    };
+    let (word, rest) = match name.find(char::is_whitespace) {
+        Some(i) => (&name[..i], name[i..].trim()),
+        None => (name, ""),
+    };
+    let plausible = word.len() <= COMMAND_NAME_MAX
+        && word.chars().next().is_some_and(|c| c.is_ascii_alphabetic())
+        && word
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_');
+    let known = || {
+        !word.is_empty()
+            && !word.contains(['/', '\\'])
+            && (crate::aliases::is_alias(&crate::config::live(), &line[..word.len() + 1])
+                || find_any(word).is_some())
+    };
+    if !plausible && !known() {
+        return SlashLine::Text(line);
+    }
+    SlashLine::Command {
+        head: &line[..word.len() + 1],
+        rest,
+    }
+}
+
 /// What `find` resolves to once plugins can register commands too.
 /// Plugin-registered commands WIN over a same-named `.md` file: the
 /// live, explicit registration is the more intentional definition.
@@ -656,5 +714,78 @@ mod tests {
                 found.iter().map(|c| c.name.clone()).collect::<Vec<_>>()
             );
         }
+    }
+
+    /// The one rule every chat surface asks: text, or a command word.
+    #[test]
+    fn slash_line_tells_text_from_a_command() {
+        use SlashLine::*;
+        assert_eq!(slash_line("hello /join"), Text("hello /join"));
+        assert_eq!(slash_line("/home/x/file fails"), Text("/home/x/file fails"));
+        assert_eq!(slash_line("/x.log is empty"), Text("/x.log is empty"));
+        assert_eq!(slash_line("/ 5"), Text("/ 5"));
+        assert_eq!(slash_line("/9cron"), Text("/9cron"));
+        assert_eq!(slash_line("/€ rate"), Text("/€ rate"));
+        assert_eq!(slash_line("/"), Text("/"));
+        assert_eq!(slash_line("//usr is full"), Text("/usr is full"));
+        assert_eq!(slash_line("//"), Text("/"));
+        let long = format!("/{}", "a".repeat(41));
+        assert_eq!(slash_line(&long), Text(long.as_str()));
+        assert_eq!(
+            slash_line("/usr is full"),
+            Command {
+                head: "/usr",
+                rest: "is full"
+            }
+        );
+        assert_eq!(
+            slash_line("/join\tsmoke-store "),
+            Command {
+                head: "/join",
+                rest: "smoke-store"
+            }
+        );
+        assert_eq!(
+            slash_line("/model-alias_2"),
+            Command {
+                head: "/model-alias_2",
+                rest: ""
+            }
+        );
+    }
+
+    /// A name this node knows stays a command whatever its shape: a
+    /// custom command file `2fa.md` (digits first), a `[model_aliases]`
+    /// key `glm-5.2` (a chat alias). Unknown, the same shape is text.
+    #[test]
+    fn a_known_name_with_a_dot_is_a_command() {
+        let (cfg_root, _data_root, _g) = crate::testenv::scratch_xdg();
+        let dir = cfg_root.path().join("veles");
+        std::fs::create_dir_all(dir.join("commands")).unwrap();
+        assert_eq!(slash_line("/2fa now"), SlashLine::Text("/2fa now"));
+        std::fs::write(dir.join("commands/2fa.md"), "ship $1").unwrap();
+        assert_eq!(
+            slash_line("/2fa now"),
+            SlashLine::Command {
+                head: "/2fa",
+                rest: "now"
+            }
+        );
+        std::fs::write(
+            dir.join("config.toml"),
+            "[model_aliases.\"glm-5.2\"]\nprovider = \"zai\"\nmodel = \"glm-5.2\"\n",
+        )
+        .unwrap();
+        assert_eq!(
+            slash_line("/glm-5.2 hello"),
+            SlashLine::Command {
+                head: "/glm-5.2",
+                rest: "hello"
+            }
+        );
+        assert_eq!(
+            slash_line("/glm-5.3 hello"),
+            SlashLine::Text("/glm-5.3 hello")
+        );
     }
 }

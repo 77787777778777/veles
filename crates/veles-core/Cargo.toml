@@ -181,6 +181,8 @@ windows-sys = { version = "0.59", features = [
     "Win32_System_Pipes",
     "Win32_System_ProcessStatus",
     "Win32_System_Registry",
+    # GlobalMemoryStatusEx and GetTickCount64 (hostmetrics.rs, FLEET-7).
+    "Win32_System_SystemInformation",
     "Win32_System_Threading",
 ] }
 

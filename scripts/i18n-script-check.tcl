@@ -84,14 +84,47 @@ while {[gets $fh line] >= 0} {
     # printf fields and explicitly retained technical vocabulary carry no
     # translatable letters. Check what remains, not the placeholders or
     # names that a native UI translation deliberately keeps in Latin.
-    set letters [regsub -all {%[0-9]+\$[-0-9.]*[sdxfc]|%[-0-9.]*[sdxfc]} $tr {}]
-    foreach term {
-        veles Tcl Rust Tk Tkinter JavaScript TypeScript Node.js
-        {language server} LSP MCP A2A API CLI TUI GUI JSON TOML YAML
-        SQLite IRC Telegram Bluesky GitHub NixOS XDG
-    } {
-        set letters [string map [list $term {}] $letters]
+    # Placeholders are printf fields, %{name}, an option list (a|b|c) and a
+    # key:value or URL token (irc:account, https://...): none is prose.
+    set letters [regsub -all {%[0-9]+\$[-0-9.]*[sdxfc]|%[-0-9.]*[sdxfc]|%\{[^\}]*\}|[A-Za-z0-9_.-]+(?:\|[A-Za-z0-9_.-]+)+|[A-Za-z]+:[^\s,;)]+} $tr {}]
+    # Kept names go out as WHOLE words. A substring strip let "GUIDE" pass
+    # as the kept name "GUI" plus a stray "DE", and let a row made only of
+    # kept names hide English prose around them.
+    set letters [string map {{language server} {}} $letters]
+    # A command or flag (/locale, --json) and a key name (<Return>) are
+    # single tokens; an English sentence in angle brackets is not.
+    set letters [regsub -all {[/-][A-Za-z][A-Za-z0-9_.-]*|<[^>\s]*>} $letters {}]
+    set rest {}
+    set latin_words 0
+    set run 0
+    set longest 0
+    foreach word [regexp -all -inline {[A-Za-z0-9_.]+|[^A-Za-z0-9_.]} $letters] {
+        set bare [string trimright $word .]
+        if {$bare in {
+            veles Tcl Rust Tk Tkinter JavaScript TypeScript Node.js LSP MCP
+            A2A API CLI TUI GUI JSON TOML YAML SQLite IRC Telegram Bluesky
+            GitHub NixOS XDG
+        }} {
+            set run 0
+            continue
+        }
+        append rest $word
+        # Three plain Latin words in a row are English prose, not a name (a
+        # command, a path or a quoted example is a single token). An
+        # ALL-CAPS word (NAME, PATH) is a placeholder in a command line, and
+        # a file name (config.toml) is one token with a dot: neither counts.
+        if {[regexp {^[A-Z]{2,}$} $bare]} {
+        } elseif {[regexp {^[A-Za-z]{2,}$} $bare]} {
+            incr latin_words
+            if {[incr run] > $longest} { set longest $run }
+        } elseif {[string trim $word] ne ""} {
+            set run 0
+        }
     }
+    set letters $rest
+    # Latin locales may keep English-looking words; only a non-Latin one
+    # is held to the run rule.
+    if {$own eq {latin}} { set longest 0 }
     set seen {}
     foreach ch [split $letters ""] {
         set s [script_of [scan $ch %c]]
@@ -101,9 +134,28 @@ while {[gets $fh line] >= 0} {
     foreach s $seen {
         if {$s ne "latin" && $s ni $own} { lappend foreign $s }
     }
+    # English words left after the kept names must not outnumber the
+    # locale's own words: "Check source Проверка" is English with a
+    # garnish. WORDS, not letters: by letters "промени в config.toml" or
+    # "Push към %s" failed, and so did about 900 rows the catalogs ship.
+    # (Not for Han, Kana or Thai, which do not separate words by spaces.)
+    set outnumbered 0
+    if {$own ni {latin han {kana han} thai}} {
+        set own_words 0
+        set inword 0
+        foreach ch [split $letters ""] {
+            if {[script_of [scan $ch %c]] in $own} {
+                if {!$inword} { incr own_words }
+                set inword 1
+            } else {
+                set inword 0
+            }
+        }
+        set outnumbered [expr {$latin_words > $own_words}]
+    }
     set has_own [expr {$own eq {latin}}]
     foreach s $own { if {$s in $seen} { set has_own 1 } }
-    if {[llength $foreign] || ([string trim $letters " \t\r\n:;,.!?()[]{}→←：（）【】、。！？；"] ne "" && !$has_own)} {
+    if {$longest >= 3 || $outnumbered || [llength $foreign] || ([string trim $letters " \t\r\n:;,.!?()[]{}→←：（）【】、。！？；"] ne "" && !$has_own)} {
         puts "$loc: [lindex $parts 0] → $tr  (scripts: $seen; expected: $own)"
         incr bad
     }

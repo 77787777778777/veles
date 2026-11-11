@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset af {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset af {%1$s %2$s done} {%1$s %2$s klaar}
 ::msgcat::mcset af {%1$s %2$s failed: %3$s} {%1$s %2$s misluk: %3$s}
+::msgcat::mcset af {%1$s %2$s over ssh anyway?} {%1$s %2$s tog oor ssh?}
 ::msgcat::mcset af {%1$s %2$s over ssh…} {%1$s %2$s oor ssh…}
 ::msgcat::mcset af {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset af {%1$s (%2$s waiting)} {%1$s (%2$s wag)}
 ::msgcat::mcset af {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  redenering %3$s}
 ::msgcat::mcset af {%1$s = %2$s here} {%1$s = %2$s hier}
+::msgcat::mcset af {%1$s = %2$s on %3$s} {%1$s = %2$s op %3$s}
 ::msgcat::mcset af {%1$s NOT saved: %2$s} {%1$s NIE gestoor nie: %2$s}
 ::msgcat::mcset af {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s behoort aan die %2$s-biblioteek en is lees-enig — kopieer dit met Nuwe… om dit te verander}
 ::msgcat::mcset af {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s behoort aan die %2$s-biblioteek — veles vee nooit 'n ander program se vaardighede uit nie}
+::msgcat::mcset af {%1$s cannot restart itself: %2$s} {%1$s kan homself nie herbegin nie: %2$s}
+::msgcat::mcset af {%1$s differs: %2$s} {%1$s verskil: %2$s}
 ::msgcat::mcset af {%1$s every cron job on %2$s?} {%1$s elke cron-taak op %2$s?}
 ::msgcat::mcset af {%1$s failed: %2$s} {%1$s misluk: %2$s}
 ::msgcat::mcset af {%1$s in / %2$s out / %3$s calls} {%1$s in / %2$s uit / %3$s oproepe}
+::msgcat::mcset af {%1$s is back after %2$s s (veles %3$s).} {%1$s is terug ná %2$s s (veles %3$s).}
 ::msgcat::mcset af {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s is knooppunt %2$s, nie %3$s nie. Maak sy knooppunt-ID in Wysig… reg.}
 ::msgcat::mcset af {%1$s is not a whole number} {%1$s is nie 'n heelgetal nie}
+::msgcat::mcset af {%1$s is not on: %2$s} {%1$s is nie aan nie: %2$s}
+::msgcat::mcset af {%1$s is not set on %2$s: the default applies.} {%1$s is nie op %2$s gestel nie: die verstek geld.}
 ::msgcat::mcset af {%1$s is reachable (%2$s ms).} {%1$s is bereikbaar (%2$s ms).}
+::msgcat::mcset af {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s het %2$s beurt(e) aan die gang. Tog herbegin?}
 ::msgcat::mcset af {%1$s is set to something this box cannot edit (%2$s)} {%1$s is gestel op iets wat hierdie masjien nie kan wysig nie (%2$s)}
 ::msgcat::mcset af {%1$s is unreachable: %2$s} {%1$s is onbereikbaar: %2$s}
+::msgcat::mcset af {%1$s is up, but its node binding is wrong: %2$s} {%1$s loop, maar sy knooppuntbinding is verkeerd: %2$s}
+::msgcat::mcset af {%1$s not compared: %2$s} {%1$s nie vergelyk nie: %2$s}
 ::msgcat::mcset af {%1$s of %2$s characters} {%1$s van %2$s karakters}
 ::msgcat::mcset af {%1$s of %2$s sessions} {%1$s van %2$s sessies}
 ::msgcat::mcset af {%1$s of %2$s skills reach the prompt} {%1$s van %2$s vaardighede bereik die prompt}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset af {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset af {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset af {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset af {%1$s: %2$s on the gateway} {%1$s: %2$s op die gateway}
+::msgcat::mcset af {%1$s: %2$s on the gateway (ships with veles)} {%1$s: %2$s op die gateway (word saam met veles verskeep)}
 ::msgcat::mcset af {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset af {%1$s: no language server on the gateway. %2$s} {%1$s: geen taalserver op die gateway nie. %2$s}
 ::msgcat::mcset af {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: die laaste %2$s van %3$s reëls wat sy gateway in die geheue hou, geheime op daardie knooppunt geredigeer.}
+::msgcat::mcset af {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: gebruikersplugin %2$s oorskadu die ingeboude een met dieselfde inhoud (%3$s)}
 ::msgcat::mcset af {%d MCP server(s) configured} {%d MCP-bedieners opgestel}
 ::msgcat::mcset af {%d entries} {%d inskrywings}
 ::msgcat::mcset af {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {%d lêer(s) van die uitbreiding word presies geskryf soos nagegaan. As enige van hulle sedert die voorskou verander het, word niks geskryf nie. Geen commit, push of PR gebeur nie.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset af {%s (stale)} {%s (verouderd)}
 ::msgcat::mcset af {%s (this session)} {%s (hierdie sessie)}
 ::msgcat::mcset af {%s GB free of %s GB} {%s GB vry van %s GB}
+::msgcat::mcset af {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s Die opdrag gaan oor ssh na die opgestelde gasheer, wat hierdie kontrole nie aan die knooppunt kon koppel nie.}
 ::msgcat::mcset af {%s already exists — open it from the list} {%s bestaan reeds — maak dit uit die lys oop}
 ::msgcat::mcset af {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {%s het verander sedert jy dit oopgemaak het — niks is oorskryf nie; kopieer jou teks uit en kies dan Herlaai}
 ::msgcat::mcset af {%s cleared for this buffer} {%s skoongemaak vir hierdie buffer}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset af {%s comes from config.toml [acl] — edit there} {%s kom uit config.toml [acl] — wysig dit daar}
 ::msgcat::mcset af {%s config change(s) wait for you — /configsync} {%s konfigurasieverandering(e) wag op jou — /configsync}
 ::msgcat::mcset af {%s did not become healthy within 30s} {%s het nie binne 30s gesond geword nie}
+::msgcat::mcset af {%s did not come back within 120 s: look at its log where it runs.} {%s het nie binne 120 s teruggekom nie: kyk na sy log waar dit loop.}
 ::msgcat::mcset af {%s done} {%s klaar}
 ::msgcat::mcset af {%s failed: %s} {%s het misluk: %s}
+::msgcat::mcset af {%s holds a credential: it stays on its node and is not shown.} {%s hou 'n geloofsbewys: dit bly op sy knooppunt en word nie gewys nie.}
 ::msgcat::mcset af {%s is already split} {%s is al gesplit}
+::msgcat::mcset af {%s is restarting; waiting for it to come back…} {%s herbegin; wag vir dit om terug te kom…}
 ::msgcat::mcset af {%s is the language in use — pick another one to swap with} {%s is die taal wat in gebruik is — kies 'n ander om mee te ruil}
 ::msgcat::mcset af {%s is up} {%s loop}
 ::msgcat::mcset af {%s keys — any key closes} {%s sleutels — enige sleutel maak toe}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset af {; shadows bundled} {; oorskadu ingeboude}
 ::msgcat::mcset af {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {'n Konfigurasie-aanbod kan instellings verander en 'n kluis-aanbod voeg geheime saam; veranderinge aan 'n sekuriteitsafdeling wag steeds op die eienaar.}
 ::msgcat::mcset af {A failing plugin may drop hooks mid-turn.} {'n Mislukte plugin kan hooks midde-in 'n beurt laat val.}
+::msgcat::mcset af {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {'n Teruggehoue afdeling: dit word nie van hier geskryf nie; wysig dit op 'n knooppunt en stuur konfigurasie, dan pas die eienaar dit daar toe.}
 ::msgcat::mcset af {A local server: no key is needed unless you set one up.} {'n Plaaslike bediener: geen sleutel word benodig nie, tensy jy een opstel.}
 ::msgcat::mcset af {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {'n Getekende vrystelling word eers ná voorvlug gereedgestel. Herbegin/verifieer, voortsetting en terugrol is afsonderlike aksies. 'n Gesonde proses moet die presiese hersiene bronhersiening rapporteer.}
 ::msgcat::mcset af {A value is stored for %s — leave this empty to keep it.} {Daar is 'n waarde vir %s gestoor — laat dit leeg om dit te hou.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset af {Asking the provider for its models…} {Vra die verskaffer vir sy modelle…}
 ::msgcat::mcset af Attach Heg
 ::msgcat::mcset af {Attach to the next message} {Heg aan die volgende boodskap}
+::msgcat::mcset af {Audit log unavailable: %s} {Ouditlog onbeskikbaar: %s}
+::msgcat::mcset af {Audit log…} Ouditlog…
 ::msgcat::mcset af {Author guide} Outeursgids
 ::msgcat::mcset af {Automatically discovered from the attached gateway's cluster registry.} {Outomaties ontdek uit die gekoppelde gateway se klusterregister.}
 ::msgcat::mcset af Back Terug
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset af {Browse sessions} {Blaai deur sessies}
 ::msgcat::mcset af {Build manifest + preflight} {Boumanifes + voorvlug}
 ::msgcat::mcset af {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Bou: veles %1$s, hersiening %2$s (%3$s %4$s)}
+::msgcat::mcset af {Bulk %1$s failed: %2$s} {Bulk-%1$s het misluk: %2$s}
+::msgcat::mcset af {Bulk %1$s: %2$s (%3$s).} {Bulk-%1$s: %2$s (%3$s).}
+::msgcat::mcset af {Bulk action cancelled.} {Bulk-aksie gekanselleer.}
 ::msgcat::mcset af {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e reëleindes · C-b/C-f karakter · M-b/M-f woord · C-k knip tot reëleinde · C-y yank · M-w kopieer · C-w knip gebied · C-space stel merk · C-/ ontdoen}
 ::msgcat::mcset af {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g breek alles af · C-j nuwe reël · M-p/M-n geskiedenis · Tab voltooi}
+::msgcat::mcset af {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU: %1$s kerne, %2$s%% besig oor die laaste %3$s s}
 ::msgcat::mcset af {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s kerne, las %2$s / %3$s / %4$s (%5$s%% van die kerne)}
 ::msgcat::mcset af Cancel Kanselleer
 ::msgcat::mcset af {Cancel task} {Kanselleer taak}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset af {Channels (e.g. #veles #dev)} {Kanale (bv. #veles #dev)}
 ::msgcat::mcset af Chat Klets
 ::msgcat::mcset af {Chat — not attached; press Attach in the Instances tab} {Klets — nie gekoppel nie; druk Koppel in die Instansies-oortjie}
-::msgcat::mcset af {Check (lsp)} {Kontroleer (lsp)}
+::msgcat::mcset af {Check (C-c C-k)} {Kontroleer (C-c C-k)}
 ::msgcat::mcset af {Check again} {Kontroleer weer}
 ::msgcat::mcset af {Check files} {Kontroleer lêers}
 ::msgcat::mcset af Checkpoints Kontrolepunte
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset af {Close (Esc)} {Maak toe (Esc)}
 ::msgcat::mcset af {Close the setup wizard? Nothing has been written yet.} {Maak die opstel-assistent toe? Niks is nog geskryf nie.}
 ::msgcat::mcset af {Code actions} Kode-aksies
+::msgcat::mcset af {Command-center audit log} Bevelsentrum-ouditlog
 ::msgcat::mcset af Commit Commit
 ::msgcat::mcset af {Commit ready for review. Push is a separate action.} {Commit gereed vir hersiening. Push is 'n afsonderlike aksie.}
 ::msgcat::mcset af {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Voltooi elke PDS-veld, insluitend die vasgepen beeld-digest, voordat jy die handoff voorskou.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset af {Config differs: %s} {Konfigurasie verskil: %s}
 ::msgcat::mcset af {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Konfigurasielog: daardie knooppunt het %1$s se veranderinge tot by %3$s, hierdie gateway tot by %2$s}
 ::msgcat::mcset af {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Konfigurasielog: hierdie gateway het %1$s se veranderinge tot by %2$s, daardie knooppunt tot by %3$s}
+::msgcat::mcset af {Config of %s} {Konfigurasie van %s}
 ::msgcat::mcset af {Config only on that node: %s} {Konfigurasie net op daardie knooppunt: %s}
 ::msgcat::mcset af {Config only on this gateway: %s} {Konfigurasie net op hierdie gateway: %s}
+::msgcat::mcset af {Config: %s} {Konfigurasie: %s}
 ::msgcat::mcset af Configure Konfigureer
 ::msgcat::mcset af {Configure %s} {Konfigureer %s}
 ::msgcat::mcset af {Configure translator} {Stel vertaler op}
 ::msgcat::mcset af {Configured desktop gateway} {Opgestelde desktop-gateway}
 ::msgcat::mcset af Configure… Konfigureer…
 ::msgcat::mcset af {Configuring %s} {Stel %s op}
+::msgcat::mcset af Config… Konfigurasie…
 ::msgcat::mcset af {Confirm or discard the current signed review before starting another download.} {Bevestig of verwerp die huidige getekende hersiening voordat jy 'n ander aflaai begin.}
 ::msgcat::mcset af {Container host: typed host plan and privileged CLI handoff} {Container host: getikte gasheerplan en 'n CLI-oordrag met administrateurregte}
 ::msgcat::mcset af {Context window} Konteksvenster
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset af {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Skep die bot met @BotFather en plak dan sy token hieronder: dit gaan in die geënkripteerde kluis, nooit in config.toml nie.}
 ::msgcat::mcset af {Create this extension?} {Skep hierdie uitbreiding?}
 ::msgcat::mcset af {Create this generated extension?} {Skep hierdie gegenereerde uitbreiding?}
+::msgcat::mcset af {Created and loaded. Review and test the extension before publishing.} {Geskep en gelaai. Gaan die uitbreiding na en toets dit voordat jy publiseer.}
 ::msgcat::mcset af {Created and reloaded. Review and test the extension before publishing.} {Geskep en herlaai. Hersien en toets die uitbreiding voor publikasie.}
 ::msgcat::mcset af {Created, but reload failed} {Geskep, maar herlaai het misluk}
+::msgcat::mcset af {Created, not loaded} {Geskep, nie gelaai nie}
+::msgcat::mcset af {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {Geskep, nog nie gelaai nie: voer cargo build --release in die uitbreiding se gids uit en herlaai dit dan in Bestuur uitbreidings.}
+::msgcat::mcset af {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {Geskep. Hierdie gateway sê nie of dit die uitbreiding gelaai het nie: sien sy toestand in Bestuur uitbreidings.}
 ::msgcat::mcset af {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Skep %s/<name>/SKILL.md uit 'n sjabloon en maak dit oop. Die frontmatter-beskrywing is die enigste deel wat die prompt-indeks bereik, so laat dit sê WANNEER om die vaardigheid te gebruik.}
 ::msgcat::mcset af {Cron history} Cron-geskiedenis
 ::msgcat::mcset af {Cron jobs} Cron-take
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset af {Delete user} {Verwyder gebruiker}
 ::msgcat::mcset af {Delete workspace?} {Verwyder werkspasie?}
 ::msgcat::mcset af Deop {Neem op weg}
+::msgcat::mcset af {Deployment consistency unknown: %s node(s) could not be compared.} {Ontplooiingseenvormigheid onbekend: %s knooppunt(e) kon nie vergelyk word nie.}
+::msgcat::mcset af {Deployment consistency: not checked yet (Drift… compares every node).} {Ontplooiingseenvormigheid: nog nie nagegaan nie (Drift… vergelyk elke knooppunt).}
 ::msgcat::mcset af {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Beskryf die verandering. Die KI kan verskeie lêers van hierdie uitbreiding verander of byvoeg. Elke lêer word as 'n diff gewys, en niks word geskryf voordat jy bevestig nie.}
 ::msgcat::mcset af {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Beskryf die verandering. Die KI kan 'n vervanging voorstel, maar kan dit nie skryf voordat jy die diff nagegaan en bevestig het nie.}
 ::msgcat::mcset af {Describe the requested extension change first.} {Beskryf eers die verlangde uitbreidingsverandering.}
 ::msgcat::mcset af Description Beskrywing
+::msgcat::mcset af {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {Lessenaarbeurte gaan ná die herbegin uit hul gestoorde geskiedenis voort; konnektor-, A2A-, pos-, cron- en subagentbeurte nie.}
 ::msgcat::mcset af {Desktop: local core, modules and process plugins} {Desktop: plaaslike kern, modules en prosesplugins}
 ::msgcat::mcset af Detach Ontkoppel
 ::msgcat::mcset af {Detach foreground} {Ontkoppel voorgrond}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset af {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Laai die vrystelling-manifes en gasheerrargief af en verifieer dit voordat jy installeer. Al vyf identiteitsvelde word vereis. Die gateway hou die private opgevoerde argief; niks word deur hierdie voorskou geïnstalleer nie.}
 ::msgcat::mcset af {Downloading and verifying the signed release…} {Laai die getekende vrystelling af en verifieer dit…}
 ::msgcat::mcset af {Draft this as an extension?} {Stel dit as 'n uitbreiding op?}
+::msgcat::mcset af {Draft this change as an extension?} {Stel hierdie verandering as 'n uitbreiding op?}
 ::msgcat::mcset af {Drag to scroll; a quick swipe goes further.} {Sleep om te rol; 'n vinnige veeg gaan verder.}
 ::msgcat::mcset af {Drift check failed: %s} {Afwykingskontrole het misluk: %s}
 ::msgcat::mcset af {Drift check: %s node(s) differ from this gateway.} {Afwykingskontrole: %s knooppunt(e) verskil van hierdie gateway.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset af Eval→gw Eval→gw
 ::msgcat::mcset af {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Elke verandering aan %s word gecommit. Terugstel plaas die hele gids terug na daardie commit — en neem eers 'n momentopname van die huidige staat, so dit is nie 'n eenrigtingdeur nie.}
 ::msgcat::mcset af {Every plugin file goes back to that commit. The current state is committed first.} {Elke plugin-lêer gaan terug na daardie commit. Die huidige staat word eers gecommit.}
+::msgcat::mcset af {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {Elke vlak: Nuwe uitbreiding skryf 'n Tcl-, TypeScript-, Racket- of Common Lisp-uitbreiding, of 'n Rust-plugin buite die boom ('n cdylib op die veles-plugin-abi-sdk-krat: bou dit met cargo build --release en herlaai dit dan in Bestuur uitbreidings). Twee vlakke woon buite die gebruikersplugin-gids en begin vanaf die opdragreël: 'n module, 'n Rust-biblioteek wat saam met veles gebou word (veles plugins new NAME --kind overlay skryf sy bewaarplek), en 'n prosesplugin, 'n program op die veles-plugin-sdk-krat wat die gateway laat loop en toesig daaroor hou. Die Gids vir plugin-outeurs het 'n afdeling vir elkeen.}
 ::msgcat::mcset af {Exact commit} {Presiese commit}
 ::msgcat::mcset af {Exact permission rule} {Presiese toestemmingsreël}
 ::msgcat::mcset af {Example: a hook} {Voorbeeld: 'n hook}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset af {Explain the diagnostics} {Verduidelik die diagnostiek}
 ::msgcat::mcset af Export… {Voer uit…}
 ::msgcat::mcset af {Extension API} Uitbreidings-API
+::msgcat::mcset af {Extension API reference} {Verwysing vir die uitbreiding-API}
 ::msgcat::mcset af {Extension development} Uitbreidingsontwikkeling
 ::msgcat::mcset af {Extension guide} Uitbreidingsgids
 ::msgcat::mcset af {Extension source} Uitbreidingsbron
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset af {Guards — what the harness stops, and where it stands now} {Guards — wat die harness stop, en waar dit nou staan}
 ::msgcat::mcset af {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Verwerkers loop in die volgorde wat gewys word; die eerste een wat 'n nie-leë waarde teruggee, wen. Om een af te skakel, slaan dit oor sonder om dit te deregistreer, en die keuse word in config.toml bewaar sodat 'n plugin-herlaai dit nie stilweg kan aanskakel nie.}
 ::msgcat::mcset af Health Gesondheid
+::msgcat::mcset af {Health alerts} Gesondheidswaarskuwings
 ::msgcat::mcset af {Health alerts (%s):} {Gesondheidswaarskuwings (%s):}
 ::msgcat::mcset af Heartbeat Hartslag
 ::msgcat::mcset af {Heartbeat age: %s s} {Hartklop-ouderdom: %s s}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset af Install… Installeer…
 ::msgcat::mcset af {Instance name (for example an IRC network)} {Instansienaam (byvoorbeeld 'n IRC-netwerk)}
 ::msgcat::mcset af Instances Instansies
+::msgcat::mcset af {Instead of patching %s: } {In plaas daarvan om %s te pleister: }
 ::msgcat::mcset af {It becomes the current content, as a new revision — so the restore can be undone too.} {Dit word die huidige inhoud, as 'n nuwe hersiening — so die herstel kan ook ongedaan gemaak word.}
 ::msgcat::mcset af {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Dit gaan in die geënkripteerde kluis op hierdie masjien. Die agent sien dit nooit nie: dit kan dit net as $%s in opdragte gebruik, of dit na die toegelate gashere stuur.}
 ::msgcat::mcset af {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Dit word vlootwyd uit die clusterregister verwyder: die volgende gossip-uitruiling sê vir elke 0.2.0-vennoot om dit ook te laat vaar, en nie een van hulle voeg dit terug nie. 'n Vennoot ouer as 0.2.0 hou aan om dit te lys. As die masjien terugkom en 'n hartklop stuur, word dit weer geregistreer. Sinchronisasievennote en gestoorde instansies bly onaangeraak.}
+::msgcat::mcset af {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {Dit word as 'n wysiging wat daar gemaak is in daardie knooppunt se config.toml geskryf; konfigurasie-sinchronisering dra dit dan na die knooppunte wat konfigurasie daarmee sinchroniseer.}
 ::msgcat::mcset af {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Dit verlaat nou die geheue. Die geskiedenis hou elke hersiening, en Geskiedenis… kan dit herstel.}
+::msgcat::mcset af {Its gateway stops and %s.} {Sy gateway stop en %s.}
 ::msgcat::mcset af Join {Sluit aan}
 ::msgcat::mcset af {Join a pool} {Sluit by 'n masjiengroep aan}
 ::msgcat::mcset af {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {Sluit by %1$s se masjiengroep aan as %2$s? Die groep sal hierdie foon by %3$s bereik.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset af Joining… {Sluit aan…}
 ::msgcat::mcset af Join… {Sluit aan…}
 ::msgcat::mcset af {Jump to composer} {Spring na invoervak}
+::msgcat::mcset af {Key (for example model.default)} {Sleutel (byvoorbeeld model.default)}
 ::msgcat::mcset af Keybindings Sleutelbindings
 ::msgcat::mcset af {Keyboard help} Sleutelbordhulp
 ::msgcat::mcset af {Kick %1$s from %2$s?} {Skop %1$s uit %2$s?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset af {LLM provider} LLM-verskaffer
 ::msgcat::mcset af Language Taal
 ::msgcat::mcset af {Language (i18n)} {Taal (i18n)}
+::msgcat::mcset af {Language servers on this gateway} {Taalservers op hierdie gateway}
 ::msgcat::mcset af Language… Taal…
 ::msgcat::mcset af {Last active} {Laas aktief}
 ::msgcat::mcset af {Last probe: %1$s — %2$s} {Laaste peiling: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset af Level Vlak
 ::msgcat::mcset af {Lift lockdown} Ontsper
 ::msgcat::mcset af Lines Reëls
+::msgcat::mcset af {List targets…} {Lys teikens…}
 ::msgcat::mcset af {List the provider's models} {Lys die verskaffer se modelle}
 ::msgcat::mcset af Load Lading
 ::msgcat::mcset af {Load more} {Laai meer}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset af Next Volgende
 ::msgcat::mcset af Nickname Bynaam
 ::msgcat::mcset af {NixOS: emit a module snippet; do not edit host declarations} {NixOS: lewer 'n modulebrokkie; moenie gasheerverklarings wysig nie}
-::msgcat::mcset af {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Geen SSH-lewensiklusteiken is vir hierdie nodus opgestel nie. Voeg 'n instansie eksplisiet by om dit te ontplooi of te herbegin.}
+::msgcat::mcset af {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {Geen SSH-lewensiklusteiken is vir hierdie knooppunt opgestel nie: Herbegin vra die knooppunt om homself deur sy toesighouer te herbegin; Vloot-ontplooiing benodig 'n gestoorde instansie met 'n ssh-teiken.}
 ::msgcat::mcset af {No additional push happens.} {Geen verdere push gebeur nie.}
 ::msgcat::mcset af {No apps yet. Ask the agent to make one: “make me an app that…”} {Nog geen toepassings nie. Vra die agent om een te maak: “maak vir my 'n toepassing wat…”}
 ::msgcat::mcset af {No code in the picture. Hold the phone closer, straight on, and scan again.} {Geen kode in die prent nie. Hou die foon nader, reguit, en skandeer weer.}
+::msgcat::mcset af {No command-center action is recorded on this gateway yet.} {Nog geen bevelsentrum-aksie is op hierdie gateway aangeteken nie.}
 ::msgcat::mcset af {No configuration snapshot will be restored.} {Geen konfigurasie-momentopname sal herstel word nie.}
 ::msgcat::mcset af {No configured sync peer for this node.} {Geen opgestelde sinchroniseer-eweknie vir hierdie knooppunt nie.}
 ::msgcat::mcset af {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Geen toegewyde vertaler opgestel nie. Gebruik Stel vertaler op om sy verskaffer, model en doeltaal te kies.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset af {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Fone van %s stop ook self toepassings. Laat veles in sy toepassingsinstellings toe om vanself te begin en in die agtergrond te loop.}
 ::msgcat::mcset af {Pin / unpin} {Speld vas / los}
 ::msgcat::mcset af {Pin to home screen} {Speld op tuisskerm vas}
+::msgcat::mcset af {Plugin author guide} {Gids vir plugin-outeurs}
 ::msgcat::mcset af {Plugin history} Plugin-geskiedenis
 ::msgcat::mcset af Plugins Plugins
 ::msgcat::mcset af Port Poort
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset af {Preview here} {Voorskou hier}
 ::msgcat::mcset af {Preview pane} Voorskou-paneel
 ::msgcat::mcset af {Preview proposal} {Voorskou van voorstel}
-::msgcat::mcset af {Preview the changed name or language before creating it.} {Bekyk die veranderde naam of taal in voorskou voordat jy dit skep.}
+::msgcat::mcset af {Preview the changed name, purpose or language before creating it.} {Voorskou die veranderde naam, doel of taal voordat jy dit skep.}
 ::msgcat::mcset af Probe Peil
+::msgcat::mcset af {Probe %s node(s)?} {Peil %s knooppunt(e)?}
+::msgcat::mcset af {Probe all…} {Peil alles…}
 ::msgcat::mcset af {Probe of %1$s failed: %2$s} {Peiling van %1$s het misluk: %2$s}
 ::msgcat::mcset af {Profile result} Profieluitslag
 ::msgcat::mcset af {Promote into config.toml} {Bevorder na config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset af {Push branch…} {Push tak…}
 ::msgcat::mcset af {Push complete. No pull request has been opened.} {Push voltooi. Geen pull request is oopgemaak nie.}
 ::msgcat::mcset af {Push this branch?} {Push hierdie tak?}
+::msgcat::mcset af {Push this kind to every node that is a configured peer for it:} {Stuur hierdie soort na elke knooppunt wat 'n opgestelde eweknie daarvoor is:}
 ::msgcat::mcset af {Push to %s:} {Stuur na %s:}
 ::msgcat::mcset af Question Vraag
 ::msgcat::mcset af Questions Vrae
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset af {REPL target: the app} {REPL-teiken: die app}
 ::msgcat::mcset af {REPL target: the gateway} {REPL-teiken: die gateway}
 ::msgcat::mcset af Read Lees
+::msgcat::mcset af {Read the key first: a write names the value it replaces.} {Lees eers die sleutel: 'n skryfaksie noem die waarde wat dit vervang.}
 ::msgcat::mcset af {Reading notifications, for triggers} {Kennisgewings lees, vir snellers}
 ::msgcat::mcset af Reasoning Redenasie
 ::msgcat::mcset af {Reasoning effort} Redeneringspoging
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset af {Reset to default} {Herstel na verstek}
 ::msgcat::mcset af {Reset to template} {Stel terug na sjabloon}
 ::msgcat::mcset af Restart Herbegin
+::msgcat::mcset af {Restart %s?} {Herbegin %s?}
 ::msgcat::mcset af {Restart + verify canary} {Herbegin + verifieer kanarie}
+::msgcat::mcset af {Restart cancelled.} {Herbegin gekanselleer.}
+::msgcat::mcset af {Restart of %1$s failed: %2$s} {Herbegin van %1$s het misluk: %2$s}
 ::msgcat::mcset af {Restore hidden windows} {Herstel versteekte vensters}
 ::msgcat::mcset af {Restore plugins to %s?} {Herstel plugins na %s?}
 ::msgcat::mcset af {Restore revision r%1$s of %2$s?} {Herstel hersiening r%1$s van %2$s?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset af {S3 region} S3-streek
 ::msgcat::mcset af {SASL account (optional)} {SASL-rekening (opsioneel)}
 ::msgcat::mcset af {SASL password (hidden)} {SASL-wagwoord (versteek)}
+::msgcat::mcset af {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {SSH-lewensiklus: deur gestoorde instansie %1$s (%2$s, eenheid %3$s).}
 ::msgcat::mcset af Sandbox Sandbox
 ::msgcat::mcset af {Sandbox account} Sandbox-rekening
 ::msgcat::mcset af Sandboxes Sandboxes
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset af {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Sessies wat tans na hierdie alias oorgeskryf is, hou die roete wat hulle opgelos het; nuwe oorskrywings sal nie die naam vind nie.}
 ::msgcat::mcset af {Sessions served} {Sessies bedien}
 ::msgcat::mcset af Set Stel
+::msgcat::mcset af {Set %1$s on %2$s to %3$s?} {Stel %1$s op %2$s na %3$s?}
 ::msgcat::mcset af {Set [model] provider/default in config.toml.} {Stel [model] se verskaffer/verstek in config.toml.}
 ::msgcat::mcset af {Set as swap target} {Maak ruilteiken}
 ::msgcat::mcset af {Set mode %1$s on %2$s?} {Stel modus %1$s op %2$s?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset af Summary Opsomming
 ::msgcat::mcset af Surface Oppervlak
 ::msgcat::mcset af {Swap ⇄} {Ruil ⇄}
+::msgcat::mcset af {Sync %1$s to %2$s node(s)?} {Sinchroniseer %1$s na %2$s knooppunt(e)?}
+::msgcat::mcset af {Sync all} {Sinchroniseer alles}
+::msgcat::mcset af {Sync all…} {Sinchroniseer alles…}
 ::msgcat::mcset af {Sync cancelled.} {Sinchronisering gekanselleer.}
 ::msgcat::mcset af {Sync complete.} {Sinkronisasie voltooi.}
 ::msgcat::mcset af {Sync now} {Sinkroniseer nou}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset af {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Die huidige diagnostiek (van die taalbediener of Kontroleer) word saam met hierdie lêer gestuur. Voeg opsioneel 'n vraag by. Die antwoord is net teks; niks kan geskryf word nie.}
 ::msgcat::mcset af {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Die gids en alles daarin word verwyder. Dit kan nie ongedaan gemaak word nie — skakel dit eerder af as jy dit net uit die prompt wil hê.}
 ::msgcat::mcset af {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Die gids word verwyder. Die plugin-lêergids is 'n git-repository en 'n snapshot word eers gecommit, so Geskiedenis… kan dit terugbring.}
-::msgcat::mcset af {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Die redigeerder maak gateway-lêers oop, ook afgeleë instansies, en laat die taalbediener vir die lêer se taal op die gateway loop: tcl-lsp, typescript-language-server (TypeScript en JavaScript), rust-analyzer ('n Rust-inpropkrat of -module), clangd (C), racket-langserver en 'n Common Lisp-bediener. Zweef, gaan na definisie, voltooiing en lewendige diagnostiek werk vir elke taal waarvoor die gateway 'n bediener het; as dit nie een het nie, sê die redigeerder watter program daar geïnstalleer moet word en behou sintaksismerking. Kontroleer laat die passende kontroleerder op die gateway loop: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, of die Racket- en Lisp-lesers. Stoor, herlaai in Bestuur uitbreidings, en toets die uitbreiding sonder om plaaslike toestand te publiseer.}
+::msgcat::mcset af {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {Die redigeerder maak gateway-lêers oop, ook afgeleë instansies, en laat die taalserver vir die lêer se taal op die gateway loop: typescript-language-server (TypeScript en JavaScript), rust-analyzer ('n Rust-plugin-krat of -module), clangd (C), racket-langserver, 'n Common Lisp-bediener, en tcl-lsp vir Tcl waar die gateway dit het (die Linux-pakkette van veles bevat dit). Wys-oor, gaan-na-definisie, voltooiing en lewende diagnostiek werk vir elke taal waarvoor die gateway 'n bediener het; as dit geen het nie, sê die redigeerder watter program daar geïnstalleer moet word en behou sintaksismerking. Kontroleer laat die passende kontroleerder op die gateway loop: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, die Racket- en Lisp-lesers, en vir Tcl die enjin se eie tclsh ('n volledigheidstoets, of tcl-lsp se lint waar geïnstalleer). Stoor, herlaai in Bestuur uitbreidings, en toets die uitbreiding sonder om plaaslike toestand te publiseer.}
 ::msgcat::mcset af {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Die eerste handoff berei geheime, die vasgepen beeld en looptydlêers voor, maar begin nie die PDS nie. Maak 'n vanlyn rugsteun van die KEK- en PLC-rotasiesleutel, en maak dan 'n nuut nagegane versoek met rugsteunbevestiging om HTTP-01 TLS en aktivering op te stel. DNS-rekords moet direk na hierdie gasheer wys; veles maak geen CDN-proxy of DNS-veranderinge nie.}
+::msgcat::mcset af {The fleet is NOT consistent: %s node(s) differ.} {Die vloot is NIE eenvormig nie: %s knooppunt(e) verskil.}
+::msgcat::mcset af {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {Die vloot is eenvormig met verskille: %1$s knooppunt(e) loop dieselfde bou en stem oor alles wat hulle deel ooreen; %2$s item(s) is nie op elke knooppunt nie.}
+::msgcat::mcset af {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {Die vloot is eenvormig: %s knooppunt(e) loop dieselfde bou, modules en plugins.}
 ::msgcat::mcset af {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Die vorm het verander sedert die uitbreiding gegenereer is. Genereer weer, of voorskou die gewone geraamte.}
+::msgcat::mcset af {The gateway did not receive the purpose as written. Nothing was created.} {Die gateway het nie die doel soos geskryf ontvang nie. Niks is geskep nie.}
+::msgcat::mcset af {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {Die gateway lewer nie die uitbreidingsgidse nie (dit is ouer as 0.2.2), en hierdie lessenaar het geen kopie daarvan nie.}
 ::msgcat::mcset af {The gateway itself is untouched.} {Die gateway self word nie geraak nie.}
 ::msgcat::mcset af {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Die poort het die konfigurasie herlaai, so nuwe sessies gebruik dit nou, en 'n sleutel wat in die kluis gestoor is, word deur die volgende versoek gebruik. Telegram en IRC begin by die volgende herbegin van die poort: veles gateway restart.}
 ::msgcat::mcset af {The installed component no longer matches the selected manifest. Review the component list again.} {Die geïnstalleerde komponent stem nie meer ooreen met die gekose manifest nie. Hersien die komponentlys weer.}
 ::msgcat::mcset af {The installer preview has no verification signatures; apply is disabled.} {Die installeerder se voorskou het geen verifikasie-handtekeninge nie; toepas is gedeaktiveer.}
 ::msgcat::mcset af {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Die job en sy loopgeskiedenis word verwyder. Dit kan nie ongedaan gemaak word nie — pouse dit eerder as jy dit net wil stop.}
+::msgcat::mcset af {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {Die sleutels wat konfigurasie-sinchronisering dra, onder sy reëls: knooppunt-plaaslike sleutels en geloofsbewyse bly op hul knooppunt, en 'n teruggehoue afdeling ([acl], approvals, sandbox, hooks, plugins, MCP servers) word verander waar dit gewysig en gestuur word, en wag dan op daardie knooppunt se eienaar.}
 ::msgcat::mcset af {The log could not be read: %s} {Die log kon nie gelees word nie: %s}
 ::msgcat::mcset af {The manifest belongs to another component; its reply was discarded.} {Die manifest behoort aan 'n ander komponent; sy antwoord is verwerp.}
 ::msgcat::mcset af {The profile changed. Review the fresh plan before applying it.} {Die profiel het verander. Gaan die nuwe plan na voordat jy dit toepas.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset af {The signed release preview was malformed; nothing was installed.} {Die voorskou van die getekende vrystelling was misvormd; niks is geïnstalleer nie.}
 ::msgcat::mcset af {The source buffer changed. Request a new proposal before applying.} {Die bronbuffer het verander. Vra 'n nuwe voorstel aan voor toepassing.}
 ::msgcat::mcset af {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Die store gaan een hersiening terug. Die rollback is self 'n hersiening, so dit kan op sy beurt ongedaan gemaak word.}
+::msgcat::mcset af {The translator did not answer within %s seconds.} {Die vertaler het nie binne %s sekondes geantwoord nie.}
 ::msgcat::mcset af {The translator returned no text.} {Die vertaler het geen teks teruggegee nie.}
 ::msgcat::mcset af {The verification reply was malformed; no integrity result was accepted.} {Die verifikasie-antwoord was wanvormig; geen integriteitsresultaat is aanvaar nie.}
 ::msgcat::mcset af Themes Temas
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset af {This challenge is over.} {Hierdie uitdaging is verby.}
 ::msgcat::mcset af {This code has expired. Ask for a new one.} {Hierdie kode het verval. Vra vir 'n nuwe een.}
 ::msgcat::mcset af {This does not start a service or claim signed-download verification.} {Dit begin nie 'n diens nie en beweer nie ondertekende-aflaai-verifikasie nie.}
+::msgcat::mcset af {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {Hierdie lêer is veles se kernbron. Die meeste veranderinge pas eerder in 'n uitbreiding, wat opgraderings oorleef en geen herbou nodig het nie: 'n hook, gereedskap, diensoorskrywing of verskafferbestuurder, geskryf in Tcl, TypeScript, Racket of Common Lisp, of as 'n Rust-plugin buite die boom (Nuwe uitbreiding skryf enige van hierdie), of as 'n module of prosesplugin (die Uitbreidingsgids wys hoe om een te begin). 'n Kernpleister is vir wat die uitbreiding-API nie kan uitdruk nie. Stel hierdie verandering eerder as 'n uitbreiding op? Jou wysiging bly in hierdie buffer, ongestoor; as jy weer stoor, word die kernlêer gepleister.}
 ::msgcat::mcset af {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Hierdie poort aanvaar nie geheime waardes van hierdie masjien nie: voer dit daar in met veles secret set %s, of lys hierdie netwerk in sy [vault] trusted_networks}
 ::msgcat::mcset af {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Dit is presies wat geskryf gaan word — die enjin se eie grepe, lewendig opgehaal. Niks het nog die skyf geraak nie.}
+::msgcat::mcset af {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {Dit is veles se kernbron. 'n Verandering daaraan is gewoonlik beter as 'n uitbreiding: Nuwe uitbreiding, of stoor om een aangebied te kry.}
 ::msgcat::mcset af {This node is not a configured sync peer for any kind.} {Hierdie knooppunt is vir geen soort 'n opgestelde sinchroniseer-eweknie nie.}
 ::msgcat::mcset af {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Hierdie plugin is ingebou en lees-enig. Verwyder 'n gebruikerskopie met dieselfde naam om eerder die ingeboude kopie te gebruik.}
 ::msgcat::mcset af {This publishes the commit; no pull request is created yet.} {Dit publiseer die commit; geen pull request word nog geskep nie.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset af Unassign Ontkoppel
 ::msgcat::mcset af {Undo last} {Ontdoen laaste}
 ::msgcat::mcset af {Undo the last memory revision?} {Maak die laaste geheue-hersiening ongedaan?}
+::msgcat::mcset af {Unset %1$s on %2$s?} {Verwyder die instelling van %1$s op %2$s?}
+::msgcat::mcset af Unset… {Verwyder instelling…}
 ::msgcat::mcset af Unstage Unstage
 ::msgcat::mcset af {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Totdat IRC_ALLOWED_USERS in .env jou rekening noem, kan enigiemand op die netwerk met die bot praat — en sonder 'n [acl]-afdeling as eienaar, met elke gereedskap.}
 ::msgcat::mcset af {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Totdat TELEGRAM_ALLOWED_USERS in .env jou gebruiker-ID noem, kan enigiemand wat die bot vind met hom praat — en sonder 'n [acl]-afdeling as eienaar, met elke gereedskap.}
 ::msgcat::mcset af Untitled {Sonder titel}
-::msgcat::mcset af {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Bydra stroomop is 'n uitdruklike publiseeraksie, nie 'n outomatiese oplaai nie. In Bestuur uitbreidings lys Bydra elke gebruikersuitbreiding: kies die uitbreidings en lêers, inspekteer die diff en geheime-skandering, laat kontroles loop, en skep dan een tak en een PR (by verstek na veles) met jou gekose git-identiteit. Elke uitbreiding gaan onder sy eie gids in die bewaarplek, en 'n bestaande lêer daar word net ná 'n afsonderlike bevestiging vervang. Publiseer nooit node.toml, plaaslike geloofsbriewe, tekens, private eindpunte of onverwante plugin-toestand nie. Plaaslike herstel-kiekies is nie 'n stroomop-commit of 'n PR nie.}
+::msgcat::mcset af {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Bydrae aan die stroomop-projek is 'n eksplisiete publiseringsaksie, nie 'n outomatiese oplaai nie. In Bestuur uitbreidings lys Contribute elke gebruikersuitbreiding: kies die uitbreidings en lêers, ondersoek die diff en die geheimskandering, voer kontroles uit, en skep dan een tak en een PR (by verstek na veles). Die commit gebruik die gateway se omringende git-identiteit (user.name en user.email van sy git-konfigurasie); stel dit eers as dit moet verskil. Elke uitbreiding gaan onder sy eie gids in die bewaarplek, en 'n bestaande lêer daar word net ná 'n aparte bevestiging vervang. Moet nooit node.toml, plaaslike geloofsbewyse, tokens, private eindpunte of onverwante plugintoestand publiseer nie. Plaaslike herstelpeilings is nie 'n stroomop-commit of 'n PR nie.}
 ::msgcat::mcset af {Upstream repository or fork URL} {Upstream-repository of fork-URL}
 ::msgcat::mcset af {Uptime class} Opstydklas
 ::msgcat::mcset af {Uptime: host %1$s, gateway %2$s} {Opetyd: gasheer %1$s, gateway %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset af {Users — one role across networks and platforms} {Gebruikers — een rol oor netwerke en platforms}
 ::msgcat::mcset af {Using the phone, for the agent} {Die foon gebruik, vir die agent}
 ::msgcat::mcset af {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Gewoonlik dieselfde as die verskaffer-inskrywingnaam. Laat albei leeg by die Slaan-oor-keuse — 'n half gestelde paar roeteer nie.}
+::msgcat::mcset af {Value (TOML: "text", 5, true, [1, 2])} {Waarde (TOML: "text", 5, true, [1, 2])}
 ::msgcat::mcset af {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Waardes is TOML: aangehaalde stringe, getalle of lyste. Word in [mcp_servers.<name>] geskryf — jou kommentaar en elke ander afdeling word onaangeraak gelaat.}
 ::msgcat::mcset af Vault Kluis
 ::msgcat::mcset af {Verified signed bundle installed. Restart the gateway before using the new core.} {Geverifieerde getekende bundel geïnstalleer. Herbegin die gateway voordat jy die nuwe kern gebruik.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset af Voice {Gee voice}
 ::msgcat::mcset af {Waiting for the model…} {Wag vir die model…}
 ::msgcat::mcset af {Waiting for the model… Nothing has been written.} {Wag vir die model… Niks is geskryf nie.}
+::msgcat::mcset af Warning Waarskuwing
 ::msgcat::mcset af {Welcome to veles} {Welkom by veles}
 ::msgcat::mcset af {What the agent can do here} {Wat die agent hier kan doen}
 ::msgcat::mcset af {What veles may do on this phone. Each button opens the Android setting that changes it.} {Wat veles op hierdie foon mag doen. Elke knoppie maak die Android-instelling oop wat dit verander.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset af {Workflow SHA} Werkvloei-SHA
 ::msgcat::mcset af {Workflow commit} Werkvloei-commit
 ::msgcat::mcset af Worktree Worktree
+::msgcat::mcset af {Write cancelled.} {Skryf gekanselleer.}
 ::msgcat::mcset af {Write it} {Skryf dit}
 ::msgcat::mcset af {Write the design question first.} {Skryf eers die ontwerpvraag.}
 ::msgcat::mcset af {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Skryf geen verskaffer nie. Die gateway roeteer geen beurt voordat 'n [[custom_providers]]-inskrywing en die [model]-paar bestaan nie.}
+::msgcat::mcset af Write… Skryf…
 ::msgcat::mcset af {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Om ENIGE [acl]-sleutel te skryf, skakel hierdie poort na saamgestelde modus: die verstekrol word guest (fail-closed) en die toelaatlyste is nie meer die grens nie. Kies dit net met 'n eienaar-identiteit wat jy vertrou.}
 ::msgcat::mcset af {[model] provider} {[model]-verskaffer}
 ::msgcat::mcset af {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {[model]-verskaffer %{name} noem geen [[custom_providers]]-inskrywing nie — noem die inskrywing wat hierdie assistent skryf, of een wat config.toml reeds het}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset af {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset af {asked by: %s} {gevra deur: %s}
 ::msgcat::mcset af {asking %s for its metrics…} {vra %s vir sy metrieke…}
+::msgcat::mcset af {asking %s how it is supervised…} {vra %s hoe dit toesig kry…}
 ::msgcat::mcset af {attach a file} {heg 'n lêer aan}
 ::msgcat::mcset af {attach an image or file} {heg 'n prent of lêer aan}
 ::msgcat::mcset af {attach failed: %1$s} {koppel het misluk: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset af {channel-event reactions; /triggers add <name> network=… channel=… action=…} {reaksies op kanaalgebeure; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset af {channels to join, a space or comma separated string} {kanale om by aan te sluit, 'n spasie- of kommaskeidingstring}
 ::msgcat::mcset af chars karakters
+::msgcat::mcset af {check the buffer (diagnostics)} {kontroleer die buffer (diagnostiek)}
 ::msgcat::mcset af choice_next {gaan na die volgende roete}
 ::msgcat::mcset af choice_retry {probeer dieselfde roete weer}
 ::msgcat::mcset af choice_stop {stop hier}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset af {command list unavailable (the gateway is not reachable)} {opdraglys nie beskikbaar nie (die gateway is nie bereikbaar nie)}
 ::msgcat::mcset af {command palette} opdragpalet
 ::msgcat::mcset af {command search} opdragsoektog
+::msgcat::mcset af {command-center audit log} bevelsentrum-ouditlog
 ::msgcat::mcset af commands opdragte
 ::msgcat::mcset af {commands stay on your own session; /leave returns from the joined session} {opdragte bly op jou eie sessie; /leave keer terug uit die aangeslote sessie}
 ::msgcat::mcset af commands: opdragte:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset af {config changes from peers that wait for you; /configsync apply lands them} {konfigurasieveranderinge van eweknieë wat op jou wag; /configsync apply pas hulle toe}
 ::msgcat::mcset af {config file: %s} {konfigurasielêer: %s}
 ::msgcat::mcset af {config key} config-sleutel
+::msgcat::mcset af {config result} konfigurasie-uitslag
 ::msgcat::mcset af {config unavailable} {config onbeskikbaar}
 ::msgcat::mcset af {config unavailable: %s} {config onbeskikbaar: %s}
 ::msgcat::mcset af {config value} config-waarde
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset af doctor_resident {vas in elke prompt: %{shown} van %{total} karakters (~%{tokens} tokens) — die res laai op aanvraag met: memory action=read path=%{path}}
 ::msgcat::mcset af doctor_title geheue-ondersoek
 ::msgcat::mcset af doctor_total {totaal: %{chars} karakters oor %{files} lêers (~%{tokens} tokens)}
-::msgcat::mcset af {documentation is not in this source checkout: %s} {dokumentasie is nie in hierdie bron-uitrek nie: %s}
 ::msgcat::mcset af done klaar
 ::msgcat::mcset af {done · %1$s/%2$s} {klaar · %1$s/%2$s}
 ::msgcat::mcset af {done, but the model returned no text} {klaar, maar die model het geen teks teruggegee nie}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset af {grant a role (owner) · /revoke <id> takes it back} {ken 'n rol toe (owner) · /revoke <id> neem dit terug}
 ::msgcat::mcset af {grant a role to an identity} {ken 'n rol aan 'n identiteit toe}
 ::msgcat::mcset af {guards unreachable} {beveiligings onbereikbaar}
-::msgcat::mcset af guts: guts:
+::msgcat::mcset af {guts ▾} {binneste ▾}
 ::msgcat::mcset af {gw hooks} {gw hooks}
 ::msgcat::mcset af {gw procs} {gw procs}
 ::msgcat::mcset af {halt after N identical calls} {hou op na N identiese oproepe}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset af {live patching ARMED} {live patching GEWAPEND}
 ::msgcat::mcset af {live patching ARMED — an agent can now redefine procs in this window} {live patching GEWAPEND — 'n agent kan nou procs in hierdie venster herdefinieer}
 ::msgcat::mcset af {live patching disarmed} {live patching ontwapen}
+::msgcat::mcset af load las
 ::msgcat::mcset af loaded gelaai
 ::msgcat::mcset af {loaded older messages} {ouer boodskappe gelaai}
 ::msgcat::mcset af loading… laai…
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset af {no upstream reading for %s} {geen opstroom-lesing vir %s nie}
 ::msgcat::mcset af {no word match} {geen woordpassing nie}
 ::msgcat::mcset af {no xdg-open — path copied instead} {geen xdg-open nie — pad in plaas daarvan gekopieer}
+::msgcat::mcset af {nobody else's session is open on %s right now} {niemand anders se sessie is nou oop op %s nie}
 ::msgcat::mcset af {node log} knooppuntlog
 ::msgcat::mcset af {none loaded} {niks gelaai nie}
 ::msgcat::mcset af {none recorded} {geen aangeteken nie}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset af {not installed} {nie geïnstalleer nie}
 ::msgcat::mcset af {not reported} {nie gerapporteer nie}
 ::msgcat::mcset af {not running} {loop nie}
+::msgcat::mcset af {not saved: drafting the change as an extension} {nie gestoor nie: stel die verandering as 'n uitbreiding op}
+::msgcat::mcset af {not sent: %s} {nie gestuur nie: %s}
 ::msgcat::mcset af {not set in config.toml — the built-in default applies. %s} {nie in config.toml gestel nie — die ingeboude verstek geld. %s}
 ::msgcat::mcset af {not set yet — /secret set it later} {nog nie gestel nie — stel dit later met /secret set}
 ::msgcat::mcset af {not signed: %s} {nie geteken nie: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset af {on no plan} {by geen plan}
 ::msgcat::mcset af {on the} {op die}
 ::msgcat::mcset af {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {aan/af demp die meganisme se nota in die transkripsie — vir hierdie sessie, of as die verstek, volgens die omvang hieronder. Dit beheer die NOTA; wat elke meganisme DOEN word gestel in die afdeling wat op sy ry genoem word, en Stel op… maak dit oop. Die beveiligingsknoppies is in plek wysigbaar.}
+::msgcat::mcset af {on; this gateway does not say whether they reach the home chat} {aan; hierdie gateway sê nie of hulle die tuisgesprek bereik nie}
 ::msgcat::mcset af {one-shot tcl-lsp diagnostics — no model turn} {eenmalige tcl-lsp-diagnose — geen modeldraai nie}
 ::msgcat::mcset af {open a saved file first} {maak eers 'n gestoorde lêer oop}
 ::msgcat::mcset af {open links} {skakels oopmaak}
+::msgcat::mcset af {open one of the desktop's own source files} {maak een van die lessenaar se eie bronlêers oop}
 ::msgcat::mcset af {open the engine log} {maak die enjinlog oop}
 ::msgcat::mcset af {open the joined session before /leave (on %s)} {maak die aangeslote sessie oop voor /leave (op %s)}
 ::msgcat::mcset af {open the selected child session} {maak die gekose kindersessie oop}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset af {read-only: [approvals] allowlist} {lees-enig: [approvals]-toelaatlys}
 ::msgcat::mcset af {read-only: this session lives on %1$s (as read at %2$s)} {lees-alleen: hierdie sessie leef op %1$s (soos gelees om %2$s)}
 ::msgcat::mcset af {read-only: this skill comes from the %s library} {lees-alleen: hierdie skill kom uit die %s-biblioteek}
+::msgcat::mcset af {reading %1$s on %2$s…} {lees %1$s op %2$s…}
 ::msgcat::mcset af reasoning redenering
 ::msgcat::mcset af {reasoning display: %1$s · %2$s blocks} {redeneringvertoning: %1$s · %2$s blokke}
 ::msgcat::mcset af {reasoning display: %s} {redeneringvertoning: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset af {run failed: %s} {uitvoering het misluk: %s}
 ::msgcat::mcset af {run in:} {loop in:}
 ::msgcat::mcset af running loop
+::msgcat::mcset af {running %s on the listed nodes…} {voer %s op die gelyste knooppunte uit…}
 ::msgcat::mcset af {running since %s} {loop sedert %s}
 ::msgcat::mcset af {running subagents; /subagents cancel <id>} {lopende subagente; /subagents cancel <id>}
 ::msgcat::mcset af {save failed} {stoor het misluk}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset af {send failed: %s} {stuur het misluk: %s}
 ::msgcat::mcset af {send the message; while a turn runs, queue it as steering} {stuur die boodskap; terwyl 'n beurt loop, word dit as stuurbeheer getou}
 ::msgcat::mcset af sent gestuur
-::msgcat::mcset af {sent to the owner's home chat} {na die eienaar se tuisgesprek gestuur}
+::msgcat::mcset af {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {deur die gateway wat sy Telegram-aanpasvlak laat loop na die eienaar se tuisgesprek gestuur, nie hierdie een nie}
+::msgcat::mcset af {sent to the owner's home chat from this gateway} {van hierdie gateway na die eienaar se tuisgesprek gestuur}
 ::msgcat::mcset af server bediener
 ::msgcat::mcset af {server buffers merged} {bedienerbuffers saamgevoeg}
 ::msgcat::mcset af {server buffers separate} {bedienerbuffers apart}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset af {session, model, lifecycle} {sessie, model, lewensiklus}
 ::msgcat::mcset af {session: %s} {sessie: %s}
 ::msgcat::mcset af {sessions    %s} {sessies    %s}
+::msgcat::mcset af {sessions you can join on %s (/join <name or id>):} {sessies wat jy op %s kan aansluit (/join <naam of id>):}
 ::msgcat::mcset af {sessions: unreachable} {sessies: onbereikbaar}
 ::msgcat::mcset af {set by} {gestel deur}
 ::msgcat::mcset af {set. %s} {gestel. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset af {split: %s} {gesplits: %s}
 ::msgcat::mcset af {ssh to %1$s failed: %2$s} {ssh na %1$s het misluk: %2$s}
 ::msgcat::mcset af {stale — no heartbeat within the threshold} {verouderd — geen hartklop binne die drumpel nie}
+::msgcat::mcset af {standing approval grants: always and this session; revoke one} {staande goedkeuringstoekennings: altyd en hierdie sessie; trek een terug}
 ::msgcat::mcset af {standing global and session permission grants} {staande globale en sessie-toestemmingstoekennings}
+::msgcat::mcset af {start the line with // to send it as text} {begin die reël met // om dit as teks te stuur}
 ::msgcat::mcset af state toestand
 ::msgcat::mcset af {state       never reached} {toestand       nooit bereik nie}
 ::msgcat::mcset af {state       reachable} {toestand       bereikbaar}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset af {the config.toml that will be written} {die config.toml wat geskryf sal word}
 ::msgcat::mcset af {the default (config.toml)} {die verstek (config.toml)}
 ::msgcat::mcset af {the engine refused these answers: %s} {die enjin het hierdie antwoorde geweier: %s}
+::msgcat::mcset af {the file to open: type a path, then Return or Open} {die lêer om oop te maak: tik 'n pad en druk dan Return of Open}
 ::msgcat::mcset af {the first ACL owner identity} {die eerste ACL-eienaar-identiteit}
 ::msgcat::mcset af {the gateway answered without a report} {die gateway het geantwoord sonder 'n verslag}
 ::msgcat::mcset af {the model/provider pair is incomplete — the gateway will not route until both are present} {die model/verskaffer-paar is onvolledig — die poort sal nie roeteer totdat albei daar is nie}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset af unknown onbekend
 ::msgcat::mcset af {unknown api_mode %{mode} — expected one of %{modes}} {onbekende api_mode %{mode} — een van die volgende word verwag: %{modes}}
 ::msgcat::mcset af {unknown bindings '%{rest}' · normie|emacs|vi} {onbekende sleutelbindings '%{rest}' · normie|emacs|vi}
+::msgcat::mcset af {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {onbekende opdrag %{cmd} hier — /help lys hierdie oppervlak se opdragte; niks is gestuur nie}
 ::msgcat::mcset af {unknown command /%s — /help lists them} {onbekende bevel /%s — /help lys hulle}
 ::msgcat::mcset af {unknown command: /%s} {onbekende opdrag: /%s}
 ::msgcat::mcset af {unknown keymap: %s (normie/emacs/vi)} {onbekende sleutelkaart: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset af {upstream plan credits and windows — /usage is the local ledger} {stroomop-plan se krediete en vensters — /usage is die plaaslike grootboek}
 ::msgcat::mcset af {upstream plan quota} upstream-plan-kwota
 ::msgcat::mcset af uptime bedryfstyd
-::msgcat::mcset af {usage: /join <session> or /join <instance>/<session>} {gebruik: /join <session> of /join <instance>/<session>}
+::msgcat::mcset af {usage: /export [md|json]} {gebruik: /export [md|json]}
 ::msgcat::mcset af {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {gebruik: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset af {usage: /resume <id or prefix>} {gebruik: /resume <id of voorvoegsel>}
 ::msgcat::mcset af {usage: /resume <id-or-prefix>} {gebruik: /resume <id-or-prefix>}

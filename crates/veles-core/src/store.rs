@@ -568,6 +568,46 @@ pub struct NodeTombstone {
     pub forgotten_at: String,
 }
 
+/// How long a fleet-wide forget lasts. `Store::open` prunes older
+/// tombstones, and no tombstone older than this is listed, sent or taken
+/// from a peer (FLEET-5).
+pub const TOMBSTONE_KEEP_DAYS: i64 = 90;
+
+/// [`TOMBSTONE_KEEP_DAYS`] as a SQLite `datetime('now', ?)` modifier.
+fn tombstone_keep_modifier() -> String {
+    format!("-{TOMBSTONE_KEEP_DAYS} days")
+}
+
+/// Why a node may not be forgotten fleet-wide.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ForgetRefusal {
+    /// It is this gateway's own node: it registers itself again.
+    ThisNode,
+    /// It still heartbeats: forgetting it is how one loses track of it,
+    /// and it would be back on its next tick anyway.
+    Live { heartbeat_at: String },
+}
+
+/// The guards every fleet-wide forget goes through: the Instances tab and
+/// `/fleet forget` (`fleet_ops::forget`) and `veles nodes forget` alike
+/// (FLEET-6: the CLI used to skip both). A receiver applies the same rule
+/// to a peer's tombstone ([`Store::node_tombstone_merge_within`]).
+pub fn forget_refusal(
+    node: &NodeRow,
+    me: Option<&str>,
+    stale_after_secs: i64,
+) -> Option<ForgetRefusal> {
+    if me == Some(node.id.as_str()) {
+        return Some(ForgetRefusal::ThisNode);
+    }
+    if !crate::node::is_stale(&node.heartbeat_at, stale_after_secs) {
+        return Some(ForgetRefusal::Live {
+            heartbeat_at: node.heartbeat_at.clone(),
+        });
+    }
+    None
+}
+
 /// This node's registry id, from `<config_dir>/node.toml` (B1.5).
 ///
 /// `Option` because the answer is genuinely "not yet": a scratch test
@@ -577,6 +617,24 @@ pub struct NodeTombstone {
 ///
 /// No `load_or_create`: reading must not mint an identity as a side
 /// effect (the B1 contract `NodeIdentity::load` already upholds).
+/// How far ahead of this node's clock a gossiped stamp may run and
+/// still be taken as written: clocks drift, and a minute is no harm.
+pub const GOSSIP_MAX_SKEW_SECS: i64 = 60;
+
+/// A gossiped `heartbeat_at`/`load_at` ("YYYY-MM-DD HH:MM:SS", UTC) as
+/// this node stores it, and whether it was credible: a stamp more than
+/// [`GOSSIP_MAX_SKEW_SECS`] in the future is held to now and is not.
+/// `None` for a stamp that does not parse.
+fn gossip_stamp(stamp: &str) -> Option<(String, bool)> {
+    const FMT: &str = "%Y-%m-%d %H:%M:%S";
+    let ts = chrono::NaiveDateTime::parse_from_str(stamp, FMT).ok()?;
+    let now = chrono::Utc::now().naive_utc();
+    if ts > now + chrono::Duration::seconds(GOSSIP_MAX_SKEW_SECS) {
+        return Some((now.format(FMT).to_string(), false));
+    }
+    Some((stamp.to_string(), true))
+}
+
 fn local_node_id() -> Option<String> {
     crate::node::NodeIdentity::load(&crate::config::config_dir())
         .ok()
@@ -1294,6 +1352,18 @@ impl Store {
                     set_at TEXT NOT NULL DEFAULT (datetime('now')),
                     PRIMARY KEY (session_id, glob)
                 );
+                -- The nodes this node sent a session's subagents to
+                -- (delegate::run_on_placed, ASK-2): a replica row that
+                -- names one of this node's sessions as its parent is
+                -- listed under it only when that session placed a child
+                -- on the replica's node. Local only: never replicated,
+                -- since a peer's word is exactly what it checks.
+                CREATE TABLE IF NOT EXISTS session_placements (
+                    session_id TEXT NOT NULL,
+                    node TEXT NOT NULL,
+                    placed_at TEXT NOT NULL DEFAULT (datetime('now')),
+                    PRIMARY KEY (session_id, node)
+                );
                 -- THE MESSAGE QUEUE (R4.6). Text that arrives while the
                 -- session's turn runs — from ANY surface — sits here
                 -- until the turn boundary drains it. seq is a per-session
@@ -1568,8 +1638,9 @@ impl Store {
             // own heartbeat moves past the stamp) is let in again and
             // the tombstone dropped. Times are SQLite `datetime('now')`
             // text, the same fixed-width shape as `nodes.heartbeat_at`,
-            // so the comparison is a string compare. Kept 90 days: long
-            // enough for every peer to have heard of it.
+            // so the comparison is a string compare. Kept 90 days
+            // (TOMBSTONE_KEEP_DAYS): long enough for every peer to have
+            // heard of it.
             conn.execute_batch(
                 r#"
                 CREATE TABLE IF NOT EXISTS node_tombstones (
@@ -2049,7 +2120,17 @@ impl Store {
     /// (`node_tombstones`) that gossip carries to every peer. One
     /// transaction, so a crash cannot leave the row gone without the
     /// tombstone that keeps it gone. Returns whether a row was removed.
+    ///
+    /// Never this node (an error): nothing would ever drop its own
+    /// tombstone, so it would gossip it for 90 days and list itself as
+    /// forgotten (FLEET-6). A caller decides staleness first, through
+    /// [`forget_refusal`].
     pub fn node_forget_everywhere(&self, id: &str) -> Result<bool> {
+        if local_node_id().as_deref() == Some(id) {
+            anyhow::bail!(
+                "{id} is this node: it cannot be forgotten (it registers itself again on its next heartbeat)"
+            );
+        }
         let tx = self.conn.unchecked_transaction()?;
         let n = tx.execute("DELETE FROM nodes WHERE id = ?1", params![id])?;
         tx.execute(
@@ -2062,14 +2143,20 @@ impl Store {
         Ok(n > 0)
     }
 
-    /// Every tombstone this store holds, oldest first — what a gossip
-    /// exchange sends.
+    /// Every live tombstone this store holds, oldest first — what a
+    /// gossip exchange sends and `/api/fleet` lists. One past its
+    /// [`TOMBSTONE_KEEP_DAYS`] is expired even before the next
+    /// `Store::open` prunes it: a long-running gateway used to keep
+    /// sending it, and every peer that had pruned it took it back
+    /// (FLEET-5).
     pub fn node_tombstones(&self) -> Result<Vec<NodeTombstone>> {
-        let mut stmt = self
-            .conn
-            .prepare("SELECT id, forgotten_at FROM node_tombstones ORDER BY forgotten_at, id")?;
+        let mut stmt = self.conn.prepare(
+            "SELECT id, forgotten_at FROM node_tombstones
+              WHERE forgotten_at >= datetime('now', ?1)
+              ORDER BY forgotten_at, id",
+        )?;
         let rows = stmt
-            .query_map([], |r| {
+            .query_map(params![tombstone_keep_modifier()], |r| {
                 Ok(NodeTombstone {
                     id: r.get(0)?,
                     forgotten_at: r.get(1)?,
@@ -2083,24 +2170,47 @@ impl Store {
         Ok(self
             .conn
             .query_row(
-                "SELECT forgotten_at FROM node_tombstones WHERE id = ?1",
-                params![id],
+                "SELECT forgotten_at FROM node_tombstones
+                  WHERE id = ?1 AND forgotten_at >= datetime('now', ?2)",
+                params![id, tombstone_keep_modifier()],
                 |r| r.get(0),
             )
             .optional()?)
     }
 
-    /// Fold a peer's tombstone in: drop the node's row unless it has
-    /// heartbeat since it was forgotten, and keep the tombstone (the
-    /// later stamp wins) so this node refuses relayed copies too and
-    /// passes it on. Returns whether anything changed here.
-    ///
-    /// Refused, changing nothing: a tombstone for THIS node (it is alive
-    /// — that is what is reading this), one whose node heartbeat after
-    /// it, and a stamp that is not a `YYYY-MM-DD HH:MM:SS` time or lies
-    /// more than an hour ahead of this clock — a far-future stamp would
-    /// otherwise keep the node out for good, whatever it did.
+    /// [`Store::node_tombstone_merge_within`] with this node's
+    /// `[cluster] stale_after_secs` (the default when the config cannot
+    /// be read). Gossip passes the setting it already holds.
     pub fn node_tombstone_merge(&self, t: &NodeTombstone) -> Result<bool> {
+        let stale_after = crate::config::load()
+            .map(|c| c.cluster.stale_after_secs)
+            .unwrap_or_else(|_| crate::config::ClusterSection::default().stale_after_secs);
+        self.node_tombstone_merge_within(t, stale_after as i64)
+    }
+
+    /// Fold a peer's tombstone in: drop the node's row and keep the
+    /// tombstone (the later stamp wins), so this node refuses relayed
+    /// copies too and passes it on. Returns whether anything changed.
+    ///
+    /// A tombstone evicts only what its issuer could have forgotten
+    /// itself (`fleet_ops::forget`, `veles nodes forget`), judged HERE:
+    /// refused, changing nothing, are a tombstone for THIS node (it is
+    /// alive — that is what is reading this), one for a node that is not
+    /// stale here by `stale_after_secs` or that heartbeat after the
+    /// stamp, one older than [`TOMBSTONE_KEEP_DAYS`] (expired: a peer
+    /// that has not pruned it yet cannot hand it back, FLEET-5), and a
+    /// stamp that is not a `YYYY-MM-DD HH:MM:SS` time or lies more than
+    /// an hour ahead of this clock. A stamp ahead by less is held to
+    /// this clock's now and never renews a tombstone already here: kept
+    /// as sent, a stamp minutes ahead refused the forgotten node's own
+    /// heartbeats until then, and the receiver did not check liveness at
+    /// all, so any memsync peer could evict a live node fleet-wide and
+    /// renew it (FLEET-4).
+    pub fn node_tombstone_merge_within(
+        &self,
+        t: &NodeTombstone,
+        stale_after_secs: i64,
+    ) -> Result<bool> {
         if local_node_id().as_deref() == Some(t.id.as_str()) {
             return Ok(false);
         }
@@ -2108,9 +2218,18 @@ impl Store {
         else {
             return Ok(false);
         };
-        if at > chrono::Utc::now().naive_utc() + chrono::Duration::hours(1) {
+        let now = chrono::Utc::now().naive_utc();
+        if at > now + chrono::Duration::hours(1)
+            || at < now - chrono::Duration::days(TOMBSTONE_KEEP_DAYS)
+        {
             return Ok(false);
         }
+        // A stamp from the future is held to now, and only ever CREATES a
+        // tombstone: renewed on every relay, a held stamp would creep
+        // forward with this clock and keep the forget fresh for as long as
+        // the fast clock's stamp lies ahead.
+        let ahead = at > now;
+        let stamp = at.min(now).format("%Y-%m-%d %H:%M:%S").to_string();
         let heartbeat: Option<String> = self
             .conn
             .query_row(
@@ -2119,20 +2238,31 @@ impl Store {
                 |r| r.get(0),
             )
             .optional()?;
-        if heartbeat
-            .as_deref()
-            .is_some_and(|hb| hb > t.forgotten_at.as_str())
-        {
-            return Ok(false);
+        if let Some(hb) = heartbeat.as_deref() {
+            if hb > stamp.as_str() || !crate::node::is_stale(hb, stale_after_secs) {
+                return Ok(false);
+            }
         }
         let removed = self
             .conn
             .execute("DELETE FROM nodes WHERE id = ?1", params![t.id])?;
+        // The one a held stamp may replace is an expired one the next
+        // `Store::open` would prune.
+        let replace = if ahead {
+            format!(
+                "node_tombstones.forgotten_at < datetime('now', '{}')",
+                tombstone_keep_modifier()
+            )
+        } else {
+            "excluded.forgotten_at > node_tombstones.forgotten_at".to_string()
+        };
         let stamped = self.conn.execute(
-            "INSERT INTO node_tombstones (id, forgotten_at) VALUES (?1, ?2)
-             ON CONFLICT(id) DO UPDATE SET forgotten_at = excluded.forgotten_at
-                 WHERE excluded.forgotten_at > node_tombstones.forgotten_at",
-            params![t.id, t.forgotten_at],
+            &format!(
+                "INSERT INTO node_tombstones (id, forgotten_at) VALUES (?1, ?2)
+                 ON CONFLICT(id) DO UPDATE SET forgotten_at = excluded.forgotten_at
+                     WHERE {replace}"
+            ),
+            params![t.id, stamp],
         )?;
         Ok(removed > 0 || stamped > 0)
     }
@@ -2270,6 +2400,23 @@ impl Store {
         )? > 0)
     }
 
+    /// This node sent a subagent of `session_id` to `node` (ASK-2).
+    pub fn session_placement_record(&self, session_id: &str, node: &str) -> Result<()> {
+        self.conn.execute(
+            "INSERT OR REPLACE INTO session_placements (session_id, node) VALUES (?1, ?2)",
+            params![session_id, node],
+        )?;
+        Ok(())
+    }
+
+    /// Did this node ever send a subagent of `session_id` to `node`?
+    pub fn session_placed_on(&self, session_id: &str, node: &str) -> Result<bool> {
+        let mut st = self.conn.prepare_cached(
+            "SELECT 1 FROM session_placements WHERE session_id = ?1 AND node = ?2",
+        )?;
+        Ok(st.exists(params![session_id, node])?)
+    }
+
     /// Release a lease, but only if this holder holds it — a late
     /// renewal-race loser must not release the winner's lease.
     pub fn lease_release(&self, key: &str, holder: &str) -> Result<()> {
@@ -2352,22 +2499,36 @@ impl Store {
     /// only when fresher (string compare on RFC 3339/SQLite text — both
     /// sides write fixed-width stamps for exactly this).
     pub fn node_merge_from_gossip(&self, row: &GossipNodeRow) -> Result<bool> {
+        // A stamp from a clock running ahead is held to ours (COMP-4,
+        // 0.2.2): taken verbatim, a heartbeat a day in the future kept
+        // the node fresh for a day after it died, and once its clock
+        // was corrected every real heartbeat was older than the stored
+        // one and refused, freezing its load and work figures while the
+        // row looked fresh. A stamp that does not parse is no heartbeat.
+        let Some((heartbeat_at, credible)) = gossip_stamp(&row.heartbeat_at) else {
+            return Ok(false);
+        };
+        let load_at = row
+            .load_at
+            .as_deref()
+            .map(|s| gossip_stamp(s).map_or_else(|| s.to_string(), |(held, _)| held));
         let local_id = local_node_id();
         if local_id.as_deref() == Some(row.id.as_str()) {
             // Our own row: only the heartbeat column may move, and only
             // forward. Everything else about us is authored here.
             self.conn.execute(
                 "UPDATE nodes SET heartbeat_at = MAX(heartbeat_at, ?2) WHERE id = ?1",
-                params![row.id, row.heartbeat_at],
+                params![row.id, heartbeat_at],
             )?;
             return Ok(false);
         }
         // Forgotten fleet-wide: a copy that is not newer than the
         // forget is the row a peer still lists, relayed back — refused.
         // A heartbeat after it is the node itself, back: it is let in
-        // and the tombstone dropped, so a later forget starts fresh.
+        // and the tombstone dropped, so a later forget starts fresh. A
+        // stamp from the future is no evidence of that.
         if let Some(forgotten_at) = self.node_tombstone_at(&row.id)? {
-            if row.heartbeat_at.as_str() <= forgotten_at.as_str() {
+            if !credible || heartbeat_at.as_str() <= forgotten_at.as_str() {
                 return Ok(false);
             }
             self.conn
@@ -2403,10 +2564,10 @@ impl Store {
                         row.static_ip_source,
                         row.caps,
                         row.load1,
-                        row.load_at,
+                        load_at,
                         row.sessions_served,
                         row.registered_at,
-                        row.heartbeat_at,
+                        heartbeat_at,
                         row.cores,
                         row.io_some,
                         row.io_full,
@@ -2467,9 +2628,9 @@ impl Store {
                         row.static_ip_source,
                         row.caps,
                         row.load1,
-                        row.load_at,
+                        load_at,
                         row.sessions_served,
-                        row.heartbeat_at,
+                        heartbeat_at,
                         row.cores,
                         row.io_some,
                         row.io_full,
@@ -2539,6 +2700,35 @@ impl Store {
                     key: r.get(3)?,
                     value: r.get(4)?,
                 })
+            })?
+            .collect::<std::result::Result<Vec<_>, _>>()?;
+        Ok(rows)
+    }
+
+    /// One node's rows past a cursor WITH their local rowids — what the
+    /// fleet status weighs to say how far behind a peer is, against the
+    /// same rows `config_log_rows_for` offers.
+    pub fn config_log_seq_rows_for(
+        &self,
+        node: &str,
+        since_seq: i64,
+    ) -> Result<Vec<(i64, crate::configsync::ConfigLogRow)>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT seq, node, node_seq, at, key, value FROM config_log
+             WHERE node = ?1 AND seq > ?2 ORDER BY seq",
+        )?;
+        let rows = stmt
+            .query_map(params![node, since_seq], |r| {
+                Ok((
+                    r.get(0)?,
+                    crate::configsync::ConfigLogRow {
+                        node: r.get(1)?,
+                        node_seq: r.get(2)?,
+                        at: r.get(3)?,
+                        key: r.get(4)?,
+                        value: r.get(5)?,
+                    },
+                ))
             })?
             .collect::<std::result::Result<Vec<_>, _>>()?;
         Ok(rows)
@@ -2807,8 +2997,13 @@ impl Store {
     /// `/fork` and the `/btw` child all mean it, and they must not each
     /// carry a copy of the loop (three hand-rolled copies of a
     /// `load_history` + `append_message` pair is how they drift).
+    ///
+    /// A call still running in `from` is not copied
+    /// (`leave_out_calls_in_flight`): its result will land in `from`,
+    /// never in `to`.
     pub fn copy_history(&self, from: &str, to: &str) -> Result<usize> {
-        let msgs = self.load_history(from)?;
+        let mut msgs = self.load_history(from)?;
+        leave_out_calls_in_flight(&mut msgs);
         let n = msgs.len();
         for msg in &msgs {
             self.append_message(to, msg)?;
@@ -2966,54 +3161,21 @@ impl Store {
     /// nothing is kept), so no kept row can fall inside it. One
     /// transaction: half an archive is a malformed request.
     ///
-    /// `replayed_history` is the repaired view the caller compacted. A
-    /// stored assistant whose unanswered calls were stripped is still in
-    /// that view as text, even when the raw row is empty after encoding
-    /// its calls. Do not sweep that row through the below-tail catch-all:
-    /// it would leave an orphaned result live after the next reload.
+    /// Every summarized row is archived, whatever its shape. A head row
+    /// left live beside the summary that covers it comes back after the
+    /// summary on every reload, and at the next compaction it is in the
+    /// head again: such rows pile up and the model reads them twice.
     pub fn archive_compacted_head(
         &self,
         session_id: &str,
         head_ids: &[i64],
         below: i64,
-        replayed_history: &[crate::providers::ChatMessage],
     ) -> Result<u32> {
-        let replayed_without_calls: std::collections::HashSet<i64> = replayed_history
-            .iter()
-            .filter(|m| m.role == "assistant" && m.tool_calls.is_none())
-            .filter_map(|m| m.msg_id)
-            .collect();
-        let mut candidates = self.conn.prepare(
-            "SELECT msg_id FROM messages
-             WHERE session_id = ?1 AND msg_id = ?2 AND role = 'assistant'
-               AND tool_calls IS NOT NULL AND tool_calls NOT IN ('[]', 'null')",
-        )?;
-        let protected: Vec<i64> = head_ids
-            .iter()
-            .copied()
-            .filter(|id| replayed_without_calls.contains(id))
-            .filter(|id| {
-                candidates
-                    .query_row(params![session_id, id], |row| row.get::<_, i64>(0))
-                    .is_ok()
-            })
-            .collect();
-        drop(candidates);
         let tx = self.conn.unchecked_transaction()?;
-        let mut sql = String::from(
+        let mut n = tx.execute(
             "UPDATE messages SET archived = 1
              WHERE session_id = ?1 AND COALESCE(archived, 0) = 0 AND msg_id < ?2",
-        );
-        for (index, _) in protected.iter().enumerate() {
-            sql.push_str(&format!(" AND msg_id != ?{}", index + 3));
-        }
-        let mut n = tx.execute(
-            &sql,
-            rusqlite::params_from_iter(
-                std::iter::once(&session_id as &dyn rusqlite::ToSql)
-                    .chain(std::iter::once(&below as &dyn rusqlite::ToSql))
-                    .chain(protected.iter().map(|id| id as &dyn rusqlite::ToSql)),
-            ),
+            params![session_id, below],
         )?;
         {
             let mut stmt = tx.prepare(
@@ -3021,9 +3183,6 @@ impl Store {
                  WHERE session_id = ?1 AND msg_id = ?2 AND COALESCE(archived, 0) = 0",
             )?;
             for id in head_ids {
-                if protected.contains(id) {
-                    continue;
-                }
                 n += stmt.execute(params![session_id, id])?;
             }
         }
@@ -3122,7 +3281,8 @@ impl Store {
 
     /// Load a session's history for resume, in message order — the set
     /// a TURN sends, so it is repaired (`repair_tool_round_pairing`):
-    /// orphaned tool results are hidden and unanswered calls stripped.
+    /// orphaned tool results are hidden. An unanswered call stays; the wire
+    /// projection (`providers::replay_messages`) handles it on every request.
     ///
     /// Each message carries its persisted `msg_id`, which is how
     /// compaction's tail pruning rewrites the SAME row it read (never a
@@ -3163,6 +3323,49 @@ impl Store {
                 .collect();
         }
         Ok(out)
+    }
+
+    /// The human-readable transcript, including rows `/clear` or
+    /// compaction removed from the MODEL's context. `archived` is a
+    /// display fact here, never a request to restore those rows to a turn.
+    pub fn transcript_since(
+        &self,
+        session_id: &str,
+        since: i64,
+    ) -> Result<Vec<(ChatMessage, bool, String)>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT msg_id, role, content, reasoning, tool_calls, tool_call_id, tool_name,
+                    injection, COALESCE(archived, 0), COALESCE(created_at, '')
+             FROM messages WHERE session_id = ?1 AND msg_id > ?2 ORDER BY msg_id",
+        )?;
+        let rows = stmt.query_map(params![session_id, since], |r| {
+            let tool_calls = r
+                .get::<_, Option<String>>(4)?
+                .and_then(|raw| serde_json::from_str(&raw).ok());
+            let tool_meta = match (
+                r.get::<_, Option<String>>(5)?,
+                r.get::<_, Option<String>>(6)?,
+            ) {
+                (Some(tool_call_id), Some(name)) => Some(ToolMeta { tool_call_id, name }),
+                _ => None,
+            };
+            Ok((
+                ChatMessage {
+                    role: r.get(1)?,
+                    content: r.get(2)?,
+                    reasoning: r.get(3)?,
+                    display_reasoning: None,
+                    tool_calls,
+                    tool_meta,
+                    attachments: Vec::new(),
+                    injection: r.get(7)?,
+                    msg_id: Some(r.get(0)?),
+                },
+                r.get::<_, i64>(8)? != 0,
+                r.get(9)?,
+            ))
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
     }
 
     /// `load_history`, resuming: only the rows a client has not seen.
@@ -4119,6 +4322,7 @@ impl Store {
             "session_locale",
             "session_prompt",
             "session_tool_homes",
+            "session_placements",
             "engine_notes",
         ] {
             tx.execute(
@@ -7187,16 +7391,20 @@ fn stored_from_row(r: &rusqlite::Row<'_>) -> rusqlite::Result<StoredMessage> {
 /// window cannot judge pairing (its call may sit below the cursor) and
 /// its display consumers zip it against `message_ids_since`.
 ///
-/// Two moves, both minimal:
-///   - an ORPHANED TOOL RESULT (its call id is declared by no live
-///     assistant row) is dropped from the loaded set. The row stays in
-///     the DB, FTS-searchable; it just never reaches the wire again.
-///   - an UNANSWERED CALL (a live assistant declares an id no live tool
-///     row answers — the tail of a turn interrupted mid-round) has that
-///     id stripped from its `tool_calls`. If that empties the list the
-///     assistant row stays as plain text; stripping the call is what the
-///     provider's own validators accept, where fabricating a result row
-///     would put words in the tool's mouth.
+/// One move: an ORPHANED TOOL RESULT (its call id is declared by no live
+/// assistant row) is dropped from the loaded set. The row stays in the
+/// DB, FTS-searchable; it just never reaches the wire again.
+///
+/// An UNANSWERED CALL (the tail of a round interrupted by a crash, a halt
+/// or a failed write) is left as stored. The wire projection
+/// (`providers::replay_messages`, run on every request of every route)
+/// takes it out of its round and names it in a labelled note, so its
+/// unknown effect stays visible to the model. Stripping it here as well
+/// made the same history read differently before and after a reload:
+/// in memory the model was told a call was interrupted, after a reload
+/// it was not, and the cached prefix moved with it. The projection also
+/// pairs by position, which an id set cannot: ids repeat across rounds
+/// (some models number calls per response) and some routes send none.
 fn repair_tool_round_pairing(history: &mut Vec<ChatMessage>) {
     use std::collections::HashSet;
     // Pass 1: collect every call id a live assistant row declares.
@@ -7225,65 +7433,93 @@ fn repair_tool_round_pairing(history: &mut Vec<ChatMessage>) {
                 None => true,
             }
     });
-    // Pass 3: every id a surviving tool row answers; strip the rest.
-    let mut answered: HashSet<String> = HashSet::new();
-    for m in history.iter() {
-        if m.role == "tool" {
-            if let Some(meta) = &m.tool_meta {
-                answered.insert(meta.tool_call_id.clone());
-            }
-        }
-    }
-    let mut stripped = 0usize;
-    let mut stripped_at: Vec<usize> = Vec::new();
-    for (i, m) in history.iter_mut().enumerate() {
-        if m.role != "assistant" {
-            continue;
-        }
-        if let Some(serde_json::Value::Array(calls)) = &m.tool_calls {
-            let kept: Vec<serde_json::Value> = calls
-                .iter()
-                .filter(|c| {
-                    c.get("id")
-                        .and_then(serde_json::Value::as_str)
-                        .map(|id| answered.contains(id))
-                        .unwrap_or(false)
-                })
-                .cloned()
-                .collect();
-            if kept.len() != calls.len() {
-                stripped += calls.len() - kept.len();
-                stripped_at.push(i);
-                m.tool_calls = if kept.is_empty() {
-                    None
-                } else {
-                    Some(serde_json::Value::Array(kept))
-                };
-            }
-        }
-    }
     let dropped = before - history.len();
-    // A turn still running has persisted its assistant row and is
-    // waiting on the results: the calls stripped from the LAST assistant
-    // row, with nothing but tool rows after it, are that turn in flight
-    // — a reload mid-turn (the desktop does it on every event), not a
-    // broken history. 542 such warnings in 30 h of a batch run.
-    let last_assistant = history.iter().rposition(|m| m.role == "assistant");
-    let in_flight = dropped == 0
-        && last_assistant.is_some_and(|last| {
-            stripped_at.iter().all(|&i| i == last)
-                && history[last + 1..].iter().all(|m| m.role == "tool")
-        });
-    if in_flight && stripped > 0 {
-        tracing::debug!(
-            "load_history: {stripped} call(s) of the turn in flight are not answered yet"
-        );
-    } else if dropped > 0 || stripped > 0 {
+    if dropped > 0 {
         tracing::warn!(
-            "load_history repair: dropped {dropped} orphaned tool result(s), stripped \
-             {stripped} unanswered tool call(s) — the stored live history was not a legal \
-             request (see compaction::snap_cut_off_tool_round)"
+            "load_history repair: dropped {dropped} orphaned tool result(s) — the stored live \
+             history was not a legal request (see compaction::snap_cut_off_tool_round)"
         );
+    }
+}
+
+/// A fork does not inherit a call that is still running in its source.
+///
+/// `/btw` forks a session in the middle of its turn: the round at the tail
+/// has persisted its call rows and waits on results that will land in the
+/// SOURCE, never in the copy. Copied as stored, such a call would be named
+/// to the fork's model on every request as an interrupted tool round
+/// (`providers::replay_messages`), which is false: nothing was
+/// interrupted, and the fork never ran it. So the copy leaves out the
+/// calls of the tail round that have no result yet, and a call row left
+/// with neither text nor calls. The answered pairs of that round stay.
+///
+/// Pairing is by position, as in the projection: a result answers the
+/// first still-open call of the round that carries its id (ids repeat, and
+/// some routes send none).
+///
+/// Only the round at the TAIL, with nothing after it but tool rows, can be
+/// in flight. An unanswered call anywhere earlier was cut for good and is
+/// copied as stored, so the fork's model is told about it as its source's
+/// is. A round cut at the very tail of an idle session cannot be told from
+/// one in flight here, and is left out the same way.
+fn leave_out_calls_in_flight(history: &mut Vec<ChatMessage>) {
+    fn calls(m: &ChatMessage) -> &[serde_json::Value] {
+        if m.role != "assistant" {
+            return &[];
+        }
+        m.tool_calls
+            .as_ref()
+            .and_then(serde_json::Value::as_array)
+            .map(Vec::as_slice)
+            .unwrap_or(&[])
+    }
+    // The tail: the tool rows that end the history and, before them, the
+    // adjacent call rows of one round (parallel dispatch may persist one
+    // row per call).
+    let mut end = history.len();
+    while end > 0 && history[end - 1].role == "tool" {
+        end -= 1;
+    }
+    let mut start = end;
+    while start > 0 && !calls(&history[start - 1]).is_empty() {
+        start -= 1;
+    }
+    if start == end {
+        return;
+    }
+    // (row, index in the row, id) of every call of the round, in order;
+    // each result takes the first one left that carries its id.
+    let mut open: Vec<(usize, usize, String)> = Vec::new();
+    for (row, m) in history.iter().enumerate().take(end).skip(start) {
+        for (k, call) in calls(m).iter().enumerate() {
+            let id = call
+                .get("id")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or("");
+            open.push((row, k, id.to_string()));
+        }
+    }
+    for m in &history[end..] {
+        let Some(meta) = &m.tool_meta else { continue };
+        if let Some(at) = open.iter().position(|(_, _, id)| *id == meta.tool_call_id) {
+            open.remove(at);
+        }
+    }
+    if open.is_empty() {
+        return;
+    }
+    for row in (start..end).rev() {
+        let kept: Vec<serde_json::Value> = calls(&history[row])
+            .iter()
+            .enumerate()
+            .filter(|(k, _)| !open.iter().any(|(r, i, _)| *r == row && i == k))
+            .map(|(_, call)| call.clone())
+            .collect();
+        if kept.is_empty() && history[row].content.trim().is_empty() {
+            history.remove(row);
+        } else {
+            history[row].tool_calls = (!kept.is_empty()).then_some(serde_json::Value::Array(kept));
+        }
     }
 }
 
@@ -7891,10 +8127,11 @@ mod tests {
 
     /// The mirror image: a turn interrupted after the assistant row was
     /// persisted but before its tool result landed (crash, cancel). The
-    /// live assistant declares a call no live row answers — also a 400.
-    /// The repair strips the dangling call and keeps the assistant's text.
+    /// live assistant declares a call no live row answers — also a 400 if
+    /// sent. The load keeps the row as stored; the wire projection takes
+    /// the call out and names it in a note after the assistant's own text.
     #[test]
-    fn load_history_strips_an_unanswered_tool_call() {
+    fn an_unanswered_tool_call_loads_as_stored_and_never_reaches_the_wire() {
         let (_d, store) = scratch();
         store
             .append_message("s1", &ChatMessage::user("run it"))
@@ -7905,14 +8142,93 @@ mod tests {
         // No result row: the process died between the two persists.
 
         let h = store.load_history("s1").expect("load");
-        assert_eq!(h.len(), 2, "user + repaired assistant");
-        assert_eq!(h[1].role, "assistant");
-        assert!(
-            h[1].tool_calls.is_none(),
-            "the unanswered call must be stripped: {:?}",
-            h[1].tool_calls
-        );
+        assert_eq!(h.len(), 2, "user + the assistant as stored");
         assert_eq!(h[1].content, "let me check that");
+        let wire = crate::providers::wire_body(&wire_request(h));
+        let msgs = wire["messages"].as_array().expect("messages");
+        assert_eq!(msgs[1]["content"], "let me check that", "{wire}");
+        assert!(msgs[1]["tool_calls"].is_null(), "{wire}");
+        assert_eq!(msgs[2]["role"], "user", "{wire}");
+        assert!(
+            msgs[2]["content"]
+                .as_str()
+                .is_some_and(|s| s.contains("interrupted") && s.contains("call_D")),
+            "{wire}"
+        );
+    }
+
+    /// A request over `messages`, for the wire projection.
+    fn wire_request(messages: Vec<ChatMessage>) -> crate::providers::ChatRequest {
+        crate::providers::ChatRequest {
+            model: "m".into(),
+            messages,
+            tools: vec![],
+            reasoning_effort: None,
+            stream: false,
+            replay_reasoning: false,
+            cache_mode: crate::providers::CacheMode::Off,
+            extra_body: None,
+            thread: None,
+        }
+    }
+
+    /// An interrupted round reads the same to the model before and after a
+    /// reload. The CLI and the TUI keep their history in memory across
+    /// turns; the gateway reloads it for every turn. When the load stripped
+    /// an unanswered call by id set, the model was told about the
+    /// interruption in memory and not after a reload, the cached prefix
+    /// moved between the two, and a reused id hid the call from the strip
+    /// altogether.
+    #[test]
+    fn an_interrupted_round_reads_the_same_before_and_after_a_reload() {
+        let (_d, store) = scratch();
+        let mut both = ChatMessage::assistant("checking two things", None);
+        both.tool_calls = Some(serde_json::json!([
+            {"id": "call_a", "type": "function",
+             "function": {"name": "read_file", "arguments": "{\"path\":\"a\"}"}},
+            {"id": "call_b", "type": "function",
+             "function": {"name": "terminal", "arguments": "{\"command\":\"make\"}"}}
+        ]));
+        let memory = vec![
+            ChatMessage::user("run both"),
+            both,
+            result_row("call_a", "a says hi"),
+            // A repeat-guard halt mid-round: the turn ends with text.
+            ChatMessage::assistant("stopped: the same call three times", None),
+            ChatMessage::user("what happened?"),
+            call_row("terminal:0"),
+            result_row("terminal:0", "first"),
+            call_row("terminal:0"),
+        ];
+        for m in &memory {
+            store.append_message("s1", m).expect("persist");
+        }
+        let loaded = store.load_history("s1").expect("load");
+        // With cache breakpoints, so their positions are compared too.
+        let explicit = |messages| crate::providers::ChatRequest {
+            cache_mode: crate::providers::CacheMode::Explicit,
+            ..wire_request(messages)
+        };
+        let before = crate::providers::wire_body(&explicit(memory));
+        let after = crate::providers::wire_body(&explicit(loaded));
+        assert_eq!(before, after);
+        // A breakpoint turns the last message's content into a parts array.
+        let notes: Vec<String> = after["messages"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter(|m| m["role"] == "user")
+            .filter_map(|m| {
+                m["content"]
+                    .as_str()
+                    .or_else(|| m["content"][0]["text"].as_str())
+                    .map(str::to_string)
+            })
+            .filter(|c| c.contains("interrupted"))
+            .collect();
+        assert_eq!(notes.len(), 2, "{after}");
+        assert!(notes[0].contains("call_b") && !notes[0].contains("call_a"));
+        assert!(notes[1].contains("terminal:0"));
     }
 
     /// A healthy history passes through untouched — the repair is not a
@@ -8024,7 +8340,7 @@ mod tests {
         // Memory: [marker, t1 | t2, t3, t4]; "hidden" is a row the
         // repair kept out of memory. Head = marker + t1, tail from t2.
         let n = store
-            .archive_compacted_head("s1", &[ids[5], ids[1]], ids[2], &[])
+            .archive_compacted_head("s1", &[ids[5], ids[1]], ids[2])
             .expect("archive");
         assert_eq!(n, 3, "marker, t1, and the hidden row below the tail");
         let live: Vec<String> = store
@@ -8036,15 +8352,15 @@ mod tests {
         assert_eq!(live, vec!["t2", "t3", "t4"]);
     }
 
-    /// A replay repair can STRIP a call without removing its assistant
-    /// row. The store row must remain live when the compaction cut passes
-    /// between that call and an unrelated orphaned result: it is the
-    /// conversation text the caller still has in memory, not an empty
-    /// husk to sweep away as an invisible head row. Passing the repaired
-    /// replay history makes that distinction without archiving the call's
-    /// original arguments into the summary it never supplied.
+    /// An assistant whose call never got a result is in the head the
+    /// summarizer read, so it is archived with the rest of that head.
+    /// 0.2.0 kept such a row live ("the visible text must not disappear"):
+    /// it then came back after the summary on every reload, was in the
+    /// head again at the next compaction, kept again, and piled up. The
+    /// stated worry, an orphaned result left live, cannot arise: a call
+    /// without a result has no result row to orphan.
     #[test]
-    fn compacted_head_archive_keeps_an_assistant_whose_unanswered_call_was_stripped() {
+    fn compacted_head_archive_archives_a_summarized_unanswered_call_row() {
         let (_d, store) = scratch();
         let user = store
             .append_message("s1", &ChatMessage::user("keep this turn"))
@@ -8060,27 +8376,21 @@ mod tests {
             .expect("tail");
 
         let repaired = store.load_history("s1").expect("repaired replay");
-        assert!(repaired.iter().any(|m| {
-            m.msg_id == Some(interrupted) && m.role == "assistant" && m.tool_calls.is_none()
-        }));
         assert!(!repaired.iter().any(|m| m.msg_id == Some(orphan)));
 
         let n = store
-            .archive_compacted_head("s1", &[user, interrupted], tail, &repaired)
+            .archive_compacted_head("s1", &[user, interrupted], tail)
             .expect("archive");
-        assert_eq!(
-            n, 2,
-            "the user and orphan are archived, not the visible text"
-        );
+        assert_eq!(n, 3, "the user, the summarized call row and the orphan");
         let live = store.load_history_since("s1", 0).expect("raw live rows");
         assert_eq!(
             live.iter().map(|m| m.msg_id).collect::<Vec<_>>(),
-            vec![Some(interrupted), Some(tail)]
+            vec![Some(tail)]
         );
     }
 
     #[test]
-    fn compacted_head_archive_does_not_protect_an_ordinary_assistant() {
+    fn compacted_head_archive_archives_an_ordinary_assistant() {
         let (_d, store) = scratch();
         let answer = store
             .append_message("s1", &ChatMessage::assistant("summarize me", None))
@@ -8088,14 +8398,10 @@ mod tests {
         let tail = store
             .append_message("s1", &ChatMessage::user("the kept tail"))
             .expect("tail");
-        let replayed = store.load_history("s1").expect("replay");
         let n = store
-            .archive_compacted_head("s1", &[answer], tail, &replayed)
+            .archive_compacted_head("s1", &[answer], tail)
             .expect("archive");
-        assert_eq!(
-            n, 1,
-            "an assistant with no stored calls is an ordinary head row"
-        );
+        assert_eq!(n, 1);
         assert!(store
             .load_history_since("s1", 0)
             .expect("live")
@@ -9269,7 +9575,7 @@ mod tests {
         store.append_message("s1", &assistant).unwrap();
         // The result row for c1: an assistant declaring a call no live
         // row answers is a malformed request on the wire, and
-        // load_history's repair strips such calls — so the round-trip
+        // the wire projection takes such a call out — so the round-trip
         // fixture answers it.
         let mut result = msg("tool", "tool said hi");
         result.tool_meta = Some(crate::providers::ToolMeta {
@@ -9884,6 +10190,96 @@ mod tests {
         assert_eq!((row.cores, row.io_some, row.children), (None, None, None));
     }
 
+    /// COMP-4 (0.2.2): a gossiped heartbeat from a clock a day ahead is
+    /// held to now. Taken verbatim, it kept the node fresh for a day
+    /// after it died, and once the clock was corrected every real
+    /// heartbeat was older than the stored stamp and refused, so the
+    /// node's load and work figures froze while its row looked fresh. A
+    /// minute of drift is kept as written; a stamp that does not parse
+    /// is no heartbeat; and a stamp from the future does not get a
+    /// forgotten node back in.
+    #[test]
+    fn a_future_heartbeat_from_gossip_is_held_to_now() {
+        let (_d, store) = scratch();
+        let fmt = |t: chrono::DateTime<chrono::Utc>| t.format("%Y-%m-%d %H:%M:%S").to_string();
+        let now = chrono::Utc::now();
+        let row = |id: &str, heartbeat_at: String, load: i64| GossipNodeRow {
+            id: id.into(),
+            name: id.into(),
+            host: "h".into(),
+            version: "0".into(),
+            uptime_class: "always-on".into(),
+            gpu: None,
+            endpoint: None,
+            static_ip: None,
+            static_ip_source: None,
+            caps: None,
+            load1: Some(load),
+            load_at: Some(heartbeat_at.clone()),
+            sessions_served: 0,
+            registered_at: "2026-09-01 00:00:00".into(),
+            heartbeat_at,
+            cores: None,
+            io_some: None,
+            io_full: None,
+            children: None,
+            queued: None,
+            children_from: None,
+        };
+        let ahead = fmt(now + chrono::Duration::days(1));
+        store
+            .node_merge_from_gossip(&row("skew-1", ahead, 0))
+            .unwrap();
+        let stored = store.node_get("skew-1").unwrap().unwrap();
+        let ceiling = fmt(chrono::Utc::now() + chrono::Duration::seconds(60));
+        assert!(
+            stored.heartbeat_at <= ceiling,
+            "held to now: {}",
+            stored.heartbeat_at
+        );
+        assert!(stored.load_at.as_deref().is_some_and(|l| *l <= *ceiling));
+        // The node's next real heartbeat is taken.
+        store
+            .node_merge_from_gossip(&row("skew-1", fmt(chrono::Utc::now()), 90))
+            .unwrap();
+        assert_eq!(store.node_get("skew-1").unwrap().unwrap().load1, Some(90));
+        // A minute of drift is kept as written.
+        let drift = fmt(chrono::Utc::now() + chrono::Duration::seconds(30));
+        store
+            .node_merge_from_gossip(&row("skew-2", drift.clone(), 5))
+            .unwrap();
+        assert_eq!(
+            store.node_get("skew-2").unwrap().unwrap().heartbeat_at,
+            drift
+        );
+        // A stamp that does not parse is no heartbeat.
+        store
+            .node_merge_from_gossip(&row("skew-1", "9999-zz".into(), 1))
+            .unwrap();
+        assert_eq!(store.node_get("skew-1").unwrap().unwrap().load1, Some(90));
+        // Forgotten: a relayed far-future stamp does not bring it back.
+        // The forget is a few seconds old, so the stamp held to now is
+        // newer than it: only the stamp's being incredible keeps the
+        // node out (a forget in the same second as the merge was not
+        // older than held-to-now, and left that check unpinned).
+        store.node_forget_everywhere("skew-2").unwrap();
+        store
+            .conn()
+            .execute(
+                "UPDATE node_tombstones SET forgotten_at = datetime('now', '-10 seconds')
+                 WHERE id = 'skew-2'",
+                [],
+            )
+            .unwrap();
+        store
+            .node_merge_from_gossip(&row("skew-2", "9999-01-01 00:00:00".into(), 5))
+            .unwrap();
+        assert!(
+            store.node_get("skew-2").unwrap().is_none(),
+            "still forgotten"
+        );
+    }
+
     /// B1.5: every session row records its owner. A node with an
     /// identity stamps it at INSERT; a node without one (scratch home,
     /// pre-boot tool run) leaves NULL — honest, never a guessed owner —
@@ -10136,6 +10532,126 @@ mod tests {
             3,
             "the source kept its rows — a fork copies, it does not move"
         );
+    }
+
+    /// `/btw` forks a session in the middle of its turn. The round at the
+    /// tail is still running in the source: its results will land there,
+    /// never in the copy. Copied as stored, the fork's model was told on
+    /// every request that a tool round had been interrupted, which is
+    /// false. The answered pair of that round stays, and a round cut
+    /// EARLIER in the source is copied as stored and still named to the
+    /// fork's model, as it is to the source's.
+    #[test]
+    fn a_fork_does_not_inherit_a_call_still_in_flight() {
+        let (_d, store) = scratch();
+        store.create_session("src").unwrap();
+        store.create_session("dst").unwrap();
+        let mut running = ChatMessage::assistant("checking two things", None);
+        running.tool_calls = Some(serde_json::json!([
+            {"id": "call_a", "type": "function",
+             "function": {"name": "read_file", "arguments": "{\"path\":\"a\"}"}},
+            {"id": "call_b", "type": "function",
+             "function": {"name": "terminal", "arguments": "{\"command\":\"make\"}"}}
+        ]));
+        for m in [
+            ChatMessage::user("first"),
+            call_row("cut_earlier"),
+            ChatMessage::user("go on"),
+            running,
+            result_row("call_a", "a says hi"),
+        ] {
+            store.append_message("src", &m).unwrap();
+        }
+        assert_eq!(store.copy_history("src", "dst").unwrap(), 5);
+        let mut fork = store.load_history("dst").unwrap();
+        let ids = |m: &ChatMessage| -> Vec<String> {
+            m.tool_calls
+                .as_ref()
+                .and_then(serde_json::Value::as_array)
+                .into_iter()
+                .flatten()
+                .filter_map(|c| c["id"].as_str().map(str::to_string))
+                .collect()
+        };
+        assert_eq!(fork[3].content, "checking two things");
+        assert_eq!(
+            ids(&fork[3]),
+            ["call_a"],
+            "the answered call stays, the running one is not the fork's"
+        );
+        assert_eq!(
+            ids(&fork[1]),
+            ["cut_earlier"],
+            "an earlier cut is copied as stored"
+        );
+        fork.push(ChatMessage::user("a side question"));
+        let wire = crate::providers::wire_body(&wire_request(fork));
+        assert!(!wire.to_string().contains("call_b"), "{wire}");
+        let notes: Vec<&str> = wire["messages"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter(|m| m["role"] == "user")
+            .filter_map(|m| m["content"].as_str())
+            .filter(|c| c.contains("interrupted"))
+            .collect();
+        assert_eq!(
+            notes.len(),
+            1,
+            "only the round cut earlier is named: {wire}"
+        );
+        assert!(notes[0].contains("cut_earlier"), "{wire}");
+        let source = store.load_history("src").unwrap();
+        assert_eq!(
+            ids(&source[3]),
+            ["call_a", "call_b"],
+            "the source keeps its running call"
+        );
+    }
+
+    /// The tail round is paired by position, like the wire projection:
+    /// ids repeat, and a route that sends none leaves `""` on every call
+    /// and every result. Parallel dispatch may persist one row per call;
+    /// a call row left with neither text nor calls is not copied.
+    #[test]
+    fn a_fork_pairs_the_round_in_flight_by_position() {
+        let (_d, store) = scratch();
+        store.create_session("src").unwrap();
+        store.create_session("dst").unwrap();
+        for m in [
+            ChatMessage::user("go"),
+            call_row(""),
+            call_row(""),
+            result_row("", "the first is back"),
+        ] {
+            store.append_message("src", &m).unwrap();
+        }
+        assert_eq!(store.copy_history("src", "dst").unwrap(), 3);
+        let mut fork = store.load_history("dst").unwrap();
+        assert_eq!(
+            fork.iter().map(|m| m.role.as_str()).collect::<Vec<_>>(),
+            ["user", "assistant", "tool"]
+        );
+        fork.push(ChatMessage::user("a side question"));
+        let wire = crate::providers::wire_body(&wire_request(fork));
+        assert!(!wire.to_string().contains("interrupted"), "{wire}");
+        assert!(wire.to_string().contains("the first is back"), "{wire}");
+
+        // A whole round in flight, nothing answered yet: none of it is
+        // copied, and a finished round before it is.
+        store.create_session("src2").unwrap();
+        store.create_session("dst2").unwrap();
+        for m in [
+            ChatMessage::user("go"),
+            call_row("terminal:0"),
+            result_row("terminal:0", "done"),
+            call_row("terminal:0"),
+        ] {
+            store.append_message("src2", &m).unwrap();
+        }
+        assert_eq!(store.copy_history("src2", "dst2").unwrap(), 3);
+        let fork = store.load_history("dst2").unwrap();
+        assert_eq!(fork.last().map(|m| m.content.as_str()), Some("done"));
     }
 
     // ── truncation / undo ───────────────────────────────────────────
@@ -12166,5 +12682,142 @@ mod tombstone_pins {
             store.node_get(&me.id).unwrap().is_some(),
             "a peer cannot forget this node for it"
         );
+    }
+
+    /// FLEET-4: a peer's tombstone evicts only what its issuer could have
+    /// forgotten locally — a node stale here too. A stamp up to an hour
+    /// ahead used to beat any live heartbeat: the row went fleet-wide and
+    /// every receiver relayed the forget.
+    #[test]
+    fn a_peers_tombstone_cannot_evict_a_node_that_is_live_here() {
+        let (_cfg, _data, _guard) = crate::testenv::scratch_xdg();
+        let dir = tempfile::tempdir().unwrap();
+        let store = Store::open(&dir.path().join("s.db")).unwrap();
+        store
+            .node_merge_from_gossip(&wire("live-c", &stamp(-5)))
+            .unwrap();
+        for ahead in [50 * 60, 60, 0] {
+            let t = NodeTombstone {
+                id: "live-c".into(),
+                forgotten_at: stamp(ahead),
+            };
+            assert!(
+                !store.node_tombstone_merge(&t).unwrap(),
+                "a tombstone {ahead}s ahead is refused for a live node"
+            );
+        }
+        assert!(store.node_get("live-c").unwrap().is_some());
+        assert!(store.node_tombstones().unwrap().is_empty());
+    }
+
+    /// FLEET-4: a stamp from the future is held to now. Kept as sent, a
+    /// stamp 50 minutes ahead refused the forgotten node's own heartbeats
+    /// for those 50 minutes after it came back, and a re-sent later stamp
+    /// renewed it.
+    #[test]
+    fn a_tombstone_stamp_from_the_future_is_held_to_now() {
+        let (_cfg, _data, _guard) = crate::testenv::scratch_xdg();
+        let dir = tempfile::tempdir().unwrap();
+        let store = Store::open(&dir.path().join("s.db")).unwrap();
+        store
+            .node_merge_from_gossip(&wire("asleep", &stamp(-7200)))
+            .unwrap();
+        let ahead = NodeTombstone {
+            id: "asleep".into(),
+            forgotten_at: stamp(50 * 60),
+        };
+        assert!(store.node_tombstone_merge(&ahead).unwrap());
+        assert!(store.node_get("asleep").unwrap().is_none(), "it was stale");
+        let held = store.node_tombstones().unwrap();
+        assert_eq!(held.len(), 1);
+        assert!(held[0].forgotten_at <= stamp(0), "{held:?}");
+        // A relay of the same fast stamp later does not renew it: held to
+        // each receiver's now, it would creep forward with every exchange.
+        std::thread::sleep(std::time::Duration::from_millis(1100));
+        assert!(!store.node_tombstone_merge(&ahead).unwrap());
+        assert_eq!(store.node_tombstones().unwrap(), held, "not renewed");
+        // The node comes back a few seconds later: let in.
+        store
+            .node_merge_from_gossip(&wire("asleep", &stamp(2)))
+            .unwrap();
+        assert!(
+            store.node_get("asleep").unwrap().is_some(),
+            "a node heartbeating after the forget is back"
+        );
+    }
+
+    /// FLEET-5: 90 days is the forget's life everywhere. A peer that has
+    /// not reopened its store (where the prune runs) kept sending an
+    /// expired tombstone, and every node that had pruned it took it back.
+    #[test]
+    fn a_tombstone_past_its_90_days_is_not_taken_from_a_peer_nor_sent_on() {
+        let (_cfg, _data, _guard) = crate::testenv::scratch_xdg();
+        let dir = tempfile::tempdir().unwrap();
+        let store = Store::open(&dir.path().join("s.db")).unwrap();
+        let expired = NodeTombstone {
+            id: "long-gone".into(),
+            forgotten_at: stamp(-91 * 86_400),
+        };
+        assert!(!store.node_tombstone_merge(&expired).unwrap());
+        assert!(store.node_tombstones().unwrap().is_empty());
+        // One held since before the window closed, in a store that has
+        // not been reopened since: not listed, so not gossiped on.
+        store
+            .conn()
+            .execute(
+                "INSERT INTO node_tombstones (id, forgotten_at) VALUES ('held-gone', ?1)",
+                params![stamp(-91 * 86_400)],
+            )
+            .unwrap();
+        assert!(store.node_tombstones().unwrap().is_empty());
+        let recent = NodeTombstone {
+            id: "recent".into(),
+            forgotten_at: stamp(-89 * 86_400),
+        };
+        assert!(store.node_tombstone_merge(&recent).unwrap());
+        assert_eq!(store.node_tombstones().unwrap().len(), 1);
+    }
+
+    /// FLEET-6: this node cannot be forgotten. `veles nodes forget <own
+    /// id>` used to store a tombstone for the node itself, which nothing
+    /// ever dropped: it gossiped it for 90 days and listed itself as
+    /// forgotten fleet-wide.
+    #[test]
+    fn forgetting_this_node_leaves_no_tombstone() {
+        let (_cfg, _data, _guard) = crate::testenv::scratch_xdg();
+        let me = crate::node::NodeIdentity::load_or_create(&crate::config::config_dir()).unwrap();
+        let dir = tempfile::tempdir().unwrap();
+        let store = Store::open(&dir.path().join("s.db")).unwrap();
+        store
+            .node_register(
+                &me.id,
+                "me",
+                "h",
+                "0.2.0",
+                "ephemeral",
+                None,
+                None,
+                None,
+                None,
+            )
+            .unwrap();
+        assert!(store.node_forget_everywhere(&me.id).is_err());
+        assert!(store.node_get(&me.id).unwrap().is_some());
+        assert!(store.node_tombstones().unwrap().is_empty());
+        // The guards the CLI and the tab share: this node, a live one.
+        let row = store.node_get(&me.id).unwrap().unwrap();
+        assert_eq!(
+            forget_refusal(&row, Some(&me.id), 300),
+            Some(ForgetRefusal::ThisNode)
+        );
+        assert!(matches!(
+            forget_refusal(&row, Some("someone-else"), 300),
+            Some(ForgetRefusal::Live { .. })
+        ));
+        store
+            .node_merge_from_gossip(&wire("retired", &stamp(-7200)))
+            .unwrap();
+        let retired = store.node_get("retired").unwrap().unwrap();
+        assert_eq!(forget_refusal(&retired, Some(&me.id), 300), None);
     }
 }

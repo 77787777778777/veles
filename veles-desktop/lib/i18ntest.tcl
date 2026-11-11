@@ -1023,6 +1023,26 @@ ok "ordinary English is still refused in a non-Latin locale" \
     {[_script_gate_row bg "Check source\tCheck source"] == 1}
 ok "a wrong foreign script is still refused" \
     {[_script_gate_row sr_latn "failed\tнеуспех"] == 1}
+# TR-6: the gate's holes, one row each.
+ok "a kept name plus English prose is refused"  {[_script_gate_row bg "Check source API\tCheck source API"] == 1}
+ok "a Latin word that merely contains a kept name is refused"  {[_script_gate_row bg "GUIDE\tGUIDE"] == 1}
+ok "a row of kept names only is accepted"  {[_script_gate_row bg "API LSP\tAPI LSP"] == 0}
+ok "English with a little native script is refused (Latin outnumbers it)"  {[_script_gate_row bg "Check source\tCheck source Проверка"] == 1}
+ok "three English words inside native prose are refused"  {[_script_gate_row bg "x\tПокажи как работи в реално време the source code днес на ден"] == 1}
+ok "native prose with a command and a kept name is accepted"  {[_script_gate_row bg "x\tИзползвайте /locale reset или API-то на gateway за езика на сесията"] == 0}
+# The gate runs on every batch i18n-translate-keys.sh writes, and one
+# refused row sends the whole locale back. Counting LETTERS refused about
+# 900 rows the catalogs already ship in the established style (a file
+# name, a command, a kept English term beside short native words), so
+# the outnumber rule counts WORDS, a file name or an ALL-CAPS placeholder
+# is not prose, and %{name} is a placeholder like %s. An English sentence
+# in angle brackets is still prose; only a key name like <Return> is not.
+ok "an English sentence in angle brackets is still refused" {[_script_gate_row bg "x\t<Check the source code>"] == 1}
+ok "a file name beside short native prose is accepted" {[_script_gate_row bg "x\tпромени в config.toml"] == 0}
+ok "a kept English term beside one native word is accepted" {[_script_gate_row bg "x\t%1\$s: %2\$s в gateway"] == 0}
+ok "a command line with an ALL-CAPS placeholder is accepted" {[_script_gate_row bg "x\tПроверете с veles secret set NAME тук"] == 0}
+ok "a %{name}-only row is a placeholder-only row" {[_script_gate_row bg "x\t(%{route})"] == 0}
+ok "a key name in angle brackets is not prose" {[_script_gate_row bg "x\tНатиснете <Return>"] == 0}
 file delete -force $_script_tmp
 
 # ── a 4-byte character on a 4 KiB boundary ─────────────────────────
@@ -1043,6 +1063,25 @@ foreach _f [lsort [glob -nocomplain [file join $_dir .. msgs *.msg]]] {
 }
 foreach _u $_split { puts "      split 4-byte character: $_u — run scripts/i18n-sync.sh" }
 ok "no catalog puts a 4-byte character where Tcl 8.6 splits it" {[llength $_split] == 0}
+
+# TR-5: known wrong-meaning rows. No machine check can judge a
+# translation, but one that a reviewer PROVED wrong stays out: yo
+# rendered "preview" as "ìwòràwọ̀" (astrology, stargazing). Add a
+# (locale term meaning) triple here when a row is shown wrong.
+puts "\n── known-bad translations stay out"
+foreach {loc term meaning} {
+    yo ìwòràwọ̀ {"preview" rendered as astrology}
+} {
+    set fh [open [file join $_dir .. msgs $loc.msg] r]
+    fconfigure $fh -encoding utf-8
+    set body [read $fh]
+    close $fh
+    set hits 0
+    foreach line [split $body \n] {
+        if {[string first $term $line] >= 0} { incr hits }
+    }
+    ok "$loc.msg has no row with '$term' ($meaning): $hits found" {$hits == 0}
+}
 
 # The tally is `i18ntest:`, matching the FILE name, because that is what
 # scripts/precommit.sh and flake.nix derive from `TESTS=` and grep for

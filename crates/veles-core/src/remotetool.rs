@@ -80,6 +80,11 @@ pub const STAYS_HOME: &[&str] = &[
     "tool_describe",
     "tool_call",
     "a2a",
+    // Talks to a loopback socket on the node whose browser holds the
+    // extension and is refused for a routed (capped) principal: the
+    // `browser_*` NEEDS glob and `[tools.home]` rules must not carry it
+    // to a peer (BX-1, BX-7).
+    "browser_extension",
 ];
 
 pub fn is_remote_tool(raw: &str) -> bool {
@@ -282,6 +287,9 @@ pub const SANDBOX_RUNTIMES: &[&str] = &[
 /// The programs `tool` needs, when [`NEEDS`] names it and the config
 /// does not already satisfy it (an API TTS provider needs no edge-tts).
 pub fn needs_of(cfg: &crate::config::VelesConfig, tool: &str) -> Option<&'static [&'static str]> {
+    if STAYS_HOME.contains(&tool) {
+        return None;
+    }
     if tool == "text_to_speech"
         && cfg
             .agent
@@ -316,21 +324,26 @@ fn pinned(
         || pick(homes.iter().map(|(g, n)| (g.as_str(), n)), tool).is_some()
 }
 
-/// The `[a2a_agents]` name a registry row is reached through: the agent
-/// whose url is the node's endpoint, else the one named like the node
-/// (`delegate::remote_target_for`'s match, over a config in hand).
+/// The `[a2a_agents]` name a registry row is reached through
+/// (`delegate::agent_entry_for`: the agent whose url is the node's
+/// endpoint, else the one named like the node), over a config in hand.
 fn agent_name_for<'a>(
     cfg: &'a crate::config::VelesConfig,
     node: &crate::store::NodeRow,
 ) -> Option<&'a str> {
-    let by_endpoint = node.endpoint.as_deref().and_then(|ep| {
-        cfg.a2a_agents
-            .iter()
-            .find(|(_, a)| a.url.trim_end_matches('/') == ep.trim_end_matches('/'))
-    });
-    by_endpoint
-        .or_else(|| cfg.a2a_agents.iter().find(|(name, _)| **name == node.name))
-        .map(|(name, _)| name.as_str())
+    crate::delegate::agent_entry_for(cfg, node).map(|(name, _)| name)
+}
+
+/// Whether the last live auth probe of `node`'s `[a2a_agents]` route
+/// failed (`routeprobe`: refused, rate-limited, or no answer) and that
+/// result still stands. An unprobed route is not a failure. Read under
+/// the same key `call_on` dials and records (one lookup, COMP-11).
+fn probe_failed(cfg: &crate::config::VelesConfig, node: &crate::store::NodeRow) -> bool {
+    let Some((_, agent)) = crate::delegate::agent_entry_for(cfg, node) else {
+        return false;
+    };
+    crate::routeprobe::cached(&agent.url, agent.bearer().as_deref())
+        .is_some_and(|(p, _)| !p.is_ok())
 }
 
 /// The live peers that may take work from here (`[cluster]
@@ -338,6 +351,13 @@ fn agent_name_for<'a>(
 /// `needs`, least loaded first (`placement::rank`, mixed workload: load
 /// per core, children counted there, IO pressure). Never this node;
 /// never a stale one; never a node whose row advertises nothing.
+///
+/// A peer whose live auth probe failed within `routeprobe::FAIL_TTL`
+/// (a rotated token, a phone that stopped) goes after every other one
+/// (306787.b): it is still a home, so a call with nowhere else to go
+/// gets the honest error naming it, but it is no longer the first try
+/// while a peer that answers sits behind it. The list is read from the
+/// probe cache only; nothing is dialed here.
 pub fn capable_peers(
     store: &crate::store::Store,
     cfg: &crate::config::VelesConfig,
@@ -356,7 +376,7 @@ pub fn capable_peers(
             agent_name_for(cfg, n).is_some_and(|a| cfg.cluster.task_peers.iter().any(|p| p == a))
         })
         .collect();
-    crate::placement::rank(
+    let mut ranked: Vec<crate::store::NodeRow> = crate::placement::rank(
         store.conn(),
         Some(me),
         peers,
@@ -364,7 +384,10 @@ pub fn capable_peers(
     )
     .into_iter()
     .map(|(n, _)| n)
-    .collect()
+    .collect();
+    // Stable: the load order holds within each group.
+    ranked.sort_by_key(|n| probe_failed(cfg, n));
+    ranked
 }
 
 /// This node's advertised programs, from its own registry row (what
@@ -464,9 +487,9 @@ pub enum Answer {
     /// Nothing ran; why, naming the node.
     Failed(String),
     /// Nothing ran because the node could not be reached at all: its
-    /// heartbeat is stale, or the connection never opened. The one
-    /// failure a tool's next home may be tried after — nothing can have
-    /// run there.
+    /// heartbeat is stale, the connection never opened, or it turned the
+    /// call away at its gates (401, 403, 429). The one failure a tool's
+    /// next home may be tried after — nothing can have run there.
     Unreachable(String),
 }
 
@@ -579,15 +602,6 @@ fn node_is_stale(store: &crate::store::Store, spec: &str) -> bool {
     row.is_some_and(|n| crate::node::is_stale(&n.heartbeat_at, stale))
 }
 
-/// Did an A2A call fail before its connection opened (refused, no
-/// route, the connect timeout)? Then nothing was sent.
-fn never_connected(e: &anyhow::Error) -> bool {
-    e.chain().any(|c| {
-        c.downcast_ref::<reqwest::Error>()
-            .is_some_and(|r| r.is_connect())
-    })
-}
-
 pub(crate) fn my_id() -> Option<String> {
     crate::node::NodeIdentity::load(&crate::config::config_dir())
         .ok()
@@ -667,16 +681,25 @@ pub async fn call_on(
         crate::a2a::A2AClient::with_timeout(std::time::Duration::from_secs(CALL_TIMEOUT_SECS));
     let ctx = crate::a2a::new_context_id();
     let watch = crate::remotetask::CancelWatch::turn(session);
+    // Counted on its node while it runs, like a placed child (COMP-12,
+    // 0.2.2): the next automatic home ranks that node with this call on
+    // it, so parallel calls spread over the homes instead of all going
+    // to the one whose last heartbeat looked idlest.
+    let claim = crate::placement::claim_async(&node.id).await;
     let result = tokio::select! {
-        r = client.call(&url, bearer.as_deref(), &text, &ctx) => r,
-        () = watch.wait() => {
-            if let Some(id) = ask.wire_task_id.as_deref() {
-                let _ = crate::a2a::A2AClient::new()
-                    .cancel_task(&url, bearer.as_deref(), id)
-                    .await;
-            }
-            return Answer::Failed(format!("{tool} on node {}: cancelled", node.name));
+        r = client.call(&url, bearer.as_deref(), &text, &ctx) => Some(r),
+        () = watch.wait() => None,
+    };
+    if let Some(c) = claim {
+        c.release().await;
+    }
+    let Some(result) = result else {
+        if let Some(id) = ask.wire_task_id.as_deref() {
+            let _ = crate::a2a::A2AClient::new()
+                .cancel_task(&url, bearer.as_deref(), id)
+                .await;
         }
+        return Answer::Failed(format!("{tool} on node {}: cancelled", node.name));
     };
     let result = match result {
         Ok(r) => r,
@@ -685,9 +708,13 @@ pub async fn call_on(
                 "{tool} is homed on node {}, which did not answer: {e:#}",
                 node.name
             );
-            // Only a connection that never opened is "unreachable": a
-            // call that was sent may have run there.
-            return if never_connected(&e) {
+            // Only a call that never reached the tool is "unreachable"
+            // (a connection that never opened, or a peer that turned it
+            // away at its gates): a call that was taken may have run
+            // there. What it found is what a route probe would have
+            // (306787.b): the automatic homes and `any` pass this node
+            // over for a minute instead of dialing it again.
+            return if crate::routeprobe::record_failure(&url, bearer.as_deref(), &e).is_some() {
                 Answer::Unreachable(why)
             } else {
                 Answer::Failed(why)
@@ -695,6 +722,10 @@ pub async fn call_on(
         }
     };
     let reply_text = crate::a2a::extract_text(&result);
+    if is_remote_tool_reply(&reply_text) {
+        // The call crossed the node's token and trusted-list gates.
+        crate::routeprobe::record(&url, bearer.as_deref(), crate::routeprobe::Probe::Ok);
+    }
     if !is_remote_tool_reply(&reply_text) {
         return Answer::Failed(format!(
             "node {} did not run {tool}: {reply_text}",
@@ -1223,6 +1254,12 @@ fn short(label: &str) -> String {
 /// levels never share a principal slot. The tool is run as itself —
 /// never through `dispatch`, whose aliases and shape conversions would
 /// run a different tool than the one decided on (and ticketed).
+///
+/// The call counts on this node while it runs, under the asking node
+/// (the one gossip bound the peer to, else the ask's own word), so a
+/// long command run for a peer shows in this node's work report
+/// (COMP-12, 0.2.2; `placement::tool_run_started`). A download part is
+/// a file read, not work, and is not counted.
 pub async fn execute(
     store: Arc<Mutex<crate::store::Store>>,
     caller: &Caller<'_>,
@@ -1235,6 +1272,29 @@ pub async fn execute(
         v["ran_as"] = json!(grant.label());
         return v;
     }
+    let origin = caller
+        .node
+        .map(str::to_string)
+        .unwrap_or_else(|| ask.from_node.clone());
+    let counted = crate::rt::spawn_blocking(move || crate::placement::tool_run_started(&origin))
+        .await
+        .ok()
+        .flatten();
+    let v = execute_counted(store, caller, ask, grant, cancel).await;
+    if let Some(c) = counted {
+        let _ = crate::rt::spawn_blocking(move || drop(c)).await;
+    }
+    v
+}
+
+/// [`execute`]'s body, while the call is counted.
+async fn execute_counted(
+    store: Arc<Mutex<crate::store::Store>>,
+    caller: &Caller<'_>,
+    ask: &RemoteToolAsk,
+    grant: &Grant,
+    cancel: crate::providers::CancelToken,
+) -> Value {
     let mut args = ask.args.clone();
     let scoped = |role: Role| {
         format!(
@@ -1396,12 +1456,11 @@ mod tests {
             .send()
             .await
             .expect_err("nothing listens on port 1");
-        assert!(never_connected(
+        let nothing_ran = |e: &anyhow::Error| crate::routeprobe::learned_from(e).is_some();
+        assert!(nothing_ran(
             &anyhow::Error::from(refused).context("a2a call")
         ));
-        assert!(!never_connected(&anyhow::anyhow!(
-            "node refused web_extract"
-        )));
+        assert!(!nothing_ran(&anyhow::anyhow!("node refused web_extract")));
 
         let (_d, _env, store) = scratch_store();
         store
@@ -1726,6 +1785,29 @@ mod tests {
         assert_eq!(needs_of(&tts, "text_to_speech"), None);
     }
 
+    /// The tab bridge talks to a loopback socket on the node whose
+    /// browser the extension lives in and needs no agent-browser: the
+    /// generic `browser_*` rule (a NEEDS glob and a `[tools.home]` glob)
+    /// must never carry it to a peer, where it is only refused (BX-1).
+    #[test]
+    fn the_tab_bridge_never_auto_homes() {
+        let (_d, _env, store) = scratch_store();
+        let cfg = pool(&store, &["bash"]);
+        assert_eq!(needs_of(&cfg, "browser_extension"), None);
+        assert_eq!(
+            auto_home_for(&store, &cfg, Some("phone-1"), "s", "browser_extension"),
+            None
+        );
+        assert_eq!(
+            auto_home_for(&store, &cfg, Some("phone-1"), "s", "browser_navigate"),
+            Some(vec!["laptop-1".to_string()])
+        );
+        let mut homes = BTreeMap::new();
+        homes.insert("browser_*".to_string(), "laptop".into());
+        assert_eq!(homes_for(&store, &homes, "s", "browser_extension"), None);
+        assert!(homes_for(&store, &homes, "s", "browser_navigate").is_some());
+    }
+
     /// A rule for the tool wins over the automatic home: `local` keeps
     /// it here (the opt-out), a session's `/tools home` too, and
     /// `[tools] auto_home = false` turns the whole thing off.
@@ -1807,6 +1889,266 @@ mod tests {
             auto_home_for(&store, &only_old, Some("phone-1"), "s1", "search_files"),
             None
         );
+    }
+
+    /// 306787.b: a task peer whose live auth probe failed, while that
+    /// result stands, goes after the peers that answer (the load order
+    /// holds within each group), and with no other peer it is still a
+    /// home. A re-homed call that cannot connect records that failure
+    /// for the next choice, so the next automatic home skips the node.
+    #[tokio::test]
+    async fn a_peer_whose_auth_probe_failed_is_tried_last() {
+        use crate::routeprobe::{cached, record, Probe};
+        let (d, _env, store) = scratch_store();
+        let mut cfg = pool(&store, &["bash"]);
+        // Its own url: the probe cache is process-wide, and other tests
+        // dial the pool's.
+        let vps_url = crate::routeprobe::tests::dead_url().await;
+        cfg.a2a_agents.get_mut("vps").unwrap().url = vps_url.clone();
+        let order = |cfg: &crate::config::VelesConfig| {
+            capable_peers(&store, cfg, "phone-1", &["rg"])
+                .into_iter()
+                .map(|n| n.id)
+                .collect::<Vec<_>>()
+        };
+        assert_eq!(order(&cfg), ["vps-1", "laptop-1"], "unprobed: by load");
+        record(&vps_url, None, Probe::Refused("HTTP 401".into()));
+        assert_eq!(order(&cfg), ["laptop-1", "vps-1"], "refused: last");
+        record(&vps_url, None, Probe::Ok);
+        assert_eq!(order(&cfg), ["vps-1", "laptop-1"], "passed again");
+        record(&vps_url, None, Probe::Unreachable("down".into()));
+        let mut only_vps = cfg.clone();
+        only_vps.cluster.task_peers = vec!["vps".into()];
+        assert_eq!(order(&only_vps), ["vps-1"], "still a home");
+
+        // The call side: the vps's url is a dead port. A call that never
+        // connects is Unreachable and leaves a standing failure.
+        record(&vps_url, None, Probe::Ok);
+        std::fs::write(
+            d.path().join("config.toml"),
+            format!("[a2a_agents.vps]\nurl = \"{vps_url}\"\n"),
+        )
+        .unwrap();
+        let shared = Arc::new(Mutex::new(
+            crate::store::Store::open(&d.path().join("t.db")).unwrap(),
+        ));
+        let answer = call_on(
+            &shared,
+            "vps",
+            "s1",
+            "search_files",
+            json!({"pattern": "x"}),
+            None,
+            None,
+        )
+        .await;
+        assert!(matches!(answer, Answer::Unreachable(_)), "{answer:?}");
+        assert!(
+            matches!(cached(&vps_url, None), Some((Probe::Unreachable(_), _))),
+            "the failed call is recorded"
+        );
+        assert_eq!(order(&cfg), ["laptop-1", "vps-1"]);
+    }
+
+    /// COMP-11 (0.2.2): the automatic homes read a peer's route under
+    /// the key `call_on` dials and records. Node "a" is reached through
+    /// entry `b` (its endpoint) while entry `a` carries its name. The
+    /// dial took endpoint and name per entry in the config HashMap's
+    /// random order, the demotion took the endpoint first, so about half
+    /// the time a failed call was recorded under `a`'s url and the
+    /// demotion read `b`'s, and the dead node stayed first. Each round
+    /// loads the config afresh (a new HashMap, a new order).
+    #[tokio::test]
+    async fn probe_failed_reads_the_key_call_on_records() {
+        use crate::routeprobe::{record, Probe};
+        let (d, _env, store) = scratch_store();
+        let url_a = crate::routeprobe::tests::dead_url().await;
+        let url_b = crate::routeprobe::tests::dead_url().await;
+        let caps = json!({"os": "linux", "tools": ["rg"]}).to_string();
+        for (id, name, endpoint, load) in [
+            ("a-1", "a", url_b.as_str(), 10),
+            ("c-1", "c", "http://c:9900", 50),
+        ] {
+            store
+                .node_register(
+                    id,
+                    name,
+                    "h",
+                    "v",
+                    "always-on",
+                    None,
+                    Some(endpoint),
+                    None,
+                    Some(&caps),
+                )
+                .unwrap();
+            store.node_heartbeat(id, Some(load)).unwrap();
+        }
+        std::fs::write(
+            d.path().join("config.toml"),
+            format!(
+                "[cluster]\ntask_peers = [\"b\", \"c\"]\n\
+                 [a2a_agents.a]\nurl = \"{url_a}\"\n\
+                 [a2a_agents.b]\nurl = \"{url_b}\"\n\
+                 [a2a_agents.c]\nurl = \"http://c:9900\"\n"
+            ),
+        )
+        .unwrap();
+        let shared = Arc::new(Mutex::new(
+            crate::store::Store::open(&d.path().join("t.db")).unwrap(),
+        ));
+        for round in 0..16 {
+            record(&url_a, None, Probe::Ok);
+            record(&url_b, None, Probe::Ok);
+            let answer = call_on(
+                &shared,
+                "a-1",
+                "s1",
+                "search_files",
+                json!({"pattern": "x"}),
+                None,
+                None,
+            )
+            .await;
+            assert!(matches!(answer, Answer::Unreachable(_)), "{answer:?}");
+            let cfg = crate::config::load().unwrap();
+            let order: Vec<String> = capable_peers(&store, &cfg, "me-1", &["rg"])
+                .into_iter()
+                .map(|n| n.id)
+                .collect();
+            assert_eq!(
+                order,
+                ["c-1", "a-1"],
+                "round {round}: the failed call demotes a"
+            );
+        }
+    }
+
+    /// COMP-12 (0.2.2), the calling side: a re-homed call holds a claim
+    /// on its node while it is pending, as a placed child does, so the
+    /// next automatic home ranks that node with the call on it and a
+    /// burst of calls spreads over the homes. Released when it returns.
+    #[tokio::test]
+    async fn a_re_homed_call_is_counted_on_its_peer_while_it_runs() {
+        let (d, _env, store) = scratch_store();
+        // The work table claims are written to (state.db in VELES_HOME).
+        let _work =
+            crate::store::Store::open(&crate::config::veles_home().join("state.db")).unwrap();
+        let url = crate::routeprobe::tests::fake_peer_after(
+            "vps",
+            None,
+            std::time::Duration::from_millis(1500),
+        )
+        .await;
+        store
+            .node_register(
+                "rh-vps",
+                "vps",
+                "h",
+                "v",
+                "always-on",
+                None,
+                Some(&url),
+                None,
+                None,
+            )
+            .unwrap();
+        store.node_heartbeat("rh-vps", Some(10)).unwrap();
+        std::fs::write(
+            d.path().join("config.toml"),
+            format!("[a2a_agents.vps]\nurl = \"{url}\"\n"),
+        )
+        .unwrap();
+        let shared = Arc::new(Mutex::new(
+            crate::store::Store::open(&d.path().join("t.db")).unwrap(),
+        ));
+        let call = crate::rt::spawn(async move {
+            call_on(
+                &shared,
+                "rh-vps",
+                "s1",
+                "search_files",
+                json!({"pattern": "x"}),
+                None,
+                None,
+            )
+            .await
+        });
+        let deadline = std::time::Instant::now() + std::time::Duration::from_millis(1200);
+        let mut seen = 0;
+        while seen == 0 && std::time::Instant::now() < deadline {
+            seen = crate::placement::in_flight("rh-vps");
+            tokio::time::sleep(std::time::Duration::from_millis(20)).await;
+        }
+        let answer = call.await.unwrap();
+        assert_eq!(seen, 1, "the pending call counts on its node");
+        assert!(
+            matches!(&answer, Answer::Failed(why) if why.contains("fake peer vps")),
+            "{answer:?}"
+        );
+        assert_eq!(crate::placement::in_flight("rh-vps"), 0, "released");
+    }
+
+    /// COMP-12 (0.2.2), the serving side: a tool call run here for a
+    /// peer counts in this node's work report while it runs, under the
+    /// node gossip bound the peer to, so a long command run for a peer
+    /// shows on this node. The call is a read of a FIFO, which blocks
+    /// until the test writes to it.
+    #[cfg(unix)]
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn a_tool_run_for_a_peer_is_counted_here_while_it_runs() {
+        let (home, _env) = crate::testenv::scratch_home();
+        std::fs::write(
+            home.path().join("node.toml"),
+            "id = \"tr-self\"\nname = \"vps\"\n",
+        )
+        .unwrap();
+        let db = crate::config::veles_home().join("state.db");
+        let store = Arc::new(Mutex::new(crate::store::Store::open(&db).unwrap()));
+        let fifo = home.path().join("slow");
+        assert!(std::process::Command::new("mkfifo")
+            .arg(&fifo)
+            .status()
+            .unwrap()
+            .success());
+        let a = ask("read_file", json!({"path": fifo.display().to_string()}));
+        let run = crate::rt::spawn(async move {
+            execute(
+                store,
+                &caller(),
+                &a,
+                &Grant::HostRead,
+                crate::providers::CancelToken::new(),
+            )
+            .await
+        });
+        let report = || {
+            let c = rusqlite::Connection::open(&db).unwrap();
+            crate::placement::own_report(&c, "tr-self").unwrap()
+        };
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
+        let mut seen = report();
+        while seen.running == 0 && std::time::Instant::now() < deadline {
+            tokio::time::sleep(std::time::Duration::from_millis(20)).await;
+            seen = report();
+        }
+        // Let the read finish whatever was seen, so a failure below does
+        // not leave a worker blocked on the FIFO.
+        if !run.is_finished() {
+            let f = fifo.clone();
+            crate::rt::spawn_blocking(move || {
+                use std::io::Write;
+                let mut w = std::fs::OpenOptions::new().write(true).open(&f).unwrap();
+                w.write_all(b"x").unwrap();
+            })
+            .await
+            .unwrap();
+        }
+        let v = run.await.unwrap();
+        assert_eq!(seen.running, 1, "counted while it ran: {seen:?}");
+        assert_eq!(seen.from.get("node-a"), Some(&1), "{seen:?}");
+        assert_eq!(v["status"], "ok", "{v}");
+        assert_eq!(report().running, 0, "and only while it ran");
     }
 
     /// Least loaded first, and an unknown load ranks after every known

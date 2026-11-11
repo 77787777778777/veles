@@ -49,6 +49,8 @@ const MAX_REPLY: usize = 1024 * 1024;
 const MAX_AGENT_REPLY: usize = 2 * MAX_REPLY;
 /// How long one tab action may take before its caller is told so.
 const ACTION_TIMEOUT: Duration = Duration::from_secs(30);
+/// How long a loopback caller has to deliver its whole request.
+const AGENT_REQUEST_TIMEOUT: Duration = Duration::from_secs(5);
 
 fn bridge_dir() -> PathBuf {
     std::env::var_os(BRIDGE_DIR_ENV)
@@ -59,6 +61,62 @@ fn bridge_dir() -> PathBuf {
 
 fn endpoint_path() -> PathBuf {
     bridge_dir().join("browser-extension-endpoint")
+}
+
+/// What the host wrote to the endpoint file: `<port> <tab id> <host pid>`.
+/// The id is a per-connection secret only the owner can read (the file is
+/// 0600); the pid says whether the host that wrote it is still there.
+struct Endpoint {
+    port: u16,
+    id: String,
+    pid: Option<u32>,
+}
+
+fn parse_endpoint(text: &str) -> Option<Endpoint> {
+    let mut parts = text.split_whitespace();
+    let port = parts.next()?.parse::<u16>().ok()?;
+    let id = parts.next().filter(|id| !id.is_empty())?.to_owned();
+    let pid = parts.next().and_then(|p| p.parse::<u32>().ok());
+    Some(Endpoint { port, id, pid })
+}
+
+/// A host killed by a signal, the OOM killer or a power cut leaves its
+/// endpoint file behind, and its port is then free for anyone (BX-3).
+fn host_is_gone(endpoint: &Endpoint) -> bool {
+    endpoint
+        .pid
+        .is_some_and(|pid| !crate::platform::pid_alive(pid))
+}
+
+/// What an agent request carries instead of the bridge's long-lived
+/// token: a proof that holds only for the connection `id` names. A
+/// process that took over a dead host's port learns nothing it can use
+/// against the next host (BX-3).
+fn agent_proof(token: &str, id: &str) -> String {
+    use hmac::{Hmac, Mac};
+    let mut mac = <Hmac<sha2::Sha256> as Mac>::new_from_slice(token.as_bytes())
+        .expect("hmac-sha256 accepts a key of any length");
+    mac.update(b"veles-browser-agent:");
+    mac.update(id.as_bytes());
+    format!("{:x}", mac.finalize().into_bytes())
+}
+
+/// A reader with ONE deadline for everything it reads: a peer that sends a
+/// byte per timeout cannot hold the caller (BX-4).
+struct Deadline<'a> {
+    stream: &'a TcpStream,
+    until: Instant,
+}
+
+impl Read for Deadline<'_> {
+    fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+        let left = self.until.saturating_duration_since(Instant::now());
+        if left.is_zero() {
+            return Err(std::io::ErrorKind::TimedOut.into());
+        }
+        self.stream.set_read_timeout(Some(left))?;
+        (&*self.stream).read(buf)
+    }
 }
 
 pub fn token_path() -> PathBuf {
@@ -241,10 +299,10 @@ pub fn run_host_with_channels(
     };
     listener.set_nonblocking(true)?;
     let port = listener.local_addr()?.port();
-    private_write(&endpoint_path(), &format!("{port} {id}\n"))?;
-    let _endpoint_guard = EndpointGuard {
-        value: format!("{port} {id}\n"),
-    };
+    let endpoint = format!("{port} {id} {}\n", std::process::id());
+    private_write(&endpoint_path(), &endpoint)?;
+    let _endpoint_guard = EndpointGuard { value: endpoint };
+    let proof = agent_proof(&expected, &id);
     write_frame(&mut browser_out, &json!({"type":"hello-ok","id":id}))?;
     let (browser_tx, browser_rx) = std::sync::mpsc::channel();
     let _browser_thread = std::thread::spawn(move || loop {
@@ -269,7 +327,7 @@ pub fn run_host_with_channels(
                     continue;
                 }
                 seq += 1;
-                match serve_agent(agent, &expected, &id, seq, &mut browser_out, &browser_rx) {
+                match serve_agent(agent, &proof, &id, seq, &mut browser_out, &browser_rx) {
                     Ok(Flow::Continue) => {}
                     Ok(Flow::Stop) => break Ok(()),
                     Err(e) => break Err(e),
@@ -317,13 +375,18 @@ fn serve_agent(
         }
     };
     // An accepted socket inherits the listener's non-blocking mode on
-    // Windows and the BSDs; a caller that connects and says nothing must
-    // not hold the host for long.
+    // Windows and the BSDs; a caller that connects and says nothing, or
+    // sends a byte at a time, must not hold the host: one deadline covers
+    // the whole request (BX-4).
     let request = agent
         .set_nonblocking(false)
-        .and_then(|()| agent.set_read_timeout(Some(Duration::from_secs(5))))
         .map_err(anyhow::Error::from)
-        .and_then(|()| read_frame(&mut agent));
+        .and_then(|()| {
+            read_frame(&mut Deadline {
+                stream: &agent,
+                until: Instant::now() + AGENT_REQUEST_TIMEOUT,
+            })
+        });
     let request = match request {
         Ok(Some(request)) => request,
         Ok(None) => return Ok(Flow::Continue),
@@ -440,10 +503,11 @@ struct Layout {
 /// install keeps its own files (BX-9).
 ///
 ///   * Linux: Chrome `~/.config/google-chrome/NativeMessagingHosts`,
-///     Chromium `~/.config/chromium/NativeMessagingHosts`, Firefox
+///     Chromium `~/.config/chromium/NativeMessagingHosts`, Edge
+///     `~/.config/microsoft-edge/NativeMessagingHosts`, Firefox
 ///     `~/.mozilla/native-messaging-hosts`.
 ///   * macOS: `~/Library/Application Support/` + `Google/Chrome/`,
-///     `Chromium/` and `Mozilla/` + `NativeMessagingHosts`.
+///     `Chromium/`, `Microsoft Edge/` and `Mozilla/` + `NativeMessagingHosts`.
 ///   * Windows: no directory is searched. Chrome, Chromium, Edge and
 ///     Firefox read the default value of
 ///     `HKCU\Software\{Google\Chrome,Chromium,Microsoft\Edge,Mozilla}\NativeMessagingHosts\<name>`,
@@ -482,6 +546,13 @@ fn layout(os: HostOs, home: &Path, bridge: &Path, name: &str) -> Layout {
                 None,
             ),
             entry(
+                "Edge",
+                Flavor::Chromium,
+                home.join(".config/microsoft-edge/NativeMessagingHosts")
+                    .join(&file),
+                None,
+            ),
+            entry(
                 "Firefox",
                 Flavor::Firefox,
                 home.join(".mozilla/native-messaging-hosts").join(&file),
@@ -503,6 +574,14 @@ fn layout(os: HostOs, home: &Path, bridge: &Path, name: &str) -> Layout {
                     "Chromium",
                     Flavor::Chromium,
                     support.join("Chromium/NativeMessagingHosts").join(&file),
+                    None,
+                ),
+                entry(
+                    "Edge",
+                    Flavor::Chromium,
+                    support
+                        .join("Microsoft Edge/NativeMessagingHosts")
+                        .join(&file),
                     None,
                 ),
                 entry(
@@ -664,9 +743,10 @@ fn absolute_bridge_dir() -> Result<PathBuf> {
 }
 
 /// Write the token, the launcher, a user-owned copy of the unpacked
-/// extension, and the Chrome, Chromium, Edge (Windows) and Firefox
-/// native-host registrations for `name` ([`NATIVE_NAME`] unless a test
-/// says otherwise). Linux, Windows and macOS; see [`layout`] for where.
+/// extension, and the Chrome, Chromium, Edge and Firefox native-host
+/// registrations for `name` ([`NATIVE_NAME`] unless a test says
+/// otherwise), all four on each of Linux, Windows and macOS; see
+/// [`layout`] for where.
 pub fn install_extension(overwrite: bool, name: &str) -> Result<String> {
     let os = supported_os()?;
     check_native_name(name)?;
@@ -876,25 +956,32 @@ fn cmd_launcher(entry: &Path, bridge: &Path) -> Result<String> {
 /// the Windows zip and install), in `share/veles` (the Nix package and
 /// bundles), or this source tree.
 fn shipped_extension() -> Option<PathBuf> {
+    let shipped = |p: PathBuf| Some(p).filter(|p| p.join("manifest.json").is_file());
     crate::config::beside_binary("browser-extension")
-        .or_else(|| crate::config::beside_binary("share/veles/browser-extension"))
-        .or_else(|| {
-            Some(Path::new(env!("CARGO_MANIFEST_DIR")).join("../../browser-extension"))
-                .filter(|p| p.is_dir())
-        })
+        .and_then(shipped)
+        .or_else(|| crate::config::beside_binary("share/veles/browser-extension").and_then(shipped))
+        .or_else(|| shipped(Path::new(env!("CARGO_MANIFEST_DIR")).join("../../browser-extension")))
+}
+
+/// The shipped extension, or the plain reason there is none: an install
+/// that registered the native host for an extension it cannot hand over
+/// would succeed and leave the user nothing to load (BX-6).
+fn require_shipped_extension(found: Option<PathBuf>) -> Result<PathBuf> {
+    found.context(
+        "this veles ships no browser-extension directory (looked beside the binary, in \
+         share/veles/browser-extension and in the source tree); reinstall veles from a release \
+         or a bundle, or run the install from the source checkout it was built in",
+    )
 }
 
 /// Copy the unpacked extension to a directory the user owns, so the path
 /// a browser remembers survives upgrades, a GC and a bundle's namespace.
-fn copy_extension(dest: &Path) -> Result<Option<PathBuf>> {
-    let Some(source) = shipped_extension() else {
-        return Ok(None);
-    };
+fn copy_extension(source: &Path, dest: &Path) -> Result<PathBuf> {
     if dest.exists() {
         std::fs::remove_dir_all(dest).with_context(|| format!("remove {}", dest.display()))?;
     }
     std::fs::create_dir_all(dest)?;
-    for entry in std::fs::read_dir(&source)? {
+    for entry in std::fs::read_dir(source)? {
         let entry = entry?;
         let name = entry.file_name();
         if !entry.file_type()?.is_file() || name.to_string_lossy().ends_with("-test.cjs") {
@@ -908,7 +995,7 @@ fn copy_extension(dest: &Path) -> Result<Option<PathBuf>> {
             std::fs::set_permissions(&target, std::fs::Permissions::from_mode(0o644))?;
         }
     }
-    Ok(Some(dest.to_path_buf()))
+    Ok(dest.to_path_buf())
 }
 
 fn path_text(path: &Path) -> Result<&str> {
@@ -946,6 +1033,7 @@ fn install_into(
             }
         }
     }
+    let source = require_shipped_extension(shipped_extension())?;
     let token = match token() {
         Some(existing) => existing,
         None => create_token()?,
@@ -956,7 +1044,7 @@ fn install_into(
         use std::os::unix::fs::PermissionsExt as _;
         std::fs::set_permissions(&layout.launcher, std::fs::Permissions::from_mode(0o700))?;
     }
-    let extension = copy_extension(&layout.extension)?;
+    let extension = copy_extension(&source, &layout.extension)?;
     let base = json!({
         "name": name,
         "description": "veles local tab bridge",
@@ -983,9 +1071,7 @@ fn install_into(
             None => registered.push(format!("  {}: {}", r.browser, r.manifest.display())),
         }
     }
-    let extension = extension
-        .map(|p| p.display().to_string())
-        .unwrap_or_else(|| "<installed veles share/veles/browser-extension>".into());
+    let extension = extension.display().to_string();
     let renamed = if name == NATIVE_NAME {
         String::new()
     } else {
@@ -1086,34 +1172,53 @@ fn uninstall_from(
     ))
 }
 
+/// A tab is connected when the endpoint file is there and the host that
+/// wrote it is still running.
+fn connected() -> bool {
+    std::fs::read_to_string(endpoint_path())
+        .ok()
+        .and_then(|text| parse_endpoint(&text))
+        .is_some_and(|endpoint| !host_is_gone(&endpoint))
+}
+
 pub fn status() -> Value {
-    json!({"installed":token().is_some(),"connected":endpoint_path().is_file(),"browser":"Chrome, Chromium, Edge or Firefox native messaging"})
+    json!({"installed":token().is_some(),"connected":connected(),"browser":"Chrome, Chromium, Edge or Firefox native messaging"})
 }
 
 /// The tool's half of one exchange, blocking: run it off the runtime.
-fn exchange(request: Value) -> String {
-    let endpoint = match std::fs::read_to_string(endpoint_path()) {
+fn exchange(mut request: Value) -> String {
+    const NO_TAB: &str = "error: no tab is connected; use the extension popup's Connect this tab";
+    let text = match std::fs::read_to_string(endpoint_path()) {
         Ok(value) => value,
-        Err(_) => {
-            return "error: no tab is connected; use the extension popup's Connect this tab".into()
-        }
+        Err(_) => return NO_TAB.into(),
     };
-    let mut parts = endpoint.split_whitespace();
-    let Some(port) = parts.next().and_then(|p| p.parse::<u16>().ok()) else {
+    let Some(endpoint) = parse_endpoint(&text) else {
         return "error: the extension bridge has invalid state; reconnect the tab".into();
     };
-    if parts.next().unwrap_or_default().is_empty() {
-        return "error: the extension bridge has invalid state; reconnect the tab".into();
+    // The endpoint file and the port are untrusted (BX-3): a host that is
+    // gone leaves both behind, and the port may be someone else's by now.
+    if host_is_gone(&endpoint) {
+        return NO_TAB.into();
     }
-    let address = std::net::SocketAddr::from(([127, 0, 0, 1], port));
-    let mut stream = match TcpStream::connect_timeout(&address, Duration::from_secs(5)) {
+    let Some(token) = token() else {
+        return "error: no extension token; install the bridge".into();
+    };
+    // Never the long-lived token: only a proof for this connection.
+    request["token"] = json!(agent_proof(&token, &endpoint.id));
+    let address = std::net::SocketAddr::from(([127, 0, 0, 1], endpoint.port));
+    let stream = match TcpStream::connect_timeout(&address, Duration::from_secs(5)) {
         Ok(s) => s,
         Err(e) => return format!("error: the extension bridge is unavailable: {e}"),
     };
-    let _ = stream.set_read_timeout(Some(ACTION_TIMEOUT + Duration::from_secs(5)));
+    let _ = stream.set_write_timeout(Some(Duration::from_secs(5)));
     let reply = (|| -> Result<Value> {
-        write_frame(&mut stream, &request)?;
-        read_frame_up_to(&mut stream, MAX_AGENT_REPLY)?.context("extension disconnected")
+        write_frame(&mut &stream, &request)?;
+        // One deadline for the whole reply, whatever the listener trickles.
+        let mut reader = Deadline {
+            stream: &stream,
+            until: Instant::now() + ACTION_TIMEOUT + Duration::from_secs(5),
+        };
+        read_frame_up_to(&mut reader, MAX_AGENT_REPLY)?.context("extension disconnected")
     })();
     match reply {
         Ok(value) => value.to_string(),
@@ -1143,8 +1248,13 @@ impl crate::tools::Tool for BrowserExtensionTool {
     }
     async fn call(&self, args: Value) -> String {
         if !crate::ask::owner_session(&self.session_id) {
-            // A call routed here from another node arrives as a capped
-            // principal, never the owner (BX-23): say where it works.
+            // Only an owner session uses the tab: one with no principal
+            // (a local surface) or the Owner role (ask::owner_session).
+            // A connector user's session, a guest's, or any other
+            // capped principal is refused here, told where it works.
+            // The tool is never re-homed to another node
+            // (remotetool::STAYS_HOME, BX-1/BX-7), so the browser it
+            // drives is always this machine's.
             return "error: the browser tab bridge is owner-only and works only from the owner's sessions on the machine running the browser".into();
         }
         if args["action"] == "status" {
@@ -1158,11 +1268,7 @@ impl crate::tools::Tool for BrowserExtensionTool {
                 return format!("error: {e}");
             }
         }
-        let Some(token) = token() else {
-            return "error: no extension token; install the bridge".into();
-        };
-        let mut request = args;
-        request["token"] = json!(token);
+        let request = args;
         // Up to 35 s of socket I/O: never on a runtime worker (BX-21).
         crate::rt::spawn_blocking(move || exchange(request))
             .await
@@ -1247,7 +1353,11 @@ mod tests {
         agent
             .set_read_timeout(Some(Duration::from_secs(5)))
             .unwrap();
-        write_frame(&mut agent, &json!({"token":secret,"action":"snapshot"})).unwrap();
+        write_frame(
+            &mut agent,
+            &json!({"token":agent_proof(&secret, "tab-1"),"action":"snapshot"}),
+        )
+        .unwrap();
         let action = read_frame(&mut browser).unwrap().unwrap();
         assert_eq!(action["type"], "action");
         assert_eq!(action["id"], "tab-1");
@@ -1779,6 +1889,57 @@ mod tests {
         assert!(token().is_none());
     }
 
+    /// BX-6: an install that cannot find the extension to hand over fails
+    /// with the reason instead of printing a placeholder path.
+    #[test]
+    fn an_install_with_no_shipped_extension_fails_plainly() {
+        let err = require_shipped_extension(None).unwrap_err().to_string();
+        assert!(err.contains("ships no browser-extension"), "{err}");
+        let found = shipped_extension().expect("the source tree ships it");
+        assert!(found.join("manifest.json").is_file());
+        assert_eq!(
+            require_shipped_extension(Some(found.clone())).unwrap(),
+            found
+        );
+        let empty = tempfile::tempdir().unwrap();
+        let copied = copy_extension(&found, &empty.path().join("ext")).unwrap();
+        assert!(copied.join("manifest.json").is_file());
+        assert!(!copied.join("background-test.cjs").exists());
+    }
+
+    /// BX-2: Edge is claimed wherever the bridge is; a Linux or macOS
+    /// install registers it (Edge reads the same Chromium-style manifest).
+    #[test]
+    fn edge_is_registered_wherever_it_is_claimed() {
+        let (_scratch, _env) = crate::testenv::scratch_home();
+        let bridge = crate::config::data_dir();
+        let home = tempfile::tempdir().unwrap();
+        let entry = Path::new("/opt/veles/bin/veles");
+        for (os, dir) in [
+            (HostOs::Linux, ".config/microsoft-edge/NativeMessagingHosts"),
+            (
+                HostOs::MacOs,
+                "Library/Application Support/Microsoft Edge/NativeMessagingHosts",
+            ),
+        ] {
+            let path = home.path().join(dir).join("veles_browser.json");
+            install_into(
+                os,
+                home.path(),
+                &bridge,
+                entry,
+                NATIVE_NAME,
+                true,
+                &mut NoRegistry,
+            )
+            .unwrap();
+            let launcher = bridge.join("browser-extension").join("native-host");
+            assert_flavor(&read_json(&path), Flavor::Chromium, NATIVE_NAME, &launcher);
+            uninstall_from(os, home.path(), &bridge, NATIVE_NAME, &mut NoRegistry).unwrap();
+            assert!(!path.exists(), "{path:?}");
+        }
+    }
+
     /// A test's `--native-name` install keeps to its own files, so its
     /// uninstall cannot take the owner's bridge with it.
     #[test]
@@ -1859,8 +2020,8 @@ mod tests {
     struct Host {
         browser: std::os::unix::net::UnixStream,
         done: std::sync::mpsc::Receiver<Result<()>>,
-        secret: String,
         port: u16,
+        proof: String,
     }
 
     /// A host connected as tab `tab-1`, with the browser end of its stdio.
@@ -1893,7 +2054,7 @@ mod tests {
         Host {
             browser,
             done,
-            secret,
+            proof: agent_proof(&secret, "tab-1"),
             port,
         }
     }
@@ -1947,11 +2108,11 @@ mod tests {
         let mut a = agent(host.port);
         raw_send(
             &mut a,
-            &json!({"token":host.secret,"action":"navigate","url":"file:///etc/passwd"}),
+            &json!({"token":host.proof,"action":"navigate","url":"file:///etc/passwd"}),
         );
         assert_eq!(raw_recv(&mut a)["ok"], false);
         let mut a = agent(host.port);
-        raw_send(&mut a, &json!({"token":host.secret,"action":"snapshot"}));
+        raw_send(&mut a, &json!({"token":host.proof,"action":"snapshot"}));
         let first = raw_recv(&mut host.browser);
         assert_eq!(
             first["action"], "snapshot",
@@ -1967,6 +2128,88 @@ mod tests {
             .recv_timeout(Duration::from_secs(5))
             .unwrap()
             .unwrap();
+    }
+
+    /// BX-3: an endpoint file outlives a host that was killed. Whoever
+    /// binds its port next must not be handed the bridge's long-lived
+    /// token, and a dead host's pid is no connected tab.
+    #[cfg(unix)]
+    #[test]
+    fn a_stale_endpoint_never_receives_the_token() {
+        let (_home, _env) = crate::testenv::scratch_home();
+        let secret = create_token().unwrap();
+        let squatter = std::net::TcpListener::bind(("127.0.0.1", 0)).unwrap();
+        let port = squatter.local_addr().unwrap().port();
+        private_write(
+            &endpoint_path(),
+            &format!("{port} gone {}\n", std::process::id()),
+        )
+        .unwrap();
+        let worker =
+            std::thread::spawn(move || exchange(json!({"action":"snapshot","token":token()})));
+        let (mut caught, _) = squatter.accept().unwrap();
+        caught
+            .set_read_timeout(Some(Duration::from_secs(5)))
+            .unwrap();
+        let mut seen = Vec::new();
+        let mut chunk = [0u8; 4096];
+        while let Ok(n) = caught.read(&mut chunk) {
+            if n == 0 {
+                break;
+            }
+            seen.extend_from_slice(&chunk[..n]);
+            if seen.len() > 4
+                && seen.len() >= 4 + u32::from_le_bytes(seen[..4].try_into().unwrap()) as usize
+            {
+                break;
+            }
+        }
+        drop(caught);
+        let _ = worker.join();
+        let seen = String::from_utf8_lossy(&seen);
+        assert!(
+            !seen.contains(&secret),
+            "the token went to the squatter: {seen}"
+        );
+        // A host that is gone is not a connected tab.
+        private_write(&endpoint_path(), &format!("{port} gone 2147483646\n")).unwrap();
+        assert_eq!(status()["connected"], false);
+        assert!(exchange(json!({"action":"snapshot"})).contains("no tab is connected"));
+    }
+
+    /// BX-4: a caller that trickles bytes under the per-read timeout must
+    /// not hold the single accept loop: one deadline covers the frame.
+    #[cfg(unix)]
+    #[test]
+    fn a_trickling_caller_cannot_stall_the_host() {
+        let (_home, _env) = crate::testenv::scratch_home();
+        let mut host = connected_host();
+        let port = host.port;
+        let trickle = std::thread::spawn(move || {
+            let mut a = agent(port);
+            let len = 4000u32.to_le_bytes();
+            for b in len {
+                let _ = a.write_all(&[b]);
+                std::thread::sleep(Duration::from_secs(2));
+            }
+            for _ in 0..4 {
+                let _ = a.write_all(b" ");
+                std::thread::sleep(Duration::from_secs(2));
+            }
+        });
+        std::thread::sleep(Duration::from_millis(300));
+        let mut b = agent(host.port);
+        raw_send(&mut b, &json!({"token":host.proof,"action":"snapshot"}));
+        host.browser
+            .set_read_timeout(Some(Duration::from_secs(7)))
+            .unwrap();
+        let got =
+            std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| raw_recv(&mut host.browser)));
+        assert!(
+            got.is_ok_and(|v| v["action"] == "snapshot"),
+            "a second caller waited behind a trickle"
+        );
+        let _ = trickle.join();
     }
 
     /// BX-10: the loopback port is open to every local user. Nothing a
@@ -1994,7 +2237,7 @@ mod tests {
         drop(a);
         // A valid request still gets through.
         let mut a = agent(host.port);
-        raw_send(&mut a, &json!({"token":host.secret,"action":"snapshot"}));
+        raw_send(&mut a, &json!({"token":host.proof,"action":"snapshot"}));
         let action = raw_recv(&mut host.browser);
         assert_eq!(action["action"], "snapshot");
         raw_send(
@@ -2019,7 +2262,7 @@ mod tests {
         let text = "Ћирилица и ијекавица. ".repeat(3000);
         assert!(text.len() > 100 * 1024);
         let mut a = agent(host.port);
-        raw_send(&mut a, &json!({"token":host.secret,"action":"snapshot"}));
+        raw_send(&mut a, &json!({"token":host.proof,"action":"snapshot"}));
         let action = raw_recv(&mut host.browser);
         raw_send(
             &mut host.browser,
@@ -2049,7 +2292,7 @@ mod tests {
         );
         std::thread::sleep(Duration::from_millis(200));
         let mut a = agent(host.port);
-        raw_send(&mut a, &json!({"token":host.secret,"action":"snapshot"}));
+        raw_send(&mut a, &json!({"token":host.proof,"action":"snapshot"}));
         let action = raw_recv(&mut host.browser);
         assert_eq!(action["action"], "snapshot");
         assert!(action["seq"].is_u64(), "each action carries its own seq");

@@ -18,6 +18,16 @@
       url = "github:nix-community/fenix?rev=6bd8c2ef0033a19933ce0d0a4152a7d204e430d3";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # The Tcl language server the Linux packages ship (DEV-6): the Dev
+    # tab's hover, definition, completion and diagnostics for Tcl. Every
+    # input follows ours, so its libtcl is the engine's tcl-8_6 and it is
+    # compiled by the same pinned toolchain.
+    tcl-lsp = {
+      url = "github:77787777778777/tcl-lsp?rev=6a3c58b4e6216bbbdc36de7fe57116f6e14a7925";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.utils.follows = "utils";
+      inputs.fenix.follows = "fenix";
+    };
   };
 
   outputs =
@@ -26,6 +36,7 @@
       fenix,
       nixpkgs,
       utils,
+      tcl-lsp,
     }@inputs:
     # nixosModules is system-INDEPENDENT, so it lives outside
     # eachDefaultSystem; everything else stays inside it.
@@ -394,6 +405,41 @@
           patches = (o.patches or [ ]) ++ [ ./nix/tk-kinsoku.patch ];
         });
 
+        # The shipped Tcl language server (the tcl-lsp input; DEV-6).
+        # Its own wrapper bakes its Tcl library, tcllib, nagelfar and
+        # tclint/tclfmt as defaults. velesPkg's wrapper names it in
+        # VELES_TCL_LSP, where dev_check::find_program looks before PATH
+        # (as VELES_TCLSH names the APK's tclsh), so the gateway starts
+        # this copy and every artifact built from velesPkg carries it.
+        #
+        # Upstream's binaries keep rust-src panic paths, which made its
+        # whole toolchain (950 MB: rustc, cargo, clippy) a runtime
+        # dependency; velesPkg drops the same references from its own
+        # binaries. The toolchain is found by name in the binary rather
+        # than rebuilt here, so a change to upstream's component list
+        # cannot quietly bring it back (the bundle also refuses a tree
+        # with rustc or cargo in it). tcl-cmddb is upstream's build-time
+        # generator for its command database, not part of the server.
+        tclLsp = tcl-lsp.packages.${system}.tcl-lsp.overrideAttrs (old: {
+          nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ pkgs.removeReferencesTo ];
+          postInstall = (old.postInstall or "") + ''
+            rm -f $out/bin/tcl-cmddb
+            toolchain_refs() {
+              grep -aoE '/nix/store/[a-z0-9]{32}-(rust|rustc|cargo)-[^/"]*' "$1" \
+                | grep -v '^/nix/store/e\{32\}-' | sort -u || true
+            }
+            f=$out/bin/.tcl-lsp-wrapped
+            for t in $(toolchain_refs "$f"); do
+              remove-references-to -t "$t" "$f"
+            done
+            if [ -n "$(toolchain_refs "$f")" ]; then
+              echo "tcl-lsp still references a Rust toolchain" >&2
+              exit 1
+            fi
+            test -x $out/bin/tcl-lsp
+          '';
+        });
+
         # The dependencies veles actually needs — the szhrmk-flake devShell
         # minus everything that belonged to other projects (no CUDA, Vulkan,
         # COSMIC, onnxruntime, ffmpeg, pipewire, ...), plus the Tcl runtime
@@ -630,7 +676,7 @@
         # both packages.default and the OCI image below can reference it.
         velesPkg = pkgs.rustPlatform.buildRustPackage rec {
           pname = "veles-agent";
-          version = "0.2.1";
+          version = "0.2.2";
           src = rustSrc;
           cargoLock = {
             lockFile = ./Cargo.lock;
@@ -731,6 +777,7 @@
               --set WISH "${tkDesktop}/bin/wish" \
               --set VELES_DESKTOP_DIR "${./veles-desktop}" \
               --set VELES_LOCALES_DIR "$out/share/veles/locales" \
+              --set VELES_TCL_LSP "${tclLsp}/bin/tcl-lsp" \
               --prefix PATH : ${pkgs.lib.makeBinPath ([ pkgs.git pkgs.openssh pkgs.cacert pkgs.tcl-8_6 pkgs.ripgrep pkgs.cosign ] ++ imageDecoders)}
           '';
 
@@ -754,6 +801,20 @@
               echo "$listed" | grep -q '${p.name} .*src=bundled' \
                 || { echo "installed veles does not list bundled ${p.name}: $listed" >&2; exit 1; }
             '') bundledTclPlugins}
+            # The shipped Tcl language server (DEV-6): the wrapper names it
+            # where dev_check::find_program looks first, and it answers an
+            # LSP handshake with no PATH and no environment of its own.
+            grep -q 'VELES_TCL_LSP.*${tclLsp}/bin/tcl-lsp' $out/bin/veles \
+              || { echo "installed veles does not name the shipped tcl-lsp" >&2; exit 1; }
+            lsp_msg() { printf 'Content-Length: %d\r\n\r\n%s' "''${#1}" "$1"; }
+            {
+              lsp_msg '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"processId":null,"rootUri":null,"capabilities":{}}}'
+              lsp_msg '{"jsonrpc":"2.0","method":"initialized","params":{}}'
+              lsp_msg '{"jsonrpc":"2.0","id":2,"method":"shutdown","params":null}'
+              lsp_msg '{"jsonrpc":"2.0","method":"exit","params":null}'
+            } | env -i HOME=$TMPDIR TMPDIR=$TMPDIR ${tclLsp}/bin/tcl-lsp > $TMPDIR/tcl-lsp.out
+            grep -q '"hoverProvider"' $TMPDIR/tcl-lsp.out \
+              || { echo "the shipped tcl-lsp did not answer initialize:" >&2; cat $TMPDIR/tcl-lsp.out >&2; exit 1; }
             runHook postInstallCheck
           '';
 
@@ -999,7 +1060,7 @@
             # `wish` exits 0 even when the script fails, and the output is
             # piped into tee — so assert on each suite's reported tally,
             # not on $?.
-            for suite in exporttest granttest fleetdeploytest fleetexecutortest fleetworkertest fleetjournaltest fleetdeployuitest fleetobstest i18ntest i18nkeysetest pathtest jointest mdtest mdspectest transcriptspectest uitest listtest emacstest titletest sessiontest texttest translatetest contributetest extensionassisttest rendertest lsptest fgtest devtest mediatest chrometest statetest coachtest whichkeytest comptest tabtest irctest apittest insttest installtest sectest acltest setuptest cmdstest sandboxtest lspstarttest tiptest tipzonetest statustest statusbuildtest quotatest taskstest asktest panetest sidebartest sessionswintest overlaytest responsivitytest memfilestest streamtest androidtest cmdtreetest devicetest phonetest settingsformtest appstest; do
+            for suite in exporttest granttest fleetdeploytest fleetexecutortest fleetworkertest fleetjournaltest fleetdeployuitest fleetobstest fleetmanagetest i18ntest i18nkeysetest pathtest jointest mdtest mdspectest transcriptspectest uitest listtest emacstest titletest sessiontest texttest translatetest contributetest extensionassisttest rendertest lsptest fgtest devtest mediatest chrometest statetest coachtest whichkeytest comptest tabtest irctest apittest insttest instwindowtest installtest sectest acltest setuptest cmdstest sandboxtest lspstarttest tiptest tipzonetest statustest statusbuildtest quotatest taskstest asktest panetest sidebartest sessionswintest overlaytest responsivitytest memfilestest streamtest androidtest cmdtreetest devicetest phonetest settingsformtest appstest; do
               wish desktop/lib/$suite.tcl | tee $suite.log
               grep -qE "^$suite: [0-9]+ passed, 0 failed" $suite.log \
                 || { echo "FAIL: $suite did not report a clean tally" >&2; exit 1; }
@@ -1056,6 +1117,13 @@
             # An absolute TZif path works in the build sandbox; Chrono
             # does not consult TZDIR for an IANA zone name.
             VELES_TEST_TZDIR = "${pkgs.tzdata}/share/zoneinfo";
+            # The shipped tcl-lsp, named as velesPkg's wrapper names it, so
+            # the real-server tests (lsp_proxy's Tcl round trip, Check,
+            # /lint) run here, offline, and find it the way the gateway
+            # does. Required: a lookup that lost it fails instead of
+            # skipping (DEV-6).
+            VELES_TCL_LSP = "${tclLsp}/bin/tcl-lsp";
+            VELES_TEST_LSP_REQUIRE = "tcl-lsp";
           };
           buildPhase = ''
             runHook preBuild
@@ -1107,6 +1175,39 @@
           touch $out
         '';
 
+        # Pitfall numbers are global and cited by number: each used once
+        # across docs/issues/pitfalls/*.md, and HANDOFF.md §7 names none
+        # that does not exist (105 was used three times until 2026-11-10).
+        # scripts/precommit.sh runs the same script.
+        #
+        # The public export carries neither file
+        # (scripts/release/public-exclude.txt), and its CI is this same
+        # `nix flake check`: a path named here that does not exist is an
+        # evaluation error, which would have turned the public 0.2.2 CI
+        # red. There the check has nothing to read and says so.
+        pitfallCheck =
+          if builtins.pathExists ./HANDOFF.md && builtins.pathExists ./docs/issues/pitfalls then
+            pkgs.runCommand "veles-pitfall-numbers"
+              {
+                nativeBuildInputs = [ pkgs.tcl-8_6 ];
+                docs = pkgs.lib.fileset.toSource {
+                  root = ./.;
+                  fileset = pkgs.lib.fileset.unions [
+                    ./HANDOFF.md
+                    ./docs/issues/pitfalls
+                  ];
+                };
+              }
+              ''
+                tclsh ${./scripts/check-pitfall-numbers.tcl} "$docs"
+                touch $out
+              ''
+          else
+            pkgs.runCommand "veles-pitfall-numbers" { } ''
+              echo "no pitfall records in this tree (a public export): nothing to check"
+              touch $out
+            '';
+
         # ── The Android APK ────────────────────────────────────────────
         #
         # Gradle-free: aapt2, javac, d8 and zipalign, the way the SDK's
@@ -1131,7 +1232,7 @@
         androidMinSdk = "26";
         # Raised by hand for each release a store sees; a sideloaded
         # reinstall of the same code keeps it.
-        androidVersionCode = "8";
+        androidVersionCode = "9";
         androidSdk =
           (androidHost.androidenv.composeAndroidPackages {
             platformVersions = [ androidTargetSdk ];
@@ -2342,6 +2443,7 @@
             ;
           revision = self.shortRev or self.dirtyShortRev or "dirty";
           nixUserChroot = pkgs.pkgsStatic.nix-user-chroot;
+          inherit tclLsp;
           echoPlugin = staticPlugin { crate = "veles-plugin-echo"; name = "echo"; };
           atprotoPlugin = staticPlugin {
             crate = "veles-atproto";
@@ -2352,7 +2454,7 @@
 
         # The image's tag names the commit it was built from, so the VPS
         # can say which one it runs.
-        imageTag = "0.2.0-${self.shortRev or self.dirtyShortRev or "dirty"}";
+        imageTag = "0.2.2-${self.shortRev or self.dirtyShortRev or "dirty"}";
         imageRevision = self.rev or self.dirtyRev or "dirty";
         # The release builder overrides only this label. Published images
         # must be rejected if their source does not name the authenticated
@@ -2372,6 +2474,8 @@
         packages.bundleTree = linuxBundle.tree;
         packages.bundleArchive = linuxBundle.archive;
         packages.bundleAppImage = linuxBundle.appimage;
+        # The Tcl language server velesPkg ships, buildable on its own.
+        packages.tcl-lsp = tclLsp;
         # Rust overlay modules (PLAN-extension-api.md E5): `velesWithModules`,
         # and the example overlay built with it (examples/overlay-module).
         lib.velesWithModules = velesWithModules;
@@ -2744,6 +2848,7 @@
 
           clippy = clippyCheck;
           rustfmt = fmtCheck;
+          pitfall-numbers = pitfallCheck;
           tcl-desktop = tclCheck;
 
           # AndroWish's SDL 2.0.6 posted soft-keyboard text as ONE 32-byte
@@ -2813,7 +2918,7 @@
         #     bind-mount owner on the host.
         #   - Entrypoint is the wrapped `veles` binary; Cmd defaults to
         #     `gateway run` but any subcommand works:
-        #     `podman run --rm veles-agent:0.2.0 status` etc.
+        #     `podman run --rm veles-agent:0.2.2 status` etc.
         #   - No s6 / entrypoint.sh — veles' own lifecycle code (pid file,
         #     crash-loop guard, graceful SIGTERM, shutdown log) IS the init
         #     story; PID 1 is `veles` itself. `--restart unless-stopped` on
@@ -2966,7 +3071,9 @@
           # shell's PATH. VELES_TEST_LSP_REQUIRE turns a missing one into
           # a failure instead of a skip, so this shell cannot go green by
           # not having them. rust-analyzer is on PATH (packages above);
-          # tcl-lsp is the operator's own, so it is not required.
+          # tcl-lsp is the one the packages ship, named where velesPkg's
+          # wrapper names it, so a gateway run from this shell starts it
+          # too (DEV-6).
           VELES_TEST_LSP_PATH = nixpkgs.lib.makeBinPath [
             pkgs.typescript-language-server
             pkgs.typescript
@@ -2974,7 +3081,8 @@
             pkgs.ecl
             pkgs.llvmPackages.clang-unwrapped
           ];
-          VELES_TEST_LSP_REQUIRE = "clangd,rust-analyzer,typescript-language-server,tsc,racket,ecl,cargo,clang";
+          VELES_TCL_LSP = "${tclLsp}/bin/tcl-lsp";
+          VELES_TEST_LSP_REQUIRE = "clangd,rust-analyzer,typescript-language-server,tsc,racket,ecl,cargo,clang,tcl-lsp";
 
           inherit (buildEnv)
             PKG_CONFIG_PATH

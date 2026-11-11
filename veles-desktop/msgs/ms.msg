@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset ms {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset ms {%1$s %2$s done} {%1$s %2$s selesai}
 ::msgcat::mcset ms {%1$s %2$s failed: %3$s} {%1$s %2$s gagal: %3$s}
+::msgcat::mcset ms {%1$s %2$s over ssh anyway?} {%1$s %2$s melalui ssh juga?}
 ::msgcat::mcset ms {%1$s %2$s over ssh…} {%1$s %2$s melalui ssh…}
 ::msgcat::mcset ms {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset ms {%1$s (%2$s waiting)} {%1$s (%2$s menunggu)}
 ::msgcat::mcset ms {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  penaakulan %3$s}
 ::msgcat::mcset ms {%1$s = %2$s here} {%1$s = %2$s di sini}
+::msgcat::mcset ms {%1$s = %2$s on %3$s} {%1$s = %2$s pada %3$s}
 ::msgcat::mcset ms {%1$s NOT saved: %2$s} {%1$s TIDAK disimpan: %2$s}
 ::msgcat::mcset ms {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s milik pustaka %2$s dan baca sahaja — salin dengan New… untuk mengubahnya}
 ::msgcat::mcset ms {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s milik pustaka %2$s — veles tidak pernah memadam kemahiran alat lain}
+::msgcat::mcset ms {%1$s cannot restart itself: %2$s} {%1$s tidak dapat memulakan semula dirinya: %2$s}
+::msgcat::mcset ms {%1$s differs: %2$s} {%1$s berbeza: %2$s}
 ::msgcat::mcset ms {%1$s every cron job on %2$s?} {%1$s setiap kerja cron pada %2$s?}
 ::msgcat::mcset ms {%1$s failed: %2$s} {%1$s gagal: %2$s}
 ::msgcat::mcset ms {%1$s in / %2$s out / %3$s calls} {%1$s masuk / %2$s keluar / %3$s panggilan}
+::msgcat::mcset ms {%1$s is back after %2$s s (veles %3$s).} {%1$s kembali selepas %2$s s (veles %3$s).}
 ::msgcat::mcset ms {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s ialah nod %2$s, bukan %3$s. Betulkan id nodnya dalam Edit….}
 ::msgcat::mcset ms {%1$s is not a whole number} {%1$s bukan nombor bulat}
+::msgcat::mcset ms {%1$s is not on: %2$s} {%1$s tidak aktif: %2$s}
+::msgcat::mcset ms {%1$s is not set on %2$s: the default applies.} {%1$s tidak ditetapkan pada %2$s: nilai lalai digunakan.}
 ::msgcat::mcset ms {%1$s is reachable (%2$s ms).} {%1$s boleh dicapai (%2$s ms).}
+::msgcat::mcset ms {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s sedang menjalankan %2$s giliran. Mulakan semula juga?}
 ::msgcat::mcset ms {%1$s is set to something this box cannot edit (%2$s)} {%1$s ditetapkan kepada sesuatu yang tidak boleh disunting pada mesin ini (%2$s)}
 ::msgcat::mcset ms {%1$s is unreachable: %2$s} {%1$s tidak dapat dicapai: %2$s}
+::msgcat::mcset ms {%1$s is up, but its node binding is wrong: %2$s} {%1$s aktif, tetapi pengikatan nodnya salah: %2$s}
+::msgcat::mcset ms {%1$s not compared: %2$s} {%1$s tidak dibandingkan: %2$s}
 ::msgcat::mcset ms {%1$s of %2$s characters} {%1$s daripada %2$s aksara}
 ::msgcat::mcset ms {%1$s of %2$s sessions} {%1$s daripada %2$s sesi}
 ::msgcat::mcset ms {%1$s of %2$s skills reach the prompt} {%1$s daripada %2$s kemahiran sampai ke gesaan}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset ms {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset ms {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset ms {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset ms {%1$s: %2$s on the gateway} {%1$s: %2$s pada gateway}
+::msgcat::mcset ms {%1$s: %2$s on the gateway (ships with veles)} {%1$s: %2$s pada gateway (disertakan dengan veles)}
 ::msgcat::mcset ms {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset ms {%1$s: no language server on the gateway. %2$s} {%1$s: tiada pelayan bahasa pada gateway. %2$s}
 ::msgcat::mcset ms {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: %2$s terakhir daripada %3$s baris yang disimpan gateway dalam ingatan, rahsia ditapis pada nod itu.}
+::msgcat::mcset ms {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: plugin pengguna %2$s menggantikan yang disertakan dengan kandungan yang sama (%3$s)}
 ::msgcat::mcset ms {%d MCP server(s) configured} {%d pelayan MCP dikonfigurasikan}
 ::msgcat::mcset ms {%d entries} {%d entri}
 ::msgcat::mcset ms {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {%d fail sambungan akan ditulis tepat seperti yang disemak. Jika mana-mana daripadanya berubah sejak pratonton, tiada apa yang ditulis. Tiada commit, push atau PR berlaku.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset ms {%s (stale)} {%s (basi)}
 ::msgcat::mcset ms {%s (this session)} {%s (sesi ini)}
 ::msgcat::mcset ms {%s GB free of %s GB} {%s GB kosong daripada %s GB}
+::msgcat::mcset ms {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s Arahan itu pergi melalui ssh ke hos yang dikonfigurasikan, yang tidak dapat dikaitkan oleh semakan ini dengan nod itu.}
 ::msgcat::mcset ms {%s already exists — open it from the list} {%s sudah wujud — bukanya daripada senarai}
 ::msgcat::mcset ms {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {%s telah berubah sejak anda membukanya — tiada apa yang ditimpa; salin teks anda, kemudian Muat semula}
 ::msgcat::mcset ms {%s cleared for this buffer} {%s dibersihkan untuk penimbal ini}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset ms {%s comes from config.toml [acl] — edit there} {%s datang daripada config.toml [acl] — sunting di situ}
 ::msgcat::mcset ms {%s config change(s) wait for you — /configsync} {%s perubahan konfigurasi menunggu anda — /configsync}
 ::msgcat::mcset ms {%s did not become healthy within 30s} {%s tidak menjadi sihat dalam 30s}
+::msgcat::mcset ms {%s did not come back within 120 s: look at its log where it runs.} {%s tidak kembali dalam 120 s: lihat lognya di tempat ia berjalan.}
 ::msgcat::mcset ms {%s done} {%s selesai}
 ::msgcat::mcset ms {%s failed: %s} {%s gagal: %s}
+::msgcat::mcset ms {%s holds a credential: it stays on its node and is not shown.} {%s menyimpan kelayakan: ia kekal pada nodnya dan tidak ditunjukkan.}
 ::msgcat::mcset ms {%s is already split} {%s sudah dipisah}
+::msgcat::mcset ms {%s is restarting; waiting for it to come back…} {%s sedang dimulakan semula; menunggu ia kembali…}
 ::msgcat::mcset ms {%s is the language in use — pick another one to swap with} {%s ialah bahasa yang sedang digunakan — pilih bahasa lain untuk ditukar}
 ::msgcat::mcset ms {%s is up} {%s aktif}
 ::msgcat::mcset ms {%s keys — any key closes} {%s kekunci — sebarang kekunci menutup}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset ms {; shadows bundled} {; menggantikan yang disertakan}
 ::msgcat::mcset ms {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Tawaran konfigurasi boleh mengubah tetapan dan tawaran peti besi menggabungkan rahsia; perubahan pada bahagian keselamatan masih menunggu pemilik.}
 ::msgcat::mcset ms {A failing plugin may drop hooks mid-turn.} {Plugin yang gagal boleh menggugurkan hook di tengah giliran.}
+::msgcat::mcset ms {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {Bahagian yang ditahan: ia tidak ditulis dari sini; sunting pada nod dan tolak konfigurasi, dan pemiliknya akan menggunakannya di sana.}
 ::msgcat::mcset ms {A local server: no key is needed unless you set one up.} {Pelayan setempat: tiada kunci diperlukan melainkan anda menyediakannya.}
 ::msgcat::mcset ms {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Release yang ditandatangani hanya dipentas selepas pra-semakan. Mulakan semula/sahkan, penerusan dan rollback ialah tindakan berasingan. Proses yang sihat mesti melaporkan semakan sumber tepat yang disemak.}
 ::msgcat::mcset ms {A value is stored for %s — leave this empty to keep it.} {Sudah ada nilai tersimpan untuk %s — biarkan kosong untuk mengekalkannya.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset ms {Asking the provider for its models…} {Meminta senarai model daripada penyedia…}
 ::msgcat::mcset ms Attach Lampir
 ::msgcat::mcset ms {Attach to the next message} {Lampirkan pada mesej seterusnya}
+::msgcat::mcset ms {Audit log unavailable: %s} {Log audit tidak tersedia: %s}
+::msgcat::mcset ms {Audit log…} {Log audit…}
 ::msgcat::mcset ms {Author guide} {Panduan penulis}
 ::msgcat::mcset ms {Automatically discovered from the attached gateway's cluster registry.} {Dikesan secara automatik daripada daftar kluster gateway yang dilampirkan.}
 ::msgcat::mcset ms Back Kembali
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset ms {Browse sessions} {Semak imbas sesi}
 ::msgcat::mcset ms {Build manifest + preflight} {Bina manifes + pra-semakan}
 ::msgcat::mcset ms {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Binaan: veles %1$s, semakan %2$s (%3$s %4$s)}
+::msgcat::mcset ms {Bulk %1$s failed: %2$s} {%1$s pukal gagal: %2$s}
+::msgcat::mcset ms {Bulk %1$s: %2$s (%3$s).} {%1$s pukal: %2$s (%3$s).}
+::msgcat::mcset ms {Bulk action cancelled.} {Tindakan pukal dibatalkan.}
 ::msgcat::mcset ms {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e hujung baris · C-b/C-f aksara · M-b/M-f perkataan · C-k bunuh ke EOL · C-y yank · M-w salin · C-w bunuh rantau · C-space tetapkan tanda · C-/ undo}
 ::msgcat::mcset ms {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g membatalkan semua · C-j baris baru · M-p/M-n sejarah · Tab lengkapkan}
+::msgcat::mcset ms {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU: %1$s teras, %2$s%% sibuk sepanjang %3$s s lalu}
 ::msgcat::mcset ms {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s teras, beban %2$s / %3$s / %4$s (%5$s%% daripada teras)}
 ::msgcat::mcset ms Cancel Batal
 ::msgcat::mcset ms {Cancel task} {Batalkan tugas}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset ms {Channels (e.g. #veles #dev)} {Saluran (cth. #veles #dev)}
 ::msgcat::mcset ms Chat Sembang
 ::msgcat::mcset ms {Chat — not attached; press Attach in the Instances tab} {Chat — tidak dilampirkan; tekan Lampirkan dalam tab Instance}
-::msgcat::mcset ms {Check (lsp)} {Semak (lsp)}
+::msgcat::mcset ms {Check (C-c C-k)} {Semak (C-c C-k)}
 ::msgcat::mcset ms {Check again} {Semak semula}
 ::msgcat::mcset ms {Check files} {Semak fail}
 ::msgcat::mcset ms Checkpoints Checkpoint
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset ms {Close (Esc)} {Tutup (Esc)}
 ::msgcat::mcset ms {Close the setup wizard? Nothing has been written yet.} {Tutup wizard persediaan? Belum ada apa-apa yang ditulis.}
 ::msgcat::mcset ms {Code actions} {Tindakan kod}
+::msgcat::mcset ms {Command-center audit log} {Log audit pusat arahan}
 ::msgcat::mcset ms Commit Komit
 ::msgcat::mcset ms {Commit ready for review. Push is a separate action.} {Komit sedia untuk disemak. Tolak ialah tindakan berasingan.}
 ::msgcat::mcset ms {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Lengkapkan setiap medan PDS, termasuk digest imej yang dipin, sebelum pratonton penyerahan.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset ms {Config differs: %s} {Konfigurasi berbeza: %s}
 ::msgcat::mcset ms {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Log konfigurasi: nod itu mempunyai perubahan %1$s sehingga %3$s, gateway ini sehingga %2$s}
 ::msgcat::mcset ms {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Log konfigurasi: gateway ini mempunyai perubahan %1$s sehingga %2$s, nod itu sehingga %3$s}
+::msgcat::mcset ms {Config of %s} {Konfigurasi %s}
 ::msgcat::mcset ms {Config only on that node: %s} {Konfigurasi hanya pada nod itu: %s}
 ::msgcat::mcset ms {Config only on this gateway: %s} {Konfigurasi hanya pada gateway ini: %s}
+::msgcat::mcset ms {Config: %s} {Konfigurasi: %s}
 ::msgcat::mcset ms Configure Konfigurasi
 ::msgcat::mcset ms {Configure %s} {Konfigurasi %s}
 ::msgcat::mcset ms {Configure translator} {Konfigurasikan penterjemah}
 ::msgcat::mcset ms {Configured desktop gateway} {Gateway desktop yang dikonfigurasikan}
 ::msgcat::mcset ms Configure… Konfigurasi…
 ::msgcat::mcset ms {Configuring %s} {Mengkonfigurasi %s}
+::msgcat::mcset ms Config… Konfigurasi…
 ::msgcat::mcset ms {Confirm or discard the current signed review before starting another download.} {Sahkan atau buang semakan bertandatangan semasa sebelum memulakan muat turun yang lain.}
 ::msgcat::mcset ms {Container host: typed host plan and privileged CLI handoff} {Hos kontena: pelan hos berjenis dan serahan CLI yang memerlukan hak pentadbir}
 ::msgcat::mcset ms {Context window} {Tetingkap konteks}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset ms {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Cipta bot dengan @BotFather, kemudian tampal tokennya di bawah: token masuk ke peti besi yang disulitkan, tidak sekali-kali ke config.toml.}
 ::msgcat::mcset ms {Create this extension?} {Cipta ekstensi ini?}
 ::msgcat::mcset ms {Create this generated extension?} {Cipta sambungan yang dijana ini?}
+::msgcat::mcset ms {Created and loaded. Review and test the extension before publishing.} {Dicipta dan dimuat. Semak dan uji sambungan sebelum menerbitkannya.}
 ::msgcat::mcset ms {Created and reloaded. Review and test the extension before publishing.} {Dicipta dan dimuat semula. Semak dan uji ekstensi sebelum menerbitkan.}
 ::msgcat::mcset ms {Created, but reload failed} {Dicipta, tetapi muat semula gagal}
+::msgcat::mcset ms {Created, not loaded} {Dicipta, tidak dimuat}
+::msgcat::mcset ms {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {Dicipta, belum dimuat: jalankan cargo build --release dalam direktori sambungan, kemudian muat semula dalam Urus sambungan.}
+::msgcat::mcset ms {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {Dicipta. Gateway ini tidak menyatakan sama ada ia memuatkan sambungan: lihat keadaannya dalam Urus sambungan.}
 ::msgcat::mcset ms {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Mencipta %s/<name>/SKILL.md daripada templat dan membukanya. Penerangan frontmatter ialah satu-satunya bahagian yang sampai ke indeks gesaan, jadi buat ia menyatakan BILA hendak menggunakan kemahiran itu.}
 ::msgcat::mcset ms {Cron history} {Sejarah cron}
 ::msgcat::mcset ms {Cron jobs} {Kerja cron}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset ms {Delete user} {Padam pengguna}
 ::msgcat::mcset ms {Delete workspace?} {Padam ruang kerja?}
 ::msgcat::mcset ms Deop {Tarik balik op}
+::msgcat::mcset ms {Deployment consistency unknown: %s node(s) could not be compared.} {Konsistensi penggunaan tidak diketahui: %s nod tidak dapat dibandingkan.}
+::msgcat::mcset ms {Deployment consistency: not checked yet (Drift… compares every node).} {Konsistensi penggunaan: belum disemak (Perbezaan… membandingkan setiap nod).}
 ::msgcat::mcset ms {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Terangkan perubahan. AI boleh mengubah atau menambah beberapa fail sambungan ini. Setiap fail dipaparkan sebagai diff, dan tiada apa yang ditulis sebelum anda mengesahkan.}
 ::msgcat::mcset ms {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Huraikan perubahan. AI boleh mencadangkan penggantian, tetapi tidak boleh menulisnya sebelum anda memeriksa dan mengesahkan diff.}
 ::msgcat::mcset ms {Describe the requested extension change first.} {Huraikan dahulu perubahan ekstensi yang diminta.}
 ::msgcat::mcset ms Description Huraian
+::msgcat::mcset ms {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {Giliran desktop bersambung daripada sejarah tersimpan selepas permulaan semula; giliran penyambung, A2A, mel, cron dan subagen tidak.}
 ::msgcat::mcset ms {Desktop: local core, modules and process plugins} {Desktop: teras setempat, modul dan plugin proses}
 ::msgcat::mcset ms Detach Tanggalkan
 ::msgcat::mcset ms {Detach foreground} {Lepas foreground}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset ms {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Muat turun dan sahkan manifes keluaran serta arkib hos sebelum memasang. Kelima-lima medan identiti diperlukan. Get laluan menyimpan arkib peribadi yang disediakan; tiada apa dipasang oleh pratonton ini.}
 ::msgcat::mcset ms {Downloading and verifying the signed release…} {Memuat turun dan mengesahkan keluaran bertandatangan…}
 ::msgcat::mcset ms {Draft this as an extension?} {Draf ini sebagai ekstensi?}
+::msgcat::mcset ms {Draft this change as an extension?} {Draf perubahan ini sebagai sambungan?}
 ::msgcat::mcset ms {Drag to scroll; a quick swipe goes further.} {Seret untuk menatal; leretan pantas pergi lebih jauh.}
 ::msgcat::mcset ms {Drift check failed: %s} {Semakan penyimpangan gagal: %s}
 ::msgcat::mcset ms {Drift check: %s node(s) differ from this gateway.} {Semakan penyimpangan: %s nod berbeza daripada gateway ini.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset ms Eval→gw Eval→gw
 ::msgcat::mcset ms {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Setiap perubahan pada %s dikomit. Pemulihan mengembalikan keseluruhan direktori ke komit itu — dan merakam keadaan semasa dahulu, jadi ia bukan pintu sehala.}
 ::msgcat::mcset ms {Every plugin file goes back to that commit. The current state is committed first.} {Setiap fail plugin kembali ke komit itu. Keadaan semasa dikomit dahulu.}
+::msgcat::mcset ms {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {Setiap peringkat: New extension menulis sambungan Tcl, TypeScript, Racket atau Common Lisp, atau plugin Rust di luar pokok (cdylib pada crate veles-plugin-abi-sdk: binanya dengan cargo build --release, kemudian muat semula dalam Urus sambungan). Dua peringkat berada di luar direktori plugin pengguna dan dimulakan dari baris arahan: modul, pustaka Rust yang dibina bersama veles (veles plugins new NAME --kind overlay menulis repositorinya), dan plugin proses, program pada crate veles-plugin-sdk yang dijalankan dan diselia oleh gateway. Panduan Pengarang mempunyai satu bahagian untuk setiap satu.}
 ::msgcat::mcset ms {Exact commit} {Komit tepat}
 ::msgcat::mcset ms {Exact permission rule} {Peraturan kebenaran tepat}
 ::msgcat::mcset ms {Example: a hook} {Contoh: hook}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset ms {Explain the diagnostics} {Terangkan diagnostik}
 ::msgcat::mcset ms Export… Eksport…
 ::msgcat::mcset ms {Extension API} {API ekstensi}
+::msgcat::mcset ms {Extension API reference} {Rujukan API sambungan}
 ::msgcat::mcset ms {Extension development} {Pembangunan ekstensi}
 ::msgcat::mcset ms {Extension guide} {Panduan ekstensi}
 ::msgcat::mcset ms {Extension source} {Sumber ekstensi}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset ms {Guards — what the harness stops, and where it stands now} {Guards — apa yang harness hentikan, dan di mana ia berdiri sekarang}
 ::msgcat::mcset ms {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Pengendali berjalan mengikut urutan yang dipaparkan; yang pertama mengembalikan nilai bukan kosong menang. Mematikan satu melangkauinya tanpa menyahdaftarkannya, dan pilihan itu disimpan dalam config.toml supaya muat semula plugin tidak boleh menghidupkannya semula secara senyap.}
 ::msgcat::mcset ms Health Kesihatan
+::msgcat::mcset ms {Health alerts} {Makluman kesihatan}
 ::msgcat::mcset ms {Health alerts (%s):} {Amaran kesihatan (%s):}
 ::msgcat::mcset ms Heartbeat {Denyut nadi}
 ::msgcat::mcset ms {Heartbeat age: %s s} {Usia denyutan jantung: %s s}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset ms Install… Pasang…
 ::msgcat::mcset ms {Instance name (for example an IRC network)} {Nama instance (contohnya rangkaian IRC)}
 ::msgcat::mcset ms Instances Instance
+::msgcat::mcset ms {Instead of patching %s: } {Daripada menampal %s: }
 ::msgcat::mcset ms {It becomes the current content, as a new revision — so the restore can be undone too.} {Ia menjadi kandungan semasa, sebagai semakan baharu — jadi pemulihan juga boleh dibuat asal.}
 ::msgcat::mcset ms {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Ia masuk ke peti besi yang disulitkan pada mesin ini. Ejen tidak pernah melihatnya: ejen hanya boleh menggunakannya sebagai $%s dalam arahan, atau menghantarnya ke hos yang dibenarkan.}
 ::msgcat::mcset ms {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Ia dikeluarkan daripada pendaftaran kluster di seluruh armada: pertukaran gossip seterusnya memberitahu setiap rakan 0.2.0 supaya menggugurkannya juga, dan tiada daripada mereka menggabungkannya semula. Rakan yang lebih lama daripada 0.2.0 terus menyenaraikannya. Jika mesin itu kembali dan menghantar denyut jantung, ia didaftarkan semula. Rakan penyegerakan dan instance tersimpan tidak disentuh.}
+::msgcat::mcset ms {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {Ia ditulis ke dalam config.toml nod itu sebagai suntingan yang dibuat di sana; penyegerakan konfigurasi kemudian membawanya ke nod yang menyegerakkan konfigurasi dengannya.}
 ::msgcat::mcset ms {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Ia meninggalkan memori sekarang. Sejarahnya menyimpan setiap semakan, dan Sejarah… boleh memulihkannya.}
+::msgcat::mcset ms {Its gateway stops and %s.} {Gateway-nya berhenti dan %s.}
 ::msgcat::mcset ms Join Sertai
 ::msgcat::mcset ms {Join a pool} {Sertai kumpulan mesin}
 ::msgcat::mcset ms {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {Sertai kumpulan mesin %1$s sebagai %2$s? Kumpulan akan mencapai telefon ini di %3$s.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset ms Joining… {Sedang menyertai…}
 ::msgcat::mcset ms Join… Sertai…
 ::msgcat::mcset ms {Jump to composer} {Lompat ke penggubah}
+::msgcat::mcset ms {Key (for example model.default)} {Kunci (contohnya model.default)}
 ::msgcat::mcset ms Keybindings {Ikatan kekunci}
 ::msgcat::mcset ms {Keyboard help} {Bantuan papan kekunci}
 ::msgcat::mcset ms {Kick %1$s from %2$s?} {Buang %1$s daripada %2$s?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset ms {LLM provider} {Penyedia LLM}
 ::msgcat::mcset ms Language Bahasa
 ::msgcat::mcset ms {Language (i18n)} {Bahasa (i18n)}
+::msgcat::mcset ms {Language servers on this gateway} {Pelayan bahasa pada gateway ini}
 ::msgcat::mcset ms Language… Bahasa…
 ::msgcat::mcset ms {Last active} {Terakhir aktif}
 ::msgcat::mcset ms {Last probe: %1$s — %2$s} {Pemeriksaan terakhir: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset ms Level Tahap
 ::msgcat::mcset ms {Lift lockdown} {Angkat sekatan}
 ::msgcat::mcset ms Lines Baris
+::msgcat::mcset ms {List targets…} {Senaraikan sasaran…}
 ::msgcat::mcset ms {List the provider's models} {Senaraikan model penyedia}
 ::msgcat::mcset ms Load Beban
 ::msgcat::mcset ms {Load more} {Muat lagi}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset ms Next Seterusnya
 ::msgcat::mcset ms Nickname Nickname
 ::msgcat::mcset ms {NixOS: emit a module snippet; do not edit host declarations} {NixOS: keluarkan keratan modul; jangan sunting pengisytiharan hos}
-::msgcat::mcset ms {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Tiada sasaran kitar hayat SSH dikonfigurasikan untuk nod ini. Tambah instance secara eksplisit untuk menyebarkan atau memulakan semula.}
+::msgcat::mcset ms {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {Tiada sasaran kitaran hayat SSH dikonfigurasikan untuk nod ini: Mulakan semula meminta nod memulakan semula dirinya melalui penyelianya; penggunaan Fleet memerlukan instance tersimpan dengan sasaran ssh.}
 ::msgcat::mcset ms {No additional push happens.} {Tiada tolakan tambahan berlaku.}
 ::msgcat::mcset ms {No apps yet. Ask the agent to make one: “make me an app that…”} {Belum ada apl. Minta ejen membuat satu: “buatkan saya apl yang…”}
 ::msgcat::mcset ms {No code in the picture. Hold the phone closer, straight on, and scan again.} {Tiada kod dalam gambar. Dekatkan telefon, tegak lurus, dan imbas semula.}
+::msgcat::mcset ms {No command-center action is recorded on this gateway yet.} {Tiada tindakan pusat arahan direkodkan pada gateway ini lagi.}
 ::msgcat::mcset ms {No configuration snapshot will be restored.} {Tiada snapshot konfigurasi akan dipulihkan.}
 ::msgcat::mcset ms {No configured sync peer for this node.} {Tiada peer penyegerakan yang dikonfigurasikan untuk nod ini.}
 ::msgcat::mcset ms {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Tiada penterjemah khusus dikonfigurasikan. Gunakan Konfigurasikan penterjemah untuk memilih penyedia, model dan bahasa sasaran.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset ms {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Telefon buatan %s juga menghentikan apl dengan sendirinya. Dalam tetapan apl veles, benarkan ia bermula sendiri dan berjalan di latar belakang.}
 ::msgcat::mcset ms {Pin / unpin} {Sematkan / nyahsemat}
 ::msgcat::mcset ms {Pin to home screen} {Pin ke skrin utama}
+::msgcat::mcset ms {Plugin author guide} {Panduan pengarang plugin}
 ::msgcat::mcset ms {Plugin history} {Sejarah plugin}
 ::msgcat::mcset ms Plugins Plugin
 ::msgcat::mcset ms Port Port
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset ms {Preview here} {Pratonton di sini}
 ::msgcat::mcset ms {Preview pane} {Anak tetingkap pratonton}
 ::msgcat::mcset ms {Preview proposal} {Pratonton cadangan}
-::msgcat::mcset ms {Preview the changed name or language before creating it.} {Pratonton nama atau bahasa yang diubah sebelum menciptanya.}
+::msgcat::mcset ms {Preview the changed name, purpose or language before creating it.} {Pratonton nama, tujuan atau bahasa yang diubah sebelum menciptanya.}
 ::msgcat::mcset ms Probe Periksa
+::msgcat::mcset ms {Probe %s node(s)?} {Periksa %s nod?}
+::msgcat::mcset ms {Probe all…} {Periksa semua…}
 ::msgcat::mcset ms {Probe of %1$s failed: %2$s} {Pemeriksaan %1$s gagal: %2$s}
 ::msgcat::mcset ms {Profile result} {Keputusan profil}
 ::msgcat::mcset ms {Promote into config.toml} {Promosikan ke dalam config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset ms {Push branch…} {Tolak cawangan…}
 ::msgcat::mcset ms {Push complete. No pull request has been opened.} {Tolakan selesai. Tiada permintaan tarik dibuka.}
 ::msgcat::mcset ms {Push this branch?} {Tolak cawangan ini?}
+::msgcat::mcset ms {Push this kind to every node that is a configured peer for it:} {Tolak jenis ini ke setiap nod yang dikonfigurasikan sebagai rakan untuknya:}
 ::msgcat::mcset ms {Push to %s:} {Hantar ke %s:}
 ::msgcat::mcset ms Question Soalan
 ::msgcat::mcset ms Questions Soalan
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset ms {REPL target: the app} {sasaran REPL: aplikasi}
 ::msgcat::mcset ms {REPL target: the gateway} {sasaran REPL: gateway}
 ::msgcat::mcset ms Read Baca
+::msgcat::mcset ms {Read the key first: a write names the value it replaces.} {Baca kunci dahulu: penulisan menamakan nilai yang digantikannya.}
 ::msgcat::mcset ms {Reading notifications, for triggers} {Membaca pemberitahuan, untuk pencetus}
 ::msgcat::mcset ms Reasoning Penaakulan
 ::msgcat::mcset ms {Reasoning effort} {Tahap penaakulan}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset ms {Reset to default} {Set semula kepada lalai}
 ::msgcat::mcset ms {Reset to template} {Set semula ke templat}
 ::msgcat::mcset ms Restart {Mulakan semula}
+::msgcat::mcset ms {Restart %s?} {Mulakan semula %s?}
 ::msgcat::mcset ms {Restart + verify canary} {Mulakan semula + sahkan kenari}
+::msgcat::mcset ms {Restart cancelled.} {Permulaan semula dibatalkan.}
+::msgcat::mcset ms {Restart of %1$s failed: %2$s} {Permulaan semula %1$s gagal: %2$s}
 ::msgcat::mcset ms {Restore hidden windows} {Pulihkan tetingkap tersembunyi}
 ::msgcat::mcset ms {Restore plugins to %s?} {Pulihkan plugin ke %s?}
 ::msgcat::mcset ms {Restore revision r%1$s of %2$s?} {Pulihkan semakan r%1$s bagi %2$s?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset ms {S3 region} {Rantau S3}
 ::msgcat::mcset ms {SASL account (optional)} {Akaun SASL (pilihan)}
 ::msgcat::mcset ms {SASL password (hidden)} {Kata laluan SASL (tersembunyi)}
+::msgcat::mcset ms {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {Kitaran hayat SSH: melalui instance tersimpan %1$s (%2$s, unit %3$s).}
 ::msgcat::mcset ms Sandbox {Kotak pasir}
 ::msgcat::mcset ms {Sandbox account} {Akaun Sandbox}
 ::msgcat::mcset ms Sandboxes {Kotak pasir}
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset ms {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Sesi yang sedang dilampaukan ke alias ini kekal pada laluan yang mereka selesaikan; lampauan baharu tidak akan menjumpai nama itu.}
 ::msgcat::mcset ms {Sessions served} {Sesi dilayan}
 ::msgcat::mcset ms Set Tetapkan
+::msgcat::mcset ms {Set %1$s on %2$s to %3$s?} {Tetapkan %1$s pada %2$s kepada %3$s?}
 ::msgcat::mcset ms {Set [model] provider/default in config.toml.} {Tetapkan [model] provider/default dalam config.toml.}
 ::msgcat::mcset ms {Set as swap target} {Jadikan sasaran tukar}
 ::msgcat::mcset ms {Set mode %1$s on %2$s?} {Tetapkan mod %1$s pada %2$s?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset ms Summary Ringkasan
 ::msgcat::mcset ms Surface Permukaan
 ::msgcat::mcset ms {Swap ⇄} {Tukar ⇄}
+::msgcat::mcset ms {Sync %1$s to %2$s node(s)?} {Segerakkan %1$s ke %2$s nod?}
+::msgcat::mcset ms {Sync all} {Segerakkan semua}
+::msgcat::mcset ms {Sync all…} {Segerakkan semua…}
 ::msgcat::mcset ms {Sync cancelled.} {Penyegerakan dibatalkan.}
 ::msgcat::mcset ms {Sync complete.} {Penyegerakan selesai.}
 ::msgcat::mcset ms {Sync now} {Segerak sekarang}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset ms {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Diagnostik semasa (daripada pelayan bahasa atau Semak) dihantar bersama fail ini. Secara pilihan, tambah soalan. Jawapannya teks sahaja; tiada apa yang boleh ditulis.}
 ::msgcat::mcset ms {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Direktori dan segala isinya dibuang. Ini tidak boleh dibatalkan — matikan sahaja jika anda hanya mahu ia keluar dari prompt.}
 ::msgcat::mcset ms {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Direktori dipadam. Folder plugin ialah repositori git dan snapshot dikomit dahulu, jadi History… boleh memulihkannya.}
-::msgcat::mcset ms {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Editor membuka fail gateway, termasuk instance jauh, dan menjalankan pelayan bahasa untuk bahasa fail itu pada gateway: tcl-lsp, typescript-language-server (TypeScript dan JavaScript), rust-analyzer (krate atau modul plugin Rust), clangd (C), racket-langserver dan pelayan Common Lisp. Hover, pergi ke definisi, lengkapan automatik dan diagnostik langsung berfungsi untuk setiap bahasa yang ada pelayan pada gateway; apabila tiada, editor menyatakan program mana yang perlu dipasang di situ dan mengekalkan penyerlahan sintaks. Semak menjalankan pemeriksa yang sepadan pada gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, atau pembaca Racket dan Lisp. Simpan, muat semula dalam Urus sambungan, dan uji sambungan tanpa menerbitkan keadaan setempat.}
+::msgcat::mcset ms {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {Penyunting membuka fail gateway, termasuk instance jauh, dan menjalankan pelayan bahasa untuk bahasa fail itu pada gateway: typescript-language-server (TypeScript dan JavaScript), rust-analyzer (crate atau modul plugin Rust), clangd (C), racket-langserver, pelayan Common Lisp, dan tcl-lsp untuk Tcl di mana gateway mempunyainya (pakej Linux veles menyertakannya). Tuding, ke definisi, pelengkapan dan diagnostik langsung berfungsi untuk setiap bahasa yang mempunyai pelayan pada gateway; apabila tiada, penyunting menyatakan program mana yang perlu dipasang di sana dan mengekalkan penonjolan sintaks. Semak menjalankan pemeriksa yang sepadan pada gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, pembaca Racket dan Lisp, dan untuk Tcl tclsh enjin itu sendiri (semakan kelengkapan, atau lint tcl-lsp di tempat ia dipasang). Simpan, muat semula dalam Urus sambungan, dan uji sambungan tanpa menerbitkan keadaan setempat.}
 ::msgcat::mcset ms {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Penyerahan pertama menyediakan rahsia, imej yang dipin dan fail runtime tetapi tidak memulakan PDS. Sandarkan KEK dan kunci putaran PLC secara luar talian, kemudian buat permintaan yang baru disemak dengan pengesahan saya telah membuat sandaran untuk menyiapkan HTTP-01 TLS dan pengaktifan. Rekod DNS mesti menunjuk terus ke hos ini; tiada proksi CDN atau perubahan DNS yang dibuat oleh veles.}
+::msgcat::mcset ms {The fleet is NOT consistent: %s node(s) differ.} {Fleet TIDAK konsisten: %s nod berbeza.}
+::msgcat::mcset ms {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {Fleet konsisten dengan perbezaan: %1$s nod menjalankan binaan yang sama dan bersetuju pada semua yang dikongsi; %2$s item tiada pada setiap nod.}
+::msgcat::mcset ms {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {Fleet konsisten: %s nod menjalankan binaan, modul dan plugin yang sama.}
 ::msgcat::mcset ms {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Borang telah berubah sejak sambungan dijana. Jana semula, atau pratonton rangka asas biasa.}
+::msgcat::mcset ms {The gateway did not receive the purpose as written. Nothing was created.} {Gateway tidak menerima tujuan seperti yang ditulis. Tiada apa yang dicipta.}
+::msgcat::mcset ms {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {Gateway tidak menyediakan panduan sambungan (ia lebih lama daripada 0.2.2), dan desktop ini tiada salinannya.}
 ::msgcat::mcset ms {The gateway itself is untouched.} {Gerbang itu sendiri tidak disentuh.}
 ::msgcat::mcset ms {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Get laluan telah memuat semula konfigurasi, jadi sesi baharu menggunakannya serta-merta, dan kunci yang disimpan dalam peti besi digunakan oleh permintaan seterusnya. Telegram dan IRC bermula pada mula semula get laluan yang seterusnya: veles gateway restart.}
 ::msgcat::mcset ms {The installed component no longer matches the selected manifest. Review the component list again.} {Komponen yang dipasang tidak lagi sepadan dengan manifest terpilih. Semak semula senarai komponen.}
 ::msgcat::mcset ms {The installer preview has no verification signatures; apply is disabled.} {Pratonton pemasang tiada tandatangan pengesahan; terapkan dilumpuhkan.}
 ::msgcat::mcset ms {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Kerja dan sejarah jalanannya dibuang. Ini tidak boleh dibatalkan — jeda sahaja jika anda hanya mahu ia berhenti.}
+::msgcat::mcset ms {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {Kunci yang dibawa oleh penyegerakan konfigurasi, di bawah peraturannya: kunci setempat nod dan kelayakan kekal pada nodnya, dan bahagian yang ditahan ([acl], approvals, sandbox, hooks, plugins, pelayan MCP) diubah di tempat ia disunting dan ditolak, kemudian menunggu pemilik nod itu.}
 ::msgcat::mcset ms {The log could not be read: %s} {Log tidak dapat dibaca: %s}
 ::msgcat::mcset ms {The manifest belongs to another component; its reply was discarded.} {Manifest milik komponen lain; balasannya dibuang.}
 ::msgcat::mcset ms {The profile changed. Review the fresh plan before applying it.} {Profil telah berubah. Semak rancangan baharu sebelum menggunakannya.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset ms {The signed release preview was malformed; nothing was installed.} {Pratonton keluaran bertandatangan tidak terbentuk dengan betul; tiada apa dipasang.}
 ::msgcat::mcset ms {The source buffer changed. Request a new proposal before applying.} {Penimbal sumber telah berubah. Minta cadangan baharu sebelum menggunakan.}
 ::msgcat::mcset ms {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Stor kembali satu semakan. Penggulungan balik itu sendiri satu semakan, jadi ia boleh dibatalkan seterusnya.}
+::msgcat::mcset ms {The translator did not answer within %s seconds.} {Penterjemah tidak menjawab dalam %s saat.}
 ::msgcat::mcset ms {The translator returned no text.} {Penterjemah tidak mengembalikan teks.}
 ::msgcat::mcset ms {The verification reply was malformed; no integrity result was accepted.} {Balasan pengesahan adalah rosak; tiada keputusan integriti diterima.}
 ::msgcat::mcset ms Themes Tema
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset ms {This challenge is over.} {Cabaran ini telah tamat.}
 ::msgcat::mcset ms {This code has expired. Ask for a new one.} {Kod ini telah tamat tempoh. Minta yang baharu.}
 ::msgcat::mcset ms {This does not start a service or claim signed-download verification.} {Ini tidak memulakan perkhidmatan atau menuntut pengesahan muat turun bertandatangan.}
+::msgcat::mcset ms {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {Fail ini ialah sumber teras veles. Kebanyakan perubahan lebih sesuai sebagai sambungan, yang kekal selepas peningkatan dan tidak perlu dibina semula: cangkuk, alat, ganti khidmat atau pemacu penyedia, ditulis dalam Tcl, TypeScript, Racket atau Common Lisp, atau sebagai plugin Rust di luar pokok (New extension menulis mana-mana daripadanya), atau sebagai modul atau plugin proses (panduan Sambungan menunjukkan cara memulakannya). Tampalan teras adalah untuk perkara yang tidak dapat dinyatakan oleh API sambungan. Draf perubahan ini sebagai sambungan? Suntingan anda kekal dalam penimbal ini, tidak disimpan; menyimpan semula akan menampal fail teras.}
 ::msgcat::mcset ms {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Get laluan ini tidak menerima nilai rahsia dari mesin ini: masukkannya di sana dengan veles secret set %s, atau senaraikan rangkaian ini dalam [vault] trusted_networks miliknya}
 ::msgcat::mcset ms {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Inilah tepat apa yang akan ditulis — bait asal enjin, diambil secara langsung. Belum ada apa-apa yang menyentuh cakera.}
+::msgcat::mcset ms {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {Ini sumber teras veles. Perubahan padanya biasanya lebih baik sebagai sambungan: New extension, atau simpan untuk ditawarkan satu.}
 ::msgcat::mcset ms {This node is not a configured sync peer for any kind.} {Nod ini bukan peer penyegerakan yang dikonfigurasikan untuk sebarang jenis.}
 ::msgcat::mcset ms {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Plugin ini disertakan dan baca sahaja. Buang salinan pengguna dengan nama sama untuk menggunakan salinan disertakan sebagai gantinya.}
 ::msgcat::mcset ms {This publishes the commit; no pull request is created yet.} {Ini menerbitkan komit; tiada permintaan tarik dicipta lagi.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset ms Unassign Nyahtetapkan
 ::msgcat::mcset ms {Undo last} {Buat asal terakhir}
 ::msgcat::mcset ms {Undo the last memory revision?} {Buat asal semakan memori terakhir?}
+::msgcat::mcset ms {Unset %1$s on %2$s?} {Buang tetapan %1$s pada %2$s?}
+::msgcat::mcset ms Unset… {Buang tetapan…}
 ::msgcat::mcset ms Unstage Unstage
 ::msgcat::mcset ms {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Sehingga IRC_ALLOWED_USERS dalam .env menamakan akaun anda, sesiapa di rangkaian boleh bercakap dengan bot — dan tanpa bahagian [acl], sebagai pemilik, dengan semua alat.}
 ::msgcat::mcset ms {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Sehingga TELEGRAM_ALLOWED_USERS dalam .env menamakan ID pengguna anda, sesiapa yang menjumpai bot boleh bercakap dengannya — dan tanpa bahagian [acl], sebagai pemilik, dengan semua alat.}
 ::msgcat::mcset ms Untitled {Tanpa tajuk}
-::msgcat::mcset ms {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Sumbangan upstream ialah tindakan penerbitan yang jelas, bukan muat naik automatik. Dalam Urus ekstensi, Sumbang menyenaraikan setiap ekstensi pengguna: pilih ekstensi dan fail, periksa diff dan imbasan rahsia, jalankan pemeriksaan, kemudian cipta satu cawangan dan satu PR (kepada veles secara lalai) dengan identiti git pilihan anda. Setiap ekstensi berada di bawah direktorinya sendiri dalam repositori, dan fail sedia ada di situ hanya diganti selepas pengesahan berasingan. Jangan sekali-kali menerbitkan node.toml, kelayakan setempat, token, titik akhir peribadi atau keadaan plugin yang tidak berkaitan. Snapshot pemulihan setempat bukan komit upstream atau PR.}
+::msgcat::mcset ms {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Sumbangan huluan ialah tindakan penerbitan yang jelas, bukan muat naik automatik. Dalam Urus sambungan, Contribute menyenaraikan setiap sambungan pengguna: pilih sambungan dan fail, periksa diff dan imbasan rahsia, jalankan semakan, kemudian cipta satu cabang dan satu PR (kepada veles secara lalai). Commit menggunakan identiti git ambien gateway (user.name dan user.email konfigurasi gitnya); tetapkan itu dahulu jika ia sepatutnya berbeza. Setiap sambungan berada di bawah direktorinya sendiri dalam repositori, dan fail sedia ada di situ diganti hanya selepas pengesahan berasingan. Jangan sekali-kali menerbitkan node.toml, kelayakan setempat, token, titik akhir peribadi atau keadaan plugin yang tidak berkaitan. Petikan pemulihan setempat bukan commit huluan atau PR.}
 ::msgcat::mcset ms {Upstream repository or fork URL} {URL repositori huluan atau fork}
 ::msgcat::mcset ms {Uptime class} {Kelas masa aktif}
 ::msgcat::mcset ms {Uptime: host %1$s, gateway %2$s} {Masa aktif: hos %1$s, gateway %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset ms {Users — one role across networks and platforms} {Pengguna — satu peranan merentas rangkaian dan platform}
 ::msgcat::mcset ms {Using the phone, for the agent} {Menggunakan telefon, untuk ejen}
 ::msgcat::mcset ms {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Biasanya sama dengan nama entri pembekal. Biarkan kedua-duanya kosong pada pilihan Langkau — pasangan yang separuh diset tidak menghala.}
+::msgcat::mcset ms {Value (TOML: "text", 5, true, [1, 2])} {Nilai (TOML: "teks", 5, true, [1, 2])}
 ::msgcat::mcset ms {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Nilai ialah TOML: rentetan berpetik, nombor, atau senarai. Ditulis ke [mcp_servers.<name>] — komen anda dan semua bahagian lain dibiarkan.}
 ::msgcat::mcset ms Vault {Peti besi}
 ::msgcat::mcset ms {Verified signed bundle installed. Restart the gateway before using the new core.} {Himpunan bertandatangan yang disahkan telah dipasang. Mulakan semula Get laluan sebelum menggunakan teras baharu.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset ms Voice {Beri voice}
 ::msgcat::mcset ms {Waiting for the model…} {Menunggu model…}
 ::msgcat::mcset ms {Waiting for the model… Nothing has been written.} {Menunggu model… Tiada apa yang ditulis.}
+::msgcat::mcset ms Warning Amaran
 ::msgcat::mcset ms {Welcome to veles} {Selamat datang ke veles}
 ::msgcat::mcset ms {What the agent can do here} {Apa yang ejen boleh lakukan di sini}
 ::msgcat::mcset ms {What veles may do on this phone. Each button opens the Android setting that changes it.} {Apa yang veles boleh lakukan pada telefon ini. Setiap butang membuka tetapan Android yang mengubahnya.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset ms {Workflow SHA} {SHA aliran kerja}
 ::msgcat::mcset ms {Workflow commit} {Komit aliran kerja}
 ::msgcat::mcset ms Worktree Worktree
+::msgcat::mcset ms {Write cancelled.} {Penulisan dibatalkan.}
 ::msgcat::mcset ms {Write it} Tulis
 ::msgcat::mcset ms {Write the design question first.} {Tulis soalan reka bentuk dahulu.}
 ::msgcat::mcset ms {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Tidak menulis pembekal. Gateway tidak akan menghala giliran sehingga entri [[custom_providers]] dan pasangan [model] wujud.}
+::msgcat::mcset ms Write… Tulis…
 ::msgcat::mcset ms {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Menulis MANA-MANA kunci [acl] menukar get laluan ini ke mod terkawal: peranan lalai menjadi guest (fail-closed) dan senarai benar bukan lagi sempadan. Pilih ini hanya dengan identiti pemilik yang anda percayai.}
 ::msgcat::mcset ms {[model] provider} {pembekal [model]}
 ::msgcat::mcset ms {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {pembekal [model] %{name} tidak menunjuk kepada mana-mana entri [[custom_providers]] — namakan entri yang ditulis oleh wizard ini, atau yang sudah ada dalam config.toml}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset ms {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset ms {asked by: %s} {ditanya oleh: %s}
 ::msgcat::mcset ms {asking %s for its metrics…} {meminta metrik daripada %s…}
+::msgcat::mcset ms {asking %s how it is supervised…} {menanyakan %s bagaimana ia diselia…}
 ::msgcat::mcset ms {attach a file} {lampirkan fail}
 ::msgcat::mcset ms {attach an image or file} {lampirkan imej atau fail}
 ::msgcat::mcset ms {attach failed: %1$s} {gagal dilampirkan: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset ms {channel-event reactions; /triggers add <name> network=… channel=… action=…} {reaksi kepada peristiwa saluran; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset ms {channels to join, a space or comma separated string} {saluran untuk disertai, rentetan dipisah ruang atau koma}
 ::msgcat::mcset ms chars aksara
+::msgcat::mcset ms {check the buffer (diagnostics)} {semak penimbal (diagnostik)}
 ::msgcat::mcset ms choice_next {beralih ke laluan seterusnya}
 ::msgcat::mcset ms choice_retry {cuba semula laluan yang sama}
 ::msgcat::mcset ms choice_stop {berhenti di sini}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset ms {command list unavailable (the gateway is not reachable)} {senarai arahan tidak tersedia (gateway tidak boleh dihubungi)}
 ::msgcat::mcset ms {command palette} {palet arahan}
 ::msgcat::mcset ms {command search} {cari arahan}
+::msgcat::mcset ms {command-center audit log} {log audit pusat arahan}
 ::msgcat::mcset ms commands arahan
 ::msgcat::mcset ms {commands stay on your own session; /leave returns from the joined session} {arahan kekal pada sesi anda sendiri; /leave kembali daripada sesi yang disertai}
 ::msgcat::mcset ms commands: arahan:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset ms {config changes from peers that wait for you; /configsync apply lands them} {perubahan konfigurasi daripada rakan setara yang menunggu anda; /configsync apply menerapkannya}
 ::msgcat::mcset ms {config file: %s} {fail konfigurasi: %s}
 ::msgcat::mcset ms {config key} {kunci konfigurasi}
+::msgcat::mcset ms {config result} {hasil konfigurasi}
 ::msgcat::mcset ms {config unavailable} {konfigurasi tidak tersedia}
 ::msgcat::mcset ms {config unavailable: %s} {konfigurasi tidak tersedia: %s}
 ::msgcat::mcset ms {config value} {nilai konfigurasi}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset ms doctor_resident {sentiasa ada dalam setiap gesaan: %{shown} daripada %{total} aksara (~%{tokens} token) — selebihnya dimuatkan apabila perlu dengan: memory action=read path=%{path}}
 ::msgcat::mcset ms doctor_title {diagnosis memori}
 ::msgcat::mcset ms doctor_total {jumlah: %{chars} aksara dalam %{files} fail (~%{tokens} token)}
-::msgcat::mcset ms {documentation is not in this source checkout: %s} {dokumentasi tidak ada dalam checkout sumber ini: %s}
 ::msgcat::mcset ms done selesai
 ::msgcat::mcset ms {done · %1$s/%2$s} {selesai · %1$s/%2$s}
 ::msgcat::mcset ms {done, but the model returned no text} {selesai, tetapi model tidak mengembalikan teks}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset ms {grant a role (owner) · /revoke <id> takes it back} {berikan peranan (owner) · /revoke <id> menariknya balik}
 ::msgcat::mcset ms {grant a role to an identity} {berikan peranan kepada identiti}
 ::msgcat::mcset ms {guards unreachable} {pengawal tidak dapat dicapai}
-::msgcat::mcset ms guts: dalaman:
+::msgcat::mcset ms {guts ▾} {Dalaman ▾}
 ::msgcat::mcset ms {gw hooks} {kait gw}
 ::msgcat::mcset ms {gw procs} {procs gw}
 ::msgcat::mcset ms {halt after N identical calls} {henti selepas N panggilan serupa}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset ms {live patching ARMED} {tampalan langsung DIAKTIFKAN}
 ::msgcat::mcset ms {live patching ARMED — an agent can now redefine procs in this window} {tampalan langsung DIAKTIFKAN — agen kini boleh mentakrif semula prosedur dalam tetingkap ini}
 ::msgcat::mcset ms {live patching disarmed} {tampalan langsung dinyahaktif}
+::msgcat::mcset ms load beban
 ::msgcat::mcset ms loaded dimuat
 ::msgcat::mcset ms {loaded older messages} {mesej lama dimuat}
 ::msgcat::mcset ms loading… memuat…
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset ms {no upstream reading for %s} {tiada bacaan hulu untuk %s}
 ::msgcat::mcset ms {no word match} {tiada padanan perkataan}
 ::msgcat::mcset ms {no xdg-open — path copied instead} {tiada xdg-open — laluan disalin sebagai ganti}
+::msgcat::mcset ms {nobody else's session is open on %s right now} {tiada sesi orang lain terbuka pada %s sekarang}
 ::msgcat::mcset ms {node log} {log nod}
 ::msgcat::mcset ms {none loaded} {tiada dimuat}
 ::msgcat::mcset ms {none recorded} {tidak direkodkan}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset ms {not installed} {tidak dipasang}
 ::msgcat::mcset ms {not reported} {tidak dilaporkan}
 ::msgcat::mcset ms {not running} {tidak berjalan}
+::msgcat::mcset ms {not saved: drafting the change as an extension} {tidak disimpan: mendraf perubahan sebagai sambungan}
+::msgcat::mcset ms {not sent: %s} {tidak dihantar: %s}
 ::msgcat::mcset ms {not set in config.toml — the built-in default applies. %s} {tidak ditetapkan dalam config.toml — lalai terbina terpakai. %s}
 ::msgcat::mcset ms {not set yet — /secret set it later} {belum ditetapkan — tetapkan kemudian dengan /secret set}
 ::msgcat::mcset ms {not signed: %s} {tidak ditandatangani: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset ms {on no plan} {jika tiada pelan}
 ::msgcat::mcset ms {on the} pada
 ::msgcat::mcset ms {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {hidup/mati membisukan nota mekanisme dalam transkrip — untuk sesi ini, atau sebagai lalai, mengikut skop di bawah. Ia mengawal NOTA; apa yang setiap mekanisme LAKUKAN ditetapkan dalam bahagian yang dinamakan pada barisnya, dan Configure… membukanya. Tombol pengawal boleh diedit di tempat.}
+::msgcat::mcset ms {on; this gateway does not say whether they reach the home chat} {hidup; gateway ini tidak menyatakan sama ada ia sampai ke sembang peribadi pemilik}
 ::msgcat::mcset ms {one-shot tcl-lsp diagnostics — no model turn} {diagnostik tcl-lsp sekali jalan — tanpa giliran model}
 ::msgcat::mcset ms {open a saved file first} {buka fail yang disimpan dahulu}
 ::msgcat::mcset ms {open links} {membuka pautan}
+::msgcat::mcset ms {open one of the desktop's own source files} {buka salah satu fail sumber desktop ini sendiri}
 ::msgcat::mcset ms {open the engine log} {buka log enjin}
 ::msgcat::mcset ms {open the joined session before /leave (on %s)} {buka sesi yang disertai sebelum /leave (pada %s)}
 ::msgcat::mcset ms {open the selected child session} {buka sesi anak yang dipilih}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset ms {read-only: [approvals] allowlist} {baca sahaja: senarai-benar [approvals]}
 ::msgcat::mcset ms {read-only: this session lives on %1$s (as read at %2$s)} {baca-sahaja: sesi ini berada di %1$s (seperti dibaca pada %2$s)}
 ::msgcat::mcset ms {read-only: this skill comes from the %s library} {baca-sahaja: kemahiran ini daripada pustaka %s}
+::msgcat::mcset ms {reading %1$s on %2$s…} {membaca %1$s pada %2$s…}
 ::msgcat::mcset ms reasoning penaakulan
 ::msgcat::mcset ms {reasoning display: %1$s · %2$s blocks} {paparan penaakulan: %1$s · %2$s blok}
 ::msgcat::mcset ms {reasoning display: %s} {paparan penaakulan: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset ms {run failed: %s} {jalan gagal: %s}
 ::msgcat::mcset ms {run in:} {jalan dalam:}
 ::msgcat::mcset ms running berjalan
+::msgcat::mcset ms {running %s on the listed nodes…} {menjalankan %s pada nod yang disenaraikan…}
 ::msgcat::mcset ms {running since %s} {berjalan sejak %s}
 ::msgcat::mcset ms {running subagents; /subagents cancel <id>} {subagen yang sedang berjalan; /subagents cancel <id>}
 ::msgcat::mcset ms {save failed} {simpan gagal}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset ms {send failed: %s} {hantaran gagal: %s}
 ::msgcat::mcset ms {send the message; while a turn runs, queue it as steering} {hantar mesej; semasa giliran berjalan, masukkan sebagai steering}
 ::msgcat::mcset ms sent dihantar
-::msgcat::mcset ms {sent to the owner's home chat} {dihantar ke sembang utama pemilik}
+::msgcat::mcset ms {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {dihantar ke sembang peribadi pemilik oleh gateway yang menjalankan penyesuai Telegram-nya, bukan yang ini}
+::msgcat::mcset ms {sent to the owner's home chat from this gateway} {dihantar ke sembang peribadi pemilik dari gateway ini}
 ::msgcat::mcset ms server pelayan
 ::msgcat::mcset ms {server buffers merged} {penimbal pelayan digabung}
 ::msgcat::mcset ms {server buffers separate} {penimbal pelayan berasingan}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset ms {session, model, lifecycle} {sesi, model, kitaran hayat}
 ::msgcat::mcset ms {session: %s} {sesi: %s}
 ::msgcat::mcset ms {sessions    %s} {sesi    %s}
+::msgcat::mcset ms {sessions you can join on %s (/join <name or id>):} {sesi yang boleh anda sertai pada %s (/join <nama atau id>):}
 ::msgcat::mcset ms {sessions: unreachable} {sesi: tidak dapat dicapai}
 ::msgcat::mcset ms {set by} {ditetapkan oleh}
 ::msgcat::mcset ms {set. %s} {ditetapkan. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset ms {split: %s} {belah: %s}
 ::msgcat::mcset ms {ssh to %1$s failed: %2$s} {ssh ke %1$s gagal: %2$s}
 ::msgcat::mcset ms {stale — no heartbeat within the threshold} {basi — tiada denyutan jantung dalam had}
+::msgcat::mcset ms {standing approval grants: always and this session; revoke one} {kebenaran kelulusan berdiri: sentiasa dan sesi ini; batalkan satu}
 ::msgcat::mcset ms {standing global and session permission grants} {pemberian kebenaran global dan sesi yang berdiri}
+::msgcat::mcset ms {start the line with // to send it as text} {mulakan baris dengan // untuk menghantarnya sebagai teks}
 ::msgcat::mcset ms state keadaan
 ::msgcat::mcset ms {state       never reached} {keadaan       tidak pernah dicapai}
 ::msgcat::mcset ms {state       reachable} {keadaan       boleh dicapai}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset ms {the config.toml that will be written} {config.toml yang akan ditulis}
 ::msgcat::mcset ms {the default (config.toml)} {lalai (config.toml)}
 ::msgcat::mcset ms {the engine refused these answers: %s} {enjin menolak jawapan ini: %s}
+::msgcat::mcset ms {the file to open: type a path, then Return or Open} {fail untuk dibuka: taip laluan, kemudian Return atau Buka}
 ::msgcat::mcset ms {the first ACL owner identity} {identiti pemilik ACL pertama}
 ::msgcat::mcset ms {the gateway answered without a report} {gerbang menjawab tanpa laporan}
 ::msgcat::mcset ms {the model/provider pair is incomplete — the gateway will not route until both are present} {pasangan model/pembekal tidak lengkap — get laluan tidak akan menghala sehingga kedua-duanya ada}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset ms unknown {tidak diketahui}
 ::msgcat::mcset ms {unknown api_mode %{mode} — expected one of %{modes}} {api_mode tidak dikenali %{mode} — dijangka salah satu daripada: %{modes}}
 ::msgcat::mcset ms {unknown bindings '%{rest}' · normie|emacs|vi} {ikatan kekunci '%{rest}' tidak dikenali · normie|emacs|vi}
+::msgcat::mcset ms {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {arahan tidak dikenali %{cmd} di sini — /help menyenaraikan arahan permukaan ini; tiada apa yang dihantar}
 ::msgcat::mcset ms {unknown command /%s — /help lists them} {arahan tidak dikenali /%s — /help menyenaraikannya}
 ::msgcat::mcset ms {unknown command: /%s} {perintah tidak dikenali: /%s}
 ::msgcat::mcset ms {unknown keymap: %s (normie/emacs/vi)} {keymap tidak dikenali: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset ms {upstream plan credits and windows — /usage is the local ledger} {kredit dan tetingkap pelan pembekal hulu — /usage ialah lejar tempatan}
 ::msgcat::mcset ms {upstream plan quota} {kuota pelan huluan}
 ::msgcat::mcset ms uptime {masa hidup}
-::msgcat::mcset ms {usage: /join <session> or /join <instance>/<session>} {penggunaan: /join <session> atau /join <instance>/<session>}
+::msgcat::mcset ms {usage: /export [md|json]} {penggunaan: /export [md|json]}
 ::msgcat::mcset ms {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {guna: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset ms {usage: /resume <id or prefix>} {penggunaan: /resume <id atau awalan>}
 ::msgcat::mcset ms {usage: /resume <id-or-prefix>} {penggunaan: /resume <id-atau-awalan>}

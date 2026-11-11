@@ -569,6 +569,369 @@ fn history_breakpoints(messages: &[Value]) -> Vec<usize> {
     at
 }
 
+// ── tool rounds on the way out ──────────────────────────────────────────
+//
+// What the store holds is what happened: a call row is persisted before
+// its tool runs, a result after, and a crash, a halt or a failed write can
+// land between the two. What a provider accepts is narrower. Every wire
+// this engine speaks (chat completions, Responses, Anthropic Messages via
+// the drivers) requires each declared call to be answered by exactly one
+// result, after the round that declared it and before the next assistant,
+// and refuses a result that no call declares. A request that breaks either
+// rule is a 400, and because every later turn re-sends the same history,
+// the session is bricked until someone repairs it by hand.
+//
+// `replay_messages` is the one place that turns the first into the second,
+// for every route, on every request. It is a projection: nothing is run
+// again, no result is invented, and the store is not touched.
+
+/// The calls an assistant row declares; empty for any other row.
+fn declared_calls(m: &ChatMessage) -> &[Value] {
+    if m.role != "assistant" {
+        return &[];
+    }
+    m.tool_calls
+        .as_ref()
+        .and_then(Value::as_array)
+        .map(Vec::as_slice)
+        .unwrap_or(&[])
+}
+
+/// A call's id as the result row will carry it. The stream accumulator
+/// stores `""` when a route sends none, and the agent answers it with `""`.
+fn call_id(call: &Value) -> &str {
+    call.get("id").and_then(Value::as_str).unwrap_or("")
+}
+
+/// Whether this request continues a provider-held thread. Its leading
+/// results then answer the reply the provider already holds, which is not
+/// in `req.messages`.
+pub(crate) fn thread_continues(req: &ChatRequest) -> bool {
+    req.thread
+        .as_ref()
+        .and_then(|t| t.previous_message_id.as_deref())
+        .is_some_and(|id| !id.trim().is_empty())
+}
+
+/// One tool round as stored: one or more ADJACENT assistant rows that
+/// declare calls (parallel dispatch may persist one row per call), and for
+/// each declared call, in declaration order, the row that answers it.
+struct Round {
+    start: usize,
+    end: usize,
+    answers: Vec<Option<usize>>,
+}
+
+/// The calls of a round, in declaration order across its rows.
+fn round_calls<'a>(messages: &'a [ChatMessage], round: &Round) -> impl Iterator<Item = &'a Value> {
+    messages[round.start..round.end]
+        .iter()
+        .flat_map(declared_calls)
+}
+
+/// The longest argument text an interruption note repeats.
+const NOTE_ARGS_CHARS: usize = 200;
+
+/// The engine's note after a round whose calls have no saved result.
+///
+/// It is a user-role row with its own injection class, never text in the
+/// assistant's message: the model must not read the engine's words as its
+/// own (RM3-S4/A4). Fixed English and a pure function of the stored calls,
+/// so every request built from the same history, before or after a reload,
+/// carries the same bytes and the cached prefix holds.
+fn interruption_note(calls: &[&Value]) -> ChatMessage {
+    let named: Vec<String> = calls
+        .iter()
+        .map(|call| {
+            let name = call["function"]["name"].as_str().unwrap_or("");
+            let name = if name.is_empty() { "a tool" } else { name };
+            let id = call_id(call);
+            let id = if id.is_empty() {
+                "no id".to_string()
+            } else {
+                format!("id {id}")
+            };
+            let args = call["function"]["arguments"].as_str().unwrap_or("");
+            let mut shown: String = args.chars().take(NOTE_ARGS_CHARS).collect();
+            if args.chars().count() > NOTE_ARGS_CHARS {
+                shown.push('…');
+            }
+            if shown.is_empty() {
+                format!("{name} ({id})")
+            } else {
+                format!("{name} ({id}, arguments {shown})")
+            }
+        })
+        .collect();
+    ChatMessage::user(&format!(
+        "[veles] interrupted tool round: no result was saved for {}. It was not run again, \
+         and whether it took effect is unknown. Review its effects before proceeding.",
+        named.join("; ")
+    ))
+    .with_injection(INTERRUPTED_INJECTION)
+}
+
+/// The injection class of [`interruption_note`]. Never persisted: the note
+/// is rebuilt from the stored round on every request.
+pub const INTERRUPTED_INJECTION: &str = "interrupted";
+
+/// The provider's view of a stored conversation's tool rounds.
+///
+/// - Adjacent call rows become ONE assistant carrying all their calls
+///   (an assistant followed by another assistant before its results is a
+///   400 even when every id exists).
+/// - Results are paired by POSITION, not by id alone: a result answers the
+///   most recent round before it that still has an open call with its id,
+///   and inside a round the first such call. Ids are not unique: a route
+///   that sends none leaves `""`, and some models number calls per
+///   response, so `terminal:0` opens every round.
+/// - A result stored BEFORE its call (damaged ordering) is paired only when
+///   its id is unambiguous: one call and one result carry it in the whole
+///   request. A reused id could pair it with an unrelated call.
+/// - The paired results follow their round in stored order, before later
+///   work, each exactly once.
+/// - A call with no paired result is removed from its round and named in a
+///   labelled user-role note after it ([`interruption_note`]). Its effect is
+///   unknown, so it is neither sent again as a call nor ever run again. The
+///   assistant's own text stays as it was; an assistant left with neither
+///   text nor calls is not sent, the note says what it did.
+/// - A result that no call declares is not sent: every wire refuses it. The
+///   row stays in the store. A tool row without an id cannot be judged and
+///   stays where it is, as before.
+/// - `continuing`: the leading results answer a reply the provider holds
+///   (Message Threads), so they pass through as they are.
+///
+/// A well-formed history comes back unchanged, row for row.
+pub(crate) fn replay_messages(messages: &[ChatMessage], continuing: bool) -> Vec<ChatMessage> {
+    use std::collections::HashMap;
+    let n = messages.len();
+    let held = if continuing {
+        messages.iter().take_while(|m| m.role == "tool").count()
+    } else {
+        0
+    };
+
+    // The rounds, and which round each call row belongs to.
+    let mut rounds: Vec<Round> = Vec::new();
+    let mut round_of: Vec<Option<usize>> = vec![None; n];
+    let mut i = held;
+    while i < n {
+        if declared_calls(&messages[i]).is_empty() {
+            i += 1;
+            continue;
+        }
+        let start = i;
+        let mut calls = 0usize;
+        while i < n && !declared_calls(&messages[i]).is_empty() {
+            calls += declared_calls(&messages[i]).len();
+            round_of[i] = Some(rounds.len());
+            i += 1;
+        }
+        rounds.push(Round {
+            start,
+            end: i,
+            answers: vec![None; calls],
+        });
+    }
+
+    // Forward pairing. `open[id]` lists the unanswered (round, call) pairs
+    // carrying that id, in order, so its last round is the most recent.
+    let mut open: HashMap<&str, Vec<(usize, usize)>> = HashMap::new();
+    let mut paired = vec![false; n];
+    let mut early: Vec<usize> = Vec::new();
+    for (p, m) in messages.iter().enumerate().skip(held) {
+        if let Some(r) = round_of[p] {
+            if rounds[r].start == p {
+                for (s, call) in round_calls(messages, &rounds[r]).enumerate() {
+                    open.entry(call_id(call)).or_default().push((r, s));
+                }
+            }
+            continue;
+        }
+        if m.role != "tool" {
+            continue;
+        }
+        let Some(meta) = &m.tool_meta else { continue };
+        let waiting = open
+            .get_mut(meta.tool_call_id.as_str())
+            .filter(|w| !w.is_empty());
+        let Some(waiting) = waiting else {
+            early.push(p);
+            continue;
+        };
+        let latest = waiting[waiting.len() - 1].0;
+        let first_of_latest = waiting
+            .iter()
+            .position(|(r, _)| *r == latest)
+            .unwrap_or(waiting.len() - 1);
+        let (r, s) = waiting.remove(first_of_latest);
+        rounds[r].answers[s] = Some(p);
+        paired[p] = true;
+    }
+
+    // A result before its call: paired only when nothing else carries its id.
+    if !early.is_empty() {
+        let mut calls_with: HashMap<&str, usize> = HashMap::new();
+        for m in &messages[held..] {
+            for call in declared_calls(m) {
+                *calls_with.entry(call_id(call)).or_default() += 1;
+            }
+        }
+        let mut results_with: HashMap<&str, usize> = HashMap::new();
+        for m in &messages[held..] {
+            if let (true, Some(meta)) = (m.role == "tool", &m.tool_meta) {
+                *results_with.entry(meta.tool_call_id.as_str()).or_default() += 1;
+            }
+        }
+        for &p in &early {
+            let id = messages[p]
+                .tool_meta
+                .as_ref()
+                .map(|meta| meta.tool_call_id.as_str())
+                .unwrap_or("");
+            if id.is_empty() || calls_with.get(id) != Some(&1) || results_with.get(id) != Some(&1) {
+                continue;
+            }
+            let found = rounds.iter().enumerate().find_map(|(r, round)| {
+                if round.start < p {
+                    return None;
+                }
+                round_calls(messages, round)
+                    .position(|call| call_id(call) == id)
+                    .map(|s| (r, s))
+            });
+            if let Some((r, s)) = found {
+                if rounds[r].answers[s].is_none() {
+                    rounds[r].answers[s] = Some(p);
+                    paired[p] = true;
+                }
+            }
+        }
+    }
+
+    let mut out: Vec<ChatMessage> = Vec::with_capacity(n + 1);
+    out.extend(messages[..held].iter().cloned());
+    let mut p = held;
+    while p < n {
+        let m = &messages[p];
+        if let Some(r) = round_of[p] {
+            let round = &rounds[r];
+            let complete = round.answers.iter().all(Option::is_some);
+            let mut missing: Vec<&Value> = Vec::new();
+            if complete && round.end == round.start + 1 {
+                // The common case, and the one the cached prefix rests on:
+                // the row exactly as stored.
+                out.push(m.clone());
+            } else {
+                let mut joined = m.clone();
+                let mut kept: Vec<Value> = Vec::new();
+                for (k, row) in messages[round.start..round.end].iter().enumerate() {
+                    if k > 0 && !row.content.trim().is_empty() {
+                        if !joined.content.trim().is_empty() {
+                            joined.content.push_str("\n\n");
+                        }
+                        joined.content.push_str(&row.content);
+                    }
+                }
+                for (call, answer) in round_calls(messages, round).zip(&round.answers) {
+                    if answer.is_some() {
+                        kept.push(call.clone());
+                    } else {
+                        missing.push(call);
+                    }
+                }
+                if !missing.is_empty() {
+                    tracing::warn!(
+                        "build_body: tool call(s) without a saved result (msg_id={:?}, \
+                         ids={:?}) — sent as an interruption note, not replayed",
+                        m.msg_id,
+                        missing.iter().map(|call| call_id(call)).collect::<Vec<_>>()
+                    );
+                }
+                joined.tool_calls = (!kept.is_empty()).then_some(Value::Array(kept));
+                if joined.tool_calls.is_some() || !joined.content.trim().is_empty() {
+                    out.push(joined);
+                }
+            }
+            // Its results, in stored order, before anything later.
+            let mut answers: Vec<usize> = round.answers.iter().flatten().copied().collect();
+            answers.sort_unstable();
+            out.extend(answers.into_iter().map(|at| messages[at].clone()));
+            if !missing.is_empty() {
+                out.push(interruption_note(&missing));
+            }
+            p = round.end;
+            continue;
+        }
+        if m.role == "tool" && m.tool_meta.is_some() {
+            // Paired: sent with its round. Unpaired: no call declares it.
+            if !paired[p] {
+                tracing::warn!(
+                    "build_body: tool result no call declares (msg_id={:?}, id={:?}) — \
+                     not sent",
+                    m.msg_id,
+                    m.tool_meta.as_ref().map(|meta| meta.tool_call_id.as_str())
+                );
+            }
+            p += 1;
+            continue;
+        }
+        out.push(m.clone());
+        p += 1;
+    }
+    debug_assert!(
+        replay_violations(&out, continuing).is_empty(),
+        "replay_messages broke its own contract: {:?}",
+        replay_violations(&out, continuing)
+    );
+    out
+}
+
+/// What is wrong with a request's tool rounds, as text; empty when every
+/// declared call is answered exactly once directly after its round and
+/// every result answers a call. `continuing`: leading results answer a
+/// provider-held reply. Tool rows without an id are not judged.
+pub(crate) fn replay_violations(messages: &[ChatMessage], continuing: bool) -> Vec<String> {
+    let mut wrong = Vec::new();
+    let mut i = if continuing {
+        messages.iter().take_while(|m| m.role == "tool").count()
+    } else {
+        0
+    };
+    while i < messages.len() {
+        let m = &messages[i];
+        let calls = declared_calls(m);
+        if !calls.is_empty() {
+            let mut want: Vec<&str> = calls.iter().map(call_id).collect();
+            let mut j = i + 1;
+            while j < messages.len() && messages[j].role == "tool" {
+                if let Some(meta) = &messages[j].tool_meta {
+                    match want.iter().position(|id| *id == meta.tool_call_id) {
+                        Some(k) => {
+                            want.remove(k);
+                        }
+                        None => wrong.push(format!(
+                            "row {j}: result {:?} answers no call of row {i}",
+                            meta.tool_call_id
+                        )),
+                    }
+                }
+                j += 1;
+            }
+            if !want.is_empty() {
+                wrong.push(format!("row {i}: calls {want:?} have no result after them"));
+            }
+            i = j;
+            continue;
+        }
+        if m.role == "tool" && m.tool_meta.is_some() {
+            wrong.push(format!("row {i}: a result no call declares"));
+        }
+        i += 1;
+    }
+    wrong
+}
+
 /// The wires a route can ride, behind one call surface.
 ///
 /// There is deliberately no trait here, and adding a plugin driver did
@@ -811,67 +1174,29 @@ impl ProviderClient {
     }
 
     pub(crate) fn build_body_for(req: &ChatRequest) -> Value {
+        // The tool rounds first: one assistant per round, each declared
+        // call answered once, directly after it; a call without a saved
+        // result becomes a labelled note (`replay_messages`). Identity on
+        // a well-formed history, so its cached prefix does not move.
+        let projected = replay_messages(&req.messages, thread_continues(req));
         // Sanitize: providers reject an assistant with empty content and
         // no tool_calls, and an empty tool result, as "the message at
         // position N with role 'assistant' must not be empty" (400).
-        // A crash mid-persist or an interrupted tool round can leave a
-        // stored row in that shape; repair it on the way out rather than
-        // failing the whole request. Content is NEVER dropped — only
-        // replaced with a placeholder when the row is provably invalid.
-        // Compute the set once, not by rescanning the whole conversation
-        // for each assistant row. Missing means no SAVED RESULT: an action
-        // may already have happened, so recovery must never dispatch it again.
-        let answered: std::collections::HashSet<&str> = req
-            .messages
-            .iter()
-            .filter(|candidate| candidate.role == "tool")
-            .filter_map(|candidate| candidate.tool_meta.as_ref())
-            .map(|meta| meta.tool_call_id.as_str())
-            .collect();
-        let sanitized: Vec<ChatMessage> = req
-            .messages
-            .iter()
-            .map(|m| {
-                let mut m = m.clone();
+        // A crash mid-persist can leave a stored row in that shape;
+        // repair it on the way out rather than failing the whole request.
+        // Content is NEVER dropped — only replaced with a placeholder when
+        // the row is provably invalid.
+        let output: Vec<ChatMessage> = projected
+            .into_iter()
+            .map(|mut m| {
                 match m.role.as_str() {
-                    "assistant" => {
-                        let missing: Vec<&str> = m
-                            .tool_calls
-                            .as_ref()
-                            .and_then(Value::as_array)
-                            .map(Vec::as_slice)
-                            .unwrap_or(&[])
-                            .iter()
-                            .filter_map(|call| call.get("id").and_then(Value::as_str))
-                            .filter(|id| !answered.contains(id))
-                            .collect();
-                        if !missing.is_empty() {
-                            // A call is persisted before dispatch. If its
-                            // result is absent after recovery/compaction,
-                            // its effect is UNKNOWN. Do not execute it a
-                            // second time, and do not send a call no tool
-                            // row answers: both are unsafe. Keep its id in
-                            // an explicit interruption marker for review.
-                            tracing::warn!(
-                                "build_body: assistant tool call(s) without saved results \
-                                 (msg_id={:?}, ids={missing:?}) — marking interrupted, not replaying",
-                                m.msg_id
-                            );
-                            let interruption = format!(
-                                "{}\n[interrupted tool round: no saved result for {}; the action was not repeated. Review its effects before proceeding.]",
-                                m.content,
-                                missing.join(", ")
-                            );
-                            m.tool_calls = None;
-                            m.content = interruption;
-                        } else if m.content.trim().is_empty() && m.tool_calls.is_none() {
-                            tracing::warn!(
-                                "build_body: assistant message with empty content and no \
-                                 tool_calls (msg_id={:?}) — substituting placeholder",
-                                m.msg_id
-                            );
-                            m.content = "[interrupted tool round]".to_string();
-                        }
+                    "assistant" if m.content.trim().is_empty() && m.tool_calls.is_none() => {
+                        tracing::warn!(
+                            "build_body: assistant message with empty content and no \
+                             tool_calls (msg_id={:?}) — substituting placeholder",
+                            m.msg_id
+                        );
+                        m.content = "[interrupted tool round]".to_string();
                     }
                     "tool" if m.content.trim().is_empty() => {
                         tracing::warn!(
@@ -893,106 +1218,6 @@ impl ProviderClient {
                 m
             })
             .collect();
-
-        // Reconstruct each tool round for the provider: one assistant with
-        // every call in the round, then ALL of its results, before later
-        // work. Parallel dispatch can persist separate caller rows and
-        // finish their results out of order. Neither makes a legal replay:
-        // an assistant's calls must be answered before another assistant.
-        // This is a projection of saved actions, never a re-execution and
-        // never a fabricated result. Missing calls were marked interrupted
-        // above; orphaned results stay where they were, untouched.
-        let mut results: std::collections::HashMap<String, (usize, ChatMessage)> =
-            std::collections::HashMap::new();
-        for (position, m) in sanitized.iter().enumerate() {
-            if m.role == "tool" {
-                if let Some(meta) = &m.tool_meta {
-                    results
-                        .entry(meta.tool_call_id.clone())
-                        .or_insert_with(|| (position, m.clone()));
-                }
-            }
-        }
-        let mut consumed = std::collections::HashSet::new();
-        let mut output = Vec::with_capacity(sanitized.len());
-        let mut position = 0usize;
-        while position < sanitized.len() {
-            let m = &sanitized[position];
-            if m.role == "assistant" && m.tool_calls.is_some() {
-                let mut end = position + 1;
-                while end < sanitized.len()
-                    && sanitized[end].role == "assistant"
-                    && sanitized[end].tool_calls.is_some()
-                {
-                    end += 1;
-                }
-                let group = &sanitized[position..end];
-                let complete = group.iter().all(|m| {
-                    m.tool_calls
-                        .as_ref()
-                        .and_then(Value::as_array)
-                        .into_iter()
-                        .flatten()
-                        .filter_map(|call| call.get("id").and_then(Value::as_str))
-                        .all(|id| results.contains_key(id))
-                });
-                if complete {
-                    let mut combined = group[0].clone();
-                    for next in group.iter().skip(1) {
-                        if !next.content.trim().is_empty() {
-                            if !combined.content.trim().is_empty() {
-                                combined.content.push_str("\n\n");
-                            }
-                            combined.content.push_str(&next.content);
-                        }
-                        let mut calls = combined.tool_calls.take().unwrap_or_default();
-                        if let Some(array) = calls.as_array_mut() {
-                            array.extend(
-                                next.tool_calls
-                                    .as_ref()
-                                    .and_then(Value::as_array)
-                                    .cloned()
-                                    .unwrap_or_default(),
-                            );
-                        }
-                        combined.tool_calls = Some(calls);
-                    }
-                    output.push(combined);
-                    let mut completed: Vec<(usize, String)> = group
-                        .iter()
-                        .flat_map(|caller| {
-                            caller
-                                .tool_calls
-                                .as_ref()
-                                .and_then(Value::as_array)
-                                .into_iter()
-                                .flatten()
-                                .filter_map(|call| call.get("id").and_then(Value::as_str))
-                                .filter_map(|id| {
-                                    results.get(id).map(|(at, _)| (*at, id.to_string()))
-                                })
-                                .collect::<Vec<_>>()
-                        })
-                        .collect();
-                    completed.sort_by_key(|(at, _)| *at);
-                    for (_, id) in completed {
-                        if consumed.insert(id.clone()) {
-                            output.push(results[&id].1.clone());
-                        }
-                    }
-                    position = end;
-                    continue;
-                }
-            }
-            if m.role != "tool"
-                || m.tool_meta
-                    .as_ref()
-                    .is_none_or(|meta| !consumed.contains(&meta.tool_call_id))
-            {
-                output.push(m.clone());
-            }
-            position += 1;
-        }
 
         let messages: Vec<Value> = output
             .iter()
@@ -2787,11 +3012,529 @@ pub mod tests {
             unfinished["tool_calls"].is_null(),
             "an unanswered call must not reach the provider: {unfinished}"
         );
+        assert_eq!(
+            unfinished["content"], "running the tool",
+            "the assistant keeps its own words: {unfinished}"
+        );
+        // The unknown outcome stays explicit for review, in the engine's
+        // voice (a user-role note), not the model's.
+        let note = &msgs[4];
+        assert_eq!(note["role"], "user", "{msgs:?}");
         assert!(
-            unfinished["content"]
+            note["content"]
                 .as_str()
                 .is_some_and(|s| s.contains("interrupted") && s.contains("terminal:6")),
-            "the unknown outcome stays explicit for review: {unfinished}"
+            "the unknown outcome stays explicit for review: {note}"
+        );
+    }
+
+    // ── tool-round replay: the properties every route relies on ──────
+
+    /// A request over `messages` with nothing else in it.
+    fn replay_req(messages: Vec<ChatMessage>) -> ChatRequest {
+        ChatRequest {
+            model: "m".into(),
+            messages,
+            tools: vec![],
+            reasoning_effort: None,
+            stream: false,
+            replay_reasoning: false,
+            cache_mode: CacheMode::Off,
+            extra_body: None,
+            thread: None,
+        }
+    }
+
+    /// The chat-completions `messages` built for `messages`.
+    fn replayed(messages: Vec<ChatMessage>) -> Vec<Value> {
+        ProviderClient::build_body_for(&replay_req(messages))["messages"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+    }
+
+    /// An assistant row declaring `ids`, in order.
+    fn calls(content: &str, ids: &[&str]) -> ChatMessage {
+        let mut m = ChatMessage::assistant(content, None);
+        m.tool_calls = Some(Value::Array(
+            ids.iter()
+                .map(|id| {
+                    json!({"id": id, "type": "function",
+                           "function": {"name": "terminal", "arguments": "{}"}})
+                })
+                .collect(),
+        ));
+        m
+    }
+
+    fn result(id: &str, content: &str) -> ChatMessage {
+        ChatMessage::tool_result(id, "terminal", content.into())
+    }
+
+    /// What the wire refuses, read off a built body: a declared call
+    /// without exactly one result in the run of tool rows right after its
+    /// assistant, and a tool row no call declares. `held` leading results
+    /// answer a provider-held reply.
+    fn wire_violations(msgs: &[Value], held: usize) -> Vec<String> {
+        let mut wrong = Vec::new();
+        let mut i = held;
+        while i < msgs.len() {
+            let m = &msgs[i];
+            let declared: Vec<&str> = if m["role"] == "assistant" {
+                m["tool_calls"]
+                    .as_array()
+                    .into_iter()
+                    .flatten()
+                    .map(|c| c["id"].as_str().unwrap_or(""))
+                    .collect()
+            } else {
+                Vec::new()
+            };
+            if !declared.is_empty() {
+                let mut want = declared;
+                let mut j = i + 1;
+                while j < msgs.len() && msgs[j]["role"] == "tool" {
+                    let id = msgs[j]["tool_call_id"].as_str().unwrap_or("");
+                    match want.iter().position(|w| *w == id) {
+                        Some(k) => {
+                            want.remove(k);
+                        }
+                        None => wrong.push(format!("row {j}: result {id:?} answers no call")),
+                    }
+                    j += 1;
+                }
+                if !want.is_empty() {
+                    wrong.push(format!("row {i}: {want:?} unanswered"));
+                }
+                i = j;
+                continue;
+            }
+            if m["role"] == "tool" {
+                wrong.push(format!("row {i}: a result no call declares"));
+            }
+            i += 1;
+        }
+        wrong
+    }
+
+    /// Some models number their calls per response, so the same id
+    /// opens every round; keyed by id with the first result winning, the
+    /// second round lost its result and went out as a call no tool row
+    /// answers (a 400 on strict routes, and the model never saw "two").
+    #[test]
+    fn a_reused_call_id_keeps_each_round_paired_with_its_own_result() {
+        let msgs = replayed(vec![
+            ChatMessage::user("start"),
+            calls("", &["terminal:0"]),
+            result("terminal:0", "one"),
+            calls("", &["terminal:0"]),
+            result("terminal:0", "two"),
+            ChatMessage::user("continue"),
+        ]);
+        assert_eq!(msgs.len(), 6, "{msgs:?}");
+        assert_eq!(msgs[2]["content"], "one");
+        assert_eq!(msgs[3]["tool_calls"][0]["id"], "terminal:0");
+        assert_eq!(msgs[4]["content"], "two", "{msgs:?}");
+        assert!(wire_violations(&msgs, 0).is_empty(), "{msgs:?}");
+    }
+
+    /// The live failure's shape: a round interrupted before its result,
+    /// then a later round that reuses the same id and is answered. The
+    /// result is the later round's; the interrupted call is named in a
+    /// note. Pairing it with the older call would tell the model its
+    /// interrupted action returned the later output.
+    #[test]
+    fn a_reused_id_answers_its_own_round_not_an_older_interrupted_one() {
+        let msgs = replayed(vec![
+            ChatMessage::user("start"),
+            calls("first try", &["terminal:6"]),
+            ChatMessage::user("continue"),
+            calls("second try", &["terminal:6"]),
+            result("terminal:6", "second output"),
+            ChatMessage::user("next"),
+        ]);
+        assert_eq!(msgs[1]["content"], "first try", "{msgs:?}");
+        assert!(msgs[1]["tool_calls"].is_null(), "{msgs:?}");
+        assert!(
+            msgs[2]["content"]
+                .as_str()
+                .is_some_and(|s| s.contains("interrupted") && s.contains("terminal:6")),
+            "{msgs:?}"
+        );
+        assert_eq!(msgs[3]["content"], "continue");
+        assert_eq!(msgs[4]["tool_calls"][0]["id"], "terminal:6", "{msgs:?}");
+        assert_eq!(msgs[5]["content"], "second output", "{msgs:?}");
+        assert!(wire_violations(&msgs, 0).is_empty(), "{msgs:?}");
+    }
+
+    /// The other door to the same loss: a route that sends no ids leaves `""` on
+    /// every call and every result. Every result must still be sent, each
+    /// once, after its own round.
+    #[test]
+    fn calls_without_ids_keep_every_result() {
+        let msgs = replayed(vec![
+            ChatMessage::user("start"),
+            calls("", &["", ""]),
+            result("", "first"),
+            result("", "second"),
+            calls("", &[""]),
+            result("", "third"),
+            ChatMessage::user("continue"),
+        ]);
+        let sent: Vec<&str> = msgs
+            .iter()
+            .filter(|m| m["role"] == "tool")
+            .filter_map(|m| m["content"].as_str())
+            .collect();
+        assert_eq!(sent, vec!["first", "second", "third"], "{msgs:?}");
+        assert!(wire_violations(&msgs, 0).is_empty(), "{msgs:?}");
+    }
+
+    /// A round where only some calls have results (a repeat-guard
+    /// halt mid-round, a failed checkpoint write) keeps the answered pair;
+    /// only the missing call is taken out. Stripping every call left the
+    /// answered result an orphan, which is a 400 on every route.
+    #[test]
+    fn a_partly_answered_round_keeps_its_answered_pair() {
+        let msgs = replayed(vec![
+            ChatMessage::user("start"),
+            calls("", &["a", "b"]),
+            result("a", "done"),
+            ChatMessage::user("continue"),
+        ]);
+        assert_eq!(
+            msgs[1]["tool_calls"],
+            json!([{"id": "a", "type": "function",
+            "function": {"name": "terminal", "arguments": "{}"}}])
+        );
+        assert_eq!(msgs[2]["tool_call_id"], "a");
+        assert_eq!(msgs[3]["role"], "user");
+        let note = msgs[3]["content"].as_str().unwrap_or("");
+        assert!(
+            note.contains("interrupted") && note.contains("id b") && !note.contains("id a"),
+            "{msgs:?}"
+        );
+        assert!(wire_violations(&msgs, 0).is_empty(), "{msgs:?}");
+    }
+
+    /// The interruption is the engine speaking, so it is a separate
+    /// user-role note, not text appended to the assistant's message, where
+    /// the model reads it as its own words.
+    #[test]
+    fn an_interruption_note_is_not_in_the_assistants_voice() {
+        let msgs = replayed(vec![
+            ChatMessage::user("start"),
+            calls("running the tool", &["x"]),
+            ChatMessage::user("continue"),
+        ]);
+        assert_eq!(msgs[1]["role"], "assistant");
+        assert_eq!(msgs[1]["content"], "running the tool", "{msgs:?}");
+        assert!(msgs[1]["tool_calls"].is_null(), "{msgs:?}");
+        assert_ne!(msgs[2]["role"], "assistant");
+        let note = msgs[2]["content"].as_str().unwrap_or("");
+        assert!(
+            note.contains("interrupted") && note.contains("x"),
+            "{msgs:?}"
+        );
+        assert_eq!(msgs[3]["content"], "continue");
+        // An assistant that only called is not sent empty: the note says
+        // what it did.
+        let msgs = replayed(vec![
+            ChatMessage::user("start"),
+            calls("", &["y"]),
+            ChatMessage::user("continue"),
+        ]);
+        assert_eq!(
+            msgs.iter().map(|m| m["role"].clone()).collect::<Vec<_>>(),
+            vec!["user", "user", "user"],
+            "{msgs:?}"
+        );
+        assert!(msgs[1]["content"].as_str().unwrap_or("").contains("id y"));
+    }
+
+    /// A result stored before its call (damaged ordering) was sent twice:
+    /// once in place, as an orphan, and once after its round. With an
+    /// unambiguous id it is sent once, after the call.
+    #[test]
+    fn a_result_stored_before_its_call_is_sent_once_after_it() {
+        let msgs = replayed(vec![
+            ChatMessage::user("start"),
+            result("c1", "early"),
+            calls("looking", &["c1"]),
+            ChatMessage::user("continue"),
+        ]);
+        assert_eq!(msgs.len(), 4, "{msgs:?}");
+        assert_eq!(msgs[1]["tool_calls"][0]["id"], "c1");
+        assert_eq!(msgs[2]["content"], "early");
+        assert!(wire_violations(&msgs, 0).is_empty(), "{msgs:?}");
+    }
+
+    /// Message Threads: a continue sends only what follows the reply the
+    /// provider holds, so it opens with that reply's results. Those are
+    /// answers, not orphans; outside a continue the same rows are.
+    #[test]
+    fn a_thread_continue_keeps_its_leading_results() {
+        let mut req = replay_req(vec![result("toolu_1", "held"), ChatMessage::user("next")]);
+        req.thread = Some(ThreadRequest {
+            previous_message_id: Some("msg_1".into()),
+        });
+        let msgs = ProviderClient::build_body_for(&req)["messages"].clone();
+        assert_eq!(msgs[0]["tool_call_id"], "toolu_1", "{msgs}");
+        assert_eq!(msgs[1]["content"], "next");
+        req.thread = None;
+        let msgs = ProviderClient::build_body_for(&req)["messages"].clone();
+        assert_eq!(msgs.as_array().map(Vec::len), Some(1), "{msgs}");
+    }
+
+    /// The generator for the property test: xorshift, seeded per case, so
+    /// a failure names a case that reproduces.
+    struct Rng(u64);
+    impl Rng {
+        fn below(&mut self, n: u64) -> u64 {
+            self.0 ^= self.0 << 13;
+            self.0 ^= self.0 >> 7;
+            self.0 ^= self.0 << 17;
+            self.0 % n
+        }
+    }
+
+    /// How a generated history went wrong, so the properties know what to
+    /// demand of it.
+    #[derive(Default)]
+    struct Damage {
+        /// Ids repeat, or are empty.
+        ambiguous_ids: bool,
+        /// Anything but one assistant per round with its results right
+        /// after it, in order.
+        reshaped: bool,
+        /// A result no call declares was added.
+        orphan: bool,
+    }
+
+    fn generate(seed: u64) -> (Vec<ChatMessage>, Damage) {
+        let mut rng = Rng(seed.wrapping_mul(0x9E37_79B9_7F4A_7C15) | 1);
+        let mut damage = Damage::default();
+        let mode = rng.below(4); // unique, per-round numbering, empty, mixed
+        damage.ambiguous_ids = mode != 0;
+        let mut out = vec![ChatMessage::user("start")];
+        let mut serial = 0usize;
+        let mut delayed: Vec<ChatMessage> = Vec::new();
+        for round in 0..1 + rng.below(4) {
+            let k = 1 + rng.below(3) as usize;
+            let ids: Vec<String> = (0..k)
+                .map(|i| {
+                    serial += 1;
+                    match (mode, rng.below(2)) {
+                        (0, _) => format!("call_{serial}"),
+                        (1, _) | (3, 0) => format!("terminal:{i}"),
+                        _ => String::new(),
+                    }
+                })
+                .collect();
+            let refs: Vec<&str> = ids.iter().map(String::as_str).collect();
+            let text = if rng.below(2) == 0 {
+                String::new()
+            } else {
+                format!("round {round}")
+            };
+            let mut results: Vec<ChatMessage> = Vec::new();
+            let mut early: Vec<ChatMessage> = Vec::new();
+            for id in &ids {
+                serial += 1;
+                let r = result(id, &format!("out-{serial}"));
+                match rng.below(20) {
+                    0..=2 => damage.reshaped = true, // no saved result
+                    3 | 4 if mode == 0 => {
+                        damage.reshaped = true;
+                        delayed.push(r);
+                    }
+                    5 if mode == 0 => {
+                        damage.reshaped = true;
+                        early.push(r);
+                    }
+                    _ => results.push(r),
+                }
+            }
+            if results.len() > 1 && mode == 0 && rng.below(4) == 0 {
+                damage.reshaped = true;
+                results.reverse();
+            }
+            out.extend(early);
+            if k > 1 && rng.below(4) == 0 {
+                // Parallel dispatch: one assistant row per call.
+                damage.reshaped = true;
+                for (n, id) in refs.iter().enumerate() {
+                    out.push(calls(if n == 0 { &text } else { "" }, &[id]));
+                }
+            } else {
+                out.push(calls(&text, &refs));
+            }
+            out.extend(results);
+            if rng.below(3) == 0 {
+                out.append(&mut delayed);
+            }
+            if rng.below(4) == 0 {
+                out.push(ChatMessage::user("[STEER] go on").with_injection("steer"));
+            }
+        }
+        out.append(&mut delayed);
+        if rng.below(8) == 0 {
+            damage.orphan = true;
+            let at = 1 + rng.below(out.len() as u64) as usize;
+            out.insert(at, result("ghost", "ghost-out"));
+        }
+        out.push(ChatMessage::assistant("done", None));
+        out.push(ChatMessage::user("next"));
+        (out, damage)
+    }
+
+    /// The same history, serialized row for row with no repair at all:
+    /// what a well-formed history must still produce, byte for byte.
+    fn unrepaired(messages: &[ChatMessage]) -> Vec<Value> {
+        messages
+            .iter()
+            .map(|m| {
+                let mut v = json!({"role": m.role, "content": m.content});
+                if let Some(tc) = &m.tool_calls {
+                    v["tool_calls"] = tc.clone();
+                }
+                if let Some(meta) = &m.tool_meta {
+                    v["tool_call_id"] = json!(meta.tool_call_id);
+                    v["name"] = json!(meta.name);
+                }
+                v
+            })
+            .collect()
+    }
+
+    /// The replay over generated histories: reused ids, empty ids, partly
+    /// answered rounds, results before and long after their calls,
+    /// parallel call rows, orphans. Whatever the damage:
+    ///   - every call on the wire is answered exactly once, right after
+    ///     its round, and no result goes out that no call declares;
+    ///   - no result is sent twice, and none is dropped unless no call
+    ///     could have asked for it;
+    ///   - every call the wire leaves out is named in a note that is not
+    ///     the assistant's own text;
+    ///   - an undamaged history is sent exactly as stored.
+    #[test]
+    fn replayed_tool_rounds_hold_the_wire_contract_over_generated_histories() {
+        // [well-formed, well-formed with ambiguous ids, damaged, damaged
+        // with ambiguous ids]
+        let mut kinds = [0usize; 4];
+        for seed in 1..=3000u64 {
+            let (history, damage) = generate(seed);
+            let msgs = replayed(history.clone());
+            let wrong = wire_violations(&msgs, 0);
+            assert!(wrong.is_empty(), "seed {seed}: {wrong:?}\n{msgs:#?}");
+
+            let sent: Vec<&str> = msgs
+                .iter()
+                .filter(|m| m["role"] == "tool")
+                .filter_map(|m| m["content"].as_str())
+                .collect();
+            let mut unique = sent.clone();
+            unique.sort_unstable();
+            unique.dedup();
+            assert_eq!(unique.len(), sent.len(), "seed {seed}: a result sent twice");
+            if !damage.orphan {
+                for r in history.iter().filter(|m| m.role == "tool") {
+                    assert!(
+                        sent.contains(&r.content.as_str()),
+                        "seed {seed}: {:?} was dropped\n{msgs:#?}",
+                        r.content
+                    );
+                }
+            } else {
+                assert!(
+                    !sent.contains(&"ghost-out"),
+                    "seed {seed}: an orphan was sent"
+                );
+            }
+
+            let declared = history
+                .iter()
+                .filter_map(|m| m.tool_calls.as_ref().and_then(Value::as_array))
+                .map(Vec::len)
+                .sum::<usize>();
+            let on_wire = msgs
+                .iter()
+                .filter_map(|m| m["tool_calls"].as_array())
+                .map(Vec::len)
+                .sum::<usize>();
+            let notes: Vec<&str> = msgs
+                .iter()
+                .filter(|m| m["role"] == "user")
+                .filter_map(|m| m["content"].as_str())
+                .filter(|c| c.starts_with("[veles] interrupted tool round"))
+                .collect();
+            let named = notes
+                .iter()
+                .map(|n| n.matches(" (id ").count() + n.matches(" (no id").count())
+                .sum::<usize>();
+            assert_eq!(
+                declared,
+                on_wire + named,
+                "seed {seed}: a call was neither sent nor named\n{msgs:#?}"
+            );
+            for m in msgs.iter().filter(|m| m["role"] == "assistant") {
+                let text = m["content"].as_str().unwrap_or("");
+                assert!(
+                    !text.contains("[veles]") && !text.contains("interrupted tool round:"),
+                    "seed {seed}: the engine spoke in the assistant's voice: {m}"
+                );
+            }
+
+            // Well-formed means the SHAPE: repeated or empty ids in a
+            // well-formed history still go out exactly as stored.
+            if !damage.reshaped && !damage.orphan {
+                assert_eq!(
+                    msgs,
+                    unrepaired(&history),
+                    "seed {seed}: a well-formed history must go out as stored"
+                );
+                kinds[usize::from(damage.ambiguous_ids)] += 1;
+            } else {
+                kinds[2 + usize::from(damage.ambiguous_ids)] += 1;
+            }
+        }
+        // The generator is not vacuous: each kind was drawn, many times.
+        assert!(
+            kinds.iter().all(|&k| k > 20),
+            "well-formed/ambiguous/damaged: {kinds:?}"
+        );
+    }
+
+    /// The prompt cache rests on a well-formed history going out exactly as
+    /// stored, cache breakpoints included: the replay must be invisible to
+    /// every session that never had a damaged round.
+    #[test]
+    fn a_well_formed_history_keeps_its_bytes_and_breakpoints() {
+        let history = vec![
+            ChatMessage {
+                role: "system".into(),
+                ..ChatMessage::user("be brief")
+            },
+            ChatMessage::user("start"),
+            calls("looking", &["call_1", "call_2"]),
+            result("call_1", "one"),
+            result("call_2", "two"),
+            calls("", &["call_3"]),
+            result("call_3", "three"),
+            ChatMessage::assistant("done", None),
+            ChatMessage::user("next"),
+        ];
+        let mut req = replay_req(history.clone());
+        req.cache_mode = CacheMode::Explicit;
+        let body = ProviderClient::build_body_for(&req);
+        let mut expected = unrepaired(&history);
+        mark_cache_breakpoint(&mut expected[0]);
+        for i in history_breakpoints(&expected) {
+            mark_cache_breakpoint(&mut expected[i]);
+        }
+        assert_eq!(
+            serde_json::to_string(&body["messages"]).unwrap(),
+            serde_json::to_string(&expected).unwrap()
         );
     }
 

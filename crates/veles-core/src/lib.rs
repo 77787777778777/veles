@@ -154,6 +154,7 @@ pub mod contribute;
 pub mod store;
 pub mod storesync;
 pub mod streamhttp;
+pub mod supervisor;
 pub mod syncask;
 pub mod takeover;
 pub mod tasks;

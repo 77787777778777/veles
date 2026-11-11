@@ -317,6 +317,17 @@ proc ::vt::use_theme {name} {
     }
 }
 
+# `a` moved toward `b` by `frac` (0..1), as #rrggbb. Any colour Tk knows
+# (names included) is accepted, since a user theme may use either.
+proc ::vt::mix {a b frac} {
+    set out "#"
+    foreach x [winfo rgb . $a] y [winfo rgb . $b] {
+        set x [expr {$x / 257}] ; set y [expr {$y / 257}]
+        append out [format %02x [expr {int(round($x + ($y - $x) * $frac))}]]
+    }
+    return $out
+}
+
 proc ::vt::apply_theme {} {
     variable T
     option add *background $T(bg)
@@ -340,8 +351,17 @@ proc ::vt::apply_theme {} {
     ttk::style configure TLabel -background $T(bg) -foreground $T(fg)
     ttk::style configure TButton -background $T(bg_panel) -foreground $T(fg) \
         -bordercolor $T(hairline) -focuscolor $T(accent) -padding {10 4}
-    ttk::style map TButton -background [list active $T(bg_hover) \
-        pressed $T(accent)] -foreground [list pressed $T(accent_fg)]
+    # A disabled control must LOOK disabled (SMOKE-11). A style's own map
+    # hides its parent's, so the `pressed` entry alone left a disabled
+    # button in the enabled colours in every theme. The text is the dim
+    # colour pulled toward the window background (so it differs even in
+    # a theme whose dim equals its text) and the face sinks into the
+    # window; the hairline border keeps the outline. Derived button
+    # styles below repeat the `disabled` entry for the same reason.
+    set T(fg_disabled) [::vt::mix $T(fg_dim) $T(bg) 0.3]
+    ttk::style map TButton -background [list disabled $T(bg) active $T(bg_hover) \
+        pressed $T(accent)] -foreground [list disabled $T(fg_disabled) \
+        pressed $T(accent_fg)]
     ttk::style configure Accent.TButton -background $T(accent) \
         -foreground $T(accent_fg) -bordercolor $T(accent) -font {TkDefaultFont 10 bold}
     ttk::style map Accent.TButton -background [list active $T(pink) \
@@ -354,12 +374,12 @@ proc ::vt::apply_theme {} {
         -foreground $T(fg_dim) -bordercolor $T(hairline) \
         -padding {6 2} -font {TkDefaultFont 9}
     ttk::style map DevTab.TButton -background [list active $T(bg_hover)] \
-        -foreground [list active $T(fg)]
+        -foreground [list disabled $T(fg_disabled) active $T(fg)]
     ttk::style configure DevTabOn.TButton -background $T(bg_hover) \
         -foreground $T(accent) -bordercolor $T(accent) \
         -padding {6 2} -font {TkDefaultFont 9 bold}
     ttk::style map DevTabOn.TButton -background [list active $T(bg_hover)] \
-        -foreground [list active $T(accent)]
+        -foreground [list disabled $T(fg_disabled) active $T(accent)]
     # Check and radio marks in the palette. Clam's own are a white disc
     # when off and a white ring round a black dot when on: on a dark
     # theme the choice NOT made was the one that stood out (emulator,

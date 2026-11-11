@@ -11,11 +11,21 @@ namespace eval ::vfleetjournal {
     variable root ""
 }
 
+# Owner-only on unix. Windows Tcl has no `file attributes -permissions`
+# (FLEET-1: the unguarded call failed every deployment on the Windows
+# desktop before its first stage); there the journal relies on the
+# per-user data directory's ACL, like the session exports (chat.tcl).
+proc ::vfleetjournal::_owner_only {path mode} {
+    if {$::tcl_platform(platform) eq "unix"} {
+        file attributes $path -permissions $mode
+    }
+}
+
 proc ::vfleetjournal::configure {directory} {
     variable root
     set root $directory
     file mkdir $root
-    file attributes $root -permissions 0700
+    _owner_only $root 0700
 }
 
 proc ::vfleetjournal::root {} {
@@ -48,7 +58,7 @@ proc ::vfleetjournal::_write {op} {
         fconfigure $f -encoding utf-8
         puts -nonewline $f [::vfleetjson::encode [::vfleetjson::operation_value $op]]
         close $f
-        file attributes $tmp -permissions 0600
+        _owner_only $tmp 0600
         file rename -force $tmp $path
     } error]} {
         catch {close $f}

@@ -560,15 +560,19 @@ impl Tool for WebExtractTool {
     }
 }
 
-/// A failure for which another Tor circuit can help. HTTP 403 is
-/// included: sites often refuse one exit while serving the same URL on
-/// another. DNS, URL and SSRF refusals are final, not retried.
+/// A failed fetch, and whether another Tor circuit can help: the network
+/// failing (no answer, a reset, a timeout) or HTTP 403 (sites often refuse
+/// one exit while serving the same URL on another). The guard's refusals
+/// (not a URL, an address the gateway must not reach, a name that does
+/// not resolve here, a redirect it will not follow) are final and never
+/// retried: the same URL gets the same answer on any circuit.
 fn fetch_failure(message: String, retry: bool) -> (String, bool) {
     (message, retry)
 }
 
 /// How many times a proxied fetch may try. A new client uses a new Tor
 /// SOCKS identity, but the identity remains derived from this session.
+/// Only GET is ever sent, so a second try changes nothing on the site.
 const TOR_ATTEMPTS: usize = 2;
 
 /// The tool's text. Its first line is where the session's node looks for
@@ -584,17 +588,33 @@ fn shape_output(r: Result<String, String>) -> String {
     }
 }
 
-/// How long a page has to answer and arrive.
+/// How long a page has to answer and arrive, on one connection.
 const PAGE_SECS: std::time::Duration = std::time::Duration::from_secs(20);
+/// A proxied first attempt that has not answered at all by now is taken
+/// for a dead circuit and dropped; the retry, on a fresh circuit, still
+/// gets the whole PAGE_SECS. A page that answers is never cut by this,
+/// however slowly its body arrives.
+const TOR_PROBE_SECS: std::time::Duration = std::time::Duration::from_secs(8);
 /// How long a downloaded file has to arrive.
 const FILE_SECS: std::time::Duration = std::time::Duration::from_secs(300);
 
+/// Fetch a page, through `proxy` when the session's egress says so.
+///
+/// Direct: one attempt with PAGE_SECS, as it always was. Proxied: up to
+/// TOR_ATTEMPTS, each on its own circuit and each with up to PAGE_SECS,
+/// all inside PAGE_SECS + TOR_PROBE_SECS. So a page that a working circuit
+/// serves inside PAGE_SECS is served, a dead first circuit costs at most
+/// TOR_PROBE_SECS, and the whole fetch is bounded.
 async fn fetch_and_extract(
     url: &str,
     max_chars: usize,
     proxy: Option<&str>,
 ) -> Result<String, String> {
     let started = std::time::Instant::now();
+    let whole = match proxy {
+        Some(_) => PAGE_SECS + TOR_PROBE_SECS,
+        None => PAGE_SECS,
+    };
     let mut last = "no answer".to_string();
     for attempt in 0..TOR_ATTEMPTS {
         let attempt_proxy = match proxy {
@@ -607,16 +627,16 @@ async fn fetch_and_extract(
             }
             None => None,
         };
-        let left = PAGE_SECS.saturating_sub(started.elapsed());
-        let budget = if proxy.is_some() && attempt == 0 {
-            // Most pages answer well inside this. A dead circuit gets
-            // one bounded probe; the second has the remaining 12s, not
-            // zero after the original 20s budget was consumed.
-            left.min(std::time::Duration::from_secs(8))
+        let page = PAGE_SECS.min(whole.saturating_sub(started.elapsed()));
+        if page.is_zero() {
+            break;
+        }
+        let answer = if proxy.is_some() && attempt == 0 {
+            page.min(TOR_PROBE_SECS)
         } else {
-            left
+            page
         };
-        match fetch_once(url, max_chars, attempt_proxy.as_deref(), budget).await {
+        match fetch_once(url, max_chars, attempt_proxy.as_deref(), answer, page).await {
             Ok(text) => return Ok(text),
             Err((message, retry)) => {
                 last = message;
@@ -629,23 +649,26 @@ async fn fetch_and_extract(
     Err(last)
 }
 
+/// One GET. The response has to START within `answer` and the page has
+/// to have ARRIVED within `page`, both counted from the request.
 async fn fetch_once(
     url: &str,
     max_chars: usize,
     proxy: Option<&str>,
-    budget: std::time::Duration,
+    answer: std::time::Duration,
+    page: std::time::Duration,
 ) -> Result<String, (String, bool)> {
     // Guarded: `web_extract` takes a URL from the model, which takes it
     // from whoever is talking, and returns the page's text to them.
     // That is a read of anything the gateway can reach.
-    // A page answers, and arrives, within PAGE_SECS. A file may take
+    // A page answers, and arrives, within its budget. A file may take
     // longer to arrive (a 60 MB scan), so the client's whole-request
     // budget is FILE_SECS and the page's is kept by hand.
     let started = std::time::Instant::now();
-    let page_left = || budget.saturating_sub(started.elapsed());
+    let page_left = || page.saturating_sub(started.elapsed());
     let resp = tokio::time::timeout(
-        budget,
-        crate::urlguard::get_through(
+        answer,
+        crate::urlguard::get_guarded(
             url,
             FILE_SECS,
             Some("Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"),
@@ -653,8 +676,11 @@ async fn fetch_once(
         ),
     )
     .await
-    .map_err(|_| fetch_failure(format!("no answer within {}s", budget.as_secs()), true))?
-    .map_err(|e| fetch_failure(e, true))?;
+    .map_err(|_| fetch_failure(format!("no answer within {}s", answer.as_secs()), true))?
+    .map_err(|e| {
+        let retry = matches!(e, crate::urlguard::GetError::Network(_));
+        fetch_failure(e.to_string(), retry)
+    })?;
     let status = resp.status().as_u16();
     let final_url = resp.url().to_string();
     let headers: Vec<(String, String)> = resp
@@ -671,7 +697,7 @@ async fn fetch_once(
             .await
             .map_err(|_| {
                 fetch_failure(
-                    format!("the page did not arrive within {}s", budget.as_secs()),
+                    format!("the page did not arrive within {}s", page.as_secs()),
                     true,
                 )
             })?

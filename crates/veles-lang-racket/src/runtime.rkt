@@ -171,10 +171,50 @@
           (reply-err id (format "racket:~a: the handler ran ~a s without answering; killed"
                                 name invoke-deadline)))))]))
 
+;; Read every form of the file with read-syntax and evaluate nothing: the
+;; Dev tab's Check when the gateway has no `racket` program but runs this
+;; engine (SMOKE-23). A `#lang` line loads that language's reader, as
+;; loading the same file would. Under a custodian of its own, in a thread
+;; of its own. Answers "" or {line, col, message}.
+(define (do-read-check m)
+  (define id (hash-ref m 'id))
+  (define path (hash-ref m 'path))
+  (define cust (make-custodian))
+  (custodian-limit-memory cust (* 64 1024 1024))
+  (parameterize ([current-custodian cust])
+    (thread
+     (lambda ()
+       (define answer
+         (with-handlers ([(lambda (e) #t)
+                          (lambda (e)
+                            (define-values (line col)
+                              (if (exn:fail:read? e)
+                                  (let ([locs (exn:fail:read-srclocs e)])
+                                    (if (pair? locs)
+                                        (values (or (srcloc-line (car locs)) 1)
+                                                (or (srcloc-column (car locs)) 0))
+                                        (values 1 0)))
+                                  (values 1 0)))
+                            (jsexpr->string
+                             (hash 'line line 'col col 'message (describe e))))])
+           (parameterize ([read-accept-reader #t]
+                          [read-accept-lang #t]
+                          [current-namespace (make-base-empty-namespace)])
+             (call-with-input-file path
+               (lambda (in)
+                 (port-count-lines! in)
+                 (let loop ()
+                   (unless (eof-object? (read-syntax path in))
+                     (loop))))))
+           ""))
+       (reply-ok id answer)
+       (custodian-shutdown-all cust)))))
+
 (define (dispatch! m)
   (define t (hash-ref m 't ""))
   (cond
     [(equal? t "load") (thread (lambda () (do-load m)))]
+    [(equal? t "read-check") (do-read-check m)]
     [(equal? t "unload") (do-unload m)]
     [(equal? t "invoke") (do-invoke m)]
     [(equal? t "host-reply")

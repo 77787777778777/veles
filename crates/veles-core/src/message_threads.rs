@@ -109,6 +109,14 @@ impl State {
             Some(first) if first.role != "assistant" => {}
             _ => return None,
         }
+        // The endpoint holds the reply's tool calls, so a continue must
+        // answer every one of them, once, with the results that open the
+        // suffix. A round cut short (a halt, a failed write) cannot be sent
+        // as a continue at all: only a new create, which goes through the
+        // replay projection, takes the unanswered call out of the round.
+        if !answers_the_held_reply(req, self.sent) {
+            return None;
+        }
         Some(Prepared {
             messages: req.messages[self.sent..].to_vec(),
             previous_response_id: Some(self.previous_message_id.clone()),
@@ -130,6 +138,38 @@ impl State {
         }
         prepared
     }
+}
+
+/// Whether the results that open the suffix at `sent` answer every call of
+/// the stored reply just before it, each exactly once, and nothing else.
+fn answers_the_held_reply(req: &ChatRequest, sent: usize) -> bool {
+    let mut declared: Vec<&str> = sent
+        .checked_sub(1)
+        .and_then(|i| req.messages.get(i))
+        .and_then(|reply| reply.tool_calls.as_ref())
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .map(|call| {
+            call.get("id")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or("")
+        })
+        .collect();
+    let mut answered: Vec<&str> = req
+        .messages
+        .iter()
+        .skip(sent)
+        .take_while(|m| m.role == "tool")
+        .map(|m| {
+            m.tool_meta
+                .as_ref()
+                .map_or("", |meta| meta.tool_call_id.as_str())
+        })
+        .collect();
+    declared.sort_unstable();
+    answered.sort_unstable();
+    declared == answered
 }
 
 pub fn prepare(
@@ -338,6 +378,42 @@ mod tests {
         // The four messages of the request plus the reply the thread stored.
         assert_eq!(state.sent, 5);
         assert_eq!(state.previous_message_id, "msg_2");
+    }
+
+    /// The thread holds the reply's tool calls. A continue whose leading
+    /// results do not answer every one of them (a repeat-guard halt after
+    /// the first of two calls) is refused by the endpoint and cannot be
+    /// repaired inside a continue, so it becomes a new create, where the
+    /// replay projection names the unanswered call in a note.
+    #[test]
+    fn a_continue_must_answer_every_call_the_thread_holds() {
+        let first = req();
+        let r = route();
+        let mut reply = completion(Some("msg_1"), "tool_use", false);
+        reply.message.tool_calls = Some(serde_json::json!([
+            {"id": "toolu_a", "type": "function", "function": {"name": "t", "arguments": "{}"}},
+            {"id": "toolu_b", "type": "function", "function": {"name": "t", "arguments": "{}"}}
+        ]));
+        let state = complete(&first, &r, &reply).expect("state");
+        let mut later = first.clone();
+        later.messages.push(reply.message.clone());
+        later
+            .messages
+            .push(ChatMessage::tool_result("toolu_a", "t", "a".into()));
+        let mut halted = later.clone();
+        halted
+            .messages
+            .push(ChatMessage::assistant("stopped: repeated call", None));
+        halted.messages.push(ChatMessage::user("why?"));
+        assert!(state.prepare(&halted, &r, false).is_none());
+        later
+            .messages
+            .push(ChatMessage::tool_result("toolu_b", "t", "b".into()));
+        let next = state
+            .prepare(&later, &r, false)
+            .expect("a full round continues");
+        assert_eq!(next.messages.len(), 2);
+        assert_eq!(next.messages[0].role, "tool");
     }
 
     #[test]

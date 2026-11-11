@@ -415,33 +415,11 @@ impl DesktopServer {
     /// same access-event filter). A config the server only re-reads
     /// when asked is a config the settings UI and a $EDITOR fight over.
     fn spawn_config_watcher(self: &Arc<Self>) {
-        use notify::{EventKind, RecursiveMode, Watcher};
         let path = veles_core::config::config_dir().join("config.toml");
         let srv = self.clone();
-        std::thread::spawn(move || {
-            let (tx, rx) = std::sync::mpsc::channel();
-            let Ok(mut watcher) = notify::recommended_watcher(tx) else {
-                return;
-            };
-            if watcher.watch(&path, RecursiveMode::NonRecursive).is_err() {
-                return;
-            }
-            for res in rx {
-                let Ok(ev) = res else { continue };
-                if matches!(ev.kind, EventKind::Access(_)) {
-                    continue;
-                }
-                if let Some(p) = ev.paths.first() {
-                    if p != &path {
-                        continue;
-                    }
-                }
-                // Debounce: editors write in several events; one beat
-                // of quiet is enough.
-                std::thread::sleep(std::time::Duration::from_millis(300));
-                let _ = srv.reload_config();
-                tracing::info!("config.toml changed — reloaded");
-            }
+        watch_config_file(path, move || {
+            let _ = srv.reload_config();
+            tracing::info!("config.toml changed — reloaded");
         });
     }
 
@@ -683,19 +661,59 @@ impl DesktopServer {
             return Ok(());
         }
         if run.active_tool.is_some() {
-            let tool_result_saved = after_start.iter().any(|message| {
-                message.role == "tool"
-                    && message.tool_meta.as_ref().is_some_and(|meta| {
-                        Some(meta.tool_call_id.as_str()) == run.active_tool.as_deref()
-                    })
-            });
-            if !tool_result_saved {
-                self.recovery_review(
-                    run,
-                    "[veles] the gateway restarted during a tool action whose result was not saved. The action was not repeated. Review its effects and tell the agent how to proceed.",
-                )?;
-                self.recovery_kick(&sid);
-                return Ok(());
+            // The running call is found by POSITION: ids are not unique,
+            // so an earlier call's saved result can carry this one's id
+            // (`""`, `terminal:0`) and must not count as its result.
+            // Only when no call of the turn carries the id at all does
+            // any saved result with it count, as before.
+            use veles_core::turn_recovery::InFlight;
+            let id = run.active_tool.as_deref().unwrap_or_default();
+            let flight = veles_core::turn_recovery::call_in_flight(&after_start, id);
+            let tool_result_saved = match &flight {
+                InFlight::Answered => true,
+                InFlight::Cut(..) => false,
+                InFlight::Unknown => after_start.iter().any(|message| {
+                    message.role == "tool"
+                        && message
+                            .tool_meta
+                            .as_ref()
+                            .is_some_and(|meta| meta.tool_call_id == id)
+                }),
+            };
+            // A call that only reads, or the agent's own restart of this
+            // gateway, is answered with what happened to it and the turn
+            // goes on without the owner (ASK-3). The engine's existing
+            // judgements decide which (turn_recovery::cut_call); the
+            // call itself is never dispatched again.
+            let cut = match flight {
+                InFlight::Cut(name, args) => {
+                    veles_core::turn_recovery::cut_call(&name, &args).map(|kind| (name, kind))
+                }
+                _ => None,
+            };
+            match cut {
+                _ if tool_result_saved => {}
+                Some((name, kind)) => {
+                    tracing::info!(
+                        "turn recovery: {sid}: {name} call {id} was cut by the restart ({kind:?}); continuing"
+                    );
+                    self.store.lock_ok().append_message(
+                        &sid,
+                        &veles_core::providers::ChatMessage::tool_result(
+                            id,
+                            &name,
+                            veles_core::turn_recovery::cut_call_result(kind).into(),
+                        ),
+                    )?;
+                }
+                None => {
+                    self.recovery_review(
+                        run,
+                        "[veles] the gateway restarted during a tool action whose result was not saved. The action was not repeated. Review its effects and tell the agent how to proceed.",
+                    )?;
+                    self.recovery_kick(&sid);
+                    return Ok(());
+                }
             }
             // The result row is durable even if the marker-clearing write
             // was lost. Reuse it; never dispatch the action again.
@@ -1431,17 +1449,54 @@ fn list_sessions_on(
             .collect();
     }
     rows.extend(pinned_extra);
+    // ASK-2: a child a peer ran for one of this node's sessions names it
+    // in its parent column, `a2a-remote/<this node>/<session>`. That
+    // column is the PEER's word, so it nests a row under a local session
+    // only when the row comes from the replica of a node this node
+    // actually sent a child of that session to (store
+    // `session_placements`, written by delegate::run_on_placed). A peer
+    // cannot attach rows under a local session it was never given.
+    let me = veles_core::node::NodeIdentity::load(&veles_core::config::config_dir())
+        .ok()
+        .flatten()
+        .map(|id| id.id);
+    let placed_here = |column: Option<&str>, from: Option<&str>| -> Option<String> {
+        let (node, sid) = veles_core::delegate::placed_parent_parts(column?)?;
+        let from = from?;
+        (me.as_deref() == Some(node) && store.session_placed_on(sid, from).unwrap_or(false))
+            .then(|| sid.to_string())
+    };
+    // The parent the client nests a row under (it nests by session id).
+    // A placed child's column names the placing node too: the session
+    // id is shown when the link holds — this node's own session, placed
+    // from here; another node's session, which is no local session's id
+    // — and the column as written otherwise, which nests under nothing.
+    let shown_parent = |column: Option<&str>, from: Option<&str>| -> Option<String> {
+        let p = column?;
+        let Some((node, sid)) = veles_core::delegate::placed_parent_parts(p) else {
+            return Some(p.to_string());
+        };
+        if me.as_deref() == Some(node) {
+            return Some(placed_here(column, from).unwrap_or_else(|| p.to_string()));
+        }
+        Some(if store.session_exists(sid).unwrap_or(true) {
+            p.to_string()
+        } else {
+            sid.to_string()
+        })
+    };
     let sessions: Vec<Value> = rows
         .iter()
         .map(|m| {
             // The fork link: a subagent child names its parent here, so
             // the sidebar can mark children and offer "go to parent"
             // (USER taxonomy, 2026-09-17).
+            let from = owner.get(&m.id).map(|(node, _)| node.as_str());
             let mut v = json!({
                 "id": m.id,
                 "title": m.title,
                 "preview": m.preview,
-                "parent": m.parent,
+                "parent": shown_parent(m.parent.as_deref(), from),
                 "created_at": m.created_at,
                 "updated_at": m.updated_at,
                 "message_count": m.message_count,
@@ -1510,6 +1565,29 @@ fn list_sessions_on(
                 );
             }
         }
+        // ASK-2: a child a peer ran for one of THIS node's sessions names
+        // it as `a2a-remote/<this node>/<session>`. When that session is
+        // not on the page, it (and its own ancestors) is context too, so
+        // the replica child still nests under it — when this node placed
+        // a child of that session on the row's node (`placed_here`).
+        let placed: Vec<String> = rows
+            .iter()
+            .filter_map(|r| {
+                let (from, _) = owner.get(&r.id)?;
+                placed_here(r.parent.as_deref(), Some(from))
+            })
+            .filter(|sid| !page_ids.contains(sid))
+            .collect();
+        if !placed.is_empty() {
+            let mut extra = store.session_rows(&placed).unwrap_or_default();
+            extra.extend(store.session_ancestor_rows(&placed).unwrap_or_default());
+            for row in extra {
+                if !page_ids.contains(&row.id) && !ancestor_rows.iter().any(|(r, _)| r.id == row.id)
+                {
+                    ancestor_rows.push((row, None));
+                }
+            }
+        }
     }
     // DOWNWARD context (SI-6): the children of the local sessions on this
     // page that the page itself does not hold. Ranked by `updated_at`, a
@@ -1535,12 +1613,51 @@ fn list_sessions_on(
         .into_iter()
         .filter(|r| !on_list.contains(&r.id) && !context_ids.contains(&r.id))
         .collect();
+    // ASK-2: the children peers ran for these local sessions, from the
+    // peers' replicas here. Listed whether or not the caller asked for
+    // remote rows: the Sessions window does not, and a subagent belongs
+    // under its parent wherever the parent is shown. Read-only, as every
+    // replica row is. From each replica, only the children of the local
+    // sessions this node sent a child to that node from.
+    let mut remote_children: Vec<(veles_core::store::SessionRow, Option<(String, String)>)> =
+        Vec::new();
+    if let (Some(me), false) = (me.as_deref(), local_ids.is_empty()) {
+        for (node, replica) in veles_core::storesync::replicas_ro() {
+            let placed: Vec<String> = local_ids
+                .iter()
+                .filter(|id| store.session_placed_on(id, &node).unwrap_or(false))
+                .map(|id| veles_core::delegate::remote_parent(me, Some(id)))
+                .collect();
+            if placed.is_empty() {
+                continue;
+            }
+            let Ok(found) = replica.session_descendant_rows(&placed, 50, 500) else {
+                continue;
+            };
+            let name = store
+                .node_get(&node)
+                .ok()
+                .flatten()
+                .map(|n| n.name)
+                .unwrap_or_else(|| node.chars().take(8).collect());
+            for row in found {
+                if on_list.contains(&row.id)
+                    || context_ids.contains(&row.id)
+                    || store.session_exists(&row.id).unwrap_or(false)
+                {
+                    continue;
+                }
+                remote_children.push((row, Some((node.clone(), name.clone()))));
+            }
+        }
+    }
     let context_json = |row: veles_core::store::SessionRow, owner: Option<(String, String)>| {
+        let from = owner.as_ref().map(|(node, _)| node.as_str());
         let mut v = json!({
             "id": row.id,
             "title": row.title,
             "preview": row.preview,
-            "parent": row.parent,
+            "parent": shown_parent(row.parent.as_deref(), from),
             "created_at": row.created_at,
             "updated_at": row.updated_at,
             "message_count": row.message_count,
@@ -1556,16 +1673,19 @@ fn list_sessions_on(
     };
     let children_json: Vec<Value> = descendant_rows
         .into_iter()
-        .map(|r| context_json(r, None))
+        .map(|r| (r, None))
+        .chain(remote_children)
+        .map(|(r, owner)| context_json(r, owner))
         .collect();
     let ancestor_json: Vec<Value> = ancestor_rows
         .into_iter()
         .map(|(row, owner)| {
+            let from = owner.as_ref().map(|(node, _)| node.as_str());
             let mut v = json!({
                 "id": row.id,
                 "title": row.title,
                 "preview": row.preview,
-                "parent": row.parent,
+                "parent": shown_parent(row.parent.as_deref(), from),
                 "created_at": row.created_at,
                 "updated_at": row.updated_at,
                 "message_count": row.message_count,
@@ -1681,7 +1801,10 @@ fn replica_history(srv: &DesktopServer, id: &str) -> Option<(StatusCode, Json<Va
         .flatten()
         .map(|n| n.name)
         .unwrap_or_else(|| node.chars().take(8).collect());
-    let rows = history_rows(&r, &srv.cfg.read_ok(), id, 0, 0);
+    // A replica is an audit transcript, not the prompt the owner will send.
+    // `/clear` archives every message but leaves the guards that annotated
+    // them; filtering to live rows here showed ONLY those orphaned guards.
+    let rows = history_rows(&r, &srv.cfg.read_ok(), id, 0, 0, true);
     Some(match rows {
         Ok(out) => (
             StatusCode::OK,
@@ -1787,9 +1910,11 @@ async fn delete_session(
 /// its anchor position in the walk below regardless.
 ///
 /// `store` is a connection, usually a pooled read-only one
-/// (`DesktopServer::read`). Its four reads share one read transaction,
-/// so a row written in between cannot be in one list and missing from
-/// the others; they took the store lock four times before.
+/// (`DesktopServer::read`). The messages and notes share one read
+/// transaction. A read-only replica also includes archived rows:
+/// `/clear` removes them from the model's next prompt, not from the
+/// transcript a person came to inspect. Live history and SSE keep the
+/// established filter so `/clear` does not resurrect old rows there.
 #[allow(clippy::too_many_arguments)]
 fn history_rows(
     store: &Store,
@@ -1797,24 +1922,30 @@ fn history_rows(
     id: &str,
     since: i64,
     since_note: i64,
+    include_archived: bool,
 ) -> anyhow::Result<Vec<Value>> {
     let snapshot = if store.conn().is_autocommit() {
         Some(store.conn().unchecked_transaction()?)
     } else {
         None
     };
-    let msgs = store.load_history_since(id, since)?;
+    let msgs = if include_archived {
+        store.transcript_since(id, since)?
+    } else {
+        store
+            .load_history_since(id, since)?
+            .into_iter()
+            .zip(store.message_times_since(id, since)?)
+            .map(|(m, at)| (m, false, at))
+            .collect()
+    };
     // Engine notes are pinned to the message they followed, so they can
     // be rendered back AT THE POINT THEY HAPPENED rather than dumped at
     // the end. Without this a reopened session shows a conversation that
     // looks like you had it — no sign a cron ran it, or that history was
     // compacted underneath you.
-    let ids = store.message_ids_since(id, since).unwrap_or_default();
+    let ids: Vec<i64> = msgs.iter().filter_map(|(m, _, _)| m.msg_id).collect();
     let notes = store.notes_for(id).unwrap_or_default();
-    // When each row happened, for the transcript's timestamps: zipped like
-    // `ids` (same filter), sent as RFC 3339 UTC — the client shows it in
-    // its own local time.
-    let times = store.message_times_since(id, since).unwrap_or_default();
     drop(snapshot);
     let note_json = |n: &veles_core::store::StoredNote| {
         let mut v = json!({
@@ -1845,7 +1976,7 @@ fn history_rows(
 
     let rendered: Vec<Value> = msgs
         .iter()
-        .map(|m| {
+        .map(|(m, archived, _at)| {
             // Prefer display_reasoning (plugin-summarized); fall back to
             // raw reasoning so the block shows even without the plugin.
             let reasoning = m.display_reasoning.clone().or_else(|| m.reasoning.clone());
@@ -1874,12 +2005,14 @@ fn history_rows(
                     "tool_name": name,
                     "tool_call_id": tcid,
                     "content": m.content,
+                    "archived": archived,
                 })
             } else {
                 let mut v = json!({
                     "role": m.role,
                     "content": m.content,
                     "display_reasoning": reasoning,
+                    "archived": archived,
                 });
                 // The injection class, when this row is one (steer /
                 // background / compaction / todo / hook / verification)
@@ -1911,6 +2044,7 @@ fn history_rows(
 
     // Walk the messages, dropping in each note once its anchor message
     // has been emitted.
+    let times: Vec<String> = msgs.iter().map(|(_, _, at)| at.clone()).collect();
     for (i, mut m) in rendered.into_iter().enumerate() {
         let this_id = ids.get(i).copied().unwrap_or(i64::MAX);
         if let Some(t) = times.get(i) {
@@ -2016,7 +2150,7 @@ async fn history(
         }
         let cfg = srv.cfg();
         srv.read("desktop::history", |s| {
-            match history_rows(s, &cfg, &id, 0, 0) {
+            match history_rows(s, &cfg, &id, 0, 0, false) {
                 Ok(out) => (
                     StatusCode::OK,
                     Json(json!({
@@ -2065,31 +2199,46 @@ async fn export_session(
         );
     };
     veles_core::rt::spawn_blocking(move || {
-        srv.read("desktop::export", |s| {
-            if !s.session_exists(&id).unwrap_or(false) {
-                return (
-                    StatusCode::NOT_FOUND,
-                    Json(json!({ "error": format!("no session {id} on this node") })),
-                );
-            }
+        let render = |s: &veles_core::store::Store, node: Option<&str>| {
             match veles_core::export::render_session(s, &id, format, None) {
-                Ok(r) => (
-                    StatusCode::OK,
-                    Json(json!({
+                Ok(r) => {
+                    let mut out = json!({
                         "session_id": id,
                         "format": format.as_str(),
                         "ext": format.ext(),
                         "file_stem": veles_core::export::file_stem(&id),
                         "message_count": r.message_count,
                         "content": r.content,
-                    })),
-                ),
+                    });
+                    if let Some(node) = node {
+                        out["node"] = json!(node);
+                        out["read_only"] = json!(true);
+                    }
+                    (StatusCode::OK, Json(out))
+                }
                 Err(e) => (
                     StatusCode::INTERNAL_SERVER_ERROR,
                     Json(json!({ "error": format!("{e:#}") })),
                 ),
             }
-        })
+        };
+        let local = srv.read("desktop::export", |s| {
+            s.session_exists(&id)
+                .unwrap_or(false)
+                .then(|| render(s, None))
+        });
+        if let Some(reply) = local {
+            return reply;
+        }
+        // A replica's session opens read-only (`replica_history`); its
+        // export renders from the same copy (ASK-5).
+        match veles_core::storesync::replica_holding(&id) {
+            Some((node, replica)) => render(&replica, Some(&node)),
+            None => (
+                StatusCode::NOT_FOUND,
+                Json(json!({ "error": format!("no session {id} on this node") })),
+            ),
+        }
     })
     .await
     .unwrap_or_else(|e| {
@@ -3281,6 +3430,17 @@ async fn command_run(
             Json(json!({"error": "not a command (no leading /)"})),
         );
     }
+    // The composer hands every `/` line here. One that is text by the
+    // rule every surface asks (commands::slash_line) — a path typed
+    // first, a `//` line — comes back as `send`, with `//` reduced to
+    // one slash, and the composer sends it as a message; nothing below
+    // runs it (SMOKE-19 follow-up).
+    if let veles_core::commands::SlashLine::Text(t) = veles_core::commands::slash_line(&line) {
+        return (
+            StatusCode::OK,
+            Json(json!({"handled": false, "text": "", "reload": false, "send": t})),
+        );
+    }
     // A CHAT alias — `/qwen-flash <prompt>`. It mints a session, so it
     // cannot be a shared-dispatcher arm (see `commands::media_alias`).
     //
@@ -3906,7 +4066,7 @@ async fn session_events(
         veles_core::rt::spawn_blocking(move || {
             srv.read("desktop::events", |st| {
                 let snap = snap.map(|s| unpersisted_rounds(st, &id, s));
-                let replay = history_rows(st, &srv.cfg.read_ok(), &id, since, since_note)
+                let replay = history_rows(st, &srv.cfg.read_ok(), &id, since, since_note, false)
                     .unwrap_or_default();
                 let cursor = st.last_msg_id(&id).unwrap_or(0);
                 let note_cursor = st.last_note_id(&id).unwrap_or(since_note);
@@ -4083,7 +4243,7 @@ async fn session_events(
                             let gap = {
                                 let cfg = srv.cfg.read_ok();
                                 srv.read("desktop::events", |st| {
-                                    history_rows(st, &cfg, &sid, cursor, note_cursor)
+                                    history_rows(st, &cfg, &sid, cursor, note_cursor, false)
                                 })
                                 .unwrap_or_default()
                             };
@@ -4528,6 +4688,13 @@ async fn lsp_status() -> Json<Value> {
         v["cmd"] = json!(s.cmd);
     }
     Json(v)
+}
+
+/// GET /api/lsp/servers — per extension language, the server this
+/// gateway would start, or how to get one (the Dev tab's guide lists
+/// it; DEV-6).
+async fn lsp_servers() -> Json<Value> {
+    Json(json!({"servers": veles_core::lsp_servers::servers()}))
 }
 
 /// POST /api/lsp/check {path} — the Dev pane's Check: the file type's
@@ -7233,6 +7400,40 @@ async fn plugin_api_version() -> Json<Value> {
     Json(json!({"version": veles_core::plugins::extension_api_version()}))
 }
 
+/// GET /api/extensions/docs/{plugins,extending} — the plugin author guide
+/// and the extension API reference as compiled into this gateway. The
+/// Dev tab's guide buttons opened `docs/*.md` beside the desktop, which
+/// exists only in a source checkout, and against a remote gateway named
+/// the wrong machine's file (DEV-2).
+async fn extension_docs(Path(name): Path<String>) -> (StatusCode, Json<Value>) {
+    match veles_core::extension_assist::guide_text(&name) {
+        Some((title, text)) => (
+            StatusCode::OK,
+            Json(json!({"name": name, "title": title, "text": text})),
+        ),
+        None => (
+            StatusCode::NOT_FOUND,
+            Json(json!({"error": "no such guide: plugins or extending"})),
+        ),
+    }
+}
+
+#[derive(Deserialize)]
+struct ClassifyQuery {
+    path: String,
+}
+
+/// GET /api/extensions/classify?path= — `extension`, `core` or `other`:
+/// whether the Dev pane offers to draft a change to this file as an
+/// extension instead (DEV-12).
+async fn extension_classify(Query(q): Query<ClassifyQuery>) -> Json<Value> {
+    let path = std::path::PathBuf::from(&q.path);
+    Json(json!({
+        "path": q.path,
+        "kind": veles_core::extension_assist::classify(&path),
+    }))
+}
+
 /// POST /api/plugins/preview — exact proposed files, with no writes,
 /// snapshots or reloads. The form and the confirmation review share this.
 async fn plugin_preview(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
@@ -7245,6 +7446,9 @@ async fn plugin_preview(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
             Json(json!({
                 "name": name.trim(),
                 "kind": kind,
+                // What was received, for the desktop to compare with its
+                // form (DEV-1: a purpose lost on the wire was confirmed).
+                "description": desc.trim(),
                 "api": veles_core::plugins::extension_api_version(),
                 "files": files.into_iter().map(|file| json!({
                     "name": file.name,
@@ -7558,8 +7762,11 @@ async fn extension_assist_propose(
         Ok(found) => found,
         Err(e) => return assist_refusal(e),
     };
+    // `dir` is canonical; the desktop's path may spell the plugin root
+    // through a symlink (DEV-3), as plugins_dir() does.
     let focus = path
         .strip_prefix(&dir)
+        .or_else(|_| path.strip_prefix(veles_core::plugins::plugins_dir().join(&name)))
         .ok()
         .map(|p| p.to_string_lossy().replace('\\', "/"));
     let cfg = srv.cfg();
@@ -7681,13 +7888,8 @@ async fn extension_assist_apply(
         {
             Ok(Ok(mut reply)) => {
                 if reply["created"] == true {
-                    match srv.hooks.reload_plugins().await {
-                        Ok(()) => reply["reloaded"] = json!(true),
-                        Err(error) => {
-                            reply["reloaded"] = json!(false);
-                            reply["reload_error"] = json!(error);
-                        }
-                    }
+                    let name = reply["name"].as_str().unwrap_or("").to_string();
+                    load_written_extension(&srv, &name, None, &mut reply).await;
                 }
                 (StatusCode::OK, Json(reply))
             }
@@ -7728,6 +7930,70 @@ async fn extension_assist_apply(
     }
 }
 
+/// Load an extension that was just written (New extension, an applied
+/// generated one) through ITS OWN tier, and put in the reply whether it
+/// took: `loaded` and `load`, the load line or what stands in the way.
+/// The dialog said "Created and reloaded" for TypeScript, Racket and Lisp
+/// extensions that stayed `pending`: the reload reached the Tcl tier only,
+/// and the watcher can miss a directory that appears with its files in it
+/// (SMOKE-2). `reloaded`/`reload_error` stay for desktops older than
+/// `loaded`. `kind` is looked up from the manifest when not given.
+async fn load_written_extension(
+    srv: &DesktopServer,
+    name: &str,
+    kind: Option<&str>,
+    reply: &mut Value,
+) {
+    let kind = match kind {
+        Some(kind) => kind.to_string(),
+        None => {
+            let cfg = veles_core::config::load().unwrap_or_default();
+            veles_core::plugins::discover(&cfg.plugins.enabled, &cfg.plugins.disabled)
+                .unwrap_or_default()
+                .into_iter()
+                .find(|p| p.manifest.name == name)
+                .map(|p| p.manifest.kind)
+                .unwrap_or_else(|| "tcl".to_string())
+        }
+    };
+    let (loaded, load) = if kind == "tcl" {
+        // One plugin sourced, with its own answer; a reload of every
+        // plugin answers for all of them at once.
+        let load = srv.hooks.load_tcl_plugin(name).await;
+        reply["reloaded"] = json!(load.is_ok());
+        if let Err(error) = &load {
+            reply["reload_error"] = json!(error);
+        }
+        match load {
+            Ok(line) => (true, line),
+            Err(error) => (false, error),
+        }
+    } else {
+        match srv.hooks.reload_plugins().await {
+            Ok(()) => reply["reloaded"] = json!(true),
+            Err(error) => {
+                reply["reloaded"] = json!(false);
+                reply["reload_error"] = json!(error);
+            }
+        }
+        if kind == "rust" {
+            (
+                false,
+                "not loaded yet: its library does not exist until `cargo build --release` has \
+                 run in its directory; then reload it in Manage extensions"
+                    .to_string(),
+            )
+        } else {
+            match veles_core::scripthost::load_named(name).await {
+                Ok(line) => (true, line),
+                Err(error) => (false, error),
+            }
+        }
+    };
+    reply["loaded"] = json!(loaded);
+    reply["load"] = json!(load);
+}
+
 /// POST /api/plugins/new {name, description?, kind?, template?} — scaffold
 /// an extension. Creation happens only when the desktop's confirmed form
 /// submits; no placeholder draft is written by the preview endpoint.
@@ -7744,6 +8010,8 @@ async fn plugin_new(
                 "js" => "plugin.ts",
                 "racket" => "plugin.rkt",
                 "lisp" => "plugin.lisp",
+                // The entry of a Rust plugin is its build; open the source.
+                "rust" => "src/lib.rs",
                 _ => "plugin.tcl",
             };
             let entry = dir.join(entry_name);
@@ -7754,13 +8022,12 @@ async fn plugin_new(
                 "api": veles_core::plugins::extension_api_version(),
                 "kind": kind,
             });
-            match srv.hooks.reload_plugins().await {
-                Ok(()) => response["reloaded"] = json!(true),
-                Err(error) => {
-                    response["reloaded"] = json!(false);
-                    response["reload_error"] = json!(error);
-                }
-            }
+            // The directory is named after the manifest's (validated) name.
+            let created = dir
+                .file_name()
+                .map(|n| n.to_string_lossy().into_owned())
+                .unwrap_or_else(|| name.to_string());
+            load_written_extension(&srv, &created, Some(kind), &mut response).await;
             (StatusCode::CREATED, Json(response))
         }
         Err(e) => (
@@ -8747,17 +9014,26 @@ async fn shell_start(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
 /// GET /api/translate/config — public default target and readiness only.
 /// Ready means a route translate.rs will actually use: `[translation]`
 /// naming both halves, or a configured provider that lists the default
-/// translator model (`translate::ready`).
+/// translator model (`translate::ready`). `timeout_secs` is how long one
+/// translation can take here (`translate::BUDGET_SECS`), which the popup
+/// waits for its POST /api/translate.
 async fn translate_config(State(srv): State<Arc<DesktopServer>>) -> Json<Value> {
     let cfg = srv.cfg();
     Json(json!({
         "target_language": cfg.translation.target_language,
         "configured": veles_core::translate::ready(&cfg),
+        "timeout_secs": veles_core::translate::BUDGET_SECS,
     }))
 }
 
 /// POST /api/translate — one direct call to the configured translator.
 /// Selected text never becomes an agent turn or enters session history.
+///
+/// No capability check, unlike `/translate` in a chat (cmd-session): the
+/// desktop API has no principals. Its caller is the operator (docs/acl.md,
+/// "no principal"), and the bearer gate in front of every route is the
+/// whole check; the same bearer starts host shells (/api/shells). TR-4,
+/// pinned by `the_translate_endpoints_are_behind_the_bearer`.
 async fn translate_text(
     State(srv): State<Arc<DesktopServer>>,
     Json(body): Json<Value>,
@@ -8814,16 +9090,26 @@ async fn btw_start(Json(body): Json<Value>) -> (StatusCode, Json<Value>) {
 /// configured SSH instance list. Only an explicit allowlist is exposed:
 /// peer tokens, signing keys and local configuration never enter it.
 async fn fleet_inventory(State(srv): State<Arc<DesktopServer>>) -> (StatusCode, Json<Value>) {
-    let cfg = srv.cfg();
-    let nodes = match srv.store.lock_ok().nodes_list() {
-        Ok(nodes) => nodes,
-        Err(e) => {
-            return (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                Json(json!({"error": format!("could not read node registry: {e}")})),
-            )
-        }
-    };
+    match fleet_body(&srv.store, &srv.cfg(), srv.bus.as_ref()) {
+        Ok(body) => (StatusCode::OK, Json(body)),
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(json!({"error": format!("could not read node registry: {e}")})),
+        ),
+    }
+}
+
+/// What `/api/fleet` answers and `/fleet list` prints
+/// (`fleet_ops::list_text`): the registry inventory, the command-center
+/// annotation and where this process's health alerts go. One builder for
+/// both, because the chat listing derived its own `fresh`/`stale` and
+/// fell behind the tab (FLEET-9). The error is a failed registry read.
+pub(crate) fn fleet_body(
+    store: &Arc<Mutex<Store>>,
+    cfg: &VelesConfig,
+    bus: Option<&veles_core::bus::GatewayBus>,
+) -> anyhow::Result<Value> {
+    let nodes = store.lock_ok().nodes_list()?;
     let replicas = veles_core::storesync::list_replicas().unwrap_or_default();
     let me = veles_core::node::NodeIdentity::load(&veles_core::config::config_dir())
         .ok()
@@ -8838,8 +9124,15 @@ async fn fleet_inventory(State(srv): State<Arc<DesktopServer>>) -> (StatusCode, 
     );
     // Per-kind sync status, per-node health and the inbox counts
     // (crate::fleet_ops) — names, cursors and counts, never a token.
-    crate::fleet_ops::annotate(&mut body, &nodes, &srv.store.lock_ok(), &cfg);
-    (StatusCode::OK, Json(body))
+    crate::fleet_ops::annotate(&mut body, &nodes, &store.lock_ok(), cfg);
+    // Where this process's health alerts go (FLEET-8), which needs
+    // the bus: whether the home chat's adapter runs here.
+    body["alerts"]["delivery"] = crate::fleet_watch::delivery(cfg, bus);
+    // Whether this process runs the gateway. The last passes, the
+    // backoff and the alerts are process-local, so a listing from any
+    // other process (`veles chat`, the TUI) holds only what it has seen.
+    body["gateway"] = json!(bus.is_some());
+    Ok(body)
 }
 
 /// A store apply that applied NOTHING and refused something is a
@@ -8881,7 +9174,8 @@ async fn fleet_forget(
         .ok()
         .flatten()
         .map(|id| id.id);
-    match crate::fleet_ops::forget(&srv.store, &srv.cfg(), requested, me.as_deref(), confirmed) {
+    let r = crate::fleet_ops::forget(&srv.store, &srv.cfg(), requested, me.as_deref(), confirmed);
+    match crate::fleet_manage::audited(DESKTOP_WHO, "forget", requested, r) {
         Ok(body) => (StatusCode::OK, Json(body)),
         Err(error) => (
             fleet_error_status(&error),
@@ -8898,7 +9192,8 @@ async fn fleet_probe(
     Json(body): Json<Value>,
 ) -> (StatusCode, Json<Value>) {
     let requested = body["node"].as_str().unwrap_or("");
-    match crate::fleet_ops::probe(&srv.store, &srv.cfg(), requested).await {
+    let r = crate::fleet_ops::probe(&srv.store, &srv.cfg(), requested).await;
+    match crate::fleet_manage::audited(DESKTOP_WHO, "probe", requested, r) {
         Ok(body) => (StatusCode::OK, Json(body)),
         Err(error) => (
             fleet_error_status(&error),
@@ -8937,7 +9232,13 @@ async fn fleet_logs(
             .unwrap_or(crate::fleet_obs::DEFAULT_LINES as u64),
         "level": body["level"].as_str().unwrap_or("all"),
     });
-    fleet_answer(crate::fleet_obs::ask(&srv.store, &srv.cfg(), &requested, params).await)
+    let r = crate::fleet_obs::ask(&srv.store, &srv.cfg(), &requested, params).await;
+    fleet_answer(crate::fleet_manage::audited(
+        DESKTOP_WHO,
+        "logs",
+        &requested,
+        r,
+    ))
 }
 
 /// POST /api/fleet/metrics {node} — that node's CPU load and cores,
@@ -8948,9 +9249,14 @@ async fn fleet_metrics(
     Json(body): Json<Value>,
 ) -> (StatusCode, Json<Value>) {
     let requested = body["node"].as_str().unwrap_or("").to_string();
-    fleet_answer(
-        crate::fleet_obs::ask(&srv.store, &srv.cfg(), &requested, json!({"op": "metrics"})).await,
-    )
+    let r =
+        crate::fleet_obs::ask(&srv.store, &srv.cfg(), &requested, json!({"op": "metrics"})).await;
+    fleet_answer(crate::fleet_manage::audited(
+        DESKTOP_WHO,
+        "metrics",
+        &requested,
+        r,
+    ))
 }
 
 /// POST /api/fleet/drift — version, revision and config drift: every
@@ -8958,7 +9264,8 @@ async fn fleet_metrics(
 /// asked for its fingerprint and compared with this node's, by key name
 /// and config-log high-water mark (no value is sent).
 async fn fleet_drift(State(srv): State<Arc<DesktopServer>>) -> (StatusCode, Json<Value>) {
-    fleet_answer(crate::fleet_obs::drift(&srv.store, &srv.cfg()).await)
+    let r = crate::fleet_obs::drift(&srv.store, &srv.cfg()).await;
+    fleet_answer(crate::fleet_manage::audited(DESKTOP_WHO, "drift", "", r))
 }
 
 /// POST /api/fleet/gossip {peer?} — exchange registry gossip now with
@@ -8968,7 +9275,13 @@ async fn fleet_gossip(
     Json(body): Json<Value>,
 ) -> (StatusCode, Json<Value>) {
     let peer = body["peer"].as_str().map(str::to_string);
-    fleet_answer(crate::fleet_obs::gossip_now(&srv.store, &srv.cfg(), peer.as_deref()).await)
+    let r = crate::fleet_obs::gossip_now(&srv.store, &srv.cfg(), peer.as_deref()).await;
+    fleet_answer(crate::fleet_manage::audited(
+        DESKTOP_WHO,
+        "gossip",
+        peer.as_deref().unwrap_or(""),
+        r,
+    ))
 }
 
 /// POST /api/fleet/sync {node, kind?, operation?, confirm?} — run one
@@ -8986,7 +9299,7 @@ async fn fleet_sync(
     let operation = body["operation"].as_str().unwrap_or("push");
     let kind = body["kind"].as_str().unwrap_or("store");
     let confirmed = body["confirm"].as_bool().unwrap_or(false);
-    match crate::fleet_ops::operate(
+    let r = crate::fleet_ops::operate(
         &srv.store,
         &srv.cfg(),
         kind,
@@ -8994,14 +9307,145 @@ async fn fleet_sync(
         operation,
         confirmed,
     )
-    .await
-    {
+    .await;
+    let action = format!("sync {operation} {kind}");
+    match crate::fleet_manage::audited(DESKTOP_WHO, &action, requested, r) {
         Ok(body) => (fleet_sync_status(&body), Json(body)),
         Err(error) => (
             fleet_error_status(&error),
             Json(json!({"error": error.to_string()})),
         ),
     }
+}
+
+/// Who the command center's audit trail names for a desktop request:
+/// the owner token is the only way in.
+const DESKTOP_WHO: &str = "desktop (owner)";
+
+/// POST /api/fleet/status {node} — the node's boot, what supervises
+/// it (and whether it can restart itself) and the work running in it
+/// (crate::fleet_manage). The tab polls it after a restart: a new boot
+/// is the node back.
+async fn fleet_status(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let requested = body["node"].as_str().unwrap_or("").to_string();
+    fleet_answer(crate::fleet_manage::status(&srv.store, &srv.cfg(), &requested).await)
+}
+
+/// POST /api/fleet/restart {node, force?, confirm} — the node restarts
+/// its gateway through its own supervisor. Refused in a lockdown (here
+/// or there), for a node that knows no supervisor, and while turns run
+/// unless `force`. Answers once the node accepted (`boot_before`); the
+/// tab then polls /api/fleet/status for a new boot.
+async fn fleet_restart(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let requested = body["node"].as_str().unwrap_or("").to_string();
+    let r = crate::fleet_manage::restart(
+        &srv.store,
+        &srv.cfg(),
+        &requested,
+        body["force"].as_bool().unwrap_or(false),
+        body["confirm"].as_bool().unwrap_or(false),
+        false,
+        DESKTOP_WHO,
+    )
+    .await;
+    fleet_answer(crate::fleet_manage::audited(
+        DESKTOP_WHO,
+        "restart",
+        &requested,
+        r,
+    ))
+}
+
+/// POST /api/fleet/config {node, key} — one config key as that node
+/// has it (a credential withheld), and the hash a write names.
+/// POST /api/fleet/config {node, key, raw | unset: true, expect, confirm}
+/// — write it there, under config sync's rules (crate::fleet_manage).
+async fn fleet_config(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let requested = body["node"].as_str().unwrap_or("").to_string();
+    let key = body["key"].as_str().unwrap_or("").trim().to_string();
+    let writing = body.get("raw").is_some() || body["unset"] == json!(true);
+    if !writing {
+        let r = crate::fleet_manage::config_get(&srv.store, &srv.cfg(), &requested, &key).await;
+        return fleet_answer(crate::fleet_manage::audited(
+            DESKTOP_WHO,
+            &format!("config get {key}"),
+            &requested,
+            r,
+        ));
+    }
+    let r = crate::fleet_manage::config_set(
+        &srv.store,
+        &srv.cfg(),
+        &requested,
+        &key,
+        body["raw"].as_str(),
+        body["expect"].as_str(),
+        body["confirm"].as_bool().unwrap_or(false),
+        DESKTOP_WHO,
+    )
+    .await;
+    fleet_answer(crate::fleet_manage::audited(
+        DESKTOP_WHO,
+        &format!("config set {key}"),
+        &requested,
+        r,
+    ))
+}
+
+/// POST /api/fleet/bulk {action: probe|sync, kind?, confirm?} — without
+/// `confirm`, the targets it would reach (for the one confirmation that
+/// lists them); with it, the per-target results.
+async fn fleet_bulk(
+    State(srv): State<Arc<DesktopServer>>,
+    Json(body): Json<Value>,
+) -> (StatusCode, Json<Value>) {
+    let action = body["action"].as_str().unwrap_or("").to_string();
+    let kind = body["kind"].as_str().unwrap_or("store").to_string();
+    let confirmed = body["confirm"].as_bool().unwrap_or(false);
+    let r = crate::fleet_manage::bulk(&srv.store, &srv.cfg(), &action, &kind, confirmed).await;
+    let what = if action == "sync" {
+        format!("bulk sync {kind}")
+    } else {
+        format!("bulk {action}")
+    };
+    if confirmed {
+        fleet_answer(crate::fleet_manage::audited(DESKTOP_WHO, &what, "", r))
+    } else {
+        fleet_answer(r)
+    }
+}
+
+#[derive(Deserialize)]
+struct FleetAuditQuery {
+    limit: Option<usize>,
+}
+
+/// GET /api/fleet/alerts — this gateway's recent node health alerts,
+/// newest first (crate::fleet_watch), and where they are sent. Cheap
+/// (no store read), so the desktop polls it on every tab: an alert
+/// reaches the window, not only the home chat.
+async fn fleet_alerts(State(srv): State<Arc<DesktopServer>>) -> Json<Value> {
+    let cfg = srv.cfg();
+    Json(json!({
+        "enabled": cfg.notify.fleet_alerts,
+        "recent": crate::fleet_watch::recent(),
+        "delivery": crate::fleet_watch::delivery(&cfg, srv.bus.as_ref()),
+    }))
+}
+
+/// GET /api/fleet/audit?limit=N — the newest command-center actions
+/// this gateway asked for: who, what, which node, the result.
+async fn fleet_audit(Query(q): Query<FleetAuditQuery>) -> Json<Value> {
+    Json(json!({"records": crate::fleet_manage::audit_recent(q.limit.unwrap_or(100))}))
 }
 
 fn fleet_inventory_json(
@@ -11120,6 +11564,12 @@ pub fn router(srv: Arc<DesktopServer>, auth: Arc<veles_core::authn::AuthConfig>)
         .route("/api/status", get(status))
         .route("/api/fleet", get(fleet_inventory))
         .route("/api/fleet/sync", post(fleet_sync))
+        .route("/api/fleet/status", post(fleet_status))
+        .route("/api/fleet/restart", post(fleet_restart))
+        .route("/api/fleet/config", post(fleet_config))
+        .route("/api/fleet/bulk", post(fleet_bulk))
+        .route("/api/fleet/audit", get(fleet_audit))
+        .route("/api/fleet/alerts", get(fleet_alerts))
         .route("/api/fleet/forget", post(fleet_forget))
         .route("/api/fleet/probe", post(fleet_probe))
         .route("/api/fleet/logs", post(fleet_logs))
@@ -11191,6 +11641,8 @@ pub fn router(srv: Arc<DesktopServer>, auth: Arc<veles_core::authn::AuthConfig>)
         .route("/api/plugins", get(plugins_list))
         .route("/api/plugins/new", post(plugin_new))
         .route("/api/plugins/preview", post(plugin_preview))
+        .route("/api/extensions/docs/:name", get(extension_docs))
+        .route("/api/extensions/classify", get(extension_classify))
         .route(
             "/api/extensions/assist/preview",
             post(extension_assist_preview),
@@ -11345,6 +11797,10 @@ pub fn router(srv: Arc<DesktopServer>, auth: Arc<veles_core::authn::AuthConfig>)
         .route("/api/themes", get(themes))
         .route("/api/tools", get(list_tools))
         .route("/api/join", post(crate::desktop_join::join_request))
+        .route(
+            "/api/join/candidates",
+            get(crate::desktop_join::candidates_request),
+        )
         .route("/api/join/status", get(crate::desktop_join::status_request))
         .route("/api/join/leave", post(crate::desktop_join::leave_request))
         .route("/api/commands", get(commands_list))
@@ -11470,6 +11926,7 @@ pub fn router(srv: Arc<DesktopServer>, auth: Arc<veles_core::authn::AuthConfig>)
         .route("/api/lsp/events", get(lsp_events))
         .route("/api/lsp/stop", post(lsp_stop))
         .route("/api/lsp/status", get(lsp_status))
+        .route("/api/lsp/servers", get(lsp_servers))
         .route("/api/lsp/check", post(lsp_check))
         .route("/api/chat", post(chat))
         // Axum's default request-body cap is 2MB, and the Dev pane now
@@ -11816,10 +12273,149 @@ pub async fn serve(srv: Arc<DesktopServer>) -> Result<()> {
     Ok(())
 }
 
+/// Call `changed` after each burst of writes to the config file at
+/// `path`. Returns false when no watch could be armed. The watch is
+/// armed before this returns, so a caller can edit right after.
+///
+/// It watches the DIRECTORY and picks the file out by name. A watch on
+/// the file itself follows its inode, and configedit (the desktop's and
+/// the CLI's own settings writes), `sed -i` and most editors publish
+/// config.toml by renaming a new file over it: from then on the watch
+/// sat on the replaced inode and no later hand edit was seen until a
+/// restart (SMOKE-25). A directory watch survives any number of
+/// replacements; on Windows it is what ReadDirectoryChangesW watches
+/// anyway, and Android's inotify behaves as Linux's.
+///
+/// A config.toml that is a symlink is watched at both ends: the link's
+/// directory (the link itself replaced) and its target's (configedit
+/// publishes beside the target, see `write_with_backup`).
+fn watch_config_file(path: std::path::PathBuf, changed: impl Fn() + Send + 'static) -> bool {
+    use notify::{EventKind, RecursiveMode, Watcher};
+    let mut targets: Vec<std::path::PathBuf> = vec![path.clone()];
+    if let Ok(real) = std::fs::canonicalize(&path) {
+        if !targets.contains(&real) {
+            targets.push(real);
+        }
+    }
+    let (tx, rx) = std::sync::mpsc::channel();
+    let Ok(mut watcher) = notify::recommended_watcher(tx) else {
+        return false;
+    };
+    let mut armed = false;
+    let mut dirs: Vec<&std::path::Path> = Vec::new();
+    for t in &targets {
+        let Some(dir) = t.parent() else { continue };
+        if dirs.contains(&dir) {
+            continue;
+        }
+        dirs.push(dir);
+        armed |= watcher.watch(dir, RecursiveMode::NonRecursive).is_ok();
+    }
+    if !armed {
+        return false;
+    }
+    let names: Vec<std::ffi::OsString> = targets
+        .iter()
+        .filter_map(|t| t.file_name().map(|n| n.to_os_string()))
+        .collect();
+    let ours = move |ev: &notify::Event| {
+        ev.paths
+            .iter()
+            .any(|p| p.file_name().is_some_and(|n| names.iter().any(|m| m == n)))
+    };
+    std::thread::spawn(move || {
+        let _watcher = watcher;
+        while let Ok(res) = rx.recv() {
+            let Ok(ev) = res else { continue };
+            // The rename that publishes a replacement names both the
+            // temporary and config.toml: any path of ours counts.
+            if matches!(ev.kind, EventKind::Access(_)) || !ours(&ev) {
+                continue;
+            }
+            // Debounce: editors write in several events; one beat of
+            // quiet, then one reload for the whole burst.
+            std::thread::sleep(std::time::Duration::from_millis(300));
+            while rx.try_recv().is_ok() {}
+            changed();
+        }
+    });
+    true
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use veles_core::hooks::HookBus;
+
+    /// SMOKE-25: configedit, `sed -i` and most editors publish
+    /// config.toml by writing a temporary and renaming it over the old
+    /// file. A watch on the FILE stays on the replaced inode, so every
+    /// hand edit after the first replacement went unseen until a
+    /// restart. The real sequence against a running watcher: replace by
+    /// rename with the engine's own writer, then edit in place.
+    #[test]
+    fn config_watcher_sees_hand_edits_after_the_file_was_replaced() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("config.toml");
+        std::fs::write(&path, "a = 1\n").unwrap();
+        let (tx, rx) = std::sync::mpsc::channel::<String>();
+        let seen = path.clone();
+        let tx = std::sync::Mutex::new(tx);
+        assert!(watch_config_file(path.clone(), move || {
+            let _ = tx
+                .lock()
+                .unwrap()
+                .send(std::fs::read_to_string(&seen).unwrap_or_default());
+        }));
+        let wait_for = |want: &str| {
+            let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
+            while let Some(left) = deadline.checked_duration_since(std::time::Instant::now()) {
+                match rx.recv_timeout(left) {
+                    Ok(text) if text.contains(want) => return true,
+                    Ok(_) => continue,
+                    Err(_) => return false,
+                }
+            }
+            false
+        };
+        // A reload queued behind the one that reported reads whatever
+        // the file holds when it runs: let them all land before the next
+        // edit, so only a NEW event can report it.
+        let settle = || {
+            std::thread::sleep(std::time::Duration::from_millis(1200));
+            while rx.try_recv().is_ok() {}
+        };
+        veles_core::configedit::write_with_backup(&path, "a = 1\n", "a = 2\n").unwrap();
+        assert!(wait_for("a = 2"), "the replacement itself is a change");
+        settle();
+        // A hand edit in place after the replacement: `>>`, or an editor
+        // that writes through the file.
+        use std::io::Write;
+        let mut f = std::fs::OpenOptions::new()
+            .append(true)
+            .open(&path)
+            .unwrap();
+        f.write_all(b"[translation]\nb = 3\n").unwrap();
+        f.sync_all().unwrap();
+        drop(f);
+        assert!(
+            wait_for("b = 3"),
+            "an edit after a replacement must reload too"
+        );
+        settle();
+        // And a second replacement (sed -i) followed by another edit.
+        let now = std::fs::read_to_string(&path).unwrap();
+        veles_core::configedit::write_with_backup(&path, &now, "c = 4\n").unwrap();
+        assert!(wait_for("c = 4"));
+        settle();
+        let mut f = std::fs::OpenOptions::new()
+            .append(true)
+            .open(&path)
+            .unwrap();
+        f.write_all(b"d = 5\n").unwrap();
+        drop(f);
+        assert!(wait_for("d = 5"), "every later edit is seen, not just one");
+    }
 
     /// A passive request is the app talking to itself, not a person:
     /// the idle clock must not move for it. The notifier's long-poll by
@@ -11873,6 +12469,120 @@ mod tests {
     /// read-only mode on another node … a key audit path"). A session this
     /// node has itself is the local one, listed once; a client that does
     /// not ask sees no change.
+    /// ASK-2, with two stores and the real replication path: a subagent
+    /// placed on a peer used to have no row here and, on the peer, a
+    /// parent nobody has ("a2a-remote"), so once replicated it showed as
+    /// an orphan "↳" at the top of the sidebar and not at all in the
+    /// Sessions window. The peer now parents it to the placing session
+    /// (`a2a-remote/<this node>/<session>`), and this node lists it under
+    /// that session: in the sidebar's remote listing and in the Sessions
+    /// window's local one. The link is a column of the replicated row,
+    /// so a restart of either gateway changes nothing.
+    #[test]
+    fn a_remote_placed_child_is_listed_under_its_parent() {
+        let (_d, srv, _home, _env) = scratch_server();
+        let me = veles_core::node::NodeIdentity::load_or_create(&veles_core::config::config_dir())
+            .unwrap()
+            .id;
+        srv.store.lock_ok().create_session("p-local").unwrap();
+        // The peer: its own store, where run_remote_child mints the row.
+        let peer_dir = tempfile::tempdir().unwrap();
+        let peer = Store::open(&peer_dir.path().join("state.db")).unwrap();
+        veles_core::storesync::install_triggers(&peer).unwrap();
+        let rc = veles_core::delegate::mint_remote_child_session(
+            &peer,
+            "count the GPUs",
+            &me,
+            Some("p-local"),
+        )
+        .unwrap();
+        peer.append_message(
+            &rc,
+            &veles_core::providers::ChatMessage::user("count the GPUs"),
+        )
+        .unwrap();
+        // Replication: the peer's offer applied to its replica here.
+        let peer_node = "0f0e0d0c-peer";
+        let offer = veles_core::storesync::build_offer(&peer, peer_node, "peer", 0).unwrap();
+        let conn = veles_core::storesync::open_replica(peer_node).unwrap();
+        veles_core::storesync::apply_offer(&conn, &offer).unwrap();
+        drop(conn);
+
+        let rt = probe_rt();
+        let list = |q: &[(&str, &str)]| -> Value {
+            let map: HashMap<String, String> = q
+                .iter()
+                .map(|(k, v)| (k.to_string(), v.to_string()))
+                .collect();
+            let (code, Json(v)) =
+                rt.block_on(list_sessions(State(srv.clone()), axum::extract::Query(map)));
+            assert_eq!(code, StatusCode::OK, "{v}");
+            v
+        };
+        let find_id = |v: &Value, id: &str| -> Option<Value> {
+            ["sessions", "children", "parents"]
+                .iter()
+                .find_map(|k| v[*k].as_array()?.iter().find(|r| r["id"] == id).cloned())
+        };
+        let find = |v: &Value| find_id(v, &rc);
+        // The parent column is the peer's word: until this node has sent
+        // a child of p-local to that peer, the row nests under nothing
+        // here and the Sessions window does not list it.
+        let sidebar = list(&[("remote", "1")]);
+        let row = find(&sidebar).unwrap_or_else(|| panic!("the replica row is listed: {sidebar}"));
+        assert_ne!(row["parent"], "p-local", "not placed from here: {row}");
+        assert!(find(&list(&[])).is_none(), "not placed from here");
+        srv.store
+            .lock_ok()
+            .session_placement_record("p-local", peer_node)
+            .unwrap();
+
+        // The sidebar's listing (remote rows merged in).
+        let sidebar = list(&[("remote", "1")]);
+        let row = find(&sidebar).unwrap_or_else(|| panic!("the child is listed: {sidebar}"));
+        assert_eq!(row["parent"], "p-local", "under its parent: {row}");
+        assert_eq!(row["remote"], true);
+        assert_eq!(row["node"], peer_node);
+        // The Sessions window's listing (no remote rows asked for).
+        let window = list(&[]);
+        let row = find(&window).unwrap_or_else(|| panic!("the child is listed: {window}"));
+        assert_eq!(row["parent"], "p-local", "under its parent: {row}");
+        assert_eq!(row["remote"], true, "and read-only: {row}");
+
+        // Another peer whose rows name p-local (and a session this node
+        // does not have) gets nothing nested: this node sent it no child.
+        let other_dir = tempfile::tempdir().unwrap();
+        let other = Store::open(&other_dir.path().join("state.db")).unwrap();
+        veles_core::storesync::install_triggers(&other).unwrap();
+        let spoof = veles_core::delegate::mint_remote_child_session(
+            &other,
+            "spoofed",
+            &me,
+            Some("p-local"),
+        )
+        .unwrap();
+        let stray =
+            veles_core::delegate::mint_remote_child_session(&other, "stray", &me, Some("p-nope"))
+                .unwrap();
+        let other_node = "0f0e0d0c-other";
+        let offer = veles_core::storesync::build_offer(&other, other_node, "other", 0).unwrap();
+        let conn = veles_core::storesync::open_replica(other_node).unwrap();
+        veles_core::storesync::apply_offer(&conn, &offer).unwrap();
+        drop(conn);
+        let sidebar = list(&[("remote", "1")]);
+        for id in [&spoof, &stray] {
+            let row = find_id(&sidebar, id).unwrap_or_else(|| panic!("listed: {sidebar}"));
+            assert!(
+                row["parent"] != "p-local" && row["parent"] != "p-nope",
+                "a peer attaches nothing under a local session: {row}"
+            );
+        }
+        let window = list(&[]);
+        assert!(find_id(&window, &spoof).is_none(), "{window}");
+        assert!(find_id(&window, &stray).is_none(), "{window}");
+        assert!(find(&window).is_some(), "the placed child still is");
+    }
+
     #[test]
     fn a_replicas_sessions_are_listed_and_opened_read_only() {
         let (_d, srv, _home, _env) = scratch_server();
@@ -11939,6 +12649,90 @@ mod tests {
             local.get("read_only").is_none(),
             "a local session is not read-only"
         );
+    }
+
+    #[test]
+    fn a_cleared_remote_session_keeps_its_messages_with_their_notes() {
+        let (_d, srv, _home, _env) = scratch_server();
+        let node = "495908ea-37cd-4bfc-8846-93bf588bc7c8";
+        {
+            let c = veles_core::storesync::open_replica(node).unwrap();
+            c.execute_batch(
+                "ALTER TABLE messages ADD COLUMN archived INTEGER NOT NULL DEFAULT 0;
+                 INSERT INTO sessions(id, title) VALUES ('cleared-irc', 'irc:a');
+                 INSERT INTO messages(session_id, role, content, archived)
+                     VALUES ('cleared-irc', 'user', 'a synthetic question', 1),
+                            ('cleared-irc', 'assistant', 'the synthetic answer', 1);
+                 INSERT INTO engine_notes(session_id, after_msg_id, kind, summary)
+                     SELECT 'cleared-irc', MIN(msg_id), 'guard', 'a guard about the question'
+                     FROM messages WHERE session_id = 'cleared-irc';",
+            )
+            .unwrap();
+        }
+        let (code, Json(h)) = probe_rt().block_on(history(State(srv), Path("cleared-irc".into())));
+        assert_eq!(code, StatusCode::OK, "{h}");
+        assert_eq!(h["read_only"], true);
+        let text = h["messages"].to_string();
+        assert!(text.contains("a synthetic question"), "{h}");
+        assert!(text.contains("the synthetic answer"), "{h}");
+        assert!(text.contains("a guard about the question"), "{h}");
+        let rows = h["messages"].as_array().unwrap();
+        assert_eq!(rows[0]["content"], "a synthetic question");
+        assert_eq!(rows[0]["archived"], true);
+        assert_eq!(rows[1]["summary"], "a guard about the question");
+        assert_eq!(rows[2]["content"], "the synthetic answer");
+    }
+
+    /// ASK-5: a replica's session opens read-only from the sidebar, and
+    /// its Export… answered "no session … on this node": the export read
+    /// only the local store. It renders from the replica that holds it.
+    #[test]
+    fn export_reads_a_replica_session() {
+        let (_d, srv, _home, _env) = scratch_server();
+        let node = "495908ea-37cd-4bfc-8846-93bf588bc7c8";
+        {
+            let c = veles_core::storesync::open_replica(node).unwrap();
+            c.execute_batch(
+                "INSERT INTO sessions(id, title, updated_at)
+                     VALUES ('r1', '#flashsupport', '2099-01-01 00:00:00');
+                 INSERT INTO messages(session_id, role, content)
+                     VALUES ('r1', 'user', 'hello from the replica');
+                 INSERT INTO messages(session_id, role, content)
+                     VALUES ('r1', 'assistant', 'and back');",
+            )
+            .unwrap();
+        }
+        let rt = probe_rt();
+        let q =
+            |f: &str| axum::extract::Query(StdMap::from([("format".to_string(), f.to_string())]));
+        let (code, Json(v)) = rt.block_on(export_session(
+            State(srv.clone()),
+            Path("r1".into()),
+            q("markdown"),
+        ));
+        assert_eq!(code, StatusCode::OK, "{v}");
+        assert_eq!(v["message_count"], 2, "{v}");
+        assert!(
+            v["content"]
+                .as_str()
+                .unwrap()
+                .contains("hello from the replica"),
+            "{v}"
+        );
+        assert_eq!(v["node"], node, "the export says whose copy it is: {v}");
+        let (code, Json(v)) = rt.block_on(export_session(
+            State(srv.clone()),
+            Path("r1".into()),
+            q("json"),
+        ));
+        assert_eq!(code, StatusCode::OK, "{v}");
+        assert!(v["content"].as_str().unwrap().contains("and back"), "{v}");
+        let (code, _) = rt.block_on(export_session(
+            State(srv.clone()),
+            Path("nowhere".into()),
+            q("markdown"),
+        ));
+        assert_eq!(code, StatusCode::NOT_FOUND);
     }
 
     #[tokio::test]
@@ -12062,6 +12856,10 @@ mod tests {
         assert_eq!(body["target_language"], "");
         assert!(body.get("provider").is_none());
         assert!(body.get("model").is_none());
+        // How long one translation can take here: the popup waits that
+        // long for its request (two provider calls of 600 s).
+        assert_eq!(body["timeout_secs"], veles_core::translate::BUDGET_SECS);
+        assert_eq!(veles_core::translate::BUDGET_SECS, 1200);
     }
 
     #[tokio::test]
@@ -12172,6 +12970,21 @@ mod tests {
         for forbidden in ["SEEDED-PEER-BEARER-0451", "dial-only.invalid"] {
             assert!(!text.contains(forbidden), "{forbidden} leaked: {text}");
         }
+    }
+
+    /// FLEET-8: `/api/fleet` says where this gateway's health alerts
+    /// go, so the Instances tab stops claiming "sent to the owner's
+    /// home chat" whenever `[notify] fleet_alerts` is on.
+    #[tokio::test]
+    async fn fleet_inventory_says_where_this_gateways_alerts_go() {
+        let (_d, srv, _h, _e) = scratch_server();
+        let (code, Json(body)) = fleet_inventory(State(srv.clone())).await;
+        assert_eq!(code, StatusCode::OK, "{body}");
+        assert_eq!(body["alerts"]["delivery"]["sends"], "no", "{body}");
+        assert_eq!(
+            body["alerts"]["delivery"]["reason"],
+            "[notify] fleet_alerts is off"
+        );
     }
 
     #[tokio::test]
@@ -12612,6 +13425,180 @@ mod tests {
             body
         );
         assert!(applied.get("reloaded").is_some(), "{applied}");
+        // SMOKE-2: the reply names the extension and says whether its
+        // tier loaded it (this test server has no Tcl interpreter).
+        assert_eq!(applied["name"], "gen-fixture", "{applied}");
+        assert_eq!(applied["loaded"], false, "{applied}");
+        assert!(applied["load"].as_str().is_some(), "{applied}");
+    }
+
+    #[tokio::test]
+    async fn the_extension_guides_come_from_the_gateway() {
+        // DEV-2: no shipped desktop carries docs/, and a remote desktop
+        // must not open its own disk's path on this machine.
+        let (code, Json(guide)) = extension_docs(Path("plugins".into())).await;
+        assert_eq!(code, StatusCode::OK);
+        assert!(guide["text"]
+            .as_str()
+            .unwrap()
+            .contains("## Process plugins"));
+        let (code, Json(api)) = extension_docs(Path("extending".into())).await;
+        assert_eq!(code, StatusCode::OK);
+        assert_eq!(api["title"], "Extension API reference");
+        let (code, _) = extension_docs(Path("..%2Fsecrets".into())).await;
+        assert_eq!(code, StatusCode::NOT_FOUND);
+        // DEV-6: the guide's list of language servers.
+        let Json(servers) = lsp_servers().await;
+        let rows = servers["servers"].as_array().unwrap();
+        assert!(rows.iter().any(|r| r["language"] == "tcl"
+            && r["hint"]
+                .as_str()
+                .unwrap()
+                .contains("this build of veles does not include")));
+        // DEV-12: what the Dev pane asks before offering an extension.
+        let (_cfg, _data, _guard) = veles_core::testenv::scratch_xdg();
+        let ext = veles_core::plugins::plugins_dir().join("demo/plugin.tcl");
+        std::fs::create_dir_all(ext.parent().unwrap()).unwrap();
+        std::fs::write(&ext, "x\n").unwrap();
+        let Json(kind) = extension_classify(Query(ClassifyQuery {
+            path: ext.display().to_string(),
+        }))
+        .await;
+        assert_eq!(kind["kind"], "extension", "{kind}");
+        let checkout = tempfile::tempdir().unwrap();
+        let core = checkout.path().join("crates/veles-core/src/agent.rs");
+        std::fs::create_dir_all(core.parent().unwrap()).unwrap();
+        std::fs::write(checkout.path().join("crates/veles-core/Cargo.toml"), "").unwrap();
+        std::fs::write(&core, "x\n").unwrap();
+        let Json(kind) = extension_classify(Query(ClassifyQuery {
+            path: core.display().to_string(),
+        }))
+        .await;
+        assert_eq!(kind["kind"], "core", "{kind}");
+    }
+
+    #[tokio::test]
+    async fn a_new_rust_extension_opens_its_source() {
+        // DEV-12: the Rust tier through the route the dialog posts to.
+        let (_d, srv, _h, _e) = scratch_server();
+        let (code, Json(created)) = plugin_new(
+            State(srv.clone()),
+            Json(json!({"name": "native-one", "description": "a native tool", "kind": "rust"})),
+        )
+        .await;
+        assert_eq!(code, StatusCode::CREATED, "{created}");
+        let path = std::path::PathBuf::from(created["path"].as_str().unwrap());
+        assert!(path.ends_with("src/lib.rs"), "{created}");
+        assert!(std::fs::read_to_string(&path)
+            .unwrap()
+            .contains("veles_plugin!(init);"));
+        assert_eq!(created["loaded"], false, "{created}");
+        assert!(
+            created["load"]
+                .as_str()
+                .unwrap_or("")
+                .contains("cargo build --release"),
+            "{created}"
+        );
+    }
+
+    /// SMOKE-2: a TypeScript, Racket or Lisp extension created from the
+    /// Dev tab stayed `pending` while the dialog said "Created and
+    /// reloaded": the create reloaded the Tcl tier only. Now its own host
+    /// loads it before the reply, and the reply says whether it did; a
+    /// kind with no host on this gateway says so instead.
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn a_new_script_extension_is_loaded_by_its_host_or_says_why_not() {
+        use veles_core::scripthost::{self, BoxFut, ScriptHost, ScriptRef};
+        struct JsHost;
+        impl ScriptHost for JsHost {
+            fn kind(&self) -> &'static str {
+                "js"
+            }
+            fn load(&self, script: ScriptRef) -> BoxFut<'_, Result<String, String>> {
+                Box::pin(async move { Ok(format!("{} compiled", script.entry.display())) })
+            }
+            fn unload(&self, _name: &str) -> BoxFut<'_, Result<String, String>> {
+                Box::pin(async { Ok("dropped".to_string()) })
+            }
+            fn invoke(&self, _: &str, _: u64, _: String) -> BoxFut<'_, Result<String, String>> {
+                Box::pin(async { Ok("null".to_string()) })
+            }
+        }
+        let (_d, srv, _h, _e) = scratch_server();
+        let owner = "module:lang-js-smoke2";
+        veles_core::lifecycle::with_thread_owner(owner, || {
+            scripthost::register_host(Arc::new(JsHost))
+        });
+        let (code, Json(created)) = plugin_new(
+            State(srv.clone()),
+            Json(json!({"name": "smoke2-ts", "description": "Greets people", "kind": "js"})),
+        )
+        .await;
+        assert_eq!(code, StatusCode::CREATED, "{created}");
+        assert_eq!(created["loaded"], true, "{created}");
+        assert!(
+            created["load"].as_str().unwrap_or("").contains("plugin.ts"),
+            "{created}"
+        );
+        let state = |name: &str| {
+            scripthost::rows()
+                .into_iter()
+                .find(|r| r.name == name)
+                .map(|r| r.state)
+        };
+        assert_eq!(state("smoke2-ts"), Some("loaded"));
+        // No Racket host in this process: created, and honestly not loaded.
+        let (code, Json(created)) = plugin_new(
+            State(srv.clone()),
+            Json(json!({"name": "smoke2-rkt", "description": "Greets people", "kind": "racket"})),
+        )
+        .await;
+        assert_eq!(code, StatusCode::CREATED, "{created}");
+        assert_eq!(created["loaded"], false, "{created}");
+        assert!(
+            created["load"]
+                .as_str()
+                .unwrap_or("")
+                .contains("no racket host"),
+            "{created}"
+        );
+        let _ = scripthost::unload_script("smoke2-ts").await;
+        scripthost::purge_owner_hosts(Some(owner));
+    }
+
+    #[tokio::test]
+    async fn the_new_extension_preview_echoes_the_purpose_it_received() {
+        // DEV-1: the desktop compares this echo with its form, so a
+        // purpose lost on the way can never be confirmed as reviewed.
+        let (code, Json(preview)) = plugin_preview(Json(json!({
+            "name": "demo",
+            "description": "  Log every LLM call  ",
+            "kind": "tcl",
+        })))
+        .await;
+        assert_eq!(code, StatusCode::OK, "{preview}");
+        assert_eq!(preview["description"], "Log every LLM call", "{preview}");
+        assert_eq!(preview["name"], "demo");
+        assert_eq!(preview["kind"], "tcl");
+        assert!(
+            preview["files"][0]["text"]
+                .as_str()
+                .unwrap()
+                .contains("description = \"Log every LLM call\""),
+            "{preview}"
+        );
+        // A body whose purpose is not a string (the old desktop's wire)
+        // echoes the empty purpose it actually used.
+        // (One literal on purpose: `"Log"` by itself is a desktop catalog
+        // key, and every string literal in this tree is engine-reachable
+        // to the catalog seam check.)
+        let wire: Value = serde_json::from_str(
+            r#"{"name":"demo","description":{"Log":"every","LLM":"call"},"kind":"tcl"}"#,
+        )
+        .unwrap();
+        let (_, Json(lost)) = plugin_preview(Json(wire)).await;
+        assert_eq!(lost["description"], "", "{lost}");
     }
 
     #[tokio::test]
@@ -12655,89 +13642,149 @@ mod tests {
     /// and a language without a server says which program, where. The
     /// server-table pieces are unit-tested in veles-core; this is the glue
     /// that used to be the constant `tcl-lsp`.
-    #[tokio::test]
-    async fn the_dev_pane_s_lsp_start_and_check_pick_by_file_type() {
-        let dir = tempfile::tempdir().unwrap();
-        let ext = dir.path().join("cplug");
-        std::fs::create_dir_all(&ext).unwrap();
-        std::fs::write(ext.join("plugin.toml"), "name = \"cplug\"\n").unwrap();
-        let c = ext.join("plugin.c");
-        std::fs::write(&c, "int f(void) {\n  return missing;\n}\n").unwrap();
-        let start = |path: &std::path::Path| LspStart {
-            path: Some(path.display().to_string()),
-            root: None,
-            cmd: None,
-            args: vec![],
+    #[test]
+    fn the_dev_pane_s_lsp_start_and_check_pick_by_file_type() {
+        with_lsp_sessions(&["c"], async {
+            let dir = tempfile::tempdir().unwrap();
+            let ext = dir.path().join("cplug");
+            std::fs::create_dir_all(&ext).unwrap();
+            std::fs::write(ext.join("plugin.toml"), "name = \"cplug\"\n").unwrap();
+            let c = ext.join("plugin.c");
+            std::fs::write(&c, "int f(void) {\n  return missing;\n}\n").unwrap();
+            let start = |path: &std::path::Path| LspStart {
+                path: Some(path.display().to_string()),
+                root: None,
+                cmd: None,
+                args: vec![],
+            };
+
+            // No server is known for a README; nothing is spawned.
+            let readme = ext.join("README.md");
+            std::fs::write(&readme, "# cplug\n").unwrap();
+            let Json(none) = lsp_start(Json(start(&readme))).await;
+            assert_eq!(none["ok"], false, "{none}");
+            assert!(none["error"].as_str().unwrap().contains(".md"), "{none}");
+
+            // A Common Lisp file on a gateway with no Lisp server: the reply
+            // names the program it looked for and the machine.
+            let lisp = ext.join("plugin.lisp");
+            std::fs::write(&lisp, "(defun f () 1)\n").unwrap();
+            if veles_core::shell::which("cl-lsp").is_none() {
+                let Json(missing) = lsp_start(Json(start(&lisp))).await;
+                assert_eq!(missing["ok"], false, "{missing}");
+                assert_eq!(missing["language"], "commonlisp", "{missing}");
+                assert_eq!(missing["missing"], json!(["cl-lsp"]), "{missing}");
+                assert!(
+                    missing["error"]
+                        .as_str()
+                        .unwrap()
+                        .contains("on the gateway"),
+                    "{missing}"
+                );
+            }
+
+            // A C file starts clangd in the `c` session, rooted at the
+            // extension, with the URIs built here. What starts is the file
+            // the gateway's lookup found, as it was found (DEV-5): on
+            // Windows `C:\Program Files\LLVM\bin\clangd.exe`, which no
+            // test for a name ending in "clangd" accepts.
+            if let Some(clangd) = veles_core::dev_check::find_program("clangd") {
+                let Json(started) = lsp_start(Json(start(&c))).await;
+                assert_eq!(started["ok"], true, "{started}");
+                assert_eq!(started["session"], "c", "{started}");
+                assert_eq!(started["language"], "c", "{started}");
+                assert_eq!(
+                    started["cmd"],
+                    clangd.to_string_lossy().into_owned(),
+                    "{started}"
+                );
+                let root = veles_core::lsp_servers::canonical(&ext);
+                assert_eq!(started["root"], root.display().to_string(), "{started}");
+                assert_eq!(
+                    started["uri"],
+                    veles_core::lsp_servers::file_uri(
+                        &root.join("plugin.c").display().to_string(),
+                        veles_core::platform::OS
+                    ),
+                    "{started}"
+                );
+                let Json(stopped) = lsp_stop(axum::extract::Query(LspSession {
+                    session: Some("c".into()),
+                }))
+                .await;
+                assert_eq!(stopped["was_running"], true, "{stopped}");
+            } else {
+                let required = std::env::var("VELES_TEST_LSP_REQUIRE").unwrap_or_default();
+                assert!(
+                    !required.split(',').any(|r| r.trim() == "clangd"),
+                    "clangd is required by VELES_TEST_LSP_REQUIRE but is not on PATH"
+                );
+            }
+
+            // Check: the file type's checker, on the gateway's saved copy.
+            let (code, Json(missing_path)) = lsp_check(Json(json!({}))).await;
+            assert_eq!(code, StatusCode::BAD_REQUEST, "{missing_path}");
+            let (code, Json(report)) = lsp_check(Json(json!({"path": c}))).await;
+            assert_eq!(code, StatusCode::OK, "{report}");
+            assert_eq!(report["language"], "c", "{report}");
+            if veles_core::shell::which("clang").is_some()
+                || veles_core::shell::which("cc").is_some()
+            {
+                assert_eq!(report["status"], "failed", "{report}");
+                assert_eq!(report["diagnostics"][0]["line"], 2, "{report}");
+            } else {
+                assert_eq!(report["status"], "unavailable", "{report}");
+            }
+        });
+    }
+
+    /// Run a test body that starts language servers, and stop the
+    /// sessions `keys` names on every way out of it, a failed assertion
+    /// included, BEFORE its runtime goes; then shut the runtime down with
+    /// a deadline. A session lives in lsp_proxy's process-wide table, so
+    /// nothing else ever stops it, and on Windows tokio reads a child's
+    /// pipes on blocking-pool threads, which a runtime being dropped waits
+    /// for without limit. A guard inside a `#[tokio::test]` body cannot do
+    /// this: the macro pins the body on the test function's stack, so its
+    /// runtime is dropped before the body's locals are. 2026-11-11: one
+    /// failed assertion left clangd running and the Windows gate's test
+    /// binary waiting on its pipes for good.
+    fn with_lsp_sessions(
+        keys: &'static [&'static str],
+        body: impl std::future::Future<Output = ()>,
+    ) {
+        const DEADLINE: std::time::Duration = std::time::Duration::from_secs(10);
+        struct Teardown {
+            keys: &'static [&'static str],
+            rt: Option<tokio::runtime::Runtime>,
+        }
+        impl Drop for Teardown {
+            fn drop(&mut self) {
+                for key in self.keys {
+                    veles_core::lsp_proxy::stop(Some(*key));
+                }
+                let Some(rt) = self.rt.take() else { return };
+                let began = std::time::Instant::now();
+                rt.shutdown_timeout(DEADLINE);
+                // Past the deadline something still reads a stopped
+                // server's pipe; a passing body must not hide that. (While
+                // unwinding, the body's own failure is the report.)
+                assert!(
+                    std::thread::panicking() || began.elapsed() < DEADLINE,
+                    "the runtime's blocking work outlived the sessions' stop by {DEADLINE:?}"
+                );
+            }
+        }
+        let teardown = Teardown {
+            keys,
+            rt: Some(
+                tokio::runtime::Builder::new_current_thread()
+                    .enable_all()
+                    .build()
+                    .expect("a test runtime"),
+            ),
         };
-
-        // No server is known for a README; nothing is spawned.
-        let readme = ext.join("README.md");
-        std::fs::write(&readme, "# cplug\n").unwrap();
-        let Json(none) = lsp_start(Json(start(&readme))).await;
-        assert_eq!(none["ok"], false, "{none}");
-        assert!(none["error"].as_str().unwrap().contains(".md"), "{none}");
-
-        // A Common Lisp file on a gateway with no Lisp server: the reply
-        // names the program it looked for and the machine.
-        let lisp = ext.join("plugin.lisp");
-        std::fs::write(&lisp, "(defun f () 1)\n").unwrap();
-        if veles_core::shell::which("cl-lsp").is_none() {
-            let Json(missing) = lsp_start(Json(start(&lisp))).await;
-            assert_eq!(missing["ok"], false, "{missing}");
-            assert_eq!(missing["language"], "commonlisp", "{missing}");
-            assert_eq!(missing["missing"], json!(["cl-lsp"]), "{missing}");
-            assert!(
-                missing["error"]
-                    .as_str()
-                    .unwrap()
-                    .contains("on the gateway"),
-                "{missing}"
-            );
-        }
-
-        // A C file starts clangd in the `c` session, rooted at the
-        // extension, with the URIs built here.
-        if veles_core::shell::which("clangd").is_some() {
-            let Json(started) = lsp_start(Json(start(&c))).await;
-            assert_eq!(started["ok"], true, "{started}");
-            assert_eq!(started["session"], "c", "{started}");
-            assert_eq!(started["language"], "c", "{started}");
-            assert!(started["cmd"].as_str().unwrap().ends_with("clangd"));
-            let root = veles_core::lsp_servers::canonical(&ext);
-            assert_eq!(started["root"], root.display().to_string(), "{started}");
-            assert_eq!(
-                started["uri"],
-                veles_core::lsp_servers::file_uri(
-                    &root.join("plugin.c").display().to_string(),
-                    veles_core::platform::OS
-                ),
-                "{started}"
-            );
-            let Json(stopped) = lsp_stop(axum::extract::Query(LspSession {
-                session: Some("c".into()),
-            }))
-            .await;
-            assert_eq!(stopped["was_running"], true, "{stopped}");
-        } else {
-            let required = std::env::var("VELES_TEST_LSP_REQUIRE").unwrap_or_default();
-            assert!(
-                !required.split(',').any(|r| r.trim() == "clangd"),
-                "clangd is required by VELES_TEST_LSP_REQUIRE but is not on PATH"
-            );
-        }
-
-        // Check: the file type's checker, on the gateway's saved copy.
-        let (code, Json(missing_path)) = lsp_check(Json(json!({}))).await;
-        assert_eq!(code, StatusCode::BAD_REQUEST, "{missing_path}");
-        let (code, Json(report)) = lsp_check(Json(json!({"path": c}))).await;
-        assert_eq!(code, StatusCode::OK, "{report}");
-        assert_eq!(report["language"], "c", "{report}");
-        if veles_core::shell::which("clang").is_some() || veles_core::shell::which("cc").is_some() {
-            assert_eq!(report["status"], "failed", "{report}");
-            assert_eq!(report["diagnostics"][0]["line"], 2, "{report}");
-        } else {
-            assert_eq!(report["status"], "unavailable", "{report}");
-        }
+        teardown.rt.as_ref().expect("the runtime").block_on(body);
     }
 
     #[tokio::test]
@@ -12758,6 +13805,37 @@ mod tests {
         assert!(!veles_core::plugins::plugins_dir()
             .join("preview-only")
             .exists());
+    }
+
+    /// A mock provider's read of ONE whole request: the headers, then as
+    /// many body bytes as `Content-Length` names, bounded by ten seconds.
+    /// A single `read` returns whatever has arrived, which for a request
+    /// of a few kilobytes is often only part of it; answering and closing
+    /// with the rest unread makes Windows reset the connection, and the
+    /// engine then reports "error sending request" for a turn that was
+    /// fine (the Windows gate, 2026-11-11, one run in three).
+    fn read_whole_request(socket: &mut std::net::TcpStream) -> Vec<u8> {
+        use std::io::Read;
+        let _ = socket.set_read_timeout(Some(std::time::Duration::from_secs(10)));
+        let mut bytes = Vec::new();
+        let mut buffer = [0u8; 8192];
+        loop {
+            if let Some(headers) = bytes.windows(4).position(|part| part == b"\r\n\r\n") {
+                let head = String::from_utf8_lossy(&bytes[..headers]).to_ascii_lowercase();
+                let length = head
+                    .lines()
+                    .find_map(|line| line.strip_prefix("content-length:"))
+                    .and_then(|v| v.trim().parse::<usize>().ok())
+                    .unwrap_or(0);
+                if bytes.len() >= headers + 4 + length {
+                    return bytes;
+                }
+            }
+            match socket.read(&mut buffer) {
+                Ok(count) if count > 0 => bytes.extend_from_slice(&buffer[..count]),
+                _ => return bytes,
+            }
+        }
     }
 
     fn scratch_server() -> (
@@ -13056,12 +14134,11 @@ mod tests {
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let address = listener.local_addr().unwrap();
         let server = std::thread::spawn(move || {
-            use std::io::{Read, Write};
+            use std::io::Write;
             let Ok((mut socket, _)) = listener.accept() else {
                 return;
             };
-            let mut bytes = [0u8; 8192];
-            let _ = socket.read(&mut bytes);
+            let _ = read_whole_request(&mut socket);
             let body = "data: {\"choices\":[{\"delta\":{\"content\":\"ordinary complete\"}}]}\n\ndata: [DONE]\n\n";
             let _ = socket.write_all(format!(
                 "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
@@ -13368,14 +14445,13 @@ mod tests {
         let requests = Arc::new(Mutex::new(Vec::new()));
         let seen = requests.clone();
         let server = std::thread::spawn(move || {
-            use std::io::{Read, Write};
+            use std::io::Write;
             let Ok((mut socket, _)) = listener.accept() else {
                 return;
             };
-            let mut bytes = [0u8; 16384];
-            let count = socket.read(&mut bytes).unwrap_or(0);
+            let bytes = read_whole_request(&mut socket);
             seen.lock_ok()
-                .push(String::from_utf8_lossy(&bytes[..count]).into_owned());
+                .push(String::from_utf8_lossy(&bytes).into_owned());
             let body = "data: {\"choices\":[{\"delta\":{\"content\":\"saved tool continued\"}}]}\n\ndata: [DONE]\n\n";
             let _ = socket.write_all(format!(
                 "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
@@ -13435,12 +14511,11 @@ mod tests {
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let address = listener.local_addr().unwrap();
         let server = std::thread::spawn(move || {
-            use std::io::{Read, Write};
+            use std::io::Write;
             let Ok((mut socket, _)) = listener.accept() else {
                 return;
             };
-            let mut bytes = [0u8; 8192];
-            let _ = socket.read(&mut bytes);
+            let _ = read_whole_request(&mut socket);
             let body = "data: {\"choices\":[{\"delta\":{\"content\":\"continued new request\"}}]}\n\ndata: [DONE]\n\n";
             let _ = socket.write_all(format!(
                 "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
@@ -13511,6 +14586,235 @@ mod tests {
             "needs-review"
         );
         assert!(!srv.agents.lock_ok().contains_key("recover-tool"));
+    }
+
+    /// A turn cut inside one tool call: `tool` with `args` was started
+    /// and its result never saved. Returns the recovered checkpoint state,
+    /// the history, and the requests the provider saw.
+    async fn recover_cut_tool_call(
+        sid: &str,
+        tool: &str,
+        args: serde_json::Value,
+    ) -> (String, Vec<veles_core::providers::ChatMessage>, Vec<String>) {
+        let mut call = veles_core::providers::ChatMessage::assistant("", None);
+        call.tool_calls = Some(serde_json::json!([{
+            "id": "call-1", "type": "function",
+            "function": {"name": tool, "arguments": args.to_string()}
+        }]));
+        recover_cut_rows(sid, vec![call], "call-1").await
+    }
+
+    /// A turn cut with `rows` saved after its prompt and call `started`
+    /// recorded as running when the gateway died.
+    async fn recover_cut_rows(
+        sid: &str,
+        rows: Vec<veles_core::providers::ChatMessage>,
+        started: &str,
+    ) -> (String, Vec<veles_core::providers::ChatMessage>, Vec<String>) {
+        let (_d, srv, _h, _e) = scratch_server();
+        recovery_orphan(&srv, sid, "desktop");
+        {
+            let store = srv.store.lock_ok();
+            store
+                .append_message(
+                    sid,
+                    &veles_core::providers::ChatMessage::user("look into it"),
+                )
+                .unwrap();
+            let run = store.recovery_candidates().unwrap().remove(0);
+            for row in &rows {
+                store.append_message(sid, row).unwrap();
+            }
+            store.turn_tool_started(&run.turn_id, started).unwrap();
+        }
+        let (url, requests) = answering_provider("continued after the restart");
+        point_at(&srv, &url);
+        let run = srv.recovery_candidates().unwrap().remove(0);
+        let claim = veles_core::turn_recovery::claim(&srv.store.lock_ok(), &run)
+            .unwrap()
+            .unwrap();
+        srv.resume_interrupted_turn(&run, &claim).await.unwrap();
+        srv.store.lock_ok().recovery_release(&claim).unwrap();
+        let store = srv.store.lock_ok();
+        let state = store.turn_checkpoint(sid).unwrap().unwrap().state;
+        let history = store.load_history(sid).unwrap();
+        let seen = requests.lock_ok().clone();
+        (state, history, seen)
+    }
+
+    /// ASK-3: a restart during a call that is safe to repeat — the
+    /// engine's own read-only judgement (plan mode's) — or during the
+    /// agent's own `veles gateway restart` must not wait for the owner.
+    /// It sent every such turn to needs-review, so "we're back after a
+    /// restart" still needed a prompt by hand. The cut call gets a result
+    /// saying what happened, and the turn continues once: one request,
+    /// the user's prompt in it once.
+    #[tokio::test]
+    async fn recovery_continues_a_turn_cut_during_a_read_only_tool() {
+        let (state, history, seen) = recover_cut_tool_call(
+            "recover-read",
+            "read_file",
+            serde_json::json!({"path": "src/main.rs"}),
+        )
+        .await;
+        assert_eq!(state, "recovered");
+        assert_eq!(seen.len(), 1, "one continuation, sent once");
+        assert_eq!(seen[0].matches("look into it").count(), 1);
+        let result = history
+            .iter()
+            .find(|m| {
+                m.role == "tool"
+                    && m.tool_meta
+                        .as_ref()
+                        .is_some_and(|t| t.tool_call_id == "call-1")
+            })
+            .expect("the cut call is answered");
+        assert!(result.content.contains("restart"), "{}", result.content);
+        assert!(history
+            .iter()
+            .any(|m| m.content == "continued after the restart"));
+        assert!(!history
+            .iter()
+            .any(|m| m.content.contains("was not repeated")));
+    }
+
+    /// The agent's own restart is THIS gateway's executable (here the
+    /// test binary, which is the running process) or its unit; another
+    /// `veles` with the same argv is in the side-effects list below.
+    #[tokio::test]
+    async fn recovery_continues_after_the_agents_own_restart_command() {
+        let own = format!(
+            "{} gateway restart",
+            std::env::current_exe().unwrap().display()
+        );
+        for (sid, command) in [
+            ("recover-restart", own.as_str()),
+            (
+                "recover-restart-sd",
+                "cd ~/src && systemctl --user restart veles-gateway",
+            ),
+        ] {
+            let (state, history, seen) =
+                recover_cut_tool_call(sid, "terminal", serde_json::json!({"command": command}))
+                    .await;
+            assert_eq!(state, "recovered", "{command}");
+            assert_eq!(seen.len(), 1, "{command}");
+            assert!(
+                history
+                    .iter()
+                    .any(|m| m.role == "tool" && m.content.contains("the gateway restarted")),
+                "{command}"
+            );
+        }
+    }
+
+    /// Anything with side effects keeps the old answer: its result is
+    /// unknown, nothing is repeated, the owner decides.
+    #[tokio::test]
+    async fn recovery_still_stops_for_a_tool_with_side_effects() {
+        for (sid, tool, args) in [
+            (
+                "recover-write",
+                "write_file",
+                serde_json::json!({"path": "x", "content": "y"}),
+            ),
+            (
+                "recover-rm",
+                "terminal",
+                serde_json::json!({"command": "rm -rf build"}),
+            ),
+            (
+                "recover-restart-chain",
+                "terminal",
+                serde_json::json!({"command": "rm -rf build; veles gateway restart"}),
+            ),
+            (
+                "recover-other-veles",
+                "terminal",
+                serde_json::json!({"command": "/tmp/unpacked/veles gateway restart"}),
+            ),
+            (
+                "recover-delegate",
+                "delegate_task",
+                serde_json::json!({"goal": "x"}),
+            ),
+            (
+                "recover-clarify",
+                "clarify",
+                serde_json::json!({"question": "which?"}),
+            ),
+            ("recover-plugin", "some_plugin_tool", serde_json::json!({})),
+        ] {
+            let (state, history, seen) = recover_cut_tool_call(sid, tool, args).await;
+            assert_eq!(state, "needs-review", "{tool}");
+            assert!(seen.is_empty(), "{tool}: nothing is sent");
+            assert!(history
+                .iter()
+                .any(|m| m.content.contains("was not repeated")));
+        }
+    }
+
+    /// Call ids are not unique (ENG-1): a route that sends none leaves
+    /// `""`, and models that number calls per response open every round
+    /// with `terminal:0`. An EARLIER call's saved result with the same id
+    /// is not the cut call's: the turn still stops for review, and no
+    /// read-only judgement is taken from the wrong call.
+    #[tokio::test]
+    async fn recovery_is_not_fooled_by_an_earlier_result_with_the_same_id() {
+        use veles_core::providers::ChatMessage;
+        let calls = |calls: serde_json::Value| {
+            let mut m = ChatMessage::assistant("", None);
+            m.tool_calls = Some(calls);
+            m
+        };
+        let call = |id: &str, tool: &str, args: serde_json::Value| {
+            serde_json::json!({
+                "id": id, "type": "function",
+                "function": {"name": tool, "arguments": args.to_string()}
+            })
+        };
+        let ls = serde_json::json!({"command": "ls"});
+        let rm = serde_json::json!({"command": "rm -rf build"});
+        for (sid, rows, started) in [
+            (
+                "recover-reused-id",
+                vec![
+                    calls(serde_json::json!([call(
+                        "terminal:0",
+                        "terminal",
+                        ls.clone()
+                    )])),
+                    ChatMessage::tool_result("terminal:0", "terminal", "Cargo.toml".into()),
+                    calls(serde_json::json!([call(
+                        "terminal:0",
+                        "terminal",
+                        rm.clone()
+                    )])),
+                ],
+                "terminal:0",
+            ),
+            (
+                "recover-empty-ids",
+                vec![
+                    calls(serde_json::json!([
+                        call("", "terminal", ls.clone()),
+                        call("", "terminal", rm.clone()),
+                    ])),
+                    ChatMessage::tool_result("", "terminal", "Cargo.toml".into()),
+                ],
+                "",
+            ),
+        ] {
+            let (state, history, seen) = recover_cut_rows(sid, rows, started).await;
+            assert_eq!(state, "needs-review", "{sid}");
+            assert!(seen.is_empty(), "{sid}: nothing is sent");
+            assert!(
+                history
+                    .iter()
+                    .any(|m| m.content.contains("was not repeated")),
+                "{sid}"
+            );
+        }
     }
 
     /// A provider that answers every request with `reply`, recording each
@@ -15100,7 +16404,8 @@ mod tests {
             .lock_ok()
             .append_message(sid, &veles_core::providers::ChatMessage::user("two"))
             .expect("two");
-        let rows = history_rows(&srv.store.lock_ok(), &srv.cfg.read_ok(), sid, 0, 0).expect("rows");
+        let rows =
+            history_rows(&srv.store.lock_ok(), &srv.cfg.read_ok(), sid, 0, 0, false).expect("rows");
         let one = rows.iter().find(|r| r["content"] == "one").expect("one");
         assert_eq!(one["msg_id"], json!(first), "{one}");
         assert_eq!(one["at"], json!("2026-09-28T23:58:10Z"), "{one}");
@@ -15112,8 +16417,15 @@ mod tests {
             "{note}"
         );
         // Resumed past the first row: the times still line up with their rows.
-        let after =
-            history_rows(&srv.store.lock_ok(), &srv.cfg.read_ok(), sid, first, 0).expect("after");
+        let after = history_rows(
+            &srv.store.lock_ok(),
+            &srv.cfg.read_ok(),
+            sid,
+            first,
+            0,
+            false,
+        )
+        .expect("after");
         let two = after.iter().find(|r| r["content"] == "two").expect("two");
         assert!(
             two["at"]
@@ -15146,7 +16458,8 @@ mod tests {
             )
             .expect("steer");
 
-        let rows = history_rows(&srv.store.lock_ok(), &srv.cfg.read_ok(), sid, 0, 0).expect("rows");
+        let rows =
+            history_rows(&srv.store.lock_ok(), &srv.cfg.read_ok(), sid, 0, 0, false).expect("rows");
         let background = rows
             .iter()
             .find(|r| r["content"].as_str() == Some("[BACKGROUND SHELL COMPLETE] x"))
@@ -15196,9 +16509,17 @@ mod tests {
             .append_message(sid, &veles_core::providers::ChatMessage::user("second"))
             .expect("m2");
 
-        let all = history_rows(&srv.store.lock_ok(), &srv.cfg.read_ok(), sid, 0, 0).expect("full");
-        let after = history_rows(&srv.store.lock_ok(), &srv.cfg.read_ok(), sid, cursor, 0)
-            .expect("resumed");
+        let all =
+            history_rows(&srv.store.lock_ok(), &srv.cfg.read_ok(), sid, 0, 0, false).expect("full");
+        let after = history_rows(
+            &srv.store.lock_ok(),
+            &srv.cfg.read_ok(),
+            sid,
+            cursor,
+            0,
+            false,
+        )
+        .expect("resumed");
 
         let text = |rows: &[Value]| -> Vec<String> {
             rows.iter()
@@ -15217,9 +16538,16 @@ mod tests {
         let head = srv.store.lock_ok().last_msg_id(sid).expect("head");
         assert!(head > cursor, "the cursor moved: {head} > {cursor}");
         assert!(
-            history_rows(&srv.store.lock_ok(), &srv.cfg.read_ok(), sid, head, 0)
-                .expect("caught up")
-                .is_empty(),
+            history_rows(
+                &srv.store.lock_ok(),
+                &srv.cfg.read_ok(),
+                sid,
+                head,
+                0,
+                false
+            )
+            .expect("caught up")
+            .is_empty(),
             "a client that is caught up gets nothing"
         );
     }
@@ -15241,14 +16569,15 @@ mod tests {
                 &veles_core::providers::ChatMessage::assistant("an answer", None),
             )
             .unwrap();
-        let rows = history_rows(&store, &srv.cfg.read_ok(), sid, 0, 0).expect("history");
+        let rows = history_rows(&store, &srv.cfg.read_ok(), sid, 0, 0, false).expect("history");
         assert_eq!(rows[0]["msg_id"], json!(user_id));
         assert_eq!(rows[0]["content"], json!("same words"));
         assert!(
             rows[1].get("msg_id").is_none(),
             "only the prompt needs this identity"
         );
-        let caught_up = history_rows(&store, &srv.cfg.read_ok(), sid, user_id, 0).expect("resume");
+        let caught_up =
+            history_rows(&store, &srv.cfg.read_ok(), sid, user_id, 0, false).expect("resume");
         assert_eq!(
             caught_up.len(),
             1,
@@ -17776,7 +19105,8 @@ mod tests {
             .unwrap();
             call_id
         };
-        let rows = history_rows(&srv.store.lock_ok(), &srv.cfg.read_ok(), sid, 0, 0).expect("rows");
+        let rows =
+            history_rows(&srv.store.lock_ok(), &srv.cfg.read_ok(), sid, 0, 0, false).expect("rows");
         let pos = |pred: &dyn Fn(&Value) -> bool| rows.iter().position(pred);
         let a1 = pos(&|r| r["content"] == "a1").expect("a1 rendered");
         let note = pos(&|r| r["role"] == "note").expect("note rendered");
@@ -17786,8 +19116,15 @@ mod tests {
             "the note follows a1, not a later row: {rows:#?}"
         );
 
-        let gap =
-            history_rows(&srv.store.lock_ok(), &srv.cfg.read_ok(), sid, call_id, 0).expect("gap");
+        let gap = history_rows(
+            &srv.store.lock_ok(),
+            &srv.cfg.read_ok(),
+            sid,
+            call_id,
+            0,
+            false,
+        )
+        .expect("gap");
         assert!(
             gap.iter().any(|r| r["content"] == "late"),
             "the result past the cursor is served even though its call is behind it: {gap:#?}"
@@ -18860,7 +20197,15 @@ mod tests {
         // 1) and its note cursor (0 — it had seen no note before the
         // drop). The note's id beats its anchor: it replays even
         // though every message sits at/below the message cursor.
-        let rows = history_rows(&srv.store.lock_ok(), &srv.cfg.read_ok(), sid, cursor, 0).unwrap();
+        let rows = history_rows(
+            &srv.store.lock_ok(),
+            &srv.cfg.read_ok(),
+            sid,
+            cursor,
+            0,
+            false,
+        )
+        .unwrap();
         let replayed: Vec<&Value> = rows.iter().filter(|r| r["role"] == "note").collect();
         assert_eq!(replayed.len(), 1, "the late note replays: {rows:?}");
         assert_eq!(replayed[0]["note_id"], json!(note_ids[0]));
@@ -18874,6 +20219,7 @@ mod tests {
             sid,
             cursor,
             note_ids[0],
+            false,
         )
         .unwrap();
         assert!(
@@ -19551,6 +20897,46 @@ data: [DONE]
         )
         .await;
         assert_eq!(code, StatusCode::NOT_FOUND);
+    }
+
+    /// SMOKE-19 follow-up, the desktop's half: the composer handed every
+    /// `/` line to its commands, so `/home/x/file fails` and `//usr is
+    /// full` ended as "unknown command" and could not be sent. The
+    /// engine's one rule (commands::slash_line) answers here: a line
+    /// that is text comes back as `send`, with `//` reduced to one
+    /// slash, and the composer sends it as a message; a command word
+    /// nothing knows is still `handled: false`.
+    #[tokio::test]
+    async fn a_line_that_is_text_comes_back_to_be_sent() {
+        let (_d, srv, _home, _env) = scratch_server();
+        let sid = "cmd-text";
+        srv.store.lock_ok().create_session(sid).expect("session");
+        let run = |line: &str| {
+            let srv = srv.clone();
+            let line = line.to_string();
+            async move {
+                let (code, Json(v)) = command_run(
+                    State(srv),
+                    Json(RunCommandBody {
+                        session_id: sid.to_string(),
+                        command: line,
+                    }),
+                )
+                .await;
+                assert_eq!(code, StatusCode::OK, "{v}");
+                v
+            }
+        };
+        let v = run("/home/x/file fails").await;
+        assert_eq!(v["handled"], false, "{v}");
+        assert_eq!(v["send"], "/home/x/file fails", "{v}");
+        let v = run("//usr is full").await;
+        assert_eq!(v["send"], "/usr is full", "{v}");
+        let v = run("//limits").await;
+        assert_eq!(v["send"], "/limits", "a doubled slash is never run: {v}");
+        let v = run("/usr is full").await;
+        assert_eq!(v["handled"], false, "{v}");
+        assert!(v.get("send").is_none_or(Value::is_null), "{v}");
     }
 
     /// `/api/acl/explain` — the desktop's answer to "why does this
@@ -21366,6 +22752,47 @@ data: [DONE]
             .unwrap();
         let res = tower::ServiceExt::oneshot(app, authed).await.unwrap();
         assert_eq!(res.status(), StatusCode::NO_CONTENT);
+    }
+
+    /// TR-4: `/translate` in a chat needs cmd-session, and the HTTP twin
+    /// checks no capability. That is the desktop API's model, not a gap:
+    /// it has no principals (docs/acl.md: the desktop is "no principal",
+    /// the operator), and its one bearer gate is the whole check (the same
+    /// bearer starts host shells at /api/shells). Pinned so neither
+    /// translate route can end up outside that gate, where any local
+    /// process could spend the translator's quota.
+    #[tokio::test]
+    async fn the_translate_endpoints_are_behind_the_bearer() {
+        let token = "translate-token";
+        let (_d, srv, _home, _env) = scratch_server();
+        let auth = std::sync::Arc::new(veles_core::authn::AuthConfig::new(
+            Default::default(),
+            token.to_string(),
+        ));
+        let app = router(srv, auth);
+        for (method, path, body) in [
+            ("POST", "/api/translate", r#"{"text":"Hallo"}"#),
+            ("GET", "/api/translate/config", ""),
+        ] {
+            let request = |bearer: Option<&str>| {
+                let mut b = axum::http::Request::builder()
+                    .method(method)
+                    .uri(path)
+                    .header("content-type", "application/json");
+                if let Some(t) = bearer {
+                    b = b.header("authorization", format!("Bearer {t}"));
+                }
+                b.body(axum::body::Body::from(body)).unwrap()
+            };
+            let res = tower::ServiceExt::oneshot(app.clone(), request(None))
+                .await
+                .unwrap();
+            assert_eq!(res.status(), StatusCode::UNAUTHORIZED, "{method} {path}");
+            let res = tower::ServiceExt::oneshot(app.clone(), request(Some(token)))
+                .await
+                .unwrap();
+            assert_ne!(res.status(), StatusCode::UNAUTHORIZED, "{method} {path}");
+        }
     }
 
     // ── the plan split on /api/usage (2026-09-20) ────────────────────

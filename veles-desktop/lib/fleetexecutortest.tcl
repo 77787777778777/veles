@@ -60,10 +60,20 @@ set ::model_slot 0
 array set ::pending {}
 set ::preview_failure 0
 set ::managed_core 1
+# What each target's own gateway says it is, when that is not the target
+# itself (FLEET-2): node id -> the self id its /api/fleet answers with.
+set ::answers_as [dict create]
 proc json_text {typed} { return [string trim [lindex $typed 1] \"] }
 proc fake_transport {action target payload} {
     lappend ::transport_log $action [dict get $target node_id]
     set id [dict get $target node_id]
+    if {$action eq "identity"} {
+        set self $id
+        if {[dict exists $::answers_as $id]} { set self [dict get $::answers_as $id] }
+        if {$self eq "!unreachable"} { error "couldn't open socket: connection refused" }
+        if {$self eq ""} { return [::json::json2dict [::fleetfix::fleet_json {}]] }
+        return [::json::json2dict [::fleetfix::fleet_json [list [list $self [dict get $target instance] 0.1.6 false true]]]]
+    }
     if {$action eq "health"} {
         if {[dict exists $::bad_health $id]} { return [dict get $::bad_health $id] }
         return [dict get $::health $id]
@@ -128,8 +138,8 @@ ok "reviewed apply creates a journal without changing a target" {
     $::transport_log eq ""
 }
 set op [::vfleetdeploy::stage $op node-a]
-ok "canary staging performs health, the installer-state baseline, then signed preview; no install or restart" {
-    $::transport_log eq {health node-a install-state node-a download-preview node-a} &&
+ok "canary staging proves the node's identity, then health, the installer-state baseline and the signed preview; no install or restart" {
+    $::transport_log eq {identity node-a health node-a install-state node-a download-preview node-a} &&
     [dict get $op targets node-a status] eq "staged" &&
     [dict exists $op reviews node-a]
 }
@@ -168,9 +178,10 @@ ok "transport diagnostics are redacted before journaling" {
     $redacted eq "transport authentication or credential diagnostic (redacted)" &&
     ![string match *super-secret* $redacted]
 }
+set before_canary_verify [llength $::transport_log]
 set op [::vfleetdeploy::verify $op node-a]
-ok "canary verify installs, restarts and requires the exact reviewed revision" {
-    [lrange $::transport_log end-5 end] eq {download-confirm node-a restart node-a health node-a} &&
+ok "canary verify proves the node's identity, then installs, restarts and requires the exact reviewed revision" {
+    [lrange $::transport_log $before_canary_verify end] eq {identity node-a download-confirm node-a restart node-a health node-a} &&
     [dict get $op targets node-a status] eq "healthy"
 }
 set ::health [observations]
@@ -184,19 +195,19 @@ rejects "rollback refuses a retained artifact retained by a later installation" 
     ::vfleetdeploy::rollback $drift_artifact_op node-a
 } "retained rollback artifact changed"
 ok "rollback artifact drift never confirms or restarts" {
-    [lrange $::transport_log $before_artifact_drift end] eq {rollback-preview node-a}
+    [lrange $::transport_log $before_artifact_drift end] eq {identity node-a rollback-preview node-a}
 }
 set ::current_artifact [string repeat 8 64]
 set ::previous_artifact [string repeat 9 64]
 # The exact call sequence, from a reset log (F1-08): continue's own fresh
-# canary check, the next target's health, then staging's canary and
-# target checks before the baseline and the preview.
+# canary check, the next target's health, then staging's identity proof,
+# its canary and target checks before the baseline and the preview.
 set ::transport_log {}
 set op [::vfleetdeploy::continue $op]
 ok "continuation revalidates health and stages only the next target" {
     [dict get $op targets node-a status] eq "healthy" &&
     [dict get $op targets node-b status] eq "staged" &&
-    $::transport_log eq {health node-a health node-b health node-a health node-b install-state node-b download-preview node-b}
+    $::transport_log eq {health node-a health node-b identity node-b health node-a health node-b install-state node-b download-preview node-b}
 }
 set op [::vfleetdeploy::verify $op node-b]
 set op [::vfleetdeploy::continue $op]
@@ -435,7 +446,7 @@ set ::cancelled {}
 set recovered [::vfleetdeploy::stage $recovered node-a]
 set ::model_slot 0
 ok "cold staged resume cancels the old pending plan, then obtains a fresh preview (no 409)" {
-    [lrange $::transport_log $before_recovery_calls end] eq {health node-a install-state node-a download-cancel node-a download-preview node-a} &&
+    [lrange $::transport_log $before_recovery_calls end] eq {identity node-a health node-a install-state node-a download-cancel node-a download-preview node-a} &&
     $::cancelled eq [list $old_recovery_plan] &&
     [dict get $recovered reviews node-a plan_id] ne $old_recovery_plan &&
     [dict get $recovered targets node-a status] eq "staged"
@@ -649,6 +660,59 @@ ok "finish rollback accepts a later target that failed before installation" {
     [dict get $closed status] eq "rolled-back" &&
     [dict get $closed targets node-b status] eq "failed"
 }
+
+# ── FLEET-2: the saved instance must prove it is the node ─────────────
+# Before a stage, an install confirmation + restart, or a rollback +
+# restart, the target's own gateway is asked which node it is. Anything
+# but the selected id refuses, with both ids named, and touches nothing.
+set ::health [observations]
+set ::rolling_back 0
+set ::vfleetdeploy::transport fake_transport_deploy
+set ::transport_log {}
+dict set ::answers_as node-a node-b
+set wrong_op [::vfleetdeploy::apply $m $before]
+rejects "staging refuses a saved instance that answers as another node, naming both ids" {
+    ::vfleetdeploy::stage $wrong_op node-a
+} "saved instance alpha is node node-b, not node-a"
+ok "the refused stage touched nothing and journaled no failure" {
+    $::transport_log eq {identity node-a} &&
+    [dict get [::vfleetjournal::get [dict get $wrong_op id]] targets node-a status] eq "reviewed"
+}
+dict set ::answers_as node-a ""
+rejects "staging refuses a saved instance that reports no node identity" {
+    ::vfleetdeploy::stage $wrong_op node-a
+} "reports no cluster node identity, so it cannot be proven to be node node-a"
+dict set ::answers_as node-a !unreachable
+rejects "staging refuses a saved instance that cannot be asked" {
+    ::vfleetdeploy::stage $wrong_op node-a
+} "could not be asked which node it is"
+ok "the journal keeps a bounded phrase for an identity refusal" {
+    [::vfleetdeploy::_safe_error "node identity mismatch: saved instance alpha is node node-b, not node-a"] eq
+        "the saved instance did not prove it is the selected node; nothing was changed"
+}
+dict unset ::answers_as node-a
+set wrong_op [::vfleetdeploy::stage $wrong_op node-a]
+dict set ::answers_as node-a node-b
+set ::transport_log {}
+rejects "restart + verify refuses before the install confirmation and the restart" {
+    ::vfleetdeploy::verify $wrong_op node-a
+} "saved instance alpha is node node-b, not node-a"
+ok "nothing was installed or restarted, and the target is still staged" {
+    $::transport_log eq {identity node-a} &&
+    [dict get [::vfleetjournal::get [dict get $wrong_op id]] targets node-a status] eq "staged"
+}
+dict unset ::answers_as node-a
+set wrong_op [::vfleetdeploy::verify $wrong_op node-a]
+dict set ::answers_as node-a node-b
+set ::transport_log {}
+rejects "rollback refuses before the restore and the restart" {
+    ::vfleetdeploy::rollback $wrong_op node-a
+} "saved instance alpha is node node-b, not node-a"
+ok "nothing was restored or restarted, and the target is still healthy" {
+    $::transport_log eq {identity node-a} &&
+    [dict get [::vfleetjournal::get [dict get $wrong_op id]] targets node-a status] eq "healthy"
+}
+dict unset ::answers_as node-a
 
 # ── F1-11: exact binding phrases and an operator-only diagnostic ──────
 ok "a signed preview defect is not reported as registry tampering" {

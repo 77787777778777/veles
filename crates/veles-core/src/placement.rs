@@ -402,6 +402,16 @@ pub const IO_HIGH: i64 = 20;
 /// this weight replaced.
 pub const DEFAULT_CORES: i64 = 4;
 
+/// The most cores a report is taken to have. Far above any machine in a
+/// pool, and low enough that one more child still weighs something
+/// (`10_000 / MAX_CORES` hundredths of a percent).
+pub const MAX_CORES: i64 = 4096;
+
+/// The most children (running or queued) a report is taken to count.
+/// Far above anything a node runs, and low enough that the score cannot
+/// overflow however many of them are added up and weighed.
+pub const MAX_REPORTED_CHILDREN: i64 = 100_000;
+
 // ── what one node is ranked by ───────────────────────────────────────
 
 /// Everything placement counts on one node, from its registry row and
@@ -482,11 +492,14 @@ impl NodeLoad {
 pub fn node_load(conn: &rusqlite::Connection, me: Option<&str>, n: &NodeRow) -> NodeLoad {
     // A peer's figures arrive over the wire: a percentage outside 0-100,
     // a core count under 1 or a negative child count is a broken report,
-    // not a reason to rank the node first. Clamped, or unknown.
+    // not a reason to rank the node first. Clamped, or unknown. So is a
+    // figure no machine has: a child count near i64::MAX overflowed the
+    // score (wrapped negative in a release build: ranked first), and a
+    // billion cores made a child weigh nothing.
     let percent = |v: Option<i64>| v.map(|v| v.clamp(0, 100));
-    let count = |v: Option<i64>| v.map(|v| v.max(0));
+    let count = |v: Option<i64>| v.map(|v| v.clamp(0, MAX_REPORTED_CHILDREN));
     let mut l = NodeLoad {
-        cores: n.cores.filter(|&c| c > 0),
+        cores: n.cores.filter(|&c| c > 0).map(|c| c.min(MAX_CORES)),
         load_percent: percent(n.load1),
         io_some: percent(n.io_some),
         io_full: percent(n.io_full),
@@ -505,12 +518,15 @@ pub fn node_load(conn: &rusqlite::Connection, me: Option<&str>, n: &NodeRow) -> 
     let placed = placed_on(conn, &n.id);
     l.unreported_from_here = match (l.running, me) {
         // The peer reports its work, by origin: what it already counts
-        // from us is not added again.
-        (Some(_), Some(me)) => {
+        // from us is not added again. It cannot vouch for more of ours
+        // than it runs at all (COMP-6, 0.2.2): a report of running 0 and
+        // 99 from us hid every child we placed there.
+        (Some(running), Some(me)) => {
             let counted = WorkReport::parse_from(n.children_from.as_deref())
                 .get(me)
                 .copied()
-                .unwrap_or(0);
+                .unwrap_or(0)
+                .clamp(0, running);
             (placed - counted).max(0)
         }
         _ => placed,
@@ -634,24 +650,56 @@ pub struct Pruned {
     pub dropped: usize,
 }
 
+/// The longest a claim (a `placed` row) is ever held: a remote child's
+/// whole call, which the transport bounds at the child's cap plus 120 s
+/// (`remotetask::run_on_peer`), and a re-homed tool call's
+/// (`remotetool::CALL_TIMEOUT_SECS`, the same figure), plus a minute.
+/// A local claim is taken over by its child within moments. A tool run
+/// served for a peer ([`tool_run_started`]) is held to the same age: its
+/// caller stops waiting for it within that time.
+pub const CLAIM_MAX_AGE_SECS: u64 = crate::delegate::CHILD_TIMEOUT_SECS + 180;
+
 /// Drop every work row whose process is gone (`alive` is
-/// [`pid_lives`] outside tests). Run at gateway boot (the
-/// reconciliation with what is actually running), on every heartbeat
-/// tick, and before a `gpu`/`any` resolution.
+/// [`pid_lives`] outside tests), and every claim or served tool run
+/// older than either can be held ([`CLAIM_MAX_AGE_SECS`]). Run at
+/// gateway boot (the reconciliation with what is actually running), on
+/// every heartbeat tick, and before a `gpu`/`any` resolution.
+///
+/// The age bound is COMP-5 (0.2.2): a claim's row is bound to the
+/// placing process, which is usually the long-lived gateway. When its
+/// release failed (a DELETE that waited out SQLite's busy timeout under
+/// exactly the disk pressure placement is about, or a store that would
+/// not open), the row stayed counted, as queued work here or as a child
+/// on a peer, until the gateway restarted. A tool run the gateway serves
+/// for a peer is bound to the gateway the same way, and is told apart by
+/// its pid, the pruning process's own: a delegate child's row carries
+/// the child's pid and is kept while that process lives. (A child that
+/// prunes, through `nodes`, sees its own row as such a run; it is
+/// stopped at its cap, three minutes under the bound.)
 pub fn prune(
     conn: &rusqlite::Connection,
     alive: &dyn Fn(u32, Option<&str>) -> bool,
 ) -> Result<Pruned> {
-    let rows: Vec<(i64, i64, Option<String>)> = {
-        let mut st = conn.prepare("SELECT id, pid, pid_start FROM placement_work")?;
+    let rows: Vec<(i64, i64, Option<String>, bool)> = {
+        let mut st = conn.prepare(
+            "SELECT id, pid, pid_start,
+                    (state = 'placed' OR pid = ?2) AND started_at < datetime('now', ?1)
+             FROM placement_work",
+        )?;
         let rows = st
-            .query_map([], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)))?
+            .query_map(
+                rusqlite::params![
+                    format!("-{CLAIM_MAX_AGE_SECS} seconds"),
+                    i64::from(std::process::id())
+                ],
+                |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)),
+            )?
             .collect::<std::result::Result<_, _>>()?;
         rows
     };
     let mut out = Pruned::default();
-    for (id, pid, start) in rows {
-        let lives = u32::try_from(pid).is_ok_and(|p| alive(p, start.as_deref()));
+    for (id, pid, start, expired) in rows {
+        let lives = !expired && u32::try_from(pid).is_ok_and(|p| alive(p, start.as_deref()));
         if lives {
             out.kept += 1;
         } else {
@@ -756,6 +804,9 @@ fn this_node() -> Option<String> {
 pub struct Claim {
     db: PathBuf,
     row: Option<i64>,
+    /// A claim on THIS node: queued work in its own heartbeat, so making
+    /// or releasing it is a change worth publishing ([`work_changed`]).
+    local: bool,
 }
 
 impl Claim {
@@ -763,6 +814,19 @@ impl Claim {
     pub fn row(&self) -> Option<i64> {
         self.row
     }
+
+    /// Release the claim on the blocking pool: its DELETE can wait on
+    /// SQLite's busy timeout, which must not stall a runtime worker.
+    pub async fn release(self) {
+        let _ = crate::rt::spawn_blocking(move || drop(self)).await;
+    }
+}
+
+/// [`claim`] on the blocking pool, for an async caller (its INSERT can
+/// wait on SQLite's busy timeout). `None` only if the task failed.
+pub async fn claim_async(node_id: &str) -> Option<Claim> {
+    let id = node_id.to_string();
+    crate::rt::spawn_blocking(move || claim(&id)).await.ok()
 }
 
 /// Whose delegate child a process is, for the work count
@@ -783,10 +847,13 @@ impl Drop for Claim {
         if let Some(c) = open_work(&self.db) {
             // Only a claim that is still a claim: a row its child took
             // over is the child's, and its guard deletes it.
-            let _ = c.execute(
+            let gone = c.execute(
                 "DELETE FROM placement_work WHERE id = ?1 AND state = 'placed'",
                 rusqlite::params![row],
             );
+            if self.local && gone.is_ok_and(|n| n > 0) {
+                note_change(&self.db);
+            }
         }
     }
 }
@@ -815,9 +882,16 @@ pub fn claim_in(db: &Path, node_id: &str, origin: &str) -> Claim {
         .ok()
         .map(|_| c.last_insert_rowid())
     });
+    // A claim on a peer changes no row of ours (the peer reports the
+    // child once it starts there); one on this node is queued work here.
+    let local = !origin.is_empty() && node_id == origin;
+    if local && row.is_some() {
+        note_change(db);
+    }
     Claim {
         db: db.to_path_buf(),
         row,
+        local,
     }
 }
 
@@ -826,17 +900,59 @@ pub fn claim_in(db: &Path, node_id: &str, origin: &str) -> Claim {
 pub struct ChildRun {
     db: PathBuf,
     row: i64,
+    /// Whether its start and end wake the early publish (a re-homed tool
+    /// call's do not: [`tool_run_started`]).
+    wake: bool,
 }
 
 impl Drop for ChildRun {
     fn drop(&mut self) {
         if let Some(c) = open_work(&self.db) {
-            let _ = c.execute(
+            let gone = c.execute(
                 "DELETE FROM placement_work WHERE id = ?1",
                 rusqlite::params![self.row],
             );
+            if self.wake && gone.is_ok_and(|n| n > 0) {
+                note_change(&self.db);
+            }
         }
     }
+}
+
+/// A re-homed tool call a peer (`origin`) asked this node to run,
+/// counted here while it runs (COMP-12, 0.2.2): a `running` row bound to
+/// this process, so a long sandbox command run for a peer shows in this
+/// node's work report. It does not wake the early publish: most such
+/// calls end within a second, the asking node holds a claim on this one
+/// while it waits, and a long one is in the next regular heartbeat. A
+/// row whose release failed is pruned once it is older than any call is
+/// waited for ([`CLAIM_MAX_AGE_SECS`]), as a claim is. `None` without a
+/// node identity.
+pub fn tool_run_started(origin: &str) -> Option<ChildRun> {
+    let me = this_node()?;
+    tool_run_started_in(&default_db(), &me, origin)
+}
+
+/// [`tool_run_started`] against an explicit store and identity.
+pub fn tool_run_started_in(db: &Path, me: &str, origin: &str) -> Option<ChildRun> {
+    let c = open_work(db)?;
+    let pid = std::process::id();
+    c.execute(
+        "INSERT INTO placement_work (state, target, origin, pid, pid_start)
+         VALUES ('running', ?1, ?2, ?3, ?4)",
+        rusqlite::params![
+            me,
+            origin,
+            i64::from(pid),
+            crate::platform::process_start_id(pid)
+        ],
+    )
+    .ok()?;
+    Some(ChildRun {
+        db: db.to_path_buf(),
+        row: c.last_insert_rowid(),
+        wake: false,
+    })
 }
 
 /// A child process just started on this node. Its row is bounded by the
@@ -890,10 +1006,157 @@ pub fn child_started_in(db: &Path, me: &str, of: ChildOf<'_>, child_pid: u32) ->
             c.last_insert_rowid()
         }
     };
+    note_change(db);
     Some(ChildRun {
         db: db.to_path_buf(),
         row,
+        wake: true,
     })
+}
+
+// ── publishing a change at once ──────────────────────────────────────
+//
+// A peer learns this node's work from its registry row, which the
+// gateway rewrites and gossips once per `[cluster] gossip_interval_secs`
+// (30 s by default). Two nodes placing `any` children inside one
+// interval both ranked the same idle node by a report that predated the
+// other's child. A change to this node's OWN work (a child started or
+// ended here, a placement on this node made or released) now wakes the
+// gateway's heartbeat loop, which writes the row and gossips it within
+// a second or two ([`early_publish_at`]) instead of up to a full
+// interval later. Only the gateway listens; a TUI's children are
+// published at the gateway's next tick, from the shared table.
+
+/// How long a change waits for others before the early publish goes out:
+/// a batch's members start together and are one publish, not one each.
+pub const COALESCE: std::time::Duration = std::time::Duration::from_secs(1);
+
+/// The least time between two publishes of this node's row, early ones
+/// included, so a node whose children start and end all the time costs
+/// its peers one gossip exchange per this interval at most.
+pub const EARLY_MIN: std::time::Duration = std::time::Duration::from_secs(5);
+
+/// One notifier per work table (the gateway's is `state.db` in
+/// `VELES_HOME`; a test's is its scratch store, so tests cannot wake
+/// each other).
+fn notifier(db: &Path) -> std::sync::Arc<tokio::sync::Notify> {
+    use crate::lockutil::LockOk;
+    type Map = std::collections::HashMap<PathBuf, std::sync::Arc<tokio::sync::Notify>>;
+    static MAP: std::sync::OnceLock<std::sync::Mutex<Map>> = std::sync::OnceLock::new();
+    MAP.get_or_init(Default::default)
+        .lock_ok()
+        .entry(db.to_path_buf())
+        .or_default()
+        .clone()
+}
+
+/// This node's row changed: wake whoever publishes it. One stored permit
+/// at most, so changes made while nobody waits are one wake-up.
+fn note_change(db: &Path) {
+    notifier(db).notify_one();
+}
+
+/// Resolves once this node's own work has changed since the last time it
+/// resolved (the gateway's heartbeat loop waits on it beside its tick).
+pub async fn work_changed() {
+    work_changed_in(&default_db()).await
+}
+
+/// [`work_changed`] for an explicit work table.
+pub async fn work_changed_in(db: &Path) {
+    let n = notifier(db);
+    n.notified().await;
+}
+
+/// When the early publish for a change seen at `changed` goes out, given
+/// that this node's row was last published at `last`: [`COALESCE`] after
+/// the change, and never sooner than [`EARLY_MIN`] after the last one
+/// ([`EARLY_MIN_BUSY_DISK`] while this node's own disk is under
+/// pressure). Generic over the clock so the gateway's loop can run it on
+/// tokio's, which a test can pause.
+pub fn early_publish_at<T>(changed: T, last: T, busy_disk: bool) -> T
+where
+    T: std::ops::Add<std::time::Duration, Output = T> + Ord,
+{
+    let gap = if busy_disk {
+        EARLY_MIN_BUSY_DISK
+    } else {
+        EARLY_MIN
+    };
+    (changed + COALESCE).max(last + gap)
+}
+
+/// The least time between two publishes while this node's own IO
+/// pressure is at or over [`IO_HIGH`]. Every publish, early or not, runs
+/// a gossip exchange with each gossip peer (a write transaction and an
+/// fsync on both sides); a disk that is already stalling pays that once
+/// per 15 s at most under steady child churn, not once per 5 s.
+pub const EARLY_MIN_BUSY_DISK: std::time::Duration = std::time::Duration::from_secs(15);
+
+/// Why the gateway's heartbeat loop woke ([`next_publish`]).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Wake {
+    /// The regular `[cluster] gossip_interval_secs` tick.
+    Tick,
+    /// A change to this node's own work, published early.
+    Early,
+}
+
+/// The gateway's heartbeat loop: wait in [`next_publish_in`] for the
+/// next publish, then run `publish` (the heartbeat write and a gossip
+/// exchange with every gossip peer), which answers whether this node's
+/// own disk is under pressure. Never returns.
+///
+/// A publish counts as made when `publish` has finished: the gossip is
+/// what a peer reads, and EARLY_MIN is the least time between two of
+/// those. Stamped when the loop woke, a 10 s gossip round left the next
+/// early publish 1 s after it, so changes under slow gossip went out
+/// back to back.
+pub async fn publish_loop<F, Fut>(tick: tokio::time::Interval, publish: F)
+where
+    F: FnMut(Wake) -> Fut,
+    Fut: std::future::Future<Output = bool>,
+{
+    publish_loop_in(tick, &default_db(), publish).await
+}
+
+/// [`publish_loop`] for an explicit work table.
+pub async fn publish_loop_in<F, Fut>(mut tick: tokio::time::Interval, db: &Path, mut publish: F)
+where
+    F: FnMut(Wake) -> Fut,
+    Fut: std::future::Future<Output = bool>,
+{
+    let mut published = tokio::time::Instant::now();
+    let mut busy_disk = false;
+    loop {
+        let wake = next_publish_in(&mut tick, published, db, busy_disk).await;
+        busy_disk = publish(wake).await;
+        published = tokio::time::Instant::now();
+    }
+}
+
+/// Wait until this node's registry row is due to be written and
+/// gossiped again: at the next regular `tick`, or, when this node's own
+/// work changes first, at [`early_publish_at`] (then the regular tick is
+/// a full interval away again). `published` is when the row last went
+/// out; `busy_disk` is whether the last heartbeat measured this node's
+/// IO pressure at or over [`IO_HIGH`]. [`publish_loop`] waits here
+/// between publishes.
+pub async fn next_publish_in(
+    tick: &mut tokio::time::Interval,
+    published: tokio::time::Instant,
+    db: &Path,
+    busy_disk: bool,
+) -> Wake {
+    tokio::select! {
+        _ = tick.tick() => Wake::Tick,
+        () = work_changed_in(db) => {
+            let at = early_publish_at(tokio::time::Instant::now(), published, busy_disk);
+            tokio::time::sleep_until(at).await;
+            tick.reset();
+            Wake::Early
+        }
+    }
 }
 
 /// Does this placement land on THIS node? The caller runs the child
@@ -1495,6 +1758,261 @@ mod tests {
         assert_eq!(work_rows(&store, "h-far") + work_rows(&store, "h-me"), 0);
     }
 
+    /// 306787.b, the burst window: a change to this node's OWN work wakes
+    /// the publisher at once (a placement here made or released, a child
+    /// started or ended here), and a claim on a peer, which changes no
+    /// row of ours, does not. The early publish is paced: a second after
+    /// the change, and never within EARLY_MIN of the last publish.
+    #[tokio::test]
+    async fn a_change_to_this_nodes_work_wakes_the_publisher() {
+        use std::time::{Duration, Instant};
+        let (_dir, _store, db) = scratch_at();
+        let woke = || {
+            let db = db.clone();
+            async move {
+                tokio::time::timeout(Duration::from_millis(250), work_changed_in(&db))
+                    .await
+                    .is_ok()
+            }
+        };
+        assert!(!woke().await, "nothing changed yet");
+        let far = claim_in(&db, "e-far", "e-me");
+        assert!(!woke().await, "a claim on a peer changes no row of ours");
+        let here = claim_in(&db, "e-me", "e-me");
+        assert!(woke().await, "a placement here is queued work in our row");
+        let me = std::process::id();
+        let run = child_started_in(&db, "e-me", ChildOf::Here(Some(&here)), me).unwrap();
+        assert!(woke().await, "a child started here");
+        drop(here);
+        assert!(
+            !woke().await,
+            "a claim its child took over releases nothing"
+        );
+        drop(run);
+        assert!(woke().await, "a child ended here");
+        drop(far);
+        assert!(!woke().await, "the peer reports its own child's end");
+        let unstarted = claim_in(&db, "e-me", "e-me");
+        assert!(woke().await);
+        drop(unstarted);
+        assert!(woke().await, "a placement here whose child never started");
+        let served = child_started_in(&db, "e-me", ChildOf::Peer("e-vps"), me).unwrap();
+        assert!(woke().await, "a peer's child started here");
+        drop(served);
+        assert!(woke().await);
+        // Another store's changes are not this one's.
+        let (_d2, _s2, other) = scratch_at();
+        let _o = claim_in(&other, "e-me", "e-me");
+        assert!(!woke().await, "a different work table");
+
+        let t = Instant::now() + Duration::from_secs(60);
+        let ago = |s: u64| t - Duration::from_secs(s);
+        assert_eq!(
+            early_publish_at(t, ago(60), false),
+            t + COALESCE,
+            "idle: a second"
+        );
+        assert_eq!(
+            early_publish_at(t, t, false),
+            t + EARLY_MIN,
+            "just published"
+        );
+        assert_eq!(
+            early_publish_at(t, ago(2), false),
+            t + Duration::from_secs(3),
+            "the rest of EARLY_MIN"
+        );
+        assert_eq!(
+            early_publish_at(t, ago(2), true),
+            t + Duration::from_secs(13),
+            "a busy disk: the rest of EARLY_MIN_BUSY_DISK"
+        );
+    }
+
+    /// COMP-10 (0.2.2): the gateway's heartbeat loop, as the gate runs
+    /// it. It waits in `next_publish`, which is what the loop's select
+    /// was; with the tick at 60 s, a change to this node's work goes out
+    /// a second later (or EARLY_MIN after the last publish), never at the
+    /// tick, and the tick moves a full interval past it. Without a change
+    /// the tick still comes. Paused time: the clock moves only when every
+    /// task waits, so each instant below is exact.
+    #[tokio::test(start_paused = true)]
+    async fn a_work_change_publishes_before_the_next_tick() {
+        use std::time::Duration;
+        use tokio::time::Instant;
+        let (_dir, _store, db) = scratch_at();
+        let t0 = Instant::now();
+        let mut tick = tokio::time::interval(Duration::from_secs(60));
+        tick.tick().await; // the immediate first tick, as the gateway skips it
+        let published = Instant::now();
+        // Idle for 30 s, then a placement on this node.
+        tokio::time::sleep(Duration::from_secs(30)).await;
+        let here = claim_in(&db, "w-me", "w-me");
+        let wake = next_publish_in(&mut tick, published, &db, false).await;
+        assert_eq!(wake, Wake::Early);
+        assert_eq!(
+            Instant::now() - t0,
+            Duration::from_secs(31),
+            "a second after it"
+        );
+        let published = Instant::now();
+        // A second change one second later: paced to EARLY_MIN.
+        tokio::time::sleep(Duration::from_secs(1)).await;
+        drop(here);
+        assert_eq!(
+            next_publish_in(&mut tick, published, &db, false).await,
+            Wake::Early
+        );
+        assert_eq!(
+            Instant::now() - published,
+            EARLY_MIN,
+            "not sooner than EARLY_MIN"
+        );
+        // Under disk pressure, the gap is EARLY_MIN_BUSY_DISK.
+        let published = Instant::now();
+        let again = claim_in(&db, "w-me", "w-me");
+        assert_eq!(
+            next_publish_in(&mut tick, published, &db, true).await,
+            Wake::Early
+        );
+        assert_eq!(Instant::now() - published, EARLY_MIN_BUSY_DISK);
+        // Nothing changes: the regular tick, a full interval after the
+        // early publish reset it.
+        let published = Instant::now();
+        // (The release just above was a change too: let it go out first.)
+        drop(again);
+        assert_eq!(
+            next_publish_in(&mut tick, published, &db, false).await,
+            Wake::Early
+        );
+        let quiet_from = Instant::now();
+        assert_eq!(
+            next_publish_in(&mut tick, quiet_from, &db, false).await,
+            Wake::Tick
+        );
+        assert_eq!(Instant::now() - quiet_from, Duration::from_secs(60));
+        // A claim on a peer is no change of ours: the tick, not early.
+        let _far = claim_in(&db, "w-far", "w-me");
+        let quiet_from = Instant::now();
+        assert_eq!(
+            next_publish_in(&mut tick, quiet_from, &db, false).await,
+            Wake::Tick
+        );
+    }
+
+    /// The gateway's loop itself (`publish_loop`, its heartbeat and
+    /// gossip as the body): EARLY_MIN spaces a publish from the END of
+    /// the one before. The loop stamped `published` when it woke, before
+    /// the heartbeat and the gossip ran, so with gossip that took 10 s
+    /// the next early publish started 1 s after the last one ended: the
+    /// pacing spaced starts, and under slow gossip early publishes ran
+    /// back to back. Paused time; the body's 10 s is slow gossip.
+    #[tokio::test(start_paused = true)]
+    async fn early_publishes_are_spaced_from_the_end_of_the_last() {
+        use std::sync::{Arc, Mutex};
+        use std::time::Duration;
+        use tokio::time::Instant;
+        let (_dir, _store, db) = scratch_at();
+        let mut tick = tokio::time::interval(Duration::from_secs(600));
+        tick.tick().await;
+        let runs: Arc<Mutex<Vec<(Wake, Instant, Instant)>>> = Arc::default();
+        let seen = runs.clone();
+        let loop_db = db.clone();
+        let publisher = crate::rt::spawn(async move {
+            publish_loop_in(tick, &loop_db, move |wake| {
+                let seen = seen.clone();
+                async move {
+                    let start = Instant::now();
+                    tokio::time::sleep(Duration::from_secs(10)).await;
+                    seen.lock().unwrap().push((wake, start, Instant::now()));
+                    false
+                }
+            })
+            .await
+        });
+        // A change, then another while the first publish is still out.
+        tokio::time::sleep(Duration::from_secs(1)).await;
+        let a = claim_in(&db, "s-me", "s-me");
+        tokio::time::sleep(Duration::from_secs(6)).await;
+        drop(a);
+        tokio::time::sleep(Duration::from_secs(40)).await;
+        publisher.abort();
+        let runs = runs.lock().unwrap().clone();
+        assert!(runs.len() >= 2, "two early publishes: {runs:?}");
+        assert!(runs.iter().take(2).all(|(w, _, _)| *w == Wake::Early));
+        let (_, _, first_end) = runs[0];
+        let (_, second_start, _) = runs[1];
+        assert!(
+            second_start - first_end >= EARLY_MIN,
+            "the second publish started {:?} after the first ended",
+            second_start - first_end
+        );
+    }
+
+    /// COMP-5 (0.2.2): a claim whose release failed (its DELETE waited
+    /// out the busy timeout) is bound to the placing process, the live
+    /// gateway, so the pid check kept it counted until a restart. A claim
+    /// older than any claim can be held is dropped; a fresh one, and a
+    /// running child of any age, are kept while their process lives.
+    /// COMP-12's tool runs are bound to the serving gateway the same way:
+    /// one older than any call is waited for is dropped, a fresh one kept.
+    #[test]
+    fn a_claim_older_than_any_child_can_live_is_pruned() {
+        let (_dir, store, _db) = scratch_at();
+        // This test process stands for the gateway. A delegate child is
+        // a process of its own, as in production: a pid that is not
+        // ours, and living.
+        let me = std::process::id();
+        let child = me ^ 1;
+        let alive = |pid: u32, start: Option<&str>| pid == child || pid_lives(pid, start);
+        let row = |state: &str, target: &str, pid: u32, age_secs: u64| {
+            store
+                .conn()
+                .execute(
+                    "INSERT INTO placement_work (state, target, origin, pid, pid_start, started_at)
+                     VALUES (?1, ?2, 'x-me', ?3, ?4, datetime('now', ?5))",
+                    rusqlite::params![
+                        state,
+                        target,
+                        i64::from(pid),
+                        crate::platform::process_start_id(pid),
+                        format!("-{age_secs} seconds")
+                    ],
+                )
+                .unwrap();
+        };
+        row("placed", "x-peer", me, 3600);
+        row("placed", "x-fresh", me, 60);
+        row("running", "x-me", child, 3600);
+        row("running", "x-served", me, 3600);
+        row("running", "x-serving", me, 60);
+        let pruned = prune(store.conn(), &alive).unwrap();
+        assert_eq!(
+            pruned,
+            Pruned {
+                kept: 3,
+                dropped: 2
+            }
+        );
+        assert_eq!(work_rows(&store, "x-peer"), 0, "the leaked claim is gone");
+        assert_eq!(work_rows(&store, "x-fresh"), 1);
+        assert_eq!(work_rows(&store, "x-me"), 1, "a running child is its pid's");
+        assert_eq!(
+            work_rows(&store, "x-served"),
+            0,
+            "a tool run older than any call is waited for is gone"
+        );
+        assert_eq!(work_rows(&store, "x-serving"), 1, "a fresh tool run stays");
+        let peer = {
+            reg(&store, "x-peer", "peer", None);
+            store.node_get("x-peer").unwrap().unwrap()
+        };
+        assert_eq!(
+            node_load(store.conn(), Some("x-me"), &peer).unreported_from_here,
+            0
+        );
+    }
+
     /// A peer's figures come off the wire. A broken or hostile report
     /// (no cores, negative children, IO over 100) is clamped or read as
     /// unknown, so it cannot rank the node first.
@@ -1522,6 +2040,77 @@ mod tests {
         assert_eq!(l.child_weight_x100(), 10_000 / DEFAULT_CORES);
         let p = resolve(&store, &BackendSpec::Any, None, 600, &|_| true).unwrap();
         assert_eq!(p.node.id, "b-fine", "{}", p.reason);
+    }
+
+    /// A report with figures no machine has (0.2.2 review). The counts
+    /// were held at 0 from below only, and the cores at 1: a report of
+    /// i64::MAX children overflowed the score, so ranking panicked in a
+    /// debug build (every `any` placement failed) and in a release build
+    /// the score wrapped negative and ranked the node FIRST; and a
+    /// billion cores made a child weigh nothing, so the children this
+    /// node placed there never moved it down. Counts are held to
+    /// [`MAX_REPORTED_CHILDREN`] and cores to [`MAX_CORES`].
+    #[test]
+    fn a_huge_report_cannot_rank_a_node_first() {
+        let (_dir, store, _db) = scratch_at();
+        reg(&store, "h-fine", "fine", None);
+        reg(&store, "h-huge", "huge", None);
+        beat(&store, "h-fine", 30, Some(4), Some(0), None);
+        beat(&store, "h-huge", 30, Some(4), Some(0), None);
+        store
+            .conn()
+            .execute(
+                "UPDATE nodes SET children = ?1, queued = ?1 WHERE id = 'h-huge'",
+                [i64::MAX],
+            )
+            .unwrap();
+        let p = resolve(&store, &BackendSpec::Any, None, 600, &|_| true).unwrap();
+        assert_eq!(p.node.id, "h-fine", "{}", p.reason);
+        store
+            .conn()
+            .execute(
+                "UPDATE nodes SET children = 0, queued = 0, cores = ?1 WHERE id = 'h-huge'",
+                [i64::MAX],
+            )
+            .unwrap();
+        let huge = store.node_get("h-huge").unwrap().unwrap();
+        let l = node_load(store.conn(), None, &huge);
+        assert!(l.child_weight_x100() > 0, "a child weighs something: {l:?}");
+    }
+
+    /// COMP-6 (0.2.2): a peer's report says how many of its running
+    /// children came from us, and we subtract that from our claims there
+    /// so no child counts twice. A report that claims more of ours than
+    /// it runs (running 0, five from us) is held to what it runs, so it
+    /// cannot erase the children we placed there and it has not reported.
+    #[test]
+    fn a_peer_cannot_vouch_for_more_of_our_children_than_it_runs() {
+        let (_dir, store, db) = scratch_at();
+        reg(&store, "v-me", "laptop", None);
+        reg(&store, "v-vps", "vps", None);
+        let report = WorkReport {
+            running: 0,
+            queued: 0,
+            from: BTreeMap::from([("v-me".to_string(), 5)]),
+        };
+        beat(&store, "v-vps", 10, Some(4), Some(0), Some(report));
+        let a = claim_in(&db, "v-vps", "v-me");
+        let b = claim_in(&db, "v-vps", "v-me");
+        let vps = store.node_get("v-vps").unwrap().unwrap();
+        let l = node_load(store.conn(), Some("v-me"), &vps);
+        assert_eq!(l.unreported_from_here, 2, "{l:?}");
+        assert_eq!(l.children(), 2);
+        // One of them reported, honestly: counted once.
+        let report = WorkReport {
+            running: 1,
+            queued: 0,
+            from: BTreeMap::from([("v-me".to_string(), 1)]),
+        };
+        beat(&store, "v-vps", 10, Some(4), Some(0), Some(report));
+        let vps = store.node_get("v-vps").unwrap().unwrap();
+        let l = node_load(store.conn(), Some("v-me"), &vps);
+        assert_eq!((l.unreported_from_here, l.children()), (1, 2), "{l:?}");
+        drop((a, b));
     }
 
     /// The order is a pure function of the rows: the same registry ranks

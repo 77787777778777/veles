@@ -236,15 +236,52 @@ pub async fn get_through(
     user_agent: Option<&str>,
     proxy: Option<&str>,
 ) -> Result<reqwest::Response, String> {
+    get_guarded(raw, timeout, user_agent, proxy)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+/// Why a guarded GET produced no response.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum GetError {
+    /// Nothing was asked of the network, or its answer was not followed:
+    /// not a URL, a scheme or an address this gateway must not reach, a
+    /// name that does not resolve here, a redirect it will not follow, a
+    /// proxy or client it cannot set up. Final: asking again, on another
+    /// circuit or not, gets the same answer.
+    Refused(String),
+    /// The request went out and the network failed it (connect, proxy,
+    /// TLS, reset, timeout). Another try, on another circuit, may succeed.
+    Network(String),
+}
+
+impl std::fmt::Display for GetError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Refused(why) | Self::Network(why) => f.write_str(why),
+        }
+    }
+}
+
+/// [`get_through`], saying which kind of failure it was, so a caller that
+/// retries (`web_extract` through Tor) retries only what can change.
+pub async fn get_guarded(
+    raw: &str,
+    timeout: Duration,
+    user_agent: Option<&str>,
+    proxy: Option<&str>,
+) -> Result<reqwest::Response, GetError> {
     let mut current = raw.to_string();
     for hop in 0..=MAX_REDIRECTS {
-        let t = check(&current).await?;
+        let t = check(&current).await.map_err(GetError::Refused)?;
         let mut b = reqwest::Client::builder().timeout(timeout);
         if let Some(ua) = user_agent {
             b = b.user_agent(ua);
         }
         b = match proxy {
-            Some(p) => b.proxy(reqwest::Proxy::all(p).map_err(|e| format!("the proxy: {e}"))?),
+            Some(p) => b.proxy(
+                reqwest::Proxy::all(p).map_err(|e| GetError::Refused(format!("the proxy: {e}")))?,
+            ),
             None => b.resolve(&t.host, t.addr),
         };
         let client = b
@@ -253,12 +290,12 @@ pub async fn get_through(
             // through.
             .redirect(reqwest::redirect::Policy::none())
             .build()
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| GetError::Refused(e.to_string()))?;
         let resp = client
             .get(t.url.clone())
             .send()
             .await
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| GetError::Network(e.to_string()))?;
         if !resp.status().is_redirection() {
             return Ok(resp);
         }
@@ -270,7 +307,9 @@ pub async fn get_through(
             return Ok(resp); // a redirect with nowhere to go is the answer
         };
         if hop == MAX_REDIRECTS {
-            return Err(format!("refused: more than {MAX_REDIRECTS} redirects"));
+            return Err(GetError::Refused(format!(
+                "refused: more than {MAX_REDIRECTS} redirects"
+            )));
         }
         // Relative Locations are legal and common, and resolving them
         // against the PREVIOUS url is what keeps a relative hop from
@@ -278,10 +317,10 @@ pub async fn get_through(
         current = t
             .url
             .join(loc)
-            .map_err(|e| format!("refused: bad redirect target: {e}"))?
+            .map_err(|e| GetError::Refused(format!("refused: bad redirect target: {e}")))?
             .to_string();
     }
-    Err("refused: redirect loop".into())
+    Err(GetError::Refused("refused: redirect loop".into()))
 }
 
 #[cfg(test)]

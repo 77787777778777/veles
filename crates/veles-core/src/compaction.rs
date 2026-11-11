@@ -211,7 +211,15 @@ fn snap_cut_off_tool_round(history: &[ChatMessage], want: usize) -> usize {
         }
         // The earliest index AT OR PAST `want` where nothing is pending.
         // i+1 because the cut is an exclusive bound: rows [0, cut) go.
-        if i + 1 >= want && open.is_empty() {
+        // Nor between two results: a round's results follow it directly,
+        // so a tool row right after the cut belongs to a round the cut
+        // would split. The open set cannot see that when ids repeat or
+        // are empty (a route that sends none answers `""` with `""`): the
+        // first result closes the only open id. The kept tail then opened
+        // with a result no kept call declares, which the replay drops, so
+        // the model never saw it again.
+        let splits_results = history.get(i + 1).is_some_and(|next| next.role == "tool");
+        if i + 1 >= want && open.is_empty() && !splits_results {
             cut = i + 1;
             break;
         }
@@ -1142,6 +1150,32 @@ mod tests {
         // keep_recent=2 → want_start=2.
         let cut = choose_cut_forced(&h, 2, 1).expect("must cut");
         assert_eq!(cut, 2, "an unanswered call does not move the cut");
+    }
+
+    /// Ids cannot tell two results of one round apart when they repeat or
+    /// are empty (a route that sends no ids leaves `""` on every call and
+    /// every result). The first result closed the round's only open id, so
+    /// a forced cut landed between the two results; the kept tail opened
+    /// with the second, which no kept call declares, and the replay drops
+    /// such a row: the model never saw that result again.
+    #[test]
+    fn forced_cut_never_lands_between_two_results_of_one_round() {
+        let mut both = msg("assistant", "");
+        both.tool_calls = Some(serde_json::json!([
+            {"id": "", "type": "function", "function": {"name": "read_file", "arguments": "{}"}},
+            {"id": "", "type": "function", "function": {"name": "read_file", "arguments": "{}"}}
+        ]));
+        let h = vec![
+            msg("user", "go"),
+            both,
+            paired_result("", "first"),
+            paired_result("", "second"),
+            msg("assistant", "a"),
+            msg("assistant", "b"),
+        ];
+        // keep_recent=3 → want_start=3, between the two results.
+        let cut = choose_cut_forced(&h, 3, 1).expect("must cut");
+        assert_eq!(cut, 4, "the round and both its results stay on one side");
     }
 
     /// The degenerate end that remains: a result that PRECEDES its own

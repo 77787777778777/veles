@@ -3784,7 +3784,7 @@ mod tests {
         std::fs::write(
             dir.join("run.sh"),
             format!(
-                "(trap '' TERM; sleep 1; : > \"{}\") >/dev/null 2>&1 & echo $! > \"{}\"\n\
+                "(trap '' TERM; sleep 3; : > \"{}\") >/dev/null 2>&1 & echo $! > \"{}\"\n\
                  trap 'exit 143' TERM INT\nsleep 30 & wait $!\n",
                 canary.display(),
                 child_pid.display()
@@ -3805,14 +3805,20 @@ mod tests {
             .trim()
             .parse()
             .expect("runner pid");
+        // The waits are sized for a loaded machine: the hermetic gate runs
+        // this beside sixteen test threads, and with 2 s for the fixture to
+        // start and a 1 s grandchild it was red on 2026-11-11 with nothing
+        // wrong ("no grandchild pid after 2s"). The fixture gets 30 s to
+        // start; the grandchild is due after 3 s and the canary is looked
+        // for 3.3 s after the kill: the same property, with room.
         let start = std::time::Instant::now();
-        while !child_pid.exists() && start.elapsed() < std::time::Duration::from_secs(2) {
+        while !child_pid.exists() && start.elapsed() < std::time::Duration::from_secs(30) {
             tokio::time::sleep(std::time::Duration::from_millis(10)).await;
         }
         let child: i32 = std::fs::read_to_string(&child_pid)
             .unwrap_or_else(|e| {
                 panic!(
-                    "the launch fixture produced no grandchild pid after 2s: {e}; \
+                    "the launch fixture produced no grandchild pid after 30s: {e}; \
                      runner {pid}, run.sh={:?}, launch={out:?}",
                     std::fs::read_to_string(dir.join("run.sh"))
                 )
@@ -3832,7 +3838,7 @@ mod tests {
             .arg("-c")
             .arg(format!("kill -KILL -{pid} 2>/dev/null || true"))
             .status();
-        tokio::time::sleep(std::time::Duration::from_millis(1300)).await;
+        tokio::time::sleep(std::time::Duration::from_millis(3300)).await;
         assert!(
             !canary.exists(),
             "detached grandchild {child} survived cancellation; runner {pid}"

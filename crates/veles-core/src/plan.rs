@@ -35,6 +35,7 @@
 //! allow is a mutation in a mode that promised there would be none, and
 //! that is the only failure here that matters.
 
+use crate::shell::Dialect;
 use serde_json::Value;
 
 /// Session meta key prefix, exactly the shape `/failover` uses.
@@ -450,10 +451,32 @@ struct Word {
 /// or say why it cannot be judged from its words at all.
 ///
 /// Separators are `&&`, `||`, `;`, `|`, `|&` and newlines; every part they
-/// separate must pass [`judge_segment`] on its own. Quotes and backslashes
+/// separate must pass [`judge_segment`] on its own. Quotes and escapes
 /// are honoured, so `grep -E "a|b"` is one command, not two.
-fn split_command(cmd: &str) -> Result<Vec<Vec<Word>>, String> {
-    let s = cmd.replace("\\\r\n", " ").replace("\\\n", " ");
+///
+/// Quotes and escapes are the ones of the shell that runs the line
+/// (`dialect`). To a POSIX shell a backslash escapes; to PowerShell and
+/// cmd it is a path separator, and a judge that ate it both lost
+/// `C:\veles\veles.exe` (it read `C:velesveles.exe`) and took `x\;del y`
+/// for one word where the shell runs `del y`. PowerShell also quotes
+/// with typographic quotes (a `”` closes a `"…"`), calls the next word
+/// with a leading `&`, and runs a `{ … }` handed to a cmdlet (`sort
+/// {…}`); cmd escapes with `^` and has no `'` quotes and no `#`
+/// comments.
+fn split_command(cmd: &str, dialect: Dialect) -> Result<Vec<Vec<Word>>, String> {
+    let s = match dialect {
+        Dialect::Posix => cmd.replace("\\\r\n", " ").replace("\\\n", " "),
+        Dialect::Cmd => cmd.replace("^\r\n", "").replace("^\n", ""),
+        Dialect::PowerShell => cmd
+            .chars()
+            .map(|ch| match ch {
+                '\u{2018}' | '\u{2019}' | '\u{201A}' | '\u{201B}' => '\'',
+                '\u{201C}' | '\u{201D}' | '\u{201E}' => '"',
+                ch => ch,
+            })
+            .collect(),
+    };
+    let escapes = dialect == Dialect::Posix;
     let c: Vec<char> = s.chars().collect();
     let mut segs: Vec<Vec<Word>> = vec![Vec::new()];
     let mut cur = String::new();
@@ -485,14 +508,14 @@ fn split_command(cmd: &str) -> Result<Vec<Vec<Word>>, String> {
                 segs.push(Vec::new());
                 i += 1;
             }
-            '#' if !in_word => {
+            '#' if !in_word && dialect != Dialect::Cmd => {
                 // A comment runs to the end of the line; the newline
                 // itself still separates.
                 while i < c.len() && c[i] != '\n' {
                     i += 1;
                 }
             }
-            '\'' => {
+            '\'' if dialect != Dialect::Cmd => {
                 in_word = true;
                 i += 1;
                 loop {
@@ -519,7 +542,7 @@ fn split_command(cmd: &str) -> Result<Vec<Vec<Word>>, String> {
                             i += 1;
                             break;
                         }
-                        Some('\\') => match c.get(i + 1) {
+                        Some('\\') if escapes => match c.get(i + 1) {
                             Some(&x) if matches!(x, '"' | '\\' | '$' | '`') => {
                                 cur.push(x);
                                 i += 2;
@@ -546,7 +569,7 @@ fn split_command(cmd: &str) -> Result<Vec<Vec<Word>>, String> {
                     }
                 }
             }
-            '\\' => {
+            '\\' if escapes => {
                 in_word = true;
                 if let Some(x) = next {
                     cur.push(x);
@@ -554,6 +577,27 @@ fn split_command(cmd: &str) -> Result<Vec<Vec<Word>>, String> {
                 } else {
                     i += 1;
                 }
+            }
+            '^' if dialect == Dialect::Cmd => {
+                in_word = true;
+                if let Some(x) = next {
+                    cur.push(x);
+                    i += 2;
+                } else {
+                    i += 1;
+                }
+            }
+            '{' if dialect == Dialect::PowerShell => {
+                return Err("a script block `{ … }` is code the command runs".into())
+            }
+            // PowerShell's call operator: `& "C:\Program Files\x.exe" …`
+            // runs the next word, which is the command's name.
+            '&' if dialect == Dialect::PowerShell
+                && next != Some('&')
+                && !in_word
+                && segs.last().is_some_and(|s| s.is_empty()) =>
+            {
+                i += 1;
             }
             '`' => return Err("a backtick runs a command inside the command".into()),
             '$' => {
@@ -947,12 +991,31 @@ fn judge_segment(words: &[Word]) -> Result<(), String> {
 /// `Err`, which in plan mode means "refused, use `/plan off`" — and the
 /// reason names the part that was refused, so the model can redo just
 /// that part as a read instead of concluding the terminal is off.
+///
+/// The line is split as the shell the terminal runs will split it
+/// ([`crate::shell::dialect`]).
 pub fn judge_command(cmd: &str) -> Result<(), String> {
-    let segs = split_command(cmd)?;
+    judge_command_allowing(cmd, crate::shell::dialect(), |_| false)
+}
+
+/// [`judge_command`] for a line a shell of `dialect` runs, where a simple
+/// command for which `also` answers true passes as well. Turn recovery
+/// lets the gateway's own restart through this way; every other part is
+/// judged exactly as plan mode judges it.
+pub fn judge_command_allowing(
+    cmd: &str,
+    dialect: Dialect,
+    also: impl Fn(&[&str]) -> bool,
+) -> Result<(), String> {
+    let segs = split_command(cmd, dialect)?;
     if segs.is_empty() {
         return Err("the command is empty".into());
     }
     for seg in &segs {
+        let words: Vec<&str> = seg.iter().map(|w| w.text.as_str()).collect();
+        if also(&words) {
+            continue;
+        }
         judge_segment(seg)?;
     }
     Ok(())
@@ -1804,7 +1867,6 @@ mod tests {
         for c in [
             "grep -E 'a|b;c&&d>e' f",
             "echo \"a > b; rm x\"",
-            r"grep a\|b f",
             "rg -n 'x$' src",
             "echo \"$HOME\"",
         ] {
@@ -1814,8 +1876,81 @@ mod tests {
                 judge_command(c)
             );
         }
+        // An escaped separator is one word to a POSIX shell; PowerShell
+        // and cmd have no `\` escape (below).
+        assert!(judge_in(Dialect::Posix, r"grep a\|b f").is_ok());
         assert!(judge_command("grep 'x' f; rm y").is_err());
         assert!(judge_command("grep \"x\" f | sh").is_err());
+    }
+
+    fn judge_in(dialect: Dialect, cmd: &str) -> Result<(), String> {
+        judge_command_allowing(cmd, dialect, |_| false)
+    }
+
+    fn words_in(dialect: Dialect, cmd: &str) -> Vec<Vec<String>> {
+        split_command(cmd, dialect)
+            .unwrap()
+            .into_iter()
+            .map(|seg| seg.into_iter().map(|w| w.text).collect())
+            .collect()
+    }
+
+    /// A line is split as the shell that runs it splits it. POSIX rules
+    /// everywhere took a Windows path's backslashes for escapes
+    /// (`C:\veles\veles.exe` read as `C:velesveles.exe`, so turn recovery
+    /// did not know the gateway's own restart), and a `\;`, `\"`, a
+    /// typographic quote or a `{ … }` hid from the judge a command that
+    /// PowerShell runs; `'`, `#` and `^` did the same under cmd. Each line
+    /// here is a read to the POSIX reading and runs a write in the shell
+    /// named.
+    #[test]
+    fn a_command_is_split_by_the_rules_of_the_shell_that_runs_it() {
+        use Dialect::{Cmd, Posix, PowerShell};
+        assert_eq!(
+            words_in(PowerShell, r"cat C:\veles\x.txt"),
+            vec![vec!["cat".to_string(), r"C:\veles\x.txt".into()]]
+        );
+        assert_eq!(
+            words_in(Cmd, r#"type "C:\Program Files\x.txt""#),
+            vec![vec!["type".to_string(), r"C:\Program Files\x.txt".into()]]
+        );
+        assert_eq!(
+            words_in(
+                PowerShell,
+                r#"& "C:\Program Files\veles\veles.exe" gateway restart"#
+            ),
+            vec![vec![
+                r"C:\Program Files\veles\veles.exe".to_string(),
+                "gateway".into(),
+                "restart".into()
+            ]]
+        );
+        for (dialect, c) in [
+            (PowerShell, r"cat x\;Remove-Item y"),
+            (PowerShell, r"grep a\|b f"),
+            (PowerShell, r#"cat "\" ; Remove-Item y ; cat "\""#),
+            (PowerShell, "cat x\\\nRemove-Item y"),
+            (
+                PowerShell,
+                "echo \"a\u{201D} ; Remove-Item y ; echo \u{201C}b\"",
+            ),
+            (PowerShell, "ls | sort {Remove-Item y}"),
+            (Cmd, r"cat x\&del y"),
+            (Cmd, "echo 'a & del y'"),
+            (Cmd, "echo a #& del y"),
+            (Cmd, r#"echo ^"a & del y^""#),
+        ] {
+            assert!(judge_in(Posix, c).is_ok(), "a read to POSIX: {c}");
+            assert!(
+                judge_in(dialect, c).is_err(),
+                "{dialect:?} runs a write: {c}"
+            );
+        }
+        // PowerShell's call operator starts a command; to POSIX it is a
+        // lone `&`.
+        assert!(judge_in(PowerShell, "& cat x; & 'ls' y").is_ok());
+        assert!(judge_in(Posix, "& cat x").is_err());
+        assert!(judge_in(PowerShell, "ls & rm x").is_err());
     }
 
     /// Each new takeback, one refusing case apiece: these are the write

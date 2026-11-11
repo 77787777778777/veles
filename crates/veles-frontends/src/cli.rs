@@ -366,7 +366,16 @@ pub fn run_oneshot(
     // `chat -q "/lint f.tcl"` fell through to the provider — a model
     // turn (and a model ANSWER) for what is a local command. Found
     // live while proving /lint: the model offered to write the script.
-    if query.starts_with('/') {
+    //
+    // Text by the one rule every surface asks (commands::slash_line) is
+    // the prompt: a path typed first, and a `//` line with one slash
+    // taken off. What an unknown command-shaped word gets here is this
+    // path's own, narrower refusal (unknown_slash_refusal).
+    let (query, command) = match veles_core::commands::slash_line(query) {
+        veles_core::commands::SlashLine::Text(t) => (t, false),
+        veles_core::commands::SlashLine::Command { .. } => (query, true),
+    };
+    if command {
         let mut parts = query.splitn(2, ' ');
         let head = parts.next().unwrap_or("");
         let rest = parts.next().unwrap_or("").trim();
@@ -670,6 +679,16 @@ pub fn plugins(action: Option<PluginsCmd>) -> Result<()> {
                 );
                 println!("save the file: the runtime watches this directory.");
                 println!("API reference: docs/plugins.md, \"JavaScript / TypeScript\"");
+            } else if kind == "rust" {
+                println!("  Cargo.toml    a cdylib on veles-plugin-abi-sdk");
+                println!("  src/lib.rs    a tool and a post_llm_call hook you can edit");
+                println!(
+                    "\nBuild it with `cargo build --release` in that directory: the manifest's"
+                );
+                println!(
+                    "entry is the library the build makes. Then reload it in Manage extensions."
+                );
+                println!("API reference: docs/plugins.md, \"Out-of-tree Rust\"");
             } else {
                 println!("  plugin.tcl    a post_llm_call handler you can edit");
                 println!("\nIt is live on the next reload — `veles tcl reload`, or just");

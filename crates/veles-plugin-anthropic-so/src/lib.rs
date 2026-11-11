@@ -401,10 +401,75 @@ fn max_out(req: &Value, c: Caps) -> u64 {
 
 // ── request: OpenAI shape → Anthropic Messages shape ────────────────────
 
+/// Tool-call ids as this wire needs them: non-empty, `[A-Za-z0-9_-]` only,
+/// and unique in the request. Other routes do not promise any of that: a
+/// route that sends no ids leaves `""`, Kimi-style ids carry `:` and `.`,
+/// and some models number calls per response, so `terminal:0` opens every
+/// round. The engine pairs such calls with their results by POSITION
+/// (`replay_messages`: each round's results directly after it); this wire
+/// pairs strictly by id, so a call that would collide gets a fresh id and
+/// the results of the same round, in order, follow it. A valid, unused id
+/// is kept as it is, so a history of this wire's own ids is sent byte for
+/// byte as before. The same rule, in the same order, is in the Tcl twin.
+#[derive(Default)]
+struct ToolIds {
+    used: std::collections::HashSet<String>,
+    /// The current round: original id → the ids given to its calls, in
+    /// declaration order, not yet answered.
+    round: HashMap<String, std::collections::VecDeque<String>>,
+}
+
+impl ToolIds {
+    /// An assistant that calls tools opens a new round.
+    fn open_round(&mut self) {
+        self.round.clear();
+    }
+
+    /// The id to send for a declared call.
+    fn call(&mut self, id: &str) -> String {
+        let base: String = if id.is_empty() {
+            "call".to_string()
+        } else {
+            id.chars()
+                .map(|c| {
+                    if c.is_ascii_alphanumeric() || c == '_' || c == '-' {
+                        c
+                    } else {
+                        '_'
+                    }
+                })
+                .collect()
+        };
+        let mut out = base.clone();
+        let mut n = 1u32;
+        while self.used.contains(&out) {
+            out = format!("{base}_{n}");
+            n += 1;
+        }
+        self.used.insert(out.clone());
+        self.round
+            .entry(id.to_string())
+            .or_default()
+            .push_back(out.clone());
+        out
+    }
+
+    /// The id to send for a result: the next call of the current round
+    /// that carried its id. A result with no such call (a thread continue
+    /// answers a reply the endpoint holds) keeps its id.
+    fn result(&mut self, id: &str) -> String {
+        self.round
+            .get_mut(id)
+            .and_then(std::collections::VecDeque::pop_front)
+            .unwrap_or_else(|| id.to_string())
+    }
+}
+
 fn to_wire(req: &Value, c: Caps, streaming: bool) -> Value {
     let mut system = String::new();
     let mut system_cache: Option<Value> = None;
     let mut messages: Vec<Value> = Vec::new();
+    let mut ids = ToolIds::default();
 
     for m in req["messages"].as_array().into_iter().flatten() {
         let role = m["role"].as_str().unwrap_or("");
@@ -447,7 +512,7 @@ fn to_wire(req: &Value, c: Caps, streaming: bool) -> Value {
             let (text, cache) = content_text(&m["content"]);
             let mut block = json!({
                 "type": "tool_result",
-                "tool_use_id": m["tool_call_id"].as_str().unwrap_or(""),
+                "tool_use_id": ids.result(m["tool_call_id"].as_str().unwrap_or("")),
                 "content": text,
             });
             if let Some(cc) = cache {
@@ -502,6 +567,12 @@ fn to_wire(req: &Value, c: Caps, streaming: bool) -> Value {
                 }
             }
         }
+        if m["tool_calls"]
+            .as_array()
+            .is_some_and(|calls| !calls.is_empty())
+        {
+            ids.open_round();
+        }
         for call in m["tool_calls"].as_array().into_iter().flatten() {
             // OpenAI carries arguments as a JSON *string*; this wire wants
             // the object itself.
@@ -509,7 +580,7 @@ fn to_wire(req: &Value, c: Caps, streaming: bool) -> Value {
             let input: Value = serde_json::from_str(raw).unwrap_or_else(|_| json!({}));
             blocks.push(json!({
                 "type": "tool_use",
-                "id": call["id"].as_str().unwrap_or(""),
+                "id": ids.call(call["id"].as_str().unwrap_or("")),
                 "name": call["function"]["name"].as_str().unwrap_or(""),
                 "input": input,
             }));

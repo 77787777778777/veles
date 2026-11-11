@@ -55,6 +55,29 @@ if find "$HOME/bundle" -type f \( -name cargo -o -name rustc \) -print -quit | g
     echo "compiler in the portable closure" >&2; exit 1
 fi
 "$HOME/bundle/bin/veles" --version
+# The shipped Tcl language server (DEV-6): the bundled veles names it in
+# VELES_TCL_LSP, and it answers an LSP handshake from the bundle's own
+# closure under the bundle's launcher, with no environment and no host /nix.
+check_tcl_lsp() {
+    local root=$1 label=$2 chroot lsp log
+    log=$result/$VELES_SMOKE_DISTRO.$label.tcl-lsp.log
+    chroot=$(ls -d "$root"/nix/store/*-nix-user-chroot-*/bin/nix-user-chroot)
+    # The wrapper is a compiled one: read the variable out of its bytes.
+    lsp=$(grep -aoE 'VELES_TCL_LSP=/nix/store/[a-z0-9]{32}-[^/]+/bin/tcl-lsp' \
+        "$root"/nix/store/*-veles-agent-*/bin/veles | head -1)
+    lsp=${lsp#VELES_TCL_LSP=}
+    [[ $lsp == /nix/store/*/bin/tcl-lsp && -x $root$lsp ]] || { echo "$label: no shipped tcl-lsp named" >&2; exit 1; }
+    lsp_msg() { printf 'Content-Length: %d\r\n\r\n%s' "${#1}" "$1"; }
+    {
+        lsp_msg '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"processId":null,"rootUri":null,"capabilities":{}}}'
+        lsp_msg '{"jsonrpc":"2.0","method":"initialized","params":{}}'
+        lsp_msg '{"jsonrpc":"2.0","id":2,"method":"shutdown","params":null}'
+        lsp_msg '{"jsonrpc":"2.0","method":"exit","params":null}'
+    } | (cd / && timeout 60 env -i HOME="$HOME" TMPDIR="$HOME/tmp" "$chroot" "$root/nix" "$lsp") >"$log" 2>&1
+    grep -q '"hoverProvider"' "$log" || { cat "$log"; exit 1; }
+    echo "${label}_TCL_LSP_PASS"
+}
+check_tcl_lsp "$HOME/bundle" archive
 write_config() {
     cat > "$1/config.toml" <<'CFG'
 [sandbox]
@@ -146,5 +169,6 @@ cd "$HOME/appimage"
 # Compare symlink TEXT, not unrelated paths outside that namespace.
 diff -qr --no-dereference "$HOME/bundle" "$HOME/appimage/squashfs-root"
 "$HOME/appimage/squashfs-root/AppRun" --version
+check_tcl_lsp "$HOME/appimage/squashfs-root" appimage
 echo "APPIMAGE_FUSE_AND_EXTRACTION_MATCH_PASS"
 echo "PORTABLE_SMOKE_PASS"

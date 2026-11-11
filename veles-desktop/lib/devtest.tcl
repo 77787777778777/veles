@@ -89,9 +89,40 @@ namespace eval ::vapi {
     # Path-aware, because the tab tests open several files and each tab
     # has to end up holding a DIFFERENT buffer — a stub that returns the
     # same empty string for everything would pass a broken switcher.
+    variable docs_route 1
+    variable servers_asked 0
+    variable core_root /repo/
     proc get_json {url} {
+        # The Dev pane asks what each opened path is (DEV-12); that probe
+        # must not hide which endpoint the OPEN read.
+        if {[regexp {^/api/extensions/classify\?path=(.*)$} $url -> path]} {
+            set path [string map {%20 " " %5C \\} $path]
+            if {[string match "$::vapi::core_root*" $path]} { return [dict create kind core] }
+            if {[string match "*/plugins/*" $path]} { return [dict create kind extension] }
+            return [dict create kind other]
+        }
         variable last_url $url
         if {$url eq "/api/plugins/api"} { return [dict create version 0.11] }
+        if {$url in {/api/extensions/docs/plugins /api/extensions/docs/extending}} {
+            if {!$::vapi::docs_route} { error "HTTP 404: not found" }
+            set name [file tail $url]
+            return [dict create name $name text [expr {$name eq "plugins"
+                ? "# Plugins\n\n## Process plugins\n\nA child process."
+                : "# Extension API\n\nThe stable surface."}]]
+        }
+        if {$url eq "/api/lsp/servers"} {
+            incr ::vapi::servers_asked
+            return [dict create servers [list \
+                [dict create language tcl display Tcl present 1 shipped 1 \
+                    program tcl-lsp hint {This build of veles does not include a Tcl language server.}] \
+                [dict create language typescript display TypeScript present 1 shipped 0 \
+                    program typescript-language-server hint {npm install -g typescript-language-server}] \
+                [dict create language racket display Racket present 0 program "" \
+                    hint {install Racket and the racket-langserver package on the gateway}]]]
+        }
+        if {[regexp {path=([^&]*)} $url -> path] && [info exists ::vapi::shas($path)]} {
+            return [dict create text $::vapi::files($path) sha256 $::vapi::shas($path)]
+        }
         if {$url eq "/api/plugins/slopdrop/status"} {
             return [dict create root $::vapi::mirror_root]
         }
@@ -117,12 +148,29 @@ namespace eval ::vapi {
         }
         return "{}"
     }
+    # The typed-value constructors in api.tcl's representation. The stub
+    # below reads the typed body back; a raw dict (the DEV-1 bug, whose
+    # values the real encoder infers) is refused, as the gateway would.
+    proc json_raw {text} { return [list ::vapi::__json__ $text] }
+    proc json_string {v} { return [json_raw "\"$v\""] }
+    proc json_object {pairs} { return [list ::vapi::__json_dict__ $pairs] }
+    proc _typed_fields {body} {
+        if {[lindex $body 0] ne "::vapi::__json_dict__"} {
+            error "the body is not a typed JSON object: $body"
+        }
+        set out {}
+        foreach {k v} [lindex $body 1] {
+            dict set out $k [string range [lindex $v 1] 1 end-1]
+        }
+        return $out
+    }
     proc post_json {path body} {
         if {$path eq "/api/plugins/preview"} {
+            set body [_typed_fields $body]
             set name [dict get $body name]
             set kind [dict get $body kind]
             set entry [expr {$kind eq "js" ? "plugin.ts" : "plugin.tcl"}]
-            return [dict create name $name kind $kind files [list \
+            return [dict create name $name kind $kind description [dict get $body description] files [list \
                 [dict create name plugin.toml text "api = \"0.11\"\ndescription = \"[dict get $body description]\""] \
                 [dict create name $entry text "::veles::hook post_llm_call ::example::handle"]]]
         }
@@ -504,6 +552,10 @@ ok "the button opens the extension form, not a name-only prompt" {
     [winfo exists .vdev_new_extension.form.kind] &&
     [.vdev_new_extension.form.api cget -text] eq "0.11"
 }
+# DEV-12: the out-of-tree Rust tier is a New extension choice too.
+ok "the form offers every tier it can scaffold" {
+    [.vdev_new_extension.form.kind cget -values] eq {tcl js racket lisp rust}
+}
 set ::vdev_new_name demo-tool
 set ::vdev_new_purpose {A tool example}
 set ::vdev_new_kind js
@@ -526,6 +578,73 @@ set ::vdev_new_purpose {Changed purpose}
 ::vdev::_extension_create
 ok "editing after the preview requires a new preview" {
     [llength $::create_posts] == 0
+}
+# DEV-12: a Rust extension's entry is the library its build makes, so
+# nothing of it is loaded until it is built. The dialog said "Created and
+# reloaded" for a crate nobody had built.
+namespace eval ::vmanage {
+    proc confirm {w title detail} { return 1 }
+    proc post {w path body} { return [dict create path /plugins/demo-tool/created] }
+    proc say {w msg {kind info}} { set ::created_said [list $msg $kind] }
+}
+if {![llength [info commands ::voverlay::_open_in_dev]]} {
+    namespace eval ::voverlay { proc _open_in_dev {path} {} }
+}
+foreach kind {rust tcl} {
+    set ::vdev_new_kind $kind
+    ::vdev::_extension_preview
+    set ::created_said {}
+    ::vdev::_extension_create
+    set ::created_said_$kind $::created_said
+}
+ok "a created Rust extension says it must be built, not that it was reloaded" {
+    [string match "*cargo build --release*" [lindex $::created_said_rust 0]] &&
+    ![string match "*reloaded*" [lindex $::created_said_rust 0]] &&
+    [lindex $::created_said_rust 1] eq "warn"
+}
+ok "…and a Tcl one says it was created and reloaded" {
+    [string match "Created and reloaded*" [lindex $::created_said_tcl 0]] &&
+    [lindex $::created_said_tcl 1] eq "ok"
+}
+# SMOKE-2: TypeScript, Racket and Lisp extensions stayed `pending` while
+# the dialog said "Created and reloaded". The gateway now loads each
+# through its own tier and says whether that worked; the dialog repeats
+# exactly that.
+proc ::smoke2_create {kind reply} {
+    set ::smoke2_reply $reply
+    namespace eval ::vmanage {
+        proc post {w path body} { return $::smoke2_reply }
+    }
+    set ::vdev_new_kind $kind
+    ::vdev::_extension_preview
+    set ::created_said {}
+    ::vdev::_extension_create
+    return $::created_said
+}
+set said [::smoke2_create js [dict create path /plugins/demo-tool/plugin.ts kind js reloaded true loaded true load {js:demo-tool: loaded in 12 ms — plugin.ts}]]
+ok "a TypeScript extension the gateway loaded says it was created and loaded" {
+    [string match "Created and loaded*" [lindex $said 0]] && [lindex $said 1] eq "ok"
+}
+set why {this gateway has no racket host: the lang-racket module is not installed or not enabled, so nothing runs racket extensions here}
+set said [::smoke2_create racket [dict create path /plugins/demo-tool/plugin.rkt kind racket reloaded true loaded false load $why]]
+ok "a Racket extension the gateway could not load says so, and why, not 'reloaded'" {
+    [string match "Created, not loaded*" [lindex $said 0]] &&
+    [string match "*no racket host*lang-racket*" [lindex $said 0]] &&
+    ![string match "*reloaded*" [lindex $said 0]] && [lindex $said 1] eq "warn"
+}
+set said [::smoke2_create lisp [dict create path /plugins/demo-tool/plugin.lisp kind lisp reloaded false reload_error {other: broken} loaded true load {lisp:demo-tool: loaded in 30 ms}]]
+ok "another plugin's Tcl reload error does not make a loaded Lisp extension a failure" {
+    [string match "Created and loaded*" [lindex $said 0]] && [lindex $said 1] eq "ok"
+}
+set said [::smoke2_create lisp [dict create path /plugins/demo-tool/plugin.lisp reloaded true]]
+ok "a gateway that does not say whether a Lisp extension loaded is not taken to have loaded it" {
+    ![string match "*reloaded*" [lindex $said 0]] &&
+    [string match "*Manage extensions*" [lindex $said 0]] && [lindex $said 1] eq "warn"
+}
+namespace eval ::vmanage {
+    proc confirm {w title detail} { set ::confirm_seen $title; return 0 }
+    proc post {w path body} { lappend ::create_posts [list $path $body]; return [dict create] }
+    proc say {w msg {kind info}} {}
 }
 destroy .vdev_new_extension
 .devroot.dev.edit.bar.extguide invoke
@@ -552,6 +671,53 @@ ok "the guide has working documentation buttons" {
     [winfo exists .vdev_extension_guide.bar.author] &&
     [winfo exists .vdev_extension_guide.bar.api]
 }
+# DEV-11: nothing lets the author choose an identity; Prepare commits
+# with git's ambient one, as its own dialog says.
+ok "the guide says the ambient git identity is used" {
+    ![string match "*chosen git identity*" $guide] &&
+    [string match "*ambient git identity*" $guide]
+}
+# DEV-6: whether each language has a server is the gateway's answer,
+# with the gateway's own instructions when it has none. The Linux
+# packages ship tcl-lsp: the row says so, and the prose no longer says
+# that none ships.
+ok "the guide lists each language's server as the gateway reports it" {
+    [string match "*TypeScript: typescript-language-server on the gateway\n*" $guide] &&
+    [string match "*Tcl: tcl-lsp on the gateway (ships with veles)*" $guide] &&
+    [string match "*Racket: no language server on the gateway. install Racket*" $guide] &&
+    ![string match "*none ships with veles*" $guide] &&
+    [string match "*the Linux packages of veles ship it*" $guide] &&
+    $::vapi::servers_asked == 1
+}
+# DEV-2: no shipped layout (nix package, AppImage, Windows zip, APK) has
+# docs/ beside veles-desktop, and against a remote gateway a local path
+# is the wrong machine's file. The guides come from the gateway.
+set ::lib_dir_saved $::vdev::lib_dir
+set ::vdev::lib_dir /nonexistent/prefix/veles-desktop/lib
+set ::vstatus::last ""
+.vdev_extension_guide.bar.author invoke
+update
+ok "Author guide opens the plugin author guide from an installed layout" {
+    [winfo exists .vdev_extension_doc] &&
+    [string match "*## Process plugins*" [.vdev_extension_doc.body get 1.0 end]] &&
+    $::vapi::last_url eq "/api/extensions/docs/plugins" &&
+    ![string match "*source checkout*" $::vstatus::last]
+}
+.vdev_extension_guide.bar.api invoke
+update
+ok "API reference opens the extension API guide the same way" {
+    [winfo exists .vdev_extension_doc] &&
+    [string match "*Extension API*" [.vdev_extension_doc.body get 1.0 end]] &&
+    $::vapi::last_url eq "/api/extensions/docs/extending"
+}
+set ::vapi::docs_route 0
+destroy .vdev_extension_doc
+.vdev_extension_guide.bar.author invoke
+ok "a gateway without the route says so instead of opening nothing" {
+    ![winfo exists .vdev_extension_doc] && [string match "*older than 0.2.2*" $::vstatus::last]
+}
+set ::vapi::docs_route 1
+set ::vdev::lib_dir $::lib_dir_saved
 # dev-ext-7: every example must load as written. Each one is sourced into
 # a fresh interpreter with the ::veles::* registration commands stubbed;
 # a `proc ::my_plugin::x` before its namespace exists fails with
@@ -951,6 +1117,201 @@ set doomed [lindex [::vdev::buf_list] end]
 update
 ok "× closes a clean tab"                 {[llength [::vdev::buf_list]] == $::before - 1}
 ok "…the one it belonged to"              {[lsearch -exact [::vdev::buf_list] $::doomed] < 0}
+
+puts "\nthe editor saves against the hash it loaded"
+# editor_save read `editor_sha` without declaring it: a local that never
+# existed, so every save went out with base_sha null and a file changed
+# on the gateway since it was opened was overwritten silently.
+set ::vapi::files(/tmp/hashed.tcl) "proc hashed {} {}\n"
+set ::vapi::shas(/tmp/hashed.tcl) sha-loaded
+set ::vdev::current_file /tmp/hashed.tcl
+::vdev::editor_open
+update
+[::vdev::editor_widget] insert end "# edited\n"
+update
+::vdev::editor_save
+ok "a save names the hash the buffer was loaded at" \
+    {[string match {*"base_sha":"sha-loaded"*} [lindex [lindex $::vapi::posts end] 1]]}
+
+puts "\nextension first when core source is patched (DEV-12)"
+# Until 0.2.2 the only offer was a refusal inside AI assist: opening,
+# editing and saving veles' own source in the Dev pane never suggested
+# an extension.
+set ::confirm_titles {}
+set ::confirm_details {}
+set ::confirm_answer 1
+proc ::vmanage::confirm {w title detail} {
+    lappend ::confirm_titles $title
+    lappend ::confirm_details $detail
+    return $::confirm_answer
+}
+set ::new_ext_opened 0
+rename ::vdev::new_extension ::vdev::_real_new_extension
+proc ::vdev::new_extension {} { incr ::new_ext_opened; set ::vdev_new_purpose "" }
+set core /repo/crates/veles-core/src/agent.rs
+set ::vapi::files($core) "fn agent() {}\n"
+set ::vstatus::last ""
+set ::vdev::current_file $core
+::vdev::editor_open
+update
+ok "opening core source says an extension is usually the better change" \
+    {[string match "*core source*extension*" $::vstatus::last]}
+[::vdev::editor_widget] insert end "// patched\n"
+update
+set ::posts_before [llength $::vapi::posts]
+::vdev::editor_save
+ok "saving core source offers to draft the change as an extension" {
+    $::confirm_titles eq {{Draft this change as an extension?}} && $::new_ext_opened == 1 &&
+    [string match "*Instead of patching agent.rs*" $::vdev_new_purpose]
+}
+ok "…naming every tier the guide describes" {
+    [string match "*Tcl, TypeScript, Racket or Common Lisp*" [lindex $::confirm_details 0]] &&
+    [string match "*out-of-tree Rust*" [lindex $::confirm_details 0]] &&
+    [string match "*module or process plugin*" [lindex $::confirm_details 0]]
+}
+ok "…accepting writes nothing and keeps the edit" {
+    [llength $::vapi::posts] == $::posts_before &&
+    [string match "*// patched*" [bufget [::vdev::editor_widget]]]
+}
+set ::confirm_titles {}
+::vdev::editor_save
+ok "…and the next save patches core without asking again" {
+    $::confirm_titles eq {} && [lindex [lindex $::vapi::posts end] 0] eq "/api/fs/write"
+}
+set ext /home/u/.config/veles/plugins/demo/plugin.tcl
+set ::vapi::files($ext) "proc demo {} {}\n"
+set ::vdev::current_file $ext
+::vdev::editor_open
+update
+[::vdev::editor_widget] insert end "# more\n"
+update
+set ::confirm_titles {}
+::vdev::editor_save
+ok "saving a user extension asks nothing" {
+    $::confirm_titles eq {} && [lindex [lindex $::vapi::posts end] 0] eq "/api/fs/write"
+}
+rename ::vdev::new_extension ""
+rename ::vdev::_real_new_extension ::vdev::new_extension
+
+# SMOKE-8: the editor's toolbar was one packed row of 16 controls, 1882 px
+# wide. At 1440 px Check, the path entry and pop-out were never mapped
+# (Check had no key either, so it could not be reached at all and no file
+# could be opened by path); at 1080x720 more went, and the REPL and the
+# inspector left the code five lines. The real Dev pane, mapped at the
+# desktop's default size, at 1440x1000 and at a phone's width (1080 px
+# at density 2.625 is 412 dp), measured.
+puts "\nevery Dev control is reachable and the editor has room, at every size"
+proc ::smoke8_controls {f} {
+    set out {}
+    foreach k [winfo children $f] {
+        if {[winfo class $k] in {TFrame Frame}} {
+            lappend out {*}[::smoke8_controls $k]
+        } else {
+            lappend out $k
+        }
+    }
+    return $out
+}
+proc ::smoke8_rect {k} {
+    list [winfo rootx $k] [winfo rooty $k] [winfo width $k] [winfo height $k]
+}
+proc ::smoke8_overlap {a b} {
+    lassign [::smoke8_rect $a] ax ay aw ah
+    lassign [::smoke8_rect $b] bx by bw bh
+    expr {$ax < $bx + $bw && $bx < $ax + $aw && $ay < $by + $bh && $by < $ay + $ah}
+}
+set ::vapi::files(/tmp/smoke8.tcl) [string repeat "set x 1\n" 80]
+foreach size {1080x720 1440x1000 412x915} {
+    destroy .devroot.dev
+    ::vpanes::_build_dev .devroot.dev
+    pack .devroot.dev -fill both -expand 1
+    wm geometry . $size+0+0
+    update
+    set ::vdev::current_file /tmp/smoke8.tcl
+    ::vdev::editor_open
+    update
+    set pane .devroot.dev
+    lassign [::smoke8_rect $pane] px py pw ph
+    set bad {}
+    foreach bar [list $pane.repl.bar $pane.edit.bar $pane.dbg.bar] {
+        set kids [::smoke8_controls $bar]
+        # The inspector's caption and argument entry flow with its verbs.
+        if {$bar eq "$pane.dbg.bar"} { lappend kids $pane.dbg.h $pane.dbg.arg }
+        foreach k $kids {
+            lassign [::smoke8_rect $k] x y kw kh
+            if {![winfo ismapped $k]} { lappend bad "[winfo name $k] unmapped"; continue }
+            if {$x < $px || $x + $kw > $px + $pw || $y < $py || $y + $kh > $py + $ph} {
+                lappend bad "[winfo name $k] outside the pane"
+            }
+            if {[winfo class $k] ni {TEntry Entry} && $kw < [winfo reqwidth $k]} {
+                lappend bad "[winfo name $k] squeezed to $kw of [winfo reqwidth $k] px"
+            }
+            if {[winfo class $k] in {TEntry Entry} && $kw < 120} {
+                lappend bad "[winfo name $k] only $kw px wide"
+            }
+        }
+        foreach a $kids {
+            foreach b $kids {
+                if {$a < $b && [winfo ismapped $a] && [winfo ismapped $b] && [::smoke8_overlap $a $b]} {
+                    lappend bad "[winfo name $a] under [winfo name $b]"
+                }
+            }
+        }
+    }
+    ok "$size: every REPL, editor and inspector control is mapped, whole and inside the pane[expr {[llength $bad] ? " ([join [lrange $bad 0 5] {; }])" : ""}]" {
+        [llength $bad] == 0
+    }
+    set ed [::vdev::editor_widget]
+    # What holds on every machine: the editor has more room than the REPL
+    # or the inspector, and a floor of ten lines, twice the five of the
+    # defect this guards. Neither a line count nor a share of the pane
+    # does: both are the font's doing. With the flake sandbox's font the
+    # inspector's verbs wrap to more rows at 1080 px, and the editor has
+    # 281 px of 720 (14 lines) where this machine's font gives it half;
+    # `>= 15 lines` and `half the pane` were both red there on 2026-11-11
+    # with the layout right.
+    set lines [expr {[winfo height $ed] / [font metrics [$ed cget -font] -linespace]}]
+    set eh [winfo height $ed]
+    set rh [winfo height $pane.repl]
+    set ih [winfo height $pane.dbg]
+    ok "$size: the editor shows $lines lines (at least 10) and has the most room (editor $eh px, REPL $rh px, inspector $ih px of $ph px)" {
+        [winfo ismapped $ed] && $lines >= 10 && $eh > $rh && $eh > $ih
+    }
+}
+# The live desktop builds the pane while another tab shows, and Tk's
+# panedwindow then gave the REPL 159 px of its 111 px ask at 1080x720:
+# seven lines of code were left. Start from such a share and resize.
+set pw .devroot.dev.pw
+wm geometry . 1080x720+0+0
+update
+$pw sash place 0 0 [expr {[winfo reqheight .devroot.dev.repl] + 60}]
+$pw sash place 1 0 [expr {[winfo height $pw] - [winfo reqheight .devroot.dev.dbg] - 80}]
+update
+wm geometry . 1080x700+0+0
+update
+ok "a resize gives the REPL and the inspector what they ask, the editor the rest" {
+    [winfo height .devroot.dev.repl] == [winfo reqheight .devroot.dev.repl] &&
+    [winfo height .devroot.dev.dbg] ==
+        max([winfo reqheight .devroot.dev.dbg], [$pw panecget .devroot.dev.dbg -minsize])
+}
+::vdev::_sash_moved $pw
+$pw sash place 0 0 [expr {[winfo reqheight .devroot.dev.repl] + 60}]
+update
+wm geometry . 1080x720+0+0
+update
+ok "…until the user drags a sash: then their sizes stand" {
+    [winfo height .devroot.dev.repl] == [winfo reqheight .devroot.dev.repl] + 60
+}
+ok "Check has a key in the editor (C-c C-k)" {
+    [string match "*editor_check*" [bind [::vdev::editor_widget] <Control-c><Control-k>]]
+}
+set m .devroot.dev.edit.bar.guts.m
+ok "the guts menu on the editor bar opens every guts file and patches.tcl" {
+    [winfo exists $m] && [$m index end] == 9 &&
+    [string match "*open_lib chat.tcl*" [$m entrycget 0 -command]] &&
+    [string match "*open_lib overlays.tcl*" [$m entrycget 7 -command]] &&
+    [string match "*open_patches*" [$m entrycget 9 -command]]
+}
 
 puts "\ndevtest: $passed passed, $failed failed"
 exit [expr {$failed > 0 ? 1 : 0}]

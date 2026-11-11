@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset pl {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset pl {%1$s %2$s done} {%1$s %2$s gotowe}
 ::msgcat::mcset pl {%1$s %2$s failed: %3$s} {%1$s %2$s nie powiodło się: %3$s}
+::msgcat::mcset pl {%1$s %2$s over ssh anyway?} {%1$s %2$s mimo to przez ssh?}
 ::msgcat::mcset pl {%1$s %2$s over ssh…} {%1$s %2$s przez ssh…}
 ::msgcat::mcset pl {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset pl {%1$s (%2$s waiting)} {%1$s (%2$s oczekuje)}
 ::msgcat::mcset pl {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  rozumowanie %3$s}
 ::msgcat::mcset pl {%1$s = %2$s here} {%1$s = %2$s tutaj}
+::msgcat::mcset pl {%1$s = %2$s on %3$s} {%1$s = %2$s na %3$s}
 ::msgcat::mcset pl {%1$s NOT saved: %2$s} {%1$s NIE zapisano: %2$s}
 ::msgcat::mcset pl {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s należy do biblioteki %2$s i jest tylko do odczytu — aby zmienić, skopiuj przez Nowy…}
 ::msgcat::mcset pl {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s należy do biblioteki %2$s — veles nigdy nie usuwa skilli innych narzędzi}
+::msgcat::mcset pl {%1$s cannot restart itself: %2$s} {%1$s nie może uruchomić się ponownie sam: %2$s}
+::msgcat::mcset pl {%1$s differs: %2$s} {%1$s różni się: %2$s}
 ::msgcat::mcset pl {%1$s every cron job on %2$s?} {%1$s wszystkie zadania cron na %2$s?}
 ::msgcat::mcset pl {%1$s failed: %2$s} {%1$s nie powiodło się: %2$s}
 ::msgcat::mcset pl {%1$s in / %2$s out / %3$s calls} {%1$s wej. / %2$s wyj. / %3$s wywołań}
+::msgcat::mcset pl {%1$s is back after %2$s s (veles %3$s).} {%1$s wrócił po %2$s s (veles %3$s).}
 ::msgcat::mcset pl {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s to węzeł %2$s, a nie %3$s. Popraw jego identyfikator węzła w Edytuj….}
 ::msgcat::mcset pl {%1$s is not a whole number} {%1$s nie jest liczbą całkowitą}
+::msgcat::mcset pl {%1$s is not on: %2$s} {%1$s jest wyłączone: %2$s}
+::msgcat::mcset pl {%1$s is not set on %2$s: the default applies.} {%1$s nie jest ustawione w %2$s: obowiązuje wartość domyślna.}
 ::msgcat::mcset pl {%1$s is reachable (%2$s ms).} {%1$s jest osiągalny (%2$s ms).}
+::msgcat::mcset pl {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s prowadzi %2$s tur(y). Uruchomić mimo to ponownie?}
 ::msgcat::mcset pl {%1$s is set to something this box cannot edit (%2$s)} {%1$s ma ustawioną wartość, której ten komputer nie może edytować (%2$s)}
 ::msgcat::mcset pl {%1$s is unreachable: %2$s} {%1$s jest nieosiągalny: %2$s}
+::msgcat::mcset pl {%1$s is up, but its node binding is wrong: %2$s} {%1$s działa, ale jego przypisanie do węzła jest błędne: %2$s}
+::msgcat::mcset pl {%1$s not compared: %2$s} {%1$s nie porównano: %2$s}
 ::msgcat::mcset pl {%1$s of %2$s characters} {%1$s z %2$s znaków}
 ::msgcat::mcset pl {%1$s of %2$s sessions} {%1$s z %2$s sesji}
 ::msgcat::mcset pl {%1$s of %2$s skills reach the prompt} {%1$s z %2$s skilli trafia do promptu}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset pl {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset pl {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset pl {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset pl {%1$s: %2$s on the gateway} {%1$s: %2$s na bramie}
+::msgcat::mcset pl {%1$s: %2$s on the gateway (ships with veles)} {%1$s: %2$s na bramie (dostarczany z veles)}
 ::msgcat::mcset pl {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset pl {%1$s: no language server on the gateway. %2$s} {%1$s: brak serwera języka na bramie. %2$s}
 ::msgcat::mcset pl {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: ostatnie %2$s z %3$s wierszy, które jego brama trzyma w pamięci; sekrety zredagowane na tym węźle.}
+::msgcat::mcset pl {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: wtyczka użytkownika %2$s przesłania dołączoną o tej samej treści (%3$s)}
 ::msgcat::mcset pl {%d MCP server(s) configured} {%d skonfigurowanych serwerów MCP}
 ::msgcat::mcset pl {%d entries} {%d wpisów}
 ::msgcat::mcset pl {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {Pliki rozszerzenia (%d) zostaną zapisane dokładnie w przejrzanej postaci. Jeśli którykolwiek zmienił się od podglądu, nic nie zostanie zapisane. Nie ma commita, wypchnięcia ani PR.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset pl {%s (stale)} {%s (nieaktualny)}
 ::msgcat::mcset pl {%s (this session)} {%s (ta sesja)}
 ::msgcat::mcset pl {%s GB free of %s GB} {wolne %s GB z %s GB}
+::msgcat::mcset pl {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s Polecenie idzie przez ssh do skonfigurowanego hosta, którego to sprawdzenie nie potrafiło powiązać z węzłem.}
 ::msgcat::mcset pl {%s already exists — open it from the list} {%s już istnieje — otwórz go z listy}
 ::msgcat::mcset pl {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {%s zmienił się, odkąd go otworzyłeś — nic nie zostało nadpisane; skopiuj swój tekst, a potem Przeładuj}
 ::msgcat::mcset pl {%s cleared for this buffer} {%s wyczyszczono dla tego bufora}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset pl {%s comes from config.toml [acl] — edit there} {%s pochodzi z config.toml [acl] — edytuj tam}
 ::msgcat::mcset pl {%s config change(s) wait for you — /configsync} {zmiany konfiguracji czekające na ciebie: %s — /configsync}
 ::msgcat::mcset pl {%s did not become healthy within 30s} {%s nie osiągnął gotowości w ciągu 30s}
+::msgcat::mcset pl {%s did not come back within 120 s: look at its log where it runs.} {%s nie wrócił w ciągu 120 s: zajrzyj do jego logu tam, gdzie działa.}
 ::msgcat::mcset pl {%s done} {%s gotowe}
 ::msgcat::mcset pl {%s failed: %s} {%s nie powiodło się: %s}
+::msgcat::mcset pl {%s holds a credential: it stays on its node and is not shown.} {%s zawiera dane uwierzytelniające: zostają na swoim węźle i nie są pokazywane.}
 ::msgcat::mcset pl {%s is already split} {%s jest już podzielony}
+::msgcat::mcset pl {%s is restarting; waiting for it to come back…} {%s uruchamia się ponownie; czekam, aż wróci…}
 ::msgcat::mcset pl {%s is the language in use — pick another one to swap with} {%s to język w użyciu — wybierz inny do zamiany}
 ::msgcat::mcset pl {%s is up} {%s działa}
 ::msgcat::mcset pl {%s keys — any key closes} {%s klawiszy — dowolny klawisz zamyka}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset pl {; shadows bundled} {; przesłania dołączoną}
 ::msgcat::mcset pl {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Oferta konfiguracji może zmienić ustawienia, a oferta sejfu scala sekrety; zmiany w sekcji bezpieczeństwa nadal czekają na właściciela.}
 ::msgcat::mcset pl {A failing plugin may drop hooks mid-turn.} {Wadliwa wtyczka może gubić hooki w trakcie tury.}
+::msgcat::mcset pl {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {Sekcja wstrzymana: nie jest zapisywana stąd; edytuj ją na węźle i wypchnij konfigurację, a jej właściciel zastosuje ją tam.}
 ::msgcat::mcset pl {A local server: no key is needed unless you set one up.} {Serwer lokalny: klucz nie jest potrzebny, chyba że sam go ustawisz.}
 ::msgcat::mcset pl {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Podpisane wydanie jest przygotowywane dopiero po preflight. Restart/weryfikacja, kontynuacja i wycofanie to osobne czynności. Sprawny proces musi zgłaszać dokładnie przejrzaną rewizję źródeł.}
 ::msgcat::mcset pl {A value is stored for %s — leave this empty to keep it.} {Dla %s zapisano już wartość — zostaw to pole puste, aby ją zachować.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset pl {Asking the provider for its models…} {Pytanie dostawcy o listę modeli…}
 ::msgcat::mcset pl Attach Dołącz
 ::msgcat::mcset pl {Attach to the next message} {Dołącz do następnej wiadomości}
+::msgcat::mcset pl {Audit log unavailable: %s} {Log audytu niedostępny: %s}
+::msgcat::mcset pl {Audit log…} {Log audytu…}
 ::msgcat::mcset pl {Author guide} {Przewodnik autora}
 ::msgcat::mcset pl {Automatically discovered from the attached gateway's cluster registry.} {Wykrywane automatycznie z rejestru klastra podłączonej bramy.}
 ::msgcat::mcset pl Back Wstecz
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset pl {Browse sessions} {Przeglądaj sesje}
 ::msgcat::mcset pl {Build manifest + preflight} {Manifest kompilacji + preflight}
 ::msgcat::mcset pl {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Kompilacja: veles %1$s, rewizja %2$s (%3$s %4$s)}
+::msgcat::mcset pl {Bulk %1$s failed: %2$s} {Akcja zbiorcza %1$s nie powiodła się: %2$s}
+::msgcat::mcset pl {Bulk %1$s: %2$s (%3$s).} {Akcja zbiorcza %1$s: %2$s (%3$s).}
+::msgcat::mcset pl {Bulk action cancelled.} {Akcja zbiorcza anulowana.}
 ::msgcat::mcset pl {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e końce linii · C-b/C-f znak · M-b/M-f słowo · C-k skasuj do EOL · C-y wklej · M-w kopiuj · C-w skasuj region · C-space ustaw znacznik · C-/ cofnij}
 ::msgcat::mcset pl {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g przerywa wszystko · C-j nowa linia · M-p/M-n historia · Tab uzupełnianie}
+::msgcat::mcset pl {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU: %1$s rdzeni, %2$s%% zajętości w ciągu ostatnich %3$s s}
 ::msgcat::mcset pl {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s rdzeni, obciążenie %2$s / %3$s / %4$s (%5$s%% rdzeni)}
 ::msgcat::mcset pl Cancel Anuluj
 ::msgcat::mcset pl {Cancel task} {Anuluj zadanie}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset pl {Channels (e.g. #veles #dev)} {Kanały (np. #veles #dev)}
 ::msgcat::mcset pl Chat Czat
 ::msgcat::mcset pl {Chat — not attached; press Attach in the Instances tab} {Czat — nie podłączono; naciśnij Podłącz w zakładce Instancje}
-::msgcat::mcset pl {Check (lsp)} {Sprawdź (lsp)}
+::msgcat::mcset pl {Check (C-c C-k)} {Sprawdź (C-c C-k)}
 ::msgcat::mcset pl {Check again} {Sprawdź ponownie}
 ::msgcat::mcset pl {Check files} {Sprawdź pliki}
 ::msgcat::mcset pl Checkpoints {Punkty kontrolne}
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset pl {Close (Esc)} {Zamknij (Esc)}
 ::msgcat::mcset pl {Close the setup wizard? Nothing has been written yet.} {Zamknąć kreatora konfiguracji? Nic jeszcze nie zapisano.}
 ::msgcat::mcset pl {Code actions} {Akcje kodu}
+::msgcat::mcset pl {Command-center audit log} {Log audytu centrum dowodzenia}
 ::msgcat::mcset pl Commit Zatwierdź
 ::msgcat::mcset pl {Commit ready for review. Push is a separate action.} {Commit gotowy do przeglądu. Wypchnięcie to osobna czynność.}
 ::msgcat::mcset pl {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Uzupełnij wszystkie pola PDS, w tym przypięty digest obrazu, zanim wyświetlisz podgląd handoffu.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset pl {Config differs: %s} {Konfiguracja się różni: %s}
 ::msgcat::mcset pl {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Dziennik konfiguracji: tamten węzeł ma zmiany %1$s do %3$s, ta brama do %2$s}
 ::msgcat::mcset pl {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Dziennik konfiguracji: ta brama ma zmiany %1$s do %2$s, tamten węzeł do %3$s}
+::msgcat::mcset pl {Config of %s} {Konfiguracja %s}
 ::msgcat::mcset pl {Config only on that node: %s} {Konfiguracja tylko na tamtym węźle: %s}
 ::msgcat::mcset pl {Config only on this gateway: %s} {Konfiguracja tylko na tej bramie: %s}
+::msgcat::mcset pl {Config: %s} {Konfiguracja: %s}
 ::msgcat::mcset pl Configure Konfiguruj
 ::msgcat::mcset pl {Configure %s} {Konfiguruj %s}
 ::msgcat::mcset pl {Configure translator} {Konfiguruj tłumacza}
 ::msgcat::mcset pl {Configured desktop gateway} {Skonfigurowana brama pulpitu}
 ::msgcat::mcset pl Configure… Konfiguruj…
 ::msgcat::mcset pl {Configuring %s} {Konfigurowanie %s}
+::msgcat::mcset pl Config… Konfiguracja…
 ::msgcat::mcset pl {Confirm or discard the current signed review before starting another download.} {Potwierdź lub odrzuć bieżący przegląd podpisanego wydania przed rozpoczęciem kolejnego pobierania.}
 ::msgcat::mcset pl {Container host: typed host plan and privileged CLI handoff} {Host kontenerów: typowany plan hosta i uprzywilejowane przekazanie CLI}
 ::msgcat::mcset pl {Context window} {Okno kontekstu}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset pl {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Utwórz bota przez @BotFather, a potem wklej poniżej jego token: trafi do zaszyfrowanego sejfu, nigdy do config.toml.}
 ::msgcat::mcset pl {Create this extension?} {Utworzyć to rozszerzenie?}
 ::msgcat::mcset pl {Create this generated extension?} {Utworzyć to wygenerowane rozszerzenie?}
+::msgcat::mcset pl {Created and loaded. Review and test the extension before publishing.} {Utworzono i wczytano. Przejrzyj i przetestuj rozszerzenie przed publikacją.}
 ::msgcat::mcset pl {Created and reloaded. Review and test the extension before publishing.} {Utworzono i przeładowano. Przed opublikowaniem przejrzyj i przetestuj rozszerzenie.}
 ::msgcat::mcset pl {Created, but reload failed} {Utworzono, ale przeładowanie nie powiodło się}
+::msgcat::mcset pl {Created, not loaded} {Utworzono, nie wczytano}
+::msgcat::mcset pl {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {Utworzono, jeszcze nie wczytano: uruchom cargo build --release w katalogu rozszerzenia, a potem wczytaj je ponownie w Zarządzaj rozszerzeniami.}
+::msgcat::mcset pl {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {Utworzono. Ta brama nie informuje, czy wczytała rozszerzenie: sprawdź jego stan w Zarządzaj rozszerzeniami.}
 ::msgcat::mcset pl {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Tworzy %s/<name>/SKILL.md z szablonu i otwiera go. Opis z frontmatter to jedyna część, która trafia do indeksu promptu — napisz w nim, KIEDY używać skilla.}
 ::msgcat::mcset pl {Cron history} {Historia cron}
 ::msgcat::mcset pl {Cron jobs} {Zadania cron}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset pl {Delete user} {Usuń użytkownika}
 ::msgcat::mcset pl {Delete workspace?} {Usunąć obszar roboczy?}
 ::msgcat::mcset pl Deop {Odbierz opa}
+::msgcat::mcset pl {Deployment consistency unknown: %s node(s) could not be compared.} {Spójność wdrożenia nieznana: nie udało się porównać węzłów: %s.}
+::msgcat::mcset pl {Deployment consistency: not checked yet (Drift… compares every node).} {Spójność wdrożenia: jeszcze nie sprawdzono (Dryf… porównuje każdy węzeł).}
 ::msgcat::mcset pl {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Opisz zmianę. AI może zmienić lub dodać kilka plików tego rozszerzenia. Każdy plik jest pokazany jako diff, a nic nie zostanie zapisane przed twoim potwierdzeniem.}
 ::msgcat::mcset pl {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Opisz zmianę. AI może zaproponować zamiennik, ale nie może go zapisać, zanim nie sprawdzisz i nie zatwierdzisz diff.}
 ::msgcat::mcset pl {Describe the requested extension change first.} {Najpierw opisz żądaną zmianę rozszerzenia.}
 ::msgcat::mcset pl Description Opis
+::msgcat::mcset pl {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {Tury desktopu wznawiają po restarcie z zapisanej historii; tury konektorów, A2A, poczty, cron i podagentów nie.}
 ::msgcat::mcset pl {Desktop: local core, modules and process plugins} {Desktop: lokalne jądro, moduły i wtyczki procesów}
 ::msgcat::mcset pl Detach Odłącz
 ::msgcat::mcset pl {Detach foreground} {Odłącz z pierwszego planu}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset pl {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Pobierz i zweryfikuj manifest wydania oraz archiwum hosta przed instalacją. Wszystkie pięć pól tożsamości jest wymaganych. Brama przechowuje prywatne archiwum przygotowane do instalacji; ten podgląd niczego nie instaluje.}
 ::msgcat::mcset pl {Downloading and verifying the signed release…} {Pobieranie i weryfikacja podpisanego wydania…}
 ::msgcat::mcset pl {Draft this as an extension?} {Przygotować z tego rozszerzenie?}
+::msgcat::mcset pl {Draft this change as an extension?} {Przygotować tę zmianę jako rozszerzenie?}
 ::msgcat::mcset pl {Drag to scroll; a quick swipe goes further.} {Przeciągnij, aby przewinąć; szybkie przesunięcie przewija dalej.}
 ::msgcat::mcset pl {Drift check failed: %s} {Sprawdzenie rozbieżności nie powiodło się: %s}
 ::msgcat::mcset pl {Drift check: %s node(s) differ from this gateway.} {Sprawdzenie rozbieżności: %s węzłów różni się od tej bramy.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset pl Eval→gw Eval→gw
 ::msgcat::mcset pl {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Każda zmiana w %s jest commitowana. Przywracanie cofa cały katalog do tego commita — najpierw jednak zapisuje snapshot bieżącego stanu, więc to nie jest droga bez powrotu.}
 ::msgcat::mcset pl {Every plugin file goes back to that commit. The current state is committed first.} {Każdy plik wtyczki wraca do tego commita. Bieżący stan jest najpierw commitowany.}
+::msgcat::mcset pl {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {Każdy poziom: Nowe rozszerzenie pisze rozszerzenie w Tcl, TypeScript, Rackecie lub Common Lispie albo zewnętrzną wtyczkę Rust (cdylib na cratcie veles-plugin-abi-sdk: zbuduj ją przez cargo build --release, a potem wczytaj ponownie w Zarządzaj rozszerzeniami). Dwa poziomy żyją poza katalogiem wtyczek użytkownika i startują z wiersza poleceń: moduł, biblioteka Rust budowana razem z veles (veles plugins new NAME --kind overlay zapisuje jej repozytorium), oraz wtyczka procesowa, program na cratcie veles-plugin-sdk, który brama uruchamia i nadzoruje. Przewodnik autora ma sekcję dla każdego z nich.}
 ::msgcat::mcset pl {Exact commit} {Dokładny commit}
 ::msgcat::mcset pl {Exact permission rule} {Dokładna reguła uprawnień}
 ::msgcat::mcset pl {Example: a hook} {Przykład: hook}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset pl {Explain the diagnostics} {Wyjaśnij diagnostykę}
 ::msgcat::mcset pl Export… Eksportuj…
 ::msgcat::mcset pl {Extension API} {API rozszerzeń}
+::msgcat::mcset pl {Extension API reference} {Dokumentacja API rozszerzeń}
 ::msgcat::mcset pl {Extension development} {Tworzenie rozszerzeń}
 ::msgcat::mcset pl {Extension guide} {Przewodnik po rozszerzeniach}
 ::msgcat::mcset pl {Extension source} {Źródło rozszerzenia}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset pl {Guards — what the harness stops, and where it stands now} {Strażnicy — co zatrzymuje harness i jak to teraz wygląda}
 ::msgcat::mcset pl {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handlery są wywoływane w pokazanej kolejności; wygrywa pierwszy, który zwróci niepustą wartość. Wyłączenie jednego pomija go bez wyrejestrowania, a wybór pozostaje w config.toml, więc przeładowanie wtyczki nie włączy go po cichu z powrotem.}
 ::msgcat::mcset pl Health Kondycja
+::msgcat::mcset pl {Health alerts} {Alerty o stanie}
 ::msgcat::mcset pl {Health alerts (%s):} {Alerty kondycji (%s):}
 ::msgcat::mcset pl Heartbeat {Sygnał życia}
 ::msgcat::mcset pl {Heartbeat age: %s s} {Wiek sygnału życia: %s s}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset pl Install… Zainstaluj…
 ::msgcat::mcset pl {Instance name (for example an IRC network)} {Nazwa instancji (np. sieć IRC)}
 ::msgcat::mcset pl Instances Instancje
+::msgcat::mcset pl {Instead of patching %s: } {Zamiast łatać %s: }
 ::msgcat::mcset pl {It becomes the current content, as a new revision — so the restore can be undone too.} {Stanie się bieżącą treścią, jako nowa wersja — więc przywrócenie też można cofnąć.}
 ::msgcat::mcset pl {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Trafi do zaszyfrowanego sejfu na tej maszynie. Agent nigdy go nie widzi: może go tylko używać jako $%s w poleceniach albo wysyłać do dozwolonych hostów.}
 ::msgcat::mcset pl {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Jest usuwany z rejestru klastra w całej flocie: następna wymiana gossipu każe każdemu peerowi 0.2.0 też go porzucić i żaden z nich go ponownie nie scali. Peer starszy niż 0.2.0 nadal go będzie wymieniać. Jeśli maszyna wróci i zgłosi puls, zostanie zarejestrowana ponownie. Peery synchronizacji i zapisane instancje pozostają nietknięte.}
+::msgcat::mcset pl {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {Jest zapisywana w config.toml tego węzła jako edycja wykonana tam; synchronizacja konfiguracji przenosi ją potem do węzłów, które synchronizują z nim konfigurację.}
 ::msgcat::mcset pl {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Opuszcza teraz pamięć. Historia przechowuje każdą wersję, a Historia… może go przywrócić.}
+::msgcat::mcset pl {Its gateway stops and %s.} {Jego brama zatrzymuje się i %s.}
 ::msgcat::mcset pl Join Dołącz
 ::msgcat::mcset pl {Join a pool} {Dołącz do grupy maszyn}
 ::msgcat::mcset pl {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {Dołączyć do grupy maszyn %1$s jako %2$s? Grupa będzie łączyć się z tym telefonem pod %3$s.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset pl Joining… Dołączanie…
 ::msgcat::mcset pl Join… Dołącz…
 ::msgcat::mcset pl {Jump to composer} {Przejdź do kompozytora}
+::msgcat::mcset pl {Key (for example model.default)} {Klucz (na przykład model.default)}
 ::msgcat::mcset pl Keybindings {Skróty klawiszowe}
 ::msgcat::mcset pl {Keyboard help} {Pomoc klawiatury}
 ::msgcat::mcset pl {Kick %1$s from %2$s?} {Wyrzucić %1$s z %2$s?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset pl {LLM provider} {Dostawca LLM}
 ::msgcat::mcset pl Language Język
 ::msgcat::mcset pl {Language (i18n)} {Język (i18n)}
+::msgcat::mcset pl {Language servers on this gateway} {Serwery języka na tej bramie}
 ::msgcat::mcset pl Language… Język…
 ::msgcat::mcset pl {Last active} {Ostatnia aktywność}
 ::msgcat::mcset pl {Last probe: %1$s — %2$s} {Ostatnie sondowanie: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset pl Level Poziom
 ::msgcat::mcset pl {Lift lockdown} {Znieś blokadę}
 ::msgcat::mcset pl Lines Wiersze
+::msgcat::mcset pl {List targets…} {Wypisz cele…}
 ::msgcat::mcset pl {List the provider's models} {Pobierz listę modeli dostawcy}
 ::msgcat::mcset pl Load Obciążenie
 ::msgcat::mcset pl {Load more} {Wczytaj więcej}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset pl Next Dalej
 ::msgcat::mcset pl Nickname Pseudonim
 ::msgcat::mcset pl {NixOS: emit a module snippet; do not edit host declarations} {NixOS: wydaj fragment modułu; nie edytuj deklaracji hosta}
-::msgcat::mcset pl {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Dla tego węzła nie skonfigurowano celu cyklu życia SSH. Dodaj instancję jawnie, aby ją wdrożyć lub zrestartować.}
+::msgcat::mcset pl {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {Dla tego węzła nie skonfigurowano celu cyklu życia SSH: Uruchom ponownie prosi węzeł o samodzielny restart przez jego nadzorcę; Wdrożenie floty wymaga zapisanej instancji z celem ssh.}
 ::msgcat::mcset pl {No additional push happens.} {Nie nastąpi żadne dodatkowe wypchnięcie.}
 ::msgcat::mcset pl {No apps yet. Ask the agent to make one: “make me an app that…”} {Nie ma jeszcze aplikacji. Poproś agenta o jedną: „zrób mi aplikację, która…”}
 ::msgcat::mcset pl {No code in the picture. Hold the phone closer, straight on, and scan again.} {Na zdjęciu nie ma kodu. Przybliż telefon, trzymaj go prosto i zeskanuj ponownie.}
+::msgcat::mcset pl {No command-center action is recorded on this gateway yet.} {Na tej bramie nie zapisano jeszcze żadnej akcji centrum dowodzenia.}
 ::msgcat::mcset pl {No configuration snapshot will be restored.} {Żadna migawka konfiguracji nie zostanie przywrócona.}
 ::msgcat::mcset pl {No configured sync peer for this node.} {Brak skonfigurowanego peera synchronizacji dla tego węzła.}
 ::msgcat::mcset pl {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Nie skonfigurowano dedykowanego tłumacza. Użyj opcji Konfiguruj tłumacza, aby wybrać dostawcę, model i język docelowy.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset pl {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Telefony marki %s także same zatrzymują aplikacje. W ustawieniach aplikacji veles pozwól jej uruchamiać się samodzielnie i działać w tle.}
 ::msgcat::mcset pl {Pin / unpin} {Przypnij / odepnij}
 ::msgcat::mcset pl {Pin to home screen} {Przypnij do ekranu głównego}
+::msgcat::mcset pl {Plugin author guide} {Przewodnik autora wtyczek}
 ::msgcat::mcset pl {Plugin history} {Historia wtyczek}
 ::msgcat::mcset pl Plugins Wtyczki
 ::msgcat::mcset pl Port Port
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset pl {Preview here} {Podgląd tutaj}
 ::msgcat::mcset pl {Preview pane} {Panel podglądu}
 ::msgcat::mcset pl {Preview proposal} {Podejrzyj propozycję}
-::msgcat::mcset pl {Preview the changed name or language before creating it.} {Przed utworzeniem podejrzyj zmienioną nazwę lub język.}
+::msgcat::mcset pl {Preview the changed name, purpose or language before creating it.} {Podejrzyj zmienioną nazwę, cel lub język przed utworzeniem.}
 ::msgcat::mcset pl Probe Sondowanie
+::msgcat::mcset pl {Probe %s node(s)?} {Sondować %s węzłów?}
+::msgcat::mcset pl {Probe all…} {Sondować wszystkie…}
 ::msgcat::mcset pl {Probe of %1$s failed: %2$s} {Sondowanie %1$s nie powiodło się: %2$s}
 ::msgcat::mcset pl {Profile result} {Wynik profilu}
 ::msgcat::mcset pl {Promote into config.toml} {Przenieś do config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset pl {Push branch…} {Wypchnij gałąź…}
 ::msgcat::mcset pl {Push complete. No pull request has been opened.} {Wypchnięcie zakończone. Nie otwarto żadnego pull requesta.}
 ::msgcat::mcset pl {Push this branch?} {Wypchnąć tę gałąź?}
+::msgcat::mcset pl {Push this kind to every node that is a configured peer for it:} {Wypchnij ten rodzaj do każdego węzła, który jest dla niego skonfigurowanym peerem:}
 ::msgcat::mcset pl {Push to %s:} {Wysyłka do %s:}
 ::msgcat::mcset pl Question Pytanie
 ::msgcat::mcset pl Questions Pytania
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset pl {REPL target: the app} {cel REPL: aplikacja}
 ::msgcat::mcset pl {REPL target: the gateway} {cel REPL: gateway}
 ::msgcat::mcset pl Read Odczyt
+::msgcat::mcset pl {Read the key first: a write names the value it replaces.} {Najpierw odczytaj klucz: zapis nazywa wartość, którą zastępuje.}
 ::msgcat::mcset pl {Reading notifications, for triggers} {Czytanie powiadomień, dla wyzwalaczy}
 ::msgcat::mcset pl Reasoning Rozumowanie
 ::msgcat::mcset pl {Reasoning effort} {Poziom rozumowania}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset pl {Reset to default} {Przywróć domyślne}
 ::msgcat::mcset pl {Reset to template} {Zresetuj do szablonu}
 ::msgcat::mcset pl Restart Restartuj
+::msgcat::mcset pl {Restart %s?} {Uruchomić ponownie %s?}
 ::msgcat::mcset pl {Restart + verify canary} {Restart + weryfikacja canary}
+::msgcat::mcset pl {Restart cancelled.} {Ponowne uruchomienie anulowane.}
+::msgcat::mcset pl {Restart of %1$s failed: %2$s} {Ponowne uruchomienie %1$s nie powiodło się: %2$s}
 ::msgcat::mcset pl {Restore hidden windows} {Przywróć ukryte okna}
 ::msgcat::mcset pl {Restore plugins to %s?} {Przywrócić wtyczki do %s?}
 ::msgcat::mcset pl {Restore revision r%1$s of %2$s?} {Przywrócić wersję r%1$s pliku %2$s?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset pl {S3 region} {Region S3}
 ::msgcat::mcset pl {SASL account (optional)} {Konto SASL (opcjonalnie)}
 ::msgcat::mcset pl {SASL password (hidden)} {Hasło SASL (ukryte)}
+::msgcat::mcset pl {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {Cykl życia SSH: przez zapisaną instancję %1$s (%2$s, jednostka %3$s).}
 ::msgcat::mcset pl Sandbox Piaskownica
 ::msgcat::mcset pl {Sandbox account} {Konto piaskownicy}
 ::msgcat::mcset pl Sandboxes Piaskownice
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset pl {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Sesje nadpisane tym aliasem zachowują trasę, którą już rozwiązały; nowe nadpisania nie znajdą tej nazwy.}
 ::msgcat::mcset pl {Sessions served} {Obsłużone sesje}
 ::msgcat::mcset pl Set Ustaw
+::msgcat::mcset pl {Set %1$s on %2$s to %3$s?} {Ustawić %1$s w %2$s na %3$s?}
 ::msgcat::mcset pl {Set [model] provider/default in config.toml.} {Ustawia [model] provider/default w config.toml.}
 ::msgcat::mcset pl {Set as swap target} {Ustaw jako cel zamiany}
 ::msgcat::mcset pl {Set mode %1$s on %2$s?} {Ustawić tryb %1$s na %2$s?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset pl Summary Podsumowanie
 ::msgcat::mcset pl Surface Powierzchnia
 ::msgcat::mcset pl {Swap ⇄} {Zamień ⇄}
+::msgcat::mcset pl {Sync %1$s to %2$s node(s)?} {Synchronizować %1$s do %2$s węzłów?}
+::msgcat::mcset pl {Sync all} {Synchronizuj wszystko}
+::msgcat::mcset pl {Sync all…} {Synchronizuj wszystko…}
 ::msgcat::mcset pl {Sync cancelled.} {Synchronizacja anulowana.}
 ::msgcat::mcset pl {Sync complete.} {Synchronizacja zakończona.}
 ::msgcat::mcset pl {Sync now} {Synchronizuj teraz}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset pl {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Bieżąca diagnostyka (z serwera języka lub ze Sprawdź) jest wysyłana wraz z tym plikiem. Opcjonalnie dodaj pytanie. Odpowiedź to tylko tekst; nic nie może zostać zapisane.}
 ::msgcat::mcset pl {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Katalog i wszystko w nim zostanie usunięte. Tego nie da się cofnąć — wyłącz to zamiast tego, jeśli chcesz tylko wykluczyć je z promptu.}
 ::msgcat::mcset pl {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Katalog zostanie usunięty. Folder wtyczki to repozytorium git — najpierw zatwierdzana jest migawka, więc History… może go przywrócić.}
-::msgcat::mcset pl {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Edytor otwiera pliki bramy, także zdalnych instancji, i uruchamia na bramie serwer języka właściwy dla języka pliku: tcl-lsp, typescript-language-server (TypeScript i JavaScript), rust-analyzer (crate lub moduł wtyczki Rust), clangd (C), racket-langserver oraz serwer Common Lisp. Najechanie kursorem, przejście do definicji, uzupełnianie i diagnostyka na żywo działają dla każdego języka, dla którego brama ma serwer; gdy go nie ma, edytor podaje, jaki program zainstalować na bramie, i zachowuje kolorowanie składni. Sprawdź uruchamia na bramie odpowiedni sprawdzacz: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only albo czytniki Racketa i Lispu. Zapisuj, przeładowuj w Zarządzaj rozszerzeniami i testuj rozszerzenie bez publikowania lokalnego stanu.}
+::msgcat::mcset pl {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {Edytor otwiera pliki bramy, także zdalnych instancji, i uruchamia na bramie serwer języka dla języka pliku: typescript-language-server (TypeScript i JavaScript), rust-analyzer (crate lub moduł wtyczki Rust), clangd (C), racket-langserver, serwer Common Lisp oraz tcl-lsp dla Tcl, gdy brama go ma (dostarczają go pakiety veles dla Linuksa). Podpowiedzi, przejście do definicji, uzupełnianie i diagnostyka na żywo działają dla każdego języka, dla którego brama ma serwer; gdy nie ma żadnego, edytor mówi, jaki program tam zainstalować, i zachowuje kolorowanie składni. Sprawdź uruchamia na bramie pasujący sprawdzacz: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, czytniki Racketa i Lispu, a dla Tcl własny tclsh silnika (kontrola kompletności lub lint tcl-lsp, gdzie zainstalowany). Zapisz, wczytaj ponownie w Zarządzaj rozszerzeniami i przetestuj rozszerzenie bez publikowania lokalnego stanu.}
 ::msgcat::mcset pl {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Pierwszy handoff przygotowuje sekrety, przypięty obraz i pliki uruchomieniowe, ale nie uruchamia PDS. Zrób offline kopię zapasową klucza KEK i klucza rotacji PLC, a następnie wykonaj nowo przejrzane żądanie z potwierdzeniem wykonania kopii zapasowej, aby skonfigurować HTTP-01 TLS i aktywację. Rekordy DNS muszą wskazywać bezpośrednio na tego hosta; veles nie konfiguruje proxy CDN ani nie wprowadza zmian w DNS.}
+::msgcat::mcset pl {The fleet is NOT consistent: %s node(s) differ.} {Flota NIE jest spójna: %s węzłów się różni.}
+::msgcat::mcset pl {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {Flota jest spójna z różnicami: %1$s węzłów działa na tym samym buildzie i zgadza się we wszystkim, co współdzielą; %2$s pozycji nie ma na każdym węźle.}
+::msgcat::mcset pl {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {Flota jest spójna: %s węzłów działa na tym samym buildzie, modułach i wtyczkach.}
 ::msgcat::mcset pl {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Formularz zmienił się od wygenerowania rozszerzenia. Wygeneruj ponownie albo podejrzyj zwykły szkielet.}
+::msgcat::mcset pl {The gateway did not receive the purpose as written. Nothing was created.} {Brama nie otrzymała celu w zapisanej postaci. Nic nie utworzono.}
+::msgcat::mcset pl {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {Brama nie udostępnia przewodników po rozszerzeniach (jest starsza niż 0.2.2), a ten desktop nie ma ich kopii.}
 ::msgcat::mcset pl {The gateway itself is untouched.} {Sam gateway pozostaje nietknięty.}
 ::msgcat::mcset pl {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Brama wczytała konfigurację ponownie: nowe sesje używają jej od razu, a klucz zapisany w sejfie zostanie użyty przy następnym żądaniu. Telegram i IRC uruchomią się przy następnym restarcie bramy: veles gateway restart.}
 ::msgcat::mcset pl {The installed component no longer matches the selected manifest. Review the component list again.} {Zainstalowany komponent nie odpowiada już wybranemu manifestowi. Sprawdź ponownie listę komponentów.}
 ::msgcat::mcset pl {The installer preview has no verification signatures; apply is disabled.} {Podgląd instalatora nie ma podpisów weryfikacyjnych; zastosowanie jest wyłączone.}
 ::msgcat::mcset pl {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Zadanie i jego historia uruchomień zostaną usunięte. Tego nie da się cofnąć — wstrzymaj je zamiast tego, jeśli chcesz tylko je zatrzymać.}
+::msgcat::mcset pl {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {Klucze przenoszone przez synchronizację konfiguracji, zgodnie z jej regułami: klucze lokalne węzła i dane uwierzytelniające zostają na swoim węźle, a sekcja wstrzymana ([acl], approvals, sandbox, hooks, plugins, MCP servers) zmienia się tam, gdzie jest edytowana i wypychana, a potem czeka na właściciela tego węzła.}
 ::msgcat::mcset pl {The log could not be read: %s} {Nie udało się odczytać dziennika: %s}
 ::msgcat::mcset pl {The manifest belongs to another component; its reply was discarded.} {Manifest należy do innego komponentu; jego odpowiedź została odrzucona.}
 ::msgcat::mcset pl {The profile changed. Review the fresh plan before applying it.} {Profil się zmienił. Przejrzyj zaktualizowany plan przed zastosowaniem.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset pl {The signed release preview was malformed; nothing was installed.} {Podgląd podpisanego wydania miał nieprawidłowy format; nic nie zostało zainstalowane.}
 ::msgcat::mcset pl {The source buffer changed. Request a new proposal before applying.} {Bufor źródłowy się zmienił. Przed zastosowaniem poproś o nową propozycję.}
 ::msgcat::mcset pl {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Magazyn cofa się o jedną rewizję. Sam rollback jest rewizją, więc można go z kolei cofnąć.}
+::msgcat::mcset pl {The translator did not answer within %s seconds.} {Tłumacz nie odpowiedział w ciągu %s sekund.}
 ::msgcat::mcset pl {The translator returned no text.} {Tłumacz nie zwrócił żadnego tekstu.}
 ::msgcat::mcset pl {The verification reply was malformed; no integrity result was accepted.} {Odpowiedź weryfikacyjna była nieprawidłowa; nie zaakceptowano wyniku integralności.}
 ::msgcat::mcset pl Themes Motywy
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset pl {This challenge is over.} {To wyzwanie dobiegło końca.}
 ::msgcat::mcset pl {This code has expired. Ask for a new one.} {Ten kod wygasł. Poproś o nowy.}
 ::msgcat::mcset pl {This does not start a service or claim signed-download verification.} {To nie uruchamia usługi ani nie twierdzi, że wykonano weryfikację podpisanego pobrania.}
+::msgcat::mcset pl {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {Ten plik to źródło rdzenia veles. Większość zmian lepiej pasuje do rozszerzenia, które przeżywa aktualizacje i nie wymaga przebudowy: hook, narzędzie, nadpisanie usługi lub sterownik dostawcy, napisane w Tcl, TypeScript, Rackecie lub Common Lispie bądź jako zewnętrzna wtyczka Rust (Nowe rozszerzenie pisze każde z nich), lub jako moduł albo wtyczka procesowa (Przewodnik po rozszerzeniach pokazuje, jak zacząć). Łatka w rdzeniu jest dla tego, czego API rozszerzeń nie wyrazi. Przygotować tę zmianę jako rozszerzenie? Twoja edycja zostaje w tym buforze, niezapisana; ponowny zapis załata plik rdzenia.}
 ::msgcat::mcset pl {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Ta brama nie przyjmuje wartości sekretów z tej maszyny: wpisz go tam poleceniem veles secret set %s albo dopisz tę sieć do jej [vault] trusted_networks}
 ::msgcat::mcset pl {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {To dokładnie to, co zostanie zapisane — bajty samego silnika, pobrane na żywo. Nic jeszcze nie dotknęło dysku.}
+::msgcat::mcset pl {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {To jest źródło rdzenia veles. Zmiana w nim zwykle lepiej wychodzi jako rozszerzenie: Nowe rozszerzenie albo zapisz, żeby dostać propozycję.}
 ::msgcat::mcset pl {This node is not a configured sync peer for any kind.} {Ten węzeł nie jest skonfigurowanym peerem synchronizacji dla żadnego rodzaju.}
 ::msgcat::mcset pl {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Ta wtyczka jest dołączona w zestawie i tylko do odczytu. Usuń kopię użytkownika o tej samej nazwie, aby zamiast niej użyć dołączonej kopii.}
 ::msgcat::mcset pl {This publishes the commit; no pull request is created yet.} {To publikuje commit; pull request nie jest jeszcze tworzony.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset pl Unassign {Cofnij przypisanie}
 ::msgcat::mcset pl {Undo last} {Cofnij ostatnią}
 ::msgcat::mcset pl {Undo the last memory revision?} {Cofnąć ostatnią rewizję pamięci?}
+::msgcat::mcset pl {Unset %1$s on %2$s?} {Usunąć ustawienie %1$s w %2$s?}
+::msgcat::mcset pl Unset… {Usuń ustawienie…}
 ::msgcat::mcset pl Unstage {Cofnij z poczekalni}
 ::msgcat::mcset pl {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Dopóki IRC_ALLOWED_USERS w .env nie wskaże twojego konta, z botem może rozmawiać każdy w sieci — a bez sekcji [acl] jako właściciel, ze wszystkimi narzędziami.}
 ::msgcat::mcset pl {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Dopóki TELEGRAM_ALLOWED_USERS w .env nie wskaże twojego ID użytkownika, z botem może rozmawiać każdy, kto go znajdzie — a bez sekcji [acl] jako właściciel, ze wszystkimi narzędziami.}
 ::msgcat::mcset pl Untitled {Bez tytułu}
-::msgcat::mcset pl {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Współtworzenie upstream to wyraźna czynność publikowania, a nie automatyczne wysłanie. W Zarządzaj rozszerzeniami opcja Współtwórz pokazuje wszystkie rozszerzenia użytkownika: wybierz rozszerzenia i pliki, przejrzyj diff i skan sekretów, uruchom sprawdzenia, a następnie utwórz jedną gałąź i jeden PR (domyślnie do veles) z wybraną tożsamością gita. Każde rozszerzenie trafia do własnego katalogu w repozytorium, a istniejący tam plik jest zastępowany dopiero po osobnym potwierdzeniu. Nigdy nie publikuj node.toml, lokalnych poświadczeń, tokenów, prywatnych endpointów ani niepowiązanego stanu wtyczek. Lokalne migawki awaryjne nie są commitem upstream ani PR-em.}
+::msgcat::mcset pl {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Wkład do upstreamu to jawna akcja publikowania, a nie automatyczne wysłanie. W Zarządzaj rozszerzeniami opcja Współtwórz wymienia wszystkie rozszerzenia użytkownika: wybierz rozszerzenia i pliki, przejrzyj diff i skan sekretów, uruchom kontrole, a potem utwórz jedną gałąź i jeden PR (domyślnie do veles). Commit używa tożsamości git z otoczenia bramy (user.name i user.email z jej konfiguracji git); ustaw je najpierw, jeśli mają być inne. Każde rozszerzenie trafia do własnego katalogu w repozytorium, a istniejący tam plik jest zastępowany tylko po osobnym potwierdzeniu. Nigdy nie publikuj node.toml, lokalnych danych uwierzytelniających, tokenów, prywatnych punktów końcowych ani niepowiązanego stanu wtyczek. Lokalne migawki ratunkowe nie są commitem do upstreamu ani PR.}
 ::msgcat::mcset pl {Upstream repository or fork URL} {Adres URL repozytorium upstream lub forka}
 ::msgcat::mcset pl {Uptime class} {Klasa dostępności}
 ::msgcat::mcset pl {Uptime: host %1$s, gateway %2$s} {Czas działania: host %1$s, brama %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset pl {Users — one role across networks and platforms} {Użytkownicy — jedna rola we wszystkich sieciach i platformach}
 ::msgcat::mcset pl {Using the phone, for the agent} {Używanie telefonu, dla agenta}
 ::msgcat::mcset pl {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Zwykle takie samo jak nazwa wpisu dostawcy. Przy opcji Pomiń zostaw oba pola puste — połowa pary nie routuje.}
+::msgcat::mcset pl {Value (TOML: "text", 5, true, [1, 2])} {Wartość (TOML: "tekst", 5, true, [1, 2])}
 ::msgcat::mcset pl {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Wartości to TOML: cytowane ciągi, liczby lub listy. Zostaną zapisane do [mcp_servers.<name>] — twoje komentarze i każda inna sekcja pozostaną nietknięte.}
 ::msgcat::mcset pl Vault Sejf
 ::msgcat::mcset pl {Verified signed bundle installed. Restart the gateway before using the new core.} {Zweryfikowany podpisany pakiet został zainstalowany. Uruchom ponownie bramę przed użyciem nowego rdzenia.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset pl Voice {Daj voice}
 ::msgcat::mcset pl {Waiting for the model…} {Czekam na model…}
 ::msgcat::mcset pl {Waiting for the model… Nothing has been written.} {Czekam na model… Nic nie zostało zapisane.}
+::msgcat::mcset pl Warning Ostrzeżenie
 ::msgcat::mcset pl {Welcome to veles} {Witaj w veles}
 ::msgcat::mcset pl {What the agent can do here} {Co agent może tu robić}
 ::msgcat::mcset pl {What veles may do on this phone. Each button opens the Android setting that changes it.} {Co veles może robić na tym telefonie. Każdy przycisk otwiera ustawienie Androida, które to zmienia.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset pl {Workflow SHA} {SHA workflow}
 ::msgcat::mcset pl {Workflow commit} {Commit workflow}
 ::msgcat::mcset pl Worktree {Drzewo robocze}
+::msgcat::mcset pl {Write cancelled.} {Zapis anulowany.}
 ::msgcat::mcset pl {Write it} Zapisz
 ::msgcat::mcset pl {Write the design question first.} {Najpierw wpisz pytanie o projekt.}
 ::msgcat::mcset pl {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Nie zapisuje dostawcy. Gateway nie routuje żadnej tury, dopóki nie istnieje wpis [[custom_providers]] i para z [model].}
+::msgcat::mcset pl Write… Zapisz…
 ::msgcat::mcset pl {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Zapisanie DOWOLNEGO klucza w [acl] przełącza tę bramę w tryb nadzorowany: domyślna rola staje się guest (fail-closed), a listy dozwolonych przestają być granicą. Wybieraj to tylko z tożsamością właściciela, której ufasz.}
 ::msgcat::mcset pl {[model] provider} {Dostawca w [model]}
 ::msgcat::mcset pl {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {dostawca w [model] %{name} nie wskazuje żadnego wpisu [[custom_providers]] — podaj wpis, który zapisuje ten kreator, albo taki, który config.toml już ma}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset pl {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset pl {asked by: %s} {zapytany przez: %s}
 ::msgcat::mcset pl {asking %s for its metrics…} {pytam %s o metryki…}
+::msgcat::mcset pl {asking %s how it is supervised…} {pytam %s, jak jest nadzorowany…}
 ::msgcat::mcset pl {attach a file} {Dołącz plik}
 ::msgcat::mcset pl {attach an image or file} {dołącz obraz lub plik}
 ::msgcat::mcset pl {attach failed: %1$s} {dołączenie nie powiodło się: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset pl {channel-event reactions; /triggers add <name> network=… channel=… action=…} {reakcje na zdarzenia kanału; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset pl {channels to join, a space or comma separated string} {kanały do dołączenia, string rozdzielony spacjami lub przecinkami}
 ::msgcat::mcset pl chars znaki
+::msgcat::mcset pl {check the buffer (diagnostics)} {sprawdź bufor (diagnostyka)}
 ::msgcat::mcset pl choice_next {przejdź do następnej trasy}
 ::msgcat::mcset pl choice_retry {ponów na tej samej trasie}
 ::msgcat::mcset pl choice_stop {zatrzymaj się tutaj}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset pl {command list unavailable (the gateway is not reachable)} {lista poleceń niedostępna (brama jest nieosiągalna)}
 ::msgcat::mcset pl {command palette} {paleta poleceń}
 ::msgcat::mcset pl {command search} {wyszukiwanie poleceń}
+::msgcat::mcset pl {command-center audit log} {log audytu centrum dowodzenia}
 ::msgcat::mcset pl commands polecenia
 ::msgcat::mcset pl {commands stay on your own session; /leave returns from the joined session} {polecenia pozostają w twojej sesji; /leave wraca z sesji, do której dołączono}
 ::msgcat::mcset pl commands: polecenia:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset pl {config changes from peers that wait for you; /configsync apply lands them} {zmiany konfiguracji od innych węzłów, które czekają na ciebie; /configsync apply je wprowadza}
 ::msgcat::mcset pl {config file: %s} {plik konfiguracji: %s}
 ::msgcat::mcset pl {config key} {klucz konfiguracji}
+::msgcat::mcset pl {config result} {wynik konfiguracji}
 ::msgcat::mcset pl {config unavailable} {konfiguracja niedostępna}
 ::msgcat::mcset pl {config unavailable: %s} {konfiguracja niedostępna: %s}
 ::msgcat::mcset pl {config value} {wartość konfiguracji}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset pl doctor_resident {na stałe w każdym prompcie: %{shown} z %{total} znaków (~%{tokens} tokenów) — resztę wczytasz na żądanie przez: memory action=read path=%{path}}
 ::msgcat::mcset pl doctor_title {diagnostyka pamięci}
 ::msgcat::mcset pl doctor_total {razem: %{chars} znaków w %{files} plikach (~%{tokens} tokenów)}
-::msgcat::mcset pl {documentation is not in this source checkout: %s} {dokumentacji nie ma w tym checkoutcie źródeł: %s}
 ::msgcat::mcset pl done gotowe
 ::msgcat::mcset pl {done · %1$s/%2$s} {gotowe · %1$s/%2$s}
 ::msgcat::mcset pl {done, but the model returned no text} {gotowe, ale model nie zwrócił tekstu}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset pl {grant a role (owner) · /revoke <id> takes it back} {nadaj rolę (owner) · /revoke <id> ją odbiera}
 ::msgcat::mcset pl {grant a role to an identity} {przyznaj rolę tożsamości}
 ::msgcat::mcset pl {guards unreachable} {strażnicy nieosiągalni}
-::msgcat::mcset pl guts: wnętrze:
+::msgcat::mcset pl {guts ▾} {wnętrzności ▾}
 ::msgcat::mcset pl {gw hooks} {haki gw}
 ::msgcat::mcset pl {gw procs} {procedury gw}
 ::msgcat::mcset pl {halt after N identical calls} {zatrzymaj po N identycznych wywołaniach}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset pl {live patching ARMED} {live patching UZBROJONY}
 ::msgcat::mcset pl {live patching ARMED — an agent can now redefine procs in this window} {live patching UZBROJONY — agent może teraz redefiniować procs w tym oknie}
 ::msgcat::mcset pl {live patching disarmed} {live patching rozbrojony}
+::msgcat::mcset pl load obciążenie
 ::msgcat::mcset pl loaded załadowano
 ::msgcat::mcset pl {loaded older messages} {załadowano starsze wiadomości}
 ::msgcat::mcset pl loading… wczytywanie…
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset pl {no upstream reading for %s} {brak odczytów upstream dla %s}
 ::msgcat::mcset pl {no word match} {brak trafienia słowa}
 ::msgcat::mcset pl {no xdg-open — path copied instead} {brak xdg-open — skopiowano ścieżkę}
+::msgcat::mcset pl {nobody else's session is open on %s right now} {na %s nie ma teraz otwartej sesji nikogo innego}
 ::msgcat::mcset pl {node log} {dziennik węzła}
 ::msgcat::mcset pl {none loaded} {nic nie załadowano}
 ::msgcat::mcset pl {none recorded} {nic nie zapisano}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset pl {not installed} niezainstalowany
 ::msgcat::mcset pl {not reported} niezgłoszone
 ::msgcat::mcset pl {not running} {nie działa}
+::msgcat::mcset pl {not saved: drafting the change as an extension} {nie zapisano: przygotowuję zmianę jako rozszerzenie}
+::msgcat::mcset pl {not sent: %s} {nie wysłano: %s}
 ::msgcat::mcset pl {not set in config.toml — the built-in default applies. %s} {nieustawione w config.toml — obowiązuje wbudowana wartość domyślna. %s}
 ::msgcat::mcset pl {not set yet — /secret set it later} {jeszcze nieustawiony — ustaw go później przez /secret set}
 ::msgcat::mcset pl {not signed: %s} {niepodpisany: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset pl {on no plan} {gdy brak planu}
 ::msgcat::mcset pl {on the} {w dniu}
 ::msgcat::mcset pl {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {wł./wył. wycisza notkę mechanizmu w zapisie — na tę sesję albo jako domyślne, wg zakresu poniżej. Dotyczy NOTKI; to, co każdy mechanizm ROBI, ustawia się w sekcji nazwanej na jego wierszu, a Konfiguruj… ją otwiera. Gałki strażnika można edytować w miejscu.}
+::msgcat::mcset pl {on; this gateway does not say whether they reach the home chat} {włączone; ta brama nie informuje, czy docierają do czatu domowego}
 ::msgcat::mcset pl {one-shot tcl-lsp diagnostics — no model turn} {jednorazowa diagnostyka tcl-lsp — bez tury modelu}
 ::msgcat::mcset pl {open a saved file first} {najpierw otwórz zapisany plik}
 ::msgcat::mcset pl {open links} {otwierać linki}
+::msgcat::mcset pl {open one of the desktop's own source files} {otwórz jeden z plików źródłowych samego desktopu}
 ::msgcat::mcset pl {open the engine log} {otwórz log silnika}
 ::msgcat::mcset pl {open the joined session before /leave (on %s)} {otwórz sesję, do której dołączono, przed /leave (na %s)}
 ::msgcat::mcset pl {open the selected child session} {otwórz wybraną sesję podrzędną}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset pl {read-only: [approvals] allowlist} {tylko do odczytu: lista dozwolonych [approvals]}
 ::msgcat::mcset pl {read-only: this session lives on %1$s (as read at %2$s)} {tylko do odczytu: ta sesja jest na %1$s (stan odczytany o %2$s)}
 ::msgcat::mcset pl {read-only: this skill comes from the %s library} {tylko do odczytu: ta umiejętność pochodzi z biblioteki %s}
+::msgcat::mcset pl {reading %1$s on %2$s…} {odczytuję %1$s na %2$s…}
 ::msgcat::mcset pl reasoning rozumowanie
 ::msgcat::mcset pl {reasoning display: %1$s · %2$s blocks} {wyświetlanie rozumowania: %1$s · bloki: %2$s}
 ::msgcat::mcset pl {reasoning display: %s} {wyświetlanie rozumowania: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset pl {run failed: %s} {błąd uruchomienia: %s}
 ::msgcat::mcset pl {run in:} {uruchom w:}
 ::msgcat::mcset pl running działa
+::msgcat::mcset pl {running %s on the listed nodes…} {uruchamiam %s na wymienionych węzłach…}
 ::msgcat::mcset pl {running since %s} {działa od %s}
 ::msgcat::mcset pl {running subagents; /subagents cancel <id>} {uruchomieni subagenci; /subagents cancel <id>}
 ::msgcat::mcset pl {save failed} {błąd zapisu}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset pl {send failed: %s} {wysyłanie nie powiodło się: %s}
 ::msgcat::mcset pl {send the message; while a turn runs, queue it as steering} {Wyślij wiadomość; gdy trwa tura, trafi do kolejki jako steering}
 ::msgcat::mcset pl sent wysłano
-::msgcat::mcset pl {sent to the owner's home chat} {wysłano na główny czat właściciela}
+::msgcat::mcset pl {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {wysyłane do czatu domowego właściciela przez bramę, która obsługuje jego adapter Telegrama, a nie przez tę}
+::msgcat::mcset pl {sent to the owner's home chat from this gateway} {wysyłane do czatu domowego właściciela z tej bramy}
 ::msgcat::mcset pl server serwer
 ::msgcat::mcset pl {server buffers merged} {bufory serwera połączone}
 ::msgcat::mcset pl {server buffers separate} {bufory serwera osobno}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset pl {session, model, lifecycle} {sesja, model, cykl życia}
 ::msgcat::mcset pl {session: %s} {sesja: %s}
 ::msgcat::mcset pl {sessions    %s} {sesje    %s}
+::msgcat::mcset pl {sessions you can join on %s (/join <name or id>):} {sesje, do których możesz dołączyć na %s (/join <nazwa lub id>):}
 ::msgcat::mcset pl {sessions: unreachable} {sesje: nieosiągalne}
 ::msgcat::mcset pl {set by} {ustawione przez}
 ::msgcat::mcset pl {set. %s} {ustawiono. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset pl {split: %s} {podział: %s}
 ::msgcat::mcset pl {ssh to %1$s failed: %2$s} {błąd ssh do %1$s: %2$s}
 ::msgcat::mcset pl {stale — no heartbeat within the threshold} {nieaktualny — brak sygnału życia w progu czasu}
+::msgcat::mcset pl {standing approval grants: always and this session; revoke one} {trwałe zgody na zatwierdzenia: zawsze i ta sesja; odbierz jedną}
 ::msgcat::mcset pl {standing global and session permission grants} {trwałe globalne i sesyjne przyznane uprawnienia}
+::msgcat::mcset pl {start the line with // to send it as text} {zacznij wiersz od //, aby wysłać go jako tekst}
 ::msgcat::mcset pl state stan
 ::msgcat::mcset pl {state       never reached} {stan       nigdy nieosiągnięty}
 ::msgcat::mcset pl {state       reachable} {stan       osiągalny}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset pl {the config.toml that will be written} {config.toml, który zostanie zapisany}
 ::msgcat::mcset pl {the default (config.toml)} {domyślne (config.toml)}
 ::msgcat::mcset pl {the engine refused these answers: %s} {silnik odrzucił te odpowiedzi: %s}
+::msgcat::mcset pl {the file to open: type a path, then Return or Open} {plik do otwarcia: wpisz ścieżkę, potem Return lub Otwórz}
 ::msgcat::mcset pl {the first ACL owner identity} {pierwsza tożsamość właściciela w ACL}
 ::msgcat::mcset pl {the gateway answered without a report} {gateway odpowiedział bez raportu}
 ::msgcat::mcset pl {the model/provider pair is incomplete — the gateway will not route until both are present} {para model/dostawca jest niepełna — brama nie będzie trasować, dopóki nie będą ustawione obie}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset pl unknown nieznane
 ::msgcat::mcset pl {unknown api_mode %{mode} — expected one of %{modes}} {nieznany api_mode %{mode} — oczekiwano jednego z: %{modes}}
 ::msgcat::mcset pl {unknown bindings '%{rest}' · normie|emacs|vi} {nieznane skróty '%{rest}' · normie|emacs|vi}
+::msgcat::mcset pl {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {nieznane polecenie %{cmd} tutaj — /help wymienia polecenia tego interfejsu; nic nie wysłano}
 ::msgcat::mcset pl {unknown command /%s — /help lists them} {nieznane polecenie /%s — /help pokazuje listę}
 ::msgcat::mcset pl {unknown command: /%s} {nieznane polecenie: /%s}
 ::msgcat::mcset pl {unknown keymap: %s (normie/emacs/vi)} {nieznany keymap: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset pl {upstream plan credits and windows — /usage is the local ledger} {kredyty i okna planu u dostawcy — /usage to lokalna ewidencja}
 ::msgcat::mcset pl {upstream plan quota} {limit planu upstream}
 ::msgcat::mcset pl uptime {czas pracy}
-::msgcat::mcset pl {usage: /join <session> or /join <instance>/<session>} {użycie: /join <sesja> lub /join <instancja>/<sesja>}
+::msgcat::mcset pl {usage: /export [md|json]} {użycie: /export [md|json]}
 ::msgcat::mcset pl {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {użycie: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset pl {usage: /resume <id or prefix>} {użycie: /resume <id lub prefiks>}
 ::msgcat::mcset pl {usage: /resume <id-or-prefix>} {użycie: /resume <id-lub-prefiks>}

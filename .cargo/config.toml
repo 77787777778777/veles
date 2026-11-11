@@ -29,3 +29,12 @@
 # stack is bigger than production is not a test.
 [env.RUST_MIN_STACK]
 value = "8388608"
+
+# Test scratch space in RAM on Linux. A test binary run through cargo gets
+# a TMPDIR under /dev/shm unless its TMPDIR is tmpfs already; the script's
+# header says why (a bare `cargo test` on disk took 68 minutes for one
+# crate) and what it leaves alone. The path is relative to the directory
+# that holds `.cargo/`. Other platforms have no entry: Windows and macOS
+# tests use the system temp directory as before.
+[target.'cfg(target_os = "linux")']
+runner = "scripts/cargo-test-runner.sh"

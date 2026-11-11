@@ -96,6 +96,7 @@ source [file join $_script_dir lib instances.tcl]
 source [file join $_script_dir lib attach.tcl]
 source [file join $_script_dir lib instpane.tcl]
 source [file join $_script_dir lib fleetobs.tcl]
+source [file join $_script_dir lib fleetmanage.tcl]
 source [file join $_script_dir lib fleetdeployui.tcl]
 source [file join $_script_dir lib statusbar.tcl]
 source [file join $_script_dir lib media.tcl]
@@ -360,6 +361,7 @@ after idle {
 ::vsidebar::load_pins
 ::vsidebar::refresh
 ::vstatus::poll
+catch { ::vfleetmanage::alerts_start }   ;# node health alerts in the window, every tab
 ::vpanes::poll_start
 ::vdock::load_layout
 # A phone: the composer on its own row, rows of buttons that wrap, the

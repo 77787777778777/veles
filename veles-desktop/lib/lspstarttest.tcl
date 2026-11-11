@@ -211,6 +211,20 @@ ok "…keeping the gateway's URI, language, server and note" {
     [::vlsp::server_label] eq "typescript-language-server" && [::vlsp::note] eq "no tsconfig.json"
 }
 ok "…and the old session is left to the gateway, not stopped" {$::_drv::stops == $::stops_before}
+# The gateway reports the program it FOUND (a full path since 0.2.2). The
+# status line shows its name, the same for every gateway: a Windows
+# gateway's path has backslashes, which `file tail` on a Unix desktop
+# does not split on, and an `.exe` the user never typed.
+set ::_saved_server $::vlsp::server
+set ::_labels {}
+foreach p {{C:\Program Files\LLVM\bin\clangd.exe} /nix/store/abc-clang/bin/clangd {C:\Users\u\AppData\Roaming\npm\typescript-language-server.CMD} tcl-lsp} {
+    set ::vlsp::server $p
+    lappend ::_labels [::vlsp::server_label]
+}
+set ::vlsp::server $::_saved_server
+ok "the server's name is its program name on a Windows gateway as on a Unix one ($::_labels)" {
+    $::_labels eq {clangd clangd typescript-language-server tcl-lsp}
+}
 ::vlsp::_on_stream lsp-live {}
 set ::init ""
 foreach f $::_drv::sent { if {[string match {*"method":"initialize"*} $f]} { set ::init $f } }

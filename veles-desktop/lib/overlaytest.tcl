@@ -484,7 +484,8 @@ puts "\nplugins: origin and shadow warnings are actionable"
 set ::vapi::plugins_payload [::json::json2dict {{
     "plugins": [
         {"name":"anthropic","kind":"tcl","description":"native wire","hooks":[],"entry":"plugin.tcl","dir":"/bundled/anthropic","path":"/bundled/anthropic/plugin.tcl","bundled":true,"enabled":true,"explicitly_disabled":false,"allowlisted":true,"sha256":"abc123"},
-        {"name":"old-copy","kind":"tcl","description":"user copy","hooks":[],"entry":"plugin.tcl","dir":"/user/old-copy","path":"/user/old-copy/plugin.tcl","bundled":false,"enabled":true,"explicitly_disabled":false,"allowlisted":true,"sha256":"def456","shadow":"user plugin old-copy shadows bundled /bundled/old-copy; different content (not an age claim)","shadow_bundled_root":"/bundled/old-copy","shadow_bundled_sha256":"fed654","shadow_same_content":false}
+        {"name":"old-copy","kind":"tcl","description":"user copy","hooks":[],"entry":"plugin.tcl","dir":"/user/old-copy","path":"/user/old-copy/plugin.tcl","bundled":false,"enabled":true,"explicitly_disabled":false,"allowlisted":true,"sha256":"def456","shadow":"user plugin old-copy shadows bundled /bundled/old-copy; different content (not an age claim)","shadow_bundled_root":"/bundled/old-copy","shadow_bundled_sha256":"fed654","shadow_same_content":false},
+        {"name":"own-ext","kind":"js","description":"a user's own","hooks":[],"entry":"plugin.ts","dir":"/user/own-ext","path":"/user/own-ext/plugin.ts","bundled":false,"enabled":true,"explicitly_disabled":false,"allowlisted":true,"sha256":"aaa111","shadow":null}
     ],
     "shadows":["user plugin old-copy shadows bundled /bundled/old-copy; different content (not an age claim)"],
     "drivers":[],
@@ -498,6 +499,16 @@ ok "a bundled row names its origin" \
     {[lindex [$plugin_tree item anthropic -values] 3] eq "bundled"}
 ok "a shadowed user row names the covered bundled copy" \
     {[string match "*shadows bundled*" [lindex [$plugin_tree item old-copy -values] 3]]}
+# SMOKE-17: /api/plugins sends "shadow": null for a plugin that covers
+# nothing, and json2dict reads it as the word null: every user extension
+# said "user; shadows bundled".
+ok "a user extension that covers nothing does not claim to shadow (null)" \
+    {[lindex [$plugin_tree item own-ext -values] 3] eq "user"}
+$plugin_tree selection set own-ext
+::voverlay::_plugin_detail .ov_plugins
+ok "its detail view has no shadow line either" \
+    {![string match "*null*" [.ov_plugins.split.detail.t get 1.0 end]]}
+$plugin_tree selection set {}
 ok "the shadow warning is visible without selecting a row" \
     {[string match "*old-copy*shadows bundled*" [join $::vmanage::said "\n"]]}
 $plugin_tree selection set old-copy

@@ -39,6 +39,10 @@ Environment=CONTAINER_HOST=unix:///run/veles-sbx/podman.sock
 # THIS container's netns, not of the VPS config in /opt/data.
 Environment=A2A_HOST=0.0.0.0
 Environment=VELES_DESKTOP_HOST=0.0.0.0
+# Restart=always below starts the container again whenever the gateway
+# exits, which the gateway cannot see from inside: this lets the command
+# center's Restart ask it to restart itself (veles_core::supervisor).
+Environment=VELES_SUPERVISOR=container
 # The shared bridge network with vlpds (the atproto PDS): the gateway
 # reaches it by container name (http://vlpds:2583) — two rootless
 # containers do NOT share 127.0.0.1, and pasta can't join a bridge, so

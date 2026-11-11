@@ -6,11 +6,12 @@
 # Uses the veles at $VELES_BIN (default target/debug/veles; build it first)
 # and the first browser found of: $CHROME_BIN, google-chrome-stable,
 # google-chrome, chromium; $FIREFOX_BIN, firefox-devedition, firefox;
-# $EDGE_BIN, microsoft-edge-stable, microsoft-edge. A browser that is not
-# installed is skipped, and with none installed the script prints SKIP and
-# exits 0. (A Linux install does not register Edge; with --user-data-dir it
-# reads the copied manifest as Chrome does.) The Windows run is
-# scripts/win/browser-bridge-e2e.ps1.
+# $EDGE_BIN, microsoft-edge-stable, microsoft-edge. With no browser named,
+# one that is not installed is skipped, and with none installed the script
+# prints SKIP and exits 0; a browser NAMED here that is not installed, or
+# a name it does not know, fails the run. (Every install registers Edge:
+# the run copies the manifest the install wrote for the browser it drives
+# into its profile.) The Windows run is scripts/win/browser-bridge-e2e.ps1.
 #
 # Everything is throwaway: a scratch HOME and VELES_HOME per browser (the
 # install writes its native-host manifests and launcher there), a fresh

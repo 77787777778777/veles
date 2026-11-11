@@ -19,12 +19,16 @@ namespace eval ::vstatus { proc set_msg {m} { set ::status $m } }
 namespace eval ::vkeymap { proc key_for {cmd} { return "" } }
 namespace eval ::vapi {
     variable request {}
+    variable ms_given 0
     proc get_json_async {path callback} {
-        {*}$callback 1 [dict create target_language German configured 1]
+        {*}$callback 1 [dict create target_language German configured true]
     }
-    proc post_json_async {path body on_err on_ok} {
+    # `ms` is the request's own timeout (api.tcl: 0 means its default).
+    proc post_json_async {path body on_err on_ok {ms 0}} {
         variable request
+        variable ms_given
         set request [list $path $body $on_err $on_ok]
+        set ms_given $ms
         return token
     }
 }
@@ -326,6 +330,150 @@ answer_config [dict create target_language "" configured true]
 ok "…in that language's own name" {$::vtranslate::target eq "Deutsch"}
 ::vtranslate::close
 ::vi18n::use en
+
+# The popup's real layout (SMOKE-9, TR-2): every button is MAPPED and lies
+# inside the window at the desktop sizes and at a phone's size, with a long
+# route text, configured or not. Measured on the live widgets.
+proc inside {top w} {
+    expr {[winfo ismapped $w] &&
+        [winfo rootx $w] >= [winfo rootx $top] &&
+        [winfo rooty $w] >= [winfo rooty $top] &&
+        [winfo rootx $w] + [winfo width $w] <= [winfo rootx $top] + [winfo width $top] &&
+        [winfo rooty $w] + [winfo height $w] <= [winfo rooty $top] + [winfo height $top]}
+}
+proc all_inside {} {
+    set lost {}
+    foreach b {target lang retry cancel copy settings close route} {
+        if {![inside .vtranslate .vtranslate.bar.$b]} { lappend lost $b }
+    }
+    return $lost
+}
+ok "the popup's size is the usual one on a desktop screen and fits a phone screen" {
+    [::vtranslate::geometry 1920 1080] eq "760x520" &&
+    [::vtranslate::geometry 360 640] eq "344x520" &&
+    [::vtranslate::geometry 320 480] eq "304x384"
+}
+set long "No dedicated translator configured. Use Configure translator to choose its provider, model and target language. And then some more words to make the route text longer than any bar."
+foreach {label wxh configured} {
+    default-configured {} 1
+    default-unconfigured {} 0
+    1080x720 1080x720 1
+    1440x1000 1440x1000 0
+    phone-360x640 360x640 1
+    phone-unconfigured 360x640 0
+} {
+    set ::vtranslate::target ""
+    ::vtranslate::popup .source
+    answer_config [dict create target_language German configured [expr {$configured ? "true" : "false"}]]
+    if {$wxh ne {}} { wm geometry .vtranslate $wxh }
+    .vtranslate.bar.route configure -text $long
+    update
+    update idletasks
+    ok "$label: every bar widget is mapped and inside the window ([all_inside])" {[all_inside] eq {}}
+    ok "$label: the result pane is mapped and inside" {[inside .vtranslate .vtranslate.text]}
+    if {$wxh eq {}} {
+        ok "$label: the popup is at its own default size" {
+            [winfo width .vtranslate] == 760 && [winfo height .vtranslate] == 520
+        }
+    }
+    ::vtranslate::close
+}
+
+# TR-3: an unconfigured translator sends nothing and keeps its guidance.
+set ::vapi::request {}
+set ::vtranslate::target ""
+::vtranslate::popup .source
+answer_config [dict create target_language German configured false]
+ok "unconfigured: no request is sent" {[llength $::vapi::request] == 0}
+ok "unconfigured: the route line keeps the setup guidance" {
+    [string match "No dedicated translator configured*" [.vtranslate.bar.route cget -text]]
+}
+ok "unconfigured: the result pane carries the guidance too" {
+    [string match "No dedicated translator configured*" [.vtranslate.text get 1.0 end-1c]]
+}
+ok "unconfigured: Translate stays usable" {![.vtranslate.bar.retry instate disabled]}
+::vtranslate::close
+
+# A failed request leaves the route line alone (the error is in the pane).
+set ::vtranslate::target ""
+::vtranslate::popup .source
+answer_config [dict create target_language German configured true]
+.vtranslate.bar.route configure -text "Dedicated translator: m @ p"
+lassign $::vapi::request path body on_err on_ok
+{*}$on_err "HTTP 502: upstream down"
+ok "a failure is written in the result pane" {
+    [string match "*upstream down*" [.vtranslate.text get 1.0 end-1c]]
+}
+ok "a failure leaves the route line as it was" {
+    [.vtranslate.bar.route cget -text] eq "Dedicated translator: m @ p"
+}
+
+# TR-1: a placeholder the translator lost is shown, not hidden.
+{*}$on_ok [dict create text "Hallo!" model m provider p warnings [list "placeholder lost: {name}" "placeholder lost: %s"]]
+ok "a lost placeholder is named in the route line" {
+    [string match "*Warning: placeholder lost: {name}; placeholder lost: %s*" [.vtranslate.bar.route cget -text]]
+}
+{*}$on_ok [dict create text "Hallo!" model m provider p warnings {}]
+ok "no warning when nothing was lost" {
+    ![string match "*Warning*" [.vtranslate.bar.route cget -text]]
+}
+
+# Return in the target field translates into what was typed.
+set ::vapi::request {}
+.vtranslate.bar.lang delete 0 end
+.vtranslate.bar.lang insert end French
+focus -force .vtranslate.bar.lang
+update
+set before [llength $::config_callbacks]
+event generate .vtranslate.bar.lang <Return>
+update
+ok "Return in the target field starts a request" {[llength $::config_callbacks] == $before + 1}
+answer_config [dict create target_language German configured true]
+ok "…into the language typed" {
+    [llength $::vapi::request] > 0 && [string match "*French*" [lindex $::vapi::request 1]]
+}
+::vtranslate::close
+
+# A slow translator (L3): the popup posted with the desktop client's
+# default 10 s timeout, so a translation the engine was still working on
+# (and the 0.2.2 retry doubles a slow one) ended in the popup as
+# "transport: timeout". The request waits the engine's own budget, which
+# /api/translate/config states (1200 s: two calls of 600 s), and a real
+# timeout says so in words. The stubbed answer below arrives after
+# `elapsed` ms: within the request's timeout it is delivered, past it the
+# client reports what http::geturl -timeout does.
+puts "\na slow translator"
+proc slow_answer {elapsed response} {
+    set ms $::vapi::ms_given
+    if {$ms <= 0} { set ms $::vapi::timeout }
+    lassign $::vapi::request path body on_err on_ok
+    if {$elapsed > $ms} {
+        {*}$on_err "transport: timeout"
+    } else {
+        {*}$on_ok $response
+    }
+}
+set ::vtranslate::target ""
+::vtranslate::popup .source
+answer_config [dict create target_language German configured true timeout_secs 1200]
+slow_answer 45000 [dict create text "Hallo (langsam)" model m provider p]
+ok "a translation that takes 45 s arrives" {
+    [.vtranslate.text get 1.0 end-1c] eq "Hallo (langsam)"
+}
+ok "…the request waits the engine's budget" {$::vapi::ms_given >= 1200000}
+::vtranslate::request
+answer_config [dict create target_language German configured true timeout_secs 1200]
+slow_answer 1300000 {}
+ok "past the budget the popup says the translator did not answer in time" {
+    [string match "*did not answer within 1200 seconds*" [.vtranslate.text get 1.0 end-1c]]
+}
+::vtranslate::close
+set ::vtranslate::target ""
+::vtranslate::popup .source
+answer_config [dict create target_language German configured true]
+ok "a gateway that states no budget gets the same 1200 s" {$::vapi::ms_given >= 1200000}
+::vtranslate::close
+
 rename ::vapi::get_json_async {}
 rename ::vapi::_real_get_json_async_for_test ::vapi::get_json_async
 ::vtranslate::close

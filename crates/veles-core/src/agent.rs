@@ -3742,7 +3742,7 @@ impl Agent {
             };
             let archived = match below {
                 Some(below) if !head_ids.is_empty() => {
-                    store.archive_compacted_head(&self.session_id, &head_ids, below, history)
+                    store.archive_compacted_head(&self.session_id, &head_ids, below)
                 }
                 // No row of the head carries an id: it was never persisted
                 // from here (an in-memory history), so a count is all
@@ -11893,12 +11893,14 @@ mod tests {
         );
     }
 
-    /// A replay repair hides an orphan and strips a call it cannot answer.
-    /// Compaction must keep the assistant row that still supplies visible
-    /// text to the repaired view, rather than sweeping its raw stored row
-    /// and leaving the orphan to reappear on the next reload.
+    /// After a compaction, a reload is the history compaction left in
+    /// memory: the summary, then the kept tail, and nothing the summary
+    /// already covers. 0.2.0 kept a summarized assistant live in the store
+    /// when its call had no result, so the desktop (which reloads for every
+    /// turn) got that row back after the summary, and at every later
+    /// compaction it was summarized again and kept again.
     #[tokio::test]
-    async fn compaction_keeps_an_assistant_whose_unanswered_call_was_stripped() {
+    async fn compaction_reload_matches_compacted_memory() {
         let sid = "stripped-call-compaction-session";
         let agent = compaction_agent(sid).await;
         {
@@ -11934,25 +11936,23 @@ mod tests {
             ));
         }
         let mut history = agent.store.lock().unwrap().load_history(sid).unwrap();
-        assert!(history
-            .iter()
-            .any(|m| { m.msg_id == Some(interrupted_id) && m.tool_calls.is_none() }));
+        assert!(history.iter().any(|m| m.msg_id == Some(interrupted_id)));
         agent
             .compact_forced(&mut history)
             .await
             .expect("forced compaction cuts");
-        let live = agent
-            .store
-            .lock()
-            .unwrap()
-            .load_history_since(sid, 0)
-            .unwrap();
         assert!(
-            live.iter().any(|m| m.msg_id == Some(interrupted_id)),
-            "the visible assistant text must not disappear with its stripped call"
+            !history.iter().any(|m| m.msg_id == Some(interrupted_id)),
+            "the fixture's interrupted row is in the summarized head"
+        );
+        let reloaded = agent.store.lock().unwrap().load_history(sid).unwrap();
+        assert_eq!(
+            reloaded.iter().map(|m| m.msg_id).collect::<Vec<_>>(),
+            history.iter().map(|m| m.msg_id).collect::<Vec<_>>(),
+            "a reload must give back the compacted history, no summarized row after the summary"
         );
         assert!(
-            live.iter().all(|m| m.content != "orphan"),
+            reloaded.iter().all(|m| m.content != "orphan"),
             "the orphan stays archived with the summarized head"
         );
     }
@@ -12290,10 +12290,16 @@ mod tests {
             // on how much of the tail one pass prunes) is 46,879 chars,
             // and 52k put the target at 46,832 — 47 chars UNDER it — the
             // day the environment block gained its one platform line
-            // (31 chars, PLAN-windows.md §6). 56k puts the target ~5k
+            // (31 chars, PLAN-windows.md §6). 56k put the target ~5k
             // chars above the floor: ~1,300 tokens of prefix growth before
-            // this test says anything again.
-            c.warn_context_tokens = 56_000;
+            // this test said anything again.
+            //
+            // It said it at 0.2.2. The floor had risen to 49,692 chars, and
+            // the split guidance (what a part placed on another node can
+            // reach, in the system prompt and in delegate_task's and nodes'
+            // descriptions) put the target at 49,604, 88 chars under it.
+            // 60k puts the target ~5k chars above the floor again.
+            c.warn_context_tokens = 60_000;
             c.target_percent = 33.0;
             c.keep_recent = 4;
             c.min_head = 2;

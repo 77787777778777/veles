@@ -357,13 +357,19 @@ themselves as [BACKGROUND … COMPLETE] / [MONITOR FIRED] rows — keep working 
 turn; never sleep or poll to wait (`shell` action `wait` blocks when you need a result \
 inside the turn).\n\
 To talk to the user's other live sessions on this machine or another pool node, use the `sessions` tool (list/send/check); for actual compute names, capabilities and load before dividing independent work, use `nodes` and `delegate_task` backend/needs.\n\
-SPLITTING HEAVY WORK ACROSS THE POOL is your call — nothing splits a job for you. When \
-a job has independent parts that each take minutes (crates to build or test, files to \
-encode, trees or datasets to scan, dumps to copy), `nodes` shows every node's cores, \
-load per core, disk IO pressure and the children already counted there; send the parts \
-as one `delegate_task` `tasks` batch with backend='any' and workload='cpu' or 'io' so \
-they run on the least-loaded nodes instead of queueing on this machine's CPU and disk. \
-Keep short, sequential or same-file work here.\n",
+SPLITTING HEAVY WORK ACROSS THE POOL is your call — nothing splits a job for you. \
+`nodes` shows every node's cores, load per core, disk IO pressure and the children \
+already counted there. A part placed on another node (backend='any', 'gpu' or a node \
+name) runs in that node's sandbox at the User level and sees none of this node's files, \
+so send only self-contained parts there: fetches and lookups, work on a URL or a git \
+remote it can clone, pure computation from what its goal and context carry. Work on \
+this node's files (building or testing this checkout, scanning local trees, encoding \
+local files) stays here as local children (no backend), or goes to a named node whose \
+sandbox already holds the same checkout. Send independent parts of minutes each as one \
+`delegate_task` `tasks` batch with backend='any' and workload='cpu' or 'io' so they run \
+on the least-loaded nodes; a batch holds at most 3 parts and waits for all of them, so \
+for more parts start each as its own background:true child with backend='any'. Keep \
+short, sequential or same-file work here.\n",
     );
 
     // The reply attachment convention, stated once so the model stops
@@ -843,6 +849,53 @@ mod tests {
             awareness < runtime,
             "the awareness line is stable and must precede the context tier"
         );
+    }
+
+    /// COMP-2 and COMP-13 (0.2.2): the split guidance sent file-bound
+    /// work (builds, tests, scans, dumps) to backend='any', but a part
+    /// placed on another node carries only its goal and context and runs
+    /// at that node's User level in its sandbox: it sees none of this
+    /// node's files. And it said "one tasks batch" for any fan-out, while
+    /// a batch holds at most MAX_BATCH parts. The prompt, the
+    /// delegate_task description and the nodes description each now say
+    /// what a remote part can reach, what is worth sending, where
+    /// file-bound work goes, and how to fan out past one batch.
+    #[test]
+    fn the_split_guidance_says_what_a_remote_part_can_reach() {
+        use crate::tools::Tool;
+        let p = build(&VelesConfig::default(), None);
+        let split = p
+            .find("SPLITTING HEAVY WORK ACROSS THE POOL")
+            .map(|i| &p[i..])
+            .expect("the split guidance");
+        let delegate = crate::delegate::DelegateTaskTool {
+            session_id: "s".into(),
+            hooks: None,
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let nodes = crate::nodes_tool::NodesTool {
+            store: std::sync::Arc::new(std::sync::Mutex::new(
+                crate::store::Store::open(&dir.path().join("state.db")).unwrap(),
+            )),
+        };
+        let batch = format!("at most {}", crate::delegate::MAX_BATCH);
+        for (what, text) in [
+            ("the prompt", split),
+            ("delegate_task", delegate.description()),
+            ("nodes", nodes.description()),
+        ] {
+            for words in [
+                "sees none of this node's files",
+                "User level",
+                "sandbox",
+                "git remote",
+                "same checkout",
+                batch.as_str(),
+                "background:true",
+            ] {
+                assert!(text.contains(words), "{what} must say {words:?}: {text}");
+            }
+        }
     }
 
     /// Two sessions in DIFFERENT directories must still share every byte

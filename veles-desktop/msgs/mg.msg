@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset mg {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset mg {%1$s %2$s done} {Vita ny %1$s %2$s}
 ::msgcat::mcset mg {%1$s %2$s failed: %3$s} {%1$s %2$s tsy nahomby: %3$s}
+::msgcat::mcset mg {%1$s %2$s over ssh anyway?} {%1$s %2$s amin'ny ssh ihany ve?}
 ::msgcat::mcset mg {%1$s %2$s over ssh…} {%1$s %2$s tamin'ny ssh…}
 ::msgcat::mcset mg {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset mg {%1$s (%2$s waiting)} {%1$s (%2$s miandry)}
 ::msgcat::mcset mg {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  fisainana %3$s}
 ::msgcat::mcset mg {%1$s = %2$s here} {%1$s = %2$s eto}
+::msgcat::mcset mg {%1$s = %2$s on %3$s} {%1$s = %2$s ao amin'ny %3$s}
 ::msgcat::mcset mg {%1$s NOT saved: %2$s} {TSY voatahiry ny %1$s: %2$s}
 ::msgcat::mcset mg {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s dia an'ny tranomboky %2$s ary tsy azo ovaina — kopia amin'ny Vaovao… raha te-hanovana azy}
 ::msgcat::mcset mg {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s dia an'ny tranomboky %2$s — tsy mba mamafa veles ny fahaizan'ny fitaovana hafa}
+::msgcat::mcset mg {%1$s cannot restart itself: %2$s} {Tsy afaka mamerina ny tenany ny %1$s: %2$s}
+::msgcat::mcset mg {%1$s differs: %2$s} {Tsy mitovy ny %1$s: %2$s}
 ::msgcat::mcset mg {%1$s every cron job on %2$s?} {%1$s ny asa cron rehetra ao amin'ny %2$s?}
 ::msgcat::mcset mg {%1$s failed: %2$s} {%1$s tsy nahomby: %2$s}
 ::msgcat::mcset mg {%1$s in / %2$s out / %3$s calls} {%1$s miditra / %2$s mivoaka / %3$s antso}
+::msgcat::mcset mg {%1$s is back after %2$s s (veles %3$s).} {Niverina ny %1$s taorian'ny %2$s s (veles %3$s).}
 ::msgcat::mcset mg {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s dia node %2$s, fa tsy %3$s. Ahitsio ao amin'ny Edit… ny node id-ny.}
 ::msgcat::mcset mg {%1$s is not a whole number} {Tsy isa feno ny %1$s}
+::msgcat::mcset mg {%1$s is not on: %2$s} {Tsy mandeha ny %1$s: %2$s}
+::msgcat::mcset mg {%1$s is not set on %2$s: the default applies.} {Tsy voapetraka ao amin'ny %2$s ny %1$s: ny fototra no mihatra.}
 ::msgcat::mcset mg {%1$s is reachable (%2$s ms).} {Azo tratrarina ny %1$s (%2$s ms).}
+::msgcat::mcset mg {%1$s is running %2$s turn(s). Restart it anyway?} {Misy turn %2$s mihazakazaka ny %1$s. Hamerenina alefa ihany ve?}
 ::msgcat::mcset mg {%1$s is set to something this box cannot edit (%2$s)} {Voapetraka amin'ny zavatra tsy azon'ity solosaina ity ovaina ny %1$s (%2$s)}
 ::msgcat::mcset mg {%1$s is unreachable: %2$s} {Tsy azo tratrarina ny %1$s: %2$s}
+::msgcat::mcset mg {%1$s is up, but its node binding is wrong: %2$s} {Miasa ny %1$s, saingy diso ny fampifandraisany amin'ny node: %2$s}
+::msgcat::mcset mg {%1$s not compared: %2$s} {Tsy nampitahaina ny %1$s: %2$s}
 ::msgcat::mcset mg {%1$s of %2$s characters} {%1$s amin'ny %2$s tarehintsoratra}
 ::msgcat::mcset mg {%1$s of %2$s sessions} {%1$s amin'ny fivoriana %2$s}
 ::msgcat::mcset mg {%1$s of %2$s skills reach the prompt} {%1$s amin'ny %2$s fahaizana no mahatratra ny baiko}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset mg {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset mg {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset mg {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset mg {%1$s: %2$s on the gateway} {%1$s: %2$s ao amin'ny gateway}
+::msgcat::mcset mg {%1$s: %2$s on the gateway (ships with veles)} {%1$s: %2$s ao amin'ny gateway (tafiditra miaraka amin'ny veles)}
 ::msgcat::mcset mg {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset mg {%1$s: no language server on the gateway. %2$s} {%1$s: tsy misy mpizara fiteny ao amin'ny gateway. %2$s}
 ::msgcat::mcset mg {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: ny %2$s farany amin'ny %3$s andalana tazonin'ny gateway ao amin'ny fitadidiana, voafafa ny tsiambaratelo amin'io node io.}
+::msgcat::mcset mg {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: ny plugin %2$s an'ny mpampiasa dia manaloka ilay tafiditra mitovy votoaty aminy (%3$s)}
 ::msgcat::mcset mg {%d MCP server(s) configured} {%d MCP server voarafitra}
 ::msgcat::mcset mg {%d entries} {%d singa}
 ::msgcat::mcset mg {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {Rakitra %d amin'ny extension no hosoratana araka ny efa nojerena. Raha misy niova hatramin'ny topi-maso, tsy hisy hosoratana. Tsy misy commit, push na PR.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset mg {%s (stale)} {%s (lany andro)}
 ::msgcat::mcset mg {%s (this session)} {%s (ity fivoriana ity)}
 ::msgcat::mcset mg {%s GB free of %s GB} {%s GB malalaka amin'ny %s GB}
+::msgcat::mcset mg {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s Ny baiko dia mandeha amin'ny ssh ho any amin'ny host voarafitra, izay tsy azon'ity fanamarinana ity ampifandraisina amin'ny node.}
 ::msgcat::mcset mg {%s already exists — open it from the list} {Efa misy ny %s — sokafy avy amin'ny lisitra}
 ::msgcat::mcset mg {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {Niova ny %s taorian'ny nanokafanao azy — tsy nisy nosoloina; adikao ny soratrao, avy eo Ampidiro indray}
 ::msgcat::mcset mg {%s cleared for this buffer} {Voadio ny %s ho an'ity buffer ity}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset mg {%s comes from config.toml [acl] — edit there} {Avian'ny config.toml [acl] ny %s — ovay any}
 ::msgcat::mcset mg {%s config change(s) wait for you — /configsync} {fanovana fikirakirana %s miandry anao — /configsync}
 ::msgcat::mcset mg {%s did not become healthy within 30s} {Tsy lasa salama tao anatin'ny 30s ny %s}
+::msgcat::mcset mg {%s did not come back within 120 s: look at its log where it runs.} {Tsy niverina tao anatin'ny 120 s ny %s: jereo ny rakitra log-ny any amin'izay iasany.}
 ::msgcat::mcset mg {%s done} {Vita ny %s}
 ::msgcat::mcset mg {%s failed: %s} {Nisy diso tamin'ny %s: %s}
+::msgcat::mcset mg {%s holds a credential: it stays on its node and is not shown.} {Mitazona porofo fidirana ny %s: mijanona ao amin'ny node-any izy ary tsy aseho.}
 ::msgcat::mcset mg {%s is already split} {Efa mizara roa ny %s}
+::msgcat::mcset mg {%s is restarting; waiting for it to come back…} {Mamerina alefa ny %s; miandry azy hiverina…}
 ::msgcat::mcset mg {%s is the language in use — pick another one to swap with} {%s no fiteny ampiasaina — misafidiana hafa hifanakalozana}
 ::msgcat::mcset mg {%s is up} {Miasa ny %s}
 ::msgcat::mcset mg {%s keys — any key closes} {%s fanalahidy — mikatona amin'ny fanalahidy rehetra}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset mg {; shadows bundled} {; manaloka ny efa tafiditra}
 ::msgcat::mcset mg {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Ny tolo-bolana config dia afaka manova fikirakirana, ary ny tolo-bolana vault dia mampifangaro tsiambaratelo; ny fanovana ao amin'ny fizarana fiarovana dia mbola miandry ny tompony.}
 ::msgcat::mcset mg {A failing plugin may drop hooks mid-turn.} {Ny plugin tsy miasa dia mety hamoy hook eo afovoan'ny fihodinana.}
+::msgcat::mcset mg {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {Fizarana voatazona: tsy soratana avy eto; ovay ao amin'ny node iray ary atero ny config, ary ny tompony no mampihatra izany any.}
 ::msgcat::mcset mg {A local server: no key is needed unless you set one up.} {Servera any an-toerana: tsy mila key raha tsy mametraka iray ianao.}
 ::msgcat::mcset mg {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Ny release voasoina dia apetraka tsara aorian'ny preflight ihany. Ny fanarenana/fanamarinana, ny fanohizana ary ny fihemorana dia asa samy hafa. Tsy maintsy milaza ny fanitsiana loharanony voamarina marina ny process salama.}
 ::msgcat::mcset mg {A value is stored for %s — leave this empty to keep it.} {Misy sanda voatahiry ho an'ny %s — avelao ho foana ity mba hitazonana azy.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset mg {Asking the provider for its models…} {Mangataka ny modelin'ny mpamatsy…}
 ::msgcat::mcset mg Attach Ampiakao
 ::msgcat::mcset mg {Attach to the next message} {Histora ao amin'ilay hafatra manaraka}
+::msgcat::mcset mg {Audit log unavailable: %s} {Tsy misy ny rakitra fanaraha-maso: %s}
+::msgcat::mcset mg {Audit log…} {Rakitra fanaraha-maso…}
 ::msgcat::mcset mg {Author guide} {Torolalana ho an'ny mpanoratra}
 ::msgcat::mcset mg {Automatically discovered from the attached gateway's cluster registry.} {Hita ho azy avy amin'ny rejisitry ny cluster an'ny gateway miraikitra.}
 ::msgcat::mcset mg Back Hiverina
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset mg {Browse sessions} {Jereo ny fivoriana}
 ::msgcat::mcset mg {Build manifest + preflight} {Manangona manifest + preflight}
 ::msgcat::mcset mg {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Fananganana: veles %1$s, fanitsiana %2$s (%3$s %4$s)}
+::msgcat::mcset mg {Bulk %1$s failed: %2$s} {Tsy nahomby ny asa miaraka %1$s: %2$s}
+::msgcat::mcset mg {Bulk %1$s: %2$s (%3$s).} {Asa miaraka %1$s: %2$s (%3$s).}
+::msgcat::mcset mg {Bulk action cancelled.} {Nofoanana ny asa miaraka.}
 ::msgcat::mcset mg {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e faran'ny andalana · C-b/C-f litera · M-b/M-f teny · C-k tapaho hatramin'ny EOL · C-y yank · M-w adiko · C-w tapaho ny faritra · C-space mametraka marika · C-/ esorina}
 ::msgcat::mcset mg {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g manakana ny zava-drehetra · C-j andalana vaovao · M-p/M-n tantara · Tab fenoy}
+::msgcat::mcset mg {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU: %1$s fototra, %2$s%% mavitrika tao anatin'ny %3$s s lasa}
 ::msgcat::mcset mg {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s core, load %2$s / %3$s / %4$s (%5$s%% amin'ny core)}
 ::msgcat::mcset mg Cancel Foano
 ::msgcat::mcset mg {Cancel task} {Hamafoana ny asa}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset mg {Channels (e.g. #veles #dev)} {Channels (oh. #veles #dev)}
 ::msgcat::mcset mg Chat Resaka
 ::msgcat::mcset mg {Chat — not attached; press Attach in the Instances tab} {Chat — tsy miraikitra; tsindrio ny Miraikitra ao amin'ny tabilao Fifandraisana}
-::msgcat::mcset mg {Check (lsp)} {Jereo (lsp)}
+::msgcat::mcset mg {Check (C-c C-k)} {Jereo (C-c C-k)}
 ::msgcat::mcset mg {Check again} {Hamarino indray}
 ::msgcat::mcset mg {Check files} {Hamarihino ny rakitra}
 ::msgcat::mcset mg Checkpoints Fandrefesana
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset mg {Close (Esc)} {Akatony (Esc)}
 ::msgcat::mcset mg {Close the setup wizard? Nothing has been written yet.} {Hidiana ny setup wizard? Mbola tsy misy na inona na inona voasoratra.}
 ::msgcat::mcset mg {Code actions} {Hetsika kaody}
+::msgcat::mcset mg {Command-center audit log} {Rakitra fanaraha-maso ny foibe baiko}
 ::msgcat::mcset mg Commit Commit
 ::msgcat::mcset mg {Commit ready for review. Push is a separate action.} {Vonona ho jerena ny commit. Ny push dia asa misaraka.}
 ::msgcat::mcset mg {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Fenoy ny sehatra PDS rehetra, anisan'izany ny image digest voafato, alohan'ny hijerena mialoha ny handoff.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset mg {Config differs: %s} {Tsy mitovy ny config: %s}
 ::msgcat::mcset mg {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Log config: io node io dia manana ny fanovan'i %1$s hatramin'ny %3$s, ity gateway ity hatramin'ny %2$s}
 ::msgcat::mcset mg {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Log config: ity gateway ity dia manana ny fanovan'i %1$s hatramin'ny %2$s, io node io hatramin'ny %3$s}
+::msgcat::mcset mg {Config of %s} {Config an'ny %s}
 ::msgcat::mcset mg {Config only on that node: %s} {Config ao amin'io node io ihany: %s}
 ::msgcat::mcset mg {Config only on this gateway: %s} {Config eto amin'ity gateway ity ihany: %s}
+::msgcat::mcset mg {Config: %s} {Config: %s}
 ::msgcat::mcset mg Configure Amboary
 ::msgcat::mcset mg {Configure %s} {Amboary %s}
 ::msgcat::mcset mg {Configure translator} {Fikirakirana ny mpandika teny}
 ::msgcat::mcset mg {Configured desktop gateway} {Gateway desktop voarafitra}
 ::msgcat::mcset mg Configure… Amboary…
 ::msgcat::mcset mg {Configuring %s} {Fandrindrana ny %s}
+::msgcat::mcset mg Config… Config…
 ::msgcat::mcset mg {Confirm or discard the current signed review before starting another download.} {Hamarino na esory ity fijery ny famoahana voasaina-tanana ity vao manomboka amin'ny alarana hafa.}
 ::msgcat::mcset mg {Container host: typed host plan and privileged CLI handoff} {Tompon-draikitra: drafitran'ny tompon-draikitra voafaritra-karazana sy fanoloana baiko CLI mila fahefan'ny mpitantana}
 ::msgcat::mcset mg {Context window} {Feridana context}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset mg {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Mamoròna ny bot amin'ny @BotFather, avy eo apetaho eto ambany ny token-ny: miditra ao amin'ny vata fitehirizana voaraikitra izy, tsy miditra ao amin'ny config.toml mihitsy.}
 ::msgcat::mcset mg {Create this extension?} {Hamoronana ity fanitarana ity?}
 ::msgcat::mcset mg {Create this generated extension?} {Hamorona ity extension vokarina ity?}
+::msgcat::mcset mg {Created and loaded. Review and test the extension before publishing.} {Voaforona sy nampidirina. Diniho ary andramo ny extension vao avoaka.}
 ::msgcat::mcset mg {Created and reloaded. Review and test the extension before publishing.} {Nofoarana ary nampidirina indray. Jereo ary andramo ny fanitarana alohan'ny hivoahana.}
 ::msgcat::mcset mg {Created, but reload failed} {Nofoarana, nefa tsy nahomby ny fampidirana indray}
+::msgcat::mcset mg {Created, not loaded} {Voaforona, tsy nampidirina}
+::msgcat::mcset mg {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {Voaforona, tsy nampidirina mbola: ampiasao ny cargo build --release ao amin'ny lahatahirin'ny extension, avy eo avereno ampidirina ao amin'ny Fitantanana extension.}
+::msgcat::mcset mg {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {Voaforona. Tsy milaza raha nampiditra ny extension ity gateway ity: jereo ny toetrany ao amin'ny Fitantanana extension.}
 ::msgcat::mcset mg {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Mamorona %s/<name>/SKILL.md avy amin'ny modely iray ary manokatra azy. Ny famaritana amin'ny frontmatter no hany zavatra tonga amin'ny tondro-tsoratra, koa ataovy ambara hoe RAHOVIANA hampiasaina ilay skill.}
 ::msgcat::mcset mg {Cron history} {Histora Cron}
 ::msgcat::mcset mg {Cron jobs} {Asa cron}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset mg {Delete user} {Fafao ny mpampiasa}
 ::msgcat::mcset mg {Delete workspace?} {Fafao ny toeram-piasana?}
 ::msgcat::mcset mg Deop {Esory ny op}
+::msgcat::mcset mg {Deployment consistency unknown: %s node(s) could not be compared.} {Tsy fantatra ny fifanarahan'ny fametrahana: tsy nampitahaina ny node %s.}
+::msgcat::mcset mg {Deployment consistency: not checked yet (Drift… compares every node).} {Fifanarahan'ny fametrahana: tsy mbola nojerena (ny Fahasamihafana… dia mampitaha ny node rehetra).}
 ::msgcat::mcset mg {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Farano ny fanovana. Mety hanova na hanampy rakitra maromaro amin'ity extension ity ny AI. Aseho ho diff ny rakitra tsirairay, ary tsy misy soratana alohan'ny fanamarinanao.}
 ::msgcat::mcset mg {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Lazao ny fanovana. Mety hanolotra soloina ny AI, nefa tsy afaka manoratra azy raha tsy mbola nojerena sy nohamarininao ny diff.}
 ::msgcat::mcset mg {Describe the requested extension change first.} {Lazao aloha ny fanovana fanitarana takiana.}
 ::msgcat::mcset mg Description Famaritana
+::msgcat::mcset mg {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {Ny turn an'ny desktop dia manohy avy amin'ny tantarany voatahiry aorian'ny famerenana alefa; tsy manao izany ny turn an'ny connector, A2A, mail, cron ary subagent.}
 ::msgcat::mcset mg {Desktop: local core, modules and process plugins} {Foibe: core ao an-toerana, modoly sy plugin mpanatanteraka}
 ::msgcat::mcset mg Detach Misaraka
 ::msgcat::mcset mg {Detach foreground} {Ampisaraho ny foreground}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset mg {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Alavo ary hamarino ny manifest sy ny fonosana ho an'ity solosaina ity vao ampidirina. Tsy maintsy feno ny saha maha-izy dimy. Miotra ao amin'ny gateway ny fonosana napetraka manokana; tsy misy ampidirina amin'ity fijery mialoha ity.}
 ::msgcat::mcset mg {Downloading and verifying the signed release…} {Manalava ary mamarino ny famoahana voasaina-tanana…}
 ::msgcat::mcset mg {Draft this as an extension?} {Foronina ho fanitarana ve ity?}
+::msgcat::mcset mg {Draft this change as an extension?} {Haforonina ho extension ve ity fanovana ity?}
 ::msgcat::mcset mg {Drag to scroll; a quick swipe goes further.} {Sintony mba hanodinkodinana; ny fikosehana haingana dia mandeha lavitra kokoa.}
 ::msgcat::mcset mg {Drift check failed: %s} {Tsy nahomby ny fanamarinana fahasamihafana: %s}
 ::msgcat::mcset mg {Drift check: %s node(s) differ from this gateway.} {Fanamarinana fahasamihafana: node %s no tsy mitovy amin'ity gateway ity.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset mg Eval→gw Eval→gw
 ::msgcat::mcset mg {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Voarakitra ao amin'ny commit isaky ny fiovana ny %s. Ny famerenana dia mamerina ny lahatahiry manontolo amin'izany commit izany — ary maka sarin'ny toe-javatra misy aloha izy, ka tsy lalana tsy azo iverenana izany.}
 ::msgcat::mcset mg {Every plugin file goes back to that commit. The current state is committed first.} {Miverina amin'izany commit izany ny rakitra plugin rehetra. Voarakitra aloha ny toe-javatra misy.}
+::msgcat::mcset mg {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {Ny ambaratonga rehetra: ny Extension vaovao dia manoratra extension Tcl, TypeScript, Racket na Common Lisp, na plugin Rust ivelan'ny hazo (cdylib ao amin'ny crate veles-plugin-abi-sdk: amboary amin'ny cargo build --release, avy eo avereno ampidirina ao amin'ny Fitantanana extension). Ambaratonga roa no mipetraka ivelan'ny lahatahirin'ny plugin an'ny mpampiasa ary manomboka avy amin'ny andalana baiko: module iray, tranomboky Rust namboarina miaraka amin'ny veles (ny veles plugins new NAME --kind overlay dia manoratra ny fitahirizany), ary plugin-process, programa ao amin'ny crate veles-plugin-sdk izay alefan'ny gateway sy ampiasainy. Ny Torolalana ho an'ny mpanoratra dia manana fizarana ho an'ny tsirairay.}
 ::msgcat::mcset mg {Exact commit} {Commit marina}
 ::msgcat::mcset mg {Exact permission rule} {Fitsipika fahazoan-dalana marina}
 ::msgcat::mcset mg {Example: a hook} {Ohatra: hook iray}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset mg {Explain the diagnostics} {Hazavao ny diagnostika}
 ::msgcat::mcset mg Export… Avoahy…
 ::msgcat::mcset mg {Extension API} {API fanitarana}
+::msgcat::mcset mg {Extension API reference} {Fanoroana ny API an'ny extension}
 ::msgcat::mcset mg {Extension development} {Fampandrosoana fanitarana}
 ::msgcat::mcset mg {Extension guide} {Torolalana fanitarana}
 ::msgcat::mcset mg {Extension source} {Loharanom-baovan'ny fanitarana}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset mg {Guards — what the harness stops, and where it stands now} {Guards — izay sakanan'ny harness, ary ny toerany ankehitriny}
 ::msgcat::mcset mg {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Mandeha araka ny filaharana aseho ny mpikarakara; ilay mamerina sanda tsy foana voalohany no mandresy. Ny famonoana iray dia mampiato azy nefa tsy manesoratra azy, ary voatahiry ao amin'ny config.toml ny safidy, ka tsy afaka mamelona azy mangingina ny fanavaozana plugin.}
 ::msgcat::mcset mg Health Fahasalamana
+::msgcat::mcset mg {Health alerts} {Fampitandremana ara-pahasalamana}
 ::msgcat::mcset mg {Health alerts (%s):} {Fampitandremana ara-pahasalamana (%s):}
 ::msgcat::mcset mg Heartbeat Fitepo
 ::msgcat::mcset mg {Heartbeat age: %s s} {Efa ela ny heartbeat: %s s}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset mg Install… Apetraho…
 ::msgcat::mcset mg {Instance name (for example an IRC network)} {Anaran'ny fifandraisana (ohatra: tambajotra IRC)}
 ::msgcat::mcset mg Instances Fifandraisana
+::msgcat::mcset mg {Instead of patching %s: } {Raha tsy manisy patch ny %s: }
 ::msgcat::mcset mg {It becomes the current content, as a new revision — so the restore can be undone too.} {Ho lasa votoaty ankehitriny izy, ho fanitsiana vaovao — ka azo foanana koa ny famerenana.}
 ::msgcat::mcset mg {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Miditra ao amin'ny vata fitehirizana voaraikitra amin'ity milina ity izy. Tsy mahita azy mihitsy ny mpandraharaha: tsy afaka mampiasa azy afa-tsy ho $%s ao anaty baiko, na mandefa azy any amin'ireo mpampiantrano nahazo alalana.}
 ::msgcat::mcset mg {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Voafafa amin'ny rejistran'ny cluster manerana ny fleet izy: ny fifanakalozana gossip manaraka dia milaza amin'ny peer 0.2.0 rehetra mba hanala azy koa, ary tsy hisy mampifangaro azy indray. Ny peer tranainy noho 0.2.0 dia mbola mitanisa azy. Raha miverina ny milina ka mandefa heartbeat, dia voasoratra indray izy. Tsy voakitika ny sync peer sy ny instance voatahiry.}
+::msgcat::mcset mg {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {Soratana ao amin'ny config.toml an'io node io izy ho fanovana natao tao; avy eo ny config sync no mitondra azy ho any amin'ireo node mifanaraka config aminy.}
 ::msgcat::mcset mg {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Hiala amin'ny fahatsiarovana izy izao. Tehirizin'ny tantarany ny fanitsiana rehetra, ary ny Tantara… dia afaka mamerina azy.}
+::msgcat::mcset mg {Its gateway stops and %s.} {Mijanona ny gateway-ny ary %s.}
 ::msgcat::mcset mg Join Hiditra
 ::msgcat::mcset mg {Join a pool} {Hiditra ao amin'ny vondrona milina}
 ::msgcat::mcset mg {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {Hiditra ao amin'ny vondrona milin'i %1$s ho %2$s? Hahatratra ity finday ity amin'ny %3$s ny vondrona.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset mg Joining… Miditra…
 ::msgcat::mcset mg Join… Midira…
 ::msgcat::mcset mg {Jump to composer} {Mankany amin'ny composer}
+::msgcat::mcset mg {Key (for example model.default)} {Fanalahidy (ohatra model.default)}
 ::msgcat::mcset mg Keybindings Keybindings
 ::msgcat::mcset mg {Keyboard help} {Fanampiana momba ny fitendry}
 ::msgcat::mcset mg {Kick %1$s from %2$s?} {Roahina ve i %1$s ao amin'ny %2$s?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset mg {LLM provider} {Mpamatsy LLM}
 ::msgcat::mcset mg Language Fiteny
 ::msgcat::mcset mg {Language (i18n)} {Fiteny (i18n)}
+::msgcat::mcset mg {Language servers on this gateway} {Mpizara fiteny ao amin'ity gateway ity}
 ::msgcat::mcset mg Language… Fiteny…
 ::msgcat::mcset mg {Last active} {Farany niasa}
 ::msgcat::mcset mg {Last probe: %1$s — %2$s} {Fanamarinana farany: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset mg Level Ambaratonga
 ::msgcat::mcset mg {Lift lockdown} {Atsaharo ny fanakatonana}
 ::msgcat::mcset mg Lines Andalana
+::msgcat::mcset mg {List targets…} {Lisitry ny kendrena…}
 ::msgcat::mcset mg {List the provider's models} {Lisitrahoy ny modelin'ny mpamatsy}
 ::msgcat::mcset mg Load Enta-mavesatra
 ::msgcat::mcset mg {Load more} {Haka bebe kokoa}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset mg Next Manaraka
 ::msgcat::mcset mg Nickname Anaram-piantsoana
 ::msgcat::mcset mg {NixOS: emit a module snippet; do not edit host declarations} {NixOS: mamoaka sombin-drakitra modoly; aza ovaina ny fanambarànan'ny tompon-draikitra}
-::msgcat::mcset mg {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Tsy misy lasibatra SSH lifecycle voarafitra ho an'ity node ity. Ampio fifandraisana mazava tsara mba hametrahana na hamerenana azy.}
+::msgcat::mcset mg {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {Tsy misy kendrena lifecycle SSH voarafitra ho an'ity node ity: ny Famerenana alefa dia mangataka ny node hamerina ny tenany amin'ny alalan'ny supervisor-ny; ny fametrahana avy amin'ny Fleet dia mila instance voatahiry misy kendrena ssh.}
 ::msgcat::mcset mg {No additional push happens.} {Tsy misy push fanampiny atao.}
 ::msgcat::mcset mg {No apps yet. Ask the agent to make one: “make me an app that…”} {Mbola tsy misy rindranasa. Angataho ny mpandraharaha hanao iray: “manaova rindranasa ho ahy izay…”}
 ::msgcat::mcset mg {No code in the picture. Hold the phone closer, straight on, and scan again.} {Tsy misy kaody ao amin'ny sary. Ataovy akaiky kokoa sy mahitsy ny finday, dia skanéo indray.}
+::msgcat::mcset mg {No command-center action is recorded on this gateway yet.} {Tsy misy asa avy amin'ny foibe baiko voarakitra amin'ity gateway ity mbola.}
 ::msgcat::mcset mg {No configuration snapshot will be restored.} {Tsy misy snapshot fikirakirana haverina.}
 ::msgcat::mcset mg {No configured sync peer for this node.} {Tsy misy sync peer voarafitra ho an'ity node ity.}
 ::msgcat::mcset mg {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Tsy misy mpandika teny manokana voarafitra. Ampiasao ny Fikirakirana ny mpandika teny hisafidianana ny mpamatsy, ny modely ary ny fiteny kendrena.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset mg {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Ny finday namboarin'i %s koa dia mampiato rindranasa ho azy. Ao amin'ny fandrindrana rindranasan'ny veles, avelao izy hanomboka ho azy sy handeha ao ambadika.}
 ::msgcat::mcset mg {Pin / unpin} {Apetaho / esory ny pin}
 ::msgcat::mcset mg {Pin to home screen} {Apetaho eo amin'ny efijery fandraisana}
+::msgcat::mcset mg {Plugin author guide} {Torolalana ho an'ny mpanoratra plugin}
 ::msgcat::mcset mg {Plugin history} {Tantaran'ny plugin}
 ::msgcat::mcset mg Plugins Plugin
 ::msgcat::mcset mg Port Port
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset mg {Preview here} {Fijery eto}
 ::msgcat::mcset mg {Preview pane} {Preview pane}
 ::msgcat::mcset mg {Preview proposal} {Jereo mialoha ny tolo-kevitra}
-::msgcat::mcset mg {Preview the changed name or language before creating it.} {Jereo mialoha ny anarana na fiteny niova alohan'ny hamoronana azy.}
+::msgcat::mcset mg {Preview the changed name, purpose or language before creating it.} {Hojerena mialoha ny anarana, tanjona na fiteny novaina vao foronina.}
 ::msgcat::mcset mg Probe Hamarinina
+::msgcat::mcset mg {Probe %s node(s)?} {Diniho ny node %s?}
+::msgcat::mcset mg {Probe all…} {Diniho daholo…}
 ::msgcat::mcset mg {Probe of %1$s failed: %2$s} {Tsy nahomby ny fanamarinana an'ny %1$s: %2$s}
 ::msgcat::mcset mg {Profile result} {Vokatry ny profil}
 ::msgcat::mcset mg {Promote into config.toml} {Ampidiro ao amin'ny config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset mg {Push branch…} {Alefaso ny sampana…}
 ::msgcat::mcset mg {Push complete. No pull request has been opened.} {Vita ny push. Tsy nisy pull request nosokafana.}
 ::msgcat::mcset mg {Push this branch?} {Halefa ity sampana ity?}
+::msgcat::mcset mg {Push this kind to every node that is a configured peer for it:} {Atero any amin'ny node rehetra voarafitra ho peer ho azy ity karazana ity:}
 ::msgcat::mcset mg {Push to %s:} {Alefa any amin'ny %s:}
 ::msgcat::mcset mg Question Fanontaniana
 ::msgcat::mcset mg Questions Fanontaniana
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset mg {REPL target: the app} {tanjona REPL: ny app}
 ::msgcat::mcset mg {REPL target: the gateway} {tanjona REPL: ny gateway}
 ::msgcat::mcset mg Read Vakio
+::msgcat::mcset mg {Read the key first: a write names the value it replaces.} {Vakio aloha ny fanalahidy: ny fanoratana dia milaza ny sanda soloiny.}
 ::msgcat::mcset mg {Reading notifications, for triggers} {Famakiana fampandrenesana, ho an'ny Triggers}
 ::msgcat::mcset mg Reasoning Reasoning
 ::msgcat::mcset mg {Reasoning effort} {Ezaka fisainana}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset mg {Reset to default} {Averina amin'ny tany am-boalohany}
 ::msgcat::mcset mg {Reset to template} {Avereno amin'ny modely}
 ::msgcat::mcset mg Restart {Avereno atombohy}
+::msgcat::mcset mg {Restart %s?} {Hamerenina alefa ve ny %s?}
 ::msgcat::mcset mg {Restart + verify canary} {Averina alefa + hamarino ny canary}
+::msgcat::mcset mg {Restart cancelled.} {Nofoanana ny famerenana alefa.}
+::msgcat::mcset mg {Restart of %1$s failed: %2$s} {Tsy nahomby ny famerenana alefa an'ny %1$s: %2$s}
 ::msgcat::mcset mg {Restore hidden windows} {Avereno ny varavarankely nafenina}
 ::msgcat::mcset mg {Restore plugins to %s?} {Hampodina amin'ny %s ve ny plugin?}
 ::msgcat::mcset mg {Restore revision r%1$s of %2$s?} {Hamerina ny fanitsiana r%1$s an'ny %2$s ve?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset mg {S3 region} {Region an'ny S3}
 ::msgcat::mcset mg {SASL account (optional)} {Kaonty SASL (tsy voatery)}
 ::msgcat::mcset mg {SASL password (hidden)} {Tenimiafina SASL (miafina)}
+::msgcat::mcset mg {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {Lifecycle SSH: amin'ny alalan'ny instance voatahiry %1$s (%2$s, unit %3$s).}
 ::msgcat::mcset mg Sandbox Sandbox
 ::msgcat::mcset mg {Sandbox account} {Kaontin'ny sandbox}
 ::msgcat::mcset mg Sandboxes Sandbox
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset mg {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Ny session efa natokana ho an'ity alias ity dia mitazona ny lalana efa nofidiny; ny override vaovao dia tsy hahita ilay anarana intsony.}
 ::msgcat::mcset mg {Sessions served} {Fivoriana voakarakara}
 ::msgcat::mcset mg Set Mametraha
+::msgcat::mcset mg {Set %1$s on %2$s to %3$s?} {Hapetraka ho %3$s ve ny %1$s ao amin'ny %2$s?}
 ::msgcat::mcset mg {Set [model] provider/default in config.toml.} {Mametraha ny provider/default [model] ao amin'ny config.toml.}
 ::msgcat::mcset mg {Set as swap target} {Ataovy fiteny hifanakalozana}
 ::msgcat::mcset mg {Set mode %1$s on %2$s?} {Hapetraka ny fomba %1$s amin'ny %2$s ve?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset mg Summary Famintinana
 ::msgcat::mcset mg Surface Sehatra
 ::msgcat::mcset mg {Swap ⇄} {Soloina ⇄}
+::msgcat::mcset mg {Sync %1$s to %2$s node(s)?} {Hatao sync ny %1$s ho any amin'ny node %2$s ve?}
+::msgcat::mcset mg {Sync all} {Sync daholo}
+::msgcat::mcset mg {Sync all…} {Sync daholo…}
 ::msgcat::mcset mg {Sync cancelled.} {Voafoana ny sync.}
 ::msgcat::mcset mg {Sync complete.} {Vita ny sync.}
 ::msgcat::mcset mg {Sync now} {Sync izao}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset mg {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Alefa miaraka amin'ity rakitra ity ny diagnostika ankehitriny (avy amin'ny language server na ny Fanamarinana). Afaka manampy fanontaniana ianao raha tianao. Soratra ihany ny valiny; tsy misy azo soratana.}
 ::msgcat::mcset mg {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Vofafa ny lahatahiry mbamin'ny zavatra rehetra ao anatiny. Tsy azo averina izany — vonoy fotsiny kosa raha tsy te ho ao amin'ny prompt intsony ianao.}
 ::msgcat::mcset mg {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Vofafa ny lahatahiry. Git repository ny lahatahirin'ny plugin ary misy snapshot alefa aloha, ka ny History… no afaka mamerina azy.}
-::msgcat::mcset mg {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Manokatra rakitry ny gateway ny mpanonta, ao anatin'izany ny instance lavitra, ary mampandeha ny language server ho an'ny fitenin'ny rakitra ao amin'ny gateway: tcl-lsp, typescript-language-server (TypeScript sy JavaScript), rust-analyzer (crate na module plugin Rust), clangd (C), racket-langserver ary server Common Lisp. Mandeha amin'ny fiteny rehetra manana server ao amin'ny gateway ny hover, fandehanana any amin'ny famaritana, famenoana ary diagnostika mivantana; raha tsy manana izy, dia milaza izay programa tokony hapetraka any ny mpanonta ary mitazona ny fanasongadinana syntaxe. Ny Fanamarinana dia mampandeha ny mpamarin-tombony ao amin'ny gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, na ny mpamaky Racket sy Lisp. Tehirizo, avereno ampidirina ao amin'ny Fitantanana extension, ary andramo ny extension tsy mamoaka ny toerana an-toerana.}
+::msgcat::mcset mg {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {Ny editor dia manokatra rakitra an'ny gateway, anisan'izany ny instance lavitra, ary mampandeha ny mpizara fiteny ho an'ny fitenin'ilay rakitra ao amin'ny gateway: typescript-language-server (TypeScript sy JavaScript), rust-analyzer (crate na module plugin Rust), clangd (C), racket-langserver, mpizara Common Lisp, ary tcl-lsp ho an'ny Tcl rehefa manana azy ny gateway (tafiditra ao amin'ny fonosana Linux an'ny veles izy). Ny hover, ny fandehanana amin'ny famaritana, ny famenoana ary ny diagnostika mivantana dia mandeha amin'ny fiteny rehetra manana mpizara ao amin'ny gateway; raha tsy manana izy, dia milaza ny programa tokony hapetraka any ny editor ary mitazona ny fanasongadinana syntaxe. Ny bokotra Jereo dia mampandeha ny mpanamarina mifanaraka ao amin'ny gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, ny mpamaky Racket sy Lisp, ary ho an'ny Tcl ny tclsh an'ny engine (fanamarinana fahafenoana, na ny lint an'ny tcl-lsp any amin'izay misy azy). Tehirizo, avereno ampidirina ao amin'ny Fitantanana extension, ary andramo ny extension tsy mamoaka ny toetra teo an-toerana.}
 ::msgcat::mcset mg {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Ny handoff voalohany dia manomana ny tsiambaratelo, ny image voafato ary ny rakitra runtime, fa tsy manomboka ny PDS. Tehirizo ivelan'ny aterineto ny KEK sy ny key fitodiky ny PLC, avy eo manaovy fangatahana vaovao voamarina miaraka amin'ny fankatoavana ny fatahirizana mba hametrahana ny HTTP-01 TLS sy ny hampandeha azy. Tsy maintsy mifantoka mivantana amin'ity host ity ny DNS record; tsy mba manao CDN proxy na fanovana DNS ny veles.}
+::msgcat::mcset mg {The fleet is NOT consistent: %s node(s) differ.} {TSY mifanaraka ny fleet: misy node %s tsy mitovy.}
+::msgcat::mcset mg {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {Mifanaraka ny fleet saingy misy fahasamihafana: ny node %1$s dia mampandeha build mitovy ary mifanaraka amin'ny zavatra zarainy rehetra; tsy ao amin'ny node rehetra ny singa %2$s.}
+::msgcat::mcset mg {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {Mifanaraka ny fleet: ny node %s dia mampandeha build, module sy plugin mitovy.}
 ::msgcat::mcset mg {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Niova ny endrika hatramin'ny namokarana ny extension. Vokaro indray, na topi-maso ny scaffold tsotra.}
+::msgcat::mcset mg {The gateway did not receive the purpose as written. Nothing was created.} {Tsy voarain'ny gateway ny tanjona araka ny voasoratra. Tsy nisy noforonina.}
+::msgcat::mcset mg {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {Tsy manolotra ny torolalana momba ny extension ity gateway ity (antitra noho ny 0.2.2 izy), ary tsy manana kopia amin'izany ity desktop ity.}
 ::msgcat::mcset mg {The gateway itself is untouched.} {Tsy voakasika ny gateway.}
 ::msgcat::mcset mg {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Namerina nampiditra ny fikirakirana ny gateway, ka mampiasa azy avy hatrany ny fotoam-piasana vaovao, ary ny fangatahana manaraka no hampiasa ny key voatahiry ao amin'ny vata fitehirizana. Manomboka rehefa averina alefa indray ny gateway ny Telegram sy ny IRC: veles gateway restart.}
 ::msgcat::mcset mg {The installed component no longer matches the selected manifest. Review the component list again.} {Tsy mifanaraka intsony ny singa napetraka amin'ny manifest voafidy — jerena indray ny lisitry ny singa.}
 ::msgcat::mcset mg {The installer preview has no verification signatures; apply is disabled.} {Tsy misy sonia fanamarinana ny topi-mason'ny mpametraka — tsy azo ampiasaina ny fampiharana.}
 ::msgcat::mcset mg {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Vofafa ny job sy ny tantaran'ny ranony. Tsy azo averina izany — ataovy fiatoana fotsiny raha tsy te hampandeha azy intsony ianao.}
+::msgcat::mcset mg {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {Ny fanalahidy entin'ny config sync, araka ny lalany: ny fanalahidy sy porofo fidirana an'ny node dia mijanona ao amin'ny node-any, ary ny fizarana voatazona ([acl], approvals, sandbox, hooks, plugins, MCP servers) dia ovaina any amin'izay anovana azy ary aterina, avy eo miandry ny tompon'io node io.}
 ::msgcat::mcset mg {The log could not be read: %s} {Tsy azo novakiana ny log: %s}
 ::msgcat::mcset mg {The manifest belongs to another component; its reply was discarded.} {An'ny singa hafa ny manifest — voafafa ny valiny natao taminy.}
 ::msgcat::mcset mg {The profile changed. Review the fresh plan before applying it.} {Niova ny profile. Hamerino ny drafitra vaovao alohan'ny ampiharana azy.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset mg {The signed release preview was malformed; nothing was installed.} {Tsy nety ny fijery mialoha ny famoahana voasaina-tanana; tsy misy nampidirina.}
 ::msgcat::mcset mg {The source buffer changed. Request a new proposal before applying.} {Niova ny buffer loharanom-baovao. Mangataha tolo-kevitra vaovao alohan'ny hampiharana.}
 ::msgcat::mcset mg {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Miverina fanitsiana iray ny store. Fanitsiana ihany koa ny rollback, ka azo averina indray.}
+::msgcat::mcset mg {The translator did not answer within %s seconds.} {Tsy namaly tao anatin'ny %s segondra ny mpandika teny.}
 ::msgcat::mcset mg {The translator returned no text.} {Tsy nisy soratra naverin'ny mpandika.}
 ::msgcat::mcset mg {The verification reply was malformed; no integrity result was accepted.} {Tsy ara-dalàna ny valin'ny fanamarinana; tsy nisy vokatra momba ny fahatokisan'ny rakitra nekena.}
 ::msgcat::mcset mg Themes {Lamina endrika}
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset mg {This challenge is over.} {Vita ity fanamby ity.}
 ::msgcat::mcset mg {This code has expired. Ask for a new one.} {Lany daty ity kaody ity. Mangataha vaovao.}
 ::msgcat::mcset mg {This does not start a service or claim signed-download verification.} {Ity dia tsy manomboka service, sady tsy milaza ho voamarinina ny download voasonia.}
+::msgcat::mcset mg {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {Rakitra fototra an'ny veles io rakitra io. Ny ankamaroan'ny fanovana dia mifanaraka amin'ny extension, izay maharitra amin'ny fanavaozana ary tsy mila fananganana indray: hook, fitaovana, fanovana serivisy na driver mpamatsy, voasoratra ao amin'ny Tcl, TypeScript, Racket na Common Lisp, na ho plugin Rust ivelan'ny hazo (ny Extension vaovao dia manoratra izay rehetra amin'ireny), na ho module na plugin-process (ny Torolalana extension dia mampiseho ny fanombohana iray). Ny patch fototra dia ho an'ny zavatra tsy azon'ny API an'ny extension ambara. Haforonina ho extension ve ity fanovana ity? Mijanona ao amin'ity buffer ity ny fanovanao, tsy voatahiry; raha tehirizina indray dia misy patch amin'ny rakitra fototra.}
 ::msgcat::mcset mg {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Tsy mandray sanda tsiambaratelo avy amin'ity milina ity ity gateway ity: ampidiro any izy amin'ny veles secret set %s, na soraty ao amin'ny [vault] trusted_networks-ny ity tambajotra ity}
 ::msgcat::mcset mg {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Ity mihitsy no hosoratana — ny bytes-n'ny engine mihitsy, alaina velomaloma. Mbola tsy nanendrika ny kapila na inona na inona.}
+::msgcat::mcset mg {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {Fototra an'ny veles io. Ny fanovana azy dia matetika tsara kokoa raha atao extension: Extension vaovao, na tehirizo mba hanolorana iray.}
 ::msgcat::mcset mg {This node is not a configured sync peer for any kind.} {Tsy sync peer voarafitra ho an'ny karazana rehetra ity node ity.}
 ::msgcat::mcset mg {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Ity plugin ity dia efa tafiditra ary tsy azo ovaina. Esory ny kopia an'ny mpampiasa mitovy anarana aminy mba hampiasana ny kopia efa tafiditra.}
 ::msgcat::mcset mg {This publishes the commit; no pull request is created yet.} {Mivoaka ny commit amin'ity; tsy mbola noforonina ny pull request.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset mg Unassign {Esory ny fanendrena}
 ::msgcat::mcset mg {Undo last} {Avereno ny farany}
 ::msgcat::mcset mg {Undo the last memory revision?} {Haverina ve ny fanitsiana memory farany?}
+::msgcat::mcset mg {Unset %1$s on %2$s?} {Hesorina ve ny %1$s ao amin'ny %2$s?}
+::msgcat::mcset mg Unset… Esory…
 ::msgcat::mcset mg Unstage {Esory amin'ny stage}
 ::msgcat::mcset mg {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Mandra-pilazan'ny IRC_ALLOWED_USERS ao amin'ny .env ny kaontinao, na iza na iza eo amin'ny tambajotra dia afaka miresaka amin'ny bot — ary raha tsy misy fizarana [acl], ho tompony, miaraka amin'ny fitaovana rehetra.}
 ::msgcat::mcset mg {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Mandra-pilazan'ny TELEGRAM_ALLOWED_USERS ao amin'ny .env ny ID-n'ny mpampiasa anao, na iza na iza mahita ny bot dia afaka miresaka aminy — ary raha tsy misy fizarana [acl], ho tompony, miaraka amin'ny fitaovana rehetra.}
 ::msgcat::mcset mg Untitled {Tsy misy lohateny}
-::msgcat::mcset mg {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Asa famoahana miharihary ny fanomezana any amin'ny upstream, fa tsy fampitana ho azy. Ao amin'ny Manage extensions, ny Contribute dia mitanisa ny fanitarana rehetra an'ny mpampiasa: fidio ny fanitarana sy rakitra, jereo ny diff sy ny scan tsiambaratelo, alefa ny fanamarinana, avy eo mamorona sampana iray sy PR iray (ho an'ny veles raha tsy misy safidy hafa) miaraka amin'ny maha-izy git nofidinao. Samy mandeha ao amin'ny directory-ny ao amin'ny repository ny fanitarana tsirairay, ary ny rakitra efa misy any dia soloina rehefa misy fanamarinana mitokana. Aza mamoaka mihitsy node.toml, credentials an-toerana, tokens, endpoint tsy miankina na toetry ny plugin tsy misy ifandraisany. Ny snapshot fanarenana an-toerana dia tsy commit upstream na PR.}
+::msgcat::mcset mg {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Asa famoahana mazava ny fandraisana anjara amin'ny upstream, fa tsy fampitana ho azy. Ao amin'ny Fitantanana extension, ny Fandraisana anjara dia mitanisa ny extension an'ny mpampiasa rehetra: safidio ny extension sy ny rakitra, diniho ny diff sy ny fitiliana tsiambaratelo, ampiasao ny fanamarinana, avy eo foronina sampana iray sy PR iray (ho an'ny veles raha tsy misy lazaina). Ny commit dia mampiasa ny maha-izy git teo an-toerana an'ny gateway (user.name sy user.email ao amin'ny config git-ny); apetraho aloha ireo raha tokony hafa. Ny extension tsirairay dia ao amin'ny lahatahiriny ao amin'ny fitahirizana, ary ny rakitra efa misy ao dia soloina ihany aorian'ny fanamarinana mitokana. Aza mamoaka mihitsy ny node.toml, porofo fidirana teo an-toerana, token, endpoint manokana na toetran'ny plugin tsy misy ifandraisany. Ny snapshot fanarenana teo an-toerana dia tsy commit upstream na PR.}
 ::msgcat::mcset mg {Upstream repository or fork URL} {URL tahiry upstream na fork}
 ::msgcat::mcset mg {Uptime class} {Sokajin'ny faharetana}
 ::msgcat::mcset mg {Uptime: host %1$s, gateway %2$s} {Faharetana: host %1$s, gateway %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset mg {Users — one role across networks and platforms} {Mpampiasa — andraikitra iray manerana ny tambajotra sy sehatra}
 ::msgcat::mcset mg {Using the phone, for the agent} {Fampiasana ny finday, ho an'ny agent}
 ::msgcat::mcset mg {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Matetika mitovy amin'ny anaran'ny fidirana provider. Avela ho banga izy roa raha misafidy Skip — ny fandalinana tsy feno dia tsy mandeha.}
+::msgcat::mcset mg {Value (TOML: "text", 5, true, [1, 2])} {Sanda (TOML: "soratra", 5, true, [1, 2])}
 ::msgcat::mcset mg {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {TOML ny soatoavina: tady misy fafana, isa, na lisitra. Soratana ao amin'ny [mcp_servers.<name>] izy ireo — tsy akasina ny fanehoan-kevitrao sy ny fizarana hafa rehetra.}
 ::msgcat::mcset mg Vault Vata
 ::msgcat::mcset mg {Verified signed bundle installed. Restart the gateway before using the new core.} {Voamarina ary nampidirina ny fonosana voasaina-tanana. Avereno halefa ny gateway vao hampiasaina ny vontoetra vaovao.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset mg Voice {Omeo voice}
 ::msgcat::mcset mg {Waiting for the model…} {Miandry ny modely…}
 ::msgcat::mcset mg {Waiting for the model… Nothing has been written.} {Miandry ny modely… Tsy misy voasoratra.}
+::msgcat::mcset mg Warning Fampitandremana
 ::msgcat::mcset mg {Welcome to veles} {Tongasoa eto amin'ny veles}
 ::msgcat::mcset mg {What the agent can do here} {Izay azon'ny mpandraharaha atao eto}
 ::msgcat::mcset mg {What veles may do on this phone. Each button opens the Android setting that changes it.} {Izay azon'i veles atao amin'ity finday ity. Ny bokotra tsirairay dia manokatra ny fandrindrana Android manova azy.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset mg {Workflow SHA} {SHA ny workflow}
 ::msgcat::mcset mg {Workflow commit} {Commit workflow}
 ::msgcat::mcset mg Worktree Worktree
+::msgcat::mcset mg {Write cancelled.} {Nofoanana ny fanoratana.}
 ::msgcat::mcset mg {Write it} Soraty
 ::msgcat::mcset mg {Write the design question first.} {Soraty aloha ny fanontaniana momba ny famolavolana.}
 ::msgcat::mcset mg {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Tsy manoratra provider. Tsy handefa turn ny gateway rahavahizana tsy misy fidirana [[custom_providers]] sy ny [model].}
+::msgcat::mcset mg Write… Soraty…
 ::msgcat::mcset mg {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Ny fanoratana lakile [acl] NA INONA NA INONA dia mamadika ity gateway ity ho amin'ny fomba voafantina: lasa guest (fail-closed) ny anjara mahazatra ary tsy sisiny intsony ny lisitry ny avela. Fidio ity raha manana mombamomba ny tompony atokisanao ihany ianao.}
 ::msgcat::mcset mg {[model] provider} {[model] provider}
 ::msgcat::mcset mg {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {tsy mifanaraka amin'ny fidirana [[custom_providers]] ny mpamatsy [model] %{name} — lazao ny fidirana soratan'ity mpanoro ity, na izay efa ao amin'ny config.toml}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset mg {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset mg {asked by: %s} {Nangatahin'ny: %s}
 ::msgcat::mcset mg {asking %s for its metrics…} {mangataka metrika amin'ny %s…}
+::msgcat::mcset mg {asking %s how it is supervised…} {manontany ny %s ny fomba fanaraha-maso azy…}
 ::msgcat::mcset mg {attach a file} {Ampifandraiso rakitra}
 ::msgcat::mcset mg {attach an image or file} {ampiarahana sary na rakitra}
 ::msgcat::mcset mg {attach failed: %1$s} {Tsy nahomby ny miraikitra: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset mg {channel-event reactions; /triggers add <name> network=… channel=… action=…} {valinteny amin'ny tranga ao amin'ny fantsona; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset mg {channels to join, a space or comma separated string} {channels hidirana, string misaraka amin'ny habaka na faingo}
 ::msgcat::mcset mg chars litera
+::msgcat::mcset mg {check the buffer (diagnostics)} {jereo ny buffer (diagnostika)}
 ::msgcat::mcset mg choice_next {mandrosoa amin'ny lalana manaraka}
 ::msgcat::mcset mg choice_retry {andramo indray ny lalana mitovy}
 ::msgcat::mcset mg choice_stop {mijanona eto}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset mg {command list unavailable (the gateway is not reachable)} {tsy misy lisitry ny baiko (tsy azo idirana ny gateway)}
 ::msgcat::mcset mg {command palette} {palette baiko}
 ::msgcat::mcset mg {command search} {fikarohana baiko}
+::msgcat::mcset mg {command-center audit log} {rakitra fanaraha-maso ny foibe baiko}
 ::msgcat::mcset mg commands baiko
 ::msgcat::mcset mg {commands stay on your own session; /leave returns from the joined session} {Tsy miala amin'ny fivorianao manokana ny baiko; miverina avy amin'ny fivoriana nidirana ny /leave}
 ::msgcat::mcset mg commands: Baiko:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset mg {config changes from peers that wait for you; /configsync apply lands them} {fanovana fikirakirana avy amin'ny mpiara-miasa miandry anao; /configsync apply no mampihatra azy ireo}
 ::msgcat::mcset mg {config file: %s} {rakitra fikirana: %s}
 ::msgcat::mcset mg {config key} {fanalahidy config}
+::msgcat::mcset mg {config result} {Vokatry ny config}
 ::msgcat::mcset mg {config unavailable} {tsy misy config}
 ::msgcat::mcset mg {config unavailable: %s} {Tsy misy config: %s}
 ::msgcat::mcset mg {config value} {sanda config}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset mg doctor_resident {mipetraka ao amin'ny hafatra rehetra: %{shown} amin'ny litera %{total} (~token %{tokens}) — ny ambiny dia ampidirina rehefa ilaina amin'ny: memory action=read path=%{path}}
 ::msgcat::mcset mg doctor_title {fisavana fitadidiana}
 ::msgcat::mcset mg doctor_total {totaliny: litera %{chars} ao amin'ny rakitra %{files} (~token %{tokens})}
-::msgcat::mcset mg {documentation is not in this source checkout: %s} {tsy ao amin'ity checkout loharanom-baovao ity ny antontan-taratasy: %s}
 ::msgcat::mcset mg done Vita
 ::msgcat::mcset mg {done · %1$s/%2$s} {Vita · %1$s/%2$s}
 ::msgcat::mcset mg {done, but the model returned no text} {Vita, nefa tsy namerina lahatsoratra ny model}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset mg {grant a role (owner) · /revoke <id> takes it back} {omeo andraikitra (owner) · /revoke <id> no maka azy indray}
 ::msgcat::mcset mg {grant a role to an identity} {Omeo rôle ny identité}
 ::msgcat::mcset mg {guards unreachable} {Tsy tratra ny guards}
-::msgcat::mcset mg guts: guts:
+::msgcat::mcset mg {guts ▾} {anaty ▾}
 ::msgcat::mcset mg {gw hooks} {gw hooks}
 ::msgcat::mcset mg {gw procs} {gw procs}
 ::msgcat::mcset mg {halt after N identical calls} {janona aorian'ny antso N mitovy}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset mg {live patching ARMED} {VONONA ny live patching}
 ::msgcat::mcset mg {live patching ARMED — an agent can now redefine procs in this window} {VONONA ny live patching — afaka mamerina mamaritra procs ao amin'ity varavarankely ity ny agent}
 ::msgcat::mcset mg {live patching disarmed} {Nafoana ny live patching}
+::msgcat::mcset mg load vesatra
 ::msgcat::mcset mg loaded nampidirina
 ::msgcat::mcset mg {loaded older messages} {Nampidirina ny hafatra tranainy}
 ::msgcat::mcset mg loading… Mampiditra…
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset mg {no upstream reading for %s} {Tsy misy vakiana upstream ho an'ny %s}
 ::msgcat::mcset mg {no word match} {Tsy misy teny mifanandrify}
 ::msgcat::mcset mg {no xdg-open — path copied instead} {Tsy misy xdg-open — nadika ny lalana ho solony}
+::msgcat::mcset mg {nobody else's session is open on %s right now} {tsy misy fivoriana an'ny hafa misokatra ao amin'ny %s izao}
 ::msgcat::mcset mg {node log} {log node}
 ::msgcat::mcset mg {none loaded} {Tsy misy nampidirina}
 ::msgcat::mcset mg {none recorded} {tsy misy voatahiry}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset mg {not installed} {tsy napetraka}
 ::msgcat::mcset mg {not reported} {Tsy voalaza}
 ::msgcat::mcset mg {not running} {Tsy mandeha}
+::msgcat::mcset mg {not saved: drafting the change as an extension} {tsy voatahiry: aforonina ho extension ny fanovana}
+::msgcat::mcset mg {not sent: %s} {tsy nalefa: %s}
 ::msgcat::mcset mg {not set in config.toml — the built-in default applies. %s} {Tsy voapetraka ao amin'ny config.toml — mihatra ny default an' anatiny. %s}
 ::msgcat::mcset mg {not set yet — /secret set it later} {tsy mbola voapetraka — apetraho any aoriana amin'ny /secret set}
 ::msgcat::mcset mg {not signed: %s} {tsy nasiana sonia: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset mg {on no plan} {raha tsy misy plan}
 ::msgcat::mcset mg {on the} amin'ny
 ::msgcat::mcset mg {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {ny on/off dia mampangina ny fanamarihan'ny mechanism ao amin'ny transcript — ho an'ity session ity, na ho default, araka ny scope etsy ambany. Izy io no mifehy ny NOTE; izay ataon'ny mechanism tsirairay dia apetraka ao amin'ny fizarana voatonona amin'ny andalany, ary ny Configure… no manokana azy. Ny bokotra guard dia azo ovaina eo an-toerana.}
+::msgcat::mcset mg {on; this gateway does not say whether they reach the home chat} {mandeha; tsy milaza raha tonga any amin'ny chat an-trano izy ireo ity gateway ity}
 ::msgcat::mcset mg {one-shot tcl-lsp diagnostics — no model turn} {fisavana tcl-lsp indray mandeha — tsy misy fihodinan'ny modely}
 ::msgcat::mcset mg {open a saved file first} {sokafy aloha ny rakitra voatahiry}
 ::msgcat::mcset mg {open links} {manokatra rohy}
+::msgcat::mcset mg {open one of the desktop's own source files} {sokafy ny iray amin'ireo rakitra fototra an'ny desktop}
 ::msgcat::mcset mg {open the engine log} {sokafy ny log-n'ny engine}
 ::msgcat::mcset mg {open the joined session before /leave (on %s)} {Sokafy ny fivoriana nidirana alohan'ny /leave (ao amin'ny %s)}
 ::msgcat::mcset mg {open the selected child session} {manokatra ny fivoriana zanaka voafantina}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset mg {read-only: [approvals] allowlist} {vakiana ihany: allowlist [approvals]}
 ::msgcat::mcset mg {read-only: this session lives on %1$s (as read at %2$s)} {vakiana fotsiny: ao amin'ny %1$s ity fivoriana ity (araka ny novakiana tamin'ny %2$s)}
 ::msgcat::mcset mg {read-only: this skill comes from the %s library} {vakiana fotsiny: avy amin'ny tranomboky %s ity fahaizana ity}
+::msgcat::mcset mg {reading %1$s on %2$s…} {vakiana ny %1$s ao amin'ny %2$s…}
 ::msgcat::mcset mg reasoning fanjohian-kevitra
 ::msgcat::mcset mg {reasoning display: %1$s · %2$s blocks} {fanehoana ny fanjohian-kevitra: %1$s · %2$s bloky}
 ::msgcat::mcset mg {reasoning display: %s} {fanehoana ny fanjohian-kevitra: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset mg {run failed: %s} {tsy nahomby ny fandefasana: %s}
 ::msgcat::mcset mg {run in:} {Fandefasana ao:}
 ::msgcat::mcset mg running mandeha
+::msgcat::mcset mg {running %s on the listed nodes…} {mampandeha ny %s ao amin'ireo node voatanisa…}
 ::msgcat::mcset mg {running since %s} {mandeha hatramin'ny %s}
 ::msgcat::mcset mg {running subagents; /subagents cancel <id>} {subagents mandeha; /subagents cancel <id>}
 ::msgcat::mcset mg {save failed} {tsy nahomby ny fitehirizana}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset mg {send failed: %s} {nalefa tsy nahomby: %s}
 ::msgcat::mcset mg {send the message; while a turn runs, queue it as steering} {Alefaso ny hafatra; raha mandeha ny fihodinana dia laharano ho steering izy}
 ::msgcat::mcset mg sent nalefa
-::msgcat::mcset mg {sent to the owner's home chat} {nalefa tany amin'ny chat an-tranon'ny tompony}
+::msgcat::mcset mg {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {nalefan'ny gateway mampandeha ny adapter Telegram-ny ho any amin'ny chat an-trano an'ny tompony, fa tsy ity iray ity}
+::msgcat::mcset mg {sent to the owner's home chat from this gateway} {nalefa avy amin'ity gateway ity ho any amin'ny chat an-trano an'ny tompony}
 ::msgcat::mcset mg server mpizara
 ::msgcat::mcset mg {server buffers merged} {mitambatra ny buffer an'ny mpizara}
 ::msgcat::mcset mg {server buffers separate} {misaraka ny buffer an'ny mpizara}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset mg {session, model, lifecycle} {fivoriana, modely, tsingerim-piainana}
 ::msgcat::mcset mg {session: %s} {fivoriana: %s}
 ::msgcat::mcset mg {sessions    %s} {fivoriana    %s}
+::msgcat::mcset mg {sessions you can join on %s (/join <name or id>):} {fivoriana azonao idirana ao amin'ny %s (/join <anarana na id>):}
 ::msgcat::mcset mg {sessions: unreachable} {fivoriana: tsy azo tratrarina}
 ::msgcat::mcset mg {set by} napetraky
 ::msgcat::mcset mg {set. %s} {napetraka. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset mg {split: %s} {fizarana: %s}
 ::msgcat::mcset mg {ssh to %1$s failed: %2$s} {tsy nahomby ny ssh tany amin'ny %1$s: %2$s}
 ::msgcat::mcset mg {stale — no heartbeat within the threshold} {lany andro — tsy nisy heartbeat tao anatin'ny fetra}
+::msgcat::mcset mg {standing approval grants: always and this session; revoke one} {fanomezan-dalana maharitra: mandrakizay sy ity fivoriana ity; esory iray}
 ::msgcat::mcset mg {standing global and session permission grants} {fanomezana fahazoan-dalana maharitra global sy fivoriana}
+::msgcat::mcset mg {start the line with // to send it as text} {atombohy amin'ny // ny andalana raha halefa ho soratra}
 ::msgcat::mcset mg state toetra
 ::msgcat::mcset mg {state       never reached} {toetra       tsy tratra mihitsy}
 ::msgcat::mcset mg {state       reachable} {toetra       azo tratrarina}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset mg {the config.toml that will be written} {ny config.toml hosoratana}
 ::msgcat::mcset mg {the default (config.toml)} {ny default (config.toml)}
 ::msgcat::mcset mg {the engine refused these answers: %s} {nanda ny valiny ireto ny engine: %s}
+::msgcat::mcset mg {the file to open: type a path, then Return or Open} {ny rakitra hokafana: soraty ny lalana, avy eo Return na Sokafy}
 ::msgcat::mcset mg {the first ACL owner identity} {ny mombamomba ny tompon'andraikitra ACL voalohany}
 ::msgcat::mcset mg {the gateway answered without a report} {namaly ny gateway nefa tsy nisy tatitra}
 ::msgcat::mcset mg {the model/provider pair is incomplete — the gateway will not route until both are present} {tsy feno ny mpivady model/mpamatsy — tsy hitondra ny gateway raha tsy misy izy roa}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset mg unknown {tsy fantatra}
 ::msgcat::mcset mg {unknown api_mode %{mode} — expected one of %{modes}} {api_mode tsy fantatra %{mode} — iray amin'ireto no andrasana: %{modes}}
 ::msgcat::mcset mg {unknown bindings '%{rest}' · normie|emacs|vi} {tsy fantatra ny bindings '%{rest}' · normie|emacs|vi}
+::msgcat::mcset mg {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {baiko tsy fantatra %{cmd} eto — ny /help dia mitanisa ny baikon'ity sehatra ity; tsy nisy nalefa}
 ::msgcat::mcset mg {unknown command /%s — /help lists them} {tsy fantatra ny baiko /%s — ny /help no mampiseho azy ireo}
 ::msgcat::mcset mg {unknown command: /%s} {baiko tsy fantatra: /%s}
 ::msgcat::mcset mg {unknown keymap: %s (normie/emacs/vi)} {tsy fantatra ny keymap: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset mg {upstream plan credits and windows — /usage is the local ledger} {crédit sy varavarankelin'ny drafitra ambony — /usage no bokin'ny kaonty eo an-toerana}
 ::msgcat::mcset mg {upstream plan quota} {fetran'ny drafitry ny mpamatsy}
 ::msgcat::mcset mg uptime uptime
-::msgcat::mcset mg {usage: /join <session> or /join <instance>/<session>} {Fampiasana: /join <fivoriana> na /join <fifandraisana>/<fivoriana>}
+::msgcat::mcset mg {usage: /export [md|json]} {fampiasana: /export [md|json]}
 ::msgcat::mcset mg {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {fampiasana: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset mg {usage: /resume <id or prefix>} {fampiasana: /resume <id na tovona>}
 ::msgcat::mcset mg {usage: /resume <id-or-prefix>} {usage: /resume <id-or-prefix>}

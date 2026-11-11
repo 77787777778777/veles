@@ -35,7 +35,9 @@ use std::time::Duration;
 /// Hard wall-clock cap for one child (soft in spirit: we kill and report,
 /// the way hermes reports child timeouts rather than hanging forever).
 pub const CHILD_TIMEOUT_SECS: u64 = 900;
-const MAX_BATCH: usize = 3;
+/// The most parts one `tasks` batch takes (the split guidance in the
+/// prompt, this tool's description and the `nodes` tool names it).
+pub(crate) const MAX_BATCH: usize = 3;
 const OUTPUT_CAP: usize = 8_000;
 
 /// Why a child stopped without exiting on its own.
@@ -73,12 +75,14 @@ impl DelegateTaskTool {
     ///
     /// A remote node is reachable for `gpu`/`any` only with an
     /// `[a2a_agents]` entry AND a standing passed auth probe
-    /// (`routeprobe`; the caller refreshes them first).
+    /// (`routeprobe`; the caller refreshes them first). `tried`: node ids
+    /// this child was already sent to and never reached ([`run_hops`]),
+    /// never chosen again.
     fn resolve_backend(
-        &self,
         spec: Option<&crate::placement::BackendSpec>,
         needs: &[String],
         workload: crate::placement::Workload,
+        tried: &[String],
     ) -> Result<Option<crate::placement::Placement>, String> {
         let Some(spec) = spec else { return Ok(None) };
         let home = crate::config::veles_home();
@@ -93,8 +97,9 @@ impl DelegateTaskTool {
             .ok()
             .flatten()
             .map(|i| i.id);
-        let routable =
-            |n: &crate::store::NodeRow| crate::routeprobe::route(n, me.as_deref()).routable();
+        let routable = |n: &crate::store::NodeRow| {
+            !tried.contains(&n.id) && crate::routeprobe::route(n, me.as_deref()).routable()
+        };
         crate::placement::resolve_workload(
             &store,
             spec,
@@ -108,10 +113,11 @@ impl DelegateTaskTool {
         .map_err(|e| format!("{e:#}"))
     }
 
-    /// B4: run one child on its placed node. Local placements (and no
-    /// placement at all) return Ok(None) — the caller runs the normal
-    /// local path; a REMOTE placement performs the cluster hop and
-    /// returns the peer's verdict JSON.
+    /// B4: run one child on its placed node. No placement at all, or a
+    /// placement on this node, is [`Placed::Here`] — the caller runs the
+    /// normal local path, under the placement's claim when there is one;
+    /// a REMOTE placement performs the cluster hop and returns the peer's
+    /// verdict JSON.
     #[allow(clippy::too_many_arguments)]
     async fn run_remote_if_placed(
         &self,
@@ -123,20 +129,22 @@ impl DelegateTaskTool {
         model: Option<&str>,
         provider: Option<&str>,
         reasoning: Option<&str>,
-    ) -> Result<Option<Value>, String> {
-        let placement = match self.resolve_backend(spec, needs, workload)? {
-            Some(p) => p,
-            // No placement ask: local path, nothing to do here.
-            None => return Ok(None),
-        };
+    ) -> Result<Placed, String> {
+        let (placement, claim) =
+            match place(spec.cloned(), needs.to_vec(), workload, Vec::new()).await? {
+                Some(p) => p,
+                // No placement ask: local path, nothing to do here.
+                None => return Ok(Placed::Here(None, Detour::default())),
+            };
         let me = crate::node::NodeIdentity::load(&crate::config::config_dir())
             .ok()
             .flatten()
             .map(|i| i.id);
         if crate::placement::is_local(&placement, me.as_deref()) {
             // Resolved here but landed local (a one-node pool, or
-            // `any` picked us): the local caller path takes it.
-            return Ok(None);
+            // `any` picked us): the local caller path takes it, and its
+            // child takes the claim over when it starts.
+            return Ok(Placed::Here(Some(claim), Detour::default()));
         }
         let ask = self.remote_ask(
             goal,
@@ -148,8 +156,23 @@ impl DelegateTaskTool {
         // C3: a foreground delegate runs inside a turn, so the Stop
         // button (agent::cancel_turn on THIS session) is the watch.
         let watch = crate::remotetask::CancelWatch::turn(&self.session_id);
-        let _claim = crate::placement::claim(&placement.node.id);
-        run_on_placed(&placement, &ask, watch).await.map(Some)
+        Ok(
+            match run_hops(
+                spec,
+                needs,
+                workload,
+                me.as_deref(),
+                placement,
+                claim,
+                &ask,
+                watch,
+            )
+            .await?
+            {
+                Hops::Ran(v) => Placed::Remote(v),
+                Hops::Here { claim, detour } => Placed::Here(Some(claim), detour),
+            },
+        )
     }
 
     /// The ask a remote child is started from, carrying the CALLER's
@@ -181,32 +204,339 @@ impl DelegateTaskTool {
             // cancel watcher has a handle to aim tasks/cancel at.
             wire_task_id: Some(crate::a2a::new_task_id()),
             ticket: None,
+            // The peer parents its child row to this session (ASK-2).
+            parent_session: Some(self.session_id.clone()).filter(|s| !s.is_empty()),
         }
     }
 }
 
+/// Why one remote hop gave no verdict.
+struct HopFailed {
+    /// The honest error, naming the node.
+    why: String,
+    /// The child never reached the node: the connection never opened,
+    /// or the peer turned the call away at its gates, or rejected the
+    /// task before starting a child. Only then may `any`/`gpu` send it
+    /// to another node: a call that was taken may have run there.
+    nothing_ran: bool,
+}
+
+/// The pseudo-session a child run for a PEER is parented to when the
+/// placer named no session (an older sender).
+pub const REMOTE_PARENT: &str = "a2a-remote";
+
+/// The parent column of a child this node runs for a peer: the placing
+/// node's session as `a2a-remote/<node>/<session>` (ASK-2). The row is
+/// local to this node and its parent is not, so the column names both;
+/// the placer's listing maps it back with [`placed_parent`] once this
+/// store has replicated there. Anything that does not look like a node
+/// id and a session id falls back to the bare pseudo-session.
+pub fn remote_parent(origin: &str, parent: Option<&str>) -> String {
+    let session_ok = |s: &str| {
+        !s.is_empty()
+            && s.len() <= 128
+            && s.chars()
+                .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '_' | '.' | ':'))
+    };
+    match parent {
+        Some(sid) if crate::storesync::valid_node_id(origin) && session_ok(sid) => {
+            format!("{REMOTE_PARENT}/{origin}/{sid}")
+        }
+        _ => REMOTE_PARENT.to_string(),
+    }
+}
+
+/// The placing session a [`remote_parent`] column names, else `None`.
+pub fn placed_parent(column: &str) -> Option<&str> {
+    placed_parent_parts(column).map(|(_node, sid)| sid)
+}
+
+/// The placing node and session a [`remote_parent`] column names, else
+/// `None`. The column is written by the node that ran the child, so
+/// both are that node's word.
+pub fn placed_parent_parts(column: &str) -> Option<(&str, &str)> {
+    let rest = column.strip_prefix(REMOTE_PARENT)?.strip_prefix('/')?;
+    let (node, sid) = rest.split_once('/')?;
+    (!sid.is_empty()).then_some((node, sid))
+}
+
+/// Mint the local session row of a child run for a peer: titled
+/// `remote: <goal>`, parented by [`remote_parent`].
+pub fn mint_remote_child_session(
+    store: &crate::store::Store,
+    goal: &str,
+    origin: &str,
+    parent: Option<&str>,
+) -> Option<String> {
+    let id = crate::store::new_session_id();
+    let title = format!("remote: {}", goal.chars().take(40).collect::<String>());
+    store
+        .create_child_session(&id, &remote_parent(origin, parent), Some(&title))
+        .ok()
+        .map(|_| id)
+}
+
 /// One remote hop to a placed node: dial it through its `[a2a_agents]`
 /// entry, send the ask, and return the peer's verdict marked with where
-/// it ran. Errors are honest and name the node — never a local rerun.
+/// it ran. Errors are honest and name the node — never a local rerun
+/// here; [`run_hops`] decides whether another node may take the child.
+///
+/// A dial that never reached the node is recorded in the route probe
+/// cache (COMP-1, 0.2.2), as a probe that found the same would be: the
+/// next `any`/`gpu` choice, the `nodes` tool and the automatic tool
+/// homes pass the node over for `routeprobe::FAIL_TTL` instead of
+/// trusting a pass from before a phone's idle exit or a token rotation
+/// for up to five minutes.
 async fn run_on_placed(
     p: &crate::placement::Placement,
     ask: &crate::remotetask::RemoteTaskAsk,
     watch: crate::remotetask::CancelWatch,
-) -> Result<Value, String> {
+) -> Result<Value, HopFailed> {
     // The registry `endpoint` is information; the DIALING config is
     // [a2a_agents] (auth lives there and nowhere else).
-    let (url, bearer) = remote_target_for(&p.node).ok_or_else(|| {
-        format!(
-            "backend node '{}' ({}) has no [a2a_agents] entry — add one with its \
-             url + auth token to route work to it",
-            p.node.name, p.node.id
-        )
-    })?;
-    let mut v = crate::remotetask::run_on_peer(&url, bearer.as_deref(), ask, watch)
-        .await
-        .map_err(|e| format!("remote backend {}: {e:#}", p.node.name))?;
+    let Some((url, bearer)) = remote_target_for(&p.node) else {
+        return Err(HopFailed {
+            why: format!(
+                "backend node '{}' ({}) has no [a2a_agents] entry — add one with its \
+                 url + auth token to route work to it",
+                p.node.name, p.node.id
+            ),
+            nothing_ran: false,
+        });
+    };
+    // ASK-2: the session sent a child to this node, so the child's row
+    // in this node's replica nests under it (desktop_api's listing reads
+    // this; a row that names the session from any other node does not).
+    // Before the dial, since the child may run for its full cap; off the
+    // runtime, since the write may wait on a busy store. Best-effort: a
+    // child is not refused because the record failed.
+    if let Some(session) = ask.parent_session.clone() {
+        let node = p.node.id.clone();
+        let db = crate::config::veles_home().join("state.db");
+        let recorded = crate::rt::spawn_blocking(move || {
+            crate::store::Store::open(&db)?.session_placement_record(&session, &node)
+        })
+        .await;
+        if let Ok(Err(e)) | Err(e) = recorded.map_err(anyhow::Error::from) {
+            tracing::warn!(
+                "delegate: could not record the placement on {}: {e:#}",
+                p.node.name
+            );
+        }
+    }
+    let mut v = match crate::remotetask::run_on_peer(&url, bearer.as_deref(), ask, watch).await {
+        Ok(v) => v,
+        Err(e) => {
+            let learned = crate::routeprobe::record_failure(&url, bearer.as_deref(), &e);
+            return Err(HopFailed {
+                why: format!("remote backend {}: {e:#}", p.node.name),
+                nothing_ran: learned.is_some(),
+            });
+        }
+    };
     v["backend"] = json!(format!("{} ({}) — {}", p.node.name, p.node.id, p.reason));
     Ok(v)
+}
+
+/// The nodes a pooled child was sent to and never reached, and where it
+/// went instead: stamped on its verdict, so both hops are named
+/// (COMP-1, 0.2.2).
+#[derive(Default)]
+struct Detour {
+    /// One honest error per node passed over, in order.
+    skipped: Vec<String>,
+    /// Where it ran in the end, as a remote verdict's `backend` says it.
+    landed: Option<String>,
+}
+
+impl Detour {
+    fn stamp(&self, v: &mut Value) {
+        if self.skipped.is_empty() {
+            return;
+        }
+        v["skipped"] = json!(self.skipped);
+        if let Some(l) = &self.landed {
+            v["backend"] = json!(l);
+        }
+    }
+}
+
+/// Where a pooled child went after its first remote placement.
+enum Hops {
+    /// A peer answered: its verdict (any detour already stamped on it).
+    Ran(Value),
+    /// The next candidate was this node: run the child here under this
+    /// claim, and stamp the detour on its verdict.
+    Here {
+        claim: crate::placement::Claim,
+        detour: Detour,
+    },
+}
+
+/// Run a child placed on a peer. When `any` or `gpu` chose the node and
+/// the child never reached it (a phone that stopped, a token the peer no
+/// longer takes, a peer that does not list this node in its task_peers),
+/// it goes to the next candidate (the node is excluded and recorded as
+/// a failed route), as often as there are candidates, and the verdict
+/// names every node passed over (COMP-1, 0.2.2). Before, the child failed
+/// with that error while another node sat free, and the next `any` call
+/// chose the same node again. A NAMED node is a constraint: its failure
+/// is the answer. Each hop holds its own claim, released when it ends.
+#[allow(clippy::too_many_arguments)]
+async fn run_hops(
+    spec: Option<&crate::placement::BackendSpec>,
+    needs: &[String],
+    workload: crate::placement::Workload,
+    me: Option<&str>,
+    first: crate::placement::Placement,
+    claim: crate::placement::Claim,
+    ask: &crate::remotetask::RemoteTaskAsk,
+    watch: crate::remotetask::CancelWatch,
+) -> Result<Hops, String> {
+    let pooled = matches!(
+        spec,
+        Some(crate::placement::BackendSpec::Any | crate::placement::BackendSpec::Gpu)
+    );
+    let mut detour = Detour::default();
+    let mut tried: Vec<String> = Vec::new();
+    let (mut p, mut claim) = (first, claim);
+    loop {
+        if crate::placement::is_local(&p, me) {
+            detour.landed = Some(format!("{} ({}) — {}", p.node.name, p.node.id, p.reason));
+            return Ok(Hops::Here { claim, detour });
+        }
+        let hop = run_on_placed(&p, ask, watch.clone()).await;
+        release(claim).await;
+        let failed = match hop {
+            Ok(mut v) => {
+                detour.stamp(&mut v);
+                return Ok(Hops::Ran(v));
+            }
+            Err(f) => f,
+        };
+        if !(pooled && failed.nothing_ran) {
+            detour.skipped.push(failed.why);
+            return Err(detour.skipped.join("; then "));
+        }
+        detour.skipped.push(failed.why);
+        tried.push(p.node.id.clone());
+        match place(spec.cloned(), needs.to_vec(), workload, tried.clone()).await {
+            Ok(Some((next, next_claim))) => {
+                p = next;
+                claim = next_claim;
+            }
+            Ok(None) => return Err(detour.skipped.join("; then ")),
+            Err(e) => {
+                detour.skipped.push(e);
+                return Err(detour.skipped.join("; then "));
+            }
+        }
+    }
+}
+
+/// A batch member's or a background child's whole run from a first
+/// placement on a peer: its hops ([`run_hops`]), and when they fall
+/// through to this node, its run here in a child session of its own,
+/// under the hop's claim, as if it had been placed here. Returns the
+/// verdict and, for a run here, that child session.
+#[allow(clippy::too_many_arguments)]
+async fn run_placed_child(
+    spec: Option<crate::placement::BackendSpec>,
+    needs: Vec<String>,
+    workload: crate::placement::Workload,
+    me: Option<String>,
+    placement: crate::placement::Placement,
+    claim: crate::placement::Claim,
+    ask: crate::remotetask::RemoteTaskAsk,
+    cancel: CancelToken,
+    parent: String,
+    child_id: u32,
+) -> (Value, Option<String>) {
+    let watch = crate::remotetask::CancelWatch::token(cancel.clone());
+    let hops = run_hops(
+        spec.as_ref(),
+        &needs,
+        workload,
+        me.as_deref(),
+        placement,
+        claim,
+        &ask,
+        watch,
+    )
+    .await;
+    let (claim, detour) = match hops {
+        Ok(Hops::Ran(v)) => return (v, None),
+        Err(e) => return (json!({"status": "error", "error": e}), None),
+        Ok(Hops::Here { claim, detour }) => (claim, detour),
+    };
+    // The ask carries exactly what a local child is started from.
+    crate::rt::spawn_blocking(move || {
+        let cs = provision_child_session(&parent, &ask.goal, false);
+        if let Some(cs) = &cs {
+            crate::tasks::set_child_session(child_id, cs);
+        }
+        let mut v = run_child_routed(
+            &ask.goal,
+            &ask.context,
+            ask.model.as_deref(),
+            ask.provider.as_deref(),
+            ask.reasoning.as_deref(),
+            &parent,
+            cs.as_deref(),
+            Some(cancel),
+            Some(&claim),
+        );
+        drop(claim);
+        detour.stamp(&mut v);
+        (v, cs)
+    })
+    .await
+    .unwrap_or_else(|e| {
+        (
+            json!({"status": "error", "error": format!("join failed: {e}")}),
+            None,
+        )
+    })
+}
+
+/// What a foreground child's placement came to.
+enum Placed {
+    /// Run it here: nothing placed it (`None`), or the placement chose
+    /// this node and holds this claim until the child takes it over; and
+    /// the nodes it was sent to first and never reached, if any.
+    Here(Option<crate::placement::Claim>, Detour),
+    /// It ran on a peer: the peer's verdict.
+    Remote(Value),
+}
+
+/// Resolve where a child runs and count it there (the claim), on the
+/// blocking pool (COMP-7, 0.2.2). Resolving opens state.db (its schema
+/// block), `gpu` and `any` prune the work table first, and a claim is an
+/// INSERT. With the disk under the pressure placement exists to avoid,
+/// each can wait seconds on SQLite's busy timeout, and that wait on a
+/// runtime worker stalled every task sharing it (on a current-thread
+/// runtime, all of them). `Ok(None)`: the call asked for no placement.
+async fn place(
+    spec: Option<crate::placement::BackendSpec>,
+    needs: Vec<String>,
+    workload: crate::placement::Workload,
+    tried: Vec<String>,
+) -> Result<Option<(crate::placement::Placement, crate::placement::Claim)>, String> {
+    crate::rt::spawn_blocking(move || {
+        let p = DelegateTaskTool::resolve_backend(spec.as_ref(), &needs, workload, &tried)?;
+        Ok(p.map(|p| {
+            let c = crate::placement::claim(&p.node.id);
+            (p, c)
+        }))
+    })
+    .await
+    .map_err(|e| format!("placement task failed: {e}"))?
+}
+
+/// Release a claim on the blocking pool: its DELETE waits on the same
+/// lock as [`place`].
+async fn release(claim: crate::placement::Claim) {
+    let _ = crate::rt::spawn_blocking(move || drop(claim)).await;
 }
 
 /// How deep in the subagent tree this process is. 0 = the operator's
@@ -652,29 +982,36 @@ fn relay_target_for_children() -> Option<String> {
 /// the same way placement does.
 pub(crate) fn remote_target_for(node: &crate::store::NodeRow) -> Option<(String, Option<String>)> {
     let cfg = crate::config::load().ok()?;
-    // The agents table keys are NAMES; the registry carries ids.
-    // Endpoint match first (the operator's two tables agree on the
-    // same URL), then name match (the common spelling: agent name ==
-    // node name).
-    for (name, a) in cfg.a2a_agents.iter() {
-        if let Some(ep) = &node.endpoint {
-            if a.url.trim_end_matches('/') == ep.trim_end_matches('/') {
-                let bearer = {
-                    let t = a.auth.token.trim();
-                    (!t.is_empty()).then(|| t.to_string())
-                };
-                return Some((a.url.clone(), bearer));
-            }
-        }
-        if name == &node.name {
-            let bearer = {
-                let t = a.auth.token.trim();
-                (!t.is_empty()).then(|| t.to_string())
-            };
-            return Some((a.url.clone(), bearer));
-        }
-    }
-    None
+    agent_entry_for(&cfg, node).map(|(_, a)| (a.url.clone(), a.bearer()))
+}
+
+/// The `[a2a_agents]` entry a registry row is reached through, by name.
+/// The agents table keys are NAMES; the registry carries ids. Endpoint
+/// match first, across every entry (the operator's two tables agree on
+/// the same URL), then name match (the common spelling: agent name ==
+/// node name); among equals, the first name in order.
+///
+/// One lookup for everything that dials a node or reads its route
+/// (COMP-11, 0.2.2). This loop used to try endpoint and name per entry,
+/// in the HashMap's random order, while the automatic tool homes looked
+/// endpoint-first across all entries: when one entry named the node and
+/// another held its endpoint, a call could dial one and record its probe
+/// failure under the other's key, and the demotion never saw it.
+pub(crate) fn agent_entry_for<'a>(
+    cfg: &'a crate::config::VelesConfig,
+    node: &crate::store::NodeRow,
+) -> Option<(&'a str, &'a crate::config::A2APeer)> {
+    let mut entries: Vec<(&'a String, &'a crate::config::A2APeer)> =
+        cfg.a2a_agents.iter().collect();
+    entries.sort_by(|a, b| a.0.cmp(b.0));
+    let by_endpoint = node.endpoint.as_deref().and_then(|ep| {
+        entries
+            .iter()
+            .find(|(_, a)| a.url.trim_end_matches('/') == ep.trim_end_matches('/'))
+    });
+    by_endpoint
+        .or_else(|| entries.iter().find(|(name, _)| **name == node.name))
+        .map(|(name, a)| (name.as_str(), *a))
 }
 
 /// The route a session is pinned to, or an empty one.
@@ -762,6 +1099,10 @@ pub fn run_remote_child(
     // node's heartbeat — which is how the placer's next ranking knows
     // the child already arrived and does not count it twice.
     origin: &str,
+    // ASK-2: the placing session (`RemoteTaskAsk::parent_session`). The
+    // child row is parented to it through `remote_parent`, so it nests
+    // under that session on the placer once this store replicates.
+    parent: Option<&str>,
 ) -> Value {
     if let Some(p) = principal {
         if let Err(e) = serde_json::from_str::<crate::acl::Principal>(p) {
@@ -774,13 +1115,7 @@ pub fn run_remote_child(
     let home = crate::config::veles_home();
     let child_session = crate::store::Store::open(&home.join("state.db"))
         .ok()
-        .and_then(|s| {
-            let id = crate::store::new_session_id();
-            let title = format!("remote: {}", goal.chars().take(40).collect::<String>());
-            s.create_child_session(&id, "a2a-remote", Some(&title))
-                .ok()
-                .map(|_| id)
-        });
+        .and_then(|s| mint_remote_child_session(&s, goal, origin, parent));
     let mut v = run_child_as(
         goal,
         context,
@@ -1249,14 +1584,20 @@ impl crate::tools::Tool for DelegateTaskTool {
          Children CANNOT delegate further or ask questions. Child summaries are \
          SELF-REPORTS: verify external side effects (files, URLs, uploads) yourself \
          before reporting success. Children run on the DEFAULT route (`/defaults \
-         model`), NOT on this session's — a delegate is not a continuation of this \
-         conversation, and inheriting a rate-limited route would take a parallel \
-         batch down with it. Pass 'model'/'provider'/'reasoning' to route one \
-         explicitly, or 'agent' to run a defined subagent with its own routing. \
-         SPLITTING heavy work is your call (nothing splits for you): independent \
-         parts of minutes each (builds, tests, encodes, scans) go out as one 'tasks' \
-         batch with backend='any' + 'workload'; keep short, sequential or same-file \
-         work here."
+         model`), NOT on this session's. Pass 'model'/'provider'/'reasoning' to route \
+         one explicitly, or 'agent' to run a defined subagent with its own routing. \
+         SPLITTING heavy work is your call. A child on another node runs in its \
+         sandbox at the User level and sees none of this node's files: send only \
+         self-contained parts (fetches, URL or git remote work, computation) as a \
+         'tasks' batch with backend='any' + 'workload' (at most 3; more: background:true \
+         children); work on local files stays here or on a named node whose sandbox \
+         has the same checkout."
+        // Why the default route and not this session's: a delegate is not
+        // a continuation of this conversation, and inheriting a
+        // rate-limited route would take a parallel batch down with it.
+        // (Moved out of the resident description in 0.2.2 to pay for the
+        // split guidance's bytes: the core tier has a budget,
+        // tools::tests::the_core_tier_is_under_the_declared_budget.)
     }
     fn schema(&self) -> Value {
         json!({
@@ -1453,7 +1794,7 @@ impl crate::tools::Tool for DelegateTaskTool {
             // through the SAME background-event + wake path a local
             // background child uses — one arrival shape, local or
             // remote.
-            let placement = match self.resolve_backend(backend.as_ref(), &needs, workload) {
+            let placed = match place(backend.clone(), needs.clone(), workload, Vec::new()).await {
                 Ok(p) => p,
                 Err(e) => return format!("error: {e}"),
             };
@@ -1461,12 +1802,12 @@ impl crate::tools::Tool for DelegateTaskTool {
                 .ok()
                 .flatten()
                 .map(|i| i.id);
-            let remote = placement
+            let remote = placed
                 .as_ref()
-                .map(|p| !crate::placement::is_local(p, me.as_deref()))
+                .map(|(p, _)| !crate::placement::is_local(p, me.as_deref()))
                 .unwrap_or(false);
             if remote {
-                let Some(placement) = placement else {
+                let Some((placement, claim)) = placed else {
                     unreachable!("remote implies Some")
                 };
                 let (child_id, cancel) = crate::tasks::start(TaskKind::Subagent, &goal, &parent);
@@ -1488,18 +1829,31 @@ impl crate::tools::Tool for DelegateTaskTool {
                 let goal2 = goal.clone();
                 let bus = self.bus();
                 let parent2 = parent.clone();
-                let watch = crate::remotetask::CancelWatch::token(cancel);
-                let claim = crate::placement::claim(&placement.node.id);
+                let spec = backend.clone();
+                let needs2 = needs.clone();
                 crate::bg::spawn(async move {
-                    let _claim = claim;
-                    let v = run_on_placed(&placement, &ask, watch)
-                        .await
-                        .unwrap_or_else(|e| json!({"status": "error", "error": e}));
+                    // COMP-1: a node this child never reached passes it
+                    // to the next candidate, this node included.
+                    let (v, here_cs) = run_placed_child(
+                        spec,
+                        needs2,
+                        workload,
+                        me,
+                        placement,
+                        claim,
+                        ask,
+                        cancel,
+                        parent2.clone(),
+                        child_id,
+                    )
+                    .await;
                     let ok = v["status"].as_str() == Some("ok");
                     // The transcript handle for remote work is the
                     // PEER's child session id (from its verdict) —
-                    // there is no local row.
-                    let remote_cs = v["remote_child_session"].as_str().map(|s| s.to_string());
+                    // there is no local row — unless it ran here after
+                    // all.
+                    let remote_cs = here_cs
+                        .or_else(|| v["remote_child_session"].as_str().map(|s| s.to_string()));
                     crate::tasks::finish(child_id, ok);
                     if let Some(h) = &bus {
                         h.fire(
@@ -1552,7 +1906,7 @@ impl crate::tools::Tool for DelegateTaskTool {
                 // Placed here by `any`/`gpu`: counted on this node while
                 // it runs, or a run of background children all pile onto
                 // the node whose heartbeat looked idlest (SI-7).
-                placement.map(|p| crate::placement::claim(&p.node.id)),
+                placed.map(|(_, claim)| claim),
             );
             return json!({
                 "status": "started",
@@ -1578,45 +1932,59 @@ impl crate::tools::Tool for DelegateTaskTool {
                 .flatten()
                 .map(|i| i.id);
             let mut planned = Vec::with_capacity(arr.len());
-            for t in arr {
-                let goal = t["goal"].as_str().unwrap_or_default().to_string();
-                let ctx = t["context"].as_str().unwrap_or_default().to_string();
-                if goal.trim().is_empty() {
-                    return "error: every task needs a non-empty goal".into();
-                }
-                // A task may carry its own `backend`; an unset per-task
-                // spelling inherits the top-level one.
-                let task_backend_str = t["backend"]
-                    .as_str()
-                    .map(|s| s.to_string())
-                    .unwrap_or_else(|| backend_arg.clone());
-                let task_spec = match crate::placement::BackendSpec::parse(&task_backend_str) {
-                    Ok(None) if !needs.is_empty() => Some(crate::placement::BackendSpec::Any),
-                    Ok(s) => s,
-                    Err(e) => return format!("error: {e:#}"),
-                };
-                // A task may say its own workload; unset inherits.
-                let task_workload = match t["workload"].as_str() {
-                    Some(w) => match crate::placement::Workload::parse(w) {
-                        Ok(w) => w,
-                        Err(e) => return format!("error: {e:#}"),
-                    },
-                    None => workload,
-                };
-                let placement =
-                    match self.resolve_backend(task_spec.as_ref(), &needs, task_workload) {
-                        Ok(p) => p,
-                        Err(e) => return format!("error: {e}"),
+            // An error for one member releases the claims the members
+            // before it took, off the runtime like the claims themselves.
+            let refused: Option<String> = 'plan: {
+                for t in arr {
+                    let goal = t["goal"].as_str().unwrap_or_default().to_string();
+                    let ctx = t["context"].as_str().unwrap_or_default().to_string();
+                    if goal.trim().is_empty() {
+                        break 'plan Some("error: every task needs a non-empty goal".into());
+                    }
+                    // A task may carry its own `backend`; an unset per-task
+                    // spelling inherits the top-level one.
+                    let task_backend_str = t["backend"]
+                        .as_str()
+                        .map(|s| s.to_string())
+                        .unwrap_or_else(|| backend_arg.clone());
+                    let task_spec = match crate::placement::BackendSpec::parse(&task_backend_str) {
+                        Ok(None) if !needs.is_empty() => Some(crate::placement::BackendSpec::Any),
+                        Ok(s) => s,
+                        Err(e) => break 'plan Some(format!("error: {e:#}")),
                     };
-                // Counted on its node BEFORE the next member resolves
-                // (SI-7): a batch of `any` children spreads over the
-                // pool instead of piling onto one snapshot's idlest
-                // node. Held until the member finishes, local or not.
-                let claim = placement
-                    .as_ref()
-                    .map(|p| crate::placement::claim(&p.node.id));
-                let placement = placement.filter(|p| !crate::placement::is_local(p, me.as_deref()));
-                planned.push((goal, ctx, placement, claim));
+                    // A task may say its own workload; unset inherits.
+                    let task_workload = match t["workload"].as_str() {
+                        Some(w) => match crate::placement::Workload::parse(w) {
+                            Ok(w) => w,
+                            Err(e) => break 'plan Some(format!("error: {e:#}")),
+                        },
+                        None => workload,
+                    };
+                    // Counted on its node BEFORE the next member resolves
+                    // (SI-7): a batch of `any` children spreads over the
+                    // pool instead of piling onto one snapshot's idlest
+                    // node. Held until the member finishes, local or not.
+                    let (placement, claim) =
+                        match place(task_spec.clone(), needs.clone(), task_workload, Vec::new())
+                            .await
+                        {
+                            Ok(Some((p, c))) => (Some(p), Some(c)),
+                            Ok(None) => (None, None),
+                            Err(e) => break 'plan Some(format!("error: {e}")),
+                        };
+                    let placement =
+                        placement.filter(|p| !crate::placement::is_local(p, me.as_deref()));
+                    planned.push((goal, ctx, placement, claim, task_spec, task_workload));
+                }
+                None
+            };
+            if let Some(e) = refused {
+                for (_, _, _, claim, _, _) in planned {
+                    if let Some(c) = claim {
+                        release(c).await;
+                    }
+                }
+                return e;
             }
             // Each member is STARTED here — a blocking child on the
             // blocking pool, a remote hop as a task — and only then
@@ -1625,7 +1993,7 @@ impl crate::tools::Tool for DelegateTaskTool {
             // the batch ran its children in SERIES, each holding a
             // runtime worker for up to 900 s.
             let mut handles: Vec<tokio::task::JoinHandle<Value>> = Vec::new();
-            for (goal, ctx, placement, claim) in planned {
+            for (goal, ctx, placement, claim, task_spec, task_workload) in planned {
                 let (child_id, cancel) =
                     crate::tasks::start(TaskKind::Subagent, &goal, &self.session_id);
                 // Each LOCAL member is its own titled, parent-linked
@@ -1653,40 +2021,55 @@ impl crate::tools::Tool for DelegateTaskTool {
                     }
                     None => (goal, ctx, ex_m.clone(), ex_p.clone(), ex_r.clone()),
                 };
-                if let Some(p) = placement {
-                    // C3: the registry token now rides the wire call —
-                    // `veles tasks cancel <id>` reaches the peer's
-                    // child instead of dying at the boundary.
-                    let ask = self.remote_ask(&goal, &ctx, model, provider, reasoning);
-                    let watch = crate::remotetask::CancelWatch::token(cancel);
-                    handles.push(crate::rt::spawn(async move {
-                        let _claim = claim;
-                        let v = run_on_placed(&p, &ask, watch)
-                            .await
-                            .unwrap_or_else(|e| json!({"status": "error", "error": e}));
-                        crate::tasks::finish(child_id, v["status"].as_str() == Some("ok"));
-                        v
-                    }));
-                } else {
-                    let parent = self.session_id.clone();
-                    handles.push(crate::rt::spawn_blocking(move || {
-                        // Held until the member ends; its child takes the
-                        // claim's row over while it runs.
-                        let v = run_child_routed(
-                            &goal,
-                            &ctx,
-                            model.as_deref(),
-                            provider.as_deref(),
-                            reasoning.as_deref(),
-                            &parent,
-                            cs.as_deref(),
-                            Some(cancel),
-                            claim.as_ref(),
-                        );
-                        drop(claim);
-                        crate::tasks::finish(child_id, v["status"].as_str() == Some("ok"));
-                        v
-                    }));
+                match (placement, claim) {
+                    (Some(p), Some(claim)) => {
+                        // C3: the registry token now rides the wire call —
+                        // `veles tasks cancel <id>` reaches the peer's
+                        // child instead of dying at the boundary.
+                        let ask = self.remote_ask(&goal, &ctx, model, provider, reasoning);
+                        let (parent, me, needs) =
+                            (self.session_id.clone(), me.clone(), needs.clone());
+                        handles.push(crate::rt::spawn(async move {
+                            // COMP-1: a node this member never reached passes
+                            // it to the next candidate, this node included.
+                            let (v, _) = run_placed_child(
+                                task_spec,
+                                needs,
+                                task_workload,
+                                me,
+                                p,
+                                claim,
+                                ask,
+                                cancel,
+                                parent,
+                                child_id,
+                            )
+                            .await;
+                            crate::tasks::finish(child_id, v["status"].as_str() == Some("ok"));
+                            v
+                        }));
+                    }
+                    (_, claim) => {
+                        let parent = self.session_id.clone();
+                        handles.push(crate::rt::spawn_blocking(move || {
+                            // Held until the member ends; its child takes the
+                            // claim's row over while it runs.
+                            let v = run_child_routed(
+                                &goal,
+                                &ctx,
+                                model.as_deref(),
+                                provider.as_deref(),
+                                reasoning.as_deref(),
+                                &parent,
+                                cs.as_deref(),
+                                Some(cancel),
+                                claim.as_ref(),
+                            );
+                            drop(claim);
+                            crate::tasks::finish(child_id, v["status"].as_str() == Some("ok"));
+                            v
+                        }));
+                    }
                 }
             }
             let mut results = Vec::new();
@@ -1712,7 +2095,7 @@ impl crate::tools::Tool for DelegateTaskTool {
         //
         // The explicit route is post-preset here (preset + backend was
         // refused above), so ex_m/ex_p/ex_r IS the child's route.
-        match self
+        let (claim, detour) = match self
             .run_remote_if_placed(
                 backend.as_ref(),
                 &needs,
@@ -1725,14 +2108,14 @@ impl crate::tools::Tool for DelegateTaskTool {
             )
             .await
         {
-            Ok(None) => {}
+            Ok(Placed::Here(claim, detour)) => (claim, detour),
             // A remote verdict carries the PEER's `remote_child_session`
             // as the transcript handle; the local store holds no row
             // for remote work (until B5 replicates transcripts, and
             // even then under the peer's id).
-            Ok(Some(v)) => return v.to_string(),
+            Ok(Placed::Remote(v)) => return v.to_string(),
             Err(e) => return format!("error: {e}"),
-        }
+        };
         // The child session, minted against the RAW goal — after preset
         // rendering, `goal` is the full child prompt (profile body
         // included) and its first 60 chars are a useless title. Link
@@ -1770,6 +2153,8 @@ impl crate::tools::Tool for DelegateTaskTool {
         let parent = self.session_id.clone();
         let cs_for_run = child_session.clone();
         let v = crate::rt::spawn_blocking(move || {
+            // Placed here by `any`/`gpu`/`local`: its process takes the
+            // claim over when it starts, so it is counted once.
             let v = run_child_routed(
                 &goal,
                 &ctx,
@@ -1779,8 +2164,11 @@ impl crate::tools::Tool for DelegateTaskTool {
                 &parent,
                 cs_for_run.as_deref(),
                 Some(cancel),
-                None,
+                claim.as_ref(),
             );
+            drop(claim);
+            let mut v = v;
+            detour.stamp(&mut v);
             let ok = v["status"].as_str() == Some("ok");
             crate::tasks::finish(child_id, ok);
             v
@@ -2436,6 +2824,9 @@ mod tests {
             hooks: None,
         };
         let ask = t.remote_ask("g", "", None, None, None);
+        // ASK-2: the placing session travels, so the peer can parent its
+        // child row to it.
+        assert_eq!(ask.parent_session.as_deref(), Some(t.session_id.as_str()));
         let carried = ask.principal.expect("a Trusted caller's principal travels");
         let back: crate::acl::Principal = serde_json::from_str(&carried).unwrap();
         assert_eq!(back.subject, "user:someone");
@@ -2449,6 +2840,21 @@ mod tests {
             .remote_ask("g", "", None, None, None)
             .principal
             .is_none());
+    }
+
+    /// ASK-2: a child run for a peer names its placing session in its
+    /// parent column; the placer reads it back. Malformed or missing
+    /// input keeps the old pseudo-session.
+    #[test]
+    fn a_remote_childs_parent_names_the_placing_session() {
+        let col = remote_parent("495908ea-37cd", Some("20261110_120000_aaaa11"));
+        assert_eq!(col, "a2a-remote/495908ea-37cd/20261110_120000_aaaa11");
+        assert_eq!(placed_parent(&col), Some("20261110_120000_aaaa11"));
+        assert_eq!(remote_parent("495908ea-37cd", None), REMOTE_PARENT);
+        assert_eq!(remote_parent("bad/node", Some("s")), REMOTE_PARENT);
+        assert_eq!(remote_parent("n1", Some("a/b")), REMOTE_PARENT);
+        assert_eq!(placed_parent(REMOTE_PARENT), None);
+        assert_eq!(placed_parent("20261110_120000_aaaa11"), None);
     }
 
     #[test]
@@ -2998,6 +3404,51 @@ mod tests {
         );
     }
 
+    /// COMP-7 (0.2.2): resolving a placement and counting the child there
+    /// run on the blocking pool. They open state.db and write the work
+    /// table, so under disk pressure (here: another connection holding
+    /// the database's write lock for 2 s) each waits on SQLite's busy
+    /// timeout; on a current-thread runtime that wait used to stop every
+    /// other task. A 100 ms timer started beside the call must fire on
+    /// time while the call itself waits for the lock.
+    #[tokio::test]
+    async fn placement_does_not_block_the_runtime() {
+        let (home, _env, t) = backend_tool("vps", "peer-0002");
+        let dead = crate::routeprobe::tests::dead_url().await;
+        std::fs::write(
+            home.path().join("config.toml"),
+            format!("[a2a_agents.vps]\nurl = \"{dead}\"\n"),
+        )
+        .unwrap();
+        let db = crate::config::veles_home().join("state.db");
+        let (locked, is_locked) = std::sync::mpsc::channel();
+        let holder = std::thread::spawn(move || {
+            let c = rusqlite::Connection::open(&db).unwrap();
+            c.execute_batch("BEGIN EXCLUSIVE").unwrap();
+            locked.send(()).unwrap();
+            std::thread::sleep(Duration::from_secs(2));
+            c.execute_batch("COMMIT").unwrap();
+        });
+        is_locked.recv().unwrap();
+        let start = std::time::Instant::now();
+        let timer = crate::rt::spawn(async move {
+            tokio::time::sleep(Duration::from_millis(100)).await;
+            start.elapsed()
+        });
+        let out = t.call(json!({"goal": "g", "backend": "vps"})).await;
+        let fired_after = timer.await.unwrap();
+        holder.join().unwrap();
+        assert!(
+            out.starts_with("error:") && out.contains("vps"),
+            "the dead node is an honest error: {out}"
+        );
+        assert!(
+            fired_after < Duration::from_millis(1000),
+            "the runtime was blocked: a 100 ms timer fired after {fired_after:?}"
+        );
+        assert_eq!(crate::placement::in_flight("peer-0002"), 0, "released");
+    }
+
     /// SI-7: a `backend='any'` batch DIVIDES the work. Each member is
     /// counted on its node before the next resolves, so three children
     /// go vps (load 5), zerg (15 < 5+25), vps (30 < 15+25) — not three
@@ -3054,6 +3505,19 @@ mod tests {
         assert!(sent[2].starts_with("remote backend vps:"), "{sent:?}");
         assert_eq!(crate::placement::in_flight("peer-0002"), 0);
         assert_eq!(crate::placement::in_flight("peer-0003"), 0);
+        // ASK-2: each node a member was sent to is on record for the
+        // session, which is what lets its replica rows nest under it.
+        let store =
+            crate::store::Store::open(&crate::config::veles_home().join("state.db")).unwrap();
+        for node in ["peer-0002", "peer-0003"] {
+            assert!(
+                store.session_placed_on("backend-parent", node).unwrap(),
+                "{node}"
+            );
+        }
+        assert!(!store
+            .session_placed_on("backend-parent", "self-0001")
+            .unwrap());
     }
 
     /// SI-7, the background half: a `backend='any'` child that lands on
@@ -3133,6 +3597,144 @@ mod tests {
         std::env::remove_var("VELES_BINARY");
     }
 
+    /// COMP-1 (0.2.2): the phone stopped (its idle exit) after its last
+    /// probe or gossip passed, so its route still reads as a pass and its
+    /// last report says idle. `any` chose it, and the child failed with
+    /// "connection refused" while this node sat free; the next `any` call
+    /// chose it again. Now a dial that never reached the node is recorded
+    /// as a failed route and the child goes to the next candidate (here
+    /// this node), with both hops named in the verdict; the next call
+    /// skips the phone before dialing. A batch and a background child
+    /// fall through the same way. `gpu`, with the phone its only GPU
+    /// node, says both: the phone's failure and that no other node is
+    /// left. A NAMED node stays a constraint: its failure is the answer.
+    #[cfg(unix)]
+    #[tokio::test]
+    async fn an_any_child_skips_a_peer_that_stopped_after_its_probe_passed() {
+        use crate::routeprobe::{cached, record, Probe};
+        let (home, _env) = crate::testenv::scratch_home();
+        std::fs::write(
+            home.path().join("node.toml"),
+            "id = \"hop-self\"\nname = \"laptop\"\n",
+        )
+        .unwrap();
+        let phone = crate::routeprobe::tests::dead_url().await;
+        std::fs::write(
+            home.path().join("config.toml"),
+            format!("[a2a_agents.phone]\nurl = \"{phone}\"\n"),
+        )
+        .unwrap();
+        let store =
+            crate::store::Store::open(&crate::config::veles_home().join("state.db")).unwrap();
+        for (id, name, load, cores, gpu) in [
+            ("hop-self", "laptop", 50, 4, None),
+            ("hop-phone", "phone", 0, 8, Some(r#"{"name":"Adreno"}"#)),
+        ] {
+            store
+                .node_register(id, name, "h", "0", "always-on", gpu, None, None, None)
+                .unwrap();
+            store
+                .node_heartbeat_sample(
+                    id,
+                    &crate::store::HeartbeatSample {
+                        load1: Some(load),
+                        cores: Some(cores),
+                        io: None,
+                        work: None,
+                    },
+                )
+                .unwrap();
+        }
+        drop(store);
+        let script = home.path().join("veles");
+        std::fs::write(&script, "#!/bin/sh\necho ran-here\n").unwrap();
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let mut perm = std::fs::metadata(&script).unwrap().permissions();
+            perm.set_mode(0o755);
+            std::fs::set_permissions(&script, perm).unwrap();
+        }
+        std::env::set_var("VELES_BINARY", &script);
+        let t = DelegateTaskTool {
+            session_id: "hop-parent".into(),
+            hooks: None,
+        };
+        let failed = || matches!(cached(&phone, None), Some((Probe::Unreachable(_), _)));
+
+        // The phone's last probe passed; it stopped since.
+        record(&phone, None, Probe::Ok);
+        let out = t.call(json!({"goal": "g", "backend": "any"})).await;
+        let v: Value = serde_json::from_str(&out).unwrap_or_else(|_| panic!("{out}"));
+        assert_eq!(v["status"], "ok", "it ran on this node instead: {out}");
+        assert!(
+            v["skipped"][0]
+                .as_str()
+                .is_some_and(|s| s.starts_with("remote backend phone:")),
+            "the node passed over is named: {out}"
+        );
+        assert!(
+            v["backend"].as_str().is_some_and(|b| b.contains("laptop")),
+            "and where it ran: {out}"
+        );
+        assert!(failed(), "the failed dial stands as a failed route");
+        // The next call: the phone is passed over before any dial.
+        let out = t.call(json!({"goal": "g", "backend": "any"})).await;
+        let v: Value = serde_json::from_str(&out).unwrap_or_else(|_| panic!("{out}"));
+        assert_eq!(v["status"], "ok", "{out}");
+        assert!(v.get("skipped").is_none(), "not dialed again: {out}");
+
+        // A batch member falls through the same way.
+        record(&phone, None, Probe::Ok);
+        let out = t
+            .call(json!({"backend": "any", "tasks": [{"goal": "one"}]}))
+            .await;
+        let v: Value = serde_json::from_str(&out).unwrap_or_else(|_| panic!("{out}"));
+        assert_eq!(v["results"][0]["status"], "ok", "{out}");
+        assert!(v["results"][0]["skipped"][0].is_string(), "{out}");
+        assert!(failed());
+
+        // So does a background child.
+        record(&phone, None, Probe::Ok);
+        let out = t
+            .call(json!({"goal": "bg", "backend": "any", "background": true}))
+            .await;
+        assert!(out.contains("\"started\""), "{out}");
+        let deadline = std::time::Instant::now() + Duration::from_secs(20);
+        let done = loop {
+            let evs = take_background_events("hop-parent");
+            if let Some(e) = evs.into_iter().next() {
+                break e;
+            }
+            assert!(
+                std::time::Instant::now() < deadline,
+                "the background child never completed"
+            );
+            tokio::time::sleep(Duration::from_millis(50)).await;
+        };
+        assert_eq!(done.result["status"], "ok", "{}", done.result);
+        assert!(done.result["skipped"][0].is_string(), "{}", done.result);
+
+        // gpu: the phone is the only GPU node, so nothing is left.
+        record(&phone, None, Probe::Ok);
+        let out = t.call(json!({"goal": "g", "backend": "gpu"})).await;
+        assert!(
+            out.starts_with("error: remote backend phone:") && out.contains("backend=gpu"),
+            "both hops: {out}"
+        );
+
+        // Named: the constraint's failure is the answer, and it is
+        // recorded too.
+        record(&phone, None, Probe::Ok);
+        let out = t.call(json!({"goal": "g", "backend": "phone"})).await;
+        assert!(out.starts_with("error: remote backend phone:"), "{out}");
+        assert!(!out.contains("; then "), "no second hop: {out}");
+        assert!(failed());
+        for id in ["hop-self", "hop-phone"] {
+            assert_eq!(crate::placement::in_flight(id), 0, "{id} released");
+        }
+        std::env::remove_var("VELES_BINARY");
+    }
+
     /// 306787.b: a peer's remote task is counted on THIS node, under the
     /// node that placed it, while its process runs. The placer reads that
     /// origin count off this node's heartbeat and subtracts it from its
@@ -3159,7 +3761,7 @@ mod tests {
         }
         std::env::set_var("VELES_BINARY", &script);
         let run = std::thread::spawn(|| {
-            run_remote_child("part", "", None, None, None, None, None, "rc-laptop")
+            run_remote_child("part", "", None, None, None, None, None, "rc-laptop", None)
         });
         let report = || crate::placement::own_report(store.conn(), "rc-self").unwrap();
         let deadline = std::time::Instant::now() + Duration::from_secs(10);

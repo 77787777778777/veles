@@ -1327,6 +1327,19 @@ impl GatewayCore {
         out
     }
 
+    /// The desktop's bare `/join`: the owner's joinable list, newest
+    /// first, as (session id, label) — the rows the chat surfaces' bare
+    /// `/join` prints.
+    pub(crate) fn desktop_join_candidates(&self) -> Vec<(String, String)> {
+        self.joinable()
+            .into_iter()
+            .map(|j| {
+                let label = j.label();
+                (j.sid, label)
+            })
+            .collect()
+    }
+
     fn join_store_key(owner_key: &str) -> String {
         format!("join:gateway:v1:{owner_key}")
     }
@@ -1382,6 +1395,30 @@ impl GatewayCore {
         owner_key: &str,
         target: &str,
     ) -> anyhow::Result<veles_core::joinbind::Binding> {
+        // The chat surfaces' resolver: an exact id, an id prefix of four
+        // or more, or the person's name (ASK-1). A word that names no
+        // joinable session is still tried as an id below, so an owner or
+        // banned session keeps its own refusal.
+        let resolved;
+        let target = match resolve_joinable(&self.joinable(), target) {
+            JoinResolution::One(j) => {
+                resolved = j.sid;
+                resolved.as_str()
+            }
+            JoinResolution::Many(many) => {
+                let mut out = format!("\"{target}\" names {} sessions; /join <id>:", many.len());
+                for j in many {
+                    out.push_str(&format!("\n  {}  {}", j.sid, j.label()));
+                }
+                anyhow::bail!(out)
+            }
+            JoinResolution::Missing if self.session_chat(target).is_none() => {
+                anyhow::bail!(
+                    "no session of \"{target}\" is open here; /join lists the ones you can join"
+                )
+            }
+            JoinResolution::Missing => target,
+        };
         let (platform, chat_id) = self
             .session_chat(target)
             .ok_or_else(|| anyhow::anyhow!("no live chat-backed session {target} on this node"))?;
@@ -3464,7 +3501,11 @@ impl GatewayCore {
                         // grant. A grantee's lines run clamped to the
                         // lower of their rights and the session's, and
                         // `joinable_for` keeps them to their own channel.
-                        if !principal.has(veles_core::acl::Cap::SessionJoin) {
+                        // `/leave` only ends the caller's OWN binding, so
+                        // it needs no right: a grantee whose grant was
+                        // withdrawn while joined must still be able to
+                        // let go at once (ASK-4).
+                        if head == "join" && !principal.has(veles_core::acl::Cap::SessionJoin) {
                             self.bus.send_outbound_to(
                                 &msg.platform,
                                 msg.route.as_deref(),
@@ -5392,128 +5433,155 @@ impl Gateway {
                                    // Gossip peers that did not answer last time. The phone
                                    // stops five minutes after its last use (--exit-when-idle),
                                    // so "down" is its normal state: said once, not every tick.
-                let mut down = std::collections::BTreeSet::<String>::new();
-                loop {
-                    tick.tick().await;
-                    let s = store.clone();
-                    let id = me.identity.id.clone();
-                    // B4: the load sample rides the heartbeat write —
-                    // same tick, same row, one lock. Read on THIS side
-                    // of the spawn_blocking boundary (off the async
-                    // runtime's threads, though /proc is cheap).
-                    // 306787.b: with it the core count and disk IO
-                    // pressure, and this node's own delegate work (dead
-                    // rows pruned first), which every peer's ranking
-                    // reads off this row once gossip carries it.
-                    let (load, cores, io) = veles_core::rt::spawn_blocking(|| {
-                        (
-                            veles_core::node::probe_load_one().map(|l| l.value),
-                            veles_core::node::probe_cores(),
-                            veles_core::node::probe_io_pressure(),
-                        )
-                    })
-                    .await
-                    .unwrap_or((None, None, None));
-                    let r = veles_core::rt::spawn_blocking(move || {
-                        let s = s.lock().unwrap_or_else(|p| p.into_inner());
-                        let _ = veles_core::placement::prune(
-                            s.conn(),
-                            &veles_core::placement::pid_lives,
-                        );
-                        let work = veles_core::placement::own_report(s.conn(), &id).ok();
-                        s.node_heartbeat_sample(
-                            &id,
-                            &veles_core::store::HeartbeatSample {
-                                load1: load,
-                                cores,
-                                io,
-                                work,
-                            },
-                        )
-                    })
-                    .await;
-                    match r {
-                        // The row is gone (`veles nodes forget` on this
-                        // node): come back rather than heartbeat into the
-                        // void until the next restart.
-                        Ok(Ok(0)) => {
-                            tracing::info!("cluster: own registry row missing — re-registering");
-                            let _ = register(store.clone(), me.clone()).await;
+                let down = std::sync::Arc::new(std::sync::Mutex::new(
+                    std::collections::BTreeSet::<String>::new(),
+                ));
+                // 306787.b: the regular tick, or a change to this node's
+                // own work (a child started or ended here, a placement
+                // here made or released), published at once so a peer
+                // placing `any` work meanwhile ranks this node by what it
+                // is doing. Paced by placement::early_publish_at, from the
+                // END of the last publish; the regular tick is then a full
+                // interval away. The body answers whether this node's own
+                // disk is under pressure (early publishes are then paced
+                // wider). Pinned by a_work_change_publishes_before_the_next_tick
+                // and early_publishes_are_spaced_from_the_end_of_the_last.
+                veles_core::placement::publish_loop(tick, move |wake| {
+                    let (store, me, down) = (store.clone(), me.clone(), down.clone());
+                    async move {
+                        if wake == veles_core::placement::Wake::Early {
+                            tracing::debug!("cluster: publishing a change to this node's work");
                         }
-                        Ok(Ok(_)) => {}
-                        Ok(Err(e)) => tracing::warn!("cluster: heartbeat failed: {e:#}"),
-                        Err(e) => tracing::warn!("cluster: heartbeat task failed: {e:#}"),
-                    }
-                    // B3a gossip: on the same cadence, exchange registry
-                    // rows with every configured gossip peer
-                    // ([cluster] gossip_peers names [a2a_agents] entries).
-                    // Empty list = off (the default: gossip is opt-in
-                    // exactly like memsync — nothing dials out unasked).
-                    let peers = {
-                        match veles_core::config::load() {
-                            Ok(c) => c.cluster.gossip_peers.clone(),
-                            Err(_) => Vec::new(),
-                        }
-                    };
-                    for peer_name in peers {
-                        let (url, bearer) = match peer_target(&peer_name) {
-                            Some(t) => t,
-                            None => {
-                                tracing::warn!(
-                                    "cluster: gossip peer '{peer_name}' is not in \
-                                     [a2a_agents] — skipping"
+                        let s = store.clone();
+                        let id = me.identity.id.clone();
+                        // B4: the load sample rides the heartbeat write —
+                        // same tick, same row, one lock. Read on THIS side
+                        // of the spawn_blocking boundary (off the async
+                        // runtime's threads, though /proc is cheap).
+                        // 306787.b: with it the core count and disk IO
+                        // pressure, and this node's own delegate work (dead
+                        // rows pruned first), which every peer's ranking
+                        // reads off this row once gossip carries it.
+                        let (load, cores, io) = veles_core::rt::spawn_blocking(|| {
+                            (
+                                veles_core::node::probe_load_one().map(|l| l.value),
+                                veles_core::node::probe_cores(),
+                                veles_core::node::probe_io_pressure(),
+                            )
+                        })
+                        .await
+                        .unwrap_or((None, None, None));
+                        let busy_disk = io
+                            .as_ref()
+                            .and_then(|p| p.some)
+                            .is_some_and(|s| i64::from(s) >= veles_core::placement::IO_HIGH);
+                        let r = veles_core::rt::spawn_blocking(move || {
+                            let s = s.lock().unwrap_or_else(|p| p.into_inner());
+                            let _ = veles_core::placement::prune(
+                                s.conn(),
+                                &veles_core::placement::pid_lives,
+                            );
+                            let work = veles_core::placement::own_report(s.conn(), &id).ok();
+                            s.node_heartbeat_sample(
+                                &id,
+                                &veles_core::store::HeartbeatSample {
+                                    load1: load,
+                                    cores,
+                                    io,
+                                    work,
+                                },
+                            )
+                        })
+                        .await;
+                        match r {
+                            // The row is gone (`veles nodes forget` on this
+                            // node): come back rather than heartbeat into the
+                            // void until the next restart.
+                            Ok(Ok(0)) => {
+                                tracing::info!(
+                                    "cluster: own registry row missing — re-registering"
                                 );
-                                continue;
+                                let _ = register(store.clone(), me.clone()).await;
+                            }
+                            Ok(Ok(_)) => {}
+                            Ok(Err(e)) => tracing::warn!("cluster: heartbeat failed: {e:#}"),
+                            Err(e) => tracing::warn!("cluster: heartbeat task failed: {e:#}"),
+                        }
+                        // B3a gossip: on the same cadence, exchange registry
+                        // rows with every configured gossip peer
+                        // ([cluster] gossip_peers names [a2a_agents] entries).
+                        // Empty list = off (the default: gossip is opt-in
+                        // exactly like memsync — nothing dials out unasked).
+                        let peers = {
+                            match veles_core::config::load() {
+                                Ok(c) => c.cluster.gossip_peers.clone(),
+                                Err(_) => Vec::new(),
                             }
                         };
-                        let store2 = store.clone();
-                        let r = veles_core::gossip::exchange_with_peer(
-                            &store2,
-                            &peer_name,
-                            &url,
-                            bearer.as_deref(),
-                        )
-                        .await;
-                        // The Instances tab's "last gossip" per peer, the
-                        // same record an explicit Gossip now writes.
-                        match &r {
-                            Ok(line) => crate::fleet_ops::record("gossip", &peer_name, Ok(line)),
-                            Err(e) => crate::fleet_ops::record(
-                                "gossip",
-                                &peer_name,
-                                Err(&format!("{e:#}")),
-                            ),
-                        }
-                        match r {
-                            Ok(line) => {
-                                tracing::debug!("cluster: gossip {line}");
-                                if down.remove(&peer_name) {
-                                    // Back (the phone, opened again): what
-                                    // it is owed goes on the next sync tick,
-                                    // not after a backoff of up to 30 min
-                                    // that would outlast its five-minute stay.
-                                    veles_core::backoff::pool().reset_peer(&peer_name);
-                                    tracing::info!(
-                                        "cluster: {peer_name} answers again — pushing to it \
-                                         from the next sync tick"
-                                    );
-                                }
-                            }
-                            Err(e) => {
-                                if down.insert(peer_name.clone()) {
+                        for peer_name in peers {
+                            let (url, bearer) = match peer_target(&peer_name) {
+                                Some(t) => t,
+                                None => {
                                     tracing::warn!(
-                                        "cluster: gossip with {peer_name} failed: {e:#} \
+                                        "cluster: gossip peer '{peer_name}' is not in \
+                                     [a2a_agents] — skipping"
+                                    );
+                                    continue;
+                                }
+                            };
+                            let store2 = store.clone();
+                            let r = veles_core::gossip::exchange_with_peer(
+                                &store2,
+                                &peer_name,
+                                &url,
+                                bearer.as_deref(),
+                            )
+                            .await;
+                            // The Instances tab's "last gossip" per peer, the
+                            // same record an explicit Gossip now writes.
+                            match &r {
+                                Ok(line) => {
+                                    crate::fleet_ops::record("gossip", &peer_name, Ok(line))
+                                }
+                                Err(e) => crate::fleet_ops::record(
+                                    "gossip",
+                                    &peer_name,
+                                    Err(&format!("{e:#}")),
+                                ),
+                            }
+                            match r {
+                                Ok(line) => {
+                                    tracing::debug!("cluster: gossip {line}");
+                                    if down.lock_ok().remove(&peer_name) {
+                                        // Back (the phone, opened again): what
+                                        // it is owed goes on the next sync tick,
+                                        // not after a backoff of up to 30 min
+                                        // that would outlast its five-minute stay.
+                                        veles_core::backoff::pool().reset_peer(&peer_name);
+                                        tracing::info!(
+                                            "cluster: {peer_name} answers again — pushing to it \
+                                         from the next sync tick"
+                                        );
+                                    }
+                                }
+                                Err(e) => {
+                                    if down.lock_ok().insert(peer_name.clone()) {
+                                        tracing::warn!(
+                                            "cluster: gossip with {peer_name} failed: {e:#} \
                                          (quiet until it answers again)"
-                                    )
-                                } else {
-                                    tracing::debug!(
-                                        "cluster: gossip with {peer_name} failed: {e:#}"
-                                    )
+                                        )
+                                    } else {
+                                        tracing::debug!(
+                                            "cluster: gossip with {peer_name} failed: {e:#}"
+                                        )
+                                    }
                                 }
                             }
                         }
+                        busy_disk
                     }
-                }
+                })
+                .await;
             });
         }
         // Boot announcement: "▶ veles gateway up" to the last-known chat
@@ -9380,7 +9448,9 @@ mod tests {
 
     /// Without a `session-join` grant joining is the owner's alone:
     /// anyone else is refused by name, and is not shown the command in
-    /// their help.
+    /// their help. `/leave` asks for no right, since it only ends the
+    /// caller's own binding (ASK-4, `a_revoked_grantee_can_still_leave`):
+    /// someone who never joined is told so, and nothing about anyone else.
     #[tokio::test]
     async fn join_without_the_grant_is_the_owners_alone() {
         let (url, seen) = capturing_llm().await;
@@ -9392,9 +9462,12 @@ mod tests {
             "{out}"
         );
         core.handle(alice("/leave")).await;
-        assert!(drain_texts(&mut irc)
-            .join("\n")
-            .contains("[acl] `leave` requires the session-join capability"));
+        let left = drain_texts(&mut irc).join("\n");
+        assert!(
+            left.contains("you have not joined a session from this chat")
+                && !left.contains("[acl]"),
+            "{left}"
+        );
         assert!(seen.lock().unwrap().is_empty(), "no turn");
         core.handle(alice("/help")).await;
         let help = drain_texts(&mut irc).join("\n");
@@ -9539,6 +9612,86 @@ mod tests {
             "a grantee never displaces the owner"
         );
         core.handle(owner_tg("/leave")).await;
+    }
+
+    /// ASK-4: `/leave` only ends the caller's own binding, but it was
+    /// gated on session-join like `/join`. A grantee whose grant was
+    /// withdrawn while joined got the [acl] denial and stayed joined
+    /// (and alice's session kept bob's ask route) until bob happened to
+    /// write a plain line. The ACL here is the live FILE, as on a
+    /// gateway, so the withdrawal is an edit of config.toml.
+    #[tokio::test]
+    async fn a_revoked_grantee_can_still_leave() {
+        let (url, _seen) = capturing_llm().await;
+        let (core, mut irc, _tg, _inbound, _home, _guard) = join_core_acl(&url, "{}");
+        let core = Arc::new(GatewayCore {
+            bus: core.bus.clone(),
+            sessions: std::sync::Mutex::new(HashMap::new()),
+            turn_locks: std::sync::Mutex::new(HashMap::new()),
+            joins: std::sync::Mutex::new(HashMap::new()),
+            progress: Arc::new(std::sync::Mutex::new(HashMap::new())),
+            speakers: Arc::new(std::sync::Mutex::new(HashMap::new())),
+            turn_permits: Arc::new(Mutex::new(HashMap::new())),
+            session_ids: std::sync::Mutex::new(HashMap::new()),
+            meta: std::sync::Mutex::new(HashMap::new()),
+            store: Arc::clone(&core.store),
+            cfg: Arc::clone(&core.cfg),
+            cfg_from_file: true,
+            hooks: HookBus::new(None),
+        });
+        let file = veles_core::config::config_dir().join("config.toml");
+        // A file-backed gateway builds its agents from the file too.
+        let acl = |bob_caps: &str| {
+            format!(
+                "[model]\nprovider = \"fixture\"\ndefault = \"fixture-model\"\n\n\
+                 [[custom_providers]]\nname = \"fixture\"\nbase_url = \"{url}\"\n\
+                 api_mode = \"chat_completions\"\n\n\
+                 [acl]\nowner = [\"telegram:1\"]\n\
+                 [acl.roles]\n\"irc:alice\" = \"user\"\n\"irc:bob\" = \"user\"\n\
+                 [acl.extra_caps]\n\"irc:bob\" = [{bob_caps}]\n"
+            )
+        };
+        std::fs::write(&file, acl("\"session-join\"")).unwrap();
+        let person = |who: &str, text: &str| {
+            let mut m = acl_msg(Some(&format!("irc:{who}")), text);
+            m.sender = who.into();
+            m.sender_ctx.mask = Some(format!("{who}!~{who}@host"));
+            m.sender_ctx.channel = Some("#chan".into());
+            m
+        };
+        core.handle(alice("hi")).await;
+        core.handle(person("bob", "hello")).await;
+        drain_texts(&mut irc);
+        core.handle(person("bob", "/join alice")).await;
+        let joined = drain_texts(&mut irc).join("\n");
+        assert!(joined.starts_with("joined [alice in #chan]"), "{joined}");
+        let a = alice("x");
+        let alice_key = core.session_key_for("irc", "#chan", a.sender_id.as_deref(), &a.sender_ctx);
+        let alice_sid = core
+            .session_ids
+            .lock_ok()
+            .get(&alice_key)
+            .cloned()
+            .expect("alice's session");
+        assert!(veles_core::join::active(&alice_sid).is_some());
+
+        // The owner withdraws bob's session-join (a longer file, so the
+        // live config's key changes even within one mtime tick).
+        std::fs::write(&file, format!("{}# withdrawn\n", acl(""))).unwrap();
+        core.handle(person("bob", "/join alice")).await;
+        assert!(
+            drain_texts(&mut irc)
+                .join("\n")
+                .contains("[acl] `join` requires the session-join capability"),
+            "joining again is refused"
+        );
+        core.handle(person("bob", "/leave")).await;
+        let left = drain_texts(&mut irc).join("\n");
+        assert!(left.starts_with("left [alice in #chan]"), "{left}");
+        assert!(
+            veles_core::join::active(&alice_sid).is_none(),
+            "the binding is gone at once"
+        );
     }
 
     /// The owner's line while alice's turn runs: it queues behind that

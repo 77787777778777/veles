@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset am {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset am {%1$s %2$s done} {%1$s %2$s ተጠናቋል}
 ::msgcat::mcset am {%1$s %2$s failed: %3$s} {%1$s %2$s አልተሳካም: %3$s}
+::msgcat::mcset am {%1$s %2$s over ssh anyway?} {%1$s %2$s በssh ቢፈጸምም?}
 ::msgcat::mcset am {%1$s %2$s over ssh…} {%1$s %2$s በssh…}
 ::msgcat::mcset am {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset am {%1$s (%2$s waiting)} {%1$s (%2$s በመጠበቅ ላይ)}
 ::msgcat::mcset am {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  አስተሳሰብ %3$s}
 ::msgcat::mcset am {%1$s = %2$s here} {%1$s = %2$s እዚህ}
+::msgcat::mcset am {%1$s = %2$s on %3$s} {%1$s = %2$s በ%3$s ላይ}
 ::msgcat::mcset am {%1$s NOT saved: %2$s} {%1$s አልተቀመጠም፦ %2$s}
 ::msgcat::mcset am {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s የ%2$s ቤተመጻሕፍት ነው እና ለማንበብ ብቻ ነው — ለመቀየር በአዲስ… ቅዳው}
 ::msgcat::mcset am {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s የ%2$s ቤተመጻሕፍት ነው — veles የሌላ መሣሪያን ክህሎት በጭራሽ አይሰርዝም}
+::msgcat::mcset am {%1$s cannot restart itself: %2$s} {%1$s ራሱን እንደገና ማስጀመር አይችልም፦ %2$s}
+::msgcat::mcset am {%1$s differs: %2$s} {%1$s ይለያያል፦ %2$s}
 ::msgcat::mcset am {%1$s every cron job on %2$s?} {%1$s በ%2$s ላይ ያሉትን ሁሉንም cron ስራዎች?}
 ::msgcat::mcset am {%1$s failed: %2$s} {%1$s አልተሳካም: %2$s}
 ::msgcat::mcset am {%1$s in / %2$s out / %3$s calls} {%1$s ገቢ / %2$s ውጭ / %3$s ጥሪዎች}
+::msgcat::mcset am {%1$s is back after %2$s s (veles %3$s).} {%1$s ከ%2$s ሰከንድ በኋላ ተመልሷል (veles %3$s)።}
 ::msgcat::mcset am {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s ኖድ %2$s ነው፣ %3$s አይደለም። የኖድ መለያውን በአርትዕ… ውስጥ ያስተካክሉ።}
 ::msgcat::mcset am {%1$s is not a whole number} {%1$s ሙሉ ቁጥር አይደለም}
+::msgcat::mcset am {%1$s is not on: %2$s} {%1$s በርቶ አይደለም፦ %2$s}
+::msgcat::mcset am {%1$s is not set on %2$s: the default applies.} {%1$s በ%2$s ላይ አልተዋቀረም፦ ነባሪው ይተገበራል።}
 ::msgcat::mcset am {%1$s is reachable (%2$s ms).} {%1$s ይደረስበታል (%2$s ሚሊሰከንድ)።}
+::msgcat::mcset am {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s %2$s ዙር እያካሄደ ነው። ሆኖም እንደገና ይጀመር?}
 ::msgcat::mcset am {%1$s is set to something this box cannot edit (%2$s)} {%1$s ይህ ማሽን ሊያርትዐው በማይችለው ነገር ላይ ተቀምጧል (%2$s)}
 ::msgcat::mcset am {%1$s is unreachable: %2$s} {%1$s አይደረስበትም፦ %2$s}
+::msgcat::mcset am {%1$s is up, but its node binding is wrong: %2$s} {%1$s በርቷል፣ ነገር ግን የኖድ አገናኙ ስህተት ነው፦ %2$s}
+::msgcat::mcset am {%1$s not compared: %2$s} {%1$s አልተነጻጸረም፦ %2$s}
 ::msgcat::mcset am {%1$s of %2$s characters} {%1$s ከ%2$s ቁምፊዎች}
 ::msgcat::mcset am {%1$s of %2$s sessions} {ከ%2$s ክፍለ ጊዜዎች %1$s}
 ::msgcat::mcset am {%1$s of %2$s skills reach the prompt} {%1$s ከ%2$s ክህሎቶች ወደ prompt ይደርሳሉ}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset am {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset am {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset am {%1$s: %2$s} {%1$s፦ %2$s}
+::msgcat::mcset am {%1$s: %2$s on the gateway} {%1$s፦ %2$s በጌትዌዩ ላይ}
+::msgcat::mcset am {%1$s: %2$s on the gateway (ships with veles)} {%1$s፦ %2$s በጌትዌዩ ላይ (ከveles ጋር ይላካል)}
 ::msgcat::mcset am {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s፦ %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset am {%1$s: no language server on the gateway. %2$s} {%1$s፦ በጌትዌዩ ላይ የቋንቋ አገልጋይ የለም። %2$s}
 ::msgcat::mcset am {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s፦ ጌትዌዩው በማህደረ ትውስታ ውስጥ የሚያቆያቸው የመጨረሻዎቹ %2$s ከ%3$s መስመሮች፣ ምስጢሮች በዚያ ኖድ ላይ ተሰውረዋል።}
+::msgcat::mcset am {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s፦ የተጠቃሚው ፕላግኢን %2$s ተመሳሳይ ይዘት ያለውን አብሮ የተሰራውን ይሸፍናል (%3$s)}
 ::msgcat::mcset am {%d MCP server(s) configured} {%d MCP አገልጋይ ተዋቅሯል}
 ::msgcat::mcset am {%d entries} {%d ግቤቶች}
 ::msgcat::mcset am {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {%d ፋይሎች የኤክስቴንሽኑ በተገመገመው መልኩ በትክክል ይጻፋሉ። ከቅድመ-እይታው በኋላ ከመካከላቸው አንዱ ከተቀየረ ምንም አይጻፍም። commit፣ push ወይም PR አይከሰትም።}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset am {%s (stale)} {%s (ጊዜው ያለፈበት)}
 ::msgcat::mcset am {%s (this session)} {%s (ይህ ሴሽን)}
 ::msgcat::mcset am {%s GB free of %s GB} {ነፃ፦ %s GB (ከ%s GB)}
+::msgcat::mcset am {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s ትዕዛዙ በssh ወደ ተዋቀረው አስተናጋጅ ይሄዳል፣ ይህ ፍተሻ ግን ከኖዱ ጋር ማገናኘት አልቻለም።}
 ::msgcat::mcset am {%s already exists — open it from the list} {%s አስቀድሞ አለ — ከዝርዝሩ ይክፈቱት}
 ::msgcat::mcset am {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {%s ከከፈቱት በኋላ ተቀይሯል — ምንም አልተተካም፤ ጽሑፍዎን ገልብጠው ያውጡ፣ ከዚያ እንደገና ጫን}
 ::msgcat::mcset am {%s cleared for this buffer} {%s ለዚህ ቡፈር ተጸድዷል}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset am {%s comes from config.toml [acl] — edit there} {%s ከconfig.toml [acl] ነው — እዚያ አርትዕ}
 ::msgcat::mcset am {%s config change(s) wait for you — /configsync} {%s የውቅር ለውጥ(ዎች) እርስዎን ይጠብቃሉ — /configsync}
 ::msgcat::mcset am {%s did not become healthy within 30s} {%s በ30 ሰከንድ ውስጥ ጤናማ አልሆነም}
+::msgcat::mcset am {%s did not come back within 120 s: look at its log where it runs.} {%s በ120 ሰከንድ ውስጥ አልተመለሰም፦ በሚሠራበት ቦታ ምዝገባውን ይመልከቱ።}
 ::msgcat::mcset am {%s done} {%s ተጠናቋል}
 ::msgcat::mcset am {%s failed: %s} {%s አልሰራም፦ %s}
+::msgcat::mcset am {%s holds a credential: it stays on its node and is not shown.} {%s ምስክርነት ይይዛል፦ በኖዱ ላይ ይቆያል እና አይታይም።}
 ::msgcat::mcset am {%s is already split} {%s አስቀድሞ ተሰንጥቋል}
+::msgcat::mcset am {%s is restarting; waiting for it to come back…} {%s እየተጀመረ ነው፤ እስኪመለስ በመጠበቅ ላይ…}
 ::msgcat::mcset am {%s is the language in use — pick another one to swap with} {%s አሁን በጥቅም ላይ ያለው ቋንቋ ነው — ለመለዋወጥ ሌላ ቋንቋ ይምረጡ}
 ::msgcat::mcset am {%s is up} {%s በርቷል}
 ::msgcat::mcset am {%s keys — any key closes} {%s ቁልፎች — ማንኛውም ቁልፍ ይዘጋል}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset am {; shadows bundled} {; አብሮ የተሰራውን ይሸፍናል}
 ::msgcat::mcset am {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {የውቅር አቅርቦት ቅንብሮችን ሊቀይር ይችላል፤ የካዝና አቅርቦት ደግሞ ምስጢሮችን ያዋህዳል፤ በደህንነት ክፍል ላይ የሚደረጉ ለውጦች ግን አሁንም ባለቤቱን ይጠብቃሉ።}
 ::msgcat::mcset am {A failing plugin may drop hooks mid-turn.} {የተሳሳተ ፕላግኢን በዙር መካከል ሁክሶችን ሊጥል ይችላል.}
+::msgcat::mcset am {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {የያዘ ክፍል፦ ከዚህ አይጻፍም፤ በኖድ ላይ አርትዕ አድርገው ውቅሩን ይግፉ፣ ባለቤቱም በዚያ ይተገብረዋል።}
 ::msgcat::mcset am {A local server: no key is needed unless you set one up.} {የአካባቢ አገልጋይ፦ ራስዎ እስካላዘጋጀው ድረስ ቁልፍ አያስፈልግም።}
 ::msgcat::mcset am {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {የተፈረመ ልቀት ከቅድመ-በረራ በኋላ ብቻ ይዘጋጃል። እንደገና ማስጀመር/ማረጋገጥ፣ መቀጠል እና መመለስ የተለያዩ እርምጃዎች ናቸው። ጤናማ ሂደት የተገመገመውን የምንጭ ክለሳ በትክክል ማሳወቅ አለበት።}
 ::msgcat::mcset am {A value is stored for %s — leave this empty to keep it.} {ለ%s የተቀመጠ እሴት አለ — እሱን ለማቆየት ይህን ባዶ ይተዉት።}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset am {Asking the provider for its models…} {ከአቅራቢው ሞዴሎቹን እየተጠየቀ ነው…}
 ::msgcat::mcset am Attach አያይዝ
 ::msgcat::mcset am {Attach to the next message} {ወደ ቀጣዩ መልእክት አያይዝ}
+::msgcat::mcset am {Audit log unavailable: %s} {የኦዲት ምዝገባ አይገኝም፦ %s}
+::msgcat::mcset am {Audit log…} {የኦዲት ምዝገባ…}
 ::msgcat::mcset am {Author guide} {የደራሲ መመሪያ}
 ::msgcat::mcset am {Automatically discovered from the attached gateway's cluster registry.} {ከተያያዘው ጌትዌዩ የክላስተር ምዝገባ በራስ-ሰር ተግኝቷል።}
 ::msgcat::mcset am Back ተመለስ
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset am {Browse sessions} {ክፍለ ጊዜዎችን ያስሱ}
 ::msgcat::mcset am {Build manifest + preflight} {የግንባታ ማኒፌስት + ቅድመ-በረራ}
 ::msgcat::mcset am {Build: veles %1$s, revision %2$s (%3$s %4$s)} {ግንባታ፦ veles %1$s፣ ክለሳ %2$s (%3$s %4$s)}
+::msgcat::mcset am {Bulk %1$s failed: %2$s} {ጅምላ %1$s አልተሳካም፦ %2$s}
+::msgcat::mcset am {Bulk %1$s: %2$s (%3$s).} {ጅምላ %1$s፦ %2$s (%3$s)።}
+::msgcat::mcset am {Bulk action cancelled.} {የጅምላ እርምጃ ተሰርዟል።}
 ::msgcat::mcset am {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e የመስመር ጫፎች · C-b/C-f ፊደል · M-b/M-f ቃል · C-k እስከ EOL ሰርዝ · C-y yank · M-w ቅዳ · C-w ክልል ሰርዝ · C-space ምልክት ያዘጋጅ · C-/ ቀልብስ}
 ::msgcat::mcset am {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g ሁሉንም ያቋርጣል · C-j አዲስ መስመር · M-p/M-n ታሪክ · Tab አጠናቅቅ}
+::msgcat::mcset am {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU፦ %1$s ኮሮች፣ ባለፉት %3$s ሰከንድ %2$s%% ተይዟል}
 ::msgcat::mcset am {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU፦ %1$s ኮሮች፣ ጫና %2$s / %3$s / %4$s (ከኮሮቹ %5$s%%)}
 ::msgcat::mcset am Cancel ሰርዝ
 ::msgcat::mcset am {Cancel task} {ስራውን ሰርዝ}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset am {Channels (e.g. #veles #dev)} {ቻነሎች (ለምሳሌ #veles #dev)}
 ::msgcat::mcset am Chat ቻት
 ::msgcat::mcset am {Chat — not attached; press Attach in the Instances tab} {ቻት — አልተያያዘም; በኢንስታንሶች ትር ውስጥ አያይዝ ይጫኑ}
-::msgcat::mcset am {Check (lsp)} {ፈትሽ (lsp)}
+::msgcat::mcset am {Check (C-c C-k)} {ፍተሻ (C-c C-k)}
 ::msgcat::mcset am {Check again} {እንደገና ፈትሽ}
 ::msgcat::mcset am {Check files} {ፋይሎችን አጣራ}
 ::msgcat::mcset am Checkpoints {የምርመራ ነጥቦች}
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset am {Close (Esc)} {ዝጋ (Esc)}
 ::msgcat::mcset am {Close the setup wizard? Nothing has been written yet.} {የማዋቀር ማስመሪያውን ዝጋ? እስካሁን ምንም አልተጻፈም።}
 ::msgcat::mcset am {Code actions} {የኮድ እርምጃዎች}
+::msgcat::mcset am {Command-center audit log} {የትዕዛዝ ማዕከል የኦዲት ምዝገባ}
 ::msgcat::mcset am Commit ኮሚት
 ::msgcat::mcset am {Commit ready for review. Push is a separate action.} {ኮሚቱ ለግምገማ ዝግጁ ነው። ፑሽ የተለየ እርምጃ ነው።}
 ::msgcat::mcset am {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {የታሰረውን የምስል ዲጀስት ጨምሮ ሁሉንም የPDS መስኮች ይሙሉ፣ የማስረከብ ቅድመ እይታውን ከማየትዎ በፊት።}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset am {Config differs: %s} {ውቅር ይለያያል፦ %s}
 ::msgcat::mcset am {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {የውቅር መዝገብ፦ ያ ኖድ የ%1$s ለውጦች እስከ %3$s ድረስ አለው፣ ይህ ጌትዌዩ ደግሞ እስከ %2$s}
 ::msgcat::mcset am {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {የውቅር መዝገብ፦ ይህ ጌትዌዩ የ%1$s ለውጦች እስከ %2$s ድረስ አለው፣ ያ ኖድ ደግሞ እስከ %3$s}
+::msgcat::mcset am {Config of %s} {የ%s ውቅር}
 ::msgcat::mcset am {Config only on that node: %s} {ውቅር በዚያ ኖድ ብቻ፦ %s}
 ::msgcat::mcset am {Config only on this gateway: %s} {ውቅር በዚህ ጌትዌዩ ብቻ፦ %s}
+::msgcat::mcset am {Config: %s} {ውቅር፦ %s}
 ::msgcat::mcset am Configure አዋቅር
 ::msgcat::mcset am {Configure %s} {%s አዋቅር}
 ::msgcat::mcset am {Configure translator} {ተርጓሚን አዋቅር}
 ::msgcat::mcset am {Configured desktop gateway} {የተዋቀረ የዴስክቶፕ ጌትዌይ}
 ::msgcat::mcset am Configure… አዋቅር…
 ::msgcat::mcset am {Configuring %s} {እየአዋቀሩ ነው: %s}
+::msgcat::mcset am Config… ውቅር…
 ::msgcat::mcset am {Confirm or discard the current signed review before starting another download.} {ሌላ ማውረድ ከመጀመር በፊት የአሁኑን የተፈረመ ገምገም ያረጋግጡ ወይም ይጣሉ።}
 ::msgcat::mcset am {Container host: typed host plan and privileged CLI handoff} {የኮንቴይነር ማገጃ፦ ዓይነቱ የተወሰነ የማገጃ እቅድ እና በአስተዳዳሪ ፍቃድ የሚሠራ የCLI ዝውውር}
 ::msgcat::mcset am {Context window} {የኩንብ መስኮት}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset am {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {ቦቱን በ@BotFather ይፍጠሩ፣ ከዚያ ቶከኑን ከታች ይለጥፉ፦ ወደ ተመሰጠረው ካዝና ይገባል፣ በፍጹም ወደ config.toml አይደለም።}
 ::msgcat::mcset am {Create this extension?} {ይህ ማስፋፊያ ይፈጠር?}
 ::msgcat::mcset am {Create this generated extension?} {ይህ የተፈጠረ ኤክስቴንሽን ይፈጠር?}
+::msgcat::mcset am {Created and loaded. Review and test the extension before publishing.} {ተፈጥሯል እና ተጭኗል። ከማተምዎ በፊት ኤክስቴንሽኑን ይገምግሙ እና ይፈትኑ።}
 ::msgcat::mcset am {Created and reloaded. Review and test the extension before publishing.} {ተፈጥሮ እንደገና ተጭኗል። ከማተምዎ በፊት ማስፋፊያውን ይገምግሙት እና ይሞክሩት።}
 ::msgcat::mcset am {Created, but reload failed} {ተፈጥሯል፣ ግን እንደገና መጫን አልተሳካም}
+::msgcat::mcset am {Created, not loaded} {ተፈጥሯል፣ አልተጫነም}
+::msgcat::mcset am {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {ተፈጥሯል፣ ገና አልተጫነም፦ በኤክስቴንሽኑ ማውጫ ውስጥ cargo build --release ያሂዱ፣ ከዚያ በኤክስቴንሽኖች አስተዳደር ውስጥ እንደገና ይጫኑት።}
+::msgcat::mcset am {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {ተፈጥሯል። ይህ ጌትዌዩ ኤክስቴንሽኑን መጫኑን አይነግርም፦ ሁኔታውን በኤክስቴንሽኖች አስተዳደር ውስጥ ይመልከቱ።}
 ::msgcat::mcset am {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {ከአብነት %s/<name>/SKILL.md ይፈጥራል እና ይከፍተዋል. ወደ prompt መረጃ ጠቋሚ የሚደርሰው frontmatter መግለጫ ብቻ ነው, ስለዚህ ክህሎቱን መቼ እንደሚጠቀሙ የሚናገር ያድርጉት.}
 ::msgcat::mcset am {Cron history} {የCron ታሪክ}
 ::msgcat::mcset am {Cron jobs} {Cron ስራዎች}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset am {Delete user} {ተጠቃሚ አጥፋ}
 ::msgcat::mcset am {Delete workspace?} {የስራ ቦታ አጥፋ?}
 ::msgcat::mcset am Deop {ኦፕ አንሳ}
+::msgcat::mcset am {Deployment consistency unknown: %s node(s) could not be compared.} {የማሰማራት ወጥነት አይታወቅም፦ %s ኖድ(ዎች) ሊነጻጸሩ አልቻሉም።}
+::msgcat::mcset am {Deployment consistency: not checked yet (Drift… compares every node).} {የማሰማራት ወጥነት፦ ገና አልተፈተሸም (ልዩነት… ሁሉንም ኖድ ያነጻጽራል)።}
 ::msgcat::mcset am {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {ለውጡን ይግለጹ። AI የዚህን ኤክስቴንሽን በርካታ ፋይሎች ሊቀይር ወይም ሊጨምር ይችላል። እያንዳንዱ ፋይል እንደ diff ይታያል፣ እርስዎ እስኪያረጋግጡ ድረስ ደግሞ ምንም አይጻፍም።}
 ::msgcat::mcset am {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {ለውጡን ይግለጹ። AI መተኪያ ሊጠቁም ይችላል፣ ነገር ግን diffን እስከሠመረቁት እና እስካረጋገጡት ድረስ መጻፍ አይችልም።}
 ::msgcat::mcset am {Describe the requested extension change first.} {መጀመሪያ የሚፈለገውን የማስፋፊያ ለውጥ ይግለጹ።}
 ::msgcat::mcset am Description መግለጫ
+::msgcat::mcset am {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {የዴስክቶፕ ዙሮች ከእንደገና መጀመሩ በኋላ ካለው የተቀመጠ ታሪካቸው ይቀጥላሉ፤ የconnector፣ የA2A፣ የመልእክት፣ የcron እና የንዑስ-ወኪል ዙሮች ግን አይቀጥሉም።}
 ::msgcat::mcset am {Desktop: local core, modules and process plugins} {የዴስክቶፕ፦ አካላዊ አደረ ክፍል፣ ሞጁሎች እና የሂደት ፕላገኖች}
 ::msgcat::mcset am Detach አንጣል
 ::msgcat::mcset am {Detach foreground} {ፊተኛውን አነጣ}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset am {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {ከመጫን በፊት የመልቀቂያውን ማኒፌስት እና የአስተናጋጅ አርካይቭ ያውርዱ እና ያረጋግጡ። ሁሉም አምስት የማንነት መረጃዎች ያስፈልጋሉ። ጌትዌዩ የግል ተረካቢውን አርካይቭ ይዟል፤ በዚህ ቅድመ እይታ ምንም አልተጫነም።}
 ::msgcat::mcset am {Downloading and verifying the signed release…} {የተፈረመውን መልቀቂያ በማውረድ እና በማረጋገጥ ላይ…}
 ::msgcat::mcset am {Draft this as an extension?} {ይህን እንደ ማስፋፊያ ረቂቅ ያድርጉት?}
+::msgcat::mcset am {Draft this change as an extension?} {ይህን ለውጥ እንደ ኤክስቴንሽን ረቂቅ ያድርጉ?}
 ::msgcat::mcset am {Drag to scroll; a quick swipe goes further.} {ለማሸብለል ይጎትቱ፤ ፈጣን ጠረጋ የበለጠ ይሄዳል።}
 ::msgcat::mcset am {Drift check failed: %s} {የልዩነት ፍተሻ አልተሳካም፦ %s}
 ::msgcat::mcset am {Drift check: %s node(s) differ from this gateway.} {የልዩነት ፍተሻ፦ %s ኖዶች ከዚህ ጌትዌዩ ይለያያሉ።}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset am Eval→gw Eval→gw
 ::msgcat::mcset am {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {በ%s ላይ የሚደረገው ለውጥ ሁሉ ይመዘገባል. ወደነበረበት መመለስ ሙሉውን ማውጫ ወደዚያ ኮሚት ይመልሰዋል — እና አስቀድሞ የአሁኑን ሁኔታ ቅጽበታዊ ምስል ይይዛል, ስለዚህ የአንድ-መንገድ በር አይደለም.}
 ::msgcat::mcset am {Every plugin file goes back to that commit. The current state is committed first.} {እያንዳንዱ ፕላግኢን ፋይል ወደዚያ ኮሚት ይመለሳል. የአሁኑ ሁኔታ አስቀድሞ ይመዘገባል.}
+::msgcat::mcset am {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {ሁሉም ደረጃ፦ New extension የTcl፣ TypeScript፣ Racket ወይም Common Lisp ኤክስቴንሽን፣ ወይም ከዛፉ ውጭ የሆነ የRust ፕላግኢን (በveles-plugin-abi-sdk ክሬት ላይ ያለ cdylib፦ በcargo build --release ይገንቡት፣ ከዚያ በኤክስቴንሽኖች አስተዳደር ውስጥ እንደገና ይጫኑት) ይጽፋል። ሁለት ደረጃዎች ከተጠቃሚው የፕላግኢን ማውጫ ውጭ ይኖራሉ እና ከትዕዛዝ መስመር ይጀመራሉ፦ ሞጁል፣ ከveles ጋር አብሮ የሚገነባ የRust ቤተ-መጽሐፍት (veles plugins new NAME --kind overlay ማከማቻውን ይጽፋል)፣ እና የሂደት ፕላግኢን፣ በveles-plugin-sdk ክሬት ላይ ያለ ፕሮግራም ጌትዌዩ የሚያሂደውና የሚቆጣጠረው። የጸሐፊ መመሪያ ለእያንዳንዱ ክፍል አለው።}
 ::msgcat::mcset am {Exact commit} {ትክክለኛው commit}
 ::msgcat::mcset am {Exact permission rule} {ትክክለኛው የፍቃድ ደንብ}
 ::msgcat::mcset am {Example: a hook} {ምሳሌ፦ አንድ ሁክ}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset am {Explain the diagnostics} {ምርመራዎቹን አብራራ}
 ::msgcat::mcset am Export… {ወደ ውጭ ላክ…}
 ::msgcat::mcset am {Extension API} {የማስፋፊያ API}
+::msgcat::mcset am {Extension API reference} {የኤክስቴንሽን API ማጣቀሻ}
 ::msgcat::mcset am {Extension development} {የማስፋፊያ ልማት}
 ::msgcat::mcset am {Extension guide} {የማስፋፊያ መመሪያ}
 ::msgcat::mcset am {Extension source} {የማስፋፊያ ምንጭ}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset am {Guards — what the harness stops, and where it stands now} {ጠባቂዎች — ሃርነሱ የሚያቆመው እና አሁን ያለበት ሁኔታ}
 ::msgcat::mcset am {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {አስተናጋጆች በሚታየው ቅደም ተከተል ይሰራሉ; ባዶ ያልሆነ እሴት የሚመልስ የመጀመሪያው ያሸንፋል. አንዱን ማጥፋት ሳያስወግደው ይዘለላል, ምርጫውም በconfig.toml ውስጥ ይቀመጣል ስለዚህ ፕላግኢን እንደገና ሲጫን በዝምታ እንደገና ሊያበራው አይችልም.}
 ::msgcat::mcset am Health ጤና
+::msgcat::mcset am {Health alerts} {የጤና ማሳወቂያዎች}
 ::msgcat::mcset am {Health alerts (%s):} {የጤና ማሳወቂያዎች (%s)፦}
 ::msgcat::mcset am Heartbeat {የልብ ምት}
 ::msgcat::mcset am {Heartbeat age: %s s} {የልብ ምት ዕድሜ፦ %s ሰ}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset am Install… ጫን…
 ::msgcat::mcset am {Instance name (for example an IRC network)} {የኢንስታንስ ስም (ለምሳሌ የIRC አውታረ መረብ)}
 ::msgcat::mcset am Instances ኢንስታንሶች
+::msgcat::mcset am {Instead of patching %s: } {በ%s ላይ ፓች ከማድረግ ይልቅ፦ }
 ::msgcat::mcset am {It becomes the current content, as a new revision — so the restore can be undone too.} {እንደ አዲስ ክለሳ የአሁኑ ይዘት ይሆናል — ስለዚህ መመለሱም ሊቀለበስ ይችላል።}
 ::msgcat::mcset am {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {በዚህ ማሽን ላይ ወዳለው የተመሰጠረ ካዝና ይገባል። ወኪሉ በፍጹም አያየውም፦ በትዕዛዞች ውስጥ እንደ $%s መጠቀም፣ ወይም ወደ ተፈቀዱ አስተናጋጆች መላክ ብቻ ነው የሚችለው።}
 ::msgcat::mcset am {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {ከክላስተር መዝገቡ በመላው ፍሊት ተወግዷል፦ የሚቀጥለው የgossip ልውውጥ ለሁሉም የ0.2.0 አጋር እነሱም እንዲጥሉት ይነግራል፣ አንዳቸውም እንደገና አያዋህዱትም። ከ0.2.0 የሚያረጅ አጋር ግን አሁንም ይዘረዝረዋል። ማሽኑ ተመልሶ ልብ ከመታ እንደገና ይመዘገባል። የማመሳሰያ አጋሮች እና የተቀመጡ ኢንስታንሶች አይነኩም።}
+::msgcat::mcset am {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {በዚያ ኖድ config.toml ውስጥ በዚያ እንደተደረገ አርትዕ ይጻፋል፤ ከዚያ የውቅር ማመሳሰል ውቅርን ከእሱ ጋር ወደሚያመሳስሉ ኖዶች ይወስደዋል።}
 ::msgcat::mcset am {It leaves memory now. Its history keeps every revision, and History… can restore it.} {አሁን ከትዝታ ይወጣል። ታሪኩ እያንዳንዱን ክለሳ ይይዛል፣ ታሪክ… ሊመልሰው ይችላል።}
+::msgcat::mcset am {Its gateway stops and %s.} {ጌትዌዩው ይቆማል እና %s።}
 ::msgcat::mcset am Join ተቀላቀል
 ::msgcat::mcset am {Join a pool} {የማሽኖች ቡድን ተቀላቀል}
 ::msgcat::mcset am {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {የ%1$s የማሽኖች ቡድንን እንደ %2$s ይቀላቀሉ? ቡድኑ ይህን ስልክ በ%3$s ያገኘዋል።}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset am Joining… {በመቀላቀል ላይ…}
 ::msgcat::mcset am Join… ተቀላቀል…
 ::msgcat::mcset am {Jump to composer} {ወደ ኮምፖዘሩ ዝለል}
+::msgcat::mcset am {Key (for example model.default)} {ቁልፍ (ለምሳሌ model.default)}
 ::msgcat::mcset am Keybindings {የቁልፍ ማስረካዣዎች}
 ::msgcat::mcset am {Keyboard help} {የቁልፍ ሰሌዳ እርዳታ}
 ::msgcat::mcset am {Kick %1$s from %2$s?} {%1$sን ከ%2$s አባርር?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset am {LLM provider} {የLLM አቅራቢ}
 ::msgcat::mcset am Language ቋንቋ
 ::msgcat::mcset am {Language (i18n)} {ቋንቋ (i18n)}
+::msgcat::mcset am {Language servers on this gateway} {በዚህ ጌትዌዩ ላይ ያሉ የቋንቋ አገልጋዮች}
 ::msgcat::mcset am Language… ቋንቋ…
 ::msgcat::mcset am {Last active} {መጨረሻ የነቃበት}
 ::msgcat::mcset am {Last probe: %1$s — %2$s} {የመጨረሻ ምርመራ፦ %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset am Level ደረጃ
 ::msgcat::mcset am {Lift lockdown} {መቆለፍ አንሳ}
 ::msgcat::mcset am Lines መስመሮች
+::msgcat::mcset am {List targets…} {ዒላማዎችን ዘርዝር…}
 ::msgcat::mcset am {List the provider's models} {የአቅራቢውን ሞዴሎች ዝርዝር ያሳዩ}
 ::msgcat::mcset am Load ጭነት
 ::msgcat::mcset am {Load more} {ተጨማሪ ጫን}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset am Next ቀጣይ
 ::msgcat::mcset am Nickname {ቅጽል ስም}
 ::msgcat::mcset am {NixOS: emit a module snippet; do not edit host declarations} {NixOS፦ የሞጁል ክፍላት ያውጡ፤ የማገጃ ገለጻዎችን አያርትዑ}
-::msgcat::mcset am {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {ለዚህ ኖድ የSSH የሕይወት ዑደት ዒላማ አልተዋቀረም። ለማሰማራት ወይም እንደገና ለማስጀመር ኢንስታንስ በግልጽ ያክሉ።}
+::msgcat::mcset am {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {ለዚህ ኖድ የSSH የሕይወት ዑደት ዒላማ አልተዋቀረም፦ እንደገና ጀምር ኖዱ በተቆጣጣሪው በኩል ራሱን እንደገና እንዲጀምር ይጠይቃል፤ የFleet ማሰማራት የssh ዒላማ ያለው የተቀመጠ ኢንስታንስ ይፈልጋል።}
 ::msgcat::mcset am {No additional push happens.} {ተጨማሪ ፑሽ አይከናወንም።}
 ::msgcat::mcset am {No apps yet. Ask the agent to make one: “make me an app that…”} {እስካሁን መተግበሪያ የለም። ወኪሉን አንድ እንዲሠራ ይጠይቁ፦ “… የሚያደርግ መተግበሪያ ሥራልኝ”}
 ::msgcat::mcset am {No code in the picture. Hold the phone closer, straight on, and scan again.} {በምስሉ ውስጥ ኮድ የለም። ስልኩን ይበልጥ ያቅርቡ፣ ቀጥ አድርገው ይያዙና እንደገና ይቃኙ።}
+::msgcat::mcset am {No command-center action is recorded on this gateway yet.} {በዚህ ጌትዌዩ ላይ ገና የትዕዛዝ ማዕከል እርምጃ አልተመዘገበም።}
 ::msgcat::mcset am {No configuration snapshot will be restored.} {ምንም የውቅር ቅጽበታዊ ዕይታ አልመለስም።}
 ::msgcat::mcset am {No configured sync peer for this node.} {ለዚህ ኖድ የተዋቀረ የማመሳሰል አጋር የለም።}
 ::msgcat::mcset am {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {የተለየ ተርጓሚ አልተዋቀረም። አቅራቢውን፣ ሞዴሉን እና የመድረሻ ቋንቋውን ለመምረጥ ተርጓሚን አዋቅር ይጠቀሙ።}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset am {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {በ%s የተሰሩ ስልኮች መተግበሪያዎችን በራሳቸውም ያቆማሉ። በveles የመተግበሪያ ቅንብሮች ውስጥ በራሱ እንዲጀምር እና ከበስተጀርባ እንዲሰራ ይፍቀዱለት።}
 ::msgcat::mcset am {Pin / unpin} {ሰካ / ንቀል}
 ::msgcat::mcset am {Pin to home screen} {በመነሻ ገጽ ላይ ሰካ}
+::msgcat::mcset am {Plugin author guide} {የፕላግኢን ጸሐፊ መመሪያ}
 ::msgcat::mcset am {Plugin history} {የፕላግኢን ታሪክ}
 ::msgcat::mcset am Plugins ፕላግኢኖች
 ::msgcat::mcset am Port Port
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset am {Preview here} {እዚህ ቅድመ-እይታ}
 ::msgcat::mcset am {Preview pane} {የቅድመ-እይታ ፓነል}
 ::msgcat::mcset am {Preview proposal} {ጥቆማውን ቅድመ እይታ አድርግ}
-::msgcat::mcset am {Preview the changed name or language before creating it.} {ከመፍጠርዎ በፊት የተቀየረውን ስም ወይም ቋንቋ ቅድመ እይታ ያድርጉ።}
+::msgcat::mcset am {Preview the changed name, purpose or language before creating it.} {ከመፍጠሩ በፊት የተቀየረውን ስም፣ ዓላማ ወይም ቋንቋ በቅድመ-እይታ ይመልከቱ።}
 ::msgcat::mcset am Probe ምርመራ
+::msgcat::mcset am {Probe %s node(s)?} {%s ኖድ(ዎች) ይመረመሩ?}
+::msgcat::mcset am {Probe all…} {ሁሉንም መርምር…}
 ::msgcat::mcset am {Probe of %1$s failed: %2$s} {የ%1$s ምርመራ አልተሳካም፦ %2$s}
 ::msgcat::mcset am {Profile result} {የቅርጸት ውጤት}
 ::msgcat::mcset am {Promote into config.toml} {ወደ config.toml አስተዋውቅ}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset am {Push branch…} {ቅርንጫፍ ግፋ…}
 ::msgcat::mcset am {Push complete. No pull request has been opened.} {ፑሽ ተጠናቋል። ምንም የጎትተ-ጥያቄ አልተከፈተም።}
 ::msgcat::mcset am {Push this branch?} {ይህ ቅርንጫፍ ይገፋ?}
+::msgcat::mcset am {Push this kind to every node that is a configured peer for it:} {ይህን ዓይነት ለእሱ አጋር ሆኖ ወደተዋቀረው ሁሉም ኖድ ግፋ፦}
 ::msgcat::mcset am {Push to %s:} {ወደ %s ግፋ፦}
 ::msgcat::mcset am Question ጥያቄ
 ::msgcat::mcset am Questions ጥያቄዎች
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset am {REPL target: the app} {የREPL ኢላማ፦ መተግበሪያው}
 ::msgcat::mcset am {REPL target: the gateway} {የREPL ኢላማ፦ gateway}
 ::msgcat::mcset am Read አንብብ
+::msgcat::mcset am {Read the key first: a write names the value it replaces.} {በመጀመሪያ ቁልፉን ያንብቡ፦ ጽሕፈት የሚተካውን እሴት ይጠቅሳል።}
 ::msgcat::mcset am {Reading notifications, for triggers} {ማሳወቂያዎችን ማንበብ፣ ለቀስቃሾች}
 ::msgcat::mcset am Reasoning ክርክር
 ::msgcat::mcset am {Reasoning effort} {የአስተሳሰብ ጥረት}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset am {Reset to default} {ወደ ነባሪ መልስ}
 ::msgcat::mcset am {Reset to template} {ወደ አብነት መልስ}
 ::msgcat::mcset am Restart {እንደገና ጀምር}
+::msgcat::mcset am {Restart %s?} {እንደገና ጀምር %s?}
 ::msgcat::mcset am {Restart + verify canary} {እንደገና አስጀምር + ካናሪ አረጋግጥ}
+::msgcat::mcset am {Restart cancelled.} {የእንደገና መጀመር ተሰርዟል።}
+::msgcat::mcset am {Restart of %1$s failed: %2$s} {የ%1$s እንደገና መጀመር አልተሳካም፦ %2$s}
 ::msgcat::mcset am {Restore hidden windows} {የተደበቁ መስኮቶችን መልስ}
 ::msgcat::mcset am {Restore plugins to %s?} {ፕላግኢኖችን ወደ %s መልስ?}
 ::msgcat::mcset am {Restore revision r%1$s of %2$s?} {የ%2$s ክለሳ r%1$s ይመለስ?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset am {S3 region} {የS3 ክልል}
 ::msgcat::mcset am {SASL account (optional)} {የSASL መለያ (አማራጭ)}
 ::msgcat::mcset am {SASL password (hidden)} {የSASL የይለፍ ቃል (የተደበቀ)}
+::msgcat::mcset am {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {የSSH ሕይወት ዑደት፦ በተቀመጠው ኢንስታንስ %1$s (%2$s፣ unit %3$s)።}
 ::msgcat::mcset am Sandbox ሳንድቦክስ
 ::msgcat::mcset am {Sandbox account} {የሳንድቦክስ መለያ-ሂሳብ}
 ::msgcat::mcset am Sandboxes ሳንድቦክሶች
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset am {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {በአሁኑ ጊዜ ወደዚህ ቅጽል ስም የተቀየሩ ክፍለ-ጊዜዎች የፈቱትን መንገድ ይዘው ይቀራሉ፤ አዲስ ለውጦች ግን ስሙን አያገኙም።}
 ::msgcat::mcset am {Sessions served} {የተአገለጉ ሴሽኖች}
 ::msgcat::mcset am Set አዘጋጅ
+::msgcat::mcset am {Set %1$s on %2$s to %3$s?} {%1$s በ%2$s ላይ ወደ %3$s ይቀመጥ?}
 ::msgcat::mcset am {Set [model] provider/default in config.toml.} {በconfig.toml ውስጥ [model] አቅራቢ/ነባሪን አዘጋጅ።}
 ::msgcat::mcset am {Set as swap target} {የመለዋወጫ ቋንቋ አድርግ}
 ::msgcat::mcset am {Set mode %1$s on %2$s?} {ሁነታ %1$s በ%2$s ላይ አዘጋጅ?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset am Summary ማጠቃለያ
 ::msgcat::mcset am Surface ገጽታ
 ::msgcat::mcset am {Swap ⇄} {ተለዋወጥ ⇄}
+::msgcat::mcset am {Sync %1$s to %2$s node(s)?} {%1$s ወደ %2$s ኖድ(ዎች) ይመሳሰል?}
+::msgcat::mcset am {Sync all} {ሁሉንም አመሳስል}
+::msgcat::mcset am {Sync all…} {ሁሉንም አመሳስል…}
 ::msgcat::mcset am {Sync cancelled.} {ማመሳሰል ተሰርዟል።}
 ::msgcat::mcset am {Sync complete.} {ማመሳሰል ተጠናቋል።}
 ::msgcat::mcset am {Sync now} {አሁን አመሳስል}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset am {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {አሁን ያሉት ምርመራዎች (ከቋንቋ አገልጋዩ ወይም ከፍተሻ) ከዚህ ፋይል ጋር ይላካሉ። እንደ አማራጭ ጥያቄ ይጨምሩ። መልሱ ጽሑፍ ብቻ ነው፤ ምንም ሊጻፍ አይችልም።}
 ::msgcat::mcset am {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {ማውጫው እና በውስጡ ያለው ሁሉ ይወገዳል። ይሄኛው መቀልበስ አይቻልም — ከጥያቄው ማውጣት ብቻ ከፈለጉ በምትኩ ያጥፉት።}
 ::msgcat::mcset am {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {ማውጫው ይሰረዛል። የፕላግኢን አቃፊው የgit ማከማቻ ነው እና ቀድሞ ቅጽበታዊ ገጽታ (snapshot) ይመዘገባል፣ ስለዚህ History… መልሶ ሊያመጣው ይችላል።}
-::msgcat::mcset am {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {አርታዒው የጌትዌዩ ፋይሎችን፣ ርቀት ላይ ያሉ ኢንስታንሶችን ጨምሮ፣ ይከፍታል እና በጌትዌዩ ላይ ለፋይሉ ቋንቋ የቋንቋ አገልጋዩን ያሂዳል፦ tcl-lsp፣ typescript-language-server (TypeScript እና JavaScript)፣ rust-analyzer (የRust ፕላግኢን crate ወይም ሞጁል)፣ clangd (C)፣ racket-langserver እና የCommon Lisp አገልጋይ። ጌትዌዩ አገልጋይ ላለው ሁሉም ቋንቋ hover፣ ወደ ፍቺ መሄድ፣ ማሟያ እና ቀጥታ ምርመራ ይሰራሉ፤ ሲያጥር፣ አርታዒው በዚያ የትኛውን ፕሮግራም መጫን እንዳለበት ይነግራል እና የአጻጻፍ ስልት ማድመቂያውን ይይዛል። ፍተሻ ተዛማጁን አፈታሽ በጌትዌዩ ላይ ያሂዳል፦ tcl-lsp፣ tsc --noEmit፣ node --check፣ cargo check፣ clang -fsyntax-only፣ ወይም የRacket እና Lisp አንባቢዎች። ያስቀምጡ፣ በኤክስቴንሽኖች አስተዳድር ውስጥ እንደገና ጫን፣ እና የአካባቢ ሁኔታን ሳያትሙ ኤክስቴንሽኑን ይፈትኑ።}
+::msgcat::mcset am {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {አርታዒው የጌትዌዩን ፋይሎች፣ የሩቅ ኢንስታንሶችን ጨምሮ፣ ይከፍታል እና በጌትዌዩ ላይ ለፋይሉ ቋንቋ የቋንቋ አገልጋዩን ያሂዳል፦ typescript-language-server (TypeScript እና JavaScript)፣ rust-analyzer (የRust ፕላግኢን ክሬት ወይም ሞጁል)፣ clangd (C)፣ racket-langserver፣ የCommon Lisp አገልጋይ፣ እና ለTcl ጌትዌዩ ካለው tcl-lsp (የveles የLinux ፓኬጆች ያካትቱታል)። Hover፣ ወደ ትርጓሜ መሄድ፣ ማጠናቀቅ እና ቀጥታ ምርመራ ጌትዌዩ አገልጋይ ላለው ለእያንዳንዱ ቋንቋ ይሠራሉ፤ ሲጎድለው አርታዒው በዚያ የትኛውን ፕሮግራም መጫን እንዳለበት ይነግራል እና የአጻጻፍ ምልክት ማድመቁን ይቀጥላል። ፍተሻ ተዛማጁን ፈታሽ በጌትዌዩ ላይ ያሂዳል፦ tsc --noEmit፣ node --check፣ cargo check፣ clang -fsyntax-only፣ የRacket እና የLisp አንባቢዎች፣ እና ለTcl የሞተሩ የራሱ tclsh (የሙሉነት ፍተሻ፣ ወይም የተጫነ ካለ የtcl-lsp lint)። አስቀምጥ፣ በኤክስቴንሽኖች አስተዳደር ውስጥ እንደገና ጫን፣ እና ኤክስቴንሽኑን የአካባቢ ሁኔታ ሳያትሙ ይፈትኑት።}
 ::msgcat::mcset am {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {የመጀመሪያው ማስረከብ ምስጢሮችን፣ የታሰረውን ምስል እና የራንታይም ፋይሎችን ያዘጋጃል፤ PDSን ግን አያስጀምርም። የKEK እና የPLC መተኪያ ቁልፍ በእጅ (ከመስመር ውጭ) ቅዳ፣ ከዚያ የቅዳ ማረጋገጫን የያዘ አዲስ የተገመገመ ጥያቄ ያቅርቱ — HTTP-01 TLS እና ማነቃቃት ለማዘጋጀት። የDNS መዝገቦች በቀጥታ ወደ ይህ አስተናጋጅ መመሪት ያስፈልጋቸዋል፤ veles ምንም የCDN ፕሮክሲ ወይም የDNS ለውጥ አያደርግም።}
+::msgcat::mcset am {The fleet is NOT consistent: %s node(s) differ.} {ፍሊቱ ወጥ አይደለም፦ %s ኖድ(ዎች) ይለያያሉ።}
+::msgcat::mcset am {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {ፍሊቱ ልዩነቶች ያሉት ሆኖ ወጥ ነው፦ %1$s ኖድ(ዎች) ተመሳሳይ ግንባታ ያሂዳሉ እና በሚጋሩት ነገር ሁሉ ይስማማሉ፤ %2$s ዕቃ(ዎች) በሁሉም ኖድ ላይ የሉም።}
+::msgcat::mcset am {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {ፍሊቱ ወጥ ነው፦ %s ኖድ(ዎች) ተመሳሳይ ግንባታ፣ ሞጁሎች እና ፕላግኢኖች ያሂዳሉ።}
 ::msgcat::mcset am {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {ኤክስቴንሽኑ ከተፈጠረ በኋላ ቅጹ ተቀይሯል። እንደገና ፍጠር፣ ወይም ቀላሉን ግንድ ቅድመ እይታ ይመልከቱ።}
+::msgcat::mcset am {The gateway did not receive the purpose as written. Nothing was created.} {ጌትዌዩ ዓላማውን በተጻፈው መልኩ አልተቀበለም። ምንም አልተፈጠረም።}
+::msgcat::mcset am {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {ጌትዌዩ የኤክስቴንሽን መመሪያዎችን አያገለግልም (ከ0.2.2 ያረጀ ነው)፣ ይህ ዴስክቶፕም ቅጂያቸው የለውም።}
 ::msgcat::mcset am {The gateway itself is untouched.} {ጌትዌይ (gateway) ራሱ አልተነካም።}
 ::msgcat::mcset am {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {ጌትዌዩ ውቅሩን እንደገና ጭኗል፣ ስለዚህ አዲስ ክፍለ ጊዜዎች አሁኑኑ ይጠቀሙበታል፣ በካዝናው የተቀመጠ key ደግሞ በሚቀጥለው ጥያቄ ላይ ይውላል። Telegram እና IRC በሚቀጥለው የጌትዌይ ዳግም ማስጀመሪያ ይጀምራሉ፦ veles gateway restart።}
 ::msgcat::mcset am {The installed component no longer matches the selected manifest. Review the component list again.} {የተጫነው አካል ከተመረጠው ማኒፌስት ጋር መሰላለም። የአካላት ዝርዝሩን እንደገና ይገምግሙ።}
 ::msgcat::mcset am {The installer preview has no verification signatures; apply is disabled.} {የተኪው ቅድመ-እይታ የማረጋገጫ ፊርማዎች የሉትም፤ መተግበር ተከልክሏል።}
 ::msgcat::mcset am {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {ስራው እና የአሂድ ታሪኩ ይወገዳሉ። መቀልበስ አይቻልም — ማቆም ብቻ ከፈለጉ በምትኩ አቁሙት።}
+::msgcat::mcset am {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {የውቅር ማመሳሰል በደንቦቹ መሠረት የሚወስዳቸው ቁልፎች፦ በኖዱ ብቻ የሚኖሩ ቁልፎችና ምስክርነቶች በኖዳቸው ላይ ይቆያሉ፣ የያዘ ክፍል ([acl]፣ approvals፣ sandbox፣ hooks፣ plugins፣ MCP አገልጋዮች) በሚታረትበት ቦታ ተቀይሮ ይገፋል፣ ከዚያ የዚያ ኖድ ባለቤት ይጠብቃል።}
 ::msgcat::mcset am {The log could not be read: %s} {መዝገቡ ሊነበብ አልቻለም፦ %s}
 ::msgcat::mcset am {The manifest belongs to another component; its reply was discarded.} {ማኒፌስቱ ለሌላ አካል ነው፤ መልሱ ወርውሮ ተወግዷል።}
 ::msgcat::mcset am {The profile changed. Review the fresh plan before applying it.} {መገለጫው ተቀይሯል። ለመተግበር ከመጫንዎ በፊት አዲሱን እቅድ ይገምግሙ።}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset am {The signed release preview was malformed; nothing was installed.} {የተፈረመው የመልቀቂያ ቅድመ እይታ የተበላሸ ነበር፤ ምንም አልተጫነም።}
 ::msgcat::mcset am {The source buffer changed. Request a new proposal before applying.} {የምንጩ ቡፈር ተቀይሯል። ከመተግበርዎ በፊት አዲስ ጥቆማ ይጠይቁ።}
 ::msgcat::mcset am {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {ማከማቻው አንድ ክለሳ ወደኋላ ይመለሳል። መልሶ መመለሱ ራሱ ክለሳ ነው፣ ስለዚህ በበኩሉ ሊቀለበስ ይችላል።}
+::msgcat::mcset am {The translator did not answer within %s seconds.} {ተርጓሚው በ%s ሰከንድ ውስጥ አልመለሰም።}
 ::msgcat::mcset am {The translator returned no text.} {ተርጓሚው ምንም ጽሑፍ አልመለሰም።}
 ::msgcat::mcset am {The verification reply was malformed; no integrity result was accepted.} {የማረጋገጫው ምላሽ አልተዋቀረም፤ ምንም የታማኝነት ውጤት አልተቀበልንም።}
 ::msgcat::mcset am Themes ገጽታዎች
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset am {This challenge is over.} {ይህ ፈተና አልቋል።}
 ::msgcat::mcset am {This code has expired. Ask for a new one.} {ይህ ኮድ ጊዜው አልፎበታል። አዲስ ይጠይቁ።}
 ::msgcat::mcset am {This does not start a service or claim signed-download verification.} {ይህ አገልግሎት አያስጀምርም፤ የተፈረመ ማውሎድ ማረጋገጫም አይገልጽም።}
+::msgcat::mcset am {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {ይህ ፋይል የveles ዋና ምንጭ ነው። አብዛኞቹ ለውጦች በምትኩ ኤክስቴንሽን ይሆናሉ፤ እሱም ከማሻሻያዎች በኋላ ይቆያል እንደገና መገንባትም አይጠይቅም፦ hook፣ መሣሪያ፣ የአገልግሎት ምትክ ወይም የአቅራቢ ድራይቨር፣ በTcl፣ TypeScript፣ Racket ወይም Common Lisp፣ ወይም ከዛፉ ውጭ የሆነ የRust ፕላግኢን (New extension ከእነዚህ ማንኛውንም ይጽፋል)፣ ወይም እንደ ሞጁል ወይም የሂደት ፕላግኢን (የExtension መመሪያ አንዱን እንዴት መጀመር እንደሚቻል ያሳያል)። የዋና ፓች የኤክስቴንሽን API ሊገልጸው ለማይችለው ነገር ነው። በምትኩ ይህን ለውጥ እንደ ኤክስቴንሽን ረቂቅ ያድርጉ? አርትዕዎ ባልተቀመጠ ሁኔታ በዚህ ቡፈር ውስጥ ይቆያል፤ እንደገና ማስቀመጥ የዋናውን ፋይል ይፓች ያደርጋል።}
 ::msgcat::mcset am {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {ይህ ጌትዌይ ከዚህ ማሽን የምስጢር እሴቶችን አይቀበልም፦ እዚያው በveles secret set %s ያስገቡት፣ ወይም ይህን አውታረ መረብ በ[vault] trusted_networks ውስጥ ያካትቱ}
 ::msgcat::mcset am {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {ይህ ልክ የሚጽፈው ነገር ነው — የኤንጀኑ ራሱ ባይቶች፣ በቀጥታ የተገኙ። እስካሁን ዲስኩ ላይ ምንም አልነካም።}
+::msgcat::mcset am {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {ይህ የveles ዋና ምንጭ ነው። በላዩ ላይ የሚደረግ ለውጥ ብዙውን ጊዜ እንደ ኤክስቴንሽን ቢሆን ይሻላል፦ New extension፣ ወይም ለማስቀመጥ ከመረጡ አንዱ ይቀርብልዎታል።}
 ::msgcat::mcset am {This node is not a configured sync peer for any kind.} {ይህ ኖድ ለማንኛውም ዓይነት የተዋቀረ የማመሳሰል አጋር አይደለም።}
 ::msgcat::mcset am {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {ይህ ፕላግኢን አብሮ የተሰራ እና ለማንበብ ብቻ ነው። በምትኩ አብሮ የተሰራውን ቅዳሜ ለመጠቀም ያንኑ ስም ያለው የተጠቃሚ ቅዳሜ ያስዉጡ።}
 ::msgcat::mcset am {This publishes the commit; no pull request is created yet.} {ይህ ኮሚቱን ያትማል፤ የጎትተ-ጥያቄ ገና አይፈጠርም።}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset am Unassign {ምድቡን አንሳ}
 ::msgcat::mcset am {Undo last} {የመጨረሻውን ቀልብስ}
 ::msgcat::mcset am {Undo the last memory revision?} {የመጨረሻውን የማህደረ-ትውስታ ክለሳ ቀልብስ?}
+::msgcat::mcset am {Unset %1$s on %2$s?} {%1$s በ%2$s ላይ ከቅንብር ይወገድ?}
+::msgcat::mcset am Unset… {ከቅንብር አውጣ…}
 ::msgcat::mcset am Unstage አውልቅ
 ::msgcat::mcset am {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {በ.env ውስጥ ያለው IRC_ALLOWED_USERS መለያዎን እስኪጠቅስ ድረስ፣ በአውታረ መረቡ ላይ ያለ ማንም ሰው ከቦቱ ጋር መነጋገር ይችላል — [acl] ክፍል ከሌለ ደግሞ እንደ ባለቤት፣ ከሁሉም መሣሪያዎች ጋር።}
 ::msgcat::mcset am {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {በ.env ውስጥ ያለው TELEGRAM_ALLOWED_USERS የተጠቃሚ መታወቂያዎን እስኪጠቅስ ድረስ፣ ቦቱን ያገኘ ማንም ሰው ከእሱ ጋር መነጋገር ይችላል — [acl] ክፍል ከሌለ ደግሞ እንደ ባለቤት፣ ከሁሉም መሣሪያዎች ጋር።}
 ::msgcat::mcset am Untitled {ርዕስ የሌላቸው}
-::msgcat::mcset am {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {ወደ upstream ማስተባበር ግልጽ የማተም እርምጃ ነው፣ ራስ-ሰር መጫን አይደለም። በማስፋፊያዎች አስተዳደር ውስጥ አስተባብር ሁሉንም የተጠቃሚ ማስፋፊያዎች ይዘረዝራል፦ ማስፋፊያዎችንና ፋይሎችን ይምረጡ፣ diffንና የምስጢር ፍተሻን ይመርምሩ፣ ፍተሻዎችን ያስኪዱ፣ ከዚያ በመረጡት የgit ማንነት አንድ ቅርንጫፍና አንድ PR (ነባሪው veles) ይፍጠሩ። እያንዳንዱ ማስፋፊያ በማከማቻው ውስጥ በራሱ ማውጫ ስር ይሄዳል፣ እዚያ ያለ ፋይል የሚተካው ከተለየ ማረጋገጫ በኋላ ብቻ ነው። node.toml፣ የአካባቢ ምስክርነቶች፣ ቶከኖች፣ የግል መጨረሻ ነጥቦች ወይም የማይዛመዱ የፕላግኢን ሁኔታዎችን በጭራሽ አታትሙ። የአካባቢ የመልሶ ማግኛ ቅጽበታዊ ምስሎች የupstream commit ወይም PR አይደሉም።}
+::msgcat::mcset am {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {ወደ ላይ ማበርከት ግልጽ የማተም እርምጃ ነው፣ ራስ-ሰር ጭነት አይደለም። በኤክስቴንሽኖች አስተዳደር ውስጥ አበርክት ሁሉንም የተጠቃሚ ኤክስቴንሽኖች ይዘረዝራል፦ ኤክስቴንሽኖቹንና ፋይሎቹን ይምረጡ፣ diff እና የምስጢር ፍተሻን ይመልከቱ፣ ፍተሻዎችን ያሂዱ፣ ከዚያ አንድ ቅርንጫፍና አንድ PR ይፍጠሩ (በነባሪ ወደ veles)። commit የጌትዌዩን አካባቢያዊ የgit ማንነት (የgit ውቅሩን user.nameና user.email) ይጠቀማል፤ የተለዩ መሆን ካለባቸው መጀመሪያ እነዚያን ያዘጋጁ። እያንዳንዱ ኤክስቴንሽን በማከማቻው ውስጥ በራሱ ማውጫ ሥር ይገባል፣ በዚያ ያለው ፋይልም የሚተካው ከተለየ ማረጋገጫ በኋላ ብቻ ነው። node.toml፣ የአካባቢ ምስክርነቶች፣ ቶከኖች፣ የግል መጨረሻ ነጥቦች ወይም የማይገናኙ የፕላግኢን ሁኔታዎችን በጭራሽ አያትሙ። የአካባቢ መልሶ ማግኛ ቅጽበታዊ ግልባጮች commit ወይም PR አይደሉም።}
 ::msgcat::mcset am {Upstream repository or fork URL} {የላይ-ፍሰት ማከማቻ ወይም ፎርክ URL}
 ::msgcat::mcset am {Uptime class} {የስራ ቆይታ ደረጃ}
 ::msgcat::mcset am {Uptime: host %1$s, gateway %2$s} {የስራ ጊዜ፦ አስተናጋጁ %1$s፣ ጌትዌዩ %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset am {Users — one role across networks and platforms} {ተጠቃሚዎች — በአውታረ መረቦች እና መድረኮች አንድ ሚና}
 ::msgcat::mcset am {Using the phone, for the agent} {ስልኩን መጠቀም፣ ለወኪሉ}
 ::msgcat::mcset am {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {ብዙ ጊዜ ከprovider ግቤት ስም ጋር አንድ ይሆናል። በSkip ምርጫ ሁለቱንም ባዶ ቅረዋቸው — ግማሽ የተሞላ ጥንድ አይመራም።}
+::msgcat::mcset am {Value (TOML: "text", 5, true, [1, 2])} {እሴት (TOML፦ "text", 5, true, [1, 2])}
 ::msgcat::mcset am {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {እሴቶቹ TOML ናቸው: በጥቅስ የተያዙ ሕብረቁምፊዎች፣ ቁጥሮች፣ ወይም ዝርዝሮች። ወደ [mcp_servers.<name>] ይጻፋሉ — አስተያየቶችዎ እና ሌሎች ሁሉም ክፍሎች አይነኩም።}
 ::msgcat::mcset am Vault ካዝና
 ::msgcat::mcset am {Verified signed bundle installed. Restart the gateway before using the new core.} {የተረጋገጠ የተፈረመ ጥቅል ተጭኗል። አዲሱን ኮር ከመጠቀም በፊት ጌትዌዩን እንደገና ያስጀምሩ።}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset am Voice {ቮይስ ስጥ}
 ::msgcat::mcset am {Waiting for the model…} {ሞዴሉን በመጠበቅ ላይ…}
 ::msgcat::mcset am {Waiting for the model… Nothing has been written.} {ሞዴሉን በመጠበቅ ላይ… ምንም አልተጻፈም።}
+::msgcat::mcset am Warning ማስጠንቀቂያ
 ::msgcat::mcset am {Welcome to veles} {ወደ veles እንኳን ደህና መጡ}
 ::msgcat::mcset am {What the agent can do here} {ወኪሉ እዚህ ምን ማድረግ ይችላል}
 ::msgcat::mcset am {What veles may do on this phone. Each button opens the Android setting that changes it.} {veles በዚህ ስልክ ላይ ምን ማድረግ እንደሚችል። እያንዳንዱ አዝራር ያንን የሚቀይረውን የAndroid ቅንብር ይከፍታል።}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset am {Workflow SHA} {የስራ ፍሰት SHA}
 ::msgcat::mcset am {Workflow commit} {የስራ ፍሰት commit}
 ::msgcat::mcset am Worktree የስራ-ዛፍ
+::msgcat::mcset am {Write cancelled.} {ጽሕፈቱ ተሰርዟል።}
 ::msgcat::mcset am {Write it} ጻፈው
 ::msgcat::mcset am {Write the design question first.} {መጀመሪያ የንድፍ ጥያቄውን ይጻፉ።}
 ::msgcat::mcset am {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {provider አይጽፍም። [[custom_providers]] ግቤት እና [model] ጥንድ ሳይኖሩ gateway አንድ ዙር አይመራም።}
+::msgcat::mcset am Write… ጻፍ…
 ::msgcat::mcset am {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {ማንኛውንም የ[acl] ቁልፍ መጻፍ ይህን ጌትዌይ ወደ ቁጥጥር ያለው ሁነታ ይቀይረዋል፦ ነባሪው ሚና guest (fail-closed) ይሆናል፣ የተፈቀዱ ዝርዝሮችም ድንበር መሆናቸው ያከትማል። ይህን ይምረጡ የሚያምኑት የባለቤት ማንነት ካለዎት ብቻ ነው።}
 ::msgcat::mcset am {[model] provider} {[model] provider}
 ::msgcat::mcset am {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {የ[model] አቅራቢ %{name} ከማንኛውም የ[[custom_providers]] ግቤት ጋር አይዛመድም — ይህ ማስመሪያ የሚጽፈውን ግቤት ወይም config.toml ቀድሞ ያለውን ይጥቀሱ}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset am {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset am {asked by: %s} {የጠየቀው: %s}
 ::msgcat::mcset am {asking %s for its metrics…} {%s መለኪያዎቹን እየጠየቅን…}
+::msgcat::mcset am {asking %s how it is supervised…} {%s በምን እንደሚቆጣጠር እየጠየቅን…}
 ::msgcat::mcset am {attach a file} {ፋይል አያይዝ}
 ::msgcat::mcset am {attach an image or file} {ምስል ወይም ፋይል አያይዝ}
 ::msgcat::mcset am {attach failed: %1$s} {ማያያዝ አልተሳካም: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset am {channel-event reactions; /triggers add <name> network=… channel=… action=…} {ለቻናል ክስተቶች የሚሰጡ ምላሾች፤ /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset am {channels to join, a space or comma separated string} {ለመቀላቀል የሚሆኑ ቻነሎች፣ በክፍት ኩነን ወይም በኮማ የተለየ ጽሑፍ}
 ::msgcat::mcset am chars ቁምፊዎች
+::msgcat::mcset am {check the buffer (diagnostics)} {ቡፈሩን ይፈትሹ (ምርመራ)}
 ::msgcat::mcset am choice_next {ወደ ቀጣዩ መንገድ ሂድ}
 ::msgcat::mcset am choice_retry {በዚያው መንገድ እንደገና ሞክር}
 ::msgcat::mcset am choice_stop {እዚህ አቁም}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset am {command list unavailable (the gateway is not reachable)} {የትዕዛዝ ዝርዝር አይገኝም (ጌትዌይ አይደረስም)}
 ::msgcat::mcset am {command palette} {የትዕዛዝ ሰሌዳ}
 ::msgcat::mcset am {command search} {የትእዛዝ ፍለጋ}
+::msgcat::mcset am {command-center audit log} {የትዕዛዝ ማዕከል የኦዲት ምዝገባ}
 ::msgcat::mcset am commands ትዕዛዞች
 ::msgcat::mcset am {commands stay on your own session; /leave returns from the joined session} {ትዕዛዞች በራስዎ ክፍለ ጊዜ ላይ ይቆያሉ; /leave ከቀላቀሉበት ክፍለ ጊዜ ይመልሳል}
 ::msgcat::mcset am commands: ትእዛዞች:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset am {config changes from peers that wait for you; /configsync apply lands them} {እርስዎን የሚጠብቁ ከአቻዎች የመጡ የውቅር ለውጦች፤ /configsync apply ይተገብራቸዋል}
 ::msgcat::mcset am {config file: %s} {የውቅር ፋይል፦ %s}
 ::msgcat::mcset am {config key} {የውቅር ቁልፍ}
+::msgcat::mcset am {config result} {የውቅር ውጤት}
 ::msgcat::mcset am {config unavailable} {ውቅር አይገኝም}
 ::msgcat::mcset am {config unavailable: %s} {ውቅር አይገኝም: %s}
 ::msgcat::mcset am {config value} {የውቅር እሴት}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset am doctor_resident {በእያንዳንዱ ጥያቄ ውስጥ ቋሚ፦ ከ%{total} ቁምፊዎች %{shown} (~%{tokens} ቶከኖች) — ቀሪው ሲያስፈልግ በዚህ ይጫናል፦ memory action=read path=%{path}}
 ::msgcat::mcset am doctor_title {የማህደረ ትውስታ ምርመራ}
 ::msgcat::mcset am doctor_total {ጠቅላላ፦ በ%{files} ፋይሎች ውስጥ %{chars} ቁምፊዎች (~%{tokens} ቶከኖች)}
-::msgcat::mcset am {documentation is not in this source checkout: %s} {ሰነዱ በዚህ የምንጭ ቼክአውት ውስጥ የለም፦ %s}
 ::msgcat::mcset am done ተጠናቋል
 ::msgcat::mcset am {done · %1$s/%2$s} {ተጠናቋል · %1$s/%2$s}
 ::msgcat::mcset am {done, but the model returned no text} {ተጠናቋል፣ ግን ሞዴሉ ምንም ጽሑፍ አልመለሰም}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset am {grant a role (owner) · /revoke <id> takes it back} {ሚና ስጥ (owner) · /revoke <id> መልሶ ይወስደዋል}
 ::msgcat::mcset am {grant a role to an identity} {ለማንነት ሚና ስጥ}
 ::msgcat::mcset am {guards unreachable} {ጠባቂዎች ላይ መድረስ አልተቻለም}
-::msgcat::mcset am guts: guts:
+::msgcat::mcset am {guts ▾} {ውስጠ-ነገሮች ▾}
 ::msgcat::mcset am {gw hooks} {gw hooks}
 ::msgcat::mcset am {gw procs} {gw procs}
 ::msgcat::mcset am {halt after N identical calls} {ከN ተመሳሳይ ጥሪዎች በኋላ አቁም}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset am {live patching ARMED} {live patching ንቁ}
 ::msgcat::mcset am {live patching ARMED — an agent can now redefine procs in this window} {live patching ንቁ — አንድ ኤጀንት አሁን በዚህ መስኮት procsን እንደገና መግለጽ ይችላል}
 ::msgcat::mcset am {live patching disarmed} {live patching ተዘጋ}
+::msgcat::mcset am load ጫና
 ::msgcat::mcset am loaded ተጭኗል
 ::msgcat::mcset am {loaded older messages} {የቆዩ መልዕክቶች ተጭነዋል}
 ::msgcat::mcset am loading… እየጫነ…
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset am {no upstream reading for %s} {ለ%s ምንም upstream ንባብ የለም}
 ::msgcat::mcset am {no word match} {ምንም የቃል ተዛማጅ የለም}
 ::msgcat::mcset am {no xdg-open — path copied instead} {xdg-open የለም — በምትኩ መንገዱ ተቀድቷል}
+::msgcat::mcset am {nobody else's session is open on %s right now} {በአሁኑ ጊዜ በ%s ላይ የሌላ ሰው ክፍለ ጊዜ አልተከፈተም}
 ::msgcat::mcset am {node log} {የኖድ መዝገብ}
 ::msgcat::mcset am {none loaded} {ምንም አልተጫነም}
 ::msgcat::mcset am {none recorded} {ምንም አልተመዘገበም}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset am {not installed} አልተጫነም
 ::msgcat::mcset am {not reported} አልተዘገበም
 ::msgcat::mcset am {not running} {እየሰራ አይደለም}
+::msgcat::mcset am {not saved: drafting the change as an extension} {አልተቀመጠም፦ ለውጡ እንደ ኤክስቴንሽን ረቂቅ እየተደረገ ነው}
+::msgcat::mcset am {not sent: %s} {አልተላከም፦ %s}
 ::msgcat::mcset am {not set in config.toml — the built-in default applies. %s} {በconfig.toml ውስጥ አልተዋቀረም — ነባሪው ይሰራል. %s}
 ::msgcat::mcset am {not set yet — /secret set it later} {ገና አልተቀናበረም — በኋላ በ/secret set ያቀናብሩት}
 ::msgcat::mcset am {not signed: %s} {አልተፈረመም፦ %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset am {on no plan} {እቅድ ከሌለ}
 ::msgcat::mcset am {on the} ላይ
 ::msgcat::mcset am {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {on/off የዘዴውን ማስታወሻ በግልባጩ ውስጥ ያዝዝባል — ለዚህ ክፍለ ጊዜ፣ ወይም እንደ ነባሪ፣ ከታች ባለው ስፋት መሰረት። የሚቆጣጠረው ማስታወሻውን ነው; እያንዳንዱ ዘዴ የሚያደርገው ነገር በረድፉ ላይ በተሰየመው ክፍል ውስጥ ተዘጋጅቷል፣ አዋቅር… ይከፍተዋል። የጠባቂ ቁልፎቹ በቦታው ሊስተካከሉ ይችላሉ።}
+::msgcat::mcset am {on; this gateway does not say whether they reach the home chat} {በርቷል፤ ይህ ጌትዌዩ ወደ ቤት ውይይት እንደሚደርሱ አይነግርም}
 ::msgcat::mcset am {one-shot tcl-lsp diagnostics — no model turn} {የአንድ ጊዜ tcl-lsp ምርመራ — የሞዴል ዙር የለም}
 ::msgcat::mcset am {open a saved file first} {መጀመሪያ የተቀመጠ ፋይል ይክፈቱ}
 ::msgcat::mcset am {open links} {ማገናኛዎችን መክፈት}
+::msgcat::mcset am {open one of the desktop's own source files} {ከዴስክቶፑ የራሱ የምንጭ ፋይሎች አንዱን ይክፈቱ}
 ::msgcat::mcset am {open the engine log} {የሞተር መዝገብ ክፈት}
 ::msgcat::mcset am {open the joined session before /leave (on %s)} {ከ/leave በፊት ቀላቀሉበትን ክፍለ ጊዜ ይክፈቱ (በ%s ላይ)}
 ::msgcat::mcset am {open the selected child session} {የተመረጠውን የልጅ ሴሽን መክፈት}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset am {read-only: [approvals] allowlist} {ለማንበብ ብቻ፦ የ[approvals] ፈቃድ ዝርዝር}
 ::msgcat::mcset am {read-only: this session lives on %1$s (as read at %2$s)} {ለማንበብ ብቻ: ይህ ክፍለ ጊዜ በ%1$s ላይ ነው (በ%2$s እንደተነበበ)}
 ::msgcat::mcset am {read-only: this skill comes from the %s library} {ለማንበብ ብቻ: ይህ ክህሎት ከ%s ቤተ-መጻሕፍት ነው}
+::msgcat::mcset am {reading %1$s on %2$s…} {%1$s በ%2$s ላይ እያነበብን…}
 ::msgcat::mcset am reasoning አስተሳሰብ
 ::msgcat::mcset am {reasoning display: %1$s · %2$s blocks} {የአስተሳሰብ ማሳያ: %1$s · %2$s ብሎኮች}
 ::msgcat::mcset am {reasoning display: %s} {የአስተሳሰብ ማሳያ: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset am {run failed: %s} {ሩጫው አልተሳካም: %s}
 ::msgcat::mcset am {run in:} {አሂድ በ:}
 ::msgcat::mcset am running {በስራ ላይ}
+::msgcat::mcset am {running %s on the listed nodes…} {%s በተዘረዘሩት ኖዶች ላይ እያሄድን…}
 ::msgcat::mcset am {running since %s} {ከ%s ጀምሮ በስራ ላይ}
 ::msgcat::mcset am {running subagents; /subagents cancel <id>} {የሚሄዱ ንዑስ ወኪሎች፤ /subagents cancel <id>}
 ::msgcat::mcset am {save failed} {ማስቀመጥ አልተሳካም}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset am {send failed: %s} {መላክ አልተሳካም: %s}
 ::msgcat::mcset am {send the message; while a turn runs, queue it as steering} {መልእክቱን ላክ፤ ዙር እየሰራ ከሆነ፣ እንደ ስቲሪንግ አሰልፈው}
 ::msgcat::mcset am sent ተልኳል
-::msgcat::mcset am {sent to the owner's home chat} {ወደ ባለቤቱ ዋና ውይይት ተልኳል}
+::msgcat::mcset am {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {የTelegram አስማሚውን በሚያሂደው ጌትዌዩ፣ በዚህ ሳይሆን፣ ወደ ባለቤቱ ቤት ውይይት ተልኳል}
+::msgcat::mcset am {sent to the owner's home chat from this gateway} {ከዚህ ጌትዌዩ ወደ ባለቤቱ ቤት ውይይት ተልኳል}
 ::msgcat::mcset am server አገልጋይ
 ::msgcat::mcset am {server buffers merged} {የአገልጋይ ቋቶች ተዋህደዋል}
 ::msgcat::mcset am {server buffers separate} {የአገልጋይ ቋቶች ተለይተዋል}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset am {session, model, lifecycle} {ክፍለ ጊዜ፣ ሞዴል፣ የሕይወት ዑደት}
 ::msgcat::mcset am {session: %s} {ክፍለ ጊዜ: %s}
 ::msgcat::mcset am {sessions    %s} {ክፍለ ጊዜዎች    %s}
+::msgcat::mcset am {sessions you can join on %s (/join <name or id>):} {በ%s ላይ ሊቀላቀሉባቸው የሚችሉ ክፍለ ጊዜዎች (/join <ስም ወይም መለያ>)፦}
 ::msgcat::mcset am {sessions: unreachable} {ክፍለ ጊዜዎች: መድረስ አይቻልም}
 ::msgcat::mcset am {set by} ያስቀመጠው
 ::msgcat::mcset am {set. %s} {ተቀምጧል። %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset am {split: %s} {ተከፍሏል: %s}
 ::msgcat::mcset am {ssh to %1$s failed: %2$s} {ወደ %1$s ssh አልተሳካም: %2$s}
 ::msgcat::mcset am {stale — no heartbeat within the threshold} {ያረጀ — በገደቡ ውስጥ የልብ ምት የለም}
+::msgcat::mcset am {standing approval grants: always and this session; revoke one} {ቋሚ የፍቃድ ስጦታዎች፦ ሁልጊዜ እና ይህ ክፍለ ጊዜ፤ አንዱን ይሰርዙ}
 ::msgcat::mcset am {standing global and session permission grants} {ቋሚ ዓለም-አቀፍ እና የክፍለ ጊዜ የፍቃድ ስጦታዎች}
+::msgcat::mcset am {start the line with // to send it as text} {መስመሩን እንደ ጽሑፍ ለመላክ በ// ይጀምሩት}
 ::msgcat::mcset am state ሁኔታ
 ::msgcat::mcset am {state       never reached} {ሁኔታ       በጭራሽ አልተደረሰበትም}
 ::msgcat::mcset am {state       reachable} {ሁኔታ       ሊደረስ ይችላል}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset am {the config.toml that will be written} {የሚጻፈው config.toml}
 ::msgcat::mcset am {the default (config.toml)} {ነባሪው (config.toml)}
 ::msgcat::mcset am {the engine refused these answers: %s} {ኤንጀኑ እነዚህን መልሶች ውድቅ አድርጓል፦ %s}
+::msgcat::mcset am {the file to open: type a path, then Return or Open} {የሚከፈተው ፋይል፦ መንገድ ይጻፉ፣ ከዚያ Return ወይም ክፈት}
 ::msgcat::mcset am {the first ACL owner identity} {የመጀመሪያው ACL owner ማንነት}
 ::msgcat::mcset am {the gateway answered without a report} {gateway ያለሪፖርት መልሷል}
 ::msgcat::mcset am {the model/provider pair is incomplete — the gateway will not route until both are present} {የሞዴል/አቅራቢ ጥንዱ ያልተሟላ ነው — ሁለቱም እስኪኖሩ ድረስ ጌትዌዩ አያዘዋውርም}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset am unknown ያልታወቀ
 ::msgcat::mcset am {unknown api_mode %{mode} — expected one of %{modes}} {ያልታወቀ api_mode %{mode} — ከእነዚህ አንዱ ይጠበቃል፦ %{modes}}
 ::msgcat::mcset am {unknown bindings '%{rest}' · normie|emacs|vi} {ያልታወቀ ቅንጥብ '%{rest}' · normie|emacs|vi}
+::msgcat::mcset am {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {የማይታወቅ ትዕዛዝ %{cmd} እዚህ — /help የዚህን ገጽ ትዕዛዞች ይዘረዝራል፤ ምንም አልተላከም}
 ::msgcat::mcset am {unknown command /%s — /help lists them} {ያልታወቀ ትዕዛዝ /%s — /help ይዘረዝራቸዋል}
 ::msgcat::mcset am {unknown command: /%s} {የማይታወቅ ትዕዛዝ፦ /%s}
 ::msgcat::mcset am {unknown keymap: %s (normie/emacs/vi)} {ያልታወቀ የቁልፍ ካርታ: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset am {upstream plan credits and windows — /usage is the local ledger} {የላይኛው እቅድ ክሬዲቶች እና የጊዜ መስኮቶች — /usage የአካባቢው መዝገብ ነው}
 ::msgcat::mcset am {upstream plan quota} {የአቅራቢ እቅድ ኮታ}
 ::msgcat::mcset am uptime {የስራ ጊዜ}
-::msgcat::mcset am {usage: /join <session> or /join <instance>/<session>} {አጠቃቀም: /join <ክፍለ ጊዜ> ወይም /join <ኢንስታንስ>/<ክፍለ ጊዜ>}
+::msgcat::mcset am {usage: /export [md|json]} {አጠቃቀም፦ /export [md|json]}
 ::msgcat::mcset am {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {አጠቃቀም: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset am {usage: /resume <id or prefix>} {አጠቃቀም፦ /resume <መለያ ወይም ቅድመ ቅጥያ>}
 ::msgcat::mcset am {usage: /resume <id-or-prefix>} {አጠቃቀም: /resume <id-or-prefix>}

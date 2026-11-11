@@ -347,6 +347,110 @@ ok "…and opens the manifest's entry" \
     {[lindex $::voverlay::opened end] eq "/user/plugins/rate-guard/plugin.tcl"}
 destroy .vdev_new_extension
 destroy .vdev_extension_assist
+
+# DEV-1 (0.2.2): the plain New extension flow, through the REAL
+# ::vapi::_json_value. The form was posted as an untyped dict, so a
+# multi-word Purpose went out as a JSON array or object; the gateway
+# reads `description` as a string only, dropped it, wrote "a new veles
+# plugin", and Create then refused forever. This stub is the gateway's
+# behaviour: a description that is not a JSON string is "" on the wire.
+puts "\nthe plain New extension flow keeps a multi-word purpose"
+proc ::vapi::_wire_string {text key} {
+    if {[regexp "\"$key\": \"((?:\[^\"\\\\\]|\\\\.)*)\"" $text -> raw]} {
+        return [dict get [::json::json2dict "\{\"v\": \"$raw\"\}"] v]
+    }
+    return ""
+}
+set ::vapi::wire_texts {}
+proc ::vapi::post_json {path body} {
+    set text [::vapi::_json_value $body]
+    lappend ::vapi::wire_texts [list $path $text]
+    set name [::vapi::_wire_string $text name]
+    set kind [::vapi::_wire_string $text kind]
+    set description [::vapi::_wire_string $text description]
+    set shown [expr {$description eq "" ? "a new veles plugin" : $description}]
+    switch -- $path {
+        /api/plugins/preview {
+            return [dict create name $name kind $kind description $description api 0.11 files [list \
+                [dict create name plugin.toml text "name = \"$name\"\ndescription = \"$shown\""] \
+                [dict create name plugin.tcl text "# $name — $shown"]]]
+        }
+        /api/plugins/new {
+            return [dict create name $name kind $kind path /user/plugins/$name/plugin.tcl reloaded 1]
+        }
+    }
+    error "unexpected endpoint $path"
+}
+proc ::vapi::wire_of {path} {
+    foreach c $::vapi::wire_texts { if {[lindex $c 0] eq $path} { set last [lindex $c 1] } }
+    return [expr {[info exists last] ? $last : ""}]
+}
+proc ::vmanage::post {w path body} {
+    if {[catch { ::vapi::post_json $path $body } resp]} { say $w $resp warn; return "" }
+    if {[dict exists $resp error]} { say $w [dict get $resp error] warn; return "" }
+    return $resp
+}
+::vdev::new_extension
+set ::vdev_new_name demo
+set ::vdev_new_purpose {Log every LLM call}
+set ::vdev_new_kind tcl
+::vdev::_extension_preview
+ok "the preview sends the purpose as one JSON string" {
+    [string match {*"description": "Log every LLM call"*} [::vapi::wire_of /api/plugins/preview]]
+}
+ok "…and the reviewed files carry it" {
+    [string match {*description = "Log every LLM call"*} [.vdev_new_extension.preview get 1.0 end-1c]]
+}
+set ::confirm_answer 1
+set ::last_message ""
+::vdev::_extension_create
+ok "Create writes the reviewed multi-word purpose" {
+    [string match {*"description": "Log every LLM call"*} [::vapi::wire_of /api/plugins/new]] &&
+    [lindex $::voverlay::opened end] eq "/user/plugins/demo/plugin.tcl"
+}
+foreach {kind purpose} {js {A tool example} racket {Say "hi" with C:\path [x] *} lisp {one}} {
+    set ::vapi::wire_texts {}
+    set ::vdev_new_name demo-$kind
+    set ::vdev_new_purpose $purpose
+    set ::vdev_new_kind $kind
+    ::vdev::_extension_preview
+    ::vdev::_extension_create
+    ok "a $kind extension keeps the purpose [list $purpose] from preview to create" {
+        [::vapi::_wire_string [::vapi::wire_of /api/plugins/preview] description] eq $purpose &&
+        [::vapi::_wire_string [::vapi::wire_of /api/plugins/new] description] eq $purpose &&
+        [::vapi::_wire_string [::vapi::wire_of /api/plugins/new] kind] eq $kind
+    }
+}
+set ::vapi::wire_texts {}
+set ::vdev_new_name demo
+set ::vdev_new_purpose {Log every LLM call}
+set ::vdev_new_kind tcl
+::vdev::_extension_preview
+set ::vdev_new_purpose {Log every tool call}
+::vdev::_extension_create
+ok "a purpose edited after the preview is not created unseen" {
+    [::vapi::wire_of /api/plugins/new] eq ""
+}
+# A gateway that did not receive the purpose (it echoes another one)
+# must not be confirmed as if it had.
+proc ::vapi::post_json {path body} {
+    set text [::vapi::_json_value $body]
+    lappend ::vapi::wire_texts [list $path $text]
+    if {$path eq "/api/plugins/preview"} {
+        return [dict create name demo kind tcl description {} api 0.11 files [list \
+            [dict create name plugin.toml text "description = \"a new veles plugin\""]]]
+    }
+    error "unexpected endpoint $path"
+}
+set ::vapi::wire_texts {}
+set ::vdev_new_purpose {Log every LLM call}
+::vdev::_extension_preview
+set ::last_message ""
+::vdev::_extension_create
+ok "a preview that lost the purpose cannot be created" {
+    [::vapi::wire_of /api/plugins/new] eq "" && $::last_message ne ""
+}
+destroy .vdev_new_extension
 # dev-ext-10: a core or repository file is refused by the gateway with
 # draft_as_extension; the pane offers New extension, carrying the request
 # over as its purpose, instead of a bare refusal.

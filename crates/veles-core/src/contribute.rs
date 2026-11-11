@@ -18,7 +18,12 @@ use std::ffi::OsStr;
 use std::path::{Component, Path, PathBuf};
 use std::process::{Command, Output};
 
+/// Files per extension in one contribution.
 const MAX_FILES: usize = 100;
+/// Files in one contribution, across every extension it carries. The
+/// per-extension cap used to be the TOTAL, so "wrap all my extensions
+/// into one PR" stopped at 100 files (DEV-8).
+const MAX_CONTRIBUTION_FILES: usize = 1_000;
 const MAX_FILE_BYTES: u64 = 2 * 1024 * 1024;
 const DEFAULT_BRANCH: &str = "veles-extension-contribution";
 
@@ -103,8 +108,11 @@ fn read_items(selections: &[Selection], directory: &str) -> Result<(String, Vec<
                 after: file.after,
             });
         }
-        if items.len() > MAX_FILES {
-            bail!("too many files selected (maximum {MAX_FILES})");
+        if items.len() > MAX_CONTRIBUTION_FILES {
+            bail!(
+                "too many files for one pull request ({} selected, at most {MAX_CONTRIBUTION_FILES}); contribute the extensions in more than one",
+                items.len()
+            );
         }
     }
     Ok((directory, items))
@@ -232,7 +240,7 @@ fn read_selected(root: &Path, selected: &[String]) -> Result<Vec<ReviewFile>> {
         bail!("select at least one source file");
     }
     if selected.len() > MAX_FILES {
-        bail!("too many files selected (maximum {MAX_FILES})");
+        bail!("too many files selected in one extension (at most {MAX_FILES} per extension)");
     }
     let mut seen = BTreeSet::new();
     selected
@@ -297,32 +305,10 @@ fn sanitize(text: &str, secrets: &HashMap<String, String>) -> String {
     crate::a2a::redact_outbound(&crate::secrets::scrub(text, secrets))
 }
 
-fn check_command_available_in(path: &std::ffi::OsStr, program: &str, os: &str) -> bool {
-    let candidates = if os == "windows" {
-        // Match the platform's PATHEXT ladder without its cfg: this helper
-        // also validates Windows lookup on the Linux development host.
-        let extensions = std::env::var("PATHEXT").unwrap_or_else(|_| ".COM;.EXE;.BAT;.CMD".into());
-        let mut names = extensions
-            .split(';')
-            .filter(|extension| !extension.is_empty())
-            .map(|extension| format!("{program}{}", extension.to_ascii_lowercase()))
-            .collect::<Vec<_>>();
-        names.push(program.to_string());
-        names
-    } else {
-        vec![program.to_string()]
-    };
-    std::env::split_paths(path).any(|dir| {
-        candidates.iter().any(|candidate| {
-            let candidate = dir.join(candidate);
-            candidate.is_file() && !candidate.symlink_metadata().is_ok_and(|m| m.is_dir())
-        })
-    })
-}
-
+/// Whether the checker a file needs is on this gateway: the lookup the
+/// check itself starts it through ([`crate::dev_check::find_program`]).
 fn check_command_available(program: &str) -> bool {
-    std::env::var_os("PATH")
-        .is_some_and(|path| check_command_available_in(&path, program, crate::platform::OS))
+    crate::dev_check::find_program(program).is_some()
 }
 
 fn checks(items: &[Item]) -> Vec<Value> {
@@ -511,9 +497,8 @@ const TS_HOST_DECLARATION: &str = crate::plugins::VELES_TS_DECLARATION;
 
 /// Run one non-evaluating syntax check. `label` is the path reported.
 fn check_one(full: &Path, label: &str, secrets: &HashMap<String, String>) -> Result<Value> {
-    let ext = full.extension().and_then(OsStr::to_str).unwrap_or("");
     #[cfg(test)]
-    if ext == "js" {
+    if full.extension().and_then(OsStr::to_str) == Some("js") {
         if let Some(fake) = std::env::var_os("VELES_TEST_CONTRIBUTE_NODE") {
             let output = command_output(
                 Command::new(fake).arg("--check").arg(full),
@@ -525,38 +510,75 @@ fn check_one(full: &Path, label: &str, secrets: &HashMap<String, String>) -> Res
         }
     }
     // Checker support files live until the checker has exited.
-    let mut _scratch = None;
-    let mut command = match ext {
+    let (mut command, _scratch) = match checker_for(full, label, &crate::dev_check::find_program)? {
+        Checker::Run(command, scratch) => (command, scratch),
+        Checker::Reply(reply) => return Ok(reply),
+    };
+    command
+        .env("GIT_CONFIG_NOSYSTEM", "1")
+        .stdin(std::process::Stdio::null());
+    let output = command_output(&mut command, &format!("run syntax check for {label}"))?;
+    Ok(json!({
+        "path": label,
+        "status": if output.status.success() { "passed" } else { "failed" },
+        "output": output_text(&output, secrets),
+    }))
+}
+
+/// The non-evaluating checker for one file: the command to run, with the
+/// scratch directory it needs alive until it exits, or the reply when
+/// there is none to run.
+enum Checker {
+    Run(Command, Option<tempfile::TempDir>),
+    Reply(Value),
+}
+
+/// [`Checker`] for `full`, with `find` resolving a program name to the
+/// file to start (the gateway's own lookup: [`crate::dev_check::find_program`]).
+fn checker_for(
+    full: &Path,
+    label: &str,
+    find: &dyn Fn(&str) -> Option<PathBuf>,
+) -> Result<Checker> {
+    let ext = full.extension().and_then(OsStr::to_str).unwrap_or("");
+    let reply = |status: &str, note: &str| {
+        Ok(Checker::Reply(
+            json!({"path": label, "status": status, "note": note}),
+        ))
+    };
+    match ext {
         "tcl" => {
-            if !check_command_available("tclsh") {
-                return Ok(
-                    json!({"path": label, "status": "unavailable", "note": "tclsh is not installed"}),
-                );
-            }
+            // The file the lookup found is the one started (DEV-5).
+            let Some(tclsh) = find("tclsh") else {
+                return reply("unavailable", "tclsh is not installed");
+            };
             let scratch = tempfile::tempdir().context("create the checker directory")?;
             let script = scratch.path().join("complete.tcl");
             std::fs::write(&script, TCL_COMPLETE_CHECK).context("write the Tcl checker script")?;
-            let mut c = Command::new("tclsh");
+            let mut c = Command::new(tclsh);
             c.arg(&script).arg(full);
-            _scratch = Some(scratch);
-            c
+            Ok(Checker::Run(c, Some(scratch)))
         }
         "js" => {
-            if !check_command_available("node") {
-                return Ok(
-                    json!({"path": label, "status": "unavailable", "note": "node is not installed; JavaScript was not checked"}),
+            let Some(node) = find("node") else {
+                return reply(
+                    "unavailable",
+                    "node is not installed; JavaScript was not checked",
                 );
-            }
-            let mut c = Command::new("node");
+            };
+            let mut c = Command::new(node);
             c.arg("--check").arg(full);
-            c
+            Ok(Checker::Run(c, None))
         }
         "ts" => {
-            if !check_command_available("tsc") {
-                return Ok(
-                    json!({"path": label, "status": "unavailable", "note": "no TypeScript compiler is installed; TypeScript was not checked as JavaScript"}),
+            // npm installs `tsc.cmd` on Windows: started by its path, not
+            // as a bare `tsc` Rust would only try as `tsc.exe` (DEV-5).
+            let Some(tsc) = find("tsc") else {
+                return reply(
+                    "unavailable",
+                    "no TypeScript compiler is installed; TypeScript was not checked as JavaScript",
                 );
-            }
+            };
             // An extension is an ES module run by the lang-js host, which
             // provides the `veles` global. Without saying so, tsc rejected
             // every scaffolded plugin: TS2304 (no `veles`) and TS1375 (top-
@@ -565,7 +587,7 @@ fn check_one(full: &Path, label: &str, secrets: &HashMap<String, String>) -> Res
             let ambient = scratch.path().join("veles-host.d.ts");
             std::fs::write(&ambient, TS_HOST_DECLARATION)
                 .context("write the TypeScript host declaration")?;
-            let mut c = Command::new("tsc");
+            let mut c = Command::new(tsc);
             c.args([
                 "--noEmit",
                 "--pretty",
@@ -588,34 +610,21 @@ fn check_one(full: &Path, label: &str, secrets: &HashMap<String, String>) -> Res
                 c.arg(&ambient);
             }
             c.arg(full);
-            _scratch = Some(scratch);
-            c
+            Ok(Checker::Run(c, Some(scratch)))
         }
-        "rkt" => {
-            return Ok(
-                json!({"path": label, "status": "unavailable", "note": "Racket checking is unavailable: no non-evaluating parser is configured"}),
-            );
-        }
-        "lisp" | "lsp" | "cl" | "el" => {
-            return Ok(
-                json!({"path": label, "status": "unavailable", "note": "Lisp checking is unavailable: no non-evaluating reader is configured"}),
-            );
-        }
-        _ => {
-            return Ok(
-                json!({"path": label, "status": "manual", "note": "no non-evaluating checker is registered for this file type"}),
-            );
-        }
-    };
-    command
-        .env("GIT_CONFIG_NOSYSTEM", "1")
-        .stdin(std::process::Stdio::null());
-    let output = command_output(&mut command, &format!("run syntax check for {label}"))?;
-    Ok(json!({
-        "path": label,
-        "status": if output.status.success() { "passed" } else { "failed" },
-        "output": output_text(&output, secrets),
-    }))
+        "rkt" => reply(
+            "unavailable",
+            "Racket checking is unavailable: no non-evaluating parser is configured",
+        ),
+        "lisp" | "lsp" | "cl" | "el" => reply(
+            "unavailable",
+            "Lisp checking is unavailable: no non-evaluating reader is configured",
+        ),
+        _ => reply(
+            "manual",
+            "no non-evaluating checker is registered for this file type",
+        ),
+    }
 }
 
 fn checks_report(results: Vec<Value>) -> Value {
@@ -802,12 +811,22 @@ fn git_command_on(worktree: Option<&Path>, os: &str) -> Command {
         .env_remove("GIT_COMMITTER_DATE");
     // Fixtures do not inherit the workstation's git identity. This is
     // scoped to this git child; production builds keep ambient identity.
+    // A test can instead run git as an account with no identity at all.
     #[cfg(test)]
-    command
-        .env("GIT_AUTHOR_NAME", "Fixture Author")
-        .env("GIT_AUTHOR_EMAIL", "fixture@example.test")
-        .env("GIT_COMMITTER_NAME", "Fixture Author")
-        .env("GIT_COMMITTER_EMAIL", "fixture@example.test");
+    match NO_GIT_IDENTITY.with(|c| c.borrow().clone()) {
+        Some(empty_config) => {
+            command
+                .env("GIT_CONFIG_GLOBAL", empty_config)
+                .args(["-c", "user.useConfigOnly=true"]);
+        }
+        None => {
+            command
+                .env("GIT_AUTHOR_NAME", "Fixture Author")
+                .env("GIT_AUTHOR_EMAIL", "fixture@example.test")
+                .env("GIT_COMMITTER_NAME", "Fixture Author")
+                .env("GIT_COMMITTER_EMAIL", "fixture@example.test");
+        }
+    }
     if let Some(worktree) = worktree {
         command.current_dir(worktree);
     }
@@ -828,13 +847,81 @@ fn git_result(worktree: Option<&Path>, args: &[&str]) -> Result<Output> {
 fn git_stdout(worktree: Option<&Path>, args: &[&str]) -> Result<String> {
     let output = git_result(worktree, args)?;
     if !output.status.success() {
-        bail!("git {} failed", args.first().copied().unwrap_or("command"));
+        bail!(
+            "git {} failed{}",
+            args.first().copied().unwrap_or("command"),
+            git_says(&output.stderr)
+        );
     }
     String::from_utf8(output.stdout).context("git returned non-UTF-8 output")
 }
 
+/// git's own reason for a failure, on one line, for the reply: ": " and
+/// the last 600 characters of its stderr, or nothing when it said
+/// nothing. "git commit failed" alone hid "Please tell me who you are"
+/// (SMOKE-18). Credentials in a URL (`https://user:token@host`) are
+/// masked: the destination is the user's own, but a reply is logged.
+fn git_says(stderr: &[u8]) -> String {
+    let text = String::from_utf8_lossy(stderr);
+    let mut line = text.split_whitespace().collect::<Vec<_>>().join(" ");
+    let mut from = 0;
+    while let Some(at) = line[from..].find("://") {
+        let start = from + at + 3;
+        let end = line[start..]
+            .find(|c: char| c == '/' || c.is_whitespace() || c == '\'' || c == '"')
+            .map_or(line.len(), |n| start + n);
+        if let Some(userinfo) = line[start..end].rfind('@') {
+            line.replace_range(start..start + userinfo, "***");
+            from = start + 4;
+        } else {
+            from = end;
+        }
+    }
+    if line.is_empty() {
+        return String::new();
+    }
+    let keep = line.chars().count().saturating_sub(600);
+    let tail: String = line.chars().skip(keep).collect();
+    format!(": {}{tail}", if keep > 0 { "…" } else { "" })
+}
+
 fn git_ok(worktree: &Path, args: &[&str]) -> Result<()> {
     git_stdout(Some(worktree), args).map(|_| ())
+}
+
+#[cfg(test)]
+thread_local! {
+    /// Set by a test to run git as a gateway account with no identity:
+    /// an empty global config, and no guessing from the host name.
+    static NO_GIT_IDENTITY: std::cell::RefCell<Option<PathBuf>> =
+        const { std::cell::RefCell::new(None) };
+}
+
+/// Can git on the gateway sign a commit as someone? Checked before the
+/// upstream is cloned. The gateway's git runs with its account's own
+/// configuration and no identity from the environment (`git_command`),
+/// so an account with no `user.name`/`user.email` cloned the whole
+/// upstream and then failed with "git commit failed" (SMOKE-18). `git
+/// var` resolves the identity exactly as `git commit` would, guessing
+/// included, outside any repository (the clone has no config of its own).
+fn require_commit_identity() -> Result<()> {
+    for ident in ["GIT_AUTHOR_IDENT", "GIT_COMMITTER_IDENT"] {
+        let output = git_command(None)
+            .current_dir(std::env::temp_dir())
+            .args(["var", ident])
+            .output()
+            .context("run git var")?;
+        if !output.status.success() {
+            bail!(
+                "git on the gateway has no identity to commit with: set user.name and \
+                 user.email for the account the gateway runs as (git config --global \
+                 user.name \"Your Name\"; git config --global user.email you@example.com); \
+                 nothing was cloned{}",
+                git_says(&output.stderr)
+            );
+        }
+    }
+    Ok(())
 }
 
 fn validate_destination(destination: &str) -> Result<()> {
@@ -1027,8 +1114,10 @@ fn prepared_files(worktree: &Path) -> Result<Vec<String>> {
         .filter(|path| !path.is_empty())
         .map(str::to_string)
         .collect::<Vec<_>>();
-    if files.is_empty() || files.len() > MAX_FILES {
-        bail!("prepared branch must contain between one and {MAX_FILES} selected files");
+    if files.is_empty() || files.len() > MAX_CONTRIBUTION_FILES {
+        bail!(
+            "prepared branch must contain between one and {MAX_CONTRIBUTION_FILES} selected files"
+        );
     }
     Ok(files)
 }
@@ -1108,6 +1197,7 @@ pub fn prepare_many(
             );
         }
     }
+    require_commit_identity()?;
 
     let base = crate::config::data_dir().join("contribution-worktrees");
     std::fs::create_dir_all(&base).context("create isolated contribution worktree root")?;
@@ -1120,13 +1210,10 @@ pub fn prepare_many(
     if worktree.exists() {
         bail!("isolated contribution destination already exists; retry with a new worktree");
     }
-    // A branch name is a durable request identity. The content digest
-    // gives a one-to-one reservation filename, including slashes and
-    // Unicode. It survives success and is released only on failure.
-    let reserved = base.join(format!(
-        ".branch-{:x}.lock",
-        sha2::Sha256::digest(branch.as_bytes())
-    ));
+    // A branch name is a durable request identity. It survives a
+    // successful prepare and is released on failure, and once the PR is
+    // open (`pr`).
+    let reserved = branch_reservation(&base, branch);
     if reserved.exists() {
         bail!("contribution branch already exists in a prepared worktree; choose another branch");
     }
@@ -1576,6 +1663,10 @@ pub fn pr(worktree: &Path, repo: &str, base: &str, title: &str, body: &str) -> R
         );
     }
     let stdout = sanitize(&String::from_utf8_lossy(&output.stdout), &secrets);
+    // The PR is open and its branch is on the remote: nothing here is
+    // needed any more. Free the branch name for the next contribution
+    // and remove the clone (DEV-8: both were kept forever).
+    let removed = release_prepared(&worktree, &branch);
     Ok(json!({
         "operation": "pr",
         "repo": repo,
@@ -1584,8 +1675,32 @@ pub fn pr(worktree: &Path, repo: &str, base: &str, title: &str, body: &str) -> R
         "commit": commit,
         "url": stdout.trim(),
         "pushed": false,
+        "released": true,
+        "worktree_removed": removed,
         "note": "PR was a separate gh action; this call did not push",
     }))
+}
+
+/// The reservation file of a prepared branch name: the content digest
+/// gives a one-to-one file name, slashes and Unicode included.
+fn branch_reservation(base: &Path, branch: &str) -> PathBuf {
+    base.join(format!(
+        ".branch-{:x}.lock",
+        sha2::Sha256::digest(branch.as_bytes())
+    ))
+}
+
+/// After the PR: release the branch name, drop the publish receipt and
+/// remove the clone. True when the clone is gone (on Windows git's
+/// read-only object files can keep it; the name is released anyway).
+fn release_prepared(worktree: &Path, branch: &str) -> bool {
+    let base = crate::config::data_dir().join("contribution-worktrees");
+    let _ = std::fs::remove_file(branch_reservation(&base, branch));
+    let _ = std::fs::remove_file(base.join(format!(
+        ".published-{}.json",
+        worktree.file_name().unwrap_or_default().to_string_lossy()
+    )));
+    std::fs::remove_dir_all(worktree).is_ok() || !worktree.exists()
 }
 
 #[cfg(test)]
@@ -1724,6 +1839,20 @@ mod tests {
         assert!(!error.contains("ghp_abcdefghijklmnopqrstuvwxyz123456"));
     }
 
+    /// A Windows lookup on any host: PATH holds `dir`, PATHEXT is the
+    /// default, nothing else is set.
+    fn windows_lookup(dir: &Path) -> crate::dev_check::LookupEnv<'static> {
+        fn var(name: &str) -> Option<String> {
+            (name == "PATHEXT").then(|| ".COM;.EXE;.BAT;.CMD".to_string())
+        }
+        crate::dev_check::LookupEnv {
+            os: "windows",
+            path: Some(std::env::join_paths([dir]).unwrap()),
+            var: &var,
+            exe_dir: None,
+        }
+    }
+
     #[test]
     fn windows_checker_lookup_accepts_an_executable_suffix() {
         let (_cfg, _data, _guard, _root) = fixture();
@@ -1731,16 +1860,114 @@ mod tests {
         std::fs::create_dir_all(&tools).unwrap();
         std::fs::write(tools.join("tclsh.exe"), b"fixture").unwrap();
         std::fs::write(tools.join("node.exe"), b"fixture").unwrap();
-        let path = std::env::join_paths([tools]).unwrap();
-        assert!(
-            check_command_available_in(&path, "tclsh", "windows"),
+        let env = windows_lookup(&tools);
+        assert_eq!(
+            crate::dev_check::find_program_in("tclsh", &env),
+            Some(tools.join("tclsh.exe")),
             "Windows PATH lookup missed tclsh.exe"
         );
-        assert!(
-            check_command_available_in(&path, "node", "windows"),
+        assert_eq!(
+            crate::dev_check::find_program_in("node", &env),
+            Some(tools.join("node.exe")),
             "Windows PATH lookup missed node.exe"
         );
-        assert!(!check_command_available_in(&path, "tsc", "windows"));
+        assert_eq!(crate::dev_check::find_program_in("tsc", &env), None);
+    }
+
+    /// DEV-5: availability came from a PATHEXT lookup that accepts npm's
+    /// `tsc.cmd`, but the check spawned the bare name, which Rust's
+    /// Windows process code extends with `.exe` only: NotFound, the whole
+    /// run_checks failed, and Prepare said "Fix the failed syntax checks".
+    /// The command starts exactly the file the lookup found.
+    #[test]
+    fn checks_spawn_the_resolved_checker_program() {
+        let (_cfg, _data, _guard, root) = fixture();
+        let tools = crate::config::config_dir().join("windows-npm-tools");
+        std::fs::create_dir_all(&tools).unwrap();
+        for shim in ["tsc.cmd", "node.exe", "tclsh.exe"] {
+            std::fs::write(tools.join(shim), b"fixture").unwrap();
+        }
+        let env = windows_lookup(&tools);
+        let find = |name: &str| crate::dev_check::find_program_in(name, &env);
+        for (file, shim) in [
+            ("plugin.ts", "tsc.cmd"),
+            ("plugin.js", "node.exe"),
+            ("plugin.tcl", "tclsh.exe"),
+        ] {
+            let full = root.join(file);
+            std::fs::write(&full, "x\n").unwrap();
+            match checker_for(&full, file, &find).unwrap() {
+                Checker::Run(command, _) => assert_eq!(
+                    Path::new(command.get_program()),
+                    tools.join(shim),
+                    "{file} would start another program than the one found"
+                ),
+                Checker::Reply(reply) => panic!("{file}: no checker ran: {reply}"),
+            }
+        }
+    }
+
+    /// DEV-5 on Windows itself: an npm `tsc.cmd` the lookup found starts
+    /// and answers. A bare `tsc` was NotFound there, the run failed, and
+    /// Prepare said "Fix the failed syntax checks".
+    #[cfg(windows)]
+    #[test]
+    fn an_npm_cmd_shim_checker_starts_on_windows() {
+        let (_cfg, _data, _guard, root) = fixture();
+        let tools = crate::config::config_dir().join("npm-bin");
+        std::fs::create_dir_all(&tools).unwrap();
+        std::fs::write(tools.join("tsc.cmd"), "@echo off\r\nexit /b 0\r\n").unwrap();
+        let env = windows_lookup(&tools);
+        let find = |name: &str| crate::dev_check::find_program_in(name, &env);
+        std::fs::write(root.join("plugin.ts"), "const x: number = 1;\n").unwrap();
+        let Checker::Run(mut command, _scratch) =
+            checker_for(&root.join("plugin.ts"), "plugin.ts", &find).unwrap()
+        else {
+            panic!("tsc.cmd on PATH was not found");
+        };
+        let output = command
+            .stdin(std::process::Stdio::null())
+            .output()
+            .expect("the tsc.cmd shim could not be started");
+        assert!(output.status.success(), "{output:?}");
+    }
+
+    /// DEV-4: the shipped tclsh is named only by VELES_TCLSH on Android
+    /// and sits beside veles.exe, off PATH, in the Windows zip; a lookup
+    /// on PATH alone reported the Tcl check "unavailable", which counts
+    /// as passing, so Tcl files went into the PR unchecked.
+    #[test]
+    fn a_tcl_file_is_checked_with_the_engine_s_tclsh_off_path() {
+        let (_cfg, _data, _guard, root) = fixture();
+        let Some(real) = crate::shell::which("tclsh").or_else(|| {
+            let p = PathBuf::from(crate::executecode::tclsh_path());
+            p.is_file().then_some(p)
+        }) else {
+            eprintln!("SKIP: no tclsh on this host");
+            return;
+        };
+        let shown = real.display().to_string();
+        let var = |name: &str| (name == "VELES_TCLSH").then(|| shown.clone());
+        let env = crate::dev_check::LookupEnv {
+            os: crate::platform::OS,
+            path: Some(std::ffi::OsString::new()),
+            var: &var,
+            exe_dir: None,
+        };
+        let find = |name: &str| crate::dev_check::find_program_in(name, &env);
+        for (text, status) in [
+            ("proc demo {} {return ok}\n", true),
+            ("proc demo {} {\n", false),
+        ] {
+            std::fs::write(root.join("plugin.tcl"), text).unwrap();
+            let Checker::Run(mut command, _scratch) =
+                checker_for(&root.join("plugin.tcl"), "plugin.tcl", &find).unwrap()
+            else {
+                panic!("the Tcl check was not run with VELES_TCLSH={shown} and no PATH");
+            };
+            let output = command.stdin(std::process::Stdio::null()).output().unwrap();
+            assert_eq!(output.status.success(), status, "{text:?}: {output:?}");
+        }
     }
 
     #[test]
@@ -1859,6 +2086,73 @@ mod tests {
         assert_eq!(rows[4]["status"], "unavailable");
     }
 
+    /// SMOKE-18: on a gateway with no git identity, Prepare branch said
+    /// only "git commit failed", after cloning: git's "Please tell me who
+    /// you are" was thrown away with the rest of its stderr. The identity
+    /// is now checked before anything is cloned, and a git failure
+    /// carries git's own reason.
+    #[test]
+    fn a_missing_git_identity_is_named_and_git_says_why() {
+        let (_cfg, _data, _guard, root) = fixture();
+        let base = crate::config::data_dir();
+        std::fs::create_dir_all(&base).unwrap();
+        let upstream = upstream(&base);
+        // The gateway's account as the smoke run had it: no global git
+        // config, nothing in the environment.
+        let empty = base.join("empty.gitconfig");
+        std::fs::write(&empty, "").unwrap();
+        NO_GIT_IDENTITY.with(|c| *c.borrow_mut() = Some(empty));
+        let err = prepare(
+            &root,
+            &strings(&["plugin.tcl"]),
+            upstream.to_str().unwrap(),
+            "no/identity",
+        )
+        .expect_err("a commit with no identity cannot be prepared")
+        .to_string();
+        NO_GIT_IDENTITY.with(|c| *c.borrow_mut() = None);
+        assert!(
+            err.contains("user.name") && err.contains("user.email"),
+            "the reply does not say what to set: {err}"
+        );
+        // Said before the clone, not by the commit after it (git's own
+        // hint names both settings too, so the words alone prove little).
+        assert!(
+            err.contains("no identity to commit with") && err.contains("nothing was cloned"),
+            "the identity was not checked before the clone: {err}"
+        );
+        let clones = base.join("contribution-worktrees");
+        let cloned = std::fs::read_dir(&clones)
+            .map(|d| {
+                d.flatten()
+                    .any(|e| e.file_name().to_string_lossy().starts_with("contribution-"))
+            })
+            .unwrap_or(false);
+        assert!(
+            !cloned,
+            "the upstream was cloned before the identity was checked"
+        );
+        // With an identity the same request prepares (the check is not
+        // a wall).
+        prepare(
+            &root,
+            &strings(&["plugin.tcl"]),
+            upstream.to_str().unwrap(),
+            "no/identity",
+        )
+        .expect("an identity prepares");
+        // Any git failure carries git's own words, not just its verb.
+        let repo = tempfile::tempdir().unwrap();
+        git(repo.path(), &["init", "-q"]);
+        let err = git_ok(repo.path(), &["switch", "no-such-branch-smoke18"])
+            .unwrap_err()
+            .to_string();
+        assert!(
+            err.contains("no-such-branch-smoke18"),
+            "git's own reason was dropped: {err}"
+        );
+    }
+
     #[test]
     fn prepare_commits_only_selected_files_and_does_not_push() {
         let (_cfg, _data, _guard, root) = fixture();
@@ -1908,7 +2202,12 @@ mod tests {
         assert!(second.to_string().contains("already exists"));
     }
 
-    #[cfg(unix)]
+    /// DEV-7: this ran on unix only, with a pre-commit hook that
+    /// `commit --no-verify` skips anyway, and the Windows stand-in only
+    /// read the arguments back. Every hook a prepare can trigger is a
+    /// marker here (clone and switch run post-checkout, every ref update
+    /// runs reference-transaction), on every host: Git for Windows runs a
+    /// `#!/bin/sh` hook through its own sh.
     #[test]
     fn inherited_git_execution_policy_cannot_replace_contribution_safeguards() {
         let (_cfg, _data, _guard, root) = fixture();
@@ -1918,17 +2217,26 @@ mod tests {
         let marker = base.join("unexpected-hook");
         let hooks = base.join("hooks");
         std::fs::create_dir_all(&hooks).unwrap();
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::PermissionsExt;
-            let hook = hooks.join("pre-commit");
+        // git reads `\` in a config value as an escape; `/` works on both.
+        let slashed = |p: &Path| p.display().to_string().replace('\\', "/");
+        for name in [
+            "pre-commit",
+            "post-commit",
+            "post-checkout",
+            "reference-transaction",
+        ] {
+            let hook = hooks.join(name);
             std::fs::write(&hook, "#!/bin/sh\ntouch \"$CONTRIBUTE_TEST_MARKER\"\n").unwrap();
-            std::fs::set_permissions(&hook, std::fs::Permissions::from_mode(0o755)).unwrap();
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                std::fs::set_permissions(&hook, std::fs::Permissions::from_mode(0o755)).unwrap();
+            }
         }
         let global = base.join("global.gitconfig");
         std::fs::write(
             &global,
-            format!("[core]\nhooksPath = {}\n", hooks.display()),
+            format!("[core]\nhooksPath = {}\n", slashed(&hooks)),
         )
         .unwrap();
         let old_global = std::env::var_os("GIT_CONFIG_GLOBAL");
@@ -1939,8 +2247,8 @@ mod tests {
         std::env::set_var("GIT_CONFIG_GLOBAL", &global);
         std::env::set_var("GIT_CONFIG_COUNT", "1");
         std::env::set_var("GIT_CONFIG_KEY_0", "core.hooksPath");
-        std::env::set_var("GIT_CONFIG_VALUE_0", &hooks);
-        std::env::set_var("CONTRIBUTE_TEST_MARKER", &marker);
+        std::env::set_var("GIT_CONFIG_VALUE_0", slashed(&hooks));
+        std::env::set_var("CONTRIBUTE_TEST_MARKER", slashed(&marker));
         let result = prepare(
             &root,
             &strings(&["plugin.tcl"]),
@@ -1972,24 +2280,27 @@ mod tests {
         );
     }
 
-    #[cfg(windows)]
+    /// DEV-7: the Windows stand-in asserted only the variables that were
+    /// present, so deleting an `env_remove` made it pass with nothing
+    /// checked. A removal is an entry with no value; its absence is red.
     #[test]
-    fn windows_contribution_git_uses_the_explicit_no_hook_policy() {
-        let command = git_command_on(None, "windows");
-        let args = command
-            .get_args()
-            .map(|arg| arg.to_string_lossy().into_owned())
-            .collect::<Vec<_>>();
-        assert!(args.contains(&"core.hooksPath=NUL".to_string()));
-        assert!(args.contains(&"core.attributesFile=NUL".to_string()));
-        assert!(args.contains(&"-c".to_string()));
-        // On Windows a shell hook is not a portable marker for "git ran
-        // a hook". Assert the policy that every contribution git command
-        // supplies, while the Unix fixture actually executes the hook test.
-        assert!(args.contains(&"core.pager=cat".to_string()));
-        for (name, value) in command.get_envs() {
-            if name == "GIT_DIR" || name == "GIT_WORK_TREE" || name == "GIT_INDEX_FILE" {
-                assert!(value.is_none(), "inherited {name:?} survived");
+    fn contribution_git_removes_the_inherited_repository_environment() {
+        for os in ["windows", "linux"] {
+            let command = git_command_on(None, os);
+            let envs = command.get_envs().collect::<Vec<_>>();
+            for name in [
+                "GIT_DIR",
+                "GIT_WORK_TREE",
+                "GIT_INDEX_FILE",
+                "GIT_OBJECT_DIRECTORY",
+                "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+                "GIT_COMMON_DIR",
+            ] {
+                assert!(
+                    envs.iter()
+                        .any(|(key, value)| *key == OsStr::new(name) && value.is_none()),
+                    "{os}: {name} is not removed from the contribution's git"
+                );
             }
         }
     }
@@ -2411,6 +2722,119 @@ mod tests {
         assert_eq!(row("icon.bin")["suggested"], false);
     }
 
+    /// DEV-8: "wrap all my extensions into one PR" was capped at 100
+    /// files in TOTAL, so three ordinary extensions could not go in one
+    /// pull request; the cap is per extension, and a contribution's own
+    /// limit names itself and the way out.
+    #[test]
+    fn select_all_over_many_extensions_is_not_silently_capped() {
+        let (_cfg, _data, _guard, _root) = fixture();
+        let mut selections = Vec::new();
+        for name in ["one", "two", "three"] {
+            let dir = crate::plugins::plugins_dir().join(name);
+            std::fs::create_dir_all(&dir).unwrap();
+            let mut files = Vec::new();
+            for i in 0..40 {
+                let file = format!("part{i}.tcl");
+                std::fs::write(dir.join(&file), format!("proc p{i} {{}} {{}}\n")).unwrap();
+                files.push(file);
+            }
+            selections.push(Selection {
+                name: name.into(),
+                root: dir,
+                files,
+            });
+        }
+        let report = review_many(&selections, DEFAULT_DIRECTORY).unwrap();
+        assert_eq!(report["files"].as_array().unwrap().len(), 120);
+        let big = crate::plugins::plugins_dir().join("big");
+        std::fs::create_dir_all(&big).unwrap();
+        let files = (0..=MAX_FILES)
+            .map(|i| {
+                let file = format!("f{i}.tcl");
+                std::fs::write(big.join(&file), "set x 1\n").unwrap();
+                file
+            })
+            .collect::<Vec<_>>();
+        let error = review_many(
+            &[Selection {
+                name: "big".into(),
+                root: big,
+                files,
+            }],
+            DEFAULT_DIRECTORY,
+        )
+        .unwrap_err()
+        .to_string();
+        assert!(error.contains("per extension"), "{error}");
+    }
+
+    /// DEV-8: a prepared branch name stayed reserved forever (the lock
+    /// was leaked on purpose and nothing removed it), and so did the full
+    /// clone; the dialog's default branch then failed every later
+    /// contribution with "already exists in a prepared worktree", merged
+    /// PR or not. Once the PR is open, both are released.
+    #[cfg(unix)]
+    #[test]
+    fn a_published_contribution_releases_its_branch_reservation() {
+        use std::os::unix::fs::PermissionsExt;
+        let (_cfg, _data, _guard, root) = fixture();
+        let base = crate::config::data_dir();
+        std::fs::create_dir_all(&base).unwrap();
+        let bare = |name: &str| {
+            let source = upstream(&base.join(format!("{name}-src")));
+            let remote = base.join(format!("{name}.git"));
+            git(
+                &base,
+                &[
+                    "clone",
+                    "-q",
+                    "--bare",
+                    source.to_str().unwrap(),
+                    remote.to_str().unwrap(),
+                ],
+            );
+            remote
+        };
+        let first = bare("first");
+        let prepared = prepare(
+            &root,
+            &strings(&["plugin.tcl"]),
+            first.to_str().unwrap(),
+            DEFAULT_BRANCH,
+        )
+        .unwrap();
+        let worktree = PathBuf::from(prepared["worktree"].as_str().unwrap());
+        publish(&worktree).unwrap();
+        let tools = base.join("tools");
+        std::fs::create_dir_all(&tools).unwrap();
+        std::fs::write(
+            tools.join("gh"),
+            "#!/bin/sh\nprintf 'https://example.invalid/pr/1\\n'\n",
+        )
+        .unwrap();
+        std::fs::set_permissions(tools.join("gh"), std::fs::Permissions::from_mode(0o755)).unwrap();
+        let old_gh = std::env::var_os("VELES_CONTRIBUTE_GH");
+        std::env::set_var("VELES_CONTRIBUTE_GH", tools.join("gh"));
+        let opened = pr(&worktree, "owner/repo", "main", "title", "body");
+        match old_gh {
+            Some(value) => std::env::set_var("VELES_CONTRIBUTE_GH", value),
+            None => std::env::remove_var("VELES_CONTRIBUTE_GH"),
+        }
+        let opened = opened.unwrap();
+        assert_eq!(opened["url"], "https://example.invalid/pr/1");
+        assert_eq!(opened["released"], true, "{opened}");
+        assert!(!worktree.exists(), "the published clone was left behind");
+        let second = bare("second");
+        prepare(
+            &root,
+            &strings(&["plugin.tcl"]),
+            second.to_str().unwrap(),
+            DEFAULT_BRANCH,
+        )
+        .expect("the default branch is free again once the PR is open");
+    }
+
     #[test]
     fn publish_and_pr_are_separate_local_actions() {
         let (_cfg, _data, _guard, root) = fixture();
@@ -2465,6 +2889,15 @@ mod tests {
             &worktree,
             &["remote", "set-url", "origin", remote.to_str().unwrap()],
         );
+        // A worktree changed after preparing is never published (checked
+        // before the PR, which releases the worktree: DEV-8).
+        std::fs::write(
+            worktree.join("plugin.tcl"),
+            "# uncommitted secret attempt\n",
+        )
+        .unwrap();
+        assert!(publish(&worktree).is_err());
+        std::fs::remove_file(worktree.join("plugin.tcl")).unwrap();
         #[cfg(unix)]
         {
             use std::os::unix::fs::PermissionsExt;
@@ -2512,13 +2945,9 @@ mod tests {
                     "body",
                 ]
             );
+            // The open PR released its clone: nothing is left to publish.
+            assert!(publish(&worktree).is_err());
         }
-        std::fs::write(
-            worktree.join("plugin.tcl"),
-            "# uncommitted secret attempt\n",
-        )
-        .unwrap();
-        assert!(publish(&worktree).is_err());
     }
 
     #[test]

@@ -125,6 +125,19 @@ pub const RESERVED_HOOKS: &[&str] = &[
     "kanban_task_blocked",
 ];
 
+/// What every registration path says when a plugin registers a hook in
+/// [`RESERVED_HOOKS`]: it is accepted (a ported plugin still loads) and
+/// the plugin author is told the handler will never run, instead of a
+/// plain success (ASK-8). `None` for any other name.
+pub fn reserved_note(hook: &str) -> Option<String> {
+    RESERVED_HOOKS.contains(&hook).then(|| {
+        format!(
+            "hook `{hook}` is reserved: accepted for hermes plugin portability, but veles \
+             never fires it, so this handler will not run"
+        )
+    })
+}
+
 /// The hook names some plugin has registered a handler for, or `None`
 /// when that is not known yet.
 ///
@@ -445,6 +458,16 @@ impl HookBus {
         })
         .await
         .map_err(|e| format!("reload join failed: {e}"))?
+    }
+
+    /// Source ONE Tcl plugin now (its earlier registrations purged
+    /// first) and answer its own load line or its own error: what a
+    /// just-created extension needs to say truthfully whether it loaded.
+    pub async fn load_tcl_plugin(&self, name: &str) -> Result<String, String> {
+        let Some(tcl) = self.tcl.clone() else {
+            return Err("no Tcl interpreter".into());
+        };
+        tcl.load_plugin(name).await
     }
 }
 

@@ -156,7 +156,12 @@ function install(s) {
   const dir = path.join(s.vh, s.nativeName === NATIVE_NAME ? 'browser-extension' : `browser-extension-${s.nativeName}`);
   s.extension = path.join(dir, 'extension');
   if (!fs.existsSync(path.join(s.extension, 'manifest.json'))) throw new Error(`install printed no extension copy: ${out.stdout}`);
-  s.chromeManifest = path.join(s.home, '.config/google-chrome/NativeMessagingHosts/veles_browser.json');
+  // What the install itself wrote for each Chromium-family browser on Linux:
+  // the run copies THAT file, never one browser's manifest for another.
+  s.chromiumManifests = {
+    chrome: path.join(s.home, '.config/google-chrome/NativeMessagingHosts/veles_browser.json'),
+    edge: path.join(s.home, '.config/microsoft-edge/NativeMessagingHosts/veles_browser.json'),
+  };
 }
 // The extension a browser loads: the installed copy, or (when the caller
 // changes it, or under a test name) a copy of it whose background
@@ -274,7 +279,9 @@ async function chromeSession(name, bin, s, site) {
   // install registered the run's name.
   if (!WINDOWS) {
     fs.mkdirSync(path.join(profile, 'NativeMessagingHosts'), {recursive: true});
-    fs.copyFileSync(s.chromeManifest, path.join(profile, 'NativeMessagingHosts/veles_browser.json'));
+    const manifest = s.chromiumManifests[name];
+    if (!manifest || !fs.existsSync(manifest)) throw new Error(`the install wrote no native-host manifest for ${name}: ${manifest}`);
+    fs.copyFileSync(manifest, path.join(profile, 'NativeMessagingHosts/veles_browser.json'));
   }
   const child = spawn(bin, ['--headless=new', `--user-data-dir=${profile}`, '--remote-debugging-pipe',
     '--enable-unsafe-extension-debugging', '--no-first-run', '--no-default-browser-check', '--disable-gpu',
@@ -537,21 +544,34 @@ const browsers = {
     ...windowsBrowsers('Google\\Chrome\\Application\\chrome.exe')]),
   firefox: which([process.env.FIREFOX_BIN, 'firefox-devedition', 'firefox-developer-edition', 'firefox',
     ...windowsBrowsers('Firefox Developer Edition\\firefox.exe', 'Mozilla Firefox\\firefox.exe', 'Firefox Nightly\\firefox.exe')]),
-  // Not registered by a Linux or macOS install; on Windows it is.
+  // Registered by the install on every platform (~/.config/microsoft-edge on Linux).
   edge: which([process.env.EDGE_BIN, ...(WINDOWS ? [] : ['microsoft-edge-stable', 'microsoft-edge']),
     ...windowsBrowsers('Microsoft\\Edge\\Application\\msedge.exe')]),
 };
 let failed = 0;
 let ran = 0;
 for (const name of wanted.length ? wanted : Object.keys(browsers)) {
+  if (!(name in browsers)) {
+    // A name this run does not know is a typo, never a pass.
+    console.log(`FAIL [${name}] not a browser this run drives (${Object.keys(browsers).join(', ')})`);
+    failed += 1;
+    continue;
+  }
   if (!browsers[name]) {
-    console.log(`SKIP [${name}] no ${name} binary found`);
+    // Named on the command line: the caller asked for THIS browser, and a
+    // run that could not drive it has verified nothing about it.
+    if (wanted.length) {
+      console.log(`FAIL [${name}] asked for, but no ${name} binary found`);
+      failed += 1;
+    } else {
+      console.log(`SKIP [${name}] no ${name} binary found`);
+    }
     continue;
   }
   ran += 1;
   const results = await run(name, browsers[name]);
   failed += results.filter(r => !r.ok).length;
 }
-console.log(ran ? `browser bridge e2e: ${failed ? `${failed} failed` : 'all passed'} (${ran} browser${ran === 1 ? '' : 's'})`
+console.log(ran || failed ? `browser bridge e2e: ${failed ? `${failed} failed` : 'all passed'} (${ran} browser${ran === 1 ? '' : 's'})`
   : 'browser bridge e2e: SKIP (no browser installed)');
 process.exit(failed ? 1 : 0);

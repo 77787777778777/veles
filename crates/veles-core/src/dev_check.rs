@@ -66,6 +66,10 @@ pub struct Tools<'a> {
     /// crate's `target/`, or the gateway's `CARGO_TARGET_DIR`). Tests set
     /// it so a fixture crate never builds into a shared target directory.
     pub cargo_target_dir: Option<&'a Path>,
+    /// The engine this gateway runs for a script kind (`racket`, `lisp`),
+    /// whose reader checks a file when no checker program is installed
+    /// (SMOKE-23). Production: the registered script hosts.
+    pub embedded: &'a dyn Fn(&str) -> Option<std::sync::Arc<dyn crate::scripthost::ScriptHost>>,
 }
 
 impl Tools<'_> {
@@ -76,16 +80,139 @@ impl Tools<'_> {
     }
 }
 
-/// [`check_file_with`] on this process's PATH.
+/// [`check_file_with`] with this gateway's own program lookup
+/// ([`find_program`]).
 pub fn check_file(path: &Path) -> Value {
     check_file_with(
         path,
         &Tools {
-            which: &|name| crate::shell::which(name),
+            which: &find_program,
             timeout: Duration::from_secs(300),
             cargo_target_dir: None,
+            embedded: &crate::scripthost::host_for,
         },
     )
+}
+
+// ── finding the checker programs ──────────────────────────────────────
+
+/// What a program lookup consults. Production reads this process's
+/// ([`LookupEnv::current`]); tests pass their own, so the Windows rules
+/// and an empty PATH are exercised on any host without touching the
+/// process environment.
+pub(crate) struct LookupEnv<'a> {
+    /// `windows`, or any other `platform::OS` value.
+    pub os: &'a str,
+    /// The PATH value.
+    pub path: Option<std::ffi::OsString>,
+    /// Any other variable (`PATHEXT`, `VELES_TCLSH`, `VELES_TCL_LSP`,
+    /// `TCL_LIBRARY`).
+    pub var: &'a dyn Fn(&str) -> Option<String>,
+    /// The running gateway's own directory.
+    pub exe_dir: Option<PathBuf>,
+}
+
+fn process_var(name: &str) -> Option<String> {
+    std::env::var(name).ok().filter(|v| !v.trim().is_empty())
+}
+
+impl LookupEnv<'static> {
+    pub(crate) fn current() -> LookupEnv<'static> {
+        LookupEnv {
+            os: crate::platform::OS,
+            path: std::env::var_os("PATH"),
+            var: &process_var,
+            exe_dir: std::env::current_exe()
+                .ok()
+                .and_then(|exe| exe.parent().map(Path::to_path_buf)),
+        }
+    }
+}
+
+/// The file names `name` may have on `env.os`: on Windows the PATHEXT
+/// spellings first (`tsc.cmd`, `tclsh.exe`), then the bare name.
+fn spellings(name: &str, env: &LookupEnv) -> Vec<String> {
+    if env.os != "windows" || Path::new(name).extension().is_some() {
+        return vec![name.to_string()];
+    }
+    let exts = (env.var)("PATHEXT").unwrap_or_else(|| ".COM;.EXE;.BAT;.CMD".into());
+    let mut names: Vec<String> = exts
+        .split(';')
+        .filter(|e| !e.is_empty())
+        .map(|e| format!("{name}{}", e.to_ascii_lowercase()))
+        .collect();
+    names.push(name.to_string());
+    names
+}
+
+/// Programs a veles build ships, each with the variable the build sets
+/// to its own copy: the APK's tclsh (lib/libtclsh.so, Engine.java;
+/// DEV-4) and the Linux packages' tcl-lsp (velesPkg's wrapper in
+/// flake.nix; DEV-6). That copy is the one the build was made and tested
+/// with, so [`find_program_in`] looks there before PATH.
+const SHIPPED: &[(&str, &str)] = &[("tclsh", "VELES_TCLSH"), ("tcl-lsp", "VELES_TCL_LSP")];
+
+/// This build's own copy of `name`, when it ships one and the file is
+/// there. A variable naming a file that is gone is not an answer.
+fn shipped_in(name: &str, env: &LookupEnv) -> Option<PathBuf> {
+    let named = PathBuf::from((env.var)(shipped_var(name)?)?);
+    named.is_file().then_some(named)
+}
+
+/// The program a checker runs, as a path to start: what `Command::new`
+/// is given, so availability and the spawn can never disagree (DEV-5).
+pub(crate) fn find_program_in(name: &str, env: &LookupEnv) -> Option<PathBuf> {
+    let given = Path::new(name);
+    if given.is_absolute() || given.components().count() > 1 {
+        return given.is_file().then(|| given.to_path_buf());
+    }
+    // The build's own copy first ([`SHIPPED`]), as executecode::tclsh_path
+    // finds tclsh: the APK names its tclsh only there (DEV-4), and the
+    // Linux packages' tcl-lsp is on no PATH at all (DEV-6).
+    if let Some(shipped) = shipped_in(name, env) {
+        return Some(shipped);
+    }
+    let names = spellings(name, env);
+    let in_dir = |dir: &Path| names.iter().map(|n| dir.join(n)).find(|c| c.is_file());
+    if let Some(path) = &env.path {
+        for dir in std::env::split_paths(path) {
+            if let Some(hit) = in_dir(&dir) {
+                return Some(hit);
+            }
+        }
+    }
+    // Beside the running gateway: the Windows zip's bin\ holds tclsh.exe
+    // and wish.exe next to veles.exe, off PATH. The desktop's wish (and
+    // Windows' own CreateProcess search) find them there.
+    if let Some(hit) = env.exe_dir.as_deref().and_then(in_dir) {
+        return Some(hit);
+    }
+    // A nix-built gateway run without its wrapper: TCL_LIBRARY is
+    // <tcl>/lib/tcl8.6, so tclsh is <tcl>/bin/tclsh.
+    if name.starts_with("tclsh") {
+        if let Some(library) = (env.var)("TCL_LIBRARY") {
+            if let Some(prefix) = Path::new(&library).parent().and_then(Path::parent) {
+                if let Some(hit) = in_dir(&prefix.join("bin")) {
+                    return Some(hit);
+                }
+            }
+        }
+    }
+    None
+}
+
+/// [`find_program_in`] for this process.
+pub fn find_program(name: &str) -> Option<PathBuf> {
+    find_program_in(name, &LookupEnv::current())
+}
+
+/// The variable a shipping build names its own copy of `name` in, if
+/// it ships one ([`SHIPPED`]).
+pub fn shipped_var(name: &str) -> Option<&'static str> {
+    SHIPPED
+        .iter()
+        .find(|(program, _)| *program == name)
+        .map(|(_, var)| *var)
 }
 
 /// Check one file with the checker for its language. Never errors: a
@@ -277,9 +404,14 @@ exit 0
 ";
 
 fn check_tcl(path: &Path, tools: &Tools) -> Result<Report, Unavailable> {
-    if tools.find(&["tcl-lsp"]).is_some() {
+    // The server the lookup found is the one started (DEV-5).
+    if let Some((_, server)) = tools.find(&["tcl-lsp"]) {
         let file = path.to_string_lossy();
-        match crate::lsp_check::lint_rows("tcl-lsp", &file, tools.timeout.as_secs().min(60)) {
+        match crate::lsp_check::lint_rows(
+            &server.to_string_lossy(),
+            &file,
+            tools.timeout.as_secs().min(60),
+        ) {
             Ok(rows) => {
                 let diagnostics = rows
                     .into_iter()
@@ -706,6 +838,61 @@ fn check_c(path: &Path, language: Language, tools: &Tools) -> Result<Report, Una
     })
 }
 
+// ── the engine the gateway runs ───────────────────────────────────────
+
+/// The read check of the engine this gateway runs for `kind`, when no
+/// checker program is installed. The lang-racket and lang-lisp modules
+/// embed the very reader the external check starts, and Check said "no
+/// Racket checker is installed" on a gateway whose log had just said
+/// "Racket CS 9.3 booted" (SMOKE-23). Nothing is expanded or evaluated.
+/// `None` when the gateway runs no such engine (or this thread cannot
+/// wait for it).
+fn check_embedded(kind: &str, engine: &str, path: &Path, tools: &Tools) -> Option<Report> {
+    let host = (tools.embedded)(kind)?;
+    let handle = tokio::runtime::Handle::try_current().ok()?;
+    let read = host.read_check(path.to_path_buf())?;
+    let answer = handle.block_on(tokio::time::timeout(tools.timeout, read));
+    let (passed, diagnostics, output) = match answer {
+        Ok(Ok(None)) => (true, Vec::new(), String::new()),
+        Ok(Ok(Some(e))) => {
+            let line = format!(
+                "{}:{}:{}: error: {}",
+                path.display(),
+                e.line,
+                e.col,
+                e.message
+            );
+            let d = Diagnostic {
+                path: diagnostic_path(path),
+                line: e.line,
+                col: e.col,
+                severity: "ERROR",
+                message: e.message,
+            };
+            (false, vec![d], line)
+        }
+        Ok(Err(e)) => (false, Vec::new(), e),
+        Err(_) => (
+            false,
+            Vec::new(),
+            format!(
+                "the gateway's {engine} engine did not answer within {}s",
+                tools.timeout.as_secs()
+            ),
+        ),
+    };
+    Some(Report {
+        checker: format!("the gateway's embedded {engine} (lang-{kind})"),
+        method: "the language's own reader in the running engine (nothing is expanded or run)",
+        passed,
+        diagnostics,
+        output,
+        note: Some(format!(
+            "reads the file only: the lang-{kind} engine this gateway runs did the reading"
+        )),
+    })
+}
+
 // ── Racket ────────────────────────────────────────────────────────────
 
 /// Read every form with `read-syntax`; nothing is expanded or run. The
@@ -750,6 +937,9 @@ fn parse_reader_errors(output: &str, file: &Path) -> Vec<Diagnostic> {
 
 fn check_racket(path: &Path, tools: &Tools) -> Result<Report, Unavailable> {
     let Some((name, racket)) = tools.find(&["racket"]) else {
+        if let Some(report) = check_embedded("racket", "Racket", path, tools) {
+            return Ok(report);
+        }
         return Err(Unavailable {
             looked_for: vec!["racket"],
             hint: "install Racket on the gateway for a read check",
@@ -812,6 +1002,9 @@ const LISP_READ_CHECK: &str = r#"
 
 fn check_lisp(path: &Path, tools: &Tools) -> Result<Report, Unavailable> {
     let Some((name, ecl)) = tools.find(&["ecl"]) else {
+        if let Some(report) = check_embedded("lisp", "Common Lisp (ECL)", path, tools) {
+            return Ok(report);
+        }
         return Err(Unavailable {
             looked_for: vec!["ecl"],
             hint: "install ECL (the Common Lisp the lang-lisp host embeds) on the gateway for a read check",
@@ -843,7 +1036,8 @@ fn check_lisp(path: &Path, tools: &Tools) -> Result<Report, Unavailable> {
 mod tests {
     use super::*;
 
-    /// Tools from PATH plus `VELES_TEST_LSP_PATH` (the devShell's extra
+    /// Tools as the gateway finds them (find_program: the build's own
+    /// copy, then PATH) plus `VELES_TEST_LSP_PATH` (the devShell's extra
     /// tool directories). `VELES_TEST_LSP_REQUIRE` names the tools whose
     /// absence is a failure, not a skip — so a devShell run cannot go
     /// green by not having them.
@@ -856,7 +1050,7 @@ mod tests {
                 }
             }
         }
-        crate::shell::which(name)
+        find_program(name)
     }
 
     fn need(name: &str) -> bool {
@@ -877,6 +1071,7 @@ mod tests {
             which: &lookup,
             timeout: Duration::from_secs(240),
             cargo_target_dir: None,
+            embedded: &|_| None,
         }
     }
 
@@ -896,6 +1091,214 @@ mod tests {
             .collect()
     }
 
+    /// DEV-4: the shipped tclsh is off PATH on two platforms. Android
+    /// names it only in VELES_TCLSH (lib/libtclsh.so); the Windows zip
+    /// puts tclsh.exe in bin\ beside veles.exe without adding bin\ to
+    /// PATH; a nix-built gateway run bare finds it from TCL_LIBRARY. The
+    /// engine's own locator (executecode::tclsh_path) and the desktop's
+    /// wish lookup look there; Check looked on PATH only and said
+    /// "unavailable".
+    #[test]
+    fn the_checker_lookup_finds_tclsh_where_the_shipped_builds_put_it() {
+        let dir = tempfile::tempdir().unwrap();
+        let android = write(dir.path(), "apk/lib/libtclsh.so", "fixture");
+        let zip = dir.path().join("zip/bin");
+        write(&zip, "tclsh.exe", "fixture");
+        let nix = dir.path().join("tcl-8.6");
+        write(&nix, "bin/tclsh", "fixture");
+        std::fs::create_dir_all(nix.join("lib/tcl8.6")).unwrap();
+        let empty = Some(std::ffi::OsString::new());
+        let named = android.display().to_string();
+        let var = |k: &str| (k == "VELES_TCLSH").then(|| named.clone());
+        let env = LookupEnv {
+            os: crate::platform::OS,
+            path: empty.clone(),
+            var: &var,
+            exe_dir: None,
+        };
+        assert_eq!(find_program_in("tclsh", &env), Some(android.clone()));
+        // VELES_TCLSH names tclsh, not every program.
+        assert_eq!(find_program_in("node", &env), None);
+        let none = |_: &str| None;
+        let env = LookupEnv {
+            os: "windows",
+            path: empty.clone(),
+            var: &none,
+            exe_dir: Some(zip.clone()),
+        };
+        assert_eq!(find_program_in("tclsh", &env), Some(zip.join("tclsh.exe")));
+        let library = nix.join("lib/tcl8.6").display().to_string();
+        let var = |k: &str| (k == "TCL_LIBRARY").then(|| library.clone());
+        let env = LookupEnv {
+            os: "linux",
+            path: empty,
+            var: &var,
+            exe_dir: None,
+        };
+        assert_eq!(find_program_in("tclsh", &env), Some(nix.join("bin/tclsh")));
+    }
+
+    /// DEV-6: the Linux packages ship tcl-lsp and name it in
+    /// VELES_TCL_LSP, as the APK names its tclsh in VELES_TCLSH. The
+    /// build's own copy is the one it was built and tested with, so it
+    /// wins over one on PATH; PATH is second, and a name whose file is
+    /// gone falls through to it instead of being returned.
+    #[test]
+    fn the_shipped_tcl_lsp_is_found_before_the_one_on_path() {
+        let dir = tempfile::tempdir().unwrap();
+        let shipped = write(dir.path(), "veles/bin/tcl-lsp", "fixture");
+        let on_path = dir.path().join("path");
+        write(&on_path, "tcl-lsp", "fixture");
+        let search = Some(on_path.clone().into_os_string());
+        let named = shipped.display().to_string();
+        let gone = dir.path().join("removed/tcl-lsp").display().to_string();
+        let shipping = |k: &str| (k == "VELES_TCL_LSP").then(|| named.clone());
+        let stale = |k: &str| (k == "VELES_TCL_LSP").then(|| gone.clone());
+        let none = |_: &str| None;
+        let find = |name: &str, var: &dyn Fn(&str) -> Option<String>, path| {
+            find_program_in(
+                name,
+                &LookupEnv {
+                    os: "linux",
+                    path,
+                    var,
+                    exe_dir: None,
+                },
+            )
+        };
+        assert_eq!(
+            find("tcl-lsp", &shipping, search.clone()),
+            Some(shipped.clone())
+        );
+        // VELES_TCL_LSP names tcl-lsp, not tclsh.
+        assert_eq!(find("tclsh", &shipping, None), None);
+        assert_eq!(
+            find("tcl-lsp", &none, search.clone()),
+            Some(on_path.join("tcl-lsp"))
+        );
+        assert_eq!(
+            find("tcl-lsp", &stale, search),
+            Some(on_path.join("tcl-lsp"))
+        );
+        assert_eq!(find("tcl-lsp", &none, None), None);
+    }
+
+    /// DEV-4, end to end: Check on a .tcl file with tclsh reachable only
+    /// through VELES_TCLSH (no PATH at all) runs the completeness check.
+    #[test]
+    fn tcl_check_finds_the_engine_tclsh_off_path() {
+        let Some(real) = lookup("tclsh").or_else(|| {
+            let p = PathBuf::from(crate::executecode::tclsh_path());
+            p.is_file().then_some(p)
+        }) else {
+            eprintln!("SKIP: no tclsh on this host");
+            return;
+        };
+        let shown = real.display().to_string();
+        let var = |k: &str| (k == "VELES_TCLSH").then(|| shown.clone());
+        let env = LookupEnv {
+            os: crate::platform::OS,
+            path: Some(std::ffi::OsString::new()),
+            var: &var,
+            exe_dir: None,
+        };
+        let find = |name: &str| find_program_in(name, &env);
+        let tools = Tools {
+            which: &find,
+            timeout: Duration::from_secs(60),
+            cargo_target_dir: None,
+            embedded: &|_| None,
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let good = write(dir.path(), "plugin.tcl", "proc demo {} {return 1}\n");
+        let v = check_file_with(&good, &tools);
+        assert_eq!(v["status"], "passed", "{v}");
+        assert_eq!(v["method"], "Tcl info complete", "{v}");
+        let bad = write(dir.path(), "bad.tcl", "proc demo {} {\n");
+        let v = check_file_with(&bad, &tools);
+        assert_eq!(v["status"], "failed", "{v}");
+    }
+
+    /// SMOKE-23: a gateway with no `racket` or `ecl` program but with the
+    /// lang-racket and lang-lisp engines running said "no Racket checker
+    /// is installed". The engine's own reader checks the file now, and
+    /// its error is a diagnostic. (With neither, the case below holds.)
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn the_engine_the_gateway_runs_reads_when_no_checker_program_is_installed() {
+        use crate::scripthost::{BoxFut, ReaderError, ScriptHost, ScriptRef};
+        use std::sync::Arc;
+        struct Reader(&'static str);
+        impl ScriptHost for Reader {
+            fn kind(&self) -> &'static str {
+                self.0
+            }
+            fn load(&self, _: ScriptRef) -> BoxFut<'_, Result<String, String>> {
+                Box::pin(async { Err("not in this test".to_string()) })
+            }
+            fn unload(&self, _: &str) -> BoxFut<'_, Result<String, String>> {
+                Box::pin(async { Ok(String::new()) })
+            }
+            fn invoke(&self, _: &str, _: u64, _: String) -> BoxFut<'_, Result<String, String>> {
+                Box::pin(async { Err("not in this test".to_string()) })
+            }
+            fn read_check(
+                &self,
+                path: PathBuf,
+            ) -> Option<BoxFut<'_, Result<Option<ReaderError>, String>>> {
+                Some(Box::pin(async move {
+                    let text = std::fs::read_to_string(&path).map_err(|e| e.to_string())?;
+                    Ok(text.contains("(oops").then(|| ReaderError {
+                        line: 2,
+                        col: 0,
+                        message: "expected a `)` to close `(`".to_string(),
+                    }))
+                }))
+            }
+        }
+        let dir = tempfile::tempdir().unwrap();
+        let bad = write(dir.path(), "bad.rkt", "#lang racket/base\n(oops\n");
+        let good = write(dir.path(), "good.lisp", "(defun ok () 1)\n");
+        let check = |path: PathBuf| {
+            crate::rt::spawn_blocking(move || {
+                let engines = |kind: &str| -> Option<Arc<dyn ScriptHost>> {
+                    match kind {
+                        "racket" => Some(Arc::new(Reader("racket"))),
+                        "lisp" => Some(Arc::new(Reader("lisp"))),
+                        _ => None,
+                    }
+                };
+                check_file_with(
+                    &path,
+                    &Tools {
+                        which: &|_| None,
+                        timeout: Duration::from_secs(10),
+                        cargo_target_dir: None,
+                        embedded: &engines,
+                    },
+                )
+            })
+        };
+        let v = check(bad).await.unwrap();
+        assert_eq!(v["status"], "failed", "{v}");
+        assert_eq!(diag_lines(&v), vec![2], "{v}");
+        assert!(
+            v["checker"]
+                .as_str()
+                .unwrap_or("")
+                .contains("embedded Racket"),
+            "{v}"
+        );
+        let v = check(good).await.unwrap();
+        assert_eq!(v["status"], "passed", "{v}");
+        assert!(
+            v["checker"]
+                .as_str()
+                .unwrap_or("")
+                .contains("embedded Common Lisp"),
+            "{v}"
+        );
+    }
+
     #[test]
     fn a_missing_checker_is_unavailable_and_never_a_pass() {
         let dir = tempfile::tempdir().unwrap();
@@ -903,6 +1306,7 @@ mod tests {
             which: &|_| None,
             timeout: Duration::from_secs(5),
             cargo_target_dir: None,
+            embedded: &|_| None,
         };
         for (file, program) in [
             ("a.ts", "tsc"),
@@ -1074,6 +1478,7 @@ mod tests {
         let target = dir.path().join("target");
         let private = Tools {
             cargo_target_dir: Some(&target),
+            embedded: &|_| None,
             ..tools()
         };
         let v = check_file_with(&lib, &private);

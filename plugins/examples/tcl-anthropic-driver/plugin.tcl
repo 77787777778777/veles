@@ -332,11 +332,56 @@ proc anthropic::headers_for_key {key style {ver ""}} {
 
 # ── request: OpenAI shape → Anthropic Messages shape ────────────────────
 
+# Tool-call ids as this wire needs them: non-empty, letters, digits, _ and -
+# only, and unique in the request. Other routes promise none of that: a
+# route that sends no ids leaves "", Kimi-style ids carry : and ., and some
+# models number calls per response, so terminal:0 opens every round. The
+# engine pairs such calls with their results by POSITION (each round's
+# results directly after it); this wire pairs strictly by id, so a call
+# that would collide gets a fresh id and the results of the same round, in
+# order, follow it. A valid, unused id is kept as it is, so a history of
+# this wire's own ids is sent byte for byte as before. The same rule, in
+# the same order, is in the Rust twin (ToolIds).
+proc anthropic::call_id {usedVar roundVar id} {
+    upvar 1 $usedVar used $roundVar round
+    if {$id eq ""} {
+        set base call
+    } else {
+        regsub -all {[^A-Za-z0-9_-]} $id _ base
+    }
+    set out $base
+    set n 1
+    while {[dict exists $used $out]} {
+        set out "${base}_$n"
+        incr n
+    }
+    dict set used $out 1
+    dict lappend round $id $out
+    return $out
+}
+
+# The id to send for a result: the next call of the current round that
+# carried its id. A result with no such call (a thread continue answers a
+# reply the endpoint holds) keeps its id.
+proc anthropic::result_id {roundVar id} {
+    upvar 1 $roundVar round
+    if {![dict exists $round $id] || [llength [dict get $round $id]] == 0} {
+        return $id
+    }
+    set ids [dict get $round $id]
+    dict set round $id [lrange $ids 1 end]
+    return [lindex $ids 0]
+}
+
 proc anthropic::to_wire {req caps streaming} {
     set model [::veles::json_get $req model]
     set out_msgs {}
     set system ""
     set system_cache ""
+    # Tool ids, per anthropic::call_id: used ids, and the current round's
+    # original id -> the ids given to its calls, in order.
+    set used_ids [dict create]
+    set round_ids [dict create]
 
     for {set i 0} {1} {incr i} {
         set role [::veles::json_get $req messages $i role]
@@ -381,7 +426,8 @@ proc anthropic::to_wire {req caps streaming} {
             # array reached the model as its own JSON and the marker never
             # reached the wire, which is how a session's rolling cache died
             # at the first steer (2026-10-28).
-            set id [::veles::json_get $req messages $i tool_call_id]
+            set id [anthropic::result_id round_ids \
+                [::veles::json_get $req messages $i tool_call_id]]
             set cache ""
             if {[anthropic::content_is_parts $req $i]} {
                 lassign [anthropic::parts_text $content] content cache
@@ -447,9 +493,15 @@ proc anthropic::to_wire {req caps streaming} {
             lappend blocks [anthropic::text_block $content "" -1]
         }
 
+        if {[::veles::json_get $req messages $i tool_calls 0] ne ""} {
+            set round_ids [dict create]
+        }
         for {set t 0} {1} {incr t} {
-            set tid [::veles::json_get $req messages $i tool_calls $t id]
-            if {$tid eq ""} { break }
+            # A call is there when its object is; its id may be empty (a
+            # route that sends none), which must not end the loop.
+            if {[::veles::json_get $req messages $i tool_calls $t] eq ""} { break }
+            set tid [anthropic::call_id used_ids round_ids \
+                [::veles::json_get $req messages $i tool_calls $t id]]
             set tname [::veles::json_get $req messages $i tool_calls $t function name]
             set targs [::veles::json_get $req messages $i tool_calls $t function arguments]
             # OpenAI carries arguments as a JSON *string*; this wire wants

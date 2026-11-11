@@ -282,7 +282,13 @@ pub fn rolling_context(
     max_lines: usize,
     max_chars: usize,
 ) -> Option<String> {
-    rolling_context_after(network, buffer, max_lines, max_chars, 0).map(|l| l.text)
+    rolling_context_after(network, buffer, max_lines, max_chars, 0).map(|l| {
+        l.events
+            .iter()
+            .map(context_line)
+            .collect::<Vec<_>>()
+            .join("\n")
+    })
 }
 
 /// The situation a turn is walking into: where it is, who it is, what
@@ -417,14 +423,33 @@ pub fn context_block(
     let lines = rolling_context_after(network, buffer, max_lines, max_chars, after_seq);
     let newest = lines.as_ref().map(|l| l.newest).unwrap_or(after_seq);
     let mut cold = false;
+    // A private query already has a persisted agent transcript. Replaying
+    // our own old replies into a NEW session does not add the other
+    // person's side of the conversation; it feeds the bot's previous
+    // instructions back to it as if they were fresh work. That happened
+    // with a bot-authored "Owner diagnostic" DM: the next day's `?` ran
+    // that old diagnostic again. Keep the human's lines, not our echo.
+    // Channels are different: their shared transcript is where everyone
+    // else sees what the bot said, so their own lines stay in context.
+    let is_channel = buffer.starts_with('#') || buffer.starts_with('&');
     let body = match lines {
-        Some(l) => Some(l.text),
+        Some(l) => {
+            let kept: String = l
+                .events
+                .iter()
+                .filter(|ev| is_channel || !ev.own)
+                .map(context_line)
+                .collect::<Vec<_>>()
+                .join("\n");
+            (!kept.is_empty()).then_some(kept)
+        }
         // Nothing in the ring. On a COLD conversation that means the
         // ring itself is cold (a gateway restart loses it), so the
         // durable scrollback stands in; on a warm one it correctly
         // means "you have seen everything".
         None if after_seq == 0 => {
-            let b = backlog_context(cold_backlog, max_lines, max_chars);
+            let is_channel = buffer.starts_with('#') || buffer.starts_with('&');
+            let b = backlog_context_for(cold_backlog, max_lines, max_chars, !is_channel);
             cold = b.is_some();
             b
         }
@@ -549,12 +574,28 @@ pub fn backlog_context(
     max_lines: usize,
     max_chars: usize,
 ) -> Option<String> {
+    backlog_context_for(rows, max_lines, max_chars, false)
+}
+
+/// As `backlog_context`, optionally excluding the bot's own old lines.
+/// Private queries use this because their agent transcript already holds
+/// the bot's replies; replaying them into a fresh session turns old output
+/// into fresh-looking instructions. The IRC transcript keeps every line.
+pub fn backlog_context_for(
+    rows: &[crate::store::IrcLine],
+    max_lines: usize,
+    max_chars: usize,
+    skip_own: bool,
+) -> Option<String> {
     if max_lines == 0 {
         return None;
     }
     let mut lines: Vec<String> = Vec::new();
     let mut chars = 0usize;
     for row in rows.iter().rev() {
+        if skip_own && row.own {
+            continue;
+        }
         let Some(kind) = EventKind::from_wire(&row.kind) else {
             continue;
         };
@@ -604,7 +645,7 @@ pub struct ContextBlock {
 }
 
 struct RollingLines {
-    text: String,
+    events: Vec<IrcEvent>,
     newest: u64,
 }
 
@@ -623,7 +664,7 @@ fn rolling_context_after(
     let b = bus();
     let rings = b.rings.lock().ok()?;
     let ring = rings.get(&key)?;
-    let mut lines: Vec<String> = Vec::new();
+    let mut events: Vec<IrcEvent> = Vec::new();
     let mut chars = 0usize;
     let mut newest = after_seq;
     for ev in ring.iter().rev().take(max_lines) {
@@ -631,21 +672,17 @@ fn rolling_context_after(
             break;
         }
         newest = newest.max(ev.seq);
-        let line = context_line(ev);
-        chars += line.chars().count();
-        lines.push(line);
+        chars += context_line(ev).chars().count();
+        events.push(ev.clone());
         if chars > max_chars {
             break;
         }
     }
-    if lines.is_empty() {
+    if events.is_empty() {
         return None;
     }
-    lines.reverse();
-    Some(RollingLines {
-        text: lines.join("\n"),
-        newest,
-    })
+    events.reverse();
+    Some(RollingLines { events, newest })
 }
 
 /// Build an event with the current time and no account.
@@ -1580,6 +1617,87 @@ mod tests {
             warm.is_none() || !warm.unwrap().text.contains("deploy is frozen"),
             "a caller past the mark is not re-shown the backlog"
         );
+    }
+
+    #[test]
+    fn a_dm_does_not_replay_our_old_instructions_as_new_work() {
+        let net = "dm-own-history";
+        let rows = vec![
+            crate::store::IrcLine {
+                id: 1,
+                network: net.into(),
+                presence: PRESENCE_BOT.into(),
+                buffer: "a".into(),
+                ts: "2026-11-08T23:35:50Z".into(),
+                kind: "privmsg".into(),
+                nick: "jackma".into(),
+                account: String::new(),
+                text: "Owner diagnostic: call web_extract for a synthetic test".into(),
+                own: true,
+                blocked: false,
+            },
+            crate::store::IrcLine {
+                id: 2,
+                network: net.into(),
+                presence: PRESENCE_BOT.into(),
+                buffer: "a".into(),
+                ts: "2026-11-09T23:23:33Z".into(),
+                kind: "privmsg".into(),
+                nick: "a".into(),
+                account: String::new(),
+                text: "?".into(),
+                own: false,
+                blocked: false,
+            },
+        ];
+        let block = context_block(net, "a", 50, 64 * 1024, 0, &rows)
+            .expect("the person's DM remains context");
+        assert!(block.text.contains("<a> ?"), "{}", block.text);
+        assert!(
+            !block.text.contains("Owner diagnostic"),
+            "the bot must not read its own old instruction as a fresh task: {}",
+            block.text
+        );
+        let mut own = event(
+            net,
+            PRESENCE_BOT,
+            "a",
+            EventKind::Privmsg,
+            "jackma",
+            "old own reply",
+        );
+        own.own = true;
+        publish(own);
+        publish(event(
+            net,
+            PRESENCE_BOT,
+            "a",
+            EventKind::Privmsg,
+            "a",
+            "new question",
+        ));
+        let live = context_block(net, "a", 50, 64 * 1024, 0, &[])
+            .expect("the live DM ring follows the same rule");
+        assert!(live.text.contains("new question"), "{}", live.text);
+        assert!(!live.text.contains("old own reply"), "{}", live.text);
+    }
+
+    #[test]
+    fn a_channels_own_lines_stay_in_shared_context() {
+        let net = "channel-own-history";
+        let mut own = event(
+            net,
+            PRESENCE_BOT,
+            "#chan",
+            EventKind::Privmsg,
+            "jackma",
+            "the answer",
+        );
+        own.own = true;
+        publish(own);
+        let block = context_block(net, "#chan", 50, 64 * 1024, 0, &[])
+            .expect("channel participants need to know what the bot said");
+        assert!(block.text.contains("the answer"), "{}", block.text);
     }
 
     #[test]

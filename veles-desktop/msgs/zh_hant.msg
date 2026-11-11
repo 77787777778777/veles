@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset zh_hant {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset zh_hant {%1$s %2$s done} {%1$s %2$s 完成}
 ::msgcat::mcset zh_hant {%1$s %2$s failed: %3$s} {%1$s %2$s 失敗：%3$s}
+::msgcat::mcset zh_hant {%1$s %2$s over ssh anyway?} {仍要透過 ssh %1$s %2$s 嗎？}
 ::msgcat::mcset zh_hant {%1$s %2$s over ssh…} {%1$s %2$s 經 ssh…}
 ::msgcat::mcset zh_hant {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset zh_hant {%1$s (%2$s waiting)} {%1$s（%2$s 個等待中）}
 ::msgcat::mcset zh_hant {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  推理 %3$s}
 ::msgcat::mcset zh_hant {%1$s = %2$s here} {%1$s = %2$s（此處）}
+::msgcat::mcset zh_hant {%1$s = %2$s on %3$s} {%3$s 上 %1$s = %2$s}
 ::msgcat::mcset zh_hant {%1$s NOT saved: %2$s} {%1$s 未儲存：%2$s}
 ::msgcat::mcset zh_hant {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s 屬於 %2$s 資源庫且為唯讀 — 以「新增…」複製後才可修改}
 ::msgcat::mcset zh_hant {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s 屬於 %2$s 資源庫 — veles 不會刪除其他工具的技能}
+::msgcat::mcset zh_hant {%1$s cannot restart itself: %2$s} {%1$s 無法自行重新啟動：%2$s}
+::msgcat::mcset zh_hant {%1$s differs: %2$s} {%1$s 有差異：%2$s}
 ::msgcat::mcset zh_hant {%1$s every cron job on %2$s?} {%1$s %2$s 上的全部 cron 工作？}
 ::msgcat::mcset zh_hant {%1$s failed: %2$s} {%1$s 失敗：%2$s}
 ::msgcat::mcset zh_hant {%1$s in / %2$s out / %3$s calls} {%1$s 入 / %2$s 出 / %3$s 呼叫}
+::msgcat::mcset zh_hant {%1$s is back after %2$s s (veles %3$s).} {%1$s 已於 %2$s 秒後恢復（veles %3$s）。}
 ::msgcat::mcset zh_hant {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s 是節點 %2$s，不是 %3$s。請在「編輯…」中修正其節點 ID。}
 ::msgcat::mcset zh_hant {%1$s is not a whole number} {%1$s 不是整數}
+::msgcat::mcset zh_hant {%1$s is not on: %2$s} {%1$s 未啟用：%2$s}
+::msgcat::mcset zh_hant {%1$s is not set on %2$s: the default applies.} {%1$s 未在 %2$s 上設定：將套用預設值。}
 ::msgcat::mcset zh_hant {%1$s is reachable (%2$s ms).} {%1$s 可連線（%2$s 毫秒）。}
+::msgcat::mcset zh_hant {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s 正在執行 %2$s 個回合。仍要重新啟動嗎？}
 ::msgcat::mcset zh_hant {%1$s is set to something this box cannot edit (%2$s)} {%1$s 被設為此機器無法編輯的值（%2$s）}
 ::msgcat::mcset zh_hant {%1$s is unreachable: %2$s} {%1$s 無法連線：%2$s}
+::msgcat::mcset zh_hant {%1$s is up, but its node binding is wrong: %2$s} {%1$s 已上線，但其節點綁定有誤：%2$s}
+::msgcat::mcset zh_hant {%1$s not compared: %2$s} {%1$s 未比較：%2$s}
 ::msgcat::mcset zh_hant {%1$s of %2$s characters} {%1$s / %2$s 字元}
 ::msgcat::mcset zh_hant {%1$s of %2$s sessions} {%2$s 個工作階段中的 %1$s 個}
 ::msgcat::mcset zh_hant {%1$s of %2$s skills reach the prompt} {%1$s / %2$s 個技能進入提示}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset zh_hant {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset zh_hant {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset zh_hant {%1$s: %2$s} {%1$s：%2$s}
+::msgcat::mcset zh_hant {%1$s: %2$s on the gateway} {%1$s：閘道上的 %2$s}
+::msgcat::mcset zh_hant {%1$s: %2$s on the gateway (ships with veles)} {%1$s：閘道上的 %2$s（隨 veles 附帶）}
 ::msgcat::mcset zh_hant {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s：%2$s → %3$s %4$s（%5$s）}
+::msgcat::mcset zh_hant {%1$s: no language server on the gateway. %2$s} {%1$s：閘道上沒有語言伺服器。%2$s}
 ::msgcat::mcset zh_hant {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s：其閘道在記憶體中保留的最近 %2$s（共 %3$s 行），密鑰已在該節點遮蔽。}
+::msgcat::mcset zh_hant {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s：使用者外掛 %2$s 以相同內容遮蔽了隨附的外掛（%3$s）}
 ::msgcat::mcset zh_hant {%d MCP server(s) configured} {已設定 %d 個 MCP 伺服器}
 ::msgcat::mcset zh_hant {%d entries} {%d 個項目}
 ::msgcat::mcset zh_hant {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {此擴充功能的 %d 個檔案將完全依已審核的內容寫入。若其中任何一個在預覽後已變更，則不會寫入任何內容。不會進行提交、推送或開啟 PR。}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {%s (stale)} %s（過期）
 ::msgcat::mcset zh_hant {%s (this session)} %s（此工作階段）
 ::msgcat::mcset zh_hant {%s GB free of %s GB} {可用 %s GB，共 %s GB}
+::msgcat::mcset zh_hant {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s 此命令會經 ssh 傳送至設定的主機，而此檢查無法將其與節點對應起來。}
 ::msgcat::mcset zh_hant {%s already exists — open it from the list} {%s 已存在 — 請從清單開啟}
 ::msgcat::mcset zh_hant {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {%s 在你開啟後已被修改 — 沒有覆寫任何內容；請先複製你的文字，再重新載入}
 ::msgcat::mcset zh_hant {%s cleared for this buffer} {%s 已為此緩衝區清除}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset zh_hant {%s comes from config.toml [acl] — edit there} {%s 來自 config.toml 的 [acl] — 請在那邊編輯}
 ::msgcat::mcset zh_hant {%s config change(s) wait for you — /configsync} {%s 項設定變更等待你處理 — /configsync}
 ::msgcat::mcset zh_hant {%s did not become healthy within 30s} {%s 未在 30 秒內恢復正常}
+::msgcat::mcset zh_hant {%s did not come back within 120 s: look at its log where it runs.} {%s 未在 120 秒內恢復：請查看其執行所在位置的日誌。}
 ::msgcat::mcset zh_hant {%s done} {%s 完成}
 ::msgcat::mcset zh_hant {%s failed: %s} {%s 失敗:%s}
+::msgcat::mcset zh_hant {%s holds a credential: it stays on its node and is not shown.} {%s 含有憑證：它會留在其節點上，不會顯示。}
 ::msgcat::mcset zh_hant {%s is already split} {%s 已分割}
+::msgcat::mcset zh_hant {%s is restarting; waiting for it to come back…} {%s 正在重新啟動；等待其恢復…}
 ::msgcat::mcset zh_hant {%s is the language in use — pick another one to swap with} {%s 是目前使用的語言 — 請另選一種作為切換目標}
 ::msgcat::mcset zh_hant {%s is up} {%s 已上線}
 ::msgcat::mcset zh_hant {%s keys — any key closes} {%s 鍵 — 任一鍵關閉}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {; shadows bundled} ；覆蓋隨附版本
 ::msgcat::mcset zh_hant {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} 設定提案可以變更設定，保險庫提案則會合併密鑰；對安全性區段的變更仍會等待擁有者。
 ::msgcat::mcset zh_hant {A failing plugin may drop hooks mid-turn.} {故障的外掛可能在回合中途中斷 hooks。}
+::msgcat::mcset zh_hant {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} 保留區段：不會從此處寫入；請在節點上編輯並推送設定，由其擁有者在該處套用。
 ::msgcat::mcset zh_hant {A local server: no key is needed unless you set one up.} 本機伺服器：除非你自行設定，否則不需要金鑰。
 ::msgcat::mcset zh_hant {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} 已簽署的發行版本只有在預檢後才會暫存部署。重新啟動/驗證、繼續部署與回滾是各自獨立的操作。運作正常的行程必須回報與已審核來源修訂版完全一致的版本。
 ::msgcat::mcset zh_hant {A value is stored for %s — leave this empty to keep it.} {%s 已存有值——留空即可保留。}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset zh_hant {Asking the provider for its models…} 正在向供應商索取模型清單…
 ::msgcat::mcset zh_hant Attach 附加
 ::msgcat::mcset zh_hant {Attach to the next message} 附加到下一則訊息
+::msgcat::mcset zh_hant {Audit log unavailable: %s} 審計紀錄無法使用：%s
+::msgcat::mcset zh_hant {Audit log…} 審計紀錄…
 ::msgcat::mcset zh_hant {Author guide} 作者指南
 ::msgcat::mcset zh_hant {Automatically discovered from the attached gateway's cluster registry.} 從已附加閘道的叢集登錄自動探索。
 ::msgcat::mcset zh_hant Back 上一步
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset zh_hant {Browse sessions} 瀏覽工作階段
 ::msgcat::mcset zh_hant {Build manifest + preflight} {建置資訊清單 + 預檢}
 ::msgcat::mcset zh_hant {Build: veles %1$s, revision %2$s (%3$s %4$s)} {建置：veles %1$s，修訂版 %2$s（%3$s %4$s）}
+::msgcat::mcset zh_hant {Bulk %1$s failed: %2$s} {批次%1$s 失敗：%2$s}
+::msgcat::mcset zh_hant {Bulk %1$s: %2$s (%3$s).} {批次%1$s：%2$s（%3$s）。}
+::msgcat::mcset zh_hant {Bulk action cancelled.} 批次操作已取消。
 ::msgcat::mcset zh_hant {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e 行首行尾 · C-b/C-f 字元 · M-b/M-f 詞彙 · C-k 刪至行尾 · C-y 貼上 · M-w 複製 · C-w 刪除選取範圍 · C-space 設定標記 · C-/ 復原}
 ::msgcat::mcset zh_hant {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g 中止所有操作 · C-j 換行 · M-p/M-n 歷史記錄 · Tab 自動補全}
+::msgcat::mcset zh_hant {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU：%1$s 個核心，最近 %3$s 秒內忙碌 %2$s%%}
 ::msgcat::mcset zh_hant {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU：%1$s 個核心，負載 %2$s / %3$s / %4$s（核心的 %5$s%%）}
 ::msgcat::mcset zh_hant Cancel 取消
 ::msgcat::mcset zh_hant {Cancel task} 取消工作
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {Channels (e.g. #veles #dev)} {頻道（例如 #veles #dev）}
 ::msgcat::mcset zh_hant Chat 聊天
 ::msgcat::mcset zh_hant {Chat — not attached; press Attach in the Instances tab} {聊天 — 未附加；在「實例」分頁按「附加」}
-::msgcat::mcset zh_hant {Check (lsp)} {檢查 (lsp)}
+::msgcat::mcset zh_hant {Check (C-c C-k)} {檢查（C-c C-k）}
 ::msgcat::mcset zh_hant {Check again} 再次檢查
 ::msgcat::mcset zh_hant {Check files} 檢查檔案
 ::msgcat::mcset zh_hant Checkpoints 檢查點
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {Close (Esc)} {關閉 (Esc)}
 ::msgcat::mcset zh_hant {Close the setup wizard? Nothing has been written yet.} 要關閉設定精靈嗎？目前還沒寫入任何內容。
 ::msgcat::mcset zh_hant {Code actions} 程式碼動作
+::msgcat::mcset zh_hant {Command-center audit log} 命令中心審計紀錄
 ::msgcat::mcset zh_hant Commit 提交
 ::msgcat::mcset zh_hant {Commit ready for review. Push is a separate action.} 提交已可檢視。推送是另一個獨立動作。
 ::msgcat::mcset zh_hant {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {在預覽 handoff 之前，請完成所有 PDS 欄位，包括固定的映像摘要。}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset zh_hant {Config differs: %s} 設定不同：%s
 ::msgcat::mcset zh_hant {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {設定日誌：該節點已有 %1$s 的變更，直到 %3$s；此閘道直到 %2$s}
 ::msgcat::mcset zh_hant {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {設定日誌：此閘道已有 %1$s 的變更，直到 %2$s；該節點直到 %3$s}
+::msgcat::mcset zh_hant {Config of %s} {%s 的設定}
 ::msgcat::mcset zh_hant {Config only on that node: %s} 僅在該節點上的設定：%s
 ::msgcat::mcset zh_hant {Config only on this gateway: %s} 僅在此閘道上的設定：%s
+::msgcat::mcset zh_hant {Config: %s} 設定：%s
 ::msgcat::mcset zh_hant Configure 設定
 ::msgcat::mcset zh_hant {Configure %s} {設定 %s}
 ::msgcat::mcset zh_hant {Configure translator} 設定翻譯器
 ::msgcat::mcset zh_hant {Configured desktop gateway} 已設定的桌面閘道
 ::msgcat::mcset zh_hant Configure… 設定…
 ::msgcat::mcset zh_hant {Configuring %s} {正在設定 %s}
+::msgcat::mcset zh_hant Config… 設定…
 ::msgcat::mcset zh_hant {Confirm or discard the current signed review before starting another download.} 在開始另一次下載前，確認或捨棄目前的簽署檢閱。
 ::msgcat::mcset zh_hant {Container host: typed host plan and privileged CLI handoff} {Container host：有型別的主機方案與需要管理員權限的 CLI 交接}
 ::msgcat::mcset zh_hant {Context window} 上下文視窗
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset zh_hant {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {先用 @BotFather 建立機器人，然後把它的權杖貼到下面：權杖會進入加密保險庫，絕不會寫進 config.toml。}
 ::msgcat::mcset zh_hant {Create this extension?} 要建立這個擴充嗎？
 ::msgcat::mcset zh_hant {Create this generated extension?} 要建立這個產生的擴充功能嗎？
+::msgcat::mcset zh_hant {Created and loaded. Review and test the extension before publishing.} 已建立並載入。發佈前請先檢閱並測試此擴充功能。
 ::msgcat::mcset zh_hant {Created and reloaded. Review and test the extension before publishing.} 已建立並重新載入。發佈前請先檢視並測試這個擴充。
 ::msgcat::mcset zh_hant {Created, but reload failed} 已建立，但重新載入失敗
+::msgcat::mcset zh_hant {Created, not loaded} 已建立，未載入
+::msgcat::mcset zh_hant {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {已建立，尚未載入：請在擴充功能的目錄中執行 cargo build --release，然後在「管理擴充功能」中重新載入。}
+::msgcat::mcset zh_hant {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} 已建立。此閘道未回報是否已載入該擴充功能：請在「管理擴充功能」查看其狀態。
 ::msgcat::mcset zh_hant {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {從範本建立 %s/<name>/SKILL.md 並開啟。frontmatter 描述是唯一會進入提示索引的內容，所以請寫明何時使用此技能。}
 ::msgcat::mcset zh_hant {Cron history} 排程歷史
 ::msgcat::mcset zh_hant {Cron jobs} {Cron 工作}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset zh_hant {Delete user} 刪除使用者
 ::msgcat::mcset zh_hant {Delete workspace?} 刪除工作區？
 ::msgcat::mcset zh_hant Deop 撤銷頻道管理員
+::msgcat::mcset zh_hant {Deployment consistency unknown: %s node(s) could not be compared.} {部署一致性未知：%s 個節點無法比較。}
+::msgcat::mcset zh_hant {Deployment consistency: not checked yet (Drift… compares every node).} 部署一致性：尚未檢查（「漂移…」會比較每個節點）。
 ::msgcat::mcset zh_hant {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {描述變更。AI 可能會變更或新增此擴充功能的多個檔案。每個檔案都會以差異形式顯示，在你確認之前不會寫入任何內容。}
 ::msgcat::mcset zh_hant {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {請描述變更內容。AI 可以提出替代版本，但在你檢視並確認差異之前無法寫入。}
 ::msgcat::mcset zh_hant {Describe the requested extension change first.} 請先描述你要的擴充變更。
 ::msgcat::mcset zh_hant Description 說明
+::msgcat::mcset zh_hant {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {重新啟動後，桌面回合會從其已儲存的歷史繼續；連接器、A2A、郵件、cron 與子代理的回合則不會。}
 ::msgcat::mcset zh_hant {Desktop: local core, modules and process plugins} Desktop：本機核心、模組與行程外掛
 ::msgcat::mcset zh_hant Detach 分離
 ::msgcat::mcset zh_hant {Detach foreground} 分離前景
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} 請先下載並驗證發行版資訊清單與主機封存檔，再進行安裝。五個身分欄位皆為必填。閘道會保留私用的暫存封存檔；此預覽不會安裝任何內容。
 ::msgcat::mcset zh_hant {Downloading and verifying the signed release…} 正在下載並驗證簽署發行版…
 ::msgcat::mcset zh_hant {Draft this as an extension?} 要將此草擬為擴充嗎？
+::msgcat::mcset zh_hant {Draft this change as an extension?} 要將此變更草擬為擴充功能嗎？
 ::msgcat::mcset zh_hant {Drag to scroll; a quick swipe goes further.} 拖曳即可捲動；快速滑動會捲得更遠。
 ::msgcat::mcset zh_hant {Drift check failed: %s} 漂移檢查失敗：%s
 ::msgcat::mcset zh_hant {Drift check: %s node(s) differ from this gateway.} {漂移檢查：%s 個節點與此閘道不同。}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset zh_hant Eval→gw Eval→gw
 ::msgcat::mcset zh_hant {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {對 %s 的每次變更都會提交。還原會把整個目錄回復到該提交 — 而且會先快照目前狀態，所以並非一去不返。}
 ::msgcat::mcset zh_hant {Every plugin file goes back to that commit. The current state is committed first.} 所有外掛檔案都會回復到該提交。目前狀態會先被提交。
+::msgcat::mcset zh_hant {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {各層級：「新增擴充功能」會寫出以 Tcl、TypeScript、Racket 或 Common Lisp 撰寫的擴充功能，或是樹外的 Rust 外掛（veles-plugin-abi-sdk crate 上的 cdylib：以 cargo build --release 建置，然後在「管理擴充功能」中重新載入）。有兩個層級位於使用者外掛目錄之外，需從命令列啟動：模組，即與 veles 一同建置的 Rust 程式庫（veles plugins new NAME --kind overlay 會寫出其儲存庫）；以及行程外掛，即 veles-plugin-sdk crate 上的程式，由閘道執行並監督。作者指南對每個層級都有專節說明。}
 ::msgcat::mcset zh_hant {Exact commit} 精確提交
 ::msgcat::mcset zh_hant {Exact permission rule} 精確權限規則
 ::msgcat::mcset zh_hant {Example: a hook} 範例：鉤子
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {Explain the diagnostics} 解釋診斷
 ::msgcat::mcset zh_hant Export… 匯出…
 ::msgcat::mcset zh_hant {Extension API} {擴充 API}
+::msgcat::mcset zh_hant {Extension API reference} {擴充功能 API 參考}
 ::msgcat::mcset zh_hant {Extension development} 擴充開發
 ::msgcat::mcset zh_hant {Extension guide} 擴充指南
 ::msgcat::mcset zh_hant {Extension source} 擴充原始碼
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {Guards — what the harness stops, and where it stands now} {Guards — 評估框架會攔截什麼，以及目前的狀態}
 ::msgcat::mcset zh_hant {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {處理常式依顯示順序執行；第一個回傳非空值的勝出。關掉某個會跳過它而不會取消註冊，而且選擇會存進 config.toml，因此重新載入外掛不會悄悄把它打開。}
 ::msgcat::mcset zh_hant Health 健康狀態
+::msgcat::mcset zh_hant {Health alerts} 健康警示
 ::msgcat::mcset zh_hant {Health alerts (%s):} 健康警示（%s）：
 ::msgcat::mcset zh_hant Heartbeat 心跳
 ::msgcat::mcset zh_hant {Heartbeat age: %s s} {心跳距今：%s 秒}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset zh_hant Install… 安裝…
 ::msgcat::mcset zh_hant {Instance name (for example an IRC network)} {實例名稱（例如 IRC 網路）}
 ::msgcat::mcset zh_hant Instances 實例
+::msgcat::mcset zh_hant {Instead of patching %s: } {不修補 %s，改為： }
 ::msgcat::mcset zh_hant {It becomes the current content, as a new revision — so the restore can be undone too.} {它會以新版本成為目前內容 — 因此還原本身也可以復原。}
 ::msgcat::mcset zh_hant {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {它會進入本機的加密保險庫。代理程式永遠看不到它：只能在命令中以 $%s 使用它，或把它傳送到允許的主機。}
 ::msgcat::mcset zh_hant {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {它會從整個機群的叢集登錄中移除：下一次 Gossip 交換會通知每個 0.2.0 對等節點一併丟棄它，而且它們都不會再把它合併回來。比 0.2.0 更舊的對等節點仍會列出它。若該機器回來並傳送心跳，就會重新註冊。同步對等節點與已儲存的實例不受影響。}
+::msgcat::mcset zh_hant {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {它會以在該節點上所做的編輯寫入該節點的 config.toml；設定同步接著會將其帶到與之同步設定的節點。}
 ::msgcat::mcset zh_hant {It leaves memory now. Its history keeps every revision, and History… can restore it.} {它現在會離開記憶。它的歷史保留每一個版本，歷史… 可以還原它。}
+::msgcat::mcset zh_hant {Its gateway stops and %s.} {其閘道會停止，並 %s。}
 ::msgcat::mcset zh_hant Join 加入
 ::msgcat::mcset zh_hant {Join a pool} 加入機器群組
 ::msgcat::mcset zh_hant {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {以 %2$s 的身分加入 %1$s 的機器群組嗎？群組將透過 %3$s 連線到這支手機。}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset zh_hant Joining… 正在加入…
 ::msgcat::mcset zh_hant Join… 加入…
 ::msgcat::mcset zh_hant {Jump to composer} 跳至撰寫區
+::msgcat::mcset zh_hant {Key (for example model.default)} {鍵（例如 model.default）}
 ::msgcat::mcset zh_hant Keybindings 按鍵綁定
 ::msgcat::mcset zh_hant {Keyboard help} 鍵盤說明
 ::msgcat::mcset zh_hant {Kick %1$s from %2$s?} {要將 %1$s 從 %2$s 踢出嗎？}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {LLM provider} {LLM 供應商}
 ::msgcat::mcset zh_hant Language 語言
 ::msgcat::mcset zh_hant {Language (i18n)} {語言 (i18n)}
+::msgcat::mcset zh_hant {Language servers on this gateway} 此閘道上的語言伺服器
 ::msgcat::mcset zh_hant Language… 語言…
 ::msgcat::mcset zh_hant {Last active} 最近活動
 ::msgcat::mcset zh_hant {Last probe: %1$s — %2$s} {上次探查：%1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset zh_hant Level 層級
 ::msgcat::mcset zh_hant {Lift lockdown} 解除封鎖
 ::msgcat::mcset zh_hant Lines 行數
+::msgcat::mcset zh_hant {List targets…} 列出目標…
 ::msgcat::mcset zh_hant {List the provider's models} 列出供應商的模型
 ::msgcat::mcset zh_hant Load 負載
 ::msgcat::mcset zh_hant {Load more} 載入更多
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset zh_hant Next 下一步
 ::msgcat::mcset zh_hant Nickname 暱稱
 ::msgcat::mcset zh_hant {NixOS: emit a module snippet; do not edit host declarations} NixOS：輸出模組片段；請勿編輯主機宣告
-::msgcat::mcset zh_hant {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {此節點未設定 SSH 生命週期目標。請明確新增一個實例，才能部署或重新啟動它。}
+::msgcat::mcset zh_hant {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {此節點未設定 SSH 生命週期目標：「重新啟動」會要求節點透過其監督程式自行重新啟動；「機群部署」需要一個附有 ssh 目標的已儲存實例。}
 ::msgcat::mcset zh_hant {No additional push happens.} 不會再額外推送。
 ::msgcat::mcset zh_hant {No apps yet. Ask the agent to make one: “make me an app that…”} 還沒有應用程式。請代理做一個：「幫我做一個……的應用程式」
 ::msgcat::mcset zh_hant {No code in the picture. Hold the phone closer, straight on, and scan again.} {圖片中沒有 QR 碼。請把手機靠近、拿正，然後重新掃描。}
+::msgcat::mcset zh_hant {No command-center action is recorded on this gateway yet.} 此閘道尚未記錄任何命令中心操作。
 ::msgcat::mcset zh_hant {No configuration snapshot will be restored.} 不會還原任何設定快照。
 ::msgcat::mcset zh_hant {No configured sync peer for this node.} 此節點沒有已設定的同步對等節點。
 ::msgcat::mcset zh_hant {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} 尚未設定專用翻譯器。請用「設定翻譯器」選擇其供應商、模型與目標語言。
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {%s 生產的手機也會自行停止應用程式。請在 veles 的應用程式設定中允許它自行啟動並在背景執行。}
 ::msgcat::mcset zh_hant {Pin / unpin} 釘選／取消釘選
 ::msgcat::mcset zh_hant {Pin to home screen} 釘選到主畫面
+::msgcat::mcset zh_hant {Plugin author guide} 外掛作者指南
 ::msgcat::mcset zh_hant {Plugin history} 外掛歷史
 ::msgcat::mcset zh_hant Plugins 外掛
 ::msgcat::mcset zh_hant Port 連接埠
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset zh_hant {Preview here} 在此預覽
 ::msgcat::mcset zh_hant {Preview pane} 預覽窗格
 ::msgcat::mcset zh_hant {Preview proposal} 預覽提案
-::msgcat::mcset zh_hant {Preview the changed name or language before creating it.} 建立前請先預覽變更後的名稱或語言。
+::msgcat::mcset zh_hant {Preview the changed name, purpose or language before creating it.} 建立前請先預覽變更後的名稱、用途或語言。
 ::msgcat::mcset zh_hant Probe 探查
+::msgcat::mcset zh_hant {Probe %s node(s)?} {要探測 %s 個節點嗎？}
+::msgcat::mcset zh_hant {Probe all…} 全部探測…
 ::msgcat::mcset zh_hant {Probe of %1$s failed: %2$s} {探查 %1$s 失敗：%2$s}
 ::msgcat::mcset zh_hant {Profile result} 設定檔結果
 ::msgcat::mcset zh_hant {Promote into config.toml} {提升至 config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {Push branch…} 推送分支…
 ::msgcat::mcset zh_hant {Push complete. No pull request has been opened.} 推送完成。尚未開啟任何拉取請求。
 ::msgcat::mcset zh_hant {Push this branch?} 要推送此分支嗎？
+::msgcat::mcset zh_hant {Push this kind to every node that is a configured peer for it:} 將此類項目推送到每一個已設定為其對等節點的節點：
 ::msgcat::mcset zh_hant {Push to %s:} {推送至 %s：}
 ::msgcat::mcset zh_hant Question 問題
 ::msgcat::mcset zh_hant Questions 問題
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {REPL target: the app} {REPL 目標：應用程式}
 ::msgcat::mcset zh_hant {REPL target: the gateway} {REPL 目標：閘道}
 ::msgcat::mcset zh_hant Read 讀取
+::msgcat::mcset zh_hant {Read the key first: a write names the value it replaces.} 請先讀取此鍵：寫入時會指名其所取代的值。
 ::msgcat::mcset zh_hant {Reading notifications, for triggers} 讀取通知（用於觸發器）
 ::msgcat::mcset zh_hant Reasoning 推理
 ::msgcat::mcset zh_hant {Reasoning effort} 推理強度
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset zh_hant {Reset to default} 還原為預設值
 ::msgcat::mcset zh_hant {Reset to template} 重設為範本
 ::msgcat::mcset zh_hant Restart 重新啟動
+::msgcat::mcset zh_hant {Restart %s?} {要重新啟動 %s 嗎？}
 ::msgcat::mcset zh_hant {Restart + verify canary} {重新啟動 + 驗證金絲雀}
+::msgcat::mcset zh_hant {Restart cancelled.} 重新啟動已取消。
+::msgcat::mcset zh_hant {Restart of %1$s failed: %2$s} {重新啟動 %1$s 失敗：%2$s}
 ::msgcat::mcset zh_hant {Restore hidden windows} 還原隱藏的視窗
 ::msgcat::mcset zh_hant {Restore plugins to %s?} {要將外掛還原至 %s 嗎？}
 ::msgcat::mcset zh_hant {Restore revision r%1$s of %2$s?} {還原 %2$s 的版本 r%1$s？}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {S3 region} {S3 區域}
 ::msgcat::mcset zh_hant {SASL account (optional)} {SASL 帳號（選用）}
 ::msgcat::mcset zh_hant {SASL password (hidden)} {SASL 密碼（隱藏）}
+::msgcat::mcset zh_hant {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {SSH 生命週期：透過已儲存的實例 %1$s（%2$s，單元 %3$s）。}
 ::msgcat::mcset zh_hant Sandbox 沙箱
 ::msgcat::mcset zh_hant {Sandbox account} 沙箱帳號
 ::msgcat::mcset zh_hant Sandboxes 沙箱
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} 目前覆寫至此別名的工作階段會保留各自解析出的路由；新的覆寫將找不到此名稱。
 ::msgcat::mcset zh_hant {Sessions served} 已服務工作階段
 ::msgcat::mcset zh_hant Set 設定
+::msgcat::mcset zh_hant {Set %1$s on %2$s to %3$s?} {要將 %2$s 上的 %1$s 設為 %3$s 嗎？}
 ::msgcat::mcset zh_hant {Set [model] provider/default in config.toml.} {在 config.toml 中設定 [model] 的提供者/預設。}
 ::msgcat::mcset zh_hant {Set as swap target} 設為切換目標
 ::msgcat::mcset zh_hant {Set mode %1$s on %2$s?} {設定模式 %1$s 於 %2$s？}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset zh_hant Summary 摘要
 ::msgcat::mcset zh_hant Surface 介面
 ::msgcat::mcset zh_hant {Swap ⇄} {交換 ⇄}
+::msgcat::mcset zh_hant {Sync %1$s to %2$s node(s)?} {要將 %1$s 同步到 %2$s 個節點嗎？}
+::msgcat::mcset zh_hant {Sync all} 全部同步
+::msgcat::mcset zh_hant {Sync all…} 全部同步…
 ::msgcat::mcset zh_hant {Sync cancelled.} 同步已取消。
 ::msgcat::mcset zh_hant {Sync complete.} 同步完成。
 ::msgcat::mcset zh_hant {Sync now} 立即同步
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset zh_hant {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} 目前的診斷（來自語言伺服器或「檢查」）會隨此檔案一起送出。可選擇性地附加問題。回答僅為文字；不會寫入任何內容。
 ::msgcat::mcset zh_hant {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {目錄及其全部內容會被移除。這無法復原 — 若只是想讓它離開提示詞，請改用關閉。}
 ::msgcat::mcset zh_hant {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {目錄會被刪除。外掛資料夾是 git 儲存庫，會先提交快照，因此 History… 可以復原。}
-::msgcat::mcset zh_hant {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {編輯器會開啟閘道檔案（包括遠端實例），並在閘道上為該檔案的語言執行語言伺服器：tcl-lsp、typescript-language-server（TypeScript 與 JavaScript）、rust-analyzer（Rust 外掛 crate 或模組）、clangd（C）、racket-langserver 以及一個 Common Lisp 伺服器。對閘道有對應伺服器的每種語言，懸停、跳至定義、補全與即時診斷都可運作；若沒有，編輯器會指出應在那裡安裝哪個程式，並保留語法突顯。「檢查」會在閘道上執行對應的檢查器：tcl-lsp、tsc --noEmit、node --check、cargo check、clang -fsyntax-only，或 Racket 與 Lisp 讀取器。儲存、在「管理擴充功能」中重新載入，並在不發佈本機狀態的情況下測試擴充功能。}
+::msgcat::mcset zh_hant {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {編輯器會開啟閘道檔案（含遠端實例），並在閘道上為該檔案的語言執行語言伺服器：typescript-language-server（TypeScript 與 JavaScript）、rust-analyzer（Rust 外掛 crate 或模組）、clangd（C）、racket-langserver、Common Lisp 伺服器，以及閘道有提供時的 Tcl 用 tcl-lsp（veles 的 Linux 套件會隨附它）。對閘道設有伺服器的每一種語言，皆可使用懸停、前往定義、補全與即時診斷；若閘道沒有該語言的伺服器，編輯器會說明該安裝哪個程式，並保留語法醒目提示。「檢查」會在閘道上執行對應的檢查器：tsc --noEmit、node --check、cargo check、clang -fsyntax-only、Racket 與 Lisp 讀取器，Tcl 則用引擎自身的 tclsh（完整性檢查，或已安裝時用 tcl-lsp 的 lint）。儲存、在「管理擴充功能」中重新載入，即可在不發佈本機狀態的情況下測試該擴充功能。}
 ::msgcat::mcset zh_hant {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {第一次 handoff 會準備密鑰、固定的映像和執行階段檔案，但不會啟動 PDS。請離線備份 KEK 與 PLC 輪替金鑰，然後提出一項已重新審查且已勾選「我已備份」的請求，以設定 HTTP-01 TLS 與啟用。DNS 記錄必須直接指向此主機；veles 不會進行任何 CDN 代理或 DNS 變更。}
+::msgcat::mcset zh_hant {The fleet is NOT consistent: %s node(s) differ.} {機群不一致：%s 個節點有差異。}
+::msgcat::mcset zh_hant {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {機群一致但有差異：%1$s 個節點執行相同的建置，且在其共有的項目上一致；%2$s 個項目並非存在於每個節點。}
+::msgcat::mcset zh_hant {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {機群一致：%s 個節點執行相同的建置、模組與外掛。}
 ::msgcat::mcset zh_hant {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} 表單在擴充功能產生後已變更。請重新產生，或預覽純粹的骨架。
+::msgcat::mcset zh_hant {The gateway did not receive the purpose as written. Nothing was created.} 閘道未收到所填寫的用途。未建立任何內容。
+::msgcat::mcset zh_hant {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {此閘道未提供擴充功能指南（版本早於 0.2.2），而此桌面端也沒有其副本。}
 ::msgcat::mcset zh_hant {The gateway itself is untouched.} 閘道本身不受影響。
 ::msgcat::mcset zh_hant {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {閘道已重新載入設定，新工作階段會立即使用它，存入保險庫的金鑰會由下一個請求使用。Telegram 和 IRC 將在閘道下次重新啟動時啟動：veles gateway restart。}
 ::msgcat::mcset zh_hant {The installed component no longer matches the selected manifest. Review the component list again.} 已安裝的元件與選取的清單不再相符。請重新檢閱元件清單。
 ::msgcat::mcset zh_hant {The installer preview has no verification signatures; apply is disabled.} 安裝程式預覽沒有驗證簽章；「套用」已停用。
 ::msgcat::mcset zh_hant {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {工作與其執行歷史會被移除。這無法復原 — 若只是想讓它停止，請改用暫停。}
+::msgcat::mcset zh_hant {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {設定同步依其規則會帶上的鍵：節點本地的鍵與憑證會留在其節點上，而保留區段（[acl]、核准、沙箱、掛鉤、外掛、MCP 伺服器）會在其被編輯與推送的地方變更，然後等待該節點的擁有者。}
 ::msgcat::mcset zh_hant {The log could not be read: %s} 無法讀取日誌：%s
 ::msgcat::mcset zh_hant {The manifest belongs to another component; its reply was discarded.} 這份清單屬於另一個元件；其回覆已遭捨棄。
 ::msgcat::mcset zh_hant {The profile changed. Review the fresh plan before applying it.} 設定檔已變更。套用前請先檢閱最新的計畫。
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {The signed release preview was malformed; nothing was installed.} 簽署發行版預覽格式不正確；未安裝任何內容。
 ::msgcat::mcset zh_hant {The source buffer changed. Request a new proposal before applying.} 來源緩衝區已變更。套用前請先要求新的提案。
 ::msgcat::mcset zh_hant {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} 存放區會回退一個修訂。回滾本身也是修訂，因此之後仍可再復原。
+::msgcat::mcset zh_hant {The translator did not answer within %s seconds.} {翻譯器未在 %s 秒內回應。}
 ::msgcat::mcset zh_hant {The translator returned no text.} 翻譯器未傳回任何文字。
 ::msgcat::mcset zh_hant {The verification reply was malformed; no integrity result was accepted.} 驗證回覆格式錯誤；未接受任何完整性結果。
 ::msgcat::mcset zh_hant Themes 主題
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset zh_hant {This challenge is over.} 此驗證已結束。
 ::msgcat::mcset zh_hant {This code has expired. Ask for a new one.} {此 QR 碼已過期。請索取新的。}
 ::msgcat::mcset zh_hant {This does not start a service or claim signed-download verification.} 這不會啟動服務，也不會聲稱已通過簽章下載驗證。
+::msgcat::mcset zh_hant {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {此檔案是 veles 核心原始碼。大多數變更更適合以擴充功能實現，它能在升級後繼續運作且無須重新建置：掛鉤、工具、服務覆寫或供應商驅動程式，可用 Tcl、TypeScript、Racket 或 Common Lisp 撰寫，或以樹外 Rust 外掛撰寫（「新增擴充功能」可寫出其中任何一種），或作為模組或行程外掛（擴充功能指南說明如何啟動）。核心修補是為了擴充功能 API 無法表達的部分。要改將此變更草擬為擴充功能嗎？你的編輯會留在此緩衝區中，尚未儲存；再次儲存即會修補核心檔案。}
 ::msgcat::mcset zh_hant {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {此閘道不接受來自這台機器的密鑰值：請在閘道所在機器上用 veles secret set %s 輸入，或把這個網路加入它的 [vault] trusted_networks}
 ::msgcat::mcset zh_hant {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {這正是將要寫入的內容 — 引擎實際產生的位元組，即時抓取。目前還沒有任何東西寫到磁碟。}
+::msgcat::mcset zh_hant {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {這是 veles 核心原始碼。對它的變更通常以擴充功能實現更好：請用「新增擴充功能」，或儲存後由系統提供建議。}
 ::msgcat::mcset zh_hant {This node is not a configured sync peer for any kind.} 此節點不是任何種類的已設定同步對等節點。
 ::msgcat::mcset zh_hant {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} 此外掛為隨附且唯讀。若要改用隨附的版本，請移除同名的使用者副本。
 ::msgcat::mcset zh_hant {This publishes the commit; no pull request is created yet.} 這會發佈該提交；尚未建立任何拉取請求。
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset zh_hant Unassign 取消指派
 ::msgcat::mcset zh_hant {Undo last} 復原上一次
 ::msgcat::mcset zh_hant {Undo the last memory revision?} 復原上一次的記憶修訂？
+::msgcat::mcset zh_hant {Unset %1$s on %2$s?} {要取消設定 %2$s 上的 %1$s 嗎？}
+::msgcat::mcset zh_hant Unset… 取消設定…
 ::msgcat::mcset zh_hant Unstage 取消暫存
 ::msgcat::mcset zh_hant {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {在 .env 中的 IRC_ALLOWED_USERS 寫上你的帳號之前，網路上的任何人都能與機器人對話——沒有 [acl] 區段時以擁有者身分，擁有全部工具。}
 ::msgcat::mcset zh_hant {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {在 .env 中的 TELEGRAM_ALLOWED_USERS 寫上你的使用者 ID 之前，任何找到機器人的人都能與它對話——沒有 [acl] 區段時以擁有者身分，擁有全部工具。}
 ::msgcat::mcset zh_hant Untitled 無標題
-::msgcat::mcset zh_hant {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {向上游貢獻是一項明確的發佈操作，而不是自動上傳。在「管理擴充」中，「貢獻」會列出每一個使用者擴充：選取擴充與檔案、檢視差異與密鑰掃描、執行檢查，然後使用你選擇的 git 身分建立一個分支與一筆 PR（預設送往 veles）。每個擴充會放在儲存庫中各自的目錄下，其中既有的檔案只有在另外確認之後才會被取代。切勿發佈 node.toml、本機憑證、權杖、私人端點或無關的外掛狀態。本機復原快照並不是上游提交或 PR。}
+::msgcat::mcset zh_hant {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {上游貢獻是明確的發佈動作，而非自動上傳。在「管理擴充功能」中，「貢獻」會列出每個使用者擴充功能：選擇擴充功能與檔案、檢視差異與密鑰掃描、執行檢查，然後建立一個分支與一個 PR（預設送至 veles）。提交會使用閘道環境中的 git 身分（其 git 設定中的 user.name 與 user.email）；若應有所不同，請先設定這些值。每個擴充功能會放在儲存庫中各自的目錄下，該處既有的檔案只有在另行確認後才會被取代。切勿發佈 node.toml、本機憑證、權杖、私人端點或無關的外掛狀態。本機復原快照並非上游提交或 PR。}
 ::msgcat::mcset zh_hant {Upstream repository or fork URL} {上游儲存庫或分叉 URL}
 ::msgcat::mcset zh_hant {Uptime class} 上線時間等級
 ::msgcat::mcset zh_hant {Uptime: host %1$s, gateway %2$s} {運作時間：主機 %1$s，閘道 %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {Users — one role across networks and platforms} {使用者 — 一個角色涵蓋所有網路與平台}
 ::msgcat::mcset zh_hant {Using the phone, for the agent} 操作手機（供代理使用）
 ::msgcat::mcset zh_hant {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {通常和 provider 項目名稱相同。選 Skip 時兩個都留空 — 只填一半不會路由。}
+::msgcat::mcset zh_hant {Value (TOML: "text", 5, true, [1, 2])} {值（TOML："文字", 5, true, [1, 2]）}
 ::msgcat::mcset zh_hant {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {值為 TOML：帶引號字串、數字或清單。會寫入 [mcp_servers.<name>] — 你的註解與其他區段皆不受影響。}
 ::msgcat::mcset zh_hant Vault 保險庫
 ::msgcat::mcset zh_hant {Verified signed bundle installed. Restart the gateway before using the new core.} 已安裝驗證過的簽署套件。使用新核心前請重新啟動閘道。
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset zh_hant Voice 給予發言權
 ::msgcat::mcset zh_hant {Waiting for the model…} 正在等待模型…
 ::msgcat::mcset zh_hant {Waiting for the model… Nothing has been written.} {正在等待模型… 尚未寫入任何內容。}
+::msgcat::mcset zh_hant Warning 警告
 ::msgcat::mcset zh_hant {Welcome to veles} {歡迎使用 veles}
 ::msgcat::mcset zh_hant {What the agent can do here} 代理在這裡能做什麼
 ::msgcat::mcset zh_hant {What veles may do on this phone. Each button opens the Android setting that changes it.} {veles 在這支手機上可以做什麼。每個按鈕都會開啟變更該項的 Android 設定。}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset zh_hant {Workflow SHA} {工作流程 SHA}
 ::msgcat::mcset zh_hant {Workflow commit} 工作流程提交
 ::msgcat::mcset zh_hant Worktree 工作樹
+::msgcat::mcset zh_hant {Write cancelled.} 寫入已取消。
 ::msgcat::mcset zh_hant {Write it} 寫入
 ::msgcat::mcset zh_hant {Write the design question first.} 請先寫下設計問題。
 ::msgcat::mcset zh_hant {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {不會寫入 provider。在 [[custom_providers]] 項目和 [model] 配對都存在之前，gateway 不會路由任何對話回合。}
+::msgcat::mcset zh_hant Write… 寫入…
 ::msgcat::mcset zh_hant {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {寫入任何 [acl] 鍵都會把此閘道切換到受控模式：預設角色變為 guest（fail-closed），允許清單不再是邊界。只有在擁有可信的擁有者身分時才選擇此項。}
 ::msgcat::mcset zh_hant {[model] provider} {[model] 的 provider}
 ::msgcat::mcset zh_hant {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {[model] 的供應商 %{name} 不對應任何 [[custom_providers]] 項目——請填寫此精靈寫入的項目，或 config.toml 中既有的項目}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset zh_hant {asked by: %s} 詢問者：%s
 ::msgcat::mcset zh_hant {asking %s for its metrics…} {正在向 %s 詢問其指標…}
+::msgcat::mcset zh_hant {asking %s how it is supervised…} {正在詢問 %s 其監督方式…}
 ::msgcat::mcset zh_hant {attach a file} 附加檔案
 ::msgcat::mcset zh_hant {attach an image or file} 附加圖片或檔案
 ::msgcat::mcset zh_hant {attach failed: %1$s} {附加失敗：%1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {channel-event reactions; /triggers add <name> network=… channel=… action=…} {頻道事件反應；/triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset zh_hant {channels to join, a space or comma separated string} 要加入的頻道，以空格或逗號分隔的字串
 ::msgcat::mcset zh_hant chars 字元數
+::msgcat::mcset zh_hant {check the buffer (diagnostics)} 檢查緩衝區（診斷）
 ::msgcat::mcset zh_hant choice_next 改用下一個路由
 ::msgcat::mcset zh_hant choice_retry 重試同一路由
 ::msgcat::mcset zh_hant choice_stop 到此為止
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {command list unavailable (the gateway is not reachable)} 命令清單無法使用(閘道無法連線)
 ::msgcat::mcset zh_hant {command palette} 命令面板
 ::msgcat::mcset zh_hant {command search} 搜尋命令
+::msgcat::mcset zh_hant {command-center audit log} 命令中心審計紀錄
 ::msgcat::mcset zh_hant commands 命令
 ::msgcat::mcset zh_hant {commands stay on your own session; /leave returns from the joined session} {命令只會留在自己的工作階段；/leave 會從已加入的工作階段返回}
 ::msgcat::mcset zh_hant commands: 命令：
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {config changes from peers that wait for you; /configsync apply lands them} {來自對等節點、等待你處理的設定變更；/configsync apply 會套用它們}
 ::msgcat::mcset zh_hant {config file: %s} 設定檔：%s
 ::msgcat::mcset zh_hant {config key} 設定鍵
+::msgcat::mcset zh_hant {config result} 設定結果
 ::msgcat::mcset zh_hant {config unavailable} 設定不可用
 ::msgcat::mcset zh_hant {config unavailable: %s} 設定不可用：%s
 ::msgcat::mcset zh_hant {config value} 設定值
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset zh_hant doctor_resident {每次提示常駐：%{shown} / %{total} 字元（約 %{tokens} tokens）— 其餘依需要載入：memory action=read path=%{path}}
 ::msgcat::mcset zh_hant doctor_title 記憶診斷
 ::msgcat::mcset zh_hant doctor_total {總計：%{chars} 字元，%{files} 個檔案（約 %{tokens} tokens）}
-::msgcat::mcset zh_hant {documentation is not in this source checkout: %s} 此原始碼檢出中沒有文件：%s
 ::msgcat::mcset zh_hant done 完成
 ::msgcat::mcset zh_hant {done · %1$s/%2$s} {完成 · %1$s/%2$s}
 ::msgcat::mcset zh_hant {done, but the model returned no text} 完成，但模型未回傳文字
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {grant a role (owner) · /revoke <id> takes it back} {授予角色（owner）· /revoke <id> 收回}
 ::msgcat::mcset zh_hant {grant a role to an identity} 授予角色給某個身分
 ::msgcat::mcset zh_hant {guards unreachable} 防護無法連線
-::msgcat::mcset zh_hant guts: guts:
+::msgcat::mcset zh_hant {guts ▾} {內部 ▾}
 ::msgcat::mcset zh_hant {gw hooks} {gw hooks}
 ::msgcat::mcset zh_hant {gw procs} {gw procs}
 ::msgcat::mcset zh_hant {halt after N identical calls} {在 N 次相同呼叫後停止}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {live patching ARMED} 即時修補已就緒
 ::msgcat::mcset zh_hant {live patching ARMED — an agent can now redefine procs in this window} {即時修補已就緒 — 代理現在可在這個視窗重新定義程序}
 ::msgcat::mcset zh_hant {live patching disarmed} 即時修補已解除
+::msgcat::mcset zh_hant load 負載
 ::msgcat::mcset zh_hant loaded 已載入
 ::msgcat::mcset zh_hant {loaded older messages} 已載入較舊的訊息
 ::msgcat::mcset zh_hant loading… 載入中…
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {no upstream reading for %s} {沒有 %s 的上游讀取}
 ::msgcat::mcset zh_hant {no word match} 沒有相符字詞
 ::msgcat::mcset zh_hant {no xdg-open — path copied instead} {沒有 xdg-open — 已改為複製路徑}
+::msgcat::mcset zh_hant {nobody else's session is open on %s right now} {目前 %s 上沒有其他人的工作階段開啟}
 ::msgcat::mcset zh_hant {node log} 節點日誌
 ::msgcat::mcset zh_hant {none loaded} 未載入任何項目
 ::msgcat::mcset zh_hant {none recorded} 無紀錄
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset zh_hant {not installed} 未安裝
 ::msgcat::mcset zh_hant {not reported} 未回報
 ::msgcat::mcset zh_hant {not running} 未執行
+::msgcat::mcset zh_hant {not saved: drafting the change as an extension} 未儲存：正在將此變更草擬為擴充功能
+::msgcat::mcset zh_hant {not sent: %s} 未送出：%s
 ::msgcat::mcset zh_hant {not set in config.toml — the built-in default applies. %s} {未在 config.toml 中設定 — 套用內建預設值。%s}
 ::msgcat::mcset zh_hant {not set yet — /secret set it later} {尚未設定——稍後用 /secret set 設定}
 ::msgcat::mcset zh_hant {not signed: %s} 未簽署：%s
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset zh_hant {on no plan} 無計畫時
 ::msgcat::mcset zh_hant {on the} 在
 ::msgcat::mcset zh_hant {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {開/關可將機制在對話紀錄中的備註靜音 — 依下方的範圍設定，僅限本次工作階段，或作為預設。它控制的是「備註」；每個機制「做什麼」是在其所在列的區段中設定，「設定…」會開啟該區段。防護旋鈕可直接就地編輯。}
+::msgcat::mcset zh_hant {on; this gateway does not say whether they reach the home chat} 已啟用；此閘道未說明它們是否會送達住家聊天
 ::msgcat::mcset zh_hant {one-shot tcl-lsp diagnostics — no model turn} {一次性 tcl-lsp 診斷 — 不呼叫模型}
 ::msgcat::mcset zh_hant {open a saved file first} 請先開啟一個已儲存的檔案
 ::msgcat::mcset zh_hant {open links} 開啟連結
+::msgcat::mcset zh_hant {open one of the desktop's own source files} 開啟桌面端自身的原始碼檔案
 ::msgcat::mcset zh_hant {open the engine log} 開啟引擎日誌
 ::msgcat::mcset zh_hant {open the joined session before /leave (on %s)} {請先開啟已加入的工作階段，才能 /leave（在 %s 上）}
 ::msgcat::mcset zh_hant {open the selected child session} 開啟所選的子工作階段
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {read-only: [approvals] allowlist} {唯讀：[approvals] 允許清單}
 ::msgcat::mcset zh_hant {read-only: this session lives on %1$s (as read at %2$s)} {唯讀：此工作階段位於 %1$s（讀取於 %2$s）}
 ::msgcat::mcset zh_hant {read-only: this skill comes from the %s library} {唯讀：此技能來自 %s 函式庫}
+::msgcat::mcset zh_hant {reading %1$s on %2$s…} {正在讀取 %2$s 上的 %1$s…}
 ::msgcat::mcset zh_hant reasoning 推理
 ::msgcat::mcset zh_hant {reasoning display: %1$s · %2$s blocks} {推理顯示：%1$s · %2$s 個區塊}
 ::msgcat::mcset zh_hant {reasoning display: %s} 推理顯示：%s
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {run failed: %s} 執行失敗：%s
 ::msgcat::mcset zh_hant {run in:} 執行於：
 ::msgcat::mcset zh_hant running 執行中
+::msgcat::mcset zh_hant {running %s on the listed nodes…} {正在所列節點上執行 %s…}
 ::msgcat::mcset zh_hant {running since %s} {自 %s 起執行}
 ::msgcat::mcset zh_hant {running subagents; /subagents cancel <id>} {執行中的子代理；/subagents cancel <id>}
 ::msgcat::mcset zh_hant {save failed} 儲存失敗
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset zh_hant {send failed: %s} 傳送失敗：%s
 ::msgcat::mcset zh_hant {send the message; while a turn runs, queue it as steering} {傳送訊息；回合執行中時排入 steering 佇列}
 ::msgcat::mcset zh_hant sent 已傳送
-::msgcat::mcset zh_hant {sent to the owner's home chat} 已傳送至擁有者的主聊天
+::msgcat::mcset zh_hant {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {由執行其 Telegram 配接器的閘道（而非此閘道）送至擁有者的住家聊天}
+::msgcat::mcset zh_hant {sent to the owner's home chat from this gateway} 已由此閘道送至擁有者的住家聊天
 ::msgcat::mcset zh_hant server 伺服器
 ::msgcat::mcset zh_hant {server buffers merged} 伺服器緩衝區已合併
 ::msgcat::mcset zh_hant {server buffers separate} 伺服器緩衝區各自獨立
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {session, model, lifecycle} 工作階段、模型、生命週期
 ::msgcat::mcset zh_hant {session: %s} 工作階段：%s
 ::msgcat::mcset zh_hant {sessions    %s} {工作階段    %s}
+::msgcat::mcset zh_hant {sessions you can join on %s (/join <name or id>):} {你可以在 %s 上加入的工作階段（/join <名稱或 ID>）：}
 ::msgcat::mcset zh_hant {sessions: unreachable} 工作階段：無法連線
 ::msgcat::mcset zh_hant {set by} 由
 ::msgcat::mcset zh_hant {set. %s} 已設定。%s
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset zh_hant {split: %s} 分割：%s
 ::msgcat::mcset zh_hant {ssh to %1$s failed: %2$s} {SSH 連線至 %1$s 失敗：%2$s}
 ::msgcat::mcset zh_hant {stale — no heartbeat within the threshold} {過期 — 在門檻時間內沒有心跳}
+::msgcat::mcset zh_hant {standing approval grants: always and this session; revoke one} 常設核准授權：永遠與此工作階段；可撤銷其中一項
 ::msgcat::mcset zh_hant {standing global and session permission grants} 常設的全域與工作階段權限授予
+::msgcat::mcset zh_hant {start the line with // to send it as text} {在行首加上 // 即可將其作為文字送出}
 ::msgcat::mcset zh_hant state 狀態
 ::msgcat::mcset zh_hant {state       never reached} {狀態       從未抵達}
 ::msgcat::mcset zh_hant {state       reachable} {狀態       可抵達}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {the config.toml that will be written} {將要寫入的 config.toml}
 ::msgcat::mcset zh_hant {the default (config.toml)} 預設值（config.toml）
 ::msgcat::mcset zh_hant {the engine refused these answers: %s} 引擎拒絕了這些答案：%s
+::msgcat::mcset zh_hant {the file to open: type a path, then Return or Open} {要開啟的檔案：輸入路徑，然後按 Return 或「開啟」}
 ::msgcat::mcset zh_hant {the first ACL owner identity} {第一個 ACL owner 身分}
 ::msgcat::mcset zh_hant {the gateway answered without a report} 閘道回應中沒有報告
 ::msgcat::mcset zh_hant {the model/provider pair is incomplete — the gateway will not route until both are present} 模型/供應商組合不完整——兩者都填寫之前閘道不會路由
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset zh_hant unknown 未知
 ::msgcat::mcset zh_hant {unknown api_mode %{mode} — expected one of %{modes}} {未知的 api_mode %{mode}——應為以下之一：%{modes}}
 ::msgcat::mcset zh_hant {unknown bindings '%{rest}' · normie|emacs|vi} {未知的按鍵方案「%{rest}」· normie|emacs|vi}
+::msgcat::mcset zh_hant {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {此處不認識命令 %{cmd} — /help 會列出此介面的命令；未送出任何內容}
 ::msgcat::mcset zh_hant {unknown command /%s — /help lists them} {未知指令 /%s — /help 列出所有指令}
 ::msgcat::mcset zh_hant {unknown command: /%s} 未知指令：/%s
 ::msgcat::mcset zh_hant {unknown keymap: %s (normie/emacs/vi)} 未知按鍵配置：%s（normie/emacs/vi）
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset zh_hant {upstream plan credits and windows — /usage is the local ledger} {上游方案的額度與時段 — /usage 是本機帳本}
 ::msgcat::mcset zh_hant {upstream plan quota} 上游計畫額度
 ::msgcat::mcset zh_hant uptime 運行時間
-::msgcat::mcset zh_hant {usage: /join <session> or /join <instance>/<session>} {用法：/join <工作階段> 或 /join <實例>/<工作階段>}
+::msgcat::mcset zh_hant {usage: /export [md|json]} {用法：/export [md|json]}
 ::msgcat::mcset zh_hant {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {用法：/locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset zh_hant {usage: /resume <id or prefix>} {用法：/resume <ID 或前綴>}
 ::msgcat::mcset zh_hant {usage: /resume <id-or-prefix>} {用法：/resume <id-or-prefix>}

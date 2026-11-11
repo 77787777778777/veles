@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset zu {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset zu {%1$s %2$s done} {%1$s %2$s kuqediwe}
 ::msgcat::mcset zu {%1$s %2$s failed: %3$s} {%1$s %2$s kwehlulekile: %3$s}
+::msgcat::mcset zu {%1$s %2$s over ssh anyway?} {%1$s %2$s nge-ssh noma kunjalo?}
 ::msgcat::mcset zu {%1$s %2$s over ssh…} {%1$s %2$s nge-ssh…}
 ::msgcat::mcset zu {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset zu {%1$s (%2$s waiting)} {%1$s (%2$s kulindile)}
 ::msgcat::mcset zu {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  ukucabanga %3$s}
 ::msgcat::mcset zu {%1$s = %2$s here} {%1$s = %2$s lapha}
+::msgcat::mcset zu {%1$s = %2$s on %3$s} {%1$s = %2$s ku-%3$s}
 ::msgcat::mcset zu {%1$s NOT saved: %2$s} {%1$s AKULONDOLOZWANGA: %2$s}
 ::msgcat::mcset zu {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s ingeyomtapo wezincwadi %2$s futhi iyafundwa kuphela — yikopisha nge-New… ukuze uyishintshe}
 ::msgcat::mcset zu {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s ingeyomtapo wezincwadi %2$s — i-veles ayisusi amakhono akwenye ithuluzi}
+::msgcat::mcset zu {%1$s cannot restart itself: %2$s} {%1$s ayikwazi ukuziqala kabusha: %2$s}
+::msgcat::mcset zu {%1$s differs: %2$s} {%1$s iyehluka: %2$s}
 ::msgcat::mcset zu {%1$s every cron job on %2$s?} {%1$s yonke imisebenzi ye-cron ku-%2$s?}
 ::msgcat::mcset zu {%1$s failed: %2$s} {%1$s kwehlulekile: %2$s}
 ::msgcat::mcset zu {%1$s in / %2$s out / %3$s calls} {%1$s kungena / %2$s kuphuma / %3$s izimfuno}
+::msgcat::mcset zu {%1$s is back after %2$s s (veles %3$s).} {%1$s ibuyile ngemuva kwama-%2$s s (veles %3$s).}
 ::msgcat::mcset zu {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s iy-inode %2$s, hhayi %3$s. Lungisa i-id yayo ye-node kokuthi Hlela….}
 ::msgcat::mcset zu {%1$s is not a whole number} {%1$s akusona isibalo esiphelele}
+::msgcat::mcset zu {%1$s is not on: %2$s} {%1$s ayivuliwe: %2$s}
+::msgcat::mcset zu {%1$s is not set on %2$s: the default applies.} {%1$s ayisethiwe ku-%2$s: kusebenza okuzenzakalelayo.}
 ::msgcat::mcset zu {%1$s is reachable (%2$s ms).} {%1$s iyafinyeleleka (%2$s ms).}
+::msgcat::mcset zu {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s isebenzisa izingxoxo ezingu-%2$s. Yiqale kabusha noma kunjalo?}
 ::msgcat::mcset zu {%1$s is set to something this box cannot edit (%2$s)} {%1$s isethwe kokuthile le khompyutha engakwazi ukukushintsha (%2$s)}
 ::msgcat::mcset zu {%1$s is unreachable: %2$s} {%1$s ayifinyeleleki: %2$s}
+::msgcat::mcset zu {%1$s is up, but its node binding is wrong: %2$s} {%1$s iyasebenza, kodwa ukuxhumana kwayo ne-node akulungile: %2$s}
+::msgcat::mcset zu {%1$s not compared: %2$s} {%1$s akuqhathaniswa: %2$s}
 ::msgcat::mcset zu {%1$s of %2$s characters} {izinhlamvu ezi-%1$s kwezi-%2$s}
 ::msgcat::mcset zu {%1$s of %2$s sessions} {%1$s kwangu-%2$s amaseshini}
 ::msgcat::mcset zu {%1$s of %2$s skills reach the prompt} {amakhono angu-%1$s kwangu-%2$s afinyelela epromptini}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset zu {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset zu {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset zu {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset zu {%1$s: %2$s on the gateway} {%1$s: %2$s ku-gateway}
+::msgcat::mcset zu {%1$s: %2$s on the gateway (ships with veles)} {%1$s: %2$s ku-gateway (kuhamba ne-veles)}
 ::msgcat::mcset zu {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset zu {%1$s: no language server on the gateway. %2$s} {%1$s: asikho iseva yolimi ku-gateway. %2$s}
 ::msgcat::mcset zu {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: imigqa yokugcina engu-%2$s kwengu-%3$s i-gateway yayo eyigcina ememori, izimfihlo zisusiwe kulelo node.}
+::msgcat::mcset zu {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: iplagini yomsebenzisi %2$s ithatha indawo yekhophi ekhishwe ne-veles enomxholo ofanayo (%3$s)}
 ::msgcat::mcset zu {%d MCP server(s) configured} {%d amaseva e-MCP akumisiwe}
 ::msgcat::mcset zu {%d entries} {%d izinto}
 ::msgcat::mcset zu {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {Amafayela angu-%d esandiso azobhalwa ngokunembile njengoba kubuyekezwe. Uma kwesinye sawo kushintshile kusukela ekubukeni kuqala, akukho okubhalwayo. Akukho i-commit, i-push noma i-PR eyenzekayo.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset zu {%s (stale)} {%s (kuphelelwe yisikhathi)}
 ::msgcat::mcset zu {%s (this session)} {%s (lesi seshini)}
 ::msgcat::mcset zu {%s GB free of %s GB} {%s GB engenalutho kwe-%s GB}
+::msgcat::mcset zu {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s Umyalo uhamba nge-ssh uya kubungwa obumisiwe, lokho leli hlolo alikwazanga ukukuxhumanisa ne-node.}
 ::msgcat::mcset zu {%s already exists — open it from the list} {%s isivele ikhona — yivule ohlwini}
 ::msgcat::mcset zu {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {%s ishintshile selokhu uyivula — akukho okubhalwe ngaphezulu; kopisha umbhalo wakho, bese Layisha kabusha}
 ::msgcat::mcset zu {%s cleared for this buffer} {%s kusuliwe kule bhafa}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset zu {%s comes from config.toml [acl] — edit there} {%s ivela ku-config.toml [acl] — hlela lapho}
 ::msgcat::mcset zu {%s config change(s) wait for you — /configsync} {izinguquko zokuhlelwa ezingu-%s zikulindile — /configsync}
 ::msgcat::mcset zu {%s did not become healthy within 30s} {%s akuzange kube kulungile phakathi kwama-30s}
+::msgcat::mcset zu {%s did not come back within 120 s: look at its log where it runs.} {%s ayibuyanga phakathi kwama-120 s: bheka ilogi yayo lapho isebenza khona.}
 ::msgcat::mcset zu {%s done} {%s kuqediwe}
 ::msgcat::mcset zu {%s failed: %s} {%s yehlulekile: %s}
+::msgcat::mcset zu {%s holds a credential: it stays on its node and is not shown.} {%s iphethe isiqinisekiso: sihlala kuyo node yayo futhi asikhonjiswa.}
 ::msgcat::mcset zu {%s is already split} {%s usuvele uhlukanisiwe}
+::msgcat::mcset zu {%s is restarting; waiting for it to come back…} {%s iyaqala kabusha; silindele ukuthi ibuye…}
 ::msgcat::mcset zu {%s is the language in use — pick another one to swap with} {%s wulimi olusetshenziswayo — khetha olunye ukuze ushintshane nalo}
 ::msgcat::mcset zu {%s is up} {%s iyasebenza}
 ::msgcat::mcset zu {%s keys — any key closes} {%s izinkinobho — noma iyiphi ikinobho iyavala}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset zu {; shadows bundled} {; ithatha indawo yekhophi ekhishwe ne-veles}
 ::msgcat::mcset zu {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Isiphakamiso sokuhlela singashintsha izilungiselelo kanti isiphakamiso sephasa sihlanganisa izimfihlo; izinguquko esigabeni sokuphepha zisalindile umnikazi.}
 ::msgcat::mcset zu {A failing plugin may drop hooks mid-turn.} {Iplagini ehlulekayo ingalahla amahhuku phakathi kokushintshana.}
+::msgcat::mcset zu {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {Isigaba esigciniwe: asibhalwa kusuka lapha; sihlele ku-node bese uthumela ukuhlelwa, futhi umnikazi waso usisebenzisa lapho.}
 ::msgcat::mcset zu {A local server: no key is needed unless you set one up.} {Iseva yasendaweni: akudingekile ukhiye ngaphandle uma uwusetha.}
 ::msgcat::mcset zu {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Inguqulo esayiniwe ilungiswa kuphela ngemva kwe-preflight. Ukuqala kabusha/ukuqinisekisa, ukuqhubeka nokuhoxisa izenzo ezehlukene. Inqubo esebenza kahle kufanele ibike inguqulo yomthombo ehloliwe ngokoqobo.}
 ::msgcat::mcset zu {A value is stored for %s — leave this empty to keep it.} {Kukhona inani eligciniwe le-%s — shiya lokhu kungenalutho ukuze uligcine.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset zu {Asking the provider for its models…} {Kubuzwa umhlinzeki ngamamodeli akhe…}
 ::msgcat::mcset zu Attach Namathisela
 ::msgcat::mcset zu {Attach to the next message} {Faka kumyalezo olandelayo}
+::msgcat::mcset zu {Audit log unavailable: %s} {Ilogi yokuhlola ayitholakali: %s}
+::msgcat::mcset zu {Audit log…} {Ilogi yokuhlola…}
 ::msgcat::mcset zu {Author guide} {Umhlahlandlela wombhali}
 ::msgcat::mcset zu {Automatically discovered from the attached gateway's cluster registry.} {Kutholakala ngokuzenzakalela kurejista yeqoqo ye-gateway exhunyiwe.}
 ::msgcat::mcset zu Back Emuva
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset zu {Browse sessions} {Phequlula amaseshini}
 ::msgcat::mcset zu {Build manifest + preflight} {Yakha i-manifest + preflight}
 ::msgcat::mcset zu {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Ukwakhiwa: veles %1$s, isibuyekezo %2$s (%3$s %4$s)}
+::msgcat::mcset zu {Bulk %1$s failed: %2$s} {%1$s kwenqwaba kwehlulekile: %2$s}
+::msgcat::mcset zu {Bulk %1$s: %2$s (%3$s).} {%1$s kwenqwaba: %2$s (%3$s).}
+::msgcat::mcset zu {Bulk action cancelled.} {Isenzo senqwaba sikhanseliwe.}
 ::msgcat::mcset zu {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e izinhlamvu ezasekhona · C-b/C-f izinhlamvu · M-b/M-f amagama · C-k bulala kuya EOL · C-y yank · M-w kopisha · C-w bulala indawo · C-space setha uphawu · C-/ undo}
 ::msgcat::mcset zu {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g yekisa konke · C-j umugqa omusha · M-p/M-n umlando · Tab kuphela}
+::msgcat::mcset zu {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU: izingqikithi ezingu-%1$s, %2$s%% kumatasa kuma-%3$s s adlule}
 ::msgcat::mcset zu {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: amakhora angu-%1$s, umthwalo %2$s / %3$s / %4$s (%5$s%% wamakhora)}
 ::msgcat::mcset zu Cancel Khansela
 ::msgcat::mcset zu {Cancel task} {Khansela umsebenzi}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset zu {Channels (e.g. #veles #dev)} {Amashaneli (isb. #veles #dev)}
 ::msgcat::mcset zu Chat Ingxoxo
 ::msgcat::mcset zu {Chat — not attached; press Attach in the Instances tab} {Ingxoxo — ayixhunyiwe; cindezela u-Attach kuthebhu yama-instance}
-::msgcat::mcset zu {Check (lsp)} {Hlola (lsp)}
+::msgcat::mcset zu {Check (C-c C-k)} {Hlola (C-c C-k)}
 ::msgcat::mcset zu {Check again} {Hlola futhi}
 ::msgcat::mcset zu {Check files} {Hlola amafayela}
 ::msgcat::mcset zu Checkpoints {Amaphuzu okugcina}
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset zu {Close (Esc)} {Vala (Esc)}
 ::msgcat::mcset zu {Close the setup wizard? Nothing has been written yet.} {Vala i-setup wizard? Akukho okusabhalwe.}
 ::msgcat::mcset zu {Code actions} {Izenzo zekhodi}
+::msgcat::mcset zu {Command-center audit log} {Ilogi yokuhlola yesikhungo somyalo}
 ::msgcat::mcset zu Commit Commit
 ::msgcat::mcset zu {Commit ready for review. Push is a separate action.} {I-commit ilungele ukubuyekezwa. Ukuphusha kuhlukile.}
 ::msgcat::mcset zu {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Gcwalisa yonke inkambu ye-PDS, kuhlanganise ne-digest yesithombe esiboshiwe, ngaphambi kokubuka i-handoff.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset zu {Config differs: %s} {Ukuhlelwa kuyahluka: %s}
 ::msgcat::mcset zu {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Ilogi yokuhlelwa: lelo node linazo izinguquko zika-%1$s kuze kufike ku-%3$s, le gateway kuze kufike ku-%2$s}
 ::msgcat::mcset zu {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Ilogi yokuhlelwa: le gateway inazo izinguquko zika-%1$s kuze kufike ku-%2$s, lelo node kuze kufike ku-%3$s}
+::msgcat::mcset zu {Config of %s} {Ukuhlelwa kwe-%s}
 ::msgcat::mcset zu {Config only on that node: %s} {Ukuhlelwa kukulelo node kuphela: %s}
 ::msgcat::mcset zu {Config only on this gateway: %s} {Ukuhlelwa kukule gateway kuphela: %s}
+::msgcat::mcset zu {Config: %s} {Ukuhlelwa: %s}
 ::msgcat::mcset zu Configure Lungisa
 ::msgcat::mcset zu {Configure %s} {Lungisa %s}
 ::msgcat::mcset zu {Configure translator} {Hlela umhumushi}
 ::msgcat::mcset zu {Configured desktop gateway} {I-gateway yedeskithophu ehleliwe}
 ::msgcat::mcset zu Configure… Lungisa…
 ::msgcat::mcset zu {Configuring %s} {Kucushwa i-%s}
+::msgcat::mcset zu Config… Ukuhlelwa…
 ::msgcat::mcset zu {Confirm or discard the current signed review before starting another download.} {Qinisekisa noma lahla ukubuyekezwa okusayiniwe kwamanje ngaphambi kokuqala okunye ukulanda.}
 ::msgcat::mcset zu {Container host: typed host plan and privileged CLI handoff} {Ikhontheyna yomsingathi: uhlelo lomsingathi olunohlobo nokudluliselwa kwe-CLI okudinga amalungelo omlawuli}
 ::msgcat::mcset zu {Context window} {Iwindi lomongo}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset zu {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Dala i-bot nge-@BotFather, bese unamathisela ithokheni yayo ngezansi: iya ephaseni elibethelwe, ingaze iye ku-config.toml.}
 ::msgcat::mcset zu {Create this extension?} {Dala lesi sandiso?}
 ::msgcat::mcset zu {Create this generated extension?} {Dala lesi sandiso esikhiqiziwe?}
+::msgcat::mcset zu {Created and loaded. Review and test the extension before publishing.} {Kudaliwe futhi kulayishiwe. Buyekeza futhi uhlole isandiso ngaphambi kokushicilela.}
 ::msgcat::mcset zu {Created and reloaded. Review and test the extension before publishing.} {Kudaliwe futhi kulayishwe kabusha. Buyekeza bese uhlola isandiso ngaphambi kokushicilela.}
 ::msgcat::mcset zu {Created, but reload failed} {Kudaliwe, kodwa ukulayisha kabusha kwehlulekile}
+::msgcat::mcset zu {Created, not loaded} {Kudaliwe, akulayishwanga}
+::msgcat::mcset zu {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {Kudaliwe, akukalayishwa: sebenzisa i-cargo build --release kufolda yesandiso, bese uyalayisha kabusha kokuthi Phatha izandiso.}
+::msgcat::mcset zu {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {Kudaliwe. Le gateway ayisho ukuthi yasilayisha yini isandiso: bheka isimo saso kokuthi Phatha izandiso.}
 ::msgcat::mcset zu {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Idala %s/<name>/SKILL.md isuka kusifanekiso bese iyivula. Incazelo yefrontmatter iyona kuphela efinyelela enkombeni yeprompt, ngakho yenza isho ukuthi ikhono lisetshenziswa nini.}
 ::msgcat::mcset zu {Cron history} {Umlando we-Cron}
 ::msgcat::mcset zu {Cron jobs} {Imisebenzi ye-cron}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset zu {Delete user} {Susa umsebenzisi}
 ::msgcat::mcset zu {Delete workspace?} {Susa indawo yokusebenza?}
 ::msgcat::mcset zu Deop {Susa i-op}
+::msgcat::mcset zu {Deployment consistency unknown: %s node(s) could not be compared.} {Ukuhambisana kokusatshalaliswa akwaziwa: ama-node angu-%s awakwazanga ukuqhathaniswa.}
+::msgcat::mcset zu {Deployment consistency: not checked yet (Drift… compares every node).} {Ukuhambisana kokusatshalaliswa: akukahlolwa (i-Drift… iqhathanisa wonke ama-node).}
 ::msgcat::mcset zu {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Chaza ushintsho. I-AI ingashintsha noma yengeze amafayela amaningi alesi sandiso. Yonke ifayela ikhonjiswa njenge-diff, futhi akukho okubhalwayo ngaphambi kokuba uqinisekise.}
 ::msgcat::mcset zu {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Chaza ushintsho. I-AI ingaphakamisa okuzofaka endaweni, kodwa ayikwazi ukukubhala ngaphambi kokuthi uhlole bese uqinisekisa i-diff.}
 ::msgcat::mcset zu {Describe the requested extension change first.} {Qala ngokuchaza ushintsho lwesandiso oluceliwe.}
 ::msgcat::mcset zu Description Incazelo
+::msgcat::mcset zu {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {Izingxoxo zedeskithophu ziqhubeka kusukela kumlando wazo ogciniwe ngemuva kokuqalwa kabusha; izingxoxo ze-connector, i-A2A, iposi, i-cron nama-subagent azinjalo.}
 ::msgcat::mcset zu {Desktop: local core, modules and process plugins} {Idesktop: umongo wasekhaya, amamojuli namaphlagini enqubo}
 ::msgcat::mcset zu Detach Khumula
 ::msgcat::mcset zu {Detach foreground} {Hlukanisa okungaphambili}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset zu {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Landa futhi uqinisekise i-manifest yokukhishwa ne-akhivi yekhompyutha ngaphambi kokufaka. Zonke izinkambu ezinhlanu zobunikazi ziyadingeka. I-gateway igcina i-akhivi eyimfihlo elungiselwe ukufakwa; lesi sibonisi asifaki lutho.}
 ::msgcat::mcset zu {Downloading and verifying the signed release…} {Kulandwa futhi kuqinisekiswa ukukhishwa okusayiniwe…}
 ::msgcat::mcset zu {Draft this as an extension?} {Bhala lokhu njengesandiso?}
+::msgcat::mcset zu {Draft this change as an extension?} {Bhala lolu shintsho njengesandiso?}
 ::msgcat::mcset zu {Drag to scroll; a quick swipe goes further.} {Hudula ukuze uskrole; ukuswayipha ngokushesha kuya kude kakhulu.}
 ::msgcat::mcset zu {Drift check failed: %s} {Ukuhlola ukwehluka kwehlulekile: %s}
 ::msgcat::mcset zu {Drift check: %s node(s) differ from this gateway.} {Ukuhlola ukwehluka: ama-node angu-%s ahlukile kule gateway.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset zu Eval→gw Eval→gw
 ::msgcat::mcset zu {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Yonke inguquko ku-%s iyakhomithwa. Ukubuyisela kubuyisela lonke ifolda kuleyo khomithi — futhi kuqala kuthatha isithombe sokwamanje, ngakho akusona isango elingabuyiseleki.}
 ::msgcat::mcset zu {Every plugin file goes back to that commit. The current state is committed first.} {Wonke amafayela wamaplagini abuyela kuleyo khomithi. Isimo sakwamanje siyakhomithwa kuqala.}
+::msgcat::mcset zu {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {Onke amazinga: Isandiso esisha sidala isandiso se-Tcl, se-TypeScript, se-Racket noma se-Common Lisp, noma iplagini ye-Rust engaphandle komthombo (i-cdylib ku-crate ye-veles-plugin-abi-sdk: yakha nge-cargo build --release, bese uyilayisha kabusha kokuthi Phatha izandiso). Amazinga amabili ahlala ngaphandle kwefolda yamaphlagini omsebenzisi futhi aqala emugqeni womyalo: imojuli, umtapo we-Rust owakhiwe kanye ne-veles (i-veles plugins new NAME --kind overlay ibhala umtapo wayo), neplagini yenqubo, uhlelo ku-crate ye-veles-plugin-sdk i-gateway elisebenzisayo futhi eliqondisayo. Umhlahlandlela womlobi unesigaba ngasinye.}
 ::msgcat::mcset zu {Exact commit} {Isibhaliso esiqondile}
 ::msgcat::mcset zu {Exact permission rule} {Umthetho wemvume oqondile}
 ::msgcat::mcset zu {Example: a hook} {Isibonelo: ihhuku}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset zu {Explain the diagnostics} {Chaza ukuxilonga}
 ::msgcat::mcset zu Export… {Thumela ngaphandle…}
 ::msgcat::mcset zu {Extension API} {I-API yesandiso}
+::msgcat::mcset zu {Extension API reference} {Ireferensi ye-API yezandiso}
 ::msgcat::mcset zu {Extension development} {Ukuthuthukiswa kokunweba}
 ::msgcat::mcset zu {Extension guide} {Umhlahlandlela wokunweba}
 ::msgcat::mcset zu {Extension source} {Umthombo wesandiso}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset zu {Guards — what the harness stops, and where it stands now} {Guards — lokho i-harness ekumisayo, nokuthi kumi kuphi manje}
 ::msgcat::mcset zu {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Iziphathi zisebenza ngokulandelana okubonisiwe; eyokuqala ebuyisa inani elingengalutho iyawina. Ukuvala isinye kusimweqa ngaphandle kokusisusa ebhalisweni, futhi isinqumo sigcinwa ku-config.toml ukuze ukulayisha kabusha kweplagini kungakwazi ukusivula buthule.}
 ::msgcat::mcset zu Health Impilo
+::msgcat::mcset zu {Health alerts} {Izexwayiso zempilo}
 ::msgcat::mcset zu {Health alerts (%s):} {Izixwayiso zempilo (%s):}
 ::msgcat::mcset zu Heartbeat {Ukushaya kwenhliziyo}
 ::msgcat::mcset zu {Heartbeat age: %s s} {Ubude be-heartbeat: %s s}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset zu Install… Faka…
 ::msgcat::mcset zu {Instance name (for example an IRC network)} {Igama le-instance (isibonelo: inethiwekhi ye-IRC)}
 ::msgcat::mcset zu Instances Ama-instance
+::msgcat::mcset zu {Instead of patching %s: } {Esikhundleni sokufaka isichibiyelo ku-%s: }
 ::msgcat::mcset zu {It becomes the current content, as a new revision — so the restore can be undone too.} {Iba okuqukethwe kwamanje, njengenguqulo entsha — ngakho nokubuyisela kungahlehliswa.}
 ::msgcat::mcset zu {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Kuya ephaseni elibethelwe kulo mshini. Umenzeli akakuboni neze: angakusebenzisa kuphela njenge-$%s emiyalweni, noma akuthumele kubasingathi abavunyelwe.}
 ::msgcat::mcset zu {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Isuswa kurejista yeqoqo kuyo yonke iflethi: ukushintshana kwe-gossip okulandelayo kutshela wonke ama-peer e-0.2.0 ukuthi nawo ayilahle, futhi akukho kuwona okulihlanganisa futhi. I-peer endala kune-0.2.0 iqhubeka nokulibala. Uma umshini ubuya futhi ushaya inhliziyo, ubhaliswa futhi. Ontanga bokuvumelanisa namainstansi agciniwe akuthintwa.}
+::msgcat::mcset zu {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {Kubhalwa ku-config.toml yaleyo node njengokuhlela okwenziwe khona; ukuvumelanisa kokuhlelwa bese kukuthwala kuma-node avumelanisa ukuhlelwa nayo.}
 ::msgcat::mcset zu {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Manje iyaphuma enkumbulweni. Umlando wayo ugcina yonke inguqulo, futhi Umlando… ungayibuyisela.}
+::msgcat::mcset zu {Its gateway stops and %s.} {I-gateway yayo iyama futhi %s.}
 ::msgcat::mcset zu Join Joyina
 ::msgcat::mcset zu {Join a pool} {Joyina iqembu lemishini}
 ::msgcat::mcset zu {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {Joyina iqembu lemishini lika-%1$s njengo-%2$s? Iqembu lizofinyelela le foni ku-%3$s.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset zu Joining… Iyajoyina…
 ::msgcat::mcset zu Join… Joyina…
 ::msgcat::mcset zu {Jump to composer} {Yiya ku-composer}
+::msgcat::mcset zu {Key (for example model.default)} {Ukhiye (isibonelo model.default)}
 ::msgcat::mcset zu Keybindings {Ukuhlanganiswa kozinhlamvule}
 ::msgcat::mcset zu {Keyboard help} {Usizo lwekhibhodi}
 ::msgcat::mcset zu {Kick %1$s from %2$s?} {Khipha %1$s ku-%2$s?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset zu {LLM provider} {Umhlinzeki we-LLM}
 ::msgcat::mcset zu Language Ulimi
 ::msgcat::mcset zu {Language (i18n)} {Ulimi (i18n)}
+::msgcat::mcset zu {Language servers on this gateway} {Amaseva olimi kule gateway}
 ::msgcat::mcset zu Language… Ulimi…
 ::msgcat::mcset zu {Last active} {Ukusebenza kokugcina}
 ::msgcat::mcset zu {Last probe: %1$s — %2$s} {Ukuhlola kokugcina: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset zu Level Izinga
 ::msgcat::mcset zu {Lift lockdown} {Susa ukuvalelwa}
 ::msgcat::mcset zu Lines Imigqa
+::msgcat::mcset zu {List targets…} {Bonisa izindawo…}
 ::msgcat::mcset zu {List the provider's models} {Khonjisa amamodeli kamhlinzeki}
 ::msgcat::mcset zu Load Umthwalo
 ::msgcat::mcset zu {Load more} {Layisha okwengeziwe}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset zu Next Okulandelayo
 ::msgcat::mcset zu Nickname {Igama lokubiza}
 ::msgcat::mcset zu {NixOS: emit a module snippet; do not edit host declarations} {I-NixOS: khipha isiqeshana semojuli; ungahleli izimemezelo zomsingathi}
-::msgcat::mcset zu {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Ayikho inhloso yomjikelezo wokuphila ye-SSH emisiwe leli nodi. Engeza i-instance ngokucacile ukuze ulithumele ekusebenzeni noma uliqalise kabusha.}
+::msgcat::mcset zu {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {Akukho ndawo yokuphila kwe-SSH emisiwe yale node: ukuqala kabusha kucela i-node ukuthi iziqale kabusha ngomqondisi wayo; i-Fleet deploy idinga i-instance egciniwe enendawo ye-ssh.}
 ::msgcat::mcset zu {No additional push happens.} {Akukho ukuphusha okwengeziwe okwenzekayo.}
 ::msgcat::mcset zu {No apps yet. Ask the agent to make one: “make me an app that…”} {Awekho ama-app okwamanje. Cela umenzeli enze eyodwa: “ngenzele i-app e…”}
 ::msgcat::mcset zu {No code in the picture. Hold the phone closer, straight on, and scan again.} {Ayikho ikhodi esithombeni. Sondeza ifoni, uyibambe iqonde, bese uskena futhi.}
+::msgcat::mcset zu {No command-center action is recorded on this gateway yet.} {Akukho senzo sesikhungo somyalo esirekhodiwe kule gateway okwamanje.}
 ::msgcat::mcset zu {No configuration snapshot will be restored.} {Asikho isithombe sokuhlelwa esizobuyiselwa.}
 ::msgcat::mcset zu {No configured sync peer for this node.} {Akukho peer yokuvumelanisa emisiwe yale node.}
 ::msgcat::mcset zu {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Akukho umhumushi okhethekile ohleliwe. Sebenzisa u-Hlela umhumushi ukukhetha umhlinzeki, imodeli nolimi oluhlosiwe.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset zu {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Amafoni enziwe ngu-%s nawo amisa ama-app ngokwawo. Kuzilungiselelo ze-app ye-veles, yivumele iqale ngokwayo futhi isebenze ngemuva.}
 ::msgcat::mcset zu {Pin / unpin} {Phina / khipha}
 ::msgcat::mcset zu {Pin to home screen} {Phina esikrinini sasekhaya}
+::msgcat::mcset zu {Plugin author guide} {Umhlahlandlela womlobi wamaphlagini}
 ::msgcat::mcset zu {Plugin history} {Umlando weplagini}
 ::msgcat::mcset zu Plugins Amaplagini
 ::msgcat::mcset zu Port Iphothi
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset zu {Preview here} {Isibonisi lapha}
 ::msgcat::mcset zu {Preview pane} {Iphani yokubukeka okwangaphambili}
 ::msgcat::mcset zu {Preview proposal} {Buka isibonelo sesiphakamiso}
-::msgcat::mcset zu {Preview the changed name or language before creating it.} {Buka isibonelo segama noma ulimi olushintshiwe ngaphambi kokudala.}
+::msgcat::mcset zu {Preview the changed name, purpose or language before creating it.} {Buka igama elishintshile, injongo noma ulimi ngaphambi kokuyidala.}
 ::msgcat::mcset zu Probe Hlola
+::msgcat::mcset zu {Probe %s node(s)?} {Hlola ama-node angu-%s?}
+::msgcat::mcset zu {Probe all…} {Hlola konke…}
 ::msgcat::mcset zu {Probe of %1$s failed: %2$s} {Ukuhlola i-%1$s kwehlulekile: %2$s}
 ::msgcat::mcset zu {Profile result} {Umphumela wephrofayili}
 ::msgcat::mcset zu {Promote into config.toml} {Phakamisa ku-config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset zu {Push branch…} {Pusha igatsha…}
 ::msgcat::mcset zu {Push complete. No pull request has been opened.} {Ukuphusha kuqediwe. Ayikho i-pull request evuliwe.}
 ::msgcat::mcset zu {Push this branch?} {Pusha leli gatsha?}
+::msgcat::mcset zu {Push this kind to every node that is a configured peer for it:} {Thumela lolu hlobo kuyo yonke i-node engumlingani wayo omisiwe:}
 ::msgcat::mcset zu {Push to %s:} {Push ku-%s:}
 ::msgcat::mcset zu Question Umbuzo
 ::msgcat::mcset zu Questions Imibuzo
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset zu {REPL target: the app} {okuhloswe yi-REPL: i-app}
 ::msgcat::mcset zu {REPL target: the gateway} {okuhloswe yi-REPL: i-gateway}
 ::msgcat::mcset zu Read Funda
+::msgcat::mcset zu {Read the key first: a write names the value it replaces.} {Funda ukhiye kuqala: ukubhala kubiza inani elithathelwa indawo yalo.}
 ::msgcat::mcset zu {Reading notifications, for triggers} {Ukufunda izaziso, kuma-trigger}
 ::msgcat::mcset zu Reasoning Ukwucabanga
 ::msgcat::mcset zu {Reasoning effort} {Umzamo wokucabanga}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset zu {Reset to default} {Buyisela kokuzenzakalelayo}
 ::msgcat::mcset zu {Reset to template} {Buyisela esifanekisweni}
 ::msgcat::mcset zu Restart {Qalisa kabusha}
+::msgcat::mcset zu {Restart %s?} {Qala kabusha u-%s?}
 ::msgcat::mcset zu {Restart + verify canary} {Qala kabusha + qinisekisa i-canary}
+::msgcat::mcset zu {Restart cancelled.} {Ukuqala kabusha kukhanseliwe.}
+::msgcat::mcset zu {Restart of %1$s failed: %2$s} {Ukuqala kabusha kwe-%1$s kwehlulekile: %2$s}
 ::msgcat::mcset zu {Restore hidden windows} {Buyisa amawindi afihliwe}
 ::msgcat::mcset zu {Restore plugins to %s?} {Buyisela amaplagini ku-%s?}
 ::msgcat::mcset zu {Restore revision r%1$s of %2$s?} {Buyisela inguqulo r%1$s ka-%2$s?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset zu {S3 region} {Isifunda se-S3}
 ::msgcat::mcset zu {SASL account (optional)} {I-akhawunti ye-SASL (ongakukhetha)}
 ::msgcat::mcset zu {SASL password (hidden)} {Iphasiwedi ye-SASL (ifihliwe)}
+::msgcat::mcset zu {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {Ukuphila kwe-SSH: nge-instance egciniwe %1$s (%2$s, iyunithi %3$s).}
 ::msgcat::mcset zu Sandbox Isandbox
 ::msgcat::mcset zu {Sandbox account} {I-akhawunti ye-sandbox}
 ::msgcat::mcset zu Sandboxes Izandbox
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset zu {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Izeshini eziguqulwe ukuthi zisebenzise le alias zigcina indlela ezaziyitholile; ukuguqulwa okusha ngeke kuthole igama.}
 ::msgcat::mcset zu {Sessions served} {Amaseshini aphakelwe}
 ::msgcat::mcset zu Set Beka
+::msgcat::mcset zu {Set %1$s on %2$s to %3$s?} {Setha %1$s ku-%2$s ku-%3$s?}
 ::msgcat::mcset zu {Set [model] provider/default in config.toml.} {Beka i-provider/okuzenzakalelayo kwe-[model] ku-config.toml.}
 ::msgcat::mcset zu {Set as swap target} {Yenza ulimi lokushintshana}
 ::msgcat::mcset zu {Set mode %1$s on %2$s?} {Beka imodi %1$s ku-%2$s?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset zu Summary Isifinyezo
 ::msgcat::mcset zu Surface Indawo
 ::msgcat::mcset zu {Swap ⇄} {Shintshanisa ⇄}
+::msgcat::mcset zu {Sync %1$s to %2$s node(s)?} {Vumelanisa %1$s kuma-node angu-%2$s?}
+::msgcat::mcset zu {Sync all} {Vumelanisa konke}
+::msgcat::mcset zu {Sync all…} {Vumelanisa konke…}
 ::msgcat::mcset zu {Sync cancelled.} {Ukuvumelanisa kukhanseliwe.}
 ::msgcat::mcset zu {Sync complete.} {Ukuvumelanisa kuqediwe.}
 ::msgcat::mcset zu {Sync now} {Vumelanisa manje}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset zu {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Ukuxilonga kwamanje (okuvela kuseva yolimi noma ku-Hlola) kuthunyelwa nale fayela. Ngokuzikhethela engeza umbuzo. Impendulo ingumbhalo kuphela; akukho okungabhalwa.}
 ::msgcat::mcset zu {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Ifolda nakho konke okukuyo kuyasuswa. Lokhu akuhlehliseki — yivala esikhundleni uma ufuna nje ukuthi ingabonakali ku-prompt.}
 ::msgcat::mcset zu {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Ifolda iyasuswa. Ifolda ye-plugin iyirepository ye-git futhi i-snapshot iyacommitwa kuqala, ngakho i-History… ingayibuyisela.}
-::msgcat::mcset zu {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Umhleli uvula amafayela e-gateway, kuhlanganise namainstansi akude, futhi usebenzisa iseva yolimi yolimi lwefayela kuyi-gateway: tcl-lsp, typescript-language-server (i-TypeScript ne-JavaScript), rust-analyzer (i-crate noma imojuli yeplagini ye-Rust), clangd (C), racket-langserver neseva ye-Common Lisp. Ukubhula phezu, ukuya encazelweni, ukugcwalisa nokuxilonga okuphilayo kuyasebenza kuzo zonke izilimi i-gateway eneseva yazo; uma ingenayo, umhleli usho ukuthi iyiphi inhlelo okufanele ifakwe lapho futhi ugcina ukugqamisa kokubhaliwe. Okokuthi Hlola kusebenzisa isihloli esihambisana nayo kuyi-gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, noma izifundi ze-Racket ne-Lisp. Londoloza, layisha kabusha kokuthi Phatha izandiso, futhi hlola isandiso ngaphandle kokushicilela isimo sasendaweni.}
+::msgcat::mcset zu {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {Isihleli sivula amafayela e-gateway, kuhlanganisa nama-instance akude, futhi sisebenzisa iseva yolimi lolimi lwefayela ku-gateway: typescript-language-server (i-TypeScript ne-JavaScript), rust-analyzer (i-crate noma imojuli yephlagini ye-Rust), clangd (i-C), racket-langserver, iseva ye-Common Lisp, ne-tcl-lsp ye-Tcl lapho i-gateway inayo (amaphakheji e-Linux e-veles ayayifaka). Ukubonisa ngaphezulu, ukuya encazelweni, ukuqedela nokuxilonga okubukhoma kuyasebenza kulo lonke ulimi i-gateway eneseva yalo; uma ingenayo, isihleli sisho ukuthi yiluphi uhlelo okumele lufakwe lapho futhi sigcina ukugqamisa kwesintaksi. I-Check isebenzisa isihloli esihambisanayo ku-gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, izifundi ze-Racket ne-Lisp, futhi kwi-Tcl i-tclsh yomshini ngokwayo (ukuhlola ukuphelela, noma i-lint ye-tcl-lsp lapho ikhona). Gcina, layisha kabusha kokuthi Phatha izandiso, futhi uhlole isandiso ngaphandle kokushicilela isimo sasendaweni.}
 ::msgcat::mcset zu {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {I-handoff yokuqala ilungiselela izimfihlo, isithombe esiboshiwe namafayela okusebenza, kodwa ayiyiqalisi i-PDS. Gcina ikhophi ye-KEK nokhiye wokushintsha we-PLC ngaphandle kwenethiwekhi, bese wenza isicelo esibuyekezwe ngokusha ngokuvuma kwami ukuthi ikhophi igciniwe, ukuze kusethwe i-HTTP-01 TLS nokwenza kusebenze. Amarekhodi e-DNS kumele akhombe ngqo kule khompyutha; i-veles ayenzi iphroksi ye-CDN nanoma yiziphi izinguquko ze-DNS.}
+::msgcat::mcset zu {The fleet is NOT consistent: %s node(s) differ.} {Iqoqo ALIHAMBISANI: ama-node angu-%s ayehluka.}
+::msgcat::mcset zu {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {Iqoqo liyahambisana ngomehluko: ama-node angu-%1$s asebenzisa ukwakhiwa okufanayo futhi avumelana kukho konke ababelana ngakho; izinto ezingu-%2$s azikho kuwo wonke ama-node.}
+::msgcat::mcset zu {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {Iqoqo liyahambisana: ama-node angu-%s asebenzisa ukwakhiwa okufanayo, amamojuli namaphlagini afanayo.}
 ::msgcat::mcset zu {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Ifomu lishintshile kusukela isandiso sakhishwa. Khiqiza futhi, noma buka isakhiwo esilula kuqala.}
+::msgcat::mcset zu {The gateway did not receive the purpose as written. Nothing was created.} {I-gateway ayitholanga injongo njengoba ibhaliwe. Akukho okudalwe.}
+::msgcat::mcset zu {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {I-gateway ayinikezi imihlahlandlela yezandiso (indala kuno-0.2.2), futhi le deskithophu ayinayo ikhophi yayo.}
 ::msgcat::mcset zu {The gateway itself is untouched.} {I-gateway uqobo ayithintwanga.}
 ::msgcat::mcset zu {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {I-gateway ilayishe kabusha ukulungiselelwa, ngakho izikhathi ezintsha zikusebenzisa manje, futhi ukhiye ogcinwe ephaseni usetshenziswa yisicelo esilandelayo. I-Telegram ne-IRC ziqala uma i-gateway iqalwa kabusha ngokulandelayo: veles gateway restart.}
 ::msgcat::mcset zu {The installed component no longer matches the selected manifest. Review the component list again.} {Ikhomponenti efakiwe ayisafani ne-manifest ekhethiwe. Hlola uhlu lwamakhomponenti futhi.}
 ::msgcat::mcset zu {The installer preview has no verification signatures; apply is disabled.} {Isiboniso sesifaki asinaso izisayinisho zokuqinisekisa; ukusebenzisa kukhutshaziwe.}
 ::msgcat::mcset zu {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Umsebenzi nomlando wokusebenza kwawo kuyasuswa. Lokhu akuhlehliseki — yimisa esikhundleni uma ufuna nje ukuthi ume.}
+::msgcat::mcset zu {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {Amakhiye i-config sync ewathwalayo, ngaphansi kwemithetho yayo: amakhiye asendaweni ye-node neziqinisekiso zihlala kuyo node yazo, futhi isigaba esigciniwe ([acl], approvals, sandbox, hooks, plugins, MCP servers) sishintshwa lapho sihlelwa khona futhi sithunyelwa, bese silinda umnikazi waleyo node.}
 ::msgcat::mcset zu {The log could not be read: %s} {Ilogi ayikwazekanga ukufundwa: %s}
 ::msgcat::mcset zu {The manifest belongs to another component; its reply was discarded.} {I-manifest ingeyenye ikhomponenti; impendulo yayo yalahlwa.}
 ::msgcat::mcset zu {The profile changed. Review the fresh plan before applying it.} {Iphrofayela ishintshile. Buyekeza uhlelo olusha ngaphambi kokulusebenzisa.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset zu {The signed release preview was malformed; nothing was installed.} {Isibonisi sokukhishwa okusayiniwe besingahlelekile kahle; akukho okufakiwe.}
 ::msgcat::mcset zu {The source buffer changed. Request a new proposal before applying.} {Ibhafa yomthombo ishintshile. Cela isiphakamiso esisha ngaphambi kokusebenzisa.}
 ::msgcat::mcset zu {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Isitolo sibuyela emuva ngenguquko eyodwa. Ukubuyisela emuva kuyinguquko ngokwako, ngakho nayo ingahlehliswa.}
+::msgcat::mcset zu {The translator did not answer within %s seconds.} {Umhumushi akaphendulanga phakathi kwama-%s amasekhondi.}
 ::msgcat::mcset zu {The translator returned no text.} {Isihumushi asibuyisanga mbhalo.}
 ::msgcat::mcset zu {The verification reply was malformed; no integrity result was accepted.} {Impendulo yokuqinisekisa yayingalungile; akukho mphumela wobuqotho owamukelwe.}
 ::msgcat::mcset zu Themes Amatemu
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset zu {This challenge is over.} {Le nselele isiphelile.}
 ::msgcat::mcset zu {This code has expired. Ask for a new one.} {Le khodi iphelelwe yisikhathi. Cela entsha.}
 ::msgcat::mcset zu {This does not start a service or claim signed-download verification.} {Lokhu akukuqalisi isevisi futhi akusho ukuqinisekiswa kokulandwa okusayiniwe.}
+::msgcat::mcset zu {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {Leli fayela lingumthombo oyinhloko we-veles. Izingucu eziningi zifanelana nesandiso esikhundleni salokho, esihlala ngemva kokuthuthukiswa futhi esingadingi ukwakhiwa kabusha: i-hook, ithuluzi, ukungena esikhundleni somsebenzi noma umshayeli womhlinzeki, obhalwe nge-Tcl, i-TypeScript, i-Racket noma i-Common Lisp, noma njengephlagini ye-Rust engaphandle komthombo (Isandiso esisha sibhala noma yikuphi kwalokhu), noma njengemojuli noma iplagini yenqubo (umhlahlandlela we-Extension ukhombisa indlela yokuqala eyodwa). Isichibiyelo somthombo oyinhloko senzelwe lokho i-API yezandiso engakwazi ukukusho. Bhala lolu shintsho njengesandiso esikhundleni salokho? Ukuhlela kwakho kuhlala kule bhafa, akulondolozwanga; ukulondoloza futhi kufaka isichibiyelo kufayela eliyinhloko.}
 ::msgcat::mcset zu {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Le gateway ayamukeli amanani ayimfihlo avela kulo mshini: kufake lapho nge-veles secret set %s, noma ufake le nethiwekhi ku-[vault] trusted_networks yayo}
 ::msgcat::mcset zu {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Lena ngqo okuzobhalwa — ama-byte enjini ngokwawo, akhishwe Phila njengamanje. Akukho okukade kwathinta idiski.}
+::msgcat::mcset zu {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {Lona umthombo oyinhloko we-veles. Ushintsho kuwo ngokuvamile lungcono njengesandiso: Isandiso esisha, noma gcina ukuze uphakanyiswe esinye.}
 ::msgcat::mcset zu {This node is not a configured sync peer for any kind.} {Le node ayiyona peer yokuvumelanisa emisiwe yanoma yiluphi uhlobo.}
 ::msgcat::mcset zu {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Le plagini ikhishwe ne-veles futhi ifundwa kuphela. Susa ikhophi yomsebenzisi enegama elifanayo ukuze usebenzise ikhophi ekhishwe ne-veles.}
 ::msgcat::mcset zu {This publishes the commit; no pull request is created yet.} {Lokhu kushicilela i-commit; ayikho i-pull request edaliwe okwamanje.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset zu Unassign {Susa isabelo}
 ::msgcat::mcset zu {Undo last} {Hlehlisa okokugcina}
 ::msgcat::mcset zu {Undo the last memory revision?} {Hlehlisa inguquko yokugcina yenkumbulo?}
+::msgcat::mcset zu {Unset %1$s on %2$s?} {Susa ukusetha kwe-%1$s ku-%2$s?}
+::msgcat::mcset zu Unset… {Susa ukusetha…}
 ::msgcat::mcset zu Unstage {Susa esiteji}
 ::msgcat::mcset zu {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Kuze kube yilapho i-IRC_ALLOWED_USERS ku-.env isho i-akhawunti yakho, noma ubani osenethiwekhini angakhuluma nebhothi — futhi uma singekho isigaba se-[acl], njengomnikazi, enawo wonke amathuluzi.}
 ::msgcat::mcset zu {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Kuze kube yilapho i-TELEGRAM_ALLOWED_USERS ku-.env isho i-ID yakho yomsebenzisi, noma ubani othola ibhothi angakhuluma nayo — futhi uma singekho isigaba se-[acl], njengomnikazi, enawo wonke amathuluzi.}
 ::msgcat::mcset zu Untitled Angenasihloko
-::msgcat::mcset zu {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Ukunikela phezulu kwesenzo sokushicilela okusobala, hhayi ukulayisha okuzenzakalelayo. Kokuthi Phatha izandiso, ukuthi Nikela kufaka ohlwini zonke izandiso zomsebenzisi: khetha izandiso namafayela, hlola umehluko (diff) nokuhlolwa kwezimfihlo, sebenzisa izheke, bese wenza igatsha elilodwa ne-PR eyodwa (ku-veles ngokuzenzakalela) ngobunikazi be-git obukhethile. Isandiso ngasinye singena ngaphansi komkhombandlela waso endaweni yokugcina, futhi ifayela elikhona lapho lishintshwa kuphela ngemva kokuqinisekisa okwehlukile. Ungalokothi ushicilele i-node.toml, izifakazelo zasendaweni, amathokheni, izindawo zokugcina eziyimfihlo noma isimo seplagini esingahlobene. Izithombe zokubuyisela zasendaweni akusona isibhaliso esiphezulu noma i-PR.}
+::msgcat::mcset zu {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Umnikelo waphezulu uyisenzo sokushicilela esicacile, hhayi ukulayisha okuzenzakalelayo. Kokuthi Phatha izandiso, i-Contribute ibala zonke izandiso zomsebenzisi: khetha izandiso namafayela, hlola umehluko nokusesha kwezimfihlo, sebenzisa izihloli, bese wenza igatsha elilodwa ne-PR eyodwa (ku-veles ngokuzenzakalelayo). I-commit isebenzisa ubunikazi be-git obukhona be-gateway (user.name ne-user.email yokuhlelwa kwayo kwe-git); zisethe kuqala uma kufanele zihluke. Isandiso ngasinye singena ngaphansi kwefolda yaso kumtapo, futhi ifayela elikhona lapho lithathelwa indawo kuphela ngemuva kokuqinisekiswa okwehlukile. Ungashicileli i-node.toml, iziqinisekiso zendawo, amathokheni, izindawo eziyimfihlo noma isimo sephlagini esingahlobene. Izithombe zesimo sokubuyisa zasendaweni akusona i-commit yaphezulu noma i-PR.}
 ::msgcat::mcset zu {Upstream repository or fork URL} {I-URL ye-repository ye-upstream noma ye-fork}
 ::msgcat::mcset zu {Uptime class} {Isigaba sokusebenza}
 ::msgcat::mcset zu {Uptime: host %1$s, gateway %2$s} {Isikhathi sokusebenza: i-host %1$s, i-gateway %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset zu {Users — one role across networks and platforms} {Abasebenzisi — indima eyodwa kuwo wonke amanethiwekhi namaplatifomu}
 ::msgcat::mcset zu {Using the phone, for the agent} {Ukusebenzisa ifoni, ku-agent}
 ::msgcat::mcset zu {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Ngokuvamile kuyefana negama le-entry yomhlinzeki. Yekela kokubili kungenalutho uma ukhetha ukuYeqa — ipheya elingaphelele aliqondisi.}
+::msgcat::mcset zu {Value (TOML: "text", 5, true, [1, 2])} {Inani (TOML: "umbhalo", 5, true, [1, 2])}
 ::msgcat::mcset zu {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Amanani awu-TOML: izintambo ezicashuniwe, izinombolo, noma izinhlu. Abhalwa ku-[mcp_servers.<name>] — amaphawulo akho nazo zonke ezinye izingxenye azithintwa.}
 ::msgcat::mcset zu Vault Iphasi
 ::msgcat::mcset zu {Verified signed bundle installed. Restart the gateway before using the new core.} {Ibhundle elisayiniwe eliqinisekisiwe lifakiwe. Qalisa kabusha i-gateway ngaphambi kokusebenzisa umongo omusha.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset zu Voice {Nika i-voice}
 ::msgcat::mcset zu {Waiting for the model…} {Kulindwe imodeli…}
 ::msgcat::mcset zu {Waiting for the model… Nothing has been written.} {Kulindwe imodeli… Akukho okubhaliwe.}
+::msgcat::mcset zu Warning Isexwayiso
 ::msgcat::mcset zu {Welcome to veles} {Wamukelekile ku-veles}
 ::msgcat::mcset zu {What the agent can do here} {Lokho umenzeli angakwenza lapha}
 ::msgcat::mcset zu {What veles may do on this phone. Each button opens the Android setting that changes it.} {Lokho i-veles evunyelwe ukukwenza kule foni. Inkinobho ngayinye ivula isilungiselelo se-Android esikushintshayo.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset zu {Workflow SHA} {I-SHA ye-workflow}
 ::msgcat::mcset zu {Workflow commit} {Isibhaliso se-workflow}
 ::msgcat::mcset zu Worktree Worktree
+::msgcat::mcset zu {Write cancelled.} {Ukubhala kukhanseliwe.}
 ::msgcat::mcset zu {Write it} Kubhale
 ::msgcat::mcset zu {Write the design question first.} {Bhala umbuzo wokuklama kuqala.}
 ::msgcat::mcset zu {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Ayibhali umhlinzeki. I-gateway ngeke idlulise uxoxo ngaphandle kwe-entry ye-[[custom_providers]] nepheya le-[model].}
+::msgcat::mcset zu Write… Bhala…
 ::msgcat::mcset zu {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Ukubhala NOMA YIMUPHI ukhiye we-[acl] kushintsha le gateway iye esimweni esilawulwayo: indima ezenzakalelayo iba yi-guest (fail-closed) futhi uhlu lwemvume alusewona umngcele. Khetha lokhu kuphela uma unobunikazi bomnikazi obuthembayo.}
 ::msgcat::mcset zu {[model] provider} {Umhlinzeki we-[model]}
 ::msgcat::mcset zu {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {umhlinzeki we-[model] %{name} akahambisani nokufakiwe nakuphi kwe-[[custom_providers]] — shono okufakiwe okubhalwa yile wizard, noma okuvele kukhona ku-config.toml}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset zu {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset zu {asked by: %s} {kubuzwe ngu: %s}
 ::msgcat::mcset zu {asking %s for its metrics…} {kubuzwa u-%s ngezilinganiso zayo…}
+::msgcat::mcset zu {asking %s how it is supervised…} {kubuzwa u-%s ukuthi uqondiswa kanjani…}
 ::msgcat::mcset zu {attach a file} {Namathisela ifayela}
 ::msgcat::mcset zu {attach an image or file} {namathisela isithombe noma ifayela}
 ::msgcat::mcset zu {attach failed: %1$s} {ukunamathisela kwehlulekile: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset zu {channel-event reactions; /triggers add <name> network=… channel=… action=…} {izimpendulo emicimbini yesiteshi; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset zu {channels to join, a space or comma separated string} {amashaneli okungena kuwo, uyucu olwehlukaniswa isikhala noma ikoma}
 ::msgcat::mcset zu chars izinhlamvu
+::msgcat::mcset zu {check the buffer (diagnostics)} {hlola ibhafa (ukuxilonga)}
 ::msgcat::mcset zu choice_next {qhubekela emzileni olandelayo}
 ::msgcat::mcset zu choice_retry {zama futhi umzila ofanayo}
 ::msgcat::mcset zu choice_stop {ima lapha}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset zu {command list unavailable (the gateway is not reachable)} {uhlu lomyalo atholakalanga (i-gateway ayifinyeleleki)}
 ::msgcat::mcset zu {command palette} {iphalethi yomyalo}
 ::msgcat::mcset zu {command search} {ukusesha kwemiyalo}
+::msgcat::mcset zu {command-center audit log} {ilogi yokuhlola yesikhungo somyalo}
 ::msgcat::mcset zu commands imiyalo
 ::msgcat::mcset zu {commands stay on your own session; /leave returns from the joined session} {imiyalo ihlala kuseshini yakho; i-/leave ikukhipha eseshini oyijoyinile}
 ::msgcat::mcset zu commands: imiyalo:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset zu {config changes from peers that wait for you; /configsync apply lands them} {izinguquko zokuhlelwa ezivela kontanga ezikulindile; /configsync apply iyazisebenzisa}
 ::msgcat::mcset zu {config file: %s} {ifayela lokulungiselelwa: %s}
 ::msgcat::mcset zu {config key} {ukhiye wokucushwa}
+::msgcat::mcset zu {config result} {umphumela wokuhlelwa}
 ::msgcat::mcset zu {config unavailable} {ukucushwa akukho}
 ::msgcat::mcset zu {config unavailable: %s} {ukucushwa akukho: %s}
 ::msgcat::mcset zu {config value} {inani lokucushwa}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset zu doctor_resident {kuhlala kuwo wonke umyalezo: %{shown} kwezingu-%{total} izinhlamvu (~amathokheni angu-%{tokens}) — okusele kulayishwa uma kudingeka nge: memory action=read path=%{path}}
 ::msgcat::mcset zu doctor_title {ukuhlolwa kwenkumbulo}
 ::msgcat::mcset zu doctor_total {isamba: izinhlamvu ezingu-%{chars} kumafayela angu-%{files} (~amathokheni angu-%{tokens})}
-::msgcat::mcset zu {documentation is not in this source checkout: %s} {imibhalo ayikho kule checkout yomthombo: %s}
 ::msgcat::mcset zu done kwenziwe
 ::msgcat::mcset zu {done · %1$s/%2$s} {kwenziwe · %1$s/%2$s}
 ::msgcat::mcset zu {done, but the model returned no text} {kwenziwe, kodwa i-model ayibuyisanga mbhalo}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset zu {grant a role (owner) · /revoke <id> takes it back} {nikeza iqhaza (owner) · /revoke <id> iyalibuyisa}
 ::msgcat::mcset zu {grant a role to an identity} {nika i-role ku-identity}
 ::msgcat::mcset zu {guards unreachable} {ama-guards awafinyeleleki}
-::msgcat::mcset zu guts: guts:
+::msgcat::mcset zu {guts ▾} {ingaphakathi ▾}
 ::msgcat::mcset zu {gw hooks} {ama-hook e-gw}
 ::msgcat::mcset zu {gw procs} {ama-proc e-gw}
 ::msgcat::mcset zu {halt after N identical calls} {yeka ngemva kwezobizo ezilinganayo ezingu-N}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset zu {live patching ARMED} {live patching KUVULIWE}
 ::msgcat::mcset zu {live patching ARMED — an agent can now redefine procs in this window} {live patching kuvuliwe — i-agent manje ingakwazi ukuphinda ichaze ama-proc kuleli windi}
 ::msgcat::mcset zu {live patching disarmed} {live patching kuvaliwe}
+::msgcat::mcset zu load umthwalo
 ::msgcat::mcset zu loaded ilayishiwe
 ::msgcat::mcset zu {loaded older messages} {kulayishwe imiyalezo emidala}
 ::msgcat::mcset zu loading… iyalayisha…
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset zu {no upstream reading for %s} {akukho ukufunda kwe-upstream kwa-%s}
 ::msgcat::mcset zu {no word match} {akukho gama elifanayo}
 ::msgcat::mcset zu {no xdg-open — path copied instead} {akukho xdg-open — umzila ukopishiwe esikhundleni}
+::msgcat::mcset zu {nobody else's session is open on %s right now} {akukho seshini yomunye ovulekile ku-%s njengamanje}
 ::msgcat::mcset zu {node log} {ilogi ye-node}
 ::msgcat::mcset zu {none loaded} {akukho okulayishiwe}
 ::msgcat::mcset zu {none recorded} {akukho okuqoshiwe}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset zu {not installed} akufakiwe
 ::msgcat::mcset zu {not reported} akubikiwe
 ::msgcat::mcset zu {not running} ayisebenzi
+::msgcat::mcset zu {not saved: drafting the change as an extension} {akulondolozwanga: kudwetshwa ushintsho njengesandiso}
+::msgcat::mcset zu {not sent: %s} {akuthunyelwanga: %s}
 ::msgcat::mcset zu {not set in config.toml — the built-in default applies. %s} {akubekwanga ku-config.toml — kusebenza okuzenzakalelayo okwakhelwe ngaphakathi. %s}
 ::msgcat::mcset zu {not set yet — /secret set it later} {akukasethwa — kusethe kamuva nge-/secret set}
 ::msgcat::mcset zu {not signed: %s} {ayisayiniwe: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset zu {on no plan} {uma kungekho uhlelo}
 ::msgcat::mcset zu {on the} kwi-
 ::msgcat::mcset zu {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {on/off kuthulisa inothi lomshini ku-transcript — kulesi seshini, noma njengokuzenzakalelayo, ngokwe-scope engezansi. Ilawula INOTHI; ukuthi umshini ngamunye WENZANI kubekwa esigabeni esinegama emgqeni wawo, futhi Configure… iyayivula. Amakinobho woguards ayahleleka khona lapho.}
+::msgcat::mcset zu {on; this gateway does not say whether they reach the home chat} {zivuliwe; le gateway ayisho ukuthi ziyafika yini engxoxweni yasekhaya}
 ::msgcat::mcset zu {one-shot tcl-lsp diagnostics — no model turn} {ukuhlola kwe-tcl-lsp kwesikhathi esisodwa — ngaphandle komjikelezo wemodeli}
 ::msgcat::mcset zu {open a saved file first} {qala uvule ifayela elilondoloziwe}
 ::msgcat::mcset zu {open links} {ukuvula izixhumanisi}
+::msgcat::mcset zu {open one of the desktop's own source files} {vula elinye lamafayela omthombo edeskithophu ngokwayo}
 ::msgcat::mcset zu {open the engine log} {vula ilog ye-enjini}
 ::msgcat::mcset zu {open the joined session before /leave (on %s)} {vula iseshini oyijoyinile ngaphambi kwe-/leave (ku-%s)}
 ::msgcat::mcset zu {open the selected child session} {vula iseshini yengane ekhethiwe}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset zu {read-only: [approvals] allowlist} {kufundwa kuphela: uhlu lokuvunyelwa lwe-[approvals]}
 ::msgcat::mcset zu {read-only: this session lives on %1$s (as read at %2$s)} {ukufundwa kuphela: le seshini ikwi-%1$s (njengoba ifundwe ngo-%2$s)}
 ::msgcat::mcset zu {read-only: this skill comes from the %s library} {ukufundwa kuphela: leli khono livela emtatsheni %s}
+::msgcat::mcset zu {reading %1$s on %2$s…} {kufundwa u-%1$s ku-%2$s…}
 ::msgcat::mcset zu reasoning ukucabanga
 ::msgcat::mcset zu {reasoning display: %1$s · %2$s blocks} {ukuboniswa kokucabanga: %1$s · amabhulokhi %2$s}
 ::msgcat::mcset zu {reasoning display: %s} {ukuboniswa kokucabanga: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset zu {run failed: %s} {ukusebenza kwehlulekile: %s}
 ::msgcat::mcset zu {run in:} {gijimisa ku:}
 ::msgcat::mcset zu running iyasebenza
+::msgcat::mcset zu {running %s on the listed nodes…} {kugijinywa i-%s kuma-node asohlwini…}
 ::msgcat::mcset zu {running since %s} {iyasebenza kusukela ngo-%s}
 ::msgcat::mcset zu {running subagents; /subagents cancel <id>} {ama-subagent aqhubekayo; /subagents cancel <id>}
 ::msgcat::mcset zu {save failed} {ukulondoloza kwehlulekile}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset zu {send failed: %s} {ukuthumala kwehlulekile: %s}
 ::msgcat::mcset zu {send the message; while a turn runs, queue it as steering} {Thumela umlayezo; uma ithuba lisebenza, ulibeke emgqeni njengokuqondisa}
 ::msgcat::mcset zu sent kuthunyelwe
-::msgcat::mcset zu {sent to the owner's home chat} {kuthunyelwe engxoxweni yasekhaya yomnikazi}
+::msgcat::mcset zu {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {kuthunyelwa engxoxweni yasekhaya yomnikazi yi-gateway esebenzisa i-adaptha yayo ye-Telegram, hhayi le}
+::msgcat::mcset zu {sent to the owner's home chat from this gateway} {kuthunyelwa engxoxweni yasekhaya yomnikazi kusuka kule gateway}
 ::msgcat::mcset zu server iseva
 ::msgcat::mcset zu {server buffers merged} {ama-buffer eseva ahlanganisiwe}
 ::msgcat::mcset zu {server buffers separate} {ama-buffer eseva ahlukene}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset zu {session, model, lifecycle} {iseshini, imodeli, umjikelezo wempilo}
 ::msgcat::mcset zu {session: %s} {iseshini: %s}
 ::msgcat::mcset zu {sessions    %s} {izeshini    %s}
+::msgcat::mcset zu {sessions you can join on %s (/join <name or id>):} {amaseshini ongajoyina ku-%s (/join <igama noma i-id>):}
 ::msgcat::mcset zu {sessions: unreachable} {izeshini: azifinyeleleki}
 ::msgcat::mcset zu {set by} {kumiswe ngu}
 ::msgcat::mcset zu {set. %s} {kumisiwe. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset zu {split: %s} {ukuhlukanisa: %s}
 ::msgcat::mcset zu {ssh to %1$s failed: %2$s} {i-ssh ku-%1$s yehlulekile: %2$s}
 ::msgcat::mcset zu {stale — no heartbeat within the threshold} {kugugile — akukho heartbeat phakathi komkhawulo}
+::msgcat::mcset zu {standing approval grants: always and this session; revoke one} {izimvume ezihlezi zisebenza: njalo nalesi seshini; hoxisa eyodwa}
 ::msgcat::mcset zu {standing global and session permission grants} {izimvume zethuluzi zomhlaba wonke nezeseshini ezihlezi zisebenza}
+::msgcat::mcset zu {start the line with // to send it as text} {qala umugqa ngo-// ukuze uwuthumele njengombhalo}
 ::msgcat::mcset zu state isimo
 ::msgcat::mcset zu {state       never reached} {isimo       akukaze kufinyelelwe}
 ::msgcat::mcset zu {state       reachable} {isimo       kuyafinyeleleka}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset zu {the config.toml that will be written} {i-config.toml ezobhalwa}
 ::msgcat::mcset zu {the default (config.toml)} {okumisiwe (config.toml)}
 ::msgcat::mcset zu {the engine refused these answers: %s} {injini yala lezi zimpendulo: %s}
+::msgcat::mcset zu {the file to open: type a path, then Return or Open} {ifayela okumele livulwe: thayipha indlela, bese u-Return noma u-Vula}
 ::msgcat::mcset zu {the first ACL owner identity} {obunikazi bokuqala bomnikazi we-ACL}
 ::msgcat::mcset zu {the gateway answered without a report} {i-gateway iphendule ngaphandle kombiko}
 ::msgcat::mcset zu {the model/provider pair is incomplete — the gateway will not route until both are present} {ipheya ye-model/umhlinzeki ayiphelele — i-gateway ngeke iqondise kuze kube zombili zikhona}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset zu unknown akwaziwa
 ::msgcat::mcset zu {unknown api_mode %{mode} — expected one of %{modes}} {i-api_mode engaziwa %{mode} — kulindeleke okukodwa kulokhu: %{modes}}
 ::msgcat::mcset zu {unknown bindings '%{rest}' · normie|emacs|vi} {izibopho ezingaziwa '%{rest}' · normie|emacs|vi}
+::msgcat::mcset zu {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {umyalo ongaziwa %{cmd} lapha — /help ibala imiyalo yale ndawo; akukho okuthunyelwe}
 ::msgcat::mcset zu {unknown command /%s — /help lists them} {umyalo ongaziwayo /%s — /help iyawabala}
 ::msgcat::mcset zu {unknown command: /%s} {umyalo ongaziwa: /%s}
 ::msgcat::mcset zu {unknown keymap: %s (normie/emacs/vi)} {i-keymap engaziwa: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset zu {upstream plan credits and windows — /usage is the local ledger} {amakhredithi namafasitela ohlelo oluphezulu — /usage yileja yendawo}
 ::msgcat::mcset zu {upstream plan quota} {umkhawulo wohlelo wangaphezulu}
 ::msgcat::mcset zu uptime {isikhathi sokusebenza}
-::msgcat::mcset zu {usage: /join <session> or /join <instance>/<session>} {ukusetshenziswa: /join <iseshini> noma /join <i-instance>/<iseshini>}
+::msgcat::mcset zu {usage: /export [md|json]} {ukusetshenziswa: /export [md|json]}
 ::msgcat::mcset zu {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {ukusetshenziswa: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset zu {usage: /resume <id or prefix>} {ukusetshenziswa: /resume <id noma isiqalo>}
 ::msgcat::mcset zu {usage: /resume <id-or-prefix>} {ukusetshenziswa: /resume <id-or-prefix>}

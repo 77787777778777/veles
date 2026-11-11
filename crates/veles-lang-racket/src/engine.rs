@@ -36,7 +36,7 @@ use serde_json::{json, Value};
 use veles_runtime::tokio;
 use veles_runtime::tokio::sync::{oneshot, watch};
 use veles_runtime::veles_core;
-use veles_runtime::veles_core::scripthost::{BoxFut, ScriptCx, ScriptHost, ScriptRef};
+use veles_runtime::veles_core::scripthost::{BoxFut, ReaderError, ScriptCx, ScriptHost, ScriptRef};
 
 use crate::ffi;
 
@@ -47,6 +47,8 @@ const LOAD_DEADLINE: Duration = Duration::from_secs(90);
 /// (~100 ms measured; a cold page cache reads 50 MB of boot files).
 const BOOT_DEADLINE: Duration = Duration::from_secs(30);
 const UNLOAD_DEADLINE: Duration = Duration::from_secs(10);
+/// A read check reads one file: as long as a load may take.
+const READ_CHECK_DEADLINE: Duration = Duration::from_secs(90);
 
 /// Why an `ask` has no answer: Racket said no (`Replied`: the Racket side
 /// ran its own cleanup before answering, a failed load's custodian
@@ -484,6 +486,21 @@ impl ScriptHost for RacketEngine {
         })
     }
 
+    /// The engine's own reader over the file, nothing evaluated: Check's
+    /// fallback when the gateway has no external checker (SMOKE-23).
+    fn read_check(&self, path: PathBuf) -> Option<BoxFut<'_, Result<Option<ReaderError>, String>>> {
+        Some(Box::pin(async move {
+            let answer = self
+                .ask(
+                    json!({"t": "read-check", "path": path.display().to_string()}),
+                    READ_CHECK_DEADLINE,
+                )
+                .await
+                .map_err(AskError::into_string)?;
+            ReaderError::from_answer(&answer)
+        }))
+    }
+
     fn unload(&self, name: &str) -> BoxFut<'_, Result<String, String>> {
         let name = name.to_string();
         Box::pin(async move {
@@ -865,6 +882,41 @@ mod tests {
             .filter(|(_, o)| *o == Some(owner))
             .map(|(n, _)| n)
             .collect()
+    }
+
+    /// SMOKE-23: Check reads a Racket file with the engine the gateway
+    /// runs when no `racket` program is installed. The reader's error
+    /// comes back with its line, a clean module reads clean, and nothing
+    /// of the file runs (its tool is not registered).
+    #[test]
+    fn the_engine_reads_a_file_and_runs_none_of_it() {
+        run(async {
+            let _serial = SERIAL.lock().await;
+            let root = tempfile::tempdir().unwrap();
+            let e = engine("module:lang-racket-rc").await;
+            let good = root.path().join("good.rkt");
+            std::fs::write(
+                &good,
+                "#lang racket/base\n(require veles)\n(register-tool \"rc_never\" \"x\" (hash) (lambda (a s) \"ran\"))\n",
+            )
+            .unwrap();
+            let bad = root.path().join("bad.rkt");
+            std::fs::write(&bad, "#lang racket/base\n(define x 1)\n(define (f y\n").unwrap();
+            let clean = ScriptHost::read_check(&*e, good)
+                .expect("racket reads")
+                .await;
+            assert_eq!(clean, Ok(None));
+            assert!(veles_core::tools::global_tools_with_owners()
+                .iter()
+                .all(|(n, _)| n != "rc_never"));
+            let err = ScriptHost::read_check(&*e, bad)
+                .expect("racket reads")
+                .await
+                .unwrap()
+                .expect("an unclosed paren is a reader error");
+            assert_eq!(err.line, 3, "{err:?}");
+            assert!(!err.message.is_empty(), "{err:?}");
+        });
     }
 
     #[test]

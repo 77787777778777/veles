@@ -131,6 +131,42 @@ pub trait ScriptHost: Send + Sync {
         callback: u64,
         payload: String,
     ) -> BoxFut<'_, Result<String, String>>;
+    /// Read the file at `path` with this language's own reader and
+    /// evaluate nothing: the Dev tab's Check when the gateway has no
+    /// checker program for the language but runs its engine (SMOKE-23).
+    /// `None`: this host has no read check. `Ok(None)`: every form
+    /// reads; `Ok(Some(e))`: the reader's first error.
+    fn read_check(
+        &self,
+        _path: PathBuf,
+    ) -> Option<BoxFut<'_, Result<Option<ReaderError>, String>>> {
+        None
+    }
+}
+
+/// A reader's error, from [`ScriptHost::read_check`]: a 1-based line
+/// and a 0-based column, as the external read checks report them.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReaderError {
+    pub line: u64,
+    pub col: u64,
+    pub message: String,
+}
+
+impl ReaderError {
+    /// A host's answer: "" for clean, else `{"line","col","message"}`.
+    pub fn from_answer(answer: &str) -> Result<Option<ReaderError>, String> {
+        if answer.trim().is_empty() {
+            return Ok(None);
+        }
+        let v: serde_json::Value = serde_json::from_str(answer)
+            .map_err(|e| format!("an unreadable read-check answer ({e}): {answer}"))?;
+        Ok(Some(ReaderError {
+            line: v["line"].as_u64().unwrap_or(1).max(1),
+            col: v["col"].as_u64().unwrap_or(0),
+            message: v["message"].as_str().unwrap_or("").to_string(),
+        }))
+    }
 }
 
 /// One script, as the seam hands it to its host.
@@ -356,7 +392,12 @@ impl ScriptCx {
         crate::lifecycle::with_thread_owner(self.owner, || {
             crate::rustplugins::register_plugin(plugin);
         });
-        Ok(format!("hook {hook} registered"))
+        // register_plugin has logged the reserved note; the script's own
+        // call answers with it too, where its author is looking.
+        Ok(match crate::hooks::reserved_note(hook) {
+            Some(note) => format!("hook {hook} registered; {note}"),
+            None => format!("hook {hook} registered"),
+        })
     }
 
     /// The same identity as an `Arc`, for the shells that outlive this
@@ -802,6 +843,50 @@ pub async fn load_all_in(kind: &str, discovered: &[crate::plugins::LoadedPlugin]
     out
 }
 
+/// Load ONE plugin of a script kind, by name, now: what creating an
+/// extension needs (the Dev tab's New extension, an applied generated
+/// change set). The plugin watcher cannot be relied on for it: a
+/// directory that appears with its files in it is watched only once
+/// inotify has seen the directory, after the files were written, so a
+/// new TypeScript, Racket or Lisp extension stayed `pending` while the
+/// dialog said it was loaded (SMOKE-2). Answers the load line, or why
+/// nothing was loaded: no such enabled plugin, no host for its kind, or
+/// the load's own error. A name an earlier `unload` held out is cleared:
+/// creating a plugin is asking for it.
+pub async fn load_named(name: &str) -> Result<String, String> {
+    let cfg = crate::config::load().unwrap_or_default();
+    let discovered =
+        crate::plugins::discover(&cfg.plugins.enabled, &cfg.plugins.disabled).unwrap_or_default();
+    load_named_in(name, &discovered).await
+}
+
+/// [`load_named`] over an explicit discovery.
+pub async fn load_named_in(
+    name: &str,
+    discovered: &[crate::plugins::LoadedPlugin],
+) -> Result<String, String> {
+    let Some(p) = discovered.iter().find(|p| p.manifest.name == name) else {
+        return Err(format!(
+            "`{name}` is not an enabled plugin (switched off, or not on the allowlist)"
+        ));
+    };
+    let kind = p.manifest.kind.as_str();
+    if !SCRIPT_KINDS.contains(&kind) {
+        return Err(format!("`{name}` is a {kind} plugin, not a script"));
+    }
+    let Some(host) = host_for(kind) else {
+        return Err(format!(
+            "this gateway has no {kind} host: the lang-{kind} module is not installed or not \
+             enabled, so nothing runs {kind} extensions here"
+        ));
+    };
+    unloaded()
+        .lock()
+        .unwrap_or_else(|p| p.into_inner())
+        .remove(name);
+    load_script(host, p).await
+}
+
 /// Re-load every hosted kind's scripts: the plugins directory changed.
 pub async fn reload_all() -> Vec<String> {
     let mut out = Vec::new();
@@ -1180,6 +1265,28 @@ mod tests {
         assert_eq!((inv.1, inv.2.as_str()), (4, r#"{"args":"some text"}"#));
         unload_script("t4-hooks").await.unwrap();
         purge_owner_hosts(Some("module:lang-js-t4"));
+    }
+
+    /// ASK-8: registering a reserved hook (accepted for hermes
+    /// portability, never fired) answered a plain "registered".
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn registering_a_reserved_hook_says_it_never_fires() {
+        let host = FakeHost::new("fake-t9", "t9-token");
+        let cx = ScriptCx {
+            kind: "fake-t9",
+            name: "t9-reserved".into(),
+            owner: "module:lang-js-t9",
+            host: host.clone(),
+        };
+        let out = cx
+            .call("hook", vec!["pre_verify".into(), "3".into()])
+            .await
+            .unwrap();
+        assert!(
+            out.contains("registered") && out.contains("never fires"),
+            "{out}"
+        );
+        crate::rustplugins::purge_owner_plugins(Some("module:lang-js-t9"));
     }
 
     /// The hook shell itself turns an empty decoded answer into "no

@@ -36,19 +36,37 @@ set ::vinst::instances [dict create \
     other [dict create url https://other.invalid token other-secret]]
 ::vapi::bind_instance alpha https://alpha.invalid alpha-secret
 
-# The HTTP layer only.
+# The HTTP layer only. The attached gateway answers /api/fleet with its
+# registry; a saved instance (inside ::vapi::with_instance) answers with
+# its OWN /api/fleet, whose self row says which node it is.
 set ::health_status ok
 set ::busy_during_http {}
+set ::registry_rows {{node-a alpha 0.1.6}}
+set ::instance_self [dict create alpha node-a]
 proc ::vapi::get {path {ms 0}} {
     lappend ::busy_during_http $::vfleetui::busy
+    set who $::vapi::current
     switch -- $path {
-        /api/fleet { return [::fleetfix::fleet_json {{node-a alpha 0.1.6}}] }
+        /api/fleet {
+            if {$who ne "" && [dict exists $::instance_self $who]} {
+                set self [dict get $::instance_self $who]
+                if {$self eq ""} { return [::fleetfix::fleet_json {}] }
+                return [::fleetfix::fleet_json [list [list $self $who 0.1.6 false true]]]
+            }
+            return [::fleetfix::fleet_json $::registry_rows]
+        }
         /api/health { return [::fleetfix::health_json [string repeat c 40] 0.1.6 $::health_status] }
     }
     error "HTTP 404: unexpected API path $path"
 }
 set ::confirm_answer yes
 proc tk_messageBox {args} { return $::confirm_answer }
+# The registry here has no `self` row, so no running version to propose:
+# the tag is typed, as the commit and the workflow are.
+ok "with no self row in the registry the dialog proposes no tag" {
+    [::vfleetui::running_tag] eq ""
+}
+set ::vfleetui::release_tag v0.1.6
 set ::vfleetui::release_commit [string repeat a 40]
 set ::vfleetui::workflow_commit [string repeat b 40]
 
@@ -194,6 +212,39 @@ file delete -force $reply_path
 ok "a refusal shows the operator its unjournaled diagnostic" {
     [string match "*redacted*Diagnostic*409*" $::status_message]
 }
+
+# FLEET-2: the saved instance must BE the selected node. `worker` is bound
+# to node-b, a registered node on the same release, but its own gateway
+# says it is node-a. Matching the typed node id and the version proved
+# nothing: review used to build the manifest and the preflight, and Stage
+# then installed on, and restarted, the wrong machine.
+set ::registry_rows {{node-a alpha 0.1.6} {node-b beta 0.1.6}}
+dict set ::vinst::instances worker [dict create node_id node-b url https://worker.invalid \
+    token worker-secret host worker@example.invalid unit veles-gateway]
+::vapi::bind_instance worker https://worker.invalid worker-secret
+dict set ::instance_self worker node-a
+destroy .fleetdeploy
+::vfleetui::open
+set ::vfleetui::target_ids node-b
+set wrong_node_review [::vfleetui::review]
+ok "review refuses a saved instance that answers as another node, naming both ids" {
+    $wrong_node_review == 0 && $::vfleetui::manifest eq "" && $::vfleetui::preflight eq "" &&
+    [string match "*Review refused*worker is node node-a, not node-b*" $::status_message]
+}
+dict set ::instance_self worker ""
+set anonymous_review [::vfleetui::review]
+ok "review refuses a saved instance that reports no node identity" {
+    $anonymous_review == 0 && $::vfleetui::manifest eq "" &&
+    [string match "*Review refused*worker reports no cluster node identity*node-b*" $::status_message]
+}
+dict set ::instance_self worker node-b
+ok "the same instance, answering as node-b, is reviewed" {
+    [::vfleetui::review] == 1 &&
+    [dict get [lindex [dict get $::vfleetui::manifest targets] 0] instance] eq "worker"
+}
+set ::registry_rows {{node-a alpha 0.1.6}}
+dict unset ::vinst::instances worker
+dict unset ::instance_self worker
 
 # Resume with two unfinished operations loads one instead of refusing.
 destroy .fleetdeploy

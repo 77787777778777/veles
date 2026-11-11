@@ -966,6 +966,116 @@ async fn plain_text_starting_with_a_bracket_reaches_the_endpoint_intact() {
     }
 }
 
+/// Tool ids from other routes, replayed on this wire. A route that sends
+/// none leaves `""`; Kimi-style ids carry `:`; some models number calls per
+/// response, so `terminal:0` opens every round. The engine pairs those by
+/// position; this wire pairs by id and refuses an empty, repeated or
+/// out-of-alphabet one. So each driver gives every call an id the wire
+/// takes, unique in the request, and each result the id of the call it
+/// answers in its own round; a valid id it has not seen passes unchanged.
+/// The Tcl driver used to stop reading a round's calls at the first empty
+/// id, dropping the calls but not their results. A call with no saved
+/// result reaches this wire as text and a note, never as a `tool_use`.
+#[tokio::test]
+async fn tool_ids_from_other_routes_reach_the_endpoint_paired_by_round() {
+    both_drivers().await;
+    let drivers = available_drivers();
+    let (url, seen) = fixture_server(ANTHROPIC_RESPONSE).await;
+    let call = |text: &str, ids: &[&str]| {
+        let mut m = ChatMessage::assistant(text, None);
+        m.tool_calls = Some(serde_json::Value::Array(
+            ids.iter()
+                .map(|id| {
+                    serde_json::json!({"id": id, "type": "function",
+                        "function": {"name": "search", "arguments": "{}"}})
+                })
+                .collect(),
+        ));
+        m
+    };
+    let result = |id: &str, text: &str| ChatMessage::tool_result(id, "search", text.into());
+    let mut req = request("claude-x");
+    req.messages = vec![
+        req.messages[0].clone(),
+        ChatMessage::user("go"),
+        call("", &["terminal:0"]),
+        result("terminal:0", "one"),
+        call("", &["terminal:0"]),
+        result("terminal:0", "two"),
+        call("", &["", ""]),
+        result("", "x"),
+        result("", "y"),
+        call("checking", &["toolu_ok"]),
+        result("toolu_ok", "fine"),
+        call("running", &["lost"]),
+        ChatMessage::user("next"),
+    ];
+    for d in &drivers {
+        drive_with(d, &url, default_route(), req.clone())
+            .await
+            .unwrap_or_else(|e| panic!("{d}: {e}"));
+    }
+    let posts = posts_of(&seen.lock().unwrap().clone());
+    assert_eq!(posts.len(), drivers.len(), "one POST per driver");
+    let valid = |id: &str| {
+        !id.is_empty()
+            && id
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-')
+    };
+    for (n, v) in posts.iter().enumerate() {
+        let d = drivers[n];
+        let msgs = v["messages"].as_array().expect("messages");
+        let mut seen_ids = std::collections::HashSet::new();
+        let mut results = Vec::new();
+        for (i, m) in msgs.iter().enumerate() {
+            let blocks = m["content"].as_array().cloned().unwrap_or_default();
+            let uses: Vec<String> = blocks
+                .iter()
+                .filter(|b| b["type"] == "tool_use")
+                .map(|b| b["id"].as_str().unwrap_or("").to_string())
+                .collect();
+            for id in &uses {
+                assert!(valid(id), "{d}: {id:?} is not an id this wire takes: {v}");
+                assert!(seen_ids.insert(id.clone()), "{d}: {id:?} used twice: {v}");
+            }
+            if !uses.is_empty() {
+                let answers: Vec<String> = msgs
+                    .get(i + 1)
+                    .and_then(|next| next["content"].as_array().cloned())
+                    .unwrap_or_default()
+                    .iter()
+                    .filter(|b| b["type"] == "tool_result")
+                    .map(|b| b["tool_use_id"].as_str().unwrap_or("").to_string())
+                    .collect();
+                assert_eq!(
+                    answers, uses,
+                    "{d}: round at {i} not answered in order: {v}"
+                );
+            }
+            for b in blocks.iter().filter(|b| b["type"] == "tool_result") {
+                results.push(b["content"].as_str().unwrap_or("").to_string());
+            }
+        }
+        assert_eq!(results, ["one", "two", "x", "y", "fine"], "{d}: {v}");
+        assert!(
+            seen_ids.contains("toolu_ok"),
+            "{d}: a valid id is kept: {v}"
+        );
+        assert!(!seen_ids.contains("lost"), "{d}: {v}");
+        assert!(
+            v.to_string().contains("interrupted tool round"),
+            "{d}: the unanswered call is named in a note: {v}"
+        );
+    }
+    if posts.len() == 2 {
+        assert_eq!(
+            posts[0]["messages"], posts[1]["messages"],
+            "the two drivers must agree"
+        );
+    }
+}
+
 /// A tool loop as the engine sends it: a question, two tool rounds.
 /// The question and the first result are text that IS valid JSON array
 /// syntax — which a tool's output very often is.

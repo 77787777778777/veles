@@ -17,8 +17,13 @@
 //! when the node is down. Results are cached per (url, token) —
 //! [`OK_TTL`] for a pass, [`FAIL_TTL`] for a failure so a node that
 //! comes back is retried soon — and a successful gossip exchange, which
-//! crosses the same gates, counts as a pass. Sync traffic is not "use"
-//! for an idle phone (`idle.rs`), so a probe never keeps one awake.
+//! crosses the same gates, counts as a pass. Real traffic counts the
+//! other way too ([`learned_from`], 0.2.2): a gossip exchange, a
+//! delegate dial or a re-homed tool call that never connected, or that
+//! the peer turned away at its gates, is a failure, so a pass from
+//! before a phone's idle exit or a token rotation does not stand for
+//! its five minutes. Sync traffic is not "use" for an idle phone
+//! (`idle.rs`), so a probe never keeps one awake.
 
 use std::collections::HashMap;
 use std::sync::Mutex;
@@ -141,19 +146,74 @@ pub async fn probe(url: &str, bearer: Option<&str>) -> Probe {
     match req.send().await {
         Ok(r) => match r.status().as_u16() {
             200 => Probe::Ok,
-            401 => Probe::Refused("the peer refused this node's token (HTTP 401)".into()),
-            403 => Probe::Refused("this node is not in the peer's trusted list (HTTP 403)".into()),
-            // After the token check, before the trusted list: a child sent
-            // now would get the same answer, so not a route for a minute.
-            429 => Probe::Refused("the peer is rate-limiting this node (HTTP 429)".into()),
-            s => Probe::Refused(format!("the peer answered HTTP {s}")),
+            s => Probe::Refused(refusal(s)),
         },
         Err(e) if e.is_timeout() => {
             Probe::Unreachable(format!("no answer within {}s", PROBE_TIMEOUT.as_secs()))
         }
-        Err(e) if e.is_connect() => Probe::Unreachable("connection refused or unreachable".into()),
+        Err(e) if e.is_connect() => Probe::Unreachable(UNREACHABLE.into()),
         Err(_) => Probe::Unreachable("the request failed".into()),
     }
+}
+
+const UNREACHABLE: &str = "connection refused or unreachable";
+
+/// The most of a peer's rejection reason a route keeps (characters).
+const REJECTION_CHARS: usize = 200;
+
+/// Why a peer that answered with `status` refused us.
+fn refusal(status: u16) -> String {
+    match status {
+        401 => "the peer refused this node's token (HTTP 401)".into(),
+        403 => "this node is not in the peer's trusted list (HTTP 403)".into(),
+        // After the token check, before the trusted list: a child sent
+        // now would get the same answer, so not a route for a minute.
+        429 => "the peer is rate-limiting this node (HTTP 429)".into(),
+        s => format!("the peer answered HTTP {s}"),
+    }
+}
+
+/// What a failed call to a peer (a delegate dial, a gossip exchange, a
+/// re-homed tool call) tells about its route, when it tells anything
+/// (COMP-1, 0.2.2): a connection that never opened is no answer, and a
+/// peer that turned the call away at its gates (401, 403, 429) or
+/// rejected the task before starting it refused us. Either way nothing
+/// ran there. Anything else was sent and may have run, so it says
+/// nothing about the route and `None` is returned.
+pub fn learned_from(e: &anyhow::Error) -> Option<Probe> {
+    for c in e.chain() {
+        if let Some(t) = c.downcast_ref::<crate::a2a::TurnedAway>() {
+            return Some(Probe::Refused(refusal(t.status)));
+        }
+        if let Some(r) = c.downcast_ref::<crate::remotetask::TaskRejected>() {
+            // The peer's own words (its task_peers, its lockdown, or the
+            // turn cap of this context), on one line and bounded: `nodes`
+            // shows them, and the peer wrote them.
+            let mut why = crate::bskylink::one_line(r.reason());
+            if why.chars().count() > REJECTION_CHARS {
+                why = why.chars().take(REJECTION_CHARS).collect::<String>() + "…";
+            }
+            if why.is_empty() {
+                why = "it gave no reason".into();
+            }
+            return Some(Probe::Refused(format!("the peer rejected the task: {why}")));
+        }
+        if c.downcast_ref::<reqwest::Error>()
+            .is_some_and(|r| r.is_connect())
+        {
+            return Some(Probe::Unreachable(UNREACHABLE.into()));
+        }
+    }
+    None
+}
+
+/// Record what a failed call to `url` taught about its route
+/// ([`learned_from`]) and return it; nothing is recorded for a call
+/// that may have run.
+pub fn record_failure(url: &str, bearer: Option<&str>, e: &anyhow::Error) -> Option<Probe> {
+    let p = learned_from(e)?;
+    record(url, bearer, p.clone());
+    Some(p)
 }
 
 /// Probe every route in `targets` that has no standing result, at once,
@@ -265,6 +325,12 @@ pub(crate) mod tests {
     /// JSON-RPC error naming `name`, so a delegate verdict says which
     /// fake node the child was sent to. Returns its url.
     pub(crate) async fn fake_peer(name: &str, good: Option<&str>) -> String {
+        fake_peer_after(name, good, Duration::ZERO).await
+    }
+
+    /// [`fake_peer`] that answers a `message/send` only after `delay`,
+    /// so a test can look at what is counted while a call is pending.
+    pub(crate) async fn fake_peer_after(name: &str, good: Option<&str>, delay: Duration) -> String {
         use tokio::io::{AsyncReadExt, AsyncWriteExt};
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
         let url = format!("http://{}/a2a", listener.local_addr().unwrap());
@@ -335,6 +401,7 @@ pub(crate) mod tests {
                                 "error": {"code": -32001, "message": "task not found"}}),
                         )
                     } else {
+                        tokio::time::sleep(delay).await;
                         (
                             "200 OK",
                             serde_json::json!({"jsonrpc": "2.0", "id": id,

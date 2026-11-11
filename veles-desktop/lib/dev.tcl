@@ -182,6 +182,9 @@ proc ::vdev::attach {w args} {
     bind $w <KeyRelease> { ::vdev::_edit_sync_schedule }
     bind $w <Control-x><Control-s> { ::vdev::editor_save ; break }
     bind $w <Control-c><Control-c> { ::vdev::editor_source_app ; break }
+    # Check: the buffer's diagnostics from the gateway's checker (SMOKE-8:
+    # it had no key, and its button could be off the edge of the bar).
+    bind $w <Control-c><Control-k> { ::vdev::editor_check ; break }
     bind $w <Alt-period> { ::vdev::_goto_def ; break }
     bind $w <Control-c><Control-d> { ::vdev::_goto_def ; break }
     # xref-find-references, and signature help on demand.
@@ -837,6 +840,109 @@ proc ::vdev::eval_in {tgt code} {
     return [list 0 "unknown error"]
 }
 
+# ── toolbars that wrap ───────────────────────────────────────────────
+#
+# A Dev toolbar is a row that wraps at its own width: its controls go
+# into as many rows as the width needs, in the order given, and "\n" in
+# the order starts a new row. The editor's bar was one packed row of 16
+# controls 1882 px wide: at 1440 px Check, the path entry and pop-out
+# were never mapped (Check had no key either, so it could not be
+# reached at all), at the default 1080x720 Outline, Rename and
+# Highlight went too, and on a phone most of it (SMOKE-8). An entry
+# takes the rest of its row. The rows are frames of their own
+# (`f.row<n>`); a control may live outside `f` (a sibling of it), since
+# the rows are inside `f`.
+namespace eval ::vdev {
+    variable flows [dict create]
+    variable flow_of [dict create]
+}
+
+proc ::vdev::flow {f order} {
+    variable flows
+    variable flow_of
+    dict set flows $f $order
+    bind $f <Configure> [list ::vdev::_reflow_soon $f]
+    bind $f <Destroy> [list ::vdev::_flow_gone $f]
+    foreach k $order {
+        if {$k eq "\n" || ![winfo exists $k]} { continue }
+        # A label that grows (a language swap) may no longer fit.
+        dict set flow_of $k $f
+        if {"VDevFlowKid" ni [bindtags $k]} { bindtags $k [linsert [bindtags $k] 0 VDevFlowKid] }
+    }
+    bind VDevFlowKid <Configure> {
+        if {[dict exists $::vdev::flow_of %W]} { ::vdev::_reflow_soon [dict get $::vdev::flow_of %W] }
+    }
+    _reflow $f
+}
+
+proc ::vdev::_flow_gone {f} {
+    variable flows
+    variable flow_rows
+    variable flow_of
+    dict for {k owner} $flow_of { if {$owner eq $f} { dict unset flow_of $k } }
+    dict unset flows $f
+    unset -nocomplain flow_rows($f)
+}
+
+proc ::vdev::_reflow_soon {f} {
+    after cancel [list ::vdev::_reflow $f]
+    after idle [list ::vdev::_reflow $f]
+}
+
+proc ::vdev::_reflow {f} {
+    variable flows
+    variable flow_rows
+    if {![dict exists $flows $f] || ![winfo exists $f]} { return 0 }
+    set width [winfo width $f]
+    # Not mapped yet: lay out for the window (its <Configure> follows).
+    if {$width <= 1} { set width [winfo width [winfo toplevel $f]] }
+    if {$width <= 1} { set width [winfo screenwidth $f] }
+    set rows {}
+    set row {}
+    set used 0
+    foreach k [dict get $flows $f] {
+        if {$k eq "\n"} {
+            if {[llength $row]} { lappend rows $row }
+            set row {}
+            set used 0
+            continue
+        }
+        if {![winfo exists $k]} { continue }
+        set need [expr {[winfo reqwidth $k] + 2}]
+        if {[llength $row] && $used + $need > $width} {
+            lappend rows $row
+            set row {}
+            set used 0
+        }
+        lappend row $k
+        incr used $need
+    }
+    if {[llength $row]} { lappend rows $row }
+    if {[info exists flow_rows($f)] && $flow_rows($f) eq $rows} { return [llength $rows] }
+    set flow_rows($f) $rows
+    set n 0
+    foreach r $rows {
+        set rf $f.row$n
+        if {![winfo exists $rf]} { ttk::frame $rf }
+        pack $rf -side top -fill x
+        foreach k $r {
+            if {[winfo class $k] in {TEntry Entry}} {
+                pack $k -in $rf -side left -padx 1 -pady 1 -fill x -expand 1
+            } else {
+                pack $k -in $rf -side left -padx 1 -pady 1 -fill none -expand 0
+            }
+            # A frame made after its buttons is drawn over them.
+            raise $k $rf
+        }
+        incr n
+    }
+    while {[winfo exists $f.row$n]} {
+        destroy $f.row$n
+        incr n
+    }
+    return [llength $rows]
+}
+
 # ── build ────────────────────────────────────────────────────────────
 
 proc ::vpanes::_build_dev {w} {
@@ -866,11 +972,11 @@ proc ::vpanes::_build_dev {w} {
         -command { ::vdev::set_arm $::vdev::armed }
     catch { ::va11y::name $w.repl.bar.arm \
         [::vi18n::mc {let an agent evaluate Tcl in this window}] }
-    pack $w.repl.bar.mode -side left -padx {0 6}
-    pack $w.repl.bar.toggle -side left
-    pack $w.repl.bar.arm -side left -padx {8 0}
-    pack $w.repl.bar.hint -side right
-    text $w.repl.out -height 6 -wrap word -background $::vt::T(bg_input) \
+    # Three lines of output by default, not six: at 1080x720 the REPL and
+    # the inspector left the editor five lines (SMOKE-8). The sashes
+    # still give either one more room.
+    ::vdev::flow $w.repl.bar [list $w.repl.bar.mode $w.repl.bar.toggle $w.repl.bar.arm $w.repl.bar.hint]
+    text $w.repl.out -height 3 -wrap word -background $::vt::T(bg_input) \
         -foreground $::vt::T(fg) -font {monospace 10} -state disabled \
         -highlightthickness 0 -relief flat
     entry $w.repl.in -background $::vt::T(bg_panel) -foreground $::vt::T(fg) \
@@ -905,7 +1011,10 @@ proc ::vpanes::_build_dev {w} {
     # ── editor ──
     ttk::frame $w.edit
     ttk::frame $w.edit.bar
-    ttk::entry $w.edit.bar.path -textvariable ::vdev::current_file -font {monospace 9}
+    # 20 characters at least: a row it shares never squeezes it to nothing,
+    # and on a phone it still shares one with Open, Save and pop-out.
+    ttk::entry $w.edit.bar.path -textvariable ::vdev::current_file -font {monospace 9} -width 20
+    ::va11y::name $w.edit.bar.path [::vi18n::mc {the file to open: type a path, then Return or Open}]
     ttk::button $w.edit.bar.open -text [::vi18n::mc {Open}] -command { ::vdev::editor_open }
     ;# keymap-literal: widget-local, see the REPL toolbar above.
     ttk::button $w.edit.bar.save -text [::vi18n::mc {Save (C-x C-s)}] -command { ::vdev::editor_save }
@@ -913,7 +1022,9 @@ proc ::vpanes::_build_dev {w} {
     ttk::button $w.edit.bar.source -text [::vi18n::mc {Source→app (C-c C-c)}] \
         -command { ::vdev::editor_source_app }
     ttk::button $w.edit.bar.evalgw -text [::vi18n::mc {Eval→gw}] -command { ::vdev::editor_eval_gw }
-    ttk::button $w.edit.bar.check -text [::vi18n::mc {Check (lsp)}] -command { ::vdev::editor_check }
+    ;# keymap-literal: widget-local, see the REPL toolbar above. Check had
+    ;# no key, so with its button off the edge it could not be reached.
+    ttk::button $w.edit.bar.check -text [::vi18n::mc {Check (C-c C-k)}] -command { ::vdev::editor_check }
     ttk::button $w.edit.bar.outline -text [::vi18n::mc {Outline}] -command { ::vdev::_outline }
     ttk::button $w.edit.bar.def -text [::vi18n::mc {Def (M-.)}] -command { ::vdev::_goto_def }
     ;# keymap-literal: widget-local, see the REPL toolbar above.
@@ -938,25 +1049,30 @@ proc ::vpanes::_build_dev {w} {
     ::va11y::name $w.edit.bar.extguide [::vi18n::mc {extension architecture, examples and LSP help}]
     ttk::button $w.edit.bar.assist -text [::vi18n::mc {AI assist…}] -command { ::vdev::extension_assist }
     ::va11y::name $w.edit.bar.assist [::vi18n::mc {preview an AI extension change and explicitly apply its diff}]
-    pack $w.edit.bar.newext $w.edit.bar.extguide $w.edit.bar.assist -side left -padx 1
-    pack $w.edit.bar.slopdrop -side left -padx 1
-    pack $w.edit.bar.open $w.edit.bar.save $w.edit.bar.source \
-        $w.edit.bar.evalgw $w.edit.bar.def $w.edit.bar.peek $w.edit.bar.outline \
-        $w.edit.bar.rename $w.edit.bar.hl $w.edit.bar.check $w.edit.bar.pop \
-        -side right -padx 1
-    pack $w.edit.bar.path -side left -fill x -expand 1 -padx {0 4}
-    # Quick-open row: the guts' own source files, one click each.
-    ttk::frame $w.edit.lib
-    ttk::label $w.edit.lib.h -text [::vi18n::mc {guts:}] -foreground $::vt::T(fg_dim)
-    pack $w.edit.lib.h -side left
+    # The guts' own source files, one click each, from a menu: as a row of
+    # nine buttons they took a toolbar row from the code at 1080x720 and
+    # three on a phone (SMOKE-8).
+    ttk::menubutton $w.edit.bar.guts -text [::vi18n::mc {guts ▾}] -width 0 \
+        -menu $w.edit.bar.guts.m
+    ::va11y::name $w.edit.bar.guts [::vi18n::mc {open one of the desktop's own source files}]
+    menu $w.edit.bar.guts.m -tearoff 0
     foreach f {chat.tcl panes.tcl dev.tcl keymap.tcl dock.tcl editline.tcl theme.tcl overlays.tcl} {
-        ttk::button $w.edit.lib.[string map {. _} $f] -text $f -width 12 \
-            -command [list ::vdev::open_lib $f]
-        pack $w.edit.lib.[string map {. _} $f] -side left -padx 1
+        $w.edit.bar.guts.m add command -label $f -command [list ::vdev::open_lib $f]
     }
-    ttk::button $w.edit.lib.patches -text [::vi18n::mc {patches.tcl}] -width 11 \
-        -command { ::vdev::open_patches }
-    pack $w.edit.lib.patches -side left -padx {6 1}
+    $w.edit.bar.guts.m add separator
+    $w.edit.bar.guts.m add command -label [::vi18n::mc {patches.tcl}] -command { ::vdev::open_patches }
+    # Two groups, each wrapping at the bar's width: the extension
+    # workflow and the file (what to open, save, pop out), then what acts
+    # on the buffer. Labels at their own width, not the theme's minimum.
+    foreach k [winfo children $w.edit.bar] {
+        if {[winfo class $k] eq "TButton"} { $k configure -width 0 }
+    }
+    ::vdev::flow $w.edit.bar [list \
+        $w.edit.bar.newext $w.edit.bar.extguide $w.edit.bar.assist \
+        $w.edit.bar.path $w.edit.bar.open $w.edit.bar.save $w.edit.bar.pop "\n" \
+        $w.edit.bar.source $w.edit.bar.evalgw $w.edit.bar.check $w.edit.bar.def \
+        $w.edit.bar.peek $w.edit.bar.outline $w.edit.bar.rename $w.edit.bar.hl \
+        $w.edit.bar.slopdrop $w.edit.bar.guts]
     # The tab strip. Buffers live in .stack, one packed at a time; the
     # strip is the only thing that knows they are plural.
     canvas $w.edit.tabs -height 26 -highlightthickness 0 -borderwidth 0 \
@@ -973,7 +1089,6 @@ proc ::vpanes::_build_dev {w} {
         -foreground $::vt::T(fg_dim)
     pack $w.edit.bar -fill x
     pack $w.edit.tabs -fill x -pady {2 0}
-    pack $w.edit.lib -fill x -pady {2 0}
     pack $w.edit.status -fill x
     pack $w.edit.stack -fill both -expand 1
     # The Dev pane is now just the first editor rather than the only
@@ -1007,17 +1122,19 @@ proc ::vpanes::_build_dev {w} {
         ttk::button $w.dbg.bar.$id -text [::vi18n::mc $label] \
             -command [list ::vdev::inspect $id]
         ::vi18n::label $w.dbg.bar.$id $label
-        pack $w.dbg.bar.$id -side left -padx 1
     }
     entry $w.dbg.arg -background $::vt::T(bg_panel) -foreground $::vt::T(fg) \
         -insertbackground $::vt::T(pink) -font {monospace 9} -relief flat \
         -highlightthickness 0
+    # One wrapping row: the caption, the verbs at their own width, the
+    # argument entry; and two lines of output, not five: it answers on
+    # demand, and its sash gives it more (SMOKE-8).
+    foreach k [winfo children $w.dbg.bar] { $k configure -width 0 }
+    ::vdev::flow $w.dbg.bar [concat [list $w.dbg.h] [winfo children $w.dbg.bar] [list $w.dbg.arg]]
     pack $w.dbg.bar -fill x
-    pack $w.dbg.arg -fill x -pady {2 0}
-    text $w.dbg.out -height 5 -wrap word -background $::vt::T(bg_input) \
+    text $w.dbg.out -height 2 -wrap word -background $::vt::T(bg_input) \
         -foreground $::vt::T(fg) -font {monospace 9} -state disabled \
         -highlightthickness 0 -relief flat
-    pack $w.dbg.h -fill x
     pack $w.dbg.out -fill both -expand 1
     bind $w.dbg.arg <Return> { ::vdev::inspect_from_arg ; break }
 
@@ -1025,6 +1142,44 @@ proc ::vpanes::_build_dev {w} {
     $w.pw add $w.edit -minsize 140 -stretch always
     $w.pw add $w.dbg -minsize 70 -stretch never
     pack $w.pw -fill both -expand 1
+    # The editor is what the pane is for. On a first show Tk's
+    # panedwindow gave the REPL the editor's room (159 px for the 111 it
+    # asks, at 1080x720: seven lines of code; SMOKE-8). Until a sash is
+    # dragged, every resize gives the REPL and the inspector the height
+    # they ask for and the editor the rest.
+    # A toolbar that wraps into another row asks for more height too.
+    bind $w.pw <Configure> [list ::vdev::_place_sashes_soon $w.pw]
+    bind $w.repl.bar <Configure> +[list ::vdev::_place_sashes_soon $w.pw]
+    bind $w.dbg.bar <Configure> +[list ::vdev::_place_sashes_soon $w.pw]
+    bind $w.pw <ButtonRelease-1> [list ::vdev::_sash_moved $w.pw]
+    bind $w.pw <Destroy> [list unset -nocomplain ::vdev::sash_moved($w.pw)]
+}
+
+proc ::vdev::_sash_moved {pw} {
+    variable sash_moved
+    set sash_moved($pw) 1
+}
+
+proc ::vdev::_place_sashes_soon {pw} {
+    after cancel [list ::vdev::_place_sashes $pw]
+    after idle [list ::vdev::_place_sashes $pw]
+}
+
+proc ::vdev::_place_sashes {pw} {
+    variable sash_moved
+    if {[info exists sash_moved($pw)] || ![winfo exists $pw]} { return 0 }
+    set panes [$pw panes]
+    set h [winfo height $pw]
+    if {[llength $panes] != 3 || $h <= 1} { return 0 }
+    lassign $panes top middle bottom
+    set sash [expr {[$pw cget -sashwidth] + 2 * [$pw cget -sashpad]}]
+    set above [expr {max([winfo reqheight $top], [$pw panecget $top -minsize])}]
+    set below [expr {$h - max([winfo reqheight $bottom], [$pw panecget $bottom -minsize]) - $sash}]
+    # Too short for all three at their asks: Tk's own sharing stands.
+    if {$below - $above - $sash < [$pw panecget $middle -minsize]} { return 0 }
+    $pw sash place 0 0 $above
+    $pw sash place 1 0 $below
+    return 1
 }
 
 # ── target switching ─────────────────────────────────────────────────
@@ -1159,6 +1314,9 @@ proc ::vdev::editor_open {} {
     variable editor_sha
     set editor_sha($w) [expr {[dict exists $resp sha256] ? [dict get $resp sha256] : ""}]
     _lsp_open
+    if {[_path_kind $path] eq "core"} {
+        catch { ::vstatus::set_msg [::vi18n::mc {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.}] }
+    }
     # A go-to-definition that landed in another file jumps once the text
     # is actually on screen.
     if {$::vdev::_jump_after_open ne ""} {
@@ -1269,8 +1427,54 @@ proc ::vdev::_slopdrop_sync_click {} {
     editor_status "slopdrop synced: $procs procs, $vars vars"
 }
 
+# ── extension first (DEV-12) ─────────────────────────────────────────
+#
+# What a path is, as the gateway sees it: "extension" (a user
+# extension's file), "core" (veles' own source: a checkout, the bundled
+# plugins, the installed desktop) or "other". Asked once per path, and
+# "" when the gateway cannot say (an older one has no such route).
+proc ::vdev::_path_kind {path} {
+    variable path_kind
+    if {$path eq ""} { return "" }
+    if {![info exists path_kind($path)]} {
+        set kind ""
+        if {![catch {::vapi::get_json "/api/extensions/classify?path=[::vapi::urlencode $path]"} reply] &&
+            [dict exists $reply kind]} {
+            set kind [dict get $reply kind]
+        }
+        set path_kind($path) $kind
+    }
+    return $path_kind($path)
+}
+
+# The first save of a core file offers to draft the change as an
+# extension instead, naming every tier the guide describes. Until 0.2.2
+# the only offer was a refusal inside AI assist; patching core in the
+# Dev pane never suggested anything. Returns 1 when the author took the
+# offer: the save stops, and the edit stays in the buffer, unsaved. A
+# declined offer is not repeated for that file this session.
+proc ::vdev::_offer_extension_first {path} {
+    variable extension_first_asked
+    if {[info exists extension_first_asked($path)] || [_path_kind $path] ne "core"} { return 0 }
+    set extension_first_asked($path) 1
+    set parent [winfo toplevel [editor_widget]]
+    if {![::vmanage::confirm $parent [::vi18n::mc {Draft this change as an extension?}] \
+        [::vi18n::mc {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.}]]} {
+        return 0
+    }
+    ::vdev::new_extension
+    set ::vdev_new_purpose [format [::vi18n::mc {Instead of patching %s: }] [file tail $path]]
+    editor_status "[editor_status_base] [::vi18n::mc {not saved: drafting the change as an extension}]"
+    return 1
+}
+
 proc ::vdev::editor_save {} {
     variable editor_save_cmd
+    # Without this the hash below was a LOCAL that never existed: every
+    # Dev-pane save went out with base_sha null, so a file changed on the
+    # gateway since it was opened was overwritten without a word, and the
+    # hash a save returned was dropped.
+    variable editor_sha
     # A buffer that is not a plain file on disk saves its own way.
     set ed [editor_widget]
     if {[info exists editor_save_cmd($ed)] && $editor_save_cmd($ed) ne ""} {
@@ -1300,6 +1504,7 @@ proc ::vdev::editor_save {} {
         editor_status "slopdrop: $msg"
         return 1
     }
+    if {[_offer_extension_first $path]} { return 0 }
     set sha ""
     if {[info exists editor_sha($ed)]} { set sha $editor_sha($ed) }
     set base [expr {$sha eq "" ? "null" : "\"[::vapi::json_escape $sha]\""}]

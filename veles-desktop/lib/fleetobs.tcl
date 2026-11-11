@@ -40,8 +40,8 @@ proc ::vfleetobs::_bytes {n} {
     return "$n B"
 }
 
-proc ::vfleetobs::_num {v} {
-    if {[string is double -strict $v]} { return [format %.2f $v] }
+proc ::vfleetobs::_num {v {fmt %.2f}} {
+    if {[string is double -strict $v]} { return [format $fmt $v] }
     return "?"
 }
 
@@ -52,10 +52,18 @@ proc ::vfleetobs::metrics_lines {m} {
         [::vapi::field $m version ?] [::vapi::field $m revision ?] \
         [::vapi::field $m os] [::vapi::field $m arch]]
     set cpu [::vapi::field $m cpu]
-    lappend lines [format [::vi18n::mc {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)}] \
-        [::vapi::field $cpu cores ?] [_num [::vapi::field $cpu load1]] \
-        [_num [::vapi::field $cpu load5]] [_num [::vapi::field $cpu load15]] \
-        [::vapi::field $cpu load1_pct ?]]
+    if {[::vapi::field $cpu load1] eq "" && [::vapi::field $cpu busy_pct] ne ""} {
+        # Windows keeps no load average; the node measured its CPU busy
+        # share since its previous sample instead (FLEET-7).
+        lappend lines [format [::vi18n::mc {CPU: %1$s cores, %2$s%% busy over the last %3$s s}] \
+            [::vapi::field $cpu cores ?] [_num [::vapi::field $cpu busy_pct] %.1f] \
+            [_num [::vapi::field $cpu busy_window_secs] %.0f]]
+    } else {
+        lappend lines [format [::vi18n::mc {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)}] \
+            [::vapi::field $cpu cores ?] [_num [::vapi::field $cpu load1]] \
+            [_num [::vapi::field $cpu load5]] [_num [::vapi::field $cpu load15]] \
+            [::vapi::field $cpu load1_pct ?]]
+    }
     set mem [::vapi::field $m memory]
     if {$mem ne ""} {
         lappend lines [format [::vi18n::mc {Memory: %1$s available of %2$s (%3$s%% used)}] \
@@ -159,6 +167,11 @@ proc ::vfleetobs::drift_node_lines {d node_id} {
 # The whole report, for the drift viewer.
 proc ::vfleetobs::drift_lines {d} {
     set lines {}
+    # Deployment consistency first (lib/fleetmanage.tcl, 0.2.2): whether
+    # every node runs the same build, modules and plugins.
+    if {[llength [info commands ::vfleetmanage::consistency_lines]]} {
+        lappend lines {*}[::vfleetmanage::consistency_lines [::vapi::field $d consistency]] ""
+    }
     foreach g [::vapi::field [::vapi::field $d versions] groups {}] {
         lappend lines [format [::vi18n::mc {Version %1$s: %2$s}] [::vapi::field $g version ?] \
             [join [_group_names $g] {, }]]
@@ -363,7 +376,11 @@ proc ::vfleetobs::_logs_done {g resp} {
     .fleetlogs.body delete 1.0 end
     .fleetlogs.body insert end [log_text $resp]
     .fleetlogs.body configure -state disabled
-    .fleetlogs.body see end
+    # The newest lines, from the start of each. `see end` on this -wrap
+    # none text also scrolled sideways to the end of the last line, and a
+    # long last line opened the viewer a third of the way across (SMOKE-15).
+    .fleetlogs.body yview moveto 1
+    .fleetlogs.body xview moveto 0
 }
 
 # ── drift ───────────────────────────────────────────────────────────

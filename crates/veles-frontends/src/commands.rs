@@ -245,7 +245,7 @@ pub fn help_entries(surface: Surface) -> Vec<(&'static str, &'static str)> {
             "translate text with the dedicated translation model, without an agent turn",
         ),
         (
-            "/fleet [list|sync <node-id> [kind]|apply [kind]|forget <node-id> confirm|logs <node-id> [lines]|metrics <node-id>|drift|gossip [peer]]",
+            "/fleet [list|sync <node-id> [kind]|apply [kind]|forget <node-id> confirm|probe <node-id>|logs <node-id> [lines]|metrics <node-id>|drift|gossip [peer]]",
             "inspect the cluster; explicitly push/apply store, memory, config or vault sync; forget a stale node fleet-wide; read a node's log tail or metrics; compare versions and config; gossip now",
         ),
         ("/usage", "token usage by provider"),
@@ -365,6 +365,10 @@ pub fn help_entries(surface: Surface) -> Vec<(&'static str, &'static str)> {
             "where your tools run; list/create/assign/purge (admin)",
         ),
         ("/limits", "context ceilings per role; set (admin)"),
+        (
+            "/approvals [revoke <rule>]",
+            "standing approval grants: always and this session; revoke one",
+        ),
         (
             "/lockdown [on|off]",
             "refuse every connector; lift only from a local frontend",
@@ -607,6 +611,13 @@ pub fn dispatch(ctx: &mut CommandCtx, head: &str, rest: &str) -> Option<Handled>
         "/limits" => {
             Some(limits_command(&AclCtx::from_agent(agent, ctx.principal), rest).into())
         }
+
+        // Standing approval grants, reviewed and revoked from any
+        // surface (the desktop also has its panel over the same rules).
+        "/approvals" => Some(
+            approvals_command(&AclCtx::from_agent(agent, ctx.principal), Some(agent), rest)
+                .into(),
+        ),
 
         // `/acl`'s top-level spellings. One implementation, three
         // names, so `/grant` cannot drift from `/acl grant`.
@@ -1858,13 +1869,24 @@ pub async fn translate_command(ctx: &CommandCtx<'_>, rest: &str) -> String {
         return "usage: /translate [--to <language>] -- <text>".into();
     }
     match veles_core::translate::translate(&ctx.agent.cfg, &text, target.as_deref()).await {
-        Ok(answer) => format!(
-            "{}\n\n[{} @ {} → {}]",
-            answer["text"].as_str().unwrap_or_default(),
-            answer["model"].as_str().unwrap_or_default(),
-            answer["provider"].as_str().unwrap_or_default(),
-            answer["target_language"].as_str().unwrap_or_default()
-        ),
+        Ok(answer) => {
+            let mut out = format!(
+                "{}\n\n[{} @ {} → {}]",
+                answer["text"].as_str().unwrap_or_default(),
+                answer["model"].as_str().unwrap_or_default(),
+                answer["provider"].as_str().unwrap_or_default(),
+                answer["target_language"].as_str().unwrap_or_default()
+            );
+            // Placeholders or markup the translator lost and could not
+            // restore: said, never hidden.
+            for warning in answer["warnings"].as_array().into_iter().flatten() {
+                out.push_str(&format!(
+                    "\n[warning: {}]",
+                    warning.as_str().unwrap_or_default()
+                ));
+            }
+            out
+        }
         Err(error) => format!("translation failed: {error:#}"),
     }
 }
@@ -1880,61 +1902,212 @@ pub async fn fleet_command(ctx: &CommandCtx<'_>, rest: &str) -> String {
                 veles_core::acl::Cap::CmdStatus,
             );
         }
-        let nodes = match ctx.agent.store.lock_ok().nodes_list() {
-            Ok(nodes) => nodes,
-            Err(error) => return format!("fleet read failed: {error}"),
-        };
-        if nodes.is_empty() {
-            return "no registered nodes; enable the cluster registry to populate /fleet".into();
-        }
-        let mut out = "registered fleet nodes:\n".to_string();
-        for node in nodes {
-            let peer = if ctx
-                .agent
-                .cfg
-                .cluster
-                .storesync_peers
-                .iter()
-                .any(|p| p == &node.name || p == &node.id)
-            {
-                " [sync peer]"
-            } else {
-                ""
+        // The body /api/fleet answers with, so this listing and the
+        // Instances tab read one health and one sync status: deriving
+        // `fresh`/`stale` here left the chat without the failing state,
+        // the per-kind status, the alerts, the drift and the forgotten
+        // nodes (FLEET-9). Every status caller gets each node's state;
+        // the rest is the owner's, as the tab is.
+        let bus = veles_core::bus::global_bus();
+        let body =
+            match crate::desktop_api::fleet_body(&ctx.agent.store, &ctx.agent.cfg, bus.as_ref()) {
+                Ok(body) => body,
+                Err(error) => return format!("fleet read failed: {error}"),
             };
-            out.push_str(&format!(
-                "- {} ({}) {} — {}{}\n",
-                node.id,
-                node.name,
-                node.host,
-                // The configured threshold, as /nodes, /api/fleet and the
-                // nodes tool read it — 120 here once called a node stale
-                // that every other surface still called fresh (FLEET-7).
-                if veles_core::node::is_stale(
-                    &node.heartbeat_at,
-                    ctx.agent.cfg.cluster.stale_after_secs as i64,
-                ) {
-                    "stale"
-                } else {
-                    "fresh"
-                },
-                peer,
-            ));
+        let listed = body["nodes"]
+            .as_array()
+            .is_some_and(|nodes| !nodes.is_empty());
+        let mut out =
+            crate::fleet_ops::list_text(&body, caller_is(ctx.principal, veles_core::acl::Cap::All));
+        if listed {
+            out.push_str(
+                "Use /fleet sync <node-id> [store|memory|config|vault] to push; /fleet apply [kind] drains received offers; \
+                 config/vault and memory apply need a trailing `confirm`. /fleet probe <node-id> checks that a node answers.",
+            );
         }
-        out.push_str(
-            "Use /fleet sync <node-id> [store|memory|config|vault] to push; /fleet apply [kind] drains received offers; \
-             config/vault and memory apply need a trailing `confirm`.",
-        );
         return out;
     }
     if !caller_is(ctx.principal, veles_core::acl::Cap::All) {
         return denied(
             ctx.principal,
-            "/fleet sync|apply|forget",
+            "/fleet sync|apply|forget|probe|restart|config|bulk|audit",
             veles_core::acl::Cap::All,
         );
     }
-    const USAGE: &str = "usage: /fleet [list|sync <node-id> [store|memory|config|vault] [confirm]|apply [kind] [confirm]|forget <node-id> confirm|logs <node-id> [lines]|metrics <node-id>|drift|gossip [peer]]";
+    const USAGE: &str = "usage: /fleet [list|sync <node-id> [store|memory|config|vault] [confirm]|apply [kind] [confirm]|forget <node-id> confirm|probe <node-id>|logs <node-id> [lines]|metrics <node-id>|drift|gossip [peer]|status <node-id>|restart <node-id> [force] confirm|config get <node-id> <key>|config set <node-id> <key> <value> confirm|config unset <node-id> <key> confirm|bulk probe [confirm]|bulk sync <kind> [confirm]|alerts|forgotten|audit [n]]";
     let args: Vec<&str> = words.collect();
+    let who = ctx
+        .principal
+        .map(|p| p.label())
+        .unwrap_or_else(|| "local owner".into());
+    let audited = |action: &str, node: &str, r| crate::fleet_manage::audited(&who, action, node, r);
+    // The command center's management verbs (crate::fleet_manage): the
+    // same calls the Instances tab makes, owner-only, each one in this
+    // gateway's audit trail.
+    match operation {
+        "status" if args.len() == 1 => {
+            let cfg: veles_core::config::VelesConfig = (*ctx.agent.cfg).clone();
+            let r = crate::fleet_manage::status(&ctx.agent.store, &cfg, args[0]).await;
+            return match audited("status", args[0], r) {
+                Ok(v) => format!(
+                    "{}: veles {} ({}), boot {}; supervisor: {}; running: {} turn(s), {} task(s)\n",
+                    v["name"].as_str().unwrap_or("?"),
+                    v["version"].as_str().unwrap_or("?"),
+                    v["revision"].as_str().unwrap_or("?"),
+                    v["boot"].as_str().unwrap_or("?"),
+                    v["supervisor"]["detail"].as_str().unwrap_or("?"),
+                    v["in_flight"]["turns_total"],
+                    v["in_flight"]["tasks_total"]
+                ),
+                Err(error) => format!("fleet status failed: {error}"),
+            };
+        }
+        "restart" if !args.is_empty() && args.len() <= 3 => {
+            let flags = &args[1..];
+            if flags.iter().any(|f| !matches!(*f, "force" | "confirm")) {
+                return USAGE.into();
+            }
+            let cfg: veles_core::config::VelesConfig = (*ctx.agent.cfg).clone();
+            let r = crate::fleet_manage::restart(
+                &ctx.agent.store,
+                &cfg,
+                args[0],
+                flags.contains(&"force"),
+                flags.contains(&"confirm"),
+                true,
+                &who,
+            )
+            .await;
+            return match audited("restart", args[0], r) {
+                Ok(v) => crate::fleet_manage::restart_text(&v),
+                Err(error) => format!("fleet restart failed: {error}"),
+            };
+        }
+        "config" if args.len() >= 3 => {
+            let cfg: veles_core::config::VelesConfig = (*ctx.agent.cfg).clone();
+            let (verb, node, key) = (args[0], args[1], args[2]);
+            let confirmed = args.last() == Some(&"confirm");
+            let rest: Vec<&str> = args[3..]
+                .iter()
+                .copied()
+                .take(args.len() - 3 - usize::from(confirmed))
+                .collect();
+            let r = match verb {
+                "get" if args.len() == 3 => {
+                    crate::fleet_manage::config_get(&ctx.agent.store, &cfg, node, key).await
+                }
+                "set" if !rest.is_empty() => {
+                    let raw = rest.join(" ");
+                    crate::fleet_manage::config_set(
+                        &ctx.agent.store,
+                        &cfg,
+                        node,
+                        key,
+                        Some(&raw),
+                        None,
+                        confirmed,
+                        &who,
+                    )
+                    .await
+                }
+                "unset" if rest.is_empty() => {
+                    crate::fleet_manage::config_set(
+                        &ctx.agent.store,
+                        &cfg,
+                        node,
+                        key,
+                        None,
+                        None,
+                        confirmed,
+                        &who,
+                    )
+                    .await
+                }
+                _ => return USAGE.into(),
+            };
+            return match audited(&format!("config {verb} {key}"), node, r) {
+                Ok(v) => crate::fleet_manage::config_text(&v),
+                Err(error) => format!("fleet config {verb} failed: {error}"),
+            };
+        }
+        "bulk" if !args.is_empty() => {
+            let confirmed = args.last() == Some(&"confirm");
+            let words: Vec<&str> = args.iter().copied().filter(|a| *a != "confirm").collect();
+            let (action, kind) = match words.as_slice() {
+                ["probe"] => ("probe", "store"),
+                ["sync", kind] => ("sync", *kind),
+                _ => return USAGE.into(),
+            };
+            let cfg: veles_core::config::VelesConfig = (*ctx.agent.cfg).clone();
+            let store = ctx.agent.store.clone();
+            let (a, k) = (action.to_string(), kind.to_string());
+            // The sync passes run on their own runtime, as /fleet sync's do.
+            let r = veles_core::rt::spawn_blocking(move || {
+                let runtime = tokio::runtime::Runtime::new().map_err(|error| {
+                    veles_core::storesync::OperationError::Failed(anyhow::anyhow!(error))
+                })?;
+                runtime.block_on(crate::fleet_manage::bulk(&store, &cfg, &a, &k, confirmed))
+            })
+            .await
+            .unwrap_or_else(|error| {
+                Err(veles_core::storesync::OperationError::Failed(
+                    anyhow::anyhow!("fleet bulk worker failed: {error}"),
+                ))
+            });
+            let r = if confirmed {
+                audited(&format!("bulk {}", words.join(" ")), "", r)
+            } else {
+                r
+            };
+            return match r {
+                Ok(v) => crate::fleet_manage::bulk_text(&v),
+                Err(error) => format!("fleet bulk {action} failed: {error}"),
+            };
+        }
+        "alerts" if args.is_empty() => {
+            let recent = crate::fleet_watch::recent();
+            if recent.is_empty() {
+                return "No node health alert since this process started.\n".into();
+            }
+            return recent
+                .iter()
+                .map(|a| {
+                    format!(
+                        "{} {}\n",
+                        a["at"].as_str().unwrap_or("?"),
+                        a["text"].as_str().unwrap_or("")
+                    )
+                })
+                .collect();
+        }
+        "forgotten" if args.is_empty() => {
+            let rows = ctx
+                .agent
+                .store
+                .lock_ok()
+                .node_tombstones()
+                .unwrap_or_default();
+            if rows.is_empty() {
+                return "No node is forgotten fleet-wide.\n".into();
+            }
+            return rows
+                .iter()
+                .map(|t| format!("{} (forgotten at {} UTC)\n", t.id, t.forgotten_at))
+                .collect();
+        }
+        "audit" if args.len() <= 1 => {
+            let n = match args.first().map(|n| n.parse::<usize>()) {
+                None => 20,
+                Some(Ok(n)) => n,
+                Some(Err(_)) => return USAGE.into(),
+            };
+            return crate::fleet_manage::audit_text(&crate::fleet_manage::audit_recent(n));
+        }
+        "status" | "restart" | "config" | "bulk" | "alerts" | "forgotten" | "audit" => {
+            return USAGE.into()
+        }
+        _ => {}
+    }
     // The command center's observation verbs (crate::fleet_obs): the
     // same calls the Instances tab makes, owner-only like the rest.
     match operation {
@@ -1951,7 +2124,8 @@ pub async fn fleet_command(ctx: &CommandCtx<'_>, rest: &str) -> String {
                 serde_json::json!({"op": "metrics"})
             };
             let cfg: veles_core::config::VelesConfig = (*ctx.agent.cfg).clone();
-            return match crate::fleet_obs::ask(&ctx.agent.store, &cfg, args[0], params).await {
+            let r = crate::fleet_obs::ask(&ctx.agent.store, &cfg, args[0], params).await;
+            return match audited(operation, args[0], r) {
                 Ok(v) if operation == "logs" => crate::fleet_obs::logs_text(&v),
                 Ok(v) => crate::fleet_obs::metrics_text(&v),
                 Err(error) => format!("fleet {operation} failed: {error}"),
@@ -1959,16 +2133,17 @@ pub async fn fleet_command(ctx: &CommandCtx<'_>, rest: &str) -> String {
         }
         "drift" if args.is_empty() => {
             let cfg: veles_core::config::VelesConfig = (*ctx.agent.cfg).clone();
-            return match crate::fleet_obs::drift(&ctx.agent.store, &cfg).await {
+            let r = crate::fleet_obs::drift(&ctx.agent.store, &cfg).await;
+            return match audited("drift", "", r) {
                 Ok(v) => crate::fleet_obs::drift_text(&v),
                 Err(error) => format!("fleet drift failed: {error}"),
             };
         }
         "gossip" if args.len() <= 1 => {
             let cfg: veles_core::config::VelesConfig = (*ctx.agent.cfg).clone();
-            return match crate::fleet_obs::gossip_now(&ctx.agent.store, &cfg, args.first().copied())
-                .await
-            {
+            let r =
+                crate::fleet_obs::gossip_now(&ctx.agent.store, &cfg, args.first().copied()).await;
+            return match audited("gossip", args.first().copied().unwrap_or(""), r) {
                 Ok(v) => {
                     let mut out = format!("{}\n", v["result"].as_str().unwrap_or(""));
                     for r in v["results"].as_array().into_iter().flatten() {
@@ -1983,7 +2158,17 @@ pub async fn fleet_command(ctx: &CommandCtx<'_>, rest: &str) -> String {
                 Err(error) => format!("fleet gossip failed: {error}"),
             };
         }
-        "logs" | "metrics" | "drift" | "gossip" => return USAGE.into(),
+        // The tab's Probe: the node's configured A2A card, and the answer
+        // recorded for the node's health (fleet_ops::probe).
+        "probe" if args.len() == 1 => {
+            let cfg: veles_core::config::VelesConfig = (*ctx.agent.cfg).clone();
+            let r = crate::fleet_ops::probe(&ctx.agent.store, &cfg, args[0]).await;
+            return match audited("probe", args[0], r) {
+                Ok(v) => crate::fleet_ops::probe_text(&v),
+                Err(error) => format!("fleet probe failed: {error}"),
+            };
+        }
+        "logs" | "metrics" | "drift" | "gossip" | "probe" => return USAGE.into(),
         _ => {}
     }
     let confirmed = args.last() == Some(&"confirm");
@@ -2013,7 +2198,8 @@ pub async fn fleet_command(ctx: &CommandCtx<'_>, rest: &str) -> String {
                 .ok()
                 .flatten()
                 .map(|id| id.id);
-            return match crate::fleet_ops::forget(&store, &cfg, args[0], me.as_deref(), confirmed) {
+            let r = crate::fleet_ops::forget(&store, &cfg, args[0], me.as_deref(), confirmed);
+            return match audited("forget", args[0], r) {
                 Ok(v) => format!(
                     "forgot node {} ({})",
                     v["node"].as_str().unwrap_or(""),
@@ -2025,6 +2211,7 @@ pub async fn fleet_command(ctx: &CommandCtx<'_>, rest: &str) -> String {
         _ => return USAGE.into(),
     };
     let kind = kind.to_string();
+    let (kind_label, node_label) = (kind.clone(), node.clone());
     let result = veles_core::rt::spawn_blocking(move || {
         let runtime = tokio::runtime::Runtime::new().map_err(|error| {
             veles_core::storesync::OperationError::Failed(anyhow::anyhow!(error))
@@ -2038,10 +2225,44 @@ pub async fn fleet_command(ctx: &CommandCtx<'_>, rest: &str) -> String {
         Ok(result) => result,
         Err(error) => return format!("fleet operation worker failed: {error}"),
     };
+    let result = audited(
+        &format!("sync {operation} {}", kind_label),
+        &node_label,
+        result,
+    );
     match result {
-        Ok(body) => serde_json::to_string_pretty(&body).unwrap_or_else(|_| body.to_string()),
+        Ok(body) => fleet_result_text(&body),
         Err(error) => format!("fleet {operation} failed: {error}"),
     }
+}
+
+/// A fleet push or apply as the person reads it: the engine's `result`
+/// line under its kind, as the desktop's Instances pane words it
+/// ("memory sync: …"). It used to print the operation's JSON, which a
+/// TUI showed as one line of braces (SMOKE-20).
+fn fleet_result_text(body: &serde_json::Value) -> String {
+    let kind = body["kind"].as_str().unwrap_or("fleet");
+    let verb = match body["operation"].as_str() {
+        Some("apply") => "apply",
+        _ => "sync",
+    };
+    if let Some(line) = body["result"].as_str() {
+        return format!("{kind} {verb}: {line}");
+    }
+    let mut out = format!("{kind} {verb}: done");
+    if let Some(fields) = body.as_object() {
+        for (key, value) in fields {
+            if matches!(key.as_str(), "kind" | "operation") {
+                continue;
+            }
+            let shown = match value {
+                serde_json::Value::String(s) => s.clone(),
+                other => other.to_string(),
+            };
+            out.push_str(&format!("\n  {key}: {shown}"));
+        }
+    }
+    out
 }
 
 pub async fn dispatch_async(ctx: &mut CommandCtx<'_>, head: &str, rest: &str) -> Option<Handled> {
@@ -7597,6 +7818,90 @@ fn surface_name(s: Surface) -> &'static str {
 /// a turn is entitled to know the number. Setting is `cmd-admin`, and
 /// it writes to the runtime store so every surface sees it live —
 /// `config.toml` stays hand-authored.
+/// `/approvals [revoke <rule>]` and `veles approvals`: the standing
+/// approval grants, and revoking one (ASK-9). Three sources, as the
+/// desktop's grants panel (grants_api.rs) reads them: the store's
+/// "always" rules, the grants of `session` (the caller's own agent;
+/// none from the CLI), and the config's `[approvals] allowlist`, which
+/// is listed read-only because config.toml is its source of truth.
+/// Listing takes `cmd-admin` (the ACL table); revoking is the owner's.
+pub fn approvals_command(ctx: &AclCtx, session: Option<&Agent>, rest: &str) -> String {
+    const USAGE: &str = "usage: /approvals [revoke <rule>]";
+    let mut words = rest.split_whitespace();
+    match (words.next(), words.next(), words.next()) {
+        (None | Some("list"), None, None) => {}
+        (Some("revoke"), Some(rule), None) => {
+            if ctx
+                .principal
+                .is_some_and(|p| !p.has(veles_core::acl::Cap::All))
+            {
+                return "[acl] only the owner can revoke approval grants".into();
+            }
+            let here = session.is_some_and(|a| a.revoke_session_approval_rule(rule));
+            let always = match ctx.store.lock_ok().approval_rule_remove(rule) {
+                Ok(n) => n > 0,
+                Err(e) => return format!("revoke failed: {e:#}"),
+            };
+            return match (always, here) {
+                (true, true) => format!("revoked {rule}: always, and for this session"),
+                (true, false) => format!("revoked {rule}: always"),
+                (false, true) => format!("revoked {rule}: for this session"),
+                (false, false) => {
+                    let configured = veles_core::config::live()
+                        .approvals
+                        .allowlist
+                        .iter()
+                        .any(|g| g == rule);
+                    if configured {
+                        format!("{rule} is in config.toml's [approvals] allowlist; remove it there")
+                    } else {
+                        format!("no standing grant {rule}; /approvals lists them")
+                    }
+                }
+            };
+        }
+        _ => return USAGE.into(),
+    }
+    let always = match ctx.store.lock_ok().approval_rules() {
+        Ok(rows) => rows,
+        Err(e) => return format!("could not read approval grants: {e:#}"),
+    };
+    let here = session
+        .map(|a| a.session_approval_rules())
+        .unwrap_or_default();
+    let configured = veles_core::config::live().approvals.allowlist.clone();
+    if always.is_empty() && here.is_empty() && configured.is_empty() {
+        return "no standing approval grants (answering an approval \"always\" or \"this session\" makes one)"
+            .into();
+    }
+    let mut out = String::from("standing approval grants:");
+    if !always.is_empty() {
+        out.push_str("\nalways (every session):");
+        for (rule, note, _) in always {
+            let note = crate::grants_api::shown_note(note);
+            if note.is_empty() {
+                out.push_str(&format!("\n  {rule}"));
+            } else {
+                out.push_str(&format!("\n  {rule}  — {note}"));
+            }
+        }
+    }
+    if !here.is_empty() {
+        out.push_str("\nthis session:");
+        for rule in here {
+            out.push_str(&format!("\n  {rule}"));
+        }
+    }
+    if !configured.is_empty() {
+        out.push_str("\nconfig.toml [approvals] allowlist (edit the file to change):");
+        for rule in configured {
+            out.push_str(&format!("\n  {rule}"));
+        }
+    }
+    out.push_str("\n/approvals revoke <rule> removes one");
+    out
+}
+
 pub fn limits_command(ctx: &AclCtx, rest: &str) -> String {
     use veles_core::acl::{Cap, Role};
     let cfg = acl_cfg(ctx);
@@ -8068,6 +8373,26 @@ mod tests {
             translate_arguments("--to German --"),
             (Some("German".into()), "".into())
         );
+    }
+
+    /// SMOKE-20: `/fleet sync <node> memory` answered with the
+    /// operation's pretty-printed JSON. The person reads the engine's
+    /// result line under its kind, as on the desktop.
+    #[test]
+    fn a_fleet_operation_answers_in_words_not_json() {
+        let out = fleet_result_text(&serde_json::json!({
+            "operation": "push", "kind": "memory", "node": "n1",
+            "result": "sent 3 lessons to laptop",
+        }));
+        assert_eq!(out, "memory sync: sent 3 lessons to laptop");
+        let out = fleet_result_text(&serde_json::json!({
+            "operation": "apply", "kind": "config", "result": "nothing waiting",
+        }));
+        assert_eq!(out, "config apply: nothing waiting");
+        let out = fleet_result_text(&serde_json::json!({
+            "operation": "push", "kind": "store", "node": "n1", "sent": 4,
+        }));
+        assert!(!out.contains('{') && out.contains("sent: 4"), "{out}");
     }
 
     #[tokio::test]
@@ -9172,6 +9497,312 @@ mod tests {
         assert!(apply.contains("applied"), "{apply}");
     }
 
+    /// FLEET-9: `/fleet list` reads the body `/api/fleet` answers with, so
+    /// the owner sees what the Instances tab shows: a failing node and
+    /// why, each sync kind's status, a version drift, the nodes forgotten
+    /// fleet-wide, what waits in the inboxes and where health alerts go.
+    /// It used to print `fresh` or `stale` and a `[sync peer]` tag for
+    /// store sync only, so a node the tab painted red read "fresh" in
+    /// chat. A caller with only the status capability gets the states.
+    #[test]
+    fn fleet_list_shows_what_the_instances_tab_shows() {
+        let (_home, _env) = veles_core::testenv::scratch_home();
+        let agent = veles_core::testenv::mock_agent_with(
+            "http://127.0.0.1:0/unused",
+            "fleet-list-f9",
+            |cfg| {
+                cfg.cluster.storesync_peers = vec!["f9-list-peer".into()];
+                // Dialable (nothing dials it in a listing), so the line
+                // is the cursor and the last pass.
+                cfg.a2a_agents.insert(
+                    "f9-list-peer".into(),
+                    veles_core::config::A2APeer {
+                        url: "http://127.0.0.1:0".into(),
+                        ..Default::default()
+                    },
+                );
+            },
+        );
+        {
+            let store = agent.store.lock_ok();
+            for (id, name, version) in [
+                ("f9-list-node", "f9-list-peer", "0.2.1"),
+                ("f9-list-other", "f9-list-plain", "0.2.2"),
+            ] {
+                store
+                    .node_register(
+                        id,
+                        name,
+                        "f9-host",
+                        version,
+                        "always-on",
+                        None,
+                        Some("http://127.0.0.1:0"),
+                        None,
+                        None,
+                    )
+                    .expect("registry fixture");
+            }
+            store
+                .node_forget_everywhere("f9-list-gone")
+                .expect("tombstone fixture");
+        }
+        // The last store pass to the peer failed: the tab paints the node
+        // failing and shows the line.
+        crate::fleet_ops::record("store", "f9-list-peer", Err("refused: f9 push boom"));
+        let mut ctx = CommandCtx {
+            agent: &agent,
+            surface: Surface::Repl,
+            history: None,
+            turn_live: false,
+            principal: None,
+        };
+        let owner = dispatch(&mut ctx, "/fleet", "list")
+            .expect("fleet is shared")
+            .text;
+        for wanted in [
+            "- f9-list-node (f9-list-peer) f9-host — failing: store sync: refused: f9 push boom\n",
+            "    store sync with f9-list-peer (manual only): cursor ",
+            "last pass failed at ",
+            "- f9-list-other (f9-list-plain) f9-host — fresh\n",
+            "version drift in the registry: ",
+            "forgotten fleet-wide: f9-list-gone (at ",
+            "received, waiting to apply: store 0 · memory 0 · config 0 · vault 0\n",
+            "health alerts (listed here only; [notify] fleet_alerts is off)",
+            "/fleet probe <node-id>",
+        ] {
+            assert!(owner.contains(wanted), "missing {wanted:?} in:\n{owner}");
+        }
+        let guest = veles_core::acl::Principal::guest();
+        let mut ctx = CommandCtx {
+            principal: Some(&guest),
+            ..ctx
+        };
+        let limited = dispatch(&mut ctx, "/fleet", "list")
+            .expect("fleet is shared")
+            .text;
+        assert!(
+            limited.contains("- f9-list-node (f9-list-peer) f9-host — failing\n"),
+            "the state, without the reason:\n{limited}"
+        );
+        for owner_only in [
+            "f9 push boom",
+            "store sync with",
+            "version drift",
+            "forgotten fleet-wide",
+            "waiting to apply",
+            "health alerts",
+        ] {
+            assert!(
+                !limited.contains(owner_only),
+                "{owner_only:?} is the owner's:\n{limited}"
+            );
+        }
+    }
+
+    /// FLEET-9: `/fleet probe <node>` is the tab's Probe. Owner only; it
+    /// dials the node's `[a2a_agents]` card, never its registry endpoint;
+    /// and a node that does not answer is failing in `/fleet list`, with
+    /// the probe as the reason. There was no such verb: the tab could
+    /// probe a node and the chat surfaces could not.
+    #[tokio::test]
+    async fn fleet_probe_is_the_tabs_probe() {
+        let (_home, _env) = veles_core::testenv::scratch_home();
+        // A port nothing listens on.
+        let dead = std::net::TcpListener::bind("127.0.0.1:0").expect("a free port");
+        let url = format!("http://{}", dead.local_addr().expect("its address"));
+        drop(dead);
+        let agent =
+            veles_core::testenv::mock_agent_with("http://127.0.0.1:0", "fleet-probe-f9", |cfg| {
+                cfg.a2a_agents.insert(
+                    "f9-probe-peer".into(),
+                    veles_core::config::A2APeer {
+                        url,
+                        ..Default::default()
+                    },
+                );
+            });
+        for (id, name) in [
+            ("f9-probe-node", "f9-probe-peer"),
+            ("f9-probe-bare", "f9-probe-undialed"),
+        ] {
+            agent
+                .store
+                .lock_ok()
+                .node_register(
+                    id,
+                    name,
+                    "f9-host",
+                    "0.2.2",
+                    "always-on",
+                    None,
+                    Some("http://127.0.0.1:0"),
+                    None,
+                    None,
+                )
+                .expect("registry fixture");
+        }
+        let guest = veles_core::acl::Principal::guest();
+        let guest_ctx = CommandCtx {
+            agent: &agent,
+            surface: Surface::Gateway,
+            history: None,
+            turn_live: false,
+            principal: Some(&guest),
+        };
+        let out = fleet_command(&guest_ctx, "probe f9-probe-node").await;
+        assert!(
+            out.contains("[acl]") && out.contains("`all` capability"),
+            "{out}"
+        );
+        let owner_ctx = CommandCtx {
+            principal: None,
+            ..guest_ctx
+        };
+        let usage = fleet_command(&owner_ctx, "probe").await;
+        assert!(
+            usage.starts_with("usage:") && usage.contains("probe <node-id>"),
+            "{usage}"
+        );
+        let unknown = fleet_command(&owner_ctx, "probe f9-probe-nobody").await;
+        assert!(unknown.contains("unknown registered node"), "{unknown}");
+        let undialed = fleet_command(&owner_ctx, "probe f9-probe-bare").await;
+        assert!(
+            undialed.contains("no [a2a_agents] entry names this node"),
+            "{undialed}"
+        );
+        let dead = fleet_command(&owner_ctx, "probe f9-probe-node").await;
+        assert!(
+            dead.starts_with("node f9-probe-node did not answer ([a2a_agents] f9-probe-peer, "),
+            "{dead}"
+        );
+        let list = fleet_command(&owner_ctx, "list").await;
+        assert!(
+            list.contains("- f9-probe-node (f9-probe-peer) f9-host — failing: probe: "),
+            "{list}"
+        );
+        assert!(
+            list.contains("- f9-probe-bare (f9-probe-undialed) f9-host — fresh\n"),
+            "{list}"
+        );
+    }
+
+    /// 0.2.2: `/fleet` offers what the tab offers — status, restart,
+    /// config, bulk, alerts, the forgotten list and the audit trail.
+    /// A guest asking a node to restart or rewrite its config is refused
+    /// before anything is sent (and leaves no change); this node's own
+    /// restart without a known supervisor says why and stays up; a held
+    /// section and a node-local key are refused by name; a bulk action
+    /// lists its targets until confirmed; and every owner action is in
+    /// `/fleet audit` with who asked.
+    #[tokio::test]
+    async fn fleet_management_verbs_are_the_tabs_and_owner_only() {
+        let (_home, _env) = veles_core::testenv::scratch_home();
+        std::env::remove_var(veles_core::supervisor::ENV);
+        let me = veles_core::node::NodeIdentity::load_or_create(&veles_core::config::config_dir())
+            .expect("identity");
+        std::fs::write(
+            veles_core::config::config_dir().join("config.toml"),
+            "[model]\ndefault = \"alpha\"\n",
+        )
+        .unwrap();
+        let agent =
+            veles_core::testenv::mock_agent_with("http://127.0.0.1:0", "fleet-manage-022", |cfg| {
+                cfg.a2a_agents.insert(
+                    "m22-peer".into(),
+                    veles_core::config::A2APeer {
+                        url: "http://127.0.0.1:9".into(),
+                        ..Default::default()
+                    },
+                );
+            });
+        for (id, name) in [(me.id.as_str(), "m22-self"), ("m22-node", "m22-peer")] {
+            agent
+                .store
+                .lock_ok()
+                .node_register(id, name, "h", "0.2.2", "always-on", None, None, None, None)
+                .expect("registry fixture");
+        }
+        let guest = veles_core::acl::Principal::guest();
+        let guest_ctx = CommandCtx {
+            agent: &agent,
+            surface: Surface::Gateway,
+            history: None,
+            turn_live: false,
+            principal: Some(&guest),
+        };
+        for verb in [
+            "restart m22-self confirm",
+            "config set m22-self model.default evil confirm",
+            "bulk probe confirm",
+            "audit",
+            "status m22-self",
+        ] {
+            let out = fleet_command(&guest_ctx, verb).await;
+            assert!(out.contains("`all` capability"), "{verb}: {out}");
+        }
+        let owner_ctx = CommandCtx {
+            principal: None,
+            ..guest_ctx
+        };
+        assert!(
+            !std::fs::read_to_string(veles_core::config::config_dir().join("config.toml"))
+                .unwrap()
+                .contains("evil")
+        );
+        let status = fleet_command(&owner_ctx, &format!("status {}", me.id)).await;
+        assert!(status.contains("supervisor:"), "{status}");
+        if !veles_core::supervisor::detect().can_restart() {
+            let restart = fleet_command(&owner_ctx, "restart m22-self confirm").await;
+            assert!(restart.contains("cannot restart itself"), "{restart}");
+        }
+        assert!(fleet_command(&owner_ctx, "restart m22-self now")
+            .await
+            .starts_with("usage:"));
+        let read = fleet_command(&owner_ctx, "config get m22-self model.default").await;
+        assert!(read.contains("model.default = \"alpha\""), "{read}");
+        let unconfirmed = fleet_command(&owner_ctx, "config set m22-self model.default beta").await;
+        assert!(unconfirmed.contains("confirm"), "{unconfirmed}");
+        let set = fleet_command(&owner_ctx, "config set m22-self model.default beta confirm").await;
+        assert!(set.contains("written in its config.toml"), "{set}");
+        let read = fleet_command(&owner_ctx, "config get m22-self model.default").await;
+        assert!(read.contains("\"beta\""), "{read}");
+        let held = fleet_command(&owner_ctx, "config set m22-self acl.default all confirm").await;
+        assert!(held.contains("held section"), "{held}");
+        let local = fleet_command(&owner_ctx, "config get m22-self cluster.seeds").await;
+        assert!(local.contains("node-local"), "{local}");
+        let plan = fleet_command(&owner_ctx, "bulk probe").await;
+        assert!(
+            plan.contains("would reach") && plan.contains("m22-peer"),
+            "{plan}"
+        );
+        assert!(!plan.contains("m22-self"), "never this node: {plan}");
+        let ran = fleet_command(&owner_ctx, "bulk probe confirm").await;
+        assert!(ran.contains("m22-peer: FAILED"), "{ran}");
+        assert!(fleet_command(&owner_ctx, "bulk sync nonsense")
+            .await
+            .contains("not a sync kind"));
+        assert!(fleet_command(&owner_ctx, "alerts")
+            .await
+            .contains("No node health alert"));
+        assert!(fleet_command(&owner_ctx, "forgotten")
+            .await
+            .contains("No node is forgotten"));
+        let audit = fleet_command(&owner_ctx, "audit 50").await;
+        for action in [
+            "status",
+            "restart",
+            "config set model.default",
+            "config get model.default",
+            "bulk probe",
+        ] {
+            assert!(
+                audit.contains(&format!("local owner {action}")),
+                "{action}: {audit}"
+            );
+        }
+    }
+
     /// `/crons` is canonical and `/cron` is its alias, so all five
     /// list-shaped commands are plural (`/tasks /subagents /shells
     /// /monitors /crons`). Both spellings must answer IDENTICALLY —
@@ -9232,6 +9863,87 @@ mod tests {
     /// the failure where someone believes they left plan mode).
     fn catalog(loc: &str, key: &str) -> String {
         veles_core::i18n::translate(loc, key).unwrap_or_else(|| key.to_string())
+    }
+
+    /// ASK-9: standing approval grants could be reviewed and revoked
+    /// only from the desktop's panel; a TUI or headless owner had no way
+    /// to see or reset an "always" answer, and a TUI session's own
+    /// grants were visible nowhere.
+    #[test]
+    fn approvals_command_lists_and_revokes_standing_grants() {
+        let (_home, _env) = veles_core::testenv::scratch_home();
+        let a = veles_core::testenv::mock_agent("http://127.0.0.1:0/unused", "appr-a");
+        a.store
+            .lock_ok()
+            .approval_rule_add("terminal:recursive-delete", Some("rm -rf build"))
+            .unwrap();
+        a.test_add_session_approval_rule("terminal:sudo");
+        let mut ctx = CommandCtx {
+            agent: &a,
+            surface: Surface::Tui,
+            history: None,
+            turn_live: false,
+            principal: None,
+        };
+        let list = dispatch(&mut ctx, "/approvals", "").expect("claimed").text;
+        assert!(
+            list.contains("terminal:recursive-delete") && list.contains("terminal:sudo"),
+            "{list}"
+        );
+        let out = dispatch(&mut ctx, "/approvals", "revoke terminal:recursive-delete")
+            .expect("claimed")
+            .text;
+        assert!(out.starts_with("revoked"), "{out}");
+        assert!(!a
+            .store
+            .lock_ok()
+            .approval_rule_exists("terminal:recursive-delete")
+            .unwrap());
+        let out = dispatch(&mut ctx, "/approvals", "revoke terminal:sudo")
+            .expect("claimed")
+            .text;
+        assert!(out.contains("this session"), "{out}");
+        assert!(a.session_approval_rules().is_empty());
+        let out = dispatch(&mut ctx, "/approvals", "revoke nothing:here")
+            .expect("claimed")
+            .text;
+        assert!(out.starts_with("no standing grant"), "{out}");
+
+        // A connector's admin may read them and may not revoke.
+        a.store
+            .lock_ok()
+            .approval_rule_add("terminal:recursive-delete", None)
+            .unwrap();
+        let admin = veles_core::acl::Principal {
+            id: None,
+            subject: "irc:admin".into(),
+            role: veles_core::acl::Role::Admin,
+            caps: veles_core::acl::Role::Admin.default_caps(),
+            rule_context_limit: None,
+            mask: None,
+            via: None,
+            ticket_role: None,
+        };
+        let mut remote = CommandCtx {
+            agent: &a,
+            surface: Surface::Gateway,
+            history: None,
+            turn_live: false,
+            principal: Some(&admin),
+        };
+        let out = dispatch(
+            &mut remote,
+            "/approvals",
+            "revoke terminal:recursive-delete",
+        )
+        .expect("claimed")
+        .text;
+        assert!(out.starts_with("[acl]"), "{out}");
+        assert!(a
+            .store
+            .lock_ok()
+            .approval_rule_exists("terminal:recursive-delete")
+            .unwrap());
     }
 
     /// `/export` writes through the shared exporter into the private

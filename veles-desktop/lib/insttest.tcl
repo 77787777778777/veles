@@ -888,6 +888,14 @@ ok "_fmt_triggers is a one-element list" {
     [llength [::vinstpane::_fmt_triggers [dict create triggers \
         {{name a enabled 1} {name b enabled 0}}]]] == 1
 }
+# /api/logs answers records, not lines: the detail printed them as raw
+# dicts ("level INFO msg {…} target … time …", SMOKE-21).
+ok "_fmt_logs prints a log record as its time, level, target and message" {
+    [::vinstpane::_fmt_logs [dict create logs [list [dict create level INFO \
+        msg {module lang-js: running (0.2.1)} target veles_core::modulehost \
+        time 22:36:57.991]]]]
+    eq [list {22:36:57.991 INFO veles_core::modulehost: module lang-js: running (0.2.1)}]
+}
 ok "_fmt_logs is the list the gateway sent" {
     [llength [::vinstpane::_fmt_logs [dict create logs {"a b c" "d e"}]]] == 2
 }
@@ -1031,15 +1039,27 @@ set ::vinstpane::fleet_nodes [list [dict create \
 ok "a registry node appears without a configured instance" {
     [.instlist.list exists cluster:node-unmanaged]
 }
-ok "the cluster node carries its version and load" {
-    [.instlist.list item cluster:node-unmanaged -values] eq [list 0.2.0 {load 37} registered]
+# Load in its own column: it sat under "uptime" as "load 37" (SMOKE-21).
+ok "the cluster node carries its version and load, each in its column" {
+    [.instlist.list set cluster:node-unmanaged version] eq "0.2.0"
+    && [.instlist.list set cluster:node-unmanaged load] eq "37"
+    && [.instlist.list set cluster:node-unmanaged uptime] eq ""
+    && [.instlist.list set cluster:node-unmanaged platforms] eq "registered"
 }
 ::vinstpane::_select cluster:node-unmanaged
 ok "the cluster node is inspectable" {
     [string match "*GPU worker*" [.instdetail.body get 1.0 end]]
 }
-ok "the cluster node does not offer SSH lifecycle actions" {
-    [.instctl.start instate disabled] && [.instctl.restart instate disabled]
+ok "a field the registry has no value for is left out, not printed null" {
+    ![string match "*[::vi18n::mc {Static IP}]*" [.instdetail.body get 1.0 end]]
+    && ![string match "*: null*" [.instdetail.body get 1.0 end]]
+}
+# 0.2.2: Restart on a registry row is the node restarting itself through
+# its supervisor, asked over the cluster link (lib/fleetmanage.tcl); the
+# ssh verbs stay a saved instance's.
+ok "the cluster node offers no SSH lifecycle: Start and Stop are off, Restart is the cluster link's" {
+    [.instctl.start instate disabled] && [.instctl.stop instate disabled]
+    && ![.instctl.restart instate disabled]
 }
 ok "the cluster node cannot masquerade as an attachable instance" {
     [.instctl.attach instate disabled]
@@ -1064,9 +1084,12 @@ ok "a configured sync peer enables its explicit sync operation" {
     ![.instctl.sync instate disabled]
 }
 namespace eval ::vapi {
+    variable fleet_fail ""
     variable fleet_posts {}
     proc post_json_async {path body on_err on_ok} {
         lappend ::vapi::fleet_posts [list $path $body]
+        # A refusal arrives exactly as _post_json_async_done builds it.
+        if {$::vapi::fleet_fail ne ""} { {*}$on_err $::vapi::fleet_fail ; return }
         {*}$on_ok [dict create result "nothing to push"]
     }
 }
@@ -1092,6 +1115,14 @@ ok "a store push asks no confirmation (it only lands in the peer's inbox)" {
 ok "the push result is shown, labelled with its kind" {
     $::vstatus::last eq "Store sync: nothing to push"
 }
+# SMOKE-20: a refused sync showed `HTTP 409: {"error":"…"}` in the
+# status line. The engine's words, not its JSON.
+set ::vapi::fleet_fail {HTTP 409: {"error":"this node has no vault to send"}}
+::vinstpane::_sync_request push store node-unmanaged 0
+set ::vapi::fleet_fail ""
+ok "a refused sync shows the engine's reason, not its JSON" {
+    $::vstatus::last eq "Store sync failed: this node has no vault to send"
+}
 dict set fleet_node self 1
 set ::vinstpane::fleet_nodes [list $fleet_node]
 ::vinstpane::_enable_buttons
@@ -1113,6 +1144,18 @@ ok "only the store drain is preselected; data-changing kinds are opt-in" {
     $::vinstpane::_sync_pick(store) == 1 && $::vinstpane::_sync_pick(config) == 0
     && $::vinstpane::_sync_pick(vault) == 0 && $::vinstpane::_sync_pick(memory) == 0
 }
+destroy .fleetsync
+# Nothing waiting is nothing to preselect: the store drain was checked
+# with 0 waiting beside a config row with 1 (SMOKE-21). A kind that
+# changes data stays opt-in however much waits.
+set ::vinstpane::fleet_sync [dict create inbox [dict create store 0 memory 0 config 1 vault 0]]
+::vinstpane::_cluster_apply
+ok "a kind with nothing waiting is not preselected; a data-changing one stays opt-in" {
+    $::vinstpane::_sync_pick(store) == 0 && $::vinstpane::_sync_pick(config) == 0
+}
+destroy .fleetsync
+set ::vinstpane::fleet_sync [dict create inbox [dict create store 1 memory 0 config 2 vault 0]]
+::vinstpane::_cluster_apply
 .fleetsync.btns.ok invoke
 ok "apply received drains the local inbox, not a remote endpoint" {
     $::vapi::fleet_posts eq [list [list /api/fleet/sync [dict create kind store operation apply]]]
@@ -1178,7 +1221,7 @@ ok "cluster attach uses the associated saved gateway, not the A2A endpoint" {
 }
 ::vinstpane::refresh_list
 ok "a bound registry row says which saved instance manages it" {
-    [lindex [.instlist.list item cluster:node-unmanaged -values] 2] eq "managed via worker"
+    [.instlist.list set cluster:node-unmanaged platforms] eq "managed via worker"
 }
 # FLEET-4: the association is verified against the gateway itself.
 ::_http::reset
@@ -1196,6 +1239,75 @@ ok "a gateway whose own self row matches verifies" {
 ok "a gateway with no node identity cannot be verified" {
     [string match "*cannot be verified*" [::vinstpane::verify_node_binding worker node-unmanaged]]
 }
+# FLEET-2: start / stop / restart of a saved instance bound to a node
+# prove the binding first, over the instance's own gateway. ssh itself is
+# never run here: `open |…` is intercepted and records the verb it got.
+::vinst::update worker host worker@example.invalid
+::vinst::update worker unit veles-gateway
+rename ::open ::_insttest_open
+set ::ssh_verbs {}
+proc ::open {args} {
+    set what [lindex $args 0]
+    if {[string index $what 0] eq "|"} {
+        lappend ::ssh_verbs [lindex [string range $what 1 end] 8]
+        return -code error "insttest: ssh is not run"
+    }
+    return [uplevel 1 [list ::_insttest_open {*}$args]]
+}
+::_http::ok_with {{"nodes":[{"id":"node-elsewhere","self":true},{"id":"node-unmanaged","self":false}]}}
+set refused_verbs {}
+foreach verb {start stop restart} {
+    lappend refused_verbs [::vinstpane::_ssh_run worker $verb]
+}
+ok "start, stop and restart refuse a saved instance that answers as another node" {
+    $refused_verbs eq {0 0 0} && $::ssh_verbs eq {} &&
+    [string match "*is node node-elsewhere, not node-unmanaged*" $::vstatus::last]
+}
+::_http::ok_with {{"nodes":[]}}
+ok "restart refuses a saved instance that reports no node identity" {
+    [::vinstpane::_ssh_run worker restart] == 0 && $::ssh_verbs eq {} &&
+    [string match "*cannot be verified*" $::vstatus::last]
+}
+::_http::ok_with {{"nodes":[{"id":"node-unmanaged","self":true}]}}
+::vinstpane::_ssh_run worker restart
+ok "a saved instance that answers as its node is restarted" { $::ssh_verbs eq {restart} }
+# A stopped or hung gateway cannot answer. Start is how it comes back,
+# so it proceeds; a stop or a restart asks the operator first.
+::_http::fail_with 500
+set ::ssh_verbs {}
+set ::confirm_asked 0
+set ::confirm_answer 0
+::vinstpane::_ssh_run worker restart
+ok "a restart of a gateway that cannot be asked waits for the operator, and a no refuses" {
+    $::confirm_asked == 1 && $::ssh_verbs eq {} &&
+    [string match "*Cannot verify that worker is node node-unmanaged*" $::vstatus::last]
+}
+set ::confirm_answer 1
+::vinstpane::_ssh_run worker stop
+set ::confirm_answer 0
+ok "…and a yes runs it" { $::confirm_asked == 2 && $::ssh_verbs eq {stop} }
+::vinstpane::_ssh_run worker start
+ok "a start of a gateway that cannot be asked proceeds without asking" {
+    $::confirm_asked == 2 && $::ssh_verbs eq {stop start}
+}
+# Once up, the started gateway is checked: a wrong binding is said.
+::_http::ok_with {{"nodes":[{"id":"node-elsewhere","self":true}]}}
+set ::vinstpane::ssh_tries 0
+::vinstpane::_wait_healthy worker
+ok "a started gateway that turns out to be another node is reported" {
+    [string match "*worker is up, but its node binding is wrong*node-elsewhere*" $::vstatus::last]
+}
+::vinst::update worker node_id ""
+::_http::reset
+set ::ssh_verbs {}
+::vinstpane::_ssh_run worker restart
+ok "a saved instance with no node binding is restarted without asking any gateway" {
+    $::ssh_verbs eq {restart} && ![::_http::seen /api/fleet]
+}
+rename ::open {}
+rename ::_insttest_open ::open
+::vinst::update worker node_id node-unmanaged
+::vinst::update worker host ""
 ::_http::ok_with {{"status":"ok"}}
 set ::vinst::instances {}
 ::vinst::load
@@ -1307,6 +1419,20 @@ ok "health is shown and a failing node is red in the list" {
     [string match "*Health: failing*" $body]
     && [.instlist.list item cluster:node-unmanaged -tags] eq "down"
 }
+# FLEET-8: the SSH line follows the binding. It used to say "No SSH
+# lifecycle target is configured" on every registry row, even one whose
+# bound saved instance has a host and a unit and offers Fleet deploy.
+ok "a node bound to a saved instance with no ssh host has no lifecycle target" {
+    [string match "*No SSH lifecycle target is configured*" $body]
+}
+::vinst::update worker host worker@example.invalid
+::vinstpane::_paint_cluster_detail cluster:node-unmanaged
+set body [.instdetail.body get 1.0 end]
+ok "a node bound to a saved instance with a host and unit names it, and does not deny it" {
+    ![string match "*No SSH lifecycle target*" $body]
+    && [string match "*SSH lifecycle: through saved instance worker (worker@example.invalid, unit veles-gateway)*" $body]
+}
+::vinst::update worker host ""
 ::vinst::remove worker
 set ::vinstpane::fleet_nodes {}
 destroy .instlist .instdetail .instctl

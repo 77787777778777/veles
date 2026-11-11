@@ -550,6 +550,13 @@ enum Command {
         #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
         args: Vec<String>,
     },
+    /// Standing approval grants ("always" rules and the config
+    /// allowlist): list them, or `revoke <rule>`.
+    Approvals {
+        /// Nothing (list), or `revoke <rule>`.
+        #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
+        args: Vec<String>,
+    },
     /// The compute pool (Plan B): this node's identity/capabilities and
     /// every registered node, from the cluster registry in state.db.
     Nodes {
@@ -3711,7 +3718,28 @@ fn nodes_family(action: Option<NodesAction>) -> anyhow::Result<()> {
             Ok(())
         }
         NodesAction::Forget { id } => {
+            use veles_core::store::{forget_refusal, ForgetRefusal};
             let target = resolve_node(&store, &id)?;
+            // The guards the Instances tab and `/fleet forget` apply
+            // (fleet_ops::forget): this command used to skip both, and
+            // left this node's own tombstone gossiping for 90 days (audit
+            // FLEET-6).
+            let me = (!self_id.is_empty()).then_some(self_id.as_str());
+            match forget_refusal(&target, me, stale_after) {
+                Some(ForgetRefusal::ThisNode) => anyhow::bail!(
+                    "{} ({}) is this node: it cannot be forgotten, it registers itself again",
+                    target.name,
+                    target.id
+                ),
+                Some(ForgetRefusal::Live { heartbeat_at }) => anyhow::bail!(
+                    "{} ({}) is still heartbeating (last {heartbeat_at}); only a stale node can \
+                     be forgotten — stop it and wait [cluster] stale_after_secs ({} s)",
+                    target.name,
+                    target.id,
+                    cfg.cluster.stale_after_secs
+                ),
+                None => {}
+            }
             // Fleet-wide: the tombstone this leaves rides the next gossip
             // exchange, so a peer that still lists the node drops it
             // instead of gossiping it back (FLEET-6 forget propagation).
@@ -3756,6 +3784,7 @@ fn acl_family(which: &str, args: &[String]) -> anyhow::Result<()> {
     let out = match which {
         "acl" => veles_frontends::commands::acl_command(&ctx, &rest),
         "limits" => veles_frontends::commands::limits_command(&ctx, &rest),
+        "approvals" => veles_frontends::commands::approvals_command(&ctx, None, &rest),
         // `Surface::Repl`, and it is not a formality: a shell on this
         // box is exactly the evidence `/lockdown off` asks for, and
         // this is the surface an operator reaches for when the desktop
@@ -3966,8 +3995,10 @@ enum PluginsAction {
         #[arg(long, default_value = "")]
         description: String,
         /// The plugin's language: tcl (default), js (TypeScript, the
-        /// lang-js host), racket (the lang-racket host) or lisp (Common
-        /// Lisp, the lang-lisp host). `overlay` writes a Rust overlay
+        /// lang-js host), racket (the lang-racket host), lisp (Common
+        /// Lisp, the lang-lisp host) or rust (an out-of-tree cdylib on
+        /// veles-plugin-abi-sdk: build it with cargo build --release, then
+        /// reload it). `overlay` writes a Rust overlay
         /// module's own repository into ./<name> instead: a crate and a
         /// flake that builds veles with it (docs/extending.md, "Rust
         /// overlay modules"; not part of the stable API)
@@ -5229,6 +5260,7 @@ fn main() -> anyhow::Result<()> {
         Some(Command::Sandbox { ref args }) => acl_family("sandbox", args),
         Some(Command::Limits { ref args }) => acl_family("limits", args),
         Some(Command::Lockdown { ref args }) => acl_family("lockdown", args),
+        Some(Command::Approvals { ref args }) => acl_family("approvals", args),
         Some(Command::Nodes { action }) => nodes_family(action),
         Some(Command::Dream) => {
             // S2 dreaming: one reflection pass (may take a minute), then

@@ -1378,6 +1378,16 @@ proc ::vchat::export_session {sid fmt} {
     return $path
 }
 
+# `/export` argument -> the endpoint's format name, "" when it is not
+# one. The same words as the engine's Format::parse.
+proc ::vchat::export_format {word} {
+    switch -- [string tolower [string trim $word]] {
+        "" - md - markdown { return markdown }
+        json { return json }
+    }
+    return ""
+}
+
 # /resume <id or prefix>: the session itself, else the most recently
 # active one whose id starts with it — over every session, through the
 # listing's search (the desktop told people to /resume and had no
@@ -2493,7 +2503,11 @@ proc ::vchat::_joined_session {sid} {
         && [dict get $spec target_session] eq $sid}]
 }
 
-proc ::vchat::send_current {} {
+# `verbatim`: the input is text the gateway already judged to be text
+# (POST /api/command answered `send`: a path typed first, or a `//` line
+# with one slash taken off). It is sent as a message, never read as a
+# command again.
+proc ::vchat::send_current {{verbatim 0}} {
     variable session
     variable busy
     variable turn_anchor
@@ -2525,7 +2539,9 @@ proc ::vchat::send_current {} {
     # `/secret set NAME <value>` keeps only its command part in the
     # input history (which outlives the session): the value is dropped
     # by the /secret arm and must not survive here either.
-    if {[regexp {^(/secret\s+set\s+\S+)\s+\S} $txt -> safe]} {
+    # A verbatim send was pushed when it was typed.
+    if {$verbatim} {
+    } elseif {[regexp {^(/secret\s+set\s+\S+)\s+\S} $txt -> safe]} {
         ::vedit::hist_push $safe
     } elseif {$txt ne ""} { ::vedit::hist_push $txt }
 
@@ -2538,7 +2554,9 @@ proc ::vchat::send_current {} {
     # accepted; /steer, /secret and every other slash command must not
     # run as an ordinary local desktop command. chat_send routes /leave
     # through the target's joined-command endpoint as well.
-    if {[string index $txt 0] eq "/" && [_joined_session $session]} {
+    if {$verbatim} {
+        # Text, as the gateway judged it: on to the message path below.
+    } elseif {[string index $txt 0] eq "/" && [_joined_session $session]} {
         .mid.chatwrap.chat.input delete 1.0 end
         if {[string equal -nocase $txt "/leave"]} {
             # The target owns exact-binding leave; chat_send returns its
@@ -2784,6 +2802,20 @@ proc ::vchat::_try_shared_command {sid cmd} {
         emit_message system [format [::vi18n::mc {%s failed: %s}] $cmd $e]
         return 1
     }
+    # Text by the gateway's one rule (commands::slash_line, shared with
+    # the TUI and the REPL): a path typed first, or a `//` line with one
+    # slash taken off. Sent as a message, exactly as if typed — the
+    # input, attachments and steering logic are send_current's.
+    set send ""
+    catch { set send [dict get $r send] }
+    if {$send ne "" && $send ne "null"} {
+        catch {
+            .mid.chatwrap.chat.input delete 1.0 end
+            .mid.chatwrap.chat.input insert 1.0 $send
+            ::vchat::send_current 1
+        }
+        return 1
+    }
     set handled 0
     catch { set handled [dict get $r handled] }
     if {!([string is true -strict $handled] || $handled eq "1")} { return 0 }
@@ -2832,6 +2864,29 @@ proc ::vchat::_try_shared_command {sid cmd} {
     return 1
 }
 
+# The sessions `inst` lets the owner join, one per line with its id, in
+# the chat surfaces' words. GET /api/join/candidates runs the gateway's
+# own joinable list, so the desktop keeps no second copy of who may be
+# joined.
+proc ::vchat::_join_candidates {inst} {
+    if {[catch {::vapi::with_instance $inst {::vapi::get_json /api/join/candidates}} d]} {
+        emit_message system [format [::vi18n::mc {join failed on %s: %s}] $inst [::vapi::reason $d]]
+        return 1
+    }
+    set rows {}
+    if {[dict exists $d sessions]} { set rows [dict get $d sessions] }
+    if {![llength $rows]} {
+        emit_message system [format [::vi18n::mc {nobody else's session is open on %s right now}] $inst]
+        return 1
+    }
+    set out [format [::vi18n::mc {sessions you can join on %s (/join <name or id>):}] $inst]
+    foreach r $rows {
+        append out "\n  [dict get $r session_id]  [dict get $r label]"
+    }
+    emit_message system $out
+    return 1
+}
+
 # Owner joins: the target gateway owns execution and persistence; the
 # client keeps only its return view in the local instance registry.
 proc ::vchat::_join_command {sid verb rest} {
@@ -2840,21 +2895,30 @@ proc ::vchat::_join_command {sid verb rest} {
         emit_message system [::vi18n::mc {/leave the current joined session before opening another}] ; return 1
     }
     if {$verb eq "/join"} {
-        if {$rest eq ""} { emit_message system [::vi18n::mc {usage: /join <session> or /join <instance>/<session>}] ; return 1 }
         set slash [string first / $rest]
         if {$slash > 0} {
             set inst [string range $rest 0 [expr {$slash - 1}]]
             set target [string range $rest [expr {$slash + 1}] end]
         } else { set inst $here ; set target $rest }
+        # A bare `/join` (or `/join <instance>/`) lists what that gateway
+        # lets the owner join, as the chat surfaces do; it used to print
+        # a usage line instead (ASK-1).
+        if {$target eq ""} { return [_join_candidates $inst] }
         if {$inst eq $here && $target eq $sid} { emit_message system [::vi18n::mc {already in that session}] ; return 1 }
         set body [dict create \
             session_id [::vapi::json_string $target] \
             instance [::vapi::json_string $here] \
             owner_session [::vapi::json_string $sid]]
         if {[catch {::vapi::with_instance $inst {::vapi::post_json /api/join $body}} response]} {
-            emit_message system [format [::vi18n::mc {join failed on %s: %s}] $inst $response] ; return 1
+            emit_message system [format [::vi18n::mc {join failed on %s: %s}] $inst [::vapi::reason $response]] ; return 1
         }
         set join [dict get $response join]
+        # The gateway resolves a name or an id prefix to one session with
+        # the chat surfaces' resolver; from here on the view, the saved
+        # return state and /leave name that session, never the word typed.
+        if {[dict exists $join target_session] && [dict get $join target_session] ne ""} {
+            set target [dict get $join target_session]
+        }
         set spec [dict create join_id [dict get $join join_id] instance $inst \
             target_session $target from_instance $here from_session $sid]
         if {$inst ne $here && ![::vapp::attach $inst]} {
@@ -3091,8 +3155,14 @@ proc ::vchat::slash_command {cmd} {
             emit_message system [join $lines "\n"]
         }
         "export" {
-            set fmt [expr {$rest eq "json" ? "json" : "markdown"}]
-            if {[catch {::vchat::export_session $::vchat::session $fmt} e]} {
+            # The engine's grammar (export.rs Format::parse): md, markdown
+            # or json in any case, nothing else. Only a lower-case `json`
+            # was recognised here, so `/export JSON` and `/export xml`
+            # both wrote Markdown (ASK-6).
+            set fmt [::vchat::export_format $rest]
+            if {$fmt eq ""} {
+                emit_message system [::vi18n::mc {usage: /export [md|json]}]
+            } elseif {[catch {::vchat::export_session $::vchat::session $fmt} e]} {
                 emit_message system [::vi18n::mc {export failed: %s} $e]
             } else {
                 emit_message system [format [::vi18n::mc {exported to %s}] $e]
@@ -3536,14 +3606,14 @@ proc ::vchat::slash_command {cmd} {
                         turn_error "request failed: $e"
                     }
                 } else {
-                    emit_message system "[format [::vi18n::mc {unknown command: /%s}] $name]\n[::vi18n::mc {try /help}]"
+                    emit_message system "[format [::vi18n::mc {unknown command: /%s}] $name]\n[::vi18n::mc {try /help}]\n[::vi18n::mc {start the line with // to send it as text}]"
                 }
             } elseif {$render_err ne "" && ![string match "*404*" $render_err]} {
                 # A transport/render failure is NOT "no such command" —
                 # saying so sent people looking in the wrong place.
                 emit_message system [format [::vi18n::mc {/%s failed: %s}] $name $render_err]
             } else {
-                emit_message system "[format [::vi18n::mc {unknown command: /%s}] $name]\n[::vi18n::mc {try /help}]"
+                emit_message system "[format [::vi18n::mc {unknown command: /%s}] $name]\n[::vi18n::mc {try /help}]\n[::vi18n::mc {start the line with // to send it as text}]"
             }
         }
     }

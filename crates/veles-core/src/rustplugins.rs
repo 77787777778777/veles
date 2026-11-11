@@ -247,6 +247,9 @@ pub fn register_plugin(plugin: Arc<dyn VelesPlugin>) {
                  (see hooks::KNOWN_HOOKS)"
             );
         }
+        if let Some(note) = crate::hooks::reserved_note(hook.as_str()) {
+            tracing::warn!("rust plugin `{name}`: {note}");
+        }
     }
 
     for tool in plugin.tools() {
@@ -784,6 +787,9 @@ unsafe extern "C" fn host_register_hook(
             p.name
         );
         return 0;
+    }
+    if let Some(note) = crate::hooks::reserved_note(&name) {
+        tracing::warn!("rust .so plugin `{}`: {note}", p.name);
     }
     let lib = Arc::clone(&p.lib);
     let free = p.free;

@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset wo {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset wo {%1$s %2$s done} {%1$s %2$s dëpp}
 ::msgcat::mcset wo {%1$s %2$s failed: %3$s} {%1$s %2$s fàccu na: %3$s}
+::msgcat::mcset wo {%1$s %2$s over ssh anyway?} {%1$s %2$s ci ssh ci saa si?}
 ::msgcat::mcset wo {%1$s %2$s over ssh…} {%1$s %2$s ci ssh…}
 ::msgcat::mcset wo {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset wo {%1$s (%2$s waiting)} {%1$s (%2$s xaar)}
 ::msgcat::mcset wo {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  xalaat %3$s}
 ::msgcat::mcset wo {%1$s = %2$s here} {%1$s = %2$s fii}
+::msgcat::mcset wo {%1$s = %2$s on %3$s} {%1$s = %2$s ci %3$s}
 ::msgcat::mcset wo {%1$s NOT saved: %2$s} {%1$s DENCUWUL: %2$s}
 ::msgcat::mcset wo {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s bokk ci nciki %2$s, jàng rekk — kopi ko ak New… ngir soppi ko}
 ::msgcat::mcset wo {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s bokk ci nciki %2$s — veles farul saangaari tool yu keneen}
+::msgcat::mcset wo {%1$s cannot restart itself: %2$s} {%1$s mënul tàmbalaatewaat boppam: %2$s}
+::msgcat::mcset wo {%1$s differs: %2$s} {%1$s wuute na: %2$s}
 ::msgcat::mcset wo {%1$s every cron job on %2$s?} {%1$s bépp jëfi cron ci %2$s?}
 ::msgcat::mcset wo {%1$s failed: %2$s} {%1$s fàccu na: %2$s}
 ::msgcat::mcset wo {%1$s in / %2$s out / %3$s calls} {%1$s duloo / %2$s dijji / %3$s wowu}
+::msgcat::mcset wo {%1$s is back after %2$s s (veles %3$s).} {%1$s dellusi na ginnaaw %2$s s (veles %3$s).}
 ::msgcat::mcset wo {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s mooy node %2$s, du %3$s. Déglaal node id bi ci Edit….}
 ::msgcat::mcset wo {%1$s is not a whole number} {%1$s du lim bu mat}
+::msgcat::mcset wo {%1$s is not on: %2$s} {%1$s doxul: %2$s}
+::msgcat::mcset wo {%1$s is not set on %2$s: the default applies.} {%1$s setuwul ci %2$s: defò bi a ngi dox.}
 ::msgcat::mcset wo {%1$s is reachable (%2$s ms).} {%1$s mën nañu ko jot (%2$s ms).}
+::msgcat::mcset wo {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s dafay dox %2$s turn. Tàmbalaatewaat ko ci saa si?}
 ::msgcat::mcset wo {%1$s is set to something this box cannot edit (%2$s)} {%1$s set na ci li jémm bii mënul soppi (%2$s)}
 ::msgcat::mcset wo {%1$s is unreachable: %2$s} {%1$s mënuñu ko jot: %2$s}
+::msgcat::mcset wo {%1$s is up, but its node binding is wrong: %2$s} {%1$s dox na, waaye jokkoo bi ak node bi baaxul: %2$s}
+::msgcat::mcset wo {%1$s not compared: %2$s} {%1$s toppantalewuñu ko: %2$s}
 ::msgcat::mcset wo {%1$s of %2$s characters} {%1$s ci %2$s wadde}
 ::msgcat::mcset wo {%1$s of %2$s sessions} {%1$s ci %2$s session}
 ::msgcat::mcset wo {%1$s of %2$s skills reach the prompt} {%1$s ci %2$s saangaar àgg nañu ci prompt}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset wo {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset wo {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset wo {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset wo {%1$s: %2$s on the gateway} {%1$s: %2$s ci gateway bi}
+::msgcat::mcset wo {%1$s: %2$s on the gateway (ships with veles)} {%1$s: %2$s ci gateway bi (ñu koy boole ak veles)}
 ::msgcat::mcset wo {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset wo {%1$s: no language server on the gateway. %2$s} {%1$s: amul serveru làkk ci gateway bi. %2$s}
 ::msgcat::mcset wo {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: %2$s yu mujj ci %3$s lidd yu gateway bi denc ci memory, kumpa yi ñu far ci node boobu.}
+::msgcat::mcset wo {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: plugin bu jëfandikukat bi %2$s dafay tëx ci bi ñu boole ci, te kontenu bi benn la (%3$s)}
 ::msgcat::mcset wo {%d MCP server(s) configured} {%d serveru MCP ñu konfigure}
 ::msgcat::mcset wo {%d entries} {%d yëf}
 ::msgcat::mcset wo {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {%d fichier ci extension bi ñu nañu ko bind ni ñu ko xool. Su lañu soppiku dale ci preview bi, dara duñu bind. Amul commit, push walla PR.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset wo {%s (stale)} {%s (maggat)}
 ::msgcat::mcset wo {%s (this session)} {%s (session bii)}
 ::msgcat::mcset wo {%s GB free of %s GB} {%s GB yu des ci %s GB}
+::msgcat::mcset wo {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s Command bi dafay dem ci ssh ci host bi ñu konfigure, te xool bii mënul a firndeel ne node bi la.}
 ::msgcat::mcset wo {%s already exists — open it from the list} {%s am na ba noppi — ubbi ko ci lim bi}
 ::msgcat::mcset wo {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {%s soppiku na li dale ci bi nga ko ubbee — dara bindaatuwul ci kaw; duppil sa mbind, ba noppi Dellusi}
 ::msgcat::mcset wo {%s cleared for this buffer} {%s set na ci buffer bii}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset wo {%s comes from config.toml [acl] — edit there} {%s joge ci config.toml [acl] — soppi ko fa}
 ::msgcat::mcset wo {%s config change(s) wait for you — /configsync} {%s coppite ci config lay xaar — /configsync}
 ::msgcat::mcset wo {%s did not become healthy within 30s} {%s nekkul bu baax ci 30s}
+::msgcat::mcset wo {%s did not come back within 120 s: look at its log where it runs.} {%s dellusiwul ci biir 120 s: xool log bi fa mu dox.}
 ::msgcat::mcset wo {%s done} {%s dëpp}
 ::msgcat::mcset wo {%s failed: %s} {%s mutate na: %s}
+::msgcat::mcset wo {%s holds a credential: it stays on its node and is not shown.} {%s am na kumpa: dafay des ci node bi moom, te ñu koy wonul.}
 ::msgcat::mcset wo {%s is already split} {%s facc na}
+::msgcat::mcset wo {%s is restarting; waiting for it to come back…} {%s dafay tàmbalaatewaat; xaar nañu ko mu dellusi…}
 ::msgcat::mcset wo {%s is the language in use — pick another one to swap with} {%s mooy làkk wi ñuy jëfandikoo — tànnal beneen ngir soppi}
 ::msgcat::mcset wo {%s is up} {%s dox na}
 ::msgcat::mcset wo {%s keys — any key closes} {%s tus — tus bu nekk tëj na ko}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset wo {; shadows bundled} {; bu boroom bi moo ëpp}
 ::msgcat::mcset wo {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Jox bu config mën na soppi setiŋ yi, jox bu kees bi boole kumpa yi; coppite ci wàll bu kaarange dañuy xaar boroom bi.}
 ::msgcat::mcset wo {A failing plugin may drop hooks mid-turn.} {Plugin bu fàccu mën na wàcce hooks ci diggu turn.}
+::msgcat::mcset wo {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {Wàll bu ñu denc: ñu koy bindul fii; soppi ko ci node bi ba noppi push config, boroom bi dina ko jëfe fa.}
 ::msgcat::mcset wo {A local server: no key is needed unless you set one up.} {Server bu lokal: key warul su fekkee nga setul benn.}
 ::msgcat::mcset wo {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Release bu ñu màkk, dañu ko yeb rekk gannaaw preflight. Tàmbaliwaat/xool, wéy di dem ak dellu li mooy jëf yu wuute. Process bu baax war na yóone revision bi ñu xool ci source bi.}
 ::msgcat::mcset wo {A value is stored for %s — leave this empty to keep it.} {Am na njëg lu ñu denc ngir %s — bàyyil lii mu wéet ngir mu des.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset wo {Asking the provider for its models…} {Dañuy laaj joxekat bi ci model yi…}
 ::msgcat::mcset wo Attach Attach
 ::msgcat::mcset wo {Attach to the next message} {Yokk ci messaaj bi next}
+::msgcat::mcset wo {Audit log unavailable: %s} {Logu audit bi amul: %s}
+::msgcat::mcset wo {Audit log…} {Logu audit…}
 ::msgcat::mcset wo {Author guide} {Téere jàngalekat bu bindkat}
 ::msgcat::mcset wo {Automatically discovered from the attached gateway's cluster registry.} {Ñu koy gis boppam ci rejis bu cluster bu gateway bi ñu boole.}
 ::msgcat::mcset wo Back Dellu
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset wo {Browse sessions} {Seet session yi}
 ::msgcat::mcset wo {Build manifest + preflight} {Sos manifest + preflight}
 ::msgcat::mcset wo {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Build: veles %1$s, revision %2$s (%3$s %4$s)}
+::msgcat::mcset wo {Bulk %1$s failed: %2$s} {%1$s ci yépp fàccu na: %2$s}
+::msgcat::mcset wo {Bulk %1$s: %2$s (%3$s).} {%1$s ci yépp: %2$s (%3$s).}
+::msgcat::mcset wo {Bulk action cancelled.} {Jëf bi ci yépp cancel na.}
 ::msgcat::mcset wo {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e bu yàpp bu line · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo}
 ::msgcat::mcset wo {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g abort lu nepp · C-j newline · M-p/M-n history · Tab complete}
+::msgcat::mcset wo {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU: %1$s cores, %2$s%% dox ci %3$s s yu mujj}
 ::msgcat::mcset wo {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s kor, sàkku %2$s / %3$s / %4$s (%5$s%% ci kor yi)}
 ::msgcat::mcset wo Cancel Dibbi
 ::msgcat::mcset wo {Cancel task} {Cancel jëf bi}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset wo {Channels (e.g. #veles #dev)} {Channels (misaal: #veles #dev)}
 ::msgcat::mcset wo Chat Waxtaan
 ::msgcat::mcset wo {Chat — not attached; press Attach in the Instances tab} {Chat — du attaché; toggal Attach ci tab Instances}
-::msgcat::mcset wo {Check (lsp)} {Seetal (lsp)}
+::msgcat::mcset wo {Check (C-c C-k)} {Xool (C-c C-k)}
 ::msgcat::mcset wo {Check again} Xoolaat
 ::msgcat::mcset wo {Check files} {Saytul fichier yi}
 ::msgcat::mcset wo Checkpoints Checkpoints
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset wo {Close (Esc)} {Tëj (Esc)}
 ::msgcat::mcset wo {Close the setup wizard? Nothing has been written yet.} {Téjjali setup wizard bi? Lenñ amul ñu bind.}
 ::msgcat::mcset wo {Code actions} {Jëfi code}
+::msgcat::mcset wo {Command-center audit log} {Logu audit bu command center bi}
 ::msgcat::mcset wo Commit Commit
 ::msgcat::mcset wo {Commit ready for review. Push is a separate action.} {Commit bi waaj na ngir saytu. Push mooy jëf ju wuute.}
 ::msgcat::mcset wo {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Matéyal bépp barab bu PDS, ëmb digest bu image bi ñu tëraale, balaa nga xool yóbbu bi.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset wo {Config differs: %s} {Config bi wuute na: %s}
 ::msgcat::mcset wo {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Log bu config: node boobu am na coppite yu %1$s ba %3$s, gateway bii ba %2$s}
 ::msgcat::mcset wo {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Log bu config: gateway bii am na coppite yu %1$s ba %2$s, node boobu ba %3$s}
+::msgcat::mcset wo {Config of %s} {Config bu %s}
 ::msgcat::mcset wo {Config only on that node: %s} {Config ci node boobu rekk: %s}
 ::msgcat::mcset wo {Config only on this gateway: %s} {Config ci gateway bii rekk: %s}
+::msgcat::mcset wo {Config: %s} {Config: %s}
 ::msgcat::mcset wo Configure Konfigure
 ::msgcat::mcset wo {Configure %s} {Konfigure %s}
 ::msgcat::mcset wo {Configure translator} {Konfigure tàngalekat bi}
 ::msgcat::mcset wo {Configured desktop gateway} {Gateway bu desktop bu ñu konfigure}
 ::msgcat::mcset wo Configure… Konfigure…
 ::msgcat::mcset wo {Configuring %s} {Dinañu konfigure %s}
+::msgcat::mcset wo Config… Config…
 ::msgcat::mcset wo {Confirm or discard the current signed review before starting another download.} {Dëppoo walla bàyyi revu bi ñu signe bi ñu am léegi balaa tàmbali beneen yeb.}
 ::msgcat::mcset wo {Container host: typed host plan and privileged CLI handoff} {Hoste container: planu host bu ñu tëral ak joxe CI bu soxla sañ-sañu admin}
 ::msgcat::mcset wo {Context window} {Context window}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset wo {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Sakkal bot bi ak @BotFather, te nga taf token bi ci suuf: dina dugg ci kees bu ñu kripte, du dugg mukk ci config.toml.}
 ::msgcat::mcset wo {Create this extension?} {Sos ekstansiyon bii?}
 ::msgcat::mcset wo {Create this generated extension?} {Ndax sos extension bi ñu jur bii?}
+::msgcat::mcset wo {Created and loaded. Review and test the extension before publishing.} {Sos nañu ko te yeb nañu ko. Xool te seet extension bi balaa publiye ko.}
 ::msgcat::mcset wo {Created and reloaded. Review and test the extension before publishing.} {Sos nañu ko te yebaat ko. Xoolal te jànkat ekstansiyon bi balaa yónnée ko.}
 ::msgcat::mcset wo {Created, but reload failed} {Sos nañu ko, waaye yebaat bi fàccu na}
+::msgcat::mcset wo {Created, not loaded} {Sos nañu ko, yebuwuñu ko}
+::msgcat::mcset wo {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {Sos nañu ko, yebuwuñu ko ba léegi: doxal cargo build --release ci dossier bu extension bi, ba noppi yebaat ko ci Manage extensions.}
+::msgcat::mcset wo {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {Sos nañu ko. Gateway bii waxul ndax yeb na extension bi: xool ndogal bi ci Manage extensions.}
 ::msgcat::mcset wo {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Dafay defar %s/<name>/SKILL.md ci benn template, te ubbi ko. Description bi ci frontmatter moo rekk àgg ci prompt index — def ko di wax LAN la war a jëfandikoo skill bi.}
 ::msgcat::mcset wo {Cron history} {Cron history}
 ::msgcat::mcset wo {Cron jobs} {Jëfi cron}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset wo {Delete user} {Far jëfandikukat bi}
 ::msgcat::mcset wo {Delete workspace?} {Far workspace bi?}
 ::msgcat::mcset wo Deop {Dindi op}
+::msgcat::mcset wo {Deployment consistency unknown: %s node(s) could not be compared.} {Dëppoo bu déploiement bi xamul: node %s lañu mënuñu toppantale.}
+::msgcat::mcset wo {Deployment consistency: not checked yet (Drift… compares every node).} {Dëppoo bu déploiement bi: xooluñu ko ba léegi (Drift… dafay toppantale node bu nekk).}
 ::msgcat::mcset wo {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Faramfacce coppite bi. AI mën na soppi walla yokk ay fichier yu bari ci extension bii. Fichier bu nekk dañuy wone ni diff, te dara duñu bind balaa nga firndeel.}
 ::msgcat::mcset wo {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Melatal soppi bi. AI mën na propoze benn li wuutu, waaye mënu ko bind balaa nga xool te dëggal diff bi.}
 ::msgcat::mcset wo {Describe the requested extension change first.} {Melatal soppi bi nga bëgg ci ekstansiyon bi ci njëkk.}
 ::msgcat::mcset wo Description Melatin
+::msgcat::mcset wo {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {Turn yu desktop dañuy wéy ci taarix bi ñu denc ginnaaw tàmbalaatewaat bi; turn yu connector, A2A, mail, cron ak subagent dañuy wéyul.}
 ::msgcat::mcset wo {Desktop: local core, modules and process plugins} {Desktop: core bu lokal, module yi ak plugin yu process}
 ::msgcat::mcset wo Detach Dëggël
 ::msgcat::mcset wo {Detach foreground} {Wàcce ci ginnaaw}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset wo {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Yeb te xool manifestu release bi ak arsiifu masin bi balaa install. Bépp ci juróom ci dàttu idantité yi soxl nañu. Gateway bi dafay denc arsiif bi ñu stoke ci wàll wu sutura; xool bii installul dara.}
 ::msgcat::mcset wo {Downloading and verifying the signed release…} {Ñu ngi yeb te xool release bi ñu signe…}
 ::msgcat::mcset wo {Draft this as an extension?} {Defal lii ni ekstansiyon?}
+::msgcat::mcset wo {Draft this change as an extension?} {Waajal coppite bii ni extension?}
 ::msgcat::mcset wo {Drag to scroll; a quick swipe goes further.} {Xëccal ngir yëngal; laal bu gaaw dafay yëngal ba sore.}
 ::msgcat::mcset wo {Drift check failed: %s} {Xool bu drift fàccu na: %s}
 ::msgcat::mcset wo {Drift check: %s node(s) differ from this gateway.} {Xool bu drift: %s node wuute na ak gateway bii.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset wo Eval→gw Eval→gw
 ::msgcat::mcset wo {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Bépp soppi ci %s ñu koy commit. Restore dafay dellusi réér bi yépp ci commit bu boobu — te dafay fotoo state bi bii ci jëkk, ndaxte du benn door bu benn wàll.}
 ::msgcat::mcset wo {Every plugin file goes back to that commit. The current state is committed first.} {Bépp fileu plugin dafay dellusi ci commit boobu. State bi bii ñu koy commit ci jëkk.}
+::msgcat::mcset wo {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {Téeri bu nekk: New extension dafay bind extension ci Tcl, TypeScript, Racket walla Common Lisp, walla plugin bu Rust bu génn ci arbre bi (cdylib ci crate bi veles-plugin-abi-sdk: tabax ko ak cargo build --release, ba noppi yebaat ko ci Manage extensions). Ñaari téeri dañuy dox ci biti dossier bu plugin bu jëfandikukat bi, te dañuy tàmbali ci lidd bu command bi: module, library bu Rust bu ñu tabax ak veles (veles plugins new NAME --kind overlay dafay bind repository bi moom), ak plugin bu process, program ci crate bi veles-plugin-sdk bi gateway bi doxal te saytu. Guide bu mbindéef bi am na benn wàll ci bépp.}
 ::msgcat::mcset wo {Exact commit} {Commit bu mat}
 ::msgcat::mcset wo {Exact permission rule} {Règle bu jox bu mat}
 ::msgcat::mcset wo {Example: a hook} {Misal: benn hook}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset wo {Explain the diagnostics} {Firi diagnostic yi}
 ::msgcat::mcset wo Export… {Yónnee biti…}
 ::msgcat::mcset wo {Extension API} {API bu ekstansiyon}
+::msgcat::mcset wo {Extension API reference} {Referaans bu API bu extension}
 ::msgcat::mcset wo {Extension development} {Tabaxu ekstansiyon}
 ::msgcat::mcset wo {Extension guide} {Tërale bu ekstansiyon}
 ::msgcat::mcset wo {Extension source} {Source bu ekstansiyon}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset wo {Guards — what the harness stops, and where it stands now} {Guards — lu harness bi tëj, te fi mu nekk tey}
 ::msgcat::mcset wo {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handlers dox nañu ci nått yu wone; bi jëkk bu gisee value bu amul dara moo ko jël. Tëj benn du ko unregister — rekk ci config.toml la togg, ndaxte plugin reload du mën a dellusi ko suuf su kenn xam.}
 ::msgcat::mcset wo Health Wér-gi-yaram
+::msgcat::mcset wo {Health alerts} {Xibaar yu wér-gi-yaram}
 ::msgcat::mcset wo {Health alerts (%s):} {Xamle yu wér-gi-yaram (%s):}
 ::msgcat::mcset wo Heartbeat {Tëggu xol}
 ::msgcat::mcset wo {Heartbeat age: %s s} {Yaatu heartbeat: %s s}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset wo Install… Wàtale…
 ::msgcat::mcset wo {Instance name (for example an IRC network)} {Tur instance (misaal: benn reso bu IRC)}
 ::msgcat::mcset wo Instances Instances
+::msgcat::mcset wo {Instead of patching %s: } {Ci lu dul def patch ci %s: }
 ::msgcat::mcset wo {It becomes the current content, as a new revision — so the restore can be undone too.} {Dina nekk li ci biir fi mu nekk, niki revision bu bees — kon mën nga neenal delloo bi itam.}
 ::msgcat::mcset wo {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Dina dugg ci kees bu ñu kripte ci masin bii. Ndawu bi du ko gis mukk: mën na ko jëfandikoo rekk ni $%s ci ndigal yi, walla yónne ko ci host yi ñu may.}
 ::msgcat::mcset wo {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Ñu ko far nañu ci rejis bu cluster bi ci fleet bépp: gossip bu topp dafay wax bépp peer bu 0.2.0 ngir mu far ko itam, te benn ci ñoom duggalul ko. Peer bu magg ci 0.2.0 dafay wéy wone ko. Su masin bi dellusee te heartbeat, ñu ko bindaat nañu. Sync peer yi ak instance yu ñu denc dañu leen bàyyi ni ñu doon.}
+::msgcat::mcset wo {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {Bind nañu ko ci config.toml bu node boobu ni coppite bu ñu def fa; kon config sync dafay yóbbu ko ci node yi ñu koy sync config.}
 ::msgcat::mcset wo {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Léegi mu ngi génn ci jot bi. Taariixam dafa denc revision bu nekk, te Taariix… mën na ko delloo.}
+::msgcat::mcset wo {Its gateway stops and %s.} {Gateway bi moom dafay tëj te %s.}
 ::msgcat::mcset wo Join Bokk
 ::msgcat::mcset wo {Join a pool} {Bokk ci mbooloo masin}
 ::msgcat::mcset wo {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {Bokk ci mbooloo masinu %1$s ni %2$s? Mbooloo mi dina agsi ci telefon bii ci %3$s.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset wo Joining… {Mu ngi bokk…}
 ::msgcat::mcset wo Join… Bokk…
 ::msgcat::mcset wo {Jump to composer} {Dem ci composer bi}
+::msgcat::mcset wo {Key (for example model.default)} {Key (ci misaal model.default)}
 ::msgcat::mcset wo Keybindings Keybindings
 ::msgcat::mcset wo {Keyboard help} {Ndimbal ci klawiye}
 ::msgcat::mcset wo {Kick %1$s from %2$s?} {Kick %1$s ci %2$s?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset wo {LLM provider} {Joxekat LLM}
 ::msgcat::mcset wo Language Làkk
 ::msgcat::mcset wo {Language (i18n)} {Làkk (i18n)}
+::msgcat::mcset wo {Language servers on this gateway} {Server yu làkk ci gateway bii}
 ::msgcat::mcset wo Language… Làkk…
 ::msgcat::mcset wo {Last active} {Mujj a dox}
 ::msgcat::mcset wo {Last probe: %1$s — %2$s} {Probe bu mujj: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset wo Level Njaw
 ::msgcat::mcset wo {Lift lockdown} Ubbi
 ::msgcat::mcset wo Lines Lidd
+::msgcat::mcset wo {List targets…} {Lim targets…}
 ::msgcat::mcset wo {List the provider's models} {Limal model yu joxekat bi}
 ::msgcat::mcset wo Load Yeb
 ::msgcat::mcset wo {Load more} {Yebal yeneen}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset wo Next Jokk
 ::msgcat::mcset wo Nickname Tur
 ::msgcat::mcset wo {NixOS: emit a module snippet; do not edit host declarations} {NixOS: génne benn morceau bu module; bul soppi xamle yi ci host bi}
-::msgcat::mcset wo {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Amul cible bu lifecycle bu SSH bu ñu konfigure ngir node bii. Yokkal benn instance ci leer ngir deploy walla tàmbalaate ko.}
+::msgcat::mcset wo {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {Amul target bu SSH lifecycle bu ñu konfigure ci node bii: Restart dafay laaj node bi mu tàmbalaatewaat boppam ci supervisor bi moom; Fleet deploy soxl na ci instance bu ñu denc, bu am target bu ssh.}
 ::msgcat::mcset wo {No additional push happens.} {Benn push bu yokk du am.}
 ::msgcat::mcset wo {No apps yet. Ask the agent to make one: “make me an app that…”} {Amul app ba tey. Laajal ndawu bi mu defar benn: “defaral ma app buy…”}
 ::msgcat::mcset wo {No code in the picture. Hold the phone closer, straight on, and scan again.} {Amul code ci nataal bi. Jegeel telefon bi, jubal ko, te saytuwaat.}
+::msgcat::mcset wo {No command-center action is recorded on this gateway yet.} {Amul jëf bu command center bi ñu bind ci gateway bii ba léegi.}
 ::msgcat::mcset wo {No configuration snapshot will be restored.} {Amul konfigurasiyoŋ bu ñu denc bu ñu di delloo.}
 ::msgcat::mcset wo {No configured sync peer for this node.} {Amul peer bu sync bu ñu konfigure ngir node bii.}
 ::msgcat::mcset wo {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Amul tàngalekat bu ñu konfigure. Jëfandikool Konfigure tàngalekat ngir tànn joxekat bi, model bi ak làkk wi mu dem.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset wo {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Telefon yi %s defar dañuy taxawal ay app seen bopp itam. Ci réglages app veles, may ko mu tàmbali boppam te liggéey ci ginnaaw.}
 ::msgcat::mcset wo {Pin / unpin} {Takk / tekki}
 ::msgcat::mcset wo {Pin to home screen} {Takk ko ci écran bu njëkk bi}
+::msgcat::mcset wo {Plugin author guide} {Guide bu mbindéef plugin}
 ::msgcat::mcset wo {Plugin history} {Taariixu plugin}
 ::msgcat::mcset wo Plugins Plugins
 ::msgcat::mcset wo Port Port
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset wo {Preview here} {Xoolal fii}
 ::msgcat::mcset wo {Preview pane} {Pane bu xool}
 ::msgcat::mcset wo {Preview proposal} {Xoolal propoze bi}
-::msgcat::mcset wo {Preview the changed name or language before creating it.} {Xoolal tur bi walla làkk wi ñu soppi balaa sos ko.}
+::msgcat::mcset wo {Preview the changed name, purpose or language before creating it.} {Xool tur bi, mbëggeel bi walla làkk bi ñu soppiku balaa sos ko.}
 ::msgcat::mcset wo Probe Probe
+::msgcat::mcset wo {Probe %s node(s)?} {Ndax probe node %s?}
+::msgcat::mcset wo {Probe all…} {Probe yépp…}
 ::msgcat::mcset wo {Probe of %1$s failed: %2$s} {Probe bu %1$s fàccu na: %2$s}
 ::msgcat::mcset wo {Profile result} {Njëgu profil bi}
 ::msgcat::mcset wo {Promote into config.toml} {Yëkkati ci config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset wo {Push branch…} {Push branch…}
 ::msgcat::mcset wo {Push complete. No pull request has been opened.} {Push bi jeex na. Amul pull request bu ñu ubbi.}
 ::msgcat::mcset wo {Push this branch?} {Push branch bii?}
+::msgcat::mcset wo {Push this kind to every node that is a configured peer for it:} {Push bu noste bii ci node bu nekk bu ñu konfigure ni peer bu moom:}
 ::msgcat::mcset wo {Push to %s:} {Push ci %s:}
 ::msgcat::mcset wo Question Laaj
 ::msgcat::mcset wo Questions {Laaj yi}
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset wo {REPL target: the app} {jublukaay REPL: app bi}
 ::msgcat::mcset wo {REPL target: the gateway} {jublukaay REPL: gateway bi}
 ::msgcat::mcset wo Read Jàng
+::msgcat::mcset wo {Read the key first: a write names the value it replaces.} {Jàngal key bi bu njëkk: bind bi dafay tuddu njëg bi mu soppi.}
 ::msgcat::mcset wo {Reading notifications, for triggers} {Jàng yégle yi, ngir Tiriga yi}
 ::msgcat::mcset wo Reasoning Réysonnement
 ::msgcat::mcset wo {Reasoning effort} {Xalaatu dëgër}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset wo {Reset to default} {Delloo ko ni mu nekkoon}
 ::msgcat::mcset wo {Reset to template} {Dellusi ci template}
 ::msgcat::mcset wo Restart Restart
+::msgcat::mcset wo {Restart %s?} {Tàmbalaatewaat %s?}
 ::msgcat::mcset wo {Restart + verify canary} {Tàmbaliwaat + xool canary}
+::msgcat::mcset wo {Restart cancelled.} {Tàmbalaatewaat bi cancel na.}
+::msgcat::mcset wo {Restart of %1$s failed: %2$s} {Tàmbalaatewaat bu %1$s fàccu na: %2$s}
 ::msgcat::mcset wo {Restore hidden windows} {Delloo window yi ñu néew}
 ::msgcat::mcset wo {Restore plugins to %s?} {Dellusi plugins ci %s?}
 ::msgcat::mcset wo {Restore revision r%1$s of %2$s?} {Delloo revision r%1$s bu %2$s?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset wo {S3 region} {Région S3}
 ::msgcat::mcset wo {SASL account (optional)} {Kontu SASL (bu la neexee)}
 ::msgcat::mcset wo {SASL password (hidden)} {Baatu jàll bu SASL (nëbbu na)}
+::msgcat::mcset wo {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {SSH lifecycle: ci instance bu ñu denc %1$s (%2$s, unit %3$s).}
 ::msgcat::mcset wo Sandbox Sandbox
 ::msgcat::mcset wo {Sandbox account} {Kontu sandbox}
 ::msgcat::mcset wo Sandboxes Sandboxes
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset wo {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Sesyon yi ñu soppi léegi ci alias bii jog nañu ci yoon wi ñu jël; override yu bees duñu gënn tur wi.}
 ::msgcat::mcset wo {Sessions served} {Session yu ñu joxe}
 ::msgcat::mcset wo Set Tekkal
+::msgcat::mcset wo {Set %1$s on %2$s to %3$s?} {Ndax set %1$s ci %2$s ci %3$s?}
 ::msgcat::mcset wo {Set [model] provider/default in config.toml.} {Tekkal provider/default [model] bi ci config.toml.}
 ::msgcat::mcset wo {Set as swap target} {Def ko làkk bu ñuy soppi}
 ::msgcat::mcset wo {Set mode %1$s on %2$s?} {Tekkal mode %1$s ci %2$s?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset wo Summary Sumaar
 ::msgcat::mcset wo Surface Surface
 ::msgcat::mcset wo {Swap ⇄} {Soppi ⇄}
+::msgcat::mcset wo {Sync %1$s to %2$s node(s)?} {Sync %1$s ci node %2$s?}
+::msgcat::mcset wo {Sync all} {Sync yépp}
+::msgcat::mcset wo {Sync all…} {Sync yépp…}
 ::msgcat::mcset wo {Sync cancelled.} {Sync bi cancel na.}
 ::msgcat::mcset wo {Sync complete.} {Sync bi jeex na.}
 ::msgcat::mcset wo {Sync now} {Sync léegi}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset wo {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Diagnostic yi fi mu ngi (joge ci language server walla Check) dañuy dem ak fichier bii. Mën nga yokk benn laaj. Tontu bi mbind rekk la; dara mënul a bind.}
 ::msgcat::mcset wo {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Ñu far répertwaar bi ak yépp ci biiram. Kii du ko dellusi — këyangeel ko rekk su la bëgg rekk ko génne ci prompt bi.}
 ::msgcat::mcset wo {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Ñu far répertwaar bi. Folder bi ci plugin git repository la — ñu commit snapshot bu jëkk, ngir History… mën a dellusi ko.}
-::msgcat::mcset wo {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Editeur bi dafay ubbi fichier yu gateway, waaye ci instance yu gannaaw, te dafay doolel language server bu làkk fichier bi ci gateway bi: tcl-lsp, typescript-language-server (TypeScript ak JavaScript), rust-analyzer (crate walla module bu plugin bu Rust), clangd (C), racket-langserver ak benn server bu Common Lisp. Hover, dem ci definition, matukaay bu tëddal ak diagnostic yu dox léegi dañuy dox ci bépp làkk bu gateway bi am server; su amul, editeur bi dafay wax ban program lañu wara yeb fa te dafay wéy wone syntax highlighting. Check dafay doolel checker bi mel ni moom ci gateway bi: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, walla jàngkat yi bu Racket ak Lisp. Denc, yebaat ci Manage extensions, te jéema extension bi te publiewul state bu lokal.}
+::msgcat::mcset wo {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {Editeur bi dafay ubbi fichier yu gateway bi, yaram ci instance yu remote, te dafay doxal server bu làkk bu fichier bi ci gateway bi: typescript-language-server (TypeScript ak JavaScript), rust-analyzer (crate walla module bu plugin bu Rust), clangd (C), racket-langserver, server bu Common Lisp, ak tcl-lsp ngir Tcl su gateway bi ame ko (package yu Linux yu veles dañuy ko boole). Hover, dem ci definisyon, completion ak diagnostics yu law dañuy dox ci làkk bu nekk bu gateway bi am server ngir moom; su amul, editeur bi dafay wax ban program lañu war a yeb fa, te dafay denc syntax highlighting. Check dafay doxal checker bi ñu mel ci gateway bi: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, jàngkat yu Racket ak Lisp, te ngir Tcl, tclsh bu engine bi moom (xool bu mat, walla lint bu tcl-lsp fu ñu ko yeb). Saf, yebaat ci Manage extensions, te seet extension bi te publiyeul état bu local bi.}
 ::msgcat::mcset wo {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Yóbbu bi jëkk dafay waajal kumpa yi, image bi ñu tëraale ak fichier yu runtime, waaye tàmbaleesul PDS bi. Denkal KEK bi ak key bu rotation bu PLC bi ci biti resóo, ba noppi def laaj bu bees bu ñu xool ak xaatim bu man denkal naa ko ngir tëral TLS bu HTTP-01 ak activation. Mbind yu DNS yi wara jëm ci host bii boppam; veles doxalul dara ci proxy CDN walla ci DNS.}
+::msgcat::mcset wo {The fleet is NOT consistent: %s node(s) differ.} {Fleet bi dëppóowul: node %s dañuy wuute.}
+::msgcat::mcset wo {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {Fleet bi dëppóo na te am na wuute: node %1$s dañuy dox benn build te dëppóo ci li ñu bokk; yëf %2$s amul ci node bu nekk.}
+::msgcat::mcset wo {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {Fleet bi dëppóo na: node %s dañuy dox benn build, module ak plugin.}
 ::msgcat::mcset wo {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Fòm bi soppiku na dale ci ñu jur extension bi. Juraat, walla xool scaffold bu xóot bi.}
+::msgcat::mcset wo {The gateway did not receive the purpose as written. Nothing was created.} {Gateway bi jotuwul mbëggeel bi ni ñu ko binde. Dara sosuñu ko.}
+::msgcat::mcset wo {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {Gateway bi joxul guide yu extension yi (magg na ci 0.2.2), te desktop bii amul kopi bu ñoom.}
 ::msgcat::mcset wo {The gateway itself is untouched.} {Gateway bi ñu ko fàwwu.}
 ::msgcat::mcset wo {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Gateway bi yeesal na config bi, kon sesiyoŋ yu bees yi ñu ngi koy jëfandikoo léegi, te key bi ñu denc ci kees bi, laaj bi ci topp moo koy jëfandikoo. Telegram ak IRC dinañu tàmbali bu gateway bi tàmbaliwaatee: veles gateway restart.}
 ::msgcat::mcset wo {The installed component no longer matches the selected manifest. Review the component list again.} {Composant bi ñu wàtale méngalewul manifest bi ñu tànn. Xalaataat limu composant yi.}
 ::msgcat::mcset wo {The installer preview has no verification signatures; apply is disabled.} {Preview bu wàtale bi amul signatir yu seetal; tëj nañu jëfandikoo.}
 ::msgcat::mcset wo {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Ñu far job bi ak jaar-jaaram. Kii du ko dellusi — këyangeel ko rekk su la bëgg mu bàyyi.}
+::msgcat::mcset wo {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {Key yi config sync dafay yóbbu, ci sart yi moom: key yu node rekk ak kumpa yi dañuy des ci node bi ñu bokk, te wàll bu ñu denc ([acl], approvals, sandbox, hooks, plugins, server yu MCP) dañuy soppiku fa ñu koy bind te push, ba noppi dafay xaar boroom node boobu.}
 ::msgcat::mcset wo {The log could not be read: %s} {Mënuñu jàng log bi: %s}
 ::msgcat::mcset wo {The manifest belongs to another component; its reply was discarded.} {Manifest bi bokk na ci beneen composant; bàyyi nañu tontu bi.}
 ::msgcat::mcset wo {The profile changed. Review the fresh plan before applying it.} {Profil bi soppiku na. Xoolal plan bu bees bi balaa nga ko jëfandikoo.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset wo {The signed release preview was malformed; nothing was installed.} {Preview bi ñu sàkk ci release bi ñu signe baaxul; installul dara.}
 ::msgcat::mcset wo {The source buffer changed. Request a new proposal before applying.} {Buffer bu source bi soppiku na. Laajal benn propoze bu bees balaa jëfandikoo ko.}
 ::msgcat::mcset wo {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Store bi dinaa dellusi ci revision bu benn. Rollback bi it révision la, kon mën nañu ko dellusi.}
+::msgcat::mcset wo {The translator did not answer within %s seconds.} {Traduktor bi tontuwul ci biir %s segondu.}
 ::msgcat::mcset wo {The translator returned no text.} {Tradikteer bi delloo wul benn mbind.}
 ::msgcat::mcset wo {The verification reply was malformed; no integrity result was accepted.} {Tontu seet bi baaxul; ñu jëlul benn njëgub wóor.}
 ::msgcat::mcset wo Themes Tèmes
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset wo {This challenge is over.} {Jéem bii jeex na.}
 ::msgcat::mcset wo {This code has expired. Ask for a new one.} {Code bii jeex na. Laajal bu bees.}
 ::msgcat::mcset wo {This does not start a service or claim signed-download verification.} {Lii du tàmbali benn service, te du wax ne ñu seet ko ak sain ci telechargement.}
+::msgcat::mcset wo {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {Fichier bii mooy source bu veles core. Bare coppite dañuy jokkoo ci extension, bu dafay wéy ginnaaw upgrade yi te soxlawul ci tabaxaat: hook, tool, service override walla driver bu provider, bu ñu bind ci Tcl, TypeScript, Racket walla Common Lisp, walla ni plugin bu Rust bu génn ci arbre bi (New extension dafay bind bépp ci yii), walla ni module walla plugin bu process (guide bu Extension dafay wone ni ñu tàmbali benn). Patch bu core ngir li API bu extension mënul a wax. Ndax waajal coppite bii ni extension? Sa coppite dafay des ci buffer bii, binduwul; suñu safaat, dina patch fichier bu core bi.}
 ::msgcat::mcset wo {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Gateway bii du jël njëgu kumpa yu jóge ci masin bii: duggal ko foofu ak veles secret set %s, walla boole réseau bii ci [vault] trusted_networks bi}
 ::msgcat::mcset wo {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Lii mooy li ñuy bind — bytes yu engine bi boppam, ñu ko génne live. Lenñ a dox ci disque bi.}
+::msgcat::mcset wo {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {Bii mooy source bu veles core. Coppite ci kaw bii ëpp ci saa daal di gën a baax ni extension: New extension, walla saf ngir ñu jox la benn.}
 ::msgcat::mcset wo {This node is not a configured sync peer for any kind.} {Node bii du peer bu sync bu ñu konfigure ngir benn xeet.}
 ::msgcat::mcset wo {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Plugin bii ci biir veles la te jàng rekk la. Dindi kopi bu boroom bi ak tur bi ñu mel ngir jëfandikoo kopi bu ci biir veles bi.}
 ::msgcat::mcset wo {This publishes the commit; no pull request is created yet.} {Lii dafay yónnée commit bi; amul pull request bu ñu sos léegi.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset wo Unassign {Dindi sas wi}
 ::msgcat::mcset wo {Undo last} {Dellusi mujj bi}
 ::msgcat::mcset wo {Undo the last memory revision?} {Dellusi revision bu mujj bi ci memory?}
+::msgcat::mcset wo {Unset %1$s on %2$s?} {Ndax setal %1$s ci %2$s?}
+::msgcat::mcset wo Unset… Setal…
 ::msgcat::mcset wo Unstage {Génne ci rëdd bi}
 ::msgcat::mcset wo {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Ba IRC_ALLOWED_USERS ci .env tudd sa kont, ku nekk ci réseau bi mën na waxtaan ak bot bi — te su amul xaaju [acl], ni boroom bi, ak jumtukaay yépp.}
 ::msgcat::mcset wo {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Ba TELEGRAM_ALLOWED_USERS ci .env tudd sa id jëfandikukat, ku gis bot bi mën na waxtaan ak moom — te su amul xaaju [acl], ni boroom bi, ak jumtukaay yépp.}
 ::msgcat::mcset wo Untitled {Amul tur}
-::msgcat::mcset wo {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Jox ci kaw ab jëf bu publiye bu leer la, du yónnee boppam. Ci Manage extensions, Contribute dafay wone ekstansiyon yépp yu jëfandikukat: tànn ekstansiyon yi ak fichie yi, xool diff bi ak xool bi ci kumpa yi, doxal xool yi, ba noppi sos benn branch ak benn PR (ci veles boppam ci defò) ak sa idantité git bi nga tànn. Ekstansiyon bu nekk dafay dem ci sa dosie boppam ci depo bi, te fichie bu am fa, dañu koy soppi rekk gannaaw benn firndeel bu wuute. Bul publiye node.toml, kredansiyel yu lokal, token, endpoint yu private walla état bu plugin bu ñu bokkul. Snapshot yu dellu yu lokal, du commit walla PR ci kaw.}
+::msgcat::mcset wo {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Contribution bu upstream jëf bu publiye bu leer la, du yónnee bu boppam. Ci Manage extensions, Contribute dafay lim extension bu jëfandikukat bu nekk: tànnal extension yi ak fichier yi, xool diff bi ak xool bu kumpa yi, doxal check yi, ba noppi sos benn branch ak benn PR (ci veles ci defò). Commit bi dafay jëfandikoo idantité git bu gateway bi (user.name ak user.email ci git configuration bi moom); set leen bu njëkk su wara ne ñu wuute. Extension bu nekk dafay dem ci dossier bu boppam ci repository bi, te fichier bu am fa dafay soppiku rekk ginnaaw benn firndeel bu ëpp. Bul publiye node.toml, kumpa yu local, token yi, endpoint yu private walla état bu plugin bu dul bokk. Snapshot yu recovery yu local du commit bu upstream walla PR.}
 ::msgcat::mcset wo {Upstream repository or fork URL} {URL bu repositoriyu upstream walla fork}
 ::msgcat::mcset wo {Uptime class} {Klas bu uptime}
 ::msgcat::mcset wo {Uptime: host %1$s, gateway %2$s} {Uptime: host %1$s, gateway %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset wo {Users — one role across networks and platforms} {Users — benn role ci yoon yi ak platforms yi yépp}
 ::msgcat::mcset wo {Using the phone, for the agent} {Jëfandikoo telefon bi, ngir agent bi}
 ::msgcat::mcset wo {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Ci loolu gën a bari, turu entrée provider bi la. Su tànnee Skip, mucc ñaar yi ñu bow nal — ñaar bu kenn bind du route.}
+::msgcat::mcset wo {Value (TOML: "text", 5, true, [1, 2])} {Njëg (TOML: "mbind", 5, true, [1, 2])}
 ::msgcat::mcset wo {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Vaaleer yi TOML lañu: strings yu ñu wër, numbéri, walla lists. Ñu ko bind ci [mcp_servers.<name>] — comments yooyu ak section yooyu yépp ñu ko fàwwu.}
 ::msgcat::mcset wo Vault Kees
 ::msgcat::mcset wo {Verified signed bundle installed. Restart the gateway before using the new core.} {Bundle bi ñu xool te signe install nañu ko. Tàmbalaatewaat gateway bi balaa jëfandikoo core bu bees bi.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset wo Voice {Jox voice}
 ::msgcat::mcset wo {Waiting for the model…} {Xaar model bi…}
 ::msgcat::mcset wo {Waiting for the model… Nothing has been written.} {Xaar model bi… Dara bindaatuwul.}
+::msgcat::mcset wo Warning Musal
 ::msgcat::mcset wo {Welcome to veles} {Dalal ak jàmm ci veles}
 ::msgcat::mcset wo {What the agent can do here} {Li ndawu bi mën a def fii}
 ::msgcat::mcset wo {What veles may do on this phone. Each button opens the Android setting that changes it.} {Li veles mën a def ci telefon bii. Bépp butoŋ dina ubbi réglage Android bi koy soppi.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset wo {Workflow SHA} {SHA bu workflow bi}
 ::msgcat::mcset wo {Workflow commit} {Commit bu workflow}
 ::msgcat::mcset wo Worktree Worktree
+::msgcat::mcset wo {Write cancelled.} {Bind bi cancel na.}
 ::msgcat::mcset wo {Write it} {Bindal ko}
 ::msgcat::mcset wo {Write the design question first.} {Bindal laaj bu design bi ci njëkk.}
 ::msgcat::mcset wo {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Du bind benn provider. Gateway bi du route turn ba fa am [[custom_providers]] ak [model].}
+::msgcat::mcset wo Write… Bind…
 ::msgcat::mcset wo {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Bind BÉPP caabi [acl] dafay yóbbu gateway bii ci anam curated: sas bu jëkk bi dafay nekk guest (fail-closed) te lisab ndigal yi nekkatuñu dig. Tànnal lii rekk soo amee xamxamu boroom bu nga wóolu.}
 ::msgcat::mcset wo {[model] provider} {[model] provider}
 ::msgcat::mcset wo {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {joxekatu [model] %{name} méngoowul ak benn bind ci [[custom_providers]] — tuddal bind bi wizard bii di bind, walla bi config.toml am ba noppi}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset wo {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset wo {asked by: %s} {Ku ko laaj: %s}
 ::msgcat::mcset wo {asking %s for its metrics…} {ñu ngi laaj %s metrikam…}
+::msgcat::mcset wo {asking %s how it is supervised…} {laaj nañu %s ni ñu koy saytu…}
 ::msgcat::mcset wo {attach a file} {Tëj ag file}
 ::msgcat::mcset wo {attach an image or file} {takk nataal walla fichier}
 ::msgcat::mcset wo {attach failed: %1$s} {Attach fàccu na: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset wo {channel-event reactions; /triggers add <name> network=… channel=… action=…} {tontu yi ci xew-xewi kanaal; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset wo {channels to join, a space or comma separated string} {channels yiy joge, string bu ñu wóol walla ñu pëndd}
 ::msgcat::mcset wo chars araf
+::msgcat::mcset wo {check the buffer (diagnostics)} {xool buffer bi (diagnostics)}
 ::msgcat::mcset wo choice_next {dem ci yoon wi ci topp}
 ::msgcat::mcset wo choice_retry {jéemaatal ci yoon wi}
 ::msgcat::mcset wo choice_stop {taxawal fii}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset wo {command list unavailable (the gateway is not reachable)} {command list bëggul (gateway bi jëlloowul)}
 ::msgcat::mcset wo {command palette} {command palette}
 ::msgcat::mcset wo {command search} {Seetu command bi}
+::msgcat::mcset wo {command-center audit log} {Logu audit bu command center bi}
 ::msgcat::mcset wo commands commands
 ::msgcat::mcset wo {commands stay on your own session; /leave returns from the joined session} {ndigal yi dañuy des ci sa session boppam; /leave dafay dellu ci ginnaaw ci session bi nga bokk ci}
 ::msgcat::mcset wo commands: Commands:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset wo {config changes from peers that wait for you; /configsync apply lands them} {coppite ci config bu jóge ci say moroom yu lay xaar; /configsync apply dafay def leen}
 ::msgcat::mcset wo {config file: %s} {fiise config: %s}
 ::msgcat::mcset wo {config key} {Key bu config}
+::msgcat::mcset wo {config result} {resultat bu config}
 ::msgcat::mcset wo {config unavailable} {Config bi amul}
 ::msgcat::mcset wo {config unavailable: %s} {Config bi amul: %s}
 ::msgcat::mcset wo {config value} {Vaaleer bi ci config}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset wo doctor_resident {nekk ci laaj bu nekk: %{shown} ci %{total} araf (~tokens %{tokens}) — li des dañuy ko yeb su soxlaa ak: memory action=read path=%{path}}
 ::msgcat::mcset wo doctor_title {saytu xel mi}
 ::msgcat::mcset wo doctor_total {lépp: araf %{chars} ci %{files} fichier (~tokens %{tokens})}
-::msgcat::mcset wo {documentation is not in this source checkout: %s} {dokimantasioŋ amul ci source checkout bii: %s}
 ::msgcat::mcset wo done {Jeex na}
 ::msgcat::mcset wo {done · %1$s/%2$s} {Jeex na · %1$s/%2$s}
 ::msgcat::mcset wo {done, but the model returned no text} {Jeex na, waaye model bi dellusi amul mbind}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset wo {grant a role (owner) · /revoke <id> takes it back} {jox role (owner) · /revoke <id> dafay ko jëlaat}
 ::msgcat::mcset wo {grant a role to an identity} {Jox benn role ci benn identité}
 ::msgcat::mcset wo {guards unreachable} {Guards yi du jot}
-::msgcat::mcset wo guts: guts:
+::msgcat::mcset wo {guts ▾} {biir bi ▾}
 ::msgcat::mcset wo {gw hooks} {gw hooks yi}
 ::msgcat::mcset wo {gw procs} {gw procs yi}
 ::msgcat::mcset wo {halt after N identical calls} {daal ci N identical calls yi}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset wo {live patching ARMED} {Live patching bi uñi}
 ::msgcat::mcset wo {live patching ARMED — an agent can now redefine procs in this window} {Live patching bi uñi — benn agent man na leegi a soppi procs yi ci bii fenetir}
 ::msgcat::mcset wo {live patching disarmed} {Live patching bi daañ}
+::msgcat::mcset wo load say
 ::msgcat::mcset wo loaded {Yeb nañu}
 ::msgcat::mcset wo {loaded older messages} {Yeb nañu xibaar yi yàgg}
 ::msgcat::mcset wo loading… {Di yeb…}
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset wo {no upstream reading for %s} {Amul jàng yu upstream ngir %s}
 ::msgcat::mcset wo {no word match} {Amul baat bu wattu}
 ::msgcat::mcset wo {no xdg-open — path copied instead} {Amul xdg-open — copie nañu path bi rek}
+::msgcat::mcset wo {nobody else's session is open on %s right now} {amul session bu keneen bu ubbeeku ci %s léegi}
 ::msgcat::mcset wo {node log} {log bu node}
 ::msgcat::mcset wo {none loaded} {Amul lu ñu yeb}
 ::msgcat::mcset wo {none recorded} deretul
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset wo {not installed} yebul
 ::msgcat::mcset wo {not reported} {Du wàññi}
 ::msgcat::mcset wo {not running} {Du dox}
+::msgcat::mcset wo {not saved: drafting the change as an extension} {binduwul: waajal nañu coppite bi ni extension}
+::msgcat::mcset wo {not sent: %s} {yónneewuñu ko: %s}
 ::msgcat::mcset wo {not set in config.toml — the built-in default applies. %s} {Duñu ko bind ci config.toml — default bu nekk ci biir moo dox. %s}
 ::msgcat::mcset wo {not set yet — /secret set it later} {defaruñu ko — defar ko ginnaaw ak /secret set}
 ::msgcat::mcset wo {not signed: %s} {du saytukat: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset wo {on no plan} {Bu amul plan}
 ::msgcat::mcset wo {on the} {Ci bi}
 ::msgcat::mcset wo {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {Uñi/daañ mooy muñal xibaaru mechanism gi ci transcript bi — ngir bii session, walla ni default, ci scope yi ci suuf. Mooy yóbbu NOTE bi; luy def bu nekk ñu koy defar ci section bi bu tur-am ci seen raŋ, te Configure… moo koy uñi. Guard knobs yi ñu koy soppi ci biir.}
+::msgcat::mcset wo {on; this gateway does not say whether they reach the home chat} {dox na; gateway bii waxul ndax dañuy àgg ci chat bu kër gi}
 ::msgcat::mcset wo {one-shot tcl-lsp diagnostics — no model turn} {saytu tcl-lsp bu benn yoon — amul turn bu model}
 ::msgcat::mcset wo {open a saved file first} {ubbil fichier bu ñu saf ci njëkk}
 ::msgcat::mcset wo {open links} {ubbi ay lëkkalekaay}
+::msgcat::mcset wo {open one of the desktop's own source files} {ubbi benn ci fichier yu source yu desktop bi boppam}
 ::msgcat::mcset wo {open the engine log} {uubi engine log bi}
 ::msgcat::mcset wo {open the joined session before /leave (on %s)} {ubbi session bi nga bokk balaa /leave (ci %s)}
 ::msgcat::mcset wo {open the selected child session} {ubbi session bu subagent bi ñu tànn}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset wo {read-only: [approvals] allowlist} {jàng rekk: allowlist [approvals]}
 ::msgcat::mcset wo {read-only: this session lives on %1$s (as read at %2$s)} {jàng rek: session bi mungi ci %1$s (ni ñu ko jàngee ci %2$s)}
 ::msgcat::mcset wo {read-only: this skill comes from the %s library} {jàng rek: skill bi génn na ci library bi %s}
+::msgcat::mcset wo {reading %1$s on %2$s…} {jàng nañu %1$s ci %2$s…}
 ::msgcat::mcset wo reasoning xalaat
 ::msgcat::mcset wo {reasoning display: %1$s · %2$s blocks} {xalaat wone: %1$s · %2$s block yi}
 ::msgcat::mcset wo {reasoning display: %s} {xalaat wone: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset wo {run failed: %s} {run bi dajaloo: %s}
 ::msgcat::mcset wo {run in:} {run ci:}
 ::msgcat::mcset wo running {xëy na}
+::msgcat::mcset wo {running %s on the listed nodes…} {doxal nañu %s ci node yi ñu lim…}
 ::msgcat::mcset wo {running since %s} {mu ngi dox dale %s}
 ::msgcat::mcset wo {running subagents; /subagents cancel <id>} {subagent yiy dox; /subagents cancel <id>}
 ::msgcat::mcset wo {save failed} {aar bi dajaloo na}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset wo {send failed: %s} {yonentu faile: %s}
 ::msgcat::mcset wo {send the message; while a turn runs, queue it as steering} {Yónnee message bi; su turn bi duggee, làq ko ni steering}
 ::msgcat::mcset wo sent {yónnee nañu ko}
-::msgcat::mcset wo {sent to the owner's home chat} {yónnee nañu ko ci chat bu boroom bi}
+::msgcat::mcset wo {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {yónnee nañu ko ci chat bu kër bu boroom bi, ci gateway bi doxal adapter bu Telegram bi moom, du bii}
+::msgcat::mcset wo {sent to the owner's home chat from this gateway} {yónnee nañu ko ci chat bu kër bu boroom bi ci gateway bii}
 ::msgcat::mcset wo server server
 ::msgcat::mcset wo {server buffers merged} {server buffers ñu bokkale}
 ::msgcat::mcset wo {server buffers separate} {server buffers ñu wéyale}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset wo {session, model, lifecycle} {session, model, dund gi}
 ::msgcat::mcset wo {session: %s} {session: %s}
 ::msgcat::mcset wo {sessions    %s} {session yi    %s}
+::msgcat::mcset wo {sessions you can join on %s (/join <name or id>):} {session yi nga mën a bokk ci %s (/join <tur walla id>):}
 ::msgcat::mcset wo {sessions: unreachable} {session yi: mënul a yëgg}
 ::msgcat::mcset wo {set by} {defar nañu ko}
 ::msgcat::mcset wo {set. %s} {defar nañu ko. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset wo {split: %s} {wéyale: %s}
 ::msgcat::mcset wo {ssh to %1$s failed: %2$s} {ssh ba %1$s dajaloo: %2$s}
 ::msgcat::mcset wo {stale — no heartbeat within the threshold} {xàll — amul heartbeat ci biir seuil bi}
+::msgcat::mcset wo {standing approval grants: always and this session; revoke one} {jox yu sax yu approbation: sax ak session bii; dindi benn}
 ::msgcat::mcset wo {standing global and session permission grants} {jox yu permission yu sax yu global ak yu session}
+::msgcat::mcset wo {start the line with // to send it as text} {tàmbali lidd bi ak // ngir yónnee ko ni mbind}
 ::msgcat::mcset wo state tàngg
 ::msgcat::mcset wo {state       never reached} {tàngg       xewul a yëgg}
 ::msgcat::mcset wo {state       reachable} {tàngg       mën a yëgg}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset wo {the config.toml that will be written} {config.toml bi ñuy bind}
 ::msgcat::mcset wo {the default (config.toml)} {default bi (config.toml)}
 ::msgcat::mcset wo {the engine refused these answers: %s} {engine bi dall na tont yi: %s}
+::msgcat::mcset wo {the file to open: type a path, then Return or Open} {fichier bi ngir ubbi: bind benn chemin, ba noppi Return walla Open}
 ::msgcat::mcset wo {the first ACL owner identity} {identité owner bu njëkk ci ACL}
 ::msgcat::mcset wo {the gateway answered without a report} {gateway bi tontu na waaye amul report}
 ::msgcat::mcset wo {the model/provider pair is incomplete — the gateway will not route until both are present} {ñaar ñi ci model/joxekat matul — gateway bi du yobu ba ñoom ñaar ñépp am}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset wo unknown {xamuñu ko}
 ::msgcat::mcset wo {unknown api_mode %{mode} — expected one of %{modes}} {api_mode bu ñu xamul %{mode} — ñu ngi xaar benn ci: %{modes}}
 ::msgcat::mcset wo {unknown bindings '%{rest}' · normie|emacs|vi} {bindings bu xamul '%{rest}' · normie|emacs|vi}
+::msgcat::mcset wo {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {command bu ñu xamul %{cmd} fii — /help dafay lim command yi ci surface bii; yónneewuñu dara}
 ::msgcat::mcset wo {unknown command /%s — /help lists them} {komand bu xamul /%s — /help wone na leen}
 ::msgcat::mcset wo {unknown command: /%s} {komand bu ñu xamul: /%s}
 ::msgcat::mcset wo {unknown keymap: %s (normie/emacs/vi)} {keymap bu xamul: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset wo {upstream plan credits and windows — /usage is the local ledger} {kredi ak palanteeri waxtu yu plan bu kow — /usage mooy téereb kontaab bu fi nekk}
 ::msgcat::mcset wo {upstream plan quota} {quota yu upstream ci mbind bi}
 ::msgcat::mcset wo uptime uptime
-::msgcat::mcset wo {usage: /join <session> or /join <instance>/<session>} {jëfandikoo: /join <session> walla /join <instance>/<session>}
+::msgcat::mcset wo {usage: /export [md|json]} {ni ñu koy jëfandikoo: /export [md|json]}
 ::msgcat::mcset wo {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {jëfandiku: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset wo {usage: /resume <id or prefix>} {jëfandikoo: /resume <id walla njëlbéen>}
 ::msgcat::mcset wo {usage: /resume <id-or-prefix>} {usage: /resume <id-or-prefix>}

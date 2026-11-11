@@ -226,6 +226,25 @@ install_veles() {
         cp -R "$VELES_REPO/plugins/examples/$p" "$VELES_PREFIX/share/veles/plugins/$p"
     done
     note "installed $VELES_PREFIX/share/veles/plugins"
+    # The browser tab bridge's unpacked extension, at
+    # bin/../share/veles/browser-extension where `veles browser-extension
+    # install` looks (browserextension.rs shipped_extension). Without it the
+    # install would fall back to this checkout, which may later move or
+    # change under the installed binary (BX-6). The node tests stay behind.
+    # With the default prefix (~/.local) and data directory
+    # (~/.local/share/veles) this IS <data>/browser-extension, where
+    # `veles browser-extension install` keeps the launcher (native-host)
+    # and the copy the browser loads (extension/): replace the shipped
+    # top-level files only, or an upgrade unregisters the bridge.
+    mkdir -p "$VELES_PREFIX/share/veles/browser-extension"
+    find "$VELES_PREFIX/share/veles/browser-extension" -maxdepth 1 -type f \
+        ! -name native-host -exec rm -f {} +
+    for f in "$VELES_REPO"/browser-extension/*; do
+        [ -f "$f" ] || continue
+        case "$f" in *-test.cjs) continue ;; esac
+        cp "$f" "$VELES_PREFIX/share/veles/browser-extension/"
+    done
+    note "installed $VELES_PREFIX/share/veles/browser-extension"
     case ":$PATH:" in
         *":$VELES_PREFIX/bin:"*) ;;
         *) note "NOTE: $VELES_PREFIX/bin is not on your PATH — add it." ;;

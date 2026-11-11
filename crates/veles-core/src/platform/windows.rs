@@ -892,24 +892,21 @@ pub fn default_shell() -> String {
     "cmd".to_string()
 }
 
-/// How this shell takes a script on its command line.
+/// How this shell takes a script on its command line. The shell's kind
+/// is read once, in [`crate::shell::Dialect::of`], so the judge of a
+/// command's words splits it as the shell it is handed to will.
 pub fn shell_args(shell: &str, script: &str) -> Vec<String> {
-    let stem = Path::new(shell)
-        .file_stem()
-        .map(|s| s.to_string_lossy().to_ascii_lowercase())
-        .unwrap_or_default();
-    if stem == "cmd" {
-        vec!["/D".into(), "/C".into(), script.to_string()]
-    } else if stem == "pwsh" || stem == "powershell" {
-        vec![
+    use crate::shell::Dialect;
+    match Dialect::of(shell) {
+        Dialect::Cmd => vec!["/D".into(), "/C".into(), script.to_string()],
+        Dialect::PowerShell => vec![
             "-NoProfile".into(),
             "-NonInteractive".into(),
             "-Command".into(),
             script.to_string(),
-        ]
-    } else {
+        ],
         // bash.exe (Git for Windows), busybox sh, …: POSIX `-c`.
-        vec!["-c".into(), script.to_string()]
+        Dialect::Posix => vec!["-c".into(), script.to_string()],
     }
 }
 

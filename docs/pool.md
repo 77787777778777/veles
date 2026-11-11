@@ -177,7 +177,14 @@ os = "android"
 
 With no `[tools.home]` rule for a tool, a call whose program this node
 lacks goes to a live `[cluster] task_peers` node that advertises one,
-least loaded first, and the result says `[<tool> ran on node <id>]`:
+least loaded first, and the result says `[<tool> ran on node <id>]`.
+A node whose last live auth probe failed (see "How `any` and `gpu`
+choose" below; the failure stands for a minute) is tried after the
+others, not first. With no other candidate it is still tried, and the
+error names it. A re-homed call that never reached the node (no
+connection, or turned away with 401, 403 or 429) counts as such a
+failure and passes the call to the next home; one that was answered
+counts as a pass:
 
 | tool | needs one of |
 |---|---|
@@ -202,7 +209,11 @@ means `any`.
 Every heartbeat carries the node's 1-minute load per core (0-100), its
 core count, its disk IO pressure, and its delegate work: the children
 whose process runs there, the ones placed there and not started yet, and
-which node asked for each. IO pressure is the kernel's pressure-stall
+which node asked for each. Windows keeps no load average: a Windows node
+sends its CPU busy share since its previous heartbeat instead (0-100
+across every core, from `GetSystemTimes`), so it is ranked by its CPU
+like any other node. Before 0.2.2 it sent nothing and ranked after every
+node that reports a load. IO pressure is the kernel's pressure-stall
 figure (`/proc/pressure/io`, `some` and `full`, 10-second average). It
 is read on Linux and, where the app may read it, on Android. Windows,
 macOS and the BSDs report it as unknown, and so does a Linux kernel
@@ -214,11 +225,10 @@ never as 0.
 - its load per core, plus one core's worth (100 / cores points) for each
   child counted there. The count is what the node reports, plus the
   children this node placed there that the node has not reported yet,
-  so a child is never counted twice. That is why a batch, a run of
-  background children, or placements made at the same time from two
-  nodes spread out instead of landing on the node whose last heartbeat
-  looked idlest. A node that reports no cores is counted as 4, so one
-  child is 25 points.
+  so a child is never counted twice. That is why a batch, or a run of
+  background children, spreads out instead of landing on the node whose
+  last heartbeat looked idlest. A node that reports no cores is counted
+  as 4, so one child is 25 points.
 - plus its IO pressure (`some`), point for point.
 
 `delegate_task workload` shifts the weights. `cpu` (compile, encode,
@@ -236,20 +246,48 @@ Reachable means this node, or a node with an `[a2a_agents]` entry that
 passed a live auth probe: an authenticated `tasks/get` for a task that
 does not exist. Every veles peer answers it once the token and the
 trusted-peer list let the caller in. A pass stands for 5 minutes and a
-failure for 1, and a successful gossip exchange counts as a pass. A
-refused token (401), a caller missing from the trusted list (403), a
-rate limit (429) and no answer within 4 seconds are all failures. So a
-phone that stopped after five idle minutes, or a peer whose token was
-rotated, is skipped before any work is sent to it. The probe is not
+failure for 1. A refused token (401), a caller missing from the trusted
+list (403), a rate limit (429) and no answer within 4 seconds are all
+failures. Real traffic counts too: a successful gossip exchange is a
+pass, and a gossip exchange, a delegate child or a re-homed tool call
+that never reached the node (no connection, or turned away with 401,
+403 or 429, or a task the peer rejected because its `[cluster]
+task_peers` does not name this node) is a failure. The probe is not
 "use" for an idle phone, so it never keeps one awake. `delegate_task`
 with `any` or `gpu`, and the `nodes` tool, re-probe expired routes
 before they choose, all at once, so a call can wait up to 4 seconds for
 a peer that has gone quiet.
 
+So a phone that stopped after five idle minutes, or a peer whose token
+was rotated, is skipped once a probe, a gossip exchange or a call has
+found it so. When `any` or `gpu` sends a child to such a node before
+that (its last pass is still standing), the child goes to the next
+candidate, this node included: nothing ran on the first node, since the
+connection never opened or the peer turned the call away before
+starting anything. The result's `skipped` names each node passed over
+with its error, and `backend` names where the child ran. A child that
+reached a node and then failed is not sent anywhere else (it may have
+run there), and a named backend is never moved: its failure is the
+answer.
+
 The counts live in this node's `state.db` (`placement_work`), which
 every process on the node shares, so a TUI's delegates and the
 gateway's see each other. Each row ends with its process: a claim with
 the process that placed it, a running child with the child's own pid.
+A claim also ends when it is older than any claim can be held (the
+child's 15-minute cap, the transport's 2 minutes on top, and a minute
+more), so a release that failed while the disk was busy is not counted
+until the gateway's next restart.
+
+A re-homed tool call (an automatic home or a `[tools.home]` rule) is
+counted the same way: the calling node holds a claim on the node while
+the call is pending, so a burst of calls spreads over the homes, and
+the node that runs it counts it under the caller while it runs, so a
+long command run for a peer shows in its report. A tool run does not
+publish early (most end within a second); a long one shows at the next
+heartbeat. Its count is bound to the gateway that serves it, so, like a
+claim, it ends when it is older than any call is waited for.
+
 A child placed here takes over its own claim when its process starts,
 so it is counted once. A gateway restart therefore keeps counting
 children that are still running, and the boot reconciliation drops the
@@ -257,7 +295,36 @@ claims and children whose process is gone (or whose PID now belongs to
 another process). It logs what it kept and dropped. The same pruning
 runs on every heartbeat and before every `any`/`gpu` choice. A peer's
 figures are taken as reported but cannot rank it first: a count below
-0 is read as 0, a percentage is held to 0-100, and 0 cores is unknown.
+0 is read as 0, a percentage is held to 0-100, 0 cores is unknown, a
+figure no machine has is held to 4,096 cores or 100,000 children (a
+child count near the integer limit overflowed the score, and a billion
+cores made a child weigh nothing), and its count of this node's
+children is held to the children it runs, so a report cannot hide the
+ones this node placed there. A node counts a
+peer's child under the node gossip bound that peer to, not under the
+origin the request names, so one peer cannot speak for another. A
+gossiped heartbeat more than a minute ahead of this node's clock is
+held to now, so a node whose clock runs fast neither stays fresh after
+it stops nor has its later heartbeats refused as older than the stored
+one (which froze its load and work figures).
+
+A node's report travels in its registry row, which the gateway writes
+and gossips every `[cluster] gossip_interval_secs` (30 by default). A
+change to the node's own work does not wait for that: when a child
+starts or ends there, or a placement on the node itself is made or
+released, the gateway writes the row and gossips it to its
+`gossip_peers` about a second later. Changes in that second go out
+together, and two such publishes are at least 5 seconds apart (15 while
+the node's own IO pressure is at or over 20%: every publish is a gossip
+exchange, a write on both sides, and a stalling disk should not pay it
+every 5 seconds). So when
+two nodes place `any` work at nearly the same time, the second one
+usually sees the first one's child already counted on its target. It
+does not when both choose within the same second or two, and a node
+that hears of a peer only through a third node waits for that node's
+next regular tick. Only the gateway publishes early. Children started
+by a TUI on the same node are published at the gateway's next tick,
+from the shared table.
 
 The `nodes` tool shows, for every node, the figures above (`cores`,
 `load_per_core_percent`, `io_pressure_percent`, `children_running`,
@@ -273,6 +340,27 @@ independent parts that each take minutes, sent as one `tasks` batch with
 `backend='any'` and a `workload`. They also tell it to keep short,
 sequential or same-file work where it is. veles does not split a task by
 itself.
+
+What a part can reach depends on where it lands. A part placed on
+another node (by `any`, `gpu` or a node name) carries only its goal and
+context: it runs in that node's sandbox at the User level (a delegated
+child carries no ticket, so it never gets that node's host shell, even
+when the caller is the owner), and it sees none of the placing node's
+files, nor the other node's host files. Its sandbox workspace (`/work`)
+persists per caller on that node. So the parts worth sending are
+self-contained: fetches and lookups, work on a URL or a git remote the
+part can clone, and computation from what its goal and context carry.
+Work on the placing node's files (building or testing a checkout there,
+scanning its trees, encoding its files) stays there as local children
+(no `backend`), or goes to a named node whose sandbox already holds the
+same checkout. The guidance says so. Nothing ships files between nodes
+for a delegate child yet (`docs/issues/open-items/pool-platform.md`).
+
+A `tasks` batch holds at most 3 parts and returns when all of them have
+finished. For more parts, the guidance says to start each as its own
+`background: true` child with `backend='any'`: each is placed and counted
+as it starts, so they spread like a batch, and each reports back on its
+own as `[BACKGROUND CHILD COMPLETE]`.
 
 ## A node without a sandbox
 

@@ -18,9 +18,10 @@
 //!
 //! WHAT IS DECIDED HERE, PER LANGUAGE
 //!
-//!   * the server: a short candidate list, resolved on the GATEWAY's
-//!     PATH (that is where the files are), overridable per language
-//!     with `VELES_LSP_<KEY>`;
+//!   * the server: a short candidate list, resolved on the GATEWAY
+//!     (that is where the files are) by `dev_check::find_program`: the
+//!     copy the build ships first (the Linux packages' tcl-lsp), then
+//!     PATH; overridable per language with `VELES_LSP_<KEY>`;
 //!   * the session key: TypeScript and JavaScript share one tsserver,
 //!     C and C++ one clangd, so a tab switch between them is a reuse;
 //!   * the project root, by that language's own rule — the nearest
@@ -128,8 +129,9 @@ impl Language {
         }
     }
 
-    /// The servers tried in order. The first one found on the gateway's
-    /// PATH is used.
+    /// The servers tried in order. The first one the gateway finds is
+    /// used: the build's own copy first, then PATH
+    /// (`dev_check::find_program`).
     pub fn candidates(self) -> &'static [(&'static str, &'static [&'static str])] {
         match self.server_key() {
             "tcl" => &[("tcl-lsp", &[])],
@@ -149,17 +151,26 @@ impl Language {
     /// How to make a server available, said in the reply when none is.
     pub fn install_hint(self) -> &'static str {
         match self.server_key() {
-            "tcl" => "install tcl-lsp on the gateway's PATH",
+            // The old hint, "install tcl-lsp on the gateway's PATH", named
+            // no source (DEV-6). The Linux packages ship tcl-lsp, so this is
+            // read on a build without it (the Windows zip, the APK, a
+            // source build): say so, where it comes from, where it does
+            // not run, and what works without.
+            "tcl" => {
+                "this build of veles does not include a Tcl language server; the Linux packages (the nix package, the .tar.zst bundle and the AppImage) ship tcl-lsp. Build tcl-lsp from https://github.com/77787777778777/tcl-lsp (nix build github:77787777778777/tcl-lsp; it links Tcl 8.6, and is not built for Windows or Android) and put it on the gateway's PATH, or set VELES_LSP_TCL to another Tcl server's command line. Without one, Tcl keeps syntax highlighting and Check still runs on the engine's own tclsh (a completeness check)"
+            }
             "typescript" => {
                 "install typescript-language-server and typescript on the gateway (npm install -g typescript-language-server typescript, or the nixpkgs packages of the same names)"
             }
             "rust" => "install rust-analyzer on the gateway (rustup component add rust-analyzer)",
-            "c" => "install clangd (LLVM) on the gateway",
+            "c" => {
+                "install clangd (LLVM) on the gateway (apt install clangd, brew install llvm, winget install LLVM.LLVM, or the nixpkgs clang-tools package)"
+            }
             "racket" => {
                 "install Racket and the racket-langserver package on the gateway (raco pkg install racket-langserver)"
             }
             _ => {
-                "install a Common Lisp language server on the gateway (for example cl-lsp), or set VELES_LSP_LISP to its command line"
+                "install a Common Lisp language server on the gateway (for example cl-lsp, through Roswell: ros install cxxxr/cl-lsp), or set VELES_LSP_LISP to its command line"
             }
         }
     }
@@ -174,6 +185,9 @@ impl Language {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Selection {
     pub language: Language,
+    /// The file to start: what the lookup found, so the proxy spawns the
+    /// copy that was found (the build's own before PATH) and not whatever
+    /// the name resolves to later (DEV-5, DEV-6).
     pub program: String,
     pub args: Vec<String>,
     pub root: PathBuf,
@@ -229,11 +243,9 @@ pub fn select_with(
 ) -> Result<Selection, Option<Missing>> {
     let language = Language::from_path(path).ok_or(None)?;
     let commands = candidate_commands(language, env);
-    let Some((program, args)) = commands
-        .iter()
-        .find(|(program, _)| which(program).is_some())
-        .cloned()
-    else {
+    let Some((program, args)) = commands.iter().find_map(|(program, args)| {
+        which(program).map(|found| (found.to_string_lossy().into_owned(), args.clone()))
+    }) else {
         return Err(Some(Missing {
             language,
             tried: commands.into_iter().map(|(p, _)| p).collect(),
@@ -259,9 +271,57 @@ pub fn select_with(
     })
 }
 
-/// [`select_with`] against this process's PATH and environment.
+/// [`select_with`] with this gateway's one program lookup
+/// ([`crate::dev_check::find_program`]: the build's own copy, then PATH)
+/// and its environment.
 pub fn select(path: &Path) -> Result<Selection, Option<Missing>> {
-    select_with(path, &|name| crate::shell::which(name), &|var| {
+    select_with(path, &crate::dev_check::find_program, &|var| {
+        std::env::var(var).ok().filter(|v| !v.trim().is_empty())
+    })
+}
+
+/// Each extension language's server on this gateway, for the Dev tab's
+/// guide (GET /api/lsp/servers): the program `/api/lsp/start` would run,
+/// or, when there is none, how to get one. The guide used to name
+/// tcl-lsp as if every gateway had it (DEV-6). `shipped` is true when the
+/// program found is the copy this build ships (the file the variable
+/// [`crate::dev_check::shipped_var`] names, read through `env`). `which`
+/// and `env` as for [`select_with`].
+pub fn servers_with(
+    which: &dyn Fn(&str) -> Option<PathBuf>,
+    env: &dyn Fn(&str) -> Option<String>,
+) -> Vec<serde_json::Value> {
+    Language::ALL
+        .into_iter()
+        .map(|language| {
+            let commands = candidate_commands(language, env);
+            let found = commands
+                .iter()
+                .find_map(|(program, _)| which(program).map(|path| (program.clone(), path)));
+            let shipped = found.as_ref().is_some_and(|(program, path)| {
+                crate::dev_check::shipped_var(program)
+                    .and_then(env)
+                    .is_some_and(|named| Path::new(&named) == path)
+            });
+            serde_json::json!({
+                "language": language.id(),
+                "display": language.display(),
+                "present": found.is_some(),
+                "shipped": shipped,
+                "program": found.as_ref().map(|(p, _)| p.clone()).unwrap_or_default(),
+                "path": found.as_ref().map(|(_, path)| display_path(path)).unwrap_or_default(),
+                "tried": commands.iter().map(|(p, _)| p.clone()).collect::<Vec<_>>(),
+                "hint": language.install_hint(),
+                "override": language.override_var(),
+            })
+        })
+        .collect()
+}
+
+/// [`servers_with`] with this gateway's program lookup and environment,
+/// as [`select`].
+pub fn servers() -> Vec<serde_json::Value> {
+    servers_with(&crate::dev_check::find_program, &|var| {
         std::env::var(var).ok().filter(|v| !v.trim().is_empty())
     })
 }
@@ -555,7 +615,7 @@ fn percent_encode_path(path: &str) -> String {
     out
 }
 
-fn percent_decode(text: &str) -> String {
+pub(crate) fn percent_decode(text: &str) -> String {
     let bytes = text.as_bytes();
     let mut out = Vec::with_capacity(bytes.len());
     let mut i = 0;
@@ -695,13 +755,45 @@ mod tests {
             ("a.c", "clangd", vec![]),
         ] {
             let sel = select_with(&dir.path().join(file), &found, &none_env).unwrap();
-            assert_eq!(sel.program, program, "{file}");
+            // The file the lookup found is the file started (DEV-5).
+            assert_eq!(sel.program, format!("/bin/{program}"), "{file}");
             assert_eq!(sel.args, args, "{file}");
         }
         // A second C candidate is tried when the first is absent.
         let only_ccls = |name: &str| (name == "ccls").then(|| PathBuf::from("/bin/ccls"));
         let sel = select_with(&dir.path().join("a.c"), &only_ccls, &none_env).unwrap();
-        assert_eq!(sel.program, "ccls");
+        assert_eq!(sel.program, "/bin/ccls");
+    }
+
+    /// DEV-6: the Linux packages ship tcl-lsp and name it in
+    /// VELES_TCL_LSP. The server started is the file the lookup found
+    /// (the shipped copy, not whatever `tcl-lsp` PATH holds when the
+    /// proxy spawns), and the guide's row says it ships with veles. One
+    /// found on PATH instead is the operator's own.
+    #[test]
+    fn the_shipped_tcl_lsp_is_the_one_started_and_is_listed_as_shipped() {
+        let dir = tempfile::tempdir().unwrap();
+        let shipped = PathBuf::from("/opt/veles/bin/tcl-lsp");
+        let env = |var: &str| (var == "VELES_TCL_LSP").then(|| shipped.display().to_string());
+        let finds_shipped = |name: &str| (name == "tcl-lsp").then(|| shipped.clone());
+        let sel = select_with(&dir.path().join("plugin.tcl"), &finds_shipped, &env).unwrap();
+        assert_eq!(sel.program, shipped.display().to_string());
+        let rows = servers_with(&finds_shipped, &env);
+        let tcl = rows.iter().find(|r| r["language"] == "tcl").unwrap();
+        assert_eq!(tcl["present"], true, "{tcl}");
+        assert_eq!(tcl["shipped"], true, "{tcl}");
+        assert_eq!(tcl["program"], "tcl-lsp", "{tcl}");
+        assert_eq!(tcl["path"], display_path(&shipped), "{tcl}");
+        let on_path = |name: &str| (name == "tcl-lsp").then(|| PathBuf::from("/usr/bin/tcl-lsp"));
+        for rows in [
+            servers_with(&on_path, &none_env),
+            servers_with(&on_path, &env),
+        ] {
+            let tcl = rows.iter().find(|r| r["language"] == "tcl").unwrap();
+            assert_eq!(tcl["present"], true, "{tcl}");
+            assert_eq!(tcl["shipped"], false, "{tcl}");
+            assert!(rows.iter().all(|r| r["shipped"] == false), "{rows:?}");
+        }
     }
 
     #[test]
@@ -730,6 +822,65 @@ mod tests {
         );
     }
 
+    /// DEV-6: "install tcl-lsp on the gateway's PATH" named no source.
+    /// Every hint says how to get a server. Tcl's is read only where no
+    /// server was found, which on a Linux package means one that does not
+    /// ship it (Windows, Android, a source build): it says this build
+    /// lacks one, which builds have it, where tcl-lsp comes from, and
+    /// what still works without it.
+    #[test]
+    fn every_missing_server_says_how_to_get_one_or_that_none_ships() {
+        for language in Language::ALL {
+            let hint = language.install_hint();
+            let actionable = [
+                "npm install",
+                "rustup",
+                "apt install",
+                "raco pkg install",
+                "ros install",
+            ]
+            .iter()
+            .any(|how| hint.contains(how));
+            if language == Language::Tcl {
+                assert!(
+                    hint.contains("this build of veles does not include"),
+                    "{hint}"
+                );
+                assert!(hint.contains("the Linux packages"), "{hint}");
+                assert!(!hint.contains("ships with veles yet"), "{hint}");
+                assert!(
+                    hint.contains("https://github.com/77787777778777/tcl-lsp"),
+                    "{hint}"
+                );
+                assert!(hint.contains("Check still runs"), "{hint}");
+                assert!(hint.contains("VELES_LSP_TCL"), "{hint}");
+            } else {
+                assert!(actionable, "{}: {hint}", language.display());
+            }
+        }
+    }
+
+    /// DEV-6: the guide's per-language list is the gateway's own answer.
+    #[test]
+    fn the_server_listing_says_per_language_what_the_gateway_has() {
+        let only_tsserver = |name: &str| {
+            (name == "typescript-language-server")
+                .then(|| PathBuf::from("/opt/bin/typescript-language-server"))
+        };
+        let rows = servers_with(&only_tsserver, &none_env);
+        assert_eq!(rows.len(), Language::ALL.len());
+        let row = |id: &str| rows.iter().find(|r| r["language"] == id).unwrap().clone();
+        let ts = row("typescript");
+        assert_eq!(ts["present"], true);
+        assert_eq!(ts["program"], "typescript-language-server");
+        assert_eq!(ts["path"], "/opt/bin/typescript-language-server");
+        let tcl = row("tcl");
+        assert_eq!(tcl["present"], false);
+        assert_eq!(tcl["tried"], serde_json::json!(["tcl-lsp"]));
+        assert_eq!(tcl["hint"], Language::Tcl.install_hint());
+        assert_eq!(tcl["override"], "VELES_LSP_TCL");
+    }
+
     #[test]
     fn the_override_variable_replaces_the_candidates() {
         let dir = tempfile::tempdir().unwrap();
@@ -737,7 +888,7 @@ mod tests {
             |var: &str| (var == "VELES_LSP_LISP").then(|| "alive-lsp --stdio  -v".to_string());
         let any = |name: &str| Some(PathBuf::from(format!("/opt/{name}")));
         let sel = select_with(&dir.path().join("plugin.lisp"), &any, &env).unwrap();
-        assert_eq!(sel.program, "alive-lsp");
+        assert_eq!(sel.program, "/opt/alive-lsp");
         assert_eq!(sel.args, vec!["--stdio", "-v"]);
         let nothing = |_: &str| None;
         let missing = select_with(&dir.path().join("plugin.lisp"), &nothing, &env)

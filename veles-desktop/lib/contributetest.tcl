@@ -257,6 +257,13 @@ ok "the PR targets veles by default and names every extension" {
 ok "the PR body survives JSON serialization" {
     [dict get $pr body] eq {A multiword description with a quoted "detail"}
 }
+# DEV-8 (0.2.2): an opened PR releases its branch name and removes the
+# prepared clone on the gateway, so neither Push nor Open PR has anything
+# left to act on.
+ok "an opened PR disables Push and Open PR" {
+    [$c.bar.publish instate disabled] && [$c.bar.pr instate disabled] &&
+    $::contribution_published eq {} && $::contribution_prepared eq {}
+}
 $c.files.c.inner.f1 invoke
 ok "changing selection invalidates review, preparation and publication" {
     $::contribution_review eq {} && $::contribution_prepared eq {} &&
@@ -289,6 +296,72 @@ ok "Contribute offers every user extension, never a bundled one" {
     $::dialog_calls eq {{{alpha zeta} zeta} {{alpha zeta} {}}}
 }
 destroy $ov
+
+# SMOKE-22: a manager window's status shared the button row. After a
+# refused Create, New extension's "Preview the changed name…" was drawn
+# over Extension guide and Manage extensions, its start cut off. The real
+# dialog, mapped at its own size and at its minimum, measured.
+puts "\na manager window's status line never covers its buttons"
+source [file join $_dir extensionguide.tcl]
+proc ::vapi::post_json {path body} {
+    if {$path eq "/api/plugins/preview"} {
+        set form [::vdev::_extension_form]
+        return [dict create name [dict get $form name] kind [dict get $form kind] \
+            description [dict get $form description] files [list \
+            [dict create name plugin.toml text {name = "x"}]]]
+    }
+    error "unexpected POST $path"
+}
+proc ::smoke22_overlaps {a b} {
+    set ax [winfo rootx $a]; set ay [winfo rooty $a]
+    set bx [winfo rootx $b]; set by [winfo rooty $b]
+    expr {$ax < $bx + [winfo width $b] && $bx < $ax + [winfo width $a] &&
+          $ay < $by + [winfo height $b] && $by < $ay + [winfo height $a]}
+}
+foreach geometry {780x650 560x480} {
+    ::vdev::new_extension
+    set w .vdev_new_extension
+    wm geometry $w $geometry
+    set ::vdev_new_name greeter
+    set ::vdev_new_purpose {Greets people}
+    ::vdev::_extension_preview
+    set ::vdev_new_purpose {Greets people, politely}
+    ::vdev::_extension_create
+    update
+    set status $w.bar.status
+    set buttons [lmap b [winfo children $w.bar] {
+        if {[winfo class $b] ne "TButton"} { continue }
+        set b
+    }]
+    ok "$geometry: the refusal is shown in full ([winfo width $status] px for [winfo reqwidth $status])" {
+        [string match "Preview the changed*" [$status cget -text]] &&
+        [winfo ismapped $status] &&
+        [winfo reqwidth $status] <= [winfo width $status] &&
+        [winfo rootx $status] >= [winfo rootx $w] &&
+        [winfo rootx $status] + [winfo width $status] <= [winfo rootx $w] + [winfo width $w]
+    }
+    ok "$geometry: no button lies under the status line" {
+        [llength $buttons] == 5 &&
+        [llength [lmap b $buttons { if {![::smoke22_overlaps $b $status]} continue; set b }]] == 0
+    }
+    ::vmanage::say $w [string repeat {the gateway's reason, in its own long words; } 8] warn
+    update
+    ok "$geometry: a status longer than the window wraps inside it, under the buttons" {
+        [winfo reqwidth $status] <= [winfo width $status] &&
+        [winfo rootx $status] + [winfo width $status] <= [winfo rootx $w] + [winfo width $w] &&
+        [llength [lmap b $buttons { if {![::smoke22_overlaps $b $status]} continue; set b }]] == 0
+    }
+    if {$geometry eq "780x650"} {
+        ok "$geometry: every button is mapped at its full width inside the window" {
+            [llength [lmap b $buttons {
+                if {[winfo ismapped $b] && [winfo width $b] >= [winfo reqwidth $b] &&
+                    [winfo rootx $b] + [winfo width $b] <= [winfo rootx $w] + [winfo width $w]} continue
+                set b
+            }]] == 0
+        }
+    }
+    destroy $w
+}
 
 puts "\ncontributetest: $passed passed, $failed failed"
 exit [expr {$failed ? 1 : 0}]

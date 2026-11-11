@@ -53,6 +53,22 @@ proc ::vfleetui::available {} {
     return 1
 }
 
+# The tag of the release this fleet runs: the attached gateway's own row
+# in its registry (`self`), as v<version>. "" before the registry has
+# answered: an empty tag is refused at review, by name, rather than a
+# guess staged.
+proc ::vfleetui::running_tag {} {
+    set nodes {}
+    catch { set nodes $::vinstpane::fleet_nodes }
+    foreach node $nodes {
+        if {[catch { dict get $node self } self] || $self ni {1 true}} { continue }
+        if {[catch { dict get $node version } version]
+            || $version eq "" || $version eq "null"} { return "" }
+        return [expr {[string match v* $version] ? $version : "v$version"}]
+    }
+    return ""
+}
+
 proc ::vfleetui::open {} {
     variable w
     variable selected
@@ -70,6 +86,15 @@ proc ::vfleetui::open {} {
         return
     }
     set selected $node
+    # The release tag follows the running version until someone types
+    # another. v0.2.0 was written into the code, and a 0.2.1 fleet's
+    # dialog proposed it (audit SMOKE-10).
+    variable release_tag
+    variable tag_filled
+    if {$release_tag eq "" || $release_tag eq $tag_filled} {
+        set release_tag [running_tag]
+        set tag_filled $release_tag
+    }
     set manifest ""
     set preflight ""
     set operation ""
@@ -77,7 +102,6 @@ proc ::vfleetui::open {} {
     if {[winfo exists .fleetdeploy]} { destroy .fleetdeploy }
     set w [toplevel .fleetdeploy]
     wm title $w [::vi18n::mc {Fleet deployment}]
-    wm geometry $w 760x620
     ttk::frame $w.body -padding 12
     pack $w.body -fill both -expand 1
     ttk::label $w.body.title -text [::vi18n::mc {Reviewed fleet deployment}] -font TkHeadingFont
@@ -115,40 +139,52 @@ proc ::vfleetui::open {} {
     grid $w.body.release.repo -row 4 -column 0 -sticky w
     ttk::entry $w.body.release.repository -textvariable ::vfleetui::repository
     grid $w.body.release.repository -row 4 -column 1 -columnspan 3 -sticky ew -padx 6
+    # The eight actions in two rows of four, in the order an operation
+    # takes them: review, stage, verify, continue; then the ways back and
+    # out. In one row they asked 1349 px of a window fixed at 760x620:
+    # Finish rollback, Resume and Abandon were never on screen, nor were
+    # the status line and Close (audit SMOKE-10).
     ttk::frame $w.body.actions
     pack $w.body.actions -fill x -pady 8
     ttk::button $w.body.actions.review -text [::vi18n::mc {Build manifest + preflight}] -command ::vfleetui::review
     ::vi18n::label $w.body.actions.review {Build manifest + preflight}
-    pack $w.body.actions.review -side left
     ttk::button $w.body.actions.stage -text [::vi18n::mc {Stage canary}] -command [list ::vfleetui::mutate stage]
     ::vi18n::label $w.body.actions.stage {Stage canary}
-    pack $w.body.actions.stage -side left -padx 4
     ttk::button $w.body.actions.verify -text [::vi18n::mc {Restart + verify canary}] -command [list ::vfleetui::mutate verify]
     ::vi18n::label $w.body.actions.verify {Restart + verify canary}
-    pack $w.body.actions.verify -side left -padx 4
     ttk::button $w.body.actions.continue -text [::vi18n::mc {Continue to next target}] -command [list ::vfleetui::mutate continue]
     ::vi18n::label $w.body.actions.continue {Continue to next target}
-    pack $w.body.actions.continue -side left -padx 4
     ttk::button $w.body.actions.rollback -text [::vi18n::mc {Roll back selected target}] -command [list ::vfleetui::mutate rollback]
     ::vi18n::label $w.body.actions.rollback {Roll back selected target}
-    pack $w.body.actions.rollback -side left -padx 4
     ttk::button $w.body.actions.finish-rollback -text [::vi18n::mc {Finish rollback}] -command [list ::vfleetui::mutate finish-rollback]
     ::vi18n::label $w.body.actions.finish-rollback {Finish rollback}
-    pack $w.body.actions.finish-rollback -side left -padx 4
     ttk::button $w.body.actions.resume -text [::vi18n::mc {Resume unfinished operation}] -command ::vfleetui::resume
     ::vi18n::label $w.body.actions.resume {Resume unfinished operation}
-    pack $w.body.actions.resume -side left -padx 4
     ttk::button $w.body.actions.abandon -text [::vi18n::mc {Abandon untouched operation}] -command [list ::vfleetui::mutate abandon]
     ::vi18n::label $w.body.actions.abandon {Abandon untouched operation}
-    pack $w.body.actions.abandon -side left -padx 4
+    set col 0
+    set row 0
+    variable actions
+    foreach id $actions {
+        grid $w.body.actions.$id -row $row -column $col -sticky ew -padx 2 -pady 2
+        if {[incr col] == 4} { set col 0 ; incr row }
+    }
     ttk::label $w.status -text [::vi18n::mc {No deployment started.}] -wraplength 720 -justify left
     ::vi18n::label $w.status {No deployment started.}
-    pack $w.status -anchor w -pady 5
-    text $w.body.review -wrap none -height 25 -width 90 -state disabled
-    pack $w.body.review -fill both -expand 1
+    # The status line under the actions it reports on, and Close at the
+    # bottom, are packed BEFORE the review text that expands: the review
+    # takes what is left, never their room.
+    pack $w.status -in $w.body -anchor w -pady 5
     ttk::button $w.body.close -text [::vi18n::mc Close] -command [list destroy $w]
     ::vi18n::label $w.body.close Close
-    pack $w.body.close -anchor e -pady 5
+    pack $w.body.close -side bottom -anchor e -pady 5
+    text $w.body.review -wrap none -height 12 -width 90 -state disabled
+    pack $w.body.review -fill both -expand 1
+    # As large as it asks to be, on the screen, over the main window.
+    if {[llength [info commands ::vplace::centered]]} {
+        update idletasks
+        ::vplace::centered $w [winfo reqwidth $w] [winfo reqheight $w] 0.05
+    }
     set ::vfleetui::target_ids $node
     ::vfleetjournal::configure [file join [::vpaths::data_dir] fleet-deployments]
     _render "Select the release identity, then build the manifest and preflight. No changes have been made."
@@ -299,6 +335,9 @@ proc ::vfleetui::review {} {
         set m [::vfleetdeploy::manifest $ids [_release] native-bundle]
         set observations {}
         foreach target [dict get $m targets] {
+            # Each bound saved instance must answer as its node, or no
+            # manifest is offered at all (FLEET-2).
+            ::vfleetdeploy::verify_identity $target
             dict set observations [dict get $target node_id] \
                 [::vfleetdeploy::health_observation [dict get $target instance]]
         }
@@ -550,7 +589,9 @@ proc ::vfleetui::mutate {action} {
 
 proc ::vfleetui::init {} {
     variable repository 77787777778777/veles
-    variable release_tag v0.2.0
+    variable release_tag ""
+    # The tag open filled in, to tell it from one someone typed.
+    variable tag_filled ""
     variable release_commit ""
     variable workflow_commit ""
 }

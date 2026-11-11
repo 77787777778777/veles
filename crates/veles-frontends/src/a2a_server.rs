@@ -1067,6 +1067,54 @@ impl A2AServer {
         result
     }
 
+    /// `veles/fleet-manage` (fleet_manage.rs): a cluster peer's command
+    /// center asking this node for its status, to restart itself, or to
+    /// read or write one config key. The same gate as `veles/fleet` —
+    /// an authenticated peer in `[cluster] memsync_peers` (who may push
+    /// config here), never in a lockdown — and its own method, so a
+    /// node older than 0.2.2 answers "method not found". A change must
+    /// be fresh and name the state it was decided on (fleet_manage.rs).
+    /// Every request is in the audit log: who asked, for what, and why
+    /// it was refused; never a value.
+    async fn fleet_manage_request(&self, peer: &str, params: &Value) -> Result<Value, String> {
+        let op = params["op"].as_str().unwrap_or("").to_string();
+        let verdict = if veles_core::lockdown::current(Some(&self.store)).is_some() {
+            Err("this node is in lockdown and answers no fleet management requests".to_string())
+        } else {
+            match veles_core::config::load() {
+                Err(e) => Err(format!("config load failed: {e:#}")),
+                Ok(c) if !c.cluster.memsync_peers.iter().any(|p| p == peer) => Err(format!(
+                    "fleet management requests are answered only for peers named in [cluster] \
+                     memsync_peers, and '{peer}' is not one"
+                )),
+                Ok(_) => Ok(()),
+            }
+        };
+        let result = match verdict {
+            Err(why) => Err(why),
+            Ok(()) => {
+                let (store, params) = (self.store.clone(), params.clone());
+                let dirs = veles_core::config::dirs();
+                veles_core::rt::spawn_blocking(move || {
+                    let _dirs = veles_core::config::set_dirs(dirs);
+                    let sup = veles_core::supervisor::detect();
+                    crate::fleet_manage::answer_local(&store, &params, &sup, true)
+                })
+                .await
+                .unwrap_or_else(|e| Err(format!("fleet management request failed: {e}")))
+            }
+        };
+        veles_core::a2a::audit_log(&json!({
+            "event": "fleet_manage_request", "peer": peer, "op": op,
+            "asked_by": params["asked_by"].as_str().unwrap_or(""),
+            "key": params["key"].as_str(),
+            "request_id": params["request_id"].as_str(),
+            "answered": result.is_ok(),
+            "refused": result.as_ref().err(),
+        }));
+        result
+    }
+
     /// A singleton lease ask (B3a): this node is the arbiter, the peer
     /// is asking to hold (or renew, or read) a singleton lease. The
     /// ask's `holder` must be the node id this PEER owns — bound by the
@@ -1322,8 +1370,18 @@ impl A2AServer {
                             None
                         };
                         // Counted here under the placing node, so its
-                        // ranking sees this child arrive (306787.b).
-                        let origin = ask.from_node.clone();
+                        // ranking sees this child arrive (306787.b): the
+                        // node gossip bound this peer to, not the ask's
+                        // own word, which any authenticated peer could
+                        // set to another node to make that node count its
+                        // children here as reported (COMP-6, 0.2.2). The
+                        // ask's word only until gossip has bound the peer.
+                        let origin = self
+                            .caller_of(peer)
+                            .1
+                            .unwrap_or_else(|| ask.from_node.clone());
+                        // ASK-2: the child row nests under this session.
+                        let parent = ask.parent_session.clone();
                         veles_core::rt::spawn_blocking(move || {
                             veles_core::delegate::run_remote_child(
                                 &goal,
@@ -1334,6 +1392,7 @@ impl A2AServer {
                                 principal.as_deref(),
                                 token,
                                 &origin,
+                                parent.as_deref(),
                             )
                         })
                         .await
@@ -2103,6 +2162,13 @@ async fn dispatch_method(
             )),
         ),
         crate::fleet_obs::METHOD => match srv.fleet_request(identity, &params).await {
+            Ok(v) => (StatusCode::OK, Json(jsonrpc_result(&id, v))),
+            Err(why) => (
+                StatusCode::OK,
+                Json(jsonrpc_error(&id, ERR_UNTRUSTED, &why)),
+            ),
+        },
+        crate::fleet_manage::METHOD => match srv.fleet_manage_request(identity, &params).await {
             Ok(v) => (StatusCode::OK, Json(jsonrpc_result(&id, v))),
             Err(why) => (
                 StatusCode::OK,
@@ -2972,6 +3038,213 @@ mod tests {
         assert!(srv.sessions.lock_ok().is_empty(), "no session, no turn");
     }
 
+    /// `veles/fleet-manage`, the threat cases (0.2.2 command center):
+    /// a peer that is not allowed is refused every op; a restart needs a
+    /// supervisor, the node's current boot, no running turns unless
+    /// forced, and a fresh request — a replay is refused, so is one for a
+    /// boot that has passed; a config write needs the value it replaces,
+    /// and a node-local key, a held section and a credential are never
+    /// written from a peer; a lockdown refuses even the cluster peer; and
+    /// every request lands in the A2A audit log, refusals with why.
+    #[tokio::test]
+    async fn fleet_management_is_gated_fresh_and_follows_config_sync_rules() {
+        use std::sync::atomic::Ordering;
+        let (home, srv, _env) = scratch_server();
+        let rpc = |params: Value| {
+            json!({"jsonrpc": "2.0", "id": 9, "method": crate::fleet_manage::METHOD,
+                   "params": params})
+        };
+        let fresh = |mut p: Value| {
+            p["request_id"] = json!(uuid::Uuid::new_v4().simple().to_string());
+            p["at"] = json!(chrono::Utc::now().timestamp());
+            p["asked_by"] = json!("desktop");
+            p
+        };
+        let cfg_path = veles_core::config::config_dir().join("config.toml");
+        std::fs::write(
+            &cfg_path,
+            "[cluster]\nmemsync_peers = [\"vps\"]\n\n[model]\ndefault = \"alpha\"\n",
+        )
+        .unwrap();
+        let call = |peer: &'static str, params: Value| {
+            let srv = srv.clone();
+            async move {
+                let (_, Json(resp)) = dispatch_method(srv, peer, "127.0.0.1:0", &rpc(params)).await;
+                resp
+            }
+        };
+        let err = |resp: &Value| resp["error"]["message"].as_str().unwrap_or("").to_string();
+
+        // A peer that is not allowed: nothing, for any op.
+        for op in ["status", "restart", "config_get", "config_set"] {
+            let resp = call("stranger", fresh(json!({"op": op, "key": "model.default"}))).await;
+            assert_eq!(resp["error"]["code"], ERR_UNTRUSTED, "{op}: {resp}");
+            assert!(err(&resp).contains("memsync_peers"), "{resp}");
+        }
+
+        // The cluster peer reads the status: boot and supervisor.
+        let status = call("vps", json!({"op": "status"})).await;
+        let boot = status["result"]["boot"].as_str().expect("boot").to_string();
+        assert_eq!(boot, veles_core::supervisor::boot_id());
+
+        // No supervisor known (the test process has none): refused, and
+        // nothing is scheduled.
+        std::env::remove_var(veles_core::supervisor::ENV);
+        let before = crate::fleet_manage::RESTARTS_SCHEDULED.load(Ordering::SeqCst);
+        let resp = call("vps", fresh(json!({"op": "restart", "expect_boot": boot}))).await;
+        if !veles_core::supervisor::detect().can_restart() {
+            assert!(err(&resp).contains("cannot restart itself"), "{resp}");
+        }
+        // Under a declared supervisor: a request for a past boot is
+        // refused, a running turn refuses it unless forced, the right one
+        // is taken once and its replay refused.
+        std::env::set_var(veles_core::supervisor::ENV, "container");
+        let resp = call(
+            "vps",
+            fresh(json!({"op": "restart", "expect_boot": "0123"})),
+        )
+        .await;
+        assert!(err(&resp).contains("restarted since"), "{resp}");
+        srv.store
+            .lock_ok()
+            .conn()
+            .execute(
+                "INSERT INTO turn_checkpoints (session_id, turn_id, host, surface, state,
+                   start_msg_id, owner_pid) VALUES ('s1', 't1', 'h', 'desktop', 'running', 1, ?1)",
+                [std::process::id() as i64],
+            )
+            .unwrap();
+        let resp = call("vps", fresh(json!({"op": "restart", "expect_boot": boot}))).await;
+        assert!(err(&resp).contains("turn(s) are running"), "{resp}");
+        assert_eq!(
+            crate::fleet_manage::RESTARTS_SCHEDULED.load(Ordering::SeqCst),
+            before,
+            "nothing restarts while it is refused"
+        );
+        let forced = fresh(json!({"op": "restart", "expect_boot": boot, "force": true}));
+        let resp = call("vps", forced.clone()).await;
+        assert_eq!(resp["result"]["restarting"], true, "{resp}");
+        assert_eq!(resp["result"]["supervisor"]["kind"], "container");
+        assert_eq!(
+            crate::fleet_manage::RESTARTS_SCHEDULED.load(Ordering::SeqCst),
+            before + 1
+        );
+        let replay = call("vps", forced).await;
+        assert!(err(&replay).contains("replay"), "{replay}");
+        assert_eq!(
+            crate::fleet_manage::RESTARTS_SCHEDULED.load(Ordering::SeqCst),
+            before + 1,
+            "a replay restarts nothing"
+        );
+        std::env::remove_var(veles_core::supervisor::ENV);
+
+        // Config: read, then write with the hash of what it replaces.
+        let read = call("vps", json!({"op": "config_get", "key": "model.default"})).await;
+        assert_eq!(read["result"]["value"], "alpha", "{read}");
+        let hash = read["result"]["hash"].as_str().unwrap().to_string();
+        let write = fresh(
+            json!({"op": "config_set", "key": "model.default", "raw": "beta",
+                                 "expect": hash}),
+        );
+        let resp = call("vps", write.clone()).await;
+        assert_eq!(resp["result"]["value"], "beta", "{resp}");
+        assert!(std::fs::read_to_string(&cfg_path).unwrap().contains("beta"));
+        // Its replay, and a write decided on the old value, are refused.
+        assert!(err(&call("vps", write).await).contains("replay"));
+        let stale = fresh(
+            json!({"op": "config_set", "key": "model.default", "raw": "gamma",
+                                 "expect": hash}),
+        );
+        assert!(err(&call("vps", stale).await).contains("not what this change was decided on"));
+        // What config sync never applies from a peer is never written.
+        let now = crate::fleet_manage::value_hash(None);
+        for (key, raw, why) in [
+            ("cluster.memsync_peers", "[\"evil\"]", "node-local"),
+            ("a2a_agents.evil.url", "http://x", "node-local"),
+            // A table holding a node-local key, written whole.
+            (
+                "platforms.a2a.extra",
+                "{ host = \"0.0.0.0\" }",
+                "node-local",
+            ),
+            ("web", "{ others_via = \"direct\" }", "node-local"),
+            ("acl.default", "all", "held section"),
+            ("sandbox.network", "true", "held section"),
+            ("platforms.telegram.token", "123", "credential"),
+            (
+                "model.provider",
+                "sk-ant-abcdefghijklmnopqrstuvwx",
+                "credential",
+            ),
+        ] {
+            let resp = call(
+                "vps",
+                fresh(json!({"op": "config_set", "key": key, "raw": raw, "expect": now})),
+            )
+            .await;
+            assert!(err(&resp).contains(why), "{key}: {resp}");
+        }
+        let text = std::fs::read_to_string(&cfg_path).unwrap();
+        assert!(!text.contains("evil") && !text.contains("sk-ant") && !text.contains("[acl]"));
+        assert!(
+            !text.contains("0.0.0.0") && !text.contains("others_via"),
+            "{text}"
+        );
+        assert!(err(&call(
+            "vps",
+            json!({"op": "config_get", "key": "cluster.memsync_peers"})
+        )
+        .await)
+        .contains("node-local"));
+        assert!(err(&call("vps", json!({"op": "rm"})).await)
+            .contains("unknown fleet management request"));
+        // A node whose owner reviews every config change from another
+        // node (`configsync_auto = false`: a config push waits in its
+        // inbox for them) takes none from the command center either.
+        std::fs::write(
+            &cfg_path,
+            "[cluster]\nmemsync_peers = [\"vps\"]\nconfigsync_auto = false\n\n\
+             [model]\ndefault = \"beta\"\n",
+        )
+        .unwrap();
+        let read = call("vps", json!({"op": "config_get", "key": "model.default"})).await;
+        let hash = read["result"]["hash"].as_str().expect("hash").to_string();
+        let held = fresh(
+            json!({"op": "config_set", "key": "model.default", "raw": "delta",
+                                "expect": hash}),
+        );
+        let resp = call("vps", held).await;
+        assert!(err(&resp).contains("configsync_auto"), "{resp}");
+        assert!(!std::fs::read_to_string(&cfg_path)
+            .unwrap()
+            .contains("delta"));
+
+        // A lockdown refuses even the cluster peer.
+        veles_core::lockdown::engage(&srv.store, "tui:owner", "an incident").unwrap();
+        let resp = call("vps", json!({"op": "status"})).await;
+        assert!(err(&resp).contains("lockdown"), "{resp}");
+        veles_core::lockdown::release(&srv.store).unwrap();
+
+        // Both sides of every request are in the audit log, never a value.
+        let audit = std::fs::read_to_string(home.path().join("a2a_audit.jsonl")).unwrap();
+        let manage: Vec<Value> = audit
+            .lines()
+            .filter_map(|l| serde_json::from_str::<Value>(l).ok())
+            .filter(|v| v["event"] == "fleet_manage_request")
+            .collect();
+        assert!(manage
+            .iter()
+            .any(|v| v["peer"] == "stranger" && v["answered"] == false));
+        assert!(manage
+            .iter()
+            .any(|v| v["op"] == "restart" && v["answered"] == true && v["asked_by"] == "desktop"));
+        assert!(
+            !audit.contains("beta") && !audit.contains("sk-ant-abc"),
+            "{audit}"
+        );
+        assert!(srv.sessions.lock_ok().is_empty(), "no session, no turn");
+    }
+
     #[test]
     fn default_port_prefers_env_then_config_then_9900() {
         // scratch_home repoints VELES_HOME so the dotenv lookup reads OUR
@@ -3214,6 +3487,7 @@ mod b3a_pins {
             principal: None,
             wire_task_id: None,
             ticket: None,
+            parent_session: None,
         }
     }
 
@@ -3314,6 +3588,79 @@ mod b3a_pins {
         assert!(
             titled.starts_with("remote:"),
             "the remote child is titled as one: {titled:?}"
+        );
+    }
+
+    /// COMP-6 (0.2.2): a remote child is counted here under the node
+    /// gossip bound its peer to, not under the `from_node` the ask names.
+    /// A peer that named another node made that node subtract the child
+    /// from its own placements here, hiding work it had not reported.
+    #[cfg(unix)]
+    #[tokio::test]
+    async fn a_remote_child_counts_under_the_node_its_peer_is_bound_to() {
+        let (home, srv, _env) = scratch_server();
+        std::fs::write(
+            home.path().join("config.toml"),
+            "[cluster]\ntask_peers = [\"peer-x\"]\n",
+        )
+        .unwrap();
+        std::fs::write(
+            home.path().join("node.toml"),
+            "id = \"srv-self\"\nname = \"vps\"\n",
+        )
+        .unwrap();
+        {
+            let s = srv.store.lock_ok();
+            s.node_register(
+                "bbbb-2222",
+                "laptop",
+                "h",
+                "0",
+                "always-on",
+                None,
+                None,
+                None,
+                None,
+            )
+            .unwrap();
+            s.node_observe("bbbb-2222", "10.0.0.2:1", "peer-x").unwrap();
+        }
+        let fake = home.path().join("fake-veles");
+        std::fs::write(&fake, "#!/bin/sh\nsleep 2\necho done\n").unwrap();
+        {
+            use std::os::unix::fs::PermissionsExt;
+            std::fs::set_permissions(&fake, std::fs::Permissions::from_mode(0o755)).unwrap();
+        }
+        std::env::set_var("VELES_BINARY", &fake);
+        // The ask names a third node as its origin.
+        let srv2 = srv.clone();
+        let run = veles_core::rt::spawn(async move {
+            srv2.run_task(&task_ask(&base_ask()), "peer-x", "127.0.0.1:0")
+                .await
+        });
+        let db = veles_core::config::veles_home().join("state.db");
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
+        let seen = loop {
+            let r = Store::open(&db)
+                .ok()
+                .and_then(|s| veles_core::placement::own_report(s.conn(), "srv-self").ok());
+            if let Some(r) = r.filter(|r| r.running > 0) {
+                break r;
+            }
+            assert!(
+                std::time::Instant::now() < deadline,
+                "the remote child never counted here"
+            );
+            tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+        };
+        let task = run.await.unwrap();
+        std::env::remove_var("VELES_BINARY");
+        assert_eq!(seen.from.get("bbbb-2222"), Some(&1), "{seen:?}");
+        assert!(!seen.from.contains_key("aaaa-1111"), "{seen:?}");
+        assert_eq!(
+            task["status"]["state"].as_str(),
+            Some(STATE_COMPLETED),
+            "{task}"
         );
     }
 

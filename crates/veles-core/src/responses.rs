@@ -138,7 +138,15 @@ impl ResponsesClient {
     // ── request body ─────────────────────────────────────────────────
 
     pub(crate) fn build_body(&self, req: &ChatRequest) -> Value {
-        let input = history_to_input(&req.messages);
+        // The same tool-round projection every other wire gets: one
+        // assistant per round, each call answered once right after it, an
+        // unanswered call named in a labelled note rather than sent as a
+        // `function_call` with no output (an error on this wire).
+        let projected = crate::providers::replay_messages(
+            &req.messages,
+            crate::providers::thread_continues(req),
+        );
+        let input = history_to_input(&projected);
         let mut body = json!({
             "model": req.model,
             "input": input,
@@ -943,6 +951,68 @@ mod tests {
         );
         assert_eq!(input[3]["call_id"], json!("call_2"));
         assert_eq!(input[4]["call_id"], json!("call_2"));
+    }
+
+    /// The Kimi failure class on this wire: a call with no saved result.
+    /// The Responses API refuses a `function_call` without its output ("No
+    /// tool output found for function call"), and every later turn resends
+    /// the same history. The call becomes a labelled note after the
+    /// assistant's own text, the same projection the chat-completions body
+    /// and the drivers get; a partly answered round keeps its answered pair.
+    #[test]
+    fn an_unanswered_call_never_reaches_the_responses_wire() {
+        let call = |content: &str, ids: &[&str]| {
+            let mut m = ChatMessage::assistant(content, None);
+            m.tool_calls = Some(json!(ids
+                .iter()
+                .map(|id| json!({"id": id, "type": "function",
+                    "function": {"name": "terminal", "arguments": "{}"}}))
+                .collect::<Vec<_>>()));
+            m
+        };
+        let mut r = req(false);
+        r.messages = vec![
+            ChatMessage::user("start"),
+            call("checking", &["x"]),
+            ChatMessage::user("continue"),
+            call("", &["a", "b"]),
+            ChatMessage::tool_result("a", "terminal", "a done".into()),
+            ChatMessage::user("again"),
+        ];
+        let input = client().build_body(&r)["input"]
+            .as_array()
+            .cloned()
+            .expect("input");
+        let outputs: Vec<&str> = input
+            .iter()
+            .filter(|i| i["type"] == "function_call_output")
+            .filter_map(|i| i["call_id"].as_str())
+            .collect();
+        for item in input.iter().filter(|i| i["type"] == "function_call") {
+            let id = item["call_id"].as_str().unwrap_or("");
+            assert!(
+                outputs.contains(&id),
+                "a function_call without its output reached the wire: {item} in {input:?}"
+            );
+        }
+        assert_eq!(outputs, vec!["a"], "{input:?}");
+        assert_eq!(
+            input[1],
+            json!({"role": "assistant", "content": "checking"}),
+            "the assistant's own words, unchanged: {input:?}"
+        );
+        let notes: Vec<&str> = input
+            .iter()
+            .filter(|i| i["role"] == "user")
+            .filter_map(|i| i["content"].as_str())
+            .filter(|c| c.contains("interrupted"))
+            .collect();
+        assert_eq!(notes.len(), 2, "one note per interrupted round: {input:?}");
+        assert!(notes[0].contains("id x"), "{notes:?}");
+        assert!(
+            notes[1].contains("id b") && !notes[1].contains("id a"),
+            "{notes:?}"
+        );
     }
 
     /// An assistant message that has BOTH text and calls keeps the

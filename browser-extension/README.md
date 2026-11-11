@@ -14,13 +14,15 @@ The command creates an owner-only bridge token, writes a launcher and a copy of 
 
 | | launcher and extension copy | where each browser finds the native host |
 | --- | --- | --- |
-| Linux | `~/.local/share/veles/browser-extension/` (`native-host`, `extension/`) | Chrome `~/.config/google-chrome/NativeMessagingHosts/veles_browser.json`, Chromium `~/.config/chromium/NativeMessagingHosts/`, Firefox (Developer Edition included) `~/.mozilla/native-messaging-hosts/` |
-| macOS | `browser-extension/` in the veles data directory | `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/`, `~/Library/Application Support/Chromium/NativeMessagingHosts/`, `~/Library/Application Support/Mozilla/NativeMessagingHosts/` |
+| Linux | `~/.local/share/veles/browser-extension/` (`native-host`, `extension/`) | Chrome `~/.config/google-chrome/NativeMessagingHosts/veles_browser.json`, Chromium `~/.config/chromium/NativeMessagingHosts/`, Edge `~/.config/microsoft-edge/NativeMessagingHosts/`, Firefox (Developer Edition included) `~/.mozilla/native-messaging-hosts/` |
+| macOS | `browser-extension/` in the veles data directory | `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/`, `~/Library/Application Support/Chromium/NativeMessagingHosts/`, `~/Library/Application Support/Microsoft Edge/NativeMessagingHosts/`, `~/Library/Application Support/Mozilla/NativeMessagingHosts/` |
 | Windows | `%LOCALAPPDATA%\veles\browser-extension\` (`native-host.cmd`, `extension\`, and the manifests `veles_browser.chromium.json` and `veles_browser.firefox.json`) | the default value of `HKCU\Software\Google\Chrome\NativeMessagingHosts\veles_browser`, `HKCU\Software\Chromium\NativeMessagingHosts\veles_browser` and `HKCU\Software\Microsoft\Edge\NativeMessagingHosts\veles_browser` (the Chromium manifest's path), and of `HKCU\Software\Mozilla\NativeMessagingHosts\veles_browser` (the Firefox manifest's path). Nothing needs administrator rights. |
 
 The launcher runs veles from a path that survives upgrades (your Nix profile's `veles`, the AppImage or bundle launcher, an installer release's `current`, or the installed binary) and fixes the veles data directory for the browser-started host. On Windows it is a `.cmd` that Chrome, Edge and Firefox start through `cmd.exe`. Rerun the install with `--overwrite` after moving veles or switching profile.
 
 The Windows zip and `scripts\install\windows.ps1` ship the extension as `browser-extension\` beside `bin\`; the install copies it from there.
+
+The extension directory is found beside the veles binary (`browser-extension/` or `share/veles/browser-extension/`: a release, a bundle, the Nix package, and the source install `scripts/install/install.sh`, which copies it to `<prefix>/share/veles/browser-extension`). `veles browser-extension install` stops with an error when none is there, instead of registering a native host with nothing to load; a plain build from a checkout falls back to that checkout's `browser-extension/`.
 
 The extension is for developer loading; it is not in the Chrome Web Store, the Edge add-ons store or on addons.mozilla.org.
 

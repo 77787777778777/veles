@@ -5,6 +5,8 @@ accepted = [
     "BSD-2-Clause", "BSD-3-Clause", "ISC", "Zlib", "Unicode-3.0", "Unlicense",
     "MPL-2.0", "BSL-1.0", "CC0-1.0", "CDLA-Permissive-2.0", "LGPL-2.1-or-later",
     "OpenSSL", "AGPL-3.0-only",
+    # GNU Unifont, which veles-textart ships in font/ (its OFL-1.1.txt).
+    "OFL-1.1",
 ]
 ignore-build-dependencies = false
 ignore-dev-dependencies = true

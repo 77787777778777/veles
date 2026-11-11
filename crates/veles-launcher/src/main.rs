@@ -18,7 +18,9 @@
 //! with a non-zero code (a crash, a kill) is started again after 3 s,
 //! up to five times in two minutes, each restart noted in the log; a
 //! clean `veles gateway stop` (exit 0) ends the launcher too, and five
-//! deaths in two minutes make it give up with the last code. So the
+//! deaths in two minutes make it give up with the last code. A restart
+//! the gateway asked for (exit 76, the command center's Restart) is
+//! started again the same way and is not a death. So the
 //! logon task runs as long as the gateway does (`schtasks /Query` says
 //! "Running"), and the restart does not rely on Task Scheduler:
 //! measured 2026-10-13, its `RestartOnFailure` did not restart a task
@@ -30,6 +32,12 @@
 
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
+
+/// The exit code of a restart the gateway asked for (the command
+/// center's Restart): `veles_core::supervisor::RESTART_EXIT_CODE`, held
+/// equal to this one by a core test, since the launcher links nothing
+/// of core.
+const RESTART_EXIT_CODE: i32 = 76;
 
 fn default_log() -> PathBuf {
     if let Some(h) = std::env::var_os("VELES_HOME").filter(|v| !v.is_empty()) {
@@ -67,7 +75,11 @@ fn main() {
     loop {
         let (stdout, stderr) = log_handles(&log);
         let mut cmd = Command::new(&exe);
+        // The gateway restarts itself by exiting non-zero when the
+        // command center asks it to, and only under a supervisor known
+        // to start it again (veles_core::supervisor): this is one.
         cmd.args(["gateway", "run"])
+            .env("VELES_SUPERVISOR", "veles-gw")
             .stdin(Stdio::null())
             .stdout(stdout)
             .stderr(stderr);
@@ -95,25 +107,56 @@ fn main() {
             Ok(st) => st.code().unwrap_or(1),
             Err(_) => 1,
         };
-        if code == 0 {
-            std::process::exit(0);
-        }
-        let now = std::time::Instant::now();
-        deaths.retain(|t| now.duration_since(*t) < std::time::Duration::from_secs(120));
-        deaths.push(now);
-        if deaths.len() >= 5 {
-            note(&log, &format!("gateway exited with code {code}: the fifth death in two minutes, giving up (`veles gateway restart` starts it again)"));
-            std::process::exit(code);
-        }
-        note(
-            &log,
-            &format!(
-                "gateway exited with code {code}: restarting in 3 s ({}/5 in two minutes)",
-                deaths.len()
+        match after_exit(&mut deaths, code, std::time::Instant::now()) {
+            After::Stop => std::process::exit(0),
+            After::GiveUp => {
+                note(&log, &format!("gateway exited with code {code}: the fifth death in two minutes, giving up (`veles gateway restart` starts it again)"));
+                std::process::exit(code);
+            }
+            After::Restart if code == RESTART_EXIT_CODE => note(
+                &log,
+                "the gateway asked to be restarted: starting it again in 3 s (not a death)",
             ),
-        );
+            After::Restart => note(
+                &log,
+                &format!(
+                    "gateway exited with code {code}: restarting in 3 s ({}/5 in two minutes)",
+                    deaths.len()
+                ),
+            ),
+        }
         std::thread::sleep(std::time::Duration::from_secs(3));
     }
+}
+
+/// What the launcher does once the gateway has exited.
+#[derive(Debug, PartialEq, Eq)]
+enum After {
+    /// A clean stop: the launcher ends too.
+    Stop,
+    /// Start it again in 3 s.
+    Restart,
+    /// The fifth death in two minutes: end with its code.
+    GiveUp,
+}
+
+/// The gateway exited with `code` at `now`; `deaths` are the deaths
+/// counted so far, and this one is added when it counts. A restart the
+/// gateway asked for ([`RESTART_EXIT_CODE`]) is started again and never
+/// counted: the give-up is for a gateway that keeps dying.
+fn after_exit(deaths: &mut Vec<std::time::Instant>, code: i32, now: std::time::Instant) -> After {
+    if code == 0 {
+        return After::Stop;
+    }
+    if code == RESTART_EXIT_CODE {
+        return After::Restart;
+    }
+    deaths.retain(|t| now.duration_since(*t) < std::time::Duration::from_secs(120));
+    deaths.push(now);
+    if deaths.len() >= 5 {
+        return After::GiveUp;
+    }
+    After::Restart
 }
 
 /// The gateway's stdout and stderr: the log, appended, or nothing.
@@ -140,5 +183,44 @@ fn note(log: &std::path::Path, msg: &str) {
         .open(log)
     {
         let _ = writeln!(f, "veles-gw: {msg}");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::time::{Duration, Instant};
+
+    /// The command center's Restart is the gateway exiting with
+    /// RESTART_EXIT_CODE so this launcher starts it again. Counted as a
+    /// death, five Restarts in two minutes made the launcher give up and
+    /// left a Windows node down until someone started it by hand. A
+    /// requested restart is not a death; five real ones still end it.
+    #[test]
+    fn a_requested_restart_is_not_a_death() {
+        let t0 = Instant::now();
+        let at = |s: u64| t0 + Duration::from_secs(s);
+        let mut deaths = Vec::new();
+        for i in 0..8 {
+            assert_eq!(
+                after_exit(&mut deaths, RESTART_EXIT_CODE, at(i * 12)),
+                After::Restart,
+                "restart {i}"
+            );
+        }
+        assert!(deaths.is_empty(), "{deaths:?}");
+        // Four crashes among the restarts, then a fifth: it gives up.
+        for i in 0..4 {
+            assert_eq!(after_exit(&mut deaths, 1, at(100 + i)), After::Restart);
+            assert_eq!(
+                after_exit(&mut deaths, RESTART_EXIT_CODE, at(100 + i)),
+                After::Restart
+            );
+        }
+        assert_eq!(after_exit(&mut deaths, -1, at(110)), After::GiveUp);
+        // Deaths older than two minutes are forgotten; a clean stop ends.
+        let mut deaths = vec![at(0), at(1), at(2), at(3)];
+        assert_eq!(after_exit(&mut deaths, 1, at(200)), After::Restart);
+        assert_eq!(after_exit(&mut deaths, 0, at(201)), After::Stop);
     }
 }

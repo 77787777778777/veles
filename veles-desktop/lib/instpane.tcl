@@ -43,12 +43,18 @@ namespace eval ::vinstpane {
     variable fleet_alerts {}
     variable fleet_versions {}
     variable fleet_forgotten {}
+    # /api/fleet `consistency`: the last deployment-consistency verdict.
+    variable fleet_consistency {}
     variable fleet_generation 0
     # The registry group's tree id. Saved groups are `g:<name>`, and a
     # saved group literally named `cluster-registry` collided with the
     # old fixed id and stopped the list rendering (FLEET-13); a control
     # character cannot come from the editor.
     variable registry_group "g:\x01cluster-registry"
+    # The health alerts group's id, and alert row id -> node id.
+    variable alerts_group "g:\x01health-alerts"
+    variable alert_node
+    array set alert_node {}
     variable selected ""            ;# instance name, or ""
     variable health                  ;# name -> up|down|unauth|never
     array set health {}
@@ -75,6 +81,9 @@ namespace eval ::vinstpane {
     variable _ssh_out
     array set _ssh_out {}
     variable _dlg_rc ""
+    # The control strip's actions and its current rows, per strip root
+    # (docked and floated roots are separate strips).
+    variable ctl_flows [dict create]
     # Validator regexps, named so the tests can reach them. A unit name
     # and an ssh host are not free text (see the plan's argument-safety
     # section); a leading `-` in host becomes an ssh OPTION, which is
@@ -160,15 +169,17 @@ proc ::vinstpane::build_list {{root ""}} {
     # plain listbox foreground cannot do. Keyboard handling stays
     # Tk-native (Up/Down walk rows, including group headings, Enter
     # attaches) — consistent with the IRC buffer tree this mirrors.
-    ttk::treeview $R_list.list -columns {version uptime platforms} \
+    ttk::treeview $R_list.list -columns {version uptime load platforms} \
         -show {tree headings} -selectmode browse
     $R_list.list heading #0        -text [::vi18n::mc {instance}]
     $R_list.list heading version   -text [::vi18n::mc {version}]
     $R_list.list heading uptime    -text [::vi18n::mc {uptime}]
+    $R_list.list heading load      -text [::vi18n::mc {load}]
     $R_list.list heading platforms -text [::vi18n::mc {platforms}]
     $R_list.list column #0        -width 160 -stretch 1
     $R_list.list column version   -width 70  -stretch 0 -anchor w
     $R_list.list column uptime    -width 100 -stretch 0 -anchor w
+    $R_list.list column load      -width 50  -stretch 0 -anchor w
     $R_list.list column platforms -width 160 -stretch 0 -anchor w
     $R_list.list tag configure up     -foreground $::vt::T(green)
     $R_list.list tag configure down   -foreground $::vt::T(red)
@@ -180,6 +191,7 @@ proc ::vinstpane::build_list {{root ""}} {
     pack $R_list.sb -side right -fill y
     pack $R_list.list -fill both -expand 1
     bind $R_list.list <<TreeviewSelect>> { ::vinstpane::_pick %W }
+    bind $R_list.list <Configure> { ::vinstpane::_fit_columns %W %w }
     ::vctx::attach $R_list.list {
         {"Attach"  {::vinstpane::attach_selected}}
         {-}
@@ -188,6 +200,13 @@ proc ::vinstpane::build_list {{root ""}} {
         {"Remove"  {::vinstpane::remove_entry}}
     }
     catch { ::va11y::name $R_list.list [::vi18n::mc {instances}] }
+    # Entering the tab maps the list (so does floating it into its own
+    # window): what it shows is asked again at once. The polls run only
+    # while the tab is current, so the list was empty for up to 15 s on
+    # a first visit, and on a return it showed the snapshot from when
+    # the tab was left: a node down for minutes, green and "fresh"
+    # (SMOKE-6).
+    bind $R_list <Map> { ::vinstpane::_shown }
     # Pack only on the FLOAT path (parent = the float toplevel). At boot
     # the parent is the main window, and this guard used to fire there
     # too — the instances regions came up packed into the root beside
@@ -200,20 +219,29 @@ proc ::vinstpane::build_list {{root ""}} {
 # One row per instance under a per-host group heading. The attached
 # instance is marked — a client talking to a gateway with no visible
 # indication of WHICH is how you act on the wrong machine.
+#
+# The rows are brought to what they should be IN PLACE (_sync_rows), not
+# deleted and inserted again. The rebuild re-inserted every group closed
+# on every 15 s refresh: the cluster's nodes never showed by themselves,
+# and a group someone opened closed again under them (SMOKE-5). A row
+# that stays keeps what the person did with it — open or closed,
+# selected, where the list was scrolled — and a new group arrives open,
+# so every node is on screen without a click.
 proc ::vinstpane::refresh_list {} {
     variable R_list
     variable health
     variable meta
     variable selected
     if {![winfo exists $R_list.list]} { return }
-    set keep $selected
-    $R_list.list delete [$R_list.list children {}]
     set attached ""
     if {[llength [info commands ::vapi::attached]]} {
         set attached [::vapi::attached]
     }
+    set want {}
     foreach {g names} [::vinst::groups] {
-        $R_list.list insert {} end -id "g:$g" -text "▾ $g" -tags group
+        # The tree draws the open/closed indicator itself; a ▾ in the
+        # label stayed "open" on a closed group.
+        lappend want [list {} "g:$g" $g {} group]
         foreach n $names {
             set dot "○"
             set tag never
@@ -232,18 +260,17 @@ proc ::vinstpane::refresh_list {} {
                 catch { set plats [join [dict get $meta($n) platforms] { }] }
             }
             set mark [expr {$n eq $attached ? " ⚡" : ""}]
-            $R_list.list insert "g:$g" end -id $n -text "$dot $n$mark" \
-                -values [list $ver $up $plats] -tags $tag ;# i18n-exempt: glyph + node name
+            lappend want [list "g:$g" $n "$dot $n$mark" [list $ver $up "" $plats] $tag] ;# i18n-exempt: glyph + node name
         }
     }
     # The gateway's cluster registry is automatic; manually configured
     # SSH instances remain above it. `cluster:` rows have no SSH target.
     variable fleet_nodes
+    variable fleet_alerts
     variable registry_group
     if {[llength $fleet_nodes]} {
         set group $registry_group
-        $R_list.list insert {} end -id $group \
-            -text [::vi18n::mc {▾ Cluster registry}] -tags group
+        lappend want [list {} $group [regsub {^▾\s*} [::vi18n::mc {▾ Cluster registry}] {}] {} group]
         foreach node $fleet_nodes {
             set id "cluster:[dict get $node id]"
             # Health, not just heartbeat age: a node whose sync pushes
@@ -255,6 +282,7 @@ proc ::vinstpane::refresh_list {} {
                 default { set dot "●" ; set tag up }
             }
             set name [dict get $node name]
+            # Load has its own column: it sat under "uptime" (SMOKE-21).
             set load [dict get $node load1]
             if {$load eq "null" || $load eq ""} { set load "?" }
             # A node bound to a saved instance is the SAME machine as that
@@ -262,15 +290,84 @@ proc ::vinstpane::refresh_list {} {
             set gateway [_cluster_gateway $node]
             set how [expr {$gateway eq "" ? [::vi18n::mc {registered}]
                 : [format [::vi18n::mc {managed via %s}] $gateway]}]
-            $R_list.list insert $group end -id $id -text "$dot $name" ;# i18n-exempt: registry name, no UI prose
-            $R_list.list item $id -values [list [dict get $node version] "load $load" $how]
-            $R_list.list item $id -tags $tag
+            lappend want [list $group $id "$dot $name" \
+                [list [dict get $node version] "" $load $how] $tag] ;# i18n-exempt: registry name, no UI prose
         }
     }
-    if {$keep ne "" && [$R_list.list exists $keep]} {
-        $R_list.list selection set $keep
-        $R_list.list focus $keep
+    # The gateway's node health alerts, newest first, one row each (0.2.2:
+    # they reached only the home chat). Selecting one selects its node,
+    # whose detail lists them; lib/fleetmanage.tcl also shows a new one
+    # in the window on any tab.
+    variable alerts_group
+    variable alert_node
+    array unset alert_node
+    set recent [::vapi::field $fleet_alerts recent {}]
+    if {[llength $recent]} {
+        lappend want [list {} $alerts_group [::vi18n::mc {Health alerts}] {} group]
+        foreach a [lrange $recent 0 9] {
+            set id "alert:[::vapi::field $a at ?]:[::vapi::field $a node ?]"
+            set alert_node($id) [::vapi::field $a node ""]
+            lappend want [list $alerts_group $id \
+                "⚠ [::vapi::field $a name ?]: [::vapi::field $a from ?] → [::vapi::field $a to ?]" \
+                [list "" "" "" [::vapi::field $a at ?]] [expr {[::vapi::field $a to ""] eq "fresh" ? "up" : "down"}]] ;# i18n-exempt: node name and states
+        }
     }
+    _sync_rows $R_list.list $want
+    # The selection survives in place; it is re-asserted only when it is
+    # not already the widget's (each `selection set` queues a
+    # <<TreeviewSelect>>, see _select).
+    if {$selected ne "" && [$R_list.list exists $selected]
+        && [$R_list.list selection] ne [list $selected]} {
+        $R_list.list selection set $selected
+        $R_list.list focus $selected
+    }
+}
+
+# Make a two-level treeview hold exactly `want` — {parent id text values
+# tags} rows, parents before their children — moving, updating, adding
+# and deleting rows, never rebuilding. Open state, selection, focus and
+# the scroll position belong to rows that stay, so they stay too.
+proc ::vinstpane::_sync_rows {t want} {
+    set keep [dict create]
+    set next [dict create]
+    foreach r $want {
+        lassign $r parent id text values tags
+        dict set keep $id 1
+        set i [expr {[dict exists $next $parent] ? [dict get $next $parent] : 0}]
+        if {[$t exists $id]} {
+            if {[$t parent $id] ne $parent || [$t index $id] != $i} {
+                $t move $id $parent $i
+            }
+            $t item $id -text $text -values $values -tags $tags
+        } else {
+            $t insert $parent $i -id $id -text $text -values $values \
+                -tags $tags -open 1
+        }
+        dict set next $parent [incr i]
+    }
+    foreach top [$t children {}] {
+        foreach c [$t children $top] {
+            if {![dict exists $keep $c]} { $t delete $c }
+        }
+        if {![dict exists $keep $top]} { $t delete $top }
+    }
+}
+
+# The columns a list this wide can show beside a readable name: from the
+# right, platforms, load and uptime give way first. On a 360 dp phone the
+# fixed columns took all the width and the name column showed two
+# letters of each node (the detail pane has all of it).
+proc ::vinstpane::_fit_columns {t width} {
+    if {![winfo exists $t]} { return }
+    set used 160
+    set show {}
+    foreach c {version uptime load platforms} {
+        incr used [$t column $c -width]
+        if {$used > $width} { break }
+        lappend show $c
+    }
+    if {[llength $show] == 4} { set show #all }
+    if {[$t cget -displaycolumns] ne $show} { $t configure -displaycolumns $show }
 }
 
 proc ::vinstpane::_pick {w} {
@@ -282,6 +379,18 @@ proc ::vinstpane::_pick {w} {
     # click that missed.
     if {[string match {g:*} $id]} {
         catch { $w selection remove $id }
+        return
+    }
+    # An alert row stands for its node: select the node, whose detail
+    # lists its alerts.
+    if {[string match {alert:*} $id]} {
+        variable alert_node
+        set node [expr {[info exists alert_node($id)] ? $alert_node($id) : ""}]
+        if {$node ne "" && [$w exists "cluster:$node"]} {
+            _select "cluster:$node"
+        } else {
+            catch { $w selection remove $id }
+        }
         return
     }
     # The same re-entrancy guard ::virc::_pick carries, for the same
@@ -378,6 +487,20 @@ proc ::vinstpane::_clear_detail {} {
     $R_detail.body configure -state disabled
 }
 
+# Where the reader is in the detail, kept across a repaint of the SAME
+# row: the polls repaint it every 5 s, and each repaint put the view
+# back at the top under someone reading the sync lines further down. A
+# new selection starts at the top (_select clears the pane first).
+proc ::vinstpane::_detail_top {} {
+    variable R_detail
+    if {![winfo exists $R_detail.body]} { return 0 }
+    return [lindex [$R_detail.body yview] 0]
+}
+proc ::vinstpane::_detail_moveto {top} {
+    variable R_detail
+    if {[winfo exists $R_detail.body]} { $R_detail.body yview moveto $top }
+}
+
 proc ::vinstpane::_detail_write {text {tag ""}} {
     variable R_detail
     if {![winfo exists $R_detail.body]} { return }
@@ -412,6 +535,7 @@ proc ::vinstpane::paint_detail {} {
     variable detail
     if {$selected eq ""} { return }
     set n $selected
+    set top [_detail_top]
     _clear_detail
     set url ""
     catch { set url [dict get [::vinst::get $n] url] }
@@ -485,6 +609,7 @@ proc ::vinstpane::paint_detail {} {
         _detail_write ""
         _detail_write [::vi18n::mc {plaintext http to a non-loopback host — use a tunnel (HANDOFF §16)}] warn
     }
+    _detail_moveto $top
 }
 
 # ── field renderers: endpoint -> LIST OF LINES ──────────────────────
@@ -618,7 +743,18 @@ proc ::vinstpane::_fmt_logs {l} {
     set lines ""
     catch { set lines [dict get $l logs] }
     if {![llength $lines]} { return [list [::vi18n::mc {(empty)}]] }
-    return $lines
+    # /api/logs answers records: one line each, as the Logs… viewer
+    # prints them. The pane printed the raw dict (SMOKE-21).
+    set out {}
+    foreach e $lines {
+        if {[catch { dict get $e msg } msg]} { lappend out $e ; continue }
+        set head {}
+        foreach k {time level target} {
+            if {![catch { dict get $e $k } v] && $v ne "" && $v ne "null"} { lappend head $v }
+        }
+        lappend out [expr {[llength $head] ? "[join $head { }]: $msg" : $msg}]
+    }
+    return $out
 }
 
 # The attached gateway's registry, not the selected instance's URL:
@@ -647,6 +783,7 @@ proc ::vinstpane::_fleet_loaded {generation ok response} {
     variable fleet_alerts
     variable fleet_versions
     variable fleet_forgotten
+    variable fleet_consistency
     if {$generation != $fleet_generation} { return }
     if {!$ok || [catch {dict get $response nodes} nodes]} {
         set fleet_nodes {}
@@ -654,17 +791,24 @@ proc ::vinstpane::_fleet_loaded {generation ok response} {
         set fleet_alerts {}
         set fleet_versions {}
         set fleet_forgotten {}
+        set fleet_consistency {}
     } else {
         set fleet_nodes $nodes
         set fleet_sync [::vapi::field $response sync]
         set fleet_alerts [::vapi::field $response alerts]
         set fleet_versions [::vapi::field $response versions]
         set fleet_forgotten [::vapi::field $response forgotten {}]
+        set fleet_consistency [::vapi::field $response consistency {}]
     }
     refresh_list
     # A registry row's controls follow its node (stale → Forget, a new
     # sync kind → Sync now), so they are recomputed with the data.
-    if {[_is_cluster [selected]]} { _enable_buttons }
+    # Its detail is painted from this same answer: repainted now, it
+    # never says "fresh" beside a row that just turned stale.
+    if {[_is_cluster [selected]]} {
+        _enable_buttons
+        _paint_cluster_detail [selected]
+    }
 }
 
 # ── polling ─────────────────────────────────────────────────────────
@@ -701,6 +845,22 @@ proc ::vinstpane::_poll_list_tick {} {
         refresh_fleet
         foreach n [::vinst::names] { _health_one $n }
     }
+}
+
+# The list was mapped: one refresh now, outside the poll timers (their
+# cadence and their single chain stay as they are). From a timer, not
+# from inside the <Map>: the tab switch that maps the list lays out and
+# paints first, and a burst of Map events asks once.
+proc ::vinstpane::_shown {} {
+    after cancel ::vinstpane::_refresh_now
+    after 0 ::vinstpane::_refresh_now
+}
+
+proc ::vinstpane::_refresh_now {} {
+    if {![_tab_current]} { return }
+    refresh_fleet
+    foreach n [::vinst::names] { _health_one $n }
+    poll_detail_once
 }
 
 proc ::vinstpane::_poll_detail_tick {} {
@@ -896,6 +1056,10 @@ proc ::vinstpane::_sync_dialog {operation} {
         set text [_kind_label $kind]
         if {$operation eq "apply"} {
             set waiting [::vapi::field $inbox $kind 0]
+            # Nothing waiting is nothing to preselect (the store drain
+            # was checked with 0 waiting, SMOKE-21). A kind that changes
+            # data stays opt-in however much waits.
+            if {![string is integer -strict $waiting] || $waiting <= 0} { set _sync_pick($kind) 0 }
             set text [format [::vi18n::mc {%1$s (%2$s waiting)}] $text $waiting]
         }
         if {[_needs_confirm $kind $operation]} {
@@ -954,9 +1118,11 @@ proc ::vinstpane::_sync_dialog_ok {} {
 proc ::vinstpane::_cluster_sync {} { return [_sync_dialog push] }
 proc ::vinstpane::_cluster_apply {} { return [_sync_dialog apply] }
 
+# `why` is post_json_async's "HTTP 409: {json}" for a refusal: show the
+# engine's words, not its JSON (SMOKE-20).
 proc ::vinstpane::_sync_failed {selection kind why} {
     if {$selection ne $::vinstpane::selected} { return }
-    ::vstatus::set_msg [format [::vi18n::mc {%1$s sync failed: %2$s}] [_kind_label $kind] $why]
+    ::vstatus::set_msg [format [::vi18n::mc {%1$s sync failed: %2$s}] [_kind_label $kind] [::vapi::reason $why]]
 }
 
 proc ::vinstpane::_sync_done {selection kind response} {
@@ -1143,6 +1309,27 @@ proc ::vinstpane::_sync_lines {node} {
     return $lines
 }
 
+# Where this gateway's health alerts go, from /api/fleet `alerts`: off,
+# or `delivery.sends` here / elsewhere / no (with its reason). A change is
+# sent only with ask_relay on, a home chat named, and by the node that
+# runs that chat's Telegram adapter; the header used to say "sent to the
+# owner's home chat" whenever the switch was on (FLEET-8). A gateway
+# before 0.2.2 reports no delivery, and nothing is claimed for it.
+proc ::vinstpane::_alerts_delivery {alerts} {
+    if {[::vapi::field $alerts enabled 0] ni {true 1}} {
+        return [::vi18n::mc {listed here only; [notify] fleet_alerts is off}]
+    }
+    set delivery [::vapi::field $alerts delivery]
+    switch -- [::vapi::field $delivery sends] {
+        here { return [::vi18n::mc {sent to the owner's home chat from this gateway}] }
+        elsewhere { return [::vi18n::mc {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one}] }
+        no {
+            return [format [::vi18n::mc {not sent: %s}] [::vapi::field $delivery reason ?]]
+        }
+    }
+    return [::vi18n::mc {on; this gateway does not say whether they reach the home chat}]
+}
+
 proc ::vinstpane::_paint_cluster_detail {name} {
     variable R_detail
     set node [_cluster_node $name]
@@ -1153,7 +1340,11 @@ proc ::vinstpane::_paint_cluster_detail {name} {
         endpoint {Endpoint} static_ip {Static IP} heartbeat_at {Heartbeat}
         uptime_class {Uptime class} sessions_served {Sessions served}
     } {
-        lappend lines "[::vi18n::mc $label]: [dict get $node $key]"
+        # A field the registry holds no value for is left out: "Static
+        # IP: null" told the reader nothing (SMOKE-21).
+        set value [::vapi::field $node $key]
+        if {$value eq "" || $value eq "null"} { continue }
+        lappend lines "[::vi18n::mc $label]: $value"
     }
     set load [dict get $node load1]
     if {$load eq "null"} { set load "unknown" }
@@ -1178,11 +1369,15 @@ proc ::vinstpane::_paint_cluster_detail {name} {
         lappend lines {*}[::vfleetobs::detail_lines [dict get $node id]]
         set vline [::vfleetobs::version_line $fleet_versions]
         if {$vline ne ""} { lappend lines $vline }
+        # Deployment consistency as the last Drift check found it
+        # (lib/fleetmanage.tcl): the fleet's verdict and what differs here.
+        variable fleet_consistency
+        if {[llength [info commands ::vfleetmanage::consistency_lines]]} {
+            lappend lines {*}[::vfleetmanage::consistency_lines $fleet_consistency [dict get $node id]]
+        }
         set is_self [expr {[::vapi::field $node self 0] in {true 1}}]
         set alerts [::vfleetobs::alert_lines $fleet_alerts [expr {$is_self ? "" : [dict get $node id]}]]
-        set on [expr {[::vapi::field $fleet_alerts enabled 0] in {true 1}}]
-        lappend lines [format [::vi18n::mc {Health alerts (%s):}] \
-            [expr {$on ? [::vi18n::mc {sent to the owner's home chat}] : [::vi18n::mc {listed here only; [notify] fleet_alerts is off}]}]]
+        lappend lines [format [::vi18n::mc {Health alerts (%s):}] [_alerts_delivery $fleet_alerts]]
         if {[llength $alerts]} {
             foreach a $alerts { lappend lines "  $a" }
         } else {
@@ -1209,11 +1404,28 @@ proc ::vinstpane::_paint_cluster_detail {name} {
     } else {
         lappend lines [::vi18n::mc {No explicitly configured desktop gateway is bound to this node.}]
     }
-    lappend lines "" [::vi18n::mc {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.}]
+    # The ssh target is the bound saved instance's host and unit, the
+    # pair Fleet deploy restarts through (FLEET-8: this line used to deny
+    # one on every row, including rows that offered Fleet deploy).
+    set host ""
+    set unit ""
+    if {$gateway ne ""} {
+        set spec [::vinst::get $gateway]
+        catch { set host [dict get $spec host] }
+        catch { set unit [dict get $spec unit] }
+    }
+    if {$host ne "" && $unit ne ""} {
+        lappend lines "" [format [::vi18n::mc {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).}] \
+            $gateway $host $unit]
+    } else {
+        lappend lines "" [::vi18n::mc {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.}]
+    }
+    set top [_detail_top]
     _clear_detail
     $R_detail.body configure -state normal
     $R_detail.body insert end [join $lines \n]
     $R_detail.body configure -state disabled
+    _detail_moveto $top
 }
 
 proc ::vinstpane::poll_detail_once {} {
@@ -1338,13 +1550,22 @@ proc ::vinstpane::attach {name} {
 # (FLEET-4): a typo or a stale binding attached — and deployed — to the
 # wrong host. The gateway's own /api/fleet names its `self` row; that
 # must match. "" = verified, else the reason, ready for the status bar.
-# Exported for the deploy preflight as well.
+# The deployment executor (fleetdeploy.tcl verify_identity) asks the same
+# question through its own transport, in the worker process.
 proc ::vinstpane::verify_node_binding {instance node_id} {
+    return [lindex [node_binding_verdict $instance $node_id] 1]
+}
+
+# The same answer with its kind: {ok ""}, {mismatch why} (the gateway is
+# another node), {anonymous why} (it answers with no self row) or
+# {unreachable why} (it could not be asked). A lifecycle verb needs the
+# kind: a stopped gateway cannot answer, and that is not a mismatch.
+proc ::vinstpane::node_binding_verdict {instance node_id} {
     if {[catch {
         ::vapi::with_instance $instance { ::vapi::get_json /api/fleet 5000 }
     } resp]} {
-        return [format [::vi18n::mc {Cannot verify that %1$s is node %2$s: %3$s}] \
-            $instance $node_id $resp]
+        return [list unreachable [format [::vi18n::mc {Cannot verify that %1$s is node %2$s: %3$s}] \
+            $instance $node_id $resp]]
     }
     set self_id ""
     foreach n [::vapi::field $resp nodes {}] {
@@ -1354,14 +1575,14 @@ proc ::vinstpane::verify_node_binding {instance node_id} {
         }
     }
     if {$self_id eq ""} {
-        return [format [::vi18n::mc {%1$s reports no cluster node identity, so it cannot be verified as %2$s.}] \
-            $instance $node_id]
+        return [list anonymous [format [::vi18n::mc {%1$s reports no cluster node identity, so it cannot be verified as %2$s.}] \
+            $instance $node_id]]
     }
     if {$self_id ne $node_id} {
-        return [format [::vi18n::mc {%1$s is node %2$s, not %3$s. Fix its node id in Edit….}] \
-            $instance $self_id $node_id]
+        return [list mismatch [format [::vi18n::mc {%1$s is node %2$s, not %3$s. Fix its node id in Edit….}] \
+            $instance $self_id $node_id]]
     }
-    return ""
+    return [list ok ""]
 }
 
 proc ::vinstpane::detach {} {
@@ -1385,7 +1606,6 @@ proc ::vinstpane::build_ctl {{root ""}} {
     if {$root ne ""} { set R_ctl $root }
     if {[winfo exists $R_ctl]} { destroy $R_ctl }
     ttk::frame $R_ctl
-    set sep 0
     # The label is a CATALOG KEY and the button is REGISTERED through
     # ::vi18n::label, not ::vi18n::mc. Two separate bugs lived here and
     # both were invisible to every static check:
@@ -1402,20 +1622,37 @@ proc ::vinstpane::build_ctl {{root ""}} {
     # The single-word labels are why the extractor never saw them either:
     # flat_prose_cells requires whitespace, so `Attach`/`Stop`/`Add…`
     # failed its prose test and only the multi-word cells became keys.
+    #
+    # THE TABLE IS THE STRIP. One line per action, `|` between groups;
+    # `_ctl_<id>` is its dispatcher. A new action is a line here and its
+    # proc, nothing else: the strip wraps into as many rows as the window
+    # needs (_flow_ctl), on every platform. It used to be one packed row
+    # that needed 2227 px, so at the default 1080x720 ten of the twenty
+    # actions (Start, Stop, Restart, Fleet deploy…, Add…, Edit…, Remove
+    # among them) were never on screen, and seven still were not at
+    # 1440 px (SMOKE-4); only Android wrapped it.
     set labels [dict create]
+    set items {}
     foreach {id label} {
         attach    {Attach}
         detach    {Detach}
         |         {}
-        reload    {Reload plugins}
         sync      {Sync now}
         apply     {Apply received}
+        gossip    {Gossip now}
+        |         {}
         probe     {Probe}
-        forget    {Forget node…}
         logs      {Logs…}
         metrics   {Metrics}
         drift     {Drift…}
-        gossip    {Gossip now}
+        config    {Config…}
+        forget    {Forget node…}
+        |         {}
+        bulkprobe {Probe all…}
+        bulksync  {Sync all…}
+        audit     {Audit log…}
+        |         {}
+        reload    {Reload plugins}
         pause     {Pause scheduler}
         resume    {Resume scheduler}
         |         {}
@@ -1429,28 +1666,109 @@ proc ::vinstpane::build_ctl {{root ""}} {
         remove    {Remove}
     } {
         if {$id eq "|"} {
-            incr sep
-            ttk::separator $R_ctl.s$sep -orient vertical
-            pack $R_ctl.s$sep -side left -fill y -padx 3 -pady 3
+            lappend items |
             continue
         }
         dict set labels $id $label
-        ttk::button $R_ctl.$id -text [::vi18n::mc $label] \
+        # -width 0: the label's own width. The theme's minimum of eleven
+        # characters made "Probe" as wide as "Apply received" and cost
+        # the strip a row.
+        ttk::button $R_ctl.$id -text [::vi18n::mc $label] -width 0 \
             -command [list ::vinstpane::_ctl_$id]
         ::vi18n::label $R_ctl.$id $label
-        pack $R_ctl.$id -side left -padx 2 -pady 3
         catch { ::vcoach::attach $R_ctl.$id }
+        # A label that grows (a locale swap) may no longer fit its row.
+        bindtags $R_ctl.$id [linsert [bindtags $R_ctl.$id] 0 VInstCtlKid]
+        lappend items $R_ctl.$id
     }
+    variable ctl_flows
+    dict set ctl_flows $R_ctl [dict create items $items rows {}]
+    bindtags $R_ctl [linsert [bindtags $R_ctl] 0 VInstCtl]
+    bind VInstCtl <Configure> { ::vinstpane::_flow_ctl %W }
+    bind VInstCtl <Destroy> { catch { dict unset ::vinstpane::ctl_flows %W } }
+    bind VInstCtlKid <Configure> { ::vinstpane::_flow_ctl_soon [winfo parent %W] }
+    _flow_ctl $R_ctl
     catch { ::va11y::name $R_ctl [::vi18n::mc {instance controls}] }
-    # Eleven buttons are wider than a phone: there they wrap into rows
-    # (lib/android.tcl). Add… was off the screen on the emulator.
-    if {[llength [info commands ::vandroid::flow]]} { ::vandroid::flow $R_ctl }
     # Float-path pack only — see build_list. At boot this packed the
     # strip into the root AFTER .mid, which left it a zero-height
     # cavity until the first tab switch repacked it.
     set parent [winfo parent $R_ctl]
     if {$parent ne "." && [winfo toplevel $parent] eq $parent} { pack $R_ctl -side bottom -fill x }
     return $R_ctl
+}
+
+# The strip in rows: its actions in table order, a new row whenever the
+# next one would run past the strip's width, a separator where two
+# groups meet inside a row (a group boundary at a row's start needs
+# none). Rows are frames LOWERED beneath the buttons they hold, so the
+# buttons stay visible and keep their creation order for Tab. Runs on
+# every <Configure> of the strip and of its buttons; an unchanged layout
+# is left alone, which is what ends the Configure it causes.
+proc ::vinstpane::_flow_ctl {f} {
+    variable ctl_flows
+    if {![winfo exists $f] || ![dict exists $ctl_flows $f]} { return 0 }
+    set width [winfo width $f]
+    # Not mapped yet (the tab is not current): its window's width is
+    # where it will be packed, full width.
+    if {$width <= 1} { set width [winfo width [winfo toplevel $f]] }
+    if {$width <= 1} { set width [winfo screenwidth $f] }
+    set pad [_dp 2]
+    set sepw [expr {[_dp 2] + 2 * [_dp 3]}]
+    set rows {}
+    set row {}
+    set used 0
+    set boundary 0
+    foreach item [dict get $ctl_flows $f items] {
+        if {$item eq "|"} { set boundary 1 ; continue }
+        if {![winfo exists $item]} { continue }
+        set w [expr {[winfo reqwidth $item] + 2 * $pad}]
+        set gap [expr {[llength $row] && $boundary ? $sepw : 0}]
+        if {[llength $row] && $used + $gap + $w > $width} {
+            lappend rows $row
+            set row {}
+            set used 0
+            set gap 0
+        }
+        if {$gap} { lappend row | }
+        lappend row $item
+        incr used [expr {$gap + $w}]
+        set boundary 0
+    }
+    if {[llength $row]} { lappend rows $row }
+    if {$rows eq [dict get $ctl_flows $f rows]} { return [llength $rows] }
+    dict set ctl_flows $f rows $rows
+    foreach c [winfo children $f] {
+        if {[string match "$f.row*" $c] || [string match "$f.sep*" $c]} { destroy $c }
+    }
+    set n 0
+    set s 0
+    foreach r $rows {
+        set rf $f.row$n
+        ttk::frame $rf
+        lower $rf
+        pack $rf -side top -anchor w
+        foreach item $r {
+            if {$item eq "|"} {
+                ttk::separator $f.sep[incr s] -orient vertical
+                pack $f.sep$s -in $rf -side left -fill y -padx [_dp 3] -pady [_dp 3]
+                continue
+            }
+            pack $item -in $rf -side left -padx $pad -pady $pad
+        }
+        incr n
+    }
+    return [llength $rows]
+}
+
+proc ::vinstpane::_flow_ctl_soon {f} {
+    after cancel [list ::vinstpane::_flow_ctl $f]
+    after idle [list ::vinstpane::_flow_ctl $f]
+}
+
+# A size in desktop pixels, in this screen's (a dp on a phone).
+proc ::vinstpane::_dp {n} {
+    if {[llength [info commands ::vandroid::dp]]} { return [::vandroid::dp $n] }
+    return $n
 }
 
 # state -> {id reason}: "" reason = enabled. `name` is the selected
@@ -1518,6 +1836,15 @@ proc ::vinstpane::_enable_buttons {} {
     variable health
     if {![winfo exists $R_ctl]} { return }
     set name $selected
+    # Fleet-wide management (lib/fleetmanage.tcl): Probe all and Sync
+    # all reach every registry node the attached gateway can dial, the
+    # audit log is that gateway's; neither needs a row selected.
+    variable fleet_nodes
+    set fleet_state [expr {[llength $fleet_nodes] ? "normal" : "disabled"}]
+    foreach id {bulkprobe bulksync audit} {
+        catch { $R_ctl.$id configure -state $fleet_state }
+    }
+    catch { $R_ctl.config configure -state disabled }
     if {[_is_cluster $name]} {
         foreach id {attach detach reload sync apply pause resume start stop restart edit remove} {
             catch { $R_ctl.$id configure -state disabled }
@@ -1525,6 +1852,14 @@ proc ::vinstpane::_enable_buttons {} {
         foreach id {forget probe logs metrics drift gossip} { catch { $R_ctl.$id configure -state disabled } }
         set node [_cluster_node $name]
         if {$node ne ""} {
+            # A registry node's own gateway restarts itself through its
+            # supervisor, and its config is read and written over the
+            # same link (the node refuses what it cannot or may not do,
+            # and says why). A stale node does not answer.
+            catch { $R_ctl.config configure -state normal }
+            if {[_node_state $node] ne "stale"} {
+                catch { $R_ctl.restart configure -state normal }
+            }
             # Any registry node can be asked for its log and metrics (the
             # gateway answers for itself and asks another node over its
             # [a2a_agents] link); drift compares the whole registry, and
@@ -1728,6 +2063,38 @@ proc ::vinstpane::ssh_argv {host unit verb} {
         systemctl --user $verb [::vsafe::arg $unit]]
 }
 
+# A saved instance bound to a cluster node (its node_id) must still BE
+# that node before ssh starts, stops or restarts its unit (FLEET-2): the
+# same check as attach and Fleet deploy, asked of the instance's own
+# gateway. A gateway that answers as another node, or with no identity,
+# is refused with the reason in the status bar. One that cannot be asked
+# is the normal state for `start` (a stopped gateway does not answer),
+# which proceeds and is checked once it is up; a stop or a restart of a
+# gateway that cannot be asked (a hung one is why one restarts) asks the
+# operator first. No node_id, nothing to prove.
+proc ::vinstpane::_lifecycle_binding_ok {n spec verb} {
+    set node_id ""
+    catch { set node_id [dict get $spec node_id] }
+    if {$node_id eq ""} { return 1 }
+    lassign [node_binding_verdict $n $node_id] verdict why
+    switch -- $verdict {
+        ok { return 1 }
+        unreachable {
+            if {$verb eq "start"} { return 1 }
+            if {[_confirm [format [::vi18n::mc {%1$s %2$s over ssh anyway?}] $verb $n] \
+                    [format [::vi18n::mc {%s The command goes over ssh to the configured host, which this check could not tie to the node.}] $why]]} {
+                return 1
+            }
+            ::vstatus::set_msg $why
+            return 0
+        }
+        default {
+            ::vstatus::set_msg $why
+            return 0
+        }
+    }
+}
+
 proc ::vinstpane::_ssh_run {n verb} {
     # `variable _ssh_out` is not decoration: without it the `set
     # _ssh_out($f) ""` below creates a LOCAL array that dies with this
@@ -1746,6 +2113,7 @@ proc ::vinstpane::_ssh_run {n verb} {
         ::vstatus::set_msg [format [::vi18n::mc {bad unit for %1$s: %2$s}] $n $unit]
         return 0
     }
+    if {![_lifecycle_binding_ok $n $spec $verb]} { return 0 }
     set argv [ssh_argv $host $unit $verb]
     ::vstatus::set_msg [format [::vi18n::mc {%1$s %2$s over ssh…}] $verb $n]
     # `open |argv r` with a LIST: no shell, no exec redirection grammar,
@@ -1823,6 +2191,15 @@ proc ::vinstpane::_wait_healthy {n} {
     }
     set ssh_tries 0
     ::vstatus::set_msg [format [::vi18n::mc {%s is up}] $n]
+    # A start could not be checked while the gateway was down; it can now.
+    set node_id ""
+    catch { set node_id [dict get [::vinst::get $n] node_id] }
+    if {$node_id ne ""} {
+        set why [verify_node_binding $n $node_id]
+        if {$why ne ""} {
+            ::vstatus::set_msg [format [::vi18n::mc {%1$s is up, but its node binding is wrong: %2$s}] $n $why]
+        }
+    }
     _health_one $n
     poll_detail_once
     return 1
@@ -1839,10 +2216,30 @@ proc ::vinstpane::_ctl_stop    {} {
     return [_ssh_run $n stop]
 }
 proc ::vinstpane::_ctl_restart {} {
+    variable selected
+    # A registry row: the node restarts its own gateway through its
+    # supervisor, asked over the cluster link (lib/fleetmanage.tcl). A
+    # saved instance: ssh + systemd --user, as before.
+    if {[_is_cluster $selected]} {
+        set node [_cluster_node $selected]
+        if {$node eq ""} { return 0 }
+        return [::vfleetmanage::restart [dict get $node id] [dict get $node name]]
+    }
     set n [_name_or_msg]
     if {$n eq ""} { return 0 }
     return [_ssh_run $n restart]
 }
+# Node management (lib/fleetmanage.tcl): one node's config, Probe all,
+# Sync all of a kind, and the command center's audit log.
+proc ::vinstpane::_ctl_config {} {
+    variable selected
+    set node [_cluster_node $selected]
+    if {$node eq ""} { return 0 }
+    return [expr {[::vfleetmanage::open_config [dict get $node id] [dict get $node name]] ne ""}]
+}
+proc ::vinstpane::_ctl_bulkprobe {} { return [::vfleetmanage::bulk probe] }
+proc ::vinstpane::_ctl_bulksync {} { return [expr {[::vfleetmanage::open_bulk_sync] ne ""}] }
+proc ::vinstpane::_ctl_audit {} { return [expr {[::vfleetmanage::open_audit] ne ""}] }
 proc ::vinstpane::_ctl_deploy {} {
     return [::vfleetui::open]
 }
@@ -1871,26 +2268,39 @@ proc ::vinstpane::_ask {title spec} {
     toplevel $dlg
     wm title $dlg $title
     catch { wm transient $dlg . }
+    # Each label above its field, one column: the long labels ("cluster
+    # node id — explicit attach association, optional") no longer push
+    # the fields off a narrow window, and the column is as wide as the
+    # widest of them or a 44-character field.
     set row 0
     foreach {k label} $fields {
         ttk::label $dlg.l$k -text $label
-        grid $dlg.l$k -row $row -column 0 -sticky e -padx 4 -pady 3
+        grid $dlg.l$k -row $row -column 0 -sticky w -padx 8 -pady {6 0}
+        incr row
         ttk::entry $dlg.e$k -width 44
         $dlg.e$k insert 0 [dict get $spec $k]
-        grid $dlg.e$k -row $row -column 1 -sticky we -padx 4 -pady 3
+        grid $dlg.e$k -row $row -column 0 -sticky we -padx 8 -pady {1 2}
         catch { ::vi18n::aname $dlg.e$k {field: %s} $label }
         incr row
     }
+    grid columnconfigure $dlg 0 -weight 1
     set _dlg_rc ""
     frame $dlg.btns
     ttk::button $dlg.btns.ok -text OK -command { set ::vinstpane::_dlg_rc ok }
     ttk::button $dlg.btns.cancel -text [::vi18n::mc {Cancel}] \
         -command { set ::vinstpane::_dlg_rc cancel }
     pack $dlg.btns.ok $dlg.btns.cancel -side left -padx 6 -pady 6
-    grid $dlg.btns -row $row -column 0 -columnspan 2 -pady 6
+    grid $dlg.btns -row $row -column 0 -pady 6
     bind $dlg <Escape> { set ::vinstpane::_dlg_rc cancel }
     bind $dlg <Return> { set ::vinstpane::_dlg_rc ok }
-    catch { ::vplace::centered $dlg 380 [expr {80 + 28 * [llength $fields]}] 0.2 }
+    # As large as it asks to be. A guessed 380 px cut a 640 px dialog:
+    # the url showed eight characters and Cancel read "Can" (SMOKE-16).
+    # Twice: on a phone the first fit wraps the long labels to the
+    # screen, and the wrapped dialog is taller than it asked before.
+    foreach pass {1 2} {
+        update idletasks
+        catch { ::vplace::centered $dlg [winfo reqwidth $dlg] [winfo reqheight $dlg] 0.2 }
+    }
     catch { focus $dlg.ename }
     catch { grab set $dlg }
     tkwait variable ::vinstpane::_dlg_rc

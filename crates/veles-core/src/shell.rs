@@ -56,6 +56,45 @@ pub fn shell_args(script: &str) -> Vec<String> {
     crate::platform::shell_args(shell_binary(), script)
 }
 
+/// How a shell reads a command line: what quotes, what escapes, what a
+/// backslash is. A judge of a command's words ([`crate::plan`]'s, and
+/// turn recovery's through it) must split the line the way the shell
+/// that runs it will, or a `\;` it took for an escaped character is a
+/// command separator to the shell, and `C:\veles\veles.exe` loses its
+/// backslashes.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Dialect {
+    /// bash, sh, busybox sh, Git for Windows' bash: `\` escapes.
+    Posix,
+    /// pwsh and Windows PowerShell: `\` is a path separator, the
+    /// backtick escapes, typographic quotes quote, `{ … }` is code.
+    PowerShell,
+    /// cmd.exe: `\` is a path separator, `^` escapes, `'` and `#` are
+    /// ordinary characters.
+    Cmd,
+}
+
+impl Dialect {
+    /// The dialect of `shell` (a path or a PATH name), by its file stem:
+    /// the same reading [`crate::platform::shell_args`] makes of it.
+    pub fn of(shell: &str) -> Dialect {
+        let stem = std::path::Path::new(shell)
+            .file_stem()
+            .map(|s| s.to_string_lossy().to_ascii_lowercase())
+            .unwrap_or_default();
+        match stem.as_str() {
+            "pwsh" | "powershell" => Dialect::PowerShell,
+            "cmd" => Dialect::Cmd,
+            _ => Dialect::Posix,
+        }
+    }
+}
+
+/// The dialect of [`shell_binary`], the shell every command runs in.
+pub fn dialect() -> Dialect {
+    Dialect::of(shell_binary())
+}
+
 /// A `Command` for `<shell> <args that run script>`, stdio untouched.
 pub fn command(script: &str) -> tokio::process::Command {
     let mut c = tokio::process::Command::new(shell_binary());

@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset tl {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset tl {%1$s %2$s done} {%1$s %2$s tapos}
 ::msgcat::mcset tl {%1$s %2$s failed: %3$s} {%1$s %2$s nabigo: %3$s}
+::msgcat::mcset tl {%1$s %2$s over ssh anyway?} {Ituloy pa rin ang %1$s %2$s sa ssh?}
 ::msgcat::mcset tl {%1$s %2$s over ssh…} {%1$s %2$s sa ssh…}
 ::msgcat::mcset tl {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset tl {%1$s (%2$s waiting)} {%1$s (%2$s naghihintay)}
 ::msgcat::mcset tl {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  pangangatwiran %3$s}
 ::msgcat::mcset tl {%1$s = %2$s here} {%1$s = %2$s dito}
+::msgcat::mcset tl {%1$s = %2$s on %3$s} {%1$s = %2$s sa %3$s}
 ::msgcat::mcset tl {%1$s NOT saved: %2$s} {HINDI na-save ang %1$s: %2$s}
 ::msgcat::mcset tl {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {Ang %1$s ay kabilang sa library ng %2$s at read-only — kopyahin ito gamit ang New… upang mabago}
 ::msgcat::mcset tl {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {Ang %1$s ay kabilang sa library ng %2$s — hindi kailanman binubura ng veles ang mga skill ng ibang tool}
+::msgcat::mcset tl {%1$s cannot restart itself: %2$s} {Hindi kayang i-restart ng %1$s ang sarili nito: %2$s}
+::msgcat::mcset tl {%1$s differs: %2$s} {Naiiba ang %1$s: %2$s}
 ::msgcat::mcset tl {%1$s every cron job on %2$s?} {%1$s ang lahat ng trabaho sa cron sa %2$s?}
 ::msgcat::mcset tl {%1$s failed: %2$s} {Nabigo ang %1$s: %2$s}
 ::msgcat::mcset tl {%1$s in / %2$s out / %3$s calls} {%1$s pasok / %2$s labas / %3$s tawag}
+::msgcat::mcset tl {%1$s is back after %2$s s (veles %3$s).} {Bumalik na ang %1$s pagkalipas ng %2$s s (veles %3$s).}
 ::msgcat::mcset tl {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {Ang %1$s ay node %2$s, hindi %3$s. Ayusin ang node id nito sa Edit….}
 ::msgcat::mcset tl {%1$s is not a whole number} {Hindi buong numero ang %1$s}
+::msgcat::mcset tl {%1$s is not on: %2$s} {Naka-off ang %1$s: %2$s}
+::msgcat::mcset tl {%1$s is not set on %2$s: the default applies.} {Hindi nakatakda ang %1$s sa %2$s: ang default ang gagamitin.}
 ::msgcat::mcset tl {%1$s is reachable (%2$s ms).} {Maabot ang %1$s (%2$s ms).}
+::msgcat::mcset tl {%1$s is running %2$s turn(s). Restart it anyway?} {May %2$s turn na tumatakbo ang %1$s. I-restart pa rin?}
 ::msgcat::mcset tl {%1$s is set to something this box cannot edit (%2$s)} {Nakatakda ang %1$s sa hindi kayang i-edit ng box na ito (%2$s)}
 ::msgcat::mcset tl {%1$s is unreachable: %2$s} {Hindi maabot ang %1$s: %2$s}
+::msgcat::mcset tl {%1$s is up, but its node binding is wrong: %2$s} {Umaandar ang %1$s, pero mali ang node binding nito: %2$s}
+::msgcat::mcset tl {%1$s not compared: %2$s} {Hindi naikumpara ang %1$s: %2$s}
 ::msgcat::mcset tl {%1$s of %2$s characters} {%1$s sa %2$s karakter}
 ::msgcat::mcset tl {%1$s of %2$s sessions} {%1$s sa %2$s session}
 ::msgcat::mcset tl {%1$s of %2$s skills reach the prompt} {%1$s sa %2$s skill ang umaabot sa prompt}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset tl {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset tl {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset tl {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset tl {%1$s: %2$s on the gateway} {%1$s: %2$s sa gateway}
+::msgcat::mcset tl {%1$s: %2$s on the gateway (ships with veles)} {%1$s: %2$s sa gateway (kasama sa veles)}
 ::msgcat::mcset tl {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset tl {%1$s: no language server on the gateway. %2$s} {%1$s: walang language server sa gateway. %2$s}
 ::msgcat::mcset tl {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: ang huling %2$s sa %3$s linya na itinatago ng gateway nito sa memory, tinanggal ang mga sikreto sa node na iyon.}
+::msgcat::mcset tl {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: tinatabunan ng user plugin na %2$s ang bundled na may parehong nilalaman (%3$s)}
 ::msgcat::mcset tl {%d MCP server(s) configured} {%d MCP server na naka-configure}
 ::msgcat::mcset tl {%d entries} {%d entry}
 ::msgcat::mcset tl {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {%d file ng extension ang isusulat nang eksakto ayon sa nirepaso. Kung may nagbago sa mga ito mula sa preview, walang isusulat. Walang commit, push o PR na mangyayari.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset tl {%s (stale)} {%s (lipas na)}
 ::msgcat::mcset tl {%s (this session)} {%s (session na ito)}
 ::msgcat::mcset tl {%s GB free of %s GB} {%s GB bakante sa %s GB}
+::msgcat::mcset tl {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s Ang command ay dumadaan sa ssh papunta sa naka-configure na host, na hindi naisama ng check na ito sa node.}
 ::msgcat::mcset tl {%s already exists — open it from the list} {Mayroon nang %s — buksan ito mula sa listahan}
 ::msgcat::mcset tl {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {Nagbago ang %s mula nang buksan mo ito — walang na-overwrite; kopyahin ang teksto mo, saka I-reload}
 ::msgcat::mcset tl {%s cleared for this buffer} {Na-clear ang %s para sa buffer na ito}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset tl {%s comes from config.toml [acl] — edit there} {Nanggagaling ang %s sa config.toml [acl] — i-edit doon}
 ::msgcat::mcset tl {%s config change(s) wait for you — /configsync} {%s pagbabago sa config ang naghihintay sa iyo — /configsync}
 ::msgcat::mcset tl {%s did not become healthy within 30s} {Hindi naging maayos ang %s sa loob ng 30s}
+::msgcat::mcset tl {%s did not come back within 120 s: look at its log where it runs.} {Hindi bumalik ang %s sa loob ng 120 s: tingnan ang log nito sa lugar kung saan ito tumatakbo.}
 ::msgcat::mcset tl {%s done} {%s tapos}
 ::msgcat::mcset tl {%s failed: %s} {Nabigo ang %s: %s}
+::msgcat::mcset tl {%s holds a credential: it stays on its node and is not shown.} {May credential ang %s: nananatili ito sa node nito at hindi ipinapakita.}
 ::msgcat::mcset tl {%s is already split} {Nahati na ang %s}
+::msgcat::mcset tl {%s is restarting; waiting for it to come back…} {Nagre-restart ang %s; hinihintay itong bumalik…}
 ::msgcat::mcset tl {%s is the language in use — pick another one to swap with} {ang %s ang wikang ginagamit — pumili ng iba bilang papalitan}
 ::msgcat::mcset tl {%s is up} {Umaandar na ang %s}
 ::msgcat::mcset tl {%s keys — any key closes} {%s key — anumang key ang nagsasara}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset tl {; shadows bundled} {; tinatabunan ang bundled}
 ::msgcat::mcset tl {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Maaaring magbago ng mga setting ang isang alok na config at pinagsasama ng isang alok na vault ang mga sikreto; naghihintay pa rin sa owner ang mga pagbabago sa seksiyong pangseguridad.}
 ::msgcat::mcset tl {A failing plugin may drop hooks mid-turn.} {Maaaring ma-drop ng isang nagkakamaling plugin ang mga hook sa gitna ng turn.}
+::msgcat::mcset tl {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {Isang held section: hindi ito isinusulat mula dito; i-edit ito sa isang node at i-push ang config, at doon ito ia-apply ng owner nito.}
 ::msgcat::mcset tl {A local server: no key is needed unless you set one up.} {Lokal na server: walang kailangang key maliban kung mag-set ka.}
 ::msgcat::mcset tl {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Ma-i-stage lang ang isang signed na release pagkatapos ng preflight. Magkahiwalay na aksyon ang restart/verify, pagpapatuloy, at rollback. Dapat iulat ng isang maayos na process ang eksaktong nasuring source revision.}
 ::msgcat::mcset tl {A value is stored for %s — leave this empty to keep it.} {May nakatagong value para sa %s — iwanang blangko ito para panatilihin iyon.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset tl {Asking the provider for its models…} {Humihingi ng mga modelo sa provider…}
 ::msgcat::mcset tl Attach Ikabit
 ::msgcat::mcset tl {Attach to the next message} {Ikabit sa susunod na mensahe}
+::msgcat::mcset tl {Audit log unavailable: %s} {Hindi available ang audit log: %s}
+::msgcat::mcset tl {Audit log…} {Audit log…}
 ::msgcat::mcset tl {Author guide} {Gabay ng may-akda}
 ::msgcat::mcset tl {Automatically discovered from the attached gateway's cluster registry.} {Awtomatikang natuklasan mula sa cluster registry ng naka-attach na gateway.}
 ::msgcat::mcset tl Back Bumalik
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset tl {Browse sessions} {Mag-browse ng mga session}
 ::msgcat::mcset tl {Build manifest + preflight} {Build manifest + preflight}
 ::msgcat::mcset tl {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Build: veles %1$s, rebisyon %2$s (%3$s %4$s)}
+::msgcat::mcset tl {Bulk %1$s failed: %2$s} {Nabigo ang bulk %1$s: %2$s}
+::msgcat::mcset tl {Bulk %1$s: %2$s (%3$s).} {Bulk %1$s: %2$s (%3$s).}
+::msgcat::mcset tl {Bulk action cancelled.} {Kinansela ang bulk action.}
 ::msgcat::mcset tl {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e dulo ng linya · C-b/C-f karakter · M-b/M-f salita · C-k pumatay hanggang EOL · C-y yank · M-w kopya · C-w pumatay ng rehiyon · C-space itakda ang marka · C-/ undo}
 ::msgcat::mcset tl {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g kinakansel ang lahat · C-j bagong linya · M-p/M-n kasaysayan · Tab kumpleto}
+::msgcat::mcset tl {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU: %1$s core, %2$s%% abala sa nakalipas na %3$s s}
 ::msgcat::mcset tl {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s core, load %2$s / %3$s / %4$s (%5$s%% ng mga core)}
 ::msgcat::mcset tl Cancel Kanselahin
 ::msgcat::mcset tl {Cancel task} {Kanselahin ang gawain}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset tl {Channels (e.g. #veles #dev)} {Mga channel (hal. #veles #dev)}
 ::msgcat::mcset tl Chat Chat
 ::msgcat::mcset tl {Chat — not attached; press Attach in the Instances tab} {Chat — hindi naka-attach; pindutin ang Attach sa tab na Instances}
-::msgcat::mcset tl {Check (lsp)} {I-check (lsp)}
+::msgcat::mcset tl {Check (C-c C-k)} {Suriin (C-c C-k)}
 ::msgcat::mcset tl {Check again} {Suriin muli}
 ::msgcat::mcset tl {Check files} {Suriin ang mga file}
 ::msgcat::mcset tl Checkpoints {Mga Checkpoint}
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset tl {Close (Esc)} {Isara (Esc)}
 ::msgcat::mcset tl {Close the setup wizard? Nothing has been written yet.} {Isara ang setup wizard? Wala pang naisusulat.}
 ::msgcat::mcset tl {Code actions} {Mga code action}
+::msgcat::mcset tl {Command-center audit log} {Audit log ng command center}
 ::msgcat::mcset tl Commit Commit
 ::msgcat::mcset tl {Commit ready for review. Push is a separate action.} {Handa nang suriin ang commit. Hiwalay na aksyon ang push.}
 ::msgcat::mcset tl {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Kumpletuhin ang bawat field ng PDS, kabilang ang na-pin na image digest, bago i-preview ang handoff.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset tl {Config differs: %s} {Naiiba ang config: %s}
 ::msgcat::mcset tl {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Config log: ang node na iyon ay may mga pagbabago ni %1$s hanggang %3$s, ang gateway na ito hanggang %2$s}
 ::msgcat::mcset tl {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Config log: ang gateway na ito ay may mga pagbabago ni %1$s hanggang %2$s, ang node na iyon hanggang %3$s}
+::msgcat::mcset tl {Config of %s} {Config ng %s}
 ::msgcat::mcset tl {Config only on that node: %s} {Config na nasa node na iyon lang: %s}
 ::msgcat::mcset tl {Config only on this gateway: %s} {Config na nasa gateway na ito lang: %s}
+::msgcat::mcset tl {Config: %s} {Config: %s}
 ::msgcat::mcset tl Configure I-configure
 ::msgcat::mcset tl {Configure %s} {I-configure ang %s}
 ::msgcat::mcset tl {Configure translator} {I-configure ang tagasalin}
 ::msgcat::mcset tl {Configured desktop gateway} {Naka-configure na desktop gateway}
 ::msgcat::mcset tl Configure… I-configure…
 ::msgcat::mcset tl {Configuring %s} {Ini-configure ang %s}
+::msgcat::mcset tl Config… Config…
 ::msgcat::mcset tl {Confirm or discard the current signed review before starting another download.} {Kumpirmahin o i-discard ang kasalukuyang signed review bago magsimula ng isa pang download.}
 ::msgcat::mcset tl {Container host: typed host plan and privileged CLI handoff} {Container host: typed host plan at CLI handoff na nangangailangan ng karapatan ng administrator}
 ::msgcat::mcset tl {Context window} {Context window}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset tl {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Gawin ang bot gamit ang @BotFather, saka i-paste ang token nito sa ibaba: mapupunta ito sa naka-encrypt na vault, hindi kailanman sa config.toml.}
 ::msgcat::mcset tl {Create this extension?} {Gawin ang extension na ito?}
 ::msgcat::mcset tl {Create this generated extension?} {Likhain ang nabuong extension na ito?}
+::msgcat::mcset tl {Created and loaded. Review and test the extension before publishing.} {Nagawa at na-load. Repasuhin at subukan ang extension bago i-publish.}
 ::msgcat::mcset tl {Created and reloaded. Review and test the extension before publishing.} {Nagawa at na-reload. Suriin at subukan ang extension bago i-publish.}
 ::msgcat::mcset tl {Created, but reload failed} {Nagawa, ngunit nabigo ang reload}
+::msgcat::mcset tl {Created, not loaded} {Nagawa, hindi na-load}
+::msgcat::mcset tl {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {Nagawa, hindi pa na-load: patakbuhin ang cargo build --release sa direktoryo ng extension, saka i-reload ito sa Manage extensions.}
+::msgcat::mcset tl {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {Nagawa. Hindi sinasabi ng gateway na ito kung na-load nito ang extension: tingnan ang estado nito sa Manage extensions.}
 ::msgcat::mcset tl {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Gumagawa ng %s/<name>/SKILL.md mula sa isang template at binubuksan ito. Ang paglalarawan sa frontmatter lamang ang umaabot sa prompt index, kaya ipahayag dito KUNG kailan gagamitin ang skill.}
 ::msgcat::mcset tl {Cron history} {Kasaysayan ng Cron}
 ::msgcat::mcset tl {Cron jobs} {Mga trabaho sa cron}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset tl {Delete user} {Tanggalin ang user}
 ::msgcat::mcset tl {Delete workspace?} {Tanggalin ang workspace?}
 ::msgcat::mcset tl Deop {Tanggalan ng op}
+::msgcat::mcset tl {Deployment consistency unknown: %s node(s) could not be compared.} {Hindi alam ang deployment consistency: %s node ang hindi naikumpara.}
+::msgcat::mcset tl {Deployment consistency: not checked yet (Drift… compares every node).} {Deployment consistency: hindi pa nasusuri (ikumpara ng Drift… ang bawat node).}
 ::msgcat::mcset tl {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Ilarawan ang pagbabago. Maaaring baguhin o magdagdag ang AI ng ilang file ng extension na ito. Ang bawat file ay ipinapakita bilang diff, at walang isinusulat bago mo kumpirmahin.}
 ::msgcat::mcset tl {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Ilarawan ang pagbabago. Maaaring magpanukala ang AI ng kapalit, ngunit hindi ito makakapagsulat hangga't hindi mo sinusuri at kinukumpirma ang diff.}
 ::msgcat::mcset tl {Describe the requested extension change first.} {Ilarawan muna ang hiniling na pagbabago sa extension.}
 ::msgcat::mcset tl Description Paglalarawan
+::msgcat::mcset tl {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {Magpapatuloy ang mga desktop turn mula sa naka-save nilang history pagkatapos ng restart; hindi ito gagawin ng connector, A2A, mail, cron at subagent turn.}
 ::msgcat::mcset tl {Desktop: local core, modules and process plugins} {Desktop: lokal na core, mga module at process plugin}
 ::msgcat::mcset tl Detach I-detach
 ::msgcat::mcset tl {Detach foreground} {I-detach ang foreground}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset tl {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {I-download at i-verify ang release manifest at host archive bago i-install. Kailangan ang lahat ng limang identity field. Inilalagay ng gateway sa pribadong staging ang archive; walang na-install ang preview na ito.}
 ::msgcat::mcset tl {Downloading and verifying the signed release…} {Dine-download at nire-verify ang signed release…}
 ::msgcat::mcset tl {Draft this as an extension?} {I-draft ito bilang extension?}
+::msgcat::mcset tl {Draft this change as an extension?} {I-draft ang pagbabagong ito bilang extension?}
 ::msgcat::mcset tl {Drag to scroll; a quick swipe goes further.} {Hilahin para mag-scroll; mas malayo ang mabilis na pag-swipe.}
 ::msgcat::mcset tl {Drift check failed: %s} {Nabigo ang drift check: %s}
 ::msgcat::mcset tl {Drift check: %s node(s) differ from this gateway.} {Drift check: %s node ang naiiba sa gateway na ito.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset tl Eval→gw Eval→gw
 ::msgcat::mcset tl {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Naka-commit ang bawat pagbabago sa %s. Ibabalik ng pag-restore ang buong direktoryo sa commit na iyon — at ine-snapshot muna ang kasalukuyang estado, kaya hindi ito tuluyan.}
 ::msgcat::mcset tl {Every plugin file goes back to that commit. The current state is committed first.} {Babalik ang bawat file ng plugin sa commit na iyon. Ine-commit muna ang kasalukuyang estado.}
+::msgcat::mcset tl {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {Bawat tier: ang New extension ay nagsusulat ng extension sa Tcl, TypeScript, Racket o Common Lisp, o isang out-of-tree Rust plugin (isang cdylib sa crate na veles-plugin-abi-sdk: i-build ito gamit ang cargo build --release, saka i-reload sa Manage extensions). Dalawang tier ang nasa labas ng user plugin directory at sinisimulan mula sa command line: isang module, isang Rust library na binuo kasama ng veles (ang veles plugins new NAME --kind overlay ang nagsusulat ng repository nito), at isang process plugin, isang program sa crate na veles-plugin-sdk na pinapatakbo at pinangangasiwaan ng gateway. May seksiyon ang Author guide para sa bawat isa.}
 ::msgcat::mcset tl {Exact commit} {Eksaktong commit}
 ::msgcat::mcset tl {Exact permission rule} {Eksaktong panuntunan ng permiso}
 ::msgcat::mcset tl {Example: a hook} {Halimbawa: isang hook}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset tl {Explain the diagnostics} {Ipaliwanag ang diagnostics}
 ::msgcat::mcset tl Export… I-export…
 ::msgcat::mcset tl {Extension API} {Extension API}
+::msgcat::mcset tl {Extension API reference} {Sanggunian ng Extension API}
 ::msgcat::mcset tl {Extension development} {Pagbuo ng extension}
 ::msgcat::mcset tl {Extension guide} {Gabay sa extension}
 ::msgcat::mcset tl {Extension source} {Source ng extension}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset tl {Guards — what the harness stops, and where it stands now} {Guards — kung ano ang pinipigilan ng harness, at ang estado nito ngayon}
 ::msgcat::mcset tl {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Tumatakbo ang mga handler sa ipinapakitang pagkakasunud-sunod; panalo ang unang magbabalik ng hindi-walang-laman na halaga. Kapag naka-off ang isa, nilalaktawan ito nang hindi ina-unregister, at naiimbak ang pagpipilian sa config.toml upang hindi ito tahimik na maibalik ng isang plugin reload.}
 ::msgcat::mcset tl Health Kalusugan
+::msgcat::mcset tl {Health alerts} {Mga alerto sa kalusugan}
 ::msgcat::mcset tl {Health alerts (%s):} {Mga alerto sa kalusugan (%s):}
 ::msgcat::mcset tl Heartbeat {Pintig (heartbeat)}
 ::msgcat::mcset tl {Heartbeat age: %s s} {Edad ng heartbeat: %s s}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset tl Install… I-install…
 ::msgcat::mcset tl {Instance name (for example an IRC network)} {Pangalan ng instance (halimbawa isang IRC network)}
 ::msgcat::mcset tl Instances Instances
+::msgcat::mcset tl {Instead of patching %s: } {Sa halip na i-patch ang %s: }
 ::msgcat::mcset tl {It becomes the current content, as a new revision — so the restore can be undone too.} {Ito ang magiging kasalukuyang nilalaman, bilang bagong rebisyon — kaya puwede ring bawiin ang pagbabalik.}
 ::msgcat::mcset tl {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Mapupunta ito sa naka-encrypt na vault sa makinang ito. Hindi ito kailanman nakikita ng agent: magagamit lang nito ito bilang $%s sa mga command, o maipapadala sa mga host na pinapayagan.}
 ::msgcat::mcset tl {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Tinanggal ito sa registry ng cluster sa buong fleet: sasabihan ng susunod na palitan ng gossip ang bawat 0.2.0 peer na i-drop din ito, at wala sa kanila ang magsasama-muli nito. Ang peer na mas luma sa 0.2.0 ay patuloy pa ring ililista ito. Kung bumalik ang makina at mag-heartbeat, makarehistro itong muli. Hindi apektado ang mga sync peer at mga naka-save na instance.}
+::msgcat::mcset tl {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {Isinusulat ito sa config.toml ng node na iyon bilang edit na ginawa roon; pagkatapos ay dinadala ito ng config sync sa mga node na kuma-sync ng config dito.}
 ::msgcat::mcset tl {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Aalis na ito sa memorya. Itinatabi ng history nito ang bawat rebisyon, at maibabalik ito ng History…}
+::msgcat::mcset tl {Its gateway stops and %s.} {Hihinto ang gateway nito at %s.}
 ::msgcat::mcset tl Join Sumali
 ::msgcat::mcset tl {Join a pool} {Sumali sa isang grupo ng mga makina}
 ::msgcat::mcset tl {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {Sumali sa grupo ng mga makina ng %1$s bilang %2$s? Maaabot ng grupo ang teleponong ito sa %3$s.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset tl Joining… Sumasali…
 ::msgcat::mcset tl Join… Sumali…
 ::msgcat::mcset tl {Jump to composer} {Pumunta sa composer}
+::msgcat::mcset tl {Key (for example model.default)} {Key (halimbawa: model.default)}
 ::msgcat::mcset tl Keybindings {Mga keybinding}
 ::msgcat::mcset tl {Keyboard help} {Tulong sa keyboard}
 ::msgcat::mcset tl {Kick %1$s from %2$s?} {I-kick ang %1$s mula sa %2$s?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset tl {LLM provider} {LLM provider}
 ::msgcat::mcset tl Language Wika
 ::msgcat::mcset tl {Language (i18n)} {Wika (i18n)}
+::msgcat::mcset tl {Language servers on this gateway} {Mga language server sa gateway na ito}
 ::msgcat::mcset tl Language… Wika…
 ::msgcat::mcset tl {Last active} {Huling aktibo}
 ::msgcat::mcset tl {Last probe: %1$s — %2$s} {Huling probe: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset tl Level Antas
 ::msgcat::mcset tl {Lift lockdown} {Alisin ang lockdown}
 ::msgcat::mcset tl Lines {Mga linya}
+::msgcat::mcset tl {List targets…} {Ilista ang mga target…}
 ::msgcat::mcset tl {List the provider's models} {Ilista ang mga modelo ng provider}
 ::msgcat::mcset tl Load Karga
 ::msgcat::mcset tl {Load more} {Mag-load pa}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset tl Next Susunod
 ::msgcat::mcset tl Nickname Nickname
 ::msgcat::mcset tl {NixOS: emit a module snippet; do not edit host declarations} {NixOS: maglabas ng module snippet; huwag i-edit ang mga deklarasyon ng host}
-::msgcat::mcset tl {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Walang naka-configure na SSH lifecycle target para sa node na ito. Magdagdag nang maayos ng instance para ma-deploy o ma-restart ito.}
+::msgcat::mcset tl {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {Walang naka-configure na SSH lifecycle target para sa node na ito: hinihiling ng Restart sa node na i-restart ang sarili nito sa pamamagitan ng supervisor nito; kailangan ng Fleet deploy ng naka-save na instance na may ssh target.}
 ::msgcat::mcset tl {No additional push happens.} {Walang karagdagang push na mangyayari.}
 ::msgcat::mcset tl {No apps yet. Ask the agent to make one: “make me an app that…”} {Wala pang app. Hilingin sa agent na gumawa ng isa: “gawan mo ako ng app na…”}
 ::msgcat::mcset tl {No code in the picture. Hold the phone closer, straight on, and scan again.} {Walang code sa larawan. Ilapit ang telepono, nang tuwid, at i-scan muli.}
+::msgcat::mcset tl {No command-center action is recorded on this gateway yet.} {Wala pang naitalang command-center action sa gateway na ito.}
 ::msgcat::mcset tl {No configuration snapshot will be restored.} {Walang configuration snapshot na ibabalik.}
 ::msgcat::mcset tl {No configured sync peer for this node.} {Walang naka-configure na sync peer para sa node na ito.}
 ::msgcat::mcset tl {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Walang naka-configure na dedikadong tagasalin. Gamitin ang I-configure ang tagasalin para piliin ang provider, modelo at target na wika nito.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset tl {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Kusa ring pinahihinto ng mga teleponong gawa ng %s ang mga app. Sa mga setting ng app ng veles, payagan itong kusang magsimula at tumakbo sa background.}
 ::msgcat::mcset tl {Pin / unpin} {I-pin / i-unpin}
 ::msgcat::mcset tl {Pin to home screen} {I-pin sa home screen}
+::msgcat::mcset tl {Plugin author guide} {Gabay sa plugin author}
 ::msgcat::mcset tl {Plugin history} {History ng plugin}
 ::msgcat::mcset tl Plugins {Mga plugin}
 ::msgcat::mcset tl Port Port
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset tl {Preview here} {I-preview dito}
 ::msgcat::mcset tl {Preview pane} {Preview pane}
 ::msgcat::mcset tl {Preview proposal} {I-preview ang panukala}
-::msgcat::mcset tl {Preview the changed name or language before creating it.} {I-preview ang binagong pangalan o wika bago ito gawin.}
+::msgcat::mcset tl {Preview the changed name, purpose or language before creating it.} {I-preview ang nabagong pangalan, layunin o wika bago ito gawin.}
 ::msgcat::mcset tl Probe I-probe
+::msgcat::mcset tl {Probe %s node(s)?} {I-probe ang %s node?}
+::msgcat::mcset tl {Probe all…} {I-probe lahat…}
 ::msgcat::mcset tl {Probe of %1$s failed: %2$s} {Nabigo ang probe ng %1$s: %2$s}
 ::msgcat::mcset tl {Profile result} {Resulta ng profile}
 ::msgcat::mcset tl {Promote into config.toml} {I-promote sa config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset tl {Push branch…} {I-push ang branch…}
 ::msgcat::mcset tl {Push complete. No pull request has been opened.} {Tapos na ang push. Walang pull request na nabuksan.}
 ::msgcat::mcset tl {Push this branch?} {I-push ang branch na ito?}
+::msgcat::mcset tl {Push this kind to every node that is a configured peer for it:} {I-push ang ganitong uri sa bawat node na naka-configure na peer nito:}
 ::msgcat::mcset tl {Push to %s:} {I-push sa %s:}
 ::msgcat::mcset tl Question Tanong
 ::msgcat::mcset tl Questions {Mga tanong}
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset tl {REPL target: the app} {REPL target: ang app}
 ::msgcat::mcset tl {REPL target: the gateway} {REPL target: ang gateway}
 ::msgcat::mcset tl Read Basahin
+::msgcat::mcset tl {Read the key first: a write names the value it replaces.} {Basahin muna ang key: pinangalanan ng isang write ang value na pinapalitan nito.}
 ::msgcat::mcset tl {Reading notifications, for triggers} {Pagbasa ng mga abiso, para sa mga trigger}
 ::msgcat::mcset tl Reasoning Reasoning
 ::msgcat::mcset tl {Reasoning effort} {Antas ng pangangatwiran}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset tl {Reset to default} {Ibalik sa default}
 ::msgcat::mcset tl {Reset to template} {I-reset sa template}
 ::msgcat::mcset tl Restart I-restart
+::msgcat::mcset tl {Restart %s?} {I-restart ang %s?}
 ::msgcat::mcset tl {Restart + verify canary} {I-restart + i-verify ang canary}
+::msgcat::mcset tl {Restart cancelled.} {Kinansela ang restart.}
+::msgcat::mcset tl {Restart of %1$s failed: %2$s} {Nabigo ang restart ng %1$s: %2$s}
 ::msgcat::mcset tl {Restore hidden windows} {Ibalik ang mga nakatagong window}
 ::msgcat::mcset tl {Restore plugins to %s?} {I-restore ang mga plugin sa %s?}
 ::msgcat::mcset tl {Restore revision r%1$s of %2$s?} {Ibalik ang rebisyon r%1$s ng %2$s?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset tl {S3 region} {S3 region}
 ::msgcat::mcset tl {SASL account (optional)} {SASL account (opsyonal)}
 ::msgcat::mcset tl {SASL password (hidden)} {SASL password (nakatago)}
+::msgcat::mcset tl {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {SSH lifecycle: sa pamamagitan ng naka-save na instance na %1$s (%2$s, unit %3$s).}
 ::msgcat::mcset tl Sandbox Sandbox
 ::msgcat::mcset tl {Sandbox account} {Account ng sandbox}
 ::msgcat::mcset tl Sandboxes {Mga sandbox}
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset tl {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Ang mga session na naka-override sa alias na ito ay mananatili sa rutang napili nila; hindi mahahanap ng mga bagong override ang pangalan.}
 ::msgcat::mcset tl {Sessions served} {Nangasiwang session}
 ::msgcat::mcset tl Set Itakda
+::msgcat::mcset tl {Set %1$s on %2$s to %3$s?} {Itakda ang %1$s sa %2$s sa %3$s?}
 ::msgcat::mcset tl {Set [model] provider/default in config.toml.} {Itakda ang provider/default ng [model] sa config.toml.}
 ::msgcat::mcset tl {Set as swap target} {Gawing papalitan}
 ::msgcat::mcset tl {Set mode %1$s on %2$s?} {Itakda ang mode na %1$s sa %2$s?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset tl Summary Buod
 ::msgcat::mcset tl Surface Surface
 ::msgcat::mcset tl {Swap ⇄} {Palitan ⇄}
+::msgcat::mcset tl {Sync %1$s to %2$s node(s)?} {I-sync ang %1$s sa %2$s node?}
+::msgcat::mcset tl {Sync all} {I-sync lahat}
+::msgcat::mcset tl {Sync all…} {I-sync lahat…}
 ::msgcat::mcset tl {Sync cancelled.} {Kinansela ang sync.}
 ::msgcat::mcset tl {Sync complete.} {Tapos na ang sync.}
 ::msgcat::mcset tl {Sync now} {I-sync ngayon}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset tl {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Ipinapadala ang kasalukuyang diagnostics (mula sa server ng wika o Check) kasama ng file na ito. Maaaring magdagdag ng tanong. Teksto lang ang sagot; walang maisusulat.}
 ::msgcat::mcset tl {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Buburahin ang direktoryo at lahat ng laman nito. Hindi ito maaaring i-undo — i-off na lang ito kung gusto mo lang itong matanggal sa prompt.}
 ::msgcat::mcset tl {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Buburahin ang direktoryo. Ang plugin folder ay isang git repository at may snapshot na i-commit muna, kaya maibabalik ito ng History….}
-::msgcat::mcset tl {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Binubuksan ng editor ang mga file ng gateway, kasama ang mga remote instance, at pinapatakbo ang server ng wika para sa wika ng file sa gateway: tcl-lsp, typescript-language-server (TypeScript at JavaScript), rust-analyzer (isang Rust plugin crate o module), clangd (C), racket-langserver at isang Common Lisp server. Gumagana ang hover, go to definition, completion at live diagnostics sa bawat wikang may server ang gateway; kapag wala ito, sinasabi ng editor kung aling program ang i-install doon at pinapanatili ang syntax highlighting. Ang Check ay nagpapatakbo ng katugmang checker sa gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, o ang Racket at Lisp reader. I-save, i-reload sa Manage extensions, at subukan ang extension nang hindi ipinapublish ang lokal na state.}
+::msgcat::mcset tl {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {Binubuksan ng editor ang mga file ng gateway, kabilang ang mga remote instance, at pinapatakbo sa gateway ang language server para sa wika ng file: typescript-language-server (TypeScript at JavaScript), rust-analyzer (isang Rust plugin crate o module), clangd (C), racket-langserver, isang Common Lisp server, at tcl-lsp para sa Tcl kung mayroon ito sa gateway (kasama ang tcl-lsp sa mga Linux package ng veles). Gumagana ang hover, go to definition, completion at live diagnostics para sa bawat wikang may server ang gateway; kapag wala itong server, sinasabi ng editor kung anong program ang i-install doon at pinapanatili ang syntax highlighting. Ang Check ay nagpapatakbo sa gateway ng katumbas na checker: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, ang mga reader ng Racket at Lisp, at para sa Tcl ang sariling tclsh ng engine (isang completeness check, o ang lint ng tcl-lsp kung naka-install). I-save, i-reload sa Manage extensions, at subukan ang extension nang hindi ipinapublish ang local state.}
 ::msgcat::mcset tl {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Inihahanda ng unang handoff ang mga sikreto, ang na-pin na image at ang mga file sa runtime ngunit hindi nito sinisimulan ang PDS. I-back up ang KEK at ang PLC rotation key nang offline, saka gumawa ng bagong-repasong kahilingan na may kumpirmasyon ng backup upang i-set up ang HTTP-01 TLS at activation. Dapat direktang ituro ng mga DNS record ang host na ito; walang CDN proxy o pagbabago sa DNS na ginagawa ng veles.}
+::msgcat::mcset tl {The fleet is NOT consistent: %s node(s) differ.} {HINDI consistent ang fleet: %s node ang naiiba.}
+::msgcat::mcset tl {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {Consistent ang fleet na may mga pagkakaiba: %1$s node ang tumatakbo sa parehong build at nagkakasundo sa lahat ng ibinabahagi nila; %2$s item ang wala sa bawat node.}
+::msgcat::mcset tl {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {Consistent ang fleet: %s node ang tumatakbo sa parehong build, module at plugin.}
 ::msgcat::mcset tl {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Nagbago ang form mula nang mabuo ang extension. Bumuo muli, o i-preview ang plain scaffold.}
+::msgcat::mcset tl {The gateway did not receive the purpose as written. Nothing was created.} {Hindi natanggap ng gateway ang layunin ayon sa pagkakasulat. Walang nagawa.}
+::msgcat::mcset tl {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {Hindi naghahain ang gateway ng mga gabay sa extension (luma ito kaysa 0.2.2), at walang kopya nito ang desktop na ito.}
 ::msgcat::mcset tl {The gateway itself is untouched.} {Ang gateway mismo ay hindi ginagalaw.}
 ::msgcat::mcset tl {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Ni-reload ng gateway ang config, kaya ginagamit na ito ng mga bagong session, at ang key na nakatago sa vault ay gagamitin ng susunod na request. Magsisimula ang Telegram at IRC sa susunod na restart ng gateway: veles gateway restart.}
 ::msgcat::mcset tl {The installed component no longer matches the selected manifest. Review the component list again.} {Hindi na tumutugma ang na-install na component sa napiling manifest. Suriin muli ang listahan ng component.}
 ::msgcat::mcset tl {The installer preview has no verification signatures; apply is disabled.} {Walang verification signatures ang installer preview; naka-disable ang apply.}
 ::msgcat::mcset tl {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Buburahin ang job at ang kasaysayan ng mga pagtakbo nito. Hindi ito maaaring i-undo — i-pause na lang ito kung gusto mo lang itong itigil.}
+::msgcat::mcset tl {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {Ang mga key na dinadala ng config sync, sa ilalim ng mga patakaran nito: nananatili sa node nila ang node-local na key at credential, at ang held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) ay binabago sa lugar kung saan ito inedit at ipinush, pagkatapos ay hinihintay ang owner ng node na iyon.}
 ::msgcat::mcset tl {The log could not be read: %s} {Hindi mabasa ang log: %s}
 ::msgcat::mcset tl {The manifest belongs to another component; its reply was discarded.} {Kabilang sa ibang component ang manifest; itinapon ang sagot nito.}
 ::msgcat::mcset tl {The profile changed. Review the fresh plan before applying it.} {Nagbago ang profile. Suriin ang sariwang plano bago ito ilapat.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset tl {The signed release preview was malformed; nothing was installed.} {Mali ang pagkakagawa ng signed release preview; walang na-install.}
 ::msgcat::mcset tl {The source buffer changed. Request a new proposal before applying.} {Nagbago ang source buffer. Humingi ng bagong panukala bago mag-apply.}
 ::msgcat::mcset tl {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Babalik ang store ng isang revision. Ang rollback mismo ay isang revision, kaya maaari rin itong i-undo.}
+::msgcat::mcset tl {The translator did not answer within %s seconds.} {Hindi sumagot ang translator sa loob ng %s segundo.}
 ::msgcat::mcset tl {The translator returned no text.} {Walang ibinalik na teksto ang translator.}
 ::msgcat::mcset tl {The verification reply was malformed; no integrity result was accepted.} {Malformed ang tugon sa pag-verify; walang integridad na resulta ang tinanggap.}
 ::msgcat::mcset tl Themes {Mga Tema}
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset tl {This challenge is over.} {Tapos na ang challenge na ito.}
 ::msgcat::mcset tl {This code has expired. Ask for a new one.} {Nag-expire na ang code na ito. Humingi ng bago.}
 ::msgcat::mcset tl {This does not start a service or claim signed-download verification.} {Hindi ito nagpapatakbo ng serbisyo o umaangkin ng pag-verify ng signed-download.}
+::msgcat::mcset tl {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {Core source ng veles ang file na ito. Mas bagay ang karamihan ng pagbabago bilang extension, na nakakaligtas sa mga upgrade at hindi kailangang i-rebuild: isang hook, tool, service override o provider driver, na nakasulat sa Tcl, TypeScript, Racket o Common Lisp, o bilang out-of-tree Rust plugin (ang New extension ay nagsusulat ng alinman sa mga ito), o bilang module o process plugin (ipinapakita ng gabay sa Extension kung paano magsimula ng isa). Ang core patch ay para sa hindi kayang ipahayag ng extension API. I-draft na lang ang pagbabagong ito bilang extension? Mananatili ang edit mo sa buffer na ito, hindi na-save; ang muling pag-save ay magpa-patch sa core file.}
 ::msgcat::mcset tl {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Hindi tumatanggap ang gateway na ito ng mga value ng sikreto mula sa makinang ito: doon ito ilagay gamit ang veles secret set %s, o ilista ang network na ito sa [vault] trusted_networks nito}
 ::msgcat::mcset tl {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Ito mismo ang isusulat — ang mismong bytes ng engine, na kinuha nang live. Wala pang nahihipo sa disk.}
+::msgcat::mcset tl {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {Core source ng veles ito. Karaniwang mas mabuti ang pagbabago dito bilang extension: New extension, o i-save para alukin ka nito.}
 ::msgcat::mcset tl {This node is not a configured sync peer for any kind.} {Ang node na ito ay hindi naka-configure na sync peer para sa anumang kind.}
 ::msgcat::mcset tl {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Ang plugin na ito ay bundled at read-only. Alisin ang user copy na iisa ang pangalan upang magamit ang bundled copy sa halip.}
 ::msgcat::mcset tl {This publishes the commit; no pull request is created yet.} {Inilalathala nito ang commit; walang pull request na nagagawa pa.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset tl Unassign {Alisin ang pagtatalaga}
 ::msgcat::mcset tl {Undo last} {I-undo ang huli}
 ::msgcat::mcset tl {Undo the last memory revision?} {I-undo ang huling memory revision?}
+::msgcat::mcset tl {Unset %1$s on %2$s?} {I-unset ang %1$s sa %2$s?}
+::msgcat::mcset tl Unset… I-unset…
 ::msgcat::mcset tl Unstage Unstage
 ::msgcat::mcset tl {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Hangga't hindi pinangangalanan ng IRC_ALLOWED_USERS sa .env ang account mo, kahit sino sa network ay puwedeng kumausap sa bot — at kung walang seksiyong [acl], bilang owner, kasama ang lahat ng tool.}
 ::msgcat::mcset tl {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Hangga't hindi pinangangalanan ng TELEGRAM_ALLOWED_USERS sa .env ang user id mo, kahit sinong makakita sa bot ay puwedeng kumausap dito — at kung walang seksiyong [acl], bilang owner, kasama ang lahat ng tool.}
 ::msgcat::mcset tl Untitled {Walang pamagat}
-::msgcat::mcset tl {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Ang upstream contribution ay isang hayagang aksyon ng pag-publish, hindi awtomatikong upload. Sa Manage extensions, inililista ng Contribute ang bawat user extension: piliin ang mga extension at file, suriin ang diff at secrets scan, patakbuhin ang mga check, saka gumawa ng isang branch at isang PR (sa veles bilang default) gamit ang pinili mong git identity. Bawat extension ay napupunta sa sariling directory sa repository, at ang existing na file doon ay pinapalitan lang pagkatapos ng hiwalay na kumpirmasyon. Huwag kailanman i-publish ang node.toml, lokal na credential, token, pribadong endpoint o walang kaugnayang plugin state. Ang mga lokal na recovery snapshot ay hindi upstream commit o PR.}
+::msgcat::mcset tl {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Ang upstream contribution ay tahasang pagkilos ng pag-publish, hindi kusang upload. Sa Manage extensions, inililista ng Contribute ang bawat user extension: piliin ang mga extension at file, suriin ang diff at ang secrets scan, patakbuhin ang mga check, saka gumawa ng isang branch at isang PR (sa veles bilang default). Ginagamit ng commit ang ambient git identity ng gateway (user.name at user.email ng git configuration nito); itakda muna ang mga ito kung dapat silang magkaiba. Pumapasok ang bawat extension sa sariling direktoryo nito sa repository, at ang umiiral nang file doon ay pinapalitan lamang pagkatapos ng hiwalay na kumpirmasyon. Huwag kailanman i-publish ang node.toml, lokal na credential, token, pribadong endpoint o walang kaugnayang plugin state. Ang mga lokal na recovery snapshot ay hindi upstream commit o PR.}
 ::msgcat::mcset tl {Upstream repository or fork URL} {Upstream repository o fork URL}
 ::msgcat::mcset tl {Uptime class} {Uri ng uptime}
 ::msgcat::mcset tl {Uptime: host %1$s, gateway %2$s} {Oras na tumatakbo: host %1$s, gateway %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset tl {Users — one role across networks and platforms} {Mga user — isang role sa lahat ng network at platform}
 ::msgcat::mcset tl {Using the phone, for the agent} {Paggamit ng telepono, para sa agent}
 ::msgcat::mcset tl {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Karaniwang kapareho ng pangalan ng provider entry. Iwanang walang laman ang pareho kapag pinili ang Laktawan — hindi nagre-route ang kalahating-set na pares.}
+::msgcat::mcset tl {Value (TOML: "text", 5, true, [1, 2])} {Halaga (TOML: "teksto", 5, true, [1, 2])}
 ::msgcat::mcset tl {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Ang mga value ay TOML: quoted string, numero, o listahan. Isusulat ang mga ito sa [mcp_servers.<name>] — hindi ginagalaw ang mga komento mo at lahat ng ibang section.}
 ::msgcat::mcset tl Vault Vault
 ::msgcat::mcset tl {Verified signed bundle installed. Restart the gateway before using the new core.} {Na-install na ang verified signed bundle. I-restart ang gateway bago gamitin ang bagong core.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset tl Voice {Bigyan ng voice}
 ::msgcat::mcset tl {Waiting for the model…} {Naghihintay sa modelo…}
 ::msgcat::mcset tl {Waiting for the model… Nothing has been written.} {Naghihintay sa modelo… Walang naisulat.}
+::msgcat::mcset tl Warning Babala
 ::msgcat::mcset tl {Welcome to veles} {Maligayang pagdating sa veles}
 ::msgcat::mcset tl {What the agent can do here} {Ang kayang gawin ng agent dito}
 ::msgcat::mcset tl {What veles may do on this phone. Each button opens the Android setting that changes it.} {Ang maaaring gawin ng veles sa teleponong ito. Binubuksan ng bawat button ang setting ng Android na nagbabago nito.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset tl {Workflow SHA} {Workflow SHA}
 ::msgcat::mcset tl {Workflow commit} {Commit ng workflow}
 ::msgcat::mcset tl Worktree Worktree
+::msgcat::mcset tl {Write cancelled.} {Kinansela ang write.}
 ::msgcat::mcset tl {Write it} {Isulat ito}
 ::msgcat::mcset tl {Write the design question first.} {Isulat muna ang design question.}
 ::msgcat::mcset tl {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Walang provider na isinusulat. Hindi magre-route ang gateway ng turn hanggang may [[custom_providers]] entry at [model] na pares.}
+::msgcat::mcset tl Write… Isulat…
 ::msgcat::mcset tl {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Ang pagsulat ng KAHIT ANONG [acl] key ay naglilipat sa gateway na ito sa curated na mode: nagiging guest (fail-closed) ang default na role at hindi na hangganan ang mga allowlist. Piliin lang ito kung may pagkakakilanlan ng owner na pinagkakatiwalaan mo.}
 ::msgcat::mcset tl {[model] provider} {[model] provider}
 ::msgcat::mcset tl {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {ang [model] provider na %{name} ay hindi tumutugma sa anumang entry sa [[custom_providers]] — pangalanan ang entry na isinusulat ng wizard na ito, o isang mayroon na sa config.toml}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset tl {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset tl {asked by: %s} {tinanong ni: %s}
 ::msgcat::mcset tl {asking %s for its metrics…} {humihingi ng mga sukatan ng %s…}
+::msgcat::mcset tl {asking %s how it is supervised…} {tinatanong ang %s kung paano ito pinapangasiwaan…}
 ::msgcat::mcset tl {attach a file} {Mag-attach ng file}
 ::msgcat::mcset tl {attach an image or file} {mag-attach ng larawan o file}
 ::msgcat::mcset tl {attach failed: %1$s} {Nabigo ang attach: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset tl {channel-event reactions; /triggers add <name> network=… channel=… action=…} {mga reaksyon sa event ng channel; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset tl {channels to join, a space or comma separated string} {mga channel na sasalihan, isang string na pinaghihiwalay ng space o kuwit}
 ::msgcat::mcset tl chars karakter
+::msgcat::mcset tl {check the buffer (diagnostics)} {suriin ang buffer (diagnostics)}
 ::msgcat::mcset tl choice_next {lumipat sa susunod na route}
 ::msgcat::mcset tl choice_retry {subukan ulit ang parehong route}
 ::msgcat::mcset tl choice_stop {tumigil dito}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset tl {command list unavailable (the gateway is not reachable)} {hindi available ang listahan ng mga command (hindi maabot ang gateway)}
 ::msgcat::mcset tl {command palette} {command palette}
 ::msgcat::mcset tl {command search} {paghahanap ng command}
+::msgcat::mcset tl {command-center audit log} {audit log ng command center}
 ::msgcat::mcset tl commands {mga command}
 ::msgcat::mcset tl {commands stay on your own session; /leave returns from the joined session} {nasa sarili mong session pa rin ang mga command; ibinabalik ka ng /leave mula sa sinalihang session}
 ::msgcat::mcset tl commands: {mga command:}
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset tl {config changes from peers that wait for you; /configsync apply lands them} {mga pagbabago sa config mula sa mga peer na naghihintay sa iyo; /configsync apply ang maglalapat sa mga ito}
 ::msgcat::mcset tl {config file: %s} {config file: %s}
 ::msgcat::mcset tl {config key} {config key}
+::msgcat::mcset tl {config result} {resulta ng config}
 ::msgcat::mcset tl {config unavailable} {hindi available ang config}
 ::msgcat::mcset tl {config unavailable: %s} {hindi available ang config: %s}
 ::msgcat::mcset tl {config value} {config value}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset tl doctor_resident {laging nasa bawat prompt: %{shown} sa %{total} na karakter (~%{tokens} na token) — ang iba ay nilo-load kapag kailangan gamit ang: memory action=read path=%{path}}
 ::msgcat::mcset tl doctor_title {pagsusuri ng memorya}
 ::msgcat::mcset tl doctor_total {kabuuan: %{chars} na karakter sa %{files} na file (~%{tokens} na token)}
-::msgcat::mcset tl {documentation is not in this source checkout: %s} {wala sa source checkout na ito ang dokumentasyon: %s}
 ::msgcat::mcset tl done tapos
 ::msgcat::mcset tl {done · %1$s/%2$s} {tapos · %1$s/%2$s}
 ::msgcat::mcset tl {done, but the model returned no text} {tapos, pero walang text na ibinalik ang model}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset tl {grant a role (owner) · /revoke <id> takes it back} {magbigay ng papel (owner) · /revoke <id> ang bumabawi nito}
 ::msgcat::mcset tl {grant a role to an identity} {bigyan ng role ang isang identity}
 ::msgcat::mcset tl {guards unreachable} {hindi maabot ang guards}
-::msgcat::mcset tl guts: guts:
+::msgcat::mcset tl {guts ▾} {laman ▾}
 ::msgcat::mcset tl {gw hooks} {gw hooks}
 ::msgcat::mcset tl {gw procs} {gw procs}
 ::msgcat::mcset tl {halt after N identical calls} {huminto pagkatapos ng N magkaparehong calls}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset tl {live patching ARMED} {live patching: HANDA}
 ::msgcat::mcset tl {live patching ARMED — an agent can now redefine procs in this window} {live patching: HANDA — maaari na ngayong i-redefine ng isang agent ang mga proc sa window na ito}
 ::msgcat::mcset tl {live patching disarmed} {hindi na pinagana ang live patching}
+::msgcat::mcset tl load karga
 ::msgcat::mcset tl loaded na-load
 ::msgcat::mcset tl {loaded older messages} {na-load ang mga lumang mensahe}
 ::msgcat::mcset tl loading… naglo-load…
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset tl {no upstream reading for %s} {walang upstream reading para sa %s}
 ::msgcat::mcset tl {no word match} {walang tugmang salita}
 ::msgcat::mcset tl {no xdg-open — path copied instead} {walang xdg-open — na-kopya ang path sa halip}
+::msgcat::mcset tl {nobody else's session is open on %s right now} {wala pang bukas na session ng ibang tao sa %s ngayon}
 ::msgcat::mcset tl {node log} {log ng node}
 ::msgcat::mcset tl {none loaded} {walang na-load}
 ::msgcat::mcset tl {none recorded} {walang naitala}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset tl {not installed} {hindi naka-install}
 ::msgcat::mcset tl {not reported} {walang naiulat}
 ::msgcat::mcset tl {not running} {hindi tumatakbo}
+::msgcat::mcset tl {not saved: drafting the change as an extension} {hindi na-save: ginagawang extension ang pagbabago}
+::msgcat::mcset tl {not sent: %s} {hindi ipinadala: %s}
 ::msgcat::mcset tl {not set in config.toml — the built-in default applies. %s} {hindi naka-set sa config.toml — nalalapat ang built-in default. %s}
 ::msgcat::mcset tl {not set yet — /secret set it later} {hindi pa naitakda — itakda mamaya gamit ang /secret set}
 ::msgcat::mcset tl {not signed: %s} {hindi napirmahan: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset tl {on no plan} {kapag walang plan}
 ::msgcat::mcset tl {on the} sa
 ::msgcat::mcset tl {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {pinipigilan ng on/off ang nota ng mechanism sa transcript — para sa session na ito, o bilang default, ayon sa scope sa ibaba. Kinokontrol nito ang NOTE; kung ano ang GINAGAWA ng bawat mechanism ay naka-set sa section na nakapangalan sa row nito, at binubuksan ito ng Configure…. Ang guard knobs ay pwede mong i-edit in place.}
+::msgcat::mcset tl {on; this gateway does not say whether they reach the home chat} {on; hindi sinasabi ng gateway na ito kung umaabot ang mga ito sa home chat}
 ::msgcat::mcset tl {one-shot tcl-lsp diagnostics — no model turn} {isang-beses na diagnostics ng tcl-lsp — walang turn ng model}
 ::msgcat::mcset tl {open a saved file first} {magbukas muna ng naka-save na file}
 ::msgcat::mcset tl {open links} {magbukas ng mga link}
+::msgcat::mcset tl {open one of the desktop's own source files} {magbukas ng isa sa mga source file ng desktop mismo}
 ::msgcat::mcset tl {open the engine log} {buksan ang engine log}
 ::msgcat::mcset tl {open the joined session before /leave (on %s)} {buksan ang sinalihang session bago ang /leave (sa %s)}
 ::msgcat::mcset tl {open the selected child session} {buksan ang napiling child session}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset tl {read-only: [approvals] allowlist} {read-only: [approvals] allowlist}
 ::msgcat::mcset tl {read-only: this session lives on %1$s (as read at %2$s)} {read-only: nasa %1$s ang session na ito (gaya ng nabasa noong %2$s)}
 ::msgcat::mcset tl {read-only: this skill comes from the %s library} {read-only: mula ang skill na ito sa %s library}
+::msgcat::mcset tl {reading %1$s on %2$s…} {binabasa ang %1$s sa %2$s…}
 ::msgcat::mcset tl reasoning reasoning
 ::msgcat::mcset tl {reasoning display: %1$s · %2$s blocks} {display ng reasoning: %1$s · %2$s na block}
 ::msgcat::mcset tl {reasoning display: %s} {display ng reasoning: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset tl {run failed: %s} {nabigo ang run: %s}
 ::msgcat::mcset tl {run in:} {patakbuhin sa:}
 ::msgcat::mcset tl running tumatakbo
+::msgcat::mcset tl {running %s on the listed nodes…} {pinapatakbo ang %s sa mga nakalistang node…}
 ::msgcat::mcset tl {running since %s} {tumatakbo mula %s}
 ::msgcat::mcset tl {running subagents; /subagents cancel <id>} {mga tumatakbong subagent; /subagents cancel <id>}
 ::msgcat::mcset tl {save failed} {nabigo ang pag-save}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset tl {send failed: %s} {nabigo ang pag-send: %s}
 ::msgcat::mcset tl {send the message; while a turn runs, queue it as steering} {Ipadala ang mensahe; habang may tumatakbong turn, i-queue ito bilang steering}
 ::msgcat::mcset tl sent naipadala
-::msgcat::mcset tl {sent to the owner's home chat} {naipadala sa home chat ng owner}
+::msgcat::mcset tl {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {ipinadala sa home chat ng owner ng gateway na nagpapatakbo ng Telegram adapter nito, hindi ang isang ito}
+::msgcat::mcset tl {sent to the owner's home chat from this gateway} {ipinadala sa home chat ng owner mula sa gateway na ito}
 ::msgcat::mcset tl server server
 ::msgcat::mcset tl {server buffers merged} {pinagsama ang mga buffer ng server}
 ::msgcat::mcset tl {server buffers separate} {hiwalay ang mga buffer ng server}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset tl {session, model, lifecycle} {session, model, lifecycle}
 ::msgcat::mcset tl {session: %s} {session: %s}
 ::msgcat::mcset tl {sessions    %s} {mga session    %s}
+::msgcat::mcset tl {sessions you can join on %s (/join <name or id>):} {mga session na masasalihan mo sa %s (/join <pangalan o id>):}
 ::msgcat::mcset tl {sessions: unreachable} {mga session: hindi maabot}
 ::msgcat::mcset tl {set by} {itinakda ni}
 ::msgcat::mcset tl {set. %s} {Naitakda. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset tl {split: %s} {split: %s}
 ::msgcat::mcset tl {ssh to %1$s failed: %2$s} {nabigo ang ssh papunta sa %1$s: %2$s}
 ::msgcat::mcset tl {stale — no heartbeat within the threshold} {luma na — walang heartbeat sa loob ng threshold}
+::msgcat::mcset tl {standing approval grants: always and this session; revoke one} {mga standing approval grant: always at para sa session na ito; i-revoke ang isa}
 ::msgcat::mcset tl {standing global and session permission grants} {standing na global at session na grant ng permiso}
+::msgcat::mcset tl {start the line with // to send it as text} {simulan ang linya ng // para ipadala ito bilang text}
 ::msgcat::mcset tl state estado
 ::msgcat::mcset tl {state       never reached} {estado       hindi kailanman naabot}
 ::msgcat::mcset tl {state       reachable} {estado       maabot}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset tl {the config.toml that will be written} {ang config.toml na isusulat}
 ::msgcat::mcset tl {the default (config.toml)} {ang default (config.toml)}
 ::msgcat::mcset tl {the engine refused these answers: %s} {tinanggihan ng engine ang mga sagot na ito: %s}
+::msgcat::mcset tl {the file to open: type a path, then Return or Open} {ang file na bubuksan: mag-type ng path, saka Return o Open}
 ::msgcat::mcset tl {the first ACL owner identity} {ang unang identity ng ACL owner}
 ::msgcat::mcset tl {the gateway answered without a report} {sumagot ang gateway nang walang report}
 ::msgcat::mcset tl {the model/provider pair is incomplete — the gateway will not route until both are present} {kulang ang pares ng model/provider — hindi magro-route ang gateway hangga't wala ang dalawa}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset tl unknown {hindi alam}
 ::msgcat::mcset tl {unknown api_mode %{mode} — expected one of %{modes}} {hindi kilalang api_mode %{mode} — inaasahan ang isa sa: %{modes}}
 ::msgcat::mcset tl {unknown bindings '%{rest}' · normie|emacs|vi} {hindi kilalang binding na '%{rest}' · normie|emacs|vi}
+::msgcat::mcset tl {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {hindi kilalang command %{cmd} dito — inililista ng /help ang mga command ng surface na ito; walang ipinadala}
 ::msgcat::mcset tl {unknown command /%s — /help lists them} {hindi kilalang command /%s — nasa /help ang listahan ng mga ito}
 ::msgcat::mcset tl {unknown command: /%s} {unknown command: /%s}
 ::msgcat::mcset tl {unknown keymap: %s (normie/emacs/vi)} {hindi kilalang keymap: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset tl {upstream plan credits and windows — /usage is the local ledger} {mga credit at window ng upstream na plan — /usage ang lokal na ledger}
 ::msgcat::mcset tl {upstream plan quota} {sakop ng upstream na plano}
 ::msgcat::mcset tl uptime uptime
-::msgcat::mcset tl {usage: /join <session> or /join <instance>/<session>} {paggamit: /join <session> o /join <instance>/<session>}
+::msgcat::mcset tl {usage: /export [md|json]} {paggamit: /export [md|json]}
 ::msgcat::mcset tl {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {paggamit: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset tl {usage: /resume <id or prefix>} {paggamit: /resume <id o prefix>}
 ::msgcat::mcset tl {usage: /resume <id-or-prefix>} {paggamit: /resume <id-or-prefix>}

@@ -1,3 +1,16 @@
+veles-agent (0.2.2) unstable; urgency=medium
+
+  * Errata release for 0.2.0 and 0.2.1: fixes found by an audit of the
+    code and by driving the real desktop (tool-result replay, compaction,
+    the Dev editor and extension creation, the Instances tab, placement
+    of delegated work, the browser tab bridge, restart recovery, the
+    translator), and node management in the fleet command center
+    (restart, per-node config, alerts, bulk actions, an audit trail and
+    a deployment-consistency view). 0.2.1 was a hotfix for the
+    translation result pane and was not packaged here.
+
+ -- veles-agent maintainers <noreply@example.invalid>  Tue, 10 Nov 2026 22:00:00 +0000
+
 veles-agent (0.2.0) unstable; urgency=medium
 
   * Add a fleet command center (node health, every sync kind, reviewed

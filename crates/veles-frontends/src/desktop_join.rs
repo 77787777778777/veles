@@ -34,6 +34,26 @@ pub async fn join_request(Json(req): Json<JoinRequest>) -> (axum::http::StatusCo
     }
 }
 
+/// GET /api/join/candidates: what a bare `/join` on the desktop lists,
+/// from the gateway's own joinable list.
+pub async fn candidates_request() -> (axum::http::StatusCode, Json<Value>) {
+    let Some(core) = crate::gateway::global_core_arc() else {
+        return (
+            axum::http::StatusCode::CONFLICT,
+            Json(json!({"error": "no chat gateway runs in this process"})),
+        );
+    };
+    let sessions: Vec<Value> = core
+        .desktop_join_candidates()
+        .into_iter()
+        .map(|(sid, label)| json!({"session_id": sid, "label": label}))
+        .collect();
+    (
+        axum::http::StatusCode::OK,
+        Json(json!({"sessions": sessions})),
+    )
+}
+
 #[derive(serde::Deserialize)]
 pub struct StatusRequest {
     join_id: String,
@@ -183,6 +203,54 @@ mod tests {
         assert_eq!(restored.store.lock_ok().queue_items(&sid).unwrap().len(), 2);
         restored.desktop_leave(&binding.join_id, &sid).unwrap();
         assert!(veles_core::join::active(&sid).is_none());
+    }
+
+    /// ASK-1: help and README promise `/join [name|id]` on the desktop,
+    /// as in the chat surfaces. The desktop endpoint looked the word up
+    /// as an exact session id, so `/join alice` failed with "no live
+    /// chat-backed session alice". One resolver for every surface: an
+    /// exact id, an id prefix of four or more, or the person's name.
+    #[test]
+    fn desktop_join_finds_a_person_by_name() {
+        let (core, _d, _h) = fixture();
+        let sid = sender(&core, "alice");
+        let b = core.desktop_join("desktop:join:jn", "alice").unwrap();
+        assert_eq!(
+            b.target_session, sid,
+            "the name resolves to alice's session"
+        );
+        assert!(veles_core::join::active(&sid).is_some());
+        assert!(core.desktop_leave("jn", &sid).is_some());
+        let prefix = &sid[..sid.len() - 2];
+        let b = core.desktop_join("desktop:join:jp", prefix).unwrap();
+        assert_eq!(b.target_session, sid, "an id prefix resolves too");
+        assert!(core.desktop_leave("jp", &sid).is_some());
+        let err = core
+            .desktop_join("desktop:join:jx", "carol")
+            .unwrap_err()
+            .to_string();
+        assert!(
+            err.contains("carol") && err.contains("/join"),
+            "a name nobody has says so in the chat surfaces' words: {err}"
+        );
+    }
+
+    /// A bare `/join` on the desktop lists who can be joined, from the
+    /// gateway's own joinable list (no second copy in the client).
+    #[test]
+    fn join_candidates_list_the_joinable_sessions_with_their_labels() {
+        let (core, _d, _h) = fixture();
+        assert!(core.desktop_join_candidates().is_empty());
+        let a = sender(&core, "alice");
+        let b = sender(&core, "bob");
+        let rows = core.desktop_join_candidates();
+        let ids: Vec<&str> = rows.iter().map(|(s, _)| s.as_str()).collect();
+        assert!(
+            ids.contains(&a.as_str()) && ids.contains(&b.as_str()),
+            "{rows:?}"
+        );
+        let alice = rows.iter().find(|(s, _)| *s == a).unwrap();
+        assert_eq!(alice.1, "[alice in #chan]");
     }
 
     #[test]

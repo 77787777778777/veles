@@ -151,7 +151,8 @@ holes. They were undeclared capabilities that announced nothing.
   most powerful things a plugin can do were the two invisible ones.
 
 `plugins/veles_api.tcl` is the signature reference. It is copied next to
-your plugins at boot so a language server can resolve `::veles::*`, and
+your plugins at boot so a language server can resolve `::veles::*` (the
+Dev tab's tcl-lsp, which the Linux packages ship), and
 a test keeps it honest in both directions — nothing missing, nothing
 invented.
 

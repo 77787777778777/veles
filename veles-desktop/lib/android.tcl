@@ -1031,6 +1031,7 @@ proc ::vandroid::foreground {} {
     catch { ::vdock::layout_save_start }
     catch { ::vpanes::poll_start }
     catch { ::vstatus::poll }
+    catch { ::vfleetmanage::alerts_start }
     catch { ::vbrand::redraw }
     foreach sid $sids {
         catch { ::vchat::_events_reconnect $sid }

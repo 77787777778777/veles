@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset so {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset so {%1$s %2$s done} {%1$s %2$s waa la sameeyay}
 ::msgcat::mcset so {%1$s %2$s failed: %3$s} {%1$s %2$s guuldareystay: %3$s}
+::msgcat::mcset so {%1$s %2$s over ssh anyway?} {%1$s %2$s ssh dhexdiisa si kastaba?}
 ::msgcat::mcset so {%1$s %2$s over ssh…} {%1$s %2$s ssh dhexdiisa…}
 ::msgcat::mcset so {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset so {%1$s (%2$s waiting)} {%1$s (%2$s ayaa sugaya)}
 ::msgcat::mcset so {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  sababayn %3$s}
 ::msgcat::mcset so {%1$s = %2$s here} {%1$s = %2$s halkan}
+::msgcat::mcset so {%1$s = %2$s on %3$s} {%1$s = %2$s ee %3$s}
 ::msgcat::mcset so {%1$s NOT saved: %2$s} {%1$s LAMA kaydin: %2$s}
 ::msgcat::mcset so {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s waxay ka tirsan tahay maktabadda %2$s waana keli-akhris — ku nuqul New… si aad u beddesho}
 ::msgcat::mcset so {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s waxay ka tirsan tahay maktabadda %2$s — veles waligiis ma tirtiro xirfadaha qalab kale}
+::msgcat::mcset so {%1$s cannot restart itself: %2$s} {%1$s iskama dib u bilaabi karo: %2$s}
+::msgcat::mcset so {%1$s differs: %2$s} {%1$s wuu ka duwan yahay: %2$s}
 ::msgcat::mcset so {%1$s every cron job on %2$s?} {%1$s dhammaan shaqooyinka cron ee %2$s?}
 ::msgcat::mcset so {%1$s failed: %2$s} {%1$s guuldareystay: %2$s}
 ::msgcat::mcset so {%1$s in / %2$s out / %3$s calls} {%1$s gal / %2$s bax / %3$s wicitaan}
+::msgcat::mcset so {%1$s is back after %2$s s (veles %3$s).} {%1$s wuu soo noqday %2$s s ka dib (veles %3$s).}
 ::msgcat::mcset so {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s waa node %2$s, ma aha %3$s. Hagaaji aqoonsiga node-keeda Edit….}
 ::msgcat::mcset so {%1$s is not a whole number} {%1$s ma aha tiro dhammaystiran}
+::msgcat::mcset so {%1$s is not on: %2$s} {%1$s lama shidin: %2$s}
+::msgcat::mcset so {%1$s is not set on %2$s: the default applies.} {%1$s laguma dejin %2$s: caadiga ayaa khuseeya.}
 ::msgcat::mcset so {%1$s is reachable (%2$s ms).} {%1$s waa la gaari karaa (%2$s ms).}
+::msgcat::mcset so {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s waxay waddaa %2$s jeel. Si kastaba ma dib loo bilaabaa?}
 ::msgcat::mcset so {%1$s is set to something this box cannot edit (%2$s)} {%1$s waxaa loo dhigay wax aan kombiyuutarkani beddeli karin (%2$s)}
 ::msgcat::mcset so {%1$s is unreachable: %2$s} {%1$s lama gaari karo: %2$s}
+::msgcat::mcset so {%1$s is up, but its node binding is wrong: %2$s} {%1$s waa shaqeeyaa, laakiin xidhiidhka node-keeda waa khalad: %2$s}
+::msgcat::mcset so {%1$s not compared: %2$s} {%1$s lama barbardhigin: %2$s}
 ::msgcat::mcset so {%1$s of %2$s characters} {%1$s ee %2$s xarfo}
 ::msgcat::mcset so {%1$s of %2$s sessions} {%1$s ka mid ah %2$s kalfadhi}
 ::msgcat::mcset so {%1$s of %2$s skills reach the prompt} {%1$s ee %2$s xirfadood ayaa tagaya prompt-ka}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset so {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset so {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset so {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset so {%1$s: %2$s on the gateway} {%1$s: %2$s ee gateway-ga}
+::msgcat::mcset so {%1$s: %2$s on the gateway (ships with veles)} {%1$s: %2$s ee gateway-ga (wuxuu la socdaa veles)}
 ::msgcat::mcset so {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset so {%1$s: no language server on the gateway. %2$s} {%1$s: server luqadeed ma jiro gateway-ga. %2$s}
 ::msgcat::mcset so {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: %2$s ee ugu dambeeya %3$s sadar oo gateway-keedu xusuusta ku hayo, sirta waa laga tirtiray node-kaas.}
+::msgcat::mcset so {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: plugin-ka isticmaalaha %2$s wuxuu daboolaa kan ku lifaaqan isla nuxurkaas (%3$s)}
 ::msgcat::mcset so {%d MCP server(s) configured} {%d MCP server oo la hagaajiyay}
 ::msgcat::mcset so {%d entries} {%d qoraal}
 ::msgcat::mcset so {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {%d fayl oo ka mid ah extension-ka ayaa loo qori doonaa si sax ah sidii la dib-u-eegay. Haddii midkood beddelmay tan iyo hor-aragtida, waxba lama qoro. Commit, push ama PR ma dhacdo.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset so {%s (stale)} {%s (duugoobay)}
 ::msgcat::mcset so {%s (this session)} {%s (kalfadhigan)}
 ::msgcat::mcset so {%s GB free of %s GB} {%s GB bannaan oo ka mid ah %s GB}
+::msgcat::mcset so {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s Amarku wuxuu ssh ku tagaa host-ka la hagaajiyay, taas oo hubintani aanay ku xidhi karin node-ka.}
 ::msgcat::mcset so {%s already exists — open it from the list} {%s horey ayuu u jiray — ka fur liiska}
 ::msgcat::mcset so {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {%s wuu isbeddelay tan iyo markii aad furtay — waxba lama beddelin; koobiyee qoraalkaaga, kadibna Dib u soo shub}
 ::msgcat::mcset so {%s cleared for this buffer} {%s waa loo nadiifiyay buufirkan}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset so {%s comes from config.toml [acl] — edit there} {%s wuxuu ka yimid config.toml [acl] — halkaas wax ka beddel}
 ::msgcat::mcset so {%s config change(s) wait for you — /configsync} {%s isbeddel oo habayn ah ayaa ku sugaya — /configsync}
 ::msgcat::mcset so {%s did not become healthy within 30s} {%s ma uusan noqon mid caafimaad qaba 30s gudahood}
+::msgcat::mcset so {%s did not come back within 120 s: look at its log where it runs.} {%s kuma soo noqon 120 s gudahood: eeg log-kiisa meesha uu ka shaqeeyo.}
 ::msgcat::mcset so {%s done} {%s waa la sameeyay}
 ::msgcat::mcset so {%s failed: %s} {%s wuu fashilmay: %s}
+::msgcat::mcset so {%s holds a credential: it stays on its node and is not shown.} {%s waxay haysataa aqoonsi sir ah: waxay ku sii hadhaa node-keeda lamana muujiyo.}
 ::msgcat::mcset so {%s is already split} {%s horey ayaa loo kala qaybiyay}
+::msgcat::mcset so {%s is restarting; waiting for it to come back…} {%s waa dib loo bilaabayaa; waxaa la sugayaa inuu soo noqdo…}
 ::msgcat::mcset so {%s is the language in use — pick another one to swap with} {%s waa luqadda hadda la isticmaalayo — dooro mid kale oo lagu beddelo}
 ::msgcat::mcset so {%s is up} {%s waa shaqeeyaa}
 ::msgcat::mcset so {%s keys — any key closes} {%s furayaal — fure kasta waa xidhaa}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset so {; shadows bundled} {; wuxuu daboolaa kan ku lifaaqan}
 ::msgcat::mcset so {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Soo-jeedinta habayntu waxay beddeli kartaa dejinta, soo-jeedinta khasnaduna waxay isku dartaa sirta; isbeddellada qaybta amniga weli waxay sugayaan mulkiilaha.}
 ::msgcat::mcset so {A failing plugin may drop hooks mid-turn.} {Plugin guuldareysta ayaa laga yaabaa inuu hooks-ka hoos u tuuro kalfadhi dhexdiisa.}
+::msgcat::mcset so {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {Qayb la hayo: halkan laga ma qoro; wax ka beddel node, kadibna u dir habaynta, mulkiilaheeda ayaa halkaas ku dhaqan geliya.}
 ::msgcat::mcset so {A local server: no key is needed unless you set one up.} {Server maxalli ah: fure looma baahna ilaa aad mid dejiso.}
 ::msgcat::mcset so {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Siideyn saxiixan waxaa la diyaariyaa kaliya ka dib preflight. Dib-u-bilow/xaqiijin, sii wadid iyo dib-u-celin waa tallaabooyin kala go'an. Hab caafimaad qaba waa inuu sheegaa dib-u-eegista ilaha la hubiyay si sax ah.}
 ::msgcat::mcset so {A value is stored for %s — leave this empty to keep it.} {Qiime ayaa u kaydsan %s — halkan madhan u daa si aad u haysato.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset so {Asking the provider for its models…} {Bixiyaha waxaa laga weyddiinayaa modeladiisa…}
 ::msgcat::mcset so Attach Dhaji
 ::msgcat::mcset so {Attach to the next message} {Ku dheji fariinta xigta}
+::msgcat::mcset so {Audit log unavailable: %s} {Diiwaanka hubinta lama heli karo: %s}
+::msgcat::mcset so {Audit log…} {Diiwaanka hubinta…}
 ::msgcat::mcset so {Author guide} {Tilmaamaha qoraaga}
 ::msgcat::mcset so {Automatically discovered from the attached gateway's cluster registry.} {Laga helay si otomaatig ah diiwaangelinta cluster-ka ee gateway-ga ku lifaaqan.}
 ::msgcat::mcset so Back Dib
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset so {Browse sessions} {Baadh kalfadhiyada}
 ::msgcat::mcset so {Build manifest + preflight} {Manifest-ka dhiska + preflight}
 ::msgcat::mcset so {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Dhismaha: veles %1$s, dib-u-eegis %2$s (%3$s %4$s)}
+::msgcat::mcset so {Bulk %1$s failed: %2$s} {Ficil wadar ah %1$s wuu fashilmay: %2$s}
+::msgcat::mcset so {Bulk %1$s: %2$s (%3$s).} {Ficil wadar ah %1$s: %2$s (%3$s).}
+::msgcat::mcset so {Bulk action cancelled.} {Ficilkii wadarka waa la joojiyay.}
 ::msgcat::mcset so {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e dhamaadka xariiqda · C-b/C-f xaraf · M-b/M-f erey · C-k ka jar ilaa EOL · C-y yank · M-w koobi · C-w jar gobol · C-space calaamad dhig · C-/ tirtir}
 ::msgcat::mcset so {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g wax kasta jooji · C-j xarig cusub · M-p/M-n taariikh · Tab buuxi}
+::msgcat::mcset so {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU: %1$s xudun, %2$s%% mashquul %3$s s ee ugu dambeeyay}
 ::msgcat::mcset so {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s core, culeys %2$s / %3$s / %4$s (%5$s%% core-yada)}
 ::msgcat::mcset so Cancel {Iska daa}
 ::msgcat::mcset so {Cancel task} {Jooji hawsha}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset so {Channels (e.g. #veles #dev)} {Kanaalada (tusaale #veles #dev)}
 ::msgcat::mcset so Chat Sheekeysi
 ::msgcat::mcset so {Chat — not attached; press Attach in the Instances tab} {Chat — lama xidhin; riix Ku xidh tab-ka Nuqullada}
-::msgcat::mcset so {Check (lsp)} {Hubi (lsp)}
+::msgcat::mcset so {Check (C-c C-k)} {Hubi (C-c C-k)}
 ::msgcat::mcset so {Check again} {Mar kale hubi}
 ::msgcat::mcset so {Check files} {Baadh faylasha}
 ::msgcat::mcset so Checkpoints Jeex-jeexyada
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset so {Close (Esc)} {Xidh (Esc)}
 ::msgcat::mcset so {Close the setup wizard? Nothing has been written yet.} {Xir sahanka dejinta? Waxba weli lama qorin.}
 ::msgcat::mcset so {Code actions} {Ficillada koodhka}
+::msgcat::mcset so {Command-center audit log} {Diiwaanka hubinta xarunta amarraha}
 ::msgcat::mcset so Commit Commit
 ::msgcat::mcset so {Commit ready for review. Push is a separate action.} {Commit-ga wuxuu diyaar u yahay dib-u-eegis. Push waa tallaabo gooni ah.}
 ::msgcat::mcset so {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Buuxi goob kasta oo PDS, oo ay ku jirto digest-ka sawirka la dhejiyay, ka hor inta aanad horay u eegin handoff-ka.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset so {Config differs: %s} {Habayntu way duwan tahay: %s}
 ::msgcat::mcset so {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Diiwaanka habaynta: node-kaas wuxuu hayaa isbeddellada %1$s ilaa %3$s, gateway-kan ilaa %2$s}
 ::msgcat::mcset so {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Diiwaanka habaynta: gateway-kan wuxuu hayaa isbeddellada %1$s ilaa %2$s, node-kaas ilaa %3$s}
+::msgcat::mcset so {Config of %s} {Habaynta %s}
 ::msgcat::mcset so {Config only on that node: %s} {Habayn kaliya node-kaas: %s}
 ::msgcat::mcset so {Config only on this gateway: %s} {Habayn kaliya gateway-kan: %s}
+::msgcat::mcset so {Config: %s} {Habayn: %s}
 ::msgcat::mcset so Configure Hagaaji
 ::msgcat::mcset so {Configure %s} {Hagaaji %s}
 ::msgcat::mcset so {Configure translator} {Hagaaji turjumaanka}
 ::msgcat::mcset so {Configured desktop gateway} {Gateway-ga desktop-ka ee la hagaajiyay}
 ::msgcat::mcset so Configure… Hagaaji…
 ::msgcat::mcset so {Configuring %s} {Hagaajinta %s}
+::msgcat::mcset so Config… Habayn…
 ::msgcat::mcset so {Confirm or discard the current signed review before starting another download.} {Xaqiiji ama tuur dib-u-eegista saxeexan ee hadda jirta ka hor inta aanad bilaabin soo-dejin kale.}
 ::msgcat::mcset so {Container host: typed host plan and privileged CLI handoff} {Container host: qorshe host oo noocaysan iyo wareejin CLI oo u baahan xuquuq maamule}
 ::msgcat::mcset so {Context window} {Daaqada macnaha}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset so {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Ku samee bot-ka @BotFather, kadibna hoos ku dheji tokenkiisa: wuxuu galayaa khasnadda la sireeyay, weligiis ma galo config.toml.}
 ::msgcat::mcset so {Create this extension?} {Ma abuuraysaa kordhintan?}
 ::msgcat::mcset so {Create this generated extension?} {Ma abuurinayaa extension-kan la soo saaray?}
+::msgcat::mcset so {Created and loaded. Review and test the extension before publishing.} {Waa la abuuray oo la shubay. Dib u eeg oo tijaabi extension-ka ka hor inta aanad daabicin.}
 ::msgcat::mcset so {Created and reloaded. Review and test the extension before publishing.} {Waa la abuuray oo dib loo shubay. Dib u eeg oo tijaabi kordhinta ka hor inta aanad daabicin.}
 ::msgcat::mcset so {Created, but reload failed} {Waa la abuuray, laakiin dib-u-shubiddu way fashilantay}
+::msgcat::mcset so {Created, not loaded} {La abuuray, lama shubin}
+::msgcat::mcset so {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {La abuuray, weli lama shubin: ku socodsii cargo build --release galka extension-ka, kadibna dib u soo shub Manage extensions.}
+::msgcat::mcset so {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {La abuuray. Gateway-kan ma sheego inuu shubay extension-ka: eeg xaaladdiisa Manage extensions.}
 ::msgcat::mcset so {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Waxay ka abuurtaa %s/<name>/SKILL.md qaab-ka waxayna u furtaa. Sharaxaadda frontmatter waa qaybta kaliya ee gaarta index-ka prompt-ka, marka samee inay sheegto GOORTA xirfadda la isticmaalo.}
 ::msgcat::mcset so {Cron history} {Taariikhda Cron}
 ::msgcat::mcset so {Cron jobs} {Shaqooyinka cron}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset so {Delete user} {Tirtir isticmaalaha}
 ::msgcat::mcset so {Delete workspace?} {Ma tirtirayaa goobta shaqada?}
 ::msgcat::mcset so Deop {Ka qaad op}
+::msgcat::mcset so {Deployment consistency unknown: %s node(s) could not be compared.} {Isku-xirnaanta daabacaadda lama garanayo: %s node lama barbardhigi karin.}
+::msgcat::mcset so {Deployment consistency: not checked yet (Drift… compares every node).} {Isku-xirnaanta daabacaadda: weli lama hubin (Drift… wuxuu barbardhigaa node kasta).}
 ::msgcat::mcset so {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Sharax isbeddelka. AI waxay beddeli kartaa ama ku dari kartaa dhowr fayl oo extension-kan. Fayl kastaa waxaa lagu muujiyaa diff, waxbana lama qoro ka hor inta aadan xaqiijin.}
 ::msgcat::mcset so {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Sharax isbeddelka. AI-gu wuxuu soo jeedin karaa beddelid, laakiin ma qori karo ka hor inta aanad baadin oo aad xaqiijin farqiga.}
 ::msgcat::mcset so {Describe the requested extension change first.} {Marka hore sharax isbeddelka kordhinta ee la codsaday.}
 ::msgcat::mcset so Description Sharaxaad
+::msgcat::mcset so {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {Jeelada desktop waxay ka sii socdaan taariikhdooda la kaydiyay dib-u-bilaabista ka dib; jeelada connector, A2A, mail, cron iyo subagent ma sidaas yeelaan.}
 ::msgcat::mcset so {Desktop: local core, modules and process plugins} {Desktop: core maxalli ah, modules iyo plugins-ka process-ka}
 ::msgcat::mcset so Detach {Ka xir}
 ::msgcat::mcset so {Detach foreground} {Ka xidh horta}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset so {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Soo deji oo xaqiiji manifest-ka sii-deynta iyo kaydka kombiyuutarka ka hor inta aanad rakibin. Dhammaan shanta goobood ee aqoonsiga waa loo baahan yahay. Gateway-gu wuxuu hayaa kaydka gaarka ah ee la diyaariyay; horudhac-kan waxba lama rakibin.}
 ::msgcat::mcset so {Downloading and verifying the signed release…} {Waa la soo dejisanayaa oo la xaqiijinayaa sii-deynta saxeexan…}
 ::msgcat::mcset so {Draft this as an extension?} {Tan u qor sidii extension?}
+::msgcat::mcset so {Draft this change as an extension?} {Isbeddelkan ma ka dhignaa extension?}
 ::msgcat::mcset so {Drag to scroll; a quick swipe goes further.} {Jiid si aad u dhaqaajiso; xoqid degdeg ah ayaa sii fogeysa.}
 ::msgcat::mcset so {Drift check failed: %s} {Hubinta drift wuu fashilmay: %s}
 ::msgcat::mcset so {Drift check: %s node(s) differ from this gateway.} {Hubinta drift: %s node ayaa ka duwan gateway-kan.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset so Eval→gw Eval→gw
 ::msgcat::mcset so {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Isbeddel kasta oo %s ah waa la commit-ayaa. Soo-celintu waxay buug-galka oo dhan ku celisaa commit-kaas — iyadoo marka hore sawir laga qaadayo xaaladda hadda jirta, marka ma aha albaab hal-dhinac ah.}
 ::msgcat::mcset so {Every plugin file goes back to that commit. The current state is committed first.} {Fayl kasta oo plugin ah wuxuu ku soo noqonayaa commit-kaas. Xaaladda hadda jirta ayaa marka hore la commit-ayaa.}
+::msgcat::mcset so {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {Heer kasta: New extension wuxuu qoraa extension Tcl, TypeScript, Racket ama Common Lisp ah, ama plugin Rust oo dibadda ah (cdylib ku yaal crate-ka veles-plugin-abi-sdk: ku dhis cargo build --release, kadibna dib u soo shub Manage extensions). Laba heer ayaa ku nool dibadda galka plugin-ka isticmaalaha waxayna ka bilaabmaan khadka amarra: module, maktabad Rust oo lala dhisay veles (veles plugins new NAME --kind overlay wuxuu qoraa kaydkeeda), iyo process plugin, barnaamij ku yaal crate-ka veles-plugin-sdk oo gateway-gu socodsiiyo oo kormeero. Hagaha qoraagu wuxuu leeyahay qayb mid kasta.}
 ::msgcat::mcset so {Exact commit} {Commit sax ah}
 ::msgcat::mcset so {Exact permission rule} {Xeerka ogolaanshaha saxda ah}
 ::msgcat::mcset so {Example: a hook} {Tusaale: hook}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset so {Explain the diagnostics} {Sharax diagnostic-yada}
 ::msgcat::mcset so Export… Dhoofi…
 ::msgcat::mcset so {Extension API} {API-ga kordhinta}
+::msgcat::mcset so {Extension API reference} {Tixraaca API-ga extension-ka}
 ::msgcat::mcset so {Extension development} {Horumarinta extension-ka}
 ::msgcat::mcset so {Extension guide} {Hage extension-ka}
 ::msgcat::mcset so {Extension source} {Isha kordhinta}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset so {Guards — what the harness stops, and where it stands now} {Ilaaliyayaal — waxa harness-ku joojiyo, iyo halka uu hadda taagan yahay}
 ::msgcat::mcset so {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handlers-ku waxay socdaan sida ay u kala qoran yihiin; kii ugu horreeya ee soo celiya qiime aan madhnayn ayaa guuleysta. Mid damintu waa ka gudubtaa iyadoon laga diiwaanka saarin, doorashaduna waxay ku sugnaanaysaa config.toml si dib-u-soo-shubka plugin-ku uusan ugu soo celin aamusan.}
 ::msgcat::mcset so Health Caafimaadka
+::msgcat::mcset so {Health alerts} {Digniinaha caafimaadka}
 ::msgcat::mcset so {Health alerts (%s):} {Digniinaha caafimaadka (%s):}
 ::msgcat::mcset so Heartbeat Heartbeat
 ::msgcat::mcset so {Heartbeat age: %s s} {Da'da garaaca wadnaha: %s s}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset so Install… {Ku rakib…}
 ::msgcat::mcset so {Instance name (for example an IRC network)} {Magaca nuqulka (tusaale, shabakad IRC)}
 ::msgcat::mcset so Instances Nuqullo
+::msgcat::mcset so {Instead of patching %s: } {Halkii aad %s wax ka beddeli lahayd: }
 ::msgcat::mcset so {It becomes the current content, as a new revision — so the restore can be undone too.} {Wuxuu noqonayaa nuxurka hadda, sida dib-u-eegis cusub — sidaas darteed soo celintana waa la burin karaa.}
 ::msgcat::mcset so {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Wuxuu galayaa khasnadda la sireeyay ee mashiinkan. Wakiilku weligiis ma arko: wuxuu kaliya u isticmaali karaa sida $%s amarrada dhexdooda, ama u diri karaa martigeliyeyaasha la oggol yahay.}
 ::msgcat::mcset so {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Waxaa laga saaray diiwaanka cluster-ka fleet-ka oo dhan: isdhaafsiga gossip ee xiga wuxuu u sheegayaa peer kasta oo 0.2.0 inuu isna tuuro, midkoodna dib uma soo daro. Peer ka duqoobay 0.2.0 weli wuu liisaynayaa. Haddii mashiinku soo noqdo oo heartbeat sameeyo, mar kale ayaa la diiwaangelinayaa. Sync peers iyo instance-yada la kaydiyay lama taabanayo.}
+::msgcat::mcset so {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {Waxaa lagu qoraa config.toml ee node-kaas iyadoo wax-ka-beddel halkaas laga sameeyay; kadib isku-dubbaridka habaynta ayaa u qaada node-yada habaynta la isku dubbarida.}
 ::msgcat::mcset so {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Hadda wuu ka baxayaa xusuusta. Taariikhdiisu waxay haysaa dib-u-eegis kasta, Taariikh… ayaana soo celin karta.}
+::msgcat::mcset so {Its gateway stops and %s.} {Gateway-keedu wuu joogsadaa oo %s.}
 ::msgcat::mcset so Join {Ku biir}
 ::msgcat::mcset so {Join a pool} {Ku biir koox mashiinno}
 ::msgcat::mcset so {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {Ku biir kooxda mashiinnada ee %1$s adigoo ah %2$s? Kooxdu waxay taleefankan ku gaari doontaa %3$s.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset so Joining… {Waa la biirayaa…}
 ::msgcat::mcset so Join… {Ku biir…}
 ::msgcat::mcset so {Jump to composer} {U bood composer-ka}
+::msgcat::mcset so {Key (for example model.default)} {Fure (tusaale model.default)}
 ::msgcat::mcset so Keybindings Furayaasha
 ::msgcat::mcset so {Keyboard help} {Caawimaadda kiiboordka}
 ::msgcat::mcset so {Kick %1$s from %2$s?} {Ma ka saarayaa %1$s kanaalka %2$s?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset so {LLM provider} {Bixiyaha LLM}
 ::msgcat::mcset so Language Af
 ::msgcat::mcset so {Language (i18n)} {Luqad (i18n)}
+::msgcat::mcset so {Language servers on this gateway} {Server-yada luqadeed ee gateway-kan}
 ::msgcat::mcset so Language… Luqad…
 ::msgcat::mcset so {Last active} {Markii ugu dambeysay ee firfircoon}
 ::msgcat::mcset so {Last probe: %1$s — %2$s} {Baaritaankii ugu dambeeyay: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset so Level Heer
 ::msgcat::mcset so {Lift lockdown} {Qaad xirista}
 ::msgcat::mcset so Lines Sadarro
+::msgcat::mcset so {List targets…} {Liis bartilmaameedyo…}
 ::msgcat::mcset so {List the provider's models} {Liis gali modelada bixiyaha}
 ::msgcat::mcset so Load Culeys
 ::msgcat::mcset so {Load more} {Soo rar wax badan}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset so Next Xiga
 ::msgcat::mcset so Nickname Laqab
 ::msgcat::mcset so {NixOS: emit a module snippet; do not edit host declarations} {NixOS: soo saar qayb yar oo module ah; ha wax ka beddelin caddaymaha host-ka}
-::msgcat::mcset so {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Bartilmaameedka nolosha SSH looma hagaajiyo node-gan. Ku dar nuqul si cad si aad u dejiso ama aad dib u bilaabto.}
+::msgcat::mcset so {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {Bartilmaameed SSH lifecycle lama hagaajin node-kan: Dib-u-bilaab wuxuu node-ka weyddiistaa inuu isagu is dib u bilaabo supervisor-kiisa; Fleet deploy wuxuu u baahan yahay instance la kaydiyay oo leh bartilmaameed ssh.}
 ::msgcat::mcset so {No additional push happens.} {Wax push dheeraad ah ma dhacdo.}
 ::msgcat::mcset so {No apps yet. Ask the agent to make one: “make me an app that…”} {Weli ma jiro ab. Ka codso wakiilka inuu mid sameeyo: “ii samee ab …”}
 ::msgcat::mcset so {No code in the picture. Hold the phone closer, straight on, and scan again.} {Sawirka kood kuma jiro. Taleefanka u dhowee, si toos ah u qabo, oo mar kale iskaan garee.}
+::msgcat::mcset so {No command-center action is recorded on this gateway yet.} {Weli wax ficil ah oo xarunta amarraha lagama diiwaangelin gateway-kan.}
 ::msgcat::mcset so {No configuration snapshot will be restored.} {Ma jiro snapshot habayn oo la soo celin doono.}
 ::msgcat::mcset so {No configured sync peer for this node.} {Ma jiro sync peer la habeeyay node-kan.}
 ::msgcat::mcset so {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Ma jiro turjumaan gooni ah oo la hagaajiyay. Isticmaal Hagaaji turjumaanka si aad u doorato bixiyahiisa, model-kiisa iyo luqadda la beegsanayo.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset so {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Taleefannada %s sameeyo sidoo kale iyagaa joojiya abka. Dejinta abka veles, u oggolow inuu iskiis u bilaabmo oo uu gadaasha ka shaqeeyo.}
 ::msgcat::mcset so {Pin / unpin} {Ku qabo / ka sii daa}
 ::msgcat::mcset so {Pin to home screen} {Ku dheji shaashadda hore}
+::msgcat::mcset so {Plugin author guide} {Hagaha qoraaga plugin-ka}
 ::msgcat::mcset so {Plugin history} {Taariikhda plugin}
 ::msgcat::mcset so Plugins Plugins
 ::msgcat::mcset so Port Port
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset so {Preview here} {Horfiiri halkan}
 ::msgcat::mcset so {Preview pane} {Pane-ka horay-dhaafida}
 ::msgcat::mcset so {Preview proposal} {Muuji soo jeedinta}
-::msgcat::mcset so {Preview the changed name or language before creating it.} {Muuji magaca ama luqadda la beddelay ka hor inta aanad abuurin.}
+::msgcat::mcset so {Preview the changed name, purpose or language before creating it.} {Hor-arag magaca, ujeeddada ama luqadda la beddelay ka hor inta aanad abuurin.}
 ::msgcat::mcset so Probe Baar
+::msgcat::mcset so {Probe %s node(s)?} {Ma baarayaa %s node?}
+::msgcat::mcset so {Probe all…} {Baar dhammaan…}
 ::msgcat::mcset so {Probe of %1$s failed: %2$s} {Baaritaanka %1$s wuu fashilmay: %2$s}
 ::msgcat::mcset so {Profile result} {Natiijada profile-ka}
 ::msgcat::mcset so {Promote into config.toml} {Kor u qaad config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset so {Push branch…} {Gudbi laan…}
 ::msgcat::mcset so {Push complete. No pull request has been opened.} {Gudbintu waa dhammaatay. Pull request ma la furin.}
 ::msgcat::mcset so {Push this branch?} {Ma gudbinaysaa laantan?}
+::msgcat::mcset so {Push this kind to every node that is a configured peer for it:} {U dir noocan node kasta oo peer loo hagaajiyay:}
 ::msgcat::mcset so {Push to %s:} {U dir %s:}
 ::msgcat::mcset so Question Su'aal
 ::msgcat::mcset so Questions Su'aalo
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset so {REPL target: the app} {bartilmaameedka REPL: abka}
 ::msgcat::mcset so {REPL target: the gateway} {bartilmaameedka REPL: gateway-ga}
 ::msgcat::mcset so Read Akhri
+::msgcat::mcset so {Read the key first: a write names the value it replaces.} {Akhri furaha marka hore: qoraalku wuxuu sheegaa qiimaha uu beddelayo.}
 ::msgcat::mcset so {Reading notifications, for triggers} {Akhrinta ogeysiisyada, kiciyeyaasha awgood}
 ::msgcat::mcset so Reasoning Fikir-yeelis
 ::msgcat::mcset so {Reasoning effort} {Heerka sababaynta}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset so {Reset to default} {Ku celi sidii caadiga ahayd}
 ::msgcat::mcset so {Reset to template} {Ku celi template-ka}
 ::msgcat::mcset so Restart {Dib u bilow}
+::msgcat::mcset so {Restart %s?} {Dib u bilaab %s?}
 ::msgcat::mcset so {Restart + verify canary} {Dib u bilow + xaqiiji canary}
+::msgcat::mcset so {Restart cancelled.} {Dib-u-bilaabistii waa la joojiyay.}
+::msgcat::mcset so {Restart of %1$s failed: %2$s} {Dib-u-bilaabista %1$s wuu fashilmay: %2$s}
 ::msgcat::mcset so {Restore hidden windows} {Soo-celi daahaya qarsoon}
 ::msgcat::mcset so {Restore plugins to %s?} {Ma ku soo celinayaa plugins-ka %s?}
 ::msgcat::mcset so {Restore revision r%1$s of %2$s?} {Ma soo celisaa dib-u-eegista r%1$s ee %2$s?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset so {S3 region} {Gobolka S3}
 ::msgcat::mcset so {SASL account (optional)} {Akoonka SASL (ikhtiyaari)}
 ::msgcat::mcset so {SASL password (hidden)} {Furaha sirta ah ee SASL (qarsoon)}
+::msgcat::mcset so {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {SSH lifecycle: iyada oo loo marayo instance la kaydiyay %1$s (%2$s, unit %3$s).}
 ::msgcat::mcset so Sandbox Sandbox
 ::msgcat::mcset so {Sandbox account} {Akoonka sandbox-ka}
 ::msgcat::mcset so Sandboxes Sandboxes
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset so {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Kalfadadka hadda loo rogay alias-kan waxay sii wadaan jidkii ay xalleeyeen; rogitaanno cusub magacaan ma helaan.}
 ::msgcat::mcset so {Sessions served} {Kalfadhiyada la adeegsaday}
 ::msgcat::mcset so Set Deji
+::msgcat::mcset so {Set %1$s on %2$s to %3$s?} {%1$s ee %2$s ma loo dhigaa %3$s?}
 ::msgcat::mcset so {Set [model] provider/default in config.toml.} {Provider/degreeska [model] kaga deji config.toml.}
 ::msgcat::mcset so {Set as swap target} {Ka dhig luqadda beddelka}
 ::msgcat::mcset so {Set mode %1$s on %2$s?} {Qaabka %1$s ee %2$s la dejiyo?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset so Summary {Soo koob}
 ::msgcat::mcset so Surface Dusha
 ::msgcat::mcset so {Swap ⇄} {Beddel ⇄}
+::msgcat::mcset so {Sync %1$s to %2$s node(s)?} {Isku-dubbarid %1$s ma loo diraa %2$s node?}
+::msgcat::mcset so {Sync all} {Isku-dubbarid dhammaan}
+::msgcat::mcset so {Sync all…} {Isku-dubbarid dhammaan…}
 ::msgcat::mcset so {Sync cancelled.} {Isku-dubbaridka waa la joojiyay.}
 ::msgcat::mcset so {Sync complete.} {Isku-dhafka waa dhammaaday.}
 ::msgcat::mcset so {Sync now} {Hadda isku-dhaf}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset so {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Diagnostic-yada hadda (ka yimid language server ama Hubi) waa la diraa faylkan. Si ikhtiyaari ah ku dar su'aal. Jawaabtu waa qoraal kaliya; waxba lama qori karo.}
 ::msgcat::mcset so {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Buugga iyo waxa ku jira oo dhan waa la tirtiray. Tan dib looma celin karo — haddii aad rabto in uu ka baxo prompt-ka oo keliya, iska dami.}
 ::msgcat::mcset so {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Buugga waa la tirtiray. Lambarka plugin-ka waa keyd git ah oo sawir-koob hore ayaa la geliyaa, sidaa darteed History… wuu soo celin karaa.}
-::msgcat::mcset so {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Tafatirahu wuxuu furaa faylasha gateway-ka, oo ay ku jiraan instance-yada fog, wuxuuna gateway-ka ku ordayaa language server-ka luqadda faylka: tcl-lsp, typescript-language-server (TypeScript iyo JavaScript), rust-analyzer (crate ama module plugin Rust), clangd (C), racket-langserver iyo server Common Lisp. Hover, aad qeexidda, dhammaystir iyo diagnostic-yo toos ah waxay u shaqeeyaan luqad kasta oo gateway-ku server u leeyahay; marka uusan midna lahayn, tafatirahu wuxuu sheegaa barnaamijka laga shubayo halkaas wuxuuna hayaa syntax highlighting. Hubi wuxuu gateway-ka ku ordayaa hubiyaha u dhigma: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, ama akhristayaasha Racket iyo Lisp. Kaydi, dib u soo shub Maamul extensions, oo tijaabi extension-ka adigoon daabicin xaaladda maxalliga ah.}
+::msgcat::mcset so {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {Tafatiraha wuxuu furaa faylasha gateway-ga, oo ay ku jiraan instance-yada fog, wuxuuna ku socodsiiyaa server-ka luqadeed ee luqadda faylka gateway-ga: typescript-language-server (TypeScript iyo JavaScript), rust-analyzer (crate ama module plugin Rust), clangd (C), racket-langserver, server Common Lisp, iyo tcl-lsp oo Tcl ah halka uu gateway-gu haysto (baakadaha Linux ee veles ayaa ku jira). Hover, tag meesha qeexidda, dhammaystir iyo baaritaanno toos ah waxay u shaqeeyaan luqad kasta oo gateway-gu server u leeyahay; marka uusan midna lahayn, tafatirahu wuxuu sheegaa barnaamijka laga rakibayo halkaas wuuna hayaa iftiiminta syntax-ka. Hubi wuxuu ku socodsiiyaa hubiyaha u dhigma gateway-ga: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, akhristayaasha Racket iyo Lisp, iyo Tcl ahaan tclsh-ga engine-ka laftiisa (hubin buuxnaan, ama lint-ka tcl-lsp halka uu ku rakiban yahay). Badbaadi, dib u soo shub Manage extensions, oo tijaabi extension-ka adigoon daabicin xaaladda maxalliga ah.}
 ::msgcat::mcset so {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Handoff-ka koowaad wuxuu diyaariyaa siraha, sawirka la dhejiyay iyo faylasha runtime-ka laakiin ma bilowdo PDS-ka. Kaydi KEK iyo furaha rogaalka PLC meel offline ah, kadibna samee codsi cusub oo dib loo eegay oo leh xaqiijinta kaydka si loo dejiyo TLS HTTP-01 iyo firfircoonida. Diiwaannada DNS waa inay si toos ah u tilmaamaan host-kan; veles ma sameeyo proxy CDN ama isbeddel DNS.}
+::msgcat::mcset so {The fleet is NOT consistent: %s node(s) differ.} {Fleet-ku isku mid MA aha: %s node way kala duwan yihiin.}
+::msgcat::mcset so {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {Fleet-ku waa isku mid oo kala duwanaansho leh: %1$s node waxay ku shaqeeyaan isla build oo waxay ku heshiiyaan wax kasta oo ay wadaagaan; %2$s shay kuma jiraan node kasta.}
+::msgcat::mcset so {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {Fleet-ku waa isku mid: %s node waxay ku shaqeeyaan isla build, modules iyo plugins.}
 ::msgcat::mcset so {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Foomku wuu isbeddelay tan iyo markii extension-ka la soo saaray. Mar kale soo saar, ama hor-arag scaffold-ka cad.}
+::msgcat::mcset so {The gateway did not receive the purpose as written. Nothing was created.} {Gateway-ga ma helin ujeeddada sidii la qoray. Waxba lama abuurin.}
+::msgcat::mcset so {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {Gateway-ga ma bixiyo hagayaasha extension-ka (waa ka duqsan 0.2.2), desktop-kanna koobkooda ma hayo.}
 ::msgcat::mcset so {The gateway itself is untouched.} {Gateway-ga laftiisa lama taaban.}
 ::msgcat::mcset so {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Gateway-gu wuxuu dib u soo raray habaynta, sidaa darteed kalfadhiyada cusubi hadda ayay isticmaalaan, furaha lagu kaydiyay khasnaddana codsiga xiga ayaa isticmaali doona. Telegram iyo IRC waxay bilaabanayaan marka gateway-ga dib loo bilaabo mar kale: veles gateway restart.}
 ::msgcat::mcset so {The installed component no longer matches the selected manifest. Review the component list again.} {Qaybta la rakibay hadda lama mid ah manifest-ka la dooratay. Mar kale dib u eeg liiska qaybaha.}
 ::msgcat::mcset so {The installer preview has no verification signatures; apply is disabled.} {Preview-ga rakibiyaha ma laha saxeexyo xaqiijin; dabaqa waa la damiyay.}
 ::msgcat::mcset so {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Shaqada iyo taariikhdeeda orodka waa la tirtiray. Tan dib looma celin karo — haddii aad rabto in ay istaagto oo keliya, hakinta.}
+::msgcat::mcset so {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {Furayaasha isku-dubbaridka habayntu qaado, sida uu xeerarkeedu qabaan: furayaasha iyo aqoonsiga node-ka gaarka ah waxay ku hadhaan node-kooda, qayb la hayona ([acl], approvals, sandbox, hooks, plugins, MCP servers) waxaa lagu beddelaa halka laga beddelo oo la diraa, kadibna waxay sugaysaa mulkiilaha node-kaas.}
 ::msgcat::mcset so {The log could not be read: %s} {Diiwaanka lama akhrin karin: %s}
 ::msgcat::mcset so {The manifest belongs to another component; its reply was discarded.} {Manifest-ku waxaa iska leh qayb kale; jawaabteeda waa la tuuray.}
 ::msgcat::mcset so {The profile changed. Review the fresh plan before applying it.} {Profile-kii wuu isbeddelay. Dib u eeg qorshaha cusub ka hor inta aanad codsan.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset so {The signed release preview was malformed; nothing was installed.} {Horudhaca sii-deynta saxeexan wuu qaldanaa; waxba lama rakibin.}
 ::msgcat::mcset so {The source buffer changed. Request a new proposal before applying.} {Bufirka isha wuu isbeddelay. Codso soo jeedin cusub ka hor inta aanad dhirgelin.}
 ::msgcat::mcset so {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Keydka hal dib-u-eegis ayuu dib ugu noqdaa. Dib-u-noqoshada lafteedu waa dib-u-eegis, sidaa darteed iyaduna waa la noqon karaa.}
+::msgcat::mcset so {The translator did not answer within %s seconds.} {Turjumaanku kuma jawaabin %s il-biriqsi gudahood.}
 ::msgcat::mcset so {The translator returned no text.} {Tarjumaanku ma soo celin qoraal.}
 ::msgcat::mcset so {The verification reply was malformed; no integrity result was accepted.} {Jawaabta xaqiijinta wuu khaldanaa; ma jiro natiijo daacadnimo oo la aqbalay.}
 ::msgcat::mcset so Themes {Quruxda muuqaalka (mawduucyada)}
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset so {This challenge is over.} {Caqabaddan way dhammaatay.}
 ::msgcat::mcset so {This code has expired. Ask for a new one.} {Koodkan wuu dhacay. Weydiiso mid cusub.}
 ::msgcat::mcset so {This does not start a service or claim signed-download verification.} {Tani ma bilaabayso adeeg mana sheeganayso xaqiijin saxeex-download.}
+::msgcat::mcset so {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {Faylkani waa source-ka udub-dhexaadka veles. Isbeddellada badankoodu waxay ku habboon yihiin extension, kaas oo ka gudba cusboonaysiinta oo aan u baahnayn dib-u-dhis: hook, qalab, service override ama driver bixiye, oo ku qoran Tcl, TypeScript, Racket ama Common Lisp, ama plugin Rust oo dibadda ah (New extension wuxuu qoraa mid ka mid ah kuwan), ama module ama process plugin (hagaha Extension wuxuu tusayaa sida loo bilaabo mid). Patch udub-dhexaad wuxuu u yahay waxa API-ga extension-ku sheegi karin. Isbeddelkan ma ka dhignaa extension? Wax-ka-beddelkaagu wuxuu ku sii hadhaa buufirkan, isagoon la kaydin; haddii aad mar kale badbaadiso waxaa la beddelaa faylka udub-dhexaadka.}
 ::msgcat::mcset so {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Gateway-gan ma aqbalo qiimayaasha sirta ah ee mashiinkan: halkaas ku geli veles secret set %s, ama shabakaddan ku dar [vault] trusted_networks-kiisa}
 ::msgcat::mcset so {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Kani waa saxsan waxa la qorayaa — baytarka engine-ka laftiisa, oo nool loo soo dejiyay. Waxba weli lama taabann disk-ka.}
+::msgcat::mcset so {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {Kani waa source-ka udub-dhexaadka veles. Isbeddelkiisa badanaa waxaa ka wanaagsan extension: New extension, ama badbaadi si laguu soo jeediyo mid.}
 ::msgcat::mcset so {This node is not a configured sync peer for any kind.} {Node-kanu ma aha sync peer la habeeyay nooc kasta.}
 ::msgcat::mcset so {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Plugin-kan waa ku lifaaqan yahay waana keli-akhris. Ka saar nuqul isticmaale oo isla magac ah si aad u isticmaasho kan ku lifaaqan.}
 ::msgcat::mcset so {This publishes the commit; no pull request is created yet.} {Tani waxay daabicdaa commit-ga; pull request weli ma la abuurin.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset so Unassign {Ka qaad meelaynta}
 ::msgcat::mcset so {Undo last} {Noqo tan ugu dambeysay}
 ::msgcat::mcset so {Undo the last memory revision?} {Dib-u-eegistii ugu dambeysay ee xusuusta la noqdo?}
+::msgcat::mcset so {Unset %1$s on %2$s?} {%1$s ee %2$s ma laga saaraa?}
+::msgcat::mcset so Unset… {Ka saar…}
 ::msgcat::mcset so Unstage {Ka saar}
 ::msgcat::mcset so {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Ilaa IRC_ALLOWED_USERS ee .env uu magacaabo akoonkaaga, qof kasta oo shabakadda ku jira wuu la hadli karaa bot-ka — haddii aan qayb [acl] jirinna, isagoo mulkiile ah, oo leh qalab kasta.}
 ::msgcat::mcset so {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Ilaa TELEGRAM_ALLOWED_USERS ee .env uu magacaabo aqoonsiga isticmaalahaaga, qof kasta oo helaa bot-ka wuu la hadli karaa — haddii aan qayb [acl] jirinna, isagoo mulkiile ah, oo leh qalab kasta.}
 ::msgcat::mcset so Untitled {Aan cinwaan lahayn}
-::msgcat::mcset so {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Gudbinta upstream waa fal daabacaad oo cad, ma aha soo-qaadis toos ah. Manage extensions, Gudbin waxay liisaa extension kasta oo isticmaale: dooro extension-yada iyo faylasha, fiiri diff-ka iyo baaritaanka sirta, socodsii hubin, kadibna abuur hal laan iyo hal PR (si caadi ah veles) adigoo isticmaalaya aqoonsigaaga git ee aad dooratay. Extension kastaa wuxuu galaa galkiisa gaar ah ee repository-ga, fayl halkaas ku jiraana waxaa lagu beddelaa oo keliya kadib xaqiijin gaar ah. Waligeed ha daabicin node.toml, aqoonsiyada maxalliga ah, tokens, endpoints gaar ah ama xaalad plugin oo aan la xidhiidhin. Sawirrada soo-celinta maxalliga ah ma aha commit upstream ama PR.}
+::msgcat::mcset so {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Wax-ku-daridda upstream waa ficil daabacin oo cad, ma aha soo-qaadis otomaatig ah. Manage extensions dhexdiisa, Contribute wuxuu liisaa extension kasta oo isticmaale: dooro extension-yada iyo faylasha, eeg diff-ka iyo baaritaanka sirta, socodsii hubinno, kadibna abuur hal branch iyo hal PR (veles ahaan caadi ahaan). Commit-ku wuxuu isticmaalaa aqoonsiga git ee gateway-ga (user.name iyo user.email ee habaynta git-kiisa); marka hore deji kuwaas haddii ay tahay inay ka duwanaadaan. Extension kastaa wuxuu galayaa galkiisa u gaar ah kaydka dhexdiisa, fayl halkaas hore u jirayna waxaa lagu beddelaa oo keliya xaqiijin gooni ah ka dib. Waligaa ha daabicin node.toml, aqoonsi maxalli ah, tokens, endpoints gaar ah ama xaalad plugin oo aan khusayn. Sawirrada soo-celinta maxalliga ah ma aha commit upstream ama PR.}
 ::msgcat::mcset so {Upstream repository or fork URL} {URL-ka bakhaarka upstream ama fork-ka}
 ::msgcat::mcset so {Uptime class} {Qaybta uptime}
 ::msgcat::mcset so {Uptime: host %1$s, gateway %2$s} {Waqtiga shaqada: host %1$s, gateway %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset so {Users — one role across networks and platforms} {Isticmaalayaasha — hal doorka oo ku baahsan shabakadaha iyo barxadaha}
 ::msgcat::mcset so {Using the phone, for the agent} {Isticmaalka taleefanka, wakiilka awgiis}
 ::msgcat::mcset so {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Badanaa waa isla magaca gelinta bixiyaha. Ka labada madhan doorashada Ka-boodka — lammaane badhig-lagu buuxiyay ma wado.}
+::msgcat::mcset so {Value (TOML: "text", 5, true, [1, 2])} {Qiime (TOML: "qoraal", 5, true, [1, 2])}
 ::msgcat::mcset so {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Qiimayaashu waa TOML: xarfo la xigay, tirooyin, ama liis. Waxaa lagu qoraa [mcp_servers.<name>] — faallooyinkaaga iyo qaybaha kale oo dhan waa looga tagayaa sidoodii.}
 ::msgcat::mcset so Vault Khasnad
 ::msgcat::mcset so {Verified signed bundle installed. Restart the gateway before using the new core.} {Xirmada saxeexan ee la xaqiijiyay waa la rakibay. Dib u bilaab gateway-ga ka hor inta aanad isticmaalin xudunta cusub.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset so Voice {Sii voice}
 ::msgcat::mcset so {Waiting for the model…} {Waxaa la sugayaa model-ka…}
 ::msgcat::mcset so {Waiting for the model… Nothing has been written.} {Waxaa la sugayaa model-ka… Waxba lama qorin.}
+::msgcat::mcset so Warning Digniin
 ::msgcat::mcset so {Welcome to veles} {Ku soo dhawoow veles}
 ::msgcat::mcset so {What the agent can do here} {Waxa wakiilku halkan ku samayn karo}
 ::msgcat::mcset so {What veles may do on this phone. Each button opens the Android setting that changes it.} {Waxa veles loo oggol yahay inuu ku sameeyo taleefankan. Badhan kastaa wuxuu furaa dejinta Android ee beddesha.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset so {Workflow SHA} {SHA ee socodka shaqada}
 ::msgcat::mcset so {Workflow commit} {Commit-ka workflow}
 ::msgcat::mcset so Worktree Worktree
+::msgcat::mcset so {Write cancelled.} {Qoraalkii waa la joojiyay.}
 ::msgcat::mcset so {Write it} Qor
 ::msgcat::mcset so {Write the design question first.} {Marka hore qor su'aasha naqshadeed.}
 ::msgcat::mcset so {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Bixiye ma la qorayo. Gateway-ku ma wado tallabo inta aan gelid [[custom_providers]] iyo lammaanada [model] jirin.}
+::msgcat::mcset so Write… Qor…
 ::msgcat::mcset so {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Qorista fure KASTA oo [acl] ah waxay gateway-gan u beddeshaa habka xaddidan: doorka caadiga ah wuxuu noqdaa guest (fail-closed), liisaska ogolaanshuhuna mar dambe ma aha xadka. Dooro tan oo keliya haddii aad leedahay aqoonsi mulkiile oo aad ku kalsoon tahay.}
 ::msgcat::mcset so {[model] provider} {[model] bixiyaha}
 ::msgcat::mcset so {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {bixiyaha [model] %{name} ma waafaqsana gelid kasta oo [[custom_providers]] ah — magacaw gelidda uu sahankani qoro, ama mid config.toml horey u leeyahay}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset so {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset so {asked by: %s} {weydiiyay: %s}
 ::msgcat::mcset so {asking %s for its metrics…} {waxaa la weyddiinayaa %s metrics-keeda…}
+::msgcat::mcset so {asking %s how it is supervised…} {waxaa la weyddiinayaa %s sida loo kormeero…}
 ::msgcat::mcset so {attach a file} {Ku lifaaq fayl}
 ::msgcat::mcset so {attach an image or file} {ku lifaaq sawir ama fayl}
 ::msgcat::mcset so {attach failed: %1$s} {ku xidhiddu waa guuldareystay: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset so {channel-event reactions; /triggers add <name> network=… channel=… action=…} {falcelinta dhacdooyinka kanaalka; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset so {channels to join, a space or comma separated string} {kanaalada la galayo, xarfo ama comma lagu kala saaray string}
 ::msgcat::mcset so chars xarfo
+::msgcat::mcset so {check the buffer (diagnostics)} {hubi buufirka (baaritaanno)}
 ::msgcat::mcset so choice_next {u gudub waddada xigta}
 ::msgcat::mcset so choice_retry {isku day waddo isku mid ah mar kale}
 ::msgcat::mcset so choice_stop {halkan ku joogso}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset so {command list unavailable (the gateway is not reachable)} {liiska amarrada lama heli karo (gateway-ka la taaban karo ma jiro)}
 ::msgcat::mcset so {command palette} {palette-ka amarka}
 ::msgcat::mcset so {command search} {raadinta amarrada}
+::msgcat::mcset so {command-center audit log} {diiwaanka hubinta xarunta amarraha}
 ::msgcat::mcset so commands amarrada
 ::msgcat::mcset so {commands stay on your own session; /leave returns from the joined session} {amarradu waxay ku hadhaan kalfadhigaaga; /leave wuxuu kaa soo celiyaa kalfadhiga la biiray}
 ::msgcat::mcset so commands: amarrada:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset so {config changes from peers that wait for you; /configsync apply lands them} {isbeddellada habaynta ee ka yimid asxaabta oo ku sugaya; /configsync apply ayaa dhaqan geliya}
 ::msgcat::mcset so {config file: %s} {faylka dejinta: %s}
 ::msgcat::mcset so {config key} {furaha config-ka}
+::msgcat::mcset so {config result} {natiijada habaynta}
 ::msgcat::mcset so {config unavailable} {config lama heli karo}
 ::msgcat::mcset so {config unavailable: %s} {config lama heli karo: %s}
 ::msgcat::mcset so {config value} {qiimaha config-ka}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset so doctor_resident {had iyo jeer ku jira weydiin kasta: %{shown} ka mid ah %{total} xaraf (~%{tokens} tokens) — inta kale waxaa la soo raraa marka loo baahdo iyadoo la adeegsanayo: memory action=read path=%{path}}
 ::msgcat::mcset so doctor_title {baaritaanka xusuusta}
 ::msgcat::mcset so doctor_total {wadarta: %{chars} xaraf oo ku jira %{files} fayl (~%{tokens} tokens)}
-::msgcat::mcset so {documentation is not in this source checkout: %s} {dukumeentiyadu kuma jiraan checkout-kan isha: %s}
 ::msgcat::mcset so done {waa la dhammeeyay}
 ::msgcat::mcset so {done · %1$s/%2$s} {waa la dhammeeyay · %1$s/%2$s}
 ::msgcat::mcset so {done, but the model returned no text} {waa la dhammeeyay, laakiin model-ku qoraal kuma soo celin}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset so {grant a role (owner) · /revoke <id> takes it back} {sii door (owner) · /revoke <id> ayaa dib u qaada}
 ::msgcat::mcset so {grant a role to an identity} {sii aqoonsiga door}
 ::msgcat::mcset so {guards unreachable} {ilaaliyeyaasha la gaari maayo}
-::msgcat::mcset so guts: guts:
+::msgcat::mcset so {guts ▾} {gudaha ▾}
 ::msgcat::mcset so {gw hooks} {gw hooks}
 ::msgcat::mcset so {gw procs} {gw procs}
 ::msgcat::mcset so {halt after N identical calls} {jooji ka dib N wicamo la mid ah}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset so {live patching ARMED} {live patching HUBAN}
 ::msgcat::mcset so {live patching ARMED — an agent can now redefine procs in this window} {live patching HUBAN — wakiil hadda wuxuu dib u qeexi karaa procs-ka daaqaddan}
 ::msgcat::mcset so {live patching disarmed} {live patching waa la damiyay}
+::msgcat::mcset so load culays
 ::msgcat::mcset so loaded {la soo raray}
 ::msgcat::mcset so {loaded older messages} {farriimihii hore waa la soo raray}
 ::msgcat::mcset so loading… {la soo rarayaa…}
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset so {no upstream reading for %s} {ma jiro akhris upstream oo loogu talagalay %s}
 ::msgcat::mcset so {no word match} {isku-dhac erey ma jiro}
 ::msgcat::mcset so {no xdg-open — path copied instead} {ma jiro xdg-open — waddada waa la koobiyay}
+::msgcat::mcset so {nobody else's session is open on %s right now} {qof kale kalfadhiihiisa kama furan %s hadda}
 ::msgcat::mcset so {node log} {diiwaanka node-ka}
 ::msgcat::mcset so {none loaded} {midna lama soo rarin}
 ::msgcat::mcset so {none recorded} {wax lama diiwaan gelin}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset so {not installed} {lama rakibin}
 ::msgcat::mcset so {not reported} {lama soo sheegeyn}
 ::msgcat::mcset so {not running} {ma socdo}
+::msgcat::mcset so {not saved: drafting the change as an extension} {lama kaydin: isbeddelka waxaa laga dhigayaa extension}
+::msgcat::mcset so {not sent: %s} {lama dirin: %s}
 ::msgcat::mcset so {not set in config.toml — the built-in default applies. %s} {config.toml lagama dhigin — caadiga ah ee ku dhisan ayaa khuseeya. %s}
 ::msgcat::mcset so {not set yet — /secret set it later} {weli lama dejin — hadhow ku deji /secret set}
 ::msgcat::mcset so {not signed: %s} {lama saxiixin: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset so {on no plan} {haddii uusan jirin qorshe}
 ::msgcat::mcset so {on the} dusha
 ::msgcat::mcset so {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {On/off wuxuu aamusiyaa qoraalka habka ee transcript-ka — kalfadhigan, ama sida caadiga ah, iyadoo loo eegayo baaxadda hoose. Wuxuu xukuma NOTE; waxa uu hab kastaa sameeyo waxaa lagu dejiyaa qaybta loogu magac daray safkiisa, Habeey…-na wuu furaa. Ilaaliyeyaasha gudaha waa laga beddeli karaa.}
+::msgcat::mcset so {on; this gateway does not say whether they reach the home chat} {waa shidan; gateway-kan ma sheego inay gaaraan chat-ka guriga}
 ::msgcat::mcset so {one-shot tcl-lsp diagnostics — no model turn} {baaritaan tcl-lsp hal mar ah — wareeg model la'aan}
 ::msgcat::mcset so {open a saved file first} {marka hore fur fayl la badbaadiyay}
 ::msgcat::mcset so {open links} {furitaanka xiriirrada}
+::msgcat::mcset so {open one of the desktop's own source files} {fur mid ka mid ah faylasha source-ka desktop-ka laftiisa}
 ::msgcat::mcset so {open the engine log} {fur log-ga injinkarka}
 ::msgcat::mcset so {open the joined session before /leave (on %s)} {fur kalfadhiga la biiray ka hor /leave (ee %s)}
 ::msgcat::mcset so {open the selected child session} {fur kalfadhiga ilmaha la doortay}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset so {read-only: [approvals] allowlist} {keli-akhris: [approvals] liiska ogolaanshaha}
 ::msgcat::mcset so {read-only: this session lives on %1$s (as read at %2$s)} {akhris keliya: kalfadhigani wuxuu ku jiraa %1$s (sidii loo akhriyay %2$s)}
 ::msgcat::mcset so {read-only: this skill comes from the %s library} {akhris keliya: xirfaddan waxay ka timid maktabadda %s}
+::msgcat::mcset so {reading %1$s on %2$s…} {waxaa la akhrinayaa %1$s ee %2$s…}
 ::msgcat::mcset so reasoning caqligal
 ::msgcat::mcset so {reasoning display: %1$s · %2$s blocks} {muujinta caqligalka: %1$s · %2$s qaybo}
 ::msgcat::mcset so {reasoning display: %s} {muujinta caqligalka: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset so {run failed: %s} {ordinku waa fashilmay: %s}
 ::msgcat::mcset so {run in:} {ku orod:}
 ::msgcat::mcset so running {wuu socdaa}
+::msgcat::mcset so {running %s on the listed nodes…} {waxaa lagu socodsiiyaa %s node-yada liiska ku qoran…}
 ::msgcat::mcset so {running since %s} {wuu socdaa tan iyo %s}
 ::msgcat::mcset so {running subagents; /subagents cancel <id>} {wakiilo-hoosaadyada socda; /subagents cancel <id>}
 ::msgcat::mcset so {save failed} {keydintu waa fashilantay}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset so {send failed: %s} {diriddu way fashilantay: %s}
 ::msgcat::mcset so {send the message; while a turn runs, queue it as steering} {Dir fariinta; marka turn uu socdo, steering ahaan loo safa}
 ::msgcat::mcset so sent {la diray}
-::msgcat::mcset so {sent to the owner's home chat} {loo diray sheekada guriga ee mulkiilaha}
+::msgcat::mcset so {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {waxaa u diray chat-ka guriga mulkiilaha gateway-ga socodsiiya Telegram adapter-kiisa, ma aha kan}
+::msgcat::mcset so {sent to the owner's home chat from this gateway} {waxaa laga diray chat-ka guriga mulkiilaha gateway-kan}
 ::msgcat::mcset so server server
 ::msgcat::mcset so {server buffers merged} {buufinada server-ka waa la isku daray}
 ::msgcat::mcset so {server buffers separate} {buufinada server-ka waa kala go'an yihiin}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset so {session, model, lifecycle} {kalfadhi, model, wareegga nolosha}
 ::msgcat::mcset so {session: %s} {kalfadhi: %s}
 ::msgcat::mcset so {sessions    %s} {kalfadhiyo    %s}
+::msgcat::mcset so {sessions you can join on %s (/join <name or id>):} {kalfadhiyada aad ku biiri karto %s (/join <magac ama id>):}
 ::msgcat::mcset so {sessions: unreachable} {kalfadhiyada: lama gaari karo}
 ::msgcat::mcset so {set by} {waxaa dejiyay}
 ::msgcat::mcset so {set. %s} {waa la dejiyay. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset so {split: %s} {kala qayb: %s}
 ::msgcat::mcset so {ssh to %1$s failed: %2$s} {ssh-ka %1$s waa fashilmay: %2$s}
 ::msgcat::mcset so {stale — no heartbeat within the threshold} {duugoobay — garaac wadne ma jiro xadka gudihiis}
+::msgcat::mcset so {standing approval grants: always and this session; revoke one} {ogolaanshooyin joogto ah: weligood iyo kalfadhigan; mid buri}
 ::msgcat::mcset so {standing global and session permission grants} {ogolaanshooyinka joogtada ah ee caalamiga ah iyo kalfadhiga}
+::msgcat::mcset so {start the line with // to send it as text} {sadarka ku bilow // si aad qoraal ahaan u dirto}
 ::msgcat::mcset so state xaalad
 ::msgcat::mcset so {state       never reached} {xaalad       weligeed lama gaarin}
 ::msgcat::mcset so {state       reachable} {xaalad       waa la gaari karaa}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset so {the config.toml that will be written} {config.toml la qorayaa}
 ::msgcat::mcset so {the default (config.toml)} {kan caadiga ah (config.toml)}
 ::msgcat::mcset so {the engine refused these answers: %s} {engine-ku wuu diiday jawaabahani: %s}
+::msgcat::mcset so {the file to open: type a path, then Return or Open} {faylka la furayo: qor dariiq, kadibna Return ama Open}
 ::msgcat::mcset so {the first ACL owner identity} {aqoonsigii mulkiilaha ugu horreeyay ee ACL-ka}
 ::msgcat::mcset so {the gateway answered without a report} {gateway-ku wuxuu ku jawaabay iyada oo aynan warbixin lahayn}
 ::msgcat::mcset so {the model/provider pair is incomplete — the gateway will not route until both are present} {lammaanaha model/bixiye ma dhammaystirna — gateway-gu ma hagi doono ilaa labaduba jiraan}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset so unknown {lama yaqaan}
 ::msgcat::mcset so {unknown api_mode %{mode} — expected one of %{modes}} {api_mode aan la aqoon %{mode} — waxaa la filayaa mid ka mid ah: %{modes}}
 ::msgcat::mcset so {unknown bindings '%{rest}' · normie|emacs|vi} {xirmooyin aan la aqoon '%{rest}' · normie|emacs|vi}
+::msgcat::mcset so {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {amar aan la aqoon %{cmd} halkan — /help wuxuu liisaa amarraha dushaatan; waxba lama dirin}
 ::msgcat::mcset so {unknown command /%s — /help lists them} {amar aan la aqoon /%s — /help ayaa liisa}
 ::msgcat::mcset so {unknown command: /%s} {amar aan la aqoon: /%s}
 ::msgcat::mcset so {unknown keymap: %s (normie/emacs/vi)} {keymap aan la aqoon: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset so {upstream plan credits and windows — /usage is the local ledger} {dhibcaha iyo daaqadaha qorshaha sare — /usage waa buugga xisaabta maxalliga ah}
 ::msgcat::mcset so {upstream plan quota} {xadka qorshaha upstream}
 ::msgcat::mcset so uptime {waqtiga shaqada}
-::msgcat::mcset so {usage: /join <session> or /join <instance>/<session>} {isticmaal: /join <kalfadhi> ama /join <nuqul>/<kalfadhi>}
+::msgcat::mcset so {usage: /export [md|json]} {isticmaal: /export [md|json]}
 ::msgcat::mcset so {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {isticmaalka: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset so {usage: /resume <id or prefix>} {isticmaal: /resume <id ama horgale>}
 ::msgcat::mcset so {usage: /resume <id-or-prefix>} {isticmaalka: /resume <id-or-prefix>}

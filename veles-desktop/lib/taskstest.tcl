@@ -36,6 +36,7 @@ source [file join $_dir a11y.tcl]
 # ── stubbed collaborators ────────────────────────────────────────────
 namespace eval ::vapi {
     variable tasks {}
+    variable ok_errors {}
     variable fail 0
     variable posts {}
     variable output {}
@@ -75,7 +76,18 @@ namespace eval ::vapi {
     proc post_async {path body {on_err ""} {on_ok ""}} {
         variable posts
         lappend posts $path
-        if {$on_ok ne ""} { after idle [list {*}$on_ok "{}"] }
+        # Exactly as api.tcl:_post_async_done calls it: `{*}$on_ok` with NO
+        # response argument, and a callback error caught and reported, not
+        # raised. This stub used to append a "{}" response the real one
+        # never passes, so a three-argument callback passed here and threw
+        # "wrong # args" in the real desktop (SMOKE-14).
+        if {$on_ok ne ""} {
+            after idle [list apply {{on_ok} {
+                if {[catch { uplevel #0 [list {*}$on_ok] } e]} {
+                    lappend ::vapi::ok_errors $e
+                }
+            }} $on_ok]
+        }
     }
 }
 namespace eval ::vstatus {
@@ -292,6 +304,7 @@ set ::vapi::posts {}
 update
 ok "posted to the cancel route"     {[lsearch -exact $::vapi::posts "/api/tasks/2/cancel?session=s1"] >= 0}
 ok "…and said so in the status bar" {[string match "*cancelled task 2*" [lindex $::vstatus::msgs end]]}
+ok "…and its completion callback ran cleanly" {[llength $::vapi::ok_errors] == 0}
 
 # ── output is fetched and shown ──────────────────────────────────────
 puts "\noutput is fetched for a shell"

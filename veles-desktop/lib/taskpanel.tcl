@@ -391,7 +391,10 @@ proc ::voverlay::_tasks_cancel_failed {id error} {
     ::vstatus::set_msg [format [::vi18n::mc {cancel failed: %1$s}] $error]
 }
 
-proc ::voverlay::_tasks_cancelled {w id response} {
+# ::vapi::post_async acknowledges with no response argument (api.tcl,
+# `{*}$on_ok`); a third parameter here threw "wrong # args" in the real
+# desktop, so the status line never said the task was cancelled.
+proc ::voverlay::_tasks_cancelled {w id} {
     ::vstatus::set_msg [format [::vi18n::mc {cancelled task %1$s}] $id]
     if {[winfo exists $w]} { _tasks_fill $w }
 }

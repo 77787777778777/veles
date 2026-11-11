@@ -365,6 +365,15 @@ pub fn spawn(home: PathBuf) -> Result<TclHandle> {
             }
             publish_hook_registry(&mut interp);
 
+            // A fresh install has no plugins/ yet. Make it now: the API
+            // stub and the watcher below both need it, and without them
+            // the first extension (New extension makes the directory)
+            // had no hover or definition for `::veles::` and no hot
+            // reload until the gateway restarted (SMOKE-12).
+            let plugins_dir = home.join("plugins");
+            if let Err(e) = std::fs::create_dir_all(&plugins_dir) {
+                tracing::warn!("could not create {}: {e}", plugins_dir.display());
+            }
             // Keep the tooling stub beside the live plugins (see
             // sync_api_stub). Before the watcher starts, so the write is
             // never a reload trigger.
@@ -678,6 +687,11 @@ fn source_plugin(interp: &mut tcl::Interpreter, p: &crate::plugins::LoadedPlugin
         })
     });
     interp.set("::veles::plugin_current", "");
+    if let Ok(notes) = interp.eval("join [::veles::_take_reserved_noted] \\n") {
+        for note in notes.to_string().lines().filter(|l| !l.is_empty()) {
+            tracing::warn!("plugin {}: {note}", p.manifest.name);
+        }
+    }
     sourced.map_err(|e| anyhow::anyhow!("{}: {e}", entry.display()))?;
     tracing::info!("loaded plugin: {}", p.manifest.name);
     Ok(())
@@ -764,6 +778,22 @@ fn register_bridge_commands(interp: &mut tcl::Interpreter, home: PathBuf) {
         quote(&crate::profiles::active_profile()),
     );
     let _ = interp.eval(boot.as_str());
+    // The reserved hooks and what registering one answers (ASK-8), in
+    // the core's words: `::veles::hook` reads this dict.
+    let reserved: Vec<String> = crate::hooks::RESERVED_HOOKS
+        .iter()
+        .filter_map(|h| {
+            let note = crate::hooks::reserved_note(h)?;
+            Some(format!("{} {}", quote(h), quote(&note)))
+        })
+        .collect();
+    let _ = interp.eval(
+        format!(
+            "namespace eval ::veles {{}}; set ::veles::reserved_hooks [list {}]",
+            reserved.join(" ")
+        )
+        .as_str(),
+    );
 
     // Hook dispatch convention: plugins register via
     //   veles::hook <name> <procname>
@@ -784,10 +814,26 @@ fn register_bridge_commands(interp: &mut tcl::Interpreter, home: PathBuf) {
         # save would be worse than not having one.
         if {![info exists ::veles::hooks_off]} { array set ::veles::hooks_off {} }
 
-        # Register a proc as a handler for a lifecycle hook.
+        # Register a proc as a handler for a lifecycle hook. A reserved
+        # hook (never fired) is accepted and answers what the core says
+        # about it; the loader logs it after the plugin's `source`.
         proc ::veles::hook {hookname procname} {
             lappend ::veles::hooks($hookname) $procname
             set ::veles::hook_owner([::veles::_off_key $hookname $procname]) $::veles::plugin_current
+            if {[info exists ::veles::reserved_hooks] && [dict exists $::veles::reserved_hooks $hookname]} {
+                set note [dict get $::veles::reserved_hooks $hookname]
+                lappend ::veles::reserved_noted $note
+                return $note
+            }
+            return ""
+        }
+
+        # The reserved-hook notes since the last call (the loader's log).
+        proc ::veles::_take_reserved_noted {} {
+            if {![info exists ::veles::reserved_noted]} { return {} }
+            set out $::veles::reserved_noted
+            set ::veles::reserved_noted {}
+            return $out
         }
 
         # Drop every handler plugin `name` registered; returns how many.
@@ -903,6 +949,7 @@ fn git_snapshot_plugins(home: &Path) {
     }
     let run = |args: &[&str]| {
         std::process::Command::new("git")
+            .args(crate::plugins::GIT_NO_DAEMON)
             .args(args)
             .current_dir(&dir)
             .env("GIT_AUTHOR_NAME", "veles")
@@ -947,7 +994,19 @@ fn is_reload_trigger(ev: &notify::Event) -> bool {
     if matches!(ev.kind, notify::EventKind::Access(_)) {
         return false;
     }
-    ev.paths.iter().any(|p| is_plugin_source(p))
+    // A directory that appears (made, renamed or copied in) may already
+    // hold a plugin: its files can be written before the watch on it is
+    // armed, so their own events never come. The digest guard decides
+    // whether anything changed (SMOKE-12).
+    let appeared = matches!(
+        ev.kind,
+        notify::EventKind::Create(_)
+            | notify::EventKind::Modify(notify::event::ModifyKind::Name(_))
+    );
+    ev.paths.iter().any(|p| {
+        is_plugin_source(p)
+            || (appeared && p.is_dir() && !p.components().any(|c| c.as_os_str() == ".git"))
+    })
 }
 
 /// A file whose change means a plugin changed: a manifest, a Tcl
@@ -1564,6 +1623,32 @@ mod tests {
     /// (it once defined `proc ::name::handle` before its namespace
     /// existed: "unknown namespace"), and one plugin that fails to source
     /// must not stop the plugins discovered after it.
+    /// ASK-8: a reserved hook (accepted for hermes portability, never
+    /// fired) answered a registration exactly like a live one, so a
+    /// plugin author had a handler that never ran and no word of it.
+    #[test]
+    fn registering_a_reserved_hook_in_tcl_says_it_never_fires() {
+        let (home, _guard) = crate::testenv::scratch_home();
+        std::fs::write(home.path().join("config.toml"), "").expect("config");
+        std::env::remove_var("VELES_PLUGIN_DIRS");
+        let handle = spawn(home.path().to_path_buf()).expect("spawn");
+        let said = handle
+            .eval("proc ::rsv_probe {} { return x }; ::veles::hook pre_verify ::rsv_probe")
+            .expect("hook");
+        assert!(
+            said.contains("pre_verify") && said.contains("never fires"),
+            "{said}"
+        );
+        let said = handle
+            .eval("::veles::hook post_llm_call ::rsv_probe")
+            .expect("hook");
+        assert_eq!(said, "", "a hook that fires registers quietly");
+        assert!(handle
+            .eval("::veles::_take_reserved_noted")
+            .expect("noted")
+            .contains("pre_verify"));
+    }
+
     #[test]
     fn the_tcl_scaffold_loads_and_a_broken_plugin_does_not_stop_later_ones() {
         let (home, _guard) = crate::testenv::scratch_home();
@@ -1601,6 +1686,112 @@ mod tests {
             error.contains("aaa-broken") && !error.contains("bbb-scaffold"),
             "the broken plugin, and only it, is reported: {error}"
         );
+    }
+
+    /// SMOKE-12: a fresh install boots with no `plugins/`. The API stub
+    /// and the plugin watcher both needed the directory at boot, so the
+    /// first extension (New extension makes the directory) had no hover
+    /// or definition for `::veles::` and no hot reload until the gateway
+    /// restarted. Boot now makes the directory; a plugin created after
+    /// boot, in a directory of its own, is loaded and reloaded on edit.
+    #[test]
+    fn a_fresh_home_gets_the_api_stub_and_hot_reload_for_its_first_extension() {
+        let (home, _guard) = crate::testenv::scratch_home();
+        std::fs::write(home.path().join("config.toml"), "").expect("config");
+        std::env::remove_var("VELES_PLUGIN_DIRS");
+        let plugins = home.path().join("plugins");
+        assert!(
+            !plugins.exists(),
+            "the scratch home starts without plugins/"
+        );
+        let handle = spawn(home.path().to_path_buf()).expect("spawn");
+        assert_eq!(handle.eval("set _ booted").expect("eval"), "booted");
+        assert!(
+            plugins.join("veles_api.tcl").is_file(),
+            "a fresh home has no API stub for the first extension"
+        );
+        // Let the watcher arm, then create the first extension the way
+        // New extension does: a directory that appears with its files.
+        std::thread::sleep(Duration::from_millis(400));
+        let first = plugins.join("first-ext");
+        std::fs::create_dir_all(&first).expect("mkdir");
+        std::fs::write(first.join("plugin.toml"), "name = \"first-ext\"\n").expect("toml");
+        std::fs::write(
+            first.join("plugin.tcl"),
+            "proc ::first_ext_marker {} { return one }\n",
+        )
+        .expect("tcl");
+        let wait_for = |want: &str| {
+            let deadline = std::time::Instant::now() + Duration::from_secs(8);
+            loop {
+                let got = handle
+                    .eval(
+                        "if {[llength [info commands ::first_ext_marker]]} { ::first_ext_marker }",
+                    )
+                    .unwrap_or_default();
+                if got == want || std::time::Instant::now() > deadline {
+                    return got;
+                }
+                std::thread::sleep(Duration::from_millis(100));
+            }
+        };
+        assert_eq!(wait_for("one"), "one", "the new extension was not loaded");
+        std::fs::write(
+            first.join("plugin.tcl"),
+            "proc ::first_ext_marker {} { return two }\n",
+        )
+        .expect("edit");
+        assert_eq!(wait_for("two"), "two", "an edit was not hot-reloaded");
+    }
+
+    /// Git for Windows can turn `core.fsmonitor` on system-wide (the
+    /// build host's installer did). The plugin snapshot's `git add` and
+    /// `git status` then started a `git fsmonitor--daemon` on
+    /// `<home>\plugins` that outlived veles and kept the home from being
+    /// removed ("used by another process", veles-cli tests/recover.rs).
+    /// Both snapshots, the runtime's at boot and the API's, run git
+    /// without one whatever the configuration says; here the repo's own
+    /// config asks for it.
+    #[cfg(windows)]
+    #[test]
+    fn a_plugin_snapshot_leaves_no_git_daemon_holding_the_home() {
+        let (home, _guard) = crate::testenv::scratch_home();
+        let plugins = home.path().join("plugins");
+        std::fs::create_dir_all(&plugins).expect("plugins/");
+        let git = |args: &[&str]| {
+            std::process::Command::new("git")
+                .args(args)
+                .current_dir(&plugins)
+                .output()
+                .expect("git")
+        };
+        assert!(git(&["init", "-q"]).status.success());
+        assert!(git(&["config", "core.fsmonitor", "true"]).status.success());
+        let watched = || git(&["fsmonitor--daemon", "status"]).status.success();
+        // Never leave one running, red or green.
+        let stop = || drop(git(&["fsmonitor--daemon", "stop"]));
+
+        std::fs::write(plugins.join("a.tcl"), "proc ::a {} {}\n").expect("a.tcl");
+        git_snapshot_plugins(home.path());
+        let after_boot = watched();
+        stop();
+        std::fs::write(plugins.join("b.tcl"), "proc ::b {} {}\n").expect("b.tcl");
+        crate::plugins::snapshot("probe").expect("snapshot");
+        let after_api = watched();
+        stop();
+
+        assert!(
+            !after_boot,
+            "the runtime's snapshot left a git fsmonitor daemon"
+        );
+        assert!(!after_api, "the API's snapshot left a git fsmonitor daemon");
+        let log = git(&["log", "--oneline"]);
+        assert_eq!(
+            String::from_utf8_lossy(&log.stdout).lines().count(),
+            2,
+            "both snapshots committed"
+        );
+        std::fs::remove_dir_all(&plugins).expect("nothing holds the plugins directory");
     }
 
     /// The bundled tier through the REAL boot path (0.1.2): a fresh

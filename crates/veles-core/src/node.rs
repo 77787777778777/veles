@@ -116,6 +116,15 @@ pub const PROBE_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(5)
 /// not kernels. Everything above the CPU count is saturation; one
 /// number, not a curve, is all "least-loaded" needs.
 ///
+/// Windows keeps no load average. There the figure is the CPU busy
+/// share since the previous heartbeat (`hostmetrics::cpu_busy`, from
+/// `GetSystemTimes` deltas), already 0-100 across every core. The two
+/// agree where placement looks: idle reads 0 and a saturated machine
+/// 100; between, a load average also counts tasks waiting for a CPU, so
+/// a busy share reads a queued machine as merely full. Before 0.2.2 a
+/// Windows node reported nothing here, and `any` ranked it after every
+/// other node however idle it was (audit COMP-3).
+///
 /// `None` = unknown (an OS we cannot read): never mistaken for idle —
 /// the registry column stays NULL and `any` placement skips the node's
 /// score rather than treating unreadable as free.
@@ -126,11 +135,27 @@ pub struct LoadOne {
 
 /// Read the 1-minute load average, normalized as above. Linux and the
 /// BSDs: /proc/loadavg, then getloadavg(3) as the portable fallback;
-/// elsewhere (or unreadable) None.
+/// Windows: the CPU busy share; elsewhere (or unreadable) None.
 pub fn probe_load_one() -> Option<LoadOne> {
-    probe_load_one_with(loadavg_one, cpu_count)
+    #[cfg(windows)]
+    {
+        crate::hostmetrics::cpu_busy().map(|b| load_one_from_busy(b.pct))
+    }
+    #[cfg(not(windows))]
+    {
+        probe_load_one_with(loadavg_one, cpu_count)
+    }
 }
 
+/// A busy share (0-100 over every core) as the registry's load figure.
+#[cfg_attr(not(windows), allow(dead_code))]
+fn load_one_from_busy(pct: f64) -> LoadOne {
+    LoadOne {
+        value: pct.round().clamp(0.0, 100.0) as u8,
+    }
+}
+
+#[cfg_attr(windows, allow(dead_code))]
 fn probe_load_one_with(
     read_one: impl Fn() -> Option<f64>,
     cpus: impl Fn() -> Option<usize>,
@@ -169,10 +194,12 @@ fn loadavg_one() -> Option<f64> {
 }
 
 #[cfg(any(not(unix), target_os = "android"))]
+#[cfg_attr(windows, allow(dead_code))]
 fn loadavg_one() -> Option<f64> {
     read_proc_loadavg()
 }
 
+#[cfg_attr(windows, allow(dead_code))]
 fn read_proc_loadavg() -> Option<f64> {
     let text = std::fs::read_to_string("/proc/loadavg").ok()?;
     parse_finite(text.split_whitespace().next()?)
@@ -1132,6 +1159,29 @@ mod tests {
         assert!(probe_load_one_with(|| None, || Some(16)).is_none());
         assert!(probe_load_one_with(|| Some(1.0), || None).is_none());
         assert!(probe_load_one_with(|| Some(1.0), || Some(0)).is_none());
+    }
+
+    /// COMP-3: Windows' figure is the CPU busy share (already per core),
+    /// rounded and clamped like a normalized load.
+    #[test]
+    fn a_busy_share_is_the_load_figure_where_there_is_no_load_average() {
+        assert_eq!(load_one_from_busy(37.4).value, 37);
+        assert_eq!(load_one_from_busy(99.6).value, 100);
+        assert_eq!(load_one_from_busy(0.0).value, 0);
+        assert_eq!(load_one_from_busy(150.0).value, 100);
+        assert_eq!(load_one_from_busy(-1.0).value, 0);
+    }
+
+    /// COMP-3, on the Windows build host (the gate is Linux-only): a
+    /// Windows node reports a load figure, so `any` placement ranks it by
+    /// its CPU instead of last as unknown.
+    #[cfg(windows)]
+    #[test]
+    fn windows_reports_a_load_figure() {
+        let first = probe_load_one().expect("a load figure on Windows");
+        assert!(first.value <= 100);
+        std::thread::sleep(crate::hostmetrics::MIN_CPU_WINDOW);
+        assert!(probe_load_one().is_some(), "and again, since the first");
     }
 
     /// Owner ask 306787.b: disk IO pressure from PSI, avg10 rounded to a

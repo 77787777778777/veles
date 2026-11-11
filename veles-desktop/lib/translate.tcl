@@ -10,7 +10,15 @@ namespace eval ::vtranslate {
     variable pending_generation 0
     variable config_pending 0
     variable configured 0
+    variable flow_key
     variable target_edited 0
+    # How long one translation can take on the gateway, in seconds: its
+    # /api/translate/config `timeout_secs` (translate::BUDGET_SECS, two
+    # provider calls of 600 s). The request waits this plus `margin_secs`
+    # for the HTTP round trip; the desktop client's own default (10 s)
+    # cut a translation off while the engine was still working on it.
+    variable budget_secs 1200
+    variable margin_secs 15
 }
 
 proc ::vtranslate::focused {} {
@@ -54,8 +62,8 @@ proc ::vtranslate::popup {w} {
     if {[winfo exists $window]} { destroy $window }
     toplevel $window
     wm title $window [::vi18n::mc {Translate selection}]
-    wm geometry $window 760x520
-    wm minsize $window 420 320
+    wm geometry $window [geometry [winfo screenwidth .] [winfo screenheight .]]
+    wm minsize $window 260 240
     ttk::frame $window.bar
     pack $window.bar -fill x -padx 8 -pady 6
     ttk::label $window.bar.target -text [::vi18n::mc {Target language:}]
@@ -66,11 +74,14 @@ proc ::vtranslate::popup {w} {
     ttk::button $window.bar.copy -text [::vi18n::mc {Copy}] -command ::vtranslate::copy
     ttk::button $window.bar.settings -text [::vi18n::mc {Configure translator}] -command ::vtranslate::configure
     ttk::button $window.bar.close -text [::vi18n::mc {Close}] -command ::vtranslate::close
-    pack $window.bar.target -side left
-    pack $window.bar.lang -side left -padx 5
-    ttk::label $window.bar.route -text ""
-    pack $window.bar.route -side left -fill x -expand 1 -padx 8
-    pack $window.bar.close $window.bar.settings $window.bar.copy $window.bar.cancel $window.bar.retry -side right -padx 3
+    ttk::label $window.bar.route -text "" -justify left
+    # Everything in the bar is gridded by _flow, which wraps the buttons to
+    # the width the window has and puts the route text on a row of its own:
+    # a long route or error can no longer push a button out (SMOKE-9).
+    bind $window.bar <Configure> [list ::vtranslate::_flow $window]
+    bind $window.bar.lang <Return> ::vtranslate::request
+    array unset ::vtranslate::flow_key
+    _flow $window
     ttk::panedwindow $window.panes -orient vertical
     pack $window.panes -fill both -expand 1
     ttk::frame $window.sourceframe
@@ -111,6 +122,67 @@ proc ::vtranslate::popup {w} {
         [list ::vtranslate::_config_loaded $popup_generation $generation]
 }
 
+# The popup's size: the usual 760x520, never larger than the screen it opens
+# on (a phone is 360x640 or so).
+proc ::vtranslate::geometry {screen_w screen_h} {
+    set w [expr {min(760, max(260, $screen_w - 16))}]
+    set h [expr {min(520, max(240, $screen_h - 96))}]
+    return ${w}x${h}
+}
+
+# Greedy rows of [list widget width] pairs into the given width: returns
+# a list of rows, each a list of widget names. A widget wider than the width
+# still gets a row of its own.
+proc ::vtranslate::rows {items width gap} {
+    set rows {}
+    set row {}
+    set used 0
+    foreach item $items {
+        lassign $item name w
+        if {$row ne {} && $used + $gap + $w > $width} {
+            lappend rows $row
+            set row {}
+            set used 0
+        }
+        if {$row ne {}} { incr used $gap }
+        lappend row $name
+        incr used $w
+    }
+    if {$row ne {}} { lappend rows $row }
+    return $rows
+}
+
+proc ::vtranslate::_flow {window} {
+    variable flow_key
+    set bar $window.bar
+    if {![winfo exists $bar.route]} { return }
+    set width [winfo width $bar]
+    if {$width < 20} { return }
+    set items {}
+    foreach b {retry cancel copy settings close} {
+        lappend items [list $bar.$b [winfo reqwidth $bar.$b]]
+    }
+    set rows [rows $items $width 6]
+    set key [list $width $rows]
+    $bar.route configure -wraplength [expr {max(40, $width - 4)}]
+    if {[info exists flow_key($window)] && $flow_key($window) eq $key} { return }
+    set flow_key($window) $key
+    foreach w [grid slaves $bar] { grid forget $w }
+    grid $bar.target -row 0 -column 0 -sticky w
+    grid $bar.lang -row 0 -column 1 -columnspan 4 -sticky ew -padx 5
+    set r 1
+    foreach row $rows {
+        set c 0
+        foreach w $row {
+            grid $w -row $r -column $c -sticky ew -padx 3 -pady 2
+            incr c
+        }
+        incr r
+    }
+    grid $bar.route -row $r -column 0 -columnspan 5 -sticky ew -pady {4 0}
+    for {set c 0} {$c < 5} {incr c} { grid columnconfigure $bar $c -weight 1 }
+}
+
 proc ::vtranslate::_config_loaded {requested_generation config_generation ok response} {
     variable target
     variable configured
@@ -127,6 +199,11 @@ proc ::vtranslate::_config_loaded {requested_generation config_generation ok res
         return
     }
     set configured [expr {[::vapi::field $response configured] eq "true"}]
+    # How long the gateway can take for one translation; a gateway that
+    # does not say has the same 1200 s.
+    set budget [::vapi::field $response timeout_secs ""]
+    set ::vtranslate::budget_secs [expr {
+        [string is integer -strict $budget] && $budget > 0 ? $budget : 1200}]
     if {$target eq "" && !$::vtranslate::target_edited} {
         catch { set target [dict get $response target_language] }
     }
@@ -136,8 +213,14 @@ proc ::vtranslate::_config_loaded {requested_generation config_generation ok res
         catch { set target [string trim [::vi18n::locale_name [::vi18n::current]]] }
     }
     if {!$configured} {
-        $window.bar.route configure -text \
-            [::vi18n::mc {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.}]
+        # Nothing to send to: say how to set it up, in the route line and in
+        # the result pane, and keep both (a request would only replace the
+        # guidance with the server's refusal).
+        set hint [::vi18n::mc {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.}]
+        $window.bar.route configure -text $hint
+        _write $hint
+        _idle
+        return
     }
     request 0
 }
@@ -213,7 +296,8 @@ proc ::vtranslate::request {{refresh_config 1}} {
     set pending_generation $current
     set pending [::vapi::post_json_async /api/translate $body \
         [list ::vtranslate::_failed $current] \
-        [list ::vtranslate::_done $current]]
+        [list ::vtranslate::_done $current] \
+        [expr {($::vtranslate::budget_secs + $::vtranslate::margin_secs) * 1000}]]
 }
 
 proc ::vtranslate::cancel_pending {} {
@@ -246,18 +330,30 @@ proc ::vtranslate::_done {generation response} {
     }
     catch { set route "[dict get $response model] @ [dict get $response provider]" }
     _write $translated
-    catch { $window.bar.route configure -text "[::vi18n::mc {Dedicated translator}]: $route" }
+    set shown "[::vi18n::mc {Dedicated translator}]: $route"
+    # The gateway checks that placeholders and markup came back unchanged;
+    # a loss it could not cure is said here, not hidden (TR-1).
+    set warnings {}
+    catch { set warnings [dict get $response warnings] }
+    if {[llength $warnings] > 0} {
+        append shown " - [::vi18n::mc {Warning}]: [join $warnings {; }]"
+    }
+    catch { $window.bar.route configure -text $shown }
 }
 
 proc ::vtranslate::_failed {generation why} {
     variable window
     if {$generation != $::vtranslate::generation || ![winfo exists $window]} { return }
     _settle $generation
-    catch { $window.bar.route configure -text "[::vi18n::mc {Translation failed}]: $why" }
-    if {[$window.text get 1.0 end-1c] eq "" ||
-            [$window.text get 1.0 end-1c] eq [::vi18n::mc {Translating…}]} {
-        _write "[::vi18n::mc {Translation failed}]: $why"
+    # The request's own timeout (the gateway's budget and the margin)
+    # ran out: say that in words, not as "transport: timeout".
+    if {$why eq "transport: timeout"} {
+        set why [format [::vi18n::mc {The translator did not answer within %s seconds.}] \
+            $::vtranslate::budget_secs]
     }
+    # The error goes to the result pane only; the route line keeps saying
+    # which translator this is (SMOKE-9).
+    _write "[::vi18n::mc {Translation failed}]: $why"
 }
 
 proc ::vtranslate::_write {text} {

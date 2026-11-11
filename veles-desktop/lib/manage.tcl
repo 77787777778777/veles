@@ -44,9 +44,22 @@ proc ::vmanage::window {w title geometry {minsize {520 340}}} {
     bind $w <Escape> [list destroy $w]
     ttk::frame $w.bar
     pack $w.bar -fill x -padx 8 -pady {4 0}
-    ttk::label $w.bar.status -text "" -foreground $::vt::T(fg_dim)
-    pack $w.bar.status -side right -fill x -expand 1 -padx 8
+    # The status is a row of its own under the buttons, wrapping at the
+    # bar's width. Packed beside them it took the room it asked for: a
+    # long message unmapped the last buttons (New extension lost
+    # Extension guide and Manage extensions after a refused Create) and
+    # was cut at its start (SMOKE-22).
+    ttk::label $w.bar.status -text "" -foreground $::vt::T(fg_dim) \
+        -anchor w -justify left
+    pack $w.bar.status -side bottom -fill x -pady {2 0}
+    bind $w.bar <Configure> [list ::vmanage::_status_wrap $w.bar %w]
     return $w.bar
+}
+
+proc ::vmanage::_status_wrap {bar width} {
+    if {[winfo exists $bar.status] && $width > 40} {
+        $bar.status configure -wraplength [expr {$width - 8}]
+    }
 }
 
 # A toolbar button. `name` is the widget suffix; `label` is shown; `help`

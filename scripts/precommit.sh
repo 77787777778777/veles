@@ -50,6 +50,15 @@ step() {
 # Formatting FIRST, and as a check rather than a rewrite: if it would
 # change something, that is a finding, not a fixup to do silently.
 step "rustfmt"  cargo fmt --all --check
+# Cargo.lock agrees with the manifests, checked BEFORE any step that
+# resolves: every cargo build below runs without --locked and would
+# quietly rewrite a stale lock in the tree, so the gate passed while the
+# committed lock was wrong. 0.2.1 was tagged with Cargo.lock still naming
+# the workspace crates at 0.2.0, and `cargo build --locked` of the tag
+# failed. --offline: the answer must not depend on the network (the
+# dependency sources are already here for every later step). Not
+# --no-deps, which never reads the lock and passes a stale one.
+step "lockfile matches" cargo metadata --locked --offline --format-version 1
 step "clippy"   cargo clippy --workspace --all-features --all-targets -- -D warnings
 # The public export refuses a private identifier or a credential shape
 # (scripts/release/export-public.sh). Nothing ran it before a release, so
@@ -85,7 +94,17 @@ step "process plugin fixture" cargo build -p veles-plugin-echo
 # std, and every test binary that links it then fails with "cannot
 # satisfy dependencies so `std` only shows up once". Its own (empty)
 # tests are nothing to lose.
-step "cargo test" env VELES_REQUIRE_PLUGIN_SO=1 cargo test --workspace --exclude veles-runtime --all-features
+# A bare `cargo test` keeps its scratch stores in RAM through cargo's
+# runner (.cargo/config.toml -> scripts/cargo-test-runner.sh); on disk the
+# same tests took 68 minutes for one crate. This step checks the runner
+# itself with a fake binary: here TMPDIR is tmpfs already, so the real
+# test step below would not notice a broken one.
+step "cargo test runner" bash scripts/cargo-test-runner-test.sh
+# `--no-fail-fast`: without it cargo stops at the first red test binary
+# and the ones after it never run. On 2026-11-11 a red veles-core
+# integration test hid a red veles-frontends unit test, which then looked
+# like a Windows-only failure because only the Windows step ran it.
+step "cargo test" env VELES_REQUIRE_PLUGIN_SO=1 cargo test --workspace --exclude veles-runtime --all-features --no-fail-fast
 step "browser extension" bash -c 'node --check browser-extension/background.js && node --check browser-extension/popup.js && node browser-extension/popup-test.cjs && node browser-extension/background-test.cjs'
 # The docs site agrees with the published extension API spec (its
 # sources live outside this repo, so no cargo test can read them; the
@@ -296,6 +315,11 @@ if [ "$ops_code" != "$ops_docs" ]; then
 else
     echo "OK"
 fi
+# Pitfall numbers are global and cited by number (AGENTS.md): each is
+# used once across docs/issues/pitfalls/*.md, and HANDOFF.md §7 names
+# none that does not exist. 105 was used three times until 2026-11-10
+# and nothing noticed. flake.nix `pitfall-numbers` runs the same script.
+step "pitfall numbers" tclsh scripts/check-pitfall-numbers.tcl
 # Every suite in the runner must also be in flake.nix, or it passes here
 # and never runs in CI.
 printf '%-28s' "suites wired into flake"

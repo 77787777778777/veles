@@ -1,0 +1,21 @@
+
+# tcl-lsp
+
+The Linux packages (the nix package, the .tar.zst bundle, the AppImage and the
+gateway image built from the nix package) also ship tcl-lsp, the Tcl language
+server the Dev tab starts: MIT OR Apache-2.0,
+https://github.com/77787777778777/tcl-lsp, at the revision flake.lock pins. It
+runs nagelfar (GPL-3.0-or-later) and tclint/tclfmt (MIT) as separate programs.
+tcl-lsp links the Rust crates below; each license text is reproduced once,
+followed by the crates it covers.
+
+{{#each licenses}}
+## {{name}} (tcl-lsp)
+
+Used by: {{#each used_by}}{{crate.name}} {{crate.version}}{{#unless @last}}, {{/unless}}{{/each}}
+
+```text
+{{text}}
+```
+
+{{/each}}

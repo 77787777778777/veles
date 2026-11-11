@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset ha {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset ha {%1$s %2$s done} {%1$s %2$s an gama}
 ::msgcat::mcset ha {%1$s %2$s failed: %3$s} {%1$s %2$s ya gaza: %3$s}
+::msgcat::mcset ha {%1$s %2$s over ssh anyway?} {%1$s %2$s ta ssh duk da haka?}
 ::msgcat::mcset ha {%1$s %2$s over ssh…} {%1$s %2$s ta ssh…}
 ::msgcat::mcset ha {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset ha {%1$s (%2$s waiting)} {%1$s (%2$s suna jira)}
 ::msgcat::mcset ha {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  tunani %3$s}
 ::msgcat::mcset ha {%1$s = %2$s here} {%1$s = %2$s a nan}
+::msgcat::mcset ha {%1$s = %2$s on %3$s} {%1$s = %2$s a kan %3$s}
 ::msgcat::mcset ha {%1$s NOT saved: %2$s} {ba a ajiye %1$s ba: %2$s}
 ::msgcat::mcset ha {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s na ɗakin %2$s ne kuma ana karantawa kawai — kwafi shi da New… don canza shi}
 ::msgcat::mcset ha {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s na ɗakin %2$s ne — veles ba ya goge fasahohin wani kayan aiki}
+::msgcat::mcset ha {%1$s cannot restart itself: %2$s} {%1$s ba zai iya sake kunna kansa ba: %2$s}
+::msgcat::mcset ha {%1$s differs: %2$s} {%1$s ya bambanta: %2$s}
 ::msgcat::mcset ha {%1$s every cron job on %2$s?} {%1$s kowane aikin cron a kan %2$s?}
 ::msgcat::mcset ha {%1$s failed: %2$s} {%1$s ya gaza: %2$s}
 ::msgcat::mcset ha {%1$s in / %2$s out / %3$s calls} {%1$s shiga / %2$s fita / %3$s kira}
+::msgcat::mcset ha {%1$s is back after %2$s s (veles %3$s).} {%1$s ya dawo bayan %2$s s (veles %3$s).}
 ::msgcat::mcset ha {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s node ne %2$s, ba %3$s ba. Gyara id ɗin node ɗinsa a Edit….}
 ::msgcat::mcset ha {%1$s is not a whole number} {%1$s ba cikakken lamba ba ne}
+::msgcat::mcset ha {%1$s is not on: %2$s} {Ba a kunna %1$s ba: %2$s}
+::msgcat::mcset ha {%1$s is not set on %2$s: the default applies.} {Ba a saita %1$s a kan %2$s ba: ana amfani da na asali.}
 ::msgcat::mcset ha {%1$s is reachable (%2$s ms).} {Ana iya isa %1$s (%2$s ms).}
+::msgcat::mcset ha {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s yana da zama %2$s. A sake kunna shi duk da haka?}
 ::msgcat::mcset ha {%1$s is set to something this box cannot edit (%2$s)} {%1$s an saita shi ga abin da wannan kwamfutar ba za ta iya gyara ba (%2$s)}
 ::msgcat::mcset ha {%1$s is unreachable: %2$s} {Ba a iya isa %1$s: %2$s}
+::msgcat::mcset ha {%1$s is up, but its node binding is wrong: %2$s} {%1$s yana aiki, amma haɗin node ɗinsa ba daidai ba: %2$s}
+::msgcat::mcset ha {%1$s not compared: %2$s} {Ba a kwatanta %1$s ba: %2$s}
 ::msgcat::mcset ha {%1$s of %2$s characters} {%1$s daga cikin %2$s haruffa}
 ::msgcat::mcset ha {%1$s of %2$s sessions} {%1$s cikin zamuna %2$s}
 ::msgcat::mcset ha {%1$s of %2$s skills reach the prompt} {%1$s daga cikin %2$s fasaha sun isa ga prompt}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset ha {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset ha {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset ha {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset ha {%1$s: %2$s on the gateway} {%1$s: %2$s a kan gateway}
+::msgcat::mcset ha {%1$s: %2$s on the gateway (ships with veles)} {%1$s: %2$s a kan gateway (yana zuwa tare da veles)}
 ::msgcat::mcset ha {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset ha {%1$s: no language server on the gateway. %2$s} {%1$s: babu sabar harshe a kan gateway. %2$s}
 ::msgcat::mcset ha {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: ƙarshen %2$s daga cikin layuka %3$s da gateway ɗinsa ke ajiyewa a memori, an ɓoye sirrika a wancan node ɗin.}
+::msgcat::mcset ha {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: plugin ɗin mai amfani %2$s yana rufe na aikawa da abu ɗaya (%3$s)}
 ::msgcat::mcset ha {%d MCP server(s) configured} {%d sabar MCP da aka saita}
 ::msgcat::mcset ha {%d entries} {%d shigarwa}
 ::msgcat::mcset ha {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {Za a rubuta fayiloli %d na extension ɗin daidai yadda aka duba su. Idan ɗayansu ya canza tun daga dubawar, ba za a rubuta komai ba. Babu commit, push ko PR.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset ha {%s (stale)} {%s (maras sabuntawa)}
 ::msgcat::mcset ha {%s (this session)} {%s (wannan zaman)}
 ::msgcat::mcset ha {%s GB free of %s GB} {%s GB a sarari daga %s GB}
+::msgcat::mcset ha {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s Umarnin yana tafiya ta ssh zuwa ga host ɗin da aka saita, wanda wannan binciken bai iya danganta shi da node ɗin ba.}
 ::msgcat::mcset ha {%s already exists — open it from the list} {%s ya riga ya wanzu — buɗe shi daga jerin}
 ::msgcat::mcset ha {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {%s ya canza tun da ka buɗe shi — ba a sake rubuta komai ba; kwafi rubutunka, sannan Sake ɗora}
 ::msgcat::mcset ha {%s cleared for this buffer} {%s an share shi don wannan buffer}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset ha {%s comes from config.toml [acl] — edit there} {%s daga config.toml [acl] ne — gyara a can}
 ::msgcat::mcset ha {%s config change(s) wait for you — /configsync} {canje-canjen saiti %s suna jiran ka — /configsync}
 ::msgcat::mcset ha {%s did not become healthy within 30s} {%s bai zama lafiya ba cikin 30s}
+::msgcat::mcset ha {%s did not come back within 120 s: look at its log where it runs.} {%s bai dawo ba cikin 120 s: duba log ɗinsa inda yake gudana.}
 ::msgcat::mcset ha {%s done} {%s an gama}
 ::msgcat::mcset ha {%s failed: %s} {%s ya gaza: %s}
+::msgcat::mcset ha {%s holds a credential: it stays on its node and is not shown.} {%s yana riƙe da tabbaci: yana zama a node ɗinsa kuma ba a nuna shi.}
 ::msgcat::mcset ha {%s is already split} {%s an riga an raba shi}
+::msgcat::mcset ha {%s is restarting; waiting for it to come back…} {Ana sake kunna %s; ana jiran ya dawo…}
 ::msgcat::mcset ha {%s is the language in use — pick another one to swap with} {%s shi ne harshen da ake amfani da shi — zaɓi wani don musanya}
 ::msgcat::mcset ha {%s is up} {%s yana aiki}
 ::msgcat::mcset ha {%s keys — any key closes} {%s maɓallai — kowane maɓalli yana rufewa}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset ha {; shadows bundled} {; yana rufe na aikawa}
 ::msgcat::mcset ha {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Tayin saiti na iya canza saituna kuma tayin ma'ajiya na haɗa sirrika; canje-canje a sashen tsaro har yanzu suna jiran mai shi.}
 ::msgcat::mcset ha {A failing plugin may drop hooks mid-turn.} {Plugin da ya gaza yana iya jefa hooks a tsakiyar juyi.}
+::msgcat::mcset ha {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {Sashe da aka riƙe: ba a rubuta shi daga nan ba; gyara shi a kan node ka tura saiti, sannan mai shi yana amfani da shi a can.}
 ::msgcat::mcset ha {A local server: no key is needed unless you set one up.} {Sabar gida: ba a buƙatar key sai idan ka saita ɗaya.}
 ::msgcat::mcset ha {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Ana shirya sakin da aka sanya hannu kawai bayan preflight. Sake kunnawa/Tabbatarwa, ci gaba da mayar da baya ayyuka ne daban-daban. Dole shiri mai lafiya ya ba da rahoton ainihin bitar tushe da aka duba.}
 ::msgcat::mcset ha {A value is stored for %s — leave this empty to keep it.} {Akwai ƙima da aka ajiye don %s — bar wannan babu komai don riƙe ta.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset ha {Asking the provider for its models…} {Ana tambayar mai samarwa samfuransa…}
 ::msgcat::mcset ha Attach Haɗa
 ::msgcat::mcset ha {Attach to the next message} {Haɗa zuwa saƙon gaba}
+::msgcat::mcset ha {Audit log unavailable: %s} {Ba a samun log ɗin dubawa: %s}
+::msgcat::mcset ha {Audit log…} {Log ɗin dubawa…}
 ::msgcat::mcset ha {Author guide} {Jagorar marubuci}
 ::msgcat::mcset ha {Automatically discovered from the attached gateway's cluster registry.} {An gano shi da atomatik daga rajistar ƙungiyar gateway ɗin da aka haɗa.}
 ::msgcat::mcset ha Back Geri
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset ha {Browse sessions} {Bincika zamuna}
 ::msgcat::mcset ha {Build manifest + preflight} {Gina manifest + preflight}
 ::msgcat::mcset ha {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Gini: veles %1$s, bita %2$s (%3$s %4$s)}
+::msgcat::mcset ha {Bulk %1$s failed: %2$s} {Aikin %1$s na tarin ya gaza: %2$s}
+::msgcat::mcset ha {Bulk %1$s: %2$s (%3$s).} {%1$s na tarin: %2$s (%3$s).}
+::msgcat::mcset ha {Bulk action cancelled.} {An soke aikin tarin.}
 ::msgcat::mcset ha {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e ƙarshen layi · C-b/C-f harafi · M-b/M-f kalma · C-k kashe zuwa EOL · C-y yankewa · M-w kwafi · C-w kashe yanki · C-space saita alama · C-/ soke}
 ::msgcat::mcset ha {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g yana dakatar da komai · C-j sabon layi · M-p/M-n tarihi · Tab cikawa}
+::msgcat::mcset ha {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU: cores %1$s, %2$s%% suna aiki cikin %3$s s na ƙarshe}
 ::msgcat::mcset ha {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: cores %1$s, nauyi %2$s / %3$s / %4$s (%5$s%% na cores ɗin)}
 ::msgcat::mcset ha Cancel Soke
 ::msgcat::mcset ha {Cancel task} {Soke aikin}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset ha {Channels (e.g. #veles #dev)} {Tashoshi (misali #veles #dev)}
 ::msgcat::mcset ha Chat Hira
 ::msgcat::mcset ha {Chat — not attached; press Attach in the Instances tab} {Chat — ba a haɗa shi ba; danna Attach a shafin Instances}
-::msgcat::mcset ha {Check (lsp)} {Duba (lsp)}
+::msgcat::mcset ha {Check (C-c C-k)} {Duba (C-c C-k)}
 ::msgcat::mcset ha {Check again} {Sake bincika}
 ::msgcat::mcset ha {Check files} {Binciki fayiloli}
 ::msgcat::mcset ha Checkpoints {checkpoints dubawa}
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset ha {Close (Esc)} {Rufe (Esc)}
 ::msgcat::mcset ha {Close the setup wizard? Nothing has been written yet.} {Rufe jagoran saitin? Har yanzu ba a rubuta kome ba.}
 ::msgcat::mcset ha {Code actions} {Ayyukan code}
+::msgcat::mcset ha {Command-center audit log} {Log ɗin dubawa na cibiyar umarni}
 ::msgcat::mcset ha Commit Commit
 ::msgcat::mcset ha {Commit ready for review. Push is a separate action.} {Commit shirye yake don bita. Push aikin daban ne.}
 ::msgcat::mcset ha {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Cika duk filin PDS, har da image digest da aka gafarta, kafin nuna handoff.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset ha {Config differs: %s} {Saiti ya bambanta: %s}
 ::msgcat::mcset ha {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Log ɗin saiti: wancan node ɗin yana da canje-canjen %1$s har zuwa %3$s, wannan gateway har zuwa %2$s}
 ::msgcat::mcset ha {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Log ɗin saiti: wannan gateway yana da canje-canjen %1$s har zuwa %2$s, wancan node ɗin har zuwa %3$s}
+::msgcat::mcset ha {Config of %s} {Saitin %s}
 ::msgcat::mcset ha {Config only on that node: %s} {Saiti a wancan node ɗin kaɗai: %s}
 ::msgcat::mcset ha {Config only on this gateway: %s} {Saiti a wannan gateway kaɗai: %s}
+::msgcat::mcset ha {Config: %s} {Saiti: %s}
 ::msgcat::mcset ha Configure Saita
 ::msgcat::mcset ha {Configure %s} {Saita %s}
 ::msgcat::mcset ha {Configure translator} {Saita mai fassara}
 ::msgcat::mcset ha {Configured desktop gateway} {Gateway na desktop da aka saita}
 ::msgcat::mcset ha Configure… Saita…
 ::msgcat::mcset ha {Configuring %s} {Ana saita %s}
+::msgcat::mcset ha Config… Saiti…
 ::msgcat::mcset ha {Confirm or discard the current signed review before starting another download.} {Tabbatar ko share yanzun dubara da aka sanya hannu kafin fara wani zazzagewa.}
 ::msgcat::mcset ha {Container host: typed host plan and privileged CLI handoff} {Container host: shirin mai karɓa mai rubutu da miƙar CLI da ke buƙatar damar admin}
 ::msgcat::mcset ha {Context window} {Taga mahallin}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset ha {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Ƙirƙiri bot da @BotFather, sannan manna tokin ɗinsa a ƙasa: yana shiga ma'ajiyar da aka ɓoye, ba zai taɓa shiga config.toml ba.}
 ::msgcat::mcset ha {Create this extension?} {A ƙirƙiri wannan faɗaɓɓara?}
 ::msgcat::mcset ha {Create this generated extension?} {A ƙirƙiri wannan extension ɗin da aka ƙirƙira?}
+::msgcat::mcset ha {Created and loaded. Review and test the extension before publishing.} {An ƙirƙira kuma an ɗora. Duba ka gwada extension ɗin kafin wallafawa.}
 ::msgcat::mcset ha {Created and reloaded. Review and test the extension before publishing.} {An ƙirƙira kuma an sake ɗorawa. Duba kuma gwada faɗaɓɓara kafin wallafawa.}
 ::msgcat::mcset ha {Created, but reload failed} {An ƙirƙira, amma sake ɗorawa ya gaza}
+::msgcat::mcset ha {Created, not loaded} {An ƙirƙira, ba a ɗora ba}
+::msgcat::mcset ha {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {An ƙirƙira, ba a ɗora ba tukuna: gudanar da cargo build --release a cikin directory ɗin extension ɗin, sannan sake ɗora shi a Manage extensions.}
+::msgcat::mcset ha {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {An ƙirƙira. Wannan gateway ba ya faɗin ko ya ɗora extension ɗin: duba halinsa a Manage extensions.}
 ::msgcat::mcset ha {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Yana ƙirƙira %s/<name>/SKILL.md daga samfuri kuma ya buɗe shi. Bayanin frontmatter ne kaɗai ke isa ga index na prompt, don haka ka sa ya faɗi LOKACIN da za a yi amfani da fasaha.}
 ::msgcat::mcset ha {Cron history} {Tarihin Cron}
 ::msgcat::mcset ha {Cron jobs} {Ayyukan cron}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset ha {Delete user} {Goge mai amfani}
 ::msgcat::mcset ha {Delete workspace?} {Goge wurin aiki?}
 ::msgcat::mcset ha Deop {Cire op}
+::msgcat::mcset ha {Deployment consistency unknown: %s node(s) could not be compared.} {Ba a san daidaiton turawa ba: ba a iya kwatanta node %s ba.}
+::msgcat::mcset ha {Deployment consistency: not checked yet (Drift… compares every node).} {Daidaiton turawa: ba a duba shi ba tukuna (Drift… yana kwatanta kowane node).}
 ::msgcat::mcset ha {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Bayyana canjin. AI na iya canza ko ƙara fayiloli da yawa na wannan extension. Ana nuna kowane fayil a matsayin diff, kuma ba a rubuta komai kafin ka tabbatar.}
 ::msgcat::mcset ha {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Bayyana canjin. AI na iya ba da shawarar maye, amma ba zai iya rubuta shi ba kafin ka duba kuma ka tabbatar da bambancin.}
 ::msgcat::mcset ha {Describe the requested extension change first.} {Da farko bayyana canjin faɗaɓɓara da ake nema.}
 ::msgcat::mcset ha Description Bayani
+::msgcat::mcset ha {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {Zaman desktop suna ci gaba daga tarihin da aka ajiye bayan sake kunnawa; zaman connector, A2A, mail, cron da subagent ba sa ci gaba.}
 ::msgcat::mcset ha {Desktop: local core, modules and process plugins} {Desktop: core ta gida, modules da plugins na tsari}
 ::msgcat::mcset ha Detach Ware
 ::msgcat::mcset ha {Detach foreground} {Cire umarnin gaba}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset ha {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Yi zazzagewa kuma a tantance manifest na fitowa da kafaftan host kafin a shigar. Ana buƙatar duk filayen asali biyar. Gateway yana riƙe kafaftan da aka shirya a sirri; wannan dubara ba ta shigar da komai ba.}
 ::msgcat::mcset ha {Downloading and verifying the signed release…} {Ana zazzagewa da tantance fitowa da aka sanya hannu…}
 ::msgcat::mcset ha {Draft this as an extension?} {A tsara wannan a matsayin faɗaɓɓara?}
+::msgcat::mcset ha {Draft this change as an extension?} {A rubuta wannan canji a matsayin extension?}
 ::msgcat::mcset ha {Drag to scroll; a quick swipe goes further.} {Ja don gungurawa; saurin sharewa yana ƙara nisa.}
 ::msgcat::mcset ha {Drift check failed: %s} {Binciken drift ya gaza: %s}
 ::msgcat::mcset ha {Drift check: %s node(s) differ from this gateway.} {Binciken drift: node %s sun bambanta da wannan gateway.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset ha Eval→gw Eval→gw
 ::msgcat::mcset ha {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Kowane canji ga %s ana yi masa commit. Maidowa yana mayar da dukan directory zuwa wancan commit — kuma yana ɗaukar hoton halin yanzu tukuna, don haka ba ƙofar hanya ɗaya ba ce.}
 ::msgcat::mcset ha {Every plugin file goes back to that commit. The current state is committed first.} {Kowane fayil na plugin yana komawa ga wancan commit. An fara yin commit ga halin yanzu.}
+::msgcat::mcset ha {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {Kowane mataki: New extension yana rubuta extension na Tcl, TypeScript, Racket ko Common Lisp, ko plugin na Rust da ke wajen bishiya (cdylib a kan crate ɗin veles-plugin-abi-sdk: gina shi da cargo build --release, sannan sake ɗora shi a Manage extensions). Matakai biyu suna zaune wajen directory ɗin plugin na mai amfani kuma suna farawa daga layin umarni: module, ɗakin karatu na Rust da aka gina tare da veles (veles plugins new NAME --kind overlay yana rubuta repository ɗinsa), da plugin na tsari, shiri a kan crate ɗin veles-plugin-sdk wanda gateway ke gudanarwa da kulawa. Author guide yana da sashe ga kowanne.}
 ::msgcat::mcset ha {Exact commit} {Ainihin commit}
 ::msgcat::mcset ha {Exact permission rule} {Ainihin ƙa'idar izini}
 ::msgcat::mcset ha {Example: a hook} {Misali: hook}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset ha {Explain the diagnostics} {Bayyana bayanan bincike}
 ::msgcat::mcset ha Export… Fitar…
 ::msgcat::mcset ha {Extension API} {API na faɗaɓɓara}
+::msgcat::mcset ha {Extension API reference} {Bayanin API na extension}
 ::msgcat::mcset ha {Extension development} {Haɓaka faɗaɓɓara}
 ::msgcat::mcset ha {Extension guide} {Jagorar faɗaɓɓara}
 ::msgcat::mcset ha {Extension source} {Tushen faɗaɓɓara}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset ha {Guards — what the harness stops, and where it stands now} {Tsaro — abin da harness ke hana, da inda yake yanzu}
 ::msgcat::mcset ha {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handlers suna gudu a tsarin da aka nuna; na farko da ya dawo da ƙima marar komai ya ci nasara. Kashe ɗaya yana tsallake shi ba tare da cire rajistarsa ba, kuma zaɓin yana ajiye a cikin config.toml don sake ɗora plugin ba zai iya mayar da shi a kunne ba tare da sanarwa ba.}
 ::msgcat::mcset ha Health Lafiya
+::msgcat::mcset ha {Health alerts} {Faɗakarwar lafiya}
 ::msgcat::mcset ha {Health alerts (%s):} {Faɗakarwar lafiya (%s):}
 ::msgcat::mcset ha Heartbeat {Bugun zuciya}
 ::msgcat::mcset ha {Heartbeat age: %s s} {Lokacin bugun zuciya: %s s}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset ha Install… Shigar…
 ::msgcat::mcset ha {Instance name (for example an IRC network)} {Suna na instance (misali hanyar sadarwar IRC)}
 ::msgcat::mcset ha Instances Instances
+::msgcat::mcset ha {Instead of patching %s: } {Maimakon yin faci ga %s: }
 ::msgcat::mcset ha {It becomes the current content, as a new revision — so the restore can be undone too.} {Zai zama abun da ke ciki na yanzu, a matsayin sabuwar bita — don haka ana iya soke dawowar ma.}
 ::msgcat::mcset ha {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Yana shiga ma'ajiyar da aka ɓoye a wannan na'ura. Wakili ba ya taɓa ganinsa: zai iya amfani da shi ne kawai a matsayin $%s a cikin umarni, ko ya aika shi zuwa runduna da aka yarda.}
 ::msgcat::mcset ha {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {An cire shi daga rijistar cluster a duk fleet: musayar gossip ta gaba za ta gaya wa kowane peer na 0.2.0 ya bar shi shima, kuma babu wanda zai sake haɗa shi. Peer da ya fi 0.2.0 tsufa zai ci gaba da lissafa shi. Idan injin ya dawo ya buga zuciya, za a sake yi masa rajista. Ba a taɓa sync peers da instans ɗin da aka ajiye ba.}
+::msgcat::mcset ha {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {Ana rubuta shi cikin config.toml na wancan node a matsayin gyara da aka yi a can; sannan daidaitawar saiti tana kai shi ga nodes ɗin da ke daidaita saiti da shi.}
 ::msgcat::mcset ha {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Yanzu zai bar ƙwaƙwalwa. Tarihinsa yana riƙe kowace bita, kuma Tarihi… zai iya dawo da shi.}
+::msgcat::mcset ha {Its gateway stops and %s.} {Gateway ɗinsa yana tsayawa kuma %s.}
 ::msgcat::mcset ha Join Shiga
 ::msgcat::mcset ha {Join a pool} {Shiga rukunin injuna}
 ::msgcat::mcset ha {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {Shiga rukunin injunan %1$s a matsayin %2$s? Rukunin zai iso ga wannan wayar a %3$s.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset ha Joining… {Ana shiga…}
 ::msgcat::mcset ha Join… Shiga…
 ::msgcat::mcset ha {Jump to composer} {Je zuwa akwatin rubutu}
+::msgcat::mcset ha {Key (for example model.default)} {Maɓalli (misali model.default)}
 ::msgcat::mcset ha Keybindings {Haɗin maɓallai}
 ::msgcat::mcset ha {Keyboard help} {Taimakon madannai}
 ::msgcat::mcset ha {Kick %1$s from %2$s?} {Kora %1$s daga %2$s?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset ha {LLM provider} {Mai samar da LLM}
 ::msgcat::mcset ha Language Harshe
 ::msgcat::mcset ha {Language (i18n)} {Harshe (i18n)}
+::msgcat::mcset ha {Language servers on this gateway} {Sabobin harshe a kan wannan gateway}
 ::msgcat::mcset ha Language… Harshe…
 ::msgcat::mcset ha {Last active} {Aiki na ƙarshe}
 ::msgcat::mcset ha {Last probe: %1$s — %2$s} {Gwajin ƙarshe: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset ha Level Mataki
 ::msgcat::mcset ha {Lift lockdown} {Cire kullewa}
 ::msgcat::mcset ha Lines Layuka
+::msgcat::mcset ha {List targets…} {Jerin manufofi…}
 ::msgcat::mcset ha {List the provider's models} {Lissafa samfuran mai samarwa}
 ::msgcat::mcset ha Load Caji
 ::msgcat::mcset ha {Load more} {Ƙara lodawa}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset ha Next Gaba
 ::msgcat::mcset ha Nickname {Sunan nick}
 ::msgcat::mcset ha {NixOS: emit a module snippet; do not edit host declarations} {NixOS: fitar da gajeren yanki na module; kada a gyara bayanan mai karɓa}
-::msgcat::mcset ha {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Ba a saita manufar lamuwar rai ta SSH ba don wannan nodi. Ƙara instance a bayyane don warba ko sake kunna shi.}
+::msgcat::mcset ha {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {Babu manufar SSH lifecycle da aka saita don wannan node: Restart yana roƙon node ɗin ya sake kunna kansa ta supervisor ɗinsa; Fleet deploy yana buƙatar instance da aka ajiye mai manufar ssh.}
 ::msgcat::mcset ha {No additional push happens.} {Ba a yin ƙarin push.}
 ::msgcat::mcset ha {No apps yet. Ask the agent to make one: “make me an app that…”} {Babu manhaja tukuna. Ka nemi wakilin ya yi ɗaya: “yi mini manhajar da za ta…”}
 ::msgcat::mcset ha {No code in the picture. Hold the phone closer, straight on, and scan again.} {Babu lamba a hoton. Kawo wayar kusa, ka riƙe ta a mike, ka sake dubawa.}
+::msgcat::mcset ha {No command-center action is recorded on this gateway yet.} {Babu wani aikin cibiyar umarni da aka rubuta a kan wannan gateway tukuna.}
 ::msgcat::mcset ha {No configuration snapshot will be restored.} {Ba za a dawo da hoton saiti ba.}
 ::msgcat::mcset ha {No configured sync peer for this node.} {Babu peer na daidaitawa da aka saita don wannan node.}
 ::msgcat::mcset ha {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Ba a saita mai fassara na musamman ba. Yi amfani da Saita mai fassara don zaɓar mai samarwa, samfuri da harshen da ake nufa.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset ha {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Wayoyin da %s ya ƙera ma suna dakatar da manhajoji da kansu. A saitunan manhajar veles, ka bar ta ta fara da kanta kuma ta yi aiki a bango.}
 ::msgcat::mcset ha {Pin / unpin} {Maƙala / cire maƙala}
 ::msgcat::mcset ha {Pin to home screen} {Maƙala a allon gida}
+::msgcat::mcset ha {Plugin author guide} {Jagorar marubucin plugin}
 ::msgcat::mcset ha {Plugin history} {Tarihin plugin}
 ::msgcat::mcset ha Plugins Plugins
 ::msgcat::mcset ha Port Port
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset ha {Preview here} {Dubawa a nan}
 ::msgcat::mcset ha {Preview pane} {Fanelin Preview}
 ::msgcat::mcset ha {Preview proposal} {Samfotin shawara}
-::msgcat::mcset ha {Preview the changed name or language before creating it.} {Duba sunan ko harshen da aka canza kafin ƙirƙira shi.}
+::msgcat::mcset ha {Preview the changed name, purpose or language before creating it.} {Duba suna, manufa ko harshen da aka canza kafin ƙirƙirarsa.}
 ::msgcat::mcset ha Probe Gwada
+::msgcat::mcset ha {Probe %s node(s)?} {A gwada node %s?}
+::msgcat::mcset ha {Probe all…} {Gwada duka…}
 ::msgcat::mcset ha {Probe of %1$s failed: %2$s} {Gwajin %1$s ya gaza: %2$s}
 ::msgcat::mcset ha {Profile result} {Sakamakon profile}
 ::msgcat::mcset ha {Promote into config.toml} {Ɗaga zuwa config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset ha {Push branch…} {Tura reshe…}
 ::msgcat::mcset ha {Push complete. No pull request has been opened.} {An gama push. Ba a buɗe pull request ba tukuna.}
 ::msgcat::mcset ha {Push this branch?} {A tura wannan reshe?}
+::msgcat::mcset ha {Push this kind to every node that is a configured peer for it:} {Tura wannan nau'in zuwa ga kowanne node da aka saita a matsayin peer ɗinsa:}
 ::msgcat::mcset ha {Push to %s:} {Tura zuwa %s:}
 ::msgcat::mcset ha Question Tambaya
 ::msgcat::mcset ha Questions Tambayoyi
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset ha {REPL target: the app} {manufar REPL: manhajar}
 ::msgcat::mcset ha {REPL target: the gateway} {manufar REPL: gateway}
 ::msgcat::mcset ha Read Karanta
+::msgcat::mcset ha {Read the key first: a write names the value it replaces.} {Karanta maɓallin farko: rubutu yana ambaton ƙimar da yake maye gurbi.}
 ::msgcat::mcset ha {Reading notifications, for triggers} {Karanta sanarwa, domin Kunnawa}
 ::msgcat::mcset ha Reasoning Hankali
 ::msgcat::mcset ha {Reasoning effort} {Ƙoƙarin tunani}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset ha {Reset to default} {Mayar zuwa na asali}
 ::msgcat::mcset ha {Reset to template} {Sake saita zuwa samfuri}
 ::msgcat::mcset ha Restart {Sake farawa}
+::msgcat::mcset ha {Restart %s?} {Sake kunna %s?}
 ::msgcat::mcset ha {Restart + verify canary} {Sake kunnawa + tabbatar da canary}
+::msgcat::mcset ha {Restart cancelled.} {An soke sake kunnawa.}
+::msgcat::mcset ha {Restart of %1$s failed: %2$s} {Sake kunna %1$s ya gaza: %2$s}
 ::msgcat::mcset ha {Restore hidden windows} {Maido da tagogi na boye}
 ::msgcat::mcset ha {Restore plugins to %s?} {Maidowa plugins zuwa %s?}
 ::msgcat::mcset ha {Restore revision r%1$s of %2$s?} {A dawo da bita r%1$s ta %2$s?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset ha {S3 region} {Yankin S3}
 ::msgcat::mcset ha {SASL account (optional)} {Asusun SASL (na zaɓi)}
 ::msgcat::mcset ha {SASL password (hidden)} {Kalmar sirri ta SASL (a ɓoye)}
+::msgcat::mcset ha {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {SSH lifecycle: ta instance da aka ajiye %1$s (%2$s, unit %3$s).}
 ::msgcat::mcset ha Sandbox Sandbox
 ::msgcat::mcset ha {Sandbox account} {Asalin sandbox}
 ::msgcat::mcset ha Sandboxes Sandboxes
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset ha {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Zamanin da aka karkatar zuwa wannan alias suna riƙe hanyar da suka samu; sabbin karkatarwa ba za su sami sunan ba.}
 ::msgcat::mcset ha {Sessions served} {Zamuna da aka yi wa hidima}
 ::msgcat::mcset ha Set Saita
+::msgcat::mcset ha {Set %1$s on %2$s to %3$s?} {A saita %1$s a kan %2$s zuwa %3$s?}
 ::msgcat::mcset ha {Set [model] provider/default in config.toml.} {Saita provider/tsoho na [model] a cikin config.toml.}
 ::msgcat::mcset ha {Set as swap target} {Mayar da harshen musanya}
 ::msgcat::mcset ha {Set mode %1$s on %2$s?} {Saita yanayi %1$s a kan %2$s?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset ha Summary Taƙaitawa
 ::msgcat::mcset ha Surface Fuska
 ::msgcat::mcset ha {Swap ⇄} {Musanya ⇄}
+::msgcat::mcset ha {Sync %1$s to %2$s node(s)?} {A daidaita %1$s zuwa node %2$s?}
+::msgcat::mcset ha {Sync all} {Daidaita duka}
+::msgcat::mcset ha {Sync all…} {Daidaita duka…}
 ::msgcat::mcset ha {Sync cancelled.} {An soke daidaitawa.}
 ::msgcat::mcset ha {Sync complete.} {An gama Sync.}
 ::msgcat::mcset ha {Sync now} {Sync yanzu}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset ha {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Ana aika bayanan bincike na yanzu (daga sabar harshe ko Bincike) tare da wannan fayil. Za ka iya ƙara tambaya. Amsar rubutu ce kawai; ba za a iya rubuta komai ba.}
 ::msgcat::mcset ha {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Ana cire kundin da duk abin da ke cikinsa. Ba za a iya mayar da wannan ba — kashe shi maimakon haka idan kawai kana son cire shi daga prompt.}
 ::msgcat::mcset ha {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {An goge kundin. Kundin plugin wurin ajiye git ne kuma ana yi masa snapshot kafin a ci gaba, don haka History… zai iya dawo da shi.}
-::msgcat::mcset ha {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Edita ɗin yana buɗe fayilolin gateway, haɗe da instans na nesa, kuma yana gudanar da sabar harshe na harshen fayil ɗin a kan gateway: tcl-lsp, typescript-language-server (TypeScript da JavaScript), rust-analyzer (crate ko module na plugin na Rust), clangd (C), racket-langserver da sabar Common Lisp. Hover, je zuwa ma'anar kalma, cikawa da bayanan bincike na raye suna aiki ga kowane harshen da gateway ɗin yake da sabar gare shi; idan ba shi da ɗaya, edita ɗin yana faɗin wane shiri za a saka a can kuma yana riƙe da hasken rubutun. Bincike yana gudanar da mai duba da ya dace a kan gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, ko masu karanta Racket da Lisp. Ajiye, sake ɗorawa a Sarrafa extension, kuma gwada extension ɗin ba tare da wallafa yanayin gida ba.}
+::msgcat::mcset ha {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {Editan yana buɗe fayilolin gateway, har da instances na nesa, kuma yana gudanar da sabar harshe na harshen fayil ɗin a kan gateway: typescript-language-server (TypeScript da JavaScript), rust-analyzer (crate ko module na plugin na Rust), clangd (C), racket-langserver, sabar Common Lisp, da tcl-lsp don Tcl inda gateway ke da shi (fakitin Linux na veles suna aikawa da shi). Hover, je ga definition, cikawa da bincike na raye suna aiki ga kowane harshen da gateway ke da sabar gare shi; idan ba shi da ɗaya, editan yana faɗin wane shiri a ɗora a can kuma yana riƙe da hasken rubutu. Check yana gudanar da mai duba da ya dace a kan gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, masu karanta Racket da Lisp, kuma ga Tcl tclsh na injin ɗin kansa (duban cikawa, ko lint na tcl-lsp inda aka ɗora). Ajiye, sake ɗora a Manage extensions, ka gwada extension ɗin ba tare da wallafa halin gida ba.}
 ::msgcat::mcset ha {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Handoff na farko yana shirya secrets, image da aka gafarta da fayilolin runtime, amma bai fara PDS ba. Adana KEK da maɓallin juyawa na PLC a offline, sannan yi sabon bukatar da aka sake duba tare da amincewa cewa na adana don saita HTTP-01 TLS da kunna shi. Rikodin DNS dole su nuna kai tsaye wannan host; babu proxy na CDN ko canje-canjen DNS da veles ke yi.}
+::msgcat::mcset ha {The fleet is NOT consistent: %s node(s) differ.} {Fleet ɗin BA su daidaita ba: node %s sun bambanta.}
+::msgcat::mcset ha {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {Fleet ɗin sun daidaita da bambance-bambance: node %1$s suna gudanar da gini ɗaya kuma sun yarda a kan duk abin da suke rabawa; abu %2$s ba sa kan kowane node.}
+::msgcat::mcset ha {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {Fleet ɗin sun daidaita: node %s suna gudanar da gini, modules da plugins ɗaya.}
 ::msgcat::mcset ha {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Fom ɗin ya canza tun da aka ƙirƙira extension ɗin. Sake ƙirƙira, ko duba tsarin farko.}
+::msgcat::mcset ha {The gateway did not receive the purpose as written. Nothing was created.} {Gateway ɗin bai karɓi manufar yadda aka rubuta ta ba. Ba a ƙirƙira komai ba.}
+::msgcat::mcset ha {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {Gateway ɗin ba ya ba da jagororin extension (ya girmi 0.2.2), kuma wannan desktop ba shi da kwafi ɗinsu.}
 ::msgcat::mcset ha {The gateway itself is untouched.} {Gateway ɗin da kansa ba a taɓa shi ba.}
 ::msgcat::mcset ha {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Gateway ya sake loda saituna, don haka sababbin zama suna amfani da su yanzu, kuma key da aka ajiye a ma'ajiya buƙata ta gaba ce za ta yi amfani da shi. Telegram da IRC suna farawa a sake kunna gateway na gaba: veles gateway restart.}
 ::msgcat::mcset ha {The installed component no longer matches the selected manifest. Review the component list again.} {ɓangaren da aka shigar bai ƙara dacewa da bayanin da aka zaɓa ba. Ka sake duba jerin bangarori.}
 ::msgcat::mcset ha {The installer preview has no verification signatures; apply is disabled.} {Dubawar mai shigarwa ba ta da sa hannun tabbatarwa; aiwatarwa a kashe.}
 ::msgcat::mcset ha {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Ana cire aikin da tarihin gudanarsa. Ba za a iya mayar da wannan ba — dakatar da shi maimakon haka idan kawai kana son ya tsaya.}
+::msgcat::mcset ha {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {Maɓallan da daidaitawar saiti ke ɗauka, a ƙarƙashin dokokinta: maɓallan gida na node da tabbaci suna zama a node ɗinsu, kuma sashe da aka riƙe ([acl], approvals, sandbox, hooks, plugins, MCP servers) ana canza shi inda aka gyara shi kuma aka tura, sannan yana jiran mai node ɗin.}
 ::msgcat::mcset ha {The log could not be read: %s} {Ba a iya karanta log ɗin ba: %s}
 ::msgcat::mcset ha {The manifest belongs to another component; its reply was discarded.} {Bayanin na wani ɓangare ne; an watsar da amsarsa.}
 ::msgcat::mcset ha {The profile changed. Review the fresh plan before applying it.} {Fasalin ya canza. Duba sabon shiri kafin aiwatar da shi.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset ha {The signed release preview was malformed; nothing was installed.} {Dubbar fitowar da aka sanya hannu ta kasance mara siffa; ba a shigar da komai ba.}
 ::msgcat::mcset ha {The source buffer changed. Request a new proposal before applying.} {Buffin tushe ya canza. Nemi sabon shawara kafin aiwatarwa.}
 ::msgcat::mcset ha {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Wurin ajiya zai koma baya juzu'i ɗaya. Komawar ita kanta juzu'i ce, don haka za a iya mayar da ita ma.}
+::msgcat::mcset ha {The translator did not answer within %s seconds.} {Mai fassara bai amsa ba cikin daƙiƙa %s.}
 ::msgcat::mcset ha {The translator returned no text.} {Mafarin fassarar bai mayar da wani rubutu ba.}
 ::msgcat::mcset ha {The verification reply was malformed; no integrity result was accepted.} {Amsar tabbatarwa mara tsari ce; babu sakamakon ƙudurin da aka karɓa.}
 ::msgcat::mcset ha Themes {Darussa (Themes)}
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset ha {This challenge is over.} {Wannan ƙalubalen ya ƙare.}
 ::msgcat::mcset ha {This code has expired. Ask for a new one.} {Lokacin wannan lambar ya ƙare. Nemi sabuwa.}
 ::msgcat::mcset ha {This does not start a service or claim signed-download verification.} {Wannan ba ya kunna wani aiki ko kuma yin ikirarin tabbatar da zazzage mai sa hannu.}
+::msgcat::mcset ha {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {Wannan fayil ɗin tushen veles core ne. Yawancin canje-canje sun fi dacewa a matsayin extension, wanda ke jure sabuntawa kuma ba ya buƙatar sake ginawa: hook, kayan aiki, maye gurbin sabis ko direban mai samarwa, wanda aka rubuta a Tcl, TypeScript, Racket ko Common Lisp, ko a matsayin plugin na Rust da ke wajen bishiya (New extension yana rubuta kowane ɗaya daga cikinsu), ko a matsayin module ko plugin na tsari (jagorar Extension tana nuna yadda a fara ɗaya). Facin core don abin da API ɗin extension ba zai iya bayyanawa ba ne. A rubuta wannan canji a matsayin extension maimakon haka? Gyaranka yana zama a cikin wannan buffer, ba a ajiye shi ba; sake ajiyawa yana yin faci ga fayil ɗin core.}
 ::msgcat::mcset ha {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Wannan gateway ba ya karɓar ƙimomin sirri daga wannan na'ura: shigar da shi a can da veles secret set %s, ko saka wannan hanyar sadarwa a cikin [vault] trusted_networks ɗinsa}
 ::msgcat::mcset ha {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Wannan shi ne ainihin abin da za a rubuta — ainihin bytes ɗin injin ɗin, da aka ɗauko kai tsaye. Har yanzu babu abin da ya taɓa faifan.}
+::msgcat::mcset ha {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {Wannan tushen veles core ne. Canji a kansa yawanci ya fi kyau a matsayin extension: New extension, ko ajiye don a ba ka ɗaya.}
 ::msgcat::mcset ha {This node is not a configured sync peer for any kind.} {Wannan node ba peer ne na daidaitawa da aka saita don kowane iri ba.}
 ::msgcat::mcset ha {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Wannan plugin an aikawa tare da shi kuma ana karantawa kawai. Cire kwafin mai amfani mai sunan iri ɗaya don amfani da na tare maimakon shi.}
 ::msgcat::mcset ha {This publishes the commit; no pull request is created yet.} {Wannan yana wallafa commit; ba a ƙirƙiri pull request ba tukuna.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset ha Unassign {Cire naɗi}
 ::msgcat::mcset ha {Undo last} {Mayar na ƙarshe}
 ::msgcat::mcset ha {Undo the last memory revision?} {Mayar da juzu'in memory na ƙarshe?}
+::msgcat::mcset ha {Unset %1$s on %2$s?} {A cire saitin %1$s a kan %2$s?}
+::msgcat::mcset ha Unset… {Cire saiti…}
 ::msgcat::mcset ha Unstage {Cire mataki}
 ::msgcat::mcset ha {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Har sai IRC_ALLOWED_USERS a cikin .env ya ambaci asusunka, kowa a cibiyar sadarwa zai iya magana da bot — kuma idan babu sashen [acl], a matsayin mai shi, da dukkan kayan aiki.}
 ::msgcat::mcset ha {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Har sai TELEGRAM_ALLOWED_USERS a cikin .env ya ambaci ID ɗin mai amfani naka, duk wanda ya sami bot zai iya magana da shi — kuma idan babu sashen [acl], a matsayin mai shi, da dukkan kayan aiki.}
 ::msgcat::mcset ha Untitled {Marasa take}
-::msgcat::mcset ha {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Ba da gudummawa ga upstream aiki ne na wallafa a fili, ba turawa kai tsaye ba. A cikin Sarrafa faɗaɓɓara, Contribute yana lissafa kowace faɗaɓɓar mai amfani: zaɓi faɗaɓɓarar da fayiloli, duba bambanci da binciken sirrika, gudanar da gwaje-gwaje, sannan ƙirƙiri reshe ɗaya da PR ɗaya (zuwa veles ta asali) da asalin git ɗin da ka zaɓa. Kowace faɗaɓɓara tana ƙarƙashin nata directory a cikin repository, kuma ana maye gurbin fayil da ke akwai a can ne kawai bayan wata tabbatarwa ta dabam. Kada ka taɓa wallafa node.toml, takardun shaidar gida, tokin, ƙarshen adireshin keɓaɓɓen, ko yanayin plugin da ba shi da alaƙa. Hotunan dawowar gida ba commit na upstream ba ne ko PR.}
+::msgcat::mcset ha {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Gudummawa ga upstream aiki ne na wallafa da aka bayyana, ba turawa ta atomatik ba. A Manage extensions, Contribute yana lissafa kowane extension na mai amfani: zaɓi extensions da fayilolin, duba diff ɗin da binciken sirrika, gudanar da dubawa, sannan ƙirƙiri reshe ɗaya da PR ɗaya (zuwa veles ta asali). Commit ɗin yana amfani da asalin git na gateway (user.name da user.email na saitin git ɗinsa); saita waɗannan da farko idan ya kamata su bambanta. Kowanne extension yana ƙarƙashin directory ɗinsa a cikin repository, kuma fayil da ya riga ya wanzu a can ana maye gurbinsa ne kawai bayan wani tabbaci na daban. Kada ka taɓa wallafa node.toml, tabbacin gida, tokens, private endpoints ko halin plugin maras alaƙa. Hotunan farfaɗo na gida ba commit na upstream ba ne ko PR.}
 ::msgcat::mcset ha {Upstream repository or fork URL} {URL na ma'ajiyar upstream ko fork}
 ::msgcat::mcset ha {Uptime class} {Ajin lokacin aiki}
 ::msgcat::mcset ha {Uptime: host %1$s, gateway %2$s} {Lokacin aiki: host %1$s, gateway %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset ha {Users — one role across networks and platforms} {Masu amfani — matsayi ɗaya a duk hanyoyin sadarwa da dandamali}
 ::msgcat::mcset ha {Using the phone, for the agent} {Amfani da waya, domin wakili}
 ::msgcat::mcset ha {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Yawanci ya yi daidai da sunan shigarwar provider. Ka bar su biyu fanko a zaɓin Tsallake — idan ɗaya kaɗai aka cika, ba zai ba da hanya ba.}
+::msgcat::mcset ha {Value (TOML: "text", 5, true, [1, 2])} {Ƙima (TOML: "rubutu", 5, true, [1, 2])}
 ::msgcat::mcset ha {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Ƙimomin TOML ne: igiyoyin da aka rufe, lambobi, ko jerin. Ana rubuta su a cikin [mcp_servers.<name>] — sharhinka da duk sauran sassan ba a taɓa su ba.}
 ::msgcat::mcset ha Vault Ma'ajiya
 ::msgcat::mcset ha {Verified signed bundle installed. Restart the gateway before using the new core.} {An shigar da kafaftan da aka sanya hannu da aka tantance. Sake kunna gateway kafin a yi amfani da sabon core.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset ha Voice {Ba da voice}
 ::msgcat::mcset ha {Waiting for the model…} {Ana jiran samfurin…}
 ::msgcat::mcset ha {Waiting for the model… Nothing has been written.} {Ana jiran samfurin… Ba a rubuta komai ba.}
+::msgcat::mcset ha Warning Gargaɗi
 ::msgcat::mcset ha {Welcome to veles} {Barka da zuwa veles}
 ::msgcat::mcset ha {What the agent can do here} {Abin da wakilin zai iya yi a nan}
 ::msgcat::mcset ha {What veles may do on this phone. Each button opens the Android setting that changes it.} {Abin da veles zai iya yi a wannan wayar. Kowane maɓalli yana buɗe saitin Android da ke canza shi.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset ha {Workflow SHA} {SHA na workflow}
 ::msgcat::mcset ha {Workflow commit} {Commit na workflow}
 ::msgcat::mcset ha Worktree Worktree
+::msgcat::mcset ha {Write cancelled.} {An soke rubutawa.}
 ::msgcat::mcset ha {Write it} {Rubuta shi}
 ::msgcat::mcset ha {Write the design question first.} {Rubuta tambayar zane da farko.}
 ::msgcat::mcset ha {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Ba ya rubuta provider. Gateway ba zai tura juyi ba har sai an sami shigarwar [[custom_providers]] da kuma ma'auratan [model].}
+::msgcat::mcset ha Write… Rubuta…
 ::msgcat::mcset ha {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Rubuta KOWANE maɓallin [acl] yana mayar da wannan gateway zuwa yanayin curated: matsayin tsoho ya zama guest (fail-closed) kuma jerin izini ba su ne iyaka ba. Zaɓi wannan kawai idan kana da shaidar mai shi da ka amince da ita.}
 ::msgcat::mcset ha {[model] provider} {[model] provider}
 ::msgcat::mcset ha {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {mai bayarwa na [model] %{name} bai dace da kowace shigarwar [[custom_providers]] ba — ambaci shigarwar da wannan jagora ke rubutawa, ko wadda config.toml ke da ita tuni}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset ha {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset ha {asked by: %s} {wanda ya yi tambaya: %s}
 ::msgcat::mcset ha {asking %s for its metrics…} {ana tambayar %s ma'aunansa…}
+::msgcat::mcset ha {asking %s how it is supervised…} {ana tambayar %s yadda ake kula da shi…}
 ::msgcat::mcset ha {attach a file} {haɗa fayil}
 ::msgcat::mcset ha {attach an image or file} {haɗa hoto ko fayil}
 ::msgcat::mcset ha {attach failed: %1$s} {haɗa bai yi ba: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset ha {channel-event reactions; /triggers add <name> network=… channel=… action=…} {martani ga abubuwan da suka faru a tasha; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset ha {channels to join, a space or comma separated string} {tashoshin shiga, igiya da sarari ko waƙafi ke raba ta}
 ::msgcat::mcset ha chars haruffa
+::msgcat::mcset ha {check the buffer (diagnostics)} {duba buffer ɗin (bincike)}
 ::msgcat::mcset ha choice_next {wuce zuwa hanya ta gaba}
 ::msgcat::mcset ha choice_retry {sake gwada hanya ɗaya}
 ::msgcat::mcset ha choice_stop {tsaya a nan}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset ha {command list unavailable (the gateway is not reachable)} {jerin umarni ba a samu ba (gateway ba a iya isa ba)}
 ::msgcat::mcset ha {command palette} {farashin umarni (command palette)}
 ::msgcat::mcset ha {command search} {neman umarni}
+::msgcat::mcset ha {command-center audit log} {log ɗin dubawa na cibiyar umarni}
 ::msgcat::mcset ha commands umarni
 ::msgcat::mcset ha {commands stay on your own session; /leave returns from the joined session} {umarni suna a kanka zaman; /leave yana komawa daga zaman da aka shiga}
 ::msgcat::mcset ha commands: umarni:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset ha {config changes from peers that wait for you; /configsync apply lands them} {canje-canjen saitin daga takwarori da ke jiran ka; /configsync apply yana aiwatar da su}
 ::msgcat::mcset ha {config file: %s} {fayil ɗin saiti: %s}
 ::msgcat::mcset ha {config key} {maɓallin config}
+::msgcat::mcset ha {config result} {sakamakon saiti}
 ::msgcat::mcset ha {config unavailable} {config ba ya nan}
 ::msgcat::mcset ha {config unavailable: %s} {config ba ya nan: %s}
 ::msgcat::mcset ha {config value} {ƙimar config}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset ha doctor_resident {yana cikin kowane umarni: %{shown} daga cikin haruffa %{total} (~tokens %{tokens}) — sauran ana lodawa idan an buƙata da: memory action=read path=%{path}}
 ::msgcat::mcset ha doctor_title {binciken ƙwaƙwalwa}
 ::msgcat::mcset ha doctor_total {jimla: haruffa %{chars} a cikin fayiloli %{files} (~tokens %{tokens})}
-::msgcat::mcset ha {documentation is not in this source checkout: %s} {takardun ba su cikin wannan source checkout ba: %s}
 ::msgcat::mcset ha done {an gama}
 ::msgcat::mcset ha {done · %1$s/%2$s} {an gama · %1$s/%2$s}
 ::msgcat::mcset ha {done, but the model returned no text} {an gama, amma model bai dawo da rubutu ba}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset ha {grant a role (owner) · /revoke <id> takes it back} {ba da rawa (owner) · /revoke <id> yana karɓe ta}
 ::msgcat::mcset ha {grant a role to an identity} {ba da rawa ga ainihi}
 ::msgcat::mcset ha {guards unreachable} {guards ba a isa}
-::msgcat::mcset ha guts: guts:
+::msgcat::mcset ha {guts ▾} {ciki ▾}
 ::msgcat::mcset ha {gw hooks} {gw hooks}
 ::msgcat::mcset ha {gw procs} {gw procs}
 ::msgcat::mcset ha {halt after N identical calls} {tsaya bayan kira iri ɗaya N}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset ha {live patching ARMED} {live patching A SHIRYE}
 ::msgcat::mcset ha {live patching ARMED — an agent can now redefine procs in this window} {live patching A SHIRYE — agent yanzu zai iya sake ayyana procs a wannan taga}
 ::msgcat::mcset ha {live patching disarmed} {live patching BA A SHIRYE}
+::msgcat::mcset ha load nauyi
 ::msgcat::mcset ha loaded {an loda}
 ::msgcat::mcset ha {loaded older messages} {an loda tsofaffin saƙonni}
 ::msgcat::mcset ha loading… {ana lodawa…}
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset ha {no upstream reading for %s} {babu karatun upstream ga %s}
 ::msgcat::mcset ha {no word match} {babu kalmar da ta dace}
 ::msgcat::mcset ha {no xdg-open — path copied instead} {babu xdg-open — an kwafa hanya a maimakon}
+::msgcat::mcset ha {nobody else's session is open on %s right now} {babu zaman wani a buɗe a kan %s a yanzu}
 ::msgcat::mcset ha {node log} {log ɗin node}
 ::msgcat::mcset ha {none loaded} {babu wanda aka loda}
 ::msgcat::mcset ha {none recorded} {babu wanda aka rubuta}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset ha {not installed} {ba a shigar ba}
 ::msgcat::mcset ha {not reported} {ba a ruwaito ba}
 ::msgcat::mcset ha {not running} {ba ya gudana}
+::msgcat::mcset ha {not saved: drafting the change as an extension} {ba a ajiye ba: ana rubuta canjin a matsayin extension}
+::msgcat::mcset ha {not sent: %s} {ba a aika ba: %s}
 ::msgcat::mcset ha {not set in config.toml — the built-in default applies. %s} {ba a saita shi a config.toml ba — ana amfani da na asali na ciki. %s}
 ::msgcat::mcset ha {not set yet — /secret set it later} {ba a saita ba tukuna — saita shi daga baya da /secret set}
 ::msgcat::mcset ha {not signed: %s} {ba a sanya hannu ba: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset ha {on no plan} {a kan rashin tsari}
 ::msgcat::mcset ha {on the} {a kan}
 ::msgcat::mcset ha {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {kunna/kashe yana kashe sanarwar tsarin a cikin transcript — don wannan zama, ko a matsayin na asali, bisa ga iyakar da ke ƙasa. Yana mulkin SANARWA; abin da kowane tsari YAKE YI ana saita shi a sashen da ke layinsa, kuma Configure… yana buɗe shi. Maɓallan guards ana iya gyara su a wurin.}
+::msgcat::mcset ha {on; this gateway does not say whether they reach the home chat} {a kunne; wannan gateway ba ya faɗin ko suna isa ga home chat}
 ::msgcat::mcset ha {one-shot tcl-lsp diagnostics — no model turn} {binciken tcl-lsp na lokaci ɗaya — ba tare da juyin model ba}
 ::msgcat::mcset ha {open a saved file first} {buɗe fayil da aka ajiye tukuna}
 ::msgcat::mcset ha {open links} {buɗe hanyoyin haɗi}
+::msgcat::mcset ha {open one of the desktop's own source files} {buɗe ɗaya daga cikin fayilolin tushe na desktop ɗin}
 ::msgcat::mcset ha {open the engine log} {buɗe rajistar engine}
 ::msgcat::mcset ha {open the joined session before /leave (on %s)} {buɗe zaman da aka shiga kafin /leave (a kan %s)}
 ::msgcat::mcset ha {open the selected child session} {buɗe zaman yaron da aka zaɓi}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset ha {read-only: [approvals] allowlist} {karantawa kawai: jerin izini na [approvals]}
 ::msgcat::mcset ha {read-only: this session lives on %1$s (as read at %2$s)} {kawai karantawa: wannan zama yana kan %1$s (kamar yadda aka karanta a %2$s)}
 ::msgcat::mcset ha {read-only: this skill comes from the %s library} {kawai karantawa: wannan kwarewa ta fito daga ɗakin %s}
+::msgcat::mcset ha {reading %1$s on %2$s…} {ana karanta %1$s a kan %2$s…}
 ::msgcat::mcset ha reasoning tunani
 ::msgcat::mcset ha {reasoning display: %1$s · %2$s blocks} {nuni na tunani: %1$s · tubalan %2$s}
 ::msgcat::mcset ha {reasoning display: %s} {nuni na tunani: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset ha {run failed: %s} {gudanarwa ta gaza: %s}
 ::msgcat::mcset ha {run in:} {gudana a:}
 ::msgcat::mcset ha running {ana gudana}
+::msgcat::mcset ha {running %s on the listed nodes…} {ana gudanar da %s a kan nodes ɗin da aka jera…}
 ::msgcat::mcset ha {running since %s} {yana gudana tun %s}
 ::msgcat::mcset ha {running subagents; /subagents cancel <id>} {ƙananan wakilan da ke gudana; /subagents cancel <id>}
 ::msgcat::mcset ha {save failed} {ajiye ya gaza}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset ha {send failed: %s} {aika ya gaza: %s}
 ::msgcat::mcset ha {send the message; while a turn runs, queue it as steering} {aika saƙon; yayin da aiki ke gudana, jera shi a matsayin steering}
 ::msgcat::mcset ha sent {an aika}
-::msgcat::mcset ha {sent to the owner's home chat} {an aika zuwa tattaunawar gidan mai shi}
+::msgcat::mcset ha {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {an aika zuwa home chat ɗin mai shi ta gateway ɗin da ke gudanar da adapter ɗin Telegram, ba wannan ba}
+::msgcat::mcset ha {sent to the owner's home chat from this gateway} {an aika zuwa home chat ɗin mai shi daga wannan gateway}
 ::msgcat::mcset ha server {uwar garken}
 ::msgcat::mcset ha {server buffers merged} {an haɗa buffers na uwar garken}
 ::msgcat::mcset ha {server buffers separate} {an raba buffers na uwar garken}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset ha {session, model, lifecycle} {zama, model, zagayowar rayuwa}
 ::msgcat::mcset ha {session: %s} {zama: %s}
 ::msgcat::mcset ha {sessions    %s} {zamomi    %s}
+::msgcat::mcset ha {sessions you can join on %s (/join <name or id>):} {zaman da za ka iya shiga a kan %s (/join <suna ko id>):}
 ::msgcat::mcset ha {sessions: unreachable} {zamomi: ba a iya kaiwa}
 ::msgcat::mcset ha {set by} {wanda ya saita}
 ::msgcat::mcset ha {set. %s} {an saita. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset ha {split: %s} {rabuwa: %s}
 ::msgcat::mcset ha {ssh to %1$s failed: %2$s} {ssh zuwa %1$s ya gaza: %2$s}
 ::msgcat::mcset ha {stale — no heartbeat within the threshold} {ya tsufa — babu bugun zuciya cikin iyakar lokaci}
+::msgcat::mcset ha {standing approval grants: always and this session; revoke one} {damomin amincewa na tsaye: kullum da na wannan zama; janye ɗaya}
 ::msgcat::mcset ha {standing global and session permission grants} {damomin izini na duniya da na zama}
+::msgcat::mcset ha {start the line with // to send it as text} {fara layin da // don aika shi a matsayin rubutu}
 ::msgcat::mcset ha state yanayi
 ::msgcat::mcset ha {state       never reached} {yanayi       ba a taɓa kaiwa ba}
 ::msgcat::mcset ha {state       reachable} {yanayi       ana iya kaiwa}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset ha {the config.toml that will be written} {config.toml ɗin da za a rubuta}
 ::msgcat::mcset ha {the default (config.toml)} {tsoho (config.toml)}
 ::msgcat::mcset ha {the engine refused these answers: %s} {injin ɗin ya ƙi waɗannan amsoshin: %s}
+::msgcat::mcset ha {the file to open: type a path, then Return or Open} {fayil ɗin da za a buɗe: rubuta hanyar, sannan Return ko Open}
 ::msgcat::mcset ha {the first ACL owner identity} {asalin mai shi na farko na ACL}
 ::msgcat::mcset ha {the gateway answered without a report} {gateway ya amsa ba tare da rahoto ba}
 ::msgcat::mcset ha {the model/provider pair is incomplete — the gateway will not route until both are present} {haɗin samfuri/mai bayarwa bai cika ba — gateway ba zai yi hanya ba har sai duka biyun sun kasance}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset ha unknown {ba a sani ba}
 ::msgcat::mcset ha {unknown api_mode %{mode} — expected one of %{modes}} {api_mode da ba a sani ba %{mode} — ana tsammanin ɗaya daga cikin: %{modes}}
 ::msgcat::mcset ha {unknown bindings '%{rest}' · normie|emacs|vi} {ba a san bindings ba: '%{rest}' · normie|emacs|vi}
+::msgcat::mcset ha {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {umarni da ba a sani ba %{cmd} a nan — /help yana lissafa umarnin wannan surface; ba a aika komai ba}
 ::msgcat::mcset ha {unknown command /%s — /help lists them} {ba a san umarnin /%s ba — /help ya jera su}
 ::msgcat::mcset ha {unknown command: /%s} {umarni marasan: /%s}
 ::msgcat::mcset ha {unknown keymap: %s (normie/emacs/vi)} {ba a san keymap ba: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset ha {upstream plan credits and windows — /usage is the local ledger} {kiredit da tagogin lokaci na shirin sama — /usage shi ne littafin lissafi na gida}
 ::msgcat::mcset ha {upstream plan quota} {kason shirin na sama}
 ::msgcat::mcset ha uptime {lokacin aiki}
-::msgcat::mcset ha {usage: /join <session> or /join <instance>/<session>} {yin amfani: /join <zama> ko /join <instance>/<zama>}
+::msgcat::mcset ha {usage: /export [md|json]} {amfani: /export [md|json]}
 ::msgcat::mcset ha {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {amfani: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset ha {usage: /resume <id or prefix>} {amfani: /resume <id ko prefix>}
 ::msgcat::mcset ha {usage: /resume <id-or-prefix>} {amfani: /resume <id-or-prefix>}

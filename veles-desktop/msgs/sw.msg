@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset sw {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset sw {%1$s %2$s done} {%1$s %2$s imekamilika}
 ::msgcat::mcset sw {%1$s %2$s failed: %3$s} {%1$s %2$s imeshindikana: %3$s}
+::msgcat::mcset sw {%1$s %2$s over ssh anyway?} {%1$s %2$s kupitia ssh hata hivyo?}
 ::msgcat::mcset sw {%1$s %2$s over ssh…} {%1$s %2$s kupitia ssh…}
 ::msgcat::mcset sw {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset sw {%1$s (%2$s waiting)} {%1$s (%2$s zinasubiri)}
 ::msgcat::mcset sw {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  fikra %3$s}
 ::msgcat::mcset sw {%1$s = %2$s here} {%1$s = %2$s hapa}
+::msgcat::mcset sw {%1$s = %2$s on %3$s} {%1$s = %2$s kwenye %3$s}
 ::msgcat::mcset sw {%1$s NOT saved: %2$s} {%1$s HAIJAHIFADHIWA: %2$s}
 ::msgcat::mcset sw {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s ni ya maktaba ya %2$s na ni ya kusoma tu — inakili kwa New… ili kuibadilisha}
 ::msgcat::mcset sw {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s ni ya maktaba ya %2$s — veles haifuti kamwe ujuzi wa zana nyingine}
+::msgcat::mcset sw {%1$s cannot restart itself: %2$s} {%1$s haiwezi kujianzisha upya: %2$s}
+::msgcat::mcset sw {%1$s differs: %2$s} {%1$s inatofautiana: %2$s}
 ::msgcat::mcset sw {%1$s every cron job on %2$s?} {%1$s kila kazi ya cron kwenye %2$s?}
 ::msgcat::mcset sw {%1$s failed: %2$s} {%1$s imeshindikana: %2$s}
 ::msgcat::mcset sw {%1$s in / %2$s out / %3$s calls} {%1$s ndani / %2$s nje / %3$s simu}
+::msgcat::mcset sw {%1$s is back after %2$s s (veles %3$s).} {%1$s imerudi baada ya sekunde %2$s (veles %3$s).}
 ::msgcat::mcset sw {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s ni nodi %2$s, si %3$s. Rekebisha kitambulisho chake cha nodi katika Edit….}
 ::msgcat::mcset sw {%1$s is not a whole number} {%1$s si nambari nzima}
+::msgcat::mcset sw {%1$s is not on: %2$s} {%1$s haijawashwa: %2$s}
+::msgcat::mcset sw {%1$s is not set on %2$s: the default applies.} {%1$s haijawekwa kwenye %2$s: chaguo-msingi linatumika.}
 ::msgcat::mcset sw {%1$s is reachable (%2$s ms).} {%1$s inafikika (%2$s ms).}
+::msgcat::mcset sw {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s ina zamu %2$s zinazoendelea. Ianzishe upya hata hivyo?}
 ::msgcat::mcset sw {%1$s is set to something this box cannot edit (%2$s)} {%1$s imewekwa kitu ambacho mashine hii haiwezi kuhariri (%2$s)}
 ::msgcat::mcset sw {%1$s is unreachable: %2$s} {%1$s haifikiki: %2$s}
+::msgcat::mcset sw {%1$s is up, but its node binding is wrong: %2$s} {%1$s imewashwa, lakini muunganisho wake wa nodi si sahihi: %2$s}
+::msgcat::mcset sw {%1$s not compared: %2$s} {%1$s haikulinganishwa: %2$s}
 ::msgcat::mcset sw {%1$s of %2$s characters} {%1$s kati ya %2$s herufi}
 ::msgcat::mcset sw {%1$s of %2$s sessions} {%1$s kati ya vikao %2$s}
 ::msgcat::mcset sw {%1$s of %2$s skills reach the prompt} {%1$s kati ya %2$s ujuzi hufika kwenye prompt}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset sw {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset sw {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset sw {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset sw {%1$s: %2$s on the gateway} {%1$s: %2$s kwenye gateway}
+::msgcat::mcset sw {%1$s: %2$s on the gateway (ships with veles)} {%1$s: %2$s kwenye gateway (husafirishwa pamoja na veles)}
 ::msgcat::mcset sw {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset sw {%1$s: no language server on the gateway. %2$s} {%1$s: hakuna seva ya lugha kwenye gateway. %2$s}
 ::msgcat::mcset sw {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: %2$s ya mwisho kati ya mistari %3$s ambayo gateway yake huhifadhi kwenye kumbukumbu, siri zimefutwa kwenye nodi hiyo.}
+::msgcat::mcset sw {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: programu-jalizi ya mtumiaji %2$s inachukua nafasi ya ile iliyoambatishwa kwa maudhui sawa (%3$s)}
 ::msgcat::mcset sw {%d MCP server(s) configured} {%d seva za MCP zimesanidiwa}
 ::msgcat::mcset sw {%d entries} {%d viingilio}
 ::msgcat::mcset sw {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {Faili %d za kiendelezi zitaandikwa haswa kama zilivyohakikiwa. Iwapo lolote lilibadilika tangu onyesho la awali, hakuna kitakachoandikwa. Hakuna commit, push au PR inayotokea.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset sw {%s (stale)} {%s (imepitwa na wakati)}
 ::msgcat::mcset sw {%s (this session)} {%s (kipindi hiki)}
 ::msgcat::mcset sw {%s GB free of %s GB} {%s GB wazi kati ya %s GB}
+::msgcat::mcset sw {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s Amri huenda kupitia ssh hadi kwenye seva pangishi iliyosanidiwa, ambayo ukaguzi huu haukuweza kuihusisha na nodi.}
 ::msgcat::mcset sw {%s already exists — open it from the list} {%s tayari ipo — ifungue kutoka kwenye orodha}
 ::msgcat::mcset sw {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {%s imebadilika tangu ulipoifungua — hakuna kilichoandikwa juu; nakili maandishi yako, kisha Pakia tena}
 ::msgcat::mcset sw {%s cleared for this buffer} {%s imefutwa kwa buffer hii}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset sw {%s comes from config.toml [acl] — edit there} {%s inatoka kwenye config.toml [acl] — hariri hapo}
 ::msgcat::mcset sw {%s config change(s) wait for you — /configsync} {mabadiliko %s ya usanidi yanakusubiri — /configsync}
 ::msgcat::mcset sw {%s did not become healthy within 30s} {%s haikufikia hali nzuri ndani ya sekunde 30}
+::msgcat::mcset sw {%s did not come back within 120 s: look at its log where it runs.} {%s haikurudi ndani ya sekunde 120: angalia kumbukumbu yake hapo inapofanya kazi.}
 ::msgcat::mcset sw {%s done} {%s imekamilika}
 ::msgcat::mcset sw {%s failed: %s} {%s imeshindikana: %s}
+::msgcat::mcset sw {%s holds a credential: it stays on its node and is not shown.} {%s ina siri: inabaki kwenye nodi yake na haionyeshwi.}
 ::msgcat::mcset sw {%s is already split} {%s tayari imegawanyika}
+::msgcat::mcset sw {%s is restarting; waiting for it to come back…} {%s inaanzishwa upya; tunasubiri irudi…}
 ::msgcat::mcset sw {%s is the language in use — pick another one to swap with} {%s ndiyo lugha inayotumika — chagua nyingine ya kubadilishana nayo}
 ::msgcat::mcset sw {%s is up} {%s iko juu / imewashwa}
 ::msgcat::mcset sw {%s keys — any key closes} {%s funguo — funguo yoyote hufunga}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset sw {; shadows bundled} {; inachukua nafasi ya iliyohusishwa}
 ::msgcat::mcset sw {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Pendekezo la usanidi linaweza kubadilisha mipangilio na pendekezo la sefu huunganisha siri; mabadiliko ya sehemu ya usalama bado yanamsubiri mmiliki.}
 ::msgcat::mcset sw {A failing plugin may drop hooks mid-turn.} {Programu-jalizi inayoshindikana inaweza kuacha hooks katikati ya zamu.}
+::msgcat::mcset sw {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {Sehemu iliyoshikiliwa: haiandikwi kutoka hapa; ihariri kwenye nodi na kusukuma usanidi, na mmiliki wake anaitumia hapo.}
 ::msgcat::mcset sw {A local server: no key is needed unless you set one up.} {Seva ya ndani: hakuna key inayohitajika isipokuwa umeiweka wewe mwenyewe.}
 ::msgcat::mcset sw {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Toleo lililosainiwa hupangwa tu baada ya ukaguzi wa awali. Kuanzisha upya/kuthibitisha, kuendelea na kurudisha nyuma ni hatua tofauti. Mchakato mzima lazima uripoti haswa marekebisho ya chanzo yaliyohakikiwa.}
 ::msgcat::mcset sw {A value is stored for %s — leave this empty to keep it.} {Kuna thamani iliyohifadhiwa kwa %s — acha hapa patupu ili kuibakiza.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset sw {Asking the provider for its models…} {Inaomba mtoa huduma orodha ya modeli zake…}
 ::msgcat::mcset sw Attach Ambatanisha
 ::msgcat::mcset sw {Attach to the next message} {Ambatanisha na ujumbe ujao}
+::msgcat::mcset sw {Audit log unavailable: %s} {Kumbukumbu ya ukaguzi haipatikani: %s}
+::msgcat::mcset sw {Audit log…} {Kumbukumbu ya ukaguzi…}
 ::msgcat::mcset sw {Author guide} {Mwongozo wa mwandishi}
 ::msgcat::mcset sw {Automatically discovered from the attached gateway's cluster registry.} {Hugunduliwa kiotomatiki kutoka kwenye rejista ya kundi ya gateway iliyounganishwa.}
 ::msgcat::mcset sw Back Nyuma
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset sw {Browse sessions} {Vinjari vikao}
 ::msgcat::mcset sw {Build manifest + preflight} {Manifesti ya ujenzi + ukaguzi wa awali}
 ::msgcat::mcset sw {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Ujenzi: veles %1$s, marekebisho %2$s (%3$s %4$s)}
+::msgcat::mcset sw {Bulk %1$s failed: %2$s} {%1$s ya kundi imeshindikana: %2$s}
+::msgcat::mcset sw {Bulk %1$s: %2$s (%3$s).} {%1$s ya kundi: %2$s (%3$s).}
+::msgcat::mcset sw {Bulk action cancelled.} {Kitendo cha kundi kimefutwa.}
 ::msgcat::mcset sw {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e mwisho wa mstari · C-b/C-f herufi · M-b/M-f neno · C-k futa hadi EOL · C-y yank · M-w nakili · C-w futa eneo · C-space weka alama · C-/ tandika}
 ::msgcat::mcset sw {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g inasimamisha kila kitu · C-j mstari mpya · M-p/M-n historia · Tab kukamilisha}
+::msgcat::mcset sw {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU: viini %1$s, %2$s%% vimejaa katika sekunde %3$s zilizopita}
 ::msgcat::mcset sw {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: viini %1$s, mzigo %2$s / %3$s / %4$s (%5$s%% ya viini)}
 ::msgcat::mcset sw Cancel Ghairi
 ::msgcat::mcset sw {Cancel task} {Ghairi kazi}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset sw {Channels (e.g. #veles #dev)} {Channeli (mf. #veles #dev)}
 ::msgcat::mcset sw Chat Gumzo
 ::msgcat::mcset sw {Chat — not attached; press Attach in the Instances tab} {Chat — haijaunganishwa; bonyeza Attach kwenye kichupo cha Instances}
-::msgcat::mcset sw {Check (lsp)} {Angalia (lsp)}
+::msgcat::mcset sw {Check (C-c C-k)} {Hakiki (C-c C-k)}
 ::msgcat::mcset sw {Check again} {Angalia tena}
 ::msgcat::mcset sw {Check files} {Kagua faili}
 ::msgcat::mcset sw Checkpoints Checkpoints
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset sw {Close (Esc)} {Funga (Esc)}
 ::msgcat::mcset sw {Close the setup wizard? Nothing has been written yet.} {Ufungwe wizard ya usanidi? Hakuna kilichoandikwa bado.}
 ::msgcat::mcset sw {Code actions} {Vitendo vya msimbo}
+::msgcat::mcset sw {Command-center audit log} {Kumbukumbu ya ukaguzi ya kituo cha amri}
 ::msgcat::mcset sw Commit {Fanya commit}
 ::msgcat::mcset sw {Commit ready for review. Push is a separate action.} {Commit iko tayari kukaguliwa. Push ni hatua tofauti.}
 ::msgcat::mcset sw {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Jaza kila uwanja wa PDS, ikiwa ni pamoja na image digest iliyopin, kabla ya kuonyesha handoff.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset sw {Config differs: %s} {Usanidi unatofautiana: %s}
 ::msgcat::mcset sw {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Logi ya usanidi: nodi hiyo ina mabadiliko ya %1$s hadi %3$s, gateway hii hadi %2$s}
 ::msgcat::mcset sw {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Logi ya usanidi: gateway hii ina mabadiliko ya %1$s hadi %2$s, nodi hiyo hadi %3$s}
+::msgcat::mcset sw {Config of %s} {Usanidi wa %s}
 ::msgcat::mcset sw {Config only on that node: %s} {Usanidi kwenye nodi hiyo pekee: %s}
 ::msgcat::mcset sw {Config only on this gateway: %s} {Usanidi kwenye gateway hii pekee: %s}
+::msgcat::mcset sw {Config: %s} {Usanidi: %s}
 ::msgcat::mcset sw Configure Sanidi
 ::msgcat::mcset sw {Configure %s} {Sanidi %s}
 ::msgcat::mcset sw {Configure translator} {Sanidi mtafsiri}
 ::msgcat::mcset sw {Configured desktop gateway} {Gateway ya eneo-kazi iliyosanidiwa}
 ::msgcat::mcset sw Configure… Sanidi…
 ::msgcat::mcset sw {Configuring %s} {Inasanidi %s}
+::msgcat::mcset sw Config… Usanidi…
 ::msgcat::mcset sw {Confirm or discard the current signed review before starting another download.} {Thibitisha au futa ukaguzi uliosainiwa wa sasa kabla ya kuanza upakuaji mwingine.}
 ::msgcat::mcset sw {Container host: typed host plan and privileged CLI handoff} {Mwenyeji wa kontena: mpango wa mwenyeji ulioainishwa na kukabidhi kwa CLI kunachohitaji haki za msimamizi}
 ::msgcat::mcset sw {Context window} {Dirisha la muktadha}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset sw {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Unda bot kwa @BotFather, kisha bandika tokeni yake hapa chini: inaingia kwenye sefu iliyosimbwa, kamwe si kwenye config.toml.}
 ::msgcat::mcset sw {Create this extension?} {Uunde programu-jalizi hii?}
 ::msgcat::mcset sw {Create this generated extension?} {Unde kiendelezi hiki kilichozalishwa?}
+::msgcat::mcset sw {Created and loaded. Review and test the extension before publishing.} {Imeundwa na kupakiwa. Hakiki na ujaribu kiendelezi kabla ya kukichapisha.}
 ::msgcat::mcset sw {Created and reloaded. Review and test the extension before publishing.} {Imeundwa na kupakiwa upya. Kagua na jaribu programu-jalizi kabla ya kuichapisha.}
 ::msgcat::mcset sw {Created, but reload failed} {Imeundwa, lakini kupakia upya kumeshindikana}
+::msgcat::mcset sw {Created, not loaded} {Imeundwa, haijapakiwa}
+::msgcat::mcset sw {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {Imeundwa, haijapakiwa bado: endesha cargo build --release katika saraka ya kiendelezi, kisha kipakie upya katika Dhibiti viendelezi.}
+::msgcat::mcset sw {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {Imeundwa. Gateway hii haisemi kama imepakia kiendelezi: angalia hali yake katika Dhibiti viendelezi.}
 ::msgcat::mcset sw {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Hutengeneza %s/<name>/SKILL.md kutoka kwa template na kuifungua. Maelezo ya frontmatter ndiyo sehemu pekee inayofika kwenye index ya prompt, kwa hiyo iandike kusema LINI ya kutumia ujuzi.}
 ::msgcat::mcset sw {Cron history} {Historia ya Cron}
 ::msgcat::mcset sw {Cron jobs} {Kazi za cron}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset sw {Delete user} {Futa mtumiaji}
 ::msgcat::mcset sw {Delete workspace?} {Futa workspace?}
 ::msgcat::mcset sw Deop {Ondoa op}
+::msgcat::mcset sw {Deployment consistency unknown: %s node(s) could not be compared.} {Ulinganifu wa usambazaji haujulikani: nodi %s hazikuweza kulinganishwa.}
+::msgcat::mcset sw {Deployment consistency: not checked yet (Drift… compares every node).} {Ulinganifu wa usambazaji: bado haujakaguliwa (Tofauti… hulinganisha kila nodi).}
 ::msgcat::mcset sw {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Eleza mabadiliko. AI inaweza kubadilisha au kuongeza faili kadhaa za kiendelezi hiki. Kila faili huonyeshwa kama diff, na hakuna kinachoandikwa kabla ya uthibitisho wako.}
 ::msgcat::mcset sw {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Eleza mabadiliko. AI inaweza kupendekeza mbadala, lakini haiwezi kuuandika kabla hujakagua na kuthibitisha diff.}
 ::msgcat::mcset sw {Describe the requested extension change first.} {Eleza kwanza mabadiliko ya programu-jalizi yanayohitajika.}
 ::msgcat::mcset sw Description Maelezo
+::msgcat::mcset sw {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {Zamu za desktop zinaendelea kutoka historia yake iliyohifadhiwa baada ya kuanzishwa upya; zamu za connector, A2A, barua, cron na wakala mdogo haziendelei.}
 ::msgcat::mcset sw {Desktop: local core, modules and process plugins} {Desktop: core ya ndani, moduli na programu-jalizi za mchakato}
 ::msgcat::mcset sw Detach Tenganisha
 ::msgcat::mcset sw {Detach foreground} {Tenganisha amri ya mbele}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset sw {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Pakua na uhakikishe manifesti ya toleo na akifu ya mwenyeji kabla ya kusakinisha. Sehemu zote tano za utambulishi zinahitajika. Gateway inahifadhi akifu iliyowekwa kando kwa faragha; hakuna kilichosakinishwa na ukaguzi huu.}
 ::msgcat::mcset sw {Downloading and verifying the signed release…} {Inapakua na kuhakiki toleo lililosainiwa…}
 ::msgcat::mcset sw {Draft this as an extension?} {Uandike hii kama programu-jalizi?}
+::msgcat::mcset sw {Draft this change as an extension?} {Andika mabadiliko haya kama kiendelezi?}
 ::msgcat::mcset sw {Drag to scroll; a quick swipe goes further.} {Buruta ili kusogeza; kutelezesha kwa haraka huenda mbali zaidi.}
 ::msgcat::mcset sw {Drift check failed: %s} {Ukaguzi wa utofauti umeshindikana: %s}
 ::msgcat::mcset sw {Drift check: %s node(s) differ from this gateway.} {Ukaguzi wa utofauti: nodi %s zinatofautiana na gateway hii.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset sw Eval→gw Eval→gw
 ::msgcat::mcset sw {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Kila mabadiliko ya %s yanarekodiwa (commit). Kurejesha kunairudisha directory nzima kwenye commit hiyo — na inachukua picha ya hali ya sasa kwanza, kwa hiyo si mlango wa njia-moja.}
 ::msgcat::mcset sw {Every plugin file goes back to that commit. The current state is committed first.} {Kila faili ya programu-jalizi inarudi kwenye commit hiyo. Hali ya sasa inarekodiwa kwanza.}
+::msgcat::mcset sw {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {Kila tabaka: Kiendelezi kipya huandika kiendelezi cha Tcl, TypeScript, Racket au Common Lisp, au programu-jalizi ya Rust iliyo nje ya mti (cdylib kwenye crate ya veles-plugin-abi-sdk: kiunde kwa cargo build --release, kisha kipakie upya katika Dhibiti viendelezi). Matabaka mawili hayako kwenye saraka ya programu-jalizi za mtumiaji na huanza kutoka mstari wa amri: moduli, maktaba ya Rust iliyoundwa pamoja na veles (veles plugins new NAME --kind overlay huandika hazina yake), na programu-jalizi ya mchakato, programu kwenye crate ya veles-plugin-sdk ambayo gateway huendesha na kuisimamia. Mwongozo wa mwandishi una sehemu kwa kila moja.}
 ::msgcat::mcset sw {Exact commit} {Commit haswa}
 ::msgcat::mcset sw {Exact permission rule} {Kanuni haswa ya idhini}
 ::msgcat::mcset sw {Example: a hook} {Mfano: hook}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset sw {Explain the diagnostics} {Eleza uchunguzi}
 ::msgcat::mcset sw Export… Hamisha…
 ::msgcat::mcset sw {Extension API} {API ya programu-jalizi}
+::msgcat::mcset sw {Extension API reference} {Marejeo ya API ya viendelezi}
 ::msgcat::mcset sw {Extension development} {Ukuzaji wa programu-jalizi}
 ::msgcat::mcset sw {Extension guide} {Mwongozo wa programu-jalizi}
 ::msgcat::mcset sw {Extension source} {Chanzo cha programu-jalizi}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset sw {Guards — what the harness stops, and where it stands now} {Guards — kile harness inachosimamisha, na ilipo sasa}
 ::msgcat::mcset sw {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handlers hufanya kazi kwa mpangilio ulioonyeshwa; wa kwanza kurudisha thamani isiyo tupu ndiye ashinde. Kumzima mmoja humruka bila kumwondoa kwenye usajili, na chaguo linahifadhiwa kwenye config.toml ili upakiaji tena wa programu-jalizi usiweze kumrudisha kimya kimya.}
 ::msgcat::mcset sw Health Afya
+::msgcat::mcset sw {Health alerts} {Arifa za afya}
 ::msgcat::mcset sw {Health alerts (%s):} {Arifa za afya (%s):}
 ::msgcat::mcset sw Heartbeat {Mapigo ya moyo}
 ::msgcat::mcset sw {Heartbeat age: %s s} {Umri wa mpigo wa moyo: sekunde %s}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset sw Install… Sakinisha…
 ::msgcat::mcset sw {Instance name (for example an IRC network)} {Jina la tukio (kwa mfumo mtandao wa IRC)}
 ::msgcat::mcset sw Instances {Tukio (Instances)}
+::msgcat::mcset sw {Instead of patching %s: } {Badala ya kuweka kiraka kwenye %s: }
 ::msgcat::mcset sw {It becomes the current content, as a new revision — so the restore can be undone too.} {Inakuwa maudhui ya sasa, kama marekebisho mapya — kwa hivyo urejeshaji pia unaweza kutenduliwa.}
 ::msgcat::mcset sw {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Inaingia kwenye sefu iliyosimbwa kwenye mashine hii. Wakala haioni kamwe: anaweza tu kuitumia kama $%s kwenye amri, au kuituma kwa hosti zinazoruhusiwa.}
 ::msgcat::mcset sw {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Imeondolewa kwenye rejista ya cluster kote kwenye fleet: mzunguko ujao wa gossip huwaambia kila mwenza wa 0.2.0 kuiondoa pia, na hakuna hata mmoja anayeirudisha. Mwenza wa toleo la zamani kuliko 0.2.0 huendelea kuiorodhesha. Mashine ikirudi na kutuma mpigo wa moyo, husajiliwa tena. Wenza wa usawazishaji na instances zilizohifadhiwa hazibadiliki.}
+::msgcat::mcset sw {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {Inaandikwa kwenye config.toml ya nodi hiyo kama hariri iliyofanywa hapo; usawazishaji wa usanidi kisha huihamisha hadi kwenye nodi zinazosawazisha usanidi nayo.}
 ::msgcat::mcset sw {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Sasa inaondoka kwenye kumbukumbu. Historia yake huhifadhi kila marekebisho, na Historia… inaweza kuirejesha.}
+::msgcat::mcset sw {Its gateway stops and %s.} {Gateway yake inasimama na %s.}
 ::msgcat::mcset sw Join Jiunge
 ::msgcat::mcset sw {Join a pool} {Jiunge na kundi la mashine}
 ::msgcat::mcset sw {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {Ujiunge na kundi la mashine la %1$s kama %2$s? Kundi litaifikia simu hii kwenye %3$s.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset sw Joining… Inajiunga…
 ::msgcat::mcset sw Join… Jiunge…
 ::msgcat::mcset sw {Jump to composer} {Nenda kwa mtunzi}
+::msgcat::mcset sw {Key (for example model.default)} {Ufunguo (kwa mfano model.default)}
 ::msgcat::mcset sw Keybindings {Urar Wa Ufunguo}
 ::msgcat::mcset sw {Keyboard help} {Msaada wa kibodi}
 ::msgcat::mcset sw {Kick %1$s from %2$s?} {Mfukuza %1$s kutoka %2$s?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset sw {LLM provider} {Mtoa huduma wa LLM}
 ::msgcat::mcset sw Language Lugha
 ::msgcat::mcset sw {Language (i18n)} {Lugha (i18n)}
+::msgcat::mcset sw {Language servers on this gateway} {Seva za lugha kwenye gateway hii}
 ::msgcat::mcset sw Language… Lugha…
 ::msgcat::mcset sw {Last active} {Shughuli ya mwisho}
 ::msgcat::mcset sw {Last probe: %1$s — %2$s} {Uchunguzi wa mwisho: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset sw Level Ngazi
 ::msgcat::mcset sw {Lift lockdown} {Ondoa lockdown}
 ::msgcat::mcset sw Lines Mistari
+::msgcat::mcset sw {List targets…} {Orodhesha malengo…}
 ::msgcat::mcset sw {List the provider's models} {Orodhesha modeli za mtoa huduma}
 ::msgcat::mcset sw Load Mzigo
 ::msgcat::mcset sw {Load more} {Pakia zaidi}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset sw Next Ijayo
 ::msgcat::mcset sw Nickname Nickname
 ::msgcat::mcset sw {NixOS: emit a module snippet; do not edit host declarations} {NixOS: toa kifungu cha moduli; usihariri matamko ya mwenyeji}
-::msgcat::mcset sw {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Hakuna lengo la mzunguko wa maisha la SSH lililowekwa kwa nodi hii. Ongeza tukio (instance) kwa dhahiri ili kulisambaza au kuianzisha upya.}
+::msgcat::mcset sw {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {Hakuna lengo la mzunguko wa maisha la SSH lililosanidiwa kwa nodi hii: Anzisha upya huomba nodi ijianzishe upya kupitia msimamizi wake; Usambazaji wa fleet unahitaji kipindi kilichohifadhiwa chenye lengo la ssh.}
 ::msgcat::mcset sw {No additional push happens.} {Hakuna push ya ziada itakayofanyika.}
 ::msgcat::mcset sw {No apps yet. Ask the agent to make one: “make me an app that…”} {Bado hakuna programu. Mwombe wakala atengeneze moja: “nitengenezee programu inayo…”}
 ::msgcat::mcset sw {No code in the picture. Hold the phone closer, straight on, and scan again.} {Hakuna msimbo kwenye picha. Shika simu karibu, wima, kisha uchanganue tena.}
+::msgcat::mcset sw {No command-center action is recorded on this gateway yet.} {Hakuna kitendo cha kituo cha amri kilichorekodiwa kwenye gateway hii bado.}
 ::msgcat::mcset sw {No configuration snapshot will be restored.} {Hakuna snapshot ya usanidi itakayorejeshwa.}
 ::msgcat::mcset sw {No configured sync peer for this node.} {Hakuna mwenza wa usawazishaji aliyesanidiwa kwa nodi hii.}
 ::msgcat::mcset sw {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Hakuna mtafsiri maalum aliyesanidiwa. Tumia Sanidi mtafsiri kuchagua mtoa huduma, modeli na lugha inayolengwa.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset sw {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Simu zilizotengenezwa na %s pia husimamisha programu zenyewe. Katika mipangilio ya programu ya veles, iruhusu ianze yenyewe na ifanye kazi chinichini.}
 ::msgcat::mcset sw {Pin / unpin} {Bandika juu / ondoa}
 ::msgcat::mcset sw {Pin to home screen} {Bandika kwenye skrini ya mwanzo}
+::msgcat::mcset sw {Plugin author guide} {Mwongozo wa waandishi wa programu-jalizi}
 ::msgcat::mcset sw {Plugin history} {Historia ya programu-jalizi}
 ::msgcat::mcset sw Plugins Programu-jalizi
 ::msgcat::mcset sw Port Port
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset sw {Preview here} {Onyesha awali hapa}
 ::msgcat::mcset sw {Preview pane} {Dirisha la hakiki (Preview)}
 ::msgcat::mcset sw {Preview proposal} {Angalia onyesho la pendekezo}
-::msgcat::mcset sw {Preview the changed name or language before creating it.} {Angalia onyesho la jina au lugha iliyobadilishwa kabla ya kuiunda.}
+::msgcat::mcset sw {Preview the changed name, purpose or language before creating it.} {Hakiki jina, kusudi au lugha iliyobadilika kabla ya kuunda.}
 ::msgcat::mcset sw Probe Chunguza
+::msgcat::mcset sw {Probe %s node(s)?} {Chunguza nodi %s?}
+::msgcat::mcset sw {Probe all…} {Chunguza zote…}
 ::msgcat::mcset sw {Probe of %1$s failed: %2$s} {Uchunguzi wa %1$s umeshindikana: %2$s}
 ::msgcat::mcset sw {Profile result} {Matokeo ya wasifu}
 ::msgcat::mcset sw {Promote into config.toml} {Promote kwenye config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset sw {Push branch…} {Fanya push ya tawi…}
 ::msgcat::mcset sw {Push complete. No pull request has been opened.} {Push imekamilika. Hakuna pull request iliyofunguliwa.}
 ::msgcat::mcset sw {Push this branch?} {Fanya push ya tawi hili?}
+::msgcat::mcset sw {Push this kind to every node that is a configured peer for it:} {Sukuma aina hii hadi kwenye kila nodi iliyosanidiwa kama mwenza wake:}
 ::msgcat::mcset sw {Push to %s:} {Sukuma kwenda %s:}
 ::msgcat::mcset sw Question Swali
 ::msgcat::mcset sw Questions Maswali
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset sw {REPL target: the app} {lengo la REPL: programu}
 ::msgcat::mcset sw {REPL target: the gateway} {lengo la REPL: gateway}
 ::msgcat::mcset sw Read Soma
+::msgcat::mcset sw {Read the key first: a write names the value it replaces.} {Soma ufunguo kwanza: uandishi hutaja thamani inayobadilishwa.}
 ::msgcat::mcset sw {Reading notifications, for triggers} {Kusoma arifa, kwa vichochezi}
 ::msgcat::mcset sw Reasoning Mawazo
 ::msgcat::mcset sw {Reasoning effort} {Kiwango cha fikra}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset sw {Reset to default} {Rejesha chaguo-msingi}
 ::msgcat::mcset sw {Reset to template} {Weka upya kwenye template}
 ::msgcat::mcset sw Restart {Anza upya}
+::msgcat::mcset sw {Restart %s?} {Anzisha upya %s?}
 ::msgcat::mcset sw {Restart + verify canary} {Anzisha upya + thibitisha nodi ya majaribio}
+::msgcat::mcset sw {Restart cancelled.} {Kuanzisha upya kumefutwa.}
+::msgcat::mcset sw {Restart of %1$s failed: %2$s} {Kuanzisha upya %1$s kumeshindikana: %2$s}
 ::msgcat::mcset sw {Restore hidden windows} {Rudisha madirisha yaliyofichwa}
 ::msgcat::mcset sw {Restore plugins to %s?} {Rudisha programu-jalizi kwenye %s?}
 ::msgcat::mcset sw {Restore revision r%1$s of %2$s?} {Rejesha marekebisho r%1$s ya %2$s?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset sw {S3 region} {Eneo la S3}
 ::msgcat::mcset sw {SASL account (optional)} {Akaunti ya SASL (hiari)}
 ::msgcat::mcset sw {SASL password (hidden)} {Nenosiri la SASL (limefichwa)}
+::msgcat::mcset sw {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {Mzunguko wa maisha wa SSH: kupitia kipindi kilichohifadhiwa %1$s (%2$s, unit %3$s).}
 ::msgcat::mcset sw Sandbox Sandbox
 ::msgcat::mcset sw {Sandbox account} {Akaunti ya sandbox}
 ::msgcat::mcset sw Sandboxes Sandboxes
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset sw {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Vikao ambavyo tayari vimeelekezwa kwenye alias hii vinabaki na njia walizochagua; overrides mpya hazitapata jina hilo.}
 ::msgcat::mcset sw {Sessions served} {Vikao vilivyotumika}
 ::msgcat::mcset sw Set Weka
+::msgcat::mcset sw {Set %1$s on %2$s to %3$s?} {Weka %1$s kwenye %2$s kuwa %3$s?}
 ::msgcat::mcset sw {Set [model] provider/default in config.toml.} {Weka [model] mtoa/msingi kwenye config.toml.}
 ::msgcat::mcset sw {Set as swap target} {Fanya lugha ya kubadilishana}
 ::msgcat::mcset sw {Set mode %1$s on %2$s?} {Weka modi %1$s kwenye %2$s?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset sw Summary Muhtasari
 ::msgcat::mcset sw Surface Jukwaa
 ::msgcat::mcset sw {Swap ⇄} {Badilisha ⇄}
+::msgcat::mcset sw {Sync %1$s to %2$s node(s)?} {Sawazisha %1$s hadi nodi %2$s?}
+::msgcat::mcset sw {Sync all} {Sawazisha zote}
+::msgcat::mcset sw {Sync all…} {Sawazisha zote…}
 ::msgcat::mcset sw {Sync cancelled.} {Usawazishaji umeghairiwa.}
 ::msgcat::mcset sw {Sync complete.} {Usawazishaji umekamilika.}
 ::msgcat::mcset sw {Sync now} {Sawazisha sasa}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset sw {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Uchunguzi wa sasa (kutoka seva ya lugha au Angalia) hutumwa pamoja na faili hii. Unaweza kuongeza swali. Jibu ni maandishi tu; hakuna kinachoweza kuandikwa.}
 ::msgcat::mcset sw {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Saraka na kila kitu ndani yake vitaondolewa. Hili haliwezi kutenduliwa — zima badala yake ikiwa unataka tu kikae nje ya prompt.}
 ::msgcat::mcset sw {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Saraka itafutwa. Folda ya plugin ni git repository na snapshot inawekwa kwanza, kwa hiyo Historia… inaweza kuirudisha.}
-::msgcat::mcset sw {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Kihariri hufungua faili za gateway, ikiwemo instances za mbali, na huendesha seva ya lugha ya faili hiyo kwenye gateway: tcl-lsp, typescript-language-server (TypeScript na JavaScript), rust-analyzer (crate au moduli ya programu-jalizi ya Rust), clangd (C), racket-langserver na seva ya Common Lisp. Kuweka kielekezi juu ya alama, kwenda kwenye ufafanuzi, ukamilishaji na uchunguzi wa papo hapo hufanya kazi kwa kila lugha ambayo gateway inayo seva yake; isipokuwa na moja, kihariri husema ni programu ipi ya kusakinisha hapo na huendelea kuangazia sintaksia. Angalia huendesha kikaguliwa kinacholingana kwenye gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, au visomaji vya Racket na Lisp. Hifadhi, pakia upya katika Manage extensions, na ujaribu kiendelezi bila kuchapisha hali ya ndani.}
+::msgcat::mcset sw {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {Kihariri hufungua faili za gateway, pamoja na vipindi vya mbali, na huendesha seva ya lugha ya faili hiyo kwenye gateway: typescript-language-server (TypeScript na JavaScript), rust-analyzer (crate au moduli ya programu-jalizi ya Rust), clangd (C), racket-langserver, seva ya Common Lisp, na tcl-lsp kwa Tcl pale ambapo gateway inayo (vifurushi vya Linux vya veles vinajumuisha). Kuelea, kwenda kwenye fasili, ukamilishaji na uchunguzi wa moja kwa moja hufanya kazi kwa kila lugha ambayo gateway inayo seva yake; isipokuwa nayo, kihariri husema ni programu ipi ya kusakinisha hapo na huendelea kuonyesha rangi za sintaksia. Hakiki huendesha kikaguzi kinacholingana kwenye gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, visomaji vya Racket na Lisp, na kwa Tcl tclsh ya injini yenyewe (ukaguzi wa ukamilifu, au lint ya tcl-lsp pale ambapo imesakinishwa). Hifadhi, kipakie upya katika Dhibiti viendelezi, na ujaribu kiendelezi bila kuchapisha hali ya ndani.}
 ::msgcat::mcset sw {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Handoff ya kwanza inaandaa siri, image iliyopin na faili za runtime lakini haiuanzi PDS. Hifadhi nakala ya KEK na funguo ya mzunguko wa PLC nje ya mtandao, kisha fanya ombi jipya lililokaguliwa kwa kuthibitisha kuwa nimehifadhi nakala, ili kusanidi HTTP-01 TLS na uwezeshaji. Rekodi za DNS lazima ziweke moja kwa moja kwenye host hii; hakuna proxy ya CDN au mabadiliko ya DNS yanayofanywa na veles.}
+::msgcat::mcset sw {The fleet is NOT consistent: %s node(s) differ.} {Fleet HAIlingani: nodi %s zinatofautiana.}
+::msgcat::mcset sw {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {Fleet inalingana kwa tofauti: nodi %1$s zinaendesha build sawa na zinakubaliana kwa kila kitu wanachoshirikiana; vipengele %2$s hayako kwenye kila nodi.}
+::msgcat::mcset sw {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {Fleet inalingana: nodi %s zinaendesha build, moduli na programu-jalizi sawa.}
 ::msgcat::mcset sw {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Fomu imebadilika tangu kiendelezi kizalishwe. Zalisha tena, au onyesha kiunzi rahisi.}
+::msgcat::mcset sw {The gateway did not receive the purpose as written. Nothing was created.} {Gateway haikupokea kusudi kama ilivyoandikwa. Hakuna kilichoundwa.}
+::msgcat::mcset sw {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {Gateway haitoi miongozo ya viendelezi (ni ya zamani kuliko 0.2.2), na desktop hii haina nakala yao.}
 ::msgcat::mcset sw {The gateway itself is untouched.} {Gateway yenyewe haijaguswa.}
 ::msgcat::mcset sw {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Gateway imepakia upya usanidi, kwa hiyo vikao vipya vinautumia sasa, na key iliyohifadhiwa kwenye sefu inatumiwa na ombi linalofuata. Telegram na IRC zinaanza gateway itakapowashwa upya tena: veles gateway restart.}
 ::msgcat::mcset sw {The installed component no longer matches the selected manifest. Review the component list again.} {Sehemu iliyosakinishwa haioani tena na manifest iliyochaguliwa. Pitia orodha ya sehemu tena.}
 ::msgcat::mcset sw {The installer preview has no verification signatures; apply is disabled.} {Muhtasari wa kisakinishaji hana saini za kuthibitisha; kutekeleza kimelemazwa.}
 ::msgcat::mcset sw {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Kazi na historia ya matukio yake vitaondolewa. Hii haiwezi kutenduliwa — sitisha badala yake ikiwa unataka tu ikome.}
+::msgcat::mcset sw {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {Funguo zinazobebwa na usawazishaji wa usanidi, kwa kanuni zake: funguo za nodi husika na siri hubaki kwenye nodi yao, na sehemu iliyoshikiliwa ([acl], approvals, sandbox, hooks, plugins, MCP servers) hubadilishwa pale inapohaririwa na kusukumwa, kisha husubiri mmiliki wa nodi hiyo.}
 ::msgcat::mcset sw {The log could not be read: %s} {Logi haikuweza kusomwa: %s}
 ::msgcat::mcset sw {The manifest belongs to another component; its reply was discarded.} {Manifest ni ya sehemu nyingine; jibu lake lilifutwa.}
 ::msgcat::mcset sw {The profile changed. Review the fresh plan before applying it.} {Wasifu umebadilika. Kagua mpango mpya kabla ya kuutumia.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset sw {The signed release preview was malformed; nothing was installed.} {Ukaguzi wa toleo lililosainiwa ulikuwa na umbo lisilofaa; hakuna kilichosakinishwa.}
 ::msgcat::mcset sw {The source buffer changed. Request a new proposal before applying.} {Buffer ya chanzo imebadilika. Omba pendekezo jipya kabla ya kulitumia.}
 ::msgcat::mcset sw {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Hifadhi inarudi nyuma toleo moja. Kurudisha nyuma yenyewe ni toleo, kwa hiyo linaweza kutenduliwa pia.}
+::msgcat::mcset sw {The translator did not answer within %s seconds.} {Mtafsiri hakujibu ndani ya sekunde %s.}
 ::msgcat::mcset sw {The translator returned no text.} {Kitafsiri hakikarudisha maandishi yoyote.}
 ::msgcat::mcset sw {The verification reply was malformed; no integrity result was accepted.} {Jibu la uthibitisho lilikuwa mbaya; hakuna matokeo ya uadilifu yaliyokubaliwa.}
 ::msgcat::mcset sw Themes Mandhari
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset sw {This challenge is over.} {Changamoto hii imekwisha.}
 ::msgcat::mcset sw {This code has expired. Ask for a new one.} {Msimbo huu umeisha muda. Omba mpya.}
 ::msgcat::mcset sw {This does not start a service or claim signed-download verification.} {Hii huanzishi huduma wala haidai uthibitisho wa upakuaji wa saini.}
+::msgcat::mcset sw {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {Faili hii ni msimbo wa msingi wa veles. Mabadiliko mengi hufaa zaidi kama kiendelezi, kinachodumu kupitia masasisho na hakihitaji kujengwa upya: hook, zana, ubatilishaji wa huduma au dereva wa mtoa huduma, kilichoandikwa kwa Tcl, TypeScript, Racket au Common Lisp, au kama programu-jalizi ya Rust iliyo nje ya mti (Kiendelezi kipya huandika yoyote ya haya), au kama moduli au programu-jalizi ya mchakato (mwongozo wa viendelezi huonyesha jinsi ya kuanzisha moja). Kiraka cha msingi ni kwa kile ambacho API ya viendelezi haiwezi kueleza. Andika mabadiliko haya kama kiendelezi badala yake? Hariri yako inabaki kwenye buffer hii, haijahifadhiwa; kuhifadhi tena huweka kiraka kwenye faili ya msingi.}
 ::msgcat::mcset sw {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Gateway hii haipokei thamani za siri kutoka kwenye mashine hii: iingize huko kwa veles secret set %s, au orodhesha mtandao huu kwenye [vault] trusted_networks yake}
 ::msgcat::mcset sw {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Hii ndiyo hasa itakayoandikwa — baiti za engine yenyewe, zilizopatikana moja kwa moja. Hakuna kilichogusa diski bado.}
+::msgcat::mcset sw {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {Hii ni msimbo wa msingi wa veles. Mabadiliko yake kwa kawaida ni bora kama kiendelezi: Kiendelezi kipya, au hifadhi ili upewe pendekezo la kimoja.}
 ::msgcat::mcset sw {This node is not a configured sync peer for any kind.} {Nodi hii si mwenza wa usawazishaji aliyesanidiwa kwa aina yoyote.}
 ::msgcat::mcset sw {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Programu-jalizi hii inahusishwa na ni ya kusoma tu. Ondoa nakili ya mtumiaji yenye jina lile lile ili kutumia nakili inayohusishwa badala yake.}
 ::msgcat::mcset sw {This publishes the commit; no pull request is created yet.} {Hatua hii huchapisha commit; hakuna pull request inayoundwa bado.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset sw Unassign {Ondoa ugawaji}
 ::msgcat::mcset sw {Undo last} {Tendua ya mwisho}
 ::msgcat::mcset sw {Undo the last memory revision?} {Tendua toleo la mwisho la kumbukumbu?}
+::msgcat::mcset sw {Unset %1$s on %2$s?} {Ondoa %1$s kwenye %2$s?}
+::msgcat::mcset sw Unset… Ondoa…
 ::msgcat::mcset sw Unstage {Ondoa staji}
 ::msgcat::mcset sw {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Hadi IRC_ALLOWED_USERS katika .env itakapotaja akaunti yako, yeyote kwenye mtandao anaweza kuzungumza na bot — na bila sehemu ya [acl], kama mmiliki, akiwa na zana zote.}
 ::msgcat::mcset sw {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Hadi TELEGRAM_ALLOWED_USERS katika .env itakapotaja kitambulisho chako cha mtumiaji, yeyote atakayeipata bot anaweza kuzungumza nayo — na bila sehemu ya [acl], kama mmiliki, akiwa na zana zote.}
 ::msgcat::mcset sw Untitled {Visivyo na kichwa}
-::msgcat::mcset sw {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Uchango wa juu ni kitendo cha kuchapisha kwa uwazi, si upakiaji wa kiotomatiki. Katika Manage extensions, Contribute huorodhesha programu-jalizi zote za mtumiaji: chagua programu-jalizi na faili, kagua diff na uchunguzi wa siri, endesha ukaguzi, kisha unda tawi moja na PR moja (kwa veles kwa kawaida) ukitumia utambulisho wako wa git. Kila programu-jalizi huenda chini ya saraka yake kwenye hazina, na faili iliyopo hapo hubadilishwa tu baada ya uthibitisho tofauti. Kamwe usichapishe node.toml, vitambulisho vya ndani, tokeni, vituo vya kibinafsi wala hali ya programu-jalizi isiyohusiana. Nakala za urejeshaji za ndani si commit ya juu wala PR.}
+::msgcat::mcset sw {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Kuchangia mtandaoni ni kitendo cha kuchapisha kwa uwazi, si kupakia kiotomatiki. Katika Dhibiti viendelezi, Changia huorodhesha kila kiendelezi cha mtumiaji: chagua viendelezi na faili, hakiki diff na uchunguzi wa siri, endesha ukaguzi, kisha unda tawi moja na PR moja (kwa veles kwa kawaida). Commit hutumia utambulisho wa git wa mazingira ya gateway (user.name na user.email za usanidi wake wa git); viweke kwanza ikiwa vinapaswa kutofautiana. Kila kiendelezi huenda chini ya saraka yake mwenyewe kwenye hazina, na faili iliyopo hapo hubadilishwa tu baada ya uthibitisho tofauti. Kamwe usichapishe node.toml, siri za ndani, tokeni, vituo vya kibinafsi au hali ya programu-jalizi isiyohusiana. Nakala za urejeshaji za ndani si commit ya mtandaoni wala PR.}
 ::msgcat::mcset sw {Upstream repository or fork URL} {URL ya hifadhi ya upstream au fork}
 ::msgcat::mcset sw {Uptime class} {Daraja la muda wa uhai}
 ::msgcat::mcset sw {Uptime: host %1$s, gateway %2$s} {Muda wa kufanya kazi: mwenyeji %1$s, gateway %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset sw {Users — one role across networks and platforms} {Watumiaji — jukumu moja katika mitandao na mifumo yote}
 ::msgcat::mcset sw {Using the phone, for the agent} {Kutumia simu, kwa wakala}
 ::msgcat::mcset sw {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Kwa kawaida ni jina moja na la ingizo la provider. Iache zote mbili wazi ukichagua Ruka — jozi iliyojaa nusu haiwezi ku-route.}
+::msgcat::mcset sw {Value (TOML: "text", 5, true, [1, 2])} {Thamani (TOML: "maandishi", 5, true, [1, 2])}
 ::msgcat::mcset sw {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Thamani ni TOML: mifuatano iliyonukuliwa, namba, au orodha. Zinaandikwa kwenye [mcp_servers.<name>] — maoni yako na kila sehemu nyingine zimeachwa kama zilivyo.}
 ::msgcat::mcset sw Vault Sefu
 ::msgcat::mcset sw {Verified signed bundle installed. Restart the gateway before using the new core.} {Kifurushi kilichosainiwa kilichothibitishwa kimesakinishwa. Anzisha upya gateway kabla ya kutumia kiini kipya.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset sw Voice {Toa voice}
 ::msgcat::mcset sw {Waiting for the model…} {Inasubiri modeli…}
 ::msgcat::mcset sw {Waiting for the model… Nothing has been written.} {Inasubiri modeli… Hakuna kilichoandikwa.}
+::msgcat::mcset sw Warning Onyo
 ::msgcat::mcset sw {Welcome to veles} {Karibu veles}
 ::msgcat::mcset sw {What the agent can do here} {Kile wakala anaweza kufanya hapa}
 ::msgcat::mcset sw {What veles may do on this phone. Each button opens the Android setting that changes it.} {Kile ambacho veles inaruhusiwa kufanya kwenye simu hii. Kila kitufe hufungua mpangilio wa Android unaobadilisha hilo.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset sw {Workflow SHA} {SHA ya workflow}
 ::msgcat::mcset sw {Workflow commit} {Commit ya mtiririko wa kazi}
 ::msgcat::mcset sw Worktree Worktree
+::msgcat::mcset sw {Write cancelled.} {Kuandika kumefutwa.}
 ::msgcat::mcset sw {Write it} Iandike
 ::msgcat::mcset sw {Write the design question first.} {Andika swali la usanifu kwanza.}
 ::msgcat::mcset sw {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Haandiki provider yoyote. Gateway haita-route turn hadi ingizo la [[custom_providers]] na jozi ya [model] zipo.}
+::msgcat::mcset sw Write… Andika…
 ::msgcat::mcset sw {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Kuandika ufunguo WOWOTE wa [acl] kunabadilisha gateway hii kuwa hali ya curated: jukumu chaguo-msingi linakuwa guest (fail-closed) na orodha za ruhusa si mpaka tena. Chagua hili tu ikiwa una utambulisho wa mmiliki unaouamini.}
 ::msgcat::mcset sw {[model] provider} {[model] provider}
 ::msgcat::mcset sw {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {mtoa huduma wa [model] %{name} halingani na ingizo lolote la [[custom_providers]] — taja ingizo ambalo wizard hii huandika, au lililopo tayari katika config.toml}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset sw {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset sw {asked by: %s} {imeulizwa na: %s}
 ::msgcat::mcset sw {asking %s for its metrics…} {inaomba vipimo vya %s…}
+::msgcat::mcset sw {asking %s how it is supervised…} {kumuuliza %s jinsi inavyosimamiwa…}
 ::msgcat::mcset sw {attach a file} {ambatisha faili}
 ::msgcat::mcset sw {attach an image or file} {ambatisha picha au faili}
 ::msgcat::mcset sw {attach failed: %1$s} {kuunganisha kumeshindikana: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset sw {channel-event reactions; /triggers add <name> network=… channel=… action=…} {miitikio kwa matukio ya chaneli; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset sw {channels to join, a space or comma separated string} {channeli za kujiunga, string inayotenganishwa na nafasi au koma}
 ::msgcat::mcset sw chars herufi
+::msgcat::mcset sw {check the buffer (diagnostics)} {hakiki buffer (uchunguzi)}
 ::msgcat::mcset sw choice_next {endelea kwenye njia inayofuata}
 ::msgcat::mcset sw choice_retry {jaribu tena njia ileile}
 ::msgcat::mcset sw choice_stop {simama hapa}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset sw {command list unavailable (the gateway is not reachable)} {orodha ya amri haipatikani (lango halipatikani)}
 ::msgcat::mcset sw {command palette} {paleti ya amri}
 ::msgcat::mcset sw {command search} {tafuta amri}
+::msgcat::mcset sw {command-center audit log} {kumbukumbu ya ukaguzi ya kituo cha amri}
 ::msgcat::mcset sw commands amri
 ::msgcat::mcset sw {commands stay on your own session; /leave returns from the joined session} {amri zinabakia kwenye kikao chako; /leave hurudi kutoka kwenye kikao ulichoungana nacho}
 ::msgcat::mcset sw commands: amri:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset sw {config changes from peers that wait for you; /configsync apply lands them} {mabadiliko ya usanidi kutoka kwa wenzako yanayokusubiri; /configsync apply huyatekeleza}
 ::msgcat::mcset sw {config file: %s} {faili la usanidi: %s}
 ::msgcat::mcset sw {config key} {ufunguo wa config}
+::msgcat::mcset sw {config result} {matokeo ya usanidi}
 ::msgcat::mcset sw {config unavailable} {config haipatikani}
 ::msgcat::mcset sw {config unavailable: %s} {config haipatikani: %s}
 ::msgcat::mcset sw {config value} {thamani ya config}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset sw doctor_resident {hukaa kwenye kila maelekezo: %{shown} kati ya herufi %{total} (~tokeni %{tokens}) — yaliyobaki hupakiwa yanapohitajika kwa: memory action=read path=%{path}}
 ::msgcat::mcset sw doctor_title {ukaguzi wa kumbukumbu}
 ::msgcat::mcset sw doctor_total {jumla: herufi %{chars} katika faili %{files} (~tokeni %{tokens})}
-::msgcat::mcset sw {documentation is not in this source checkout: %s} {nyaraka hazipo katika nakala hii ya chanzo: %s}
 ::msgcat::mcset sw done imekamilika
 ::msgcat::mcset sw {done · %1$s/%2$s} {imekamilika · %1$s/%2$s}
 ::msgcat::mcset sw {done, but the model returned no text} {imekamilika, lakini model haikurudisha maandishi}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset sw {grant a role (owner) · /revoke <id> takes it back} {toa jukumu (owner) · /revoke <id> hulirudisha}
 ::msgcat::mcset sw {grant a role to an identity} {kabidhi jukumu kwa utambulisho}
 ::msgcat::mcset sw {guards unreachable} {walinzi hawaifikiki}
-::msgcat::mcset sw guts: guts:
+::msgcat::mcset sw {guts ▾} {ndani ▾}
 ::msgcat::mcset sw {gw hooks} {viwambo vya gw}
 ::msgcat::mcset sw {gw procs} {procz za gw}
 ::msgcat::mcset sw {halt after N identical calls} {simama baada ya wito N wenye fanana}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset sw {live patching ARMED} {live patching IMEWASHWA}
 ::msgcat::mcset sw {live patching ARMED — an agent can now redefine procs in this window} {live patching IMEWASHWA — agent sasa anaweza kufafanua upya procs kwenye dirisha hili}
 ::msgcat::mcset sw {live patching disarmed} {live patching imezimwa}
+::msgcat::mcset sw load mzigo
 ::msgcat::mcset sw loaded imepakiwa
 ::msgcat::mcset sw {loaded older messages} {jumbe za awali zimepakiwa}
 ::msgcat::mcset sw loading… inapakia…
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset sw {no upstream reading for %s} {hakuna usomaji wa upstream kwa %s}
 ::msgcat::mcset sw {no word match} {hakuna neno linalolingana}
 ::msgcat::mcset sw {no xdg-open — path copied instead} {hakuna xdg-open — path imenakiliwa badala yake}
+::msgcat::mcset sw {nobody else's session is open on %s right now} {hakuna kikao cha mtu mwingine kilichofunguliwa kwenye %s sasa hivi}
 ::msgcat::mcset sw {node log} {logi ya nodi}
 ::msgcat::mcset sw {none loaded} {hakuna iliyopakiwa}
 ::msgcat::mcset sw {none recorded} {hakuna kilichorekodiwa}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset sw {not installed} haijasakinishwa
 ::msgcat::mcset sw {not reported} hairipotiwi
 ::msgcat::mcset sw {not running} haiendeshwi
+::msgcat::mcset sw {not saved: drafting the change as an extension} {haijahifadhiwa: mabadiliko yanaandikwa kama kiendelezi}
+::msgcat::mcset sw {not sent: %s} {hakikutumwa: %s}
 ::msgcat::mcset sw {not set in config.toml — the built-in default applies. %s} {haikuwekwa kwenye config.toml — chaguo-msingi la ndani linatumika. %s}
 ::msgcat::mcset sw {not set yet — /secret set it later} {bado haijawekwa — iweke baadaye kwa /secret set}
 ::msgcat::mcset sw {not signed: %s} {hakijasainiwa: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset sw {on no plan} {kukiwa hakuna mpango}
 ::msgcat::mcset sw {on the} kwenye
 ::msgcat::mcset sw {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {imewashwa/imezimwa hunyamazisha noti ya utaratibu kwenye transcript — kwa kikao hiki, au kama chaguo-msingi, kufuatana na scope hapa chini. Inasimamia NOTI; kile kila utaratibu HUfanya kimewekwa kwenye sehemu iliyotajwa kwenye safu yake, na Sanidi… inaifungua. Vidhibiti vya walinzi vinaweza kuhaririwa papo hapo.}
+::msgcat::mcset sw {on; this gateway does not say whether they reach the home chat} {imewashwa; gateway hii haisemi kama zinafika kwenye chat ya nyumbani}
 ::msgcat::mcset sw {one-shot tcl-lsp diagnostics — no model turn} {uchunguzi wa tcl-lsp wa mara moja — bila zamu ya modeli}
 ::msgcat::mcset sw {open a saved file first} {fungua faili iliyohifadhiwa kwanza}
 ::msgcat::mcset sw {open links} {kufungua viungo}
+::msgcat::mcset sw {open one of the desktop's own source files} {fungua moja ya faili za msimbo za desktop yenyewe}
 ::msgcat::mcset sw {open the engine log} {fungua kumbukumbu ya engine}
 ::msgcat::mcset sw {open the joined session before /leave (on %s)} {fungua kikao ulichoungana nacho kabla ya /leave (kwenye %s)}
 ::msgcat::mcset sw {open the selected child session} {fungua kikao cha mtoto kilichochaguliwa}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset sw {read-only: [approvals] allowlist} {kusoma tu: orodha ya kuruhusiwa ya [approvals]}
 ::msgcat::mcset sw {read-only: this session lives on %1$s (as read at %2$s)} {soma tu: kikao hiki kiko kwenye %1$s (kama kilivyosomwa saa %2$s)}
 ::msgcat::mcset sw {read-only: this skill comes from the %s library} {soma tu: ustadi huu unatoka kwenye maktaba ya %s}
+::msgcat::mcset sw {reading %1$s on %2$s…} {inasoma %1$s kwenye %2$s…}
 ::msgcat::mcset sw reasoning kufikiri
 ::msgcat::mcset sw {reasoning display: %1$s · %2$s blocks} {onyesho la kufikiri: %1$s · %2$s vizuizi}
 ::msgcat::mcset sw {reasoning display: %s} {onyesho la kufikiri: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset sw {run failed: %s} {utekelezaji umeshindwa: %s}
 ::msgcat::mcset sw {run in:} {endesha katika:}
 ::msgcat::mcset sw running inaendesha
+::msgcat::mcset sw {running %s on the listed nodes…} {inaendesha %s kwenye nodi zilizoorodheshwa…}
 ::msgcat::mcset sw {running since %s} {inaendesha tangu %s}
 ::msgcat::mcset sw {running subagents; /subagents cancel <id>} {subagents zinazoendelea; /subagents cancel <id>}
 ::msgcat::mcset sw {save failed} {kuhifadhi kumeshindwa}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset sw {send failed: %s} {kutuma kumeshindikana: %s}
 ::msgcat::mcset sw {send the message; while a turn runs, queue it as steering} {tuma ujumbe; zamu inapoendelea, uiweke kwenye foleni kama uelekezaji}
 ::msgcat::mcset sw sent imetumwa
-::msgcat::mcset sw {sent to the owner's home chat} {imetumwa kwenye chat ya nyumbani ya mmiliki}
+::msgcat::mcset sw {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {hutumwa kwenye chat ya nyumbani ya mmiliki na gateway inayoendesha adapta yake ya Telegram, si hii}
+::msgcat::mcset sw {sent to the owner's home chat from this gateway} {hutumwa kwenye chat ya nyumbani ya mmiliki kutoka gateway hii}
 ::msgcat::mcset sw server seva
 ::msgcat::mcset sw {server buffers merged} {bufera za seva zimeunganishwa}
 ::msgcat::mcset sw {server buffers separate} {bufera za seva zimegawanyika}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset sw {session, model, lifecycle} {kikao, modeli, mzunguko wa maisha}
 ::msgcat::mcset sw {session: %s} {kikao: %s}
 ::msgcat::mcset sw {sessions    %s} {vikao    %s}
+::msgcat::mcset sw {sessions you can join on %s (/join <name or id>):} {vikao unavyoweza kuungana navyo kwenye %s (/join <jina au kitambulisho>):}
 ::msgcat::mcset sw {sessions: unreachable} {vikao: havipatikani}
 ::msgcat::mcset sw {set by} {imewekwa na}
 ::msgcat::mcset sw {set. %s} {imewekwa. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset sw {split: %s} {mgawanyiko: %s}
 ::msgcat::mcset sw {ssh to %1$s failed: %2$s} {ssh kwa %1$s imeshindwa: %2$s}
 ::msgcat::mcset sw {stale — no heartbeat within the threshold} {imechelewa — hakuna mpigo wa moyo ndani ya kizingiti}
+::msgcat::mcset sw {standing approval grants: always and this session; revoke one} {idhini za kudumu zilizotolewa: daima na kikao hiki; batilisha moja}
 ::msgcat::mcset sw {standing global and session permission grants} {idhini za kudumu za kimataifa na za kikao zilizotolewa}
+::msgcat::mcset sw {start the line with // to send it as text} {anza mstari kwa // ili kuituma kama maandishi}
 ::msgcat::mcset sw state hali
 ::msgcat::mcset sw {state       never reached} {hali       haijafikiwa kamwe}
 ::msgcat::mcset sw {state       reachable} {hali       inayofikiwa}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset sw {the config.toml that will be written} {config.toml itakayoandikwa}
 ::msgcat::mcset sw {the default (config.toml)} {chaguo-msingi (config.toml)}
 ::msgcat::mcset sw {the engine refused these answers: %s} {engine imekataa majibu haya: %s}
+::msgcat::mcset sw {the file to open: type a path, then Return or Open} {faili ya kufungua: andika njia, kisha Return au Fungua}
 ::msgcat::mcset sw {the first ACL owner identity} {utambulisho wa kwanza wa mmiliki wa ACL}
 ::msgcat::mcset sw {the gateway answered without a report} {gateway ilijibu bila ripoti}
 ::msgcat::mcset sw {the model/provider pair is incomplete — the gateway will not route until both are present} {jozi ya model/mtoa huduma haijakamilika — gateway haitaelekeza hadi zote mbili ziwepo}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset sw unknown haijulikani
 ::msgcat::mcset sw {unknown api_mode %{mode} — expected one of %{modes}} {api_mode isiyojulikana %{mode} — inatarajiwa moja kati ya: %{modes}}
 ::msgcat::mcset sw {unknown bindings '%{rest}' · normie|emacs|vi} {bindings isiyojulikana '%{rest}' · normie|emacs|vi}
+::msgcat::mcset sw {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {amri isiyojulikana %{cmd} hapa — /help huorodhesha amri za uso huu; hakuna kilichotumwa}
 ::msgcat::mcset sw {unknown command /%s — /help lists them} {amri isiyojulikana /%s — /help inaorodhesha}
 ::msgcat::mcset sw {unknown command: /%s} {amri isiyojulikana: /%s}
 ::msgcat::mcset sw {unknown keymap: %s (normie/emacs/vi)} {keymap isiyojulikana: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset sw {upstream plan credits and windows — /usage is the local ledger} {mikopo na vipindi vya mpango wa juu — /usage ni daftari la ndani}
 ::msgcat::mcset sw {upstream plan quota} {kiasi cha mpango wa upstream}
 ::msgcat::mcset sw uptime {muda wa uendeshaji}
-::msgcat::mcset sw {usage: /join <session> or /join <instance>/<session>} {matumizi: /join <kikao> au /join <instance>/<kikao>}
+::msgcat::mcset sw {usage: /export [md|json]} {matumizi: /export [md|json]}
 ::msgcat::mcset sw {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {matumizi: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset sw {usage: /resume <id or prefix>} {matumizi: /resume <id au kiambishi>}
 ::msgcat::mcset sw {usage: /resume <id-or-prefix>} {matumizi: /resume <id-or-prefix>}

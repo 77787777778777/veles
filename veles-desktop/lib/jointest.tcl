@@ -52,6 +52,8 @@ namespace eval ::_http {
     variable fail_save 0
     variable chat_answer ""
     variable get_answer ""
+    variable join_answer ""
+    variable candidates {{"sessions": []}}
     variable command_answer {{"handled": true, "text": "engine answered"}}
 }
 rename ::vinst::save ::vinst::save_fixture_real
@@ -64,10 +66,12 @@ rename ::vapi::post ::vapi::post_fixture_real
 proc ::vapi::post {path body args} {
     lappend ::_http::calls [list [::vapi::attached] $path $body [::vapi::_url $path]]
     if {$path eq "/api/join"} {
+        if {$::_http::join_answer ne ""} { return [{*}$::_http::join_answer] }
         return {{"join": {"join_id": "j-e2e", "from_instance": "laptop", "from_session": "mine", "target_instance": "", "target_session": "alice"}}}
     }
     if {$path eq "/api/join/leave"} { return {{"ok": true}} }
     if {$path eq "/api/command"} { return $::_http::command_answer }
+    if {$path eq "/api/commands/render"} { error {HTTP 404: {"error":"no such command"}} }
     if {$path eq "/api/chat"} {
         if {$::_http::chat_answer ne ""} { return $::_http::chat_answer }
         return {{"started": true, "join": true}}
@@ -83,6 +87,10 @@ proc ::vapi::post {path body args} {
 rename ::vapi::get ::vapi::get_fixture_real
 proc ::vapi::get {path {ms 0}} {
     lappend ::_http::calls [list [::vapi::attached] $path {} [::vapi::_url $path]]
+    if {$path eq "/api/join/candidates"} { return $::_http::candidates }
+    if {[string match "/api/sessions/*/export?format=*" $path]} {
+        return {{"content": "exported", "format": "x", "message_count": 0}}
+    }
     if {[string match "/api/join/status?*" $path]} {
         if {$::_http::get_answer ne ""} { return $::_http::get_answer }
         return {{"join":{"join_id":"j-restart","target_session":"alice","from_instance":"","from_session":""}}}
@@ -369,6 +377,129 @@ ok "an unhandled /monitors cancel 2 says the command is unknown" {
     [string match "*unknown command: /monitors*" [lindex $::vchat::notes end 1]]
 }
 set ::_http::command_answer {{"handled": true, "text": "engine answered"}}
+
+# ── a line that is text although it opens with / (SMOKE-19 follow-up) ─
+# The composer handed every `/` line to its commands, and `//usr is
+# full` or `/home/x/file fails` ended as "unknown command" with no way
+# to send it. The gateway's one rule (commands::slash_line, also the
+# TUI's and the REPL's) answers `send`; the composer sends that as a
+# message, through send_current, exactly as if typed. An unknown
+# command says how to send it as text.
+puts "\na line the gateway judges text is sent as a message"
+foreach {typed answer} {
+    {//usr is full} {/usr is full}
+    {/home/x/file fails} {/home/x/file fails}
+} {
+    set ::_http::command_answer [format {{"handled": false, "text": "", "reload": false, "send": "%s"}} $answer]
+    set ::_http::chat_answer {{"started": true}}
+    ::_http::reset
+    set ::vchat::busy 0
+    set ::vchat::notes {}
+    .mid.chatwrap.chat.input delete 1.0 end
+    .mid.chatwrap.chat.input insert 1.0 $typed
+    ::vchat::send_current
+    set _cmd [lsearch -inline -index 1 $::_http::calls /api/command]
+    set _chat [lsearch -inline -index 1 $::_http::calls /api/chat]
+    ok "$typed: the gateway is asked with the line as typed" {
+        [llength $_cmd] > 0
+        && [dict get [::json::json2dict [lindex $_cmd 2]] command] eq $typed
+    }
+    ok "$typed: sent as the message `$answer`" {
+        [llength $_chat] > 0
+        && [dict get [::json::json2dict [lindex $_chat 2]] text] eq $answer
+    }
+}
+set ::_http::command_answer {{"handled": false, "text": "", "reload": false}}
+::_http::reset
+set ::vchat::notes {}
+.mid.chatwrap.chat.input delete 1.0 end
+.mid.chatwrap.chat.input insert 1.0 {/usr is full}
+::vchat::send_current
+ok "an unknown command is not sent, and says how to send it as text" {
+    [lsearch -index 1 $::_http::calls /api/chat] < 0
+    && [string match "*unknown command: /usr*" [lindex $::vchat::notes end 1]]
+    && [string match "*start the line with // to send it as text*" [lindex $::vchat::notes end 1]]
+}
+set ::_http::command_answer {{"handled": true, "text": "engine answered"}}
+set ::_http::chat_answer ""
+
+
+# ── /join by name, and a bare /join that lists (ASK-1) ───────────────
+# Help and README promise `/join [name|id]` on the desktop; the desktop
+# sent the word verbatim and the gateway looked it up as an exact id,
+# so `/join alice` answered "no live chat-backed session alice" and a
+# bare /join printed usage. The gateway resolves (one resolver for every
+# surface); the desktop must follow the id the gateway resolved, list
+# what can be joined for a bare /join, and show a refusal as words.
+puts "\n/join by name and bare /join"
+::vinst::set_remote_join {}
+set _here [::vapi::attached]
+set ::vchat::session mine
+::_http::reset
+set ::vchat::notes {}
+set ::_http::candidates {{"sessions": [{"session_id": "20261110_120000_aaaa11", "label": "[alice in #chan]"}, {"session_id": "20261110_110000_bbbb22", "label": "[bob on irc]"}]}}
+::vchat::slash_command /join
+ok "a bare /join asks the attached gateway who can be joined" {
+    [lsearch -index 1 $::_http::calls /api/join/candidates] >= 0
+    && [lindex $::_http::calls 0 0] eq $_here
+}
+ok "…and lists them with their ids, never a usage line" {
+    [string match "*20261110_120000_aaaa11*alice in #chan*20261110_110000_bbbb22*bob on irc*" [lindex $::vchat::notes end 1]]
+    && ![string match "*usage*" [lindex $::vchat::notes end 1]]
+}
+set ::_http::candidates {{"sessions": []}}
+set ::vchat::notes {}
+::vchat::slash_command /join
+ok "with nobody to join it says so" {
+    [string match "*nobody*" [lindex $::vchat::notes end 1]]
+}
+::_http::reset
+set ::_http::join_answer {return {{"join": {"join_id": "j-name", "from_instance": "", "from_session": "", "target_instance": "", "target_session": "20261110_120000_aaaa11"}}}}
+::vchat::slash_command {/join alice}
+set _join_body [::json::json2dict [lindex [lsearch -inline -index 1 $::_http::calls /api/join] 2]]
+ok "/join alice sends the name for the gateway to resolve" {
+    [dict get $_join_body session_id] eq "alice"
+}
+ok "…and the desktop follows the session the gateway resolved" {
+    $::vchat::session eq "20261110_120000_aaaa11"
+    && [dict get [::vinst::remote_join] target_session] eq "20261110_120000_aaaa11"
+}
+::vchat::slash_command /leave
+ok "/leave from it posts the resolved id, not the name" {
+    [dict get [::json::json2dict [lindex [lsearch -inline -index 1 $::_http::calls /api/join/leave] 2]] session_id] eq "20261110_120000_aaaa11"
+    && ![dict size [::vinst::remote_join]]
+}
+set ::_http::join_answer {error {HTTP 409: {"error":"no session of \"carol\" is open here; /join lists the ones you can join"}}}
+set ::vchat::notes {}
+set ::vchat::session mine
+::vchat::slash_command {/join carol}
+ok "a refused join is shown as the gateway's words, not its JSON (SMOKE-20)" {
+    [lindex $::vchat::notes end 1] eq [format {join failed on %s: no session of "carol" is open here; /join lists the ones you can join} $_here]
+}
+set ::_http::join_answer ""
+
+# ── /export takes the engine's formats (ASK-6, SMOKE-24) ─────────────
+# `/export JSON` wrote Markdown and `/export xml` wrote Markdown: only a
+# lower-case `json` was recognised and everything else fell to the
+# default. The engine (export.rs Format::parse) takes md, markdown and
+# json in any case and refuses anything else.
+puts "\n/export formats"
+foreach {line want} {{/export JSON} json {/export md} markdown {/export} markdown {/export Markdown} markdown} {
+    ::_http::reset
+    set ::vchat::notes {}
+    ::vchat::slash_command $line
+    ok "$line asks for $want" {
+        [lsearch -index 1 $::_http::calls "/api/sessions/mine/export?format=$want"] >= 0
+        && [string match "exported to *" [lindex $::vchat::notes end 1]]
+    }
+}
+::_http::reset
+set ::vchat::notes {}
+::vchat::slash_command {/export xml}
+ok "/export xml is refused with the usage and exports nothing" {
+    [llength $::_http::calls] == 0
+    && [string match "*usage: /export \\\[md|json\\\]*" [lindex $::vchat::notes end 1]]
+}
 
 file delete -force $_home
 puts "jointest: $passed passed, $failed failed"

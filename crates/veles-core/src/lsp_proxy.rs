@@ -828,7 +828,8 @@ mod tests {
                 }
             }
         }
-        crate::shell::which(name)
+        // As the gateway finds it: the build's own copy (VELES_TCL_LSP), then PATH.
+        crate::dev_check::find_program(name)
     }
 
     fn need(name: &str) -> Option<std::path::PathBuf> {
@@ -1150,8 +1151,16 @@ mod tests {
             })
             .await;
         assert!(hover_text(&hover).contains("fn helper"), "{hover}");
+        // Polled like the hover and the completion: on a loaded machine
+        // rust-analyzer answered the hover and then `null` to the
+        // definition asked right after it (it was still analysing), and
+        // the single request made the hermetic gate red on 2026-11-11
+        // with nothing wrong. What is asserted is unchanged: the
+        // definition resolves, to line 1.
         let def = live
-            .request("textDocument/definition", at(&uri, 6, 5), 60)
+            .poll("textDocument/definition", at(&uri, 6, 5), 60, |d| {
+                definition_line(d).is_some()
+            })
             .await;
         assert_eq!(definition_line(&def), Some(1), "{def}");
         // Completion inside `hel|per`: the prefix `hel` offers `helper`.
@@ -1229,9 +1238,11 @@ mod tests {
         assert!(stop(Some("live-ts")));
     }
 
-    /// tcl-lsp is the operator's own build, not a nixpkgs package, so the
-    /// devShell does not require it; on a machine that has it this is the
-    /// Tcl leg of the same round trip. It also pins pitfall 105 against
+    /// The Tcl leg of the same round trip, against the tcl-lsp the Linux
+    /// packages ship: the devShell and `nix flake check` name the flake's
+    /// pinned build in VELES_TCL_LSP, as the package does, and require it
+    /// (DEV-6), so the server is found the way the gateway finds it, off
+    /// PATH. It also pins pitfall 105 against
     /// the real server: tcl-lsp's "utf-8" columns are BYTES, so a hover
     /// sent at the Tk character column after "éé€" misses.
     #[tokio::test]

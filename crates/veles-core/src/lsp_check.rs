@@ -51,7 +51,16 @@ fn deadline_after(secs: u64) -> Instant {
 /// per line. None when the server could not be started or never
 /// answered.
 pub fn lint_file(path: &str, timeout_secs: u64) -> Result<Vec<String>, String> {
-    lint_file_cmd("tcl-lsp", path, timeout_secs)
+    lint_file_cmd(&tcl_lsp(), path, timeout_secs)
+}
+
+/// The tcl-lsp to start: the one the Dev tab starts
+/// ([`crate::dev_check::find_program`]: the build's own copy, then
+/// PATH), else the bare name, whose spawn error says it is missing.
+fn tcl_lsp() -> String {
+    crate::dev_check::find_program("tcl-lsp")
+        .map(|p| p.to_string_lossy().into_owned())
+        .unwrap_or_else(|| "tcl-lsp".into())
 }
 
 /// The real body, with the server binary as a parameter so the tests
@@ -157,7 +166,7 @@ pub fn lint_rows(
 /// after showing a diff summary, because silently rewriting a file is
 /// the hermes bargain this round exists to stop.
 pub fn fmt_file(path: &str, timeout_secs: u64) -> Result<Option<String>, String> {
-    fmt_file_cmd("tcl-lsp", path, timeout_secs)
+    fmt_file_cmd(&tcl_lsp(), path, timeout_secs)
 }
 
 fn fmt_file_cmd(cmd: &str, path: &str, timeout_secs: u64) -> Result<Option<String>, String> {
@@ -615,9 +624,10 @@ mod tests {
     /// tcl-lsp has no `--version`: it ignores the flag and starts
     /// serving on stdin. An inherited stdin that never closes (a
     /// background shell's socket) then hung this probe, and the whole
-    /// test binary, for good; a null stdin makes it exit at once.
+    /// test binary, for good; a null stdin makes it exit at once. The
+    /// program is the one `lint_file` starts (the shipped copy first).
     fn which_tcl_lsp() -> Option<()> {
-        std::process::Command::new("tcl-lsp")
+        std::process::Command::new(super::tcl_lsp())
             .arg("--version")
             .stdin(Stdio::null())
             .stdout(Stdio::null())

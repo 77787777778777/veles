@@ -35,12 +35,18 @@ close $f
 set output [exec tclsh [file join $dir fleetworker.tcl] < $input]
 set parsed [::json::json2dict $output]
 ok "worker returns structured JSON" {[dict exists $parsed ok] && [dict exists $parsed operation]}
-ok "worker refuses the fixture transport without deploying" {
-    [dict get $parsed ok] in {0 false} && [string match "*transport operation failed*" $output]
+# An unreachable target cannot prove which node it is (FLEET-2), so the
+# stage is refused before anything is asked of it and nothing is
+# journaled as failed: the operation stays reviewed and can be retried or
+# abandoned. A failure AFTER the proof is durable (the end-to-end block).
+ok "worker refuses the unreachable fixture target without deploying" {
+    [dict get $parsed ok] in {0 false} &&
+    [string match "*did not prove it is the selected node*" [dict get $parsed error]] &&
+    [string match "*could not be asked which node it is*" [dict get $parsed diagnostic]]
 }
 ok "worker does not leak the instance credential" {![string match *fixture-secret* $output]}
 set saved [::vfleetjournal::get [dict get $op id]]
-ok "worker failure is durable in the journal" {[dict get $saved targets node-a status] eq "failed"}
+ok "an identity refusal leaves the target reviewed in the journal" {[dict get $saved targets node-a status] eq "reviewed"}
 # F1-11: the operator used to see only the redacted phrase. The reply now
 # carries the raw cause as `diagnostic`, which the journal never stores.
 ok "a worker refusal carries the operator diagnostic, and the journal does not" {
@@ -123,13 +129,24 @@ proc worker_read {chan} {
 set m [::vfleetdeploy::manifest {node-a} [release] native-bundle]
 set pre [::vfleetdeploy::preflight $m [dict create node-a $observed]]
 set e2e [::vfleetdeploy::apply $m $pre]
+# FLEET-2 over real HTTP: the gateway behind `alpha` says it is node-x.
+set ::fleetfix::gw(self_id) node-x
+set ::fleetfix::gw(log) {}
+set wrong_reply [run_worker [dict create operation $e2e action stage node_id node-a journal_root $root registry $e2e_instances]]
+ok "the worker refuses to stage on a gateway that answers as another node, naming both ids" {
+    [dict get $wrong_reply ok] in {0 false} &&
+    [string match "*saved instance alpha is node node-x, not node-a*" [dict get $wrong_reply diagnostic]] &&
+    $::fleetfix::gw(log) eq {GET /api/fleet} && $::fleetfix::gw(pending) eq "" &&
+    [dict get [::vfleetjournal::get [dict get $e2e id]] targets node-a status] eq "reviewed"
+}
+set ::fleetfix::gw(self_id) node-a
 set ::fleetfix::gw(log) {}
 set staged_reply [run_worker [dict create operation $e2e action stage node_id node-a journal_root $root registry $e2e_instances]]
 set staged_journal [::vfleetjournal::get [dict get $e2e id]]
-ok "the worker stages over the real transport: health, installer state, signed preview" {
+ok "the worker stages over the real transport: identity, health, installer state, signed preview" {
     [dict get $staged_reply ok] in {1 true} &&
     [dict get $staged_journal targets node-a status] eq "staged" &&
-    $::fleetfix::gw(log) eq {GET /api/health GET /api/install/state POST /api/install/download}
+    $::fleetfix::gw(log) eq {GET /api/fleet GET /api/health GET /api/install/state POST /api/install/download}
 }
 ok "the staged plan is the gateway's single pending plan, under a fresh request id" {
     $::fleetfix::gw(pending) eq [dict get $staged_journal reviews node-a plan_id] &&
@@ -169,6 +186,20 @@ ok "abandoning an untouched staged operation cancels its signed plan and closes 
     $::fleetfix::gw(pending) eq "" &&
     [dict get [::vfleetjournal::get [dict get $abandon_op id]] status] eq "abandoned" &&
     [lsearch -exact [lmap op [::vfleetjournal::unfinished] {dict get $op id}] [dict get $abandon_op id]] < 0
+}
+# A failure after the identity proof is durable: the target answers as
+# node-a, then reports a running revision that is not a commit.
+set failing_op [::vfleetdeploy::apply $m $pre]
+set saved_revision $::fleetfix::gw(revision)
+set ::fleetfix::gw(revision) not-a-commit
+set failed_reply [run_worker [dict create operation $failing_op action stage node_id node-a journal_root $root registry $e2e_instances]]
+set ::fleetfix::gw(revision) $saved_revision
+set failed_journal [::vfleetjournal::get [dict get $failing_op id]]
+ok "worker failure after the identity proof is durable in the journal, its diagnostic is not" {
+    [dict get $failed_reply ok] in {0 false} &&
+    [dict get $failed_journal targets node-a status] eq "failed" &&
+    [dict exists $failed_reply diagnostic] &&
+    [string first [dict get $failed_reply diagnostic] [::vfleetjson::encode [::vfleetjson::operation_value $failed_journal]]] < 0
 }
 close $server
 file delete -force $root $reqdir

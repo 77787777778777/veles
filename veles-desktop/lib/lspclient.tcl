@@ -134,11 +134,20 @@ proc ::vlsp::_session_path {path} {
     return "$path?session=$session"
 }
 
-# The server's name for status lines: what the gateway ran.
+# The server's name for status lines: what the gateway ran, as its
+# program name. The gateway reports the file it found, and it may be a
+# Windows machine while this desktop is not: `file tail` does not split
+# on a backslash here, so the path is cut on both separators, and the
+# suffix Windows adds (.exe, .cmd, .bat) is not part of the name.
 proc ::vlsp::server_label {} {
     variable server
     variable language
-    if {$server ne ""} { return [file tail $server] }
+    if {$server ne ""} {
+        set name [lindex [split $server "/\\"] end]
+        regsub -nocase {\.(exe|cmd|bat)$} $name {} name
+        if {$name ne ""} { return $name }
+        return $server
+    }
     if {$language eq "tcl"} { return tcl-lsp }
     return [::vi18n::mc {language server}]
 }

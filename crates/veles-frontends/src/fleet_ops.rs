@@ -131,7 +131,9 @@ fn last(kind: &str, peer: &str) -> Value {
 pub struct Local {
     store_seq: Option<i64>,
     memory_rev: Option<i64>,
-    config_seq: Option<i64>,
+    /// This node's id while config sync is on: "behind" a config peer
+    /// is counted from its own rows, per peer (see `node_sync_status`).
+    config_node: Option<String>,
     vault_digest: Option<String>,
 }
 
@@ -145,8 +147,13 @@ impl Local {
             memory_rev: sync_memory
                 .then(|| veles_core::memory::MemoryStore::new().latest_rev_id().ok())
                 .flatten(),
-            config_seq: sync_memory
-                .then(|| store.config_log_max_seq().ok())
+            config_node: sync_memory
+                .then(|| {
+                    veles_core::node::NodeIdentity::load(&veles_core::config::config_dir())
+                        .ok()
+                        .flatten()
+                        .map(|identity| identity.id)
+                })
                 .flatten(),
             vault_digest: sync_memory
                 .then(|| {
@@ -212,9 +219,18 @@ pub fn node_sync_status(
             }
             "config" => {
                 let cursor = meta_i64(store, &veles_core::configsync::cursor_key(peer));
+                // Behind is what the next push would carry: this node's
+                // own offered rows past the cursor. The log also holds
+                // every row received from the other peers, at higher
+                // rowids; those are their origin's to push, and counting
+                // them kept a peer "10 behind" forever (SMOKE-7).
+                let pending = local
+                    .config_node
+                    .as_deref()
+                    .and_then(|me| veles_core::configsync::pending_offer(store, me, cursor).ok());
                 row["cursor"] = json!(cursor);
-                row["local"] = json!(local.config_seq);
-                row["behind"] = json!(local.config_seq.map(|h| (h - cursor).max(0)));
+                row["local"] = json!(pending.map(|(_, head)| head.unwrap_or(cursor).max(cursor)));
+                row["behind"] = json!(pending.map(|(count, _)| count));
             }
             _ => {
                 let has = store.meta_get(&veles_core::vault::peer_has_key(peer));
@@ -238,7 +254,20 @@ fn heartbeat_age(heartbeat_at: &str) -> Option<i64> {
 /// Per-node health: `stale` (no heartbeat within `stale_after_secs`),
 /// else `failing` (a sync kind is in backoff, or the last probe could
 /// not reach it), else `fresh`. The self row is never `failing`.
-pub fn node_health(node: &NodeRow, stale_after_secs: u64, sync: &Value, is_self: bool) -> Value {
+///
+/// A failed probe stands only until the next good exchange with the
+/// node: a gossip exchange (`gossip`, the last one with this node's
+/// gossip peer) or a sync pass of any kind that succeeded after it. It
+/// used to stand until someone probed again, so one failed Probe kept a
+/// node red, and its "failing" alert was never followed by a recovery
+/// (FLEET-3).
+pub fn node_health(
+    node: &NodeRow,
+    stale_after_secs: u64,
+    sync: &Value,
+    gossip: &Value,
+    is_self: bool,
+) -> Value {
     let stale = veles_core::node::is_stale(&node.heartbeat_at, stale_after_secs as i64);
     let failing: Vec<&str> = KINDS
         .iter()
@@ -250,7 +279,12 @@ pub fn node_health(node: &NodeRow, stale_after_secs: u64, sync: &Value, is_self:
         .collect();
     let peer = cfg_peer_name(node);
     let probe = last("probe", &peer);
-    let unreachable = probe["ok"] == json!(false);
+    let superseded = KINDS
+        .iter()
+        .map(|k| &sync[*k]["last"])
+        .chain(std::iter::once(gossip))
+        .any(|pass| pass["ok"] == json!(true) && later(&pass["at"], &probe["at"]));
+    let unreachable = probe["ok"] == json!(false) && !superseded;
     let state = if is_self {
         "self"
     } else if stale {
@@ -265,12 +299,34 @@ pub fn node_health(node: &NodeRow, stale_after_secs: u64, sync: &Value, is_self:
         "heartbeat_age_secs": heartbeat_age(&node.heartbeat_at),
         "failing": failing,
         "probe": probe,
+        "unreachable": unreachable,
     })
+}
+
+/// Is the RFC 3339 time `a` later than `b`? A missing or unreadable
+/// time is never later.
+fn later(a: &Value, b: &Value) -> bool {
+    let t = |v: &Value| {
+        v.as_str()
+            .and_then(|s| chrono::DateTime::parse_from_rfc3339(s).ok())
+    };
+    matches!((t(a), t(b)), (Some(a), Some(b)) if a > b)
 }
 
 /// The probe record's key: the node id (a probe resolves its own peer).
 fn cfg_peer_name(node: &NodeRow) -> String {
     node.id.clone()
+}
+
+/// The last gossip exchange with the configured gossip peer that names
+/// `node`, or null.
+fn gossip_last(cfg: &VelesConfig, node: &NodeRow) -> Value {
+    cfg.cluster
+        .gossip_peers
+        .iter()
+        .find(|p| p.as_str() == node.name || p.as_str() == node.id)
+        .map(|p| last("gossip", p))
+        .unwrap_or(Value::Null)
 }
 
 /// [`node_health`] without this node's high-water marks: what the alert
@@ -293,7 +349,13 @@ pub fn node_health_light(cfg: &VelesConfig, node: &NodeRow, is_self: bool, now: 
         );
     }
     let sync = Value::Object(sync);
-    let mut health = node_health(node, cfg.cluster.stale_after_secs, &sync, is_self);
+    let mut health = node_health(
+        node,
+        cfg.cluster.stale_after_secs,
+        &sync,
+        &gossip_last(cfg, node),
+        is_self,
+    );
     health["sync"] = sync;
     health
 }
@@ -347,7 +409,7 @@ pub fn annotate(body: &mut Value, nodes: &[NodeRow], store: &Store, cfg: &VelesC
             };
             let sync = node_sync_status(store, cfg, &local, node, now);
             let is_self = row["self"] == json!(true);
-            row["health"] = node_health(node, stale_after, &sync, is_self);
+            row["health"] = node_health(node, stale_after, &sync, &gossip_last(cfg, node), is_self);
             row["sync_kinds"] = json!(sync
                 .as_object()
                 .map(|m| m.keys().cloned().collect::<Vec<_>>())
@@ -366,11 +428,237 @@ pub fn annotate(body: &mut Value, nodes: &[NodeRow], store: &Store, cfg: &VelesC
         .map(|t| json!({"id": t.id, "forgotten_at": t.forgotten_at}))
         .collect::<Vec<_>>());
     body["versions"] = crate::fleet_obs::version_spread(nodes, stale_after);
+    // Deployment consistency (version, revision, modules, plugins,
+    // shadowing user plugins) as the last Drift check found it: it
+    // needs a dial to every node, which this 15 s poll does not make.
+    body["consistency"] = crate::fleet_obs::consistency_last();
     body["alerts"] = json!({
         "enabled": cfg.notify.fleet_alerts,
         "debounce_secs": cfg.notify.fleet_alert_debounce_secs,
         "recent": crate::fleet_watch::recent(),
     });
+}
+
+/// `/fleet list`: the `/api/fleet` body (`desktop_api::fleet_body`) as
+/// chat text. Any caller with the status capability gets each node's
+/// health state. `full` (the owner) adds what the Instances tab shows:
+/// why a node is stale or failing, its status per sync kind, what waits
+/// in this node's inboxes, a version drift, the nodes forgotten
+/// fleet-wide, and the recent health alerts with where they go; and it
+/// says so when the answering process is not the gateway, whose view
+/// of passes, backoff and alerts is only its own.
+/// `/fleet list` used to print `fresh` or `stale` and a `[sync peer]`
+/// tag for store sync only (FLEET-9).
+pub fn list_text(body: &Value, full: bool) -> String {
+    let rows = body["nodes"].as_array().map(Vec::as_slice).unwrap_or(&[]);
+    if rows.is_empty() {
+        return "no registered nodes; enable the cluster registry to populate /fleet".into();
+    }
+    let secrets = veles_core::secrets::scrubbable();
+    let clean =
+        |s: &str| veles_core::a2a::redact_outbound(&veles_core::secrets::scrub(s, &secrets));
+    let text = |v: &Value| v.as_str().unwrap_or("?").to_string();
+    let mut out = "registered fleet nodes:\n".to_string();
+    for row in rows {
+        // The self row's health state is `self`; say fresh or stale and
+        // mark it, as every other row reads.
+        let state = match row["health"]["state"].as_str() {
+            Some(state) if state != "self" => state,
+            _ if row["stale"] == json!(true) => "stale",
+            _ => "fresh",
+        };
+        out.push_str(&format!(
+            "- {} ({}) {} — {state}",
+            text(&row["id"]),
+            text(&row["name"]),
+            text(&row["host"])
+        ));
+        if row["self"] == json!(true) {
+            out.push_str(" (this node)");
+        }
+        if full {
+            let mut health = row["health"].clone();
+            health["sync"] = row["sync_status"].clone();
+            let why = crate::fleet_watch::detail(&health);
+            if !why.is_empty() {
+                out.push_str(&format!(": {why}"));
+            }
+        }
+        out.push('\n');
+        if full {
+            for kind in KINDS {
+                if row["sync_status"][kind].is_object() {
+                    out.push_str(&format!(
+                        "    {}\n",
+                        kind_line(kind, &row["sync_status"][kind], &clean)
+                    ));
+                }
+            }
+        }
+    }
+    if !full {
+        return out;
+    }
+    if body["gateway"] == json!(false) {
+        out.push_str(
+            "this process runs no gateway: the last passes, backoff and alerts here are only its own\n",
+        );
+    }
+    let inbox = &body["sync"]["inbox"];
+    if inbox.is_object() {
+        out.push_str(&format!(
+            "received, waiting to apply: store {} · memory {} · config {} · vault {}\n",
+            inbox["store"], inbox["memory"], inbox["config"], inbox["vault"]
+        ));
+    }
+    if body["versions"]["drift"] == json!(true) {
+        let groups: Vec<String> = body["versions"]["groups"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .map(|g| {
+                let names: Vec<String> = g["nodes"]
+                    .as_array()
+                    .into_iter()
+                    .flatten()
+                    .map(|n| {
+                        if n["stale"] == json!(true) {
+                            format!("{} (stale)", text(&n["name"]))
+                        } else {
+                            text(&n["name"])
+                        }
+                    })
+                    .collect();
+                format!("{} ({})", text(&g["version"]), names.join(", "))
+            })
+            .collect();
+        out.push_str(&format!(
+            "version drift in the registry: {}\n",
+            groups.join("; ")
+        ));
+    }
+    if body["consistency"].is_object() {
+        out.push_str(&crate::fleet_obs::consistency_text(&body["consistency"]));
+    }
+    let forgotten: Vec<String> = body["forgotten"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .map(|t| format!("{} (at {} UTC)", text(&t["id"]), text(&t["forgotten_at"])))
+        .collect();
+    if !forgotten.is_empty() {
+        out.push_str(&format!("forgotten fleet-wide: {}\n", forgotten.join(", ")));
+    }
+    let alerts = &body["alerts"];
+    let delivery = if alerts["enabled"] != json!(true) {
+        "listed here only; [notify] fleet_alerts is off".to_string()
+    } else {
+        match alerts["delivery"]["sends"].as_str() {
+            Some("here") => "sent to the owner's home chat from this gateway".to_string(),
+            Some("elsewhere") => "sent to the owner's home chat by the gateway that runs its \
+                                  Telegram adapter, not this one"
+                .to_string(),
+            _ => format!("not sent: {}", text(&alerts["delivery"]["reason"])),
+        }
+    };
+    let recent: Vec<String> = alerts["recent"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .take(5)
+        .map(|a| {
+            format!(
+                "    {}: {} → {} {} ({})\n",
+                text(&a["at"]),
+                text(&a["from"]),
+                text(&a["to"]),
+                text(&a["name"]),
+                if a["sent"] == json!(true) {
+                    "sent".to_string()
+                } else {
+                    text(&a["note"])
+                }
+            )
+        })
+        .collect();
+    if recent.is_empty() {
+        out.push_str(&format!(
+            "health alerts ({delivery}): none since this process started\n"
+        ));
+    } else {
+        out.push_str(&format!("health alerts ({delivery}):\n{}", recent.concat()));
+    }
+    out
+}
+
+/// One sync kind of one node, as the tab's detail pane words it.
+fn kind_line(kind: &str, s: &Value, clean: &dyn Fn(&str) -> String) -> String {
+    let count = |v: &Value| v.as_i64().map_or("?".to_string(), |n| n.to_string());
+    let mut parts = Vec::new();
+    if s["dialable"] == json!(false) {
+        parts.push("no [a2a_agents] entry, this peer cannot be dialed".to_string());
+    }
+    if kind == "vault" {
+        parts.push(
+            if s["has_vault"] == json!(false) {
+                "this node has no vault"
+            } else if s["current"] == json!(true) {
+                "the peer holds this vault"
+            } else {
+                "the peer has not been sent this vault yet"
+            }
+            .to_string(),
+        );
+    } else {
+        parts.push(format!(
+            "cursor {} of {} ({} behind)",
+            count(&s["cursor"]),
+            count(&s["local"]),
+            count(&s["behind"])
+        ));
+    }
+    if let Some(ok) = s["last"]["ok"].as_bool() {
+        parts.push(format!(
+            "last pass {} at {}: {}",
+            if ok { "ok" } else { "failed" },
+            s["last"]["at"].as_str().unwrap_or("?"),
+            clean(s["last"]["line"].as_str().unwrap_or(""))
+        ));
+    }
+    if let Some(failures) = s["backoff"]["failures"].as_u64() {
+        parts.push(format!(
+            "backing off: {failures} failure(s), next automatic try in {} s",
+            count(&s["backoff"]["retry_in_secs"])
+        ));
+    }
+    format!(
+        "{kind} sync with {} ({}): {}",
+        s["peer"].as_str().unwrap_or("?"),
+        if s["auto"] == json!(true) {
+            "automatic"
+        } else {
+            "manual only"
+        },
+        parts.join("; ")
+    )
+}
+
+/// `/fleet probe <node>`: a [`probe`] answer as one line.
+pub fn probe_text(v: &Value) -> String {
+    let node = v["node"].as_str().unwrap_or("?");
+    let peer = v["peer"].as_str().unwrap_or("?");
+    let ms = v["latency_ms"].as_u64().unwrap_or(0);
+    if v["reachable"] == json!(true) {
+        return format!("node {node} answered in {ms} ms ([a2a_agents] {peer})");
+    }
+    let secrets = veles_core::secrets::scrubbable();
+    format!(
+        "node {node} did not answer ([a2a_agents] {peer}, {ms} ms): {}",
+        veles_core::a2a::redact_outbound(&veles_core::secrets::scrub(
+            v["error"].as_str().unwrap_or(""),
+            &secrets
+        ))
+    )
 }
 
 // ── operations ───────────────────────────────────────────────────────
@@ -663,7 +951,8 @@ async fn push_vault(
 /// node fleet-wide"), so a peer that still lists the node cannot merge
 /// it back here and drops it itself. Refuses this node itself and a node
 /// still heartbeating (it would re-register on its next tick, and
-/// forgetting a live node is how one loses track of it).
+/// forgetting a live node is how one loses track of it): the guards
+/// `veles nodes forget` shares (`store::forget_refusal`, FLEET-6).
 pub fn forget(
     store: &Arc<Mutex<Store>>,
     cfg: &VelesConfig,
@@ -671,17 +960,21 @@ pub fn forget(
     me: Option<&str>,
     confirmed: bool,
 ) -> Result<Value, OperationError> {
+    use veles_core::store::{forget_refusal, ForgetRefusal};
     let node = find_node(store, requested)?;
-    if me == Some(node.id.as_str()) {
-        return Err(OperationError::Refused(
-            "this is the gateway's own node; it re-registers itself".into(),
-        ));
-    }
-    if !veles_core::node::is_stale(&node.heartbeat_at, cfg.cluster.stale_after_secs as i64) {
-        return Err(OperationError::Refused(format!(
-            "{} is still heartbeating (last {}); only a stale node can be forgotten",
-            node.name, node.heartbeat_at
-        )));
+    match forget_refusal(&node, me, cfg.cluster.stale_after_secs as i64) {
+        Some(ForgetRefusal::ThisNode) => {
+            return Err(OperationError::Refused(
+                "this is the gateway's own node; it re-registers itself".into(),
+            ))
+        }
+        Some(ForgetRefusal::Live { heartbeat_at }) => {
+            return Err(OperationError::Refused(format!(
+                "{} is still heartbeating (last {heartbeat_at}); only a stale node can be forgotten",
+                node.name
+            )))
+        }
+        None => {}
     }
     if !confirmed {
         return Err(OperationError::NeedsConfirmation(format!(
@@ -809,7 +1102,7 @@ mod tests {
         let p = node_sync_status(&store, &cfg, &local, phone, Instant::now());
         assert!(p.get("store").is_none(), "phone is no store peer: {p}");
         assert_eq!(p["config"]["backoff"]["failures"], 1, "{p}");
-        let h = node_health(phone, 300, &p, false);
+        let h = node_health(phone, 300, &p, &Value::Null, false);
         assert_eq!(h["state"], "failing", "{h}");
         assert_eq!(h["failing"], json!(["config"]));
         age(&store, "id-phone", 900);
@@ -819,8 +1112,89 @@ mod tests {
             .into_iter()
             .find(|n| n.id == "id-phone")
             .unwrap();
-        assert_eq!(node_health(&phone, 300, &p, false)["state"], "stale");
+        assert_eq!(
+            node_health(&phone, 300, &p, &Value::Null, false)["state"],
+            "stale"
+        );
         veles_core::backoff::pool().succeeded("configsync:phone");
+    }
+
+    /// SMOKE-7: in a cluster of three, `config_log` holds this node's
+    /// rows AND the rows received from both peers, but a push only ever
+    /// offers this node's own rows. Counting "behind" against the
+    /// highest rowid of every origin left the vps row at "cursor 5 of 15
+    /// (10 behind)" forever while every Sync now said "nothing to push".
+    /// Behind is what the next push would carry, nothing else.
+    #[test]
+    fn config_behind_counts_only_what_a_push_would_send() {
+        let (_home, _env) = veles_core::testenv::scratch_home();
+        let store = Store::open(&veles_core::config::veles_home().join("state.db")).unwrap();
+        registered(&store, "id-vps", "vps");
+        let mut cfg = VelesConfig::default();
+        cfg.cluster.memsync_peers = vec!["vps".into()];
+        let me = veles_core::node::resolve_self(&cfg).unwrap().identity.id;
+        let row =
+            |node: &str, n: i64, key: &str, value: &str| veles_core::configsync::ConfigLogRow {
+                node: node.into(),
+                node_seq: n,
+                at: format!("2026-11-01T00:00:{n:02}.000000000Z"),
+                key: key.into(),
+                value: value.into(),
+            };
+        for n in 1..=5 {
+            store
+                .config_log_append(&row(&me, n, "model.default", &format!("\"m{n}\"")))
+                .unwrap();
+        }
+        // The last push carried those five; then both peers' rows arrived.
+        store
+            .meta_set(&veles_core::configsync::cursor_key("vps"), "5")
+            .unwrap();
+        for origin in ["id-phone", "id-vps"] {
+            for n in 1..=5 {
+                store
+                    .config_log_append(&row(
+                        origin,
+                        n,
+                        "model.default",
+                        &format!("\"{origin}{n}\""),
+                    ))
+                    .unwrap();
+            }
+        }
+        let status = |store: &Store| {
+            let nodes = store.nodes_list().unwrap();
+            let vps = nodes.iter().find(|n| n.id == "id-vps").unwrap();
+            node_sync_status(store, &cfg, &Local::read(store, &cfg), vps, Instant::now())["config"]
+                .clone()
+        };
+        let c = status(&store);
+        assert_eq!(c["behind"], 0, "peers' rows are not ours to push: {c}");
+        assert_eq!(
+            (c["cursor"].clone(), c["local"].clone()),
+            (json!(5), json!(5)),
+            "{c}"
+        );
+        // A row a push withholds (credential-shaped) is not behind either.
+        store
+            .config_log_append(&row(
+                &me,
+                6,
+                "web.search_api",
+                "\"sk-ant-abcdefghijklmnopqrstuvwxyz0123456789\"",
+            ))
+            .unwrap();
+        assert_eq!(status(&store)["behind"], 0, "{}", status(&store));
+        // A new edit here is one row behind, at its own rowid.
+        store
+            .config_log_append(&row(&me, 7, "model.default", "\"m7\""))
+            .unwrap();
+        let c = status(&store);
+        assert_eq!(
+            (c["behind"].clone(), c["local"].clone()),
+            (json!(1), json!(17)),
+            "{c}"
+        );
     }
 
     #[test]
@@ -941,7 +1315,182 @@ mod tests {
         let v = probe(&store, &cfg, "id-vps").await.unwrap();
         assert_eq!(v["reachable"], false, "{v}");
         let node = store.lock_ok().nodes_list().unwrap().remove(0);
-        let h = node_health(&node, 300, &json!({}), false);
+        let h = node_health(&node, 300, &json!({}), &Value::Null, false);
         assert_eq!(h["state"], "failing", "a failed probe marks the node: {h}");
+    }
+
+    /// FLEET-3: one failed manual Probe used to keep the node "failing"
+    /// (a red row, and an alert) until someone probed again: nothing
+    /// else cleared the verdict. The next good exchange with the node — a
+    /// gossip exchange or a sync pass — supersedes it; a probe that fails
+    /// again after that is news again.
+    #[test]
+    fn a_failed_probe_does_not_pin_the_node_failing() {
+        let (_home, _env) = veles_core::testenv::scratch_home();
+        let store = Store::open(&veles_core::config::veles_home().join("state.db")).unwrap();
+        registered(&store, "id-probed", "probed");
+        registered(&store, "id-probed-sync", "probed-sync");
+        let mut cfg = VelesConfig::default();
+        cfg.cluster.gossip_peers = vec!["probed".into()];
+        cfg.cluster.memsync_peers = vec!["probed-sync".into()];
+        let health = |id: &str| {
+            let node = store
+                .nodes_list()
+                .unwrap()
+                .into_iter()
+                .find(|n| n.id == id)
+                .unwrap();
+            node_health_light(&cfg, &node, false, Instant::now())
+        };
+        let tick = || std::thread::sleep(Duration::from_millis(5));
+        record("probe", "id-probed", Err("connection refused"));
+        assert_eq!(health("id-probed")["state"], "failing");
+        tick();
+        record("gossip", "probed", Ok("probed: merged 3 row(s)"));
+        let h = health("id-probed");
+        assert_eq!(h["state"], "fresh", "a good gossip exchange after it: {h}");
+        tick();
+        record("probe", "id-probed", Err("connection refused"));
+        assert_eq!(
+            health("id-probed")["state"],
+            "failing",
+            "a probe failing after that is news again"
+        );
+        // A sync pass is an exchange as well.
+        record("probe", "id-probed-sync", Err("connection refused"));
+        assert_eq!(health("id-probed-sync")["state"], "failing");
+        tick();
+        record("config", "probed-sync", Ok("stored 1 row(s)"));
+        let h = health("id-probed-sync");
+        assert_eq!(h["state"], "fresh", "a good sync pass after it: {h}");
+    }
+
+    /// FLEET-9: `/fleet list` words the `/api/fleet` body as the tab's
+    /// detail pane does. The self row is marked, a stale node says for
+    /// how long and a failing one why, each sync kind has its line, and
+    /// the alerts say where they go. Without `full` only the states are
+    /// left.
+    #[test]
+    fn the_fleet_listing_words_every_part_of_the_inventory() {
+        let (_home, _env) = veles_core::testenv::scratch_home();
+        let body = json!({
+            "nodes": [
+                {"id": "id-me", "name": "me", "host": "h0", "self": true, "stale": false,
+                 "health": {"state": "self"}, "sync_status": {}},
+                {"id": "id-a", "name": "a", "host": "h1", "self": false, "stale": false,
+                 "health": {"state": "failing", "failing": ["memory"], "unreachable": true,
+                            "probe": {"ok": false, "line": "connection refused"}},
+                 "sync_status": {
+                     "memory": {"peer": "a", "auto": true, "dialable": true,
+                                "cursor": 4, "local": 9, "behind": 5,
+                                "last": {"ok": false, "at": "2026-11-10T01:00:00+00:00",
+                                         "line": "peer answered 503"},
+                                "backoff": {"failures": 2, "retry_in_secs": 40}},
+                     "vault": {"peer": "a", "auto": false, "dialable": false,
+                               "has_vault": true, "current": false,
+                               "last": null, "backoff": null},
+                 }},
+                {"id": "id-b", "name": "b", "host": "h2", "self": false, "stale": true,
+                 "health": {"state": "stale", "heartbeat_age_secs": 1260}, "sync_status": {}},
+            ],
+            "sync": {"inbox": {"store": 1, "memory": 0, "config": 2, "vault": 0}},
+            "versions": {"drift": true, "groups": [
+                {"version": "0.2.2", "nodes": [{"name": "me", "stale": false},
+                                               {"name": "a", "stale": false}]},
+                {"version": "0.2.0", "nodes": [{"name": "b", "stale": true}]},
+            ]},
+            "forgotten": [{"id": "id-gone", "forgotten_at": "2026-11-01 10:00:00"}],
+            "alerts": {
+                "enabled": true,
+                "delivery": {"sends": "elsewhere",
+                             "reason": "the telegram adapter runs on another node"},
+                "recent": [{"at": "2026-11-10T01:00:05+00:00", "name": "a",
+                            "from": "fresh", "to": "failing",
+                            "sent": false, "note": "not sent from this node"}],
+            },
+        });
+        let full = list_text(&body, true);
+        for wanted in [
+            "- id-me (me) h0 — fresh (this node)\n",
+            "- id-a (a) h1 — failing: memory sync: peer answered 503; probe: connection refused\n",
+            "    memory sync with a (automatic): cursor 4 of 9 (5 behind); \
+             last pass failed at 2026-11-10T01:00:00+00:00: peer answered 503; \
+             backing off: 2 failure(s), next automatic try in 40 s\n",
+            "    vault sync with a (manual only): no [a2a_agents] entry, this peer \
+             cannot be dialed; the peer has not been sent this vault yet\n",
+            "- id-b (b) h2 — stale: ",
+            "received, waiting to apply: store 1 · memory 0 · config 2 · vault 0\n",
+            "version drift in the registry: 0.2.2 (me, a); 0.2.0 (b (stale))\n",
+            "forgotten fleet-wide: id-gone (at 2026-11-01 10:00:00 UTC)\n",
+            "health alerts (sent to the owner's home chat by the gateway that runs its \
+             Telegram adapter, not this one):\n    \
+             2026-11-10T01:00:05+00:00: fresh → failing a (not sent from this node)\n",
+        ] {
+            assert!(full.contains(wanted), "missing {wanted:?} in:\n{full}");
+        }
+        // Where the alerts go, in each case /api/fleet reports.
+        let mut quiet = body.clone();
+        quiet["alerts"]["recent"] = json!([]);
+        for (delivery, enabled, wanted) in [
+            (
+                json!({"sends": "no", "reason": "[notify] ask_relay is off"}),
+                true,
+                "health alerts (not sent: [notify] ask_relay is off): none since this process started\n",
+            ),
+            (
+                json!({"sends": "here", "reason": ""}),
+                true,
+                "health alerts (sent to the owner's home chat from this gateway): none since",
+            ),
+            (
+                json!({"sends": "no", "reason": "[notify] fleet_alerts is off"}),
+                false,
+                "health alerts (listed here only; [notify] fleet_alerts is off): none since",
+            ),
+        ] {
+            quiet["alerts"]["delivery"] = delivery;
+            quiet["alerts"]["enabled"] = json!(enabled);
+            let text = list_text(&quiet, true);
+            assert!(text.contains(wanted), "missing {wanted:?} in:\n{text}");
+        }
+        // A listing from a process that is not the gateway says so: what
+        // it shows of passes, backoff and alerts is only its own.
+        assert!(!full.contains("runs no gateway"), "{full}");
+        quiet["gateway"] = json!(false);
+        assert!(
+            list_text(&quiet, true).contains(
+                "this process runs no gateway: the last passes, backoff and alerts here are only its own\n"
+            ),
+            "{quiet}"
+        );
+        assert!(!list_text(&quiet, false).contains("runs no gateway"));
+        // No drift and nothing forgotten: no such lines.
+        quiet["versions"]["drift"] = json!(false);
+        quiet["forgotten"] = json!([]);
+        let text = list_text(&quiet, true);
+        assert!(
+            !text.contains("version drift") && !text.contains("forgotten"),
+            "{text}"
+        );
+        assert_eq!(
+            list_text(&body, false),
+            "registered fleet nodes:\n\
+             - id-me (me) h0 — fresh (this node)\n\
+             - id-a (a) h1 — failing\n\
+             - id-b (b) h2 — stale\n"
+        );
+        assert_eq!(
+            list_text(&json!({"nodes": []}), true),
+            "no registered nodes; enable the cluster registry to populate /fleet"
+        );
+        assert_eq!(
+            probe_text(&json!({"node": "id-a", "peer": "a", "reachable": true, "latency_ms": 12})),
+            "node id-a answered in 12 ms ([a2a_agents] a)"
+        );
+        assert_eq!(
+            probe_text(&json!({"node": "id-a", "peer": "a", "reachable": false,
+                               "latency_ms": 3, "error": "connection refused"})),
+            "node id-a did not answer ([a2a_agents] a, 3 ms): connection refused"
+        );
     }
 }

@@ -126,6 +126,7 @@ proc ::vbindings::_dev_pane {} {
         {{C-c C-h}      dev {::vpanes::show dev ; ::vdev::_highlight}        "highlight occurrences"                      dev}
         {{C-c C-p}      dev {::vpanes::show dev ; ::vdev::_peek_def}         "peek the definition"                        dev}
         {{C-c C-a}      dev {::vpanes::show dev ; ::vdev::code_action}       "code actions"                               dev}
+        {{C-c C-k}      dev {::vpanes::show dev ; ::vdev::editor_check}      "check the buffer (diagnostics)"             dev}
         {{C-c C-f}      dev {::vpanes::show dev ; ::vdev::toggle_fold}       "fold / unfold at point"                     dev}
         {{C-c C-u}      dev {::vpanes::show dev ; ::vdev::unfold_all}        "unfold everything"                          dev}
         {{C-x Right}    dev {::vpanes::show dev ; ::vdev::buf_next 1}        "next buffer"                                dev}

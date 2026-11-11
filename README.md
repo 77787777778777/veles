@@ -91,9 +91,18 @@ command sandbox works on this machine.
   placement. `delegate_task backend='any'` counts the children it has
   already placed on each node until they finish, so a batch or a run of
   background children spreads over the pool instead of piling onto one
-  machine (CPU load only: disk IO is not measured).
+  machine. It ranks nodes by CPU load per core (each counted child weighs
+  one core), by disk IO pressure where the node reports it (PSI on Linux
+  and Android; unknown on Windows, never shown as 0), by the `workload`
+  hint (`cpu` or `io`) and by a cached live auth probe; a node that
+  refuses this one's token or stopped answering is skipped and the child
+  goes to the next node. A part placed on another node sees none of this
+  node's files and runs at the peer's User level in its own sandbox, so
+  it suits fetches, work from a URL or a git remote, and computation,
+  not builds or tests of a local checkout.
 - **Joining and exporting**: `/join a` finds the live conversation for `a`
-  without requiring its session id. Joining needs the `session-join`
+  without requiring its session id (a bare `/join` lists what you can join).
+  Joining needs the `session-join`
   capability: the owner has it, and anyone else only by a grant. A
   grantee can join only another person's session in the channel they are
   typing in (never a DM), and their lines there run with the lower of
@@ -104,9 +113,12 @@ command sandbox works on this machine.
   connector the file stays on the gateway host.
 - **Restart recovery**: a desktop turn cut off by a gateway stop, crash
   or reboot continues from its saved history when the gateway comes back
-  (Linux and Android; built for Windows but not yet verified there; off
-  on macOS, which lacks the process identity it relies on). A tool action whose result was not
-  saved is never repeated; the turn stops for your review instead. If
+  (verified on Linux; built for Android and Windows but not run there; off
+  on macOS, which lacks the process identity it relies on). A turn cut
+  inside a read-only tool call, or inside the agent's own gateway restart
+  command, continues by itself. Any other tool action whose result was not
+  saved (a build or test run included) is never repeated; the turn stops
+  for your review instead. If
   the provider is not reachable yet, it retries for a few minutes and
   again on the next start, then asks for review. Connector, A2A,
   session-mail, cron, subagent, TUI and trigger turns are not resumed.
@@ -114,7 +126,10 @@ command sandbox works on this machine.
   panel lists global grants, the session grants of every live session
   (desktop, Telegram, IRC and other chats, each labelled by surface) and
   the `[approvals] allowlist` entries from config.toml (read-only; edit
-  the file to remove one). It revokes an exact selected grant.
+  the file to remove one). It revokes an exact selected grant. Standing
+  grants can also be reviewed and revoked with `/approvals [revoke <rule>]`
+  (TUI, REPL, desktop composer, chat surfaces) and `veles approvals
+  [revoke <rule>]` from a shell.
 - **Multi-hazard approvals**: a call that trips several rules (say a
   recursive delete and `curl | sh`) asks once, with every permission
   class checked; uncheck the ones you do not want remembered. On a typed
@@ -125,8 +140,13 @@ command sandbox works on this machine.
   class it trips; a call half-covered by each asks again. With several
   classes, an allowlist entry must be the exact `tool:rule` key; a glob
   only clears a call that trips a single rule.
-- **Browser tab bridge** (Linux): a small Chrome/Firefox extension lets you
-  hand one of your own tabs to the agent. It reads the page and clicks or
+- **Browser tab bridge** (Linux and Windows): a small Chrome/Firefox/Edge
+  extension lets you hand one of your own tabs to the agent. Windows is
+  registered through the registry with a `.cmd` launcher; the macOS paths
+  are written and unit-tested but never run on a Mac, and Edge on Linux is
+  registered but untested in a real Edge. The tool works only from your
+  own sessions on the machine that runs the browser: it is never routed
+  to another node, so a remote session cannot use it. It reads the page and clicks or
   fills by reference, never returns password or one-time-code values, and
   runs no arbitrary JavaScript and reads no cookies or storage. See
   [browser-extension/README.md](browser-extension/README.md).

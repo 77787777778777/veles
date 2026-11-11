@@ -2520,7 +2520,8 @@ proc ::voverlay::_plugins_fill {w} {
             set state [::vi18n::mc {not allowlisted}]
         }
         set source [expr {[dict get $p bundled] ? [::vi18n::mc {bundled}] : [::vi18n::mc {user}]}]
-        if {[dict exists $p shadow] && [dict get $p shadow] ne ""} {
+        # "shadow": null (json2dict: the word null) covers nothing (SMOKE-17).
+        if {[dict exists $p shadow] && [dict get $p shadow] ni {"" null}} {
             append source [::vi18n::mc {; shadows bundled}]
         }
         $t insert {} end -id $name -values [list $name $state [dict get $p kind] \
@@ -2567,7 +2568,7 @@ proc ::voverlay::_plugin_detail {w} {
     if {[dict exists $p sha256]} {
         lappend lines "sha256: [dict get $p sha256]"
     }
-    if {[dict exists $p shadow] && [dict get $p shadow] ne ""} {
+    if {[dict exists $p shadow] && [dict get $p shadow] ni {"" null}} {
         lappend lines ""
         lappend lines [dict get $p shadow]
     }
@@ -2903,6 +2904,12 @@ proc ::voverlay::_contribution_pr {w} {
         title [::vapi::json_string $title] body [::vapi::json_string $body]]]
     if {![llength $response]} { return }
     ::vtext::set_text $w.preview "[::vi18n::mc {Pull request created}]\n\n[dict get $response url]"
+    # The gateway released the branch name and removed the prepared clone
+    # (DEV-8): there is nothing left to push or to open a PR from.
+    set ::contribution_published {}
+    set ::contribution_prepared {}
+    catch { $w.bar.publish state disabled }
+    catch { $w.bar.pr state disabled }
     ::vmanage::say $w [::vi18n::mc {Pull request opened.}] ok
 }
 

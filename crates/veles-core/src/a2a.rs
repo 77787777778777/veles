@@ -648,6 +648,38 @@ impl TaskStore {
 
 // ── outbound client ───────────────────────────────────────────────────
 
+/// A peer answered a call and turned it away at its gates, before any
+/// handler ran: its token check (HTTP 401), its trusted-peer list (403)
+/// or its rate limit (429). It rides the error chain of
+/// [`A2AClient::call`] and [`A2AClient::rpc`] so a caller can tell
+/// "nothing ran there" from a call that was taken and failed (COMP-1,
+/// 0.2.2: `any` tries the next node only in the first case). Its text is
+/// the error's text as it always was.
+#[derive(Debug)]
+pub struct TurnedAway {
+    pub status: u16,
+    what: String,
+}
+
+impl TurnedAway {
+    /// The error for a peer's error answer: a [`TurnedAway`] for a gate's
+    /// status, a plain error for anything else.
+    fn or_plain(status: reqwest::StatusCode, what: String) -> anyhow::Error {
+        match status.as_u16() {
+            s @ (401 | 403 | 429) => anyhow::Error::new(TurnedAway { status: s, what }),
+            _ => anyhow::anyhow!(what),
+        }
+    }
+}
+
+impl std::fmt::Display for TurnedAway {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.what)
+    }
+}
+
+impl std::error::Error for TurnedAway {}
+
 pub struct A2AClient {
     http: reqwest::Client,
 }
@@ -767,15 +799,21 @@ impl A2AClient {
             Ok(v) => v,
             Err(_) => {
                 let head: String = raw.chars().take(200).collect();
-                anyhow::bail!("HTTP {status}, not a JSON-RPC reply: {head}");
+                return Err(TurnedAway::or_plain(
+                    status,
+                    format!("HTTP {status}, not a JSON-RPC reply: {head}"),
+                ));
             }
         };
         if let Some(err) = body.get("error") {
-            anyhow::bail!(
-                "peer RPC error {}: {}",
-                err["code"],
-                err["message"].as_str().unwrap_or("?")
-            );
+            return Err(TurnedAway::or_plain(
+                status,
+                format!(
+                    "peer RPC error {}: {}",
+                    err["code"],
+                    err["message"].as_str().unwrap_or("?")
+                ),
+            ));
         }
         let result = body
             .get("result")
@@ -802,7 +840,7 @@ impl A2AClient {
     /// marker-framed text runs it as an LLM TURN, which is how the first
     /// memory sync spent a peer's whole context on base64. An unknown
     /// METHOD is answered "method not found" by every veles A2A server
-    /// (HANDOFF pitfall 105).
+    /// (HANDOFF pitfall 108).
     pub async fn rpc(
         &self,
         base_url: &str,
@@ -831,15 +869,21 @@ impl A2AClient {
             Ok(v) => v,
             Err(_) => {
                 let head: String = raw.chars().take(200).collect();
-                anyhow::bail!("HTTP {status}, not a JSON-RPC reply: {head}");
+                return Err(TurnedAway::or_plain(
+                    status,
+                    format!("HTTP {status}, not a JSON-RPC reply: {head}"),
+                ));
             }
         };
         if let Some(err) = body.get("error") {
-            anyhow::bail!(
-                "peer RPC error {}: {}",
-                err["code"],
-                err["message"].as_str().unwrap_or("?")
-            );
+            return Err(TurnedAway::or_plain(
+                status,
+                format!(
+                    "peer RPC error {}: {}",
+                    err["code"],
+                    err["message"].as_str().unwrap_or("?")
+                ),
+            ));
         }
         body.get("result")
             .cloned()

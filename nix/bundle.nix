@@ -17,6 +17,9 @@
   podmanRemote,
   nixUserChroot,
   revision,
+  # The Tcl language server velesPkg ships (flake.nix tclLsp, DEV-6):
+  # in the closure through velesPkg's wrapper, asserted in `tree`.
+  tclLsp,
 }:
 let
   arch = pkgs.stdenv.hostPlatform.parsed.cpu.name;
@@ -91,6 +94,11 @@ let
       tclPlugins = [
         "tcl-anthropic-driver"
       ];
+      # The language servers the gateway starts from the bundle itself
+      # (VELES_TCL_LSP in velesPkg's wrapper); asserted present in `tree`.
+      languageServers = [
+        "tcl-lsp"
+      ];
       sourcePackage = velesPkg;
     }
   );
@@ -135,6 +143,21 @@ let
               test -f "$pkg/share/veles/plugins/$p/plugin.toml" \
                 || { echo "the bundle lost bundled Tcl plugin $p" >&2; exit 1; }
             done
+
+            # The browser tab bridge's extension, at the <exe>/../share/veles
+            # path `veles browser-extension install` copies from (BX-6).
+            test -f "$pkg/share/veles/browser-extension/manifest.json" \
+              || { echo "the bundle lost the browser extension" >&2; exit 1; }
+
+            # The Tcl language server (DEV-6): the wrapper names it where
+            # the gateway looks first, and the closure carries it with its
+            # Tcl, tcllib, nagelfar and tclint. Its absolute paths resolve
+            # inside the launcher's /nix like every other program here.
+            grep -q 'VELES_TCL_LSP.*${tclLsp}/bin/tcl-lsp' "$pkg/bin/veles" \
+              || { echo "the bundled veles does not name the shipped tcl-lsp" >&2; exit 1; }
+            test -x "$out/nix/store/${baseNameOf tclLsp}/bin/tcl-lsp" \
+              && test -x "$out/nix/store/${baseNameOf tclLsp}/bin/.tcl-lsp-wrapped" \
+              || { echo "the bundle lost the shipped tcl-lsp" >&2; exit 1; }
 
             # Modules MUST come from the SAME velesPkg invocation as the core.
             # The normal discovery layout is <prefix>/lib/veles/modules/<name>/.

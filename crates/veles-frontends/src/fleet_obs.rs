@@ -157,7 +157,7 @@ pub fn local_metrics(store: &Arc<Mutex<Store>>) -> Value {
 /// Work running in THIS gateway process: turns (by surface, from the
 /// turn checkpoints it owns) and background tasks (by kind). Counts
 /// only — a label or a prompt is not the command center's business.
-fn in_flight(store: &Arc<Mutex<Store>>) -> Value {
+pub(crate) fn in_flight(store: &Arc<Mutex<Store>>) -> Value {
     let mut turns = serde_json::Map::new();
     {
         let s = veles_core::store::lock_timed(store, "fleet_obs::in_flight");
@@ -276,12 +276,311 @@ pub fn local_fingerprint(store: &Arc<Mutex<Store>>, nonce: &str) -> Value {
             "keys": keys,
             "keys_error": keys_error,
         },
+        "inventory": local_inventory(),
     })
+}
+
+// ── deployment consistency ───────────────────────────────────────────
+
+/// What this node RUNS, for deployment consistency (0.2.2): the
+/// version of each loaded in-process module and process plugin, each
+/// provider driver's source hash, and every user plugin that shadows a
+/// bundled one, with the hash of each side. 0.2.0 was "deployed to all
+/// nodes" with three builds on four nodes and a stale user copy of the
+/// Anthropic driver shadowing the bundled one, and nothing showed it.
+/// Versions and hashes only: no path, no config.
+pub fn local_inventory() -> Value {
+    let mut items = BTreeMap::<String, String>::new();
+    if let Some(h) = veles_core::modulehost::global() {
+        for s in h.status() {
+            if s.state != "refused" {
+                items.insert(format!("module:{}", s.plugin), s.version.clone());
+            }
+        }
+    }
+    if let Some(h) = veles_core::pluginhost::global() {
+        for s in h.status() {
+            if s.state != "refused" {
+                items.insert(format!("plugin:{}", s.plugin), s.version.clone());
+            }
+        }
+    }
+    for d in veles_core::providers::drivers() {
+        let version = d.provenance.version.clone().unwrap_or_default();
+        let hash = d
+            .provenance
+            .hash
+            .as_deref()
+            .map(veles_core::plugins::short_digest)
+            .unwrap_or("")
+            .to_string();
+        items.insert(
+            format!("driver:{}", d.qualified_name()),
+            format!("{version} {hash}").trim().to_string(),
+        );
+    }
+    let mut shadows = Vec::new();
+    for p in veles_core::plugins::discover_all().unwrap_or_default() {
+        if let Some(b) = veles_core::plugins::shadowed_bundled(&p) {
+            shadows.push(json!({
+                "name": p.manifest.name,
+                "user_sha256": veles_core::plugins::short_digest(&p.digest),
+                "bundled_sha256": veles_core::plugins::short_digest(&b.digest),
+                "same_content": p.digest == b.digest,
+            }));
+        }
+    }
+    json!({"items": items, "shadows": shadows})
+}
+
+/// One node's deployment, as [`consistency`] compares it.
+pub struct Deployed<'a> {
+    pub id: &'a str,
+    pub name: &'a str,
+    /// The node's fingerprint; `None` when it could not be asked.
+    pub fingerprint: Option<&'a Value>,
+    /// Why it could not be asked.
+    pub error: Option<String>,
+}
+
+/// The most common value, and whether it is shared by more than one
+/// node (a tie has no majority).
+fn majority<'v>(values: &[&'v str]) -> Option<&'v str> {
+    let mut counts = BTreeMap::<&str, usize>::new();
+    for v in values {
+        *counts.entry(v).or_default() += 1;
+    }
+    let best = counts.values().copied().max()?;
+    let top: Vec<&str> = counts
+        .iter()
+        .filter(|(_, n)| **n == best)
+        .map(|(v, _)| *v)
+        .collect();
+    (top.len() == 1).then(|| top[0])
+}
+
+/// Deployment consistency across nodes (pure): every node's version,
+/// revision, module, plugin and driver versions, and user plugins that
+/// shadow a bundled one with other content. A node that differs from
+/// the others is flagged with what differs; without a majority, every
+/// node that disagrees is.
+///
+/// An item (module, process plugin, driver) is compared among the nodes
+/// that have it, and one that is not on every compared node is listed
+/// in `missing` by name with the nodes that lack it: a Windows node has
+/// no Racket or Lisp module and a phone has its own set, so a lacking
+/// item is not drift, but it is never left unsaid either.
+///
+/// `verdict`: `not_consistent` when a node is flagged; `unknown` when a
+/// node could not be compared; `consistent_with_differences` when every
+/// node agrees on its build and on every item two or more of them share
+/// and some item is missing somewhere; `consistent` (and `consistent`
+/// true) only when nothing is flagged, unknown or missing.
+pub fn consistency(nodes: &[Deployed]) -> Value {
+    let mut unknown = Vec::new();
+    let mut compared: Vec<(&Deployed, &Value)> = Vec::new();
+    for n in nodes {
+        match n.fingerprint {
+            Some(f) if f.get("inventory").is_some_and(|i| i.is_object()) => compared.push((n, f)),
+            Some(f) => unknown.push(json!({"id": n.id, "name": n.name,
+                "why": format!("runs veles {}, which does not report its modules and plugins",
+                               f["version"].as_str().unwrap_or("?"))})),
+            None => unknown.push(json!({"id": n.id, "name": n.name,
+                "why": n.error.clone().unwrap_or_else(|| "not asked".into())})),
+        }
+    }
+    let mut why: BTreeMap<&str, Vec<String>> = BTreeMap::new();
+    // Version and revision: every node reports them.
+    for field in ["version", "revision"] {
+        let values: Vec<&str> = compared
+            .iter()
+            .map(|(_, f)| f[field].as_str().unwrap_or("?"))
+            .collect();
+        let maj = majority(&values);
+        for ((n, _), v) in compared.iter().zip(&values) {
+            if maj != Some(*v) && values.iter().any(|o| o != v) {
+                why.entry(n.id).or_default().push(format!("{field} {v}"));
+            }
+        }
+    }
+    // Each module, plugin and driver, among the nodes that load it.
+    let mut keys = BTreeSet::new();
+    for (_, f) in &compared {
+        if let Some(m) = f["inventory"]["items"].as_object() {
+            keys.extend(m.keys().cloned());
+        }
+    }
+    let mut missing = Vec::new();
+    for key in &keys {
+        let have: Vec<(&Deployed, &str)> = compared
+            .iter()
+            .filter_map(|(n, f)| f["inventory"]["items"][key].as_str().map(|v| (*n, v)))
+            .collect();
+        if have.len() < compared.len() {
+            let lacking: Vec<Value> = compared
+                .iter()
+                .filter(|(n, _)| !have.iter().any(|(h, _)| h.id == n.id))
+                .map(|(n, _)| json!({"id": n.id, "name": n.name}))
+                .collect();
+            let on: Vec<&str> = have.iter().map(|(n, _)| n.name).collect();
+            missing.push(json!({"item": key, "on": on, "lacking": lacking}));
+        }
+        let values: Vec<&str> = have.iter().map(|(_, v)| *v).collect();
+        let maj = majority(&values);
+        for (n, v) in &have {
+            if maj != Some(*v) && values.iter().any(|o| o != v) {
+                why.entry(n.id).or_default().push(format!("{key} {v}"));
+            }
+        }
+    }
+    // A user copy with other content than the bundled one it hides.
+    let mut shadows = Vec::new();
+    for (n, f) in &compared {
+        for s in f["inventory"]["shadows"].as_array().into_iter().flatten() {
+            let same = s["same_content"] == json!(true);
+            shadows.push(json!({"id": n.id, "name": n.name, "plugin": s["name"],
+                "user_sha256": s["user_sha256"], "bundled_sha256": s["bundled_sha256"],
+                "same_content": same}));
+            if !same {
+                why.entry(n.id).or_default().push(format!(
+                    "user plugin {} shadows the bundled one (user {}, bundled {})",
+                    s["name"].as_str().unwrap_or("?"),
+                    s["user_sha256"].as_str().unwrap_or("?"),
+                    s["bundled_sha256"].as_str().unwrap_or("?")
+                ));
+            }
+        }
+    }
+    let flagged: Vec<Value> = compared
+        .iter()
+        .filter_map(|(n, _)| {
+            why.get(n.id)
+                .map(|w| json!({"id": n.id, "name": n.name, "differs": w}))
+        })
+        .collect();
+    let (verdict, statement) = if !flagged.is_empty() {
+        (
+            "not_consistent",
+            format!(
+                "The fleet is NOT consistent: {} node(s) differ.",
+                flagged.len()
+            ),
+        )
+    } else if !unknown.is_empty() || compared.is_empty() {
+        (
+            "unknown",
+            format!(
+                "Consistency unknown: {} node(s) could not be compared.",
+                unknown.len()
+            ),
+        )
+    } else if !missing.is_empty() {
+        (
+            "consistent_with_differences",
+            format!(
+                "The fleet is consistent with differences: {} node(s) run the same build and \
+                 agree on everything they share; {} item(s) are not on every node.",
+                compared.len(),
+                missing.len()
+            ),
+        )
+    } else {
+        (
+            "consistent",
+            format!(
+                "The fleet is consistent: {} node(s) run the same build, modules and plugins.",
+                compared.len()
+            ),
+        )
+    };
+    json!({
+        "consistent": verdict == "consistent",
+        "verdict": verdict,
+        "compared": compared.len(),
+        "flagged": flagged,
+        "unknown": unknown,
+        "missing": missing,
+        "shadows": shadows,
+        "statement": statement,
+    })
+}
+
+fn last_consistency() -> &'static Mutex<Value> {
+    static LAST: OnceLock<Mutex<Value>> = OnceLock::new();
+    LAST.get_or_init(|| Mutex::new(Value::Null))
+}
+
+/// A consistency verdict as text: the statement, then each flagged
+/// node with what differs, the nodes that could not be compared, each
+/// item not on every node with the nodes that lack it, and the
+/// shadowing user plugins.
+pub fn consistency_text(c: &Value) -> String {
+    let mut out = String::new();
+    if let Some(s) = c["statement"].as_str() {
+        out.push_str(s);
+        out.push('\n');
+    }
+    for f in c["flagged"].as_array().into_iter().flatten() {
+        let what: Vec<&str> = f["differs"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .collect();
+        out.push_str(&format!(
+            "  {} differs: {}\n",
+            f["name"].as_str().unwrap_or("?"),
+            what.join("; ")
+        ));
+    }
+    for u in c["unknown"].as_array().into_iter().flatten() {
+        out.push_str(&format!(
+            "  {} not compared: {}\n",
+            u["name"].as_str().unwrap_or("?"),
+            u["why"].as_str().unwrap_or("")
+        ));
+    }
+    for m in c["missing"].as_array().into_iter().flatten() {
+        let lacking: Vec<&str> = m["lacking"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(|n| n["name"].as_str())
+            .collect();
+        out.push_str(&format!(
+            "  {} is not on: {}\n",
+            m["item"].as_str().unwrap_or("?"),
+            lacking.join(", ")
+        ));
+    }
+    for s in c["shadows"].as_array().into_iter().flatten() {
+        if s["same_content"] == json!(true) {
+            out.push_str(&format!(
+                "  {}: user plugin {} shadows the bundled one with the same content ({})\n",
+                s["name"].as_str().unwrap_or("?"),
+                s["plugin"].as_str().unwrap_or("?"),
+                s["user_sha256"].as_str().unwrap_or("?")
+            ));
+        }
+    }
+    out
+}
+
+/// The last consistency check this process made (`/api/fleet`
+/// `consistency`), or a note that none was made yet.
+pub fn consistency_last() -> Value {
+    let v = last_consistency().lock_ok().clone();
+    if v.is_null() {
+        json!({"checked": false, "consistent": false,
+               "statement": "Consistency not checked yet: run Drift… (/fleet drift)."})
+    } else {
+        v
+    }
 }
 
 // ── asking a node ────────────────────────────────────────────────────
 
-fn me() -> Option<String> {
+pub(crate) fn me() -> Option<String> {
     veles_core::node::NodeIdentity::load(&veles_core::config::config_dir())
         .ok()
         .flatten()
@@ -290,7 +589,10 @@ fn me() -> Option<String> {
 
 /// The `[a2a_agents]` entry named like the node (its name or id), as
 /// the probe resolves it: (peer name, url, bearer).
-fn dial_target(cfg: &VelesConfig, node: &NodeRow) -> Option<(String, String, Option<String>)> {
+pub(crate) fn dial_target(
+    cfg: &VelesConfig,
+    node: &NodeRow,
+) -> Option<(String, String, Option<String>)> {
     cfg.a2a_agents
         .iter()
         .find(|(name, _)| name.as_str() == node.name || name.as_str() == node.id)
@@ -298,7 +600,7 @@ fn dial_target(cfg: &VelesConfig, node: &NodeRow) -> Option<(String, String, Opt
 }
 
 /// Run `f` on a blocking thread with the caller's directory override.
-async fn blocking<R: Send + 'static>(
+pub(crate) async fn blocking<R: Send + 'static>(
     f: impl FnOnce() -> R + Send + 'static,
 ) -> Result<R, OperationError> {
     let dirs = veles_core::config::dirs();
@@ -463,6 +765,7 @@ pub fn compare(here: &Value, there: &Value) -> Value {
         "revision_differs": here["revision"] != there["revision"],
         "version": there["version"],
         "revision": there["revision"],
+        "inventory": there["inventory"],
         "config": {
             "comparable": nonce_same,
             "same": nonce_same && log_same && keys_same,
@@ -495,6 +798,8 @@ pub async fn drift(store: &Arc<Mutex<Store>>, cfg: &VelesConfig) -> Result<Value
     let stale_after = cfg.cluster.stale_after_secs as i64;
     let mut asks = Vec::new();
     let mut rows = Vec::new();
+    #[allow(clippy::type_complexity)]
+    let mut fingerprints: Vec<(String, String, Option<Value>, Option<String>)> = Vec::new();
     for n in &nodes {
         if me.as_deref() == Some(n.id.as_str()) {
             continue;
@@ -509,6 +814,12 @@ pub async fn drift(store: &Arc<Mutex<Store>>, cfg: &VelesConfig) -> Result<Value
             let mut b = base;
             b["asked"] = json!(false);
             b["error"] = json!("stale: not asked");
+            fingerprints.push((
+                n.id.clone(),
+                n.name.clone(),
+                None,
+                Some("stale: not asked".into()),
+            ));
             rows.push(b);
             continue;
         }
@@ -526,6 +837,10 @@ pub async fn drift(store: &Arc<Mutex<Store>>, cfg: &VelesConfig) -> Result<Value
     }
     for (mut b, r) in futures::future::join_all(asks).await {
         b["asked"] = json!(true);
+        let (id, name) = (
+            b["id"].as_str().unwrap_or("").to_string(),
+            b["name"].as_str().unwrap_or("").to_string(),
+        );
         match r {
             Ok(there) => {
                 let c = compare(&here, &there);
@@ -535,11 +850,40 @@ pub async fn drift(store: &Arc<Mutex<Store>>, cfg: &VelesConfig) -> Result<Value
                     }
                 }
                 b["error"] = Value::Null;
+                fingerprints.push((id, name, Some(there), None));
             }
-            Err(e) => b["error"] = json!(e.to_string()),
+            Err(e) => {
+                b["error"] = json!(e.to_string());
+                fingerprints.push((id, name, None, Some(e.to_string())));
+            }
         }
         rows.push(b);
     }
+    // Deployment consistency over every node, this one included.
+    let self_name = me
+        .as_deref()
+        .and_then(|id| names.get(id))
+        .cloned()
+        .unwrap_or_else(|| "this node".into());
+    let self_id = me.clone().unwrap_or_default();
+    let mut deployed = vec![Deployed {
+        id: &self_id,
+        name: &self_name,
+        fingerprint: Some(&here),
+        error: None,
+    }];
+    for (id, name, fp, err) in &fingerprints {
+        deployed.push(Deployed {
+            id,
+            name,
+            fingerprint: fp.as_ref(),
+            error: err.clone(),
+        });
+    }
+    let mut consistency = consistency(&deployed);
+    consistency["checked"] = json!(true);
+    consistency["checked_at"] = json!(chrono::Utc::now().to_rfc3339());
+    *last_consistency().lock_ok() = consistency.clone();
     // Author ids are node ids: name them where the registry can.
     for r in rows.iter_mut() {
         for side in ["here_ahead", "there_ahead"] {
@@ -577,6 +921,8 @@ pub async fn drift(store: &Arc<Mutex<Store>>, cfg: &VelesConfig) -> Result<Value
         "versions": version_spread(&nodes, cfg.cluster.stale_after_secs),
         "nodes": rows,
         "differing": differing,
+        "consistency": consistency,
+        "self_inventory": here["inventory"],
         "checked_at": chrono::Utc::now().to_rfc3339(),
     }))
 }
@@ -704,10 +1050,19 @@ pub fn metrics_text(v: &Value) -> String {
         v["arch"].as_str().unwrap_or("")
     );
     let cpu = &v["cpu"];
-    out.push_str(&format!(
-        "cpu: {} core(s), load {} / {} / {}\n",
-        cpu["cores"], cpu["load1"], cpu["load5"], cpu["load15"]
-    ));
+    if cpu["load1"].is_null() && cpu["busy_pct"].is_number() {
+        // Windows keeps no load average: the node's CPU busy share since
+        // its previous sample (hostmetrics::cpu_busy, FLEET-7).
+        out.push_str(&format!(
+            "cpu: {} core(s), {}% busy over the last {} s\n",
+            cpu["cores"], cpu["busy_pct"], cpu["busy_window_secs"]
+        ));
+    } else {
+        out.push_str(&format!(
+            "cpu: {} core(s), load {} / {} / {}\n",
+            cpu["cores"], cpu["load1"], cpu["load5"], cpu["load15"]
+        ));
+    }
     if v["memory"].is_object() {
         out.push_str(&format!(
             "memory: {} available of {} ({}% used)\n",
@@ -751,7 +1106,7 @@ pub fn metrics_text(v: &Value) -> String {
 
 /// A drift answer as chat lines.
 pub fn drift_text(v: &Value) -> String {
-    let mut out = String::new();
+    let mut out = consistency_text(&v["consistency"]);
     for g in v["versions"]["groups"].as_array().into_iter().flatten() {
         let names: Vec<&str> = g["nodes"]
             .as_array()
@@ -816,7 +1171,7 @@ pub fn drift_text(v: &Value) -> String {
             out.push_str(&format!("{name}: {}\n", what.join("; ")));
         }
     }
-    if out.is_empty() {
+    if v["nodes"].as_array().is_none_or(|n| n.is_empty()) {
         out.push_str("no other registered node\n");
     }
     out
@@ -825,6 +1180,24 @@ pub fn drift_text(v: &Value) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// FLEET-7: `/fleet metrics` for a Windows node shows its CPU busy
+    /// share, not a load average of nulls.
+    #[test]
+    fn a_windows_nodes_metrics_text_shows_its_busy_share() {
+        let v = json!({
+            "node": {"name": "winbox"}, "version": "0.2.2", "revision": "r",
+            "os": "windows", "arch": "x86_64",
+            "cpu": {"cores": 8, "busy_pct": 37.3, "busy_window_secs": 30.0},
+            "unavailable": [],
+        });
+        let text = metrics_text(&v);
+        assert!(
+            text.contains("cpu: 8 core(s), 37.3% busy over the last 30.0 s"),
+            "{text}"
+        );
+        assert!(!text.contains("load null"), "{text}");
+    }
 
     fn registered(store: &Store, id: &str, name: &str, version: &str) {
         store
@@ -1044,6 +1417,233 @@ mod tests {
         assert_eq!(
             crate::fleet_ops::gossip_status(&cfg)[0]["last"]["ok"],
             false
+        );
+    }
+
+    fn deployed(version: &str, revision: &str, items: Value, shadows: Value) -> Value {
+        json!({"version": version, "revision": revision,
+               "inventory": {"items": items, "shadows": shadows}})
+    }
+
+    /// Deployment consistency (0.2.2): the 0.2.0 fleet — three builds on
+    /// four nodes and a stale user copy of the Anthropic driver — is
+    /// flagged node by node with what differs, an older node or one that
+    /// could not be asked makes the verdict unknown, and "consistent" is
+    /// said only when every node agrees on everything. (A node that
+    /// lacks an item: consistency_names_what_a_node_lacks.)
+    #[test]
+    fn consistency_flags_the_node_that_differs_and_claims_nothing_it_did_not_see() {
+        let same = json!({"module:telegram": "0.2.2", "driver:anthropic": "1.0 aaaa"});
+        let a = deployed("0.2.2", "r1", same.clone(), json!([]));
+        let b = deployed("0.2.2", "r1", same.clone(), json!([]));
+        let c = deployed("0.2.2", "r1", same.clone(), json!([]));
+        let node = |id: &'static str, f: &'static Value| Deployed {
+            id,
+            name: id,
+            fingerprint: Some(f),
+            error: None,
+        };
+        let (a, b, c) = (
+            Box::leak(Box::new(a)),
+            Box::leak(Box::new(b)),
+            Box::leak(Box::new(c)),
+        );
+        let ok = consistency(&[node("laptop", a), node("vps", b), node("phone", c)]);
+        assert_eq!(ok["consistent"], true, "{ok}");
+        assert!(ok["statement"].as_str().unwrap().contains("is consistent"));
+
+        // 0.2.0 as it was: another build on the phone, another revision
+        // on the vps, and a user copy of the driver on the laptop.
+        let stale_driver = Box::leak(Box::new(deployed(
+            "0.2.2",
+            "r1",
+            json!({"module:telegram": "0.2.2", "driver:anthropic": "0.9 bbbb"}),
+            json!([{"name": "anthropic", "user_sha256": "bbbb", "bundled_sha256": "aaaa",
+                    "same_content": false}]),
+        )));
+        let other_rev = Box::leak(Box::new(deployed("0.2.2", "r0", same.clone(), json!([]))));
+        let other_build = Box::leak(Box::new(deployed("0.2.1", "r1", same.clone(), json!([]))));
+        let fourth = Box::leak(Box::new(deployed("0.2.2", "r1", same.clone(), json!([]))));
+        let bad = consistency(&[
+            node("laptop", stale_driver),
+            node("vps", other_rev),
+            node("phone", other_build),
+            node("winbox", fourth),
+        ]);
+        assert_eq!(bad["consistent"], false, "{bad}");
+        let flagged = |id: &str| -> Vec<String> {
+            bad["flagged"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .find(|f| f["id"] == id)
+                .map(|f| {
+                    f["differs"]
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .map(|d| d.as_str().unwrap().to_string())
+                        .collect()
+                })
+                .unwrap_or_default()
+        };
+        assert!(flagged("laptop")
+            .iter()
+            .any(|d| d.contains("driver:anthropic 0.9 bbbb")));
+        assert!(flagged("laptop")
+            .iter()
+            .any(|d| d.contains("shadows the bundled one (user bbbb, bundled aaaa)")));
+        assert_eq!(flagged("vps"), vec!["revision r0".to_string()]);
+        assert_eq!(flagged("phone"), vec!["version 0.2.1".to_string()]);
+        assert!(
+            flagged("winbox").is_empty(),
+            "the node that agrees is not flagged"
+        );
+        assert!(bad["statement"]
+            .as_str()
+            .unwrap()
+            .contains("NOT consistent"));
+
+        // An older node (no inventory) and one that was not asked: the
+        // verdict is unknown, never "consistent".
+        let old = Box::leak(Box::new(json!({"version": "0.2.1", "revision": "r1"})));
+        let unknown = consistency(&[
+            node("laptop", a),
+            node("vps", old),
+            Deployed {
+                id: "phone",
+                name: "phone",
+                fingerprint: None,
+                error: Some("stale: not asked".into()),
+            },
+        ]);
+        assert_eq!(unknown["consistent"], false);
+        assert_eq!(unknown["unknown"].as_array().unwrap().len(), 2, "{unknown}");
+        assert!(consistency_text(&unknown).contains("phone not compared: stale"));
+        // A shadow with the bundled content is listed, not flagged.
+        let same_shadow = Box::leak(Box::new(deployed(
+            "0.2.2",
+            "r1",
+            same.clone(),
+            json!([{"name": "anthropic", "user_sha256": "aaaa", "bundled_sha256": "aaaa",
+                    "same_content": true}]),
+        )));
+        let listed = consistency(&[node("laptop", same_shadow), node("vps", c)]);
+        assert_eq!(listed["consistent"], true, "{listed}");
+        assert_eq!(listed["shadows"].as_array().unwrap().len(), 1);
+        // This node reports what it runs: version, revision, inventory.
+        let (_home, _env) = veles_core::testenv::scratch_home();
+        let store = Arc::new(Mutex::new(
+            Store::open(&veles_core::config::veles_home().join("state.db")).unwrap(),
+        ));
+        let fp = local_fingerprint(&store, "n");
+        assert!(fp["inventory"]["items"].is_object(), "{fp}");
+        assert!(fp["inventory"]["shadows"].is_array(), "{fp}");
+    }
+
+    /// The decision for an item not every node has: version, revision
+    /// and every item two or more nodes share must agree for
+    /// "consistent", and an item missing from a node is always named,
+    /// with the nodes that lack it — a Windows node has no Racket or Lisp
+    /// module, a phone its own set — and the verdict is then "consistent
+    /// with differences", never plain "consistent". consistency() used
+    /// to compare an item only among the nodes that report it, so a node
+    /// that lacked a module the others ran was never mentioned.
+    #[test]
+    fn consistency_names_what_a_node_lacks() {
+        let node = |id: &'static str, f: Value| Deployed {
+            id,
+            name: id,
+            fingerprint: Some(Box::leak(Box::new(f))),
+            error: None,
+        };
+        let full = json!({"module:telegram": "0.2.2", "module:racket": "0.2.2",
+                          "driver:anthropic": "1.0 aaaa"});
+        let text = |c: &Value| consistency_text(c);
+
+        // All agree.
+        let all = consistency(&[
+            node("laptop", deployed("0.2.2", "r1", full.clone(), json!([]))),
+            node("vps", deployed("0.2.2", "r1", full.clone(), json!([]))),
+        ]);
+        assert_eq!(all["consistent"], true, "{all}");
+        assert_eq!(all["verdict"], "consistent", "{all}");
+        assert!(all["missing"].as_array().unwrap().is_empty(), "{all}");
+
+        // One node on another revision: not consistent, that node named.
+        let rev = consistency(&[
+            node("laptop", deployed("0.2.2", "r1", full.clone(), json!([]))),
+            node("vps", deployed("0.2.2", "r1", full.clone(), json!([]))),
+            node("phone", deployed("0.2.2", "r0", full.clone(), json!([]))),
+        ]);
+        assert_eq!(rev["consistent"], false, "{rev}");
+        assert_eq!(rev["verdict"], "not_consistent", "{rev}");
+        assert!(
+            text(&rev).contains("phone differs: revision r0"),
+            "{}",
+            text(&rev)
+        );
+
+        // One node lacking a module: named with the node, never plain
+        // "consistent".
+        let mut no_racket = full.clone();
+        no_racket.as_object_mut().unwrap().remove("module:racket");
+        let lacks = consistency(&[
+            node("laptop", deployed("0.2.2", "r1", full.clone(), json!([]))),
+            node("vps", deployed("0.2.2", "r1", full.clone(), json!([]))),
+            node("winbox", deployed("0.2.2", "r1", no_racket, json!([]))),
+        ]);
+        assert_eq!(lacks["consistent"], false, "{lacks}");
+        assert_eq!(lacks["verdict"], "consistent_with_differences", "{lacks}");
+        let statement = lacks["statement"].as_str().unwrap();
+        assert!(
+            statement.contains("consistent with differences"),
+            "{statement}"
+        );
+        assert!(
+            !statement.starts_with("The fleet is consistent:"),
+            "{statement}"
+        );
+        let missing = lacks["missing"].as_array().unwrap();
+        assert_eq!(missing.len(), 1, "{lacks}");
+        assert_eq!(missing[0]["item"], "module:racket");
+        assert_eq!(missing[0]["lacking"][0]["name"], "winbox");
+        assert!(
+            text(&lacks).contains("module:racket is not on: winbox"),
+            "{}",
+            text(&lacks)
+        );
+
+        // The real case: a stale user copy of the Anthropic driver on one
+        // node (the VPS ran a 2026-10-29 copy through two releases).
+        // Through this node's own inventory, as a fingerprint carries it.
+        let (_cfg, _data, _guard) = veles_core::testenv::scratch_xdg();
+        let bundled = tempfile::tempdir().unwrap();
+        let plant = |root: &std::path::Path, body: &str| {
+            let dir = root.join("anthropic");
+            std::fs::create_dir_all(&dir).unwrap();
+            std::fs::write(dir.join("plugin.toml"), "name = \"anthropic\"\n").unwrap();
+            std::fs::write(dir.join("plugin.tcl"), body).unwrap();
+        };
+        plant(bundled.path(), "# the driver as 0.2.2 ships it\n");
+        std::env::set_var(veles_core::plugins::BUNDLED_ENV, bundled.path());
+        plant(
+            &veles_core::plugins::plugins_dir(),
+            "# a copy from 2026-10-29\n",
+        );
+        let inv = local_inventory();
+        let vps = json!({"version": "0.2.2", "revision": "r1", "inventory": {
+            "items": full.clone(), "shadows": inv["shadows"].clone()}});
+        let stale = consistency(&[
+            node("laptop", deployed("0.2.2", "r1", full.clone(), json!([]))),
+            node("vps", vps),
+        ]);
+        assert_eq!(stale["consistent"], false, "{stale}");
+        assert_eq!(stale["verdict"], "not_consistent", "{stale}");
+        assert!(
+            text(&stale).contains("vps differs: user plugin anthropic shadows the bundled one"),
+            "{}",
+            text(&stale)
         );
     }
 }

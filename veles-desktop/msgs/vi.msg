@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset vi {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset vi {%1$s %2$s done} {%1$s %2$s xong}
 ::msgcat::mcset vi {%1$s %2$s failed: %3$s} {%1$s %2$s lỗi: %3$s}
+::msgcat::mcset vi {%1$s %2$s over ssh anyway?} {Vẫn %1$s %2$s qua ssh?}
 ::msgcat::mcset vi {%1$s %2$s over ssh…} {%1$s %2$s qua ssh…}
 ::msgcat::mcset vi {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset vi {%1$s (%2$s waiting)} {%1$s (%2$s đang chờ)}
 ::msgcat::mcset vi {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  suy luận %3$s}
 ::msgcat::mcset vi {%1$s = %2$s here} {%1$s = %2$s ở đây}
+::msgcat::mcset vi {%1$s = %2$s on %3$s} {%1$s = %2$s trên %3$s}
 ::msgcat::mcset vi {%1$s NOT saved: %2$s} {%1$s CHƯA lưu: %2$s}
 ::msgcat::mcset vi {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s thuộc thư viện %2$s và chỉ đọc — hãy dùng New… để sao chép và sửa nó}
 ::msgcat::mcset vi {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s thuộc thư viện %2$s — veles không bao giờ xóa skill của công cụ khác}
+::msgcat::mcset vi {%1$s cannot restart itself: %2$s} {%1$s không thể tự khởi động lại: %2$s}
+::msgcat::mcset vi {%1$s differs: %2$s} {%1$s khác biệt: %2$s}
 ::msgcat::mcset vi {%1$s every cron job on %2$s?} {%1$s mọi công việc cron trên %2$s?}
 ::msgcat::mcset vi {%1$s failed: %2$s} {%1$s lỗi: %2$s}
 ::msgcat::mcset vi {%1$s in / %2$s out / %3$s calls} {%1$s vào / %2$s ra / %3$s lượt gọi}
+::msgcat::mcset vi {%1$s is back after %2$s s (veles %3$s).} {%1$s đã trở lại sau %2$s giây (veles %3$s).}
 ::msgcat::mcset vi {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s là node %2$s, không phải %3$s. Hãy sửa node id của nó trong Sửa….}
 ::msgcat::mcset vi {%1$s is not a whole number} {%1$s không phải số nguyên}
+::msgcat::mcset vi {%1$s is not on: %2$s} {%1$s đang tắt: %2$s}
+::msgcat::mcset vi {%1$s is not set on %2$s: the default applies.} {%1$s chưa được đặt trên %2$s: áp dụng giá trị mặc định.}
 ::msgcat::mcset vi {%1$s is reachable (%2$s ms).} {Truy cập được %1$s (%2$s ms).}
+::msgcat::mcset vi {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s đang chạy %2$s lượt. Vẫn khởi động lại?}
 ::msgcat::mcset vi {%1$s is set to something this box cannot edit (%2$s)} {%1$s được đặt thành thứ máy này không sửa được (%2$s)}
 ::msgcat::mcset vi {%1$s is unreachable: %2$s} {Không truy cập được %1$s: %2$s}
+::msgcat::mcset vi {%1$s is up, but its node binding is wrong: %2$s} {%1$s đang chạy, nhưng liên kết node của nó sai: %2$s}
+::msgcat::mcset vi {%1$s not compared: %2$s} {%1$s chưa được so sánh: %2$s}
 ::msgcat::mcset vi {%1$s of %2$s characters} {%1$s trên %2$s ký tự}
 ::msgcat::mcset vi {%1$s of %2$s sessions} {%1$s trên %2$s phiên}
 ::msgcat::mcset vi {%1$s of %2$s skills reach the prompt} {%1$s trên %2$s skill tới được prompt}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset vi {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset vi {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset vi {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset vi {%1$s: %2$s on the gateway} {%1$s: %2$s trên gateway}
+::msgcat::mcset vi {%1$s: %2$s on the gateway (ships with veles)} {%1$s: %2$s trên gateway (đi kèm veles)}
 ::msgcat::mcset vi {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset vi {%1$s: no language server on the gateway. %2$s} {%1$s: không có máy chủ ngôn ngữ trên gateway. %2$s}
 ::msgcat::mcset vi {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: %2$s trong %3$s dòng cuối mà gateway của nó giữ trong bộ nhớ, bí mật đã được che trên node đó.}
+::msgcat::mcset vi {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: plugin người dùng %2$s ghi đè bản đi kèm có cùng nội dung (%3$s)}
 ::msgcat::mcset vi {%d MCP server(s) configured} {%d máy chủ MCP đã cấu hình}
 ::msgcat::mcset vi {%d entries} {%d mục}
 ::msgcat::mcset vi {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {%d tệp của tiện ích sẽ được ghi đúng như đã xem xét. Nếu có tệp nào thay đổi kể từ lúc xem trước, sẽ không ghi gì cả. Không có commit, push hay PR nào diễn ra.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset vi {%s (stale)} {%s (cũ)}
 ::msgcat::mcset vi {%s (this session)} {%s (phiên này)}
 ::msgcat::mcset vi {%s GB free of %s GB} {trống %s GB trên %s GB}
+::msgcat::mcset vi {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s Lệnh đi qua ssh tới máy chủ đã cấu hình, mà bước kiểm tra này không thể gắn với node.}
 ::msgcat::mcset vi {%s already exists — open it from the list} {%s đã tồn tại — hãy mở nó từ danh sách}
 ::msgcat::mcset vi {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {%s đã thay đổi kể từ khi bạn mở — không có gì bị ghi đè; hãy sao chép văn bản của bạn, rồi Nạp lại}
 ::msgcat::mcset vi {%s cleared for this buffer} {%s đã xóa cho khung này}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset vi {%s comes from config.toml [acl] — edit there} {%s lấy từ config.toml [acl] — sửa ở đó}
 ::msgcat::mcset vi {%s config change(s) wait for you — /configsync} {%s thay đổi cấu hình đang chờ bạn — /configsync}
 ::msgcat::mcset vi {%s did not become healthy within 30s} {%s không khỏe mạnh trong 30s}
+::msgcat::mcset vi {%s did not come back within 120 s: look at its log where it runs.} {%s không trở lại trong 120 giây: hãy xem log của nó ở nơi nó chạy.}
 ::msgcat::mcset vi {%s done} {%s xong}
 ::msgcat::mcset vi {%s failed: %s} {%s thất bại: %s}
+::msgcat::mcset vi {%s holds a credential: it stays on its node and is not shown.} {%s chứa thông tin xác thực: nó ở lại trên node của nó và không được hiển thị.}
 ::msgcat::mcset vi {%s is already split} {%s đã được tách sẵn}
+::msgcat::mcset vi {%s is restarting; waiting for it to come back…} {%s đang khởi động lại; đang chờ nó trở lại…}
 ::msgcat::mcset vi {%s is the language in use — pick another one to swap with} {%s là ngôn ngữ đang dùng — hãy chọn ngôn ngữ khác để đổi qua lại}
 ::msgcat::mcset vi {%s is up} {%s đang chạy}
 ::msgcat::mcset vi {%s keys — any key closes} {%s phím — bấm phím bất kỳ để đóng}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset vi {; shadows bundled} {; ghi đè bản đi kèm}
 ::msgcat::mcset vi {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Đề nghị cấu hình có thể thay đổi cài đặt và đề nghị kho bí mật sẽ hợp nhất bí mật; thay đổi đối với mục bảo mật vẫn chờ chủ sở hữu.}
 ::msgcat::mcset vi {A failing plugin may drop hooks mid-turn.} {Plugin lỗi có thể làm rớt hook giữa lượt.}
+::msgcat::mcset vi {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {Mục được giữ lại: không ghi từ đây; hãy sửa nó trên một node và đẩy cấu hình, rồi chủ của nó áp dụng ở đó.}
 ::msgcat::mcset vi {A local server: no key is needed unless you set one up.} {Máy chủ cục bộ: không cần khóa trừ khi bạn tự đặt một khóa.}
 ::msgcat::mcset vi {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Bản phát hành có chữ ký chỉ được dàn dựng sau preflight. Khởi động lại/xác minh, tiếp tục và khôi phục là các hành động riêng biệt. Một tiến trình khỏe mạnh phải báo cáo chính xác bản sửa đổi nguồn đã được xem xét.}
 ::msgcat::mcset vi {A value is stored for %s — leave this empty to keep it.} {Đã có giá trị được lưu cho %s — để trống ô này để giữ nguyên.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset vi {Asking the provider for its models…} {Đang hỏi nhà cung cấp danh sách mô hình…}
 ::msgcat::mcset vi Attach {Đính kèm}
 ::msgcat::mcset vi {Attach to the next message} {Đính kèm vào tin nhắn tiếp theo}
+::msgcat::mcset vi {Audit log unavailable: %s} {Không có nhật ký kiểm toán: %s}
+::msgcat::mcset vi {Audit log…} {Nhật ký kiểm toán…}
 ::msgcat::mcset vi {Author guide} {Hướng dẫn tác giả}
 ::msgcat::mcset vi {Automatically discovered from the attached gateway's cluster registry.} {Tự động phát hiện từ sổ đăng ký cụm của gateway đang kết nối.}
 ::msgcat::mcset vi Back {Quay lại}
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset vi {Browse sessions} {Duyệt các phiên}
 ::msgcat::mcset vi {Build manifest + preflight} {Manifest bản dựng + preflight}
 ::msgcat::mcset vi {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Bản dựng: veles %1$s, bản sửa đổi %2$s (%3$s %4$s)}
+::msgcat::mcset vi {Bulk %1$s failed: %2$s} {%1$s hàng loạt thất bại: %2$s}
+::msgcat::mcset vi {Bulk %1$s: %2$s (%3$s).} {%1$s hàng loạt: %2$s (%3$s).}
+::msgcat::mcset vi {Bulk action cancelled.} {Đã hủy thao tác hàng loạt.}
 ::msgcat::mcset vi {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e đầu/cuối dòng · C-b/C-f từng ký tự · M-b/M-f từng từ · C-k xóa đến cuối dòng · C-y dán · M-w sao chép · C-w xóa vùng · C-space đặt dấu · C-/ hoàn tác}
 ::msgcat::mcset vi {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g hủy mọi thứ · C-j xuống dòng · M-p/M-n lịch sử · Tab hoàn thành}
+::msgcat::mcset vi {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU: %1$s lõi, bận %2$s%% trong %3$s giây qua}
 ::msgcat::mcset vi {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s lõi, tải %2$s / %3$s / %4$s (%5$s%% số lõi)}
 ::msgcat::mcset vi Cancel Hủy
 ::msgcat::mcset vi {Cancel task} {Hủy tác vụ}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset vi {Channels (e.g. #veles #dev)} {Kênh (vd: #veles #dev)}
 ::msgcat::mcset vi Chat {Trò chuyện}
 ::msgcat::mcset vi {Chat — not attached; press Attach in the Instances tab} {Chat — chưa kết nối; bấm Kết nối trong tab Instance}
-::msgcat::mcset vi {Check (lsp)} {Kiểm tra (lsp)}
+::msgcat::mcset vi {Check (C-c C-k)} {Kiểm tra (C-c C-k)}
 ::msgcat::mcset vi {Check again} {Kiểm tra lại}
 ::msgcat::mcset vi {Check files} {Kiểm tra tệp}
 ::msgcat::mcset vi Checkpoints Checkpoint
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset vi {Close (Esc)} {Đóng (Esc)}
 ::msgcat::mcset vi {Close the setup wizard? Nothing has been written yet.} {Đóng trình hướng dẫn thiết lập? Chưa có gì được ghi cả.}
 ::msgcat::mcset vi {Code actions} {Hành động mã}
+::msgcat::mcset vi {Command-center audit log} {Nhật ký kiểm toán trung tâm điều khiển}
 ::msgcat::mcset vi Commit {Cam kết}
 ::msgcat::mcset vi {Commit ready for review. Push is a separate action.} {Commit đã sẵn sàng để xem xét. Push là hành động riêng.}
 ::msgcat::mcset vi {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Điền đầy đủ mọi trường PDS, bao gồm cả digest image đã ghim, trước khi xem trước handoff.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset vi {Config differs: %s} {Cấu hình khác nhau: %s}
 ::msgcat::mcset vi {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Nhật ký cấu hình: node đó có các thay đổi của %1$s tới %3$s, gateway này tới %2$s}
 ::msgcat::mcset vi {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Nhật ký cấu hình: gateway này có các thay đổi của %1$s tới %2$s, node đó tới %3$s}
+::msgcat::mcset vi {Config of %s} {Cấu hình của %s}
 ::msgcat::mcset vi {Config only on that node: %s} {Cấu hình chỉ có trên node đó: %s}
 ::msgcat::mcset vi {Config only on this gateway: %s} {Cấu hình chỉ có trên gateway này: %s}
+::msgcat::mcset vi {Config: %s} {Cấu hình: %s}
 ::msgcat::mcset vi Configure {Cấu hình}
 ::msgcat::mcset vi {Configure %s} {Cấu hình %s}
 ::msgcat::mcset vi {Configure translator} {Cấu hình bộ dịch}
 ::msgcat::mcset vi {Configured desktop gateway} {Gateway desktop đã cấu hình}
 ::msgcat::mcset vi Configure… {Cấu hình…}
 ::msgcat::mcset vi {Configuring %s} {Đang cấu hình %s}
+::msgcat::mcset vi Config… {Cấu hình…}
 ::msgcat::mcset vi {Confirm or discard the current signed review before starting another download.} {Xác nhận hoặc loại bỏ bản xem xét đã ký hiện tại trước khi bắt đầu tải xuống khác.}
 ::msgcat::mcset vi {Container host: typed host plan and privileged CLI handoff} {Máy chủ container: kế hoạch host có kiểu và bàn giao CLI đặc quyền}
 ::msgcat::mcset vi {Context window} {Cửa sổ ngữ cảnh}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset vi {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Tạo bot bằng @BotFather, rồi dán token của nó vào bên dưới: token sẽ vào kho bí mật được mã hóa, không bao giờ vào config.toml.}
 ::msgcat::mcset vi {Create this extension?} {Tạo tiện ích mở rộng này?}
 ::msgcat::mcset vi {Create this generated extension?} {Tạo tiện ích đã sinh ra này?}
+::msgcat::mcset vi {Created and loaded. Review and test the extension before publishing.} {Đã tạo và nạp. Hãy xem lại và thử tiện ích trước khi công bố.}
 ::msgcat::mcset vi {Created and reloaded. Review and test the extension before publishing.} {Đã tạo và tải lại. Hãy xem xét và kiểm thử tiện ích mở rộng trước khi xuất bản.}
 ::msgcat::mcset vi {Created, but reload failed} {Đã tạo, nhưng tải lại thất bại}
+::msgcat::mcset vi {Created, not loaded} {Đã tạo, chưa nạp}
+::msgcat::mcset vi {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {Đã tạo, chưa nạp: hãy chạy cargo build --release trong thư mục của tiện ích, rồi nạp lại nó trong Quản lý tiện ích.}
+::msgcat::mcset vi {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {Đã tạo. Gateway này không cho biết đã nạp tiện ích hay chưa: hãy xem trạng thái của nó trong Quản lý tiện ích.}
 ::msgcat::mcset vi {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Tạo %s/<name>/SKILL.md từ một mẫu rồi mở nó. Mô tả trong frontmatter là phần duy nhất tới được chỉ mục prompt, nên hãy ghi rõ KHI NÀO nên dùng skill.}
 ::msgcat::mcset vi {Cron history} {Lịch sử Cron}
 ::msgcat::mcset vi {Cron jobs} {Công việc cron}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset vi {Delete user} {Xóa người dùng}
 ::msgcat::mcset vi {Delete workspace?} {Xóa không gian làm việc?}
 ::msgcat::mcset vi Deop {Gỡ op}
+::msgcat::mcset vi {Deployment consistency unknown: %s node(s) could not be compared.} {Chưa rõ tính nhất quán triển khai: không thể so sánh %s node.}
+::msgcat::mcset vi {Deployment consistency: not checked yet (Drift… compares every node).} {Tính nhất quán triển khai: chưa kiểm tra (Sai lệch… so sánh mọi node).}
 ::msgcat::mcset vi {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Mô tả thay đổi. AI có thể thay đổi hoặc thêm nhiều tệp của tiện ích này. Mỗi tệp được hiển thị dưới dạng diff, và không có gì được ghi trước khi bạn xác nhận.}
 ::msgcat::mcset vi {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Mô tả thay đổi. AI có thể đề xuất phần thay thế, nhưng không thể ghi trước khi bạn xem và xác nhận diff.}
 ::msgcat::mcset vi {Describe the requested extension change first.} {Trước tiên hãy mô tả thay đổi tiện ích mở rộng mong muốn.}
 ::msgcat::mcset vi Description {Mô tả}
+::msgcat::mcset vi {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {Các lượt trên desktop tiếp tục từ lịch sử đã lưu sau khi khởi động lại; còn lượt của connector, A2A, mail, cron và subagent thì không.}
 ::msgcat::mcset vi {Desktop: local core, modules and process plugins} {Desktop: lõi cục bộ, module và plugin quá trình}
 ::msgcat::mcset vi Detach {Ngắt kết nối}
 ::msgcat::mcset vi {Detach foreground} {Tách tiền cảnh}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset vi {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Tải xuống và xác minh manifest phát hành cùng bản lưu trữ máy chủ trước khi cài đặt. Cả năm trường danh tính đều bắt buộc. Gateway giữ bản lưu trữ trong vùng tạm riêng tư; bản xem trước này không cài đặt gì cả.}
 ::msgcat::mcset vi {Downloading and verifying the signed release…} {Đang tải xuống và xác minh bản phát hành đã ký…}
 ::msgcat::mcset vi {Draft this as an extension?} {Soạn thay đổi này thành một tiện ích mở rộng?}
+::msgcat::mcset vi {Draft this change as an extension?} {Đưa thay đổi này thành bản nháp tiện ích?}
 ::msgcat::mcset vi {Drag to scroll; a quick swipe goes further.} {Kéo để cuộn; vuốt nhanh sẽ cuộn xa hơn.}
 ::msgcat::mcset vi {Drift check failed: %s} {Kiểm tra lệch thất bại: %s}
 ::msgcat::mcset vi {Drift check: %s node(s) differ from this gateway.} {Kiểm tra lệch: %s node khác với gateway này.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset vi Eval→gw Eval→gw
 ::msgcat::mcset vi {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Mọi thay đổi trong %s đều được commit. Khôi phục sẽ đưa toàn bộ thư mục về đúng commit đó — và chụp trạng thái hiện tại trước, nên không phải cửa một chiều.}
 ::msgcat::mcset vi {Every plugin file goes back to that commit. The current state is committed first.} {Mọi tệp plugin quay về đúng commit đó. Trạng thái hiện tại được commit trước.}
+::msgcat::mcset vi {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {Mọi tầng: Tiện ích mới tạo một tiện ích Tcl, TypeScript, Racket hoặc Common Lisp, hoặc một plugin Rust ngoài cây nguồn (một cdylib trên crate veles-plugin-abi-sdk: build nó bằng cargo build --release, rồi nạp lại trong Quản lý tiện ích). Hai tầng nằm ngoài thư mục plugin người dùng và khởi động từ dòng lệnh: một module, thư viện Rust được build cùng veles (veles plugins new NAME --kind overlay ghi kho của nó), và một plugin tiến trình, chương trình trên crate veles-plugin-sdk mà gateway chạy và giám sát. Hướng dẫn cho người viết có một mục cho mỗi tầng.}
 ::msgcat::mcset vi {Exact commit} {Commit chính xác}
 ::msgcat::mcset vi {Exact permission rule} {Quy tắc quyền chính xác}
 ::msgcat::mcset vi {Example: a hook} {Ví dụ: một hook}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset vi {Explain the diagnostics} {Giải thích các chẩn đoán}
 ::msgcat::mcset vi Export… Xuất…
 ::msgcat::mcset vi {Extension API} {API tiện ích mở rộng}
+::msgcat::mcset vi {Extension API reference} {Tham chiếu API tiện ích}
 ::msgcat::mcset vi {Extension development} {Phát triển mở rộng}
 ::msgcat::mcset vi {Extension guide} {Hướng dẫn mở rộng}
 ::msgcat::mcset vi {Extension source} {Mã nguồn tiện ích mở rộng}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset vi {Guards — what the harness stops, and where it stands now} {Guards — harness chặn gì và hiện đang thế nào}
 ::msgcat::mcset vi {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Trình xử lý chạy theo thứ tự hiển thị; cái đầu tiên trả về giá trị không rỗng sẽ thắng. Tắt một cái sẽ bỏ qua nó mà không hủy đăng ký, lựa chọn được giữ trong config.toml nên nạp lại plugin không thể âm thầm bật nó trở lại.}
 ::msgcat::mcset vi Health {Tình trạng}
+::msgcat::mcset vi {Health alerts} {Cảnh báo tình trạng}
 ::msgcat::mcset vi {Health alerts (%s):} {Cảnh báo sức khỏe (%s):}
 ::msgcat::mcset vi Heartbeat Heartbeat
 ::msgcat::mcset vi {Heartbeat age: %s s} {Tuổi nhịp tim: %s s}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset vi Install… {Cài đặt…}
 ::msgcat::mcset vi {Instance name (for example an IRC network)} {Tên instance (ví dụ một mạng IRC)}
 ::msgcat::mcset vi Instances Instance
+::msgcat::mcset vi {Instead of patching %s: } {Thay vì vá %s: }
 ::msgcat::mcset vi {It becomes the current content, as a new revision — so the restore can be undone too.} {Nó trở thành nội dung hiện tại, như một bản sửa đổi mới — nên việc khôi phục cũng có thể hoàn tác.}
 ::msgcat::mcset vi {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Nó sẽ vào kho bí mật được mã hóa trên máy này. Agent không bao giờ nhìn thấy nó: agent chỉ có thể dùng nó dưới dạng $%s trong lệnh, hoặc gửi nó tới các máy chủ được phép.}
 ::msgcat::mcset vi {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Nó bị xóa khỏi sổ đăng ký cụm trên toàn hạm đội: lần trao đổi gossip tiếp theo sẽ bảo mọi peer 0.2.0 bỏ nó luôn, và không peer nào hợp nhất nó trở lại. Peer cũ hơn 0.2.0 vẫn liệt kê nó. Nếu máy hoạt động lại và gửi heartbeat, nó sẽ được đăng ký lại. Các peer đồng bộ và instance đã lưu không bị đụng tới.}
+::msgcat::mcset vi {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {Nó được ghi vào config.toml của node đó như một chỉnh sửa thực hiện tại chỗ; sau đó đồng bộ cấu hình sẽ mang nó tới các node đồng bộ cấu hình với node ấy.}
 ::msgcat::mcset vi {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Tệp này sẽ rời khỏi bộ nhớ ngay bây giờ. Lịch sử của nó giữ mọi bản sửa đổi, và Lịch sử… có thể khôi phục nó.}
+::msgcat::mcset vi {Its gateway stops and %s.} {Gateway của nó dừng và %s.}
 ::msgcat::mcset vi Join {Tham gia}
 ::msgcat::mcset vi {Join a pool} {Tham gia một nhóm máy}
 ::msgcat::mcset vi {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {Tham gia nhóm máy của %1$s với tên %2$s? Nhóm sẽ kết nối với điện thoại này tại %3$s.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset vi Joining… {Đang tham gia…}
 ::msgcat::mcset vi Join… {Tham gia…}
 ::msgcat::mcset vi {Jump to composer} {Đến trình soạn thảo}
+::msgcat::mcset vi {Key (for example model.default)} {Khóa (ví dụ model.default)}
 ::msgcat::mcset vi Keybindings {Tổ hợp phím}
 ::msgcat::mcset vi {Keyboard help} {Trợ giúp bàn phím}
 ::msgcat::mcset vi {Kick %1$s from %2$s?} {Đuổi %1$s khỏi %2$s?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset vi {LLM provider} {Nhà cung cấp LLM}
 ::msgcat::mcset vi Language {Ngôn ngữ}
 ::msgcat::mcset vi {Language (i18n)} {Ngôn ngữ (i18n)}
+::msgcat::mcset vi {Language servers on this gateway} {Máy chủ ngôn ngữ trên gateway này}
 ::msgcat::mcset vi Language… {Ngôn ngữ…}
 ::msgcat::mcset vi {Last active} {Hoạt động lần cuối}
 ::msgcat::mcset vi {Last probe: %1$s — %2$s} {Lần dò cuối: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset vi Level Mức
 ::msgcat::mcset vi {Lift lockdown} {Mở khóa}
 ::msgcat::mcset vi Lines {Số dòng}
+::msgcat::mcset vi {List targets…} {Liệt kê đích…}
 ::msgcat::mcset vi {List the provider's models} {Liệt kê mô hình của nhà cung cấp}
 ::msgcat::mcset vi Load Tải
 ::msgcat::mcset vi {Load more} {Tải thêm}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset vi Next Tiếp
 ::msgcat::mcset vi Nickname {Biệt danh}
 ::msgcat::mcset vi {NixOS: emit a module snippet; do not edit host declarations} {NixOS: xuất đoạn module; không sửa khai báo máy chủ}
-::msgcat::mcset vi {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Node này chưa được cấu hình mục tiêu vòng đời SSH. Hãy thêm instance cụ thể để triển khai hoặc khởi động lại.}
+::msgcat::mcset vi {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {Node này chưa cấu hình đích vòng đời SSH: Khởi động lại sẽ yêu cầu node tự khởi động lại qua trình giám sát của nó; Triển khai fleet cần một instance đã lưu có đích ssh.}
 ::msgcat::mcset vi {No additional push happens.} {Không có push bổ sung nào xảy ra.}
 ::msgcat::mcset vi {No apps yet. Ask the agent to make one: “make me an app that…”} {Chưa có ứng dụng nào. Hãy nhờ agent làm một cái: “làm cho tôi một ứng dụng để…”}
 ::msgcat::mcset vi {No code in the picture. Hold the phone closer, straight on, and scan again.} {Không có mã trong ảnh. Đưa điện thoại lại gần, cầm thẳng và quét lại.}
+::msgcat::mcset vi {No command-center action is recorded on this gateway yet.} {Chưa có thao tác nào từ trung tâm điều khiển được ghi trên gateway này.}
 ::msgcat::mcset vi {No configuration snapshot will be restored.} {Không có ảnh chụp cấu hình nào sẽ được khôi phục.}
 ::msgcat::mcset vi {No configured sync peer for this node.} {Không có peer đồng bộ nào được cấu hình cho node này.}
 ::msgcat::mcset vi {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Chưa cấu hình bộ dịch riêng. Dùng Cấu hình bộ dịch để chọn nhà cung cấp, mô hình và ngôn ngữ đích.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset vi {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Điện thoại của %s cũng tự dừng ứng dụng. Trong cài đặt ứng dụng của veles, hãy cho phép nó tự khởi động và chạy trong nền.}
 ::msgcat::mcset vi {Pin / unpin} {Ghim / bỏ ghim}
 ::msgcat::mcset vi {Pin to home screen} {Ghim vào màn hình chính}
+::msgcat::mcset vi {Plugin author guide} {Hướng dẫn viết plugin}
 ::msgcat::mcset vi {Plugin history} {Lịch sử plugin}
 ::msgcat::mcset vi Plugins Plugin
 ::msgcat::mcset vi Port Cổng
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset vi {Preview here} {Xem trước tại đây}
 ::msgcat::mcset vi {Preview pane} {Khung xem trước}
 ::msgcat::mcset vi {Preview proposal} {Xem trước đề xuất}
-::msgcat::mcset vi {Preview the changed name or language before creating it.} {Xem trước tên hoặc ngôn ngữ đã thay đổi trước khi tạo.}
+::msgcat::mcset vi {Preview the changed name, purpose or language before creating it.} {Xem trước tên, mục đích hoặc ngôn ngữ đã thay đổi trước khi tạo.}
 ::msgcat::mcset vi Probe Dò
+::msgcat::mcset vi {Probe %s node(s)?} {Thăm dò %s node?}
+::msgcat::mcset vi {Probe all…} {Thăm dò tất cả…}
 ::msgcat::mcset vi {Probe of %1$s failed: %2$s} {Dò %1$s thất bại: %2$s}
 ::msgcat::mcset vi {Profile result} {Kết quả hồ sơ}
 ::msgcat::mcset vi {Promote into config.toml} {Chuyển vào config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset vi {Push branch…} {Đẩy nhánh…}
 ::msgcat::mcset vi {Push complete. No pull request has been opened.} {Đẩy lên hoàn tất. Chưa mở pull request nào.}
 ::msgcat::mcset vi {Push this branch?} {Đẩy nhánh này lên?}
+::msgcat::mcset vi {Push this kind to every node that is a configured peer for it:} {Đẩy loại này tới mọi node được cấu hình là peer cho nó:}
 ::msgcat::mcset vi {Push to %s:} {Đẩy tới %s:}
 ::msgcat::mcset vi Question {Câu hỏi}
 ::msgcat::mcset vi Questions {Câu hỏi}
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset vi {REPL target: the app} {đích REPL: ứng dụng}
 ::msgcat::mcset vi {REPL target: the gateway} {đích REPL: gateway}
 ::msgcat::mcset vi Read Đọc
+::msgcat::mcset vi {Read the key first: a write names the value it replaces.} {Hãy đọc khóa trước: thao tác ghi nêu giá trị mà nó thay thế.}
 ::msgcat::mcset vi {Reading notifications, for triggers} {Đọc thông báo, cho trình kích hoạt}
 ::msgcat::mcset vi Reasoning {Lý giải}
 ::msgcat::mcset vi {Reasoning effort} {Mức suy luận}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset vi {Reset to default} {Đặt lại mặc định}
 ::msgcat::mcset vi {Reset to template} {Khôi phục về mẫu}
 ::msgcat::mcset vi Restart {Khởi động lại}
+::msgcat::mcset vi {Restart %s?} {Khởi động lại %s?}
 ::msgcat::mcset vi {Restart + verify canary} {Khởi động lại + xác minh canary}
+::msgcat::mcset vi {Restart cancelled.} {Đã hủy khởi động lại.}
+::msgcat::mcset vi {Restart of %1$s failed: %2$s} {Khởi động lại %1$s thất bại: %2$s}
 ::msgcat::mcset vi {Restore hidden windows} {Khôi phục các cửa sổ đã ẩn}
 ::msgcat::mcset vi {Restore plugins to %s?} {Khôi phục plugin về %s?}
 ::msgcat::mcset vi {Restore revision r%1$s of %2$s?} {Khôi phục bản sửa đổi r%1$s của %2$s?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset vi {S3 region} {Khu vực S3}
 ::msgcat::mcset vi {SASL account (optional)} {Tài khoản SASL (không bắt buộc)}
 ::msgcat::mcset vi {SASL password (hidden)} {Mật khẩu SASL (ẩn)}
+::msgcat::mcset vi {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {Vòng đời SSH: qua instance đã lưu %1$s (%2$s, unit %3$s).}
 ::msgcat::mcset vi Sandbox Sandbox
 ::msgcat::mcset vi {Sandbox account} {Tài khoản sandbox}
 ::msgcat::mcset vi Sandboxes Sandbox
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset vi {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Các phiên đang ghi đè sang bí danh này giữ nguyên tuyến đã chọn; ghi đè mới sẽ không tìm thấy tên.}
 ::msgcat::mcset vi {Sessions served} {Phiên đã phục vụ}
 ::msgcat::mcset vi Set Đặt
+::msgcat::mcset vi {Set %1$s on %2$s to %3$s?} {Đặt %1$s trên %2$s thành %3$s?}
 ::msgcat::mcset vi {Set [model] provider/default in config.toml.} {Đặt provider/mặc định của [model] trong config.toml.}
 ::msgcat::mcset vi {Set as swap target} {Đặt làm ngôn ngữ đổi}
 ::msgcat::mcset vi {Set mode %1$s on %2$s?} {Đặt chế độ %1$s cho %2$s?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset vi Summary {Tóm tắt}
 ::msgcat::mcset vi Surface {Bề mặt}
 ::msgcat::mcset vi {Swap ⇄} {Đổi ⇄}
+::msgcat::mcset vi {Sync %1$s to %2$s node(s)?} {Đồng bộ %1$s tới %2$s node?}
+::msgcat::mcset vi {Sync all} {Đồng bộ tất cả}
+::msgcat::mcset vi {Sync all…} {Đồng bộ tất cả…}
 ::msgcat::mcset vi {Sync cancelled.} {Đã hủy đồng bộ.}
 ::msgcat::mcset vi {Sync complete.} {Đồng bộ hoàn tất.}
 ::msgcat::mcset vi {Sync now} {Đồng bộ ngay}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset vi {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Các chẩn đoán hiện tại (từ máy chủ ngôn ngữ hoặc Kiểm tra) được gửi kèm tệp này. Bạn có thể thêm một câu hỏi. Câu trả lời chỉ là văn bản; không thể ghi gì cả.}
 ::msgcat::mcset vi {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Thư mục và mọi thứ trong đó sẽ bị xóa. Việc này không hoàn tác được — nếu chỉ muốn gỡ khỏi prompt thì hãy tắt nó đi.}
 ::msgcat::mcset vi {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Thư mục bị xóa. Thư mục plugin là một git repo nên ảnh chụp được commit trước — History… có thể khôi phục.}
-::msgcat::mcset vi {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Trình soạn thảo mở các tệp của gateway, kể cả instance từ xa, và chạy máy chủ ngôn ngữ cho ngôn ngữ của tệp ngay trên gateway: tcl-lsp, typescript-language-server (TypeScript và JavaScript), rust-analyzer (một crate hoặc module plugin Rust), clangd (C), racket-langserver và một máy chủ Common Lisp. Rê chuột, đi tới định nghĩa, gợi ý hoàn thành và chẩn đoán trực tiếp đều hoạt động với mọi ngôn ngữ mà gateway có máy chủ; khi không có, trình soạn thảo cho biết cần cài chương trình nào ở đó và vẫn giữ tô sáng cú pháp. Kiểm tra chạy bộ kiểm tra tương ứng trên gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, hoặc bộ đọc Racket và Lisp. Lưu, nạp lại trong Quản lý tiện ích, và thử tiện ích mà không công bố trạng thái cục bộ.}
+::msgcat::mcset vi {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {Trình soạn thảo mở các tệp của gateway, kể cả các instance từ xa, và chạy máy chủ ngôn ngữ cho ngôn ngữ của tệp ngay trên gateway: typescript-language-server (TypeScript và JavaScript), rust-analyzer (crate hoặc module plugin Rust), clangd (C), racket-langserver, một máy chủ Common Lisp, và tcl-lsp cho Tcl khi gateway có nó (các gói Linux của veles có kèm nó). Di chuột, chuyển tới định nghĩa, tự động hoàn thành và chẩn đoán trực tiếp đều hoạt động với mọi ngôn ngữ mà gateway có máy chủ; khi không có, trình soạn thảo nói rõ cần cài chương trình nào ở đó và vẫn giữ tô sáng cú pháp. Kiểm tra chạy bộ kiểm tương ứng trên gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, bộ đọc Racket và Lisp, và với Tcl là tclsh của chính engine (kiểm tra tính đầy đủ, hoặc lint của tcl-lsp nếu đã cài). Lưu, nạp lại trong Quản lý tiện ích, và thử tiện ích mà không công bố trạng thái cục bộ.}
 ::msgcat::mcset vi {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Handoff đầu tiên chuẩn bị bí mật, image đã ghim và các tệp runtime nhưng không khởi động PDS. Sao lưu KEK và khóa xoay PLC ngoại tuyến, sau đó thực hiện một yêu cầu mới được xem xét kèm xác nhận tôi đã sao lưu để thiết lập HTTP-01 TLS và kích hoạt. Bản ghi DNS phải trỏ trực tiếp đến máy chủ này; veles không thực hiện proxy CDN hay thay đổi DNS.}
+::msgcat::mcset vi {The fleet is NOT consistent: %s node(s) differ.} {Fleet KHÔNG nhất quán: %s node khác nhau.}
+::msgcat::mcset vi {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {Fleet nhất quán nhưng có khác biệt: %1$s node chạy cùng bản build và đồng ý về mọi thứ chúng chia sẻ; %2$s mục không có trên mọi node.}
+::msgcat::mcset vi {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {Fleet nhất quán: %s node chạy cùng bản build, module và plugin.}
 ::msgcat::mcset vi {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Biểu mẫu đã thay đổi kể từ khi tiện ích được sinh. Hãy sinh lại, hoặc xem trước khung mẫu cơ bản.}
+::msgcat::mcset vi {The gateway did not receive the purpose as written. Nothing was created.} {Gateway không nhận được mục đích như đã viết. Không có gì được tạo.}
+::msgcat::mcset vi {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {Gateway không cung cấp các hướng dẫn tiện ích (nó cũ hơn 0.2.2), và desktop này không có bản sao của chúng.}
 ::msgcat::mcset vi {The gateway itself is untouched.} {Riêng gateway không bị đụng tới.}
 ::msgcat::mcset vi {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Gateway đã tải lại cấu hình, nên các phiên mới dùng nó ngay, và một khóa lưu trong kho bí mật sẽ được dùng ở yêu cầu tiếp theo. Telegram và IRC khởi động ở lần khởi động lại gateway tiếp theo: veles gateway restart.}
 ::msgcat::mcset vi {The installed component no longer matches the selected manifest. Review the component list again.} {Thành phần đã cài đặt không còn khớp với manifest đã chọn. Hãy xem lại danh sách thành phần.}
 ::msgcat::mcset vi {The installer preview has no verification signatures; apply is disabled.} {Bản xem trước của trình cài đặt không có chữ ký xác minh; áp dụng bị tắt.}
 ::msgcat::mcset vi {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Công việc và lịch sử chạy của nó bị xóa. Không hoàn tác được — nếu chỉ muốn nó dừng thì hãy tạm dừng.}
+::msgcat::mcset vi {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {Các khóa mà đồng bộ cấu hình mang theo, theo quy tắc của nó: khóa cục bộ của node và thông tin xác thực ở lại trên node của chúng, còn mục được giữ lại ([acl], approvals, sandbox, hooks, plugins, MCP servers) được sửa tại nơi nó được chỉnh và đẩy đi, rồi chờ chủ của node đó.}
 ::msgcat::mcset vi {The log could not be read: %s} {Không đọc được nhật ký: %s}
 ::msgcat::mcset vi {The manifest belongs to another component; its reply was discarded.} {Manifest thuộc về một thành phần khác; phản hồi của nó đã bị loại bỏ.}
 ::msgcat::mcset vi {The profile changed. Review the fresh plan before applying it.} {Hồ sơ đã thay đổi. Hãy xem xét kế hoạch mới trước khi áp dụng.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset vi {The signed release preview was malformed; nothing was installed.} {Bản xem trước phát hành đã ký bị lỗi định dạng; không có gì được cài đặt.}
 ::msgcat::mcset vi {The source buffer changed. Request a new proposal before applying.} {Buffer nguồn đã thay đổi. Yêu cầu đề xuất mới trước khi áp dụng.}
 ::msgcat::mcset vi {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Kho lùi về một phiên bản. Bản thân việc lùi cũng là một phiên bản nên có thể hoàn tác tiếp.}
+::msgcat::mcset vi {The translator did not answer within %s seconds.} {Trình dịch không trả lời trong %s giây.}
 ::msgcat::mcset vi {The translator returned no text.} {Trình dịch không trả về văn bản.}
 ::msgcat::mcset vi {The verification reply was malformed; no integrity result was accepted.} {Phản hồi xác minh bị hỏng; không có kết quả toàn vẹn nào được chấp nhận.}
 ::msgcat::mcset vi Themes {Bộ giao diện}
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset vi {This challenge is over.} {Thử thách này đã kết thúc.}
 ::msgcat::mcset vi {This code has expired. Ask for a new one.} {Mã này đã hết hạn. Hãy xin mã mới.}
 ::msgcat::mcset vi {This does not start a service or claim signed-download verification.} {Thao tác này không khởi động dịch vụ hay khẳng định xác minh tải xuống có chữ ký.}
+::msgcat::mcset vi {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {Tệp này là mã nguồn lõi của veles. Hầu hết thay đổi nên làm dưới dạng tiện ích, cách này sống qua các lần nâng cấp và không cần build lại: một hook, công cụ, ghi đè dịch vụ hoặc trình điều khiển nhà cung cấp, viết bằng Tcl, TypeScript, Racket hoặc Common Lisp, hoặc dưới dạng plugin Rust ngoài cây nguồn (Tiện ích mới tạo được mọi thứ này), hoặc dưới dạng module hay plugin tiến trình (hướng dẫn Tiện ích chỉ cách khởi động một cái). Vá lõi là để dành cho những gì API tiện ích không diễn đạt được. Thay vào đó hãy tạo bản nháp thay đổi này thành tiện ích? Chỉnh sửa của bạn vẫn nằm trong khung này, chưa lưu; lưu lần nữa sẽ vá tệp lõi.}
 ::msgcat::mcset vi {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Gateway này không nhận giá trị bí mật từ máy này: hãy nhập nó ở đó bằng veles secret set %s, hoặc thêm mạng này vào [vault] trusted_networks của nó}
 ::msgcat::mcset vi {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Đây chính là những gì sẽ được ghi — đúng các byte của engine, lấy trực tiếp. Chưa có gì chạm vào đĩa cả.}
+::msgcat::mcset vi {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {Đây là mã nguồn lõi của veles. Thay đổi nó thường tốt hơn nếu làm dưới dạng tiện ích: Tiện ích mới, hoặc lưu để được đề nghị một tiện ích.}
 ::msgcat::mcset vi {This node is not a configured sync peer for any kind.} {Node này không phải peer đồng bộ đã cấu hình cho loại dữ liệu nào.}
 ::msgcat::mcset vi {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Plugin này được đi kèm và chỉ đọc. Hãy xóa bản sao của người dùng có cùng tên để dùng bản đi kèm thay thế.}
 ::msgcat::mcset vi {This publishes the commit; no pull request is created yet.} {Hành động này xuất bản commit; chưa có pull request nào được tạo.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset vi Unassign {Bỏ gán}
 ::msgcat::mcset vi {Undo last} {Hoàn tác lần cuối}
 ::msgcat::mcset vi {Undo the last memory revision?} {Hoàn tác phiên bản memory gần nhất?}
+::msgcat::mcset vi {Unset %1$s on %2$s?} {Bỏ đặt %1$s trên %2$s?}
+::msgcat::mcset vi Unset… {Bỏ đặt…}
 ::msgcat::mcset vi Unstage {Bỏ khỏi index}
 ::msgcat::mcset vi {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Cho đến khi IRC_ALLOWED_USERS trong .env ghi tài khoản của bạn, bất kỳ ai trên mạng cũng có thể nói chuyện với bot — và khi không có mục [acl], với tư cách chủ sở hữu, với mọi công cụ.}
 ::msgcat::mcset vi {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Cho đến khi TELEGRAM_ALLOWED_USERS trong .env ghi ID người dùng của bạn, bất kỳ ai tìm thấy bot cũng có thể nói chuyện với nó — và khi không có mục [acl], với tư cách chủ sở hữu, với mọi công cụ.}
 ::msgcat::mcset vi Untitled {Không có tiêu đề}
-::msgcat::mcset vi {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Đóng góp lên upstream là một hành động công bố rõ ràng, không phải tải lên tự động. Trong Quản lý tiện ích mở rộng, mục Đóng góp liệt kê mọi tiện ích mở rộng của người dùng: hãy chọn tiện ích mở rộng và tệp, xem diff và kết quả quét bí mật, chạy kiểm tra, rồi tạo một nhánh và một PR (mặc định gửi tới veles) bằng danh tính git bạn chọn. Mỗi tiện ích mở rộng nằm trong thư mục riêng trong kho lưu trữ, và một tệp đã có ở đó chỉ bị thay thế sau một lần xác nhận riêng. Không bao giờ công bố node.toml, thông tin đăng nhập cục bộ, token, endpoint riêng tư hay trạng thái plugin không liên quan. Các bản chụp khôi phục cục bộ không phải là commit upstream hay PR.}
+::msgcat::mcset vi {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Đóng góp lên upstream là một hành động công bố rõ ràng, không phải tải lên tự động. Trong Quản lý tiện ích, nút Đóng góp liệt kê mọi tiện ích của người dùng: chọn tiện ích và tệp, xem diff và bản quét bí mật, chạy kiểm tra, rồi tạo một nhánh và một PR (mặc định gửi tới veles). Commit dùng danh tính git sẵn có của gateway (user.name và user.email trong cấu hình git của nó); hãy đặt chúng trước nếu cần khác. Mỗi tiện ích nằm dưới thư mục riêng trong kho, và một tệp đã có ở đó chỉ bị thay thế sau một lần xác nhận riêng. Không bao giờ công bố node.toml, thông tin xác thực cục bộ, token, endpoint riêng tư hay trạng thái plugin không liên quan. Ảnh chụp khôi phục cục bộ không phải là commit upstream hay PR.}
 ::msgcat::mcset vi {Upstream repository or fork URL} {URL kho upstream hoặc fork}
 ::msgcat::mcset vi {Uptime class} {Loại thờ gian hoạt động}
 ::msgcat::mcset vi {Uptime: host %1$s, gateway %2$s} {Thời gian hoạt động: host %1$s, gateway %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset vi {Users — one role across networks and platforms} {Người dùng — một vai trò trên mọi mạng và nền tảng}
 ::msgcat::mcset vi {Using the phone, for the agent} {Dùng điện thoại, cho tác tử}
 ::msgcat::mcset vi {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Thường trùng với tên mục provider. Khi chọn Bỏ qua, hãy để trống cả hai — một cặp đặt nửa vời sẽ không route được.}
+::msgcat::mcset vi {Value (TOML: "text", 5, true, [1, 2])} {Giá trị (TOML: "văn bản", 5, true, [1, 2])}
 ::msgcat::mcset vi {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Giá trị theo TOML: chuỗi có ngoặc kép, số hoặc danh sách. Được ghi vào [mcp_servers.<name>] — bình luận và mọi phần khác của bạn không bị đụng tới.}
 ::msgcat::mcset vi Vault {Kho bí mật}
 ::msgcat::mcset vi {Verified signed bundle installed. Restart the gateway before using the new core.} {Gói đã ký đã xác minh đã được cài đặt. Hãy khởi động lại gateway trước khi dùng lõi mới.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset vi Voice {Cấp voice}
 ::msgcat::mcset vi {Waiting for the model…} {Đang chờ mô hình…}
 ::msgcat::mcset vi {Waiting for the model… Nothing has been written.} {Đang chờ mô hình… Chưa có gì được ghi.}
+::msgcat::mcset vi Warning {Cảnh báo}
 ::msgcat::mcset vi {Welcome to veles} {Chào mừng đến với veles}
 ::msgcat::mcset vi {What the agent can do here} {Những gì agent có thể làm ở đây}
 ::msgcat::mcset vi {What veles may do on this phone. Each button opens the Android setting that changes it.} {Những gì veles được phép làm trên điện thoại này. Mỗi nút mở cài đặt Android để thay đổi điều đó.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset vi {Workflow SHA} {SHA workflow}
 ::msgcat::mcset vi {Workflow commit} {Commit của workflow}
 ::msgcat::mcset vi Worktree {Cây làm việc}
+::msgcat::mcset vi {Write cancelled.} {Đã hủy ghi.}
 ::msgcat::mcset vi {Write it} Ghi
 ::msgcat::mcset vi {Write the design question first.} {Hãy viết câu hỏi về thiết kế trước.}
 ::msgcat::mcset vi {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Không ghi provider nào. Gateway sẽ không route được lượt nào cho đến khi có mục [[custom_providers]] và cặp [model].}
+::msgcat::mcset vi Write… Ghi…
 ::msgcat::mcset vi {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Ghi BẤT KỲ khóa [acl] nào cũng chuyển gateway này sang chế độ có kiểm duyệt: vai trò mặc định thành guest (fail-closed) và các danh sách cho phép không còn là ranh giới. Chỉ chọn mục này khi có danh tính chủ sở hữu bạn tin tưởng.}
 ::msgcat::mcset vi {[model] provider} {provider của [model]}
 ::msgcat::mcset vi {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {nhà cung cấp [model] %{name} không trỏ tới mục [[custom_providers]] nào — hãy ghi mục mà trình hướng dẫn này tạo, hoặc một mục config.toml đã có}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset vi {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset vi {asked by: %s} {người hỏi: %s}
 ::msgcat::mcset vi {asking %s for its metrics…} {đang hỏi %s về số liệu của nó…}
+::msgcat::mcset vi {asking %s how it is supervised…} {đang hỏi %s xem nó được giám sát thế nào…}
 ::msgcat::mcset vi {attach a file} {đính kèm tệp}
 ::msgcat::mcset vi {attach an image or file} {đính kèm ảnh hoặc tệp}
 ::msgcat::mcset vi {attach failed: %1$s} {kết nối thất bại: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset vi {channel-event reactions; /triggers add <name> network=… channel=… action=…} {phản ứng với sự kiện kênh; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset vi {channels to join, a space or comma separated string} {các kênh sẽ tham gia, một chuỗi phân tách bằng dấu cách hoặc dấu phẩy}
 ::msgcat::mcset vi chars {ký tự}
+::msgcat::mcset vi {check the buffer (diagnostics)} {kiểm tra khung (chẩn đoán)}
 ::msgcat::mcset vi choice_next {chuyển sang tuyến kế tiếp}
 ::msgcat::mcset vi choice_retry {thử lại cùng tuyến}
 ::msgcat::mcset vi choice_stop {dừng ở đây}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset vi {command list unavailable (the gateway is not reachable)} {danh sách lệnh không khả dụng (gateway không thể kết nối)}
 ::msgcat::mcset vi {command palette} {palette lệnh}
 ::msgcat::mcset vi {command search} {tìm lệnh}
+::msgcat::mcset vi {command-center audit log} {nhật ký kiểm toán trung tâm điều khiển}
 ::msgcat::mcset vi commands {các lệnh}
 ::msgcat::mcset vi {commands stay on your own session; /leave returns from the joined session} {lệnh vẫn thuộc phiên của bạn; /leave để rởi khỏi phiên đang tham gia}
 ::msgcat::mcset vi commands: lệnh:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset vi {config changes from peers that wait for you; /configsync apply lands them} {các thay đổi cấu hình từ các nút ngang hàng đang chờ bạn; /configsync apply sẽ áp dụng chúng}
 ::msgcat::mcset vi {config file: %s} {tệp cấu hình: %s}
 ::msgcat::mcset vi {config key} {khóa cấu hình}
+::msgcat::mcset vi {config result} {kết quả cấu hình}
 ::msgcat::mcset vi {config unavailable} {không đọc được cấu hình}
 ::msgcat::mcset vi {config unavailable: %s} {không đọc được cấu hình: %s}
 ::msgcat::mcset vi {config value} {giá trị cấu hình}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset vi doctor_resident {thường trú trong mọi lời nhắc: %{shown} trên %{total} ký tự (~%{tokens} token) — phần còn lại nạp khi cần bằng: memory action=read path=%{path}}
 ::msgcat::mcset vi doctor_title {chẩn đoán bộ nhớ}
 ::msgcat::mcset vi doctor_total {tổng: %{chars} ký tự trong %{files} tệp (~%{tokens} token)}
-::msgcat::mcset vi {documentation is not in this source checkout: %s} {tài liệu không có trong checkout mã nguồn này: %s}
 ::msgcat::mcset vi done xong
 ::msgcat::mcset vi {done · %1$s/%2$s} {xong · %1$s/%2$s}
 ::msgcat::mcset vi {done, but the model returned no text} {xong, nhưng model không trả về văn bản}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset vi {grant a role (owner) · /revoke <id> takes it back} {cấp một vai trò (owner) · /revoke <id> thu hồi}
 ::msgcat::mcset vi {grant a role to an identity} {cấp vai trò cho một danh tính}
 ::msgcat::mcset vi {guards unreachable} {không tới được guards}
-::msgcat::mcset vi guts: {nội lõi:}
+::msgcat::mcset vi {guts ▾} {ruột ▾}
 ::msgcat::mcset vi {gw hooks} {hooks của gw}
 ::msgcat::mcset vi {gw procs} {procs của gw}
 ::msgcat::mcset vi {halt after N identical calls} {dừng sau N lần gọi giống nhau}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset vi {live patching ARMED} {bật live patching}
 ::msgcat::mcset vi {live patching ARMED — an agent can now redefine procs in this window} {bật live patching — agent giờ có thể định nghĩa lại proc trong cửa sổ này}
 ::msgcat::mcset vi {live patching disarmed} {tắt live patching}
+::msgcat::mcset vi load tải
 ::msgcat::mcset vi loaded {đã tải}
 ::msgcat::mcset vi {loaded older messages} {đã tải tin cũ hơn}
 ::msgcat::mcset vi loading… {đang tải…}
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset vi {no upstream reading for %s} {không đọc được upstream cho %s}
 ::msgcat::mcset vi {no word match} {không có từ khớp}
 ::msgcat::mcset vi {no xdg-open — path copied instead} {không có xdg-open — đã sao chép đường dẫn thay thế}
+::msgcat::mcset vi {nobody else's session is open on %s right now} {hiện không có phiên của ai khác mở trên %s}
 ::msgcat::mcset vi {node log} {nhật ký node}
 ::msgcat::mcset vi {none loaded} {chưa tải gì}
 ::msgcat::mcset vi {none recorded} {không ghi nhận gì}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset vi {not installed} {chưa cài đặt}
 ::msgcat::mcset vi {not reported} {không báo cáo}
 ::msgcat::mcset vi {not running} {không chạy}
+::msgcat::mcset vi {not saved: drafting the change as an extension} {chưa lưu: đang tạo bản nháp thay đổi thành tiện ích}
+::msgcat::mcset vi {not sent: %s} {chưa gửi: %s}
 ::msgcat::mcset vi {not set in config.toml — the built-in default applies. %s} {chưa đặt trong config.toml — dùng mặc định tích hợp sẵn. %s}
 ::msgcat::mcset vi {not set yet — /secret set it later} {chưa đặt — đặt sau bằng /secret set}
 ::msgcat::mcset vi {not signed: %s} {chưa ký: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset vi {on no plan} {khi không có kế hoạch}
 ::msgcat::mcset vi {on the} trên
 ::msgcat::mcset vi {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {bật/tắt làm im mục ghi chú của cơ chế trong bản ghi — cho phiên này, hoặc làm mặc định, theo phạm vi bên dưới. Nó điều khiển GHI CHÚ; cơ chế LÀM gì được đặt trong mục mang tên trên hàng của nó, và Configure… mở mục đó. Các núm guard chỉnh được ngay tại chỗ.}
+::msgcat::mcset vi {on; this gateway does not say whether they reach the home chat} {bật; gateway này không cho biết chúng có tới chat chính của chủ hay không}
 ::msgcat::mcset vi {one-shot tcl-lsp diagnostics — no model turn} {chẩn đoán tcl-lsp một lần — không dùng lượt của model}
 ::msgcat::mcset vi {open a saved file first} {hãy mở một tệp đã lưu trước}
 ::msgcat::mcset vi {open links} {mở liên kết}
+::msgcat::mcset vi {open one of the desktop's own source files} {mở một trong các tệp nguồn của chính desktop}
 ::msgcat::mcset vi {open the engine log} {mở log của engine}
 ::msgcat::mcset vi {open the joined session before /leave (on %s)} {hãy mở phiên đang tham gia trước khi /leave (trên %s)}
 ::msgcat::mcset vi {open the selected child session} {mở phiên con đã chọn}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset vi {read-only: [approvals] allowlist} {chỉ đọc: allowlist trong [approvals]}
 ::msgcat::mcset vi {read-only: this session lives on %1$s (as read at %2$s)} {chỉ đọc: phiên này nằm trên %1$s (theo bản đọc lúc %2$s)}
 ::msgcat::mcset vi {read-only: this skill comes from the %s library} {chỉ đọc: kỹ năng này đến từ thư viện %s}
+::msgcat::mcset vi {reading %1$s on %2$s…} {đang đọc %1$s trên %2$s…}
 ::msgcat::mcset vi reasoning {suy luận}
 ::msgcat::mcset vi {reasoning display: %1$s · %2$s blocks} {hiển thị suy luận: %1$s · %2$s khối}
 ::msgcat::mcset vi {reasoning display: %s} {hiển thị suy luận: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset vi {run failed: %s} {chạy thất bại: %s}
 ::msgcat::mcset vi {run in:} {chạy trong:}
 ::msgcat::mcset vi running {đang chạy}
+::msgcat::mcset vi {running %s on the listed nodes…} {đang chạy %s trên các node đã liệt kê…}
 ::msgcat::mcset vi {running since %s} {đang chạy từ %s}
 ::msgcat::mcset vi {running subagents; /subagents cancel <id>} {agent con đang chạy; /subagents cancel <id>}
 ::msgcat::mcset vi {save failed} {lưu thất bại}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset vi {send failed: %s} {gửi thất bại: %s}
 ::msgcat::mcset vi {send the message; while a turn runs, queue it as steering} {gửi tin nhắn; khi lượt đang chạy, xếp hàng điều hướng}
 ::msgcat::mcset vi sent {đã gửi}
-::msgcat::mcset vi {sent to the owner's home chat} {đã gửi tới chat nhà của chủ sở hữu}
+::msgcat::mcset vi {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {được gateway chạy adapter Telegram của nó gửi tới chat chính của chủ, không phải gateway này}
+::msgcat::mcset vi {sent to the owner's home chat from this gateway} {được gửi tới chat chính của chủ từ gateway này}
 ::msgcat::mcset vi server {máy chủ}
 ::msgcat::mcset vi {server buffers merged} {bộ đệm máy chủ đã gộp}
 ::msgcat::mcset vi {server buffers separate} {bộ đệm máy chủ riêng biệt}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset vi {session, model, lifecycle} {phiên, model, vòng đời}
 ::msgcat::mcset vi {session: %s} {phiên: %s}
 ::msgcat::mcset vi {sessions    %s} {phiên    %s}
+::msgcat::mcset vi {sessions you can join on %s (/join <name or id>):} {các phiên bạn có thể tham gia trên %s (/join <tên hoặc id>):}
 ::msgcat::mcset vi {sessions: unreachable} {phiên: không tới được}
 ::msgcat::mcset vi {set by} {được đặt bởi}
 ::msgcat::mcset vi {set. %s} {đã đặt. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset vi {split: %s} {tách: %s}
 ::msgcat::mcset vi {ssh to %1$s failed: %2$s} {ssh tới %1$s thất bại: %2$s}
 ::msgcat::mcset vi {stale — no heartbeat within the threshold} {cũ — không có nhịp tim trong ngưỡng cho phép}
+::msgcat::mcset vi {standing approval grants: always and this session; revoke one} {quyền phê duyệt thường trực: luôn luôn và phiên này; thu hồi một quyền}
 ::msgcat::mcset vi {standing global and session permission grants} {quyền dùng công cụ toàn cục và theo phiên đang có hiệu lực}
+::msgcat::mcset vi {start the line with // to send it as text} {bắt đầu dòng bằng // để gửi nó dưới dạng văn bản}
 ::msgcat::mcset vi state {trạng thái}
 ::msgcat::mcset vi {state       never reached} {trạng thái       chưa tới được}
 ::msgcat::mcset vi {state       reachable} {trạng thái       tới được}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset vi {the config.toml that will be written} {config.toml sắp được ghi}
 ::msgcat::mcset vi {the default (config.toml)} {mặc định (config.toml)}
 ::msgcat::mcset vi {the engine refused these answers: %s} {engine từ chối các câu trả lời này: %s}
+::msgcat::mcset vi {the file to open: type a path, then Return or Open} {tệp cần mở: nhập đường dẫn, rồi Return hoặc Mở}
 ::msgcat::mcset vi {the first ACL owner identity} {danh tính owner ACL đầu tiên}
 ::msgcat::mcset vi {the gateway answered without a report} {gateway trả lời nhưng không có báo cáo}
 ::msgcat::mcset vi {the model/provider pair is incomplete — the gateway will not route until both are present} {cặp mô hình/nhà cung cấp chưa đầy đủ — gateway sẽ không định tuyến cho đến khi có cả hai}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset vi unknown {không rõ}
 ::msgcat::mcset vi {unknown api_mode %{mode} — expected one of %{modes}} {api_mode không xác định %{mode} — cần một trong: %{modes}}
 ::msgcat::mcset vi {unknown bindings '%{rest}' · normie|emacs|vi} {không rõ phím tắt '%{rest}' · normie|emacs|vi}
+::msgcat::mcset vi {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {lệnh không xác định %{cmd} ở đây — /help liệt kê các lệnh của bề mặt này; không có gì được gửi}
 ::msgcat::mcset vi {unknown command /%s — /help lists them} {lệnh không xác định /%s — /help liệt kê các lệnh}
 ::msgcat::mcset vi {unknown command: /%s} {lệnh không xác định: /%s}
 ::msgcat::mcset vi {unknown keymap: %s (normie/emacs/vi)} {keymap không xác định: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset vi {upstream plan credits and windows — /usage is the local ledger} {tín dụng và khung thời gian của gói phía trên — /usage là sổ cái cục bộ}
 ::msgcat::mcset vi {upstream plan quota} {hạn mức kế hoạch upstream}
 ::msgcat::mcset vi uptime {thời gian chạy}
-::msgcat::mcset vi {usage: /join <session> or /join <instance>/<session>} {cách dùng: /join <phiên> hoặc /join <instance>/<phiên>}
+::msgcat::mcset vi {usage: /export [md|json]} {cách dùng: /export [md|json]}
 ::msgcat::mcset vi {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {cách dùng: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset vi {usage: /resume <id or prefix>} {cách dùng: /resume <id hoặc tiền tố>}
 ::msgcat::mcset vi {usage: /resume <id-or-prefix>} {cách dùng: /resume <id-or-prefix>}

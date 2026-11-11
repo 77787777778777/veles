@@ -34,10 +34,13 @@ impl Tool for NodesTool {
          cores, load per core, disk IO pressure, delegate children counted there, \
          capabilities, and whether this node passed a live auth probe to it, with the \
          order backend='any' would pick for mixed, cpu and io work. Splitting is your \
-         decision: a job with independent parts of minutes each (builds, tests, \
-         encodes, scans) goes out as one delegate_task 'tasks' batch with \
-         backend='any' and workload 'cpu' or 'io'; short or same-file work stays \
-         here. Read-only: not a deployment or service-restart tool."
+         decision. A part placed on another node runs in that node's sandbox at the \
+         User level and sees none of this node's files: self-contained parts (fetches, \
+         work from a URL or git remote, pure computation) go out as one delegate_task \
+         'tasks' batch (at most 3; more as background:true children) with \
+         backend='any' and workload 'cpu' or 'io'; work on this node's files stays \
+         here or goes to a named node whose sandbox holds the same checkout. \
+         Read-only: not a deployment or service-restart tool."
     }
 
     fn schema(&self) -> Value {
@@ -130,8 +133,14 @@ impl Tool for NodesTool {
                  halves it, workload='io' doubles it and avoids nodes at or over {}%). \
                  Unknown load ranks last; unknown cores count as {}; unknown IO adds nothing \
                  but ranks after measured low IO for io work. A named node never silently \
-                 falls back. Splitting a job into parts is your decision: only independent \
-                 parts of minutes each are worth a child.",
+                 falls back; any/gpu pass over a node a child could not reach and say so \
+                 in its result ('skipped'). Splitting a job into parts is your decision: \
+                 only independent parts of minutes each are worth a child. A part placed on \
+                 another node runs in that node's sandbox at the User level (a delegated \
+                 child carries no ticket, so never that node's host shell) and sees none of \
+                 this node's files: give it a URL, a git remote or everything it needs in \
+                 its goal and context, and keep work on this node's files here. A tasks \
+                 batch holds at most 3 parts; for more, start background:true children.",
                 crate::placement::IO_HIGH,
                 crate::placement::DEFAULT_CORES,
             )
@@ -273,6 +282,17 @@ mod tests {
         assert_eq!(gpu["gpu"]["name"], "RTX 4090");
         assert!(gpu["placement"].as_str().unwrap().starts_with("eligible"));
         assert_eq!(v["any_order"]["mixed"], json!(["gpubox"]));
+        // COMP-2 (0.2.2): what a part placed elsewhere can reach.
+        let note = v["note"].as_str().unwrap();
+        for words in [
+            "sees none of this node's files",
+            "User level",
+            "sandbox",
+            "git remote",
+            "background:true",
+        ] {
+            assert!(note.contains(words), "missing {words:?}: {note}");
+        }
         let old = node("n-old");
         assert_eq!(old["stale"], true);
         assert!(old["placement"]

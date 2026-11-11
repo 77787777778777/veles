@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset rw {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset rw {%1$s %2$s done} {%1$s %2$s byarangiye}
 ::msgcat::mcset rw {%1$s %2$s failed: %3$s} {%1$s %2$s byananive: %3$s}
+::msgcat::mcset rw {%1$s %2$s over ssh anyway?} {%1$s %2$s binyuze kuri ssh nubwo?}
 ::msgcat::mcset rw {%1$s %2$s over ssh…} {%1$s %2$s binyuze ssh…}
 ::msgcat::mcset rw {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset rw {%1$s (%2$s waiting)} {%1$s (%2$s bitegereje)}
 ::msgcat::mcset rw {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  gutekereza %3$s}
 ::msgcat::mcset rw {%1$s = %2$s here} {%1$s = %2$s hano}
+::msgcat::mcset rw {%1$s = %2$s on %3$s} {%1$s = %2$s kuri %3$s}
 ::msgcat::mcset rw {%1$s NOT saved: %2$s} {%1$s NTIBYABITSWE: %2$s}
 ::msgcat::mcset rw {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s ni iy'ububiko %2$s kandi isomwa gusa — yigano ukoresheje New… niba ushaka kuyihindura}
 ::msgcat::mcset rw {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s ni iy'ububiko %2$s — veles ntabwo isiba ubumenyi bw'ikindi gikoresho}
+::msgcat::mcset rw {%1$s cannot restart itself: %2$s} {%1$s ntishobora kongera gutangira ubwayo: %2$s}
+::msgcat::mcset rw {%1$s differs: %2$s} {%1$s iratandukanye: %2$s}
 ::msgcat::mcset rw {%1$s every cron job on %2$s?} {%1$s buri mirimo ya cron kuri %2$s?}
 ::msgcat::mcset rw {%1$s failed: %2$s} {%1$s byananive: %2$s}
 ::msgcat::mcset rw {%1$s in / %2$s out / %3$s calls} {%1$s injira / %2$s sohoka / %3$s guhamagara}
+::msgcat::mcset rw {%1$s is back after %2$s s (veles %3$s).} {%1$s yagarutse nyuma ya %2$s s (veles %3$s).}
 ::msgcat::mcset rw {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s ni node %2$s, si %3$s. Kosora id ya node ye muri Edit….}
 ::msgcat::mcset rw {%1$s is not a whole number} {%1$s ntabwo ari umubare wuzuye}
+::msgcat::mcset rw {%1$s is not on: %2$s} {%1$s ntabwo ikora: %2$s}
+::msgcat::mcset rw {%1$s is not set on %2$s: the default applies.} {%1$s ntiyashyizweho kuri %2$s: agaciro gisanzwe ni ko gakoreshwa.}
 ::msgcat::mcset rw {%1$s is reachable (%2$s ms).} {%1$s iraboneka (%2$s ms).}
+::msgcat::mcset rw {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s irimo gukora myanzure %2$s. Ongera uyitangize nubwo?}
 ::msgcat::mcset rw {%1$s is set to something this box cannot edit (%2$s)} {%1$s yashyizwe ku kintu iyi mashini idashobora guhindura (%2$s)}
 ::msgcat::mcset rw {%1$s is unreachable: %2$s} {%1$s ntabwo iboneka: %2$s}
+::msgcat::mcset rw {%1$s is up, but its node binding is wrong: %2$s} {%1$s irakora, ariko ihuriro ryayo na node ntiryo: %2$s}
+::msgcat::mcset rw {%1$s not compared: %2$s} {%1$s ntiyagereranyijwe: %2$s}
 ::msgcat::mcset rw {%1$s of %2$s characters} {%1$s ku %2$s inyuguti}
 ::msgcat::mcset rw {%1$s of %2$s sessions} {%1$s kuri %2$s by'ibiganiro}
 ::msgcat::mcset rw {%1$s of %2$s skills reach the prompt} {%1$s muri %2$s ubumenyi bugera kuri prompt}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset rw {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset rw {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset rw {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset rw {%1$s: %2$s on the gateway} {%1$s: %2$s kuri gateway}
+::msgcat::mcset rw {%1$s: %2$s on the gateway (ships with veles)} {%1$s: %2$s kuri gateway (itangwa na veles)}
 ::msgcat::mcset rw {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset rw {%1$s: no language server on the gateway. %2$s} {%1$s: nta seriveri y'ururimi kuri gateway. %2$s}
 ::msgcat::mcset rw {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: imirongo %2$s ya nyuma muri %3$s iyo gateway yayo ibika mu kwibuka, amabanga asibwe kuri uwo node.}
+::msgcat::mcset rw {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: plugin y'umukoresha %2$s isimbura iyatanzwe ifite ibirimo bimwe (%3$s)}
 ::msgcat::mcset rw {%d MCP server(s) configured} {%d seriveri za MCP zateguwe}
 ::msgcat::mcset rw {%d entries} {%d ibintu}
 ::msgcat::mcset rw {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {Dosiye %d z'iyi extension zizandikwa nk'uko zasuzumwe. Niba zimwe muri zo zahindutse kuva mu iyerekanwa, nta cyandikwa. Nta commit, push cyangwa PR ibaho.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset rw {%s (stale)} {%s (ishaje)}
 ::msgcat::mcset rw {%s (this session)} {%s (iyi sesiyo)}
 ::msgcat::mcset rw {%s GB free of %s GB} {%s GB zisigaye kuri %s GB}
+::msgcat::mcset rw {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s Iri tegeko rijya kuri host yateguwe binyuze kuri ssh, iyo iyi genzura ntishoboye guhuza na node.}
 ::msgcat::mcset rw {%s already exists — open it from the list} {%s isanzwe ihari — yifungure uhereye ku rutonde}
 ::msgcat::mcset rw {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {%s yahindutse kuva wayifungura — nta cyasimbuwe; koporora inyandiko yawe, hanyuma Ongera upakire}
 ::msgcat::mcset rw {%s cleared for this buffer} {%s isibwe kuri iyi buffer}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset rw {%s comes from config.toml [acl] — edit there} {%s iva muri config.toml [acl] — uyihindure aho}
 ::msgcat::mcset rw {%s config change(s) wait for you — /configsync} {impinduka %s mu igenamiterere zigutegereje — /configsync}
 ::msgcat::mcset rw {%s did not become healthy within 30s} {%s ntabyaje kuba muzima mu 30s}
+::msgcat::mcset rw {%s did not come back within 120 s: look at its log where it runs.} {%s ntiyagarutse mu 120 s: reba log yayo aho ikorera.}
 ::msgcat::mcset rw {%s done} {%s byarangiye}
 ::msgcat::mcset rw {%s failed: %s} {%s byanze: %s}
+::msgcat::mcset rw {%s holds a credential: it stays on its node and is not shown.} {%s ifite urufunguzo rw'ibanga: ruguma kuri node yayo kandi ntirugaragazwa.}
 ::msgcat::mcset rw {%s is already split} {%s imaze gutandukanywa}
+::msgcat::mcset rw {%s is restarting; waiting for it to come back…} {%s irimo kongera gutangira; dutegereje ko yagaruka…}
 ::msgcat::mcset rw {%s is the language in use — pick another one to swap with} {%s ni rwo rurimi rukoreshwa — hitamo urundi rwo guhinduranya}
 ::msgcat::mcset rw {%s is up} {%s ikoze}
 ::msgcat::mcset rw {%s keys — any key closes} {%s urufunguzo — urufunguzo urwarwo rufunga}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset rw {; shadows bundled} {; gisimbura iryatanzwe}
 ::msgcat::mcset rw {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Itangwa ry'igenamiterere rishobora guhindura amagenamiterere n'iritangwa ry'amabanga rihuza amabanga; impinduka ku gice cy'umutekano ziracyategereje nyirayo.}
 ::msgcat::mcset rw {A failing plugin may drop hooks mid-turn.} {Plugin inanirwa irashobora kureka hooks hagati y'umukino.}
+::msgcat::mcset rw {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {Igice gifashwe: nticyandikwa hano; gikore kuri node hanyuma utange igenamiterere, naho nyirayo agikoresha aho.}
 ::msgcat::mcset rw {A local server: no key is needed unless you set one up.} {Seriveri y'aho: nta rufunguzo rukenewe keretse niba wiyishyiriyeho urwawe.}
 ::msgcat::mcset rw {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Version yashyizweho umukono igerwa ku bihabwe gusa nyuma ya preflight. Kongera gutangiza/genzura, gukomeza no gusubiza inyuma ni ibikorwa bitandukanye. Igikorwa kizima cyiza kigomba gutanga revision nyayo y'inkomoko yasuzumwe.}
 ::msgcat::mcset rw {A value is stored for %s — leave this empty to keep it.} {Hari agaciro kabitswe kuri %s — siga iki kidafite icyo cyanditseho kugira ngo kagumeho.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset rw {Asking the provider for its models…} {Kubaza utanga serivisi urutonde rw'ibyitegererezo…}
 ::msgcat::mcset rw Attach Guhuza
 ::msgcat::mcset rw {Attach to the next message} {Shyira ku butumwa bukurikira}
+::msgcat::mcset rw {Audit log unavailable: %s} {Log y'igenzura ntabwo iboneka: %s}
+::msgcat::mcset rw {Audit log…} {Log y'igenzura…}
 ::msgcat::mcset rw {Author guide} {Ubuyobozi bw'umwanditsi}
 ::msgcat::mcset rw {Automatically discovered from the attached gateway's cluster registry.} {Byabonetse ubwayo biva muri cluster registry y'gateway yafatanywe.}
 ::msgcat::mcset rw Back Inyuma
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset rw {Browse sessions} {Reba ibiganiro}
 ::msgcat::mcset rw {Build manifest + preflight} {Kubaka manifest + preflight}
 ::msgcat::mcset rw {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Ubwubatsi: veles %1$s, revision %2$s (%3$s %4$s)}
+::msgcat::mcset rw {Bulk %1$s failed: %2$s} {%1$s rusange byanze: %2$s}
+::msgcat::mcset rw {Bulk %1$s: %2$s (%3$s).} {%1$s rusange: %2$s (%3$s).}
+::msgcat::mcset rw {Bulk action cancelled.} {Igikorwa rusange cyahagaritswe.}
 ::msgcat::mcset rw {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e impera y'umurongo · C-b/C-f inyuguti · M-b/M-f ijambo · C-k kuraho kugera ku mpera · C-y yank · M-w koporora · C-w kuraho agace · C-space gushyiraho mark · C-/ subiza inyuma}
 ::msgcat::mcset rw {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g ihagarika byose · C-j umurongo mushya · M-p/M-n amateka · Tab fatanya}
+::msgcat::mcset rw {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU: imizinga %1$s, %2$s%% ikora mu %3$s s zishize}
 ::msgcat::mcset rw {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: cores %1$s, umutwaro %2$s / %3$s / %4$s (%5$s%% bya cores)}
 ::msgcat::mcset rw Cancel Guhagarika
 ::msgcat::mcset rw {Cancel task} {Hagarika umurimo}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset rw {Channels (e.g. #veles #dev)} {Imiyoboro (urugero #veles #dev)}
 ::msgcat::mcset rw Chat Ikiganiro
 ::msgcat::mcset rw {Chat — not attached; press Attach in the Instances tab} {Chat — ntabwo ifatanyije; kanda Attach mu kazu ka Instances}
-::msgcat::mcset rw {Check (lsp)} {Kugenzura (lsp)}
+::msgcat::mcset rw {Check (C-c C-k)} {Genzura (C-c C-k)}
 ::msgcat::mcset rw {Check again} {Ongera ugenzure}
 ::msgcat::mcset rw {Check files} {Genzura dosiye}
 ::msgcat::mcset rw Checkpoints Checkpoints
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset rw {Close (Esc)} {Funga (Esc)}
 ::msgcat::mcset rw {Close the setup wizard? Nothing has been written yet.} {Gufunga igikoresho cyo gutegura? Nta na kimwe cyaranditswe.}
 ::msgcat::mcset rw {Code actions} {Ibikorwa by'ikode}
+::msgcat::mcset rw {Command-center audit log} {Log y'igenzura y'ikigo cy'ubugenzuzi}
 ::msgcat::mcset rw Commit Commit
 ::msgcat::mcset rw {Commit ready for review. Push is a separate action.} {Commit yiteguye gusuzumwa. Push ni igikorwa gitandukanye.}
 ::msgcat::mcset rw {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Uzuza imirima ya PDS yose, harimo n'incamake y'ishusho yafatiranywe, mbere yo kwitegereza ihererekanya.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset rw {Config differs: %s} {Igenamiterere ritandukanye: %s}
 ::msgcat::mcset rw {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Ibyanditswe by'igenamiterere: uwo node ifite impinduka za %1$s kugeza %3$s, iyi gateway kugeza %2$s}
 ::msgcat::mcset rw {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Ibyanditswe by'igenamiterere: iyi gateway ifite impinduka za %1$s kugeza %2$s, uwo node kugeza %3$s}
+::msgcat::mcset rw {Config of %s} {Igenamiterere rya %s}
 ::msgcat::mcset rw {Config only on that node: %s} {Igenamiterere kuri uwo node gusa: %s}
 ::msgcat::mcset rw {Config only on this gateway: %s} {Igenamiterere kuri iyi gateway gusa: %s}
+::msgcat::mcset rw {Config: %s} {Igenamiterere: %s}
 ::msgcat::mcset rw Configure Tegura
 ::msgcat::mcset rw {Configure %s} {Tegura %s}
 ::msgcat::mcset rw {Configure translator} {Tunganya umuhinduzi}
 ::msgcat::mcset rw {Configured desktop gateway} {Gateway ya desktop yateguwe}
 ::msgcat::mcset rw Configure… Tegura…
 ::msgcat::mcset rw {Configuring %s} {Gutegura %s}
+::msgcat::mcset rw Config… Igenamiterere…
 ::msgcat::mcset rw {Confirm or discard the current signed review before starting another download.} {Kemeza cyangwa ureke isuzuma ryashyizweho umukono ririho mbere yo gutangira ikindi gukurura.}
 ::msgcat::mcset rw {Container host: typed host plan and privileged CLI handoff} {Container host: gahunda ya host ifite ubwoko n'ihererekanya rya CLI risaba uburenganzira bw'umuyobozi}
 ::msgcat::mcset rw {Context window} {Idirishya ry'ibikorerwaho}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset rw {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Kora bot ukoresheje @BotFather, hanyuma ushyire token yayo hepfo: ijya mu bubiko burinzwe n'ibanga, ntijya na rimwe muri config.toml.}
 ::msgcat::mcset rw {Create this extension?} {Gukora iyi extension?}
 ::msgcat::mcset rw {Create this generated extension?} {Kurema iyi extension yakozwe?}
+::msgcat::mcset rw {Created and loaded. Review and test the extension before publishing.} {Yaremye kandi yazanywe. Suzuma kandi ugerageze iyi extension mbere yo kuyitangaza.}
 ::msgcat::mcset rw {Created and reloaded. Review and test the extension before publishing.} {Yakozwe kandi yongeye gupakirwa. Suzuma kandi igerageze extension mbere yo kuyisohora.}
 ::msgcat::mcset rw {Created, but reload failed} {Yakozwe, ariko kongera gupakira byanze}
+::msgcat::mcset rw {Created, not loaded} {Yaremye, ntiyazanywe}
+::msgcat::mcset rw {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {Yaremye, ntiyazanywe: kora cargo build --release mu bubiko bw'iyi extension, hanyuma uyongere uyipakire muri Manage extensions.}
+::msgcat::mcset rw {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {Yaremye. Iyi gateway ntiyivuga niba yazanye iyi extension: reba imiterere yayo muri Manage extensions.}
 ::msgcat::mcset rw {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Birema %s/<name>/SKILL.md uhereye ku cyitegererezo kikayifungura. Umwirondoro uri mu frontmatter ni wo wonyine ugera kuri index ya prompt, bityo ube uvuga IGIHE ukoreshwa.}
 ::msgcat::mcset rw {Cron history} {Amateka ya Cron}
 ::msgcat::mcset rw {Cron jobs} {Imirimo ya cron}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset rw {Delete user} {Siba ukoresha}
 ::msgcat::mcset rw {Delete workspace?} {Siba workspace?}
 ::msgcat::mcset rw Deop {Kuraho op}
+::msgcat::mcset rw {Deployment consistency unknown: %s node(s) could not be compared.} {Ubuhuza bw'ishyirwaho ntibuzwi: node %s ntizashoboye kugereranywa.}
+::msgcat::mcset rw {Deployment consistency: not checked yet (Drift… compares every node).} {Ubuhuza bw'ishyirwaho: ntibwigenzuye (Drift… igereranya buri node).}
 ::msgcat::mcset rw {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Sobanura impinduka. AI ishobora guhindura cyangwa kongeraho dosiye nyinshi z'iyi extension. Buri dosiye yerekanwa nka diff, kandi nta cyandikwa mbere y'uko wemeza.}
 ::msgcat::mcset rw {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Sobanura impinduka. AI irashobora gutanga icyifuzo cyo gusimbura, ariko ntishobora kuyandika mbere yuko usuzuma kandi wemeza diff.}
 ::msgcat::mcset rw {Describe the requested extension change first.} {Banza usobanure impinduka ushaka kuri extension.}
 ::msgcat::mcset rw Description Ibisobanuro
+::msgcat::mcset rw {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {Imyanzure ya desktop ikomeza uhereye ku mateka yayo yabitswe nyuma yo kongera gutangira; imyanzure ya connector, A2A, mail, cron na subagent ntibikomeza.}
 ::msgcat::mcset rw {Desktop: local core, modules and process plugins} {Desktop: core yo kuri iyi mashini, modules na plugins za porosesi}
 ::msgcat::mcset rw Detach Kurukana
 ::msgcat::mcset rw {Detach foreground} {Kohereza inyuma}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset rw {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Gukurura no kugenzura urutonde rw'irekurwa n'arkive ya host mbere yo gushyiraho. Imyanya y'indangamuntu yose itanu irakenewe. Gateway igumana arkive y'iteguro ry'ibanga; nta na kimwe gishyirwaho n'iyi ngaragaza.}
 ::msgcat::mcset rw {Downloading and verifying the signed release…} {Gukurura no kugenzura irekurwa ryashyizweho umukono…}
 ::msgcat::mcset rw {Draft this as an extension?} {Kwandika ibi nka extension?}
+::msgcat::mcset rw {Draft this change as an extension?} {Kwandika iyi mpinduka nka extension?}
 ::msgcat::mcset rw {Drag to scroll; a quick swipe goes further.} {Kurura kugira ngo uzamure cyangwa umanure; guhanagura vuba bigera kure kurushaho.}
 ::msgcat::mcset rw {Drift check failed: %s} {Igenzura ry'itandukaniro ryananive: %s}
 ::msgcat::mcset rw {Drift check: %s node(s) differ from this gateway.} {Igenzura ry'itandukaniro: node %s itandukanye n'iyi gateway.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset rw Eval→gw Eval→gw
 ::msgcat::mcset rw {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Impinduka zose kuri %s ziracommitwa. Restoring isubiza dosiye yose kuri iyo commit — kandi mbere igafata ifoto y'uko biri ubu, ntabwo ari umuryango umwe gusa.}
 ::msgcat::mcset rw {Every plugin file goes back to that commit. The current state is committed first.} {Dosiye zose za plugin zisubira kuri iyo commit. Uko biri ubu bibanza gucommitwa.}
+::msgcat::mcset rw {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {Buri rwego: New extension yandika extension ya Tcl, TypeScript, Racket cyangwa Common Lisp, cyangwa plugin ya Rust itari mu bubiko bukuru (cdylib kuri crate veles-plugin-abi-sdk: yubake ukoresheje cargo build --release, hanyuma uyongere uyipakire muri Manage extensions). Inzego ebyiri ziba hanze y'ububiko bwa plugin y'umukoresha kandi zitangira ku murongo w'amabwiriza: module, ububiko bwa Rust bwubakwa hamwe na veles (veles plugins new NAME --kind overlay yandika ububiko bwayo), na plugin y'igikorwa, porogaramu iri kuri crate veles-plugin-sdk iyo gateway ikora kandi ikagenzura. Ubuyobozi bwa Author bufite igice kuri buri imwe.}
 ::msgcat::mcset rw {Exact commit} {Commit nyayo}
 ::msgcat::mcset rw {Exact permission rule} {Itegeko ry'uburenganzira nyaryo}
 ::msgcat::mcset rw {Example: a hook} {Urugero: hook}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset rw {Explain the diagnostics} {Sobanura ubugenzuzi}
 ::msgcat::mcset rw Export… {Ohereza hanze…}
 ::msgcat::mcset rw {Extension API} {API ya extension}
+::msgcat::mcset rw {Extension API reference} {Ibisobanuro bya API ya extension}
 ::msgcat::mcset rw {Extension development} {Gukora extensions}
 ::msgcat::mcset rw {Extension guide} {Inama z'extensions}
 ::msgcat::mcset rw {Extension source} {Inkomoko ya extension}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset rw {Guards — what the harness stops, and where it stands now} {Guards — icyo harness ihagarika, n'aho igeze ubu}
 ::msgcat::mcset rw {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Handlers zikora ku murongo ugaragazwa; iya mbere isubiza ikintu kitari ubusa ni yo itsinda. Kuzimya imwe birayisimbuka nta kuyikura mu byandikishijwe, kandi icyo cyemezo gikomeza muri config.toml kugira ngo kongera gukomeza plugin bitasubire kuyishyiraho mu bucece.}
 ::msgcat::mcset rw Health Ubuzima
+::msgcat::mcset rw {Health alerts} {Impuruza z'ubuzima}
 ::msgcat::mcset rw {Health alerts (%s):} {Amatangazo y'ubuzima (%s):}
 ::msgcat::mcset rw Heartbeat Umutima
 ::msgcat::mcset rw {Heartbeat age: %s s} {Igihe cya heartbeat: %s s}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset rw Install… Shyiramo…
 ::msgcat::mcset rw {Instance name (for example an IRC network)} {Izina rya instance (urugero: umuyoboro wa IRC)}
 ::msgcat::mcset rw Instances Instances
+::msgcat::mcset rw {Instead of patching %s: } {Aho gukora patch kuri %s: }
 ::msgcat::mcset rw {It becomes the current content, as a new revision — so the restore can be undone too.} {Iba ibirimo ubu, nka revision nshya — bityo no kugarura bishobora gukurwaho.}
 ::msgcat::mcset rw {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Ijya mu bubiko burinzwe n'ibanga kuri iyi mashini. Umukozi ntayibona na rimwe: ashobora gusa kuyikoresha nka $%s mu mabwiriza, cyangwa kuyohereza ku ma host yemewe.}
 ::msgcat::mcset rw {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Ikurwa mu biyandikishijwe bya cluster muri fleet yose: guhererekanya gossip gukurikira kubwira buri mugenzi wa 0.2.0 kuyikuraho na we, kandi nta n'umwe uyisubiza. Umugenzi ushaje kurusha 0.2.0 akomeza kuyishyira ku rutonde. Niba iyo mashini igarutse ikohereza heartbeat, yongera kwiyandikisha. Bagenzi ba sync na instances zabitswe ntibihinduka.}
+::msgcat::mcset rw {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {Byandikwa muri config.toml y'uwo node nk'impinduka yakorewe aho; config sync noneho ibigeza ku node zihurira na yo ku igenamiterere.}
 ::msgcat::mcset rw {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Ubu ivuye muri memory. Amateka yayo abika buri revision, kandi Amateka… ashobora kuyigarura.}
+::msgcat::mcset rw {Its gateway stops and %s.} {Gateway yayo irahagarara na %s.}
 ::msgcat::mcset rw Join Injira
 ::msgcat::mcset rw {Join a pool} {Injira mu itsinda ry'imashini}
 ::msgcat::mcset rw {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {Kwinjira mu itsinda ry'imashini rya %1$s nka %2$s? Itsinda rizagera kuri iyi telefoni kuri %3$s.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset rw Joining… Birinjira…
 ::msgcat::mcset rw Join… Injira…
 ::msgcat::mcset rw {Jump to composer} {Jya kuri composer}
+::msgcat::mcset rw {Key (for example model.default)} {Urufunguzo (urugero model.default)}
 ::msgcat::mcset rw Keybindings Keybindings
 ::msgcat::mcset rw {Keyboard help} {Ubufasha bwa clavier}
 ::msgcat::mcset rw {Kick %1$s from %2$s?} {Kurandura %1$s muri %2$s?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset rw {LLM provider} {Utanga serivisi ya LLM}
 ::msgcat::mcset rw Language Ururimi
 ::msgcat::mcset rw {Language (i18n)} {Ururimi (i18n)}
+::msgcat::mcset rw {Language servers on this gateway} {Seriveri z'ururimi kuri iyi gateway}
 ::msgcat::mcset rw Language… Ururimi…
 ::msgcat::mcset rw {Last active} {Igihe giheruka gukora}
 ::msgcat::mcset rw {Last probe: %1$s — %2$s} {Ikigeragezo cya nyuma: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset rw Level Urwego
 ::msgcat::mcset rw {Lift lockdown} {Kuraho ifungwa}
 ::msgcat::mcset rw Lines Imirongo
+::msgcat::mcset rw {List targets…} {Urutonde rw'ibirerekezo…}
 ::msgcat::mcset rw {List the provider's models} {Garagaza urutonde rw'ibyitegererezo by'utanga serivisi}
 ::msgcat::mcset rw Load Uburemere
 ::msgcat::mcset rw {Load more} {Fungura ibindi}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset rw Next Ibikurikira
 ::msgcat::mcset rw Nickname Nickname
 ::msgcat::mcset rw {NixOS: emit a module snippet; do not edit host declarations} {NixOS: tanga agace ka module; ntuhindure imvugo za host}
-::msgcat::mcset rw {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Nta mugera w'ubuzima bwa SSH washyizwe kuri iyi node. Ongeraho instance mu buryo busobanutse kugira ngo uyishyireho cyangwa uyitangire.}
+::msgcat::mcset rw {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {Nta kirerekezo cya SSH cy'ubuzima cyateguriwe iyi node: Restart isaba iyi node kwisubiza gutangira binyuze kuri supervisor yayo; Fleet deploy ikeneye instance yabitswe ifite ikirerekezo cya ssh.}
 ::msgcat::mcset rw {No additional push happens.} {Nta push y'inyongera iba.}
 ::msgcat::mcset rw {No apps yet. Ask the agent to make one: “make me an app that…”} {Nta porogaramu iriho. Saba umukozi akore imwe: “nkorera porogaramu ishobora…”}
 ::msgcat::mcset rw {No code in the picture. Hold the phone closer, straight on, and scan again.} {Nta kode iri ku ifoto. Egereza telefoni, uyifate neza, wongere usikane.}
+::msgcat::mcset rw {No command-center action is recorded on this gateway yet.} {Nta gikorwa cy'ikigo cy'ubugenzuzi cyanditswe kuri iyi gateway.}
 ::msgcat::mcset rw {No configuration snapshot will be restored.} {Nta snapshot y'igenamiterere izasubijweho.}
 ::msgcat::mcset rw {No configured sync peer for this node.} {Nta peer ya sync yagenwe kuri iyi node.}
 ::msgcat::mcset rw {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Nta muhinduzi wihariye wateguwe. Koresha Tunganya umuhinduzi kugira ngo uhitemo provider, model n'ururimi rwo guhinduriramo.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset rw {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Telefoni zakozwe na %s nazo zihagarika porogaramu ubwazo. Mu igenamiterere rya porogaramu ya veles, yemerere kwitangiza ubwayo no gukora inyuma.}
 ::msgcat::mcset rw {Pin / unpin} {Fata / rekura}
 ::msgcat::mcset rw {Pin to home screen} {Shyira kuri ecran y'ibanze}
+::msgcat::mcset rw {Plugin author guide} {Ubuyobozi bw'umwanditsi wa plugin}
 ::msgcat::mcset rw {Plugin history} {Amateka ya plugin}
 ::msgcat::mcset rw Plugins Plugins
 ::msgcat::mcset rw Port Port
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset rw {Preview here} {Reba mbere hano}
 ::msgcat::mcset rw {Preview pane} {Umwandiko w'umigaragarizo}
 ::msgcat::mcset rw {Preview proposal} {Reba icyifuzo mbere}
-::msgcat::mcset rw {Preview the changed name or language before creating it.} {Reba izina cyangwa ururimi byahinduwe mbere yo gukora extension.}
+::msgcat::mcset rw {Preview the changed name, purpose or language before creating it.} {Suzuma izina, intego cyangwa ururimi byahinduwe mbere yo kubirema.}
 ::msgcat::mcset rw Probe Gerageza
+::msgcat::mcset rw {Probe %s node(s)?} {Genzura node %s?}
+::msgcat::mcset rw {Probe all…} {Genzura zose…}
 ::msgcat::mcset rw {Probe of %1$s failed: %2$s} {Ikigeragezo cya %1$s cyanze: %2$s}
 ::msgcat::mcset rw {Profile result} {Igisubizo cya porofayili}
 ::msgcat::mcset rw {Promote into config.toml} {Zamiza muri config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset rw {Push branch…} {Ohereza ishami…}
 ::msgcat::mcset rw {Push complete. No pull request has been opened.} {Push irangiye. Nta pull request yafunguwe.}
 ::msgcat::mcset rw {Push this branch?} {Kohereza iri shami?}
+::msgcat::mcset rw {Push this kind to every node that is a configured peer for it:} {Ohereza ubu bwoko kuri buri node ari mugenzi wayo wateguwe:}
 ::msgcat::mcset rw {Push to %s:} {Ohereza kuri %s:}
 ::msgcat::mcset rw Question Ikibazo
 ::msgcat::mcset rw Questions Ibibazo
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset rw {REPL target: the app} {intego ya REPL: porogaramu}
 ::msgcat::mcset rw {REPL target: the gateway} {intego ya REPL: gateway}
 ::msgcat::mcset rw Read Soma
+::msgcat::mcset rw {Read the key first: a write names the value it replaces.} {Banza usome urufunguzo: kwandika kwerekana agaciro gasimburwa.}
 ::msgcat::mcset rw {Reading notifications, for triggers} {Gusoma imenyesha, ku ma-trigger}
 ::msgcat::mcset rw Reasoning Imigendekere
 ::msgcat::mcset rw {Reasoning effort} {Imbaraga zo gutekereza}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset rw {Reset to default} {Garura uko byari bisanzwe}
 ::msgcat::mcset rw {Reset to template} {Subiza ku cyitegererezo}
 ::msgcat::mcset rw Restart {Ongera utangire}
+::msgcat::mcset rw {Restart %s?} {Ongera utangize %s?}
 ::msgcat::mcset rw {Restart + verify canary} {Ongera utangize + genzura canary}
+::msgcat::mcset rw {Restart cancelled.} {Kongera gutangiza byahagaritswe.}
+::msgcat::mcset rw {Restart of %1$s failed: %2$s} {Kongera gutangiza %1$s byanze: %2$s}
 ::msgcat::mcset rw {Restore hidden windows} {Garura amadirishya yihishe}
 ::msgcat::mcset rw {Restore plugins to %s?} {Garura plugins kuri %s?}
 ::msgcat::mcset rw {Restore revision r%1$s of %2$s?} {Kugarura revision r%1$s ya %2$s?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset rw {S3 region} {Akarere ka S3}
 ::msgcat::mcset rw {SASL account (optional)} {Konti ya SASL (bitari ngombwa)}
 ::msgcat::mcset rw {SASL password (hidden)} {Ijambo ry'ibanga rya SASL (rihishe)}
+::msgcat::mcset rw {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {Ubuzima bwa SSH: binyuze kuri instance yabitswe %1$s (%2$s, unit %3$s).}
 ::msgcat::mcset rw Sandbox Sandbox
 ::msgcat::mcset rw {Sandbox account} {Konti ya sandbox}
 ::msgcat::mcset rw Sandboxes Sandboxes
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset rw {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Sessions zafatiriwe kuri alias zikomeza inzira zari zifite; izishya ntizizabona izina.}
 ::msgcat::mcset rw {Sessions served} {Ibiganiro byakiriwe}
 ::msgcat::mcset rw Set Shyira
+::msgcat::mcset rw {Set %1$s on %2$s to %3$s?} {Shyiraho %1$s kuri %2$s ku gaciro %3$s?}
 ::msgcat::mcset rw {Set [model] provider/default in config.toml.} {Shyira provider/itegererezo rya [model] muri config.toml.}
 ::msgcat::mcset rw {Set as swap target} {Bigire ururimi rwo guhinduranya}
 ::msgcat::mcset rw {Set mode %1$s on %2$s?} {Shyira mode %1$s kuri %2$s?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset rw Summary Incamake
 ::msgcat::mcset rw Surface Ubuso
 ::msgcat::mcset rw {Swap ⇄} {Hinduranya ⇄}
+::msgcat::mcset rw {Sync %1$s to %2$s node(s)?} {Huza %1$s kuri node %2$s?}
+::msgcat::mcset rw {Sync all} {Huza byose}
+::msgcat::mcset rw {Sync all…} {Huza byose…}
 ::msgcat::mcset rw {Sync cancelled.} {Guhuza byahagaritswe.}
 ::msgcat::mcset rw {Sync complete.} {Sync yarangiye.}
 ::msgcat::mcset rw {Sync now} {Kora sync ubu}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset rw {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Ubugenzuzi buriho (buva kuri seriveri y'ururimi cyangwa Check) buherekezwa n'iyi dosiye. Ushobora kongeraho ikibazo. Igisubizo ni inyandiko gusa; nta cyandikwa.}
 ::msgcat::mcset rw {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Ububiko n'ibirimwo byarakuweho. Ibi ntibisubirana — zimya gusa niba ushaka ko bitagaragara muri prompt.}
 ::msgcat::mcset rw {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Ububiko bwarakuweho. Dosiyeri ya plugin ni repository ya git kandi habanza gukorerwa snapshot, ngo History… ishobore kuyigarura.}
-::msgcat::mcset rw {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Umwanditsi afungura dosiye za gateway, harimo na instances za kure, kandi akoresha seriveri y'ururimi ibereye ururimi rwa dosiye kuri gateway: tcl-lsp, typescript-language-server (TypeScript na JavaScript), rust-analyzer (crate cyangwa module ya plugin ya Rust), clangd (C), racket-langserver na seriveri ya Common Lisp. Hover, kujya ku nsobanuro, kuzuza no kugenzura bidakomeje bikora ku ndimi zose gateway ifiteho seriveri; iyo idafite, umwanditsi avuga porogaramu igomba kwishyirwaho aho kandi agumana gushira mu rangi imvugo. Check ikoresha igenzura rihuye kuri gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, cyangwa abasoma ba Racket na Lisp. Bika, ongera upakire muri Manage extensions, kandi ugerageze iyi extension nta gutangaza uko ibintu bimeze kuri iyi mashini.}
+::msgcat::mcset rw {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {Umuhinduzi ufungura dosiye za gateway, harimo na instance za kure, kandi ukoresha seriveri y'ururimi y'ururimi rwa dosiye kuri gateway: typescript-language-server (TypeScript na JavaScript), rust-analyzer (crate cyangwa module ya plugin ya Rust), clangd (C), racket-langserver, seriveri ya Common Lisp, na tcl-lsp ya Tcl aho gateway iyifite (pakeji za Linux za veles zirakwiza). Hover, kujya ku busobanuro, kuzuza no kugenzura bihoraho bikora ku rurimi rwose gateway ifite seriveri yarwo; iyo idafite, umuhinduzi uvuga porogaramu yo kwishyiraho aho kandi ugumana kwerekana syntax. Genzura ikora igenzura rihuye kuri gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, abasoma ba Racket na Lisp, na Tcl ikoresha tclsh y'ubwenge bwite (igenzura ry'ubwuzuzanye, cyangwa lint ya tcl-lsp aho ihari). Bika, ongera upakire muri Manage extensions, kandi ugerageze iyi extension utatangaje imiterere yaho.}
 ::msgcat::mcset rw {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Ihererekanya rya mbere ritegura amabanga, ishusho yafatiranywe n'amadosiye y'imikorere, ariko ntirigutangiza PDS. Kora ububiko bwa KEK n'urufunguzo rwo guhinduranya rwa PLC hanze y'umurongo, hanyuma ukore ubusabe bushya bwasuzumwe maze wemeze ububiko kugira ngo HTTP-01 TLS n'itangizwa bishyirweho. Amarekodi ya DNS agomba kwerekeza kuri iyi mashini mu nzira igororotse; nta mpinduka za proxy ya CDN cyangwa za DNS zikorwa na veles.}
+::msgcat::mcset rw {The fleet is NOT consistent: %s node(s) differ.} {Itsinda NTIRIHUJE: node %s ziratandukanye.}
+::msgcat::mcset rw {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {Itsinda rirahuje n'itandukaniro: node %1$s zikoresha build imwe kandi zemeranya ku byose zisangiye; ibintu %2$s ntibiri kuri buri node.}
+::msgcat::mcset rw {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {Itsinda rirahuje: node %s zikoresha build, module na plugin imwe.}
 ::msgcat::mcset rw {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Ifishi yahindutse kuva iyi extension ikorwa. Ongera ukore, cyangwa werekane scaffold isanzwe mbere.}
+::msgcat::mcset rw {The gateway did not receive the purpose as written. Nothing was created.} {Gateway ntiyakiriye intego nk'uko yanditswe. Nta cyaremwe.}
+::msgcat::mcset rw {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {Iyi gateway ntiyerekana ubuyobozi bwa extension (irashaje kurusha 0.2.2), kandi iyi desktop nta kopi yabwo ifite.}
 ::msgcat::mcset rw {The gateway itself is untouched.} {Gateway ubwayo ntacyo yahindutse.}
 ::msgcat::mcset rw {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Gateway yongeye gufungura igenamiterere, bityo ibiganiro bishya birarikoresha ubu, kandi urufunguzo rubitswe mu bubiko rukoreshwa n'ubusabe bukurikira. Telegram na IRC bitangira igihe gateway yongeye gutangizwa ubutaha: veles gateway restart.}
 ::msgcat::mcset rw {The installed component no longer matches the selected manifest. Review the component list again.} {Igice cyashyizweho ntikigihura na manifest yatoranyijwe. Onera usuzume urutonde rw'ibice.}
 ::msgcat::mcset rw {The installer preview has no verification signatures; apply is disabled.} {Umigaragarizo wo gushyiraho nta mikono y'ugenzura ifite; gushyira mu bikorwa ntibikora.}
 ::msgcat::mcset rw {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Job n'amateka yayo byarakuweho. Ntibisubirana — shyiramo pause niba ushaka gusa ko ihagarara.}
+::msgcat::mcset rw {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {Imitwe config sync itwara, hakurikijwe amategeko yayo: imitwe ya node n'amabanga biguma kuri node yabyo, kandi igice gifashwe ([acl], approvals, sandbox, hooks, plugins, MCP servers) gihindurwa aho gikorewe hanyuma gishyirwe, hanyuma gitegereza nyirayo w'uwo node.}
 ::msgcat::mcset rw {The log could not be read: %s} {Ibyanditswe ntibyashobotse gusomwa: %s}
 ::msgcat::mcset rw {The manifest belongs to another component; its reply was discarded.} {Iyi manifest ni iy'ikindi gice; igisubizo cyayo nticyakozwe.}
 ::msgcat::mcset rw {The profile changed. Review the fresh plan before applying it.} {Porofile yahindutse. Suzuma gahunda nshya mbere yo kuyishyira mu bikorwa.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset rw {The signed release preview was malformed; nothing was installed.} {Ingaragaza y'irekurwa ryashyizweho umukono yari ifite imiterere idahwitse; nta cyashyizweho.}
 ::msgcat::mcset rw {The source buffer changed. Request a new proposal before applying.} {Buffer y'inkomoko yahindutse. Saba icyifuzo gishya mbere yo gushyira mu bikorwa.}
 ::msgcat::mcset rw {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Store isubira inyuma revision imwe. Rollback ubwacyo ni revision, n'iyo irashobora gusubirwamo.}
+::msgcat::mcset rw {The translator did not answer within %s seconds.} {Umuhinduzi ntiyashubije mu %s masegonda.}
 ::msgcat::mcset rw {The translator returned no text.} {Umuhinduzi ntiyasubize inyandiko.}
 ::msgcat::mcset rw {The verification reply was malformed; no integrity result was accepted.} {Igisubizo cy'isuzuma cyari cyangiritse; nta musaruro w'ubwizerwa wemewe.}
 ::msgcat::mcset rw Themes Insanganyamutwe
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset rw {This challenge is over.} {Iki kibazo kirarangiye.}
 ::msgcat::mcset rw {This code has expired. Ask for a new one.} {Iyi kode yararengeje igihe. Saba indi nshya.}
 ::msgcat::mcset rw {This does not start a service or claim signed-download verification.} {Ibi ntibitangiza serivisi, kandi ntibivuga ko download ifite ikimenyetso yagenzuwe.}
+::msgcat::mcset rw {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {Iyi dosiye ni code y'ibanze ya veles. Impinduka nyinshi ziba nziza nka extension aho kuyandika, iyo ikomeza nyuma y'ivugurura kandi idakenera kongera kubakwa: hook, igikoresho, isimburwa rya serivisi cyangwa umuyobozi w'utanga serivisi, byanditswe muri Tcl, TypeScript, Racket cyangwa Common Lisp, cyangwa nka plugin ya Rust itari mu bubiko bukuru (New extension yandika ibyo byose), cyangwa nka module cyangwa plugin y'igikorwa (ubuyobozi bwa Extension bwerekana uko utangira imwe). Patch y'ibanze ni iy'ibyo API ya extension idashobora gusobanura. Kwandika iyi mpinduka nka extension aho kuyipatcha? Ibyo wahinduye biguma muri iyi buffer, ntibyabitswe; kongera kubika bipatcha dosiye y'ibanze.}
 ::msgcat::mcset rw {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Iyi gateway ntiyakira agaciro k'ibanga kavuye kuri iyi mashini: ryinjize aho ukoresheje veles secret set %s, cyangwa ushyire uyu muyoboro muri [vault] trusted_networks yayo}
 ::msgcat::mcset rw {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Ibi ni byo nyabyo bizandikwa — bytes bya engine ubwayo, byafatwa mu gihe nyacyo. Nta cyaranditse kuri disiki.}
+::msgcat::mcset rw {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {Iyi ni code y'ibanze ya veles. Impinduka kuri yo akenshi ni nziza nka extension: New extension, cyangwa bika kugira ngo ubone itangwa ryayo.}
 ::msgcat::mcset rw {This node is not a configured sync peer for any kind.} {Iyi node ntabwo ari peer ya sync yagenewe ubwoko ubwo ari bwo.}
 ::msgcat::mcset rw {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Iyi plugin ni iyatanzwe kandi isomwa gusa. Kuraho ikigano cy'umukoresha gifite iryo zina kugira ngo ukoresh iryatanzwe aho ryaco.}
 ::msgcat::mcset rw {This publishes the commit; no pull request is created yet.} {Ibi bisohora commit; nta pull request yaremwe ubu.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset rw Unassign {Kuraho inshingano}
 ::msgcat::mcset rw {Undo last} {Subiza inyuma}
 ::msgcat::mcset rw {Undo the last memory revision?} {Subiza inyuma revision ya nyuma ya memory?}
+::msgcat::mcset rw {Unset %1$s on %2$s?} {Kuraho %1$s kuri %2$s?}
+::msgcat::mcset rw Unset… Kuraho…
 ::msgcat::mcset rw Unstage Kuraho
 ::msgcat::mcset rw {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Kugeza igihe IRC_ALLOWED_USERS muri .env izavuga konti yawe, umuntu wese uri ku muyoboro ashobora kuvugana na bot — kandi niba nta gice cya [acl], nka nyirayo, afite ibikoresho byose.}
 ::msgcat::mcset rw {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Kugeza igihe TELEGRAM_ALLOWED_USERS muri .env izavuga ID yawe y'ukoresha, umuntu wese ubonye bot ashobora kuvugana na yo — kandi niba nta gice cya [acl], nka nyirayo, afite ibikoresho byose.}
 ::msgcat::mcset rw Untitled {Bidafite umutwe}
-::msgcat::mcset rw {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Gutanga hejuru ni igikorwa cyo gutangaza gisobanutse, si kohereza bwikora. Muri Gucunga extensions, Tanga ugaragaza buri extension y'umukoresha: hitamo extensions na dosiye, suzuma diff n'igenzura ry'amabanga, koresha ibigeragezo, hanyuma ukore ishami rimwe na PR imwe (ijya kuri veles mu bisanzwe) ukoresheje indangamuntu ya git wahisemo. Buri extension ijya munsi ya directory yayo mu bubiko, kandi dosiye isanzwe ihari aho isimburwa gusa nyuma y'ikindi kemezo. Ntukigere utangaza node.toml, credentials zaho, tokens, endpoint z'ibanga cyangwa imiterere ya plugin itajyanye. Snapshot zo kugarura zaho ntiziba commit cyangwa PR yo hejuru.}
+::msgcat::mcset rw {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Gutanga ku rwego rw'ibanze ni igikorwa cyo gutangaza cyasobanuwe, ntabwo ari kohereza ubwayo. Muri Manage extensions, Contribute itanga urutonde rwa buri extension y'umukoresha: hitamo extension na dosiye, suzuma itandukaniro n'igenzura ry'amabanga, kora igenzura, hanyuma ureme ishami rimwe na PR imwe (kuri veles mu bisanzwe). Commit ikoresha indangamuntu ya git iri mu gateway (user.name na user.email by'igenamiterere ryayo rya git); banza ubishyireho niba bigomba gutandukana. Buri extension ijya mu bubiko bwayo muri repository, kandi dosiye ihari aho isimburwa gusa nyuma y'ikindi cyemezo gitandukanye. Ntukigere utangaza node.toml, amabanga yaho, tokens, ibirerekezo by'ibanga cyangwa imiterere ya plugin itari iyo. Kopi z'ubwiriza zo hano ntizo commit cyangwa PR y'ibanze.}
 ::msgcat::mcset rw {Upstream repository or fork URL} {URL ya repositori ya upstream cyangwa fork}
 ::msgcat::mcset rw {Uptime class} {Uburyo bw'igihe cy'ukora}
 ::msgcat::mcset rw {Uptime: host %1$s, gateway %2$s} {Igihe cyo gukora: host %1$s, gateway %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset rw {Users — one role across networks and platforms} {Abakoresha — uruhare rumwe mu miyoboro yose}
 ::msgcat::mcset rw {Using the phone, for the agent} {Gukoresha telefoni, ku mu-agent}
 ::msgcat::mcset rw {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Akarusho ni nka izina rya entry ya provider. Siga byombi ubusa mu cyemezo cya Sima — pair iduzuye ntitwara.}
+::msgcat::mcset rw {Value (TOML: "text", 5, true, [1, 2])} {Agaciro (TOML: "inyandiko", 5, true, [1, 2])}
 ::msgcat::mcset rw {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Indangagaciro ni TOML: imirongo ifite quotes, imibare, cyangwa urutonde. Byandikwa muri [mcp_servers.<name>] — ibisobanuro byawe n'izindi ngingo zose ntibihindurwa.}
 ::msgcat::mcset rw Vault Amabanga
 ::msgcat::mcset rw {Verified signed bundle installed. Restart the gateway before using the new core.} {Paki yagenzuwe ifite umukono yashyizweho. Ongera utangize Gateway mbere yo gukoresha umutima mushya.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset rw Voice {Tanga voice}
 ::msgcat::mcset rw {Waiting for the model…} {Turategereje model…}
 ::msgcat::mcset rw {Waiting for the model… Nothing has been written.} {Turategereje model… Nta cyanditswe.}
+::msgcat::mcset rw Warning Iburira
 ::msgcat::mcset rw {Welcome to veles} {Urakaza kuri veles}
 ::msgcat::mcset rw {What the agent can do here} {Ibyo umukozi ashobora gukora hano}
 ::msgcat::mcset rw {What veles may do on this phone. Each button opens the Android setting that changes it.} {Ibyo veles yemerewe gukora kuri iyi telefoni. Buri buto ifungura igenamiterere rya Android ribihindura.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset rw {Workflow SHA} {SHA y'umurimo}
 ::msgcat::mcset rw {Workflow commit} {Commit ya workflow}
 ::msgcat::mcset rw Worktree Worktree
+::msgcat::mcset rw {Write cancelled.} {Kwandika byahagaritswe.}
 ::msgcat::mcset rw {Write it} Yandike
 ::msgcat::mcset rw {Write the design question first.} {Banza wandike ikibazo cy'igishushanyo.}
 ::msgcat::mcset rw {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Nta provider yandika. Gateway ntabwo izatwara turn kugeza hari entry ya [[custom_providers]] na pair ya [model].}
+::msgcat::mcset rw Write… Andika…
 ::msgcat::mcset rw {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Kwandika URUFUNGUZO urwo ari rwo rwose rwa [acl] bihindura iyi gateway mu buryo bwatoranyijwe: uruhare rusanzwe ruba guest (fail-closed) kandi intonde z'abemerewe ntizikiri imbibi. Hitamo ibi gusa niba ufite umwirondoro wa nyirayo wizeye.}
 ::msgcat::mcset rw {[model] provider} {Provider ya [model]}
 ::msgcat::mcset rw {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {utanga serivisi wa [model] %{name} ntahura n'icyinjijwe na kimwe cya [[custom_providers]] — vuga icyinjijwe iki gikoresho cyandika, cyangwa icyo config.toml isanganywe}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset rw {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset rw {asked by: %s} {byabajijwe na: %s}
 ::msgcat::mcset rw {asking %s for its metrics…} {turasaba %s ibipimo byayo…}
+::msgcat::mcset rw {asking %s how it is supervised…} {kubaza %s uko igenzurwa…}
 ::msgcat::mcset rw {attach a file} {Komeka dosiye}
 ::msgcat::mcset rw {attach an image or file} {ongeraho ifoto cyangwa dosiye}
 ::msgcat::mcset rw {attach failed: %1$s} {guhuza byananiranye: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset rw {channel-event reactions; /triggers add <name> network=… channel=… action=…} {ibisubizo ku bibaye mu muyoboro; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset rw {channels to join, a space or comma separated string} {imiyoboro yo kujyamo, string itandukanyijwe n'umwanya cyangwa akadomo}
 ::msgcat::mcset rw chars inyuguti
+::msgcat::mcset rw {check the buffer (diagnostics)} {genzura buffer (isuzuma)}
 ::msgcat::mcset rw choice_next {jya ku nzira ikurikira}
 ::msgcat::mcset rw choice_retry {ongera ugerageze inzira imwe}
 ::msgcat::mcset rw choice_stop {hagarara hano}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset rw {command list unavailable (the gateway is not reachable)} {urutonde rw'ibitegeko ntiboneka (gateway ntiboneka)}
 ::msgcat::mcset rw {command palette} {command palette}
 ::msgcat::mcset rw {command search} {gushaka amabwiriza}
+::msgcat::mcset rw {command-center audit log} {log y'igenzura y'ikigo cy'ubugenzuzi}
 ::msgcat::mcset rw commands ibitegeko
 ::msgcat::mcset rw {commands stay on your own session; /leave returns from the joined session} {ibitegeko biguma muri sesiyo yawe; /leave igusubiza uvuye muri sesiyo wayinjijemo}
 ::msgcat::mcset rw commands: amabwiriza:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset rw {config changes from peers that wait for you; /configsync apply lands them} {impinduka mu igenamiterere ziturutse ku bagenzi zigutegereje; /configsync apply irazishyira mu bikorwa}
 ::msgcat::mcset rw {config file: %s} {dosiye y'igenamiterere: %s}
 ::msgcat::mcset rw {config key} {urufunguzo rwa config}
+::msgcat::mcset rw {config result} {igisubizo cy'igenamiterere}
 ::msgcat::mcset rw {config unavailable} {config ntiboneka}
 ::msgcat::mcset rw {config unavailable: %s} {config ntiboneka: %s}
 ::msgcat::mcset rw {config value} {agaciro ka config}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset rw doctor_resident {biba muri buri prompt: %{shown} kuri %{total} z'inyuguti (~tokens %{tokens}) — ibisigaye bishyirwamo iyo bikenewe hakoreshejwe: memory action=read path=%{path}}
 ::msgcat::mcset rw doctor_title {isuzuma ry'ububiko}
 ::msgcat::mcset rw doctor_total {igiteranyo: inyuguti %{chars} muri dosiye %{files} (~tokens %{tokens})}
-::msgcat::mcset rw {documentation is not in this source checkout: %s} {inyandiko z'ubuyobozi ntiziri muri iyi checkout y'inkomoko: %s}
 ::msgcat::mcset rw done byarangiye
 ::msgcat::mcset rw {done · %1$s/%2$s} {byarangiye · %1$s/%2$s}
 ::msgcat::mcset rw {done, but the model returned no text} {byarangiye, ariko model nta cyo yasubije}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset rw {grant a role (owner) · /revoke <id> takes it back} {tanga inshingano (owner) · /revoke <id> irayisubiza}
 ::msgcat::mcset rw {grant a role to an identity} {Ha role identity}
 ::msgcat::mcset rw {guards unreachable} {guards ntigerwaho}
-::msgcat::mcset rw guts: guts:
+::msgcat::mcset rw {guts ▾} {ibiri imbere ▾}
 ::msgcat::mcset rw {gw hooks} {gw hooks}
 ::msgcat::mcset rw {gw procs} {gw procs}
 ::msgcat::mcset rw {halt after N identical calls} {hagarika nyuma y'ibihuza biri isa N}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset rw {live patching ARMED} {live patching byateguwe}
 ::msgcat::mcset rw {live patching ARMED — an agent can now redefine procs in this window} {live patching byateguwe — agent ashobora ubu kuvugurura procs muri iki idirishya}
 ::msgcat::mcset rw {live patching disarmed} {live patching byarazimye}
+::msgcat::mcset rw load umutwaro
 ::msgcat::mcset rw loaded byapakiwe
 ::msgcat::mcset rw {loaded older messages} {byapakiwe ubutumwa bwa kera}
 ::msgcat::mcset rw loading… birapakirwa…
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset rw {no upstream reading for %s} {nta byo gusoma biva kuri upstream ya %s}
 ::msgcat::mcset rw {no word match} {nta ijambo rihuye}
 ::msgcat::mcset rw {no xdg-open — path copied instead} {nta xdg-open — inzira yasimbuwe aho}
+::msgcat::mcset rw {nobody else's session is open on %s right now} {nta yindi sesiyo y'undi muntu ifunguye kuri %s ubu}
 ::msgcat::mcset rw {node log} {ibyanditswe bya node}
 ::msgcat::mcset rw {none loaded} {nta na kimwe cyapakiwe}
 ::msgcat::mcset rw {none recorded} {nta nimwe yanditseho}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset rw {not installed} ntiyashyizweho
 ::msgcat::mcset rw {not reported} {ntabwo byavuzwe}
 ::msgcat::mcset rw {not running} {ntabwo ikora}
+::msgcat::mcset rw {not saved: drafting the change as an extension} {ntibyabitswe: kwandika impinduka nka extension}
+::msgcat::mcset rw {not sent: %s} {ntibyoherejwe: %s}
 ::msgcat::mcset rw {not set in config.toml — the built-in default applies. %s} {ntabwo byashyizwe muri config.toml — default ya built-in irakoreshwa. %s}
 ::msgcat::mcset rw {not set yet — /secret set it later} {ntiriragenwa — rigene nyuma ukoresheje /secret set}
 ::msgcat::mcset rw {not signed: %s} {ntiyashyizweho umuseignature: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset rw {on no plan} {iyo nta plan}
 ::msgcat::mcset rw {on the} kuri
 ::msgcat::mcset rw {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {on/off bihumuriza note ya mechanism muri transcript — kuri iyi session, cyangwa nka default, bitewe na scope iri munsi. Bigenga NOTE; icyo buri mechanism IKORA gishyirwa mu gice cyanditse ku murongo wayo, na Configure… urakifungura. Guard knobs zishobora guhindurwa aho ziri.}
+::msgcat::mcset rw {on; this gateway does not say whether they reach the home chat} {birakora; iyi gateway ntiyivuga niba bigera mu kiganiro cyo mu rugo}
 ::msgcat::mcset rw {one-shot tcl-lsp diagnostics — no model turn} {isuzuma rya tcl-lsp ry'inshuro imwe — nta turn ya model}
 ::msgcat::mcset rw {open a saved file first} {banza ufungure dosiye yabitswe}
 ::msgcat::mcset rw {open links} {gufungura imiyoboro}
+::msgcat::mcset rw {open one of the desktop's own source files} {fungura imwe mu dosiye z'inkomoko za desktop ubwayo}
 ::msgcat::mcset rw {open the engine log} {fungula engine log}
 ::msgcat::mcset rw {open the joined session before /leave (on %s)} {fungura sesiyo wayinjijemo mbere ya /leave (kuri %s)}
 ::msgcat::mcset rw {open the selected child session} {fungura sesiyo y'umwana yatoranyijwe}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset rw {read-only: [approvals] allowlist} {isomwa gusa: [approvals] urutonde rwemewe}
 ::msgcat::mcset rw {read-only: this session lives on %1$s (as read at %2$s)} {gusoma gusa: iyi session iba kuri %1$s (uko yasomwe saa %2$s)}
 ::msgcat::mcset rw {read-only: this skill comes from the %s library} {gusoma gusa: iyi skill iva mu library ya %s}
+::msgcat::mcset rw {reading %1$s on %2$s…} {gusoma %1$s kuri %2$s…}
 ::msgcat::mcset rw reasoning reasoning
 ::msgcat::mcset rw {reasoning display: %1$s · %2$s blocks} {imiyerekane ya reasoning: %1$s · %2$s blocks}
 ::msgcat::mcset rw {reasoning display: %s} {imiyerekane ya reasoning: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset rw {run failed: %s} {gukora byananiranye: %s}
 ::msgcat::mcset rw {run in:} {kora muri:}
 ::msgcat::mcset rw running irakora
+::msgcat::mcset rw {running %s on the listed nodes…} {gukora %s kuri node ziri ku rutonde…}
 ::msgcat::mcset rw {running since %s} {irakora kuva %s}
 ::msgcat::mcset rw {running subagents; /subagents cancel <id>} {subagents ziri gukora; /subagents cancel <id>}
 ::msgcat::mcset rw {save failed} {guzigama byananiranye}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset rw {send failed: %s} {cohereza byanze: %s}
 ::msgcat::mcset rw {send the message; while a turn runs, queue it as steering} {Ohereza ubutumwa; iyo turn irimo gukorwa, ubushyire mu murongo nk'icyerekezo}
 ::msgcat::mcset rw sent byoherejwe
-::msgcat::mcset rw {sent to the owner's home chat} {byoherejwe mu biganiro by'ibanze bya nyirayo}
+::msgcat::mcset rw {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {byoherejwe mu kiganiro cyo mu rugo cya nyirayo na gateway ikora adapter yayo ya Telegram, si iyi}
+::msgcat::mcset rw {sent to the owner's home chat from this gateway} {byoherejwe mu kiganiro cyo mu rugo cya nyirayo biva kuri iyi gateway}
 ::msgcat::mcset rw server server
 ::msgcat::mcset rw {server buffers merged} {buffers za server zahujwe}
 ::msgcat::mcset rw {server buffers separate} {buffers za server zatandukanijwe}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset rw {session, model, lifecycle} {session, model, ubuzima bwayo}
 ::msgcat::mcset rw {session: %s} {session: %s}
 ::msgcat::mcset rw {sessions    %s} {sessions    %s}
+::msgcat::mcset rw {sessions you can join on %s (/join <name or id>):} {sesiyo ushobora kwinjiramo kuri %s (/join <izina cyangwa id>):}
 ::msgcat::mcset rw {sessions: unreachable} {sessions: ntizigerwa}
 ::msgcat::mcset rw {set by} {byashyizweho na}
 ::msgcat::mcset rw {set. %s} {byashyizweho. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset rw {split: %s} {split: %s}
 ::msgcat::mcset rw {ssh to %1$s failed: %2$s} {ssh kuri %1$s byananiranye: %2$s}
 ::msgcat::mcset rw {stale — no heartbeat within the threshold} {ishaje — nta heartbeat mu gihe ntarengwa}
+::msgcat::mcset rw {standing approval grants: always and this session; revoke one} {uburenganzira bw'emezwa buhoraho: buri gihe na muri iyi sesiyo; kuraho bumwe}
 ::msgcat::mcset rw {standing global and session permission grants} {uburenganzira buhoraho bw'isi yose n'ubwa sesiyo}
+::msgcat::mcset rw {start the line with // to send it as text} {tangira umurongo na // kugira ngo uwuhereze nk'inyandiko}
 ::msgcat::mcset rw state state
 ::msgcat::mcset rw {state       never reached} {state       ntigerwa na rimwe}
 ::msgcat::mcset rw {state       reachable} {state       iragezwaho}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset rw {the config.toml that will be written} {config.toml izandikwa}
 ::msgcat::mcset rw {the default (config.toml)} {iyo bisanzwe (config.toml)}
 ::msgcat::mcset rw {the engine refused these answers: %s} {engine yanze ibi bisubizo: %s}
+::msgcat::mcset rw {the file to open: type a path, then Return or Open} {dosiye yo gufungura: andika inzira, hanyuma Return cyangwa Open}
 ::msgcat::mcset rw {the first ACL owner identity} {indangamuntu ya mbere y'umwene wa ACL}
 ::msgcat::mcset rw {the gateway answered without a report} {gateway yasubije nta report}
 ::msgcat::mcset rw {the model/provider pair is incomplete — the gateway will not route until both are present} {umubano wa model/utanga serivisi ntiwuzuye — gateway ntizayobora kugeza byombi bihari}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset rw unknown ntibizwi
 ::msgcat::mcset rw {unknown api_mode %{mode} — expected one of %{modes}} {api_mode itazwi %{mode} — hategerejwe kimwe muri ibi: %{modes}}
 ::msgcat::mcset rw {unknown bindings '%{rest}' · normie|emacs|vi} {bindings itazwi '%{rest}' · normie|emacs|vi}
+::msgcat::mcset rw {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {itegeko ritazwi %{cmd} hano — /help itanga urutonde rw'amabwiriza y'iyi mbuga; nta cyoherejwe}
 ::msgcat::mcset rw {unknown command /%s — /help lists them} {itegeko /%s ritazwi — /help urutonde rwabyo}
 ::msgcat::mcset rw {unknown command: /%s} {itangazo ritarizi: /%s}
 ::msgcat::mcset rw {unknown keymap: %s (normie/emacs/vi)} {keymap itazwi: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset rw {upstream plan credits and windows — /usage is the local ledger} {inguzanyo n'amadirishya y'igihe bya gahunda yo hejuru — /usage ni igitabo cy'ibaruramari cyo hafi}
 ::msgcat::mcset rw {upstream plan quota} {igero ry'umugambi wa upstream}
 ::msgcat::mcset rw uptime uptime
-::msgcat::mcset rw {usage: /join <session> or /join <instance>/<session>} {ikoreshwa: /join <session> cyangwa /join <instance>/<session>}
+::msgcat::mcset rw {usage: /export [md|json]} {ikoreshwa: /export [md|json]}
 ::msgcat::mcset rw {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {Imikoreshereze: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset rw {usage: /resume <id or prefix>} {imikoreshereze: /resume <id cyangwa intangiriro>}
 ::msgcat::mcset rw {usage: /resume <id-or-prefix>} {imikoreshereze: /resume <id-or-prefix>}

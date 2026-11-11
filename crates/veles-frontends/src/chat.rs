@@ -338,8 +338,10 @@ fn status_line(r: &TurnResult) -> String {
 }
 
 fn parse_input(line: &str) -> ReplInput {
-    if !line.starts_with('/') {
-        return ReplInput::Prompt(line.to_string());
+    // Text by the one rule every surface asks (commands::slash_line): a
+    // path typed first, and a `//` line with one slash taken off.
+    if let veles_core::commands::SlashLine::Text(t) = veles_core::commands::slash_line(line) {
+        return ReplInput::Prompt(t.to_string());
     }
     let lower = line.to_lowercase();
     if lower.starts_with("/quit") || lower.starts_with("/exit") {
@@ -969,7 +971,9 @@ fn handle_slash(
                         Err(e) => println!("(command /{} failed: {e})", t.name),
                     }
                 }
-                None => println!("unknown command: {other} (try /help)"),
+                None => println!(
+                    "unknown command: {name} (try /help; start the line with // to send it as text)"
+                ),
             }
         }
     }
@@ -1181,6 +1185,20 @@ mod tests {
         // Case-insensitive: /QUIT is still a quit (a prompt that SAYS
         // /quit would be worse than exiting).
         assert!(parse_input("/QUIT").is_quit(false));
+    }
+
+    /// The same rule as the TUI and the desktop (commands::slash_line):
+    /// a path typed first is text, `//` sends the line with one slash,
+    /// and a word shaped like a command is a command (refused when
+    /// nothing knows it). The REPL sent every `/` line to dispatch, so
+    /// `/home/x/file fails` was "unknown command" with no way round it.
+    #[test]
+    fn a_path_or_a_doubled_slash_is_a_prompt() {
+        assert!(parse_input("/home/x/file fails").is_prompt("/home/x/file fails"));
+        assert!(parse_input("//usr is full").is_prompt("/usr is full"));
+        assert!(parse_input("/usr is full").is_slash("/usr is full"));
+        assert!(parse_input("//quit").is_prompt("/quit"));
+        assert!(parse_input("/x.log is empty").is_prompt("/x.log is empty"));
     }
 
     #[test]

@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset kn {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset kn {%1$s %2$s done} {%1$s %2$s ಮುಗಿದಿದೆ}
 ::msgcat::mcset kn {%1$s %2$s failed: %3$s} {%1$s %2$s ವಿಫಲವಾಗಿದೆ: %3$s}
+::msgcat::mcset kn {%1$s %2$s over ssh anyway?} {ಆದರೂ ssh ಮೂಲಕ %1$s %2$s ಮಾಡಬೇಕೇ?}
 ::msgcat::mcset kn {%1$s %2$s over ssh…} {%1$s %2$s ssh ಮೂಲಕ…}
 ::msgcat::mcset kn {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset kn {%1$s (%2$s waiting)} {%1$s (%2$s ಕಾಯುತ್ತಿವೆ)}
 ::msgcat::mcset kn {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  ರೀಸನಿಂಗ್ %3$s}
 ::msgcat::mcset kn {%1$s = %2$s here} {ಇಲ್ಲಿ %1$s = %2$s}
+::msgcat::mcset kn {%1$s = %2$s on %3$s} {%3$s ನಲ್ಲಿ %1$s = %2$s}
 ::msgcat::mcset kn {%1$s NOT saved: %2$s} {%1$s ಉಳಿಸಲಾಗಿಲ್ಲ: %2$s}
 ::msgcat::mcset kn {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s %2$s ಗ್ರಂಥಾಲಯಕ್ಕೆ ಸೇರಿದ್ದು ಓದಲು-ಮಾತ್ರ — ಬದಲಿಸಲು New… ನಿಂದ ನಕಲಿಸಿ}
 ::msgcat::mcset kn {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s %2$s ಗ್ರಂಥಾಲಯಕ್ಕೆ ಸೇರಿದ್ದು — veles ಬೇರೆ ಉಪಕರಣದ ಸ್ಕಿಲ್ಗಳನ್ನು ಎಂದಿಗೂ ಅಳಿಸುವುದಿಲ್ಲ}
+::msgcat::mcset kn {%1$s cannot restart itself: %2$s} {%1$s ತಾನೇ ಮರುಪ್ರಾರಂಭವಾಗಲು ಸಾಧ್ಯವಿಲ್ಲ: %2$s}
+::msgcat::mcset kn {%1$s differs: %2$s} {%1$s ಭಿನ್ನವಾಗಿದೆ: %2$s}
 ::msgcat::mcset kn {%1$s every cron job on %2$s?} {%1$s ರ ಮೇಲೆ %2$s ನ ಪ್ರತಿ ಕ್ರಾನ್ ಕೆಲಸವನ್ನು?}
 ::msgcat::mcset kn {%1$s failed: %2$s} {%1$s ವಿಫಲವಾಗಿದೆ: %2$s}
 ::msgcat::mcset kn {%1$s in / %2$s out / %3$s calls} {%1$s ಒಳಗೆ / %2$s ಹೊರಗೆ / %3$s ಕರೆಗಳು}
+::msgcat::mcset kn {%1$s is back after %2$s s (veles %3$s).} {%1$s %2$s ಸೆಕೆಂಡುಗಳ ನಂತರ ಮರಳಿ ಬಂದಿದೆ (veles %3$s).}
 ::msgcat::mcset kn {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s ನೋಡ್ %2$s, %3$s ಅಲ್ಲ. Edit… ನಲ್ಲಿ ಅದರ ನೋಡ್ ಐಡಿ ಸರಿಪಡಿಸಿ.}
 ::msgcat::mcset kn {%1$s is not a whole number} {%1$s ಪೂರ್ಣ ಸಂಖ್ಯೆ ಅಲ್ಲ}
+::msgcat::mcset kn {%1$s is not on: %2$s} {%1$s ಆನ್ ಆಗಿಲ್ಲ: %2$s}
+::msgcat::mcset kn {%1$s is not set on %2$s: the default applies.} {%2$s ನಲ್ಲಿ %1$s ಹೊಂದಿಸಲಾಗಿಲ್ಲ: ಡೀಫಾಲ್ಟ್ ಅನ್ವಯವಾಗುತ್ತದೆ.}
 ::msgcat::mcset kn {%1$s is reachable (%2$s ms).} {%1$s ತಲುಪಬಹುದು (%2$s ms).}
+::msgcat::mcset kn {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s %2$s ಟರ್ನ್(ಗಳನ್ನು) ನಡೆಸುತ್ತಿದೆ. ಹೇಗಿದ್ದರೂ ಮರುಪ್ರಾರಂಭಿಸುವುದೇ?}
 ::msgcat::mcset kn {%1$s is set to something this box cannot edit (%2$s)} {%1$s ಈ ಯಂತ್ರ ಇಡಿಟ್ ಮಾಡಲಾಗದ ಮೌಲ್ಯಕ್ಕೆ ಹೊಂದಿಸಲಾಗಿದೆ (%2$s)}
 ::msgcat::mcset kn {%1$s is unreachable: %2$s} {%1$s ತಲುಪಲಾಗದು: %2$s}
+::msgcat::mcset kn {%1$s is up, but its node binding is wrong: %2$s} {%1$s ಆನ್ ಆಗಿದೆ, ಆದರೆ ಅದರ ನೋಡ್ ಬೈಂಡಿಂಗ್ ತಪ್ಪಾಗಿದೆ: %2$s}
+::msgcat::mcset kn {%1$s not compared: %2$s} {%1$s ಹೋಲಿಸಲಾಗಿಲ್ಲ: %2$s}
 ::msgcat::mcset kn {%1$s of %2$s characters} {%1$s / %2$s ಅಕ್ಷರಗಳು}
 ::msgcat::mcset kn {%1$s of %2$s sessions} {%2$s ರಲ್ಲಿ %1$s ಸೆಷನ್‌ಗಳು}
 ::msgcat::mcset kn {%1$s of %2$s skills reach the prompt} {%1$s / %2$s ಸ್ಕಿಲ್ಗಳು ಪ್ರಾಂಪ್ಟ್ ತಲುಪುತ್ತವೆ}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset kn {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset kn {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset kn {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset kn {%1$s: %2$s on the gateway} {ಗೇಟ್‌ವೇಯಲ್ಲಿ %1$s: %2$s}
+::msgcat::mcset kn {%1$s: %2$s on the gateway (ships with veles)} {ಗೇಟ್‌ವೇಯಲ್ಲಿ %1$s: %2$s (veles ಜೊತೆ ಬರುತ್ತದೆ)}
 ::msgcat::mcset kn {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset kn {%1$s: no language server on the gateway. %2$s} {%1$s: ಗೇಟ್‌ವೇಯಲ್ಲಿ ಯಾವುದೇ ಭಾಷಾ ಸರ್ವರ್ ಇಲ್ಲ. %2$s}
 ::msgcat::mcset kn {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: ಅದರ ಗೇಟ್‌ವೇ ಮೆಮೊರಿಯಲ್ಲಿ ಇಟ್ಟುಕೊಳ್ಳುವ %3$s ಸಾಲುಗಳ ಕೊನೆಯ %2$s, ಆ ನೋಡ್‌ನಲ್ಲಿ ರಹಸ್ಯಗಳನ್ನು ಮಸುಕುಗೊಳಿಸಲಾಗಿದೆ.}
+::msgcat::mcset kn {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: ಬಳಕೆದಾರ ಪ್ಲಗಿನ್ %2$s ಅದೇ ವಿಷಯವಿರುವ ಜೊತೆಬಂದ ಪ್ಲಗಿನ್ ಅನ್ನು ಮೀರಿಸುತ್ತದೆ (%3$s)}
 ::msgcat::mcset kn {%d MCP server(s) configured} {%d MCP ಸರ್ವರ್(ಗಳು) ಕಾನ್ಫಿಗರ್ ಆಗಿವೆ}
 ::msgcat::mcset kn {%d entries} {%d ನಮೂದುಗಳು}
 ::msgcat::mcset kn {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {ಎಕ್ಸ್ಟೆನ್ಷನ್‌ನ %d ಫೈಲ್(ಗಳು) ಪರಿಶೀಲಿಸಿದಂತೆಯೇ ಬರೆಯಲಾಗುತ್ತದೆ. ಪೂರ್ವವೀಕ್ಷಣೆಯ ನಂತರ ಅವುಗಳಲ್ಲಿ ಯಾವುದಾದರೂ ಬದಲಾಗಿದ್ದರೆ, ಏನೂ ಬರೆಯಲಾಗುವುದಿಲ್ಲ. ಕಮಿಟ್, ಪುಷ್ ಅಥವಾ PR ನಡೆಯುವುದಿಲ್ಲ.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset kn {%s (stale)} {%s (ಹಳೆಯದು)}
 ::msgcat::mcset kn {%s (this session)} {%s (ಈ ಸೆಷನ್)}
 ::msgcat::mcset kn {%s GB free of %s GB} {%s GB ಖಾಲಿ, ಒಟ್ಟು %s GB}
+::msgcat::mcset kn {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s ಈ ಆಜ್ಞೆ ssh ಮೂಲಕ ಕಾನ್ಫಿಗರ್ ಮಾಡಿದ ಹೋಸ್ಟ್‌ಗೆ ಹೋಗುತ್ತದೆ, ಆದರೆ ಈ ಪರಿಶೀಲನೆ ಅದನ್ನು ನೋಡ್‌ಗೆ ಜೋಡಿಸಲಾಗಲಿಲ್ಲ.}
 ::msgcat::mcset kn {%s already exists — open it from the list} {%s ಈಗಾಗಲೇ ಇದೆ — ಅದನ್ನು ಪಟ್ಟಿಯಿಂದ ತೆರೆಯಿರಿ}
 ::msgcat::mcset kn {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {ನೀವು ತೆರೆದ ನಂತರ %s ಬದಲಾಗಿದೆ — ಏನನ್ನೂ ತಿದ್ದಿ ಬರೆಯಲಾಗಿಲ್ಲ; ನಿಮ್ಮ ಪಠ್ಯವನ್ನು ನಕಲಿಸಿಕೊಳ್ಳಿ, ನಂತರ ರೀಲೋಡ್ ಮಾಡಿ}
 ::msgcat::mcset kn {%s cleared for this buffer} {ಈ ಬಫರ್ಗಾಗಿ %s ತೆರವುಗೊಳಿಸಲಾಗಿದೆ}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset kn {%s comes from config.toml [acl] — edit there} {%s config.toml [acl] ನಿಂದ ಬರುತ್ತದೆ — ಅಲ್ಲೇ ಇಡಿಟ್ ಮಾಡಿ}
 ::msgcat::mcset kn {%s config change(s) wait for you — /configsync} {%s ಕಾನ್ಫಿಗ್ ಬದಲಾವಣೆ(ಗಳು) ನಿಮಗಾಗಿ ಕಾಯುತ್ತಿವೆ — /configsync}
 ::msgcat::mcset kn {%s did not become healthy within 30s} {%s 30 ಸೆಕೆಂಡ್ಗಳಲ್ಲಿ ಆರೋಗ್ಯಕರ ಆಗಲಿಲ್ಲ}
+::msgcat::mcset kn {%s did not come back within 120 s: look at its log where it runs.} {%s 120 ಸೆಕೆಂಡುಗಳಲ್ಲಿ ಮರಳಿ ಬರಲಿಲ್ಲ: ಅದು ಓಡುವಲ್ಲೇ ಅದರ ಲಾಗ್ ನೋಡಿ.}
 ::msgcat::mcset kn {%s done} {%s ಮುಗಿದಿದೆ}
 ::msgcat::mcset kn {%s failed: %s} {%s ವಿಫಲವಾಗಿದೆ: %s}
+::msgcat::mcset kn {%s holds a credential: it stays on its node and is not shown.} {%s ಒಂದು ರುಜುವಾತನ್ನು ಹೊಂದಿದೆ: ಅದು ಅದರ ನೋಡ್‌ನಲ್ಲೇ ಇರುತ್ತದೆ ಮತ್ತು ತೋರಿಸಲಾಗುವುದಿಲ್ಲ.}
 ::msgcat::mcset kn {%s is already split} {%s ಈಗಾಗಲೇ ವಿಭಜಿತವಾಗಿದೆ}
+::msgcat::mcset kn {%s is restarting; waiting for it to come back…} {%s ಮರುಪ್ರಾರಂಭವಾಗುತ್ತಿದೆ; ಅದು ಮರಳಿ ಬರುವವರೆಗೆ ಕಾಯುತ್ತಿದೆ…}
 ::msgcat::mcset kn {%s is the language in use — pick another one to swap with} {%s ಈಗ ಬಳಕೆಯಲ್ಲಿರುವ ಭಾಷೆ — ಬದಲಿಸಲು ಬೇರೆ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ}
 ::msgcat::mcset kn {%s is up} {%s ಆನ್ ಆಗಿದೆ}
 ::msgcat::mcset kn {%s keys — any key closes} {%s ಕೀಲಿಗಳು — ಯಾವುದೇ ಕೀ ಒತ್ತಿದರೆ ಮುಚ್ಚುತ್ತದೆ}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset kn {; shadows bundled} {; ಜೊತೆಬಂದದ್ದನ್ನು ಮೀರಿಸುತ್ತದೆ}
 ::msgcat::mcset kn {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {ಕಾನ್ಫಿಗ್ ಆಫರ್ ಸೆಟ್ಟಿಂಗ್ಗಳನ್ನು ಬದಲಿಸಬಹುದು ಮತ್ತು ಲಾಕರ್ ಆಫರ್ ರಹಸ್ಯಗಳನ್ನು ವಿಲೀನ ಮಾಡುತ್ತದೆ; ಭದ್ರತಾ ವಿಭಾಗದ ಬದಲಾವಣೆಗಳು ಇನ್ನೂ ಮಾಲೀಕರಿಗಾಗಿ ಕಾಯುತ್ತವೆ.}
 ::msgcat::mcset kn {A failing plugin may drop hooks mid-turn.} {ವಿಫಲ ಪ್ಲಗಿನ್ ಮಧ್ಯ-ಸರದಿಯಲ್ಲಿ ಹುಕ್ಗಳನ್ನು ಬಿಡಬಹುದು.}
+::msgcat::mcset kn {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {ತಡೆಹಿಡಿಯಲಾದ ವಿಭಾಗ: ಇಲ್ಲಿಂದ ಬರೆಯಲಾಗುವುದಿಲ್ಲ; ನೋಡ್‌ನಲ್ಲಿ ಇಡಿಟ್ ಮಾಡಿ ಕಾನ್ಫಿಗ್ ಪುಷ್ ಮಾಡಿ, ಅದರ ಮಾಲೀಕರು ಅಲ್ಲೇ ಅನ್ವಯಿಸುತ್ತಾರೆ.}
 ::msgcat::mcset kn {A local server: no key is needed unless you set one up.} {ಸ್ಥಳೀಯ ಸರ್ವರ್: ನೀವೇ ಒಂದನ್ನು ಹೊಂದಿಸದಿದ್ದರೆ key ಯಾವುದೂ ಅಗತ್ಯವಿಲ್ಲ.}
 ::msgcat::mcset kn {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {ಸಹಿ ಮಾಡಿದ ಬಿಡುಗಡೆಯನ್ನು ಪೂರ್ವಪರಿಶೀಲನೆಯ ನಂತರ ಮಾತ್ರ ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತದೆ. ಮರುಪ್ರಾರಂಭ/ಪರಿಶೀಲನೆ, ಮುಂದುವರಿಸುವುದು ಮತ್ತು ಹಿಂದಿರುಗಿಸುವುದು ಪ್ರತ್ಯೇಕ ಕ್ರಿಯೆಗಳು. ಆರೋಗ್ಯಕರ ಪ್ರಕ್ರಿಯೆಯು ಪರಿಶೀಲಿಸಿದ ಮೂಲ ಪರಿಷ್ಕರಣೆಯನ್ನು ನಿಖರವಾಗಿ ವರದಿ ಮಾಡಬೇಕು.}
 ::msgcat::mcset kn {A value is stored for %s — leave this empty to keep it.} {%s ಗಾಗಿ ಒಂದು ಮೌಲ್ಯವನ್ನು ಇರಿಸಲಾಗಿದೆ — ಅದನ್ನು ಉಳಿಸಿಕೊಳ್ಳಲು ಇದನ್ನು ಖಾಲಿ ಬಿಡಿ.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset kn {Asking the provider for its models…} {ಪ್ರೊವೈಡರ್‌ನಿಂದ ಅದರ ಮಾದರಿಗಳನ್ನು ಕೇಳಲಾಗುತ್ತಿದೆ…}
 ::msgcat::mcset kn Attach ಜೋಡಿಸು
 ::msgcat::mcset kn {Attach to the next message} {ಮುಂದಿನ ಸಂದೇಶಕ್ಕೆ ಸೇರಿಸಿ}
+::msgcat::mcset kn {Audit log unavailable: %s} {ಆಡಿಟ್ ಲಾಗ್ ಲಭ್ಯವಿಲ್ಲ: %s}
+::msgcat::mcset kn {Audit log…} {ಆಡಿಟ್ ಲಾಗ್…}
 ::msgcat::mcset kn {Author guide} {ರಚನಾಕಾರರ ಮಾರ್ಗದರ್ಶಿ}
 ::msgcat::mcset kn {Automatically discovered from the attached gateway's cluster registry.} {ಜೋಡಿಸಿದ ಗೇಟ್‌ವೇಯ ಕ್ಲಸ್ಟರ್ ರಿಜಿಸ್ಟ್ರಿಯಿಂದ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪತ್ತೆಯಾಗಿದೆ.}
 ::msgcat::mcset kn Back ಹಿಂದೆ
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset kn {Browse sessions} {ಸೆಷನ್‌ಗಳನ್ನು ಬ್ರೌಸ್ ಮಾಡಿ}
 ::msgcat::mcset kn {Build manifest + preflight} {ಬಿಲ್ಡ್ ಮ್ಯಾನಿಫೆಸ್ಟ್ + ಪೂರ್ವಪರಿಶೀಲನೆ}
 ::msgcat::mcset kn {Build: veles %1$s, revision %2$s (%3$s %4$s)} {ಬಿಲ್ಡ್: veles %1$s, ಪರಿಷ್ಕರಣೆ %2$s (%3$s %4$s)}
+::msgcat::mcset kn {Bulk %1$s failed: %2$s} {ಸಮೂಹ %1$s ವಿಫಲವಾಗಿದೆ: %2$s}
+::msgcat::mcset kn {Bulk %1$s: %2$s (%3$s).} {ಸಮೂಹ %1$s: %2$s (%3$s).}
+::msgcat::mcset kn {Bulk action cancelled.} {ಸಮೂಹ ಕ್ರಿಯೆ ರದ್ದುಪಡಿಸಲಾಗಿದೆ.}
 ::msgcat::mcset kn {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e ಸಾಲು ಕೊನೆ · C-b/C-f ಅಕ್ಷರ · M-b/M-f ಪದ · C-k EOL ವರೆಗೆ ಕೊಲ್ಲಿ · C-y yank · M-w ನಕಲು · C-w ಪ್ರದೇಶ ಕೊಲ್ಲಿ · C-space ಗುರುತು ಹಾಕಿ · C-/ undo}
 ::msgcat::mcset kn {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g ಎಲ್ಲವನ್ನೂ ರದ್ದುಮಾಡುತ್ತದೆ · C-j ಹೊಸ ಸಾಲು · M-p/M-n ಇತಿಹಾಸ · Tab ಪೂರ್ಣಗೊಳಿಸು}
+::msgcat::mcset kn {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU: %1$s ಕೋರ್‌ಗಳು, ಕಳೆದ %3$s ಸೆಕೆಂಡುಗಳಲ್ಲಿ %2$s%% ಬಳಕೆಯಲ್ಲಿ}
 ::msgcat::mcset kn {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s ಕೋರ್‌ಗಳು, ಲೋಡ್ %2$s / %3$s / %4$s (ಕೋರ್‌ಗಳ %5$s%%)}
 ::msgcat::mcset kn Cancel ರದ್ದುಮಾಡಿ
 ::msgcat::mcset kn {Cancel task} {ಕೆಲಸ ರದ್ದುಮಾಡಿ}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset kn {Channels (e.g. #veles #dev)} {ಚಾನಲ್ಗಳು (ಉದಾ. #veles #dev)}
 ::msgcat::mcset kn Chat ಚಾಟ್
 ::msgcat::mcset kn {Chat — not attached; press Attach in the Instances tab} {ಚಾಟ್ — ಅಟ್ಯಾಚ್ ಆಗಿಲ್ಲ; Instances ಟ್ಯಾಬ್ನಲ್ಲಿ Attach ಒತ್ತಿ}
-::msgcat::mcset kn {Check (lsp)} {ಪರಿಶೀಲಿಸಿ (lsp)}
+::msgcat::mcset kn {Check (C-c C-k)} {ಪರಿಶೀಲಿಸಿ (C-c C-k)}
 ::msgcat::mcset kn {Check again} {ಮತ್ತೆ ಪರಿಶೀಲಿಸಿ}
 ::msgcat::mcset kn {Check files} {ಫೈಲ್‌ಗಳನ್ನು ಪರೀಕ್ಷಿಸಿ}
 ::msgcat::mcset kn Checkpoints ಚೆಕ್‌ಪಾಯಿಂಟ್‌ಗಳು
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset kn {Close (Esc)} {ಮುಚ್ಚಿ (Esc)}
 ::msgcat::mcset kn {Close the setup wizard? Nothing has been written yet.} {ಸೆಟಪ್ ವಿಝಾರ್ಡ್ ಮುಚ್ಚುವುದೇ? ಇನ್ನೂ ಏನನ್ನೂ ಬರೆಯಲಾಗಿಲ್ಲ.}
 ::msgcat::mcset kn {Code actions} {ಕೋಡ್ ಕ್ರಿಯೆಗಳು}
+::msgcat::mcset kn {Command-center audit log} {ಕಮಾಂಡ್-ಸೆಂಟರ್ ಆಡಿಟ್ ಲಾಗ್}
 ::msgcat::mcset kn Commit {ಕಮಿಟ್ ಮಾಡಿ}
 ::msgcat::mcset kn {Commit ready for review. Push is a separate action.} {ಕಮಿಟ್ ಪರಿಶೀಲನೆಗೆ ಸಿದ್ಧವಾಗಿದೆ. ಪುಶ್ ಪ್ರತ್ಯೇಕ ಕ್ರಿಯೆಯಾಗಿದೆ.}
 ::msgcat::mcset kn {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {ಹ್ಯಾಂಡ್‌ಆಫ್ ಮುನ್ನೋಟ ನೋಡುವ ಮೊದಲು, ಪಿನ್ ಮಾಡಿದ ಇಮೇಜ್ ಡೈಜೆಸ್ಟ್ ಸೇರಿದಂತೆ ಪ್ರತಿ PDS ಕ್ಷೇತ್ರವನ್ನೂ ಭರ್ತಿ ಮಾಡಿ.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset kn {Config differs: %s} {ಕಾನ್ಫಿಗ್ ಭಿನ್ನವಾಗಿದೆ: %s}
 ::msgcat::mcset kn {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {ಕಾನ್ಫಿಗ್ ಲಾಗ್: ಆ ನೋಡ್‌ನಲ್ಲಿ %1$s ರ ಬದಲಾವಣೆಗಳು %3$s ವರೆಗೆ, ಈ ಗೇಟ್‌ವೇಯಲ್ಲಿ %2$s ವರೆಗೆ}
 ::msgcat::mcset kn {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {ಕಾನ್ಫಿಗ್ ಲಾಗ್: ಈ ಗೇಟ್‌ವೇಯಲ್ಲಿ %1$s ರ ಬದಲಾವಣೆಗಳು %2$s ವರೆಗೆ, ಆ ನೋಡ್‌ನಲ್ಲಿ %3$s ವರೆಗೆ}
+::msgcat::mcset kn {Config of %s} {%s ನ ಕಾನ್ಫಿಗ್}
 ::msgcat::mcset kn {Config only on that node: %s} {ಆ ನೋಡ್‌ನಲ್ಲಿ ಮಾತ್ರ ಇರುವ ಕಾನ್ಫಿಗ್: %s}
 ::msgcat::mcset kn {Config only on this gateway: %s} {ಈ ಗೇಟ್‌ವೇಯಲ್ಲಿ ಮಾತ್ರ ಇರುವ ಕಾನ್ಫಿಗ್: %s}
+::msgcat::mcset kn {Config: %s} {ಕಾನ್ಫಿಗ್: %s}
 ::msgcat::mcset kn Configure {ಕಾನ್ಫಿಗರ್ ಮಾಡಿ}
 ::msgcat::mcset kn {Configure %s} {%s ಕಾನ್ಫಿಗರ್ ಮಾಡಿ}
 ::msgcat::mcset kn {Configure translator} {ಅನುವಾದಕವನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ}
 ::msgcat::mcset kn {Configured desktop gateway} {ಕಾನ್ಫಿಗರ್ ಮಾಡಿದ ಡೆಸ್ಕ್‌ಟಾಪ್ ಗೇಟ್‌ವೇ}
 ::msgcat::mcset kn Configure… {ಕಾನ್ಫಿಗರ್ ಮಾಡಿ…}
 ::msgcat::mcset kn {Configuring %s} {%s ಕಾನ್ಫಿಗರ್ ಮಾಡಲಾಗುತ್ತಿದೆ}
+::msgcat::mcset kn Config… ಕಾನ್ಫಿಗ್…
 ::msgcat::mcset kn {Confirm or discard the current signed review before starting another download.} {ಇನ್ನೊಂದು ಡೌನ್‌ಲೋಡ್ ಪ್ರಾರಂಭಿಸುವ ಮೊದಲು ಪ್ರಸ್ತುತ ಸಹಿ ಮಾಡಿದ ಬಿಡುಗಡೆಯ ಪರಿಶೀಲನೆಯನ್ನು ದೃಢೀಕರಿಸಿ ಅಥವಾ ರದ್ದು ಮಾಡಿ.}
 ::msgcat::mcset kn {Container host: typed host plan and privileged CLI handoff} {ಕಂಟೇನರ್ ಹೋಸ್ಟ್: ಟೈಪ್ ಮಾಡಿದ ಹೋಸ್ಟ್ ಯೋಜನೆ ಮತ್ತು ನಿರ್ವಾಹಕ ಹಕ್ಕುಗಳಿರುವ CLI ಹ್ಯಾಂಡ್‌ಆಫ್}
 ::msgcat::mcset kn {Context window} {ಸಂದರ್ಭ ಕಿಟಕಿ}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset kn {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {@BotFather ಮೂಲಕ ಬಾಟ್ ರಚಿಸಿ, ನಂತರ ಅದರ ಟೋಕನ್ ಅನ್ನು ಕೆಳಗೆ ಅಂಟಿಸಿ: ಅದು ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಿದ ಲಾಕರ್‌ಗೆ ಹೋಗುತ್ತದೆ, ಎಂದಿಗೂ config.toml ಗೆ ಅಲ್ಲ.}
 ::msgcat::mcset kn {Create this extension?} {ಈ ಎಕ್ಸ್ಟೆನ್ಷನ್ ಅನ್ನು ರಚಿಸಬೇಕೆ?}
 ::msgcat::mcset kn {Create this generated extension?} {ರಚಿಸಲಾದ ಈ ಎಕ್ಸ್ಟೆನ್ಷನ್ ಅನ್ನು ಸೃಷ್ಟಿಸುವುದೇ?}
+::msgcat::mcset kn {Created and loaded. Review and test the extension before publishing.} {ರಚಿಸಲಾಗಿ ಲೋಡ್ ಆಗಿದೆ. ಪ್ರಕಟಿಸುವ ಮೊದಲು ಎಕ್ಸ್ಟೆನ್ಷನ್ ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಪರೀಕ್ಷಿಸಿ.}
 ::msgcat::mcset kn {Created and reloaded. Review and test the extension before publishing.} {ರಚಿಸಿ ಮರುಲೋಡ್ ಮಾಡಲಾಗಿದೆ. ಪ್ರಕಟಿಸುವ ಮೊದಲು ಎಕ್ಸ್ಟೆನ್ಷನ್ ಅನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಪರೀಕ್ಷಿಸಿ.}
 ::msgcat::mcset kn {Created, but reload failed} {ರಚಿಸಲಾಗಿದೆ, ಆದರೆ ಮರುಲೋಡ್ ವಿಫಲವಾಗಿದೆ}
+::msgcat::mcset kn {Created, not loaded} {ರಚಿಸಲಾಗಿದೆ, ಲೋಡ್ ಆಗಿಲ್ಲ}
+::msgcat::mcset kn {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {ರಚಿಸಲಾಗಿದೆ, ಇನ್ನೂ ಲೋಡ್ ಆಗಿಲ್ಲ: ಎಕ್ಸ್ಟೆನ್ಷನ್‌ನ ಡೈರೆಕ್ಟರಿಯಲ್ಲಿ cargo build --release ಓಡಿಸಿ, ನಂತರ Manage extensions ನಲ್ಲಿ ಅದನ್ನು ಮರುಲೋಡ್ ಮಾಡಿ.}
+::msgcat::mcset kn {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {ರಚಿಸಲಾಗಿದೆ. ಎಕ್ಸ್ಟೆನ್ಷನ್ ಲೋಡ್ ಆಗಿದೆಯೇ ಎಂದು ಈ ಗೇಟ್‌ವೇ ಹೇಳುವುದಿಲ್ಲ: ಅದರ ಸ್ಥಿತಿಯನ್ನು Manage extensions ನಲ್ಲಿ ನೋಡಿ.}
 ::msgcat::mcset kn {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {ಟೆಂಪ್ಲೇಟ್ನಿಂದ %s/<name>/SKILL.md ರಚಿಸಿ ತೆರೆಯುತ್ತದೆ. ಪ್ರಾಂಪ್ಟ್ ಸೂಚಿಯನ್ನು ತಲುಪುವ ಏಕೈಕ ಭಾಗ frontmatter ವಿವರಣೆ, ಆದ್ದರಿಂದ ಸ್ಕಿಲ್ ಅನ್ನು ಯಾವಾಗ ಬಳಸಬೇಕು ಎಂದು ಹೇಳುವಂತೆ ಮಾಡಿ.}
 ::msgcat::mcset kn {Cron history} {Cron ಇತಿಹಾಸ}
 ::msgcat::mcset kn {Cron jobs} {ಕ್ರಾನ್ ಕೆಲಸಗಳು}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset kn {Delete user} {ಬಳಕೆದಾರರನ್ನು ಅಳಿಸಿ}
 ::msgcat::mcset kn {Delete workspace?} {ವರ್ಕ್ಸ್ಪೇಸ್ ಅಳಿಸುವುದೇ?}
 ::msgcat::mcset kn Deop {ಆಪ್ ತೆಗೆಯಿರಿ}
+::msgcat::mcset kn {Deployment consistency unknown: %s node(s) could not be compared.} {ಡಿಪ್ಲಾಯ್ ಸ್ಥಿರತೆ ತಿಳಿದಿಲ್ಲ: %s ನೋಡ್(ಗಳನ್ನು) ಹೋಲಿಸಲಾಗಲಿಲ್ಲ.}
+::msgcat::mcset kn {Deployment consistency: not checked yet (Drift… compares every node).} {ಡಿಪ್ಲಾಯ್ ಸ್ಥಿರತೆ: ಇನ್ನೂ ಪರಿಶೀಲಿಸಿಲ್ಲ (Drift… ಎಲ್ಲಾ ನೋಡ್‌ಗಳನ್ನು ಹೋಲಿಸುತ್ತದೆ).}
 ::msgcat::mcset kn {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {ಬದಲಾವಣೆ ವಿವರಿಸಿ. AI ಈ ಎಕ್ಸ್ಟೆನ್ಷನ್‌ನ ಹಲವು ಫೈಲ್‌ಗಳನ್ನು ಬದಲಿಸಬಹುದು ಅಥವಾ ಸೇರಿಸಬಹುದು. ಪ್ರತಿ ಫೈಲ್ ಡಿಫ್ ಆಗಿ ತೋರಿಸಲ್ಪಡುತ್ತದೆ, ಮತ್ತು ನೀವು ದೃಢೀಕರಿಸುವ ಮೊದಲು ಏನೂ ಬರೆಯಲಾಗುವುದಿಲ್ಲ.}
 ::msgcat::mcset kn {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {ಬದಲಾವಣೆಯನ್ನು ವಿವರಿಸಿ. AI ಬದಲಿ ಆವೃತ್ತಿಯನ್ನು ಪ್ರಸ್ತಾಪಿಸಬಹುದು, ಆದರೆ ನೀವು ವ್ಯತ್ಯಾಸವನ್ನು ಪರಿಶೀಲಿಸಿ ದೃಢಪಡಿಸುವ ಮೊದಲು ಅದನ್ನು ಬರೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ.}
 ::msgcat::mcset kn {Describe the requested extension change first.} {ಮೊದಲು ಬೇಕಾಗಿರುವ ಎಕ್ಸ್ಟೆನ್ಷನ್ ಬದಲಾವಣೆಯನ್ನು ವಿವರಿಸಿ.}
 ::msgcat::mcset kn Description ವಿವರಣೆ
+::msgcat::mcset kn {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {ಮರುಪ್ರಾರಂಭದ ನಂತರ ಡೆಸ್ಕ್ಟಾಪ್ ಟರ್ನ್‌ಗಳು ತಮ್ಮ ಉಳಿಸಿದ ಇತಿಹಾಸದಿಂದ ಮುಂದುವರಿಯುತ್ತವೆ; connector, A2A, mail, cron ಮತ್ತು ಸಬ್‌ಏಜೆಂಟ್ ಟರ್ನ್‌ಗಳು ಮುಂದುವರಿಯುವುದಿಲ್ಲ.}
 ::msgcat::mcset kn {Desktop: local core, modules and process plugins} {ಡೆಸ್ಕ್‌ಟಾಪ್: ಸ್ಥಳೀಯ ಕೋರ್, ಮಾಡ್ಯೂಲ್‌ಗಳು ಮತ್ತು ಪ್ರೊಸೆಸ್ ಪ್ಲಗಿನ್‌ಗಳು}
 ::msgcat::mcset kn Detach ಬೇರ್ಪಡಿಸಿ
 ::msgcat::mcset kn {Detach foreground} {ಮುಂಚಾಣಿ ಬೇರ್ಪಡಿಸಿ}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset kn {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡುವ ಮೊದಲು ಬಿಡುಗಡೆಯ ಮ್ಯಾನಿಫೆಸ್ಟ್ ಮತ್ತು ಹೋಸ್ಟ್ ಆರ್ಕೈವ್ ಅನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ ಪರಿಶೀಲಿಸಿ. ಐದೂ ಗುರುತು ಕ್ಷೇತ್ರಗಳು ಕಡ್ಡಾಯ. ಖಾಸಗಿ ಸ್ಟೇಜ್ ಮಾಡಿದ ಆರ್ಕೈವ್ ಅನ್ನು ಗೇಟ್‌ವೇ ತನ್ನಲ್ಲೇ ಇಟ್ಟುಕೊಳ್ಳುತ್ತದೆ; ಈ ಮುನ್ನೋಟದಿಂದ ಏನನ್ನೂ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡುವುದಿಲ್ಲ.}
 ::msgcat::mcset kn {Downloading and verifying the signed release…} {ಸಹಿ ಮಾಡಿದ ಬಿಡುಗಡೆಯನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ…}
 ::msgcat::mcset kn {Draft this as an extension?} {ಇದನ್ನು ಎಕ್ಸ್ಟೆನ್ಷನ್ ಆಗಿ ಕರಡು ಮಾಡುವುದೇ?}
+::msgcat::mcset kn {Draft this change as an extension?} {ಈ ಬದಲಾವಣೆಯನ್ನು ಎಕ್ಸ್ಟೆನ್ಷನ್ ಆಗಿ ಕರಡು ಮಾಡುವುದೇ?}
 ::msgcat::mcset kn {Drag to scroll; a quick swipe goes further.} {ಸ್ಕ್ರಾಲ್ ಮಾಡಲು ಎಳೆಯಿರಿ; ವೇಗದ ಸ್ವೈಪ್ ಇನ್ನೂ ದೂರ ಹೋಗುತ್ತದೆ.}
 ::msgcat::mcset kn {Drift check failed: %s} {ಡ್ರಿಫ್ಟ್ ಪರಿಶೀಲನೆ ವಿಫಲವಾಗಿದೆ: %s}
 ::msgcat::mcset kn {Drift check: %s node(s) differ from this gateway.} {ಡ್ರಿಫ್ಟ್ ಪರಿಶೀಲನೆ: %s ನೋಡ್(ಗಳು) ಈ ಗೇಟ್‌ವೇಯಿಂದ ಭಿನ್ನವಾಗಿವೆ.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset kn Eval→gw Eval→gw
 ::msgcat::mcset kn {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {%s ಗೆ ಪ್ರತಿ ಬದಲಾವಣೆಯೂ ಕಮಿಟ್ ಆಗುತ್ತದೆ. Restoring ಇಡೀ ಡೈರೆಕ್ಟರಿಯನ್ನು ಆ ಕಮಿಟ್ಗೆ ಹಿಂದಿರುಗಿಸುತ್ತದೆ — ಮತ್ತು ಮೊದಲು ಪ್ರಸ್ತುತ ಸ್ಥಿತಿಯ ಸ್ನ್ಯಾಪ್ಶಾಟ್ ತೆಗೆದುಕೊಳ್ಳುತ್ತದೆ, ಆದ್ದರಿಂದ ಅದು ಒಂದು-ಮಾರ್ಗದ ಬಾಗಿಲಲ್ಲ.}
 ::msgcat::mcset kn {Every plugin file goes back to that commit. The current state is committed first.} {ಪ್ರತಿ ಪ್ಲಗಿನ್ ಫೈಲ್ ಆ ಕಮಿಟ್ಗೆ ಹಿಂದಿರುಗುತ್ತದೆ. ಪ್ರಸ್ತುತ ಸ್ಥಿತಿಯನ್ನು ಮೊದಲು ಕಮಿಟ್ ಮಾಡಲಾಗುತ್ತದೆ.}
+::msgcat::mcset kn {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {ಪ್ರತಿ ಹಂತವೂ: New extension Tcl, TypeScript, Racket ಅಥವಾ Common Lisp ಎಕ್ಸ್ಟೆನ್ಷನ್ ಬರೆಯುತ್ತದೆ, ಅಥವಾ ಮರದ ಹೊರಗಿನ Rust ಪ್ಲಗಿನ್ ಬರೆಯುತ್ತದೆ — ಅಂದರೆ veles-plugin-abi-sdk ಕ್ರೇಟ್‌ನ ಮೇಲಿನ cdylib (ಅದನ್ನು cargo build --release ನಿಂದ ಬಿಲ್ಡ್ ಮಾಡಿ, ನಂತರ Manage extensions ನಲ್ಲಿ ಮರುಲೋಡ್ ಮಾಡಿ). ಎರಡು ಹಂತಗಳು ಬಳಕೆದಾರ ಪ್ಲಗಿನ್ ಡೈರೆಕ್ಟರಿಯ ಹೊರಗೆ ಇದ್ದು ಕಮಾಂಡ್ ಲೈನ್‌ನಿಂದ ಪ್ರಾರಂಭವಾಗುತ್ತವೆ: ಒಂದು ಮಾಡ್ಯೂಲ್, ಅಂದರೆ veles ಜೊತೆಗೇ ಬಿಲ್ಡ್ ಆಗುವ Rust ಗ್ರಂಥಾಲಯ (veles plugins new NAME --kind overlay ಅದರ ರೆಪೊಸಿಟರಿ ಬರೆಯುತ್ತದೆ), ಮತ್ತು ಒಂದು ಪ್ರೊಸೆಸ್ ಪ್ಲಗಿನ್, ಅಂದರೆ ಗೇಟ್‌ವೇ ಓಡಿಸಿ ಮೇಲ್ವಿಚಾರಣೆ ಮಾಡುವ veles-plugin-sdk ಕ್ರೇಟ್‌ನ ಮೇಲಿನ ಪ್ರೋಗ್ರಾಂ. Author guide ನಲ್ಲಿ ಪ್ರತಿಯೊಂದಕ್ಕೂ ಒಂದು ವಿಭಾಗ ಇದೆ.}
 ::msgcat::mcset kn {Exact commit} {ನಿಖರ ಕಮಿಟ್}
 ::msgcat::mcset kn {Exact permission rule} {ನಿಖರ ಅನುಮತಿ ನಿಯಮ}
 ::msgcat::mcset kn {Example: a hook} {ಉದಾಹರಣೆ: ಒಂದು ಹುಕ್}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset kn {Explain the diagnostics} {ಡಯಾಗ್ನೋಸ್ಟಿಕ್ಸ್ ವಿವರಿಸಿ}
 ::msgcat::mcset kn Export… {ರಫ್ತು ಮಾಡಿ…}
 ::msgcat::mcset kn {Extension API} {ಎಕ್ಸ್ಟೆನ್ಷನ್ API}
+::msgcat::mcset kn {Extension API reference} {ಎಕ್ಸ್ಟೆನ್ಷನ್ API ರೆಫರೆನ್ಸ್}
 ::msgcat::mcset kn {Extension development} {ಎಕ್ಸ್ಟೆನ್ಷನ್ ಅಭಿವೃದ್ಧಿ}
 ::msgcat::mcset kn {Extension guide} {ಎಕ್ಸ್ಟೆನ್ಷನ್ ಮಾರ್ಗದರ್ಶಿ}
 ::msgcat::mcset kn {Extension source} {ಎಕ್ಸ್ಟೆನ್ಷನ್ ಮೂಲ}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset kn {Guards — what the harness stops, and where it stands now} {ಗಾರ್ಡ್ಗಳು — ಹಾರ್ನೆಸ್ ಏನನ್ನು ನಿಲ್ಲಿಸುತ್ತದೆ, ಮತ್ತು ಅದು ಈಗ ಎಲ್ಲಿದೆ}
 ::msgcat::mcset kn {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {ಹ್ಯಾಂಡ್ಲರ್ಗಳು ತೋರಿಸಿದ ಕ್ರಮದಲ್ಲಿ ಚಲಿಸುತ್ತವೆ; ಖಾಲಿ-ಅಲ್ಲದ ಮೌಲ್ಯ ಹಿಂದಿರುಗಿಸುವ ಮೊದಲನೆಯದು ಗೆಲ್ಲುತ್ತದೆ. ಒಂದನ್ನು off ಮಾಡಿದರೆ ಅದನ್ನು ಅನ್ರಿಜಿಸ್ಟರ್ ಮಾಡದೆ ಬಿಟ್ಟುಬಿಡುತ್ತದೆ, ಮತ್ತು ಆಯ್ಕೆಯನ್ನು config.toml ನಲ್ಲಿ ಉಳಿಸಲಾಗುತ್ತದೆ ಆದ್ದರಿಂದ ಪ್ಲಗಿನ್ ರೀಲೋಡ್ ಅದನ್ನು ಸದ್ದಿಲ್ಲದೆ ಮತ್ತೆ on ಮಾಡಲಾರದು.}
 ::msgcat::mcset kn Health ಆರೋಗ್ಯ
+::msgcat::mcset kn {Health alerts} {ಆರೋಗ್ಯ ಎಚ್ಚರಿಕೆಗಳು}
 ::msgcat::mcset kn {Health alerts (%s):} {ಆರೋಗ್ಯ ಎಚ್ಚರಿಕೆಗಳು (%s):}
 ::msgcat::mcset kn Heartbeat ಹಾರ್ಟ್‌ಬೀಟ್
 ::msgcat::mcset kn {Heartbeat age: %s s} {ಹಾರ್ಟ್ಬೀಟ್ ವಯಸ್ಸು: %s s}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset kn Install… ಸ್ಥಾಪಿಸಿ…
 ::msgcat::mcset kn {Instance name (for example an IRC network)} {ಇನ್ಸ್ಟೆನ್ಸ್ ಹೆಸರು (ಉದಾಹರಣೆಗೆ IRC ನೆಟ್‌ವರ್ಕ್)}
 ::msgcat::mcset kn Instances ಇನ್ಸ್ಟೆನ್ಸ್ಗಳು
+::msgcat::mcset kn {Instead of patching %s: } {%s ಪ್ಯಾಚ್ ಮಾಡುವ ಬದಲು: }
 ::msgcat::mcset kn {It becomes the current content, as a new revision — so the restore can be undone too.} {ಇದು ಹೊಸ ಪರಿಷ್ಕರಣೆಯಾಗಿ ಪ್ರಸ್ತುತ ವಿಷಯವಾಗುತ್ತದೆ — ಆದ್ದರಿಂದ ಮರುಸ್ಥಾಪನೆಯನ್ನೂ ರದ್ದುಗೊಳಿಸಬಹುದು.}
 ::msgcat::mcset kn {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {ಇದು ಈ ಯಂತ್ರದ ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಿದ ಲಾಕರ್‌ಗೆ ಹೋಗುತ್ತದೆ. ಏಜೆಂಟ್ ಇದನ್ನು ಎಂದಿಗೂ ನೋಡುವುದಿಲ್ಲ: ಅದು ಇದನ್ನು ಆದೇಶಗಳಲ್ಲಿ $%s ಆಗಿ ಮಾತ್ರ ಬಳಸಬಹುದು, ಅಥವಾ ಅನುಮತಿಸಿದ ಹೋಸ್ಟ್‌ಗಳಿಗೆ ಕಳುಹಿಸಬಹುದು.}
 ::msgcat::mcset kn {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {ಇದನ್ನು ಕ್ಲಸ್ಟರ್ ರಿಜಿಸ್ಟ್ರಿಯಿಂದ ಫ್ಲೀಟ್‌ನಾದ್ಯಂತ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ: ಮುಂದಿನ ಗಾಸಿಪ್ ವಿನಿಮಯವು ಪ್ರತಿ 0.2.0 ಪೀರ್‌ಗೂ ಅದನ್ನು ತೆಗೆದುಹಾಕಲು ಹೇಳುತ್ತದೆ, ಮತ್ತು ಅವುಗಳಲ್ಲಿ ಯಾವುದೂ ಅದನ್ನು ಮರಳಿ ವಿಲೀನ ಮಾಡುವುದಿಲ್ಲ. 0.2.0 ಗಿಂತ ಹಳೆಯ ಪೀರ್ ಅದನ್ನು ಇನ್ನೂ ಪಟ್ಟಿ ಮಾಡುತ್ತದೆ. ಯಂತ್ರ ಮರಳಿ ಬಂದು ಹಾರ್ಟ್‌ಬೀಟ್ ಮಾಡಿದರೆ, ಅದು ಮತ್ತೆ ನೋಂದಣಿಯಾಗುತ್ತದೆ. ಸಿಂಕ್ ಪೀರ್‌ಗಳು ಮತ್ತು ಉಳಿಸಿದ ಇನ್‌ಸ್ಟೆನ್ಸ್‌ಗಳಿಗೆ ಏನೂ ಆಗುವುದಿಲ್ಲ.}
+::msgcat::mcset kn {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {ಅದನ್ನು ಆ ನೋಡ್‌ನ config.toml ಗೆ ಅಲ್ಲೇ ಮಾಡಿದ ಇಡಿಟ್ ಆಗಿ ಬರೆಯಲಾಗುತ್ತದೆ; ನಂತರ ಕಾನ್ಫಿಗ್ ಸಿಂಕ್ ಅದನ್ನು ತನ್ನೊಂದಿಗೆ ಕಾನ್ಫಿಗ್ ಸಿಂಕ್ ಮಾಡುವ ನೋಡ್‌ಗಳಿಗೆ ಒಯ್ಯುತ್ತದೆ.}
 ::msgcat::mcset kn {It leaves memory now. Its history keeps every revision, and History… can restore it.} {ಇದು ಈಗ ಮೆಮೊರಿಯಿಂದ ಹೊರಹೋಗುತ್ತದೆ. ಇದರ ಇತಿಹಾಸ ಪ್ರತಿಯೊಂದು ಪರಿಷ್ಕರಣೆಯನ್ನೂ ಇಟ್ಟುಕೊಳ್ಳುತ್ತದೆ, ಮತ್ತು ಇತಿಹಾಸ… ಅದನ್ನು ಮರುಸ್ಥಾಪಿಸಬಹುದು.}
+::msgcat::mcset kn {Its gateway stops and %s.} {ಅದರ ಗೇಟ್‌ವೇ ನಿಲ್ಲುತ್ತದೆ ಮತ್ತು %s.}
 ::msgcat::mcset kn Join ಸೇರಿ
 ::msgcat::mcset kn {Join a pool} {ಯಂತ್ರಗಳ ಗುಂಪಿಗೆ ಸೇರಿ}
 ::msgcat::mcset kn {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {%1$s ಅವರ ಯಂತ್ರ ಗುಂಪಿಗೆ %2$s ಆಗಿ ಸೇರಬೇಕೆ? ಗುಂಪು ಈ ಫೋನ್ ಅನ್ನು %3$s ನಲ್ಲಿ ತಲುಪುತ್ತದೆ.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset kn Joining… ಸೇರಲಾಗುತ್ತಿದೆ…
 ::msgcat::mcset kn Join… ಸೇರಿ…
 ::msgcat::mcset kn {Jump to composer} {ಕಂಪೋಸರ್‌ಗೆ ಹೋಗಿ}
+::msgcat::mcset kn {Key (for example model.default)} {ಕೀ (ಉದಾಹರಣೆಗೆ model.default)}
 ::msgcat::mcset kn Keybindings ಕೀಬೈಂಡಿಂಗ್‌ಗಳು
 ::msgcat::mcset kn {Keyboard help} {ಕೀಬೋರ್ಡ್ ಸಹಾಯ}
 ::msgcat::mcset kn {Kick %1$s from %2$s?} {%1$s ಅನ್ನು %2$s ನಿಂದ ಹೊರಹಾಕುವುದೇ?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset kn {LLM provider} {LLM ಪ್ರೊವೈಡರ್}
 ::msgcat::mcset kn Language ಭಾಷೆ
 ::msgcat::mcset kn {Language (i18n)} {ಭಾಷೆ (i18n)}
+::msgcat::mcset kn {Language servers on this gateway} {ಈ ಗೇಟ್‌ವೇಯಲ್ಲಿನ ಭಾಷಾ ಸರ್ವರ್‌ಗಳು}
 ::msgcat::mcset kn Language… ಭಾಷೆ…
 ::msgcat::mcset kn {Last active} {ಕೊನೆಯ ಚಟುವಟಿಕೆ}
 ::msgcat::mcset kn {Last probe: %1$s — %2$s} {ಕೊನೆಯ ಪ್ರೋಬ್: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset kn Level ಹಂತ
 ::msgcat::mcset kn {Lift lockdown} {ಲಾಕ್ಡೌನ್ ಎತ್ತಿಹಾಕಿ}
 ::msgcat::mcset kn Lines ಸಾಲುಗಳು
+::msgcat::mcset kn {List targets…} {ಗುರಿಗಳನ್ನು ಪಟ್ಟಿ ಮಾಡಿ…}
 ::msgcat::mcset kn {List the provider's models} {ಪ್ರೊವೈಡರ್‌ನ ಮಾದರಿಗಳನ್ನು ಪಟ್ಟಿ ಮಾಡಿ}
 ::msgcat::mcset kn Load ಲೋಡ್
 ::msgcat::mcset kn {Load more} {ಇನ್ನಷ್ಟು ಲೋಡ್ ಮಾಡಿ}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset kn Next ಮುಂದೆ
 ::msgcat::mcset kn Nickname ನಿಕ್ನೇಮ್
 ::msgcat::mcset kn {NixOS: emit a module snippet; do not edit host declarations} {NixOS: ಮಾಡ್ಯೂಲ್ ಸ್ನಿಪೆಟ್ ಹೊರಡಿಸಿ; ಹೋಸ್ಟ್ ಘೋಷಣೆಗಳನ್ನು ಎಡಿಟ್ ಮಾಡಬೇಡಿ}
-::msgcat::mcset kn {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {ಈ ನೋಡ್‌ಗೆ SSH ಜೀವನಚಕ್ರ ಗುರಿಯನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿಲ್ಲ. ಡಿಪ್ಲಾಯ್ ಅಥವಾ ಪುನರಾರಂಭಿಸಲು ಸ್ಪಷ್ಟವಾಗಿ ಒಂದು ಇನ್ಸ್ಟೆನ್ಸ್ ಸೇರಿಸಿ.}
+::msgcat::mcset kn {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {ಈ ನೋಡ್‌ಗೆ ಯಾವುದೇ SSH ಲೈಫ್‌ಸೈಕಲ್ ಗುರಿ ಕಾನ್ಫಿಗರ್ ಆಗಿಲ್ಲ: Restart ತನ್ನ ಸೂಪರ್‌ವೈಸರ್ ಮೂಲಕ ನೋಡ್ ತಾನೇ ಮರುಪ್ರಾರಂಭವಾಗಲು ಕೇಳುತ್ತದೆ; Fleet deploy ಗೆ ssh ಗುರಿಯಿರುವ ಉಳಿಸಿದ ಇನ್‌ಸ್ಟೆನ್ಸ್ ಬೇಕು.}
 ::msgcat::mcset kn {No additional push happens.} {ಹೆಚ್ಚಿನ ಯಾವುದೇ ಪುಶ್ ನಡೆಯುವುದಿಲ್ಲ.}
 ::msgcat::mcset kn {No apps yet. Ask the agent to make one: “make me an app that…”} {ಇನ್ನೂ ಯಾವುದೇ ಆ್ಯಪ್ ಇಲ್ಲ. ಒಂದನ್ನು ಮಾಡಲು ಏಜೆಂಟ್‌ಗೆ ಹೇಳಿ: “ನನಗೆ ಒಂದು ಆ್ಯಪ್ ಮಾಡಿಕೊಡು, ಅದು…”}
 ::msgcat::mcset kn {No code in the picture. Hold the phone closer, straight on, and scan again.} {ಚಿತ್ರದಲ್ಲಿ ಯಾವುದೇ ಕೋಡ್ ಇಲ್ಲ. ಫೋನ್ ಅನ್ನು ಹತ್ತಿರ, ನೇರವಾಗಿ ಹಿಡಿದು ಮತ್ತೆ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.}
+::msgcat::mcset kn {No command-center action is recorded on this gateway yet.} {ಈ ಗೇಟ್‌ವೇಯಲ್ಲಿ ಇನ್ನೂ ಯಾವುದೇ ಕಮಾಂಡ್-ಸೆಂಟರ್ ಕ್ರಿಯೆ ದಾಖಲಾಗಿಲ್ಲ.}
 ::msgcat::mcset kn {No configuration snapshot will be restored.} {ಯಾವುದೇ ಕಾನ್ಫಿಗರೇಶನ್ ಸ್ನ್ಯಾಪ್ಶಾಟ್ ಮರುಸ್ಥಾಪಿಸಲಾಗುವುದಿಲ್ಲ.}
 ::msgcat::mcset kn {No configured sync peer for this node.} {ಈ ನೋಡ್ಗೆ ಕಾನ್ಫಿಗರ್ ಆದ ಸಿಂಕ್ ಪೀರ್ ಇಲ್ಲ.}
 ::msgcat::mcset kn {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {ಪ್ರತ್ಯೇಕ ಅನುವಾದಕವನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿಲ್ಲ. ಅದರ ಪ್ರೊವೈಡರ್, ಮಾದರಿ ಮತ್ತು ಗುರಿ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಲು "ಅನುವಾದಕವನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ" ಬಳಸಿ.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset kn {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {%s ತಯಾರಿಸಿದ ಫೋನ್‌ಗಳು ತಾವಾಗಿಯೇ ಆ್ಯಪ್‌ಗಳನ್ನು ನಿಲ್ಲಿಸುತ್ತವೆ. veles ನ ಆ್ಯಪ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಅದು ತಾನಾಗಿ ಪ್ರಾರಂಭವಾಗಲು ಮತ್ತು ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಚಾಲನೆಯಾಗಲು ಅನುಮತಿಸಿ.}
 ::msgcat::mcset kn {Pin / unpin} {ಪಿನ್ / ಅನ್‌ಪಿನ್}
 ::msgcat::mcset kn {Pin to home screen} {ಮುಖಪುಟ ಪರದೆಗೆ ಪಿನ್ ಮಾಡಿ}
+::msgcat::mcset kn {Plugin author guide} {ಪ್ಲಗಿನ್ ಲೇಖಕರ ಮಾರ್ಗದರ್ಶಿ}
 ::msgcat::mcset kn {Plugin history} {ಪ್ಲಗಿನ್ ಇತಿಹಾಸ}
 ::msgcat::mcset kn Plugins ಪ್ಲಗಿನ್ಗಳು
 ::msgcat::mcset kn Port ಪೋರ್ಟ್
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset kn {Preview here} {ಇಲ್ಲಿ ಪೂರ್ವವೀಕ್ಷಣೆ}
 ::msgcat::mcset kn {Preview pane} {ಪ್ರಿವ್ಯೂ ಪೇನ್}
 ::msgcat::mcset kn {Preview proposal} {ಪ್ರಸ್ತಾವನೆಯ ಮುನ್ನೋಟ}
-::msgcat::mcset kn {Preview the changed name or language before creating it.} {ರಚಿಸುವ ಮೊದಲು ಬದಲಾಯಿಸಿದ ಹೆಸರು ಅಥವಾ ಭಾಷೆಯನ್ನು ಮುನ್ನೋಟದಲ್ಲಿ ನೋಡಿ.}
+::msgcat::mcset kn {Preview the changed name, purpose or language before creating it.} {ರಚಿಸುವ ಮೊದಲು ಬದಲಾದ ಹೆಸರು, ಉದ್ದೇಶ ಅಥವಾ ಭಾಷೆಯ ಪೂರ್ವವೀಕ್ಷಣೆ ನೋಡಿ.}
 ::msgcat::mcset kn Probe ಪ್ರೋಬ್
+::msgcat::mcset kn {Probe %s node(s)?} {%s ನೋಡ್(ಗಳನ್ನು) ಪ್ರೋಬ್ ಮಾಡುವುದೇ?}
+::msgcat::mcset kn {Probe all…} {ಎಲ್ಲವನ್ನೂ ಪ್ರೋಬ್ ಮಾಡಿ…}
 ::msgcat::mcset kn {Probe of %1$s failed: %2$s} {%1$s ನ ಪ್ರೋಬ್ ವಿಫಲವಾಗಿದೆ: %2$s}
 ::msgcat::mcset kn {Profile result} {ಪ್ರೊಫೈಲ್ ಫಲಿತಾಂಶ}
 ::msgcat::mcset kn {Promote into config.toml} {config.toml ಗೆ ಪ್ರಮೋಟ್ ಮಾಡಿ}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset kn {Push branch…} {ಶಾಖೆಯನ್ನು ಪುಶ್ ಮಾಡಿ…}
 ::msgcat::mcset kn {Push complete. No pull request has been opened.} {ಪುಶ್ ಪೂರ್ಣಗೊಂಡಿದೆ. ಯಾವುದೇ ಪುಲ್ ರಿಕ್ವೆಸ್ಟ್ ತೆರೆಯಲಾಗಿಲ್ಲ.}
 ::msgcat::mcset kn {Push this branch?} {ಈ ಶಾಖೆಯನ್ನು ಪುಶ್ ಮಾಡಬೇಕೆ?}
+::msgcat::mcset kn {Push this kind to every node that is a configured peer for it:} {ಇದಕ್ಕೆ ಕಾನ್ಫಿಗರ್ ಆದ ಪೀರ್ ಆಗಿರುವ ಪ್ರತಿ ನೋಡ್‌ಗೂ ಈ ರೀತಿಯನ್ನು ಪುಷ್ ಮಾಡಿ:}
 ::msgcat::mcset kn {Push to %s:} {%s ಗೆ ಪುಶ್ ಮಾಡಿ:}
 ::msgcat::mcset kn Question ಪ್ರಶ್ನೆ
 ::msgcat::mcset kn Questions ಪ್ರಶ್ನೆಗಳು
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset kn {REPL target: the app} {REPL ಗುರಿ: ಆ್ಯಪ್}
 ::msgcat::mcset kn {REPL target: the gateway} {REPL ಗುರಿ: ಗೇಟ್‌ವೇ}
 ::msgcat::mcset kn Read ಓದಿ
+::msgcat::mcset kn {Read the key first: a write names the value it replaces.} {ಮೊದಲು ಕೀ ಓದಿ: ಬರವಣಿಗೆ ತಾನು ಬದಲಿಸುವ ಮೌಲ್ಯವನ್ನು ಹೆಸರಿಸುತ್ತದೆ.}
 ::msgcat::mcset kn {Reading notifications, for triggers} {ಅಧಿಸೂಚನೆಗಳನ್ನು ಓದುವುದು, ಟ್ರಿಗ್ಗರ್‌ಗಳಿಗಾಗಿ}
 ::msgcat::mcset kn Reasoning ತರ್ಕ
 ::msgcat::mcset kn {Reasoning effort} {ರೀಸನಿಂಗ್ ಪ್ರಯತ್ನ}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset kn {Reset to default} {ಡೀಫಾಲ್ಟ್‌ಗೆ ಮರುಹೊಂದಿಸಿ}
 ::msgcat::mcset kn {Reset to template} {ಟೆಂಪ್ಲೇಟ್ಗೆ ರೀಸೆಟ್ ಮಾಡಿ}
 ::msgcat::mcset kn Restart ಪುನರಾರಂಭಿಸು
+::msgcat::mcset kn {Restart %s?} {%s ಮರುಪ್ರಾರಂಭಿಸುವುದೇ?}
 ::msgcat::mcset kn {Restart + verify canary} {ಮರುಪ್ರಾರಂಭಿಸಿ + ಕ್ಯಾನರಿ ಪರಿಶೀಲಿಸಿ}
+::msgcat::mcset kn {Restart cancelled.} {ಮರುಪ್ರಾರಂಭ ರದ್ದುಪಡಿಸಲಾಗಿದೆ.}
+::msgcat::mcset kn {Restart of %1$s failed: %2$s} {%1$s ಮರುಪ್ರಾರಂಭ ವಿಫಲವಾಗಿದೆ: %2$s}
 ::msgcat::mcset kn {Restore hidden windows} {ಮರೆಮಾಡಿದ ವಿಂಡೋಗಳನ್ನು ಪುನಃಸ್ಥಾಪಿಸಿ}
 ::msgcat::mcset kn {Restore plugins to %s?} {ಪ್ಲಗಿನ್ಗಳನ್ನು %s ಗೆ ಮರುಸ್ಥಾಪಿಸುವುದೇ?}
 ::msgcat::mcset kn {Restore revision r%1$s of %2$s?} {%2$s ನ ಪರಿಷ್ಕರಣೆ r%1$s ಅನ್ನು ಮರುಸ್ಥಾಪಿಸಬೇಕೆ?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset kn {S3 region} {S3 ರೀಜನ್}
 ::msgcat::mcset kn {SASL account (optional)} {SASL ಖಾತೆ (ಐಚ್ಛಿಕ)}
 ::msgcat::mcset kn {SASL password (hidden)} {SASL ಪಾಸ್‌ವರ್ಡ್ (ಮರೆಮಾಡಲಾಗಿದೆ)}
+::msgcat::mcset kn {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {SSH ಲೈಫ್‌ಸೈಕಲ್: ಉಳಿಸಿದ ಇನ್‌ಸ್ಟೆನ್ಸ್ %1$s ಮೂಲಕ (%2$s, ಯೂನಿಟ್ %3$s).}
 ::msgcat::mcset kn Sandbox ಸ್ಯಾಂಡ್ಬಾಕ್ಸ್
 ::msgcat::mcset kn {Sandbox account} {ಸ್ಯಾಂಡ್‌ಬಾಕ್ಸ್ ಖಾತೆ}
 ::msgcat::mcset kn Sandboxes ಸ್ಯಾಂಡ್ಬಾಕ್ಸ್ಗಳು
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset kn {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {ಈ ಅಲಿಯಾಸ್ಗೆ ಪ್ರಸ್ತುತ ಓವರ್ರೈಡ್ ಆಗಿರುವ ಸೆಷನ್ಗಳು ತಮ್ಮ ಹಿಂದಿನ ರೂಟ್ ಉಳಿಸಿಕೊಳ್ಳುತ್ತವೆ; ಹೊಸ ಓವರ್ರೈಡ್ಗಳಿಗೆ ಈ ಹೆಸರು ಸಿಗುವುದಿಲ್ಲ.}
 ::msgcat::mcset kn {Sessions served} {ಒದಗಿಸಿದ ಸೆಷನ್‌ಗಳು}
 ::msgcat::mcset kn Set ಹೊಂದಿಸು
+::msgcat::mcset kn {Set %1$s on %2$s to %3$s?} {%2$s ನಲ್ಲಿ %1$s ಅನ್ನು %3$s ಗೆ ಹೊಂದಿಸುವುದೇ?}
 ::msgcat::mcset kn {Set [model] provider/default in config.toml.} {config.toml ನಲ್ಲಿ [model] ಪ್ರೊವೈಡರ್/ಡೀಫಾಲ್ಟ್ ಹೊಂದಿಸಿ.}
 ::msgcat::mcset kn {Set as swap target} {ಬದಲಿ ಭಾಷೆಯಾಗಿಸು}
 ::msgcat::mcset kn {Set mode %1$s on %2$s?} {%1$s ಮೋಡ್ ಅನ್ನು %2$s ನಲ್ಲಿ ಹೊಂದಿಸುವುದೇ?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset kn Summary ಸಾರಾಂಶ
 ::msgcat::mcset kn Surface ಮೇಲ್ಮೈ
 ::msgcat::mcset kn {Swap ⇄} {ಬದಲಿಸು ⇄}
+::msgcat::mcset kn {Sync %1$s to %2$s node(s)?} {%1$s ಅನ್ನು %2$s ನೋಡ್(ಗಳಿಗೆ) ಸಿಂಕ್ ಮಾಡುವುದೇ?}
+::msgcat::mcset kn {Sync all} {ಎಲ್ಲವನ್ನೂ ಸಿಂಕ್ ಮಾಡಿ}
+::msgcat::mcset kn {Sync all…} {ಎಲ್ಲವನ್ನೂ ಸಿಂಕ್ ಮಾಡಿ…}
 ::msgcat::mcset kn {Sync cancelled.} {ಸಿಂಕ್ ರದ್ದುಪಡಿಸಲಾಗಿದೆ.}
 ::msgcat::mcset kn {Sync complete.} {ಸಿಂಕ್ ಪೂರ್ಣಗೊಂಡಿದೆ.}
 ::msgcat::mcset kn {Sync now} {ಈಗ ಸಿಂಕ್ ಮಾಡಿ}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset kn {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {ಪ್ರಸ್ತುತ ಡಯಾಗ್ನೋಸ್ಟಿಕ್ಸ್ (ಭಾಷಾ ಸರ್ವರ್ ಅಥವಾ Check ನಿಂದ) ಈ ಫೈಲ್‌ನೊಂದಿಗೆ ಕಳುಹಿಸಲ್ಪಡುತ್ತವೆ. ಸ್ವೇಚ್ಛೆಯಾಗಿ ಪ್ರಶ್ನೆ ಸೇರಿಸಿ. ಉತ್ತರ ಪಠ್ಯ ಮಾತ್ರ; ಏನನ್ನೂ ಬರೆಯಲಾಗದು.}
 ::msgcat::mcset kn {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {ಡೈರೆಕ್ಟರಿ ಮತ್ತು ಅದರಲ್ಲಿರುವ ಎಲ್ಲವನ್ನೂ ಅಳಿಸಲಾಗುತ್ತದೆ. ಇದನ್ನು ರದ್ದು ಮಾಡಲು ಆಗುವುದಿಲ್ಲ — ಪ್ರಾಂಪ್ಟ್ನಿಂದ ತೆಗೆಯುವುದು ಮಾತ್ರ ಬೇಕಿದ್ದರೆ ಅದನ್ನು ಆಫ್ ಮಾಡಿ.}
 ::msgcat::mcset kn {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {ಡೈರೆಕ್ಟರಿ ಅಳಿಸಲಾಗುತ್ತದೆ. ಪ್ಲಗಿನ್ ಫೋಲ್ಡರ್ git ರೆಪೊಸಿಟರಿ — ಮೊದಲು ಸ್ನ್ಯಾಪ್ಶಾಟ್ ಕಮಿಟ್ ಆಗುತ್ತದೆ, ಆದ್ದರಿಂದ History… ಅದನ್ನು ಮರಳಿ ತರಬಹುದು.}
-::msgcat::mcset kn {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {ಎಡಿಟರ್ ಗೇಟ್‌ವೇ ಫೈಲ್‌ಗಳನ್ನು ತೆರೆಯುತ್ತದೆ, ದೂರದ ಇನ್‌ಸ್ಟೆನ್ಸ್‌ಗಳೂ ಸೇರಿ, ಮತ್ತು ಫೈಲ್‌ನ ಭಾಷೆಗೆ ಗೇಟ್‌ವೇಯಲ್ಲಿ ಭಾಷಾ ಸರ್ವರ್ ಚಲಾಯಿಸುತ್ತದೆ: tcl-lsp, typescript-language-server (TypeScript ಮತ್ತು JavaScript), rust-analyzer (Rust ಪ್ಲಗಿನ್ ಕ್ರೇಟ್ ಅಥವಾ ಮಾಡ್ಯೂಲ್), clangd (C), racket-langserver ಮತ್ತು Common Lisp ಸರ್ವರ್. ಗೇಟ್‌ವೇಯಲ್ಲಿ ಸರ್ವರ್ ಇರುವ ಪ್ರತಿ ಭಾಷೆಗೂ ಹೋವರ್, ವ್ಯಾಖ್ಯಾನಕ್ಕೆ ಹೋಗುವುದು, ಪೂರ್ಣಗೊಳಿಸುವಿಕೆ ಮತ್ತು ಲೈವ್ ಡಯಾಗ್ನೋಸ್ಟಿಕ್ಸ್ ಕೆಲಸ ಮಾಡುತ್ತವೆ; ಯಾವುದೂ ಇಲ್ಲದಿದ್ದರೆ, ಅಲ್ಲಿ ಯಾವ ಪ್ರೋಗ್ರಾಂ ಸ್ಥಾಪಿಸಬೇಕೆಂದು ಎಡಿಟರ್ ಹೇಳುತ್ತದೆ ಮತ್ತು ಸಿಂಟ್ಯಾಕ್ಸ್ ಹೈಲೈಟಿಂಗ್ ಉಳಿಸಿಕೊಳ್ಳುತ್ತದೆ. Check ಗೇಟ್‌ವೇಯಲ್ಲಿ ಹೊಂದುವ ಚೆಕರ್ ಚಲಾಯಿಸುತ್ತದೆ: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, ಅಥವಾ Racket ಮತ್ತು Lisp ರೀಡರ್‌ಗಳು. ಉಳಿಸಿ, Manage extensions ನಲ್ಲಿ ಮರುಲೋಡ್ ಮಾಡಿ, ಮತ್ತು ಸ್ಥಳೀಯ ಸ್ಥಿತಿಯನ್ನು ಪ್ರಕಟಿಸದೆ ಎಕ್ಸ್ಟೆನ್ಷನ್ ಪರೀಕ್ಷಿಸಿ.}
+::msgcat::mcset kn {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {ಎಡಿಟರ್ ಗೇಟ್‌ವೇ ಫೈಲ್‌ಗಳನ್ನು ತೆರೆಯುತ್ತದೆ, ರಿಮೋಟ್ ಇನ್‌ಸ್ಟೆನ್ಸ್‌ಗಳನ್ನೂ ಸೇರಿಸಿ, ಮತ್ತು ಫೈಲ್‌ನ ಭಾಷೆಗಾಗಿ ಗೇಟ್‌ವೇಯಲ್ಲಿ ಭಾಷಾ ಸರ್ವರ್ ಓಡಿಸುತ್ತದೆ: typescript-language-server (TypeScript ಮತ್ತು JavaScript), rust-analyzer (Rust ಪ್ಲಗಿನ್ ಕ್ರೇಟ್ ಅಥವಾ ಮಾಡ್ಯೂಲ್), clangd (C), racket-langserver, ಒಂದು Common Lisp ಸರ್ವರ್, ಮತ್ತು Tcl ಗೆ ಗೇಟ್‌ವೇಯಲ್ಲಿ ಅದು ಇದ್ದಲ್ಲಿ tcl-lsp (veles ನ Linux ಪ್ಯಾಕೇಜ್‌ಗಳು ಅದನ್ನು ಒಳಗೊಂಡಿವೆ). ಗೇಟ್‌ವೇ ಯಾವ ಭಾಷೆಗೆ ಸರ್ವರ್ ಹೊಂದಿದೆಯೋ ಆ ಪ್ರತಿ ಭಾಷೆಗೂ ಹೋವರ್, ವ್ಯಾಖ್ಯಾನಕ್ಕೆ ಹೋಗುವಿಕೆ, ಪೂರ್ಣಗೊಳಿಸುವಿಕೆ ಮತ್ತು ಲೈವ್ ಡಯಾಗ್ನಾಸ್ಟಿಕ್ಸ್ ಕೆಲಸ ಮಾಡುತ್ತವೆ; ಸರ್ವರ್ ಇಲ್ಲದಿದ್ದರೆ, ಅಲ್ಲಿ ಯಾವ ಪ್ರೋಗ್ರಾಂ ಸ್ಥಾಪಿಸಬೇಕೆಂದು ಎಡಿಟರ್ ಹೇಳುತ್ತದೆ ಮತ್ತು ವಾಕ್ಯರಚನೆ ಹೈಲೈಟಿಂಗ್ ಉಳಿಸಿಕೊಳ್ಳುತ್ತದೆ. Check ಗೇಟ್‌ವೇಯಲ್ಲಿ ಹೊಂದುವ ಚೆಕರ್ ಓಡಿಸುತ್ತದೆ: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, Racket ಮತ್ತು Lisp ಓದುಗರು, ಮತ್ತು Tcl ಗೆ ಎಂಜಿನ್‌ನದೇ tclsh (ಪೂರ್ಣತೆ ಪರಿಶೀಲನೆ, ಅಥವಾ ಸ್ಥಾಪಿತವಾಗಿದ್ದಲ್ಲಿ tcl-lsp ನ lint). ಉಳಿಸಿ, Manage extensions ನಲ್ಲಿ ಮರುಲೋಡ್ ಮಾಡಿ, ಮತ್ತು ಸ್ಥಳೀಯ ಸ್ಥಿತಿಯನ್ನು ಪ್ರಕಟಿಸದೆ ಎಕ್ಸ್ಟೆನ್ಷನ್ ಪರೀಕ್ಷಿಸಿ.}
 ::msgcat::mcset kn {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {ಮೊದಲ ಹ್ಯಾಂಡ್‌ಆಫ್ ರಹಸ್ಯಗಳನ್ನು, ಪಿನ್ ಮಾಡಿದ ಇಮೇಜ್ ಮತ್ತು ರನ್‌ಟೈಮ್ ಫೈಲ್‌ಗಳನ್ನು ಸಿದ್ಧಪಡಿಸುತ್ತದೆ, ಆದರೆ PDS ಅನ್ನು ಪ್ರಾರಂಭಿಸುವುದಿಲ್ಲ. KEK ಮತ್ತು PLC ರೊಟೇಶನ್ ಕೀಯನ್ನು ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಬ್ಯಾಕಪ್ ಮಾಡಿ, ನಂತರ ಬ್ಯಾಕಪ್ ದೃಢೀಕರಣದೊಂದಿಗೆ ಹೊಸದಾಗಿ ಪರಿಶೀಲಿಸಿದ ವಿನಂತಿ ಮಾಡಿ, HTTP-01 TLS ಮತ್ತು ಸಕ್ರಿಯಗೊಳಿಸುವಿಕೆ ಹೊಂದಿಸಲು. DNS ದಾಖಲೆಗಳು ನೇರವಾಗಿ ಈ ಹೋಸ್ಟ್‌ಗೆ ಸೂಚಿಸಬೇಕು; veles ಯಾವುದೇ CDN ಪ್ರಾಕ್ಸಿ ಅಥವಾ DNS ಬದಲಾವಣೆಗಳನ್ನು ಮಾಡುವುದಿಲ್ಲ.}
+::msgcat::mcset kn {The fleet is NOT consistent: %s node(s) differ.} {ಫ್ಲೀಟ್ ಸ್ಥಿರವಾಗಿಲ್ಲ: %s ನೋಡ್(ಗಳು) ಭಿನ್ನವಾಗಿವೆ.}
+::msgcat::mcset kn {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {ಫ್ಲೀಟ್ ವ್ಯತ್ಯಾಸಗಳೊಂದಿಗೆ ಸ್ಥಿರವಾಗಿದೆ: %1$s ನೋಡ್(ಗಳು) ಒಂದೇ ಬಿಲ್ಡ್ ಓಡಿಸುತ್ತವೆ ಮತ್ತು ಹಂಚಿಕೊಳ್ಳುವ ಎಲ್ಲದರಲ್ಲೂ ಒಂದೇ ರೀತಿ ಇವೆ; %2$s ಅಂಶ(ಗಳು) ಪ್ರತಿ ನೋಡ್‌ನಲ್ಲೂ ಇಲ್ಲ.}
+::msgcat::mcset kn {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {ಫ್ಲೀಟ್ ಸ್ಥಿರವಾಗಿದೆ: %s ನೋಡ್(ಗಳು) ಒಂದೇ ಬಿಲ್ಡ್, ಮಾಡ್ಯೂಲ್‌ಗಳು ಮತ್ತು ಪ್ಲಗಿನ್‌ಗಳನ್ನು ಓಡಿಸುತ್ತವೆ.}
 ::msgcat::mcset kn {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {ಎಕ್ಸ್ಟೆನ್ಷನ್ ರಚಿಸಿದ ನಂತರ ಫಾರ್ಮ್ ಬದಲಾಗಿದೆ. ಮತ್ತೆ ರಚಿಸಿ, ಅಥವಾ ಸಾಮಾನ್ಯ ಸ್ಕ್ಯಾಫೋಲ್ಡ್ ಪೂರ್ವವೀಕ್ಷಿಸಿ.}
+::msgcat::mcset kn {The gateway did not receive the purpose as written. Nothing was created.} {ಬರೆದಂತೆಯೇ ಇರುವ ಉದ್ದೇಶವನ್ನು ಗೇಟ್‌ವೇ ಸ್ವೀಕರಿಸಲಿಲ್ಲ. ಏನನ್ನೂ ರಚಿಸಲಿಲ್ಲ.}
+::msgcat::mcset kn {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {ಗೇಟ್‌ವೇ ಎಕ್ಸ್ಟೆನ್ಷನ್ ಮಾರ್ಗದರ್ಶಿಗಳನ್ನು ಒದಗಿಸುವುದಿಲ್ಲ (ಅದು 0.2.2 ಕ್ಕಿಂತ ಹಳೆಯದು), ಮತ್ತು ಈ ಡೆಸ್ಕ್ಟಾಪ್‌ನಲ್ಲಿ ಅವುಗಳ ಪ್ರತಿ ಇಲ್ಲ.}
 ::msgcat::mcset kn {The gateway itself is untouched.} {ಗೇಟ್ವೇ ಏನೂ ಬದಲಾಗುವುದಿಲ್ಲ.}
 ::msgcat::mcset kn {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {ಗೇಟ್‌ವೇ ಕಾನ್ಫಿಗ್ ಅನ್ನು ಮರುಲೋಡ್ ಮಾಡಿದೆ, ಆದ್ದರಿಂದ ಹೊಸ ಸೆಷನ್‌ಗಳು ಈಗಿನಿಂದಲೇ ಅದನ್ನು ಬಳಸುತ್ತವೆ, ಮತ್ತು ಲಾಕರ್‌ನಲ್ಲಿ ಇರಿಸಿದ key ಮುಂದಿನ ವಿನಂತಿಯಲ್ಲಿ ಬಳಕೆಯಾಗುತ್ತದೆ. Telegram ಮತ್ತು IRC ಗೇಟ್‌ವೇಯ ಮುಂದಿನ ಮರುಪ್ರಾರಂಭದಲ್ಲಿ ಆರಂಭವಾಗುತ್ತವೆ: veles gateway restart.}
 ::msgcat::mcset kn {The installed component no longer matches the selected manifest. Review the component list again.} {ಸ್ಥಾಪಿತ ಘಟಕವು ಆಯ್ಕೆಮಾಡಿದ ಮ್ಯಾನಿಫೆಸ್ಟ್‌ಗೆ ಇನ್ನು ಹೊಂದುತ್ತಿಲ್ಲ. ಘಟಕಗಳ ಪಟ್ಟಿಯನ್ನು ಮತ್ತೆ ಪರಿಶೀಲಿಸಿ.}
 ::msgcat::mcset kn {The installer preview has no verification signatures; apply is disabled.} {ಸ್ಥಾಪಕದ ಮುನ್ನೋಟಕ್ಕೆ ಪರಿಶೀಲನಾ ಸಿಗ್ನೇಚರ್‌ಗಳಿಲ್ಲ; ಅನ್ವಯಿಸುವುದು ನಿಷ್ಕ್ರಿಯವಾಗಿದೆ.}
 ::msgcat::mcset kn {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {ಜಾಬ್ ಮತ್ತು ಅದರ ರನ್ ಇತಿಹಾಸವನ್ನು ಅಳಿಸಲಾಗುತ್ತದೆ. ಇದನ್ನು ರದ್ದು ಮಾಡಲು ಆಗುವುದಿಲ್ಲ — ನಿಲ್ಲಿಸುವುದು ಮಾತ್ರ ಬೇಕಿದ್ದರೆ ಪಾಸ್ ಮಾಡಿ.}
+::msgcat::mcset kn {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {ಕಾನ್ಫಿಗ್ ಸಿಂಕ್ ತನ್ನ ನಿಯಮಗಳ ಅಡಿಯಲ್ಲಿ ಒಯ್ಯುವ ಕೀಗಳು: ನೋಡ್‌-ಸ್ಥಳೀಯ ಕೀಗಳು ಮತ್ತು ರುಜುವಾತುಗಳು ಆಯಾ ನೋಡ್‌ನಲ್ಲೇ ಇರುತ್ತವೆ, ಮತ್ತು ತಡೆಹಿಡಿಯಲಾದ ವಿಭಾಗ ([acl], approvals, sandbox, hooks, plugins, MCP servers) ಅನ್ನು ಇಡಿಟ್ ಮಾಡಿ ಪುಷ್ ಮಾಡುವಲ್ಲೇ ಬದಲಿಸಲಾಗುತ್ತದೆ, ನಂತರ ಆ ನೋಡ್‌ನ ಮಾಲೀಕರಿಗಾಗಿ ಕಾಯುತ್ತದೆ.}
 ::msgcat::mcset kn {The log could not be read: %s} {ಲಾಗ್ ಓದಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: %s}
 ::msgcat::mcset kn {The manifest belongs to another component; its reply was discarded.} {ಆ ಮ್ಯಾನಿಫೆಸ್ಟ್ ಬೇರೆ ಘಟಕಕ್ಕೆ ಸೇರಿದ್ದು; ಅದರ ಉತ್ತರವನ್ನು ತಿರಸ್ಕರಿಸಲಾಗಿದೆ.}
 ::msgcat::mcset kn {The profile changed. Review the fresh plan before applying it.} {ಪ್ರೊಫೈಲ್ ಬದಲಾಗಿದೆ. ಅನ್ವಯಿಸುವ ಮೊದಲು ಹೊಸ ಯೋಜನೆಯನ್ನು ಪರಿಶೀಲಿಸಿ.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset kn {The signed release preview was malformed; nothing was installed.} {ಸಹಿ ಮಾಡಿದ ಬಿಡುಗಡೆಯ ಮುನ್ನೋಟ ವಿಕೃತವಾಗಿತ್ತು; ಏನನ್ನೂ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿಲ್ಲ.}
 ::msgcat::mcset kn {The source buffer changed. Request a new proposal before applying.} {ಮೂಲ ಬಫರ್ ಬದಲಾಗಿದೆ. ಅನ್ವಯಿಸುವ ಮೊದಲು ಹೊಸ ಪ್ರಸ್ತಾವನೆಯನ್ನು ವಿನಂತಿಸಿ.}
 ::msgcat::mcset kn {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {ಸ್ಟೋರ್ ಒಂದು ರಿವಿಷನ್ ಹಿಂದೆ ಹೋಗುತ್ತದೆ. ರೋಲ್ಬ್ಯಾಕ್ ಕೂಡ ಒಂದು ರಿವಿಷನ್, ಆದ್ದರಿಂದ ಅದನ್ನೂ ರದ್ದು ಮಾಡಬಹುದು.}
+::msgcat::mcset kn {The translator did not answer within %s seconds.} {ಅನುವಾದಕ %s ಸೆಕೆಂಡುಗಳಲ್ಲಿ ಉತ್ತರಿಸಲಿಲ್ಲ.}
 ::msgcat::mcset kn {The translator returned no text.} {ಅನುವಾದಕ ಯಾವುದೇ ಪಠ್ಯವನ್ನು ಹಿಂದಿರುಗಿಸಲಿಲ್ಲ.}
 ::msgcat::mcset kn {The verification reply was malformed; no integrity result was accepted.} {ಪರಿಶೀಲನೆ ಪ್ರತ್ಯುತ್ತರ ದೋಷಪೂರಿತವಾಗಿತ್ತು; ಯಾವುದೇ ಸಮಗ್ರತಾ ಫಲಿತಾಂಶ ಸ್ವೀಕರಿಸಲಾಗಿಲ್ಲ.}
 ::msgcat::mcset kn Themes ಥೀಮ್‌ಗಳು
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset kn {This challenge is over.} {ಈ ಸವಾಲು ಮುಗಿದಿದೆ.}
 ::msgcat::mcset kn {This code has expired. Ask for a new one.} {ಈ ಕೋಡ್‌ನ ಅವಧಿ ಮುಗಿದಿದೆ. ಹೊಸದನ್ನು ಕೇಳಿ.}
 ::msgcat::mcset kn {This does not start a service or claim signed-download verification.} {ಇದು ಯಾವುದೇ ಸೇವೆಯನ್ನು ಪ್ರಾರಂಭಿಸುವುದಿಲ್ಲ ಮತ್ತು signed-download ಪರಿಶೀಲನೆಯನ್ನು ಪ್ರತಿಪಾದಿಸುವುದಿಲ್ಲ.}
+::msgcat::mcset kn {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {ಈ ಫೈಲ್ veles ಕೋರ್ ಮೂಲವಾಗಿದೆ. ಬಹುಪಾಲು ಬದಲಾವಣೆಗಳಿಗೆ ಎಕ್ಸ್ಟೆನ್ಷನ್ ಹೆಚ್ಚು ಸರಿಹೊಂದುತ್ತದೆ, ಅದು ಅಪ್‌ಗ್ರೇಡ್‌ಗಳನ್ನು ದಾಟಿ ಉಳಿಯುತ್ತದೆ ಮತ್ತು ಮರುಬಿಲ್ಡ್ ಬೇಕಿಲ್ಲ: Tcl, TypeScript, Racket ಅಥವಾ Common Lisp ನಲ್ಲಿ ಬರೆದ ಹುಕ್, ಟೂಲ್, ಸರ್ವಿಸ್ ಓವರ್‌ರೈಡ್ ಅಥವಾ ಪ್ರೊವೈಡರ್ ಡ್ರೈವರ್ ಆಗಿ, ಅಥವಾ ಮರದ ಹೊರಗಿನ Rust ಪ್ಲಗಿನ್ ಆಗಿ (New extension ಇವುಗಳಲ್ಲಿ ಯಾವುದನ್ನೂ ಬರೆಯುತ್ತದೆ), ಅಥವಾ ಮಾಡ್ಯೂಲ್ ಅಥವಾ ಪ್ರೊಸೆಸ್ ಪ್ಲಗಿನ್ ಆಗಿ (ಒಂದನ್ನು ಹೇಗೆ ಪ್ರಾರಂಭಿಸುವುದೆಂದು Extension guide ತೋರಿಸುತ್ತದೆ). ಎಕ್ಸ್ಟೆನ್ಷನ್ API ವ್ಯಕ್ತಪಡಿಸಲಾಗದ್ದಕ್ಕೆ ಮಾತ್ರ ಕೋರ್ ಪ್ಯಾಚ್. ಬದಲಿಗೆ ಈ ಬದಲಾವಣೆಯನ್ನು ಎಕ್ಸ್ಟೆನ್ಷನ್ ಆಗಿ ಕರಡು ಮಾಡುವುದೇ? ನಿಮ್ಮ ಇಡಿಟ್ ಉಳಿಸದೆ ಈ ಬಫರ್‌ನಲ್ಲೇ ಉಳಿಯುತ್ತದೆ; ಮತ್ತೆ ಉಳಿಸಿದರೆ ಕೋರ್ ಫೈಲ್ ಪ್ಯಾಚ್ ಆಗುತ್ತದೆ.}
 ::msgcat::mcset kn {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {ಈ ಗೇಟ್‌ವೇ ಈ ಯಂತ್ರದಿಂದ ರಹಸ್ಯ ಮೌಲ್ಯಗಳನ್ನು ಸ್ವೀಕರಿಸುವುದಿಲ್ಲ: ಅಲ್ಲೇ veles secret set %s ಮೂಲಕ ನಮೂದಿಸಿ, ಅಥವಾ ಈ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಅದರ [vault] trusted_networks ಗೆ ಸೇರಿಸಿ}
 ::msgcat::mcset kn {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {ಬರೆಯಲಾಗುವುದು ನಿಖರವಾಗಿ ಇದೇ — ಎಂಜಿನ್ನ ಸ್ವಂತ ಬೈಟ್ಗಳು, ಲೈವ್ ಆಗಿ ಪಡೆದವು. ಇನ್ನೂ ಡಿಸ್ಕನ್ನು ಏನೂ ಮುಟ್ಟಿಲ್ಲ.}
+::msgcat::mcset kn {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {ಇದು veles ಕೋರ್ ಮೂಲ. ಇದಕ್ಕೆ ಬದಲಾವಣೆ ಸಾಮಾನ್ಯವಾಗಿ ಎಕ್ಸ್ಟೆನ್ಷನ್ ಆಗಿ ಮಾಡುವುದೇ ಉತ್ತಮ: New extension, ಅಥವಾ ಉಳಿಸಿದರೆ ಅದನ್ನು ಸೂಚಿಸಲಾಗುತ್ತದೆ.}
 ::msgcat::mcset kn {This node is not a configured sync peer for any kind.} {ಈ ನೋಡ್ ಯಾವುದೇ ಬಗೆಗೂ ಕಾನ್ಫಿಗರ್ ಆದ ಸಿಂಕ್ ಪೀರ್ ಅಲ್ಲ.}
 ::msgcat::mcset kn {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {ಈ ಪ್ಲಗಿನ್ ಜೊತೆಬಂದಿದ್ದು ಓದಲು-ಮಾತ್ರ. ಬದಲಿಗೆ ಜೊತೆಬಂದ ನಕಲನ್ನು ಬಳಸಲು ಅದೇ ಹೆಸರಿನ ಬಳಕೆದಾರ ನಕಲನ್ನು ತೆಗೆದುಹಾಕಿ.}
 ::msgcat::mcset kn {This publishes the commit; no pull request is created yet.} {ಇದು ಕಮಿಟ್ ಅನ್ನು ಪ್ರಕಟಿಸುತ್ತದೆ; ಇನ್ನೂ ಯಾವುದೇ ಪುಲ್ ರಿಕ್ವೆಸ್ಟ್ ರಚಿಸಲಾಗುವುದಿಲ್ಲ.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset kn Unassign {ನಿಯೋಜನೆ ತೆಗೆಯಿರಿ}
 ::msgcat::mcset kn {Undo last} {ಕೊನೆಯದನ್ನು ರದ್ದು ಮಾಡು}
 ::msgcat::mcset kn {Undo the last memory revision?} {ಕೊನೆಯ ಮೆಮೊರಿ ರಿವಿಷನ್ ರದ್ದು ಮಾಡುವುದೇ?}
+::msgcat::mcset kn {Unset %1$s on %2$s?} {%2$s ನಲ್ಲಿ %1$s ಅನ್ನು ತೆಗೆಯುವುದೇ?}
+::msgcat::mcset kn Unset… ತೆಗೆಯಿರಿ…
 ::msgcat::mcset kn Unstage ಅನ್ಸ್ಟೇಜ್
 ::msgcat::mcset kn {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {.env ನಲ್ಲಿ IRC_ALLOWED_USERS ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಹೆಸರಿಸುವವರೆಗೆ, ನೆಟ್‌ವರ್ಕ್‌ನಲ್ಲಿ ಯಾರಾದರೂ ಬಾಟ್ ಜೊತೆ ಮಾತಾಡಬಹುದು — ಮತ್ತು [acl] ವಿಭಾಗ ಇಲ್ಲದಿದ್ದರೆ ಮಾಲೀಕರಾಗಿ, ಎಲ್ಲಾ ಟೂಲ್‌ಗಳೊಂದಿಗೆ.}
 ::msgcat::mcset kn {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {.env ನಲ್ಲಿ TELEGRAM_ALLOWED_USERS ನಿಮ್ಮ ಬಳಕೆದಾರ ಐಡಿಯನ್ನು ಹೆಸರಿಸುವವರೆಗೆ, ಬಾಟ್ ಅನ್ನು ಕಂಡುಕೊಳ್ಳುವ ಯಾರಾದರೂ ಅದರೊಂದಿಗೆ ಮಾತಾಡಬಹುದು — ಮತ್ತು [acl] ವಿಭಾಗ ಇಲ್ಲದಿದ್ದರೆ ಮಾಲೀಕರಾಗಿ, ಎಲ್ಲಾ ಟೂಲ್‌ಗಳೊಂದಿಗೆ.}
 ::msgcat::mcset kn Untitled {ಶೀರ್ಷಿಕೆ ಇಲ್ಲದವು}
-::msgcat::mcset kn {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {ಅಪ್ಸ್ಟ್ರೀಮ್ ಕೊಡುಗೆ ಸ್ಪಷ್ಟ ಪ್ರಕಟಣಾ ಕ್ರಿಯೆ, ತಾನಾಗಿ ಅಪ್ಲೋಡ್ ಅಲ್ಲ. Manage extensions ನಲ್ಲಿ, Contribute ಪ್ರತಿ ಬಳಕೆದಾರ ಎಕ್ಸ್ಟೆನ್ಷನ್ ಅನ್ನೂ ಪಟ್ಟಿ ಮಾಡುತ್ತದೆ: ಎಕ್ಸ್ಟೆನ್ಷನ್ಗಳನ್ನು ಮತ್ತು ಫೈಲ್ಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ, ಡಿಫ್ ಮತ್ತು ರಹಸ್ಯ ಸ್ಕ್ಯಾನ್ ಪರಿಶೀಲಿಸಿ, ಪರಿಶೀಲನೆಗಳನ್ನು ಓಡಿಸಿ, ನಂತರ ನಿಮ್ಮ ಆಯ್ದ git ಗುರುತಿನೊಂದಿಗೆ ಒಂದು ಬ್ರಾಂಚ್ ಮತ್ತು ಒಂದು PR (ಡೀಫಾಲ್ಟ್ ಆಗಿ veles ಗೆ) ರಚಿಸಿ. ಪ್ರತಿ ಎಕ್ಸ್ಟೆನ್ಷನ್ ರೆಪೊಸಿಟರಿಯಲ್ಲಿ ತನ್ನದೇ ಡೈರೆಕ್ಟರಿಯಡಿ ಹೋಗುತ್ತದೆ, ಮತ್ತು ಅಲ್ಲಿರುವ ಇರುವ ಫೈಲ್ ಪ್ರತ್ಯೇಕ ದೃಢೀಕರಣದ ನಂತರವೇ ಬದಲಾಗುತ್ತದೆ. node.toml, ಸ್ಥಳೀಯ ರುಜುವಾತುಗಳು, ಟೋಕನ್ಗಳು, ಖಾಸಗಿ ಎಂಡ್ಪಾಯಿಂಟ್ಗಳು ಅಥವಾ ಸಂಬಂಧವಿಲ್ಲದ ಪ್ಲಗಿನ್ ಸ್ಥಿತಿಯನ್ನು ಎಂದಿಗೂ ಪ್ರಕಟಿಸಬೇಡಿ. ಸ್ಥಳೀಯ ರಿಕವರಿ ಸ್ನ್ಯಾಪ್ಶಾಟ್ಗಳು ಅಪ್ಸ್ಟ್ರೀಮ್ ಕಮಿಟ್ ಅಥವಾ PR ಅಲ್ಲ.}
+::msgcat::mcset kn {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Upstream ಕೊಡುಗೆ ಸ್ಪಷ್ಟ ಪ್ರಕಟಣಾ ಕ್ರಿಯೆ, ಸ್ವಯಂಚಾಲಿತ ಅಪ್‌ಲೋಡ್ ಅಲ್ಲ. Manage extensions ನಲ್ಲಿ, Contribute ಪ್ರತಿ ಬಳಕೆದಾರ ಎಕ್ಸ್ಟೆನ್ಷನ್ ಅನ್ನು ಪಟ್ಟಿ ಮಾಡುತ್ತದೆ: ಎಕ್ಸ್ಟೆನ್ಷನ್‌ಗಳನ್ನೂ ಫೈಲ್‌ಗಳನ್ನೂ ಆಯ್ಕೆಮಾಡಿ, diff ಮತ್ತು secrets scan ಪರಿಶೀಲಿಸಿ, checks ಓಡಿಸಿ, ನಂತರ ಒಂದು ಬ್ರಾಂಚ್ ಮತ್ತು ಒಂದು PR ರಚಿಸಿ (ಡೀಫಾಲ್ಟ್ ಆಗಿ veles ಗೆ). ಕಮಿಟ್ ಗೇಟ್‌ವೇಯ ಸುತ್ತಲಿನ git ಗುರುತನ್ನು (ಅದರ git ಕಾನ್ಫಿಗರೇಶನ್‌ನ user.name ಮತ್ತು user.email) ಬಳಸುತ್ತದೆ; ಬೇರೆಯಾಗಿರಬೇಕಿದ್ದರೆ ಮೊದಲು ಅವನ್ನು ಹೊಂದಿಸಿ. ಪ್ರತಿ ಎಕ್ಸ್ಟೆನ್ಷನ್ ರೆಪೊಸಿಟರಿಯಲ್ಲಿ ತನ್ನದೇ ಡೈರೆಕ್ಟರಿಯಲ್ಲಿ ಸೇರುತ್ತದೆ, ಮತ್ತು ಅಲ್ಲಿರುವ ಫೈಲ್ ಪ್ರತ್ಯೇಕ ದೃಢೀಕರಣದ ನಂತರವೇ ಬದಲಾಗುತ್ತದೆ. node.toml, ಸ್ಥಳೀಯ ರುಜುವಾತುಗಳು, ಟೋಕನ್‌ಗಳು, ಖಾಸಗಿ ಎಂಡ್‌ಪಾಯಿಂಟ್‌ಗಳು ಅಥವಾ ಸಂಬಂಧವಿಲ್ಲದ ಪ್ಲಗಿನ್ ಸ್ಥಿತಿಯನ್ನು ಎಂದಿಗೂ ಪ್ರಕಟಿಸಬೇಡಿ. ಸ್ಥಳೀಯ ಮರುಸ್ಥಾಪನೆ ಸ್ನ್ಯಾಪ್‌ಶಾಟ್‌ಗಳು upstream ಕಮಿಟ್ ಅಥವಾ PR ಅಲ್ಲ.}
 ::msgcat::mcset kn {Upstream repository or fork URL} {ಅಪ್‌ಸ್ಟ್ರೀಮ್ ರಿಪೊಸಿಟರಿ ಅಥವಾ ಫೋರ್ಕ್ URL}
 ::msgcat::mcset kn {Uptime class} {ಅಪ್‌ಟೈಮ್ ವರ್ಗ}
 ::msgcat::mcset kn {Uptime: host %1$s, gateway %2$s} {ಅಪ್‌ಟೈಮ್: ಹೋಸ್ಟ್ %1$s, ಗೇಟ್‌ವೇ %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset kn {Users — one role across networks and platforms} {ಬಳಕೆದಾರರು — ನೆಟ್ವರ್ಕ್ ಮತ್ತು ಪ್ಲಾಟ್ಫಾರ್ಮ್ಗಳಾದ್ಯಂತ ಒಂದೇ ಪಾತ್ರ}
 ::msgcat::mcset kn {Using the phone, for the agent} {ಫೋನ್ ಬಳಕೆ, ಏಜೆಂಟ್‌ಗಾಗಿ}
 ::msgcat::mcset kn {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {ಸಾಮಾನ್ಯವಾಗಿ ಪ್ರೊವೈಡರ್ ನಮೂದು ಹೆಸರಿನಷ್ಟೇ. Skip ಆಯ್ಕೆಯಲ್ಲಿ ಎರಡನ್ನೂ ಖಾಲಿ ಬಿಡಿ — ಅರ್ಧ ತುಂಬಿದ ಜೋಡಿ ರೂಟ್ ಆಗುವುದಿಲ್ಲ.}
+::msgcat::mcset kn {Value (TOML: "text", 5, true, [1, 2])} {ಮೌಲ್ಯ (TOML: "ಪಠ್ಯ", 5, true, [1, 2])}
 ::msgcat::mcset kn {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {ಮೌಲ್ಯಗಳು TOML: ಉದ್ಧರಣ ಚಿಹ್ನೆಯ ಸ್ಟ್ರಿಂಗ್ಗಳು, ಸಂಖ್ಯೆಗಳು ಅಥವಾ ಪಟ್ಟಿಗಳು. [mcp_servers.<name>] ಗೆ ಬರೆಯಲಾಗುತ್ತದೆ — ನಿಮ್ಮ ಕಾಮೆಂಟ್ಗಳು ಮತ್ತು ಉಳಿದ ಎಲ್ಲಾ ವಿಭಾಗಗಳು ಹಾಗೆಯೇ ಉಳಿಯುತ್ತವೆ.}
 ::msgcat::mcset kn Vault ಲಾಕರ್
 ::msgcat::mcset kn {Verified signed bundle installed. Restart the gateway before using the new core.} {ಪರಿಶೀಲಿತ ಸಹಿ ಬಂಡಲ್ ಇನ್‌ಸ್ಟಾಲ್ ಆಗಿದೆ. ಹೊಸ ಕೋರ್ ಬಳಸುವ ಮೊದಲು ಗೇಟ್‌ವೇ ಮರುಪ್ರಾರಂಭಿಸಿ.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset kn Voice {ವಾಯ್ಸ್ ನೀಡಿ}
 ::msgcat::mcset kn {Waiting for the model…} {ಮಾದರಿಗಾಗಿ ಕಾಯುತ್ತಿದೆ…}
 ::msgcat::mcset kn {Waiting for the model… Nothing has been written.} {ಮಾದರಿಗಾಗಿ ಕಾಯುತ್ತಿದೆ… ಏನೂ ಬರೆಯಲಾಗಿಲ್ಲ.}
+::msgcat::mcset kn Warning ಎಚ್ಚರಿಕೆ
 ::msgcat::mcset kn {Welcome to veles} {veles ಗೆ ಸ್ವಾಗತ}
 ::msgcat::mcset kn {What the agent can do here} {ಏಜೆಂಟ್ ಇಲ್ಲಿ ಏನು ಮಾಡಬಹುದು}
 ::msgcat::mcset kn {What veles may do on this phone. Each button opens the Android setting that changes it.} {ಈ ಫೋನ್‌ನಲ್ಲಿ veles ಏನು ಮಾಡಬಹುದು. ಪ್ರತಿ ಬಟನ್ ಅದನ್ನು ಬದಲಾಯಿಸುವ Android ಸೆಟ್ಟಿಂಗ್ ಅನ್ನು ತೆರೆಯುತ್ತದೆ.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset kn {Workflow SHA} {ವರ್ಕ್‌ಫ್ಲೋ SHA}
 ::msgcat::mcset kn {Workflow commit} {ವರ್ಕ್ಫ್ಲೋ ಕಮಿಟ್}
 ::msgcat::mcset kn Worktree ವರ್ಕ್‌ಟ್ರೀ
+::msgcat::mcset kn {Write cancelled.} {ಬರವಣಿಗೆ ರದ್ದುಪಡಿಸಲಾಗಿದೆ.}
 ::msgcat::mcset kn {Write it} ಬರೆ
 ::msgcat::mcset kn {Write the design question first.} {ಮೊದಲು ವಿನ್ಯಾಸ ಪ್ರಶ್ನೆ ಬರೆಯಿರಿ.}
 ::msgcat::mcset kn {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {ಯಾವುದೇ ಪ್ರೊವೈಡರ್ ಬರೆಯುವುದಿಲ್ಲ. [[custom_providers]] ನಮೂದು ಮತ್ತು [model] ಜೋಡಿ ಇರುವವರೆಗೆ ಗೇಟ್ವೇ ಟರ್ನ್ ಅನ್ನು ರೂಟ್ ಮಾಡುವುದಿಲ್ಲ.}
+::msgcat::mcset kn Write… ಬರೆಯಿರಿ…
 ::msgcat::mcset kn {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {ಯಾವುದೇ [acl] ಕೀ ಬರೆದರೆ ಈ ಗೇಟ್‌ವೇ ಕ್ಯುರೇಟೆಡ್ ಮೋಡ್‌ಗೆ ಬದಲಾಗುತ್ತದೆ: ಡೀಫಾಲ್ಟ್ ಪಾತ್ರ guest (fail-closed) ಆಗುತ್ತದೆ ಮತ್ತು ಅನುಮತಿ ಪಟ್ಟಿಗಳು ಇನ್ನು ಗಡಿಯಲ್ಲ. ನೀವು ನಂಬುವ ಮಾಲೀಕರ ಗುರುತು ಇದ್ದರೆ ಮಾತ್ರ ಇದನ್ನು ಆರಿಸಿ.}
 ::msgcat::mcset kn {[model] provider} {[model] ಪ್ರೊವೈಡರ್}
 ::msgcat::mcset kn {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {[model] ಪ್ರೊವೈಡರ್ %{name} ಯಾವುದೇ [[custom_providers]] ನಮೂದಿಗೆ ಹೊಂದುವುದಿಲ್ಲ — ಈ ವಿಝಾರ್ಡ್ ಬರೆಯುವ ನಮೂದನ್ನು ಅಥವಾ config.toml ನಲ್ಲಿ ಈಗಾಗಲೇ ಇರುವ ನಮೂದನ್ನು ಹೆಸರಿಸಿ}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset kn {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset kn {asked by: %s} {ಕೇಳಿದವರು: %s}
 ::msgcat::mcset kn {asking %s for its metrics…} {%s ನ ಮೆಟ್ರಿಕ್ಸ್ ಕೇಳಲಾಗುತ್ತಿದೆ…}
+::msgcat::mcset kn {asking %s how it is supervised…} {%s ತಾನು ಹೇಗೆ ಮೇಲ್ವಿಚಾರಣೆಯಲ್ಲಿದೆ ಎಂದು ಕೇಳುತ್ತಿದೆ…}
 ::msgcat::mcset kn {attach a file} {ಫೈಲ್ ಲಗತ್ತಿಸಿ}
 ::msgcat::mcset kn {attach an image or file} {ಚಿತ್ರ ಅಥವಾ ಫೈಲ್ ಲಗತ್ತಿಸು}
 ::msgcat::mcset kn {attach failed: %1$s} {ಅಟ್ಯಾಚ್ ವಿಫಲವಾಗಿದೆ: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset kn {channel-event reactions; /triggers add <name> network=… channel=… action=…} {ಚಾನಲ್ ಘಟನೆಗಳಿಗೆ ಪ್ರತಿಕ್ರಿಯೆಗಳು; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset kn {channels to join, a space or comma separated string} {ಸೇರಬೇಕಾದ ಚಾನಲ್ಗಳು, ಸ್ಪೇಸ್ ಅಥವಾ ಕಾಮಾದಿಂದ ಬೇರ್ಪಟ್ಟ ಸ್ಟ್ರಿಂಗ್}
 ::msgcat::mcset kn chars ಅಕ್ಷರಗಳು
+::msgcat::mcset kn {check the buffer (diagnostics)} {ಬಫರ್ ಪರಿಶೀಲಿಸಿ (ಡಯಾಗ್ನಾಸ್ಟಿಕ್ಸ್)}
 ::msgcat::mcset kn choice_next {ಮುಂದಿನ ಮಾರ್ಗಕ್ಕೆ ಹೋಗು}
 ::msgcat::mcset kn choice_retry {ಅದೇ ಮಾರ್ಗದಲ್ಲಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸು}
 ::msgcat::mcset kn choice_stop {ಇಲ್ಲೇ ನಿಲ್ಲಿಸು}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset kn {command list unavailable (the gateway is not reachable)} {ಕಮಾಂಡ್ ಪಟ್ಟಿ ಲಭ್ಯವಿಲ್ಲ (ಗೇಟ್‌ವೇ ತಲುಪಲಾಗುತ್ತಿಲ್ಲ)}
 ::msgcat::mcset kn {command palette} {ಕಮಾಂಡ್ ಪ್ಯಾಲೆಟ್}
 ::msgcat::mcset kn {command search} {ಆಜ್ಞೆ ಹುಡುಕಾಟ}
+::msgcat::mcset kn {command-center audit log} {ಕಮಾಂಡ್-ಸೆಂಟರ್ ಆಡಿಟ್ ಲಾಗ್}
 ::msgcat::mcset kn commands ಕಮಾಂಡ್‌ಗಳು
 ::msgcat::mcset kn {commands stay on your own session; /leave returns from the joined session} {ಕಮಾಂಡ್‌ಗಳು ನಿಮ್ಮದೇ ಸೆಷನ್‌ನಲ್ಲೇ ಉಳಿಯುತ್ತವೆ; /leave ಸೇರಿದ ಸೆಷನ್‌ನಿಂದ ಹಿಂತಿರುಗಿಸುತ್ತದೆ}
 ::msgcat::mcset kn commands: ಆಜ್ಞೆಗಳು:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset kn {config changes from peers that wait for you; /configsync apply lands them} {ಪೀರ್‌ಗಳಿಂದ ಬಂದು ನಿಮಗಾಗಿ ಕಾಯುತ್ತಿರುವ ಕಾನ್ಫಿಗ್ ಬದಲಾವಣೆಗಳು; /configsync apply ಅವನ್ನು ಅನ್ವಯಿಸುತ್ತದೆ}
 ::msgcat::mcset kn {config file: %s} {ಸಂರಚನಾ ಫೈಲ್: %s}
 ::msgcat::mcset kn {config key} {ಕಾನ್ಫಿಗ್ ಕೀ}
+::msgcat::mcset kn {config result} {ಕಾನ್ಫಿಗ್ ಫಲಿತಾಂಶ}
 ::msgcat::mcset kn {config unavailable} {ಕಾನ್ಫಿಗ್ ಲಭ್ಯವಿಲ್ಲ}
 ::msgcat::mcset kn {config unavailable: %s} {ಕಾನ್ಫಿಗ್ ಲಭ್ಯವಿಲ್ಲ: %s}
 ::msgcat::mcset kn {config value} {ಕಾನ್ಫಿಗ್ ಮೌಲ್ಯ}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset kn doctor_resident {ಪ್ರತಿ ಪ್ರಾಂಪ್ಟ್‌ನಲ್ಲಿ ಸ್ಥಿರ: %{total} ಅಕ್ಷರಗಳಲ್ಲಿ %{shown} (~%{tokens} ಟೋಕನ್‌ಗಳು) — ಉಳಿದದ್ದು ಬೇಕಾದಾಗ ಇದರಿಂದ ಲೋಡ್ ಆಗುತ್ತದೆ: memory action=read path=%{path}}
 ::msgcat::mcset kn doctor_title {ಮೆಮೊರಿ ಪರೀಕ್ಷೆ}
 ::msgcat::mcset kn doctor_total {ಒಟ್ಟು: %{files} ಫೈಲ್‌ಗಳಲ್ಲಿ %{chars} ಅಕ್ಷರಗಳು (~%{tokens} ಟೋಕನ್‌ಗಳು)}
-::msgcat::mcset kn {documentation is not in this source checkout: %s} {ಈ ಮೂಲ ಚೆಕ್‌ಔಟ್‌ನಲ್ಲಿ ದಸ್ತಾವೇಜು ಇಲ್ಲ: %s}
 ::msgcat::mcset kn done ಮುಗಿದಿದೆ
 ::msgcat::mcset kn {done · %1$s/%2$s} {ಮುಗಿದಿದೆ · %1$s/%2$s}
 ::msgcat::mcset kn {done, but the model returned no text} {ಮುಗಿದಿದೆ, ಆದರೆ ಮಾಡೆಲ್ ಯಾವುದೇ ಪಠ್ಯ ನೀಡಲಿಲ್ಲ}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset kn {grant a role (owner) · /revoke <id> takes it back} {ಪಾತ್ರ ನೀಡು (owner) · /revoke <id> ಅದನ್ನು ಹಿಂಪಡೆಯುತ್ತದೆ}
 ::msgcat::mcset kn {grant a role to an identity} {ಐಡೆಂಟಿಟಿಗೆ ಪಾತ್ರ ನೀಡಿ}
 ::msgcat::mcset kn {guards unreachable} {ಗಾರ್ಡ್ಗಳು ತಲುಪಲು ಸಾಧ್ಯವಿಲ್ಲ}
-::msgcat::mcset kn guts: ಗಟ್ಸ್:
+::msgcat::mcset kn {guts ▾} {ಒಳಾಂಗಗಳು ▾}
 ::msgcat::mcset kn {gw hooks} {gw ಹುಕ್‌ಗಳು}
 ::msgcat::mcset kn {gw procs} {gw ಪ್ರೊಕ್‌ಗಳು}
 ::msgcat::mcset kn {halt after N identical calls} {N ಒಂದೇ ರೀತಿಯ ಕರೆಗಳ ನಂತರ ನಿಲ್ಲಿಸು}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset kn {live patching ARMED} {ಲೈವ್ ಪ್ಯಾಚಿಂಗ್ ಸಜ್ಜಾಗಿದೆ}
 ::msgcat::mcset kn {live patching ARMED — an agent can now redefine procs in this window} {ಲೈವ್ ಪ್ಯಾಚಿಂಗ್ ಸಜ್ಜಾಗಿದೆ — ಏಜೆಂಟ್ ಈ ವಿಂಡೋದಲ್ಲಿ procs ಮರುವ್ಯಾಖ್ಯಾನಿಸಬಹುದು}
 ::msgcat::mcset kn {live patching disarmed} {ಲೈವ್ ಪ್ಯಾಚಿಂಗ್ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ}
+::msgcat::mcset kn load ಲೋಡ್
 ::msgcat::mcset kn loaded {ಲೋಡ್ ಮಾಡಲಾಗಿದೆ}
 ::msgcat::mcset kn {loaded older messages} {ಹಳೆಯ ಸಂದೇಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಿದೆ}
 ::msgcat::mcset kn loading… {ಲೋಡ್ ಆಗುತ್ತಿದೆ…}
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset kn {no upstream reading for %s} {%s ಗೆ ಅಪ್ಸ್ಟ್ರೀಮ್ ಓದುವಿಕೆ ಇಲ್ಲ}
 ::msgcat::mcset kn {no word match} {ಪದ ಹೊಂದಾಣಿಕೆ ಇಲ್ಲ}
 ::msgcat::mcset kn {no xdg-open — path copied instead} {xdg-open ಇಲ್ಲ — ಬದಲಿಗೆ ಪಥ ನಕಲಿಸಲಾಗಿದೆ}
+::msgcat::mcset kn {nobody else's session is open on %s right now} {%s ನಲ್ಲಿ ಈಗ ಬೇರೆ ಯಾರ ಸೆಷನ್ ತೆರೆದಿಲ್ಲ}
 ::msgcat::mcset kn {node log} {ನೋಡ್ ಲಾಗ್}
 ::msgcat::mcset kn {none loaded} {ಯಾವುದೂ ಲೋಡ್ ಆಗಿಲ್ಲ}
 ::msgcat::mcset kn {none recorded} {ಯಾವುದೂ ದಾಖಲಾಗಿಲ್ಲ}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset kn {not installed} ಸ್ಥಾಪಿಸಲಾಗಿಲ್ಲ
 ::msgcat::mcset kn {not reported} ವರದಿಯಾಗಿಲ್ಲ
 ::msgcat::mcset kn {not running} ಚಾಲನೆಯಲ್ಲಿಲ್ಲ
+::msgcat::mcset kn {not saved: drafting the change as an extension} {ಉಳಿಸಲಾಗಿಲ್ಲ: ಬದಲಾವಣೆಯನ್ನು ಎಕ್ಸ್ಟೆನ್ಷನ್ ಆಗಿ ಕರಡು ಮಾಡಲಾಗುತ್ತಿದೆ}
+::msgcat::mcset kn {not sent: %s} {ಕಳುಹಿಸಲಾಗಿಲ್ಲ: %s}
 ::msgcat::mcset kn {not set in config.toml — the built-in default applies. %s} {config.toml ನಲ್ಲಿ ಹೊಂದಿಸಿಲ್ಲ — ಅಂತರ್ನಿರ್ಮಿತ default ಅನ್ವಯವಾಗುತ್ತದೆ. %s}
 ::msgcat::mcset kn {not set yet — /secret set it later} {ಇನ್ನೂ ಹೊಂದಿಸಿಲ್ಲ — ನಂತರ /secret set ಮೂಲಕ ಹೊಂದಿಸಿ}
 ::msgcat::mcset kn {not signed: %s} {ಸಹಿ ಮಾಡಿಲ್ಲ: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset kn {on no plan} {ಯೋಜನೆ ಇಲ್ಲದಿದ್ದಾಗ}
 ::msgcat::mcset kn {on the} ಮೇಲೆ
 ::msgcat::mcset kn {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {ಆನ್/ಆಫ್ ಟ್ರಾನ್ಸ್ಕ್ರಿಪ್ಟ್ನಲ್ಲಿ ಯಾಂತ್ರಿಕದ ಟಿಪ್ಪಣಿಯನ್ನು ಮೌನಗೊಳಿಸುತ್ತದೆ — ಈ ಸೆಷನ್ಗೆ, ಅಥವಾ ಕೆಳಗಿನ ಸ್ಕೋಪ್ ಪ್ರಕಾರ default ಆಗಿ. ಇದು NOTE ಅನ್ನು ನಿಯಂತ್ರಿಸುತ್ತದೆ; ಪ್ರತಿ ಯಾಂತ್ರಿಕ ಏನು ಮಾಡುತ್ತದೆ ಎಂಬುದು ಅದರ ಸಾಲಿನ ವಿಭಾಗದಲ್ಲಿ ಹೊಂದಿಸಲಾಗಿದೆ, ಮತ್ತು Configure… ಅದನ್ನು ತೆರೆಯುತ್ತದೆ. ಗಾರ್ಡ್ ನಿಯಂತ್ರಣಗಳನ್ನು ಅಲ್ಲಿಯೇ ಸಂಪಾದಿಸಬಹುದು.}
+::msgcat::mcset kn {on; this gateway does not say whether they reach the home chat} {ಆನ್; ಅವು ಹೋಮ್ ಚಾಟ್ ತಲುಪುತ್ತವೆಯೇ ಎಂದು ಈ ಗೇಟ್‌ವೇ ಹೇಳುವುದಿಲ್ಲ}
 ::msgcat::mcset kn {one-shot tcl-lsp diagnostics — no model turn} {ಒಮ್ಮೆಯ tcl-lsp ಪರೀಕ್ಷೆ — ಮಾಡೆಲ್ ಟರ್ನ್ ಇಲ್ಲ}
 ::msgcat::mcset kn {open a saved file first} {ಮೊದಲು ಉಳಿಸಿದ ಫೈಲ್ ತೆರೆಯಿರಿ}
 ::msgcat::mcset kn {open links} {ಲಿಂಕ್‌ಗಳನ್ನು ತೆರೆಯುವುದು}
+::msgcat::mcset kn {open one of the desktop's own source files} {ಡೆಸ್ಕ್ಟಾಪ್‌ನದೇ ಮೂಲ ಫೈಲ್‌ಗಳಲ್ಲಿ ಒಂದನ್ನು ತೆರೆಯಿರಿ}
 ::msgcat::mcset kn {open the engine log} {ಎಂಜಿನ್ ಲಾಗ್ ತೆರೆಯಿರಿ}
 ::msgcat::mcset kn {open the joined session before /leave (on %s)} {/leave ಮಾಡುವ ಮೊದಲು ಸೇರಿದ ಸೆಷನ್ ತೆರೆಯಿರಿ (%s ನಲ್ಲಿ)}
 ::msgcat::mcset kn {open the selected child session} {ಆಯ್ಕೆಮಾಡಿದ ಚೈಲ್ಡ್ ಸೆಷನ್ ತೆರೆಯಿರಿ}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset kn {read-only: [approvals] allowlist} {ಓದಲು-ಮಾತ್ರ: [approvals] allowlist}
 ::msgcat::mcset kn {read-only: this session lives on %1$s (as read at %2$s)} {ಓದು-ಮಾತ್ರ: ಈ ಸೆಷನ್ %1$s ನಲ್ಲಿದೆ (%2$s ಕ್ಕೆ ಓದಿದಂತೆ)}
 ::msgcat::mcset kn {read-only: this skill comes from the %s library} {ಓದು-ಮಾತ್ರ: ಈ skill %s ಲೈಬ್ರರಿಯಿಂದ ಬಂದಿದೆ}
+::msgcat::mcset kn {reading %1$s on %2$s…} {%2$s ನಲ್ಲಿ %1$s ಓದುತ್ತಿದೆ…}
 ::msgcat::mcset kn reasoning ತರ್ಕ
 ::msgcat::mcset kn {reasoning display: %1$s · %2$s blocks} {ತರ್ಕ ಪ್ರದರ್ಶನ: %1$s · %2$s ಬ್ಲಾಕ್ಗಳು}
 ::msgcat::mcset kn {reasoning display: %s} {ತರ್ಕ ಪ್ರದರ್ಶನ: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset kn {run failed: %s} {ರನ್ ವಿಫಲ: %s}
 ::msgcat::mcset kn {run in:} {ಇದರಲ್ಲಿ ರನ್:}
 ::msgcat::mcset kn running ಚಾಲನೆಯಲ್ಲಿದೆ
+::msgcat::mcset kn {running %s on the listed nodes…} {ಪಟ್ಟಿ ಮಾಡಿದ ನೋಡ್‌ಗಳಲ್ಲಿ %s ಓಡಿಸುತ್ತಿದೆ…}
 ::msgcat::mcset kn {running since %s} {%s ರಿಂದ ಚಾಲನೆಯಲ್ಲಿದೆ}
 ::msgcat::mcset kn {running subagents; /subagents cancel <id>} {ಚಾಲನೆಯಲ್ಲಿರುವ ಸಬ್‌ಏಜೆಂಟ್‌ಗಳು; /subagents cancel <id>}
 ::msgcat::mcset kn {save failed} {ಉಳಿಸಲು ವಿಫಲ}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset kn {send failed: %s} {ಕಳುಹಿಸುವಿಕೆ ವಿಫಲವಾಗಿದೆ: %s}
 ::msgcat::mcset kn {send the message; while a turn runs, queue it as steering} {ಸಂದೇಶ ಕಳುಹಿಸಿ; ಟರ್ನ್ ನಡೆಯುತ್ತಿರುವಾಗ, ಅದನ್ನು ಸ್ಟೀರಿಂಗ್ ಆಗಿ ಕ್ಯೂ ಮಾಡಿ}
 ::msgcat::mcset kn sent ಕಳುಹಿಸಲಾಗಿದೆ
-::msgcat::mcset kn {sent to the owner's home chat} {ಮಾಲೀಕರ ಮುಖ್ಯ ಚಾಟ್‌ಗೆ ಕಳುಹಿಸಲಾಗಿದೆ}
+::msgcat::mcset kn {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {ಮಾಲೀಕರ ಹೋಮ್ ಚಾಟ್‌ಗೆ ಅದರ Telegram ಅಡಾಪ್ಟರ್ ಓಡಿಸುವ ಗೇಟ್‌ವೇ ಕಳುಹಿಸುತ್ತದೆ, ಈ ಗೇಟ್‌ವೇ ಅಲ್ಲ}
+::msgcat::mcset kn {sent to the owner's home chat from this gateway} {ಮಾಲೀಕರ ಹೋಮ್ ಚಾಟ್‌ಗೆ ಈ ಗೇಟ್‌ವೇಯಿಂದ ಕಳುಹಿಸಲಾಗುತ್ತದೆ}
 ::msgcat::mcset kn server ಸರ್ವರ್
 ::msgcat::mcset kn {server buffers merged} {ಸರ್ವರ್ ಬಫರ್ಗಳು ವಿಲೀನಗೊಂಡಿವೆ}
 ::msgcat::mcset kn {server buffers separate} {ಸರ್ವರ್ ಬಫರ್ಗಳು ಪ್ರತ್ಯೇಕವಾಗಿವೆ}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset kn {session, model, lifecycle} {ಸೆಷನ್, ಮಾಡೆಲ್, ಜೀವನಚಕ್ರ}
 ::msgcat::mcset kn {session: %s} {ಸೆಷನ್: %s}
 ::msgcat::mcset kn {sessions    %s} {ಸೆಷನ್ಗಳು    %s}
+::msgcat::mcset kn {sessions you can join on %s (/join <name or id>):} {%s ನಲ್ಲಿ ನೀವು ಸೇರಬಹುದಾದ ಸೆಷನ್‌ಗಳು (/join <ಹೆಸರು ಅಥವಾ ಐಡಿ>):}
 ::msgcat::mcset kn {sessions: unreachable} {ಸೆಷನ್ಗಳು: ತಲುಪಲಾಗುವುದಿಲ್ಲ}
 ::msgcat::mcset kn {set by} ಹೊಂದಿಸಿದವರು
 ::msgcat::mcset kn {set. %s} {ಹೊಂದಿಸಲಾಗಿದೆ. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset kn {split: %s} {ವಿಭಜನೆ: %s}
 ::msgcat::mcset kn {ssh to %1$s failed: %2$s} {%1$s ಗೆ ssh ವಿಫಲ: %2$s}
 ::msgcat::mcset kn {stale — no heartbeat within the threshold} {ಹಳೆಯದು — ಮಿತಿಯೊಳಗೆ ಹಾರ್ಟ್ಬೀಟ್ ಇಲ್ಲ}
+::msgcat::mcset kn {standing approval grants: always and this session; revoke one} {ಶಾಶ್ವತ ಅನುಮತಿ ನೀಡಿಕೆಗಳು: ಯಾವಾಗಲೂ ಮತ್ತು ಈ ಸೆಷನ್; ಒಂದನ್ನು ರದ್ದುಮಾಡಿ}
 ::msgcat::mcset kn {standing global and session permission grants} {ಶಾಶ್ವತ ಜಾಗತಿಕ ಮತ್ತು ಸೆಷನ್ ಅನುಮತಿ ನೀಡಿಕೆಗಳು}
+::msgcat::mcset kn {start the line with // to send it as text} {ಪಠ್ಯವಾಗಿ ಕಳುಹಿಸಲು ಸಾಲನ್ನು // ನಿಂದ ಪ್ರಾರಂಭಿಸಿ}
 ::msgcat::mcset kn state ಸ್ಥಿತಿ
 ::msgcat::mcset kn {state       never reached} {ಸ್ಥಿತಿ       ಎಂದಿಗೂ ತಲುಪಿಲ್ಲ}
 ::msgcat::mcset kn {state       reachable} {ಸ್ಥಿತಿ       ತಲುಪಬಹುದಾದ}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset kn {the config.toml that will be written} {ಬರೆಯಲಾಗುವ config.toml}
 ::msgcat::mcset kn {the default (config.toml)} {ಡೀಫಾಲ್ಟ್ (config.toml)}
 ::msgcat::mcset kn {the engine refused these answers: %s} {ಎಂಜಿನ್ ಈ ಉತ್ತರಗಳನ್ನು ನಿರಾಕರಿಸಿತು: %s}
+::msgcat::mcset kn {the file to open: type a path, then Return or Open} {ತೆರೆಯಬೇಕಾದ ಫೈಲ್: ಪಾತ್ ಟೈಪ್ ಮಾಡಿ, ನಂತರ Return ಅಥವಾ Open}
 ::msgcat::mcset kn {the first ACL owner identity} {ಮೊದಲ ACL ಮಾಲೀಕ ಗುರುತು}
 ::msgcat::mcset kn {the gateway answered without a report} {ಗೇಟ್ವೇ ವರದಿ ಇಲ್ಲದೆ ಉತ್ತರಿಸಿತು}
 ::msgcat::mcset kn {the model/provider pair is incomplete — the gateway will not route until both are present} {ಮಾಡೆಲ್/ಪ್ರೊವೈಡರ್ ಜೋಡಿ ಅಪೂರ್ಣವಾಗಿದೆ — ಎರಡೂ ಇರುವವರೆಗೆ ಗೇಟ್‌ವೇ ರೂಟ್ ಮಾಡುವುದಿಲ್ಲ}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset kn unknown ಅಜ್ಞಾತ
 ::msgcat::mcset kn {unknown api_mode %{mode} — expected one of %{modes}} {ಅಜ್ಞಾತ api_mode %{mode} — ಇವುಗಳಲ್ಲಿ ಒಂದು ನಿರೀಕ್ಷಿತ: %{modes}}
 ::msgcat::mcset kn {unknown bindings '%{rest}' · normie|emacs|vi} {ಅಪರಿಚಿತ ಬೈಂಡಿಂಗ್ಗಳು '%{rest}' · normie|emacs|vi}
+::msgcat::mcset kn {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {ಇಲ್ಲಿ ಅಪರಿಚಿತ ಆಜ್ಞೆ %{cmd} — ಈ ಮೇಲ್ಮೈಯ ಆಜ್ಞೆಗಳನ್ನು /help ಪಟ್ಟಿ ಮಾಡುತ್ತದೆ; ಏನನ್ನೂ ಕಳುಹಿಸಲಿಲ್ಲ}
 ::msgcat::mcset kn {unknown command /%s — /help lists them} {ಅಪರಿಚಿತ ಆಜ್ಞೆ /%s — /help ಅವುಗಳನ್ನು ಪಟ್ಟಿ ಮಾಡುತ್ತದೆ}
 ::msgcat::mcset kn {unknown command: /%s} {ಅಜ್ಞಾತ ಆಜ್ಞೆ: /%s}
 ::msgcat::mcset kn {unknown keymap: %s (normie/emacs/vi)} {ಅಪರಿಚಿತ ಕೀಮ್ಯಾಪ್: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset kn {upstream plan credits and windows — /usage is the local ledger} {ಅಪ್‌ಸ್ಟ್ರೀಮ್ ಯೋಜನೆಯ ಕ್ರೆಡಿಟ್‌ಗಳು ಮತ್ತು ಅವಧಿಗಳು — /usage ಸ್ಥಳೀಯ ಲೆಕ್ಕಪುಸ್ತಕ}
 ::msgcat::mcset kn {upstream plan quota} {ಅಪ್ಸ್ಟ್ರೀಮ್ ಯೋಜನಾ ಕೋಟಾ}
 ::msgcat::mcset kn uptime ಅಪ್ಟೈಮ್
-::msgcat::mcset kn {usage: /join <session> or /join <instance>/<session>} {ಬಳಕೆ: /join <session> ಅಥವಾ /join <instance>/<session>}
+::msgcat::mcset kn {usage: /export [md|json]} {ಬಳಕೆ: /export [md|json]}
 ::msgcat::mcset kn {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {ಬಳಕೆ: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset kn {usage: /resume <id or prefix>} {ಬಳಕೆ: /resume <id ಅಥವಾ ಪೂರ್ವಪ್ರತ್ಯಯ>}
 ::msgcat::mcset kn {usage: /resume <id-or-prefix>} {ಬಳಕೆ: /resume <id-or-prefix>}

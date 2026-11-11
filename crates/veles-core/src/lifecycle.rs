@@ -419,7 +419,9 @@ pub async fn wait_for_stop() -> std::io::Result<()> {
 /// (`--exit-when-idle`, the phone), which every start after it used to
 /// call "abnormal (idle)" — and three in ten minutes, a crash loop.
 fn meant(reason: &str) -> bool {
-    matches!(reason, "clean" | "idle")
+    // "restart": the command center asked the node to restart itself
+    // (crate::supervisor), which is not a crash either.
+    matches!(reason, "clean" | "idle" | "restart")
 }
 
 /// Gateway boot bookkeeping. Returns any warnings from the previous

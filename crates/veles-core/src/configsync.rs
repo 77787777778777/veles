@@ -149,15 +149,16 @@ pub fn section_class(top: &str) -> SectionClass {
 }
 
 /// True when `key` (dotted, as the scanner produces) is a replicated
-/// key. Local sections and their whole subtrees answer false.
+/// key. Local sections and their whole subtrees answer false, and so do
+/// a [`NODE_KEYS`] key and every table that holds one: written whole
+/// (`platforms.a2a.extra = { host = … }`, the shape a 0.2.1 node logged
+/// for an inline table), it would carry the node key inside it.
 pub fn is_replicated_key(key: &str) -> bool {
     match split_key(key) {
         Ok(segs) => {
             segs.first()
                 .is_some_and(|top| !matches!(section_class(top), SectionClass::Local))
-                && !NODE_KEYS
-                    .iter()
-                    .any(|k| segs.iter().map(String::as_str).eq(k.split('.')))
+                && !holds_node_key(&segs)
         }
         // Not a key path at all: nothing this node could write — refuse.
         Err(_) => false,
@@ -305,9 +306,19 @@ pub fn scan_config_toml(raw: &str) -> Result<BTreeMap<String, String>> {
     Ok(out)
 }
 
-/// Walk a Map-section item. Tables recurse; everything else is a leaf —
-/// a value (arrays and inline tables included) or an array of tables
-/// (`[[acl.entries]]`, one ordered value at its path).
+/// Is `segs` a [`NODE_KEYS`] key, or a table that holds one?
+fn holds_node_key<S: AsRef<str>>(segs: &[S]) -> bool {
+    NODE_KEYS.iter().any(|k| {
+        let node: Vec<&str> = k.split('.').collect();
+        node.len() >= segs.len() && segs.iter().zip(&node).all(|(a, b)| a.as_ref() == *b)
+    })
+}
+
+/// Walk a Map-section item. Tables recurse, inline tables exactly like
+/// them (`extra = { host = … }` IS the table `[….extra]`, and scanned
+/// as one value it carried the node key inside it to every peer);
+/// everything else is a leaf — a value (arrays included) or an array of
+/// tables (`[[acl.entries]]`, one ordered value at its path).
 fn walk_map_item<'a>(
     path: &mut Vec<&'a str>,
     item: &'a toml_edit::Item,
@@ -321,17 +332,36 @@ fn walk_map_item<'a>(
                 path.pop();
             }
         }
-        other => {
-            if NODE_KEYS
-                .iter()
-                .any(|k| path.iter().copied().eq(k.split('.')))
-            {
-                return;
-            }
-            if let Some(text) = canonical(other) {
-                out.insert(join_key(path), text);
+        toml_edit::Item::Value(v) => walk_map_value(path, v, out),
+        other => map_leaf(path, other, out),
+    }
+}
+
+/// [`walk_map_item`] for a value: an inline table recurses.
+fn walk_map_value<'a>(
+    path: &mut Vec<&'a str>,
+    value: &'a toml_edit::Value,
+    out: &mut BTreeMap<String, String>,
+) {
+    match value {
+        toml_edit::Value::InlineTable(t) => {
+            for (k, sub) in t.iter() {
+                path.push(k);
+                walk_map_value(path, sub, out);
+                path.pop();
             }
         }
+        other => map_leaf(path, &toml_edit::Item::Value(other.clone()), out),
+    }
+}
+
+/// One scanned key, unless it is the machine's own ([`NODE_KEYS`]).
+fn map_leaf(path: &[&str], item: &toml_edit::Item, out: &mut BTreeMap<String, String>) {
+    if holds_node_key(path) {
+        return;
+    }
+    if let Some(text) = canonical(item) {
+        out.insert(join_key(path), text);
     }
 }
 
@@ -1015,6 +1045,40 @@ pub fn summarize_offer(offer: &ConfigSyncOffer) -> String {
     )
 }
 
+/// Whether one of this node's rows travels in an offer: `None` when its
+/// key does not replicate at all, `Some(false)` when its value is
+/// credential-shaped and withheld, `Some(true)` when it is sent.
+/// [`build_offer`] and [`pending_offer`] share it, so the status count
+/// is the push, not an estimate of it.
+fn offered(r: &ConfigLogRow) -> Option<bool> {
+    if !is_replicated_key(&r.key) {
+        return None;
+    }
+    Some(r.value.is_empty() || !crate::a2a::secret_shaped(&r.value))
+}
+
+/// What the next push to a peer whose cursor is `since_seq` would
+/// carry: how many of `from_node`'s rows, and the highest local rowid
+/// among them (`None` when there is nothing to send). Rows this node
+/// RECEIVED sit in the same log with higher rowids, but they are their
+/// origin's to push; counting them made a peer "10 behind" forever
+/// while every push said "nothing to push" (SMOKE-7).
+pub fn pending_offer(
+    store: &crate::store::Store,
+    from_node: &str,
+    since_seq: i64,
+) -> Result<(usize, Option<i64>)> {
+    let mut count = 0;
+    let mut head: Option<i64> = None;
+    for (seq, r) in store.config_log_seq_rows_for(from_node, since_seq)? {
+        if offered(&r) == Some(true) {
+            count += 1;
+            head = Some(head.map_or(seq, |h| h.max(seq)));
+        }
+    }
+    Ok((count, head))
+}
+
 /// Build an offer of THIS node's rows past `since_seq` (local rowid).
 /// Rows whose value is credential-shaped are withheld and named —
 /// defense in depth on top of the section allowlist, because an
@@ -1030,14 +1094,11 @@ pub fn build_offer(
     let mut withheld = Vec::new();
     let mut kept = Vec::new();
     for r in rows {
-        if !is_replicated_key(&r.key) {
-            continue;
+        match offered(&r) {
+            None => continue,
+            Some(false) => withheld.push(r.key.clone()),
+            Some(true) => kept.push(r),
         }
-        if !r.value.is_empty() && crate::a2a::secret_shaped(&r.value) {
-            withheld.push(r.key.clone());
-            continue;
-        }
-        kept.push(r);
     }
     let offer = ConfigSyncOffer {
         from_node: from_node.to_string(),
@@ -2082,6 +2143,68 @@ mod tests {
             "this node's host stays:\n{text}"
         );
         assert!(!text.contains("0.0.0.0"), "{text}");
+    }
+
+    /// The same host written as an inline table — `extra = { host = … }`
+    /// under `[platforms.a2a]`, which TOML says is the same table — was
+    /// scanned as ONE value at `platforms.a2a.extra`, a replicated key,
+    /// and config sync carried this node's bind address to every peer
+    /// inside it. An inline table is walked like a table: the host stays
+    /// here and the port beside it still travels. A row a node logged
+    /// for the whole table before this (the shape every 0.2.1 node
+    /// logs) neither writes a peer's file nor is tombstoned by the
+    /// node's first scan after it.
+    #[test]
+    fn a_node_key_inside_an_inline_table_stays_on_its_node() {
+        let raw = "[platforms.a2a]\nenabled = true\nextra = { host = \"10.0.0.2\", port = 9900 }\n";
+        let scanned = scan_config_toml(raw).unwrap();
+        assert!(
+            !scanned
+                .keys()
+                .any(|k| k.starts_with("platforms.a2a.extra") && k != "platforms.a2a.extra.port"),
+            "the bind host would travel: {scanned:?}"
+        );
+        assert_eq!(
+            scanned.get("platforms.a2a.extra.port").map(String::as_str),
+            Some("9900"),
+            "{scanned:?}"
+        );
+        let nested = scan_config_toml(
+            "[platforms]\na2a = { enabled = true, extra = { host = \"10.0.0.2\" } }\n",
+        )
+        .unwrap();
+        assert!(
+            !nested.keys().any(|k| k.contains("host")),
+            "nested inline tables too: {nested:?}"
+        );
+        assert!(nested.contains_key("platforms.a2a.enabled"), "{nested:?}");
+
+        // A 0.2.1 node's row for the whole inline table does not write
+        // this node's file.
+        assert!(!is_replicated_key("platforms.a2a.extra"));
+        let mut merged = MergedState::default();
+        merged.values.insert(
+            "platforms.a2a.extra".into(),
+            "{ host = \"0.0.0.0\", port = 9900 }".into(),
+        );
+        let out = effective_config_toml(raw, &merged).unwrap();
+        assert!(out.contains("10.0.0.2"), "{out}");
+        assert!(!out.contains("0.0.0.0"), "{out}");
+        // A snapshot that holds the whole table (scanned by 0.2.1) is
+        // not a deletion when this scan no longer yields it.
+        let (_d, store) = scratch();
+        let mut old = BTreeMap::new();
+        old.insert(
+            "platforms.a2a.extra".to_string(),
+            "{ host = \"10.0.0.2\", port = 9900 }".to_string(),
+        );
+        store.config_scan_replace(&old).unwrap();
+        let (rows, report) = scan_rows(&store, "me", raw, &now_stamp()).unwrap();
+        assert!(report.tombstoned.is_empty(), "{report:?}");
+        assert!(
+            rows.iter().all(|r| !r.value.is_empty()),
+            "no tombstone: {rows:?}"
+        );
     }
 
     /// USER 2026-10-04: "All but security" — a change to who may do what,

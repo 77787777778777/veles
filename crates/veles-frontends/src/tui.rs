@@ -2157,12 +2157,16 @@ fn send_current(
         // answer from engine state — /queue itself included — and
         // plain text is NOT a silent no-op any more. It becomes a
         // queue row every surface sees, drained at the turn boundary.
-        let text = st.input.trim().to_string();
-        if text.starts_with('/') {
-            let (head, rest) = match text.split_once(' ') {
-                Some((h, r)) => (h, r.trim()),
-                None => (text.as_str(), ""),
-            };
+        // Text by the one rule (commands::slash_line): a path typed
+        // first is text, and `//` queues the line with one slash.
+        let typed = st.input.trim().to_string();
+        let text = match veles_core::commands::slash_line(&typed) {
+            veles_core::commands::SlashLine::Text(t) => t.to_string(),
+            veles_core::commands::SlashLine::Command { .. } => typed.clone(),
+        };
+        if let veles_core::commands::SlashLine::Command { head, rest } =
+            veles_core::commands::slash_line(&typed)
+        {
             {
                 let a = cur(agent);
                 let mut h = history.lock_ok();
@@ -2213,6 +2217,16 @@ fn send_current(
     st.input.clear();
     st.caret = 0;
     st.hist_idx = None;
+    // A path typed first, or a line escaped with `//`, is text by the
+    // one rule every surface asks (commands::slash_line): sent as typed,
+    // `//` with one slash taken off, and no command below sees it.
+    if let veles_core::commands::SlashLine::Text(t) = veles_core::commands::slash_line(&text) {
+        if text.starts_with('/') {
+            let t = t.to_string();
+            launch_turn(st, agent, history, ui_tx, t);
+            return;
+        }
+    }
     // `/resume <id-or-prefix>`: app-level like /new — it rebuilds the
     // agent handle, which local_command (engine-state answers) cannot
     // reach. Prefix-matched against the store, same as the REPL.
@@ -2365,7 +2379,36 @@ fn send_current(
         st.push_msg_status(out);
         return;
     }
+    // A slash command nothing above answered is refused here, not sent
+    // to the model as chat: `/join smoke-store` (a gateway and desktop
+    // command) became a user turn and a model reply (SMOKE-19). Text
+    // (a path typed first, a `//` line) left above, so the refusal can
+    // say how to send this one as text.
+    if let Some(head) = unknown_slash_word(&text) {
+        st.push_msg_status(format!(
+            "{} ({})",
+            veles_core::i18n::lookup(
+                "unknown command %{cmd} here — /help lists this surface's commands; nothing was sent",
+                &[("cmd", head.to_string())],
+            ),
+            veles_core::i18n::lookup(
+                "start the line with // to send it as text",
+                &[]
+            )
+        ));
+        return;
+    }
     launch_turn(st, agent, history, ui_tx, text);
+}
+
+/// The command word of `text` when it is a command by the one rule
+/// (commands::slash_line), else `None`: a path typed first, a `//`
+/// line and plain text are text.
+fn unknown_slash_word(text: &str) -> Option<&str> {
+    match veles_core::commands::slash_line(text) {
+        veles_core::commands::SlashLine::Command { head, .. } => Some(head),
+        veles_core::commands::SlashLine::Text(_) => None,
+    }
 }
 
 /// Run a row the queue handed over. Mail (`veles_core::mail`) is
@@ -4764,11 +4807,22 @@ fn render_msg(
             }
         }
         Kind::Status => {
-            let logical = Line::from(vec![Span::styled(
-                format!("· {}", m.body),
-                Style::default().fg(t.dim()),
-            )]);
-            lines.extend(wrap_line(logical, wrap_w));
+            // One screen line per line of the answer: a Span carries no
+            // line break, so a multi-line answer (/fleet, /approvals, a
+            // /join list) used to run together on one line (SMOKE-20).
+            let parts: Vec<&str> = if m.body.is_empty() {
+                vec![""]
+            } else {
+                m.body.lines().collect()
+            };
+            for (i, part) in parts.into_iter().enumerate() {
+                let lead = if i == 0 { "· " } else { "  " };
+                let logical = Line::from(vec![Span::styled(
+                    format!("{lead}{part}"),
+                    Style::default().fg(t.dim()),
+                )]);
+                lines.extend(wrap_line(logical, wrap_w));
+            }
         }
     }
     MsgRender {
@@ -7355,6 +7409,33 @@ and a bare https://example.com/y, plus a list:\n- one\n- two\n\n```rust\nfn main
         );
     }
 
+    /// SMOKE-20: a command's answer is often several lines (`/fleet`,
+    /// `/approvals`, `/join`'s list), and the status block drew it as ONE
+    /// line: "— fresh- 2222… (laptop)… freshUse /fleet sync …". Each line
+    /// of the answer is a line on screen.
+    #[test]
+    fn a_multi_line_status_keeps_its_line_breaks() {
+        let th = veles_core::theme::synthwave();
+        let mut tr = Transcript::new();
+        tr.push(TEvent::Status(
+            "registered fleet nodes:\n- 1111 (vps) — fresh\n- 2222 (laptop) — fresh\nUse /fleet sync".into(),
+        ));
+        let r = render_msg(&tr.blocks[0], &th, 100, false);
+        let text: Vec<String> = r
+            .lines
+            .iter()
+            .map(|l| l.spans.iter().map(|s| s.content.as_ref()).collect())
+            .collect();
+        assert_eq!(text.len(), 4, "{text:?}");
+        assert!(text[0].ends_with("registered fleet nodes:"), "{text:?}");
+        assert!(text[2].trim_start().starts_with("- 2222"), "{text:?}");
+        assert!(
+            text[3].trim_start().starts_with("Use /fleet sync"),
+            "{text:?}"
+        );
+        assert!(text.iter().all(|l| !l.contains('\n')), "{text:?}");
+    }
+
     #[test]
     fn cache_key_catches_growth_and_kind_changes() {
         let th = veles_core::theme::synthwave();
@@ -8818,6 +8899,113 @@ and a bare https://example.com/y, plus a list:\n- one\n- two\n\n```rust\nfn main
         veles_core::agent::mark_fg_command(session, false);
         veles_core::agent::clear_turn_for_test(session);
         veles_core::tasks::cancel(child);
+    }
+
+    /// SMOKE-19: `/join smoke-store` in the TUI became a user turn: the
+    /// TUI does not have /join, nothing answered it, and the text went
+    /// to the model. An unknown command is refused and nothing is sent;
+    /// a path typed first is still a message.
+    #[test]
+    fn an_unknown_slash_command_is_refused_not_sent_to_the_model() {
+        let (agent, history, _home, _env) = dummy_agent();
+        let (ui_tx, _ui_rx) = mpsc::channel::<UiEvent>();
+        let mut st = UiState::new("s1".into());
+        st.agent_snapshot = Some(agent.clone());
+        st.input = "/join smoke-store".into();
+        st.caret = st.input.len();
+        send_current(&mut st, &agent, &history, &ui_tx);
+        assert!(!st.busy, "no turn was started");
+        assert!(
+            st.transcript.blocks.iter().any(|b| matches!(b.kind, Kind::Status)
+                && b.body.contains("unknown command /join")),
+            "the refusal is shown"
+        );
+        assert!(
+            !st.transcript
+                .blocks
+                .iter()
+                .any(|b| b.body.contains("/join smoke-store") && !matches!(b.kind, Kind::Status)),
+            "nothing was posted as the user's line"
+        );
+        let sid = cur(&agent).session_id.clone();
+        let rows = cur(&agent).store.lock_ok().load_history(&sid).unwrap();
+        assert!(
+            !rows.iter().any(|m| m.content.contains("/join")),
+            "no user row reached the store"
+        );
+        assert_eq!(unknown_slash_word("/etc/hosts what is this"), None);
+        assert_eq!(unknown_slash_word("/tmp/x.log"), None);
+        assert_eq!(unknown_slash_word("hello /join"), None);
+        assert_eq!(unknown_slash_word("/frobnicate now"), Some("/frobnicate"));
+    }
+
+    /// SMOKE-19 follow-up: since the refusal, a line whose first word
+    /// is shaped like a command could not be sent at all — `/usr is
+    /// full` was "unknown command /usr" and no way round it was given
+    /// (`//usr …` went to the model with both slashes). An unknown
+    /// command is refused with the way to send it as text; `//` sends
+    /// the line with one slash; a path typed first is text. The same
+    /// mid-turn, where text is queued.
+    #[test]
+    fn a_doubled_slash_sends_the_line_and_the_refusal_says_so() {
+        let (agent, history, _home, _env) = dummy_agent();
+        let (ui_tx, _ui_rx) = mpsc::channel::<UiEvent>();
+        let fresh = || {
+            let mut st = UiState::new("s1".into());
+            st.agent_snapshot = Some(agent.clone());
+            st
+        };
+        let send = |st: &mut UiState, line: &str| {
+            st.input = line.into();
+            st.caret = st.input.len();
+            send_current(st, &agent, &history, &ui_tx);
+        };
+        let said = |st: &UiState, kind: fn(&Kind) -> bool, body: &str| {
+            st.transcript
+                .blocks
+                .iter()
+                .any(|b| kind(&b.kind) && b.body.contains(body))
+        };
+        let user = |k: &Kind| matches!(k, Kind::User);
+        let status = |k: &Kind| matches!(k, Kind::Status);
+
+        let mut st = fresh();
+        send(&mut st, "/usr is full");
+        assert!(!st.busy, "no turn for an unknown command");
+        assert!(said(&st, status, "unknown command /usr"), "refused");
+        assert!(said(&st, status, "//"), "and told how to send it as text");
+        assert!(!said(&st, user, "/usr is full"));
+
+        let mut st = fresh();
+        send(&mut st, "//usr is full");
+        assert!(
+            st.transcript
+                .blocks
+                .iter()
+                .any(|b| matches!(b.kind, Kind::User) && b.body == "/usr is full"),
+            "sent with one slash"
+        );
+        assert!(st.busy, "as a turn");
+
+        let mut st = fresh();
+        send(&mut st, "/home/x/file fails");
+        assert!(said(&st, user, "/home/x/file fails"), "a path is text");
+
+        // Mid-turn: text is queued with one slash; an unknown command
+        // is still not text.
+        let mut st = fresh();
+        st.busy = true;
+        send(&mut st, "//usr is full");
+        let sid = cur(&agent).session_id.clone();
+        let queued = cur(&agent).store.lock_ok().queue_items(&sid).unwrap();
+        assert!(
+            queued.iter().any(|q| q.body == "/usr is full"),
+            "queued: {:?}",
+            queued.iter().map(|q| &q.body).collect::<Vec<_>>()
+        );
+        send(&mut st, "/frobnicate now");
+        let queued = cur(&agent).store.lock_ok().queue_items(&sid).unwrap();
+        assert!(!queued.iter().any(|q| q.body.contains("frobnicate")));
     }
 
     /// TSG-4: `b` only has something to detach while a turn runs, and

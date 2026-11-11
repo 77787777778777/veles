@@ -10051,10 +10051,17 @@ mod stub_server {
     async fn names_answers_from_the_tracked_roster() {
         // /names is a local answer from the member list tracked off
         // 353/366. It answers for whatever the roster holds at dispatch,
-        // so the 353 must land first: the delayed-op drive does exactly
-        // that (script written ~300ms in, ops fired at 600ms).
+        // so the 353 must land first. The script is written once the
+        // client has registered (about 300 ms in on an idle machine) and
+        // the stub hangs up once the client has been quiet for `quiet`
+        // after it, so the op has to fall between the two. With the op at
+        // 600 ms and the default 400 ms of quiet that window was a few
+        // hundred milliseconds, and on a loaded machine the op overtook
+        // the 353: "0 member(s) (roster not synced yet)", the hermetic
+        // gate red on 2026-11-11. The op now fires at 1.5 s and the stub
+        // stays three seconds, so both sides have more than a second.
         let (tx, mut rx) = oneshot::channel();
-        let sent = drive_full_with_delay(
+        let sent: Vec<String> = drive_wire_timed(
             |_| {},
             "",
             vec![
@@ -10067,9 +10074,14 @@ mod stub_server {
                 scope: Some("#chan".into()),
                 reply: tx,
             }],
-            Duration::from_millis(600),
+            Vec::new(),
+            Duration::from_millis(1500),
+            Duration::from_secs(3),
         )
-        .await;
+        .await
+        .into_iter()
+        .map(|(_, line)| line)
+        .collect();
         let out = tokio::time::timeout(Duration::from_secs(2), &mut rx)
             .await
             .expect("names never answered")

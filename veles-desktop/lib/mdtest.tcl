@@ -292,6 +292,78 @@ ok "unknown theme is not adopted" {[::vt::from_engine nope ::vt::T] == 0}
 proc ::vapi::get_json {path} { error "connection refused" }
 ok "engine unreachable → falls back cleanly" {[::vt::from_engine testtheme ::vt::T] == 0}
 
+
+# ── a disabled button looks disabled, in every shipped theme ─────────
+#
+# SMOKE-11 (2026-11-09 off-screen run): the TButton map had a `pressed`
+# foreground and nothing for `disabled`, and a style's own map hides the
+# parent's, so a disabled button drew in the enabled colours. The
+# Instances strip greys out Attach/Detach/Reload per row and none of it
+# showed. Measured on a REAL mapped button, through the computed style,
+# for the four Tcl palettes AND every theme the engine ships (read out
+# of theme.rs, which is what /api/themes serves), so a new engine theme
+# is covered the day it lands.
+puts "\ndisabled buttons look disabled"
+proc ::_hex_rgb {c} {
+    return [lmap v [winfo rgb . $c] {expr {$v / 257}}]
+}
+proc ::_lum {c} {
+    set out 0.0
+    foreach v [::_hex_rgb $c] k {0.2126 0.7152 0.0722} {
+        set s [expr {$v / 255.0}]
+        set s [expr {$s <= 0.03928 ? $s / 12.92 : pow(($s + 0.055) / 1.055, 2.4)}]
+        set out [expr {$out + $k * $s}]
+    }
+    return $out
+}
+proc ::_contrast {a b} {
+    set x [::_lum $a] ; set y [::_lum $b]
+    if {$x < $y} { lassign [list $y $x] x y }
+    return [expr {($x + 0.05) / ($y + 0.05)}]
+}
+# The engine's built-ins, parsed from the source the gateway serves.
+set _engine {}
+set _f [open [file join $_dir .. .. crates veles-core src theme.rs]]
+set _src [read $_f] ; close $_f
+foreach _blk [regexp -all -inline {Theme \{\s*name: "[^"]+"\.into\(\),[^\}]*\}} $_src] {
+    set d [dict create]
+    foreach {_ k v} [regexp -all -inline {(\w+): "([^"]*)"\.into\(\)} $_blk] { dict set d $k $v }
+    lappend _engine $d
+}
+ok "theme.rs parsed into the engine's six built-ins" {[llength $_engine] >= 6}
+proc ::vapi::get_json {path} { return [dict create themes $::_engine] }
+toplevel .dis
+ttk::button .dis.on -text "Prepare branch…"
+ttk::button .dis.off -text "Push branch…"
+.dis.off state disabled
+pack .dis.on .dis.off
+set _themes {}
+foreach p {synthwave classic amber mono} { lappend _themes tcl:$p }
+foreach d $_engine { lappend _themes engine:[dict get $d name] }
+foreach th $_themes {
+    lassign [split $th :] src name
+    array unset ::vt::T
+    if {$src eq "tcl"} { ::vt::palette_$name ::vt::T } else { ::vt::from_engine $name ::vt::T }
+    ::vt::apply_theme
+    update
+    set st [winfo class .dis.on]
+    set fg_on  [ttk::style lookup $st -foreground [.dis.on state]]
+    set fg_off [ttk::style lookup $st -foreground [.dis.off state]]
+    set bg_off [ttk::style lookup $st -background [.dis.off state]]
+    ok "$th: the disabled button is mapped and disabled" \
+        {[winfo ismapped .dis.off] && [.dis.off instate disabled] && ![.dis.on instate disabled]}
+    ok "$th: disabled text is not the enabled text ($fg_off vs $fg_on)" \
+        {[::_hex_rgb $fg_off] ne [::_hex_rgb $fg_on]}
+    # Visibly dimmer: less contrast against its own face than the
+    # enabled label has — a hue shift at the same contrast would not
+    # read as "off".
+    set c_on  [::_contrast $fg_on [ttk::style lookup $st -background [.dis.on state]]]
+    set c_off [::_contrast $fg_off $bg_off]
+    ok "$th: disabled text is dimmer ([format %.1f $c_off]:1 vs [format %.1f $c_on]:1)" \
+        {$c_off < $c_on * 0.8}
+}
+destroy .dis
+
 # ── markdown images ─────────────────────────────────────────────────
 #
 # USER (spot test, 2026-08-25): "The xorg logo seems to only render in

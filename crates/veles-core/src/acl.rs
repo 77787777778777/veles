@@ -2965,6 +2965,10 @@ pub fn builtin_cap(cmd: &str) -> Option<Cap> {
         // Secret NAMES are visible, values never are — but the list
         // itself is an inventory of what this agent can reach.
         "secret" => CmdAdmin,
+        // Standing approval grants (ASK-9): reading them is an inventory
+        // of what the agent may do unasked; revoking is owner-only,
+        // checked inside `approvals_command`.
+        "approvals" => CmdAdmin,
         "restore" => CmdSession,
         // `/acl` with no arguments answers "who am I and what may I
         // do", which is open on purpose: knowing your own tier is not

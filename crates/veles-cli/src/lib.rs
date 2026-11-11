@@ -212,11 +212,19 @@ pub fn run_gateway() -> anyhow::Result<()> {
     let result = run_gateway_inner();
     veles_core::runsock::shutdown();
     match &result {
+        Ok(()) if veles_core::supervisor::restart_requested() => {
+            veles_core::lifecycle::record_stop("restart")
+        }
         Ok(()) if veles_core::idle::exited() => veles_core::lifecycle::record_stop("idle"),
         Ok(()) => veles_core::lifecycle::record_stop("clean"),
         Err(e) => veles_core::lifecycle::record_stop(&format!("error: {e:#}")),
     }
     veles_core::lifecycle::remove_pid();
+    // A restart the command center asked for (veles_core::supervisor):
+    // exit with the code every supervisor veles runs under restarts on.
+    if result.is_ok() && veles_core::supervisor::restart_requested() {
+        std::process::exit(veles_core::supervisor::RESTART_EXIT_CODE);
+    }
     // A stop on idle has its own status, so the phone's supervisor
     // (GatewayService) leaves it stopped instead of restarting it.
     if result.is_ok() && veles_core::idle::exited() {

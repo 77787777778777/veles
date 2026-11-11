@@ -45,7 +45,7 @@ fn live_agents(srv: &DesktopServer, gateway: Option<&GatewayCore>) -> Vec<(Strin
 
 /// A stored note as the panel may show it: credential shapes redacted,
 /// one line, bounded. Never null.
-fn shown_note(note: Option<String>) -> String {
+pub(crate) fn shown_note(note: Option<String>) -> String {
     let note = note.unwrap_or_default();
     let first = note.lines().next().unwrap_or("").trim();
     let redacted = veles_core::a2a::redact_outbound(first);

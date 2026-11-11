@@ -400,7 +400,7 @@ proc ::vdev::new_extension {} {
     ttk::entry $w.form.purpose -textvariable ::vdev_new_purpose
     ttk::label $w.form.kl -text [::vi18n::mc {Language}]
     ttk::combobox $w.form.kind -state readonly -textvariable ::vdev_new_kind \
-        -values {tcl js racket lisp}
+        -values {tcl js racket lisp rust}
     ttk::label $w.form.al -text [::vi18n::mc {Extension API}]
     ttk::label $w.form.api -textvariable ::vdev_new_api
     grid $w.form.nl $w.form.name -sticky ew -padx 4 -pady 4
@@ -432,15 +432,29 @@ proc ::vdev::_extension_form {} {
         kind $::vdev_new_kind]
 }
 
+# The form as a JSON body: every field a JSON STRING. Posting the form
+# dict raw let ::vapi::_json_value infer each value's type, so a
+# multi-word purpose went out as an array ("A tool example") or an
+# object ("Log every LLM call"); the gateway reads only a string, wrote
+# "a new veles plugin" instead, and Create refused forever (DEV-1).
+proc ::vdev::_extension_body {form} {
+    set pairs {}
+    foreach key {name description kind} {
+        lappend pairs $key [::vapi::json_string [dict get $form $key]]
+    }
+    return [::vapi::json_object $pairs]
+}
+
 proc ::vdev::_extension_preview {} {
     set w .vdev_new_extension
     if {![winfo exists $w]} { return }
     set form [_extension_form]
+    set ::vdev::extension_preview {}
     if {[dict get $form name] eq ""} {
         ::vtext::set_text $w.preview [::vi18n::mc {Choose a name, purpose and language, then preview the exact files. Nothing has been written.}]
         return
     }
-    if {[catch {::vapi::post_json /api/plugins/preview $form} response]} {
+    if {[catch {::vapi::post_json /api/plugins/preview [_extension_body $form]} response]} {
         ::vtext::set_text $w.preview [::vmanage::_reason $response]
         return
     }
@@ -448,6 +462,8 @@ proc ::vdev::_extension_preview {} {
         ::vtext::set_text $w.preview [dict get $response error]
         return
     }
+    # What was reviewed is THIS form: Create compares against it.
+    dict set response form $form
     set ::vdev::extension_preview $response
     set text "[::vi18n::mc {No files have been written. Review the exact manifest and source, then confirm creation.}]\n\n"
     foreach file [dict get $response files] {
@@ -529,27 +545,64 @@ proc ::vdev::_extension_create {} {
         _extension_preview
         return
     }
-    set expected [expr {[dict get $form description] eq "" ? "a new veles plugin" : [dict get $form description]}]
-    if {[dict get $::vdev::extension_preview name] ne [dict get $form name] ||
-        [dict get $::vdev::extension_preview kind] ne [dict get $form kind] ||
-        ![string match "*$expected*" [.vdev_new_extension.preview get 1.0 end-1c]]} {
-        ::vmanage::say $w [::vi18n::mc {Preview the changed name or language before creating it.}] warn
+    set preview $::vdev::extension_preview
+    if {[dict get $preview form] ne $form} {
+        ::vmanage::say $w [::vi18n::mc {Preview the changed name, purpose or language before creating it.}] warn
+        return
+    }
+    # The gateway says what it received (0.2.2). One that lost the
+    # purpose on the way would scaffold another extension than the one
+    # the author typed: never confirm that as reviewed.
+    if {[dict exists $preview description] &&
+        [dict get $preview description] ne [dict get $form description]} {
+        ::vmanage::say $w [::vi18n::mc {The gateway did not receive the purpose as written. Nothing was created.}] warn
         return
     }
     if {![::vmanage::confirm $w [::vi18n::mc {Create this extension?}] \
         [::vi18n::mc {The reviewed files will be written to your user plugin directory. Veles saves a local recovery snapshot and attempts to reload the extension; publishing is not part of this action.}]]} {
         return
     }
-    set response [::vmanage::post $w /api/plugins/new $form]
+    set response [::vmanage::post $w /api/plugins/new [_extension_body $form]]
     if {![llength $response]} { return }
     set ::vdev::extension_created $response
     if {[dict exists $response path]} {
         ::voverlay::_open_in_dev [dict get $response path]
     }
+    _extension_created_say $w $response [dict get $form kind]
+}
+
+# What the dialog says once the files are written. A success message has
+# to be true: a Rust extension's entry is the library its build makes, so
+# nothing of it is loaded until `cargo build --release` has run there, and
+# "Created and reloaded" was said for a crate nobody had built (DEV-12).
+#
+# The gateway loads a new extension through its own tier and answers
+# `loaded` and `load` (the load line, or what stands in the way): the
+# dialog repeats that. "Created and reloaded" was said for TypeScript,
+# Racket and Lisp extensions the gateway had left `pending` (SMOKE-2).
+proc ::vdev::_extension_created_say {w response kind} {
+    if {[dict exists $response loaded]} {
+        set load ""
+        catch { set load [dict get $response load] }
+        if {$load eq "null"} { set load "" }
+        if {[string is true -strict [dict get $response loaded]]} {
+            ::vmanage::say $w [::vi18n::mc {Created and loaded. Review and test the extension before publishing.}] ok
+        } elseif {$kind eq "rust"} {
+            ::vmanage::say $w [::vi18n::mc {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.}] warn
+        } else {
+            ::vmanage::say $w "[::vi18n::mc {Created, not loaded}]: $load" warn
+        }
+        return
+    }
+    # A gateway older than `loaded` reloaded the Tcl tier only.
     if {[dict exists $response reload_error]} {
         ::vmanage::say $w "[::vi18n::mc {Created, but reload failed}]: [dict get $response reload_error]" warn
-    } else {
+    } elseif {$kind eq "rust"} {
+        ::vmanage::say $w [::vi18n::mc {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.}] warn
+    } elseif {$kind eq "tcl"} {
         ::vmanage::say $w [::vi18n::mc {Created and reloaded. Review and test the extension before publishing.}] ok
+    } else {
+        ::vmanage::say $w [::vi18n::mc {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.}] warn
     }
 }
 
@@ -572,34 +625,91 @@ proc ::vdev::_extension_create_generated {w generated} {
         return
     }
     set ::vdev::extension_created $response
-    # Open the manifest's entry, else the first file written.
+    # Open the manifest's entry, else the first file written. A Rust
+    # extension's entry is the library its build makes: open its source.
     set entry ""
     foreach f [dict get $generated files] {
         if {[dict get $f path] eq "plugin.toml"} {
             regexp {entry\s*=\s*"([^"]+)"} [dict get $f after] -> entry
         }
     }
+    if {[dict get $generated form kind] eq "rust"} { set entry src/lib.rs }
     set open ""
     foreach f [dict get $response files] {
         if {$open eq "" || [dict get $f relative] eq $entry} { set open [dict get $f path] }
     }
     if {$open ne ""} { catch { ::voverlay::_open_in_dev $open } }
-    if {[dict exists $response reload_error]} {
-        ::vmanage::say $w "[::vi18n::mc {Created, but reload failed}]: [dict get $response reload_error]" warn
-    } else {
-        ::vmanage::say $w [::vi18n::mc {Created and reloaded. Review and test the extension before publishing.}] ok
-    }
+    _extension_created_say $w $response [dict get $generated form kind]
 }
 
+# The Author guide (docs/plugins.md) and the API reference
+# (docs/extending.md) come from the gateway, which compiles both in. They
+# used to be opened from `lib/../../docs`, which exists only in a source
+# checkout: the nix package, the AppImage, the Windows zip and the APK
+# ship veles-desktop alone, so both buttons opened nothing there, and
+# against a remote gateway the local path was handed to the wrong
+# machine's file API (DEV-2). A gateway older than 0.2.2 has no such
+# route; a checkout's own copy is then read here, on the desktop.
 proc ::vdev::extension_doc {which} {
-    set root [file normalize [file join $::vdev::lib_dir .. .. docs]]
-    set file [expr {$which eq "api" ? "extending.md" : "plugins.md"}]
-    set path [file join $root $file]
-    if {[file exists $path]} {
-        ::voverlay::_open_in_dev $path
-    } else {
-        ::vstatus::set_msg [format [::vi18n::mc {documentation is not in this source checkout: %s}] $path]
+    set name [expr {$which eq "api" ? "extending" : "plugins"}]
+    set title [expr {$which eq "api"
+        ? [::vi18n::mc {Extension API reference}]
+        : [::vi18n::mc {Plugin author guide}]}]
+    if {![catch {::vapi::get_json /api/extensions/docs/$name} reply] &&
+        [dict exists $reply text]} {
+        _extension_doc_window $title [dict get $reply text]
+        return
     }
+    set local [file normalize [file join $::vdev::lib_dir .. .. docs $name.md]]
+    if {[file readable $local] && ![catch {
+        set f [open $local r]
+        fconfigure $f -encoding utf-8
+        set text [read $f]
+        close $f
+    }]} {
+        _extension_doc_window $title $text
+        return
+    }
+    ::vstatus::set_msg [::vi18n::mc {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.}]
+}
+
+proc ::vdev::_extension_doc_window {title text} {
+    set w .vdev_extension_doc
+    if {[winfo exists $w]} { destroy $w }
+    ::vmanage::window $w $title 900x700 {520 360}
+    ttk::scrollbar $w.sb -orient vertical -command [list $w.body yview]
+    text $w.body -wrap word -yscrollcommand [list $w.sb set] \
+        -background $::vt::T(bg_input) -foreground $::vt::T(fg)
+    pack $w.sb -side right -fill y -pady 8
+    pack $w.body -fill both -expand 1 -padx {10 0} -pady 8
+    $w.body insert end $text
+    ::vtext::readonly $w.body
+    catch { ::va11y::name $w.body $title } ;# i18n-exempt: caller-supplied title, already translated
+    bind $w <Escape> [list destroy $w]
+}
+
+# Which language server the gateway has for each extension language,
+# and, for one it lacks, how to get one: the gateway's own answer
+# (GET /api/lsp/servers), not a list this guide copied. The guide used
+# to name tcl-lsp as if every gateway had it (DEV-6); the Linux packages
+# ship it now, and the row says when the gateway runs that copy.
+proc ::vdev::_guide_servers {w} {
+    if {[catch {::vapi::get_json /api/lsp/servers} reply] || ![dict exists $reply servers]} {
+        return
+    }
+    set lines {}
+    foreach row [dict get $reply servers] {
+        set display [dict get $row display]
+        set shipped [expr {[dict exists $row shipped] && [string is true -strict [dict get $row shipped]]}]
+        if {[dict get $row present] && $shipped} {
+            lappend lines [format [::vi18n::mc {%1$s: %2$s on the gateway (ships with veles)}] $display [dict get $row program]]
+        } elseif {[dict get $row present]} {
+            lappend lines [format [::vi18n::mc {%1$s: %2$s on the gateway}] $display [dict get $row program]]
+        } else {
+            lappend lines [format [::vi18n::mc {%1$s: no language server on the gateway. %2$s}] $display [dict get $row hint]]
+        }
+    }
+    _guide_paragraph $w "[::vi18n::mc {Language servers on this gateway}]:\n[join $lines \n]"
 }
 
 proc ::vdev::_guide_paragraph {w text} {
@@ -630,7 +740,9 @@ proc ::vdev::extension_guide {} {
     $w.body tag configure snippet -font TkFixedFont
     _guide_paragraph $w.body [::vi18n::mc {Start with an extension in your user plugin directory. It survives upgrades and does not require a gateway rebuild. New extension previews the exact manifest and source before writing. Choose the supported language and API version, review the files, then test the extension in isolation.}]
     _guide_paragraph $w.body [::vi18n::mc {Choose the narrowest boundary: a Tool adds a model-callable capability; a Hook observes or amends a lifecycle event; a Service or override point wraps a named decision; a Provider driver adds a provider wire; a Core patch is appropriate only when the published extension API cannot express the change.}]
-    _guide_paragraph $w.body [::vi18n::mc {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.}]
+    _guide_paragraph $w.body [::vi18n::mc {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.}]
+    _guide_paragraph $w.body [::vi18n::mc {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.}]
+    _guide_servers $w.body
     _guide_paragraph $w.body [::vi18n::mc {Use the Author guide and API reference buttons for the actual contracts. The Plugins overlay lists live hooks; services and override points come from the gateway's own registry, not a copied list in this guide.}]
     _guide_paragraph $w.body [::vi18n::mc {Example: a hook}]
     _guide_snippet $w.body {namespace eval ::my_plugin {}
@@ -669,7 +781,7 @@ proc ::my_plugin::provider {} {
 }
 ::veles::register_provider my_provider ::my_plugin::provider}
     _guide_paragraph $w.body [::vi18n::mc {AI assist works on four levels: ask a design question (no file needed), change this file, change several files of this extension, or explain the current diagnostics. New extension can also generate a whole extension from its purpose. Every request is sent without tools and is refused when it carries a registered secret or a credential-shaped value; changes are shown as diffs and written only when you apply them. Ask for an extension design first; request a core patch only after identifying the missing API.}]
-    _guide_paragraph $w.body [::vi18n::mc {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.}]
+    _guide_paragraph $w.body [::vi18n::mc {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.}]
     ::vtext::readonly $w.body
     catch { ::va11y::name $w.body [::vi18n::mc {extension development guide}] }
     bind $w <Escape> [list destroy $w]

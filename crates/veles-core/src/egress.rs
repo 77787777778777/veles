@@ -779,6 +779,155 @@ mod tests {
         crate::acl::clear_session_principal(owner);
     }
 
+    /// A SOCKS5 proxy that answers the n-th connection (from 1) with
+    /// `script(n)`: a delay, then raw HTTP. Returns the proxy URL and the
+    /// destinations asked for, one per connection.
+    async fn scripted_socks(
+        script: fn(usize) -> (std::time::Duration, String),
+    ) -> (String, std::sync::Arc<std::sync::Mutex<Vec<String>>>) {
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = l.local_addr().unwrap();
+        let seen = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
+        let log = seen.clone();
+        crate::rt::spawn(async move {
+            let mut n = 0;
+            while let Ok((mut s, _)) = l.accept().await {
+                n += 1;
+                let (delay, answer) = script(n);
+                let log = log.clone();
+                crate::rt::spawn(async move {
+                    let mut hello = [0u8; 2];
+                    s.read_exact(&mut hello).await?;
+                    let mut methods = vec![0u8; hello[1] as usize];
+                    s.read_exact(&mut methods).await?;
+                    if methods.contains(&2) {
+                        s.write_all(&[5, 2]).await?;
+                        let mut n = [0u8; 2];
+                        s.read_exact(&mut n).await?;
+                        let mut name = vec![0u8; n[1] as usize];
+                        s.read_exact(&mut name).await?;
+                        let mut pl = [0u8; 1];
+                        s.read_exact(&mut pl).await?;
+                        let mut pw = vec![0u8; pl[0] as usize];
+                        s.read_exact(&mut pw).await?;
+                        s.write_all(&[1, 0]).await?;
+                    } else {
+                        s.write_all(&[5, 0]).await?;
+                    }
+                    let mut head = [0u8; 4];
+                    s.read_exact(&mut head).await?;
+                    if head[3] != 1 {
+                        return Ok::<(), std::io::Error>(());
+                    }
+                    let mut a = [0u8; 4];
+                    s.read_exact(&mut a).await?;
+                    let mut port = [0u8; 2];
+                    s.read_exact(&mut port).await?;
+                    log.lock().unwrap().push(format!(
+                        "{}:{}",
+                        std::net::Ipv4Addr::from(a),
+                        u16::from_be_bytes(port)
+                    ));
+                    s.write_all(&[5, 0, 0, 1, 0, 0, 0, 0, 0, 0]).await?;
+                    let mut req = [0u8; 4096];
+                    let _ = s.read(&mut req).await?;
+                    tokio::time::sleep(delay).await;
+                    s.write_all(answer.as_bytes()).await?;
+                    Ok(())
+                });
+            }
+        });
+        (format!("socks5h://{addr}"), seen)
+    }
+
+    fn html_page(text: &str) -> String {
+        let page = format!("<html><body><p>{text}</p></body></html>");
+        format!(
+            "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\
+             Content-Length: {}\r\nConnection: close\r\n\r\n{page}",
+            page.len()
+        )
+    }
+
+    /// A page that answers slowly on every circuit, inside the page budget
+    /// a direct fetch has always had, is served. The first circuit is
+    /// dropped as dead after its probe; the retry still has the whole page
+    /// budget. 0.2.1's retry gave the first circuit 8 s for the WHOLE page
+    /// and the second what was left of 20 s, so this page failed twice.
+    #[tokio::test]
+    async fn a_slow_tor_page_inside_the_page_budget_is_not_cut() {
+        let (home, _guard) = crate::testenv::scratch_home();
+        let (proxy, seen) = scripted_socks(|_| {
+            (
+                std::time::Duration::from_secs(14),
+                html_page("slow but here"),
+            )
+        })
+        .await;
+        config(
+            &home,
+            &format!("[web]\nothers = \"proxy\"\nothers_proxy = \"{proxy}\"\n"),
+        );
+        let user = "egress-slow-page";
+        as_user(user);
+        let started = std::time::Instant::now();
+        let out = scope(
+            user,
+            false,
+            crate::webtools::WebExtractTool
+                .call(serde_json::json!({"url": "http://93.184.216.34/slow"})),
+        )
+        .await;
+        assert!(out.contains("slow but here"), "{out}");
+        assert_eq!(
+            seen.lock().unwrap().len(),
+            2,
+            "a probe, then a fresh circuit"
+        );
+        assert!(
+            started.elapsed() < std::time::Duration::from_secs(29),
+            "the whole fetch stays bounded"
+        );
+        crate::acl::clear_session_principal(user);
+    }
+
+    /// The guard's refusals are final: a redirect to an address the
+    /// gateway must not reach is refused once, not fetched again on a
+    /// second circuit. Only the network failing earns a retry.
+    #[tokio::test]
+    async fn a_refused_redirect_is_not_retried_through_tor() {
+        let (home, _guard) = crate::testenv::scratch_home();
+        let (proxy, seen) = scripted_socks(|_| {
+            (
+                std::time::Duration::ZERO,
+                "HTTP/1.1 302 Found\r\nLocation: http://127.0.0.1/admin\r\n\
+                 Content-Length: 0\r\nConnection: close\r\n\r\n"
+                    .to_string(),
+            )
+        })
+        .await;
+        config(
+            &home,
+            &format!("[web]\nothers = \"proxy\"\nothers_proxy = \"{proxy}\"\n"),
+        );
+        let user = "egress-refused-redirect";
+        as_user(user);
+        let out = scope(
+            user,
+            false,
+            crate::webtools::WebExtractTool
+                .call(serde_json::json!({"url": "http://93.184.216.34/x"})),
+        )
+        .await;
+        assert!(out.contains("refused") && out.contains("loopback"), "{out}");
+        assert_eq!(
+            seen.lock().unwrap().clone(),
+            vec!["93.184.216.34:80".to_string()],
+            "one connection: a refusal is not retried"
+        );
+        crate::acl::clear_session_principal(user);
+    }
+
     /// The upstream engine budget is 10s. The search client must still
     /// be listening when that budget expires and SearXNG sends its page:
     /// a client deadline equal to the server's turns a slow Tor answer

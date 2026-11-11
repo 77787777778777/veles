@@ -100,15 +100,18 @@ pub struct GossipReply {
 }
 
 /// Fold tombstones, then rows, into `store` (inside the caller's
-/// transaction). Returns (rows merged, rows a tombstone dropped).
+/// transaction). Returns (rows merged, rows a tombstone dropped). A
+/// tombstone is judged by THIS node's `stale_after_secs`: it evicts only
+/// a node that is stale here too (FLEET-4).
 fn fold(
     store: &crate::store::Store,
     tombstones: &[NodeTombstone],
     rows: &[GossipNodeRow],
+    stale_after_secs: u64,
 ) -> (usize, usize) {
     let mut forgotten = 0usize;
     for t in tombstones {
-        match store.node_tombstone_merge(t) {
+        match store.node_tombstone_merge_within(t, stale_after_secs as i64) {
             Ok(true) => forgotten += 1,
             Ok(false) => {}
             Err(e) => tracing::warn!("gossip: tombstone {} failed to merge: {e:#}", t.id),
@@ -278,7 +281,7 @@ pub fn receive_gossip(
     // 70 over 5 s, and the longest was 20 s. It made five commits.
     let tx = store.write_tx()?;
     // Tombstones first, so a row they cover is refused below.
-    let (_, forgotten) = fold(store, &msg.tombstones, &[]);
+    let (_, forgotten) = fold(store, &msg.tombstones, &[], cfg.cluster.stale_after_secs);
     if forgotten > 0 {
         tracing::info!("gossip: {peer} forgot {forgotten} node(s) fleet-wide — dropped here too");
     }
@@ -359,7 +362,16 @@ pub fn fold_gossip_reply(
     let reply: GossipReply = serde_json::from_str(&json).context("not a gossip reply")?;
     // One commit for the whole fold, as in `receive_gossip`.
     let tx = store.write_tx()?;
-    let (merged, forgotten) = fold(store, &reply.tombstones, &reply.rows);
+    // The reply path holds no config; it is read only when there is a
+    // tombstone to judge.
+    let stale_after = if reply.tombstones.is_empty() {
+        0
+    } else {
+        crate::config::load()
+            .map(|c| c.cluster.stale_after_secs)
+            .unwrap_or_else(|_| crate::config::ClusterSection::default().stale_after_secs)
+    };
+    let (merged, forgotten) = fold(store, &reply.tombstones, &reply.rows, stale_after);
     // The echo: THIS node, as the peer sees us. Evidence about OUR
     // uplink, recorded against the peer that reported it.
     if !reply.you_appear_as.is_empty() {
@@ -403,7 +415,18 @@ pub async fn exchange_with_peer(
     })?;
     let client = crate::a2a::A2AClient::shared();
     let ctx = crate::a2a::new_context_id();
-    let result = client.call(peer_url, bearer, &text, &ctx).await?;
+    let result = match client.call(peer_url, bearer, &text, &ctx).await {
+        Ok(r) => r,
+        Err(e) => {
+            // A gossip peer that stopped (the phone after its idle exit)
+            // or no longer takes our token is no route for `any` either:
+            // the failure stands in the probe cache as a pass did (COMP-1,
+            // 0.2.2), instead of a pass from the last exchange standing
+            // for five minutes.
+            crate::routeprobe::record_failure(peer_url, bearer, &e);
+            return Err(e);
+        }
+    };
     let reply_text = crate::a2a::extract_text(&result);
     if !reply_text
         .trim_start()
@@ -746,5 +769,40 @@ mod tests {
             .expect("a 0.1.6 peer reads a reply with tombstones");
         assert_eq!(old.rows.len(), 1);
         assert_eq!(old.you_appear_as, "10.0.0.1:1");
+    }
+
+    /// COMP-1 (0.2.2): a gossip exchange that never reached the peer (it
+    /// stopped: the phone's idle exit) or that the peer turned away (a
+    /// token it no longer takes) is a failed route, as a probe that found
+    /// the same would be. Before, only a success was recorded, so a pass
+    /// from the last exchange kept the node routable for `any` for up to
+    /// five minutes after it went away.
+    #[tokio::test]
+    async fn a_failed_gossip_exchange_is_a_failed_route() {
+        use crate::routeprobe::{cached, record, Probe};
+        let (_home, _env) = crate::testenv::scratch_home();
+        let store = std::sync::Arc::new(std::sync::Mutex::new(
+            crate::store::Store::open(&crate::config::veles_home().join("state.db")).unwrap(),
+        ));
+        let down = crate::routeprobe::tests::dead_url().await;
+        record(&down, None, Probe::Ok);
+        assert!(exchange_with_peer(&store, "phone", &down, None)
+            .await
+            .is_err());
+        assert!(
+            matches!(cached(&down, None), Some((Probe::Unreachable(_), _))),
+            "{:?}",
+            cached(&down, None)
+        );
+        let rotated = crate::routeprobe::tests::fake_peer("vps", Some("new")).await;
+        record(&rotated, Some("old"), Probe::Ok);
+        assert!(exchange_with_peer(&store, "vps", &rotated, Some("old"))
+            .await
+            .is_err());
+        assert!(
+            matches!(cached(&rotated, Some("old")), Some((Probe::Refused(why), _)) if why.contains("401")),
+            "{:?}",
+            cached(&rotated, Some("old"))
+        );
     }
 }

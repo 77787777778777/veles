@@ -141,6 +141,13 @@ pub struct RemoteTaskAsk {
     /// get a host shell on another node by delegating to it.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ticket: Option<String>,
+    /// The placing session (ASK-2). The peer parents the child row it
+    /// mints to it (`delegate::remote_parent`), so once the peer's store
+    /// replicates here the child nests under its parent in this node's
+    /// sidebar and Sessions window. `None` from an older sender: the
+    /// child is parented to the pseudo-session `a2a-remote`, as before.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parent_session: Option<String>,
 }
 
 /// A marker line, an optional header line, then `json` base64'd inside
@@ -267,10 +274,47 @@ fn decode_call_result(result: serde_json::Value) -> Result<serde_json::Value> {
         // answered SOMETHING (refusal, wrong version). Surface it
         // verbatim — truncation would hide the reason.
         let state = result["status"]["state"].as_str().unwrap_or("?");
-        anyhow::bail!("peer did not answer a remote task ({state}): {reply_text}")
+        let what = format!("peer did not answer a remote task ({state}): {reply_text}");
+        if state == crate::a2a::STATE_REJECTED {
+            // Rejected before a child was started (its `[cluster]
+            // task_peers` does not name this node, it is locked down, or
+            // the context hit its turn cap): nothing ran there.
+            return Err(anyhow::Error::new(TaskRejected {
+                what,
+                reason: reply_text,
+            }));
+        }
+        anyhow::bail!(what)
     }
     decode_reply(&reply_text)
 }
+
+/// A peer that took the call and rejected the task before starting a
+/// child, with no verdict: its `[cluster] task_peers` does not list this
+/// node, it is locked down, or this context reached its ping-pong turn
+/// cap. It rides the error chain of [`run_on_peer`] like
+/// [`crate::a2a::TurnedAway`]: nothing ran there (COMP-1, 0.2.2).
+#[derive(Debug)]
+pub struct TaskRejected {
+    what: String,
+    reason: String,
+}
+
+impl TaskRejected {
+    /// The reason the peer gave, as it sent it (its own text, so a
+    /// display bounds it).
+    pub fn reason(&self) -> &str {
+        &self.reason
+    }
+}
+
+impl std::fmt::Display for TaskRejected {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.what)
+    }
+}
+
+impl std::error::Error for TaskRejected {}
 
 /// What may stop a remote task from the SENDER's side (C3).
 ///
@@ -356,6 +400,7 @@ mod tests {
             principal: None,
             wire_task_id: None,
             ticket: None,
+            parent_session: None,
         }
     }
 
@@ -416,6 +461,46 @@ mod tests {
     fn a_marker_without_a_fence_is_refused() {
         assert!(decode_ask(REMOTE_TASK_MARKER).is_err());
         assert!(decode_ask(&format!("{REMOTE_TASK_MARKER}\nplain text, no fence")).is_err());
+    }
+
+    /// A peer rejects a task for one of three reasons (its task_peers,
+    /// its lockdown, the ping-pong cap), and the route cache recorded
+    /// every one as "task_peers does not name this node", which `nodes`
+    /// then showed. The reason recorded is the one the peer gave, on
+    /// one line and bounded, whatever the peer sent.
+    #[test]
+    fn a_rejected_task_is_recorded_with_the_peers_own_reason() {
+        let rejected = |reason: &str| {
+            let task = crate::a2a::build_task("t", "c", crate::a2a::STATE_REJECTED, reason);
+            let e = decode_call_result(task).expect_err("a rejected task is an error");
+            match crate::routeprobe::learned_from(&e) {
+                Some(crate::routeprobe::Probe::Refused(why)) => why,
+                other => panic!("not a refusal: {other:?}"),
+            }
+        };
+        let lockdown = rejected("[lockdown] veles is locked down by the owner");
+        assert!(
+            lockdown.contains("[lockdown] veles is locked down"),
+            "{lockdown}"
+        );
+        assert!(!lockdown.contains("task_peers"), "{lockdown}");
+        let cap = rejected("turn limit for this context exceeded — tasks/cancel resets it");
+        assert!(
+            cap.contains("turn limit for this context exceeded"),
+            "{cap}"
+        );
+        let peers = rejected("this node does not take tasks from aaaa ([cluster] task_peers)");
+        assert!(peers.contains("does not take tasks from aaaa"), "{peers}");
+        let noisy = rejected(&format!(
+            "line one\n\x1b[31mline two\x07 {}",
+            "x".repeat(2000)
+        ));
+        assert!(
+            !noisy.contains('\n') && !noisy.contains('\x1b'),
+            "{noisy:?}"
+        );
+        assert!(noisy.contains("line one [31mline two"), "{noisy}");
+        assert!(noisy.chars().count() < 400, "{}", noisy.chars().count());
     }
 }
 
@@ -582,6 +667,7 @@ mod watch_pins {
             principal: None,
             wire_task_id: Some("wire-sender-c3".into()),
             ticket: None,
+            parent_session: None,
         };
         let _ = &mut ask;
         let tok = crate::providers::CancelToken::new();

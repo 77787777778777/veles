@@ -133,6 +133,40 @@ ok "this gateway's row lists the gossip peers' last exchange" {
 ok "…and the nodes forgotten fleet-wide" {
     [string match "*Forgotten fleet-wide (refused until they heartbeat again): *" $d]
 }
+# FLEET-8: with `[notify] fleet_alerts` on, the header said "sent to the
+# owner's home chat" whatever happened. A change is sent only with
+# ask_relay on, a home chat named, and from the node running that chat's
+# adapter; /api/fleet `alerts.delivery` says which, and the header says it.
+set _alerts $::vinstpane::fleet_alerts
+proc alerts_header {delivery} {
+    set a $::_alerts
+    dict set a enabled true
+    if {$delivery ne ""} { dict set a delivery $delivery } else { dict unset a delivery }
+    set ::vinstpane::fleet_alerts $a
+    ::vinstpane::_paint_cluster_detail cluster:$::remote_id
+    set d [detail]
+    if {![regexp {Health alerts \(([^\n]*)\):} $d -> header]} { return "(none)" }
+    return $header
+}
+set h [alerts_header [dict create sends no reason {[notify] ask_relay is off}]]
+ok "alerts on but ask_relay off: the header says they are not sent, and why" {
+    ![string match "*sent to the owner's home chat*" $h]
+    && [string first {not sent: [notify] ask_relay is off} $h] >= 0
+}
+set h [alerts_header [dict create sends elsewhere reason {the telegram adapter runs on another node}]]
+ok "the adapter on another node: sent from there, not from this gateway" {
+    [string match "*by the gateway that runs its Telegram adapter*" $h]
+}
+set h [alerts_header [dict create sends here reason {}]]
+ok "the adapter here: sent from this gateway" {
+    [string match "*sent to the owner's home chat from this gateway*" $h]
+}
+set h [alerts_header ""]
+ok "a gateway that predates the field claims nothing about delivery" {
+    ![string match "*sent to the owner's home chat*" $h] && $h ne "(none)"
+}
+set ::vinstpane::fleet_alerts $_alerts
+::vinstpane::_select cluster:$self_id
 
 puts "\nthe controls"
 ::vinstpane::_select cluster:$remote_id
@@ -183,6 +217,17 @@ ok "…uptime, the build and its revision, and the work in flight" {
     [string match "*Uptime: host *" $d] && [string match "*Build: veles *, revision *" $d]
     && [string match "*In flight: *" $d]
 }
+# FLEET-7: a Windows node has no load average; its CPU line is the busy
+# share the node measured (cpu.busy_pct over cpu.busy_window_secs).
+set win [::json::json2dict $::fleetfix::obs(metrics)]
+dict set win os windows
+dict set win cpu [dict create cores 8 busy_pct 37.3 busy_window_secs 30.0]
+dict set win unavailable [list {load: Windows keeps no load average (cpu.busy_pct is the CPU busy share instead)}]
+set wl [join [::vfleetobs::metrics_lines $win] \n]
+ok "a Windows node's CPU line is its busy share, not an empty load average" {
+    [string match "*CPU: 8 cores, 37.3% busy over the last 30 s*" $wl]
+    && ![string match "*load ? / ? / ?*" $wl]
+}
 
 puts "\nthe log viewer"
 set ::fleetfix::gw(bodies) {}
@@ -212,6 +257,20 @@ set _before [.fleetlogs.body get 1.0 end]
 ::vfleetobs::_logs_done [expr {$::vfleetobs::logs_gen - 1}] [dict create lines [list [dict create msg stale]] held 1]
 ok "a reply to an earlier request is dropped, not painted" {
     [.fleetlogs.body get 1.0 end] eq $_before
+}
+# A long last line (a module card's path, a file under /dev/shm) must not
+# scroll the start of every line out of view: `see end` on a -wrap none
+# text did, and the viewer opened a third of the way across (SMOKE-15).
+set _long [string repeat "a-long-segment/" 40]
+::vfleetobs::_logs_done $::vfleetobs::logs_gen [dict create held 3 lines [list \
+    [dict create time 00:00:01 level INFO target t msg first] \
+    [dict create time 00:00:02 level INFO target t msg second] \
+    [dict create time 00:00:03 level INFO target t msg $_long]]]
+update idletasks
+update
+ok "the log opens at the start of its lines, scrolled to the newest" {
+    [lindex [.fleetlogs.body xview] 0] == 0
+    && [.fleetlogs.body bbox "end-1c linestart"] ne ""
 }
 destroy .fleetlogs
 
@@ -307,12 +366,18 @@ namespace eval ::vandroid {
     proc fit {w width height {frac 0.15}} { lappend ::vandroid::fits [list $w $width $height] ; return {} }
     proc flow {f args} { lappend ::vandroid::flows $f }
 }
+# The strip wraps itself into rows on every platform (instwindowtest
+# measures it in a booted window, a phone's included); here it is only
+# asked to hold the observation buttons in its rows.
 destroy .instctl
 ::vinstpane::build_ctl .instctl
-ok "the controls strip wraps into rows on a phone, the observation buttons in it" {
-    ".instctl" in $::vandroid::flows
-    && [winfo exists .instctl.logs] && [winfo exists .instctl.metrics]
-    && [winfo exists .instctl.drift] && [winfo exists .instctl.gossip]
+proc ::_in_row {w} {
+    expr {![catch { dict get [pack info $w] -in } row]
+          && [string match .instctl.row* $row]}
+}
+ok "the controls strip holds the observation buttons in its rows on a phone" {
+    [::_in_row .instctl.logs] && [::_in_row .instctl.metrics]
+    && [::_in_row .instctl.drift] && [::_in_row .instctl.gossip]
 }
 ::vinstpane::_select cluster:$remote_id
 ::vinstpane::_ctl_logs

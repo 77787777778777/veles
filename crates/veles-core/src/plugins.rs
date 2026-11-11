@@ -478,10 +478,22 @@ pub fn validate_name(name: &str) -> Result<String> {
     Ok(n.to_string())
 }
 
+/// What every git run in the plugins repo (the runtime's snapshot at
+/// boot, [`snapshot`], rollback, the log) is given first: no file-system
+/// monitor. Git for Windows' installer can set `core.fsmonitor=true` in
+/// its system config, and then `git add`/`git status` start a
+/// `git fsmonitor--daemon` that outlives veles, watching
+/// `<home>\plugins` with a handle that keeps the directory (so the whole
+/// home) from being removed or renamed until it notices its own `.git`
+/// gone. Since every home has `plugins/` (the API stub, SMOKE-12), every
+/// gateway boot and every `veles chat` left one behind.
+pub(crate) const GIT_NO_DAEMON: [&str; 2] = ["-c", "core.fsmonitor=false"];
+
 /// Run a git command in the plugins repo.
 fn git(args: &[&str]) -> Result<std::process::Output> {
     let dir = plugins_dir();
     std::process::Command::new("git")
+        .args(GIT_NO_DAEMON)
         // Plugin sources must round-trip byte for byte (a rollback
         // restores what was committed; the build key hashes bytes), so a
         // user-level `core.autocrlf = true` — Windows' default — must not
@@ -497,6 +509,27 @@ fn git(args: &[&str]) -> Result<std::process::Output> {
         .with_context(|| format!("running git in {}", dir.display()))
 }
 
+/// A build's output never goes into the plugin directory's history: a
+/// Rust plugin's `cargo build` makes target/ beside its sources, and
+/// every snapshot would otherwise commit the whole build (DEV-12). The
+/// repository's own info/exclude, so no file appears in any plugin.
+fn exclude_build_output(dir: &Path) {
+    let exclude = dir.join(".git").join("info").join("exclude");
+    let current = std::fs::read_to_string(&exclude).unwrap_or_default();
+    if current.lines().any(|line| line.trim() == "target/") {
+        return;
+    }
+    if let Some(parent) = exclude.parent() {
+        let _ = std::fs::create_dir_all(parent);
+    }
+    let sep = if current.is_empty() || current.ends_with('\n') {
+        ""
+    } else {
+        "\n"
+    };
+    let _ = std::fs::write(&exclude, format!("{current}{sep}target/\n"));
+}
+
 /// Commit the current plugin tree. Mirrors the runtime's own snapshot
 /// so a change made through the API is versioned the same way one made
 /// by editing a file is — the rollback list must not have holes in it.
@@ -508,6 +541,7 @@ pub fn snapshot(message: &str) -> Result<()> {
     if !dir.join(".git").exists() {
         let _ = git(&["init", "-q"])?;
     }
+    exclude_build_output(&dir);
     let _ = git(&["add", "-A"])?;
     let status = git(&["status", "--porcelain"])?;
     if String::from_utf8_lossy(&status.stdout).trim().is_empty() {
@@ -605,27 +639,51 @@ pub struct ScaffoldFile {
     pub text: String,
 }
 
+/// The purpose as the scaffold writes it into an entry's source: one
+/// line, safe on its first comment line and inside its strings. `"` and `\`
+/// become `'` (`C:\path` was the invalid TOML escape `\p`, so the
+/// manifest did not parse and the plugin never loaded) and a CR or LF a
+/// space (a newline ended the comment and made the rest code) (DEV-10).
+/// The overlay scaffold does the same.
+fn scaffold_purpose(description: &str) -> String {
+    let one_line = description
+        .trim()
+        .replace(['"', '\\'], "'")
+        .replace(['\n', '\r'], " ");
+    match one_line.trim() {
+        "" => "a new veles plugin".to_string(),
+        text => text.to_string(),
+    }
+}
+
 /// Exact source and manifest for a proposed extension. This has no
 /// filesystem, git or live-reload side effects, so a preview cannot
 /// accidentally create or execute the plugin it is reviewing.
 pub fn scaffold_files(name: &str, description: &str, kind: &str) -> Result<Vec<ScaffoldFile>> {
     let name = validate_name(name)?;
-    let desc = if description.trim().is_empty() {
-        "a new veles plugin".to_string()
-    } else {
-        description.trim().replace('"', "'")
-    };
+    let desc = scaffold_purpose(description);
+    if kind == "rust" {
+        let (lib, cargo) = scaffold_rust_files(&name, &desc);
+        return Ok(vec![
+            ScaffoldFile {
+                name: "plugin.toml".into(),
+                text: scaffold_manifest(&name, description, kind, &rust_plugin_entry(&name)),
+            },
+            lib,
+            cargo,
+        ]);
+    }
     let (entry_name, entry) = match kind {
         "lisp" => ("plugin.lisp", scaffold_lisp_source(&name, &desc)),
         "racket" => ("plugin.rkt", scaffold_racket_source(&name, &desc)),
         "js" => ("plugin.ts", scaffold_js_source(&name, &desc)),
         "tcl" => ("plugin.tcl", scaffold_tcl_source(&name, &desc)),
-        other => anyhow::bail!("unknown plugin kind `{other}` (tcl, js, racket, lisp)"),
+        other => anyhow::bail!("unknown plugin kind `{other}` (tcl, js, racket, lisp, rust)"),
     };
     let mut files = vec![
         ScaffoldFile {
             name: "plugin.toml".into(),
-            text: scaffold_manifest(&name, &desc, kind, entry_name),
+            text: scaffold_manifest(&name, description, kind, entry_name),
         },
         ScaffoldFile {
             name: entry_name.into(),
@@ -649,6 +707,116 @@ pub fn scaffold_files(name: &str, description: &str, kind: &str) -> Result<Vec<S
     }
     Ok(files)
 }
+
+/// A Rust plugin (`kind = "rust"`): an out-of-tree `cdylib` on the ABI
+/// SDK (`veles-plugin-abi-sdk`, published with veles) and nothing else
+/// of veles, registering one tool and one hook (docs/plugins.md,
+/// "Out-of-tree Rust"). The manifest's `entry` is the library `cargo
+/// build --release` makes, so a build and a reload load it; until then
+/// the loader skips the plugin with "missing entry". Its own
+/// `[workspace]` keeps cargo (and rust-analyzer) from taking it for a
+/// member of a workspace above it, as in veles' own plugins/examples/
+/// after a contribution (DEV-12: the Dev tab had no Rust tier).
+fn scaffold_rust_files(name: &str, desc: &str) -> (ScaffoldFile, ScaffoldFile) {
+    let ident = name.to_ascii_lowercase().replace('-', "_");
+    let library = format!("veles_plugin_{ident}");
+    let fill = |t: &str| {
+        t.replace("@NAME@", name)
+            .replace(
+                "@CRATE@",
+                &format!("veles-plugin-{}", name.to_ascii_lowercase()),
+            )
+            .replace("@LIB@", &library)
+            .replace("@IDENT@", &ident)
+            .replace("@DESC@", desc)
+            .replace("@SDK@", &abi_sdk_requirement())
+    };
+    (
+        ScaffoldFile {
+            name: "src/lib.rs".into(),
+            text: fill(RUST_PLUGIN_LIB),
+        },
+        ScaffoldFile {
+            name: "Cargo.toml".into(),
+            text: fill(RUST_PLUGIN_CARGO),
+        },
+    )
+}
+
+/// The library a Rust plugin's release build makes, relative to its
+/// directory: the manifest's `entry` (`.so`, `.dll` or `.dylib`, as the
+/// gateway's platform names it).
+pub fn rust_plugin_entry(name: &str) -> String {
+    format!(
+        "target/release/{}veles_plugin_{}{}",
+        std::env::consts::DLL_PREFIX,
+        name.to_ascii_lowercase().replace('-', "_"),
+        std::env::consts::DLL_SUFFIX
+    )
+}
+
+/// `major.minor` of this veles: the ABI SDK is published at the
+/// workspace version, and a caret requirement on it keeps a scaffold
+/// right across patch releases.
+fn abi_sdk_requirement() -> String {
+    let version = env!("CARGO_PKG_VERSION");
+    let mut parts = version.split('.');
+    match (parts.next(), parts.next()) {
+        (Some(major), Some(minor)) => format!("{major}.{minor}"),
+        _ => version.to_string(),
+    }
+}
+
+const RUST_PLUGIN_CARGO: &str = r#"# @NAME@: @DESC@
+#
+# A veles plugin in Rust (kind = "rust" in plugin.toml): a cdylib on the
+# ABI SDK and nothing else of veles (docs/plugins.md, "Out-of-tree
+# Rust"). `cargo build --release` makes the library plugin.toml's
+# `entry` names; reload the plugin in Manage extensions to load it.
+[package]
+name = "@CRATE@"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+name = "@LIB@"
+crate-type = ["cdylib"]
+
+[dependencies]
+veles-plugin-abi-sdk = "@SDK@"
+
+# A workspace of its own: never a member of one above it.
+[workspace]
+"#;
+
+const RUST_PLUGIN_LIB: &str = r##"//! @NAME@: @DESC@
+//!
+//! A veles plugin in Rust (kind = "rust"). `init` runs once per load and
+//! registers; handlers are synchronous and run on the host's blocking
+//! threads. The SDK catches a panic in any of them and answers an error:
+//! nothing unwinds into the gateway. docs/plugins.md, "Out-of-tree
+//! Rust", has the whole surface (async tools, platforms, timers,
+//! sockets, `call` into the engine).
+
+use veles_plugin_abi_sdk::{veles_plugin, Host};
+
+fn init(host: &Host) -> Result<(), String> {
+    host.register_tool(
+        "@IDENT@_hello",
+        "say hello from @NAME@",
+        r#"{"type":"object","properties":{"who":{"type":"string"}}}"#,
+        |args| Ok(format!("hello from @NAME@: {args}")),
+    );
+    host.register_hook("post_llm_call", |_args| {
+        // None is "no opinion"; Some(json) is a verdict.
+        None
+    });
+    Ok(())
+}
+
+veles_plugin!(init);
+"##;
 
 /// The lang-js host's API, typed (`plugins/veles.d.ts`): the scaffold's
 /// copy, the Dev pane's tsc Check and the contribution check all use it.
@@ -679,7 +847,13 @@ pub fn scaffold_kind(name: &str, description: &str, kind: &str) -> Result<PathBu
     anyhow::ensure!(!dir.exists(), "{name} already exists");
     std::fs::create_dir_all(&dir).with_context(|| format!("creating {}", dir.display()))?;
     for file in files {
-        std::fs::write(dir.join(file.name), file.text)?;
+        // A Rust plugin's source is src/lib.rs.
+        let path = dir.join(&file.name);
+        if let Some(parent) = path.parent() {
+            std::fs::create_dir_all(parent)
+                .with_context(|| format!("creating {}", parent.display()))?;
+        }
+        std::fs::write(path, file.text)?;
     }
     snapshot(&format!("veles: scaffold plugin {name}"))?;
     Ok(dir)
@@ -693,10 +867,24 @@ pub fn extension_api_version() -> &'static str {
     veles_types::plugin::EXT_API_VERSION
 }
 
+/// The manifest keeps the purpose as it was typed, quotes and
+/// backslashes included, on one line: TOML's own string writer escapes
+/// it. Only the entry's comment line needs the `scaffold_purpose` form;
+/// writing that into the manifest too turned `"politely"` into
+/// `'politely'` in what Manage extensions shows (SMOKE-13).
 fn scaffold_manifest(name: &str, description: &str, kind: &str, entry: &str) -> String {
+    let one_line = description
+        .trim()
+        .replace("\r\n", " ")
+        .replace(['\n', '\r'], " ");
+    let purpose = match one_line.trim() {
+        "" => "a new veles plugin",
+        text => text,
+    };
     format!(
-        "name = \"{name}\"\nkind = \"{kind}\"\nentry = \"{entry}\"\napi = \"{}\"\ndescription = \"{description}\"\nprovides_hooks = [\"post_llm_call\"]\n",
-        veles_types::plugin::EXT_API_VERSION
+        "name = \"{name}\"\nkind = \"{kind}\"\nentry = \"{entry}\"\napi = \"{}\"\ndescription = {}\nprovides_hooks = [\"post_llm_call\"]\n",
+        veles_types::plugin::EXT_API_VERSION,
+        toml::Value::String(purpose.to_string())
     )
 }
 
@@ -1650,10 +1838,112 @@ mod tests {
         assert!(files[2].text.contains("\"moduleDetection\": \"force\""));
     }
 
+    /// DEV-12: the Dev tab's New extension and Generate had no Rust tier;
+    /// the out-of-tree cdylib existed only in docs/plugins.md. Its
+    /// scaffold is a crate on the published ABI SDK whose release build
+    /// is the manifest's entry, and its build output stays out of the
+    /// plugin directory's history.
+    #[test]
+    fn the_rust_tier_scaffolds_a_cdylib_on_the_abi_sdk() {
+        let (_cfg, _data, _guard) = crate::testenv::scratch_xdg();
+        let files = scaffold_files("Demo-native", "a native tool", "rust").unwrap();
+        let names: Vec<&str> = files.iter().map(|f| f.name.as_str()).collect();
+        assert_eq!(names, ["plugin.toml", "src/lib.rs", "Cargo.toml"]);
+        let manifest: toml::Table = toml::from_str(&files[0].text).unwrap();
+        assert_eq!(manifest["kind"].as_str(), Some("rust"));
+        let entry = format!(
+            "target/release/{}veles_plugin_demo_native{}",
+            std::env::consts::DLL_PREFIX,
+            std::env::consts::DLL_SUFFIX
+        );
+        assert_eq!(manifest["entry"].as_str(), Some(entry.as_str()));
+        let cargo: toml::Table = toml::from_str(&files[2].text).unwrap();
+        assert_eq!(
+            cargo["package"]["name"].as_str(),
+            Some("veles-plugin-demo-native")
+        );
+        assert_eq!(
+            cargo["lib"]["name"].as_str(),
+            Some("veles_plugin_demo_native")
+        );
+        assert_eq!(cargo["lib"]["crate-type"][0].as_str(), Some("cdylib"));
+        let version = env!("CARGO_PKG_VERSION");
+        let minor = version.rsplit_once('.').unwrap().0;
+        assert_eq!(
+            cargo["dependencies"]["veles-plugin-abi-sdk"].as_str(),
+            Some(minor)
+        );
+        assert!(cargo.contains_key("workspace"));
+        let lib = &files[1].text;
+        assert!(lib.contains("veles_plugin!(init);"), "{lib}");
+        assert!(lib.contains("\"demo_native_hello\""), "{lib}");
+        // The template calls the SDK as it is: these are its signatures.
+        let sdk = include_str!("../../veles-plugin-abi-sdk/src/lib.rs");
+        for signature in [
+            "pub fn register_tool<F>(&self, name: &str, description: &str, schema_json: &str, f: F)",
+            "F: Fn(&str) -> Result<String, String> + Send + Sync + 'static,",
+            "pub fn register_hook<F>(&self, hook: &str, f: F)",
+            "F: Fn(&str) -> Option<String> + Send + Sync + 'static,",
+            "macro_rules! veles_plugin",
+            "f: fn(&Host) -> Result<(), String>,",
+        ] {
+            assert!(sdk.contains(signature), "the SDK changed: {signature}");
+        }
+
+        let dir = scaffold_kind("Demo-native", "a native tool", "rust").unwrap();
+        assert!(dir.join("src/lib.rs").is_file());
+        let found = discover_all().unwrap();
+        assert_eq!(found[0].manifest.kind, "rust");
+        let build = dir.join("target/release");
+        std::fs::create_dir_all(&build).unwrap();
+        std::fs::write(build.join("output.bin"), b"built").unwrap();
+        snapshot("after a build").unwrap();
+        let tracked = git(&["ls-files"]).unwrap();
+        let tracked = String::from_utf8_lossy(&tracked.stdout);
+        assert!(tracked.contains("Demo-native/src/lib.rs"), "{tracked}");
+        assert!(!tracked.contains("target/"), "{tracked}");
+    }
+
+    #[test]
+    fn a_purpose_with_a_backslash_or_newline_scaffolds_a_loadable_manifest() {
+        // DEV-10: the purpose went into a TOML basic string unescaped
+        // (`C:\path` is the invalid escape `\p`, so the plugin never
+        // loaded) and into each entry's first comment line, where a
+        // newline ended the comment and made the rest code.
+        let purpose = "match C:\\path \"quoted\"\nmore\r\nlast";
+        for kind in ["tcl", "js", "racket", "lisp", "rust"] {
+            let files = scaffold_files("x", purpose, kind).unwrap();
+            let manifest: toml::Table = toml::from_str(&files[0].text)
+                .unwrap_or_else(|e| panic!("{kind}: the manifest does not parse: {e}"));
+            let description = manifest["description"].as_str().unwrap();
+            assert!(
+                !description.contains(['\n', '\r']),
+                "{kind}: {description:?}"
+            );
+            assert!(description.contains("C:"), "{kind}: {description:?}");
+            // SMOKE-13: the manifest keeps the purpose as typed, quotes and
+            // backslashes included (they were turned into `'`).
+            assert_eq!(
+                description, "match C:\\path \"quoted\" more last",
+                "{kind}: the manifest changed the purpose"
+            );
+            let entry = &files[1].text;
+            let head = entry
+                .lines()
+                .find(|l| l.contains("C:"))
+                .unwrap_or_else(|| panic!("{kind}: no header line in {entry}"));
+            assert!(
+                head.contains("last"),
+                "{kind}: the purpose left its comment line: {entry}"
+            );
+            assert!(!entry.lines().any(|l| l.trim_start().starts_with("more")));
+        }
+    }
+
     #[test]
     fn preview_is_exactly_the_scaffold_and_has_no_side_effects() {
         let (_cfg, _data, _guard) = crate::testenv::scratch_xdg();
-        for kind in ["tcl", "js", "racket", "lisp"] {
+        for kind in ["tcl", "js", "racket", "lisp", "rust"] {
             let name = format!("preview-{kind}");
             let preview = scaffold_files(&name, "inspect this", kind).unwrap();
             assert!(!plugins_dir().join(&name).exists());

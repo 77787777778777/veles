@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset ru {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset ru {%1$s %2$s done} {%1$s %2$s готово}
 ::msgcat::mcset ru {%1$s %2$s failed: %3$s} {%1$s %2$s не удалось: %3$s}
+::msgcat::mcset ru {%1$s %2$s over ssh anyway?} {%1$s %2$s по ssh всё равно?}
 ::msgcat::mcset ru {%1$s %2$s over ssh…} {%1$s %2$s по ssh…}
 ::msgcat::mcset ru {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset ru {%1$s (%2$s waiting)} {%1$s (ожидает: %2$s)}
 ::msgcat::mcset ru {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  рассуждения %3$s}
 ::msgcat::mcset ru {%1$s = %2$s here} {здесь %1$s = %2$s}
+::msgcat::mcset ru {%1$s = %2$s on %3$s} {%1$s = %2$s на %3$s}
 ::msgcat::mcset ru {%1$s NOT saved: %2$s} {%1$s НЕ сохранено: %2$s}
 ::msgcat::mcset ru {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s из библиотеки %2$s и доступен только для чтения — скопируйте через «Создать…», чтобы изменить}
 ::msgcat::mcset ru {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s из библиотеки %2$s — veles никогда не удаляет навыки других инструментов}
+::msgcat::mcset ru {%1$s cannot restart itself: %2$s} {%1$s не может перезапустить себя: %2$s}
+::msgcat::mcset ru {%1$s differs: %2$s} {%1$s отличается: %2$s}
 ::msgcat::mcset ru {%1$s every cron job on %2$s?} {%1$s все задачи cron на %2$s?}
 ::msgcat::mcset ru {%1$s failed: %2$s} {%1$s не удалось: %2$s}
 ::msgcat::mcset ru {%1$s in / %2$s out / %3$s calls} {вход: %1$s / выход: %2$s / вызовов: %3$s}
+::msgcat::mcset ru {%1$s is back after %2$s s (veles %3$s).} {%1$s вернулся через %2$s с (veles %3$s).}
 ::msgcat::mcset ru {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s — это узел %2$s, а не %3$s. Исправьте его id узла в «Изменить…».}
 ::msgcat::mcset ru {%1$s is not a whole number} {%1$s — не целое число}
+::msgcat::mcset ru {%1$s is not on: %2$s} {%1$s не включено: %2$s}
+::msgcat::mcset ru {%1$s is not set on %2$s: the default applies.} {%1$s не задан на %2$s: действует значение по умолчанию.}
 ::msgcat::mcset ru {%1$s is reachable (%2$s ms).} {%1$s доступен (%2$s мс).}
+::msgcat::mcset ru {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s выполняет ходов: %2$s. Всё равно перезапустить?}
 ::msgcat::mcset ru {%1$s is set to something this box cannot edit (%2$s)} {%1$s установлено в то, что эта машина изменить не может (%2$s)}
 ::msgcat::mcset ru {%1$s is unreachable: %2$s} {%1$s недоступен: %2$s}
+::msgcat::mcset ru {%1$s is up, but its node binding is wrong: %2$s} {%1$s работает, но его привязка к узлу неверна: %2$s}
+::msgcat::mcset ru {%1$s not compared: %2$s} {%1$s не сравнивался: %2$s}
 ::msgcat::mcset ru {%1$s of %2$s characters} {%1$s из %2$s символов}
 ::msgcat::mcset ru {%1$s of %2$s sessions} {%1$s из %2$s сессий}
 ::msgcat::mcset ru {%1$s of %2$s skills reach the prompt} {%1$s из %2$s навыков попадают в промпт}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset ru {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset ru {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset ru {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset ru {%1$s: %2$s on the gateway} {%1$s: %2$s на шлюзе}
+::msgcat::mcset ru {%1$s: %2$s on the gateway (ships with veles)} {%1$s: %2$s на шлюзе (поставляется с veles)}
 ::msgcat::mcset ru {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset ru {%1$s: no language server on the gateway. %2$s} {%1$s: на шлюзе нет языкового сервера. %2$s}
 ::msgcat::mcset ru {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: последние %2$s из %3$s строк, которые его шлюз держит в памяти; секреты на том узле вымараны.}
+::msgcat::mcset ru {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: пользовательский плагин %2$s перекрывает встроенный с тем же содержимым (%3$s)}
 ::msgcat::mcset ru {%d MCP server(s) configured} {настроено MCP-серверов: %d}
 ::msgcat::mcset ru {%d entries} {записей: %d}
 ::msgcat::mcset ru {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {Файлов расширения (%d) будет записано ровно в проверенном виде. Если хоть один изменился с момента предпросмотра, не записывается ничего. Коммит, push и PR не создаются.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset ru {%s (stale)} {%s (устарел)}
 ::msgcat::mcset ru {%s (this session)} {%s (эта сессия)}
 ::msgcat::mcset ru {%s GB free of %s GB} {свободно %s ГБ из %s ГБ}
+::msgcat::mcset ru {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s Команда идёт по ssh на настроенный хост, и эта проверка не смогла связать его с узлом.}
 ::msgcat::mcset ru {%s already exists — open it from the list} {%s уже существует — откройте его из списка}
 ::msgcat::mcset ru {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {%s изменился с тех пор, как вы его открыли — ничего не перезаписано; скопируйте свой текст, затем нажмите Перезагрузить}
 ::msgcat::mcset ru {%s cleared for this buffer} {%s очищено для этого буфера}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset ru {%s comes from config.toml [acl] — edit there} {%s берётся из config.toml [acl] — правьте там}
 ::msgcat::mcset ru {%s config change(s) wait for you — /configsync} {изменений конфигурации ждут вас: %s — /configsync}
 ::msgcat::mcset ru {%s did not become healthy within 30s} {%s не стал доступен за 30s}
+::msgcat::mcset ru {%s did not come back within 120 s: look at its log where it runs.} {%s не вернулся за 120 с: посмотрите его лог там, где он работает.}
 ::msgcat::mcset ru {%s done} {%s готово}
 ::msgcat::mcset ru {%s failed: %s} {%s не удалось: %s}
+::msgcat::mcset ru {%s holds a credential: it stays on its node and is not shown.} {%s содержит учётные данные: они остаются на его узле и не показываются.}
 ::msgcat::mcset ru {%s is already split} {%s уже разделён}
+::msgcat::mcset ru {%s is restarting; waiting for it to come back…} {%s перезапускается; ждём, когда он вернётся…}
 ::msgcat::mcset ru {%s is the language in use — pick another one to swap with} {%s — язык, который сейчас используется; выберите другой для переключения}
 ::msgcat::mcset ru {%s is up} {%s работает}
 ::msgcat::mcset ru {%s keys — any key closes} {%s клавиш — любая закрывает}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset ru {; shadows bundled} {; перекрывает встроенный}
 ::msgcat::mcset ru {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Предложение конфигурации может менять настройки, а предложение секретов сливает их; изменения в разделе безопасности всё равно ждут владельца.}
 ::msgcat::mcset ru {A failing plugin may drop hooks mid-turn.} {Упавший плагин может терять хуки посреди хода.}
+::msgcat::mcset ru {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {Удерживаемый раздел: отсюда он не записывается; измените его на узле и отправьте конфигурацию — владелец применит его там.}
 ::msgcat::mcset ru {A local server: no key is needed unless you set one up.} {Локальный сервер: ключ не нужен, если вы не задали его сами.}
 ::msgcat::mcset ru {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Подписанный релиз подготавливается только после предварительной проверки. Перезапуск и проверка, продолжение и откат — отдельные действия. Исправный процесс должен сообщать именно ту ревизию исходного кода, которая была проверена.}
 ::msgcat::mcset ru {A value is stored for %s — leave this empty to keep it.} {Для %s уже сохранено значение — оставьте поле пустым, чтобы его сохранить.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset ru {Asking the provider for its models…} {Запрашиваю у провайдера список моделей…}
 ::msgcat::mcset ru Attach Подключить
 ::msgcat::mcset ru {Attach to the next message} {Прикрепить к следующему сообщению}
+::msgcat::mcset ru {Audit log unavailable: %s} {Журнал аудита недоступен: %s}
+::msgcat::mcset ru {Audit log…} {Журнал аудита…}
 ::msgcat::mcset ru {Author guide} {Руководство автора}
 ::msgcat::mcset ru {Automatically discovered from the attached gateway's cluster registry.} {Определяются автоматически из реестра кластера подключённого шлюза.}
 ::msgcat::mcset ru Back Назад
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset ru {Browse sessions} {Обзор сессий}
 ::msgcat::mcset ru {Build manifest + preflight} {Манифест сборки + предварительная проверка}
 ::msgcat::mcset ru {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Сборка: veles %1$s, ревизия %2$s (%3$s %4$s)}
+::msgcat::mcset ru {Bulk %1$s failed: %2$s} {Массовое действие %1$s не удалось: %2$s}
+::msgcat::mcset ru {Bulk %1$s: %2$s (%3$s).} {Массовое действие %1$s: %2$s (%3$s).}
+::msgcat::mcset ru {Bulk action cancelled.} {Массовое действие отменено.}
 ::msgcat::mcset ru {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e концы строки · C-b/C-f символ · M-b/M-f слово · C-k удалить до конца строки · C-y вставить · M-w копировать · C-w удалить область · C-space метка · C-/ отмена}
 ::msgcat::mcset ru {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g прерывает всё · C-j новая строка · M-p/M-n история · Tab дополнение}
+::msgcat::mcset ru {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {ЦП: ядер — %1$s, занятость %2$s%% за последние %3$s с}
 ::msgcat::mcset ru {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {ЦП: ядер %1$s, нагрузка %2$s / %3$s / %4$s (%5$s%% ядер)}
 ::msgcat::mcset ru Cancel Отмена
 ::msgcat::mcset ru {Cancel task} {Отменить задачу}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset ru {Channels (e.g. #veles #dev)} {Каналы (например #veles #dev)}
 ::msgcat::mcset ru Chat Чат
 ::msgcat::mcset ru {Chat — not attached; press Attach in the Instances tab} {Чат — не подключён; нажмите «Подключить» на вкладке «Экземпляры»}
-::msgcat::mcset ru {Check (lsp)} {Проверка (lsp)}
+::msgcat::mcset ru {Check (C-c C-k)} {Проверить (C-c C-k)}
 ::msgcat::mcset ru {Check again} {Проверить снова}
 ::msgcat::mcset ru {Check files} {Проверить файлы}
 ::msgcat::mcset ru Checkpoints {Контрольные точки}
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset ru {Close (Esc)} {Закрыть (Esc)}
 ::msgcat::mcset ru {Close the setup wizard? Nothing has been written yet.} {Закрыть мастер настройки? Пока ничего не записано.}
 ::msgcat::mcset ru {Code actions} {Действия с кодом}
+::msgcat::mcset ru {Command-center audit log} {Журнал аудита командного центра}
 ::msgcat::mcset ru Commit Коммит
 ::msgcat::mcset ru {Commit ready for review. Push is a separate action.} {Коммит готов к проверке. Отправка — отдельное действие.}
 ::msgcat::mcset ru {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Заполните все поля PDS, включая закреплённый дайджест образа, прежде чем просматривать передачу.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset ru {Config differs: %s} {Конфигурация различается: %s}
 ::msgcat::mcset ru {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Журнал конфигурации: на том узле изменения %1$s до %3$s, на этом шлюзе до %2$s}
 ::msgcat::mcset ru {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Журнал конфигурации: на этом шлюзе изменения %1$s до %2$s, на том узле до %3$s}
+::msgcat::mcset ru {Config of %s} {Конфигурация %s}
 ::msgcat::mcset ru {Config only on that node: %s} {Конфигурация только на том узле: %s}
 ::msgcat::mcset ru {Config only on this gateway: %s} {Конфигурация только на этом шлюзе: %s}
+::msgcat::mcset ru {Config: %s} {Конфигурация: %s}
 ::msgcat::mcset ru Configure Настроить
 ::msgcat::mcset ru {Configure %s} {Настроить %s}
 ::msgcat::mcset ru {Configure translator} {Настроить переводчик}
 ::msgcat::mcset ru {Configured desktop gateway} {Настроенный шлюз настольного приложения}
 ::msgcat::mcset ru Configure… Настроить…
 ::msgcat::mcset ru {Configuring %s} {Настройка %s}
+::msgcat::mcset ru Config… Конфигурация…
 ::msgcat::mcset ru {Confirm or discard the current signed review before starting another download.} {Подтвердите или отмените текущую подписанную проверку, прежде чем начинать новую загрузку.}
 ::msgcat::mcset ru {Container host: typed host plan and privileged CLI handoff} {Хост контейнеров: типизированный план хоста и передача в CLI с правами администратора}
 ::msgcat::mcset ru {Context window} {Окно контекста}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset ru {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Создайте бота через @BotFather и вставьте его токен ниже: он попадёт в зашифрованное хранилище, а не в config.toml.}
 ::msgcat::mcset ru {Create this extension?} {Создать это расширение?}
 ::msgcat::mcset ru {Create this generated extension?} {Создать это сгенерированное расширение?}
+::msgcat::mcset ru {Created and loaded. Review and test the extension before publishing.} {Создано и загружено. Проверьте и протестируйте расширение перед публикацией.}
 ::msgcat::mcset ru {Created and reloaded. Review and test the extension before publishing.} {Создано и перезагружено. Проверьте и протестируйте расширение перед публикацией.}
 ::msgcat::mcset ru {Created, but reload failed} {Создано, но перезагрузка не удалась}
+::msgcat::mcset ru {Created, not loaded} {Создано, не загружено}
+::msgcat::mcset ru {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {Создано, но ещё не загружено: выполните cargo build --release в каталоге расширения, затем перезагрузите его в разделе «Управление расширениями».}
+::msgcat::mcset ru {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {Создано. Этот шлюз не сообщает, загрузил ли он расширение: посмотрите его состояние в разделе «Управление расширениями».}
 ::msgcat::mcset ru {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Создаёт %s/<name>/SKILL.md из шаблона и открывает его. В индекс промпта попадает только описание из frontmatter, так что укажите в нём, КОГДА использовать навык.}
 ::msgcat::mcset ru {Cron history} {История cron}
 ::msgcat::mcset ru {Cron jobs} {Задачи cron}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset ru {Delete user} {Удалить пользователя}
 ::msgcat::mcset ru {Delete workspace?} {Удалить рабочую область?}
 ::msgcat::mcset ru Deop {Снять op}
+::msgcat::mcset ru {Deployment consistency unknown: %s node(s) could not be compared.} {Согласованность развёртывания неизвестна: не удалось сравнить узлов: %s.}
+::msgcat::mcset ru {Deployment consistency: not checked yet (Drift… compares every node).} {Согласованность развёртывания: ещё не проверялась («Расхождения…» сравнивает все узлы).}
 ::msgcat::mcset ru {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Опишите изменение. ИИ может изменить или добавить несколько файлов этого расширения. Каждый файл показывается как дифф, и ничего не записывается до вашего подтверждения.}
 ::msgcat::mcset ru {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Опишите изменение. AI может предложить замену, но не сможет записать её, пока вы не просмотрите и не подтвердите diff.}
 ::msgcat::mcset ru {Describe the requested extension change first.} {Сначала опишите нужное изменение расширения.}
 ::msgcat::mcset ru Description Описание
+::msgcat::mcset ru {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {Ходы настольного приложения продолжаются с сохранённой истории после перезапуска; ходы коннекторов, A2A, почты, cron и субагентов — нет.}
 ::msgcat::mcset ru {Desktop: local core, modules and process plugins} {Десктоп: локальное ядро, модули и плагины процессов}
 ::msgcat::mcset ru Detach Открепить
 ::msgcat::mcset ru {Detach foreground} {Перевести в фон}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset ru {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Загрузите и проверьте манифест релиза и архив для этой машины перед установкой. Все пять полей идентичности обязательны. Шлюз хранит приватный подготовленный архив; этот предварительный просмотр ничего не устанавливает.}
 ::msgcat::mcset ru {Downloading and verifying the signed release…} {Загрузка и проверка подписанного релиза…}
 ::msgcat::mcset ru {Draft this as an extension?} {Оформить это как расширение?}
+::msgcat::mcset ru {Draft this change as an extension?} {Оформить это изменение как расширение?}
 ::msgcat::mcset ru {Drag to scroll; a quick swipe goes further.} {Проведите пальцем, чтобы прокрутить; быстрый взмах прокручивает дальше.}
 ::msgcat::mcset ru {Drift check failed: %s} {Проверка расхождений не удалась: %s}
 ::msgcat::mcset ru {Drift check: %s node(s) differ from this gateway.} {Проверка расхождений: отличаются от этого шлюза узлов: %s.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset ru Eval→gw Eval→gw
 ::msgcat::mcset ru {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Каждое изменение %s фиксируется. Восстановление возвращает весь каталог к этому коммиту — и сначала делает снимок текущего состояния, так что это не необратимый шаг.}
 ::msgcat::mcset ru {Every plugin file goes back to that commit. The current state is committed first.} {Все файлы плагинов возвращаются к этому коммиту. Сначала фиксируется текущее состояние.}
+::msgcat::mcset ru {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {Все уровни: «Новое расширение» создаёт расширение на Tcl, TypeScript, Racket или Common Lisp либо внешний Rust-плагин (cdylib на крейте veles-plugin-abi-sdk: соберите его через cargo build --release, затем перезагрузите в разделе «Управление расширениями»). Два уровня живут вне каталога пользовательских плагинов и запускаются из командной строки: модуль — Rust-библиотека, собираемая вместе с veles (veles plugins new NAME --kind overlay создаёт его репозиторий), и процессный плагин — программа на крейте veles-plugin-sdk, которую шлюз запускает и контролирует. Для каждого есть раздел в руководстве автора.}
 ::msgcat::mcset ru {Exact commit} {Точный коммит}
 ::msgcat::mcset ru {Exact permission rule} {Точное правило разрешения}
 ::msgcat::mcset ru {Example: a hook} {Пример: хук}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset ru {Explain the diagnostics} {Объяснить диагностику}
 ::msgcat::mcset ru Export… Экспортировать…
 ::msgcat::mcset ru {Extension API} {API расширений}
+::msgcat::mcset ru {Extension API reference} {Справочник по API расширений}
 ::msgcat::mcset ru {Extension development} {Разработка расширений}
 ::msgcat::mcset ru {Extension guide} {Руководство по расширениям}
 ::msgcat::mcset ru {Extension source} {Исходный код расширения}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset ru {Guards — what the harness stops, and where it stands now} {Guards — что запрещает обвязка и её текущее состояние}
 ::msgcat::mcset ru {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Обработчики выполняются в показанном порядке; побеждает первый, вернувший непустое значение. Отключённый обработчик пропускается без снятия с регистрации, и выбор сохраняется в config.toml, так что перезагрузка плагина не включит его молча обратно.}
 ::msgcat::mcset ru Health Состояние
+::msgcat::mcset ru {Health alerts} {Оповещения о состоянии}
 ::msgcat::mcset ru {Health alerts (%s):} {Оповещения о состоянии (%s):}
 ::msgcat::mcset ru Heartbeat Пульс
 ::msgcat::mcset ru {Heartbeat age: %s s} {Последний сигнал: %s с назад}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset ru Install… Установить…
 ::msgcat::mcset ru {Instance name (for example an IRC network)} {Имя экземпляра (например, сеть IRC)}
 ::msgcat::mcset ru Instances Экземпляры
+::msgcat::mcset ru {Instead of patching %s: } {Вместо правки %s: }
 ::msgcat::mcset ru {It becomes the current content, as a new revision — so the restore can be undone too.} {Он станет текущим содержимым как новая версия — поэтому и восстановление можно отменить.}
 ::msgcat::mcset ru {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Он попадёт в зашифрованное хранилище на этой машине. Агент никогда его не видит: он может только использовать его как $%s в командах или отправить на разрешённые хосты.}
 ::msgcat::mcset ru {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Он удаляется из реестра кластера во всём флоте: следующий обмен госсипом велит каждому соседу версии 0.2.0 тоже его отбросить, и никто из них не сольёт его обратно. Сосед старше 0.2.0 продолжит его показывать. Если машина вернётся и пришлёт сигнал активности, он зарегистрируется снова. Соседи по синхронизации и сохранённые экземпляры не затрагиваются.}
+::msgcat::mcset ru {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {Он записывается в config.toml того узла как правка, сделанная там; затем синхронизация конфигурации разносит его на узлы, которые с ним синхронизируются.}
 ::msgcat::mcset ru {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Сейчас он покинет память. История хранит каждую версию, и История… может его восстановить.}
+::msgcat::mcset ru {Its gateway stops and %s.} {Его шлюз останавливается и %s.}
 ::msgcat::mcset ru Join Присоединиться
 ::msgcat::mcset ru {Join a pool} {Присоединиться к группе машин}
 ::msgcat::mcset ru {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {Присоединиться к группе машин %1$s как %2$s? Группа будет связываться с этим телефоном по адресу %3$s.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset ru Joining… Присоединение…
 ::msgcat::mcset ru Join… Войти…
 ::msgcat::mcset ru {Jump to composer} {Перейти к редактору}
+::msgcat::mcset ru {Key (for example model.default)} {Ключ (например, model.default)}
 ::msgcat::mcset ru Keybindings {Горячие клавиши}
 ::msgcat::mcset ru {Keyboard help} {Справка по клавиатуре}
 ::msgcat::mcset ru {Kick %1$s from %2$s?} {Выгнать %1$s из %2$s?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset ru {LLM provider} {Провайдер LLM}
 ::msgcat::mcset ru Language Язык
 ::msgcat::mcset ru {Language (i18n)} {Язык (i18n)}
+::msgcat::mcset ru {Language servers on this gateway} {Языковые серверы на этом шлюзе}
 ::msgcat::mcset ru Language… Язык…
 ::msgcat::mcset ru {Last active} {Последняя активность}
 ::msgcat::mcset ru {Last probe: %1$s — %2$s} {Последняя проверка: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset ru Level Уровень
 ::msgcat::mcset ru {Lift lockdown} {Снять блокировку}
 ::msgcat::mcset ru Lines Строки
+::msgcat::mcset ru {List targets…} {Список целей…}
 ::msgcat::mcset ru {List the provider's models} {Показать модели провайдера}
 ::msgcat::mcset ru Load Нагрузка
 ::msgcat::mcset ru {Load more} {Загрузить ещё}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset ru Next Далее
 ::msgcat::mcset ru Nickname Ник
 ::msgcat::mcset ru {NixOS: emit a module snippet; do not edit host declarations} {NixOS: вывести фрагмент модуля; не изменять объявления хоста}
-::msgcat::mcset ru {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Для этого узла не настроена SSH-цель жизненного цикла. Добавьте экземпляр явно, чтобы развернуть или перезапустить узел.}
+::msgcat::mcset ru {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {Для этого узла не настроена цель жизненного цикла по SSH: «Перезапустить» просит узел перезапустить себя через свой супервизор; для развёртывания флота нужен сохранённый экземпляр с целью ssh.}
 ::msgcat::mcset ru {No additional push happens.} {Дополнительная отправка не выполняется.}
 ::msgcat::mcset ru {No apps yet. Ask the agent to make one: “make me an app that…”} {Приложений пока нет. Попросите агента сделать одно: «сделай мне приложение, которое…»}
 ::msgcat::mcset ru {No code in the picture. Hold the phone closer, straight on, and scan again.} {На снимке нет кода. Поднесите телефон ближе, держите его ровно и отсканируйте снова.}
+::msgcat::mcset ru {No command-center action is recorded on this gateway yet.} {На этом шлюзе пока не записано ни одного действия командного центра.}
 ::msgcat::mcset ru {No configuration snapshot will be restored.} {Снимок конфигурации не будет восстановлен.}
 ::msgcat::mcset ru {No configured sync peer for this node.} {Для этого узла не настроен партнёр по синхронизации.}
 ::msgcat::mcset ru {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Отдельный переводчик не настроен. Откройте «Настроить переводчик», чтобы выбрать провайдера, модель и целевой язык.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset ru {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Телефоны %s и сами останавливают приложения. В настройках приложения veles разрешите ему запускаться самостоятельно и работать в фоне.}
 ::msgcat::mcset ru {Pin / unpin} {Закрепить / открепить}
 ::msgcat::mcset ru {Pin to home screen} {Закрепить на главном экране}
+::msgcat::mcset ru {Plugin author guide} {Руководство автора плагинов}
 ::msgcat::mcset ru {Plugin history} {История плагинов}
 ::msgcat::mcset ru Plugins Плагины
 ::msgcat::mcset ru Port Порт
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset ru {Preview here} {Предпросмотр здесь}
 ::msgcat::mcset ru {Preview pane} {Панель предпросмотра}
 ::msgcat::mcset ru {Preview proposal} {Просмотреть предложение}
-::msgcat::mcset ru {Preview the changed name or language before creating it.} {Перед созданием проверьте изменённое имя или язык в предпросмотре.}
+::msgcat::mcset ru {Preview the changed name, purpose or language before creating it.} {Просмотрите изменённые имя, назначение или язык перед созданием.}
 ::msgcat::mcset ru Probe Проверить
+::msgcat::mcset ru {Probe %s node(s)?} {Опросить узлов: %s?}
+::msgcat::mcset ru {Probe all…} {Опросить все…}
 ::msgcat::mcset ru {Probe of %1$s failed: %2$s} {Проверка %1$s не удалась: %2$s}
 ::msgcat::mcset ru {Profile result} {Результат профиля}
 ::msgcat::mcset ru {Promote into config.toml} {Перенести в config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset ru {Push branch…} {Отправить ветку…}
 ::msgcat::mcset ru {Push complete. No pull request has been opened.} {Отправка завершена. Запрос на слияние не открыт.}
 ::msgcat::mcset ru {Push this branch?} {Отправить эту ветку?}
+::msgcat::mcset ru {Push this kind to every node that is a configured peer for it:} {Отправить этот вид на каждый узел, для которого он настроен как участник:}
 ::msgcat::mcset ru {Push to %s:} {Отправить на %s:}
 ::msgcat::mcset ru Question Вопрос
 ::msgcat::mcset ru Questions Вопросы
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset ru {REPL target: the app} {цель REPL: приложение}
 ::msgcat::mcset ru {REPL target: the gateway} {цель REPL: шлюз}
 ::msgcat::mcset ru Read Чтение
+::msgcat::mcset ru {Read the key first: a write names the value it replaces.} {Сначала прочитайте ключ: запись называет значение, которое она заменяет.}
 ::msgcat::mcset ru {Reading notifications, for triggers} {Чтение уведомлений для триггеров}
 ::msgcat::mcset ru Reasoning Рассуждение
 ::msgcat::mcset ru {Reasoning effort} {Глубина рассуждений}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset ru {Reset to default} {Сбросить по умолчанию}
 ::msgcat::mcset ru {Reset to template} {Сбросить к шаблону}
 ::msgcat::mcset ru Restart Перезапустить
+::msgcat::mcset ru {Restart %s?} {Перезапустить %s?}
 ::msgcat::mcset ru {Restart + verify canary} {Перезапустить и проверить канарейку}
+::msgcat::mcset ru {Restart cancelled.} {Перезапуск отменён.}
+::msgcat::mcset ru {Restart of %1$s failed: %2$s} {Перезапуск %1$s не удался: %2$s}
 ::msgcat::mcset ru {Restore hidden windows} {Восстановить скрытые окна}
 ::msgcat::mcset ru {Restore plugins to %s?} {Восстановить плагины к %s?}
 ::msgcat::mcset ru {Restore revision r%1$s of %2$s?} {Восстановить версию r%1$s файла %2$s?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset ru {S3 region} {Регион S3}
 ::msgcat::mcset ru {SASL account (optional)} {Учётная запись SASL (необязательно)}
 ::msgcat::mcset ru {SASL password (hidden)} {Пароль SASL (скрыт)}
+::msgcat::mcset ru {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {Жизненный цикл по SSH: через сохранённый экземпляр %1$s (%2$s, юнит %3$s).}
 ::msgcat::mcset ru Sandbox Песочница
 ::msgcat::mcset ru {Sandbox account} {Учётная запись песочницы}
 ::msgcat::mcset ru Sandboxes Песочницы
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset ru {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Сеансы, уже переопределённые на этот алиас, сохраняют выбранный маршрут; новые переопределения это имя не найдут.}
 ::msgcat::mcset ru {Sessions served} {Обслужено сессий}
 ::msgcat::mcset ru Set Задать
+::msgcat::mcset ru {Set %1$s on %2$s to %3$s?} {Установить %1$s на %2$s в %3$s?}
 ::msgcat::mcset ru {Set [model] provider/default in config.toml.} {Задать провайдера и модель по умолчанию для [model] в config.toml.}
 ::msgcat::mcset ru {Set as swap target} {Сделать целью переключения}
 ::msgcat::mcset ru {Set mode %1$s on %2$s?} {Включить режим %1$s на %2$s?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset ru Summary Сводка
 ::msgcat::mcset ru Surface Поверхность
 ::msgcat::mcset ru {Swap ⇄} {Поменять ⇄}
+::msgcat::mcset ru {Sync %1$s to %2$s node(s)?} {Синхронизировать %1$s на узлов: %2$s?}
+::msgcat::mcset ru {Sync all} {Синхронизировать всё}
+::msgcat::mcset ru {Sync all…} {Синхронизировать всё…}
 ::msgcat::mcset ru {Sync cancelled.} {Синхронизация отменена.}
 ::msgcat::mcset ru {Sync complete.} {Синхронизация завершена.}
 ::msgcat::mcset ru {Sync now} {Синхронизировать сейчас}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset ru {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Текущая диагностика (от языкового сервера или из «Проверки») отправляется вместе с этим файлом. При желании добавьте вопрос. Ответ — только текст; записать ничего нельзя.}
 ::msgcat::mcset ru {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Каталог и всё его содержимое удаляется. Это действие необратимо — если нужно лишь убрать его из промпта, лучше отключите его.}
 ::msgcat::mcset ru {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Каталог будет удалён. Папка плагина — это git-репозиторий, поэтому сначала создаётся снимок, и History… сможет всё вернуть.}
-::msgcat::mcset ru {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Редактор открывает файлы шлюза, включая удалённые экземпляры, и запускает на шлюзе языковой сервер для языка файла: tcl-lsp, typescript-language-server (TypeScript и JavaScript), rust-analyzer (crate или модуль плагина на Rust), clangd (C), racket-langserver и сервер Common Lisp. Наведение, переход к определению, автодополнение и живая диагностика работают для любого языка, для которого на шлюзе есть сервер; если сервера нет, редактор сообщает, какую программу туда установить, и сохраняет подсветку синтаксиса. «Проверка» запускает на шлюзе подходящий проверщик: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only или обработчики Racket и Lisp. Сохраняйте, перезагружайте в «Управлении расширениями» и тестируйте расширение, не публикуя локальное состояние.}
+::msgcat::mcset ru {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {Редактор открывает файлы шлюза, включая удалённые экземпляры, и запускает на шлюзе языковой сервер для языка файла: typescript-language-server (TypeScript и JavaScript), rust-analyzer (крейт или модуль Rust-плагина), clangd (C), racket-langserver, сервер Common Lisp и tcl-lsp для Tcl, где он есть у шлюза (пакеты veles для Linux поставляются с ним). Наведение, переход к определению, автодополнение и живая диагностика работают для каждого языка, для которого у шлюза есть сервер; когда сервера нет, редактор сообщает, какую программу туда установить, и сохраняет подсветку синтаксиса. «Проверить» запускает на шлюзе соответствующую проверку: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, читатели Racket и Lisp, а для Tcl — собственный tclsh движка (проверка полноты или lint от tcl-lsp, где он установлен). Сохраните, перезагрузите в разделе «Управление расширениями» и протестируйте расширение, не публикуя локальное состояние.}
 ::msgcat::mcset ru {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Первая передача готовит секреты, закреплённый образ и файлы среды выполнения, но не запускает PDS. Сохраните ключ KEK и ключ ротации PLC в офлайн-копию, затем сформируйте заново проверенный запрос с подтверждением резервной копии, чтобы настроить TLS по HTTP-01 и активацию. Записи DNS должны указывать напрямую на этот хост; veles не ставит прокси CDN и не меняет DNS.}
+::msgcat::mcset ru {The fleet is NOT consistent: %s node(s) differ.} {Флот НЕ согласован: отличаются узлы: %s.}
+::msgcat::mcset ru {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {Флот согласован с расхождениями: узлов с той же сборкой и совпадением по всему общему — %1$s; элементов, которых нет на каждом узле, — %2$s.}
+::msgcat::mcset ru {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {Флот согласован: узлов с той же сборкой, модулями и плагинами — %s.}
 ::msgcat::mcset ru {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Форма изменилась после генерации расширения. Сгенерируйте заново или посмотрите предпросмотр простого каркаса.}
+::msgcat::mcset ru {The gateway did not receive the purpose as written. Nothing was created.} {Шлюз не получил назначение в том виде, как оно написано. Ничего не создано.}
+::msgcat::mcset ru {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {Шлюз не отдаёт руководства по расширениям (он старше 0.2.2), а в этом настольном приложении их копии нет.}
 ::msgcat::mcset ru {The gateway itself is untouched.} {Сам шлюз при этом не затрагивается.}
 ::msgcat::mcset ru {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Шлюз перечитал конфигурацию: новые сессии используют её сразу, а ключ из хранилища будет использован следующим запросом. Telegram и IRC запустятся при следующем перезапуске шлюза: veles gateway restart.}
 ::msgcat::mcset ru {The installed component no longer matches the selected manifest. Review the component list again.} {Установленный компонент больше не соответствует выбранному манифесту. Просмотрите список компонентов заново.}
 ::msgcat::mcset ru {The installer preview has no verification signatures; apply is disabled.} {У предпросмотра установщика нет подписей проверки; применение отключено.}
 ::msgcat::mcset ru {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Задание и история его запусков удаляются. Это необратимо — если нужно лишь остановить, лучше поставить на паузу.}
+::msgcat::mcset ru {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {Ключи, которые переносит синхронизация конфигурации, по её правилам: локальные для узла ключи и учётные данные остаются на своём узле, а удерживаемый раздел ([acl], approvals, sandbox, hooks, plugins, MCP-серверы) меняется там, где его правят и отправляют, и затем ждёт владельца того узла.}
 ::msgcat::mcset ru {The log could not be read: %s} {Не удалось прочитать журнал: %s}
 ::msgcat::mcset ru {The manifest belongs to another component; its reply was discarded.} {Манифест принадлежит другому компоненту; его ответ отброшен.}
 ::msgcat::mcset ru {The profile changed. Review the fresh plan before applying it.} {Профиль изменился. Проверьте новый план перед применением.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset ru {The signed release preview was malformed; nothing was installed.} {Предварительный просмотр подписанного релиза оказался некорректным; ничего не установлено.}
 ::msgcat::mcset ru {The source buffer changed. Request a new proposal before applying.} {Исходный буфер изменился. Перед применением запросите новое предложение.}
 ::msgcat::mcset ru {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Хранилище откатывается на одну ревизию назад. Сам откат — тоже ревизия, поэтому его, в свою очередь, можно отменить.}
+::msgcat::mcset ru {The translator did not answer within %s seconds.} {Переводчик не ответил за %s с.}
 ::msgcat::mcset ru {The translator returned no text.} {Переводчик не вернул текст.}
 ::msgcat::mcset ru {The verification reply was malformed; no integrity result was accepted.} {Ответ проверки имел неверный формат; результат целостности не принят.}
 ::msgcat::mcset ru Themes Темы
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset ru {This challenge is over.} {Это испытание завершено.}
 ::msgcat::mcset ru {This code has expired. Ask for a new one.} {Срок действия этого кода истёк. Попросите новый.}
 ::msgcat::mcset ru {This does not start a service or claim signed-download verification.} {Это не запускает службу и не подтверждает проверку подписи загрузки.}
+::msgcat::mcset ru {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {Этот файл — исходный код ядра veles. Большинство изменений лучше оформить как расширение: оно переживает обновления и не требует пересборки — хук, инструмент, переопределение сервиса или драйвер провайдера на Tcl, TypeScript, Racket или Common Lisp, либо внешний Rust-плагин («Новое расширение» создаёт любое из этого), либо модуль или процессный плагин (руководство по расширениям показывает, как его запустить). Патч ядра — для того, что API расширений выразить не может. Оформить это изменение как расширение? Ваша правка остаётся в этом буфере несохранённой; повторное сохранение патчит файл ядра.}
 ::msgcat::mcset ru {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Этот шлюз не принимает секретные значения с этой машины: введите его там командой veles secret set %s или добавьте эту сеть в его [vault] trusted_networks}
 ::msgcat::mcset ru {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Это ровно то, что будет записано, — собственные байты движка, полученные на лету. Диск ещё не тронут.}
+::msgcat::mcset ru {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {Это исходный код ядра veles. Изменение в нём обычно лучше сделать расширением: «Новое расширение» — или сохраните, чтобы вам его предложили.}
 ::msgcat::mcset ru {This node is not a configured sync peer for any kind.} {Этот узел не настроен как партнёр по синхронизации ни для одного типа данных.}
 ::msgcat::mcset ru {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Этот плагин встроенный и доступен только для чтения. Удалите пользовательскую копию с тем же именем, чтобы использовать встроенную.}
 ::msgcat::mcset ru {This publishes the commit; no pull request is created yet.} {Это опубликует коммит; запрос на слияние пока не создаётся.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset ru Unassign {Снять назначение}
 ::msgcat::mcset ru {Undo last} {Отменить последнее}
 ::msgcat::mcset ru {Undo the last memory revision?} {Отменить последнюю ревизию памяти?}
+::msgcat::mcset ru {Unset %1$s on %2$s?} {Сбросить %1$s на %2$s?}
+::msgcat::mcset ru Unset… Сбросить…
 ::msgcat::mcset ru Unstage {Убрать из индекса}
 ::msgcat::mcset ru {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Пока IRC_ALLOWED_USERS в .env не называет ваш аккаунт, с ботом может говорить любой в сети — а без раздела [acl] как владелец, со всеми инструментами.}
 ::msgcat::mcset ru {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Пока TELEGRAM_ALLOWED_USERS в .env не называет ваш ID пользователя, с ботом может говорить любой, кто его найдёт — а без раздела [acl] как владелец, со всеми инструментами.}
 ::msgcat::mcset ru Untitled {Без заголовка}
-::msgcat::mcset ru {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Передача в upstream — явное действие публикации, а не автоматическая загрузка. В «Управлении расширениями» пункт «Передать» перечисляет все пользовательские расширения: выберите расширения и файлы, просмотрите diff и проверку на секреты, запустите проверки, затем создайте одну ветку и один PR (по умолчанию в veles) под выбранной вами git-идентичностью. Каждое расширение попадает в свой каталог в репозитории, а существующий там файл заменяется только после отдельного подтверждения. Никогда не публикуйте node.toml, локальные учётные данные, токены, приватные эндпоинты или постороннее состояние плагинов. Локальные снимки восстановления — не коммит в upstream и не PR.}
+::msgcat::mcset ru {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Вклад в апстрим — это явное действие публикации, а не автоматическая загрузка. В разделе «Управление расширениями» пункт «Внести вклад» перечисляет все пользовательские расширения: выберите расширения и файлы, просмотрите diff и проверку на секреты, запустите проверки, затем создайте одну ветку и один PR (по умолчанию в veles). Коммит использует окружную git-идентичность шлюза (user.name и user.email из его конфигурации git); задайте их заранее, если они должны отличаться. Каждое расширение попадает в свой каталог в репозитории, а существующий там файл заменяется только после отдельного подтверждения. Никогда не публикуйте node.toml, локальные учётные данные, токены, приватные адреса или постороннее состояние плагинов. Локальные снимки восстановления — это не коммит в апстрим и не PR.}
 ::msgcat::mcset ru {Upstream repository or fork URL} {URL апстрим-репозитория или форка}
 ::msgcat::mcset ru {Uptime class} {Категория времени работы}
 ::msgcat::mcset ru {Uptime: host %1$s, gateway %2$s} {Время работы: хост %1$s, шлюз %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset ru {Users — one role across networks and platforms} {Пользователи — одна роль во всех сетях и на всех платформах}
 ::msgcat::mcset ru {Using the phone, for the agent} {Управление телефоном для агента}
 ::msgcat::mcset ru {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Обычно совпадает с именем записи провайдера. При выборе Skip оставьте оба пустыми — неполная пара не маршрутизирует.}
+::msgcat::mcset ru {Value (TOML: "text", 5, true, [1, 2])} {Значение (TOML: "текст", 5, true, [1, 2])}
 ::msgcat::mcset ru {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Значения — это TOML: строки в кавычках, числа или списки. Записывается в [mcp_servers.<name>] — ваши комментарии и все остальные секции не трогаются.}
 ::msgcat::mcset ru Vault Секреты
 ::msgcat::mcset ru {Verified signed bundle installed. Restart the gateway before using the new core.} {Проверенный подписанный пакет установлен. Перезапустите шлюз, прежде чем использовать новое ядро.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset ru Voice {Дать voice}
 ::msgcat::mcset ru {Waiting for the model…} {Ожидание модели…}
 ::msgcat::mcset ru {Waiting for the model… Nothing has been written.} {Ожидание модели… Ничего не записано.}
+::msgcat::mcset ru Warning Предупреждение
 ::msgcat::mcset ru {Welcome to veles} {Добро пожаловать в veles}
 ::msgcat::mcset ru {What the agent can do here} {Что агент может делать здесь}
 ::msgcat::mcset ru {What veles may do on this phone. Each button opens the Android setting that changes it.} {Что veles может делать на этом телефоне. Каждая кнопка открывает настройку Android, которая это меняет.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset ru {Workflow SHA} {SHA рабочего процесса}
 ::msgcat::mcset ru {Workflow commit} {Коммит рабочего процесса}
 ::msgcat::mcset ru Worktree {Рабочее дерево}
+::msgcat::mcset ru {Write cancelled.} {Запись отменена.}
 ::msgcat::mcset ru {Write it} Записать
 ::msgcat::mcset ru {Write the design question first.} {Сначала напишите вопрос о проектировании.}
 ::msgcat::mcset ru {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Провайдер не записывается. Шлюз не маршрутизирует ни один ход, пока не появятся запись [[custom_providers]] и пара [model].}
+::msgcat::mcset ru Write… Записать…
 ::msgcat::mcset ru {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Запись ЛЮБОГО ключа [acl] переключает этот шлюз в курируемый режим: роль по умолчанию становится guest (fail-closed), и списки доступа перестают быть границей. Выбирайте это только с идентичностью владельца, которой вы доверяете.}
 ::msgcat::mcset ru {[model] provider} {Провайдер [model]}
 ::msgcat::mcset ru {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {провайдер [model] %{name} не соответствует ни одной записи [[custom_providers]] — укажите запись, которую пишет этот мастер, или ту, что уже есть в config.toml}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset ru {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset ru {asked by: %s} {запрошено: %s}
 ::msgcat::mcset ru {asking %s for its metrics…} {запрашиваю метрики у %s…}
+::msgcat::mcset ru {asking %s how it is supervised…} {спрашиваем у %s, как он управляется…}
 ::msgcat::mcset ru {attach a file} {Прикрепить файл}
 ::msgcat::mcset ru {attach an image or file} {прикрепить изображение или файл}
 ::msgcat::mcset ru {attach failed: %1$s} {не удалось подключиться: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset ru {channel-event reactions; /triggers add <name> network=… channel=… action=…} {реакции на события канала; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset ru {channels to join, a space or comma separated string} {каналы для входа — строка через пробел или запятую}
 ::msgcat::mcset ru chars символов
+::msgcat::mcset ru {check the buffer (diagnostics)} {проверить буфер (диагностика)}
 ::msgcat::mcset ru choice_next {перейти к следующему маршруту}
 ::msgcat::mcset ru choice_retry {повторить на том же маршруте}
 ::msgcat::mcset ru choice_stop {остановиться здесь}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset ru {command list unavailable (the gateway is not reachable)} {список команд недоступен (шлюз недоступен)}
 ::msgcat::mcset ru {command palette} {палитра команд}
 ::msgcat::mcset ru {command search} {поиск команд}
+::msgcat::mcset ru {command-center audit log} {журнал аудита командного центра}
 ::msgcat::mcset ru commands команды
 ::msgcat::mcset ru {commands stay on your own session; /leave returns from the joined session} {команды остаются в вашей сессии; /leave возвращает из присоединённой сессии}
 ::msgcat::mcset ru commands: команды:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset ru {config changes from peers that wait for you; /configsync apply lands them} {изменения конфигурации от узлов-партнёров, ожидающие вас; /configsync apply применяет их}
 ::msgcat::mcset ru {config file: %s} {файл конфигурации: %s}
 ::msgcat::mcset ru {config key} {ключ конфига}
+::msgcat::mcset ru {config result} {результат конфигурации}
 ::msgcat::mcset ru {config unavailable} {конфиг недоступен}
 ::msgcat::mcset ru {config unavailable: %s} {конфиг недоступен: %s}
 ::msgcat::mcset ru {config value} {значение конфига}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset ru doctor_resident {постоянно в каждом промпте: %{shown} из %{total} симв. (~%{tokens} токенов) — остальное подгружается по запросу: memory action=read path=%{path}}
 ::msgcat::mcset ru doctor_title {диагностика памяти}
 ::msgcat::mcset ru doctor_total {всего: %{chars} симв. в %{files} файлах (~%{tokens} токенов)}
-::msgcat::mcset ru {documentation is not in this source checkout: %s} {документации нет в этой копии исходного кода: %s}
 ::msgcat::mcset ru done готово
 ::msgcat::mcset ru {done · %1$s/%2$s} {готово · %1$s/%2$s}
 ::msgcat::mcset ru {done, but the model returned no text} {готово, но модель не вернула текст}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset ru {grant a role (owner) · /revoke <id> takes it back} {выдать роль (owner) · /revoke <id> забирает её}
 ::msgcat::mcset ru {grant a role to an identity} {выдать роль идентичности}
 ::msgcat::mcset ru {guards unreachable} {guards недоступны}
-::msgcat::mcset ru guts: внутренности:
+::msgcat::mcset ru {guts ▾} {внутренности ▾}
 ::msgcat::mcset ru {gw hooks} {хуки gw}
 ::msgcat::mcset ru {gw procs} {процедуры gw}
 ::msgcat::mcset ru {halt after N identical calls} {остановиться после N одинаковых вызовов}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset ru {live patching ARMED} {горячий патчинг ВКЛЮЧЁН}
 ::msgcat::mcset ru {live patching ARMED — an agent can now redefine procs in this window} {горячий патчинг ВКЛЮЧЁН — агент теперь может переопределять процедуры в этом окне}
 ::msgcat::mcset ru {live patching disarmed} {горячий патчинг выключен}
+::msgcat::mcset ru load нагрузка
 ::msgcat::mcset ru loaded загружено
 ::msgcat::mcset ru {loaded older messages} {загружены более ранние сообщения}
 ::msgcat::mcset ru loading… загрузка…
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset ru {no upstream reading for %s} {нет данных источника для %s}
 ::msgcat::mcset ru {no word match} {нет совпадения по слову}
 ::msgcat::mcset ru {no xdg-open — path copied instead} {xdg-open нет — вместо этого скопирован путь}
+::msgcat::mcset ru {nobody else's session is open on %s right now} {сейчас на %s нет открытых сессий других пользователей}
 ::msgcat::mcset ru {node log} {журнал узла}
 ::msgcat::mcset ru {none loaded} {ничего не загружено}
 ::msgcat::mcset ru {none recorded} {ничего не записано}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset ru {not installed} {не установлено}
 ::msgcat::mcset ru {not reported} {не сообщено}
 ::msgcat::mcset ru {not running} {не запущено}
+::msgcat::mcset ru {not saved: drafting the change as an extension} {не сохранено: изменение оформляется как расширение}
+::msgcat::mcset ru {not sent: %s} {не отправлено: %s}
 ::msgcat::mcset ru {not set in config.toml — the built-in default applies. %s} {не задано в config.toml — применяется встроенное умолчание. %s}
 ::msgcat::mcset ru {not set yet — /secret set it later} {ещё не задан — задайте позже через /secret set}
 ::msgcat::mcset ru {not signed: %s} {не подписано: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset ru {on no plan} {при отсутствии плана}
 ::msgcat::mcset ru {on the} на
 ::msgcat::mcset ru {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {вкл/выкл подавляет примечание механизма в транскрипте — для этой сессии или как умолчание, в зависимости от области ниже. Управляется только ПРИМЕЧАНИЕ; что каждый механизм ДЕЛАЕТ, задаётся в разделе, указанном в его строке, а «Настроить…» открывает его. Ручки guards можно править прямо на месте.}
+::msgcat::mcset ru {on; this gateway does not say whether they reach the home chat} {включено; этот шлюз не сообщает, доходят ли они до домашнего чата}
 ::msgcat::mcset ru {one-shot tcl-lsp diagnostics — no model turn} {разовая диагностика tcl-lsp — без хода модели}
 ::msgcat::mcset ru {open a saved file first} {сначала откройте сохранённый файл}
 ::msgcat::mcset ru {open links} {открывать ссылки}
+::msgcat::mcset ru {open one of the desktop's own source files} {откройте один из собственных исходных файлов настольного приложения}
 ::msgcat::mcset ru {open the engine log} {открыть журнал движка}
 ::msgcat::mcset ru {open the joined session before /leave (on %s)} {откройте присоединённую сессию перед /leave (на %s)}
 ::msgcat::mcset ru {open the selected child session} {открыть выбранную дочернюю сессию}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset ru {read-only: [approvals] allowlist} {только чтение: [approvals] список разрешённых}
 ::msgcat::mcset ru {read-only: this session lives on %1$s (as read at %2$s)} {только чтение: эта сессия находится на %1$s (по состоянию на %2$s)}
 ::msgcat::mcset ru {read-only: this skill comes from the %s library} {только чтение: этот навык из библиотеки %s}
+::msgcat::mcset ru {reading %1$s on %2$s…} {читаем %1$s на %2$s…}
 ::msgcat::mcset ru reasoning размышления
 ::msgcat::mcset ru {reasoning display: %1$s · %2$s blocks} {показ размышлений: %1$s · блоков: %2$s}
 ::msgcat::mcset ru {reasoning display: %s} {показ размышлений: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset ru {run failed: %s} {ошибка запуска: %s}
 ::msgcat::mcset ru {run in:} {запускать в:}
 ::msgcat::mcset ru running выполняется
+::msgcat::mcset ru {running %s on the listed nodes…} {выполняем %s на перечисленных узлах…}
 ::msgcat::mcset ru {running since %s} {работает с %s}
 ::msgcat::mcset ru {running subagents; /subagents cancel <id>} {активные субагенты; /subagents cancel <id>}
 ::msgcat::mcset ru {save failed} {не удалось сохранить}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset ru {send failed: %s} {отправка не удалась: %s}
 ::msgcat::mcset ru {send the message; while a turn runs, queue it as steering} {Отправить сообщение; пока идёт ход, оно встанет в очередь как steer}
 ::msgcat::mcset ru sent отправлено
-::msgcat::mcset ru {sent to the owner's home chat} {отправлено в домашний чат владельца}
+::msgcat::mcset ru {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {отправляется в домашний чат владельца тем шлюзом, который запускает его адаптер Telegram, а не этим}
+::msgcat::mcset ru {sent to the owner's home chat from this gateway} {отправляется в домашний чат владельца с этого шлюза}
 ::msgcat::mcset ru server сервер
 ::msgcat::mcset ru {server buffers merged} {буферы сервера объединены}
 ::msgcat::mcset ru {server buffers separate} {буферы сервера раздельные}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset ru {session, model, lifecycle} {сессия, модель, жизненный цикл}
 ::msgcat::mcset ru {session: %s} {сессия: %s}
 ::msgcat::mcset ru {sessions    %s} {сессии    %s}
+::msgcat::mcset ru {sessions you can join on %s (/join <name or id>):} {сессии, к которым можно присоединиться на %s (/join <имя или id>):}
 ::msgcat::mcset ru {sessions: unreachable} {сессии: недоступны}
 ::msgcat::mcset ru {set by} задано
 ::msgcat::mcset ru {set. %s} {задано. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset ru {split: %s} {сплит: %s}
 ::msgcat::mcset ru {ssh to %1$s failed: %2$s} {ssh к %1$s не удался: %2$s}
 ::msgcat::mcset ru {stale — no heartbeat within the threshold} {устарел — сигнала нет дольше порога}
+::msgcat::mcset ru {standing approval grants: always and this session; revoke one} {постоянные разрешения: «всегда» и «эта сессия»; отзовите любое}
 ::msgcat::mcset ru {standing global and session permission grants} {постоянные глобальные и сессионные разрешения на инструменты}
+::msgcat::mcset ru {start the line with // to send it as text} {начните строку с //, чтобы отправить её как текст}
 ::msgcat::mcset ru state состояние
 ::msgcat::mcset ru {state       never reached} {состояние       не достигалось}
 ::msgcat::mcset ru {state       reachable} {состояние       доступно}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset ru {the config.toml that will be written} {config.toml, который будет записан}
 ::msgcat::mcset ru {the default (config.toml)} {значение по умолчанию (config.toml)}
 ::msgcat::mcset ru {the engine refused these answers: %s} {движок отклонил эти ответы: %s}
+::msgcat::mcset ru {the file to open: type a path, then Return or Open} {файл для открытия: введите путь, затем Return или «Открыть»}
 ::msgcat::mcset ru {the first ACL owner identity} {первая идентичность владельца ACL}
 ::msgcat::mcset ru {the gateway answered without a report} {гейтвей ответил без отчёта}
 ::msgcat::mcset ru {the model/provider pair is incomplete — the gateway will not route until both are present} {пара модель/провайдер неполная — шлюз не будет маршрутизировать, пока не заданы обе}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset ru unknown неизвестно
 ::msgcat::mcset ru {unknown api_mode %{mode} — expected one of %{modes}} {неизвестный api_mode %{mode} — ожидается один из: %{modes}}
 ::msgcat::mcset ru {unknown bindings '%{rest}' · normie|emacs|vi} {неизвестная раскладка '%{rest}' · normie|emacs|vi}
+::msgcat::mcset ru {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {неизвестная команда %{cmd} здесь — /help перечисляет команды этой поверхности; ничего не отправлено}
 ::msgcat::mcset ru {unknown command /%s — /help lists them} {неизвестная команда /%s — список в /help}
 ::msgcat::mcset ru {unknown command: /%s} {неизвестная команда: /%s}
 ::msgcat::mcset ru {unknown keymap: %s (normie/emacs/vi)} {неизвестная раскладка: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset ru {upstream plan credits and windows — /usage is the local ledger} {кредиты и окна вышестоящего плана — /usage это локальный учёт}
 ::msgcat::mcset ru {upstream plan quota} {квота вышестоящего плана}
 ::msgcat::mcset ru uptime аптайм
-::msgcat::mcset ru {usage: /join <session> or /join <instance>/<session>} {использование: /join <session> или /join <instance>/<session>}
+::msgcat::mcset ru {usage: /export [md|json]} {использование: /export [md|json]}
 ::msgcat::mcset ru {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {использование: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset ru {usage: /resume <id or prefix>} {использование: /resume <id или префикс>}
 ::msgcat::mcset ru {usage: /resume <id-or-prefix>} {использование: /resume <id-or-prefix>}

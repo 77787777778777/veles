@@ -33,22 +33,32 @@ package require msgcat
 ::msgcat::mcset hr {%1$s %2$s} {%1$s %2$s}
 ::msgcat::mcset hr {%1$s %2$s done} {%1$s %2$s gotovo}
 ::msgcat::mcset hr {%1$s %2$s failed: %3$s} {%1$s %2$s nije uspjelo: %3$s}
+::msgcat::mcset hr {%1$s %2$s over ssh anyway?} {%1$s %2$s preko ssh ipak?}
 ::msgcat::mcset hr {%1$s %2$s over ssh…} {%1$s %2$s preko ssh…}
 ::msgcat::mcset hr {%1$s %2$s — %3$s} {%1$s %2$s — %3$s}
 ::msgcat::mcset hr {%1$s (%2$s waiting)} {%1$s (%2$s na čekanju)}
 ::msgcat::mcset hr {%1$s / %2$s  ·  reasoning %3$s} {%1$s / %2$s  ·  razmišljanje %3$s}
 ::msgcat::mcset hr {%1$s = %2$s here} {%1$s = %2$s ovdje}
+::msgcat::mcset hr {%1$s = %2$s on %3$s} {%1$s = %2$s na %3$s}
 ::msgcat::mcset hr {%1$s NOT saved: %2$s} {%1$s NIJE spremljeno: %2$s}
 ::msgcat::mcset hr {%1$s belongs to the %2$s library and is read-only — copy it with New… to change it} {%1$s pripada biblioteci %2$s i samo je za čitanje — kopirajte je s New… da biste je promijenili}
 ::msgcat::mcset hr {%1$s belongs to the %2$s library — veles never deletes another tool's skills} {%1$s pripada biblioteci %2$s — veles nikad ne briše vještine drugog alata}
+::msgcat::mcset hr {%1$s cannot restart itself: %2$s} {%1$s se ne može sam ponovno pokrenuti: %2$s}
+::msgcat::mcset hr {%1$s differs: %2$s} {%1$s se razlikuje: %2$s}
 ::msgcat::mcset hr {%1$s every cron job on %2$s?} {%1$s svaki cron zadatak na %2$s?}
 ::msgcat::mcset hr {%1$s failed: %2$s} {%1$s nije uspjelo: %2$s}
 ::msgcat::mcset hr {%1$s in / %2$s out / %3$s calls} {%1$s ulaz / %2$s izlaz / %3$s poziva}
+::msgcat::mcset hr {%1$s is back after %2$s s (veles %3$s).} {%1$s je ponovno dostupan nakon %2$s s (veles %3$s).}
 ::msgcat::mcset hr {%1$s is node %2$s, not %3$s. Fix its node id in Edit….} {%1$s je čvor %2$s, a ne %3$s. Ispravite njegov id čvora u Uredi….}
 ::msgcat::mcset hr {%1$s is not a whole number} {%1$s nije cijeli broj}
+::msgcat::mcset hr {%1$s is not on: %2$s} {%1$s nije uključeno: %2$s}
+::msgcat::mcset hr {%1$s is not set on %2$s: the default applies.} {%1$s nije postavljeno na %2$s: vrijedi zadano.}
 ::msgcat::mcset hr {%1$s is reachable (%2$s ms).} {%1$s je dostupan (%2$s ms).}
+::msgcat::mcset hr {%1$s is running %2$s turn(s). Restart it anyway?} {%1$s izvodi %2$s krug(ova). Ipak ga ponovno pokrenuti?}
 ::msgcat::mcset hr {%1$s is set to something this box cannot edit (%2$s)} {%1$s je postavljeno na nešto što ovo računalo ne može mijenjati (%2$s)}
 ::msgcat::mcset hr {%1$s is unreachable: %2$s} {%1$s nije dostupan: %2$s}
+::msgcat::mcset hr {%1$s is up, but its node binding is wrong: %2$s} {%1$s radi, ali njegova veza s čvorom nije ispravna: %2$s}
+::msgcat::mcset hr {%1$s not compared: %2$s} {%1$s nije uspoređen: %2$s}
 ::msgcat::mcset hr {%1$s of %2$s characters} {%1$s od %2$s znakova}
 ::msgcat::mcset hr {%1$s of %2$s sessions} {%1$s od %2$s sesija}
 ::msgcat::mcset hr {%1$s of %2$s skills reach the prompt} {%1$s od %2$s vještina dospijeva do upita}
@@ -63,8 +73,12 @@ package require msgcat
 ::msgcat::mcset hr {%1$s) %2$s} {%1$s) %2$s}
 ::msgcat::mcset hr {%1$s/%2$s} {%1$s/%2$s}
 ::msgcat::mcset hr {%1$s: %2$s} {%1$s: %2$s}
+::msgcat::mcset hr {%1$s: %2$s on the gateway} {%1$s: %2$s na pristupniku}
+::msgcat::mcset hr {%1$s: %2$s on the gateway (ships with veles)} {%1$s: %2$s na pristupniku (dolazi s velesom)}
 ::msgcat::mcset hr {%1$s: %2$s → %3$s %4$s (%5$s)} {%1$s: %2$s → %3$s %4$s (%5$s)}
+::msgcat::mcset hr {%1$s: no language server on the gateway. %2$s} {%1$s: nema jezičnog poslužitelja na pristupniku. %2$s}
 ::msgcat::mcset hr {%1$s: the last %2$s of %3$s lines its gateway keeps in memory, secrets redacted on that node.} {%1$s: posljednjih %2$s od %3$s redaka koje njegov pristupnik drži u memoriji; tajne su na tom čvoru uklonjene.}
+::msgcat::mcset hr {%1$s: user plugin %2$s shadows the bundled one with the same content (%3$s)} {%1$s: korisnički dodatak %2$s nadjačava ugrađeni istog sadržaja (%3$s)}
 ::msgcat::mcset hr {%d MCP server(s) configured} {%d konfiguriranih MCP poslužitelja}
 ::msgcat::mcset hr {%d entries} {%d zapisa}
 ::msgcat::mcset hr {%d file(s) of the extension will be written exactly as reviewed. If any of them changed since the preview, nothing is written. No commit, push or PR happens.} {%d datoteka proširenja bit će zapisano točno onako kako je pregledano. Ako se neka od njih promijenila nakon pregleda, ništa se ne zapisuje. Nema commita, pusha ni PR-a.}
@@ -79,6 +93,7 @@ package require msgcat
 ::msgcat::mcset hr {%s (stale)} {%s (zastarjelo)}
 ::msgcat::mcset hr {%s (this session)} {%s (ova sesija)}
 ::msgcat::mcset hr {%s GB free of %s GB} {%s GB slobodno od %s GB}
+::msgcat::mcset hr {%s The command goes over ssh to the configured host, which this check could not tie to the node.} {%s Naredba ide preko ssh na konfiguriranog hosta, a ova provjera nije mogla to povezati s čvorom.}
 ::msgcat::mcset hr {%s already exists — open it from the list} {%s već postoji — otvori je s popisa}
 ::msgcat::mcset hr {%s changed since you opened it — nothing was overwritten; copy your text out, then Reload} {%s se promijenila otkako si je otvorio — ništa nije prepisano; kopiraj svoj tekst, zatim Ponovno učitaj}
 ::msgcat::mcset hr {%s cleared for this buffer} {%s očišćeno za ovaj međuspremnik}
@@ -86,9 +101,12 @@ package require msgcat
 ::msgcat::mcset hr {%s comes from config.toml [acl] — edit there} {%s dolazi iz config.toml [acl] — mijenjajte tamo}
 ::msgcat::mcset hr {%s config change(s) wait for you — /configsync} {promjene konfiguracije koje čekaju vas: %s — /configsync}
 ::msgcat::mcset hr {%s did not become healthy within 30s} {%s nije postao zdrav unutar 30s}
+::msgcat::mcset hr {%s did not come back within 120 s: look at its log where it runs.} {%s se nije vratio u roku od 120 s: pogledajte njegov dnevnik tamo gdje radi.}
 ::msgcat::mcset hr {%s done} {%s gotovo}
 ::msgcat::mcset hr {%s failed: %s} {%s nije uspjelo: %s}
+::msgcat::mcset hr {%s holds a credential: it stays on its node and is not shown.} {%s sadrži vjerodajnicu: ona ostaje na svom čvoru i ne prikazuje se.}
 ::msgcat::mcset hr {%s is already split} {%s je već podijeljen}
+::msgcat::mcset hr {%s is restarting; waiting for it to come back…} {%s se ponovno pokreće; čekamo da se vrati…}
 ::msgcat::mcset hr {%s is the language in use — pick another one to swap with} {%s je jezik u upotrebi — odaberi drugi za zamjenu}
 ::msgcat::mcset hr {%s is up} {%s radi}
 ::msgcat::mcset hr {%s keys — any key closes} {%s tipki — bilo koja tipka zatvara}
@@ -149,6 +167,7 @@ package require msgcat
 ::msgcat::mcset hr {; shadows bundled} {; nadjačava ugrađeni}
 ::msgcat::mcset hr {A config offer can change settings and a vault offer merges secrets; changes to a security section still wait for the owner.} {Ponuda konfiguracije može promijeniti postavke, a ponuda trezora spaja tajne; promjene u sigurnosnom odjeljku i dalje čekaju vlasnika.}
 ::msgcat::mcset hr {A failing plugin may drop hooks mid-turn.} {Neispravan dodatak može izgubiti hooks usred okreta.}
+::msgcat::mcset hr {A held section: it is not written from here; edit it on a node and push config, and its owner applies it there.} {Zadržani odjeljak: odavde se ne zapisuje; uredite ga na čvoru i pošaljite konfiguraciju, a njegov vlasnik ga tamo primjenjuje.}
 ::msgcat::mcset hr {A local server: no key is needed unless you set one up.} {Lokalni poslužitelj: ključ nije potreban, osim ako ga niste sami postavili.}
 ::msgcat::mcset hr {A signed release is staged only after preflight. Restart/verify, continuation and rollback are separate actions. A healthy process must report the exact reviewed source revision.} {Potpisano izdanje postavlja se samo nakon preflight provjere. Ponovno pokretanje/provjera, nastavak i povratak su zasebne radnje. Zdrav proces mora prijaviti točnu pregledanu reviziju izvora.}
 ::msgcat::mcset hr {A value is stored for %s — leave this empty to keep it.} {Za %s je spremljena vrijednost — ostavite ovo prazno da je zadržite.}
@@ -207,6 +226,8 @@ package require msgcat
 ::msgcat::mcset hr {Asking the provider for its models…} {Tražim modele od pružatelja…}
 ::msgcat::mcset hr Attach Privitak
 ::msgcat::mcset hr {Attach to the next message} {Priloži uz sljedeću poruku}
+::msgcat::mcset hr {Audit log unavailable: %s} {Dnevnik revizije nije dostupan: %s}
+::msgcat::mcset hr {Audit log…} {Dnevnik revizije…}
 ::msgcat::mcset hr {Author guide} {Vodič za autore}
 ::msgcat::mcset hr {Automatically discovered from the attached gateway's cluster registry.} {Automatski otkriveno iz registra klastera povezanog pristupnika.}
 ::msgcat::mcset hr Back Natrag
@@ -220,8 +241,12 @@ package require msgcat
 ::msgcat::mcset hr {Browse sessions} {Pregledaj sesije}
 ::msgcat::mcset hr {Build manifest + preflight} {Manifest gradnje + preflight provjera}
 ::msgcat::mcset hr {Build: veles %1$s, revision %2$s (%3$s %4$s)} {Izrada: veles %1$s, revizija %2$s (%3$s %4$s)}
+::msgcat::mcset hr {Bulk %1$s failed: %2$s} {Skupna radnja %1$s nije uspjela: %2$s}
+::msgcat::mcset hr {Bulk %1$s: %2$s (%3$s).} {Skupna radnja %1$s: %2$s (%3$s).}
+::msgcat::mcset hr {Bulk action cancelled.} {Skupna radnja otkazana.}
 ::msgcat::mcset hr {C-a/C-e line ends · C-b/C-f char · M-b/M-f word · C-k kill to EOL · C-y yank · M-w copy · C-w kill region · C-space set mark · C-/ undo} {C-a/C-e kraj reda · C-b/C-f znak · M-b/M-f riječ · C-k briši do kraja reda · C-y yank · M-w kopiraj · C-w briši regiju · C-space postavi oznaku · C-/ poništi}
 ::msgcat::mcset hr {C-g aborts everything · C-j newline · M-p/M-n history · Tab complete} {C-g prekida sve · C-j novi red · M-p/M-n povijest · Tab dovršava}
+::msgcat::mcset hr {CPU: %1$s cores, %2$s%% busy over the last %3$s s} {CPU: %1$s jezgri, %2$s%% zauzeća u posljednjih %3$s s}
 ::msgcat::mcset hr {CPU: %1$s cores, load %2$s / %3$s / %4$s (%5$s%% of the cores)} {CPU: %1$s jezgri, opterećenje %2$s / %3$s / %4$s (%5$s%% jezgri)}
 ::msgcat::mcset hr Cancel Odustani
 ::msgcat::mcset hr {Cancel task} {Prekini zadatak}
@@ -235,7 +260,7 @@ package require msgcat
 ::msgcat::mcset hr {Channels (e.g. #veles #dev)} {Kanali (npr. #veles #dev)}
 ::msgcat::mcset hr Chat Chat
 ::msgcat::mcset hr {Chat — not attached; press Attach in the Instances tab} {Chat — nije priključen; pritisnite Priključi u kartici Instance}
-::msgcat::mcset hr {Check (lsp)} {Provjeri (lsp)}
+::msgcat::mcset hr {Check (C-c C-k)} {Provjeri (C-c C-k)}
 ::msgcat::mcset hr {Check again} {Provjeri ponovno}
 ::msgcat::mcset hr {Check files} {Provjeri datoteke}
 ::msgcat::mcset hr Checkpoints {Kontrolne točke}
@@ -261,6 +286,7 @@ package require msgcat
 ::msgcat::mcset hr {Close (Esc)} {Zatvori (Esc)}
 ::msgcat::mcset hr {Close the setup wizard? Nothing has been written yet.} {Zatvoriti čarobnjak za postavljanje? Još ništa nije zapisano.}
 ::msgcat::mcset hr {Code actions} {Akcije koda}
+::msgcat::mcset hr {Command-center audit log} {Dnevnik revizije zapovjednog središta}
 ::msgcat::mcset hr Commit Commit
 ::msgcat::mcset hr {Commit ready for review. Push is a separate action.} {Commit spreman za pregled. Push je zasebna radnja.}
 ::msgcat::mcset hr {Complete every PDS field, including the pinned image digest, before previewing the handoff.} {Ispunite sva PDS polja, uključujući pričvršćeni sažetak slike, prije pregleda predaje.}
@@ -276,14 +302,17 @@ package require msgcat
 ::msgcat::mcset hr {Config differs: %s} {Konfiguracija se razlikuje: %s}
 ::msgcat::mcset hr {Config log: that node has %1$s's changes up to %3$s, this gateway up to %2$s} {Dnevnik konfiguracije: taj čvor ima promjene za %1$s do %3$s, ovaj pristupnik do %2$s}
 ::msgcat::mcset hr {Config log: this gateway has %1$s's changes up to %2$s, that node up to %3$s} {Dnevnik konfiguracije: ovaj pristupnik ima promjene za %1$s do %2$s, taj čvor do %3$s}
+::msgcat::mcset hr {Config of %s} {Konfiguracija čvora %s}
 ::msgcat::mcset hr {Config only on that node: %s} {Konfiguracija samo na tom čvoru: %s}
 ::msgcat::mcset hr {Config only on this gateway: %s} {Konfiguracija samo na ovom pristupniku: %s}
+::msgcat::mcset hr {Config: %s} {Konfiguracija: %s}
 ::msgcat::mcset hr Configure Konfiguriraj
 ::msgcat::mcset hr {Configure %s} {Konfiguriraj %s}
 ::msgcat::mcset hr {Configure translator} {Podesi prevoditelja}
 ::msgcat::mcset hr {Configured desktop gateway} {Podešen desktop pristupnik}
 ::msgcat::mcset hr Configure… Konfiguriraj…
 ::msgcat::mcset hr {Configuring %s} {Konfiguriranje %s}
+::msgcat::mcset hr Config… Konfiguracija…
 ::msgcat::mcset hr {Confirm or discard the current signed review before starting another download.} {Potvrdite ili odbacite trenutačnu provjeru potpisanog izdanja prije novog preuzimanja.}
 ::msgcat::mcset hr {Container host: typed host plan and privileged CLI handoff} {Kontejnerski domaćin: razrađen plan domaćina i predaja CLI-u s administratorskim pravima}
 ::msgcat::mcset hr {Context window} {Prozor konteksta}
@@ -308,8 +337,12 @@ package require msgcat
 ::msgcat::mcset hr {Create the bot with @BotFather, then paste its token below: it goes into the encrypted vault, never into config.toml.} {Napravite bota preko @BotFather, a zatim zalijepite njegov token ispod: ide u šifrirani trezor, nikad u config.toml.}
 ::msgcat::mcset hr {Create this extension?} {Izraditi ovaj dodatak?}
 ::msgcat::mcset hr {Create this generated extension?} {Stvoriti ovo generirano proširenje?}
+::msgcat::mcset hr {Created and loaded. Review and test the extension before publishing.} {Stvoreno i učitano. Pregledajte i testirajte proširenje prije objavljivanja.}
 ::msgcat::mcset hr {Created and reloaded. Review and test the extension before publishing.} {Izrađeno i ponovno učitano. Pregledajte i isprobajte dodatak prije objave.}
 ::msgcat::mcset hr {Created, but reload failed} {Izrađeno, ali ponovno učitavanje nije uspjelo}
+::msgcat::mcset hr {Created, not loaded} {Stvoreno, nije učitano}
+::msgcat::mcset hr {Created, not loaded yet: run cargo build --release in the extension's directory, then reload it in Manage extensions.} {Stvoreno, još nije učitano: pokrenite cargo build --release u mapi proširenja, zatim ga ponovno učitajte u Upravljanju proširenjima.}
+::msgcat::mcset hr {Created. This gateway does not say whether it loaded the extension: see its state in Manage extensions.} {Stvoreno. Ovaj pristupnik ne kaže je li učitao proširenje: pogledajte njegovo stanje u Upravljanju proširenjima.}
 ::msgcat::mcset hr {Creates %s/<name>/SKILL.md from a template and opens it. The frontmatter description is the only part that reaches the prompt index, so make it say WHEN to use the skill.} {Stvara %s/<name>/SKILL.md iz predloška i otvara ga. Opis u frontmatteru je jedini dio koji dospijeva u indeks upita, zato neka govori KADA koristiti vještinu.}
 ::msgcat::mcset hr {Cron history} {Cron povijest}
 ::msgcat::mcset hr {Cron jobs} {Cron zadaci}
@@ -333,10 +366,13 @@ package require msgcat
 ::msgcat::mcset hr {Delete user} {Obriši korisnika}
 ::msgcat::mcset hr {Delete workspace?} {Obrisati radni prostor?}
 ::msgcat::mcset hr Deop {Oduzmi op}
+::msgcat::mcset hr {Deployment consistency unknown: %s node(s) could not be compared.} {Usklađenost postavljanja nepoznata: %s čvor(ova) nije bilo moguće usporediti.}
+::msgcat::mcset hr {Deployment consistency: not checked yet (Drift… compares every node).} {Usklađenost postavljanja: još nije provjerena (Odstupanja… uspoređuju svaki čvor).}
 ::msgcat::mcset hr {Describe the change. The AI may change or add several files of this extension. Every file is shown as a diff, and nothing is written before you confirm.} {Opišite promjenu. AI može promijeniti ili dodati nekoliko datoteka ovog proširenja. Svaka se datoteka prikazuje kao diff i ništa se ne zapisuje prije vaše potvrde.}
 ::msgcat::mcset hr {Describe the change. The AI may propose a replacement, but cannot write it before you inspect and confirm the diff.} {Opišite promjenu. AI može predložiti zamjenu, ali ne može je zapisati prije nego što pregledate i potvrdite razliku.}
 ::msgcat::mcset hr {Describe the requested extension change first.} {Prvo opišite traženu promjenu dodatka.}
 ::msgcat::mcset hr Description Opis
+::msgcat::mcset hr {Desktop turns continue from their saved history after the restart; connector, A2A, mail, cron and subagent turns do not.} {Krugovi na stolnom računalu nastavljaju iz spremljene povijesti nakon ponovnog pokretanja; krugovi konektora, A2A, pošte, cron-a i podagenata ne.}
 ::msgcat::mcset hr {Desktop: local core, modules and process plugins} {Desktop: lokalna jezgra, moduli i dodaci procesa}
 ::msgcat::mcset hr Detach Odspoji
 ::msgcat::mcset hr {Detach foreground} {Odvoji prvi plan}
@@ -364,6 +400,7 @@ package require msgcat
 ::msgcat::mcset hr {Download and verify the release manifest and host archive before installing. All five identity fields are required. The gateway keeps the private staged archive; nothing is installed by this preview.} {Preuzmite i provjerite manifest izdanja i arhivu računala domaćina prije instalacije. Svih pet polja identiteta je obavezno. Pristupnik čuva privatnu pripremljenu arhivu; ovim pregledom ništa se ne instalira.}
 ::msgcat::mcset hr {Downloading and verifying the signed release…} {Preuzimanje i provjera potpisanog izdanja…}
 ::msgcat::mcset hr {Draft this as an extension?} {Sastaviti ovo kao dodatak?}
+::msgcat::mcset hr {Draft this change as an extension?} {Sastaviti ovu promjenu kao proširenje?}
 ::msgcat::mcset hr {Drag to scroll; a quick swipe goes further.} {Povucite za pomicanje; brzo povlačenje ide dalje.}
 ::msgcat::mcset hr {Drift check failed: %s} {Provjera odstupanja nije uspjela: %s}
 ::msgcat::mcset hr {Drift check: %s node(s) differ from this gateway.} {Provjera odstupanja: %s čvorova razlikuje se od ovog pristupnika.}
@@ -391,6 +428,7 @@ package require msgcat
 ::msgcat::mcset hr Eval→gw Eval→gw
 ::msgcat::mcset hr {Every change to %s is committed. Restoring puts the whole directory back to that commit — and snapshots the current state first, so it is not a one-way door.} {Svaka izmjena u %s se spremi kao commit. Vraćanje postavlja cijeli direktorij natrag na taj commit — uz prethodnu snimku trenutnog stanja, pa nije jednosmjerna vrata.}
 ::msgcat::mcset hr {Every plugin file goes back to that commit. The current state is committed first.} {Svaka datoteka dodatka vraća se na taj commit. Trenutno stanje se najprije zabilježi.}
+::msgcat::mcset hr {Every tier: New extension writes a Tcl, TypeScript, Racket or Common Lisp extension, or an out-of-tree Rust plugin (a cdylib on the veles-plugin-abi-sdk crate: build it with cargo build --release, then reload it in Manage extensions). Two tiers live outside the user plugin directory and start from the command line: a module, a Rust library built together with veles (veles plugins new NAME --kind overlay writes its repository), and a process plugin, a program on the veles-plugin-sdk crate that the gateway runs and supervises. The Author guide has a section for each.} {Svaka razina: Novo proširenje piše proširenje u Tclu, TypeScriptu, Racketu ili Common Lispu, ili Rust dodatak izvan stabla (cdylib na cratu veles-plugin-abi-sdk: izgradite ga s cargo build --release, zatim ga ponovno učitajte u Upravljanju proširenjima). Dvije razine žive izvan mape korisničkih dodataka i pokreću se iz zapovjednog retka: modul, Rust biblioteka izgrađena zajedno s velesom (veles plugins new NAME --kind overlay zapisuje njegovo spremište), i procesni dodatak, program na cratu veles-plugin-sdk koji pristupnik pokreće i nadzire. Vodič za autore ima odjeljak za svaku.}
 ::msgcat::mcset hr {Exact commit} {Točan commit}
 ::msgcat::mcset hr {Exact permission rule} {Točno pravilo dozvole}
 ::msgcat::mcset hr {Example: a hook} {Primjer: hook}
@@ -402,6 +440,7 @@ package require msgcat
 ::msgcat::mcset hr {Explain the diagnostics} {Objasni dijagnostiku}
 ::msgcat::mcset hr Export… Izvezi…
 ::msgcat::mcset hr {Extension API} {API dodataka}
+::msgcat::mcset hr {Extension API reference} {Referenca API-ja proširenja}
 ::msgcat::mcset hr {Extension development} {Razvoj dodataka}
 ::msgcat::mcset hr {Extension guide} {Vodič za dodatke}
 ::msgcat::mcset hr {Extension source} {Izvor dodatka}
@@ -457,6 +496,7 @@ package require msgcat
 ::msgcat::mcset hr {Guards — what the harness stops, and where it stands now} {Zaštite — što harness zaustavlja i gdje trenutno stoji}
 ::msgcat::mcset hr {Handlers run in the order shown; the first one to return a non-empty value wins. Switching one off skips it without unregistering it, and the choice is kept in config.toml so a plugin reload cannot quietly turn it back on.} {Obrađivači se izvode prikazanim redoslijedom; prvi koji vrati nepraznu vrijednost pobjeđuje. Isključivanje jednog ga preskače bez odjave, a odabir se čuva u config.toml tako da ponovno učitavanje dodatka ne može tiho vratiti uključenim.}
 ::msgcat::mcset hr Health Stanje
+::msgcat::mcset hr {Health alerts} {Zdravstvene obavijesti}
 ::msgcat::mcset hr {Health alerts (%s):} {Upozorenja o zdravlju (%s):}
 ::msgcat::mcset hr Heartbeat Heartbeat
 ::msgcat::mcset hr {Heartbeat age: %s s} {Starost otkucaja: %s s}
@@ -503,10 +543,13 @@ package require msgcat
 ::msgcat::mcset hr Install… Instaliraj…
 ::msgcat::mcset hr {Instance name (for example an IRC network)} {Naziv instance (na primjer IRC mreža)}
 ::msgcat::mcset hr Instances Instance
+::msgcat::mcset hr {Instead of patching %s: } {Umjesto krpanja %s: }
 ::msgcat::mcset hr {It becomes the current content, as a new revision — so the restore can be undone too.} {Postaje trenutni sadržaj, kao nova revizija — pa se i vraćanje može poništiti.}
 ::msgcat::mcset hr {It goes into the encrypted vault on this machine. The agent never sees it: it can only use it as $%s in commands, or send it to the hosts it is allowed.} {Ide u šifrirani trezor na ovom računalu. Agent ga nikad ne vidi: može ga samo koristiti kao $%s u naredbama ili ga slati na dopuštene hostove.}
 ::msgcat::mcset hr {It is removed from the cluster registry fleet-wide: the next gossip exchange tells every 0.2.0 peer to drop it too, and none of them merges it back. A peer older than 0.2.0 keeps listing it. If the machine comes back and heartbeats, it is registered again. Sync peers and saved instances are untouched.} {Uklonjen je iz registra klastera na razini cijele flote: sljedeća razmjena gossipa kaže svakom partneru 0.2.0 da ga i on odbaci i nijedan ga ne vraća natrag. Partner stariji od 0.2.0 i dalje ga navodi. Ako se stroj vrati i pošalje otkucaj, ponovno se registrira. Sinkronizacijski partneri i spremljene instance ostaju netaknuti.}
+::msgcat::mcset hr {It is written into that node's config.toml as an edit made there; config sync then carries it to the nodes that sync config with it.} {Zapisuje se u config.toml tog čvora kao tamo načinjena izmjena; sinkronizacija konfiguracije zatim je prenosi na čvorove koji s njim sinkroniziraju konfiguraciju.}
 ::msgcat::mcset hr {It leaves memory now. Its history keeps every revision, and History… can restore it.} {Sada napušta memoriju. Njezina povijest čuva svaku reviziju, a Povijest… je može vratiti.}
+::msgcat::mcset hr {Its gateway stops and %s.} {Njegov se pristupnik zaustavlja, a zatim %s.}
 ::msgcat::mcset hr Join {Pridruži se}
 ::msgcat::mcset hr {Join a pool} {Pridruži se skupini strojeva}
 ::msgcat::mcset hr {Join the pool of %1$s as %2$s? The pool will reach this phone at %3$s.} {Pridružiti se skupini strojeva %1$s kao %2$s? Skupina će ovaj telefon dosezati na %3$s.}
@@ -515,6 +558,7 @@ package require msgcat
 ::msgcat::mcset hr Joining… Pridruživanje…
 ::msgcat::mcset hr Join… {Pridruži se…}
 ::msgcat::mcset hr {Jump to composer} {Skoči na sastavljač}
+::msgcat::mcset hr {Key (for example model.default)} {Ključ (na primjer model.default)}
 ::msgcat::mcset hr Keybindings Tipkovničkekratice
 ::msgcat::mcset hr {Keyboard help} {Pomoć za tipkovnicu}
 ::msgcat::mcset hr {Kick %1$s from %2$s?} {Izbaciti %1$s iz %2$s?}
@@ -522,6 +566,7 @@ package require msgcat
 ::msgcat::mcset hr {LLM provider} {Pružatelj LLM-a}
 ::msgcat::mcset hr Language Jezik
 ::msgcat::mcset hr {Language (i18n)} {Jezik (i18n)}
+::msgcat::mcset hr {Language servers on this gateway} {Jezični poslužitelji na ovom pristupniku}
 ::msgcat::mcset hr Language… Jezik…
 ::msgcat::mcset hr {Last active} {Zadnja aktivnost}
 ::msgcat::mcset hr {Last probe: %1$s — %2$s} {Zadnja provjera: %1$s — %2$s}
@@ -533,6 +578,7 @@ package require msgcat
 ::msgcat::mcset hr Level Razina
 ::msgcat::mcset hr {Lift lockdown} {Ukloni blokadu}
 ::msgcat::mcset hr Lines Redaka
+::msgcat::mcset hr {List targets…} {Popis meta…}
 ::msgcat::mcset hr {List the provider's models} {Dohvati modele pružatelja}
 ::msgcat::mcset hr Load Opterećenje
 ::msgcat::mcset hr {Load more} {Učitaj još}
@@ -588,10 +634,11 @@ package require msgcat
 ::msgcat::mcset hr Next Dalje
 ::msgcat::mcset hr Nickname Nadimak
 ::msgcat::mcset hr {NixOS: emit a module snippet; do not edit host declarations} {NixOS: ispiši odlomak modula; nemojte uređivati deklaracije domaćina}
-::msgcat::mcset hr {No SSH lifecycle target is configured for this node. Add an instance explicitly to deploy or restart it.} {Za ovaj čvor nije konfiguriran SSH cilj životnog ciklusa. Eksplicitno dodajte instancu da biste ga rasporedili ili ponovno pokrenuli.}
+::msgcat::mcset hr {No SSH lifecycle target is configured for this node: Restart asks the node to restart itself through its supervisor; Fleet deploy needs a saved instance with an ssh target.} {Za ovaj čvor nije konfigurirana ssh meta za upravljanje životnim ciklusom: Ponovno pokretanje zamoli čvor da se sam ponovno pokrene preko svog nadzornika; Postavljanje flote treba spremljenu instancu sa ssh metom.}
 ::msgcat::mcset hr {No additional push happens.} {Ne događa se dodatni push.}
 ::msgcat::mcset hr {No apps yet. Ask the agent to make one: “make me an app that…”} {Još nema aplikacija. Zamolite agenta da napravi jednu: „napravi mi aplikaciju koja…”}
 ::msgcat::mcset hr {No code in the picture. Hold the phone closer, straight on, and scan again.} {Na slici nema koda. Držite telefon bliže, ravno, i ponovno skenirajte.}
+::msgcat::mcset hr {No command-center action is recorded on this gateway yet.} {Na ovom pristupniku još nije zabilježena nijedna radnja iz zapovjednog središta.}
 ::msgcat::mcset hr {No configuration snapshot will be restored.} {Nijesta konfiguracijska snimka neće biti vraćena.}
 ::msgcat::mcset hr {No configured sync peer for this node.} {Nema konfiguriranog partnera za sinkronizaciju za ovaj čvor.}
 ::msgcat::mcset hr {No dedicated translator configured. Use Configure translator to choose its provider, model and target language.} {Nema namjenskog prevoditelja. Koristite Podesi prevoditelja za odabir pružatelja, modela i ciljnog jezika.}
@@ -666,6 +713,7 @@ package require msgcat
 ::msgcat::mcset hr {Phones made by %s also stop apps on their own. In veles' app settings, let it start by itself and run in the background.} {Telefoni proizvođača %s i sami zaustavljaju aplikacije. U postavkama aplikacije veles dopustite joj da se sama pokreće i radi u pozadini.}
 ::msgcat::mcset hr {Pin / unpin} {Prikvači / otkvači}
 ::msgcat::mcset hr {Pin to home screen} {Prikvači na početni zaslon}
+::msgcat::mcset hr {Plugin author guide} {Vodič za autore dodataka}
 ::msgcat::mcset hr {Plugin history} {Povijest dodataka}
 ::msgcat::mcset hr Plugins Dodaci
 ::msgcat::mcset hr Port Port
@@ -679,8 +727,10 @@ package require msgcat
 ::msgcat::mcset hr {Preview here} {Pregled ovdje}
 ::msgcat::mcset hr {Preview pane} {Pregledna ploča}
 ::msgcat::mcset hr {Preview proposal} {Pregled prijedloga}
-::msgcat::mcset hr {Preview the changed name or language before creating it.} {Pregledajte promijenjeni naziv ili jezik prije izrade.}
+::msgcat::mcset hr {Preview the changed name, purpose or language before creating it.} {Pregledajte promijenjeni naziv, svrhu ili jezik prije stvaranja.}
 ::msgcat::mcset hr Probe Provjeri
+::msgcat::mcset hr {Probe %s node(s)?} {Ispitati %s čvor(ova)?}
+::msgcat::mcset hr {Probe all…} {Ispitaj sve…}
 ::msgcat::mcset hr {Probe of %1$s failed: %2$s} {Provjera %1$s nije uspjela: %2$s}
 ::msgcat::mcset hr {Profile result} {Rezultat profila}
 ::msgcat::mcset hr {Promote into config.toml} {Prenesi u config.toml}
@@ -705,6 +755,7 @@ package require msgcat
 ::msgcat::mcset hr {Push branch…} {Gurni granu…}
 ::msgcat::mcset hr {Push complete. No pull request has been opened.} {Push dovršen. Nijedan pull request nije otvoren.}
 ::msgcat::mcset hr {Push this branch?} {Gurnuti ovu granu?}
+::msgcat::mcset hr {Push this kind to every node that is a configured peer for it:} {Pošalji ovu vrstu svakom čvoru koji je za nju konfiguriran kao partner:}
 ::msgcat::mcset hr {Push to %s:} {Pošalji na %s:}
 ::msgcat::mcset hr Question Pitanje
 ::msgcat::mcset hr Questions Pitanja
@@ -712,6 +763,7 @@ package require msgcat
 ::msgcat::mcset hr {REPL target: the app} {REPL cilj: aplikacija}
 ::msgcat::mcset hr {REPL target: the gateway} {REPL cilj: gateway}
 ::msgcat::mcset hr Read Čitaj
+::msgcat::mcset hr {Read the key first: a write names the value it replaces.} {Prvo pročitajte ključ: zapis navodi vrijednost koju zamjenjuje.}
 ::msgcat::mcset hr {Reading notifications, for triggers} {Čitanje obavijesti, za okidače}
 ::msgcat::mcset hr Reasoning Zaključivanje
 ::msgcat::mcset hr {Reasoning effort} {Razina razmišljanja}
@@ -749,7 +801,10 @@ package require msgcat
 ::msgcat::mcset hr {Reset to default} {Vrati na zadano}
 ::msgcat::mcset hr {Reset to template} {Vrati na predložak}
 ::msgcat::mcset hr Restart {Ponovno pokreni}
+::msgcat::mcset hr {Restart %s?} {Ponovno pokrenuti %s?}
 ::msgcat::mcset hr {Restart + verify canary} {Ponovno pokreni i provjeri kanarinca}
+::msgcat::mcset hr {Restart cancelled.} {Ponovno pokretanje otkazano.}
+::msgcat::mcset hr {Restart of %1$s failed: %2$s} {Ponovno pokretanje %1$s nije uspjelo: %2$s}
 ::msgcat::mcset hr {Restore hidden windows} {Vrati skrivene prozore}
 ::msgcat::mcset hr {Restore plugins to %s?} {Vratiti dodatke na %s?}
 ::msgcat::mcset hr {Restore revision r%1$s of %2$s?} {Vratiti reviziju r%1$s datoteke %2$s?}
@@ -793,6 +848,7 @@ package require msgcat
 ::msgcat::mcset hr {S3 region} {S3 regija}
 ::msgcat::mcset hr {SASL account (optional)} {SASL račun (neobavezno)}
 ::msgcat::mcset hr {SASL password (hidden)} {SASL lozinka (skrivena)}
+::msgcat::mcset hr {SSH lifecycle: through saved instance %1$s (%2$s, unit %3$s).} {SSH životni ciklus: preko spremljene instance %1$s (%2$s, jedinica %3$s).}
 ::msgcat::mcset hr Sandbox Pješčanik
 ::msgcat::mcset hr {Sandbox account} {Račun pijeska}
 ::msgcat::mcset hr Sandboxes Pješčanici
@@ -835,6 +891,7 @@ package require msgcat
 ::msgcat::mcset hr {Sessions currently overridden to this alias keep the route they resolved; new overrides will not find the name.} {Sesije koje su trenutačno nadjačane na ovaj alias zadržavaju rutu koju su razriješile; novi nadjačaji neće pronaći to ime.}
 ::msgcat::mcset hr {Sessions served} {Opslužene sesije}
 ::msgcat::mcset hr Set Postavi
+::msgcat::mcset hr {Set %1$s on %2$s to %3$s?} {Postaviti %1$s na %2$s na %3$s?}
 ::msgcat::mcset hr {Set [model] provider/default in config.toml.} {Postavi [model] provider/zadano u config.toml.}
 ::msgcat::mcset hr {Set as swap target} {Postavi kao cilj zamjene}
 ::msgcat::mcset hr {Set mode %1$s on %2$s?} {Postaviti način rada %1$s na %2$s?}
@@ -898,6 +955,9 @@ package require msgcat
 ::msgcat::mcset hr Summary Sažetak
 ::msgcat::mcset hr Surface Sučelje
 ::msgcat::mcset hr {Swap ⇄} {Zamijeni ⇄}
+::msgcat::mcset hr {Sync %1$s to %2$s node(s)?} {Sinkronizirati %1$s na %2$s čvor(ova)?}
+::msgcat::mcset hr {Sync all} {Sinkroniziraj sve}
+::msgcat::mcset hr {Sync all…} {Sinkroniziraj sve…}
 ::msgcat::mcset hr {Sync cancelled.} {Sinkronizacija otkazana.}
 ::msgcat::mcset hr {Sync complete.} {Sinkronizacija dovršena.}
 ::msgcat::mcset hr {Sync now} {Sinkroniziraj sada}
@@ -939,14 +999,20 @@ package require msgcat
 ::msgcat::mcset hr {The current diagnostics (from the language server or Check) are sent with this file. Optionally add a question. The answer is text only; nothing can be written.} {Trenutna dijagnostika (iz jezičnog poslužitelja ili iz Provjeri) šalje se uz ovu datoteku. Neobavezno dodajte pitanje. Odgovor je samo tekst; ništa se ne može zapisati.}
 ::msgcat::mcset hr {The directory and everything in it is removed. This one is not undoable — switch it off instead if you only want it out of the prompt.} {Direktorij i sve što je u njemu uklanjaju se. To se ne može poništiti — ako ga samo želite izbaciti iz prompta, radije ga isključite.}
 ::msgcat::mcset hr {The directory is deleted. The plugin folder is a git repository and a snapshot is committed first, so History… can bring it back.} {Direktorij se briše. Mapa dodatka je git repozitorij pa se prvo radi snimka, tako da ga Povijest… može vratiti.}
-::msgcat::mcset hr {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: tcl-lsp, typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver and a Common Lisp server. Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only, or the Racket and Lisp readers. Save, reload in Manage extensions, and test the extension without publishing local state.} {Uređivač otvara datoteke pristupnika, uključujući udaljene instance, i pokreće jezični poslužitelj za jezik datoteke na pristupniku: tcl-lsp, typescript-language-server (TypeScript i JavaScript), rust-analyzer (crate ili modul Rust dodataka), clangd (C), racket-langserver i poslužitelj za Common Lisp. Lebdenje, skok na definiciju, dovršavanje i dijagnostika uživo rade za svaki jezik za koji pristupnik ima poslužitelj; kada ga nema, uređivač kaže koji program tamo instalirati i zadržava isticanje sintakse. Provjeri pokreće odgovarajući provjerivač na pristupniku: tcl-lsp, tsc --noEmit, node --check, cargo check, clang -fsyntax-only ili čitače za Racket i Lisp. Spremite, ponovno učitajte u Upravljanju proširenjima i testirajte proširenje bez objavljivanja lokalnog stanja.}
+::msgcat::mcset hr {The editor opens gateway files, including remote instances, and runs the language server for the file's language on the gateway: typescript-language-server (TypeScript and JavaScript), rust-analyzer (a Rust plugin crate or module), clangd (C), racket-langserver, a Common Lisp server, and tcl-lsp for Tcl where the gateway has it (the Linux packages of veles ship it). Hover, go to definition, completion and live diagnostics work for every language the gateway has a server for; when it has none, the editor says which program to install there and keeps syntax highlighting. Check runs the matching checker on the gateway: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, the Racket and Lisp readers, and for Tcl the engine's own tclsh (a completeness check, or tcl-lsp's lint where installed). Save, reload in Manage extensions, and test the extension without publishing local state.} {Uređivač otvara datoteke pristupnika, uključujući udaljene instance, i pokreće jezični poslužitelj za jezik datoteke na pristupniku: typescript-language-server (TypeScript i JavaScript), rust-analyzer (Rust crate dodatka ili modul), clangd (C), racket-langserver, poslužitelj za Common Lisp i tcl-lsp za Tcl gdje ga pristupnik ima (linuxski paketi velesa ga sadrže). Lebdenje, skok na definiciju, dovršavanje i dijagnostika uživo rade za svaki jezik za koji pristupnik ima poslužitelj; kada ga nema, uređivač kaže koji program tamo instalirati i zadržava isticanje sintakse. Provjeri pokreće odgovarajući provjerivač na pristupniku: tsc --noEmit, node --check, cargo check, clang -fsyntax-only, čitače za Racket i Lisp, a za Tcl vlastiti tclsh motora (provjera potpunosti ili lint tcl-lsp-a gdje je instaliran). Spremite, ponovno učitajte u Upravljanju proširenjima i testirajte proširenje bez objavljivanja lokalnog stanja.}
 ::msgcat::mcset hr {The first handoff prepares secrets, the pinned image and runtime files but does not start the PDS. Back up the KEK and PLC rotation key offline, then make a newly reviewed request with backup acknowledgement to set up HTTP-01 TLS and activation. DNS records must point directly to this host; no CDN proxy or DNS changes are made by veles.} {Prva predaja priprema tajne, pričvršćenu sliku i datoteke radnog okruženja, ali ne pokreće PDS. Spremite offline sigurnosnu kopiju KEK-a i ključa za rotaciju PLC-a, zatim podnesite novo pregledani zahtjev s potvrdom da je sigurnosna kopija spremljena kako biste postavili HTTP-01 TLS i aktivaciju. DNS zapisi moraju izravno ukazivati na ovo računalo; veles ne uvodi CDN proxy niti mijenja DNS.}
+::msgcat::mcset hr {The fleet is NOT consistent: %s node(s) differ.} {Flota NIJE usklađena: %s čvor(ova) se razlikuje.}
+::msgcat::mcset hr {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.} {Flota je usklađena s razlikama: %1$s čvor(ova) izvodi istu gradnju i slaže se u svemu što dijele; %2$s stavki nije na svakom čvoru.}
+::msgcat::mcset hr {The fleet is consistent: %s node(s) run the same build, modules and plugins.} {Flota je usklađena: %s čvor(ova) izvodi istu gradnju, module i dodatke.}
 ::msgcat::mcset hr {The form changed since the extension was generated. Generate again, or preview the plain scaffold.} {Obrazac se promijenio od generiranja proširenja. Generirajte ponovno ili pregledajte čistu skelu.}
+::msgcat::mcset hr {The gateway did not receive the purpose as written. Nothing was created.} {Pristupnik nije primio svrhu onako kako je napisana. Ništa nije stvoreno.}
+::msgcat::mcset hr {The gateway does not serve the extension guides (it is older than 0.2.2), and this desktop has no copy of them.} {Pristupnik ne poslužuje vodiče za proširenja (stariji je od 0.2.2), a ovo stolno računalo nema njihovu kopiju.}
 ::msgcat::mcset hr {The gateway itself is untouched.} {Sam gateway ostaje netaknut.}
 ::msgcat::mcset hr {The gateway reloaded the config, so new sessions use it now, and a key stored in the vault is used by the next request. Telegram and IRC start on the next gateway restart: veles gateway restart.} {Pristupnik je ponovno učitao konfiguraciju: nove sesije je koriste odmah, a ključ spremljen u trezoru koristi sljedeći zahtjev. Telegram i IRC pokreću se pri sljedećem ponovnom pokretanju pristupnika: veles gateway restart.}
 ::msgcat::mcset hr {The installed component no longer matches the selected manifest. Review the component list again.} {Instalirana komponenta više ne odgovara odabranom manifestu. Ponovno pregledajte popis komponenti.}
 ::msgcat::mcset hr {The installer preview has no verification signatures; apply is disabled.} {Pregled instalatera nema potpise provjere; primjena je onemogućena.}
 ::msgcat::mcset hr {The job and its run history are removed. This is not undoable — pause it instead if you only want it to stop.} {Posao i njegova povijest izvođenja uklanjaju se. To se ne može poništiti — ako ga samo želite zaustaviti, radije ga pauzirajte.}
+::msgcat::mcset hr {The keys config sync carries, under its rules: node-local keys and credentials stay on their node, and a held section ([acl], approvals, sandbox, hooks, plugins, MCP servers) is changed where it is edited and pushed, then waits for that node's owner.} {Ključevi koje sinkronizacija konfiguracije prenosi, po njezinim pravilima: ključevi i vjerodajnice lokalne za čvor ostaju na svom čvoru, a zadržani odjeljak ([acl], approvals, sandbox, hooks, plugins, MCP servers) mijenja se tamo gdje se uređuje i šalje, a zatim čeka vlasnika tog čvora.}
 ::msgcat::mcset hr {The log could not be read: %s} {Dnevnik nije bilo moguće pročitati: %s}
 ::msgcat::mcset hr {The manifest belongs to another component; its reply was discarded.} {Manifest pripada drugoj komponenti; njezin je odgovor odbačen.}
 ::msgcat::mcset hr {The profile changed. Review the fresh plan before applying it.} {Profil je promijenjen. Pregledajte novi plan prije primjene.}
@@ -968,6 +1034,7 @@ package require msgcat
 ::msgcat::mcset hr {The signed release preview was malformed; nothing was installed.} {Pregled potpisanog izdanja bio je nepravilno oblikovan; ništa nije instalirano.}
 ::msgcat::mcset hr {The source buffer changed. Request a new proposal before applying.} {Izvorni međuspremnik se promijenio. Zatražite novi prijedlog prije primjene.}
 ::msgcat::mcset hr {The store goes back one revision. The rollback is itself a revision, so it can be undone in turn.} {Pohrana se vraća jednu reviziju unatrag. Povratak je i sam revizija, pa se i on može poništiti.}
+::msgcat::mcset hr {The translator did not answer within %s seconds.} {Prevoditelj nije odgovorio u roku od %s sekundi.}
 ::msgcat::mcset hr {The translator returned no text.} {Prevoditelj nije vratio tekst.}
 ::msgcat::mcset hr {The verification reply was malformed; no integrity result was accepted.} {Odgovor provjere je neispravan; rezultat provjere cjelovitosti nije prihvaćen.}
 ::msgcat::mcset hr Themes {Poštanske teme}
@@ -977,8 +1044,10 @@ package require msgcat
 ::msgcat::mcset hr {This challenge is over.} {Ovaj izazov je završen.}
 ::msgcat::mcset hr {This code has expired. Ask for a new one.} {Ovaj kod je istekao. Zatražite novi.}
 ::msgcat::mcset hr {This does not start a service or claim signed-download verification.} {Ovo ne pokreće uslugu i ne tvrdi da je preuzimanje provjereno potpisom.}
+::msgcat::mcset hr {This file is veles core source. Most changes fit an extension instead, which survives upgrades and needs no rebuild: a hook, tool, service override or provider driver, written in Tcl, TypeScript, Racket or Common Lisp, or as an out-of-tree Rust plugin (New extension writes any of these), or as a module or process plugin (the Extension guide shows how to start one). A core patch is for what the extension API cannot express. Draft this change as an extension instead? Your edit stays in this buffer, unsaved; saving again patches the core file.} {Ova datoteka je izvorni kod veles jezgre. Većina promjena bolje pristaje proširenju, koje preživljava nadogradnje i ne treba ponovnu gradnju: kuka, alat, nadjačavanje usluge ili upravljački program pružatelja, napisan u Tclu, TypeScriptu, Racketu ili Common Lispu, ili kao Rust dodatak izvan stabla (Novo proširenje zapisuje bilo što od toga), ili kao modul ili procesni dodatak (Vodič za proširenja pokazuje kako ga pokrenuti). Krpanje jezgre služi za ono što API proširenja ne može izraziti. Sastaviti ovu promjenu umjesto toga kao proširenje? Vaša izmjena ostaje u ovom međuspremniku, nespremljena; ponovno spremanje krpa datoteku jezgre.}
 ::msgcat::mcset hr {This gateway does not take secret values from this machine: enter it there with veles secret set %s, or list this network in its [vault] trusted_networks} {Ovaj pristupnik ne prima tajne vrijednosti s ovog računala: upišite ga tamo s veles secret set %s ili dodajte ovu mrežu u njegov [vault] trusted_networks}
 ::msgcat::mcset hr {This is exactly what will be written — the engine's own bytes, fetched live. Nothing has touched the disk yet.} {Ovo je točno ono što će se zapisati — vlastiti bajtovi enginea, dohvaćeni uživo. Disku se još ništa nije dotaklo.}
+::msgcat::mcset hr {This is veles core source. A change to it is usually better as an extension: New extension, or save to be offered one.} {Ovo je izvorni kod veles jezgre. Promjena toga obično je bolja kao proširenje: Novo proširenje ili spremite da vam se ponudi.}
 ::msgcat::mcset hr {This node is not a configured sync peer for any kind.} {Ovaj čvor nije konfigurirani partner za sinkronizaciju ni za jednu vrstu podataka.}
 ::msgcat::mcset hr {This plugin is bundled and read-only. Remove a user copy with the same name to use the bundled copy instead.} {Ovaj dodatak je ugrađen i samo za čitanje. Uklonite korisničku kopiju istog naziva da biste umjesto nje koristili ugrađenu kopiju.}
 ::msgcat::mcset hr {This publishes the commit; no pull request is created yet.} {Ovo objavljuje commit; pull request još nije izrađen.}
@@ -1014,11 +1083,13 @@ package require msgcat
 ::msgcat::mcset hr Unassign {Poništi dodjelu}
 ::msgcat::mcset hr {Undo last} {Poništi zadnje}
 ::msgcat::mcset hr {Undo the last memory revision?} {Poništiti zadnju reviziju memorije?}
+::msgcat::mcset hr {Unset %1$s on %2$s?} {Poništiti %1$s na %2$s?}
+::msgcat::mcset hr Unset… Poništi…
 ::msgcat::mcset hr Unstage {Poništi pripremu}
 ::msgcat::mcset hr {Until IRC_ALLOWED_USERS in .env names your account, anyone on the network can talk to the bot — and with no [acl] section, as owner, with every tool.} {Dok IRC_ALLOWED_USERS u .env ne navede vaš račun, svatko na mreži može razgovarati s botom — a bez odjeljka [acl] kao vlasnik, sa svim alatima.}
 ::msgcat::mcset hr {Until TELEGRAM_ALLOWED_USERS in .env names your user id, anyone who finds the bot can talk to it — and with no [acl] section, as owner, with every tool.} {Dok TELEGRAM_ALLOWED_USERS u .env ne navede vaš korisnički ID, svatko tko pronađe bota može razgovarati s njim — a bez odjeljka [acl] kao vlasnik, sa svim alatima.}
 ::msgcat::mcset hr Untitled {Bez naslova}
-::msgcat::mcset hr {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default) with your chosen git identity. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Uzvodni doprinos izričita je radnja objavljivanja, a ne automatsko slanje. U Upravljanju dodacima, Doprinesi navodi svaki korisnički dodatak: odaberite dodatke i datoteke, pregledajte razliku i skeniranje tajni, pokrenite provjere, zatim stvorite jednu granu i jedan PR (zadano prema velesu) sa svojim odabranim git identitetom. Svaki dodatak ide u svoj direktorij u repozitoriju, a postojeća datoteka ondje zamjenjuje se tek nakon zasebne potvrde. Nikad ne objavljujte node.toml, lokalne vjerodajnice, tokene, privatne završne točke ni nepovezano stanje dodataka. Lokalne snimke za oporavak nisu uzvodni commit ni PR.}
+::msgcat::mcset hr {Upstream contribution is an explicit publishing action, not an automatic upload. In Manage extensions, Contribute lists every user extension: select the extensions and files, inspect the diff and secrets scan, run checks, then create one branch and one PR (to veles by default). The commit uses the gateway's ambient git identity (user.name and user.email of its git configuration); set those first if they should differ. Each extension goes under its own directory in the repository, and an existing file there is replaced only after a separate confirmation. Never publish node.toml, local credentials, tokens, private endpoints or unrelated plugin state. Local recovery snapshots are not an upstream commit or a PR.} {Predaja uzvodno izričita je radnja objavljivanja, a ne automatsko slanje. U Upravljanju proširenjima Doprinesi navodi svako korisničko proširenje: odaberite proširenja i datoteke, pregledajte diff i skeniranje tajni, pokrenite provjere, zatim stvorite jednu granu i jedan PR (zadano prema velesu). Commit koristi okolni git identitet pristupnika (user.name i user.email iz njegove git konfiguracije); postavite ih prvo ako se trebaju razlikovati. Svako proširenje ide u vlastitu mapu u spremištu, a postojeća datoteka tamo zamjenjuje se tek nakon zasebne potvrde. Nikada ne objavljujte node.toml, lokalne vjerodajnice, tokene, privatne krajnje točke ni nepovezano stanje dodataka. Lokalne sigurnosne snimke nisu uzvodni commit ni PR.}
 ::msgcat::mcset hr {Upstream repository or fork URL} {Uzvodni repozitorij ili URL forka}
 ::msgcat::mcset hr {Uptime class} {Klasa vremena rada}
 ::msgcat::mcset hr {Uptime: host %1$s, gateway %2$s} {Vrijeme rada: host %1$s, pristupnik %2$s}
@@ -1032,6 +1103,7 @@ package require msgcat
 ::msgcat::mcset hr {Users — one role across networks and platforms} {Korisnici — jedna uloga na svim mrežama i platformama}
 ::msgcat::mcset hr {Using the phone, for the agent} {Korištenje telefona, za agenta}
 ::msgcat::mcset hr {Usually the same as the provider entry name. Leave both empty on the Skip choice — a half-set pair does not route.} {Obično isti kao naziv unosa providera. Kod preskakanja ostavi oba prazna — upola postavljen par ne routa.}
+::msgcat::mcset hr {Value (TOML: "text", 5, true, [1, 2])} {Vrijednost (TOML: "tekst", 5, true, [1, 2])}
 ::msgcat::mcset hr {Values are TOML: quoted strings, numbers, or lists. Written into [mcp_servers.<name>] — your comments and every other section are left untouched.} {Vrijednosti su TOML: nizovi u navodnicima, brojevi ili popisi. Upisuju se u [mcp_servers.<name>] — vaši komentari i svaki drugi odjeljak ostaju netaknuti.}
 ::msgcat::mcset hr Vault Trezor
 ::msgcat::mcset hr {Verified signed bundle installed. Restart the gateway before using the new core.} {Provjeren potpisani paket je instaliran. Ponovno pokrenite pristupnik prije upotrebe nove jezgre.}
@@ -1049,6 +1121,7 @@ package require msgcat
 ::msgcat::mcset hr Voice {Daj voice}
 ::msgcat::mcset hr {Waiting for the model…} {Čekam model…}
 ::msgcat::mcset hr {Waiting for the model… Nothing has been written.} {Čekam model… Ništa nije zapisano.}
+::msgcat::mcset hr Warning Upozorenje
 ::msgcat::mcset hr {Welcome to veles} {Dobrodošao u veles}
 ::msgcat::mcset hr {What the agent can do here} {Što agent ovdje može}
 ::msgcat::mcset hr {What veles may do on this phone. Each button opens the Android setting that changes it.} {Što veles smije raditi na ovom telefonu. Svaki gumb otvara postavku Androida koja to mijenja.}
@@ -1061,9 +1134,11 @@ package require msgcat
 ::msgcat::mcset hr {Workflow SHA} {SHA tijeka rada}
 ::msgcat::mcset hr {Workflow commit} {Commit radnog toka}
 ::msgcat::mcset hr Worktree {Radno stablo}
+::msgcat::mcset hr {Write cancelled.} {Zapis otkazan.}
 ::msgcat::mcset hr {Write it} Napiši
 ::msgcat::mcset hr {Write the design question first.} {Najprije upišite pitanje o dizajnu.}
 ::msgcat::mcset hr {Writes no provider. The gateway will not route a turn until a [[custom_providers]] entry and the [model] pair exist.} {Ne upisuje provider. Gateway neće routati potez dok ne postoji [[custom_providers]] unos i [model] par.}
+::msgcat::mcset hr Write… Zapiši…
 ::msgcat::mcset hr {Writing ANY [acl] key switches this gateway into curated mode: the default role becomes guest (fail-closed) and the allowlists stop being the boundary. Only pick this with an owner identity you trust.} {Zapisivanje BILO KOJEG ključa u [acl] prebacuje ovaj pristupnik u kurirani način: zadana uloga postaje guest (fail-closed), a popisi dopuštenih više nisu granica. Birajte ovo samo s identitetom vlasnika kojem vjerujete.}
 ::msgcat::mcset hr {[model] provider} {[model] provider}
 ::msgcat::mcset hr {[model] provider %{name} names no [[custom_providers]] entry — name the entry this wizard writes, or one config.toml already has} {pružatelj u [model] %{name} ne odgovara nijednom unosu u [[custom_providers]] — navedite unos koji ovaj čarobnjak piše ili neki koji config.toml već ima}
@@ -1137,6 +1212,7 @@ package require msgcat
 ::msgcat::mcset hr {ask | auto | stop | script} {ask | auto | stop | script}
 ::msgcat::mcset hr {asked by: %s} {upitao: %s}
 ::msgcat::mcset hr {asking %s for its metrics…} {tražim metrike od %s…}
+::msgcat::mcset hr {asking %s how it is supervised…} {pitamo %s kako se nadzire…}
 ::msgcat::mcset hr {attach a file} {Priloži datoteku}
 ::msgcat::mcset hr {attach an image or file} {priloži sliku ili datoteku}
 ::msgcat::mcset hr {attach failed: %1$s} {priključivanje nije uspjelo: %1$s}
@@ -1185,6 +1261,7 @@ package require msgcat
 ::msgcat::mcset hr {channel-event reactions; /triggers add <name> network=… channel=… action=…} {reakcije na događaje kanala; /triggers add <name> network=… channel=… action=…}
 ::msgcat::mcset hr {channels to join, a space or comma separated string} {kanali za ulaz, string odvojen razmakom ili zarezom}
 ::msgcat::mcset hr chars znakova
+::msgcat::mcset hr {check the buffer (diagnostics)} {provjeri međuspremnik (dijagnostika)}
 ::msgcat::mcset hr choice_next {prijeđi na sljedeću rutu}
 ::msgcat::mcset hr choice_retry {pokušaj ponovno istom rutom}
 ::msgcat::mcset hr choice_stop {stani ovdje}
@@ -1211,6 +1288,7 @@ package require msgcat
 ::msgcat::mcset hr {command list unavailable (the gateway is not reachable)} {popis naredbi nedostupan (gateway nije dostižan)}
 ::msgcat::mcset hr {command palette} {paleta naredbi}
 ::msgcat::mcset hr {command search} {pretraga naredbi}
+::msgcat::mcset hr {command-center audit log} {dnevnik revizije zapovjednog središta}
 ::msgcat::mcset hr commands naredbe
 ::msgcat::mcset hr {commands stay on your own session; /leave returns from the joined session} {naredbe vrijede za vašu vlastitu sesiju; /leave vraća iz sesije kojoj ste se pridružili}
 ::msgcat::mcset hr commands: naredbe:
@@ -1232,6 +1310,7 @@ package require msgcat
 ::msgcat::mcset hr {config changes from peers that wait for you; /configsync apply lands them} {promjene konfiguracije od partnera koje čekaju vas; /configsync apply ih primjenjuje}
 ::msgcat::mcset hr {config file: %s} {konfiguracijska datoteka: %s}
 ::msgcat::mcset hr {config key} {ključ konfiguracije}
+::msgcat::mcset hr {config result} {rezultat konfiguracije}
 ::msgcat::mcset hr {config unavailable} {konfiguracija nedostupna}
 ::msgcat::mcset hr {config unavailable: %s} {konfiguracija nedostupna: %s}
 ::msgcat::mcset hr {config value} {vrijednost konfiguracije}
@@ -1322,7 +1401,6 @@ package require msgcat
 ::msgcat::mcset hr doctor_resident {stalno u svakom upitu: %{shown} od %{total} znakova (~%{tokens} tokena) — ostatak se učitava po potrebi s: memory action=read path=%{path}}
 ::msgcat::mcset hr doctor_title {dijagnostika memorije}
 ::msgcat::mcset hr doctor_total {ukupno: %{chars} znakova u %{files} datoteka (~%{tokens} tokena)}
-::msgcat::mcset hr {documentation is not in this source checkout: %s} {dokumentacija nije u ovom izvornom checkout-u: %s}
 ::msgcat::mcset hr done gotovo
 ::msgcat::mcset hr {done · %1$s/%2$s} {gotovo · %1$s/%2$s}
 ::msgcat::mcset hr {done, but the model returned no text} {gotovo, ali model nije vratio tekst}
@@ -1429,7 +1507,7 @@ package require msgcat
 ::msgcat::mcset hr {grant a role (owner) · /revoke <id> takes it back} {dodijeli ulogu (owner) · /revoke <id> je oduzima}
 ::msgcat::mcset hr {grant a role to an identity} {dodijeli ulogu identitetu}
 ::msgcat::mcset hr {guards unreachable} {zaštite nedostupne}
-::msgcat::mcset hr guts: guts:
+::msgcat::mcset hr {guts ▾} {unutrašnjost ▾}
 ::msgcat::mcset hr {gw hooks} {gw hookovi}
 ::msgcat::mcset hr {gw procs} {gw procedure}
 ::msgcat::mcset hr {halt after N identical calls} {zaustavi nakon N identičnih poziva}
@@ -1532,6 +1610,7 @@ package require msgcat
 ::msgcat::mcset hr {live patching ARMED} {živo krpanje ARMED}
 ::msgcat::mcset hr {live patching ARMED — an agent can now redefine procs in this window} {živo krpanje ARMED — agent sada može redefinirati procs u ovom prozoru}
 ::msgcat::mcset hr {live patching disarmed} {živo krpanje deaktivirano}
+::msgcat::mcset hr load opterećenje
 ::msgcat::mcset hr loaded učitano
 ::msgcat::mcset hr {loaded older messages} {učitane starije poruke}
 ::msgcat::mcset hr loading… učitavanje…
@@ -1665,6 +1744,7 @@ package require msgcat
 ::msgcat::mcset hr {no upstream reading for %s} {nema očitanja s upstreama za %s}
 ::msgcat::mcset hr {no word match} {nema podudaranja riječi}
 ::msgcat::mcset hr {no xdg-open — path copied instead} {nema xdg-open — umjesto toga kopirana je putanja}
+::msgcat::mcset hr {nobody else's session is open on %s right now} {na %s trenutačno nije otvorena ničija druga sesija}
 ::msgcat::mcset hr {node log} {dnevnik čvora}
 ::msgcat::mcset hr {none loaded} {ništa nije učitano}
 ::msgcat::mcset hr {none recorded} {nije zabilježeno ništa}
@@ -1688,6 +1768,8 @@ package require msgcat
 ::msgcat::mcset hr {not installed} {nije instalirano}
 ::msgcat::mcset hr {not reported} {nije prijavljeno}
 ::msgcat::mcset hr {not running} {ne radi}
+::msgcat::mcset hr {not saved: drafting the change as an extension} {nije spremljeno: promjena se sastavlja kao proširenje}
+::msgcat::mcset hr {not sent: %s} {nije poslano: %s}
 ::msgcat::mcset hr {not set in config.toml — the built-in default applies. %s} {nije postavljeno u config.toml — primjenjuje se ugrađeno zadano. %s}
 ::msgcat::mcset hr {not set yet — /secret set it later} {još nije postavljeno — postavite kasnije s /secret set}
 ::msgcat::mcset hr {not signed: %s} {nije potpisano: %s}
@@ -1719,9 +1801,11 @@ package require msgcat
 ::msgcat::mcset hr {on no plan} {kad nema plana}
 ::msgcat::mcset hr {on the} na
 ::msgcat::mcset hr {on/off silences the mechanism's note in the transcript — for this session, or as the default, per the scope below. It governs the NOTE; what each mechanism DOES is set in the section named on its row, and Configure… opens it. The guard knobs are editable in place.} {uključeno/isključeno prigušuje bilješku mehanizma u transkriptu — za ovu sesiju ili kao zadano, prema opsegu ispod. Upravlja BILJEŠKOM; što svaki mehanizam RADI postavlja se u odjeljku nazvanom u njegovom retku, a Podesi… ga otvara. Zaštitni gumbi uređuju se na mjestu.}
+::msgcat::mcset hr {on; this gateway does not say whether they reach the home chat} {uključeno; ovaj pristupnik ne kaže dospijevaju li u matični razgovor}
 ::msgcat::mcset hr {one-shot tcl-lsp diagnostics — no model turn} {jednokratna tcl-lsp dijagnostika — bez poteza modela}
 ::msgcat::mcset hr {open a saved file first} {prvo otvori spremljenu datoteku}
 ::msgcat::mcset hr {open links} {otvarati poveznice}
+::msgcat::mcset hr {open one of the desktop's own source files} {otvorite jednu od izvornih datoteka samog stolnog računala}
 ::msgcat::mcset hr {open the engine log} {otvori dnevnik motora}
 ::msgcat::mcset hr {open the joined session before /leave (on %s)} {otvorite sesiju kojoj ste se pridružili prije /leave (na %s)}
 ::msgcat::mcset hr {open the selected child session} {otvori odabranu podređenu sesiju}
@@ -1808,6 +1892,7 @@ package require msgcat
 ::msgcat::mcset hr {read-only: [approvals] allowlist} {samo za čitanje: popis dopuštenih [approvals]}
 ::msgcat::mcset hr {read-only: this session lives on %1$s (as read at %2$s)} {samo za čitanje: ova sesija je na %1$s (stanje pročitano u %2$s)}
 ::msgcat::mcset hr {read-only: this skill comes from the %s library} {samo za čitanje: ova vještina dolazi iz knjižnice %s}
+::msgcat::mcset hr {reading %1$s on %2$s…} {čitamo %1$s na %2$s…}
 ::msgcat::mcset hr reasoning razmišljanje
 ::msgcat::mcset hr {reasoning display: %1$s · %2$s blocks} {prikaz razmišljanja: %1$s · %2$s blokova}
 ::msgcat::mcset hr {reasoning display: %s} {prikaz razmišljanja: %s}
@@ -1870,6 +1955,7 @@ package require msgcat
 ::msgcat::mcset hr {run failed: %s} {pokretanje nije uspjelo: %s}
 ::msgcat::mcset hr {run in:} {pokreni u:}
 ::msgcat::mcset hr running {u tijeku}
+::msgcat::mcset hr {running %s on the listed nodes…} {pokrećemo %s na navedenim čvorovima…}
 ::msgcat::mcset hr {running since %s} {radi od %s}
 ::msgcat::mcset hr {running subagents; /subagents cancel <id>} {pokrenuti podagenti; /subagents cancel <id>}
 ::msgcat::mcset hr {save failed} {spremanje nije uspjelo}
@@ -1922,7 +2008,8 @@ package require msgcat
 ::msgcat::mcset hr {send failed: %s} {slanje nije uspjelo: %s}
 ::msgcat::mcset hr {send the message; while a turn runs, queue it as steering} {Pošalji poruku; dok se odgovor izvodi, stavi je u red kao steering}
 ::msgcat::mcset hr sent poslano
-::msgcat::mcset hr {sent to the owner's home chat} {poslano u vlasnikov glavni chat}
+::msgcat::mcset hr {sent to the owner's home chat by the gateway that runs its Telegram adapter, not this one} {u matični razgovor vlasnika šalje pristupnik koji izvodi njegov Telegram adapter, a ne ovaj}
+::msgcat::mcset hr {sent to the owner's home chat from this gateway} {u matični razgovor vlasnika poslano s ovog pristupnika}
 ::msgcat::mcset hr server poslužitelj
 ::msgcat::mcset hr {server buffers merged} {međuspremnici poslužitelja spojeni}
 ::msgcat::mcset hr {server buffers separate} {međuspremnici poslužitelja odvojeni}
@@ -1938,6 +2025,7 @@ package require msgcat
 ::msgcat::mcset hr {session, model, lifecycle} {sesija, model, životni ciklus}
 ::msgcat::mcset hr {session: %s} {sesija: %s}
 ::msgcat::mcset hr {sessions    %s} {sesije    %s}
+::msgcat::mcset hr {sessions you can join on %s (/join <name or id>):} {sesije kojima se možete pridružiti na %s (/join <naziv ili id>):}
 ::msgcat::mcset hr {sessions: unreachable} {sesije: nepristupačne}
 ::msgcat::mcset hr {set by} postavio
 ::msgcat::mcset hr {set. %s} {postavljeno. %s}
@@ -1967,7 +2055,9 @@ package require msgcat
 ::msgcat::mcset hr {split: %s} {podjela: %s}
 ::msgcat::mcset hr {ssh to %1$s failed: %2$s} {ssh do %1$s nije uspio: %2$s}
 ::msgcat::mcset hr {stale — no heartbeat within the threshold} {zastario — nema otkucaja unutar praga}
+::msgcat::mcset hr {standing approval grants: always and this session; revoke one} {trajne dozvole odobrenja: uvijek i ova sesija; opozovite jednu}
 ::msgcat::mcset hr {standing global and session permission grants} {trajne globalne i sesijske dozvole}
+::msgcat::mcset hr {start the line with // to send it as text} {započnite redak s // da biste ga poslali kao tekst}
 ::msgcat::mcset hr state stanje
 ::msgcat::mcset hr {state       never reached} {stanje       nikad dosegnuto}
 ::msgcat::mcset hr {state       reachable} {stanje       dosezljivo}
@@ -2032,6 +2122,7 @@ package require msgcat
 ::msgcat::mcset hr {the config.toml that will be written} {config.toml koji će se zapisati}
 ::msgcat::mcset hr {the default (config.toml)} {zadano (config.toml)}
 ::msgcat::mcset hr {the engine refused these answers: %s} {engine je odbio ove odgovore: %s}
+::msgcat::mcset hr {the file to open: type a path, then Return or Open} {datoteka za otvaranje: upišite putanju, zatim Return ili Otvori}
 ::msgcat::mcset hr {the first ACL owner identity} {prvi ACL owner identitet}
 ::msgcat::mcset hr {the gateway answered without a report} {gateway je odgovorio bez izvještaja}
 ::msgcat::mcset hr {the model/provider pair is incomplete — the gateway will not route until both are present} {par model/pružatelj je nepotpun — pristupnik neće usmjeravati dok nisu zadana oba}
@@ -2110,6 +2201,7 @@ package require msgcat
 ::msgcat::mcset hr unknown nepoznato
 ::msgcat::mcset hr {unknown api_mode %{mode} — expected one of %{modes}} {nepoznat api_mode %{mode} — očekuje se jedan od: %{modes}}
 ::msgcat::mcset hr {unknown bindings '%{rest}' · normie|emacs|vi} {nepoznata mapiranja '%{rest}' · normie|emacs|vi}
+::msgcat::mcset hr {unknown command %{cmd} here — /help lists this surface's commands; nothing was sent} {nepoznata naredba %{cmd} ovdje — /help navodi naredbe ovog sučelja; ništa nije poslano}
 ::msgcat::mcset hr {unknown command /%s — /help lists them} {nepoznata naredba /%s — /help ih prikazuje}
 ::msgcat::mcset hr {unknown command: /%s} {nepoznata naredba: /%s}
 ::msgcat::mcset hr {unknown keymap: %s (normie/emacs/vi)} {nepoznat raspored tipki: %s (normie/emacs/vi)}
@@ -2121,7 +2213,7 @@ package require msgcat
 ::msgcat::mcset hr {upstream plan credits and windows — /usage is the local ledger} {krediti i prozori plana kod pružatelja — /usage je lokalna evidencija}
 ::msgcat::mcset hr {upstream plan quota} {kvota plana pružatelja}
 ::msgcat::mcset hr uptime {vrijeme rada}
-::msgcat::mcset hr {usage: /join <session> or /join <instance>/<session>} {uporaba: /join <sesija> ili /join <instanca>/<sesija>}
+::msgcat::mcset hr {usage: /export [md|json]} {upotreba: /export [md|json]}
 ::msgcat::mcset hr {usage: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap} {upotreba: /locale <id> | /locale primary <id> | /locale secondary <id> | /locale swap}
 ::msgcat::mcset hr {usage: /resume <id or prefix>} {upotreba: /resume <id ili prefiks>}
 ::msgcat::mcset hr {usage: /resume <id-or-prefix>} {upotreba: /resume <id-or-prefix>}

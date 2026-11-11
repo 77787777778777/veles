@@ -154,8 +154,10 @@ pub fn message(c: &Change) -> String {
     }
 }
 
-/// Why a node is in its state, in one line, scrubbed.
-fn detail(health: &Value) -> String {
+/// Why a node is in its state, in one line, scrubbed. `health` is a
+/// `fleet_ops::node_health` answer with the node's per-kind sync status
+/// under `sync` (`/fleet list` words its rows with it too).
+pub(crate) fn detail(health: &Value) -> String {
     let secrets = veles_core::secrets::scrubbable();
     let clean =
         |s: &str| veles_core::a2a::redact_outbound(&veles_core::secrets::scrub(s, &secrets));
@@ -177,7 +179,7 @@ fn detail(health: &Value) -> String {
                     format!("{k} sync: {}", clean(line))
                 });
             }
-            if health["probe"]["ok"] == json!(false) {
+            if health["unreachable"] == json!(true) {
                 parts.push(format!(
                     "probe: {}",
                     clean(health["probe"]["line"].as_str().unwrap_or(""))
@@ -189,34 +191,67 @@ fn detail(health: &Value) -> String {
     }
 }
 
+/// Where an alert raised in this process goes.
+enum Route<'a> {
+    /// To this chat, through this process's adapter.
+    Here(&'a veles_core::bus::GatewayBus, String),
+    /// The home chat's adapter runs on another node, which sends its own
+    /// copy of the change.
+    Elsewhere,
+    /// Nowhere, and why.
+    No(&'static str),
+}
+
+fn route<'a>(cfg: &VelesConfig, bus: Option<&'a veles_core::bus::GatewayBus>) -> Route<'a> {
+    if !cfg.notify.fleet_alerts {
+        return Route::No("[notify] fleet_alerts is off");
+    }
+    if !cfg.notify.ask_relay {
+        return Route::No("[notify] ask_relay is off");
+    }
+    let Some(chat) = veles_core::home::chat(HOME_PLATFORM) else {
+        return Route::No("no [platforms.telegram.home_channel] chat_id");
+    };
+    let Some(bus) = bus else {
+        return Route::No("no gateway bus in this process");
+    };
+    if !bus.has_adapter(HOME_PLATFORM) {
+        return Route::Elsewhere;
+    }
+    Route::Here(bus, chat)
+}
+
+/// Where this process's alerts go, without sending one, for
+/// `/api/fleet` `alerts.delivery`: `sends` is `here`, `elsewhere` (the
+/// node running the home chat's adapter sends them) or `no`, with the
+/// `reason`. The Instances tab used to say "sent to the owner's home
+/// chat" whenever `[notify] fleet_alerts` was on (FLEET-8).
+pub fn delivery(cfg: &VelesConfig, bus: Option<&veles_core::bus::GatewayBus>) -> Value {
+    match route(cfg, bus) {
+        Route::Here(..) => json!({"sends": "here", "reason": ""}),
+        Route::Elsewhere => json!({
+            "sends": "elsewhere",
+            "reason": "the telegram adapter runs on another node",
+        }),
+        Route::No(why) => json!({"sends": "no", "reason": why}),
+    }
+}
+
 /// Send `text` to the owner's home chat if this node may: (sent, note).
 pub fn deliver(
     cfg: &VelesConfig,
     bus: Option<&veles_core::bus::GatewayBus>,
     text: &str,
 ) -> (bool, String) {
-    if !cfg.notify.fleet_alerts {
-        return (false, "not sent: [notify] fleet_alerts is off".into());
-    }
-    if !cfg.notify.ask_relay {
-        return (false, "not sent: [notify] ask_relay is off".into());
-    }
-    let Some(chat) = veles_core::home::chat(HOME_PLATFORM) else {
-        return (
-            false,
-            "not sent: no [platforms.telegram.home_channel] chat_id".into(),
-        );
-    };
-    let Some(bus) = bus else {
-        return (false, "not sent: no gateway bus in this process".into());
-    };
-    if !bus.has_adapter(HOME_PLATFORM) {
-        return (
+    let (bus, chat) = match route(cfg, bus) {
+        Route::Here(bus, chat) => (bus, chat),
+        Route::Elsewhere => return (
             false,
             "not sent from this node: the telegram adapter runs on another node, which sends it"
                 .into(),
-        );
-    }
+        ),
+        Route::No(why) => return (false, format!("not sent: {why}")),
+    };
     let sent = bus.send_outbound(
         HOME_PLATFORM,
         veles_core::bus::OutboundMessage::plain(
@@ -238,6 +273,19 @@ pub fn deliver(
 /// One watch pass: read the registry, feed the tracker, record and send
 /// what changed. Returns the changes.
 pub fn tick(
+    store: &Arc<Mutex<Store>>,
+    cfg: &VelesConfig,
+    bus: Option<&veles_core::bus::GatewayBus>,
+    now: Instant,
+) -> Vec<Change> {
+    tick_with(tracker(), store, cfg, bus, now)
+}
+
+/// [`tick`] with the state machines passed in. The process has one
+/// tracker; a test that shared it raced every other test that ticks,
+/// because a pass forgets the nodes its own registry does not list.
+fn tick_with(
+    tracker: &Mutex<Tracker>,
     store: &Arc<Mutex<Store>>,
     cfg: &VelesConfig,
     bus: Option<&veles_core::bus::GatewayBus>,
@@ -272,7 +320,7 @@ pub fn tick(
         })
         .collect();
     let debounce = Duration::from_secs(cfg.notify.fleet_alert_debounce_secs);
-    let changes = tracker().lock_ok().observe(&seen, now, debounce);
+    let changes = tracker.lock_ok().observe(&seen, now, debounce);
     for c in &changes {
         let text = message(c);
         let (sent, note) = deliver(cfg, bus, &text);
@@ -417,13 +465,33 @@ mod tests {
             state_path: home.path().join("other-state.json"),
         };
         let say = |c: &VelesConfig, b: &veles_core::bus::GatewayBus| deliver(c, Some(b), "x");
+        // FLEET-8: `/api/fleet` says the same without sending.
+        let goes = |c: &VelesConfig, b: Option<&veles_core::bus::GatewayBus>| {
+            let d = delivery(c, b);
+            (
+                d["sends"].as_str().unwrap_or("").to_string(),
+                d["reason"].as_str().unwrap_or("").to_string(),
+            )
+        };
         assert!(say(&cfg, &with_adapter).1.contains("fleet_alerts is off"));
+        assert_eq!(
+            goes(&cfg, Some(&with_adapter)),
+            ("no".into(), "[notify] fleet_alerts is off".into())
+        );
         cfg.notify.fleet_alerts = true;
         assert!(say(&cfg, &with_adapter).1.contains("ask_relay is off"));
+        assert_eq!(
+            goes(&cfg, Some(&with_adapter)),
+            ("no".into(), "[notify] ask_relay is off".into())
+        );
         cfg.notify.ask_relay = true;
         veles_core::home::clear_all();
         assert!(say(&cfg, &with_adapter).1.contains("home_channel"));
+        assert!(goes(&cfg, Some(&with_adapter)).1.contains("home_channel"));
         veles_core::home::set(HOME_PLATFORM, "-5000");
+        assert_eq!(goes(&cfg, None).0, "no", "no bus in this process");
+        assert_eq!(goes(&cfg, Some(&without)).0, "elsewhere");
+        assert_eq!(goes(&cfg, Some(&with_adapter)).0, "here");
         let (sent, note) = say(&cfg, &without);
         assert!(!sent && note.contains("another node"), "{note}");
         let (sent, note) = say(&cfg, &with_adapter);
@@ -494,5 +562,57 @@ mod tests {
             "{listed:?}"
         );
         veles_core::home::clear_all();
+    }
+
+    /// FLEET-3: a failed manual probe is reported as failing, and the
+    /// next good gossip exchange with the node is reported as its
+    /// recovery. The probe verdict used to stand until the next probe, so
+    /// the "failing" alert was never followed by a "recovered" one.
+    #[test]
+    fn a_failed_probe_is_followed_by_a_recovery_alert() {
+        let (_home, _env) = veles_core::testenv::scratch_home();
+        let store = Store::open(&veles_core::config::veles_home().join("state.db")).unwrap();
+        store
+            .node_register(
+                "id-watch-probed",
+                "watched-probed",
+                "h",
+                "0.2.0",
+                "always-on",
+                None,
+                None,
+                None,
+                None,
+            )
+            .unwrap();
+        let store = Arc::new(Mutex::new(store));
+        let mut cfg = VelesConfig::default();
+        cfg.cluster.gossip_peers = vec!["watched-probed".into()];
+        cfg.notify.fleet_alert_debounce_secs = 0;
+        let own = Mutex::new(Tracker::default());
+        let tick = |now: Instant| tick_with(&own, &store, &cfg, None, now);
+        let t0 = Instant::now();
+        let mine = |c: Vec<Change>| -> Vec<(String, String)> {
+            c.into_iter()
+                .filter(|c| c.id == "id-watch-probed")
+                .map(|c| (c.from, c.to))
+                .collect()
+        };
+        assert!(mine(tick(t0)).is_empty(), "baseline");
+        crate::fleet_ops::record("probe", "id-watch-probed", Err("connection refused"));
+        assert_eq!(
+            mine(tick(t0 + Duration::from_secs(1))),
+            vec![("fresh".to_string(), "failing".to_string())]
+        );
+        std::thread::sleep(Duration::from_millis(5));
+        crate::fleet_ops::record("gossip", "watched-probed", Ok("merged 2 row(s)"));
+        assert_eq!(
+            mine(tick(t0 + Duration::from_secs(2))),
+            vec![("failing".to_string(), "fresh".to_string())],
+            "the next good exchange is the recovery"
+        );
+        assert!(recent()
+            .iter()
+            .any(|a| a["node"] == "id-watch-probed" && a["to"] == "fresh"));
     }
 }

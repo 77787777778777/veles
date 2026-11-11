@@ -39,6 +39,7 @@ pub const SHARED_COMMANDS: &[&str] = &[
     "/sandbox",
     "/sandboxes",
     "/limits",
+    "/approvals",
     // The emergency brake (`lockdown.rs`): engageable by an admin from
     // anywhere, liftable only from a local surface.
     "/lockdown",

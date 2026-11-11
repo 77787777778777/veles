@@ -227,11 +227,18 @@ fn a_translator_outside_the_chat_chain_translates_with_no_translation_section() 
     assert_ne!(call["stream"], json!(true), "{call}");
     let messages = call["messages"].as_array().cloned().unwrap_or_default();
     assert_eq!(messages.len(), 2, "system + selection only: {call}");
-    assert!(messages[0]["content"]
-        .as_str()
-        .unwrap_or("")
-        .contains("German"));
-    assert_eq!(messages[1]["content"], json!("Hello, {name}! 50%"));
+    let system = messages[0]["content"].as_str().unwrap_or("");
+    assert!(system.contains("German"), "{system}");
+    // The selection goes fenced, and the system prompt names the fence
+    // (TR-1): text that reads like an instruction stays data.
+    assert!(
+        system.contains("<<<VELES-TEXT") && system.contains("VELES-TEXT>>>"),
+        "{system}"
+    );
+    assert_eq!(
+        messages[1]["content"],
+        json!("<<<VELES-TEXT\nHello, {name}! 50%\nVELES-TEXT>>>")
+    );
     assert!(
         chat_seen.lock().unwrap().is_empty(),
         "the chat route must not serve a translation"
