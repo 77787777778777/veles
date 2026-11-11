@@ -85,7 +85,7 @@ declare -A images=(
 declare -A setups=(
     [debian]='apt-get update && apt-get install -y --no-install-recommends ca-certificates bash coreutils grep diffutils findutils tar zstd curl xvfb xauth fuse3 fontconfig fonts-dejavu-core && useradd -m -u __SMOKE_UID__ smoke'
     [fedora]='dnf install -y --setopt=install_weak_deps=False ca-certificates bash coreutils grep diffutils findutils tar zstd curl xorg-x11-server-Xvfb xauth fuse3 fontconfig dejavu-sans-fonts shadow-utils && useradd -m -u __SMOKE_UID__ smoke'
-    [arch]='pacman -Sy --noconfirm --needed ca-certificates bash coreutils grep diffutils findutils tar zstd curl xorg-server-xvfb xorg-xauth fuse3 fontconfig ttf-dejavu shadow && useradd -m -u __SMOKE_UID__ smoke'
+    [arch]='pacman -Syu --noconfirm --needed ca-certificates bash coreutils grep diffutils findutils tar zstd curl xorg-server-xvfb xorg-xauth fuse3 fontconfig ttf-dejavu shadow && useradd -m -u __SMOKE_UID__ smoke'
 )
 if [[ -n ${VELES_SMOKE_RESULTS:-} ]]; then
     mkdir -p "$VELES_SMOKE_RESULTS"
