@@ -113,6 +113,12 @@ pub const BACKUP_SET: &[(&str, Root)] = &[
     // They contain no credentials, but are the audit trail needed after a
     // restart or rollback decision.
     ("fleet-deployments", Root::Data),
+    // The command center's audit trail (fleet_manage.rs `audit_path`):
+    // who restarted or reconfigured which node from this gateway, when,
+    // and the result. One redacted line per action, cut back past 4,000;
+    // it holds no values and no tokens. An audit trail that a restore
+    // forgets is not one.
+    ("fleet_audit.jsonl", Root::Data),
     // Other nodes' stores as this node holds them (storesync:
     // `replicas/<node-id>.db`). A sender moves its cursor past what this
     // node reports applying, so a restore without them loses those rows
@@ -565,6 +571,44 @@ mod tests {
         assert_eq!(n, 1, "post-backup write must be gone after restore");
         drop(conn);
 
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// The command center's audit trail (`fleet_audit.jsonl`, 0.2.2: who
+    /// restarted or reconfigured which node, and the result) is carried.
+    /// 0.2.2 added the file and not the entry, and
+    /// backup_set_matches_reality could not say so until a real gateway
+    /// had written one: it went red on the developer's box the day after
+    /// the first restart over the cluster link (2026-11-12), with the
+    /// release already out. This one needs no such luck.
+    #[test]
+    fn the_fleet_audit_trail_is_carried() {
+        let _g = crate::testenv::guard();
+        let dir = std::env::temp_dir().join(format!("veles-backup-audit-{}", std::process::id()));
+        std::env::set_var("VELES_DESKTOP_PORT", "48643");
+        std::env::set_var("VELES_HOME", &dir);
+        let _ = std::fs::remove_dir_all(&dir);
+        let dest = dir.join("backup");
+        let (config, data) = fake_brain(&dir);
+        let record = "{\"at\":\"2026-11-11T21:12:03Z\",\"who\":\"owner\",\"action\":\"restart\",\
+                      \"node\":\"phone\",\"ok\":true,\"result\":\"back after 9 s\"}\n";
+        std::fs::write(data.join("fleet_audit.jsonl"), record).unwrap();
+
+        backup_to(&config, &data, &dest).unwrap();
+        assert_eq!(
+            std::fs::read_to_string(dest.join("fleet_audit.jsonl")).unwrap_or_default(),
+            record,
+            "the backup left the audit trail out"
+        );
+
+        std::fs::remove_file(data.join("fleet_audit.jsonl")).unwrap();
+        restore_from(&config, &data, &dest).unwrap();
+        assert_eq!(
+            std::fs::read_to_string(data.join("fleet_audit.jsonl")).unwrap_or_default(),
+            record,
+            "the audit trail must return to the DATA root"
+        );
+        assert!(!config.join("fleet_audit.jsonl").exists());
         let _ = std::fs::remove_dir_all(&dir);
     }
 

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "veles tab bridge",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhQdswbGE+AG4LO8BV0CnLPkWDU/qA0EvbGCsMWypFOTuy9dVfP/cG1sGn2kbfwcKkvr1yEPDBXB5E62XacCek5cytZIWGCrF3/Nb3eDEhnQwmaTbs/lpNfnARdgNf2w8/fiuRVMb4RWx9jVH/f9y32WHhBFsHSImfUFulU9f5ouNEeBdkUJ7/MldLPKkHYPYCnit8n70rvFpMbOxrz+9OuTKAvAkY1w6XbRN2l/MYXhT1blltwuzgbTP0c3PBSz3t1tiyeLRcGZbr+U3KCsIQwzfy0KFdFfC7oshLJNEQlo7xsfx0s4DzmdsTEvSDKFaWZlRT+MdrHeplkZCWgq+iwIDAQAB",
   "description": "Explicitly share the selected tab with your local veles agent.",
   "permissions": ["activeTab", "scripting", "nativeMessaging"],

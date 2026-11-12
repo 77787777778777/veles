@@ -56,6 +56,32 @@
           overlays = [ fenix.overlays.default ];
         };
 
+        # What every derivation that compiles the engine is told about
+        # its source (crates/veles-frontends/build.rs stamps both into the
+        # binary; a sandbox has no .git to ask).
+        #
+        # VELES_SOURCE_REVISION: /api/health and the fleet tell the
+        # selected bundle from the running source by it. A dirty build is
+        # honestly not a release SHA.
+        #
+        # VELES_SNAPSHOT_OF: the public tree is an export of the
+        # development tree with commit ids of its own, and names the
+        # development commit it was exported from in SNAPSHOT_OF at its
+        # root (scripts/release/export-public.sh). Empty in the
+        # development tree. The fleet's consistency check compares builds
+        # by it, so a published build and one of the development tree are
+        # known to be the same source.
+        #
+        # ONE set, used by the host package AND the Android engine: only
+        # the host package had the revision, so the 0.2.2 APK reported
+        # `unreported-dirty-build` on a phone running the release
+        # (pitfall 348; checks.android-source-stamp).
+        sourceStamp = {
+          VELES_SOURCE_REVISION = self.rev or "unreported-dirty-build";
+          VELES_SNAPSHOT_OF =
+            if builtins.pathExists ./SNAPSHOT_OF then pkgs.lib.fileContents ./SNAPSHOT_OF else "";
+        };
+
         # Explicit source filter for anything built in the nix sandbox.
         #
         # `src = ./.` carries the whole working tree into /nix/store.
@@ -676,7 +702,7 @@
         # both packages.default and the OCI image below can reference it.
         velesPkg = pkgs.rustPlatform.buildRustPackage rec {
           pname = "veles-agent";
-          version = "0.2.2";
+          version = "0.2.3";
           src = rustSrc;
           cargoLock = {
             lockFile = ./Cargo.lock;
@@ -700,9 +726,9 @@
             # The gateway and the modules NEED libveles_runtime.so and
             # libstd-*.so; both are installed in $out/lib (postInstall).
             RUSTFLAGS = buildEnv.RUSTFLAGS + " -C link-arg=-Wl,-rpath,$ORIGIN/../lib";
-            # /api/health distinguishes the selected bundle from the
-            # running source. Dirty builds are honestly not a release SHA.
-            VELES_SOURCE_REVISION = self.rev or "unreported-dirty-build";
+            # The revision and, in a public snapshot, the development
+            # commit it was exported from (sourceStamp, above).
+            inherit (sourceStamp) VELES_SOURCE_REVISION VELES_SNAPSHOT_OF;
             BINDGEN_EXTRA_CLANG_ARGS = "-I${clangResourceInclude}";
             # tests/plugin_so.rs loads the REAL out-of-tree cdylib. With
             # this unset the test SKIPS when it cannot find the artifact,
@@ -1232,7 +1258,7 @@
         androidMinSdk = "26";
         # Raised by hand for each release a store sees; a sideloaded
         # reinstall of the same code keeps it.
-        androidVersionCode = "9";
+        androidVersionCode = "10";
         androidSdk =
           (androidHost.androidenv.composeAndroidPackages {
             platformVersions = [ androidTargetSdk ];
@@ -1276,7 +1302,7 @@
             ];
             env = {
               inherit (buildEnv) PKG_CONFIG_PATH TCL_LIBRARY LIBCLANG_PATH;
-            } // t.env;
+            } // t.env // sourceStamp;
             buildPhase = ''
               runHook preBuild
               # The gateway AND the modules it loads, in ONE cargo invocation
@@ -2454,7 +2480,7 @@
 
         # The image's tag names the commit it was built from, so the VPS
         # can say which one it runs.
-        imageTag = "0.2.2-${self.shortRev or self.dirtyShortRev or "dirty"}";
+        imageTag = "0.2.3-${self.shortRev or self.dirtyShortRev or "dirty"}";
         imageRevision = self.rev or self.dirtyRev or "dirty";
         # The release builder overrides only this label. Published images
         # must be rejected if their source does not name the authenticated
@@ -2713,6 +2739,24 @@
           veles-agent = velesPkg;
           tests = testsCheck;
 
+          # The Android engine is told what it is built from, exactly as
+          # the host package is. Evaluation only: the 0.2.2 APK reported
+          # `unreported-dirty-build` because its derivation never got the
+          # revision (pitfall 348), and nothing but a phone showed it.
+          android-source-stamp =
+            let
+              android = velesAndroid "arm64-v8a";
+              told = drv: {
+                revision = drv.VELES_SOURCE_REVISION or "(not passed)";
+                snapshotOf = drv.VELES_SNAPSHOT_OF or "(not passed)";
+              };
+            in
+            assert pkgs.lib.assertMsg (told android == told velesPkg)
+              "the Android engine is told ${builtins.toJSON (told android)} about its source, the host package ${builtins.toJSON (told velesPkg)}";
+            assert pkgs.lib.assertMsg ((told velesPkg).revision == (self.rev or "unreported-dirty-build"))
+              "the host package is not told the flake's revision";
+            pkgs.runCommand "android-source-stamp" { } "touch $out";
+
           # A process plugin still builds as one static executable: a
           # dependency on veles-core or libtcl would end that, and the
           # derivation's install check names it.
@@ -2918,7 +2962,7 @@
         #     bind-mount owner on the host.
         #   - Entrypoint is the wrapped `veles` binary; Cmd defaults to
         #     `gateway run` but any subcommand works:
-        #     `podman run --rm veles-agent:0.2.2 status` etc.
+        #     `podman run --rm veles-agent:0.2.3 status` etc.
         #   - No s6 / entrypoint.sh — veles' own lifecycle code (pid file,
         #     crash-loop guard, graceful SIGTERM, shutdown log) IS the init
         #     story; PID 1 is `veles` itself. `--restart unless-stopped` on

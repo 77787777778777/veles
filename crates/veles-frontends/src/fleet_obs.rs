@@ -50,6 +50,14 @@ pub fn revision() -> &'static str {
     option_env!("VELES_SOURCE_REVISION").unwrap_or("unreported-development-build")
 }
 
+/// The development commit this binary's tree was exported from, when it
+/// is a published snapshot (build.rs; `SNAPSHOT_OF` at the root of the
+/// public tree, written by scripts/release/export-public.sh). A build
+/// of the development tree itself names none.
+pub fn snapshot_of() -> Option<&'static str> {
+    option_env!("VELES_SNAPSHOT_OF").filter(|commit| !commit.is_empty())
+}
+
 fn started() -> &'static OnceLock<Instant> {
     static STARTED: OnceLock<Instant> = OnceLock::new();
     &STARTED
@@ -145,6 +153,7 @@ pub fn local_metrics(store: &Arc<Mutex<Store>>) -> Value {
     let mut v = veles_core::hostmetrics::sample(&veles_core::config::veles_home());
     v["version"] = json!(env!("CARGO_PKG_VERSION"));
     v["revision"] = json!(revision());
+    v["snapshot_of"] = json!(snapshot_of());
     v["profile"] = json!(veles_core::profiles::active_profile());
     v["os"] = json!(std::env::consts::OS);
     v["arch"] = json!(std::env::consts::ARCH);
@@ -206,8 +215,9 @@ fn usable_nonce(nonce: &str) -> String {
     }
 }
 
-/// What drift is compared on: version, revision, and the replicated
-/// config — the config log's per-author high-water marks, a hash of the
+/// What drift is compared on: version, revision (and, for a published
+/// build, the development commit its tree was exported from), and the
+/// replicated config — the config log's per-author high-water marks, a hash of the
 /// whole log, and per replicated key of config.toml a salted hash.
 pub fn local_fingerprint(store: &Arc<Mutex<Store>>, nonce: &str) -> Value {
     let nonce = usable_nonce(nonce);
@@ -268,6 +278,7 @@ pub fn local_fingerprint(store: &Arc<Mutex<Store>>, nonce: &str) -> Value {
     json!({
         "version": env!("CARGO_PKG_VERSION"),
         "revision": revision(),
+        "snapshot_of": snapshot_of(),
         "nonce": nonce,
         "config": {
             "log_marks": marks,
@@ -359,23 +370,51 @@ fn majority<'v>(values: &[&'v str]) -> Option<&'v str> {
     (top.len() == 1).then(|| top[0])
 }
 
-/// Deployment consistency across nodes (pure): every node's version,
-/// revision, module, plugin and driver versions, and user plugins that
+/// The commit a node's build stands for: the development commit its
+/// tree was exported from when it is a published build (`snapshot_of`),
+/// else its own revision. `None` for a build that does not know its
+/// source (a dirty or unstamped build, whatever its tree names): two
+/// such builds are not known to be the same.
+fn build_commit(fingerprint: &Value) -> Option<&str> {
+    let revision = fingerprint["revision"]
+        .as_str()
+        .filter(|r| !r.is_empty() && !r.starts_with("unreported"))?;
+    Some(
+        fingerprint["snapshot_of"]
+            .as_str()
+            .filter(|commit| !commit.is_empty())
+            .unwrap_or(revision),
+    )
+}
+
+/// What one node's row is compared by against this node's ([`compare`]):
+/// the commit its build stands for, or the revision text as reported
+/// when it does not know its source. The verdict is stricter with such
+/// a build ([`consistency`]).
+fn commit_or_revision(fingerprint: &Value) -> &str {
+    build_commit(fingerprint).unwrap_or_else(|| fingerprint["revision"].as_str().unwrap_or("?"))
+}
+
+/// Deployment consistency across nodes (pure): do they run the same
+/// point release at the same commit. Compared are every node's version
+/// and commit ([`build_commit`]), the version of each module, plugin
+/// and driver among the nodes that load it, and user plugins that
 /// shadow a bundled one with other content. A node that differs from
 /// the others is flagged with what differs; without a majority, every
 /// node that disagrees is.
 ///
-/// An item (module, process plugin, driver) is compared among the nodes
-/// that have it, and one that is not on every compared node is listed
-/// in `missing` by name with the nodes that lack it: a Windows node has
-/// no Racket or Lisp module and a phone has its own set, so a lacking
-/// item is not drift, but it is never left unsaid either.
+/// What a platform or a role loads does not decide the verdict. An item
+/// (module, process plugin, driver) that is not on every compared node
+/// is listed in `missing` by name with the nodes that lack it — a
+/// Windows node has no Racket or Lisp module and a phone has its own
+/// set — and a module that reports no version (one standing by for a
+/// singleton lease another node holds) is not compared at all. 0.2.2
+/// counted both, so the fleet it was deployed to read "NOT consistent:
+/// 4 node(s) differ" with every node on the release.
 ///
 /// `verdict`: `not_consistent` when a node is flagged; `unknown` when a
-/// node could not be compared; `consistent_with_differences` when every
-/// node agrees on its build and on every item two or more of them share
-/// and some item is missing somewhere; `consistent` (and `consistent`
-/// true) only when nothing is flagged, unknown or missing.
+/// node could not be compared; else `consistent` (and `consistent`
+/// true), with `missing` naming what is not on every node.
 pub fn consistency(nodes: &[Deployed]) -> Value {
     let mut unknown = Vec::new();
     let mut compared: Vec<(&Deployed, &Value)> = Vec::new();
@@ -390,17 +429,37 @@ pub fn consistency(nodes: &[Deployed]) -> Value {
         }
     }
     let mut why: BTreeMap<&str, Vec<String>> = BTreeMap::new();
-    // Version and revision: every node reports them.
-    for field in ["version", "revision"] {
-        let values: Vec<&str> = compared
-            .iter()
-            .map(|(_, f)| f[field].as_str().unwrap_or("?"))
-            .collect();
-        let maj = majority(&values);
-        for ((n, _), v) in compared.iter().zip(&values) {
-            if maj != Some(*v) && values.iter().any(|o| o != v) {
-                why.entry(n.id).or_default().push(format!("{field} {v}"));
+    // The point release: every node reports its version.
+    let versions: Vec<&str> = compared
+        .iter()
+        .map(|(_, f)| f["version"].as_str().unwrap_or("?"))
+        .collect();
+    let maj = majority(&versions);
+    for ((n, _), v) in compared.iter().zip(&versions) {
+        if maj != Some(*v) && versions.iter().any(|o| o != v) {
+            why.entry(n.id).or_default().push(format!("version {v}"));
+        }
+    }
+    // The commit. A build that does not know its source agrees with
+    // nothing, another such build included.
+    let commits: Vec<Option<&str>> = compared.iter().map(|(_, f)| build_commit(f)).collect();
+    let known: Vec<&str> = commits.iter().flatten().copied().collect();
+    let maj = majority(&known);
+    for ((n, f), commit) in compared.iter().zip(&commits) {
+        let revision = f["revision"].as_str().unwrap_or("?");
+        match commit {
+            None if compared.len() > 1 => why
+                .entry(n.id)
+                .or_default()
+                .push(format!("revision not reported ({revision})")),
+            Some(c) if maj != Some(*c) && known.iter().any(|o| o != c) => {
+                why.entry(n.id).or_default().push(if *c == revision {
+                    format!("revision {revision}")
+                } else {
+                    format!("revision {revision} (snapshot of {c})")
+                });
             }
+            _ => {}
         }
     }
     // Each module, plugin and driver, among the nodes that load it.
@@ -425,10 +484,16 @@ pub fn consistency(nodes: &[Deployed]) -> Value {
             let on: Vec<&str> = have.iter().map(|(n, _)| n.name).collect();
             missing.push(json!({"item": key, "on": on, "lacking": lacking}));
         }
-        let values: Vec<&str> = have.iter().map(|(_, v)| *v).collect();
+        // A module standing by for a singleton lease is on the node and
+        // reports no version: there is nothing of it to compare.
+        let values: Vec<&str> = have
+            .iter()
+            .map(|(_, v)| *v)
+            .filter(|v| !v.is_empty())
+            .collect();
         let maj = majority(&values);
         for (n, v) in &have {
-            if maj != Some(*v) && values.iter().any(|o| o != v) {
+            if !v.is_empty() && maj != Some(*v) && values.iter().any(|o| o != v) {
                 why.entry(n.id).or_default().push(format!("{key} {v}"));
             }
         }
@@ -474,24 +539,18 @@ pub fn consistency(nodes: &[Deployed]) -> Value {
                 unknown.len()
             ),
         )
-    } else if !missing.is_empty() {
-        (
-            "consistent_with_differences",
-            format!(
-                "The fleet is consistent with differences: {} node(s) run the same build and \
-                 agree on everything they share; {} item(s) are not on every node.",
-                compared.len(),
-                missing.len()
-            ),
-        )
     } else {
-        (
-            "consistent",
-            format!(
-                "The fleet is consistent: {} node(s) run the same build, modules and plugins.",
-                compared.len()
-            ),
-        )
+        let mut statement = format!(
+            "The fleet is consistent: {} node(s) run the same release and commit.",
+            compared.len()
+        );
+        if !missing.is_empty() {
+            statement.push_str(&format!(
+                " {} item(s) are not on every node.",
+                missing.len()
+            ));
+        }
+        ("consistent", statement)
     };
     json!({
         "consistent": verdict == "consistent",
@@ -762,9 +821,10 @@ pub fn compare(here: &Value, there: &Value) -> Value {
     let keys_same = differ.is_empty() && only_here.is_empty() && only_there.is_empty();
     json!({
         "version_differs": here["version"] != there["version"],
-        "revision_differs": here["revision"] != there["revision"],
+        "revision_differs": commit_or_revision(here) != commit_or_revision(there),
         "version": there["version"],
         "revision": there["revision"],
+        "snapshot_of": there["snapshot_of"],
         "inventory": there["inventory"],
         "config": {
             "comparable": nonce_same,
@@ -1327,6 +1387,21 @@ mod tests {
         assert_eq!(c["config"]["log"]["there_ahead"][0]["author"], "laptop-id");
         assert_eq!(c["revision_differs"], true);
         assert_eq!(c["version_differs"], false);
+        // A published build of the same source has another commit id and
+        // names the development commit it was exported from: the row
+        // must agree with the verdict (consistency) that it is the same.
+        let mut dev = here.clone();
+        dev["revision"] = json!("7e566131aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        dev["snapshot_of"] = Value::Null;
+        let mut published = here.clone();
+        published["revision"] = json!("7c2e61b4bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+        published["snapshot_of"] = dev["revision"].clone();
+        assert_eq!(compare(&dev, &published)["revision_differs"], false);
+        assert_eq!(compare(&published, &dev)["revision_differs"], false);
+        published["snapshot_of"] = json!("03f5b0e4cccccccccccccccccccccccccccccccc");
+        let c = compare(&dev, &published);
+        assert_eq!(c["revision_differs"], true, "{c}");
+        assert_eq!(c["snapshot_of"], "03f5b0e4cccccccccccccccccccccccccccccccc");
         // A short or absent nonce is replaced, so the hashes are salted.
         let unsalted = local_fingerprint(&store, "");
         assert_eq!(unsalted["nonce"].as_str().unwrap().len(), 32);
@@ -1541,14 +1616,17 @@ mod tests {
         assert!(fp["inventory"]["shadows"].is_array(), "{fp}");
     }
 
-    /// The decision for an item not every node has: version, revision
-    /// and every item two or more nodes share must agree for
-    /// "consistent", and an item missing from a node is always named,
-    /// with the nodes that lack it — a Windows node has no Racket or Lisp
-    /// module, a phone its own set — and the verdict is then "consistent
-    /// with differences", never plain "consistent". consistency() used
-    /// to compare an item only among the nodes that report it, so a node
-    /// that lacked a module the others ran was never mentioned.
+    /// The decision for an item not every node has: version, commit and
+    /// every item two or more nodes load must agree for "consistent",
+    /// and an item missing from a node is always named, with the nodes
+    /// that lack it — a Windows node has no Racket or Lisp module, a
+    /// phone its own set. What a platform loads does not decide the
+    /// verdict (the owner, 2026-11-12: "should compare point release and
+    /// commit not platform"): 0.2.2 called such a fleet "consistent with
+    /// differences", so no real fleet could ever be called consistent.
+    /// consistency() once compared an item only among the nodes that
+    /// report it, so a node that lacked a module the others ran was
+    /// never mentioned; it still is mentioned.
     #[test]
     fn consistency_names_what_a_node_lacks() {
         let node = |id: &'static str, f: Value| Deployed {
@@ -1584,8 +1662,8 @@ mod tests {
             text(&rev)
         );
 
-        // One node lacking a module: named with the node, never plain
-        // "consistent".
+        // One node lacking a module: the fleet is consistent, and the
+        // module is named with the node that lacks it.
         let mut no_racket = full.clone();
         no_racket.as_object_mut().unwrap().remove("module:racket");
         let lacks = consistency(&[
@@ -1593,15 +1671,15 @@ mod tests {
             node("vps", deployed("0.2.2", "r1", full.clone(), json!([]))),
             node("winbox", deployed("0.2.2", "r1", no_racket, json!([]))),
         ]);
-        assert_eq!(lacks["consistent"], false, "{lacks}");
-        assert_eq!(lacks["verdict"], "consistent_with_differences", "{lacks}");
+        assert_eq!(lacks["consistent"], true, "{lacks}");
+        assert_eq!(lacks["verdict"], "consistent", "{lacks}");
         let statement = lacks["statement"].as_str().unwrap();
         assert!(
-            statement.contains("consistent with differences"),
+            statement.starts_with("The fleet is consistent: 3 node(s)"),
             "{statement}"
         );
         assert!(
-            !statement.starts_with("The fleet is consistent:"),
+            statement.contains("1 item(s) are not on every node"),
             "{statement}"
         );
         let missing = lacks["missing"].as_array().unwrap();
@@ -1645,5 +1723,168 @@ mod tests {
             "{}",
             text(&stale)
         );
+    }
+
+    /// The fleet as 0.2.2 was deployed on 2026-11-11, which the check
+    /// called "NOT consistent: 4 node(s) differ" although every node ran
+    /// the release. What decides the verdict is the point release and
+    /// the commit, not what a platform loads:
+    ///   - a module standing by for a singleton lease reports no
+    ///     version, and "" against "0.2.2" was a difference;
+    ///   - the laptop and the VPS run builds of the development tree,
+    ///     the Windows node and the phone the published artifacts, whose
+    ///     tree is an export with commit ids of its own: a published
+    ///     build names the development commit it was exported from
+    ///     (`snapshot_of`), and that is the commit compared;
+    ///   - a build that does not know its source is never "the same".
+    #[test]
+    fn consistency_compares_the_release_and_the_commit_not_what_a_platform_loads() {
+        const DEV: &str = "7e566131aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        const PUBLIC: &str = "7c2e61b4bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+        let node = |id: &'static str, f: Value| Deployed {
+            id,
+            name: id,
+            fingerprint: Some(Box::leak(Box::new(f))),
+            error: None,
+        };
+        let driver = "driver:tcl:tcl-anthropic-driver:anthropic-messages";
+        // Built from the development tree. The laptop stands by for
+        // both singleton leases.
+        let laptop = || {
+            deployed(
+                "0.2.3",
+                DEV,
+                json!({driver: "bcbefa46b9b4", "module:atproto-cmd": "0.2.3",
+                    "module:irc": "", "module:lang-js": "0.2.3", "module:lang-lisp": "0.2.3",
+                    "module:lang-racket": "0.2.3", "module:slopdrop": "0.2.3",
+                    "module:telegram": ""}),
+                json!([]),
+            )
+        };
+        let vps = || {
+            deployed(
+                "0.2.3",
+                DEV,
+                json!({driver: "bcbefa46b9b4", "module:atproto-cmd": "0.2.3",
+                    "module:irc": "0.2.3", "module:lang-js": "0.2.3", "module:lang-lisp": "0.2.3",
+                    "module:lang-racket": "0.2.3", "module:slopdrop": "0.2.3",
+                    "module:telegram": "0.2.3", "plugin:atproto": "0.2.3"}),
+                json!([]),
+            )
+        };
+        // The published artifacts: another commit id, the same source.
+        let published = |items: &Value| {
+            let mut f = deployed("0.2.3", PUBLIC, items.clone(), json!([]));
+            f["snapshot_of"] = json!(DEV);
+            f
+        };
+        let winbox = json!({driver: "bcbefa46b9b4", "module:echo-module": "0.2.3",
+            "module:irc": "0.2.3", "module:lang-js": "0.2.3", "module:slopdrop": "0.2.3",
+            "module:telegram": ""});
+        let phone = json!({driver: "bcbefa46b9b4", "module:lang-js": "0.2.3",
+            "module:slopdrop": "0.2.3"});
+
+        let fleet = consistency(&[
+            node("laptop", laptop()),
+            node("vps", vps()),
+            node("winbox", published(&winbox)),
+            node("phone", published(&phone)),
+        ]);
+        let text = consistency_text(&fleet);
+        assert_eq!(fleet["verdict"], "consistent", "{text}");
+        assert_eq!(fleet["consistent"], true, "{fleet}");
+        assert!(fleet["flagged"].as_array().unwrap().is_empty(), "{fleet}");
+        assert!(
+            text.starts_with("The fleet is consistent: 4 node(s) run the same release and commit"),
+            "{text}"
+        );
+        // What differs by platform is still said, item by item.
+        assert!(
+            text.contains("module:lang-racket is not on: winbox, phone"),
+            "{text}"
+        );
+        assert!(
+            text.contains("module:echo-module is not on: laptop, vps, phone"),
+            "{text}"
+        );
+
+        // The published 0.2.2 APK reported no revision (pitfall 348): a
+        // build that does not know its source is not known to be the
+        // same one, whatever its tree says it was exported from.
+        let mut blind = published(&phone);
+        blind["revision"] = json!("unreported-dirty-build");
+        let c = consistency(&[
+            node("laptop", laptop()),
+            node("vps", vps()),
+            node("winbox", published(&winbox)),
+            node("phone", blind.clone()),
+        ]);
+        let text = consistency_text(&c);
+        assert_eq!(c["verdict"], "not_consistent", "{text}");
+        assert_eq!(c["flagged"].as_array().unwrap().len(), 1, "{text}");
+        assert!(
+            text.contains("phone differs: revision not reported (unreported-dirty-build)"),
+            "{text}"
+        );
+        // Two such builds do not agree with each other either.
+        let c = consistency(&[node("phone", blind.clone()), node("tablet", blind)]);
+        assert_eq!(c["verdict"], "not_consistent", "{c}");
+        assert_eq!(c["flagged"].as_array().unwrap().len(), 2, "{c}");
+
+        // A published build that does not name what it was exported from
+        // (0.2.2 and older) cannot be matched to a development commit.
+        let mut unnamed = published(&winbox);
+        unnamed.as_object_mut().unwrap().remove("snapshot_of");
+        let c = consistency(&[
+            node("laptop", laptop()),
+            node("vps", vps()),
+            node("winbox", unnamed),
+        ]);
+        let text = consistency_text(&c);
+        assert_eq!(c["verdict"], "not_consistent", "{text}");
+        assert!(
+            text.contains(&format!("winbox differs: revision {PUBLIC}\n")),
+            "{text}"
+        );
+
+        // A snapshot of another commit differs, and says of which.
+        let mut other = published(&winbox);
+        other["snapshot_of"] = json!("03f5b0e4cccccccccccccccccccccccccccccccc");
+        let c = consistency(&[
+            node("laptop", laptop()),
+            node("vps", vps()),
+            node("winbox", other),
+        ]);
+        let text = consistency_text(&c);
+        assert_eq!(c["verdict"], "not_consistent", "{text}");
+        assert!(
+            text.contains(&format!(
+                "winbox differs: revision {PUBLIC} (snapshot of 03f5b0e4cccccccccccccccccccccccccccccccc)"
+            )),
+            "{text}"
+        );
+
+        // A copy that IS loaded at another version is still a
+        // difference: only a module that reports no version is left out.
+        let mut old_irc = winbox.clone();
+        old_irc["module:irc"] = json!("0.2.2");
+        let c = consistency(&[
+            node("laptop", laptop()),
+            node("vps", vps()),
+            node("winbox", published(&old_irc)),
+        ]);
+        let text = consistency_text(&c);
+        assert_eq!(c["verdict"], "not_consistent", "{text}");
+        assert!(text.contains("winbox differs: module:irc 0.2.2"), "{text}");
+        assert!(!text.contains("laptop differs"), "{text}");
+
+        // This node says what it was exported from, when it was.
+        let (_home, _env) = veles_core::testenv::scratch_home();
+        let store = Arc::new(Mutex::new(
+            Store::open(&veles_core::config::veles_home().join("state.db")).unwrap(),
+        ));
+        let fp = local_fingerprint(&store, "n");
+        assert!(fp.as_object().unwrap().contains_key("snapshot_of"), "{fp}");
+        assert_eq!(fp["snapshot_of"], json!(snapshot_of()), "{fp}");
     }
 }

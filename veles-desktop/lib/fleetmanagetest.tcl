@@ -321,20 +321,39 @@ ok "an unasked node makes it unknown, never consistent" {
 ok "not checked yet is said as such" {
     [string match "*not checked yet*" [join [::vfleetmanage::consistency_lines {}] \n]]
 }
-# A node that lacks an item the others have (fleet_obs::consistency,
-# 0.2.2): the gateway names the item with the nodes that lack it, and the
-# verdict is consistent with differences — never plain "consistent",
-# never "unknown". The Instances detail of the node that lacks it says
-# so; another node's detail carries the verdict only.
-set diff [dict create checked true consistent false verdict consistent_with_differences \
+# A node that lacks an item the others have (fleet_obs::consistency):
+# the gateway names the item with the nodes that lack it, and the fleet
+# is consistent all the same — the verdict is the point release and the
+# commit, not what a platform loads (the owner, 2026-11-12; 0.2.2 said
+# "consistent with differences", and no real fleet could read
+# "consistent"). The Instances detail of the node that lacks it names
+# the item; another node's detail carries the verdict only.
+set diff [dict create checked true consistent true verdict consistent \
     compared 3 flagged {} unknown {} shadows {} \
     missing [list [dict create item module:racket on {laptop vps} \
         lacking [list [dict create id $remote_id name winbox]]]]]
 set out [join [::vfleetmanage::consistency_lines $diff] \n]
-ok "a node lacking a module reads as consistent with differences" {
-    [string match "*consistent with differences: 3 node(s)*1 item(s) are not on every node*" $out]
-    && ![string match "*The fleet is consistent:*" $out]
+ok "a node lacking a module leaves the fleet consistent" {
+    [string match "*The fleet is consistent: 3 node(s) run the same release and commit.*" $out]
+    && ![string match "*with differences*" $out]
     && ![string match "*unknown*" $out]
+    && ![string match "*NOT consistent*" $out]
+}
+# The same fleet as a 0.2.2 gateway answers it (consistent false, its
+# own verdict word): the desktop reads it by today's rule.
+set old [dict replace $diff consistent false verdict consistent_with_differences]
+set old_out [join [::vfleetmanage::consistency_lines $old] \n]
+ok "…also when a 0.2.2 gateway says it its way" {
+    [string match "*The fleet is consistent: 3 node(s) run the same release and commit.*" $old_out]
+    && [string match "*module:racket is not on: winbox*" $old_out]
+    && ![string match "*unknown*" $old_out]
+}
+# No verdict word, nothing flagged, nothing unknown, not consistent: the
+# desktop does not make "consistent" up.
+ok "…and never without the gateway's word" {
+    [string match "*unknown*" [join [::vfleetmanage::consistency_lines \
+        [dict create checked true consistent false compared 3 flagged {} unknown {} shadows {} \
+            missing [dict get $diff missing]]] \n]]
 }
 ok "…and the item is named with the node that lacks it" {
     [string match "*module:racket is not on: winbox*" $out]
@@ -346,7 +365,7 @@ ok "…in that node's detail" {
 }
 ::vinstpane::_select cluster:$self_id
 ok "…and not in another node's" {
-    [string match "*consistent with differences*" [detail]]
+    [string match "*The fleet is consistent: 3 node(s)*" [detail]]
     && ![string match "*module:racket is not on*" [detail]]
 }
 

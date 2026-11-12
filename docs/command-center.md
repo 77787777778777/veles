@@ -184,17 +184,32 @@ be replayed after the node restarted.
 
 ### Deployment consistency
 
-**Drift…** (and `/fleet drift`) also compares what every node RUNS: its
-version and source revision, the version of each loaded module and
-process plugin, each provider driver's source hash, and every user plugin
-that shadows a bundled one (with a fingerprint of each side). A node that
-differs from the others is flagged with what differs (a user copy with
-other content than the bundled one is always flagged); without a
-majority, every node that disagrees is. "The fleet is consistent" is said
-only when every node was compared and none differs; a node that could
-not be asked (stale, no `[a2a_agents]` entry, older than 0.2.2) makes it
-"unknown". The verdict of the last check is in every registry row's
-detail and in `/fleet list`.
+**Drift…** (and `/fleet drift`) also says whether every node runs the
+same point release at the same commit. It compares each node's version
+and commit, the version of each module and process plugin among the
+nodes that load it, each provider driver's source hash, and every user
+plugin that shadows a bundled one (with a fingerprint of each side). A
+node that differs from the others is flagged with what differs (a user
+copy with other content than the bundled one is always flagged); without
+a majority, every node that disagrees is.
+
+What a platform or a role loads does not decide the verdict. A module
+that is not on every node (Racket and Lisp are not built for Windows, a
+phone has its own set) is named with the nodes that lack it, and the
+fleet is consistent all the same. A module standing by for a singleton
+lease reports no version and is not compared.
+
+The commit of a published build is the development commit its source
+tree was exported from: the published tree names it in `SNAPSHOT_OF`,
+and the build reports it beside its own revision. A published build and
+a build of the development tree at that commit are the same build to
+this check. A build that does not know its source (a build of a modified
+tree) reads "revision not reported" and agrees with nothing.
+
+"The fleet is consistent" is said only when every node was compared and
+none differs; a node that could not be asked (stale, no `[a2a_agents]`
+entry, older than 0.2.2) makes it "unknown". The verdict of the last
+check is in every registry row's detail and in `/fleet list`.
 
 ### Observing nodes
 

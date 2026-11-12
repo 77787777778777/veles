@@ -5,6 +5,9 @@
 # <dest> is the public repository's checkout: its tree is REPLACED by the
 # snapshot (its .git is kept), ready for one commit per release.
 #
+# The snapshot carries one file this tree does not: SNAPSHOT_OF, the id of
+# <commit>, by which a build of the snapshot says what it is a build of.
+#
 # Usage: scripts/release/export-public.sh <commit> <dest-dir>
 #        scripts/release/export-public.sh --check <commit>   # report only
 set -euo pipefail
@@ -16,6 +19,12 @@ if [ "${1:-}" = --check ]; then check=1; shift; fi
 commit=${1:?usage: export-public.sh [--check] <commit> [<dest-dir>]}
 dest=${2:-}
 [ "$check" = 1 ] || [ -n "$dest" ] || { echo "export-public: no destination" >&2; exit 2; }
+# A tree that is itself a snapshot is not exported again: the marker
+# written below would then name a commit of the public tree.
+if git -C "$root" cat-file -e "$commit:SNAPSHOT_OF" 2>/dev/null; then
+    echo "export-public: $commit is itself a snapshot (it tracks SNAPSHOT_OF); export the development tree" >&2
+    exit 2
+fi
 # The forbidden list is read from the working tree, never from <commit>:
 # it is private, and an export of an old commit must meet today's list.
 forbidden="$here/public-forbidden.txt"
@@ -55,4 +64,10 @@ mkdir -p "$dest"
 # Replace the destination's tree, keep its history.
 find "$dest" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf -- {} +
 cp -a "$tmp"/. "$dest"/
-echo "export-public: written to $dest"
+# The snapshot names the commit it was made from. The public tree has
+# commit ids of its own, so a published build reports a revision no
+# build of this tree can share; the build stamps this id beside its own
+# (crates/veles-frontends/build.rs) and the fleet's consistency check
+# compares builds by it (fleet_obs::consistency). The full id, one line.
+git -C "$root" rev-parse "$commit^{commit}" >"$dest/SNAPSHOT_OF"
+echo "export-public: written to $dest (SNAPSHOT_OF $(cut -c1-12 "$dest/SNAPSHOT_OF"))"

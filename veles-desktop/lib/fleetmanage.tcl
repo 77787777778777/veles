@@ -585,13 +585,16 @@ proc ::vfleetmanage::notify {text} {
 # ── deployment consistency ───────────────────────────────────────────
 
 # The deployment-consistency verdict (/api/fleet and /api/fleet/drift
-# `consistency`): version, revision, modules, plugins, drivers and user
-# plugins shadowing bundled ones, compared across every node. With a
-# node id, only what concerns that node follows the verdict. "The fleet
-# is consistent" is said only when the gateway said so: every node was
-# compared, none differs and every item is on every node. An item some
-# node lacks is named with the nodes that lack it, and the verdict is
-# then "consistent with differences".
+# `consistency`): do the nodes run the same point release at the same
+# commit. The gateway compares version and commit, the version of each
+# module, plugin and driver among the nodes that load it, and user
+# plugins shadowing bundled ones. With a node id, only what concerns
+# that node follows the verdict. "The fleet is consistent" is said only
+# when the gateway said so: every node was compared and none differs.
+# An item some node lacks (a module a platform does not have) is named
+# with the nodes that lack it and does not change the verdict; a 0.2.2
+# gateway calls that fleet "consistent with differences", which reads
+# as consistent here too.
 proc ::vfleetmanage::consistency_lines {c {node_id ""}} {
     if {$c eq "" || [::vapi::field $c checked 0] ni {true 1}} {
         return [list [::vi18n::mc {Deployment consistency: not checked yet (Drift… compares every node).}]]
@@ -599,16 +602,15 @@ proc ::vfleetmanage::consistency_lines {c {node_id ""}} {
     set flagged [::vapi::field $c flagged {}]
     set unknown [::vapi::field $c unknown {}]
     set missing [::vapi::field $c missing {}]
-    if {[::vapi::field $c consistent 0] in {true 1}} {
-        set lines [list [format [::vi18n::mc {The fleet is consistent: %s node(s) run the same build, modules and plugins.}] \
-            [::vapi::field $c compared 0]]]
-    } elseif {[llength $flagged]} {
+    set agreed [expr {[::vapi::field $c consistent 0] in {true 1}
+        || [::vapi::field $c verdict ""] eq "consistent_with_differences"}]
+    if {[llength $flagged]} {
         set lines [list [format [::vi18n::mc {The fleet is NOT consistent: %s node(s) differ.}] [llength $flagged]]]
-    } elseif {[llength $unknown] || ![llength $missing]} {
+    } elseif {[llength $unknown] || !$agreed} {
         set lines [list [format [::vi18n::mc {Deployment consistency unknown: %s node(s) could not be compared.}] [llength $unknown]]]
     } else {
-        set lines [list [format [::vi18n::mc {The fleet is consistent with differences: %1$s node(s) run the same build and agree on everything they share; %2$s item(s) are not on every node.}] \
-            [::vapi::field $c compared 0] [llength $missing]]]
+        set lines [list [format [::vi18n::mc {The fleet is consistent: %s node(s) run the same release and commit.}] \
+            [::vapi::field $c compared 0]]]
     }
     foreach f $flagged {
         if {$node_id ne "" && [::vapi::field $f id ""] ne $node_id} { continue }

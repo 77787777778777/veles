@@ -168,7 +168,7 @@ proc ::vfleetobs::drift_node_lines {d node_id} {
 proc ::vfleetobs::drift_lines {d} {
     set lines {}
     # Deployment consistency first (lib/fleetmanage.tcl, 0.2.2): whether
-    # every node runs the same build, modules and plugins.
+    # every node runs the same point release at the same commit.
     if {[llength [info commands ::vfleetmanage::consistency_lines]]} {
         lappend lines {*}[::vfleetmanage::consistency_lines [::vapi::field $d consistency]] ""
     }

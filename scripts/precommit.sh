@@ -69,6 +69,10 @@ step "clippy"   cargo clippy --workspace --all-features --all-targets -- -D warn
 # ref (HEAD when nothing is modified). Its scratch copy lives under the
 # gate's TMPDIR, removed with it.
 step "public export check" bash -c 'rev=$(git stash create 2>/dev/null); bash scripts/release/export-public.sh --check "${rev:-HEAD}"'
+# The snapshot names the commit it was exported from (SNAPSHOT_OF): a
+# published build is matched to a build of this tree by it, and 0.2.2's
+# fleet could not be called consistent without it.
+step "export names its source" bash scripts/test-export-public.sh
 # The binary as it ships: DEFAULT features. Every other step here turns
 # on --all-features, which compiles the `test-support` modules into the
 # library too, so code that calls one (crate::scratch) passed the whole

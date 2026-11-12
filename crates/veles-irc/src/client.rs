@@ -5874,6 +5874,57 @@ fn progress_body(
     }
 }
 
+/// The speaker tags a model put before its own lines, removed.
+///
+/// A channel turn carries the channel's recent lines as `HH:MM <nick>
+/// text`, the bot's own among them, and a model sometimes answers in
+/// that shape: every line headed `<itsnick>`, often in backticks, which
+/// the formatter then sends as monospace. The message is already from
+/// that nick, so the tag says nothing and reads as a second header.
+///
+/// Only a reply that OPENS with the tag is one written that way; then
+/// every line that starts with it loses it. The opening line may carry
+/// the gateway's address first (`name: `, `Voice` in the gateway). A
+/// tag of another nick is a quote and stays, and so does the bot's own
+/// in a reply that merely quotes one of its earlier lines further down.
+/// Leading indentation is kept; the tag, an optional time before it and
+/// one space after it go.
+fn strip_own_speaker_tags(text: &str, nick: &str) -> String {
+    if nick.is_empty() || !text.contains('<') {
+        return text.to_string();
+    }
+    let tag = format!(
+        r"(?:\[?\d{{1,2}}:\d{{2}}(?::\d{{2}})?\]? )?`?<[~&@%+]?(?i:{})>`?:? ?",
+        regex::escape(nick)
+    );
+    let (Ok(at_start), Ok(after_address)) = (
+        regex::Regex::new(&format!(r"^(?P<lead>[ \t]*){tag}")),
+        regex::Regex::new(&format!(r"^(?P<lead>[^\s<`]{{1,64}}[:,] ){tag}")),
+    ) else {
+        return text.to_string();
+    };
+    let Some(first) = text.lines().find(|l| !l.trim().is_empty()) else {
+        return text.to_string();
+    };
+    let addressed = !at_start.is_match(first) && after_address.is_match(first);
+    if !addressed && !at_start.is_match(first) {
+        return text.to_string();
+    }
+    let mut opened = false;
+    let mut out = String::with_capacity(text.len());
+    for line in text.split_inclusive('\n') {
+        let opening = !opened && !line.trim().is_empty();
+        opened |= opening;
+        let re = if opening && addressed {
+            &after_address
+        } else {
+            &at_start
+        };
+        out.push_str(&re.replace(line, "${lead}"));
+    }
+    out
+}
+
 async fn handle_outbound(conn: &mut Conn, out: OutboundMessage) {
     // Progress messages (typing/tool rounds/streaming partials) are a
     // Telegram-style concept; the only one with an IRC analogue is the
@@ -5906,6 +5957,12 @@ async fn handle_outbound(conn: &mut Conn, out: OutboundMessage) {
         return;
     }
 
+    // The words, without the speaker tags a model that read the channel
+    // as a transcript put before its own lines.
+    let out = OutboundMessage {
+        text: strip_own_speaker_tags(&out.text, &conn.current_nick),
+        ..out
+    };
     let body = outbound_body(&conn.cfg, &out);
     let mode = conn.channel_mode(&out.chat_id);
     if let Err(e) = conn.privmsg(&out.chat_id, &body, mode).await {
@@ -8522,6 +8579,96 @@ mod stub_server {
     /// operator wrote — which is precisely the complaint `show_route` exists
     /// to answer.
     ///
+    /// A model that reads the channel as `HH:MM <nick> text` lines
+    /// sometimes writes its answer in that shape. 2026-11-12,
+    /// #flashsupport, qwen3.8-flash: every line of a 4,630-character
+    /// answer began with `<jackma>` in backticks, which the formatter
+    /// sent as monospace, so the channel read a `<jackma>` header in
+    /// front of each line (and after the gateway's `a: ` on the first).
+    /// The message is already from that nick: the tags go, the words
+    /// stay. Somebody else's tag is a quote and stays, and so does the
+    /// bot's own tag in a reply that does not open with one.
+    #[test]
+    fn a_reply_written_as_transcript_lines_loses_its_own_speaker_tags() {
+        let model = "`<jackma>` a — pulled the live curve.\n\n\
+                     `<jackma>` **1) What a \"real rate\" is**\n\
+                     `<jackma>`  · Aug 2021: nominal 1.30%\n";
+        assert_eq!(
+            strip_own_speaker_tags(model, "jackma"),
+            "a — pulled the live curve.\n\n**1) What a \"real rate\" is**\n · Aug 2021: nominal 1.30%\n"
+        );
+        // After the gateway addressed the first line (`Voice`).
+        assert_eq!(
+            strip_own_speaker_tags("a: `<jackma>` a — pulled\n`<jackma>` more", "jackma"),
+            "a: a — pulled\nmore"
+        );
+        // The shapes the context block and a client show a line in.
+        for (line, want) in [
+            ("<jackma> hello", "hello"),
+            ("<JackMa> hello", "hello"),
+            ("08:34 <jackma> hello", "hello"),
+            ("[08:34:54] <@jackma> hello", "hello"),
+            ("  <jackma>: hello", "  hello"),
+            ("`<jackma>`hello", "hello"),
+        ] {
+            assert_eq!(strip_own_speaker_tags(line, "jackma"), want, "{line:?}");
+        }
+        // Not ours: a quote of what someone else said.
+        for kept in [
+            "<mdl> what are real rates?",
+            "<jackmab> not this nick",
+            "jackma> not a tag",
+            "a: <mdl> said this\n<jackma> and I said that",
+            "Earlier I wrote:\n<jackma> real rates are inflation-adjusted\nand that holds.",
+            "",
+        ] {
+            assert_eq!(strip_own_speaker_tags(kept, "jackma"), kept, "{kept:?}");
+        }
+        // The nick is matched as text, never as a pattern.
+        assert_eq!(strip_own_speaker_tags("<j.ckma> hi", "j.ckma"), "hi");
+        assert_eq!(
+            strip_own_speaker_tags("<jackma> hi", "j.ckma"),
+            "<jackma> hi"
+        );
+        assert_eq!(strip_own_speaker_tags("<> hi", ""), "<> hi");
+    }
+
+    /// …and it is the wire that loses them, for the nick the connection
+    /// has now.
+    #[tokio::test]
+    async fn own_speaker_tags_do_not_reach_the_wire() {
+        let text = "a: `<velestest>` first line\n`<velestest>` second line";
+        let sent = drive_wire(
+            |c| c.show_route = false,
+            "",
+            vec![],
+            vec![],
+            vec![OutboundMessage::plain("#chan", text, MessageKind::Reply)],
+            Duration::from_millis(150),
+        )
+        .await;
+        let lines: Vec<&String> = sent
+            .iter()
+            .filter(|l| l.starts_with("PRIVMSG #chan"))
+            .collect();
+        assert!(
+            lines
+                .iter()
+                .any(|l| l.as_str() == "PRIVMSG #chan :a: first line"),
+            "{lines:?}"
+        );
+        assert!(
+            lines
+                .iter()
+                .any(|l| l.as_str() == "PRIVMSG #chan :second line"),
+            "{lines:?}"
+        );
+        assert!(
+            !lines.iter().any(|l| l.contains("<velestest>")),
+            "the tag reached the channel: {lines:?}"
+        );
+    }
+
     /// Mutation: `outbound_body(&IrcConfig::default(), &out)` in
     /// `handle_outbound` fails the off half of this test and nothing else.
     #[tokio::test]

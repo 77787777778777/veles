@@ -1,3 +1,16 @@
+veles-agent (0.2.3) unstable; urgency=medium
+
+  * Errata release for 0.2.2: the fleet's deployment-consistency check
+    compares the point release and the commit (a module a platform does
+    not load, or one standing by for a lease, no longer makes a fleet
+    inconsistent; a published build names the development commit it was
+    exported from, so it matches a build of that commit), the Android
+    packages report the commit they were built from, an IRC reply no
+    longer carries the bot's own nick in front of every line, and a
+    backup carries the command center's audit trail.
+
+ -- veles-agent maintainers <noreply@example.invalid>  Thu, 12 Nov 2026 12:00:00 +0000
+
 veles-agent (0.2.2) unstable; urgency=medium
 
   * Errata release for 0.2.0 and 0.2.1: fixes found by an audit of the

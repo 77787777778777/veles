@@ -1,7 +1,39 @@
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+/// A published tree is an export of the development tree, with commit
+/// ids of its own, so its builds report a revision no development build
+/// can share. The export (scripts/release/export-public.sh) writes the
+/// development commit into `SNAPSHOT_OF` at the root of the tree; stamp
+/// it, so a published build and a development build of one source can
+/// be told to be the same (fleet_obs::consistency). The flake's sandbox
+/// source is a named file set without that file, so the flake passes
+/// the value through the environment; a plain cargo build reads the
+/// file. Empty when the tree is not an export, or when the file holds
+/// anything but a commit id.
+fn stamp_snapshot_of(root: &Path) {
+    println!("cargo:rerun-if-env-changed=VELES_SNAPSHOT_OF");
+    if std::env::var_os("VELES_SNAPSHOT_OF").is_some() {
+        return;
+    }
+    let file = root.join("SNAPSHOT_OF");
+    let commit = std::fs::read_to_string(&file)
+        .ok()
+        .map(|text| text.trim().to_owned())
+        .filter(|sha| sha.len() == 40 && sha.bytes().all(|b| b.is_ascii_hexdigit()))
+        .unwrap_or_default();
+    println!("cargo:rustc-env=VELES_SNAPSHOT_OF={commit}");
+    // A path that does not exist reads as changed on every build. A file
+    // that appears later arrives with a commit, which the watches below
+    // see when the revision comes from git.
+    if file.exists() {
+        println!("cargo:rerun-if-changed={}", file.display());
+    }
+}
+
 fn main() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    stamp_snapshot_of(&root);
     // Packaged builds select the revision through the flake's environment.
     // A local checkout is not a release merely because `git rev-parse`
     // answers: any modified tracked file makes the exact source unknown.
@@ -9,7 +41,6 @@ fn main() {
     if std::env::var_os("VELES_SOURCE_REVISION").is_some() {
         return;
     }
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let output = |args: &[&str]| {
         Command::new("git")
             .args(args)

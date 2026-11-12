@@ -175,10 +175,32 @@ pub async fn describe(exe: &Path) -> Result<Manifest, String> {
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())
         .kill_on_drop(true);
-    let out = tokio::time::timeout(Duration::from_secs(10), c.output())
-        .await
-        .map_err(|_| format!("{} --describe: no answer in 10 s", exe.display()))?
-        .map_err(|e| format!("{} --describe: {e}", exe.display()))?;
+    // "Text file busy": exec refuses a file that something still holds
+    // open for writing, and for an executable that was just written
+    // something can: a child another thread forked while the writer had
+    // it open inherits that descriptor until its own exec. The installer
+    // describes a component right after writing it. The window closes
+    // by itself within milliseconds, so wait it out, inside the same 10
+    // seconds; every other failure is an answer at once.
+    const ETXTBSY: i32 = 26;
+    let deadline = tokio::time::Instant::now() + Duration::from_secs(10);
+    let out = loop {
+        let left = deadline.saturating_duration_since(tokio::time::Instant::now());
+        match tokio::time::timeout(left, c.output())
+            .await
+            .map_err(|_| format!("{} --describe: no answer in 10 s", exe.display()))?
+        {
+            Ok(out) => break out,
+            Err(e)
+                if cfg!(unix)
+                    && e.raw_os_error() == Some(ETXTBSY)
+                    && tokio::time::Instant::now() + Duration::from_millis(20) < deadline =>
+            {
+                tokio::time::sleep(Duration::from_millis(20)).await;
+            }
+            Err(e) => return Err(format!("{} --describe: {e}", exe.display())),
+        }
+    };
     if !out.status.success() {
         return Err(format!(
             "{} --describe exited {}: {}",
@@ -1749,6 +1771,57 @@ fn plugin_line_level(line: &str) -> (tracing::Level, &str) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// An executable that was just written is refused by exec for as
+    /// long as anything holds it open for writing ("Text file busy"),
+    /// and in a process with other threads something can: a child that
+    /// another thread forks while the installer has the file open
+    /// inherits that descriptor until its own exec (O_CLOEXEC closes at
+    /// exec, not at fork). The installer describes a component right
+    /// after writing it, and a gateway forks children all the time, so
+    /// the describe waits the window out. The 0.2.3 gate met it in
+    /// veles-install's failed_rollback_restores_the_config_and_original_record
+    /// (once in 300 runs of that test binary; lsp_check.rs and
+    /// delegate.rs met the same race before).
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    #[tokio::test]
+    async fn describe_waits_out_an_executable_still_open_for_writing() {
+        use std::os::unix::fs::PermissionsExt;
+        let dir = tempfile::tempdir().unwrap();
+        let exe = dir.path().join("veles-plugin-busy");
+        std::fs::write(
+            &exe,
+            "#!/bin/sh\nprintf '%s\\n' '{\"name\":\"busy\",\"version\":\"1\",\"protocol\":1,\
+             \"description\":\"d\",\"config_sections\":[],\"knobs\":[]}'\n",
+        )
+        .unwrap();
+        std::fs::set_permissions(&exe, std::fs::Permissions::from_mode(0o700)).unwrap();
+        let holder = std::fs::OpenOptions::new().write(true).open(&exe).unwrap();
+        // The window itself: exec refuses the file.
+        let busy = std::process::Command::new(&exe)
+            .spawn()
+            .expect_err("exec of a file open for writing");
+        assert_eq!(busy.raw_os_error(), Some(26), "{busy}");
+        let release = std::thread::spawn(move || {
+            std::thread::sleep(Duration::from_millis(200));
+            drop(holder);
+        });
+        let manifest = describe(&exe)
+            .await
+            .expect("described once the writer let go");
+        assert_eq!(manifest.name, "busy");
+        release.join().unwrap();
+        // Anything else is still an error at once: a file that is not
+        // there is not waited for.
+        let started = std::time::Instant::now();
+        let missing = describe(&dir.path().join("absent")).await.unwrap_err();
+        assert!(missing.contains("--describe"), "{missing}");
+        assert!(
+            started.elapsed() < Duration::from_secs(2),
+            "{:?}",
+            started.elapsed()
+        );
+    }
 
     /// A plugin's WARN has to reach the journal as a WARN: filed at INFO,
     /// every level filter missed it (the live atproto poll warnings sat at
