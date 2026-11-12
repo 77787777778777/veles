@@ -1378,7 +1378,13 @@ mod tests {
             .remove("agent.max_turns");
         there["config"]["keys"]["web.backends"] = json!("0000000000000000");
         there["config"]["log_marks"] = json!({"laptop-id": 4});
+        // Another build: a revision of its own, exported from nothing. In
+        // a published build `here` names the commit it was exported from,
+        // and a row that differed in its revision alone, under the same
+        // export, would be the same source (the first 0.2.3 tag's public
+        // CI ran this test in such a build and said so).
         there["revision"] = json!("other");
+        there["snapshot_of"] = Value::Null;
         let c = compare(&here, &there);
         assert_eq!(c["config"]["same"], false, "{c}");
         assert_eq!(c["config"]["keys"]["differ"], json!(["model.default"]));
