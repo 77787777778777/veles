@@ -91,10 +91,7 @@ pub async fn obtain(
         tracing::info!(
             "ticketed: no ticket for {tool} in session {session} — declined or not signed"
         );
-        anyhow::bail!(
-            "no ticket: the owner declined, or nobody signed it within {} minutes",
-            crate::ticket::DEFAULT_TTL_SECS / 60
-        );
+        anyhow::bail!("no ticket: {}", crate::remotetool::unsigned_reason());
     };
     let ticket = crate::ticket::Ticket::parse(&text)?;
     let now = chrono::Utc::now().timestamp();

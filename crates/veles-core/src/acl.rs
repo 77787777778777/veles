@@ -867,8 +867,8 @@ impl LimitsSection {
     ///
     /// Compared case-insensitively: IRC casefolds hosts and idents, and
     /// the wire mask preserves whatever case the server sent, so a cap
-    /// keyed `~a@86b64c8e:…` must still land on a caller whose budget
-    /// key arrived as `~a@86B64C8E:…`. A case-sensitive map read would
+    /// keyed `~ash@1a2b3c4d:…` must still land on a caller whose budget
+    /// key arrived as `~ash@1A2B3C4D:…`. A case-sensitive map read would
     /// make the config spelling and the wire casing a silent mismatch.
     fn subject_budgets(&self, subject: &str, budget_key: &str) -> Option<&SubjectBudgets> {
         self.by_subject
@@ -2839,17 +2839,36 @@ pub fn tool_denial(tool: &str, who: &Principal) -> String {
     // so instead.
     if tool_cap(tool) == Some(Cap::All) {
         return format!(
-            "error: access denied — tool `{tool}` is owner-only and {} is not the owner. Do not retry or look for another route; tell the user the owner has to run it. This turn's [origin] row says who the owner is here: name nobody else as the owner.",
-            who.label()
+            "error: access denied — tool `{tool}` is owner-only and {} is not the owner. Do not retry or look for another route; tell the user the owner has to run it. This turn's [origin] row says who the owner is here: name nobody else as the owner.{}",
+            who.label(),
+            placed_child_hint(who)
         );
     }
     let cap = tool_cap(tool)
         .map(|c| c.as_str())
         .unwrap_or("required-capability");
     format!(
-        "error: access denied — tool `{tool}` requires the `{cap}` capability, which {} does not have. Do not retry; tell the user they need to be granted it.",
-        who.label()
+        "error: access denied — tool `{tool}` requires the `{cap}` capability, which {} does not have. Do not retry; tell the user they need to be granted it.{}",
+        who.label(),
+        placed_child_hint(who)
     )
+}
+
+/// The one route a refused child on another node has: its own result.
+///
+/// A part another node placed here runs as that node's caller, capped at
+/// the user level (`remotetool::capped`, subject `peer:<node>/…`). It
+/// cannot ask a question and nobody is attached to it, so "tell the user"
+/// reaches no one, and before 0.2.5 nothing it could say led anywhere:
+/// no delegation carried a ticket. The agent that placed it can now ask
+/// the owner for one (`delegate_task`'s `raise`), and it learns that this
+/// part needed more only if the part says so.
+fn placed_child_hint(who: &Principal) -> &'static str {
+    if who.subject.starts_with("peer:") {
+        " This part was placed here by another node and runs at the user level: say in your result exactly what needed more. The agent that placed it can place it again with delegate_task's `raise`, which asks the owner for a ticket."
+    } else {
+        ""
+    }
 }
 
 /// Refusal text for the F1 read-jail (a non-owner principal reading a
@@ -3524,7 +3543,7 @@ default_role: guest
         let cfg = cfg_from_yaml(
             r#"
 entries:
-  - identity: "*!~a@86B64C8E:81F44426:DD62833D:IP"
+  - identity: "*!~ash@1A2B3C4D:5E6F7A8B:9C0D1E2F:IP"
     network: "irc.synirc.net"
     role: user
 default_role: guest
@@ -3532,7 +3551,7 @@ default_role: guest
         );
         let p = Principal::resolve_ctx(
             None,
-            &irc_mask_ctx("irc.synirc.net", "a!~a@86B64C8E:81F44426:DD62833D:IP"),
+            &irc_mask_ctx("irc.synirc.net", "ash!~ash@1A2B3C4D:5E6F7A8B:9C0D1E2F:IP"),
             &cfg,
         );
         assert_eq!(p.role, Role::User, "the mask entry still matches as a mask");
@@ -3636,7 +3655,7 @@ default_role: guest
     fn a_subject_budget_matches_case_insensitively() {
         let mut cfg = cfg_from_yaml("default_role: user");
         cfg.limits.by_subject.insert(
-            "~a@86b64c8e:81f44426:dd62833d:ip".to_string(),
+            "~ash@1a2b3c4d:5e6f7a8b:9c0d1e2f:ip".to_string(),
             SubjectBudgets {
                 tokens_per_day: Some(50_000_000),
                 ..Default::default()
@@ -3645,8 +3664,8 @@ default_role: guest
         assert_eq!(
             cfg.limits.tokens_per_day_for_subject(
                 Role::User,
-                "irc:irc.synirc.net/a!~a@86B64C8E:81F44426:DD62833D:IP",
-                "~a@86B64C8E:81F44426:DD62833D:IP",
+                "irc:irc.synirc.net/ash!~ash@1A2B3C4D:5E6F7A8B:9C0D1E2F:IP",
+                "~ash@1A2B3C4D:5E6F7A8B:9C0D1E2F:IP",
             ),
             50_000_000,
             "the lowercase config key still lands on the uppercase wire key"
@@ -5333,6 +5352,31 @@ default_role: guest
             owner_here(&asker(Some("#flash")), &open),
             Some(OwnerHere::Unknown)
         );
+    }
+
+    /// A part another node placed here is refused like anybody at the
+    /// user level, and told the one thing it can do about it: say so in
+    /// its result. Nobody else's refusal carries that sentence.
+    #[test]
+    fn a_refused_part_from_another_node_is_told_to_say_what_it_needed() {
+        let mut part = Principal::known("peer:laptop/local:owner", Role::User);
+        part.via =
+            Some("a call from node laptop — capped at the user level without a ticket".into());
+        for tool in ["tcl_eval", "memory"] {
+            let d = tool_denial(tool, &part);
+            assert!(d.starts_with("error: access denied"), "{d}");
+            assert!(
+                d.contains("say in your result exactly what needed more"),
+                "{d}"
+            );
+            assert!(d.contains("delegate_task's `raise`"), "{d}");
+        }
+        let person = Principal::known("irc:ash", Role::User);
+        for tool in ["tcl_eval", "memory"] {
+            let d = tool_denial(tool, &person);
+            assert!(!d.contains("raise"), "{d}");
+            assert!(!d.contains("placed here"), "{d}");
+        }
     }
 
     /// The refusal of an owner-only tool sends the model to the turn's

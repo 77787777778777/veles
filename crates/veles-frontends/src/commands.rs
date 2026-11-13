@@ -10806,11 +10806,11 @@ mod tests {
     fn usage_of_a_mask_subject_uses_the_mask_entry_and_its_override() {
         use veles_core::acl::{Principal, Role, SubjectBudgets};
         let (_home, _env) = veles_core::testenv::scratch_home();
-        // Build the acl directly (the agent's cfg is behind an Arc): a's
-        // network-scoped mask entry + a 50M subject cap.
+        // Build the acl directly (the agent's cfg is behind an Arc): a channel
+        // user's network-scoped mask entry + a 50M subject cap.
         let mut acl: veles_core::acl::AclConfig = Default::default();
         acl.entries.push(veles_core::acl::AclEntry {
-            identity: "*!~a@86B64C8E:81F44426:DD62833D:IP".into(),
+            identity: "*!~ash@1A2B3C4D:5E6F7A8B:9C0D1E2F:IP".into(),
             network: Some("irc.synirc.net".into()),
             channel: None,
             platform: None,
@@ -10821,7 +10821,7 @@ mod tests {
             ticket_role: None,
         });
         acl.limits.by_subject.insert(
-            "~a@86b64c8e:81f44426:dd62833d:ip".into(),
+            "~ash@1a2b3c4d:5e6f7a8b:9c0d1e2f:ip".into(),
             SubjectBudgets {
                 tokens_per_day: Some(50_000_000),
                 ..Default::default()
@@ -10838,7 +10838,7 @@ mod tests {
             principal: Some(&admin),
             sender: None,
         };
-        let out = usage_quotas_command(&ctx, "~a@86b64c8e:81f44426:dd62833d:ip");
+        let out = usage_quotas_command(&ctx, "~ash@1a2b3c4d:5e6f7a8b:9c0d1e2f:ip");
         assert!(
             out.contains("(user,"),
             "the mask entry gives user, not guest: {out}"

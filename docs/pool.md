@@ -61,7 +61,11 @@ When a call needs a ticket, whoever is attached to the session is asked:
 - **IRC / Telegram**: the gateway posts the request; sign it on any
   key-holding device (`veles ticket sign '<request>'`) and send the
   `veles-ticket:1.…` line back as a plain message — the emergency path —
-  or let the headless signer ask you (below).
+  or let the headless signer ask you (below). On IRC the paste needs no
+  mention, also in a channel that otherwise requires one; a ticket that
+  no call is waiting for is answered with a notice and starts nothing.
+  A request too long for one IRC line arrives in several: join them
+  before signing.
 
 An identity that holds a role BY TICKET (`ticket_role` in `[acl]`, see
 [acl.md](acl.md#a-role-held-by-ticket)) uses the same tickets for calls
@@ -343,10 +347,9 @@ itself.
 
 What a part can reach depends on where it lands. A part placed on
 another node (by `any`, `gpu` or a node name) carries only its goal and
-context: it runs in that node's sandbox at the User level (a delegated
-child carries no ticket, so it never gets that node's host shell, even
-when the caller is the owner), and it sees none of the placing node's
-files, nor the other node's host files. Its sandbox workspace (`/work`)
+context: it runs in that node's sandbox at the User level, even when the
+caller is the owner, and it sees none of the placing node's files, nor
+the other node's host files. Its sandbox workspace (`/work`)
 persists per caller on that node. So the parts worth sending are
 self-contained: fetches and lookups, work on a URL or a git remote the
 part can clone, and computation from what its goal and context carry.
@@ -361,6 +364,33 @@ finished. For more parts, the guidance says to start each as its own
 `background: true` child with `backend='any'`: each is placed and counted
 as it starts, so they spread like a batch, and each reports back on its
 own as `[BACKGROUND CHILD COMPLETE]`.
+
+### A raised delegation
+
+A part that needs the other node's host (its files, its services, a host
+shell) asks for it: `delegate_task` with a node name as `backend` and
+`raise: true`. The placing node writes a ticket request for exactly that
+delegation: the tool `delegate_task`, the goal and the context, itself as
+the origin, the named node as the target, and the caller's own level as
+the grant. It puts the request to whoever is attached to the session and
+to the headless signers, as for any ticket, and you read the goal and the
+context in full before you sign. With the ticket the child runs on that
+node at the granted level, outside its sandbox; an owner ticket is the
+owner's surface there for the length of that child. Without one nothing
+is placed, and the tool's answer says whether anybody could have been
+asked.
+
+- `raise` needs a named node. `any` and `gpu` pick the node when the part
+  is placed, and a ticket names one node.
+- It asks for the caller's own level and never more. A session whose
+  caller is at the user level has nothing to be raised to.
+- It is for one delegation, not for a `tasks` batch: each raised part is
+  one ticket you read.
+- The target checks the ticket against its own `[cluster.ticket_signers]`.
+  Nothing the placing node says raises the child.
+- A part placed without it that is refused something there is told to say
+  so in its result, so the agent that placed it can ask again with
+  `raise`.
 
 ## A node without a sandbox
 

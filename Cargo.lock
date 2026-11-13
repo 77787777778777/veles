@@ -5852,7 +5852,7 @@ checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 
 [[package]]
 name = "veles-atproto"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -5876,7 +5876,7 @@ dependencies = [
 
 [[package]]
 name = "veles-atproto-cmd"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "anyhow",
  "serde",
@@ -5890,7 +5890,7 @@ dependencies = [
 
 [[package]]
 name = "veles-cli"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "anyhow",
  "assert_cmd",
@@ -5934,7 +5934,7 @@ dependencies = [
 
 [[package]]
 name = "veles-core"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "age",
  "anyhow",
@@ -5993,7 +5993,7 @@ dependencies = [
 
 [[package]]
 name = "veles-frontends"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "anyhow",
  "async-stream",
@@ -6031,7 +6031,7 @@ dependencies = [
 
 [[package]]
 name = "veles-install"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "anyhow",
  "libc",
@@ -6052,7 +6052,7 @@ dependencies = [
 
 [[package]]
 name = "veles-irc"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -6075,7 +6075,7 @@ dependencies = [
 
 [[package]]
 name = "veles-lang-js"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "oxc",
  "rquickjs",
@@ -6087,7 +6087,7 @@ dependencies = [
 
 [[package]]
 name = "veles-lang-lisp"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "libc",
  "serde_json",
@@ -6098,7 +6098,7 @@ dependencies = [
 
 [[package]]
 name = "veles-lang-racket"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "libc",
  "serde_json",
@@ -6109,11 +6109,11 @@ dependencies = [
 
 [[package]]
 name = "veles-launcher"
-version = "0.2.4"
+version = "0.2.5"
 
 [[package]]
 name = "veles-module-atproto-cmd"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "veles-atproto-cmd",
  "veles-runtime",
@@ -6121,7 +6121,7 @@ dependencies = [
 
 [[package]]
 name = "veles-module-echo"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "async-trait",
  "serde_json",
@@ -6130,7 +6130,7 @@ dependencies = [
 
 [[package]]
 name = "veles-module-irc"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "veles-irc",
  "veles-runtime",
@@ -6138,7 +6138,7 @@ dependencies = [
 
 [[package]]
 name = "veles-module-lang-js"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "veles-lang-js",
  "veles-runtime",
@@ -6146,7 +6146,7 @@ dependencies = [
 
 [[package]]
 name = "veles-module-lang-lisp"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "veles-lang-lisp",
  "veles-runtime",
@@ -6154,7 +6154,7 @@ dependencies = [
 
 [[package]]
 name = "veles-module-lang-racket"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "veles-lang-racket",
  "veles-runtime",
@@ -6162,7 +6162,7 @@ dependencies = [
 
 [[package]]
 name = "veles-module-slopdrop"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "veles-runtime",
  "veles-slopdrop",
@@ -6170,7 +6170,7 @@ dependencies = [
 
 [[package]]
 name = "veles-module-telegram"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "veles-runtime",
  "veles-telegram",
@@ -6178,11 +6178,11 @@ dependencies = [
 
 [[package]]
 name = "veles-plugin-abi"
-version = "0.2.4"
+version = "0.2.5"
 
 [[package]]
 name = "veles-plugin-abi-sdk"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "veles-plugin-abi",
 ]
@@ -6201,7 +6201,7 @@ version = "0.1.0"
 
 [[package]]
 name = "veles-plugin-echo"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -6217,7 +6217,7 @@ dependencies = [
 
 [[package]]
 name = "veles-plugin-example"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "async-trait",
  "serde",
@@ -6229,14 +6229,14 @@ dependencies = [
 
 [[package]]
 name = "veles-plugin-sample-so"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "veles-plugin-abi-sdk",
 ]
 
 [[package]]
 name = "veles-plugin-sdk"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "async-trait",
  "serde",
@@ -6249,7 +6249,7 @@ dependencies = [
 
 [[package]]
 name = "veles-runtime"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "anyhow",
  "reqwest",
@@ -6263,7 +6263,7 @@ dependencies = [
 
 [[package]]
 name = "veles-signer"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "anyhow",
  "axum",
@@ -6284,7 +6284,7 @@ dependencies = [
 
 [[package]]
 name = "veles-slopdrop"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -6309,7 +6309,7 @@ dependencies = [
 
 [[package]]
 name = "veles-telegram"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -6327,7 +6327,7 @@ dependencies = [
 
 [[package]]
 name = "veles-textart"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "flate2",
  "png",
@@ -6336,7 +6336,7 @@ dependencies = [
 
 [[package]]
 name = "veles-types"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "async-trait",
  "base64 0.22.1",
@@ -6348,7 +6348,7 @@ dependencies = [
 
 [[package]]
 name = "veles-userland"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "libc",
  "serde",

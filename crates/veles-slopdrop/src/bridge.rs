@@ -221,7 +221,7 @@ pub fn context_from(sender: Option<&veles_core::acl::SenderContext>) -> Context 
 /// ~lewrker | tcl name        (#coven, IRC4Fun)
 ///   jackma | Psy-Q
 ///  ~xenia | tcl name        (#flashsupport, synirc)
-///   jackma | demon!~demon@synIRC-23349F1F.chat
+///   jackma | orla!~orla@cloak-1A2B3C4D.example
 /// ```
 ///
 ///   *"Why does it dump entire hostmaska on one network"*
@@ -884,7 +884,7 @@ mod tests {
     /// where the server ACKed `userhost-in-names` — which veles
     /// requests, so synirc has it and IRC4Fun does not, and `tcl name`
     /// answered `Psy-Q` in one channel and
-    /// `demon!~demon@synIRC-23349F1F.chat` in the other.
+    /// `orla!~orla@cloak-1A2B3C4D.example` in the other.
     #[test]
     fn a_roster_entry_reduces_to_the_bare_nick_on_either_network() {
         // IRC4Fun: no userhost-in-names.
@@ -893,11 +893,14 @@ mod tests {
         assert_eq!(bare_nick("+gid"), "gid");
         // synirc: the same roster, with the cap.
         assert_eq!(
-            bare_nick("demon!~demon@synIRC-23349F1F.chat"),
-            "demon",
+            bare_nick("orla!~orla@cloak-1A2B3C4D.example"),
+            "orla",
             "a proc doing `lsearch [names] $who` finds nothing otherwise"
         );
-        assert_eq!(bare_nick("@mdl!~mdl@synIRC-F9CEF472.org"), "mdl");
+        assert_eq!(
+            bare_nick("@keeper!~keeper@cloak-5E6F7A8B.example"),
+            "keeper"
+        );
         // A `@` inside the HOST must not be mistaken for the start of
         // one: the first `!` ends the nick, and nothing after it counts.
         assert_eq!(bare_nick("bob!a@b@c"), "bob");

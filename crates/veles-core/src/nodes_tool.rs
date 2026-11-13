@@ -136,8 +136,8 @@ impl Tool for NodesTool {
                  falls back; any/gpu pass over a node a child could not reach and say so \
                  in its result ('skipped'). Splitting a job into parts is your decision: \
                  only independent parts of minutes each are worth a child. A part placed on \
-                 another node runs in that node's sandbox at the User level (a delegated \
-                 child carries no ticket, so never that node's host shell) and sees none of \
+                 another node runs in that node's sandbox at the User level (its host only \
+                 with delegate_task's 'raise', a ticket the owner signs) and sees none of \
                  this node's files: give it a URL, a git remote or everything it needs in \
                  its goal and context, and keep work on this node's files here. A tasks \
                  batch holds at most 3 parts; for more, start background:true children.",

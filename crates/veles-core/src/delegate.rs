@@ -129,6 +129,7 @@ impl DelegateTaskTool {
         model: Option<&str>,
         provider: Option<&str>,
         reasoning: Option<&str>,
+        raise: bool,
     ) -> Result<Placed, String> {
         let (placement, claim) =
             match place(spec.cloned(), needs.to_vec(), workload, Vec::new()).await? {
@@ -146,12 +147,24 @@ impl DelegateTaskTool {
             // child takes the claim over when it starts.
             return Ok(Placed::Here(Some(claim), Detour::default()));
         }
+        // Asked before anything is sent. A ticket nobody signs places
+        // nothing, and the claim dropped on the way out gives the node
+        // its slot back.
+        let ticket = if raise {
+            Some(
+                self.raise_ticket(goal, ctx, &placement.node.id, &placement.node.name, spec)
+                    .await?,
+            )
+        } else {
+            None
+        };
         let ask = self.remote_ask(
             goal,
             ctx,
             model.map(str::to_string),
             provider.map(str::to_string),
             reasoning.map(str::to_string),
+            ticket,
         );
         // C3: a foreground delegate runs inside a turn, so the Stop
         // button (agent::cancel_turn on THIS session) is the watch.
@@ -175,6 +188,56 @@ impl DelegateTaskTool {
         )
     }
 
+    /// `raise`: the owner's ticket for this delegation to the placed
+    /// node, or why there is none. The request names this node, that
+    /// node, the goal and the context, and asks for the caller's own
+    /// level; whoever is attached to the session and the headless
+    /// signers are asked (`remotetool::ask_for_ticket`), and the owner
+    /// reads the goal and context in full before signing. The peer
+    /// checks the ticket itself (`remotetool::delegate_principal`):
+    /// nothing this node says raises the child.
+    async fn raise_ticket(
+        &self,
+        goal: &str,
+        ctx: &str,
+        node_id: &str,
+        node_name: &str,
+        spec: Option<&crate::placement::BackendSpec>,
+    ) -> Result<String, String> {
+        let caller = crate::acl::session_principal(&self.session_id);
+        let grant = raise_grant(spec, caller.as_deref())?;
+        let me = crate::node::NodeIdentity::load(&crate::config::config_dir())
+            .ok()
+            .flatten()
+            .map(|i| i.id)
+            .ok_or("this node has no node id yet (node.toml), so no ticket can name it")?;
+        let node = if node_name.is_empty() {
+            node_id.chars().take(8).collect::<String>()
+        } else {
+            node_name.to_string()
+        };
+        let request = crate::remotetool::delegation_request(&me, node_id, goal, ctx, grant)
+            .map_err(|e| format!("{e:#}"))?;
+        let why = format!(
+            "the child would run there at the {} level, outside that node's sandbox",
+            grant.as_str()
+        );
+        tracing::info!(
+            "delegate: asking for a ticket to run a child on {node} as {}",
+            grant.as_str()
+        );
+        crate::remotetool::ask_for_ticket(&self.session_id, "delegate_task", &node, &why, &request)
+            .await
+            .ok_or_else(|| {
+                format!(
+                    "no ticket for this delegation to {node}: {}. Nothing was placed. \
+                     Without 'raise' the part runs there at the User level, in that node's \
+                     sandbox.",
+                    crate::remotetool::unsigned_reason()
+                )
+            })
+    }
+
     /// The ask a remote child is started from, carrying the CALLER's
     /// principal (serialized exactly as a local child's env gets it).
     /// Without it the peer ran the child as owner.
@@ -185,6 +248,7 @@ impl DelegateTaskTool {
         model: Option<String>,
         provider: Option<String>,
         reasoning: Option<String>,
+        ticket: Option<String>,
     ) -> crate::remotetask::RemoteTaskAsk {
         crate::remotetask::RemoteTaskAsk {
             from_node: crate::node::NodeIdentity::load(&crate::config::config_dir())
@@ -203,11 +267,46 @@ impl DelegateTaskTool {
             // (WORKING, before the child starts) so the sender's
             // cancel watcher has a handle to aim tasks/cancel at.
             wire_task_id: Some(crate::a2a::new_task_id()),
-            ticket: None,
+            // The owner's ticket for exactly this delegation, when the
+            // call asked for one (`raise`). A parameter and not a field
+            // set afterwards, so no call site can leave it out by
+            // accident: each one says what it carries.
+            ticket,
             // The peer parents its child row to this session (ASK-2).
             parent_session: Some(self.session_id.clone()).filter(|s| !s.is_empty()),
         }
     }
+}
+
+/// What `raise` may ask for: the level the child would run at on the
+/// other node, which is the caller's own, never more. `None` is an owner
+/// surface (a session with no principal).
+///
+/// A ticket names one node, so the backend has to name one: `any` and
+/// `gpu` choose at placement time and may move on to another node. And a
+/// caller at the user level has nothing to be raised to: a child placed
+/// for them already runs at that level.
+fn raise_grant(
+    spec: Option<&crate::placement::BackendSpec>,
+    caller: Option<&crate::acl::Principal>,
+) -> Result<crate::acl::Role, String> {
+    use crate::acl::Role;
+    if !matches!(spec, Some(crate::placement::BackendSpec::Node(_))) {
+        return Err(
+            "'raise' needs a backend that names one node: the ticket is signed for a \
+             delegation to that node and no other"
+                .into(),
+        );
+    }
+    let role = caller.map(|p| p.role).unwrap_or(Role::Owner);
+    if role <= Role::User {
+        return Err(format!(
+            "'raise' asks for the caller's own level on the other node, and this session's \
+             caller is at the {} level, where a placed child already runs",
+            role.as_str()
+        ));
+    }
+    Ok(role)
 }
 
 /// Why one remote hop gave no verdict.
@@ -1587,7 +1686,9 @@ impl crate::tools::Tool for DelegateTaskTool {
          model`), NOT on this session's. Pass 'model'/'provider'/'reasoning' to route \
          one explicitly, or 'agent' to run a defined subagent with its own routing. \
          SPLITTING heavy work is your call. A child on another node runs in its \
-         sandbox at the User level and sees none of this node's files: send only \
+         sandbox at the User level ('raise': true with a node name asks the owner \
+         for a ticket to run it on that node's host instead) and sees none of this \
+         node's files: send only \
          self-contained parts (fetches, URL or git remote work, computation) as a \
          'tasks' batch with backend='any' + 'workload' (at most 3; more: background:true \
          children); work on local files stays here or on a named node whose sandbox \
@@ -1612,6 +1713,7 @@ impl crate::tools::Tool for DelegateTaskTool {
                 "backend": {"type": "string", "description": "WHERE the child runs (compute pool): 'local', a node name/id from /nodes, 'gpu' (any live GPU node), or 'any' (least-loaded, self included). Default: this node. Honest error if unreachable."},
                 "workload": {"type": "string", "enum": ["cpu", "io"], "description": "any/gpu ranking: cpu- or io-heavy (io avoids busy disks); omit if mixed"},
                 "needs": {"type": "array", "items": {"type": "string"}, "description": "Programs the child's node must have, e.g. [\"rg\"] (/nodes lists them). Alone: any node with them."},
+                "raise": {"type": "boolean", "description": "With a node-name backend: ask the owner to sign a ticket so the child runs there with the caller's rights, on that node's host, not at the User level in its sandbox. The owner reads goal and context first."},
                 "background": {"type": "boolean", "description": "Return immediately; the child's summary arrives as a [BACKGROUND CHILD COMPLETE] message when it finishes (use for long tasks you don't need to block on)"},
                 "tasks": {
                     "type": "array",
@@ -1690,6 +1792,23 @@ impl crate::tools::Tool for DelegateTaskTool {
             Ok(w) => w,
             Err(e) => return format!("error: {e:#}"),
         };
+        // `raise` (PLAN-pool-round.md D2, the asking side): one
+        // delegation to a NAMED node, run there with the caller's own
+        // rights on a ticket the owner signs for exactly this goal and
+        // context. Refused here, before anything is placed, when it
+        // could not be asked for.
+        let raise = args["raise"].as_bool().unwrap_or(false);
+        if raise {
+            if !args["tasks"].is_null() {
+                return "error: 'raise' is for one delegation, not a 'tasks' batch: each raised \
+                        part is one ticket the owner reads and signs"
+                    .into();
+            }
+            let caller = crate::acl::session_principal(&self.session_id);
+            if let Err(e) = raise_grant(backend.as_ref(), caller.as_deref()) {
+                return format!("error: {e}");
+            }
+        }
         // `gpu`/`any` choose among nodes that answer: refresh the auth
         // probe of every live peer first (cached; only expired routes
         // are dialed, all at once, each within routeprobe's budget).
@@ -1810,6 +1929,26 @@ impl crate::tools::Tool for DelegateTaskTool {
                 let Some((placement, claim)) = placed else {
                     unreachable!("remote implies Some")
                 };
+                // Asked before the task exists: a ticket nobody signs
+                // leaves no child behind, and dropping the claim on
+                // the way out gives the node its slot back.
+                let ticket = if raise {
+                    match self
+                        .raise_ticket(
+                            &goal,
+                            &ctx,
+                            &placement.node.id,
+                            &placement.node.name,
+                            backend.as_ref(),
+                        )
+                        .await
+                    {
+                        Ok(t) => Some(t),
+                        Err(e) => return format!("error: {e}"),
+                    }
+                } else {
+                    None
+                };
                 let (child_id, cancel) = crate::tasks::start(TaskKind::Subagent, &goal, &parent);
                 // No local session for remote work: the transcript
                 // lives in the peer's store under the peer's own
@@ -1825,6 +1964,7 @@ impl crate::tools::Tool for DelegateTaskTool {
                     model.clone(),
                     provider.clone(),
                     reasoning.clone(),
+                    ticket,
                 );
                 let goal2 = goal.clone();
                 let bus = self.bus();
@@ -2026,7 +2166,8 @@ impl crate::tools::Tool for DelegateTaskTool {
                         // C3: the registry token now rides the wire call —
                         // `veles tasks cancel <id>` reaches the peer's
                         // child instead of dying at the boundary.
-                        let ask = self.remote_ask(&goal, &ctx, model, provider, reasoning);
+                        // A batch part is never raised (refused above).
+                        let ask = self.remote_ask(&goal, &ctx, model, provider, reasoning, None);
                         let (parent, me, needs) =
                             (self.session_id.clone(), me.clone(), needs.clone());
                         handles.push(crate::rt::spawn(async move {
@@ -2105,6 +2246,7 @@ impl crate::tools::Tool for DelegateTaskTool {
                 ex_m.as_deref(),
                 ex_p.as_deref(),
                 ex_r.as_deref(),
+                raise,
             )
             .await
         {
@@ -2799,6 +2941,207 @@ mod tests {
         );
     }
 
+    /// `raise` is asked for one named node and for the caller's own
+    /// level. Anything else is refused before a ticket is asked for.
+    #[test]
+    fn raise_names_one_node_and_asks_for_the_callers_own_level() {
+        use crate::acl::{Principal, Role};
+        use crate::placement::BackendSpec;
+        let node = BackendSpec::Node("vps".into());
+        let who = |role| Principal::known("irc:orla", role);
+        // An owner surface (a session with no principal), then callers
+        // by name.
+        assert_eq!(raise_grant(Some(&node), None), Ok(Role::Owner));
+        assert_eq!(
+            raise_grant(Some(&node), Some(&who(Role::Owner))),
+            Ok(Role::Owner)
+        );
+        assert_eq!(
+            raise_grant(Some(&node), Some(&who(Role::Admin))),
+            Ok(Role::Admin)
+        );
+        assert_eq!(
+            raise_grant(Some(&node), Some(&who(Role::Trusted))),
+            Ok(Role::Trusted)
+        );
+        // At the user level and below there is nothing to raise to.
+        for role in [Role::User, Role::Guest] {
+            let e = raise_grant(Some(&node), Some(&who(role))).unwrap_err();
+            assert!(e.contains("already runs"), "{e}");
+            assert!(e.contains(role.as_str()), "{e}");
+        }
+        // A ticket names one node.
+        for spec in [
+            None,
+            Some(BackendSpec::Any),
+            Some(BackendSpec::Gpu),
+            Some(BackendSpec::Local),
+        ] {
+            let e = raise_grant(spec.as_ref(), None).unwrap_err();
+            assert!(e.contains("names one node"), "{spec:?}: {e}");
+        }
+    }
+
+    /// The call refuses a `raise` it could not ask for before it places
+    /// or asks anything.
+    #[tokio::test]
+    async fn a_raise_that_cannot_be_asked_for_is_refused_at_the_call() {
+        let (_home, _env) = crate::testenv::scratch_home();
+        let t = DelegateTaskTool {
+            session_id: format!("raise-refused-{}", std::process::id()),
+            hooks: None,
+        };
+        let out = t.call(json!({"goal": "g", "raise": true})).await;
+        assert!(
+            out.starts_with("error:") && out.contains("names one node"),
+            "{out}"
+        );
+        let out = t
+            .call(json!({"goal": "g", "backend": "any", "raise": true}))
+            .await;
+        assert!(out.contains("names one node"), "{out}");
+        let out = t
+            .call(json!({"tasks": [{"goal": "g"}], "backend": "vps", "raise": true}))
+            .await;
+        assert!(out.contains("not a 'tasks' batch"), "{out}");
+    }
+
+    /// `raise`, the asking side: the request goes to whoever is attached
+    /// to the session, names this node, the target, the goal, the
+    /// context and the caller's level, and the ticket that comes back is
+    /// one the TARGET's own check accepts for that delegation. A decline
+    /// places nothing and says so.
+    #[tokio::test]
+    async fn a_raised_delegation_asks_the_session_and_carries_what_was_signed() {
+        use crate::ticket::{SignerKey, TicketRequest};
+        struct Signer(Arc<SignerKey>, bool, Arc<Mutex<Vec<TicketRequest>>>);
+        #[async_trait::async_trait]
+        impl crate::ask::Asker for Signer {
+            async fn ask(&self, r: crate::ask::AskRequest) -> crate::ask::AskAnswer {
+                assert_eq!(r.kind, crate::ask::AskKind::Ticket);
+                let detail = r.detail.clone().unwrap_or_default();
+                let req = TicketRequest::decode(&detail).expect("the detail ends in the request");
+                assert!(
+                    detail.contains("check the disk") && detail.contains("host only"),
+                    "the signer reads the goal and the context: {detail}"
+                );
+                self.2.lock().unwrap().push(req.clone());
+                if self.1 {
+                    crate::ask::AskAnswer::text(&self.0.sign(&req).unwrap())
+                } else {
+                    crate::ask::AskAnswer::choice(crate::ask::CHOICE_TICKET_DECLINE)
+                }
+            }
+        }
+        let (_home, _env) = crate::testenv::scratch_home();
+        std::fs::write(
+            crate::config::config_dir().join("node.toml"),
+            "id = \"placer0001\"\nname = \"placer\"\n",
+        )
+        .unwrap();
+        let (key, _) = SignerKey::generate().unwrap();
+        let key = Arc::new(key);
+        let seen = Arc::new(Mutex::new(Vec::new()));
+        let node = crate::placement::BackendSpec::Node("vps".into());
+        let raise = |sess: &str, sign: bool| {
+            let t = DelegateTaskTool {
+                session_id: sess.to_string(),
+                hooks: None,
+            };
+            // The registry holds the asker weakly (a surface owns its own):
+            // this one has to live until the ask is answered.
+            let asker: Arc<dyn crate::ask::Asker> =
+                Arc::new(Signer(key.clone(), sign, seen.clone()));
+            let id = crate::ask::attach_session_asker(sess, asker.clone());
+            let node = node.clone();
+            async move {
+                let out = t
+                    .raise_ticket(
+                        "check the disk",
+                        "host only",
+                        "target0002",
+                        "vps",
+                        Some(&node),
+                    )
+                    .await;
+                crate::ask::detach_session_asker(&t.session_id, id);
+                drop(asker);
+                out
+            }
+        };
+
+        // An owner surface: signed.
+        let sess = format!("raise-signed-{}", std::process::id());
+        let ticket = raise(&sess, true).await.expect("a ticket");
+        let req = seen.lock().unwrap().pop().expect("the session was asked");
+        assert_eq!(req.origin, "placer0001");
+        assert_eq!(req.target, "target0002");
+        assert_eq!(req.tool, "delegate_task");
+        assert_eq!(req.grant, "owner");
+        assert_eq!(
+            req.args,
+            json!({"goal": "check the disk", "context": "host only"})
+        );
+        // The target's own check, with this signer trusted there.
+        let mut cfg = crate::config::VelesConfig::default();
+        cfg.cluster.ticket_signers.insert(
+            "device".into(),
+            crate::config::TicketSignerEntry {
+                key: key.public_config(),
+            },
+        );
+        let store = crate::store::Store::open(&_home.path().join("target.db")).unwrap();
+        let placer = crate::remotetool::Caller {
+            node: Some("placer0001"),
+            name: "placer",
+        };
+        let now = chrono::Utc::now().timestamp();
+        assert_eq!(
+            crate::remotetool::delegate_principal(
+                &store,
+                &cfg,
+                "target0002",
+                &placer,
+                None,
+                Some(&ticket),
+                "check the disk",
+                "host only",
+                now,
+            )
+            .unwrap(),
+            None,
+            "the target runs the child at the owner surface"
+        );
+
+        // Declined: no ticket, nothing placed, and the text says so.
+        let sess = format!("raise-declined-{}", std::process::id());
+        let e = raise(&sess, false).await.unwrap_err();
+        assert!(e.contains("no ticket for this delegation to vps"), "{e}");
+        assert!(e.contains("Nothing was placed"), "{e}");
+        assert!(e.contains("No headless signer is configured"), "{e}");
+
+        // The grant is the caller's own level: a trusted caller's
+        // request asks for `trusted`.
+        let sess = format!("raise-trusted-{}", std::process::id());
+        crate::acl::set_session_principal(
+            &sess,
+            crate::acl::Principal::known("irc:milo", crate::acl::Role::Trusted),
+        );
+        raise(&sess, true).await.expect("a ticket");
+        assert_eq!(seen.lock().unwrap().pop().expect("asked").grant, "trusted");
+
+        // A caller at the user level is not asked at all.
+        let sess = format!("raise-user-{}", std::process::id());
+        crate::acl::set_session_principal(
+            &sess,
+            crate::acl::Principal::known("irc:ash", crate::acl::Role::User),
+        );
+        let before = seen.lock().unwrap().len();
+        let e = raise(&sess, true).await.unwrap_err();
+        assert!(e.contains("already runs"), "{e}");
+        assert_eq!(seen.lock().unwrap().len(), before, "nobody was asked");
+    }
+
     /// The ask a remote child starts from carries the CALLER's principal
     /// — the placing session's, serialized like a local child's env —
     /// and none for an owner session.
@@ -2823,7 +3166,15 @@ mod tests {
             session_id: sess,
             hooks: None,
         };
-        let ask = t.remote_ask("g", "", None, None, None);
+        let ask = t.remote_ask("g", "", None, None, None, None);
+        assert_eq!(ask.ticket, None, "no ticket unless the call carried one");
+        assert_eq!(
+            t.remote_ask("g", "", None, None, None, Some("veles-ticket:1.x".into()))
+                .ticket
+                .as_deref(),
+            Some("veles-ticket:1.x"),
+            "a signed ticket travels with the ask"
+        );
         // ASK-2: the placing session travels, so the peer can parent its
         // child row to it.
         assert_eq!(ask.parent_session.as_deref(), Some(t.session_id.as_str()));
@@ -2837,7 +3188,7 @@ mod tests {
             hooks: None,
         };
         assert!(owner
-            .remote_ask("g", "", None, None, None)
+            .remote_ask("g", "", None, None, None, None)
             .principal
             .is_none());
     }

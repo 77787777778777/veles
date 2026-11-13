@@ -904,15 +904,81 @@ fn roster_update(rosters: &mut HashMap<String, Vec<String>>, nick: &str, mv: Ros
                     if same(e) {
                         // The prefix chars are the channel's opinion of
                         // the person, not part of their nick: `@wrath`
-                        // renaming to `wrath_afk` is still an op.
-                        let prefix: String =
-                            e.chars().take_while(|c| "@%+~&".contains(*c)).collect();
-                        *e = format!("{prefix}{new}");
+                        // renaming to `wrath_afk` is still an op. Their
+                        // user and host do not change with the nick
+                        // either, and dropping them here made a renamed
+                        // owner somebody the roster could not vouch for.
+                        let (prefix, _, userhost) = entry_parts(e);
+                        let renamed = match userhost {
+                            Some(userhost) => format!("{prefix}{new}!{userhost}"),
+                            None => format!("{prefix}{new}"),
+                        };
+                        *e = renamed;
                     }
                 }
             }
         }
     }
+}
+
+/// A roster entry's parts: the channel's prefix characters, the nick,
+/// and the `user@host` after the `!` when the entry carries one.
+fn entry_parts(entry: &str) -> (&str, &str, Option<&str>) {
+    let rest = entry.trim_start_matches(['@', '%', '+', '~', '&']);
+    let prefix = &entry[..entry.len() - rest.len()];
+    match rest.split_once('!') {
+        Some((nick, userhost)) => (prefix, nick, Some(userhost)),
+        None => (prefix, rest, None),
+    }
+}
+
+/// Write down the hostmask the wire has just shown for `nick`: in
+/// `chan`'s roster when one is named (by its casefolded key), else in
+/// every roster that lists them. Returns whether an entry changed.
+///
+/// A roster entry had a hostmask only when a NAMES reply gave it one,
+/// which is the people present when we joined, on a server with
+/// `userhost-in-names`. `irc_tap::owner_nicks` holds the owner's mask
+/// rules against these entries, so an owner who joined after us, who
+/// changed nick, or who sits on a network without that capability was
+/// a bare nick nobody could match: the turn was told the owner was not
+/// known to be there while they were in the channel (found live on a
+/// local ergochat, 2026-11-13). The wire names a user and host in a
+/// JOIN's prefix, in every WHO row and in the prefix of every line a
+/// person says; each of those now lands here. It only ever edits an
+/// entry that exists: who is in a channel is still decided by NAMES,
+/// JOIN, PART, QUIT and KICK.
+fn roster_learn_mask(
+    rosters: &mut HashMap<String, Vec<String>>,
+    chan: Option<&str>,
+    nick: &str,
+    user: &str,
+    host: &str,
+) -> bool {
+    if nick.is_empty() || user.is_empty() || host.is_empty() {
+        return false;
+    }
+    let mut changed = false;
+    for (key, entries) in rosters.iter_mut() {
+        if chan.is_some_and(|want| want != key.as_str()) {
+            continue;
+        }
+        for e in entries.iter_mut() {
+            let (prefix, listed, userhost) = entry_parts(e);
+            if !listed.eq_ignore_ascii_case(nick) {
+                continue;
+            }
+            let current = userhost
+                .and_then(|uh| uh.split_once('@'))
+                .is_some_and(|(u, h)| u == user && h == host);
+            if !current {
+                let learned = format!("{prefix}{listed}!{user}@{host}");
+                *e = learned;
+                changed = true;
+            }
+        }
+    }
+    changed
 }
 
 #[cfg(test)]
@@ -951,6 +1017,95 @@ mod roster_tests {
             vec!["@wrath_afk".to_string(), "erasmus".to_string()],
             "an op who renames is still an op"
         );
+    }
+
+    #[test]
+    fn a_rename_keeps_the_hostmask() {
+        let mut m = HashMap::from([(
+            "#a".to_string(),
+            vec!["@orla!~keeper@c.owner.example".to_string(), "milo".into()],
+        )]);
+        roster_update(&mut m, "ORLA", RosterMove::Renamed("orla_afk"));
+        assert_eq!(
+            m["#a"],
+            vec![
+                "@orla_afk!~keeper@c.owner.example".to_string(),
+                "milo".to_string()
+            ],
+            "the user and host are theirs under any nick"
+        );
+    }
+
+    #[test]
+    fn a_hostmask_is_learned_for_someone_listed_and_for_nobody_else() {
+        let mut m = HashMap::from([
+            ("#a".to_string(), vec!["@orla".to_string(), "milo".into()]),
+            ("#b".to_string(), vec!["+orla".to_string()]),
+        ]);
+        // In the channel named: the prefix stays, the other channel does
+        // not change.
+        assert!(roster_learn_mask(
+            &mut m,
+            Some("#a"),
+            "Orla",
+            "~keeper",
+            "c.owner.example"
+        ));
+        assert_eq!(m["#a"][0], "@orla!~keeper@c.owner.example");
+        assert_eq!(m["#b"], vec!["+orla".to_string()]);
+        // The same mask again changes nothing, and says so: the caller
+        // publishes a snapshot only when this returns true.
+        assert!(!roster_learn_mask(
+            &mut m,
+            Some("#a"),
+            "orla",
+            "~keeper",
+            "c.owner.example"
+        ));
+        // Another host replaces the one held.
+        assert!(roster_learn_mask(
+            &mut m,
+            Some("#a"),
+            "orla",
+            "~keeper",
+            "elsewhere.example"
+        ));
+        assert_eq!(m["#a"][0], "@orla!~keeper@elsewhere.example");
+        // No channel named: every roster that lists them.
+        assert!(roster_learn_mask(
+            &mut m,
+            None,
+            "orla",
+            "~keeper",
+            "c.owner.example"
+        ));
+        assert_eq!(m["#a"][0], "@orla!~keeper@c.owner.example");
+        assert_eq!(m["#b"], vec!["+orla!~keeper@c.owner.example".to_string()]);
+        // It never adds anybody: membership is not its business.
+        let before = m.clone();
+        assert!(!roster_learn_mask(
+            &mut m,
+            Some("#a"),
+            "ash",
+            "~ash",
+            "b.example"
+        ));
+        assert!(!roster_learn_mask(
+            &mut m,
+            Some("#nowhere"),
+            "orla",
+            "~keeper",
+            "x.example"
+        ));
+        assert!(!roster_learn_mask(
+            &mut m,
+            Some("#a"),
+            "milo",
+            "",
+            "a.example"
+        ));
+        assert!(!roster_learn_mask(&mut m, Some("#a"), "milo", "~milo", ""));
+        assert_eq!(m, before);
     }
 
     #[test]
@@ -1064,8 +1219,12 @@ pub(crate) struct Conn {
     accounts: HashMap<String, String>,
     /// channel → topic text (RPL_TOPIC)
     topics: HashMap<String, String>,
-    /// channel → roster nicks with prefix chars (RPL_NAMREPLY)
+    /// channel → roster entries: prefix chars, the nick, and `!user@host`
+    /// once the wire has shown one (RPL_NAMREPLY, JOIN, WHO, a line said)
     rosters: HashMap<String, Vec<String>>,
+    /// A roster entry changed on a line that is not otherwise stateful
+    /// (see `tap_is_stateful`): publish the snapshot after handling it.
+    roster_dirty: bool,
     /// casefolded nick → away? from WHO replies (RPL_WHOREPLY/H).
     away: HashMap<String, bool>,
     /// nick → (user@host, server) from WHOIS 311/312
@@ -2113,6 +2272,7 @@ async fn run_connection_inner(
         accounts: HashMap::new(),
         topics: HashMap::new(),
         rosters: HashMap::new(),
+        roster_dirty: false,
         whois_extra: HashMap::new(),
         who_pending: Vec::new(),
         who_rows: Vec::new(),
@@ -2198,7 +2358,7 @@ async fn run_connection_inner(
                         // Snapshot AFTER handling, so the roster and
                         // topics a late-attaching client reads are the
                         // ones the line just produced.
-                        if changes_state {
+                        if changes_state || std::mem::take(&mut conn.roster_dirty) {
                             tap_publish_state(&conn);
                         }
                     }
@@ -2643,6 +2803,7 @@ async fn handle_incoming(conn: &mut Conn, msg: Message) -> Result<()> {
                 // rename that is not followed through leaves a nick
                 // listed as present under a name nobody answers to.
                 roster_update(&mut conn.rosters, old, RosterMove::Renamed(new_nick));
+                roster_learn_mask(&mut conn.rosters, None, new_nick, user, host);
                 if let Some(acc) = conn.accounts.remove(&conn.casefold(old)) {
                     let key = conn.casefold(new_nick);
                     bounded_insert(&mut conn.accounts, MAX_TRACKED_NICKS, key, acc);
@@ -2704,6 +2865,13 @@ async fn handle_incoming(conn: &mut Conn, msg: Message) -> Result<()> {
                 } else {
                     let key = conn.casefold(channel);
                     roster_update(&mut conn.rosters, nick, RosterMove::Joined(&key));
+                    // A JOIN's prefix is the one place the wire always
+                    // names the joiner's user and host. It also replaces
+                    // what the roster held for a nick that is rejoining
+                    // from somewhere else.
+                    if let Some((user, host)) = user_host_of(&msg) {
+                        roster_learn_mask(&mut conn.rosters, Some(&key), nick, &user, &host);
+                    }
                     // The trigger engine's JOIN event — other people
                     // joining, in a sanctioned channel.
                     if conn.is_sanctioned_channel(channel) {
@@ -3085,6 +3253,14 @@ async fn handle_numeric(conn: &mut Conn, resp: Response, args: &[String]) -> Res
             if let (Some(nick), Some(flags)) = (args.get(5), args.get(6)) {
                 let key = conn.casefold(nick);
                 bounded_insert(&mut conn.away, MAX_TRACKED_NICKS, key, flags.contains('G'));
+            }
+            // The same row names the member's user and host, which a
+            // NAMES reply without `userhost-in-names` does not.
+            if let (Some(chan), Some(user), Some(host), Some(nick)) =
+                (args.get(1), args.get(2), args.get(3), args.get(5))
+            {
+                let key = conn.casefold(chan);
+                roster_learn_mask(&mut conn.rosters, Some(&key), nick, user, host);
             }
             // Collect rows for a pending /who. 352 <me> <chan> <user>
             // <host> <server> <nick> <flags> ... — row tuples mirror that
@@ -4253,11 +4429,20 @@ async fn handle_privmsg(
     target: &str,
     raw_text: &str,
 ) -> Result<()> {
-    let Some(Prefix::Nickname(sender, _user, _host)) = &msg.prefix else {
+    let Some(Prefix::Nickname(sender, user, host)) = &msg.prefix else {
         return Ok(());
     };
     if conn.casefold(sender) == conn.casefold(&conn.current_nick) {
         return Ok(()); // our own echo-message
+    }
+    // What someone says carries the mask they have now: a host that
+    // changed without a JOIN (a cloak applied late), or one no NAMES or
+    // WHO reply ever named.
+    if crate::is_channel(target) {
+        let key = conn.casefold(target);
+        if roster_learn_mask(&mut conn.rosters, Some(&key), sender, user, host) {
+            conn.roster_dirty = true;
+        }
     }
 
     let is_channel = crate::is_channel(target);
@@ -4349,7 +4534,18 @@ async fn handle_privmsg(
     } else {
         (true, text.clone())
     };
-    if is_channel && !address {
+    // A pasted ticket is the answer to an ask that waits for one, with
+    // or without a mention. The request the bot posts ends "paste the
+    // ticket here", and on a channel that requires a mention the paste
+    // stopped at this gate: the ask sat out its ten minutes and the call
+    // never ran (found live on a local ergochat, 2026-11-13; the same
+    // ticket addressed to the bot by nick was taken at once). A ticket
+    // is not a "1" somebody types by accident. Nothing but its signature
+    // authorizes anything, and the ask still decides who may answer it.
+    // The line goes on only as far as the ask below: with none waiting
+    // for it, it starts nothing.
+    let ticket_paste = is_channel && !address && veles_core::ticket::Ticket::is_pasted(&text);
+    if is_channel && !address && !ticket_paste {
         // The trigger hook: the UNADDRESSED line is exactly what
         // channel triggers exist for (link titles, timtom, image
         // descriptions react to the room, not to the bot). Everything
@@ -4377,7 +4573,7 @@ async fn handle_privmsg(
         }
         return Ok(());
     }
-    if is_channel {
+    if is_channel && !ticket_paste {
         // The address itself is not part of what was said: `read` is
         // the line without it (or what an `irc.addressed` override
         // answered).
@@ -4498,6 +4694,19 @@ async fn handle_privmsg(
         debug!("irc: reply from {sender} answered ask {id}");
         conn.notice(sender, &format!("decision recorded ({id})"))
             .await?;
+        return Ok(());
+    }
+    if ticket_paste {
+        // It came past the mention gate only as a possible answer, and
+        // it starts nothing. The person who pasted it is told, or they
+        // would wait for a call that is not going to run.
+        debug!("irc: a ticket pasted by {sender} answered no ask that is open here");
+        conn.notice(
+            sender,
+            "no call here is waiting for this ticket: it has timed out or been answered, \
+             or the ticket is incomplete. Ask for the call again and sign the new request.",
+        )
+        .await?;
         return Ok(());
     }
 
@@ -9217,6 +9426,108 @@ mod stub_server {
         );
     }
 
+    /// The request the bot posts for a ticket ends "paste the ticket
+    /// here". On a channel that requires a mention the paste was dropped
+    /// at the mention gate, and the ask sat out its ten minutes. A pasted
+    /// ticket reaches the ask that waits for it; a line that only quotes
+    /// one is conversation; and one pasted where no ask waits answers
+    /// nothing.
+    #[tokio::test]
+    async fn a_pasted_ticket_answers_the_waiting_ask_without_a_mention() {
+        use veles_core::ask::{AskChoice, AskKind, AskRequest, CHOICE_TICKET_DECLINE};
+        let req = AskRequest::new(
+            "s-ticket-paste",
+            AskKind::Ticket,
+            "tcl_eval on node n needs a ticket",
+            vec![AskChoice::new(CHOICE_TICKET_DECLINE, "decline")],
+        );
+        let id = req.id.clone();
+        let _rx = veles_core::ask::register(&req, Some("irc:#tk"), None);
+        let ticket = "veles-ticket:1.key.payload.signature";
+        let (key, _) = veles_core::ticket::SignerKey::generate().unwrap();
+        let signed = key
+            .sign(
+                &veles_core::ticket::TicketRequest::new(
+                    "node-a",
+                    "node-a",
+                    "s-ticket-paste",
+                    "tcl_eval",
+                    serde_json::json!({"code": "expr 6*7"}),
+                    "owner",
+                    600,
+                )
+                .unwrap(),
+            )
+            .unwrap();
+        let sent = drive(
+            |cfg| {
+                cfg.allowed_users.clear();
+                cfg.channels = crate::parse_channels("#tk,#tk2", cfg.default_format);
+                cfg.require_mention = true;
+            },
+            vec![
+                ":velestest!u@h JOIN :#tk".into(),
+                ":velestest!u@h JOIN :#tk2".into(),
+                // Quoted inside a sentence: not a paste, and not addressed.
+                format!(
+                    ":orla!u@h PRIVMSG #tk :the log says it refused {ticket} this morning, \
+                     why would that be, does anybody here know"
+                ),
+                // Pasted where no ask is waiting.
+                format!(":orla!u@h PRIVMSG #tk2 :{ticket}"),
+            ],
+        )
+        .await;
+        assert!(
+            !sent.iter().any(|l| l.contains("decision recorded")),
+            "neither line answers the ask: {sent:?}"
+        );
+        let told: Vec<&String> = sent
+            .iter()
+            .filter(|l| l.contains("no call here is waiting for this ticket"))
+            .collect();
+        assert_eq!(
+            told.len(),
+            1,
+            "the paste nothing waits for is answered once, the quoted line not at all: {sent:?}"
+        );
+        assert!(told[0].starts_with("NOTICE orla"), "{told:?}");
+        assert_eq!(
+            veles_core::ask::open_for_chat("irc:#tk").len(),
+            1,
+            "the ask is still waiting"
+        );
+
+        let sent = drive(
+            |cfg| {
+                cfg.allowed_users.clear();
+                cfg.channels = crate::parse_channels("#tk,#tk2", cfg.default_format);
+                cfg.require_mention = true;
+            },
+            vec![
+                ":velestest!u@h JOIN :#tk".into(),
+                // A ticket that parses: the ask takes the ticket's text
+                // and its caller checks the signature, not this adapter.
+                format!(":orla!u@h PRIVMSG #tk :here you go: {signed}"),
+            ],
+        )
+        .await;
+        let recorded: Vec<&String> = sent
+            .iter()
+            .filter(|l| l.contains("decision recorded"))
+            .collect();
+        assert_eq!(recorded.len(), 1, "{sent:?}");
+        assert!(
+            recorded[0].starts_with("NOTICE orla") && recorded[0].contains(&id),
+            "{recorded:?}"
+        );
+        assert!(
+            veles_core::ask::open_for_chat("irc:#tk").is_empty(),
+            "the ask has its answer"
+        );
+        veles_core::ask::cancel(&id);
+    }
+
     /// Under lockdown the adapter answers nothing it would otherwise
     /// answer BEFORE the bus — an ask reply and the command sigil —
     /// and says why exactly once.
@@ -10239,6 +10550,197 @@ mod stub_server {
         );
         assert!(out.contains("3 member(s)"), "{out}");
         assert!(out.contains("nyx"), "{out}");
+    }
+
+    // ── the roster's hostmasks (0.2.5) ──
+    //
+    // `irc_tap::owner_nicks` holds the owner's mask rules against the
+    // roster, so the roster has to know a hostmask for everyone the wire
+    // has shown one for. Found live on a local ergochat on 2026-11-13:
+    // it knew them only for the people a NAMES reply listed when the
+    // bot joined, and only on a server with `userhost-in-names`. An
+    // owner who joined after the bot, or changed nick, was a bare nick,
+    // and a turn was told they were not known to be there.
+
+    /// Run `script` against the stub as network `net`. Returns the
+    /// roster of `#chan` and the owner's nicks there, as they stood when
+    /// `done` first held (or after four seconds).
+    async fn roster_seen(
+        net: &'static str,
+        advertise: &'static str,
+        script: Vec<String>,
+        done: impl Fn(&[String], &[String]) -> bool,
+    ) -> (Vec<String>, Vec<String>) {
+        let acl: veles_core::acl::AclConfig =
+            serde_yaml::from_str("owner: [\"*!~keeper@*.owner.example\"]\ndefault_role: guest")
+                .expect("acl parses");
+        let drive = drive_wire_timed(
+            move |c| c.name = net.into(),
+            advertise,
+            script,
+            Vec::new(),
+            Vec::new(),
+            Duration::from_millis(1500),
+            Duration::from_secs(2),
+        );
+        let watch = async {
+            let t0 = std::time::Instant::now();
+            loop {
+                let roster = crate::tap::states()
+                    .into_iter()
+                    .find(|s| s.network == net)
+                    .and_then(|s| s.rosters.get("#chan").cloned())
+                    .unwrap_or_default();
+                let owners = veles_core::irc_tap::owner_nicks(net, Some("#chan"), &acl);
+                if done(&roster, &owners) || t0.elapsed() > Duration::from_secs(4) {
+                    return (roster, owners);
+                }
+                tokio::time::sleep(Duration::from_millis(25)).await;
+            }
+        };
+        let (_, seen) = tokio::join!(drive, watch);
+        seen
+    }
+
+    fn joined_then(names: &str, more: &[&str]) -> Vec<String> {
+        let mut script = vec![
+            ":velestest!u@h JOIN :#chan".to_string(),
+            format!(":stub 353 velestest = #chan :{names}"),
+            ":stub 366 velestest #chan :End of /NAMES list".to_string(),
+        ];
+        script.extend(more.iter().map(|l| l.to_string()));
+        script
+    }
+
+    #[tokio::test]
+    async fn someone_who_joins_after_the_bot_is_listed_with_their_hostmask() {
+        let (roster, owners) = roster_seen(
+            "stub-roster-join",
+            "",
+            joined_then("@milo ash", &[":orla!~keeper@c.owner.example JOIN :#chan"]),
+            |_, owners| !owners.is_empty(),
+        )
+        .await;
+        assert!(
+            roster.contains(&"orla!~keeper@c.owner.example".to_string()),
+            "{roster:?}"
+        );
+        assert_eq!(owners, ["orla"]);
+    }
+
+    #[tokio::test]
+    async fn a_join_replaces_the_hostmask_the_roster_held_for_that_nick() {
+        // A rejoin from another host (a reconnect, a cloak that arrived
+        // late): one entry, with the host the wire shows now.
+        let (roster, owners) = roster_seen(
+            "stub-roster-rejoin",
+            "userhost-in-names",
+            joined_then(
+                "@milo!~milo@a.example orla!~keeper@elsewhere.example",
+                &[":orla!~keeper@c.owner.example JOIN :#chan"],
+            ),
+            |_, owners| !owners.is_empty(),
+        )
+        .await;
+        let hers: Vec<&String> = roster.iter().filter(|e| e.contains("orla")).collect();
+        assert_eq!(
+            hers,
+            [&"orla!~keeper@c.owner.example".to_string()],
+            "{roster:?}"
+        );
+        assert_eq!(owners, ["orla"]);
+    }
+
+    #[tokio::test]
+    async fn a_nick_change_keeps_the_hostmask_and_the_prefix() {
+        let (roster, owners) = roster_seen(
+            "stub-roster-nick",
+            "userhost-in-names",
+            joined_then(
+                "milo!~milo@a.example @orla!~keeper@c.owner.example",
+                &[":orla!~keeper@c.owner.example NICK :orla_afk"],
+            ),
+            |roster, _| roster.iter().any(|e| e.contains("orla_afk")),
+        )
+        .await;
+        assert!(
+            roster.contains(&"@orla_afk!~keeper@c.owner.example".to_string()),
+            "{roster:?}"
+        );
+        assert_eq!(owners, ["orla_afk"]);
+    }
+
+    #[tokio::test]
+    async fn a_nick_change_names_a_hostmask_the_roster_did_not_have() {
+        // A bare entry (no `userhost-in-names`, no WHO row yet): the
+        // NICK line's own prefix carries their user and host.
+        let (roster, owners) = roster_seen(
+            "stub-roster-nick-bare",
+            "",
+            joined_then(
+                "orla milo",
+                &[":orla!~keeper@c.owner.example NICK :orla_afk"],
+            ),
+            |roster, _| roster.iter().any(|e| e.contains("orla_afk")),
+        )
+        .await;
+        assert!(
+            roster.contains(&"orla_afk!~keeper@c.owner.example".to_string()),
+            "{roster:?}"
+        );
+        assert_eq!(owners, ["orla_afk"]);
+    }
+
+    #[tokio::test]
+    async fn a_who_reply_gives_a_bare_roster_its_hostmasks() {
+        // No `userhost-in-names` here: NAMES lists bare nicks, and the
+        // WHO the client sends after it is what carries user and host.
+        let (roster, owners) = roster_seen(
+            "stub-roster-who",
+            "",
+            joined_then(
+                "@orla milo",
+                &[
+                    ":stub 352 velestest #chan ~keeper c.owner.example stub orla H@ :0 Orla",
+                    ":stub 352 velestest #chan ~milo a.example stub milo H :0 Milo",
+                    ":stub 315 velestest #chan :End of /WHO list",
+                ],
+            ),
+            |_, owners| !owners.is_empty(),
+        )
+        .await;
+        assert!(
+            roster.contains(&"@orla!~keeper@c.owner.example".to_string()),
+            "{roster:?}"
+        );
+        assert!(
+            roster.contains(&"milo!~milo@a.example".to_string()),
+            "{roster:?}"
+        );
+        assert_eq!(owners, ["orla"]);
+    }
+
+    #[tokio::test]
+    async fn a_line_someone_says_brings_their_hostmask_up_to_date() {
+        // Neither NAMES nor a WHO reply named a host for them, or named
+        // one that has changed since: what they say carries the mask
+        // they have now.
+        let (roster, owners) = roster_seen(
+            "stub-roster-says",
+            "",
+            joined_then(
+                "orla milo",
+                &[":orla!~keeper@c.owner.example PRIVMSG #chan :morning"],
+            ),
+            |_, owners| !owners.is_empty(),
+        )
+        .await;
+        assert!(
+            roster.contains(&"orla!~keeper@c.owner.example".to_string()),
+            "{roster:?}"
+        );
+        assert!(roster.contains(&"milo".to_string()), "{roster:?}");
+        assert_eq!(owners, ["orla"]);
     }
 
     #[tokio::test]

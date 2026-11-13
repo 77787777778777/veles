@@ -1,3 +1,17 @@
+veles-agent (0.2.5) unstable; urgency=medium
+
+  * IRC: the owner is recognised as present when they joined the channel
+    after the bot, changed nick, or are on a network without
+    userhost-in-names. The channel roster keeps the user and host from
+    JOIN, WHO, NICK and the lines people say.
+  * delegate_task can ask the owner for a ticket: raise with a node name
+    runs the child on that node at the caller's level once the owner has
+    signed for that goal and context. A refused part on another node is
+    told to say what it needed.
+  * IRC: a signed ticket pasted into a channel is taken without a mention.
+
+ -- veles-agent maintainers <noreply@example.invalid>  Fri, 13 Nov 2026 17:00:00 +0000
+
 veles-agent (0.2.4) unstable; urgency=medium
 
   * The agent can read its own documentation and source: a new tool,

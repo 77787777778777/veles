@@ -1239,6 +1239,56 @@ pub fn delegate_principal(
     }
 }
 
+/// D2, the asking side: the request a ticket for ONE delegation signs.
+/// [`delegate_principal`] holds a ticket against the tool
+/// `delegate_task`, the arguments `{goal, context}` exactly as the ask
+/// carries them, and the empty session. The placing node builds its
+/// request here, beside that check, so the two cannot drift apart.
+pub fn delegation_request(
+    origin: &str,
+    target: &str,
+    goal: &str,
+    context: &str,
+    grant: Role,
+) -> Result<String> {
+    crate::ticket::TicketRequest::new(
+        origin,
+        target,
+        "",
+        "delegate_task",
+        json!({"goal": goal, "context": context}),
+        grant.as_str(),
+        crate::ticket::DEFAULT_TTL_SECS,
+    )?
+    .encode()
+}
+
+/// Why [`ask_for_ticket`] came back without a ticket, as far as this
+/// node can tell. It answers `None` for a decline, for a request nobody
+/// signed in time, and for a session nobody is attached to, and the text
+/// a model read said "the owner declined" for all three. With no
+/// headless signer configured the third is the likely one, so the text
+/// names what would have had to exist.
+pub fn unsigned_reason() -> String {
+    unsigned_reason_for(crate::config::live().cluster.signers.len())
+}
+
+fn unsigned_reason_for(signers: usize) -> String {
+    let minutes = crate::ticket::DEFAULT_TTL_SECS / 60;
+    if signers == 0 {
+        format!(
+            "it was declined, or nobody signed it within {minutes} minutes. No headless \
+             signer is configured on this node ([cluster] signers), so only a person \
+             attached to this session could have been asked"
+        )
+    } else {
+        format!(
+            "it was declined, or nobody signed it within {minutes} minutes ({signers} \
+             headless signer(s) and this session were asked)"
+        )
+    }
+}
+
 /// A short, path-safe form of a node label for session ids.
 fn short(label: &str) -> String {
     label
@@ -2536,6 +2586,73 @@ mod tests {
             .is_err(),
             "a ticket for another goal"
         );
+    }
+
+    /// The request a PLACING node builds for a raised delegation is the
+    /// one this node's check accepts a ticket for: the same tool, the
+    /// same arguments, the empty session. Before 0.2.5 nothing built
+    /// one, so a delegated child could not be raised at all.
+    #[test]
+    fn the_request_a_placer_builds_is_the_one_the_target_accepts() {
+        let (_d, _env, store) = scratch_store();
+        let now = chrono::Utc::now().timestamp();
+        let (key, cfg) = signer_cfg();
+        let sign = |goal: &str, context: &str, grant: Role| {
+            let text = delegation_request("node-a", "node-b", goal, context, grant).unwrap();
+            let req = crate::ticket::TicketRequest::decode(&text).unwrap();
+            assert_eq!(req.tool, "delegate_task");
+            assert_eq!(req.session, "");
+            assert_eq!(req.args, json!({"goal": goal, "context": context}));
+            key.sign(&req).unwrap()
+        };
+        let run = |ticket: &str, goal: &str, context: &str| {
+            delegate_principal(
+                &store,
+                &cfg,
+                "node-b",
+                &caller(),
+                None,
+                Some(ticket),
+                goal,
+                context,
+                now,
+            )
+        };
+        assert_eq!(
+            run(
+                &sign("check the disk", "host only", Role::Owner),
+                "check the disk",
+                "host only"
+            )
+            .unwrap(),
+            None,
+            "an owner ticket: the owner surface"
+        );
+        let admin = run(&sign("g", "c", Role::Admin), "g", "c")
+            .unwrap()
+            .expect("a principal");
+        assert_eq!(admin.role, Role::Admin, "the grant is the level it runs at");
+        assert!(
+            run(&sign("g", "c", Role::Owner), "g", "another context").is_err(),
+            "a ticket is for that goal and that context"
+        );
+    }
+
+    #[test]
+    fn no_ticket_says_who_could_have_been_asked() {
+        let none = unsigned_reason_for(0);
+        assert!(
+            none.contains("declined, or nobody signed it within 10 minutes"),
+            "{none}"
+        );
+        assert!(none.contains("No headless signer is configured"), "{none}");
+        assert!(none.contains("[cluster] signers"), "{none}");
+        let two = unsigned_reason_for(2);
+        assert!(
+            two.contains("2 headless signer(s) and this session were asked"),
+            "{two}"
+        );
+        assert!(!two.contains("No headless signer"), "{two}");
     }
 
     /// An unasked call runs under a session of the caller's with the

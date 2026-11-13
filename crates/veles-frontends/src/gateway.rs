@@ -9800,7 +9800,7 @@ mod tests {
         // The name: the nick on the wire, not IRC's "nick (account)".
         let mut ctx = veles_core::acl::SenderContext::default();
         assert_eq!(address_name("a (acct)", &ctx).as_deref(), Some("a"));
-        ctx.mask = Some("a!~a@86b64c8e".into());
+        ctx.mask = Some("a!~a@1a2b3c4d".into());
         assert_eq!(
             address_name("", &ctx).as_deref(),
             Some("a"),

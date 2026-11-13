@@ -372,7 +372,9 @@ To talk to the user's other live sessions on this machine or another pool node, 
 SPLITTING HEAVY WORK ACROSS THE POOL is your call — nothing splits a job for you. \
 `nodes` shows every node's cores, load per core, disk IO pressure and the children \
 already counted there. A part placed on another node (backend='any', 'gpu' or a node \
-name) runs in that node's sandbox at the User level and sees none of this node's files, \
+name) runs in that node's sandbox at the User level and sees none of this node's files \
+(for work that needs that node's own host, name the node and pass `raise`: the owner is \
+asked to sign a ticket for that one delegation), \
 so send only self-contained parts there: fetches and lookups, work on a URL or a git \
 remote it can clone, pure computation from what its goal and context carry. Work on \
 this node's files (building or testing this checkout, scanning local trees, encoding \
