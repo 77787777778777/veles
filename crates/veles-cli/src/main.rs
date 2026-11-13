@@ -4448,7 +4448,42 @@ fn run_install(action: InstallAction) -> anyhow::Result<()> {
     Ok(())
 }
 
+/// The source this binary was built from, packed by build.rs, and the
+/// command table, handed to the `veles_docs` tool (veles-core
+/// `selfdocs.rs`). Every way the binary runs goes through here: the
+/// gateway, a chat, the desktop's engine, a delegated child.
+fn install_self_knowledge() {
+    veles_core::selfdocs::install_source(include_bytes!(concat!(
+        env!("OUT_DIR"),
+        "/source-snapshot.gz"
+    )));
+    veles_core::selfdocs::install_page("commands", commands_page());
+}
+
+/// The commands a person can type to veles in a chat, from the table
+/// `/help` is built from.
+fn commands_page() -> String {
+    use veles_frontends::commands::{help_entries, Surface};
+    let mut page = String::from(
+        "# Commands a person can type in a chat\n\n\
+         veles' own commands on a chat surface (IRC, Telegram and the other connectors), \
+         from the table `/help` shows. Which of them a caller may use depends on their role; \
+         `/help` in the chat lists the ones open to them. The terminal and the desktop have \
+         a few more (veles_docs grep=help_entries shows the table in the source).\n\n\
+         | command | what it does |\n|---|---|\n",
+    );
+    for (usage, what) in help_entries(Surface::Gateway) {
+        page.push_str(&format!("| `{usage}` | {} |\n", what.replace('|', "\\|")));
+    }
+    page.push_str(
+        "\nNot in this table: `tcl <code>` in a channel (page=channel-tcl), and the commands \
+         a module adds for its own surface (veles_docs grep=<the command> finds them).\n",
+    );
+    page
+}
+
 fn main() -> anyhow::Result<()> {
+    install_self_knowledge();
     use std::io::IsTerminal;
     // A browser starting the tab bridge's native host runs the binary with
     // its own argv (BX-1). The installed launcher says `browser-extension
@@ -5676,6 +5711,112 @@ mod surface_parity_tests {
             shared >= 5,
             "only {shared} keys are shared between the two connectors — the comparison is no \
              longer comparing the knobs it was written for"
+        );
+    }
+}
+
+/// The snapshot build.rs really packed, read through the tool the way
+/// a model reads it. The questions are the ones a channel asked on
+/// 2026-11-12 and got "I'm sandboxed and can't see the source" for:
+/// what does a command talk to, what commands are there, where is this
+/// implemented.
+#[cfg(test)]
+mod self_knowledge_tests {
+    use serde_json::json;
+    use veles_core::tools::Tool;
+
+    async fn ask(args: serde_json::Value) -> String {
+        super::install_self_knowledge();
+        veles_core::selfdocs::VelesDocsTool.call(args).await
+    }
+
+    #[tokio::test]
+    async fn the_binary_answers_from_its_own_source() {
+        // Where is it implemented.
+        let hits = ask(json!({"grep": "fn strip_own_speaker_tags"})).await;
+        assert!(
+            hits.contains("crates/veles-irc/src/client.rs:"),
+            "the IRC adapter's source is in the binary: {hits}"
+        );
+        // What does a command talk to: the deployment files say.
+        let filter = ask(json!({"file": "deploy/vps/slopdrop/stock-proxy.filter"})).await;
+        assert!(filter.contains("finance\\.yahoo\\.com"), "{filter}");
+        let stock = ask(json!({"grep": "stock::", "file": "deploy"})).await;
+        assert!(
+            stock.contains("deploy/vps/slopdrop/stock-proxy.filter:4: # Yahoo's chart API"),
+            "{stock}"
+        );
+        // The desktop's Tcl and the plugin API are there as well.
+        assert!(
+            ask(json!({"file": "plugins/veles_api.tcl", "lines": "1-5"}))
+                .await
+                .starts_with("plugins/veles_api.tcl lines 1-5 of ")
+        );
+        let tree = ask(json!({"file": "list"})).await;
+        for dir in [
+            "crates/veles-core/",
+            "crates/veles-irc/",
+            "veles-desktop/lib/",
+            "plugins/",
+            "deploy/vps/",
+        ] {
+            assert!(tree.contains(dir), "{dir} is not in the tree: {tree}");
+        }
+        // What commands are there: the table /help is built from.
+        let index = ask(json!({})).await;
+        assert!(
+            index.contains("\n  commands — Commands a person can type in a chat"),
+            "{index}"
+        );
+        let commands = ask(json!({"page": "commands"})).await;
+        assert!(commands.contains("| `/model [name]` |"), "{commands}");
+        assert!(commands.contains("| `/pair [code]` |"), "{commands}");
+    }
+
+    /// What is packed is source to read: no suites, no fixtures, no
+    /// message catalogs, nothing that is not text, and enough of it.
+    #[test]
+    fn the_snapshot_holds_sources_and_nothing_else() {
+        let files = veles_core::selfdocs::unpack_source(include_bytes!(concat!(
+            env!("OUT_DIR"),
+            "/source-snapshot.gz"
+        )));
+        assert_eq!(
+            files.len().to_string(),
+            env!("VELES_SOURCE_SNAPSHOT_FILES"),
+            "every packed file reads back"
+        );
+        assert!(files.len() > 200, "{} files", files.len());
+        let paths: Vec<&str> = files.iter().map(|f| f.path.as_str()).collect();
+        let mut sorted = paths.clone();
+        sorted.sort();
+        assert_eq!(
+            paths, sorted,
+            "packed in one order, whatever the directory gave"
+        );
+        for p in &paths {
+            assert!(
+                !p.contains("/tests/") && !p.contains("/locales/") && !p.contains("/target/"),
+                "{p}"
+            );
+            assert!(
+                !(p.starts_with("veles-desktop/")
+                    && (p.ends_with("test.tcl") || p.contains("fixtures"))),
+                "{p}"
+            );
+        }
+        for must in [
+            "crates/veles-core/src/selfdocs.rs",
+            "crates/veles-cli/src/main.rs",
+            "crates/veles-cli/build.rs",
+            "crates/veles-core/Cargo.toml",
+        ] {
+            assert!(paths.contains(&must), "{must} is missing");
+        }
+        let size: usize = include_bytes!(concat!(env!("OUT_DIR"), "/source-snapshot.gz")).len();
+        assert!(
+            size < 8 * 1024 * 1024,
+            "the snapshot is {size} bytes in the binary"
         );
     }
 }

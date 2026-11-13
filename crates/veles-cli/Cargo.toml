@@ -54,6 +54,11 @@ libloading = "0.8"
 # production code).
 tempfile = "3"
 
+[build-dependencies]
+# build.rs packs the source snapshot `veles_docs` reads (veles-core
+# selfdocs.rs unpacks it with the same crate and backend).
+flate2 = { version = "1", default-features = false, features = ["rust_backend"] }
+
 [dev-dependencies]
 tempfile = "3"
 # The module-host tests run as `veles module-host-test`, a hidden

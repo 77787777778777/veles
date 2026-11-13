@@ -2417,6 +2417,9 @@ impl GatewayCore {
         ctx: &veles_core::acl::SenderContext,
     ) -> Result<Arc<Agent>> {
         let principal = self.resolve(sender_id, ctx);
+        // The owner as this surface shows them: what the origin row of
+        // somebody else's turn here names (`acl::owner_here`).
+        veles_core::acl::note_owner(&principal, ctx, sender_id, &self.acl());
         let key = self.session_key_for(platform, chat_id, sender_id, ctx);
         // Which sandbox this conversation belongs to, and which ones
         // this caller may name. Resolved HERE because this is the only
@@ -10384,6 +10387,50 @@ mod tests {
         let sessions = core.sessions.lock().unwrap();
         assert!(sessions.contains_key(&ka) && sessions.contains_key(&kb));
         assert_eq!(sessions.len(), 2, "{:?}", sessions.keys());
+    }
+
+    /// The gateway remembers the name the owner speaks under on a
+    /// surface, and nobody else's: it is what the origin row of another
+    /// caller's turn there names when no member list does
+    /// (`veles_core::acl::owner_here`; USER 2026-11-12: "let's tell it
+    /// who the owner is on each surface").
+    #[tokio::test]
+    async fn the_owner_is_remembered_as_the_surface_shows_them() {
+        use veles_core::acl::{owner_here, OwnerHere};
+        let (core, _rx, _home, _guard) =
+            acl_core_with("owner: [\"hooktest:1\"]\nroles: {\"hooktest:2\": trusted}");
+        let spoke_as = |handle: &str| veles_core::acl::SenderContext {
+            platform: Some("hooktest".into()),
+            chat_id: Some("room".into()),
+            handle: Some(handle.into()),
+            ..Default::default()
+        };
+        let asked = spoke_as("a_stranger");
+        let _ = core
+            .agent_for_sender(
+                "hooktest",
+                "room",
+                Some("hooktest:2"),
+                &spoke_as("a_friend"),
+            )
+            .expect("friend");
+        assert_eq!(
+            owner_here(&asked, &core.acl()),
+            Some(OwnerHere::Unknown),
+            "somebody who is not the owner is not remembered as one"
+        );
+        let _ = core
+            .agent_for_sender(
+                "hooktest",
+                "room",
+                Some("hooktest:1"),
+                &spoke_as("the_boss"),
+            )
+            .expect("owner");
+        assert_eq!(
+            owner_here(&asked, &core.acl()),
+            Some(OwnerHere::LastSeen("the_boss".into()))
+        );
     }
 
     /// A background completion in an IDLE chat-backed session starts a

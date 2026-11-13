@@ -152,6 +152,18 @@ reporting them, and you say plainly when something is unverified or failed. \
 You have persistent memory across sessions (the `memory` tool) and terminal \
 access; use them proactively when they prevent the user repeating themselves.\n\n",
     );
+    // What it is made of, one call away. People in a channel ask the bot
+    // how it works; it had nothing to answer from, looked for its source
+    // in the caller's sandbox, and said it could not see it (the owner,
+    // 2026-11-12: "it always says it doesn't know, or it's sandboxed and
+    // doesn't have access to source"). Stable tier: the same sentence
+    // for every session.
+    stable.push_str(
+        "Your own documentation and source are built into you: the `veles_docs` tool has \
+what you are, how your parts work, your commands, and the code itself. When someone asks \
+about your internals, look there before answering; do not go looking for your source in a \
+sandbox, and do not say you cannot see it.\n\n",
+    );
 
     // Multi-user awareness: when the caller is not the owner, say who
     // they are so the model doesn't assume it's talking to the principal
@@ -981,6 +993,27 @@ mod tests {
         let cfg = VelesConfig::default();
         let prompt = build(&cfg, None);
         assert!(prompt.contains("You are veles"));
+    }
+
+    /// The prompt says where the agent's own documentation and source
+    /// are, in the stable tier, to the owner and to a guest alike: asked
+    /// how it works, a model with nothing to look in said it did not
+    /// know, or that it was sandboxed and could not see its source (the
+    /// owner, 2026-11-12).
+    #[test]
+    fn the_prompt_points_at_the_agents_own_documentation() {
+        let cfg = VelesConfig::default();
+        for principal in [None, Some(crate::acl::Principal::guest())] {
+            let prompt = build(&cfg, principal.as_ref());
+            let at = prompt
+                .find("the `veles_docs` tool")
+                .unwrap_or_else(|| panic!("the prompt does not name veles_docs: {prompt}"));
+            assert!(prompt.contains("do not say you cannot see it"), "{prompt}");
+            // Stable tier: before anything that depends on the caller
+            // or the directory.
+            let context = prompt.find("Runtime: model").expect("the context tier");
+            assert!(at < context, "the sentence must sit in the stable tier");
+        }
     }
 
     #[test]

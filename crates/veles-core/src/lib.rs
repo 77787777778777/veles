@@ -136,6 +136,7 @@ pub mod scripthost;
 pub mod secret_tools;
 pub mod secrets;
 pub mod selector;
+pub mod selfdocs;
 pub mod services;
 pub mod session_search;
 pub mod session_tap;

@@ -82,6 +82,7 @@
 //! declared there is nobody to be privileged above. The owner is
 //! expected to declare themselves in config.
 
+use crate::lockutil::LockOk;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeSet, HashMap};
 
@@ -2304,6 +2305,9 @@ pub fn tool_cap(tool: &str) -> Option<Cap> {
         // (owner-only) whoami would be useless to exactly the guest it
         // exists for.
         "whoami" => Chat,
+        // veles' own documentation, compiled in: published text, asked
+        // for by exactly the callers who cannot look anywhere else.
+        "veles_docs" => Chat,
         // Secrets: owner only. `api_request` sends a key and
         // `secret_request` stores one; `secret_list` names what exists.
         // The tools re-check the session themselves (a principal must
@@ -2821,7 +2825,7 @@ pub fn tool_gate(tool: &str, cfg: &crate::config::VelesConfig) -> ToolGate {
 /// invent a permission.
 pub fn unclassified_denial(tool: &str, who: &Principal) -> String {
     format!(
-        "error: access denied — tool `{tool}` has no declared capability, so it is owner-only and {} is not the owner. Do not retry; tell the user the owner can classify it with `[tool_caps] {tool} = \"<capability>\"` in config.toml.",
+        "error: access denied — tool `{tool}` has no declared capability, so it is owner-only and {} is not the owner. Do not retry; tell the user the owner can classify it with `[tool_caps] {tool} = \"<capability>\"` in config.toml. This turn's [origin] row says who the owner is here: name nobody else as the owner.",
         who.label()
     )
 }
@@ -2835,7 +2839,7 @@ pub fn tool_denial(tool: &str, who: &Principal) -> String {
     // so instead.
     if tool_cap(tool) == Some(Cap::All) {
         return format!(
-            "error: access denied — tool `{tool}` is owner-only and {} is not the owner. Do not retry or look for another route; tell the user the owner has to run it.",
+            "error: access denied — tool `{tool}` is owner-only and {} is not the owner. Do not retry or look for another route; tell the user the owner has to run it. This turn's [origin] row says who the owner is here: name nobody else as the owner.",
             who.label()
         );
     }
@@ -3289,6 +3293,165 @@ fn clamp_owner_claim(mut p: Principal, acl: &AclConfig) -> Principal {
         "{PRINCIPAL_ENV} claimed owner; the acl does not agree — demoted to admin"
     ));
     p
+}
+
+// ── who the owner is on a surface ─────────────────────────────────────
+
+/// How the owner of this agent is known on the surface a turn arrived
+/// through.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum OwnerHere {
+    /// There now, under these names.
+    Present(Vec<String>),
+    /// Not known to be there now; this is the name they last spoke
+    /// under on that surface.
+    LastSeen(String),
+    /// Never seen there; these are the names `[[acl.users]]` gives them.
+    Configured(Vec<String>),
+    /// Nothing names them there.
+    Unknown,
+}
+
+/// The names the owner last spoke under, by surface (`platform/network`,
+/// lower case). Derived from traffic, kept in memory: after a restart a
+/// surface is unknown until the owner speaks there again, and a member
+/// list (IRC) does not need it at all.
+fn owner_seen() -> &'static std::sync::Mutex<HashMap<String, String>> {
+    static OWNER_SEEN: std::sync::OnceLock<std::sync::Mutex<HashMap<String, String>>> =
+        std::sync::OnceLock::new();
+    OWNER_SEEN.get_or_init(|| std::sync::Mutex::new(HashMap::new()))
+}
+
+fn surface_key(ctx: &SenderContext) -> String {
+    format!(
+        "{}/{}",
+        ctx.platform.as_deref().unwrap_or("").to_lowercase(),
+        ctx.network.as_deref().unwrap_or("").to_lowercase()
+    )
+}
+
+/// What a surface calls a sender: the nick on the wire, then the name
+/// the platform shows, then the name part of the verified id.
+fn shown_name(ctx: &SenderContext, sender_id: Option<&str>) -> Option<String> {
+    let nick = ctx
+        .mask
+        .as_deref()
+        .and_then(|m| m.split('!').next())
+        .map(str::trim)
+        .filter(|n| !n.is_empty());
+    let handle = ctx
+        .handle
+        .as_deref()
+        .map(str::trim)
+        .filter(|h| !h.is_empty());
+    let from_id = sender_id
+        .and_then(|id| id.split_once(':').map(|(_, name)| name))
+        .map(str::trim)
+        .filter(|n| !n.is_empty());
+    nick.or(handle).or(from_id).map(String::from)
+}
+
+/// Remember the name a sender who resolved as the owner spoke under, on
+/// the surface they spoke on. The gateway calls this for every message
+/// of a sender whose STANDING role is owner; a caller raised by a ticket
+/// is not one.
+pub fn note_owner_seen(ctx: &SenderContext, sender_id: Option<&str>) {
+    if let Some(name) = shown_name(ctx, sender_id) {
+        owner_seen().lock_ok().insert(surface_key(ctx), name);
+    }
+}
+
+/// Whether `cfg` makes senders no rule names owners on this platform:
+/// then the whole room is the owner and a name says nothing.
+fn unlisted_are_owners(cfg: &AclConfig, platform: Option<&str>) -> bool {
+    cfg.default_role.as_deref().and_then(Role::parse) == Some(Role::Owner)
+        || matches!(
+            cfg.strangers_on(platform),
+            StrangerPolicy::Role(Role::Owner)
+        )
+}
+
+/// [`note_owner_seen`] for a sender the gateway has just resolved: only
+/// when their standing role is owner under an ACL that tells owners
+/// from everybody else. A dormant ACL, or one whose unlisted senders
+/// are owners, resolves the whole room as owner, and a name noted then
+/// would be wrong the day a rule is written.
+pub fn note_owner(who: &Principal, ctx: &SenderContext, sender_id: Option<&str>, cfg: &AclConfig) {
+    let everyone = unlisted_are_owners(cfg, ctx.platform.as_deref());
+    if who.role == Role::Owner && cfg.is_configured() && !everyone {
+        note_owner_seen(ctx, sender_id);
+    }
+}
+
+/// Who the owner is on the surface `ctx` describes: the nicks in the
+/// IRC channel (for a query, on the network) whose mask an owner rule
+/// matches; else the name the owner last spoke under on that surface;
+/// else the names `[[acl.users]]` gives the owner as a person; else
+/// nobody. `None` under a dormant ACL, where every sender is the owner
+/// and there is nobody to point at.
+pub fn owner_here(ctx: &SenderContext, cfg: &AclConfig) -> Option<OwnerHere> {
+    if !cfg.is_configured() {
+        return None;
+    }
+    // An ACL whose unlisted senders are owners makes the whole room
+    // owners: a nick from the member list would name everybody, and a
+    // remembered name is whoever spoke last.
+    if !unlisted_are_owners(cfg, ctx.platform.as_deref()) {
+        if let Some(network) = ctx.network.as_deref() {
+            let present = crate::irc_tap::owner_nicks(network, ctx.channel.as_deref(), cfg);
+            if !present.is_empty() {
+                return Some(OwnerHere::Present(present));
+            }
+        }
+        if let Some(name) = owner_seen().lock_ok().get(&surface_key(ctx)).cloned() {
+            return Some(OwnerHere::LastSeen(name));
+        }
+    }
+    let configured: Vec<String> = cfg
+        .users
+        .iter()
+        .filter(|u| Role::parse(&u.role) == Some(Role::Owner) && !u.name.trim().is_empty())
+        .map(|u| u.name.trim().to_string())
+        .collect();
+    if !configured.is_empty() {
+        return Some(OwnerHere::Configured(configured));
+    }
+    Some(OwnerHere::Unknown)
+}
+
+/// [`owner_here`] as the clause the turn's origin row carries for a
+/// caller who is not the owner. A refused owner-only tool tells the
+/// model to send the caller to the owner; without this clause nothing
+/// said who that is, and a model picked a name from the channel.
+pub fn owner_note(ctx: &SenderContext, cfg: &AclConfig) -> Option<String> {
+    let join = |names: &[String]| match names {
+        [one] => one.clone(),
+        [init @ .., last] => format!("{} and {last}", init.join(", ")),
+        [] => String::new(),
+    };
+    Some(match owner_here(ctx, cfg)? {
+        OwnerHere::Present(names) if ctx.channel.is_some() => {
+            format!("the owner of this agent is here as {}", join(&names))
+        }
+        OwnerHere::Present(names) => {
+            format!(
+                "the owner of this agent is on this network as {}",
+                join(&names)
+            )
+        }
+        OwnerHere::LastSeen(name) => format!(
+            "the owner of this agent is not known to be here now; they last spoke on this \
+             surface as {name}"
+        ),
+        OwnerHere::Configured(names) => format!(
+            "the owner of this agent is the configured user {}; under which name they appear \
+             on this surface is not known",
+            join(&names)
+        ),
+        OwnerHere::Unknown => "who the owner of this agent is on this surface is not known: \
+                               name nobody as the owner"
+            .to_string(),
+    })
 }
 
 // ── tests ─────────────────────────────────────────────────────────────
@@ -4933,6 +5096,261 @@ default_role: guest
         // The label names whichever one actually identified them.
         assert!(by_mask.label().contains("nyx!~n@box.example.com"));
         assert!(!by_mask.label().contains("unverified"));
+    }
+
+    /// Who the owner is on a surface (the owner, 2026-11-12: "let's tell
+    /// it who the owner is on each surface"). A user asked the bot in a
+    /// channel for something owner-only; the refusal said "tell the user
+    /// the owner has to run it", nothing in the turn said who that is,
+    /// and the model named a bystander, the first nick in the channel's
+    /// list. The surface knows: the nick in the channel whose mask an
+    /// owner rule matches, else the name the owner last spoke under
+    /// there, else the name `[[acl.users]]` gives them.
+    #[test]
+    fn the_owner_is_named_as_the_surface_knows_them() {
+        let cfg = cfg_from_yaml(
+            "owner: [\"*!~keeper@*.owner.example\", \"tgtest:4242\"]\ndefault_role: guest",
+        );
+        let net = "owner-here-net";
+        let mut rosters = HashMap::new();
+        rosters.insert(
+            "#flash".to_string(),
+            vec![
+                "jackma!~jackma@bot.example".to_string(),
+                "milo!~milo@a.example".to_string(),
+                "ash!~ash@b.example".to_string(),
+                "~@orla!~keeper@c.owner.example".to_string(),
+            ],
+        );
+        rosters.insert(
+            "#other".to_string(),
+            vec![
+                "jackma!~jackma@bot.example".to_string(),
+                "+milo!~milo@a.example".to_string(),
+            ],
+        );
+        rosters.insert(
+            "#bare".to_string(),
+            vec!["jackma".to_string(), "@orla".to_string()],
+        );
+        crate::irc_tap::put_state(crate::irc_tap::NetworkState {
+            network: net.into(),
+            presence: crate::irc_tap::PRESENCE_BOT.into(),
+            nick: "jackma".into(),
+            connected: true,
+            channels: vec!["#flash".into(), "#other".into(), "#bare".into()],
+            topics: HashMap::new(),
+            rosters,
+            aways: HashMap::new(),
+        });
+        let asker = |channel: Option<&str>| SenderContext {
+            mask: Some("ash!~ash@b.example".into()),
+            network: Some(net.into()),
+            channel: channel.map(String::from),
+            platform: Some("irc".into()),
+            chat_id: Some(channel.unwrap_or("ash").to_string()),
+            direct: channel.is_none(),
+            ..Default::default()
+        };
+
+        // In the channel now: under the nick the channel shows.
+        assert_eq!(
+            owner_here(&asker(Some("#flash")), &cfg),
+            Some(OwnerHere::Present(vec!["orla".into()]))
+        );
+        assert_eq!(
+            owner_note(&asker(Some("#flash")), &cfg).as_deref(),
+            Some("the owner of this agent is here as orla")
+        );
+        // A channel's name is compared the way IRC compares it.
+        assert_eq!(
+            owner_here(&asker(Some("#FLASH")), &cfg),
+            Some(OwnerHere::Present(vec!["orla".into()]))
+        );
+        // A private query: wherever on the network this node sees them.
+        assert_eq!(
+            owner_note(&asker(None), &cfg).as_deref(),
+            Some("the owner of this agent is on this network as orla")
+        );
+        // Not in that channel and never heard on this network: nobody is
+        // named, and the model is told to name nobody.
+        assert_eq!(
+            owner_here(&asker(Some("#other")), &cfg),
+            Some(OwnerHere::Unknown)
+        );
+        let unknown = owner_note(&asker(Some("#other")), &cfg).unwrap();
+        assert!(unknown.contains("name nobody as the owner"), "{unknown}");
+        assert!(!unknown.contains("milo"), "{unknown}");
+        // A roster without hostmasks cannot be held against a mask rule.
+        assert_eq!(
+            owner_here(&asker(Some("#bare")), &cfg),
+            Some(OwnerHere::Unknown)
+        );
+
+        // Once the owner has spoken on this network, that name stands in
+        // where they are not present.
+        let spoke = SenderContext {
+            mask: Some("orla!~keeper@c.owner.example".into()),
+            network: Some(net.into()),
+            channel: Some("#flash".into()),
+            platform: Some("irc".into()),
+            ..Default::default()
+        };
+        note_owner_seen(&spoke, None);
+        assert_eq!(
+            owner_here(&asker(Some("#other")), &cfg),
+            Some(OwnerHere::LastSeen("orla".into()))
+        );
+        assert_eq!(
+            owner_note(&asker(Some("#other")), &cfg).as_deref(),
+            Some(
+                "the owner of this agent is not known to be here now; they last spoke on this \
+                 surface as orla"
+            )
+        );
+        // Present still wins where they are.
+        assert_eq!(
+            owner_here(&asker(Some("#flash")), &cfg),
+            Some(OwnerHere::Present(vec!["orla".into()]))
+        );
+
+        // A surface without a member list: the name the platform showed
+        // when the owner last spoke there, and nothing from another
+        // surface.
+        let tg = SenderContext {
+            platform: Some("tgtest".into()),
+            chat_id: Some("-100".into()),
+            handle: Some("somebody".into()),
+            ..Default::default()
+        };
+        assert_eq!(owner_here(&tg, &cfg), Some(OwnerHere::Unknown));
+        note_owner_seen(
+            &SenderContext {
+                platform: Some("tgtest".into()),
+                handle: Some("keeper_tg".into()),
+                ..Default::default()
+            },
+            Some("tgtest:4242"),
+        );
+        assert_eq!(
+            owner_here(&tg, &cfg),
+            Some(OwnerHere::LastSeen("keeper_tg".into()))
+        );
+        // No shown name at all: the id's own name part.
+        note_owner_seen(
+            &SenderContext {
+                platform: Some("idtest".into()),
+                ..Default::default()
+            },
+            Some("idtest:keeper"),
+        );
+        assert_eq!(
+            owner_here(
+                &SenderContext {
+                    platform: Some("idtest".into()),
+                    ..Default::default()
+                },
+                &cfg
+            ),
+            Some(OwnerHere::LastSeen("keeper".into()))
+        );
+
+        // Never seen on a surface: the name the configuration gives the
+        // owner as a person, said as such.
+        let named = cfg_from_yaml(
+            "default_role: guest\nusers:\n  - name: keeper\n    role: owner\n    identities: [\"tgtest:4242\"]\n  - name: bob\n    role: trusted\n    identities: [\"tgtest:7\"]\n",
+        );
+        let never = SenderContext {
+            platform: Some("nevertest".into()),
+            ..Default::default()
+        };
+        assert_eq!(
+            owner_here(&never, &named),
+            Some(OwnerHere::Configured(vec!["keeper".into()]))
+        );
+        assert_eq!(
+            owner_note(&never, &named).as_deref(),
+            Some(
+                "the owner of this agent is the configured user keeper; under which name they \
+                 appear on this surface is not known"
+            )
+        );
+
+        // The gateway's entry point notes a sender only when the ACL
+        // tells owners from everybody else, and only an owner.
+        let seen_on = |platform: &str| {
+            owner_here(
+                &SenderContext {
+                    platform: Some(platform.into()),
+                    ..Default::default()
+                },
+                &cfg,
+            )
+        };
+        let speaks = |platform: &str, handle: &str| SenderContext {
+            platform: Some(platform.into()),
+            handle: Some(handle.into()),
+            ..Default::default()
+        };
+        note_owner(
+            &Principal::owner(),
+            &speaks("guardtest", "anyone"),
+            None,
+            &AclConfig::default(),
+        );
+        note_owner(
+            &Principal::owner(),
+            &speaks("guardtest", "anyone"),
+            None,
+            &cfg_from_yaml("default_role: owner\nroles: {\"irc:nobody\": \"guest\"}"),
+        );
+        note_owner(
+            &Principal::known("guardtest:7", Role::Trusted),
+            &speaks("guardtest", "a_regular"),
+            None,
+            &cfg,
+        );
+        assert_eq!(seen_on("guardtest"), Some(OwnerHere::Unknown));
+        note_owner(
+            &Principal::owner(),
+            &speaks("guardtest", "the_owner"),
+            None,
+            &cfg,
+        );
+        assert_eq!(
+            seen_on("guardtest"),
+            Some(OwnerHere::LastSeen("the_owner".into()))
+        );
+
+        // A dormant ACL makes every sender the owner: there is nobody to
+        // point at. So does one whose unlisted senders are owners.
+        assert_eq!(
+            owner_here(&asker(Some("#flash")), &AclConfig::default()),
+            None
+        );
+        let open = cfg_from_yaml("default_role: owner\nroles: {\"irc:nobody\": \"guest\"}");
+        assert_eq!(
+            owner_here(&asker(Some("#flash")), &open),
+            Some(OwnerHere::Unknown)
+        );
+    }
+
+    /// The refusal of an owner-only tool sends the model to the turn's
+    /// origin row for who the owner is, instead of leaving it to pick a
+    /// name.
+    #[test]
+    fn an_owner_only_refusal_points_at_who_the_owner_is() {
+        let who = Principal::known("irc:a", Role::User);
+        for text in [
+            tool_denial("tcl_eval", &who),
+            unclassified_denial("some_new_tool", &who),
+        ] {
+            assert!(text.contains("is not the owner"), "{text}");
+            assert!(
+                text.contains("[origin] row") && text.contains("name nobody else"),
+                "{text}"
+            );
+        }
     }
 
     #[test]

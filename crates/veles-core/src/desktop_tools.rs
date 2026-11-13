@@ -271,7 +271,7 @@ impl Tool for TclEvalTool {
         "tcl_eval"
     }
     fn description(&self) -> &str {
-        "Evaluate Tcl in a live veles interpreter and return the result. target='gw' runs in the gateway's plugin interpreter (plugin procs, hooks, the veles:: bridge). target='app' runs in the veles-desktop window's OWN interpreter and MODIFIES THE RUNNING UI — redefining a proc takes effect at once, with no restart and no undo; it is refused unless the user has armed live patching in the Dev pane. Prefer editing the source file and re-sourcing it over one-off app evals, so the change survives a restart."
+        "Evaluate Tcl in a live veles interpreter and return the result (veles' own interpreters, owner only; the Tcl a channel's `tcl` commands run is tcl_state_eval). target='gw' runs in the gateway's plugin interpreter (plugin procs, hooks, the veles:: bridge). target='app' runs in the veles-desktop window's OWN interpreter and MODIFIES THE RUNNING UI — redefining a proc takes effect at once, with no restart and no undo; it is refused unless the user has armed live patching in the Dev pane. Prefer editing the source file and re-sourcing it over one-off app evals, so the change survives a restart."
     }
     fn schema(&self) -> Value {
         json!({

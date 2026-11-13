@@ -2469,6 +2469,13 @@ pub fn base_registry(
         }),
         Tier::Core,
     );
+    // CORE as well: the questions it answers ("how do you work", "where
+    // is your source") are asked by people in a channel, of a model that
+    // otherwise says it does not know or cannot see its internals, and
+    // a model that has to discover the tool first says exactly that
+    // (the owner, 2026-11-12). No session: the pages are the same for
+    // everyone.
+    r.register_tiered(Arc::new(crate::selfdocs::VelesDocsTool), Tier::Core);
     // The skill tools carry the session so they see the SAME library the
     // prompt index was built from. Without it an agent could still
     // `skill_view` something the user had switched off for this session,
@@ -3708,8 +3715,17 @@ mod tests {
         // the one sentence that splitting is the model's job. The long
         // guidance lives where it costs no schema bytes: the stable
         // prompt block (cached) and the deferred `nodes` description.
+        //
+        // 21,300 since 2026-11-12, for `veles_docs` (about 900 B: six
+        // one-line properties and a description cut to its trigger).
+        // The owner: "people keep asking and it always says it doesn't
+        // know, or it's sandboxed and doesn't have access to source".
+        // Same case as `whoami`: the question arrives in a channel, and a
+        // model that must first discover a tool answers "I don't know"
+        // instead. The index, the pages and the source are behind the
+        // call, not in the schema.
         assert!(
-            bytes < 20_300,
+            bytes < 21_300,
             "core schema array grew to {bytes} bytes — a core tool must stay cheap"
         );
         // Sanity: the discovery trio is always resident, whatever the
@@ -3721,6 +3737,31 @@ mod tests {
                 "{t} must be resident: {names:?}"
             );
         }
+    }
+
+    /// `veles_docs` is resident, open to a guest, and answers without a
+    /// session. People ask a bot in a channel how it works; a model that
+    /// had to discover the tool first, or was refused it, answered "I
+    /// don't know" (the owner, 2026-11-12).
+    #[tokio::test]
+    async fn the_agents_own_documentation_is_one_call_away_for_anyone() {
+        let (_home, _env) = crate::testenv::scratch_home();
+        let r = tiered_registry();
+        assert!(r.names().iter().any(|n| n == "veles_docs"));
+        assert!(
+            !r.deferred_names().iter().any(|n| n == "veles_docs"),
+            "core tier: nothing to discover first"
+        );
+        assert_eq!(
+            crate::acl::tool_cap("veles_docs"),
+            Some(crate::acl::Cap::Chat)
+        );
+        assert!(crate::acl::Principal::guest().has(crate::acl::Cap::Chat));
+        let out = r.dispatch("veles_docs", serde_json::json!({})).await;
+        assert!(
+            out.starts_with(&format!("veles {} — ", env!("CARGO_PKG_VERSION"))),
+            "{out}"
+        );
     }
 
     /// A deferred tool is NOT a removed tool: tool_call reaches it,

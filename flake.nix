@@ -82,6 +82,18 @@
             if builtins.pathExists ./SNAPSHOT_OF then pkgs.lib.fileContents ./SNAPSHOT_OF else "";
         };
 
+        # The pages the `veles_docs` tool carries: selfdocs.rs
+        # `include_str!`s the README, every top-level page of docs/ and
+        # this version's release notes, so the bot answers questions
+        # about itself from them. docs/issues is the owner's working
+        # notes (absent from the public tree) and stays out.
+        selfDocs = pkgs.lib.fileset.unions [
+          ./README.md
+          (pkgs.lib.fileset.difference
+            (pkgs.lib.fileset.fileFilter (f: f.hasExt "md") ./docs)
+            (pkgs.lib.fileset.maybeMissing ./docs/issues))
+        ];
+
         # Explicit source filter for anything built in the nix sandbox.
         #
         # `src = ./.` carries the whole working tree into /nix/store.
@@ -142,10 +154,15 @@
             ./docs/plugins.md
             # setup.rs pins the install guide to the shared referral registry.
             ./docs/install.md
+            # ... and since `veles_docs` every page (selfDocs, above).
+            selfDocs
             # veles-install `include_str!`s the reviewed WireGuard peer helper:
             # the pool-hub host component installs the same bytes the VPS
-            # runbook and scripts/test-wg-peers.sh pin.
-            ./deploy/vps/wg/veles-wg-peers.sh
+            # runbook and scripts/test-wg-peers.sh pin. The whole directory
+            # since the source snapshot (crates/veles-cli/build.rs packs
+            # the deployment files beside the crates' sources: they answer
+            # "what does this command talk to").
+            ./deploy
             # examples/plugins/failover-backoff: the module-host case
             # `failover-example` copies it into a scratch plugins dir and
             # loads it through the real JS host (PLAN-extension-api.md E2).
@@ -180,6 +197,8 @@
             # and the plugin author guide.
             ./docs/extending.md
             ./docs/plugins.md
+            # selfdocs.rs embeds every page (`veles_docs`).
+            selfDocs
             # tclrt.rs `include_str!`s it (sync_api_stub).
             ./plugins/veles_api.tcl
             # plugins.rs `include_str!`s the lang-js host's typed
@@ -702,7 +721,7 @@
         # both packages.default and the OCI image below can reference it.
         velesPkg = pkgs.rustPlatform.buildRustPackage rec {
           pname = "veles-agent";
-          version = "0.2.3";
+          version = "0.2.4";
           src = rustSrc;
           cargoLock = {
             lockFile = ./Cargo.lock;
@@ -1258,7 +1277,7 @@
         androidMinSdk = "26";
         # Raised by hand for each release a store sees; a sideloaded
         # reinstall of the same code keeps it.
-        androidVersionCode = "10";
+        androidVersionCode = "11";
         androidSdk =
           (androidHost.androidenv.composeAndroidPackages {
             platformVersions = [ androidTargetSdk ];
@@ -2480,7 +2499,7 @@
 
         # The image's tag names the commit it was built from, so the VPS
         # can say which one it runs.
-        imageTag = "0.2.3-${self.shortRev or self.dirtyShortRev or "dirty"}";
+        imageTag = "0.2.4-${self.shortRev or self.dirtyShortRev or "dirty"}";
         imageRevision = self.rev or self.dirtyRev or "dirty";
         # The release builder overrides only this label. Published images
         # must be rejected if their source does not name the authenticated
@@ -2962,7 +2981,7 @@
         #     bind-mount owner on the host.
         #   - Entrypoint is the wrapped `veles` binary; Cmd defaults to
         #     `gateway run` but any subcommand works:
-        #     `podman run --rm veles-agent:0.2.3 status` etc.
+        #     `podman run --rm veles-agent:0.2.4 status` etc.
         #   - No s6 / entrypoint.sh — veles' own lifecycle code (pid file,
         #     crash-loop guard, graceful SIGTERM, shutdown log) IS the init
         #     story; PID 1 is `veles` itself. `--restart unless-stopped` on

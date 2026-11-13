@@ -150,6 +150,11 @@ command sandbox works on this machine.
   fills by reference, never returns password or one-time-code values, and
   runs no arbitrary JavaScript and reads no cookies or storage. See
   [browser-extension/README.md](browser-extension/README.md).
+- **Knows itself**: the documentation and a snapshot of the source are
+  built into the binary, and the `veles_docs` tool reads them, for any
+  caller and without network or file access. Asked how it works, what a
+  command does or where something is implemented, the agent looks it up
+  instead of guessing.
 - **Undo**: every file edit is checkpointed before it lands.
 - **Approvals**: risky calls are screened and can be answered from any
   surface: terminal, desktop, Telegram or IRC.

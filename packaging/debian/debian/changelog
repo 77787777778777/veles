@@ -1,3 +1,13 @@
+veles-agent (0.2.4) unstable; urgency=medium
+
+  * The agent can read its own documentation and source: a new tool,
+    veles_docs, answers from pages and a source snapshot built into the
+    binary, for any caller and without network or file access.
+  * A turn is told who the owner is on the surface it came through, so a
+    refused owner-only request is sent to the right person.
+
+ -- veles-agent maintainers <noreply@example.invalid>  Fri, 13 Nov 2026 01:00:00 +0000
+
 veles-agent (0.2.3) unstable; urgency=medium
 
   * Errata release for 0.2.2: the fleet's deployment-consistency check

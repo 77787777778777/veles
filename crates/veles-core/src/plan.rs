@@ -2103,6 +2103,7 @@ mod tests {
             "session_export",
             "tool_search",
             "tool_describe",
+            "veles_docs",
             "browser_navigate",
             "browser_snapshot",
             "browser_scroll",

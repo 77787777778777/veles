@@ -410,6 +410,60 @@ fn context_header(network: &str, buffer: &str) -> Option<String> {
     Some(out.join("\n"))
 }
 
+/// The nicks on `network` whose hostmask an owner rule of `cfg`
+/// matches: in `channel`'s member list when one is given, else in any
+/// channel this node is in there (a private query). The bot's own nick
+/// is never one. A list without hostmasks (a server without
+/// `userhost-in-names`) names nobody: a mask rule cannot be held against
+/// a bare nick. For `acl::owner_here`.
+pub fn owner_nicks(
+    network: &str,
+    channel: Option<&str>,
+    cfg: &crate::acl::AclConfig,
+) -> Vec<String> {
+    let st = {
+        let Ok(m) = bus().states.lock() else {
+            return Vec::new();
+        };
+        m.get(&state_key(network, PRESENCE_BOT))
+            .cloned()
+            .or_else(|| m.values().find(|s| s.network == network).cloned())
+    };
+    let Some(st) = st else {
+        return Vec::new();
+    };
+    let mut nicks: Vec<String> = Vec::new();
+    for (chan, entries) in &st.rosters {
+        if channel.is_some_and(|want| !chan.eq_ignore_ascii_case(want)) {
+            continue;
+        }
+        for entry in entries {
+            let mask = entry.trim_start_matches(['~', '&', '@', '%', '+']);
+            let Some((nick, _)) = mask.split_once('!') else {
+                continue;
+            };
+            if nick.is_empty() || nick.eq_ignore_ascii_case(&st.nick) {
+                continue;
+            }
+            let ctx = crate::acl::SenderContext {
+                mask: Some(mask.to_string()),
+                network: Some(network.to_string()),
+                channel: Some(chan.clone()),
+                platform: Some("irc".to_string()),
+                chat_id: Some(chan.clone()),
+                ..Default::default()
+            };
+            let owner =
+                crate::acl::Principal::resolve_ctx(None, &ctx, cfg).role == crate::acl::Role::Owner;
+            if owner && !nicks.iter().any(|n| n.eq_ignore_ascii_case(nick)) {
+                nicks.push(nick.to_string());
+            }
+        }
+    }
+    nicks.sort();
+    nicks
+}
+
 /// The block the IRC adapter attaches to an addressed turn: the
 /// [`context_header`] followed by the buffer's rolling lines.
 ///

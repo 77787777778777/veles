@@ -172,6 +172,34 @@ or `[acl.extra_caps]`). A grantee's join is narrower than the owner's:
   grantee's join to that session (they are told); a grantee cannot join
   a session someone else has joined.
 
+### What a turn is told about the owner
+
+A caller who is not the owner sometimes needs the owner: an owner-only
+tool refuses and tells the model to send them there. So the origin line
+of such a turn says who the owner is on the surface the message came
+through:
+
+- on IRC, the nick in the channel (for a private query, anywhere on the
+  network this node is in) whose hostmask an owner rule matches:
+  `the owner of this agent is here as <nick>`;
+- else the name the owner last spoke under on that surface, on any
+  connector: `…is not known to be here now; they last spoke on this
+  surface as <name>`. This is kept in memory; after a restart it is
+  unknown until the owner speaks there;
+- else the name `[[acl.users]]` gives an owner as a person:
+  `…is the configured user <name>`;
+- else `who the owner of this agent is on this surface is not known:
+  name nobody as the owner`.
+
+The owner's own turns carry no such clause. With no `[acl]` at all, or
+with `default_role = "owner"` (or `[acl.strangers] <platform> = "owner"`),
+every sender is an owner and nothing is said. A member list without
+hostmasks (a server without `userhost-in-names`) cannot be held against
+a mask rule and names nobody.
+
+Anyone in the channel can learn from the bot which nick owns it. The
+hostmask rule itself is not shown.
+
 ## `[acl]` reference
 
 ```toml
