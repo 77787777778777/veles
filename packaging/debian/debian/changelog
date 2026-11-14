@@ -1,3 +1,16 @@
+veles-agent (0.2.6) unstable; urgency=medium
+
+  * The session store no longer waits for the disk while it holds its
+    locks. A write is answered once SQLite has it in the write-ahead log
+    and a worker syncs it straight after; before, every write waited for
+    its own sync, which stalled desktop sessions under load and ended
+    one-shot chats beside a gateway with "database is locked".
+    VELES_STORE_SYNC=full keeps the sync on every write.
+  * Nothing leaves a node for another node before it is on the disk.
+  * A turn's message waits for a busy store instead of being dropped.
+
+ -- veles-agent maintainers <noreply@example.invalid>  Sat, 14 Nov 2026 13:00:00 +0000
+
 veles-agent (0.2.5) unstable; urgency=medium
 
   * IRC: the owner is recognised as present when they joined the channel

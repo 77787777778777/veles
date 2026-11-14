@@ -794,7 +794,7 @@ fn spawn_interrupt_handler(rt: &tokio::runtime::Runtime, session_id: &str) {
             veles_core::agent::cancel_turn(&sid);
         }
         if tokio::signal::ctrl_c().await.is_ok() {
-            std::process::exit(130);
+            veles_core::durable::exit(130);
         }
     });
 }
@@ -1877,14 +1877,23 @@ pub fn doctor(
     }
     // Store check
     match Store::open(&home.join("state.db")) {
-        Ok(s) => match s.latest_session() {
-            Ok(Some(id)) => println!("  store: OK (latest session {id})"),
-            Ok(None) => println!("  store: OK (empty)"),
-            Err(e) => {
-                println!("  store: query failed ({e})");
-                failed.push("store");
+        Ok(s) => {
+            // Which of the two ways this process's commits reach the disk
+            // (`veles_core::durable`).
+            let sync = if s.is_relaxed() {
+                "commits are synced in the background"
+            } else {
+                "every commit is synced"
+            };
+            match s.latest_session() {
+                Ok(Some(id)) => println!("  store: OK (latest session {id}; {sync})"),
+                Ok(None) => println!("  store: OK (empty; {sync})"),
+                Err(e) => {
+                    println!("  store: query failed ({e})");
+                    failed.push("store");
+                }
             }
-        },
+        }
         Err(e) => {
             println!("  store: FAILED ({e})");
             failed.push("store");

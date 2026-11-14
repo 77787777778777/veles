@@ -2419,11 +2419,11 @@ fn session_mail_send_remote(node: &str, sid: &str, text: &str, wait: u64) -> any
         }
         "failed" => {
             eprintln!("the turn failed: {}", r.reply.unwrap_or_default());
-            std::process::exit(2);
+            veles_core::durable::exit(2);
         }
         state if wait > 0 && r.held => {
             eprintln!("no answer within {wait}s (the mail is {state}); veles session mail {id} shows it later");
-            std::process::exit(3);
+            veles_core::durable::exit(3);
         }
         _ => Ok(()),
     }
@@ -2502,14 +2502,14 @@ fn session_mail_send(to: &str, text: &str, wait: u64) -> anyhow::Result<()> {
         }
         Waited::Failed(e) => {
             eprintln!("the turn failed: {e}");
-            std::process::exit(2);
+            veles_core::durable::exit(2);
         }
         Waited::Pending(state) => {
             eprintln!(
                 "no answer within {wait}s (the mail is {state}); veles session mail {} shows it later",
                 sent.id
             );
-            std::process::exit(3);
+            veles_core::durable::exit(3);
         }
     }
 }
@@ -2885,7 +2885,7 @@ fn session_family(action: SessionAction) -> anyhow::Result<()> {
                 }
                 Err(e) => {
                     eprintln!("migration failed: {e:#}");
-                    std::process::exit(2);
+                    veles_core::durable::exit(2);
                 }
             }
         }
@@ -2897,7 +2897,7 @@ fn session_family(action: SessionAction) -> anyhow::Result<()> {
                 }
                 Err(e) => {
                     eprintln!("reclaim failed: {e:#}");
-                    std::process::exit(2);
+                    veles_core::durable::exit(2);
                 }
             }
         }
@@ -2932,7 +2932,7 @@ fn session_family(action: SessionAction) -> anyhow::Result<()> {
                                 owner = plan.owner_name,
                                 req = takeover::ticket_request(&me.id, &plan)?,
                             );
-                            std::process::exit(2);
+                            veles_core::durable::exit(2);
                         }
                     }
                 }
@@ -3500,7 +3500,7 @@ fn configsync_family(action: ConfigsyncAction) -> anyhow::Result<()> {
             if conflicted {
                 // std::process::exit bypasses destructors, but this is
                 // the command's last act.
-                std::process::exit(2);
+                veles_core::durable::exit(2);
             }
             Ok(())
         }
@@ -4502,6 +4502,14 @@ fn main() -> anyhow::Result<()> {
     // A bad name must not fall back to the default's config/state. Do
     // this before tracing, .env loading, provider resolution or the store.
     veles_core::profiles::validate_startup()?;
+    // The session store answers a commit when SQLite has it in the
+    // write-ahead log and syncs it to the disk in the background
+    // (`veles_core::durable`); `VELES_STORE_SYNC=full` keeps the fsync on
+    // every commit. Before any store is opened. The guard waits, on every
+    // way out of `main` that unwinds, for what this command wrote; the
+    // ways out that do not unwind go through `durable::exit`.
+    veles_core::durable::enable();
+    let _flush_store = veles_core::durable::FlushOnExit;
     // ONE tracing init for the process, chosen by the surface about to
     // run. Two call sites used to install a global subscriber under
     // different conditions, so `veles chat -q "hi"` (no -Q) panicked on
@@ -5236,7 +5244,7 @@ fn main() -> anyhow::Result<()> {
                     if conflicted {
                         // std::process::exit bypasses destructors, but
                         // this is the command's last act.
-                        std::process::exit(2);
+                        veles_core::durable::exit(2);
                     }
                     Ok(())
                 }

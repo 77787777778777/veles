@@ -223,12 +223,12 @@ pub fn run_gateway() -> anyhow::Result<()> {
     // A restart the command center asked for (veles_core::supervisor):
     // exit with the code every supervisor veles runs under restarts on.
     if result.is_ok() && veles_core::supervisor::restart_requested() {
-        std::process::exit(veles_core::supervisor::RESTART_EXIT_CODE);
+        veles_core::durable::exit(veles_core::supervisor::RESTART_EXIT_CODE);
     }
     // A stop on idle has its own status, so the phone's supervisor
     // (GatewayService) leaves it stopped instead of restarting it.
     if result.is_ok() && veles_core::idle::exited() {
-        std::process::exit(veles_core::idle::EXIT_CODE);
+        veles_core::durable::exit(veles_core::idle::EXIT_CODE);
     }
     result
 }
@@ -721,7 +721,7 @@ pub fn run_gui() -> anyhow::Result<()> {
         let status = cmd
             .status()
             .map_err(|e| anyhow::anyhow!("could not start {wish}: {e}"))?;
-        std::process::exit(status.code().unwrap_or(1));
+        veles_core::durable::exit(status.code().unwrap_or(1));
     }
 }
 

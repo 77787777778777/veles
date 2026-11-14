@@ -690,6 +690,13 @@ impl Default for A2AClient {
     }
 }
 
+/// How long a request waits for the store to be synced before it is given
+/// up unsent. Every request this client sends waits for
+/// `crate::durable::barrier_async` first: what a peer is told must be on
+/// this node's disk before the peer hears it. In a process without a sync
+/// worker the wait is nothing.
+const SYNC_PATIENCE: Duration = Duration::from_secs(120);
+
 impl A2AClient {
     pub fn new() -> Self {
         Self {
@@ -789,6 +796,7 @@ impl A2AClient {
         if let Some(tok) = bearer {
             req = req.header("Authorization", format!("Bearer {tok}"));
         }
+        crate::durable::barrier_within(SYNC_PATIENCE).await?;
         let resp = req.send().await?;
         let status = resp.status();
         // A non-JSON-RPC answer (a proxy's error page, a body-limit 413)
@@ -862,6 +870,7 @@ impl A2AClient {
         if let Some(tok) = bearer {
             req = req.header("Authorization", format!("Bearer {tok}"));
         }
+        crate::durable::barrier_within(SYNC_PATIENCE).await?;
         let resp = req.send().await?;
         let status = resp.status();
         let raw = resp.text().await?;
@@ -917,6 +926,7 @@ impl A2AClient {
         if let Some(tok) = bearer {
             req = req.header("Authorization", format!("Bearer {tok}"));
         }
+        crate::durable::barrier_within(SYNC_PATIENCE).await?;
         let resp = req.send().await?;
         let body: Value = resp.json().await?;
         if let Some(err) = body.get("error") {
@@ -961,6 +971,112 @@ pub fn summarize_result(result: &Value) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    // ── nothing leaves the node before it is on the disk ─────────────
+
+    type Seen = std::sync::Arc<std::sync::Mutex<Vec<&'static str>>>;
+
+    /// A peer that answers every JSON-RPC request with a finished task,
+    /// and notes each request in `seen` as it arrives.
+    async fn peer(seen: Seen) -> String {
+        use tokio::io::{AsyncReadExt, AsyncWriteExt};
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let url = format!("http://{}", listener.local_addr().unwrap());
+        crate::rt::spawn(async move {
+            loop {
+                let Ok((mut sock, _)) = listener.accept().await else {
+                    return;
+                };
+                let seen = seen.clone();
+                crate::rt::spawn(async move {
+                    let mut buf = Vec::new();
+                    let mut chunk = [0u8; 4096];
+                    loop {
+                        let Ok(n) = sock.read(&mut chunk).await else {
+                            return;
+                        };
+                        if n == 0 {
+                            return;
+                        }
+                        buf.extend_from_slice(&chunk[..n]);
+                        let text = String::from_utf8_lossy(&buf).to_string();
+                        let Some(head_end) = text.find("\r\n\r\n") else {
+                            continue;
+                        };
+                        let want: usize = text[..head_end]
+                            .lines()
+                            .find_map(|l| {
+                                let (k, v) = l.split_once(':')?;
+                                k.eq_ignore_ascii_case("content-length")
+                                    .then(|| v.trim().parse().ok())?
+                            })
+                            .unwrap_or(0);
+                        if buf.len() >= head_end + 4 + want {
+                            break;
+                        }
+                    }
+                    seen.lock().unwrap().push("request");
+                    let body = r#"{"jsonrpc":"2.0","id":"1","result":{"task":{"id":"t","status":{"state":"TASK_STATE_COMPLETED"}}}}"#;
+                    let reply = format!(
+                        "HTTP/1.1 200 OK\r\ncontent-type: application/json\r\ncontent-length: {}\r\nconnection: close\r\n\r\n{body}",
+                        body.len()
+                    );
+                    let _ = sock.write_all(reply.as_bytes()).await;
+                });
+            }
+        });
+        url
+    }
+
+    /// A row a peer has applied must be one this node still has after a
+    /// crash, or the peer's cursor is ahead of a log that hands the same
+    /// numbers out again. So every request to another node waits for the
+    /// store to be synced first: all three ways out of this client. The
+    /// store's sync is held here, and while it is held the peer must not
+    /// have heard anything.
+    #[tokio::test]
+    async fn a_request_to_a_peer_does_not_leave_before_the_store_is_synced() {
+        let seen: Seen = Default::default();
+        let url = peer(seen.clone()).await;
+        let (disk, release) = crate::durable::testing::Counting::gated();
+        let dir = tempfile::tempdir().unwrap();
+        let d = disk.clone();
+        let _worker = crate::durable::attach_with(
+            &dir.path().join("state.db"),
+            move || Box::new(d),
+            crate::durable::testing::fast(),
+        )
+        .unwrap();
+        // Rebound after the worker, so dropped before it.
+        let release = release;
+
+        for way in ["call", "rpc", "cancel_task"] {
+            seen.lock().unwrap().clear();
+            let before = disk.syncs();
+            let (url, client) = (url.clone(), A2AClient::new());
+            let sending = crate::rt::spawn(async move {
+                match way {
+                    "call" => client.call(&url, None, "hello", "ctx").await.map(|_| ()),
+                    "rpc" => client
+                        .rpc(&url, None, "veles/fleet", json!({}))
+                        .await
+                        .map(|_| ()),
+                    _ => client.cancel_task(&url, None, "t").await.map(|_| ()),
+                }
+            });
+            tokio::time::sleep(Duration::from_millis(200)).await;
+            assert!(disk.syncs() > before, "{way}: no sync was asked for");
+            assert!(
+                seen.lock().unwrap().is_empty(),
+                "{way}: the request left while the sync was still running"
+            );
+            release.send(()).unwrap();
+            sending.await.unwrap().unwrap();
+            assert_eq!(*seen.lock().unwrap(), ["request"], "{way}");
+        }
+        // The gate goes before the worker's last holder.
+        drop(release);
+    }
 
     fn caps(os: &str, tools: &[&str], gpu: bool) -> crate::node::NodeCaps {
         crate::node::NodeCaps {

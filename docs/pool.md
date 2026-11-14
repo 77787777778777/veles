@@ -434,6 +434,33 @@ node whose only link is through another. Without the setting, sync is
 by hand: `veles memory push <peer>`, then `veles memory apply --inbox`
 there.
 
+## What a node tells the others is on its disk first
+
+Since 0.2.6 a node answers a write to its session store before the write
+is synced to the disk, and syncs it in the background (`docs/install.md`,
+"When a write to `state.db` reaches the disk"). Between nodes that would
+be dangerous without one rule. A peer that has applied row 900 of this
+node's store log must never see this node come back from a power cut at
+row 880 and hand out 881 again: the peer's copy would then hold rows this
+node never wrote, under numbers it will write differently.
+
+So nothing leaves the node before it is on the disk. Before a request
+goes to another node (gossip, the store and memory pushes, config sync, a
+placed child, a lease), and before another node's request is answered,
+the node waits until everything written to its store so far is synced.
+The wait holds no lock, so it delays that one message and nothing else,
+and when nothing was written since the last sync it is no wait at all. A
+request that cannot be synced within two minutes is not sent.
+
+If a sync fails, the node stops talking: requests are not sent, peers are
+answered with an error instead of a result, and this stays so until the
+node is restarted. After a failed sync the operating system may have
+dropped what it could not write, and a later sync that succeeds says
+nothing about that.
+
+The rule holds on a node that keeps the sync on every write
+(`VELES_STORE_SYNC=full`) too.
+
 ## The owner's questions follow you to Telegram
 
 `[notify] ask_relay` sends an approval, a clarify or a failover question

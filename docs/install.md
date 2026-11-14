@@ -94,6 +94,42 @@ will — the OCI image sets `VELES_HOME=/opt/data` against a bind-mounted
 volume, and every test fixture points it at a tempdir. Both want exactly
 one directory.
 
+### When a write to `state.db` reaches the disk
+
+`state.db` is an SQLite database with a write-ahead log (`state.db-wal`).
+Since 0.2.6 a write is answered as soon as SQLite has it in that log, and a
+worker thread syncs the log to the disk straight after, several writes to
+one sync. Before, every single write waited for its own sync while it held
+the store's locks. On a disk where a sync takes a tenth of a second, and
+seconds when the disk is busy, that was what stalled desktop sessions under
+load and what ended a `veles chat -q` beside a busy gateway with
+"database is locked".
+
+What this means for you:
+
+- If veles crashes, is killed or is restarted, nothing is lost: the
+  operating system has the log.
+- If the machine loses power or is reset, the writes of its last moments
+  can be missing afterwards: usually well under a second, more if the disk
+  was saturated when it happened. The database itself is never left
+  inconsistent. SQLite replays the log up to its last whole write.
+- Nothing leaves the node before it is on the disk. Before a request goes
+  to another node of the pool, and before another node is answered, veles
+  waits until everything written so far is synced. So a peer never holds a
+  row that this node could lose.
+- A sync that fails is not forgotten: the node then sends nothing more to
+  its peers until it is restarted, and the log says so ("the write-ahead
+  log did not sync"). Look at the disk before restarting it.
+- A command ends only after what it wrote has been synced.
+
+`veles doctor` says which way the store is running: "commits are synced in
+the background" or "every commit is synced". To keep the sync on every
+write, set `VELES_STORE_SYNC=full` in the node's `.env` (or in the
+environment) and restart the gateway. The node still syncs before anything
+leaves it: a command started from a shell without the setting may have
+written to the same store. Memory (`veles memory`) keeps its own sync on
+every write either way.
+
 ## First run: the setup wizard
 
 A fresh install has no `config.toml`. Two wizards write the first one,

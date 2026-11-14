@@ -178,7 +178,75 @@ pub struct CallTokens {
 }
 
 pub struct Store {
+    /// SQLite's WAL hook, when this store's commits are answered before
+    /// they are synced (`crate::durable`). Declared first: it is taken off
+    /// while the connection is still open.
+    hook: Option<WalHook>,
+    /// This store's hold on the process's sync worker for its file, in a
+    /// process that has one. Declared before `conn`: the last hold waits
+    /// for the worker to stop, so the worker has let go of the log by the
+    /// time the connection closes and SQLite may remove it.
+    worker: Option<crate::durable::Syncer>,
     conn: Connection,
+}
+
+/// A WAL hook registered on a store's connection, and the reference to
+/// the worker's state it was given.
+struct WalHook {
+    db: *mut rusqlite::ffi::sqlite3,
+    arg: *const crate::durable::Inner,
+}
+
+// The raw pointers are the connection's own handle, which moves with the
+// store, and a counted reference to the worker's state, which is Sync.
+unsafe impl Send for WalHook {}
+
+impl Drop for WalHook {
+    fn drop(&mut self) {
+        // SAFETY: `db` is the handle of the connection declared after
+        // this field, so it is still open; the hook is taken off before
+        // the reference it was given is released.
+        unsafe {
+            rusqlite::ffi::sqlite3_wal_hook(self.db, None, std::ptr::null_mut());
+            drop(std::sync::Arc::from_raw(self.arg));
+        }
+    }
+}
+
+/// SQLite calls this after each commit in WAL mode, with the write lock
+/// already released, on the committer's thread. It tells the worker and
+/// returns. It folds the log itself only when the log is far longer than
+/// the worker lets it get, as SQLite's own automatic checkpoint (which a
+/// WAL hook replaces) would have done long before.
+unsafe extern "C" fn wal_hook(
+    arg: *mut std::os::raw::c_void,
+    db: *mut rusqlite::ffi::sqlite3,
+    name: *const std::os::raw::c_char,
+    frames: std::os::raw::c_int,
+) -> std::os::raw::c_int {
+    let frames = u32::try_from(frames).unwrap_or(0);
+    let hard = std::panic::catch_unwind(|| {
+        // SAFETY: `arg` is the reference `Store::relax` leaked for this
+        // hook, released only after the hook is taken off (`WalHook`).
+        let inner = unsafe { &*(arg as *const crate::durable::Inner) };
+        inner.note_commit(frames);
+        inner.hard_frames()
+    });
+    if let Ok(hard) = hard {
+        if frames >= hard {
+            // SAFETY: the connection and database name SQLite passed in.
+            unsafe {
+                rusqlite::ffi::sqlite3_wal_checkpoint_v2(
+                    db,
+                    name,
+                    rusqlite::ffi::SQLITE_CHECKPOINT_PASSIVE,
+                    std::ptr::null_mut(),
+                    std::ptr::null_mut(),
+                );
+            }
+        }
+    }
+    rusqlite::ffi::SQLITE_OK
 }
 
 /// One persisted engine note, as it comes back out of the store.
@@ -680,6 +748,27 @@ fn add_column_if_missing(conn: &Connection, table: &str, column: &str, ddl: &str
     }
 }
 
+/// How long a statement on the store waits for another writer: what
+/// rusqlite sets on every connection it opens, and what memory's own
+/// connection to the same file sets by hand.
+pub const BUSY_WAIT: std::time::Duration = std::time::Duration::from_secs(5);
+
+/// Whether `e` is SQLite saying another connection holds the lock it
+/// needs (`SQLITE_BUSY`, `SQLITE_LOCKED`): the one store error that is
+/// over when the other writer is.
+pub fn is_locked(e: &anyhow::Error) -> bool {
+    e.chain().any(|c| {
+        matches!(
+            c.downcast_ref::<rusqlite::Error>(),
+            Some(rusqlite::Error::SqliteFailure(f, _))
+                if matches!(
+                    f.code,
+                    rusqlite::ErrorCode::DatabaseBusy | rusqlite::ErrorCode::DatabaseLocked
+                )
+        )
+    })
+}
+
 /// How long a store-lock wait or hold must last before it is logged.
 const LOCK_WARN: std::time::Duration = std::time::Duration::from_millis(100);
 
@@ -857,7 +946,11 @@ impl Store {
                 "CREATE TEMP VIEW messages AS SELECT *, 0 AS archived FROM main.messages;",
             )?;
         }
-        Ok(Self { conn })
+        Ok(Self {
+            hook: None,
+            worker: None,
+            conn,
+        })
     }
 
     /// A read-only connection to a store this process already has open
@@ -870,7 +963,11 @@ impl Store {
         )
         .map_err(|e| anyhow::anyhow!("open {} read-only: {e}", path.display()))?;
         conn.busy_timeout(std::time::Duration::from_secs(5))?;
-        Ok(Self { conn })
+        Ok(Self {
+            hook: None,
+            worker: None,
+            conn,
+        })
     }
 
     pub fn open(path: &Path) -> Result<Self> {
@@ -888,7 +985,16 @@ impl Store {
         loop {
             attempt += 1;
             match Self::open_once(path) {
-                Ok(s) => return Ok(s),
+                Ok(mut s) => {
+                    if let Some(worker) = crate::durable::attach(path) {
+                        if crate::durable::relaxes() {
+                            s.relax(worker);
+                        } else {
+                            s.hold(worker);
+                        }
+                    }
+                    return Ok(s);
+                }
                 Err(e) => {
                     let locked = e.to_string().contains("database is locked");
                     if locked && attempt < 12 {
@@ -1954,11 +2060,74 @@ impl Store {
             }
         }
 
-        Ok(Self { conn })
+        Ok(Self {
+            hook: None,
+            worker: None,
+            conn,
+        })
     }
 
     pub fn conn(&self) -> &Connection {
         &self.conn
+    }
+
+    /// Answer this store's commits before they are synced, and leave the
+    /// sync and the checkpoint to `worker` (`crate::durable`). A commit
+    /// then holds SQLite's write lock, and whatever lock the caller
+    /// holds, for as long as it takes to write the frames and no longer.
+    ///
+    /// A store that is not in WAL mode, or whose setting cannot be
+    /// changed, stays as it was (every commit synced) and only holds the
+    /// worker, as [`Store::hold`] does.
+    pub fn relax(&mut self, worker: crate::durable::Syncer) {
+        if self.hook.is_some() {
+            return;
+        }
+        let wal = self
+            .conn
+            .query_row("PRAGMA journal_mode", [], |r| r.get::<_, String>(0))
+            .is_ok_and(|m| m.eq_ignore_ascii_case("wal"));
+        // The log is folded at 32 MB instead of SQLite's 4, so cap what a
+        // burst may leave behind in the file: 64 MB, cut back when the
+        // log next restarts.
+        let set = wal
+            && self
+                .conn
+                .execute_batch("PRAGMA synchronous = NORMAL; PRAGMA journal_size_limit = 67108864;")
+                .is_ok();
+        if !set {
+            tracing::warn!("store: commits stay synced one by one (WAL mode: {wal})");
+            self.hold(worker);
+            return;
+        }
+        let arg = std::sync::Arc::into_raw(worker.inner().clone());
+        // SAFETY: the handle is this connection's; the hook's argument
+        // stays alive until `WalHook::drop` has taken the hook off.
+        let db = unsafe {
+            let db = self.conn.handle();
+            rusqlite::ffi::sqlite3_wal_hook(db, Some(wal_hook), arg as *mut _);
+            db
+        };
+        self.hook = Some(WalHook { db, arg });
+        self.worker = Some(worker);
+    }
+
+    /// Hold the process's sync worker for this store's file without
+    /// changing how the store commits. A process that keeps the fsync on
+    /// every commit still has to sync before something leaves the node:
+    /// another process may have committed to the same file without one.
+    pub fn hold(&mut self, worker: crate::durable::Syncer) {
+        self.worker = Some(worker);
+    }
+
+    /// Whether commits are answered before they are synced.
+    pub fn is_relaxed(&self) -> bool {
+        self.hook.is_some()
+    }
+
+    /// This store's sync worker, when it has one.
+    pub fn sync_worker(&self) -> Option<&crate::durable::Syncer> {
+        self.worker.as_ref()
     }
     // ── cluster node registry (B1) ──────────────────────────────────
 
@@ -3021,7 +3190,21 @@ impl Store {
     /// actually read. A caller that keeps the message in memory should
     /// stamp this id onto it (`Agent::persist_stamped`) — otherwise a
     /// message appended mid-turn is unprunable until the next reload.
+    ///
+    /// The row and the session's timestamp go in as ONE transaction, or
+    /// neither does. They were two statements, each its own commit: a
+    /// lock error on the second left the row in and reported failure, and
+    /// `Agent::persist`, which asks again after a lock error, would then
+    /// have put the same message in twice (review of 0.2.6, 2026-11-14).
+    /// Taking the write lock first also means a lock error says nothing
+    /// was written. Inside a caller's transaction the caller's commit
+    /// decides.
     pub fn append_message(&self, session_id: &str, msg: &ChatMessage) -> Result<i64> {
+        let own = if self.conn.is_autocommit() {
+            Some(self.write_tx()?)
+        } else {
+            None
+        };
         let tool_calls = msg.tool_calls.as_ref().map(|v| v.to_string());
         self.conn.execute(
             "INSERT INTO messages
@@ -3040,7 +3223,26 @@ impl Store {
         )?;
         let id = self.conn.last_insert_rowid();
         self.touch_session(session_id)?;
+        if let Some(tx) = own {
+            tx.commit()?;
+        }
         Ok(id)
+    }
+
+    /// [`Store::append_message`], waiting at most `wait` for another
+    /// writer instead of SQLite's usual five seconds. For a caller that
+    /// holds the process's store mutex and will ask again: the mutex is
+    /// held for `wait`, not for five seconds, per try.
+    pub fn append_message_within(
+        &self,
+        session_id: &str,
+        msg: &ChatMessage,
+        wait: std::time::Duration,
+    ) -> Result<i64> {
+        let _ = self.conn.busy_timeout(wait);
+        let out = self.append_message(session_id, msg);
+        let _ = self.conn.busy_timeout(BUSY_WAIT);
+        out
     }
 
     /// Import path: does this session already exist (idempotence guard)?
@@ -7595,6 +7797,182 @@ mod tests {
         let dir = tempfile::tempdir().expect("tempdir");
         let store = Store::open(&dir.path().join("state.db")).expect("open store");
         (dir, store)
+    }
+
+    // ── async durability (crate::durable) ────────────────────────────
+
+    fn sync_mode(store: &Store) -> i64 {
+        store
+            .conn
+            .query_row("PRAGMA synchronous", [], |r| r.get(0))
+            .unwrap()
+    }
+
+    /// The default is what it always was: every commit synced, no worker.
+    /// Async durability is something a process turns on (`veles` does).
+    #[test]
+    fn a_store_keeps_the_sync_on_every_commit_unless_the_process_asked() {
+        let (_d, store) = scratch();
+        assert!(!store.is_relaxed());
+        assert_eq!(sync_mode(&store), 2, "FULL");
+    }
+
+    #[test]
+    fn a_relaxed_store_does_not_sync_its_commits_and_tells_the_worker_of_each() {
+        use crate::durable::testing::{eventually, fast, Counting};
+        let (_d, mut store) = scratch();
+        let disk = Counting::default();
+        let worker = crate::durable::Syncer::spawn(Box::new(disk.clone()), fast()).unwrap();
+        store.relax(worker.clone());
+        assert!(store.is_relaxed());
+        assert_eq!(sync_mode(&store), 1, "NORMAL: the commit does not fsync");
+        assert_eq!(worker.passes(), 0, "nothing committed yet");
+
+        store.create_session("s1").unwrap();
+        eventually("the worker syncs the commit", || worker.passes() >= 1);
+        let after_one = disk.syncs();
+        store
+            .append_message("s1", &ChatMessage::user("hello"))
+            .unwrap();
+        eventually("and the next one", || disk.syncs() > after_one);
+    }
+
+    /// A WAL hook replaces SQLite's automatic checkpoint. If the worker
+    /// does not fold the log (here its disk never does), the hook does it
+    /// in place once the log is far too long, so the log cannot grow
+    /// without bound.
+    #[test]
+    fn the_hook_folds_a_log_the_worker_let_grow() {
+        use crate::durable::testing::{fast, Counting};
+        let (_d, mut store) = scratch();
+        let disk = Counting::default();
+        let opts = crate::durable::Options {
+            checkpoint_frames: u32::MAX,
+            hard_frames: 40,
+            ..fast()
+        };
+        let worker = crate::durable::Syncer::spawn(Box::new(disk.clone()), opts).unwrap();
+        store.relax(worker);
+        store.create_session("s1").unwrap();
+        for i in 0..300 {
+            store
+                .append_message("s1", &ChatMessage::user(&format!("line {i}")))
+                .unwrap();
+        }
+        assert_eq!(disk.folds(), 0, "the worker was never asked to fold");
+        let log: i64 = store
+            .conn
+            .query_row("PRAGMA wal_checkpoint(PASSIVE)", [], |r| r.get(1))
+            .unwrap();
+        assert!(
+            log <= 80,
+            "300 commits left a log of {log} frames: the hook did not fold it"
+        );
+    }
+
+    #[test]
+    fn closing_a_relaxed_store_takes_the_hook_off_and_lets_the_worker_go() {
+        use crate::durable::testing::{eventually, fast, Counting};
+        let (_d, mut store) = scratch();
+        let disk = Counting::default();
+        let worker = crate::durable::Syncer::spawn(Box::new(disk.clone()), fast()).unwrap();
+        let state = worker.inner().clone();
+        store.relax(worker);
+        store.create_session("s1").unwrap();
+        assert!(!state.has_exited());
+        drop(store);
+        eventually("the worker stops with its last store", || {
+            state.has_exited()
+        });
+        assert!(disk.syncs() >= 1, "it synced before it stopped");
+    }
+
+    /// A process that keeps the fsync on every commit still holds a
+    /// worker for its store's file: its barrier has to sync what another
+    /// process committed there without one.
+    #[test]
+    fn a_store_can_hold_the_worker_and_keep_its_own_sync() {
+        use crate::durable::testing::{fast, Counting};
+        let (_d, mut store) = scratch();
+        let worker = crate::durable::Syncer::spawn(Box::new(Counting::default()), fast()).unwrap();
+        store.hold(worker);
+        assert!(!store.is_relaxed());
+        assert!(store.sync_worker().is_some());
+        assert_eq!(sync_mode(&store), 2, "FULL");
+    }
+
+    /// Without a write-ahead log there is no WAL hook to hear of commits
+    /// and `synchronous = NORMAL` means something else: such a store is
+    /// left as it is.
+    #[test]
+    fn a_store_that_is_not_in_wal_mode_is_not_relaxed() {
+        use crate::durable::testing::{fast, Counting};
+        let (_d, mut store) = scratch();
+        let mode: String = store
+            .conn
+            .query_row("PRAGMA journal_mode = DELETE", [], |r| r.get(0))
+            .unwrap();
+        assert_eq!(mode, "delete");
+        let worker = crate::durable::Syncer::spawn(Box::new(Counting::default()), fast()).unwrap();
+        store.relax(worker);
+        assert!(!store.is_relaxed());
+        assert!(store.sync_worker().is_some(), "it still holds the worker");
+        assert_eq!(sync_mode(&store), 2, "FULL");
+    }
+
+    /// An append is the row and the session's timestamp, or nothing. A
+    /// caller that asks again after an error (`Agent::persist`, after a
+    /// lock error) must not find the row already there. The failure
+    /// between the two statements is made here by taking the second
+    /// one's table away.
+    #[test]
+    fn a_message_that_could_not_be_appended_whole_is_not_there_at_all() {
+        let (_d, store) = scratch();
+        store.create_session("s1").unwrap();
+        let count = |store: &Store| -> i64 {
+            store
+                .conn
+                .query_row(
+                    "SELECT COUNT(*) FROM messages WHERE content = 'once'",
+                    [],
+                    |r| r.get(0),
+                )
+                .unwrap()
+        };
+        store
+            .conn
+            .execute_batch("ALTER TABLE sessions RENAME TO sessions_away;")
+            .unwrap();
+        assert!(store
+            .append_message("s1", &ChatMessage::user("once"))
+            .is_err());
+        store
+            .conn
+            .execute_batch("ALTER TABLE sessions_away RENAME TO sessions;")
+            .unwrap();
+        assert_eq!(count(&store), 0, "half an append stayed in the store");
+        store
+            .append_message("s1", &ChatMessage::user("once"))
+            .unwrap();
+        assert_eq!(count(&store), 1);
+    }
+
+    #[test]
+    fn an_append_with_a_short_wait_puts_the_usual_wait_back() {
+        let (_d, store) = scratch();
+        store.create_session("s1").unwrap();
+        store
+            .append_message_within(
+                "s1",
+                &ChatMessage::user("quick"),
+                std::time::Duration::from_millis(250),
+            )
+            .unwrap();
+        let ms: i64 = store
+            .conn
+            .query_row("PRAGMA busy_timeout", [], |r| r.get(0))
+            .unwrap();
+        assert_eq!(ms, 5000);
     }
 
     /// The cluster registry round-trips: a node registers, lists,

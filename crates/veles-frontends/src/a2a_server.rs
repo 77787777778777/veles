@@ -2060,12 +2060,42 @@ fn peer_principal(peer: &str) -> veles_core::acl::Principal {
     )
 }
 
+/// One JSON-RPC request from a peer.
+///
+/// What this node tells a peer it has done (a gossip row merged, a lease
+/// granted, a session adopted, a chunk of its log applied) the peer acts
+/// on. With async durability the handler's commits are answered before
+/// they reach the disk, so a reply that a handler made waits for a sync
+/// that began after the handler finished (`veles_core::durable::barrier`).
+/// The wait holds no lock. A request turned away at the door (no token,
+/// rate limit, not trusted) changed nothing and is answered at once: it
+/// must not be able to make this node sync.
 async fn rpc(
     State(srv): State<Arc<A2AServer>>,
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
     headers: HeaderMap,
     Json(body): Json<Value>,
 ) -> (StatusCode, Json<Value>) {
+    match answer(srv, addr, &headers, &body).await {
+        Err(turned_away) => turned_away,
+        Ok(reply) => reply_if_synced(
+            &body["id"],
+            reply,
+            veles_core::durable::barrier_async().await,
+        ),
+    }
+}
+
+type Reply = (StatusCode, Json<Value>);
+
+/// The reply to a request: `Err` when it was turned away before any
+/// handler ran, `Ok` when a handler made it.
+async fn answer(
+    srv: Arc<A2AServer>,
+    addr: SocketAddr,
+    headers: &HeaderMap,
+    body: &Value,
+) -> std::result::Result<Reply, Reply> {
     let client_ip = addr.ip().to_string();
     let auth = headers
         .get("authorization")
@@ -2078,50 +2108,72 @@ async fn rpc(
         // invite's own until this call registers it (veles_core::pool).
         if let Some(invited) = veles_core::pool::invite_bearer(auth.as_deref()) {
             if !srv.rate.allow(&format!("invite:{invited}")) {
-                return (
+                return Err((
                     StatusCode::TOO_MANY_REQUESTS,
                     Json(jsonrpc_error(
                         &body["id"],
                         ERR_RATE_LIMITED,
                         "rate limit exceeded",
                     )),
-                );
+                ));
             }
-            return srv
-                .pool_join_rpc(&invited, auth.as_deref().unwrap_or(""), &body)
-                .await;
+            return Ok(srv
+                .pool_join_rpc(&invited, auth.as_deref().unwrap_or(""), body)
+                .await);
         }
-        return (
+        return Err((
             StatusCode::UNAUTHORIZED,
             Json(jsonrpc_error(
                 &body["id"],
                 veles_core::a2a::ERR_UNAUTHORIZED,
                 "unauthorized",
             )),
-        );
+        ));
     };
     if !srv.rate.allow(&identity) {
-        return (
+        return Err((
             StatusCode::TOO_MANY_REQUESTS,
             Json(jsonrpc_error(
                 &body["id"],
                 ERR_RATE_LIMITED,
                 "rate limit exceeded",
             )),
-        );
+        ));
     }
     if !is_trusted_peer(&identity) {
-        return (
+        return Err((
             StatusCode::FORBIDDEN,
             Json(jsonrpc_error(
                 &body["id"],
                 ERR_UNTRUSTED,
                 "peer not in trusted list",
             )),
-        );
+        ));
     }
 
-    dispatch_method(srv, &identity, &client_ip, &body).await
+    Ok(dispatch_method(srv, &identity, &client_ip, body).await)
+}
+
+/// JSON-RPC's "internal error".
+const ERR_INTERNAL: i32 = -32603;
+
+/// The reply, or, when the store could not be synced, an error in its
+/// place: a node that cannot vouch for what it did does not say it did it.
+fn reply_if_synced(
+    id: &Value,
+    reply: (StatusCode, Json<Value>),
+    synced: Result<()>,
+) -> (StatusCode, Json<Value>) {
+    match synced {
+        Ok(()) => reply,
+        Err(e) => {
+            tracing::warn!("a2a: not answering a peer: {e:#}");
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(jsonrpc_error(id, ERR_INTERNAL, &format!("{e:#}"))),
+            )
+        }
+    }
 }
 
 /// The JSON-RPC method table, after authentication.
@@ -2132,7 +2184,7 @@ async fn rpc(
 /// socket. `tasks/cancel` was cosmetic for months partly because
 /// nothing could reach it cheaply enough to assert on.
 ///
-/// The auth, rate-limit and trusted-peer gates stay in `rpc`, ABOVE this
+/// The auth, rate-limit and trusted-peer gates stay in `answer`, ABOVE this
 /// — a test calling this directly is testing the method, not bypassing a
 /// gate that protects it.
 async fn dispatch_method(
@@ -3286,6 +3338,134 @@ mod tests {
         // "a2a:\n  enabled: true", and enabled lookups miss.
         cfg.platforms = serde_yaml::from_str("a2a:\n  enabled: true\n").unwrap();
         assert!(a2a_enabled(&cfg));
+    }
+
+    // ── nothing is answered before it is on the disk ─────────────────
+
+    /// A worker in this process whose sync waits until `release` is sent
+    /// or dropped.
+    fn gated_worker() -> (
+        tempfile::TempDir,
+        veles_core::durable::testing::Counting,
+        veles_core::durable::Syncer,
+        std::sync::mpsc::Sender<()>,
+    ) {
+        use veles_core::durable::testing::{fast, Counting};
+        let (disk, release) = Counting::gated();
+        let dir = tempfile::tempdir().unwrap();
+        let d = disk.clone();
+        let worker = veles_core::durable::attach_with(
+            &dir.path().join("state.db"),
+            move || Box::new(d),
+            fast(),
+        )
+        .unwrap();
+        // The gate last: a caller's bindings drop in reverse, so the gate
+        // goes before the worker and a failing test ends.
+        (dir, disk, worker, release)
+    }
+
+    /// What this node tells a peer it has done, it must still have done
+    /// after a crash. With async durability the handler's commits are
+    /// answered before they are synced, so the reply waits for a sync,
+    /// and for one that began AFTER the handler was done: a sync from
+    /// before would not hold what the handler wrote.
+    #[tokio::test]
+    async fn a_reply_to_a_peer_waits_for_a_sync_that_began_after_the_handler() {
+        let (_h, srv, _e) = scratch_server();
+        let (_dir, disk, _worker, release) = gated_worker();
+        // What the handler had done when each sync began: a lease ask
+        // leaves a task record, refused or not.
+        let done_at_sync = Arc::new(Mutex::new(Vec::new()));
+        let (seen, theirs) = (done_at_sync.clone(), srv.clone());
+        *disk.on_sync.lock().unwrap() = Some(Box::new(move || {
+            seen.lock().unwrap().push(theirs.tasks.list(10).len());
+        }));
+        let ask = veles_core::gossip::encode_lease_ask("singleton:cron", "aaaa", true);
+        let body = json!({
+            "jsonrpc": "2.0", "id": 7, "method": "message/send",
+            "params": {"message": {"role": "user", "parts": [{"kind": "text", "text": ask}]}}
+        });
+        // The handler itself, as axum calls it: no token is configured in
+        // the scratch home, so a loopback caller is let in.
+        let answering = veles_core::rt::spawn(async move {
+            rpc(
+                State(srv),
+                ConnectInfo("127.0.0.1:40000".parse().unwrap()),
+                HeaderMap::new(),
+                Json(body),
+            )
+            .await
+        });
+        tokio::time::sleep(std::time::Duration::from_millis(200)).await;
+        assert!(
+            !answering.is_finished(),
+            "the peer was answered while the sync was still running"
+        );
+        assert!(
+            done_at_sync.lock().unwrap().iter().any(|n| *n >= 1),
+            "no sync began after the handler had done its work: {:?}",
+            done_at_sync.lock().unwrap()
+        );
+        drop(release);
+        let (code, Json(resp)) = answering.await.unwrap();
+        assert_eq!(code, StatusCode::OK, "{resp}");
+        assert!(resp.get("result").is_some(), "{resp}");
+    }
+
+    /// A request that is turned away changed nothing, and must not be
+    /// able to make this node sync its store: anyone who can reach the
+    /// port could otherwise keep the disk busy. Here a sync would never
+    /// end, so an answer that waited for one would not come.
+    #[tokio::test]
+    async fn a_request_turned_away_is_answered_without_a_sync() {
+        let (home, srv, _e) = scratch_server();
+        let (_dir, _disk, _worker, release) = gated_worker();
+        // A trusted list that does not name the caller (no token is set,
+        // so a loopback caller is `ip:127.0.0.1`).
+        std::fs::write(
+            home.path().join(".env"),
+            "VELES_API_KEY=test-key\nA2A_TRUSTED_PEERS=someone-else\n",
+        )
+        .unwrap();
+        let body = json!({"jsonrpc": "2.0", "id": 8, "method": "tasks/list", "params": {}});
+        let answered = tokio::time::timeout(
+            std::time::Duration::from_secs(5),
+            rpc(
+                State(srv),
+                ConnectInfo("127.0.0.1:40001".parse().unwrap()),
+                HeaderMap::new(),
+                Json(body),
+            ),
+        )
+        .await;
+        drop(release);
+        let (code, Json(resp)) = answered.expect("a refusal waited for a sync");
+        assert_eq!(code, StatusCode::FORBIDDEN, "{resp}");
+    }
+
+    #[test]
+    fn a_node_that_could_not_sync_says_so_instead_of_answering() {
+        let reply = (StatusCode::OK, Json(json!({"result": {"did": "it"}})));
+        let (code, Json(kept)) = reply_if_synced(&json!(7), reply, Ok(()));
+        assert_eq!(code, StatusCode::OK);
+        assert_eq!(kept["result"]["did"], "it");
+
+        let reply = (StatusCode::OK, Json(json!({"result": {"did": "it"}})));
+        let failed = Err(anyhow::anyhow!(
+            "the session store is not known to be on the disk: EIO"
+        ));
+        let (code, Json(refused)) = reply_if_synced(&json!(7), reply, failed);
+        assert_eq!(code, StatusCode::INTERNAL_SERVER_ERROR);
+        assert_eq!(refused["id"], 7);
+        assert!(refused.get("result").is_none(), "{refused}");
+        assert!(
+            refused["error"]["message"]
+                .as_str()
+                .unwrap()
+                .contains("not known to be on the disk"),
+            "{refused}"
+        );
     }
 
     #[tokio::test]

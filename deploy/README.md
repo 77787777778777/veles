@@ -196,14 +196,22 @@ sudo journalctl _UID=$(id -u veles) -f
 ## Updating
 
 ```sh
-scripts/build-image.sh gateway
+scripts/build-image.sh                   # both images: the gateway and the signer
 for m in irc slopdrop telegram atproto-cmd lang-js lang-racket lang-lisp; do
     scripts/push-plugin.sh --no-reload "$m"
 done
 scripts/push-process-plugin.sh --no-reload atproto
-scripts/push-image.sh gateway
+scripts/push-image.sh                    # both
 ssh user@vps.example.org sudo systemctl --user -M veles@ restart veles-gateway
+ssh user@vps.example.org sudo systemctl --user -M veles-signer@ restart veles-signer
 ```
+
+The signer is updated with every release, like the gateway. Until
+2026-11-13 this recipe named the gateway image only, and the signer ran
+the 0.1.0 package through every release since; it was noticed when the first
+ticket was signed. Its restart needs nobody (the key's passphrase is a
+podman secret) and takes seconds. A request that is waiting for an answer
+at that moment is not kept: check the signer's log for one first.
 
 The modules go first. A new core changes the build key, and a gateway
 refuses every module built for another core ("core changed"), so a

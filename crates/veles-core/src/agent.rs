@@ -7317,16 +7317,45 @@ impl Agent {
     /// makes a row appended MID-TURN prunable by compaction (the mid-turn
     /// safety valve compacts a history that has not been reloaded, so an
     /// unstamped row would be invisible to the prune plan).
+    ///
+    /// A store another writer holds is waited for, not given up on.
+    /// Giving up when SQLite's own five-second wait ran out ("persist
+    /// failed: database is locked") lost the message from the session
+    /// and ended a `veles chat -q` beside a busy gateway (2026-11-14).
+    /// The append is tried until [`PERSIST_PATIENCE`] has passed. Each
+    /// try waits at most [`PERSIST_RETRY_WAIT`] inside SQLite, and
+    /// between tries the store's mutex is let go: a message that waits
+    /// for another process's write does not keep this process's readers
+    /// waiting with it. An append is one transaction
+    /// (`Store::append_message`), so a try that failed wrote nothing.
     pub fn persist(&self, msg: &ChatMessage) -> Option<i64> {
-        match self.store.lock() {
-            Ok(store) => match store.append_message(&self.session_id, msg) {
-                Ok(id) => Some(id),
+        let started = std::time::Instant::now();
+        let mut pause = std::time::Duration::from_millis(20);
+        loop {
+            let tried = match self.store.lock() {
+                Ok(store) => store.append_message_within(&self.session_id, msg, PERSIST_RETRY_WAIT),
+                Err(_) => return None,
+            };
+            match tried {
+                Ok(id) => {
+                    let waited = started.elapsed();
+                    if waited > std::time::Duration::from_secs(1) {
+                        tracing::warn!(
+                            "persist: the store was held by another writer; waited {}ms",
+                            waited.as_millis()
+                        );
+                    }
+                    return Some(id);
+                }
+                Err(e) if crate::store::is_locked(&e) && started.elapsed() < PERSIST_PATIENCE => {
+                    std::thread::sleep(pause);
+                    pause = (pause * 2).min(std::time::Duration::from_millis(250));
+                }
                 Err(e) => {
                     tracing::warn!("persist failed: {e}");
-                    None
+                    return None;
                 }
-            },
-            Err(_) => None,
+            }
         }
     }
 
@@ -7350,6 +7379,12 @@ impl Agent {
         out
     }
 }
+
+/// How long a turn waits for a store another writer holds before it gives
+/// a message up (`Agent::persist`).
+const PERSIST_PATIENCE: std::time::Duration = std::time::Duration::from_secs(30);
+/// How long each try waits inside SQLite, with the store's mutex held.
+const PERSIST_RETRY_WAIT: std::time::Duration = std::time::Duration::from_millis(250);
 
 /// usize env override helper (compaction knobs for ops/testing).
 fn env_usize(name: &str) -> Option<usize> {
@@ -13028,6 +13063,95 @@ mod tests {
             "test-session",
         ));
         Agent::new(cfg, hooks, registry, store, "test-session".to_string()).expect("agent")
+    }
+
+    /// Another connection takes the store's write lock and keeps it for
+    /// `hold`.
+    fn hold_the_store(agent: &Agent, hold: std::time::Duration) -> std::thread::JoinHandle<()> {
+        let db: std::path::PathBuf = {
+            let store = agent.store.lock().unwrap();
+            let _ = store.create_session("test-session");
+            store.conn().path().unwrap().into()
+        };
+        let (taken, wait) = std::sync::mpsc::channel();
+        let blocker = std::thread::spawn(move || {
+            let conn = rusqlite::Connection::open(&db).unwrap();
+            conn.execute_batch("BEGIN IMMEDIATE").unwrap();
+            taken.send(()).unwrap();
+            std::thread::sleep(hold);
+            conn.execute_batch("COMMIT").unwrap();
+        });
+        wait.recv().unwrap();
+        blocker
+    }
+
+    /// A turn's message is not dropped because another writer held the
+    /// store for longer than a wait inside SQLite lasts. `persist` used
+    /// to give up there ("persist failed: database is locked"): the
+    /// session lost the message, and a `veles chat -q` beside a busy
+    /// gateway ended on the error (2026-11-14: 28 of 154 chats in one
+    /// translation pass).
+    #[test]
+    fn a_message_waits_out_a_store_another_writer_holds() {
+        let agent = scratch_agent();
+        let blocker = hold_the_store(&agent, std::time::Duration::from_millis(900));
+
+        // CALIBRATION: the store really is held, for longer than one try.
+        let direct = agent.store.lock().unwrap().append_message_within(
+            "test-session",
+            &ChatMessage::user("direct"),
+            std::time::Duration::from_millis(50),
+        );
+        let err = direct.expect_err("the blocker holds the write lock");
+        assert!(crate::store::is_locked(&err), "{err:#}");
+
+        let id = agent.persist(&ChatMessage::user("kept"));
+        blocker.join().unwrap();
+        assert!(id.is_some(), "the message was given up");
+        let history = agent
+            .store
+            .lock()
+            .unwrap()
+            .load_history("test-session")
+            .unwrap();
+        assert_eq!(
+            history.iter().filter(|m| m.content == "kept").count(),
+            1,
+            "the message is in the session, once"
+        );
+        assert!(history.iter().all(|m| m.content != "direct"));
+    }
+
+    /// While a message waits for another process's write, the rest of
+    /// this process still gets the store: its mutex is let go between
+    /// tries, and no try keeps it for SQLite's five seconds.
+    #[test]
+    fn a_waiting_message_does_not_keep_the_store_from_the_rest_of_the_process() {
+        let agent = std::sync::Arc::new(scratch_agent());
+        let blocker = hold_the_store(&agent, std::time::Duration::from_millis(1500));
+        let theirs = agent.clone();
+        let writer = std::thread::spawn(move || theirs.persist(&ChatMessage::user("kept")));
+
+        let mut longest = std::time::Duration::ZERO;
+        while !writer.is_finished() {
+            let asked = std::time::Instant::now();
+            // What a reader in this process does: take the mutex, read.
+            let n = agent
+                .store
+                .lock()
+                .unwrap()
+                .session_message_count("test-session")
+                .unwrap();
+            longest = longest.max(asked.elapsed());
+            assert!(n <= 1);
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
+        blocker.join().unwrap();
+        assert!(writer.join().unwrap().is_some());
+        assert!(
+            longest < std::time::Duration::from_millis(800),
+            "a reader waited {longest:?} for the store's mutex behind a message that was waiting"
+        );
     }
 
     #[test]

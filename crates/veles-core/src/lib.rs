@@ -58,6 +58,7 @@ pub mod devices;
 pub mod discovery;
 pub mod downloads;
 pub mod dream;
+pub mod durable;
 pub mod egress;
 pub mod failover;
 pub mod filetools;
