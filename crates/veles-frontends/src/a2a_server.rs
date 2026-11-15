@@ -3397,7 +3397,15 @@ mod tests {
             )
             .await
         });
-        tokio::time::sleep(std::time::Duration::from_millis(200)).await;
+        // Until a sync has begun, or the reply came without one. A loaded
+        // machine takes its time over either.
+        for _ in 0..1000 {
+            if !done_at_sync.lock().unwrap().is_empty() || answering.is_finished() {
+                break;
+            }
+            tokio::time::sleep(std::time::Duration::from_millis(10)).await;
+        }
+        tokio::time::sleep(std::time::Duration::from_millis(100)).await;
         assert!(
             !answering.is_finished(),
             "the peer was answered while the sync was still running"
@@ -3430,7 +3438,7 @@ mod tests {
         .unwrap();
         let body = json!({"jsonrpc": "2.0", "id": 8, "method": "tasks/list", "params": {}});
         let answered = tokio::time::timeout(
-            std::time::Duration::from_secs(5),
+            std::time::Duration::from_secs(20),
             rpc(
                 State(srv),
                 ConnectInfo("127.0.0.1:40001".parse().unwrap()),

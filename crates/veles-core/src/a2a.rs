@@ -1064,8 +1064,17 @@ mod tests {
                     _ => client.cancel_task(&url, None, "t").await.map(|_| ()),
                 }
             });
-            tokio::time::sleep(Duration::from_millis(200)).await;
+            // Wait for the sync to be asked for (a loaded machine takes its
+            // time), then a moment more for a request that left early to
+            // arrive.
+            for _ in 0..1000 {
+                if disk.syncs() > before || sending.is_finished() {
+                    break;
+                }
+                tokio::time::sleep(Duration::from_millis(10)).await;
+            }
             assert!(disk.syncs() > before, "{way}: no sync was asked for");
+            tokio::time::sleep(Duration::from_millis(150)).await;
             assert!(
                 seen.lock().unwrap().is_empty(),
                 "{way}: the request left while the sync was still running"

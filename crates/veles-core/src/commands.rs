@@ -213,8 +213,7 @@ fn expand_shell(text: &str) -> String {
                         }
                         // Bound the splice so a chatty command can't
                         // blow the prompt.
-                        if s.len() > 4000 {
-                            s.truncate(4000);
+                        if crate::textcap::truncate_at_boundary(&mut s, 4000) {
                             s.push_str("\n…[truncated]");
                         }
                         out.push_str(&s);
@@ -642,6 +641,32 @@ mod tests {
             source: PathBuf::new(),
         };
         assert_eq!(render(&c, ""), "branch: trunk");
+    }
+
+    /// The 4000-byte cap on a spliced command's output, met inside a
+    /// character, panicked (2026-11-14, `crate::textcap`).
+    /// The command is POSIX sh: on Windows the shell is PowerShell, and
+    /// the cap it tests is the same code on every platform.
+    #[cfg(unix)]
+    #[test]
+    fn shell_output_capped_inside_a_character_does_not_panic() {
+        let c = CustomCommand {
+            name: "t".into(),
+            description: String::new(),
+            // "a" and then 2,100 two-byte characters: byte 4000 is the
+            // second half of one.
+            body:
+                "!`printf a; i=0; while [ $i -lt 2100 ]; do printf '\\303\\251'; i=$((i+1)); done`"
+                    .into(),
+            source: PathBuf::new(),
+        };
+        let r = render(&c, "");
+        assert!(
+            r.ends_with("…[truncated]"),
+            "{}",
+            &r[r.len().saturating_sub(30)..]
+        );
+        assert!(r.starts_with("aé"), "{}", &r[..10]);
     }
 
     #[test]

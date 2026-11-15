@@ -13065,6 +13065,24 @@ mod tests {
         Agent::new(cfg, hooks, registry, store, "test-session".to_string()).expect("agent")
     }
 
+    /// An agent whose store nothing else in the process can reach.
+    /// `Agent::new` publishes its store process-wide for turn heartbeats
+    /// (`session_tap::set_runs_store`), so in a test binary the last agent
+    /// created receives every other test's heartbeats, and one that comes
+    /// while this test holds the store waits inside SQLite with the store's
+    /// mutex. In the full suite that held a reader for three seconds and
+    /// failed `a_waiting_message_does_not_keep_the_store_from_the_rest_of_the_process`
+    /// (pitfall 381). The store is swapped after `new` has published the
+    /// old one.
+    fn agent_with_a_private_store() -> Agent {
+        let mut agent = scratch_agent();
+        let dir = crate::testenv::kept_dir();
+        agent.store = Arc::new(Mutex::new(
+            crate::store::Store::open(&dir.join("state.db")).expect("store"),
+        ));
+        agent
+    }
+
     /// Another connection takes the store's write lock and keeps it for
     /// `hold`.
     fn hold_the_store(agent: &Agent, hold: std::time::Duration) -> std::thread::JoinHandle<()> {
@@ -13093,8 +13111,8 @@ mod tests {
     /// translation pass).
     #[test]
     fn a_message_waits_out_a_store_another_writer_holds() {
-        let agent = scratch_agent();
-        let blocker = hold_the_store(&agent, std::time::Duration::from_millis(900));
+        let agent = agent_with_a_private_store();
+        let blocker = hold_the_store(&agent, std::time::Duration::from_secs(2));
 
         // CALIBRATION: the store really is held, for longer than one try.
         let direct = agent.store.lock().unwrap().append_message_within(
@@ -13127,30 +13145,38 @@ mod tests {
     /// tries, and no try keeps it for SQLite's five seconds.
     #[test]
     fn a_waiting_message_does_not_keep_the_store_from_the_rest_of_the_process() {
-        let agent = std::sync::Arc::new(scratch_agent());
-        let blocker = hold_the_store(&agent, std::time::Duration::from_millis(1500));
+        let agent = std::sync::Arc::new(agent_with_a_private_store());
+        let blocker = hold_the_store(&agent, std::time::Duration::from_secs(3));
         let theirs = agent.clone();
         let writer = std::thread::spawn(move || theirs.persist(&ChatMessage::user("kept")));
 
-        let mut longest = std::time::Duration::ZERO;
+        // What a reader in this process does: take the mutex, read. Counted
+        // while the other writer still has the store, which is while the
+        // message is waiting. Counted and not timed: how long a read takes
+        // says as much about the machine as about the code (it failed a
+        // loaded flake check at 1.5 s against a limit of 0.8 s), but a
+        // message that sat inside SQLite with the mutex for the whole wait
+        // would let no read through at all.
+        let mut reads_while_waiting = 0;
         while !writer.is_finished() {
-            let asked = std::time::Instant::now();
-            // What a reader in this process does: take the mutex, read.
             let n = agent
                 .store
                 .lock()
                 .unwrap()
                 .session_message_count("test-session")
                 .unwrap();
-            longest = longest.max(asked.elapsed());
             assert!(n <= 1);
+            if !blocker.is_finished() {
+                reads_while_waiting += 1;
+            }
             std::thread::sleep(std::time::Duration::from_millis(10));
         }
         blocker.join().unwrap();
         assert!(writer.join().unwrap().is_some());
         assert!(
-            longest < std::time::Duration::from_millis(800),
-            "a reader waited {longest:?} for the store's mutex behind a message that was waiting"
+            reads_while_waiting >= 4,
+            "{reads_while_waiting} read(s) got the store's mutex while a message waited three \
+             seconds for another writer"
         );
     }
 

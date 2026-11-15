@@ -229,6 +229,32 @@ under keep-id, a new image's first container copies every layer (two
 minutes for the gateway), longer than the unit's 90 s start timeout, so
 the restart must not be the first.
 
+Old images stay until somebody removes them, and each takes its two
+gigabytes on the pool's volume twice over (the unpacked layers and the
+copy made for the unit's user mapping). In 2026-11 twenty-nine of them,
+back to 0.1.0, had filled that volume, and the signer's new image failed
+to unpack with "no space left on device" while `df /` showed room: the
+images are on `/srv/pool`, which is another disk. Once both units run the
+new images, remove everything older than the release before. The tags to
+keep are the new one, the one before it and `current`:
+
+```sh
+ssh user@vps.example.org bash -s <<'END'
+keep=':0.2.6-7ad2153$\|:0.2.5-ca137ad$\|:current$'
+for pair in veles:agent veles-signer:signer; do
+  u=${pair%%:*}; k=${pair##*:}; uid=$(id -u $u)
+  pod() { sudo sh -c "cd / && runuser -u $u -- env XDG_RUNTIME_DIR=/run/user/$uid podman $*"; }
+  for i in $(pod images --format '{{.Repository}}:{{.Tag}}' | grep "veles-$k:" | grep -v "$keep"); do
+    pod rmi "$i"
+  done
+done
+df -h /srv/pool
+END
+```
+
+`bash -s`, not the login shell: under zsh the inner `for` gets the whole
+list as one word and removes one image.
+
 ## The switch from Demon
 
 Done 2026-10-02. Demon (`hermes`, rootful) held 0.0.0.0:8642 and :9900

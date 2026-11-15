@@ -5,7 +5,7 @@ followed by the crates it covers. veles itself is AGPL-3.0-only (LICENSE).
 
 ## GNU Affero General Public License v3.0 only
 
-Used by: veles-atproto 0.2.6, veles-atproto-cmd 0.2.6, veles-cli 0.2.6, veles-core 0.2.6, veles-frontends 0.2.6, veles-install 0.2.6, veles-irc 0.2.6, veles-lang-js 0.2.6, veles-lang-lisp 0.2.6, veles-lang-racket 0.2.6, veles-launcher 0.2.6, veles-module-atproto-cmd 0.2.6, veles-module-echo 0.2.6, veles-module-irc 0.2.6, veles-module-lang-js 0.2.6, veles-module-lang-lisp 0.2.6, veles-module-lang-racket 0.2.6, veles-module-slopdrop 0.2.6, veles-module-telegram 0.2.6, veles-plugin-abi 0.2.6, veles-plugin-abi-sdk 0.2.6, veles-plugin-anthropic-so 0.1.0, veles-plugin-badabi-so 0.1.0, veles-plugin-echo 0.2.6, veles-plugin-example 0.2.6, veles-plugin-sample-so 0.2.6, veles-plugin-sdk 0.2.6, veles-runtime 0.2.6, veles-signer 0.2.6, veles-slopdrop 0.2.6, veles-telegram 0.2.6, veles-textart 0.2.6, veles-types 0.2.6, veles-userland 0.2.6
+Used by: veles-atproto 0.2.7, veles-atproto-cmd 0.2.7, veles-cli 0.2.7, veles-core 0.2.7, veles-frontends 0.2.7, veles-install 0.2.7, veles-irc 0.2.7, veles-lang-js 0.2.7, veles-lang-lisp 0.2.7, veles-lang-racket 0.2.7, veles-launcher 0.2.7, veles-module-atproto-cmd 0.2.7, veles-module-echo 0.2.7, veles-module-irc 0.2.7, veles-module-lang-js 0.2.7, veles-module-lang-lisp 0.2.7, veles-module-lang-racket 0.2.7, veles-module-slopdrop 0.2.7, veles-module-telegram 0.2.7, veles-plugin-abi 0.2.7, veles-plugin-abi-sdk 0.2.7, veles-plugin-anthropic-so 0.1.0, veles-plugin-badabi-so 0.1.0, veles-plugin-echo 0.2.7, veles-plugin-example 0.2.7, veles-plugin-sample-so 0.2.7, veles-plugin-sdk 0.2.7, veles-runtime 0.2.7, veles-signer 0.2.7, veles-slopdrop 0.2.7, veles-telegram 0.2.7, veles-textart 0.2.7, veles-types 0.2.7, veles-userland 0.2.7
 
 ```text
 GNU AFFERO GENERAL PUBLIC LICENSE
@@ -13506,7 +13506,7 @@ Exhibit B - &quot;Incompatible With Secondary Licenses&quot; Notice
 
 ## SIL Open Font License 1.1
 
-Used by: veles-textart 0.2.6
+Used by: veles-textart 0.2.7
 
 ```text
 The SIL Open Font License version 1.1 is copied below, and is also

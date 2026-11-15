@@ -364,15 +364,13 @@ async fn pump(
     } else {
         // An error body is delivered as one event and then `done`, so the
         // driver's read loop is the same for both outcomes.
-        let text = match resp.text().await {
+        let mut text = match resp.text().await {
             Ok(t) => t,
             Err(e) => format!("(error body unreadable: {e})"),
         };
-        let text = if text.len() > EVENT_CAP {
-            format!("{}…[truncated]", &text[..EVENT_CAP])
-        } else {
-            text
-        };
+        if crate::textcap::truncate_at_boundary(&mut text, EVENT_CAP) {
+            text.push_str("…[truncated]");
+        }
         let _ = tx.send(Item::Event(text));
         let _ = tx.send(Item::Eof);
     }
@@ -763,6 +761,28 @@ mod tests {
             "the endpoint's own error envelope reaches the driver intact"
         );
         assert_eq!(open_streams(), before, "and the handle is freed");
+    }
+
+    /// An error body over the event cap is cut, and the cut was a byte
+    /// slice: a provider error page in any script that put a character
+    /// across byte 4 MiB panicked and took the gateway down (2026-11-14,
+    /// `crate::textcap`).
+    #[test]
+    fn an_error_body_capped_inside_a_character_does_not_panic() {
+        let (_h, _g, b) = bridge();
+        // One ASCII byte, then two-byte characters past the cap: byte
+        // EVENT_CAP is the second half of one.
+        let body = format!("a{}", "é".repeat(EVENT_CAP / 2 + 10));
+        let s = server(500, "text/plain", vec![body]);
+        let id = open_id(&b, s.url(), 500, None);
+        let got = drain(&b, id);
+        assert_eq!(got.len(), 1, "one event");
+        assert!(
+            got[0].ends_with("…[truncated]"),
+            "{}",
+            &got[0][got[0].len() - 20..]
+        );
+        assert!(got[0].starts_with("aé"));
     }
 
     /// An unreachable host is an `Err` from `open` — not a hang, and not a

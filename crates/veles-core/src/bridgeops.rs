@@ -781,8 +781,7 @@ fn http_request(
         let resp = req.send().await.map_err(|e| format!("http: {e}"))?;
         let status = resp.status();
         let mut text = resp.text().await.map_err(|e| format!("http body: {e}"))?;
-        if text.len() > HTTP_BODY_CAP {
-            text.truncate(HTTP_BODY_CAP);
+        if crate::textcap::truncate_at_boundary(&mut text, HTTP_BODY_CAP) {
             text.push_str("\n[truncated at 1MB]");
         }
         if status.is_success() {
@@ -1211,6 +1210,39 @@ mod tests {
             }
         });
         format!("http://{addr}/v1/messages")
+    }
+
+    /// The 1 MB cap on an HTTP body, met inside a character, panicked
+    /// and took the process with it (2026-11-14, `crate::textcap`).
+    #[test]
+    fn a_body_capped_inside_a_character_does_not_panic() {
+        use std::io::{Read, Write};
+        let (_h, _g, b) = bridge();
+        // "a" and then 500,000 two-byte characters: byte 1,000,000 is the
+        // second half of one.
+        let body = format!("a{}", "é".repeat(500_000));
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").expect("bind");
+        let addr = listener.local_addr().expect("addr");
+        std::thread::spawn(move || {
+            if let Some(Ok(mut s)) = listener.incoming().next() {
+                let mut buf = [0u8; 4096];
+                let _ = s.read(&mut buf);
+                let head = format!(
+                    "HTTP/1.1 200 OK\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+                    body.len()
+                );
+                let _ = s.write_all(head.as_bytes());
+                let _ = s.write_all(body.as_bytes());
+            }
+        });
+        let got = dispatch(&b, "http_get", &[format!("http://{addr}/")]).expect("the body");
+        assert!(
+            got.ends_with("\n[truncated at 1MB]"),
+            "{}",
+            &got[got.len() - 30..]
+        );
+        assert!(got.starts_with("aé"));
+        assert!(got.len() <= HTTP_BODY_CAP + "\n[truncated at 1MB]".len());
     }
 
     /// `timeout_secs` reaches the client: a reply slower than the

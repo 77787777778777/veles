@@ -1,3 +1,12 @@
+veles-agent (0.2.7) unstable; urgency=medium
+
+  * A cap on text from outside (the compaction transcript, an HTTP body,
+    a command's or a program's output, a provider's error body) no
+    longer aborts the gateway when it falls inside a multi-byte
+    character. The compaction one took a gateway down at every start.
+
+ -- veles-agent maintainers <noreply@example.invalid>  Sun, 15 Nov 2026 00:00:00 +0000
+
 veles-agent (0.2.6) unstable; urgency=medium
 
   * The session store no longer waits for the disk while it holds its

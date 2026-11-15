@@ -250,7 +250,9 @@ pub fn build_transcript(head: &[ChatMessage], per_msg_cap: usize, total_cap: usi
         let body = truncate_chars(&m.content, per_msg_cap);
         out.push_str(&format!("{role}: {body}\n"));
         if out.len() > total_cap {
-            out.truncate(total_cap);
+            // The cap is in bytes and may fall inside a character, where
+            // `String::truncate` panics (`crate::textcap`).
+            crate::textcap::truncate_at_boundary(&mut out, total_cap);
             out.push_str("\n[transcript truncated]");
             break;
         }
@@ -870,6 +872,27 @@ impl SummarizerBackoff {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// The transcript's own cap is in bytes, and a byte count can fall
+    /// inside a character. `String::truncate` there panics, and a panic
+    /// aborts the gateway: on 2026-11-14 a 1.29 million character session
+    /// whose interrupted turn was resumed at every start, compacted on
+    /// resume, took the laptop's gateway down on each boot. The cut
+    /// moves back to the nearest character boundary.
+    #[test]
+    fn a_transcript_cap_inside_a_character_does_not_panic() {
+        // "User: " is six bytes; each "é" is two, so byte 7 is inside the
+        // first one. Gurmukhi and Thai are three bytes a character.
+        for (text, cap) in [("éééé", 7), ("ਪੰਜਾਬੀ ਪੰਜਾਬੀ", 8), ("ภาษาไทย", 10)]
+        {
+            let head = vec![ChatMessage::user(text)];
+            let out = build_transcript(&head, 10_000, cap);
+            assert!(out.ends_with("\n[transcript truncated]"), "{out:?}");
+            let kept = out.trim_end_matches("\n[transcript truncated]");
+            assert!(kept.len() <= cap, "{kept:?} is longer than {cap} bytes");
+            assert!(kept.starts_with("User: "), "{kept:?}");
+        }
+    }
 
     /// The automatic path backs off after a failed summary and a success
     /// resets it: without this a summarizer that keeps failing is retried

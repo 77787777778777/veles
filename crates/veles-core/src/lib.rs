@@ -164,6 +164,7 @@ pub mod tcleval;
 pub mod tclrt;
 #[cfg(any(test, feature = "test-support"))]
 pub mod testenv;
+pub mod textcap;
 pub mod theme;
 pub mod ticket;
 pub mod ticketed;

@@ -5,7 +5,7 @@
 # bash, and veles shells out with `-c` from six call sites.
 
 PORTNAME=	veles-agent
-DISTVERSION=	0.2.6
+DISTVERSION=	0.2.7
 CATEGORIES=	misc
 
 MAINTAINER=	noreply@example.invalid

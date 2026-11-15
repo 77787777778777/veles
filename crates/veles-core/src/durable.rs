@@ -652,7 +652,8 @@ pub fn attach_with(
     }
 }
 
-/// Each store file this process knows, with its worker if one is alive.
+/// Each store file this process knows, with its worker if one is alive
+/// and has not stopped.
 fn stores() -> Vec<(PathBuf, Vec<Arc<Inner>>)> {
     let reg = registry();
     reg.known
@@ -663,6 +664,12 @@ fn stores() -> Vec<(PathBuf, Vec<Arc<Inner>>)> {
                 .iter()
                 .filter(|(p, _)| p == path)
                 .filter_map(|(_, w)| w.upgrade())
+                // A worker that has stopped is still reachable for the
+                // moment its thread takes to let go of its state: it can
+                // sync nothing, so it does not count as alive. (The first
+                // public CI run of 0.2.6 failed on a test that looked
+                // here in that moment.)
+                .filter(|w| !w.lock().exited)
                 .collect();
             (path.clone(), live)
         })
@@ -849,9 +856,10 @@ pub mod testing {
         }
     }
 
-    /// Poll `cond` for up to two seconds.
+    /// Poll `cond` for up to ten seconds: long enough for a thread to be
+    /// scheduled on a machine that is doing everything else as well.
     pub fn eventually(what: &str, mut cond: impl FnMut() -> bool) {
-        let end = Instant::now() + Duration::from_secs(2);
+        let end = Instant::now() + Duration::from_secs(10);
         while Instant::now() < end {
             if cond() {
                 return;
@@ -1011,14 +1019,20 @@ mod tests {
             ..fast()
         };
         let s = Syncer::spawn(Box::new(disk.clone()), opts).unwrap();
+        let began = Instant::now();
         for _ in 0..200 {
             s.note_commit(1);
             std::thread::sleep(Duration::from_millis(1));
         }
         s.barrier().unwrap();
+        // One sync per lag at most, however long the machine took over
+        // the two hundred commits, and two more for the first and the
+        // barrier's.
+        let most = began.elapsed().as_millis() as u64 / 100 + 3;
         assert!(
-            disk.syncs() <= 6,
-            "200 commits over a fifth of a second cost {} syncs",
+            disk.syncs() <= most,
+            "200 commits in {:?} cost {} syncs",
+            began.elapsed(),
             disk.syncs()
         );
     }
@@ -1241,7 +1255,23 @@ mod tests {
         let conn = rusqlite::Connection::open(&db).unwrap();
         conn.execute_batch("PRAGMA journal_mode = WAL; CREATE TABLE t(a);")
             .unwrap();
-        let worker = attach_with(&db, || Box::new(Counting::default()), fast()).unwrap();
+        // A worker whose thread takes a moment to let go of its state
+        // after it has stopped, as any thread may on a busy machine.
+        struct Lingers(Counting);
+        impl Disk for Lingers {
+            fn sync(&mut self) -> std::io::Result<()> {
+                self.0.sync()
+            }
+            fn checkpoint(&mut self) -> anyhow::Result<()> {
+                self.0.checkpoint()
+            }
+        }
+        impl Drop for Lingers {
+            fn drop(&mut self) {
+                std::thread::sleep(Duration::from_millis(300));
+            }
+        }
+        let worker = attach_with(&db, || Box::new(Lingers(Counting::default())), fast()).unwrap();
         drop(worker);
         let key = std::fs::canonicalize(&db).unwrap();
         let mine = |all: Vec<(PathBuf, Vec<Arc<Inner>>)>| {

@@ -214,8 +214,7 @@ fn format_pieces(stdout: &str, stderr: &str, exit: i32) -> String {
         s.push_str(&format!("\n[exit code: {exit}]"));
     }
     // Cap output to 50KB
-    if s.len() > 50_000 {
-        s.truncate(50_000);
+    if crate::textcap::truncate_at_boundary(&mut s, 50_000) {
         s.push_str("\n[truncated at 50KB]");
     }
     // S4: scrub known secret values before the model sees them.
@@ -354,6 +353,23 @@ proc json_parse {text} {
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// The 50 KB cap on what a program printed is in bytes, and output in
+    /// any script may put a character across it: `String::truncate` there
+    /// panics and takes the gateway down (2026-11-14, `crate::textcap`).
+    #[test]
+    fn output_capped_inside_a_character_does_not_panic() {
+        // One ASCII byte, then two-byte characters: byte 50,000 is the
+        // second half of one.
+        let stdout = format!("a{}", "é".repeat(30_000));
+        let s = format_pieces(&stdout, "", 0);
+        assert!(
+            s.ends_with("\n[truncated at 50KB]"),
+            "{}",
+            &s[s.len() - 40..]
+        );
+        assert!(s.len() <= 50_000 + "\n[truncated at 50KB]".len());
+    }
 
     fn call_with(code: &str, timeout: Option<u64>) -> impl std::future::Future<Output = String> {
         let mut args = json!({ "code": code });
