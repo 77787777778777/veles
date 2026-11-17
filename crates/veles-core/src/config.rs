@@ -1501,6 +1501,13 @@ pub struct InjectionsSection {
     /// a public feed.
     #[serde(default = "default_true")]
     pub atproto_context: bool,
+    /// Session mail (`crate::mail`) that arrives while a turn runs: the
+    /// turn takes it in at its next tool result, when the sender's
+    /// rights cover the turn's (USER 2026-11-17). Off: it waits for the
+    /// turn to end and runs as a turn of its own, and the `sessions`
+    /// tool's `inbox` still fetches it on demand.
+    #[serde(default = "default_true")]
+    pub mail: bool,
 }
 
 impl InjectionsSection {
@@ -1527,6 +1534,7 @@ impl Default for InjectionsSection {
             hook: true,
             irc_context: true,
             atproto_context: true,
+            mail: true,
         }
     }
 }

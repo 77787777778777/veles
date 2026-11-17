@@ -1,3 +1,13 @@
+veles-agent (0.2.8) unstable; urgency=medium
+
+  * Session mail reaches a session in the middle of a turn at its next
+    tool result, when its sender has at least the turn's rights. The
+    sessions tool fetches a session's own mail (inbox) and answers it
+    (reply). On the desktop, Stop ends only the turn it stops, and mail
+    queued behind that turn no longer fails with it.
+
+ -- veles-agent maintainers <noreply@example.invalid>  Tue, 17 Nov 2026 00:00:00 +0000
+
 veles-agent (0.2.7) unstable; urgency=medium
 
   * A cap on text from outside (the compaction transcript, an HTTP body,

@@ -2440,10 +2440,6 @@ async fn chat(State(srv): State<Arc<DesktopServer>>, Json(req): Json<ChatRequest
     // no way to wire up that request-scoped stream. The bus replaces all
     // of it, and `POST /api/chat` is now just "start a turn".
     let sid = req.session_id.clone();
-    // Cancellation rides the ONE process-wide registry — `agent::LIVE_TURNS`,
-    // which `run_turn` populates for EVERY surface and clears from its
-    // `TurnGuard`. The token is created here only to hand to the turn.
-    let cancel_for_task = CancelToken::new();
     // ── the queue (R4.6) ──
     // A message that arrives while a turn is live is NOT a second
     // concurrent turn and NOT a dropped keystroke: it is a queue row,
@@ -2526,9 +2522,18 @@ async fn chat(State(srv): State<Arc<DesktopServer>>, Json(req): Json<ChatRequest
             // only local concern is the asker, which must outlive the
             // request that started the turn (approvals park in the
             // registry).
+            // Cancellation rides the ONE process-wide registry —
+            // `agent::LIVE_TURNS`, which `run_turn` populates for EVERY
+            // surface and clears from its `TurnGuard`; the token is made
+            // here only to hand to the turn. One per turn: a Stop flips
+            // the token of the turn it stops, and that token stays
+            // flipped. Shared by the whole loop, it ended every queued
+            // turn after a Stop at its first check, a mail recorded as
+            // "interrupted" without a word said (2026-11-16, 23:46 UTC).
+            let cancel = CancelToken::new();
             let _ = veles_core::i18n::scope(
                 ui_locale.clone(),
-                agent.run_turn(&mut history, &body, Some(cancel_for_task.clone()), |_| {}),
+                agent.run_turn(&mut history, &body, Some(cancel), |_| {}),
             )
             .await;
             // The turn we just ran is DONE — retire its row BEFORE the
@@ -19006,6 +19011,82 @@ mod tests {
         );
         assert_eq!(items[0].body, "while busy");
         assert_eq!(items[0].state, "pending");
+    }
+
+    /// A Stop ends the turn it is pressed on, and only that one. The
+    /// drain loop handed every queued turn after the first the SAME
+    /// cancel token, which a Stop leaves flipped, so the mail queued
+    /// behind a stopped turn ran, met the flag at its first check and
+    /// was recorded as "interrupted" without a word said (2026-11-16,
+    /// 23:46 UTC, a Claude Code session's mail to a desktop session).
+    #[tokio::test]
+    async fn a_stop_ends_only_the_turn_it_stops_and_the_queue_still_runs() {
+        let (_d, srv, _h, _e) = scratch_server();
+        // The first request stalls until released; every later one
+        // answers at once.
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let (release, released) = std::sync::mpsc::channel::<()>();
+        std::thread::spawn(move || {
+            use std::io::{Read, Write};
+            for (n, socket) in listener.incoming().enumerate() {
+                let Ok(mut socket) = socket else { continue };
+                let mut buffer = [0u8; 65536];
+                let _ = socket.read(&mut buffer);
+                if n == 0 {
+                    let _ = socket.write_all(
+                        b"HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nConnection: close\r\n\r\n\
+                          data: {\"choices\":[{\"delta\":{\"content\":\"working\"}}]}\n\n",
+                    );
+                    let _ = socket.flush();
+                    let _ = released.recv_timeout(std::time::Duration::from_secs(20));
+                    let _ = socket.write_all(b"data: [DONE]\n\n");
+                    continue;
+                }
+                let body = "data: {\"choices\":[{\"delta\":{\"content\":\"queued answer\"}}]}\n\n\
+                            data: [DONE]\n\n";
+                let _ = socket.write_all(
+                    format!(
+                        "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                        body.len()
+                    )
+                    .as_bytes(),
+                );
+            }
+        });
+        point_at(&srv, &format!("http://{address}/v1"));
+        let sid = "stop-then-queue";
+        srv.store.lock_ok().create_session(sid).unwrap();
+        let resp = chat(
+            State(srv.clone()),
+            Json(ChatRequest {
+                session_id: sid.into(),
+                join_id: None,
+                text: "first".into(),
+                attachments: vec![],
+            }),
+        )
+        .await;
+        assert_eq!(resp.status(), StatusCode::ACCEPTED);
+        wait_for("the first turn to start", || {
+            veles_core::agent::turn_is_live(sid)
+        })
+        .await;
+        srv.store.lock_ok().queue_push(sid, "second").unwrap();
+        assert!(
+            veles_core::agent::cancel_turn(sid),
+            "the Stop reaches the first turn"
+        );
+        let _ = release.send(());
+        wait_for("the queued turn to be answered", || {
+            srv.store
+                .lock_ok()
+                .load_history(sid)
+                .unwrap()
+                .iter()
+                .any(|m| m.content == "queued answer")
+        })
+        .await;
     }
 
     /// `/clear` still archives everything; `/compress` SUMMARIZES via the

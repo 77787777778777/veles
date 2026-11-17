@@ -6776,6 +6776,109 @@ impl Store {
         Ok(n == 1)
     }
 
+    /// The mail waiting in a session's queue, oldest first: `(seq, body)`
+    /// of each pending `kind='mail'` row. What a running turn may take in
+    /// at its next tool round (`crate::mail::take_waiting`). A held row
+    /// (it came with the session from another node) is not waiting: it
+    /// runs only once someone here releases it.
+    pub fn mail_waiting(&self, session_id: &str) -> Result<Vec<(i64, String)>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT seq, body FROM session_queue
+             WHERE session_id = ?1 AND state = 'pending' AND kind = 'mail'
+             ORDER BY seq",
+        )?;
+        let rows = stmt.query_map(params![session_id], |r| Ok((r.get(0)?, r.get(1)?)))?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// Take a waiting mail into the turn running in its session: the
+    /// queue row goes and the mail becomes `running`, in one transaction,
+    /// or neither happens. Only a `queued` mail of kind `mail`, addressed
+    /// to this session, whose body hash is the queued text, and only
+    /// while its queue row is still `pending`: a drainer that took the
+    /// row first runs it as its own turn instead. `None` = not taken.
+    pub fn mail_take(
+        &self,
+        session_id: &str,
+        seq: i64,
+        id: &str,
+        body_sha: &str,
+    ) -> Result<Option<MailRow>> {
+        let tx = self.write_tx()?;
+        let gone = tx.execute(
+            "DELETE FROM session_queue
+             WHERE session_id = ?1 AND seq = ?2 AND state = 'pending' AND kind = 'mail'",
+            params![session_id, seq],
+        )?;
+        if gone != 1 {
+            return Ok(None);
+        }
+        let claimed = tx.execute(
+            "UPDATE session_mail SET state = 'running', updated_at = datetime('now')
+             WHERE id = ?1 AND to_session = ?2 AND body_sha = ?3
+               AND state = 'queued' AND kind = 'mail'",
+            params![id, session_id, body_sha],
+        )?;
+        if claimed != 1 {
+            // Dropping the transaction rolls the delete back.
+            return Ok(None);
+        }
+        tx.commit()?;
+        self.mail_get(id)
+    }
+
+    /// Put a mail a turn took in and did not answer back in its session's
+    /// queue, behind whatever is there: the turn stopped or failed before
+    /// it finished, and the mail then runs as a turn of its own. Only a
+    /// `running` mail moves; `false` = it had been answered (or was not
+    /// this session's).
+    pub fn mail_requeue(&self, id: &str, session_id: &str, body: &str) -> Result<bool> {
+        let tx = self.write_tx()?;
+        let n = tx.execute(
+            "UPDATE session_mail SET state = 'queued', updated_at = datetime('now')
+             WHERE id = ?1 AND to_session = ?2 AND state = 'running'",
+            params![id, session_id],
+        )?;
+        if n != 1 {
+            return Ok(false);
+        }
+        let seq: i64 = tx.query_row(
+            "SELECT COALESCE(MAX(seq), 0) + 1 FROM session_queue WHERE session_id = ?1",
+            params![session_id],
+            |r| r.get(0),
+        )?;
+        tx.execute(
+            "INSERT INTO session_queue (session_id, seq, body, state, kind)
+             VALUES (?1, ?2, ?3, 'pending', 'mail')",
+            params![session_id, seq, body],
+        )?;
+        tx.commit()?;
+        Ok(true)
+    }
+
+    /// Mail a session was running that no turn will finish: `running`,
+    /// last touched before `before` (a turn's start, `%Y-%m-%d %H:%M:%S`
+    /// UTC like `datetime('now')`), and with no queue row left to run it
+    /// again. Turns on one session follow one another, so when a turn
+    /// ends, a mail claimed before it began belonged to an earlier turn,
+    /// and that turn ended without finishing it: the process stopped or
+    /// restarted under it. A mail whose queue row is still there is the
+    /// queue's to re-run (`queue_take_next` demotes a dead taker's row),
+    /// not an orphan.
+    pub fn mail_orphans(&self, session_id: &str, before: &str) -> Result<Vec<MailRow>> {
+        let mut stmt = self.conn.prepare(&format!(
+            "SELECT {MAIL_COLS} FROM session_mail m
+             WHERE m.to_session = ?1 AND m.state = 'running' AND m.updated_at < ?2
+               AND NOT EXISTS (
+                   SELECT 1 FROM session_queue q
+                   WHERE q.session_id = m.to_session AND q.kind = 'mail'
+                     AND substr(q.body, 1, length(m.id) + 13) = '[veles mail ' || m.id || ']')
+             ORDER BY m.created_at"
+        ))?;
+        let rows = stmt.query_map(params![session_id, before], mail_row)?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
     /// The sender is (or stopped being) blocked waiting for this mail's
     /// reply — what the cycle check reads.
     pub fn mail_set_waiting(&self, id: &str, waiting: bool) -> Result<()> {

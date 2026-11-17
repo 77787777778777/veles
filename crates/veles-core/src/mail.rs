@@ -21,8 +21,10 @@
 //!   their rights, whoever's session it runs in.
 //! - **Delivery is a nudge, not a second writer.** The process that holds
 //!   the target session open ([`crate::presence`], here or a sibling over
-//!   [`crate::runsock`]) runs it when idle; a busy one reaches it at its
-//!   boundary. A session nobody holds keeps its mail queued until it is
+//!   [`crate::runsock`]) runs it when idle. A busy one takes it into the
+//!   running turn at its next tool result when the sender's rights cover
+//!   the turn's ([`take_waiting`], USER 2026-11-17), and reaches it at its
+//!   boundary otherwise. A session nobody holds keeps its mail queued until it is
 //!   next opened — its principal is unknowable while nobody holds it, and
 //!   running it as the owner (cron's rule) would be a guess.
 //! - **Loops are bounded.** Mail sent from inside a mail turn continues
@@ -651,6 +653,301 @@ pub fn finish(
                     }
                 });
         }
+    }
+}
+
+// ── mail that arrives during a turn ──────────────────────────────────
+//
+// USER 2026-11-17: "Why do I have to stop and start a turn to deliver
+// session mail? That's not ideal. It should arrive at the nearest tool
+// call result probably but also there should be a tool for sessions to
+// fetch their own mail". A mail used to wait for the end of whatever
+// turn its session was running, which for a long turn was hours (one
+// sent at 00:13 was answered at 12:36, 2026-11-15), and the agent had no
+// way to see it waiting.
+//
+// Now the running turn takes it in at its next tool round, as the steer
+// and the background results already were, and the `sessions` tool's
+// `inbox` fetches it on demand. D2 still holds: a mail's text enters a
+// turn only when the sender's rights cover the turn's (`covers`), so it
+// is never acted on with more than its sender has. Mail from a sender
+// with less waits as before and runs as its own clamped turn when this
+// one ends; the turn is told it waits, not what it says.
+
+/// A mail taken into the turn running in its session.
+#[derive(Debug, Clone)]
+pub struct Taken {
+    pub row: MailRow,
+    /// The queued body, header and all: what goes back in the queue when
+    /// the turn stops before it answered.
+    pub body: String,
+    /// The text without its header: what the model reads.
+    pub text: String,
+}
+
+/// Waiting mail the running turn may not take in: its sender has fewer
+/// rights than the turn.
+#[derive(Debug, Clone)]
+pub struct Held {
+    pub row: MailRow,
+    /// The length of its text, in characters.
+    pub chars: usize,
+    /// The first time this turn has seen it waiting.
+    pub fresh: bool,
+}
+
+/// What [`take_waiting`] found.
+#[derive(Debug, Default)]
+pub struct Arrivals {
+    pub taken: Vec<Taken>,
+    pub held: Vec<Held>,
+}
+
+/// One running turn's mail, per session.
+#[derive(Default)]
+struct TurnMail {
+    taken: Vec<Taken>,
+    seen_held: std::collections::HashSet<String>,
+    /// This turn moved the session's chain marker ([`enter`]).
+    entered: bool,
+}
+
+fn turn_mail_map() -> &'static Mutex<HashMap<String, TurnMail>> {
+    static M: std::sync::OnceLock<Mutex<HashMap<String, TurnMail>>> = std::sync::OnceLock::new();
+    M.get_or_init(|| Mutex::new(HashMap::new()))
+}
+
+/// A turn is starting in `session_id`. An entry still there belongs to a
+/// turn that never reached its end (it panicked); its mail is `running`
+/// with nobody to finish it, which is what [`sweep_orphans`] finds when
+/// this turn ends.
+pub fn turn_begin(session_id: &str) {
+    turn_mail_map().lock_ok().remove(session_id);
+}
+
+/// A mail's sender as its row records it. A principal that does not
+/// parse is a GUEST, never the owner (as in [`claim`]).
+fn sender_principal(row: &MailRow) -> Option<Principal> {
+    row.from_principal
+        .as_deref()
+        .map(|j| serde_json::from_str::<Principal>(j).unwrap_or_else(|_| Principal::guest()))
+}
+
+/// Do the sender's rights cover those of the turn now running? Then its
+/// mail may enter that turn: the text is acted on with the turn's
+/// rights, which are no more than the sender's (D2). `None` is the owner
+/// surface on either side.
+pub fn covers(sender: Option<&Principal>, running: Option<&Principal>) -> bool {
+    turn_principal(sender, running).is_none()
+}
+
+/// Take into the turn running in `session_id` every mail waiting in its
+/// queue whose sender's rights cover `running` (the turn's rights now),
+/// oldest first. Each taken mail leaves the queue and becomes `running`;
+/// the turn answers it ([`turn_end`] or the `sessions` tool's `reply`).
+/// Mail sent from the turn from then on continues the deepest chain it
+/// has taken, so the loop guard counts these hops too.
+///
+/// Mail from a sender with less stays queued, and comes back in `held`.
+/// So does a join line: a person speaking in the session runs as a turn
+/// of their own, with the rights that line has.
+pub fn take_waiting(
+    store: &Arc<Mutex<Store>>,
+    session_id: &str,
+    running: Option<&Principal>,
+) -> Arrivals {
+    let mut out = Arrivals::default();
+    let waiting = match store.lock_ok().mail_waiting(session_id) {
+        Ok(w) => w,
+        Err(e) => {
+            tracing::warn!("mail: reading {session_id}'s waiting mail failed: {e:#}");
+            return out;
+        }
+    };
+    for (seq, body) in waiting {
+        let Some((id, text)) = parse_body(&body) else {
+            continue;
+        };
+        let row = match store.lock_ok().mail_get(id) {
+            Ok(Some(r)) => r,
+            _ => continue,
+        };
+        let sha = body_sha(&body);
+        if row.kind != KIND_MAIL
+            || row.to_session != session_id
+            || row.state != "queued"
+            || row.body_sha != sha
+        {
+            continue;
+        }
+        if !covers(sender_principal(&row).as_ref(), running) {
+            out.held.push(Held {
+                chars: text.chars().count(),
+                fresh: false,
+                row,
+            });
+            continue;
+        }
+        match store.lock_ok().mail_take(session_id, seq, id, &sha) {
+            Ok(Some(row)) => out.taken.push(Taken {
+                row,
+                text: text.to_string(),
+                body: body.clone(),
+            }),
+            // A drainer took the row first; it runs as its own turn.
+            Ok(None) => {}
+            Err(e) => tracing::warn!("mail: taking {id} into the turn failed: {e:#}"),
+        }
+    }
+    if out.taken.is_empty() && out.held.is_empty() {
+        return out;
+    }
+    let mut map = turn_mail_map().lock_ok();
+    let entry = map.entry(session_id.to_string()).or_default();
+    for h in &mut out.held {
+        h.fresh = entry.seen_held.insert(h.row.id.clone());
+    }
+    for t in &out.taken {
+        if current(session_id).is_none_or(|c| t.row.hop > c.hop) {
+            enter(session_id, &t.row);
+            entry.entered = true;
+        }
+        entry.taken.push(t.clone());
+    }
+    out
+}
+
+/// The ids of the mail the running turn in `session_id` has taken in.
+pub fn taken_ids(session_id: &str) -> Vec<String> {
+    turn_mail_map()
+        .lock_ok()
+        .get(session_id)
+        .map(|e| e.taken.iter().map(|t| t.row.id.clone()).collect())
+        .unwrap_or_default()
+}
+
+/// The turn in `session_id` ended. Each mail it took in and did not
+/// answer itself gets the turn's final answer as its reply. A turn that
+/// stopped or failed (`Err`) answered nothing: its mail goes back in the
+/// queue, behind what is there, and runs as a turn of its own.
+pub fn turn_end(
+    store: &Arc<Mutex<Store>>,
+    session_id: &str,
+    outcome: std::result::Result<&str, String>,
+) {
+    let Some(entry) = turn_mail_map().lock_ok().remove(session_id) else {
+        return;
+    };
+    if entry.entered {
+        leave(session_id);
+    }
+    for t in entry.taken {
+        let still_open = matches!(
+            store.lock_ok().mail_get(&t.row.id),
+            Ok(Some(r)) if r.state == "running"
+        );
+        if !still_open {
+            // Answered with `reply` during the turn.
+            continue;
+        }
+        match &outcome {
+            Ok(reply) => finish(store, &t.row, Ok(reply)),
+            Err(why) => {
+                // Bound first: a guard in the match's head would still
+                // hold the store when the last arm's `finish` locks it.
+                let back = store.lock_ok().mail_requeue(&t.row.id, session_id, &t.body);
+                match back {
+                    Ok(true) => {
+                        tracing::info!("mail {}: back in the queue, unanswered ({why})", t.row.id)
+                    }
+                    Ok(false) => {}
+                    Err(e) => {
+                        tracing::warn!("mail {}: putting it back failed: {e:#}", t.row.id);
+                        finish(store, &t.row, Err(why.clone()));
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// When a turn in `session_id` that began at `started` ends: fail the
+/// mail an earlier turn was running and will never finish (the process
+/// stopped or restarted under it, `Store::mail_orphans`), so its sender
+/// stops waiting and sees why.
+pub fn sweep_orphans(store: &Arc<Mutex<Store>>, session_id: &str, started: &str) {
+    let rows = match store.lock_ok().mail_orphans(session_id, started) {
+        Ok(r) => r,
+        Err(e) => {
+            tracing::warn!("mail: looking for {session_id}'s unfinished mail failed: {e:#}");
+            return;
+        }
+    };
+    for row in rows {
+        tracing::warn!(
+            "mail {}: the turn running it ended without answering it",
+            row.id
+        );
+        finish(
+            store,
+            &row,
+            Err(
+                "the turn running it ended without answering it: the process stopped or \
+                 restarted under it. Send it again if it still matters."
+                    .to_string(),
+            ),
+        );
+    }
+}
+
+/// The provenance row before a mail taken into a running turn: who
+/// wrote it, that it arrived during the turn, and how to answer it.
+pub fn arrival_origin_line(row: &MailRow) -> String {
+    let who = match (&row.from_session, &row.from_title) {
+        (Some(sid), Some(t)) if !t.is_empty() => format!("session \u{201c}{t}\u{201d} ({sid})"),
+        (Some(sid), _) => format!("session {sid}"),
+        (None, _) => "the veles command line (the owner, outside any session)".to_string(),
+    };
+    let node = row
+        .via_peer
+        .as_deref()
+        .map(|n| format!(" on node {n}"))
+        .unwrap_or_default();
+    let more = match &row.from_session {
+        Some(sid) => format!(
+            " To send it anything more, use the sessions tool with to={}.",
+            reply_address(row, sid)
+        ),
+        None => String::new(),
+    };
+    format!(
+        "[origin] mail {id} from {who}{node} arrived while you were working on this turn: \
+         another agent or program wrote it, not the user. Answer it with the sessions tool, \
+         action=reply, mail={id} (through tool_call if sessions is not in your tool list); if \
+         you do not, your final answer this turn is sent to it as the reply.{more}",
+        id = row.id
+    )
+}
+
+/// How a waiting mail's sender is named where the running turn can read
+/// it while the text is held back: the session id only when it looks
+/// like one (a relayed mail's sender id is the other node's to set), and
+/// the node, never the sender's title.
+pub fn held_sender(row: &MailRow) -> String {
+    let sid = row.from_session.as_deref().filter(|s| {
+        !s.is_empty()
+            && s.len() <= 64
+            && s.bytes()
+                .all(|b| b.is_ascii_alphanumeric() || b"_-.:".contains(&b))
+    });
+    let who = match (sid, &row.from_session) {
+        (Some(s), _) => format!("session {s}"),
+        (None, Some(_)) => "a session".to_string(),
+        (None, None) => "the veles command line".to_string(),
+    };
+    match &row.via_peer {
+        Some(n) => format!("{who} on node {n}"),
+        None => who,
     }
 }
 
@@ -1829,5 +2126,532 @@ mod tests {
             .lock_ok()
             .mail_waiting_in_chain("cyc-a", &m.chain_id)
             .unwrap());
+    }
+
+    // ── mail that arrives during a turn (USER 2026-11-17) ──
+
+    /// A provider that answers `rounds` in order, keeps every request,
+    /// and runs `before(n)` before it answers the n-th (from 0).
+    fn scripted_provider(
+        rounds: Vec<String>,
+        before: impl Fn(usize) + Send + 'static,
+    ) -> (String, Arc<Mutex<Vec<String>>>) {
+        use std::io::{Read, Write};
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let addr = listener.local_addr().unwrap();
+        let seen = Arc::new(Mutex::new(Vec::<String>::new()));
+        let s = seen.clone();
+        std::thread::spawn(move || {
+            for (n, body) in rounds.into_iter().enumerate() {
+                let Some(Ok(mut sock)) = listener.incoming().next() else {
+                    return;
+                };
+                let _ = sock.set_read_timeout(Some(Duration::from_secs(10)));
+                let mut raw = Vec::new();
+                let mut chunk = [0u8; 16384];
+                while let Ok(k) = sock.read(&mut chunk) {
+                    if k == 0 {
+                        break;
+                    }
+                    raw.extend_from_slice(&chunk[..k]);
+                    if let Some(end) = raw.windows(4).position(|w| w == b"\r\n\r\n") {
+                        let head = String::from_utf8_lossy(&raw[..end]).to_lowercase();
+                        let len = head
+                            .split("content-length:")
+                            .nth(1)
+                            .and_then(|t| t.split(['\r', '\n']).next())
+                            .and_then(|t| t.trim().parse::<usize>().ok())
+                            .unwrap_or(0);
+                        if raw.len() >= end + 4 + len {
+                            break;
+                        }
+                    }
+                }
+                s.lock_ok().push(String::from_utf8_lossy(&raw).into_owned());
+                before(n);
+                let _ = sock.write_all(
+                    format!(
+                        "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                        body.len()
+                    )
+                    .as_bytes(),
+                );
+            }
+        });
+        (format!("http://{addr}/v1"), seen)
+    }
+
+    /// One provider round that calls `name` with `args`.
+    fn tool_round(call_id: &str, name: &str, args: serde_json::Value) -> String {
+        let chunk = serde_json::json!({"choices": [{"delta": {"tool_calls": [{
+            "index": 0, "id": call_id,
+            "function": {"name": name, "arguments": args.to_string()}
+        }]}}]});
+        format!(
+            "data: {{\"choices\":[{{\"delta\":{{\"role\":\"assistant\"}}}}]}}\n\ndata: {chunk}\n\ndata: [DONE]\n\n"
+        )
+    }
+
+    /// One provider round that answers `text`.
+    fn answer_round(text: &str) -> String {
+        let chunk = serde_json::json!({"choices": [{"delta": {"content": text}}]});
+        format!("data: {chunk}\n\ndata: [DONE]\n\n")
+    }
+
+    fn worker(session: &str) -> Sender {
+        Sender {
+            session: Some(session.into()),
+            title: Some("the worker".into()),
+            principal: None,
+        }
+    }
+
+    fn a_guest(session: &str) -> Sender {
+        Sender {
+            session: Some(session.into()),
+            title: Some("a guest".into()),
+            principal: Some(Principal::known("irc:guest", Role::Guest)),
+        }
+    }
+
+    #[test]
+    fn a_running_turn_takes_only_the_mail_whose_sender_covers_its_rights() {
+        let (st, _dir) = store();
+        {
+            let s = st.lock_ok();
+            for sid in ["take-t", "take-owner", "take-guest"] {
+                s.create_session(sid).unwrap();
+            }
+        }
+        let a = send(&st, &worker("take-owner"), "take-t", "owner says hi").unwrap();
+        let b = send(&st, &a_guest("take-guest"), "take-t", "guest says hi").unwrap();
+        let j = join_send(&st, &owner(), "take-t", "a joined line").unwrap();
+        // A joiner below the turn: its line is not mail either, so it is
+        // neither taken nor listed as mail waiting for the turn to end.
+        let mut helper = Principal::known("irc:helper", Role::User);
+        helper.caps = [Cap::SessionJoin].into_iter().collect();
+        let k = join_send(&st, &helper, "take-t", "a lesser joined line").unwrap();
+        turn_begin("take-t");
+
+        // An owner turn: the owner's mail comes in, the guest's waits,
+        // and the joined lines are neither (each is its own turn).
+        let got = take_waiting(&st, "take-t", None);
+        assert_eq!(got.taken.len(), 1, "{got:?}");
+        assert_eq!(got.taken[0].row.id, a.id);
+        assert_eq!(got.taken[0].text, "owner says hi");
+        assert_eq!(got.taken[0].body, render_body(&a.id, "owner says hi"));
+        assert_eq!(got.held.len(), 1, "{got:?}");
+        assert_eq!(got.held[0].row.id, b.id);
+        assert!(got.held[0].fresh);
+        assert_eq!(got.held[0].chars, "guest says hi".chars().count());
+        {
+            let s = st.lock_ok();
+            assert_eq!(s.mail_get(&a.id).unwrap().unwrap().state, "running");
+            assert_eq!(s.mail_get(&b.id).unwrap().unwrap().state, "queued");
+            assert_eq!(s.mail_get(&j.id).unwrap().unwrap().state, "queued");
+            assert_eq!(s.mail_get(&k.id).unwrap().unwrap().state, "queued");
+            let bodies: Vec<String> = s
+                .queue_items("take-t")
+                .unwrap()
+                .into_iter()
+                .map(|q| q.body)
+                .collect();
+            assert_eq!(bodies.len(), 3, "the taken mail left the queue: {bodies:?}");
+            assert!(!bodies.iter().any(|q| q.contains("owner says hi")));
+        }
+        assert_eq!(current("take-t").map(|c| c.mail_id), Some(a.id.clone()));
+        assert_eq!(taken_ids("take-t"), vec![a.id.clone()]);
+
+        // Seen again: nothing taken twice, the guest's still waits.
+        let again = take_waiting(&st, "take-t", None);
+        assert!(again.taken.is_empty());
+        assert_eq!(again.held.len(), 1);
+        assert!(!again.held[0].fresh, "told once per turn");
+
+        // The turn ends: its final answer is the reply to what it took;
+        // the guest's mail still waits to run as its own turn.
+        turn_end(&st, "take-t", Ok("the answer"));
+        {
+            let s = st.lock_ok();
+            let row = s.mail_get(&a.id).unwrap().unwrap();
+            assert_eq!(
+                (row.state.as_str(), row.reply.as_deref()),
+                ("answered", Some("the answer"))
+            );
+            assert_eq!(s.mail_get(&b.id).unwrap().unwrap().state, "queued");
+        }
+        assert!(
+            current("take-t").is_none(),
+            "the chain marker goes with the turn"
+        );
+        assert!(taken_ids("take-t").is_empty());
+
+        // A guest's turn has no more than the guest: that mail may enter.
+        let low = take_waiting(
+            &st,
+            "take-t",
+            Some(&Principal::known("irc:other", Role::Guest)),
+        );
+        assert_eq!(low.taken.len(), 1);
+        assert_eq!(low.taken[0].row.id, b.id);
+        turn_end(&st, "take-t", Ok("x"));
+    }
+
+    #[test]
+    fn mail_a_stopped_turn_took_and_did_not_answer_goes_back_in_the_queue() {
+        let (st, _dir) = store();
+        {
+            let s = st.lock_ok();
+            s.create_session("back-t").unwrap();
+            s.create_session("back-from").unwrap();
+        }
+        let a = send(&st, &worker("back-from"), "back-t", "first").unwrap();
+        let b = send(&st, &worker("back-from"), "back-t", "second").unwrap();
+        turn_begin("back-t");
+        assert_eq!(take_waiting(&st, "back-t", None).taken.len(), 2);
+        // `b` was answered during the turn (the sessions tool's reply).
+        let row_b = st.lock_ok().mail_get(&b.id).unwrap().unwrap();
+        finish(&st, &row_b, Ok("answered early"));
+        turn_end(
+            &st,
+            "back-t",
+            Err("the turn was stopped before it answered".into()),
+        );
+        let s = st.lock_ok();
+        assert_eq!(s.mail_get(&a.id).unwrap().unwrap().state, "queued");
+        let q = s.queue_items("back-t").unwrap();
+        assert_eq!(q.len(), 1, "{q:?}");
+        assert_eq!(
+            (q[0].state.as_str(), q[0].kind.as_deref()),
+            ("pending", Some("mail"))
+        );
+        assert_eq!(
+            q[0].body,
+            render_body(&a.id, "first"),
+            "the same mail, claimable"
+        );
+        let row_b = s.mail_get(&b.id).unwrap().unwrap();
+        assert_eq!(
+            (row_b.state.as_str(), row_b.reply.as_deref()),
+            ("answered", Some("answered early")),
+            "an answered mail stays answered"
+        );
+        drop(s);
+        // Run as its own turn now, it is claimed like any mail.
+        let item = st.lock_ok().queue_take_next("back-t").unwrap().unwrap();
+        assert!(matches!(
+            claim(&st.lock_ok(), "back-t", &item.body),
+            Claim::Mail(_)
+        ));
+    }
+
+    #[test]
+    fn mail_left_running_by_a_dead_turn_is_failed_when_the_next_turn_ends() {
+        let (st, _dir) = store();
+        {
+            let s = st.lock_ok();
+            s.create_session("orph-t").unwrap();
+            s.create_session("orph-from").unwrap();
+        }
+        // Taken into a turn that then died: running, no queue row.
+        let dead = send(&st, &worker("orph-from"), "orph-t", "lost").unwrap();
+        // A drainer's row the queue will re-run: running, row `running`.
+        let rerun = send(&st, &worker("orph-from"), "orph-t", "re-run").unwrap();
+        {
+            let s = st.lock_ok();
+            let (seq, body) = s.mail_waiting("orph-t").unwrap().remove(0);
+            assert!(s
+                .mail_take("orph-t", seq, &dead.id, &body_sha(&body))
+                .unwrap()
+                .is_some());
+            let item = s.queue_take_next("orph-t").unwrap().unwrap();
+            assert!(matches!(claim(&s, "orph-t", &item.body), Claim::Mail(_)));
+        }
+        // Claimed after this turn began: not an earlier turn's.
+        sweep_orphans(&st, "orph-t", "2000-01-01 00:00:00");
+        assert_eq!(
+            st.lock_ok().mail_get(&dead.id).unwrap().unwrap().state,
+            "running"
+        );
+        sweep_orphans(&st, "orph-t", "9999-12-31 23:59:59");
+        let s = st.lock_ok();
+        let row = s.mail_get(&dead.id).unwrap().unwrap();
+        assert_eq!(row.state, "failed");
+        assert!(row
+            .reply
+            .unwrap_or_default()
+            .contains("stopped or restarted"));
+        assert_eq!(
+            s.mail_get(&rerun.id).unwrap().unwrap().state,
+            "running",
+            "the queue re-runs that one"
+        );
+    }
+
+    /// Mail sent while a turn runs reaches the model with the next tool
+    /// result: an owner's at once, as mail with its provenance; a guest's
+    /// never into an owner turn. The final answer is the reply.
+    #[tokio::test]
+    async fn mail_reaches_a_running_turn_at_its_next_tool_result() {
+        let (_home, _g) = crate::testenv::scratch_home();
+        let target = "arrive-target";
+        let (url, seen) = scripted_provider(
+            vec![
+                tool_round("c1", "read_file", serde_json::json!({})),
+                answer_round("done"),
+            ],
+            |_| {},
+        );
+        let agent = crate::testenv::mock_agent(&url, target);
+        let st = agent.store.clone();
+        {
+            let s = st.lock_ok();
+            for sid in [target, "arrive-worker", "arrive-guest"] {
+                let _ = s.create_session(sid);
+            }
+        }
+        let from_worker =
+            send(&st, &worker("arrive-worker"), target, "the build is green").unwrap();
+        let from_guest = send(&st, &a_guest("arrive-guest"), target, "delete everything").unwrap();
+        let mut history = Vec::new();
+        let mut notes = Vec::new();
+        let res = agent
+            .run_turn(&mut history, "go", None, |ev| {
+                if let crate::providers::StreamEvent::Note(n) = ev {
+                    notes.push(n.summary);
+                }
+            })
+            .await
+            .unwrap();
+        assert_eq!(res.reply, "done");
+        let reqs = seen.lock_ok().clone();
+        assert_eq!(reqs.len(), 2, "two provider rounds");
+        assert!(
+            !reqs[0].contains("the build is green"),
+            "it arrives with a tool result"
+        );
+        assert!(
+            reqs[1].contains("the build is green"),
+            "the next round has it"
+        );
+        assert!(
+            reqs[1].contains(&format!("mail {} from session", from_worker.id)),
+            "with its provenance"
+        );
+        assert!(reqs[1].contains("action=reply"), "and how to answer it");
+        assert!(!reqs[1].contains("[veles mail "), "never the header");
+        assert!(
+            !reqs.iter().any(|r| r.contains("delete everything")),
+            "a guest's text never enters an owner turn"
+        );
+        {
+            let s = st.lock_ok();
+            let row = s.mail_get(&from_worker.id).unwrap().unwrap();
+            assert_eq!(
+                (row.state.as_str(), row.reply.as_deref()),
+                ("answered", Some("done"))
+            );
+            assert_eq!(s.mail_get(&from_guest.id).unwrap().unwrap().state, "queued");
+            assert_eq!(s.queue_items(target).unwrap().len(), 1, "the guest's waits");
+        }
+        let hist = st.lock_ok().load_history(target).unwrap();
+        assert!(hist
+            .iter()
+            .any(|m| m.injection.as_deref() == Some("origin:mail")
+                && m.content
+                    .starts_with(&format!("[origin] mail {}", from_worker.id))));
+        assert!(hist.iter().any(|m| m.content == "the build is green"
+            && m.injection.as_deref() == Some("mail:arrive-worker")));
+        assert!(
+            notes.iter().any(|n| n.contains("arrived during the turn")),
+            "{notes:?}"
+        );
+        assert!(
+            notes
+                .iter()
+                .any(|n| n.contains("waits for this turn to end")),
+            "{notes:?}"
+        );
+    }
+
+    /// A turn that ends fails the mail an earlier turn in its session
+    /// was running when its process died, so the sender stops waiting
+    /// and sees why.
+    #[tokio::test]
+    async fn a_turn_ending_fails_mail_an_earlier_turn_left_running() {
+        let (_home, _g) = crate::testenv::scratch_home();
+        let target = "orphan-turn-target";
+        let (url, _seen) = scripted_provider(vec![answer_round("hello")], |_| {});
+        let agent = crate::testenv::mock_agent(&url, target);
+        let st = agent.store.clone();
+        {
+            let s = st.lock_ok();
+            let _ = s.create_session(target);
+            let _ = s.create_session("orphan-turn-worker");
+        }
+        let m = send(&st, &worker("orphan-turn-worker"), target, "lost").unwrap();
+        {
+            let s = st.lock_ok();
+            let (seq, body) = s.mail_waiting(target).unwrap().remove(0);
+            assert!(s
+                .mail_take(target, seq, &m.id, &body_sha(&body))
+                .unwrap()
+                .is_some());
+        }
+        // The timestamps are seconds: the next turn begins after it.
+        tokio::time::sleep(Duration::from_millis(1100)).await;
+        let mut history = Vec::new();
+        agent
+            .run_turn(&mut history, "hi", None, |_| {})
+            .await
+            .unwrap();
+        let row = st.lock_ok().mail_get(&m.id).unwrap().unwrap();
+        assert_eq!(row.state, "failed");
+        assert!(row
+            .reply
+            .unwrap_or_default()
+            .contains("stopped or restarted"));
+    }
+
+    /// Switched off, mail waits for the turn's end as it used to.
+    #[tokio::test]
+    async fn with_mail_injection_off_mail_waits_for_the_turn_to_end() {
+        let (_home, _g) = crate::testenv::scratch_home();
+        let target = "arrive-off-target";
+        let (url, seen) = scripted_provider(
+            vec![
+                tool_round("c1", "read_file", serde_json::json!({})),
+                answer_round("done"),
+            ],
+            |_| {},
+        );
+        let agent = crate::testenv::mock_agent_with(&url, target, |c| {
+            c.agent.injections.mail = false;
+        });
+        let st = agent.store.clone();
+        {
+            let s = st.lock_ok();
+            let _ = s.create_session(target);
+            let _ = s.create_session("arrive-off-worker");
+        }
+        let m = send(
+            &st,
+            &worker("arrive-off-worker"),
+            target,
+            "the build is green",
+        )
+        .unwrap();
+        let mut history = Vec::new();
+        agent
+            .run_turn(&mut history, "go", None, |_| {})
+            .await
+            .unwrap();
+        assert!(!seen
+            .lock_ok()
+            .iter()
+            .any(|r| r.contains("the build is green")));
+        assert_eq!(
+            st.lock_ok().mail_get(&m.id).unwrap().unwrap().state,
+            "queued"
+        );
+    }
+
+    /// The turn answers what it took in with the sessions tool, and its
+    /// final answer goes to its own person, not to the mail as well.
+    #[tokio::test]
+    async fn a_turn_answers_mail_it_took_in_with_reply() {
+        let (_home, _g) = crate::testenv::scratch_home();
+        let target = "reply-target";
+        let id = new_id();
+        let call = serde_json::json!({"name": "sessions", "arguments": {
+            "action": "reply", "mail": id, "text": "answered early"}});
+        let (url, _seen) = scripted_provider(
+            vec![
+                tool_round("c1", "read_file", serde_json::json!({})),
+                tool_round("c2", "tool_call", call),
+                answer_round("done"),
+            ],
+            |_| {},
+        );
+        let agent = crate::testenv::mock_agent(&url, target);
+        let st = agent.store.clone();
+        {
+            let s = st.lock_ok();
+            let _ = s.create_session(target);
+            let _ = s.create_session("reply-worker");
+        }
+        let body = render_body(&id, "is the build green?");
+        st.lock_ok()
+            .mail_enqueue(&crate::store::NewMail {
+                id: &id,
+                to_session: target,
+                from_session: Some("reply-worker"),
+                from_title: None,
+                from_node: None,
+                from_pid: None,
+                from_principal: None,
+                via_peer: None,
+                chain_id: &id,
+                hop: 0,
+                body: &body,
+                body_sha: &body_sha(&body),
+                kind: KIND_MAIL,
+            })
+            .unwrap();
+        let mut history = Vec::new();
+        let res = agent
+            .run_turn(&mut history, "go", None, |_| {})
+            .await
+            .unwrap();
+        assert_eq!(res.reply, "done");
+        let row = st.lock_ok().mail_get(&id).unwrap().unwrap();
+        assert_eq!(
+            (row.state.as_str(), row.reply.as_deref()),
+            ("answered", Some("answered early"))
+        );
+    }
+
+    /// A turn stopped after it took mail in has answered nothing: the
+    /// mail goes back in the queue and runs as a turn of its own.
+    #[tokio::test]
+    async fn mail_taken_into_a_turn_that_is_stopped_is_queued_again() {
+        let (_home, _g) = crate::testenv::scratch_home();
+        let target = "stop-target";
+        let cancel = crate::providers::CancelToken::new();
+        let stop = cancel.clone();
+        let (url, seen) = scripted_provider(
+            vec![
+                tool_round("c1", "read_file", serde_json::json!({})),
+                answer_round("half"),
+            ],
+            move |n| {
+                if n == 1 {
+                    stop.cancel();
+                }
+            },
+        );
+        let agent = crate::testenv::mock_agent(&url, target);
+        let st = agent.store.clone();
+        {
+            let s = st.lock_ok();
+            let _ = s.create_session(target);
+            let _ = s.create_session("stop-worker");
+        }
+        let m = send(&st, &worker("stop-worker"), target, "the build is green").unwrap();
+        let mut history = Vec::new();
+        let res = agent
+            .run_turn(&mut history, "go", Some(cancel), |_| {})
+            .await
+            .unwrap();
+        assert!(res.interrupted);
+        assert!(
+            seen.lock_ok()[1].contains("the build is green"),
+            "it was taken in"
+        );
+        let s = st.lock_ok();
+        assert_eq!(s.mail_get(&m.id).unwrap().unwrap().state, "queued");
+        let q = s.queue_items(target).unwrap();
+        assert_eq!(q.len(), 1, "{q:?}");
+        assert_eq!(q[0].body, render_body(&m.id, "the build is green"));
     }
 }

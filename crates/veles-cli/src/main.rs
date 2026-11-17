@@ -1071,8 +1071,9 @@ enum SessionAction {
         #[arg(long)]
         remote: bool,
     },
-    /// Send a session mail: the text runs as that session's next turn,
-    /// marked as mail from the command line (not from its user). A
+    /// Send a session mail, marked as mail from the command line (not
+    /// from its user). A session in the middle of a turn takes it in at
+    /// its next tool result; an idle one runs it as its next turn. A
     /// session nobody has open keeps it until it is next opened.
     Send {
         /// A session id, a unique id prefix, or an exact title — or

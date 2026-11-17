@@ -4921,6 +4921,11 @@ impl Agent {
     {
         self.migration_fence(Some(user_text))?;
         let mut registered = RunRegistration::new(self, None);
+        // Mail this turn takes in at its tool rounds (`crate::mail::
+        // take_waiting`) is finished when it ends; `started` is what
+        // tells an earlier turn's unfinished mail from this one's.
+        crate::mail::turn_begin(&self.session_id);
+        let started = chrono::Utc::now().format("%Y-%m-%d %H:%M:%S").to_string();
         // Session mail (`crate::mail`): a queued body another session sent.
         // Recognised HERE, at the one point every surface's turn passes,
         // so no drainer can run a mail without its rules — including the
@@ -5032,9 +5037,16 @@ impl Agent {
         )
         .await;
         self.publish_verdict(&res, &display_reasoning);
+        let outcome = match &res {
+            Ok(r) if r.interrupted => Err("the turn was stopped before it answered".to_string()),
+            Ok(r) => Ok(r.reply.as_str()),
+            Err(e) => Err(format!("{e:#}")),
+        };
+        crate::mail::turn_end(&self.store, &self.session_id, outcome);
         if let Some(g) = mail_turn {
             g.finish(&res);
         }
+        crate::mail::sweep_orphans(&self.store, &self.session_id, &started);
         registered.finish();
         res
     }
@@ -6313,6 +6325,10 @@ impl Agent {
                             ChatMessage::user(&format!("[STEER] {steer}")).with_injection("steer");
                         self.push_persist(history, steer_msg);
                     }
+                    // Session mail that arrived during the round reaches
+                    // the turn here, at the nearest tool result, instead
+                    // of waiting for the turn to end.
+                    self.take_mail_into_turn(history);
                     // Background tasks: inject completed subagent, shell
                     // and monitor results at the turn boundary — the
                     // conversation learns the result without the user
@@ -7242,6 +7258,66 @@ impl Agent {
     /// and the desktop's wake loops (`session_wake`) start a
     /// `run_background_wake_turn` when a completion lands with no turn
     /// in flight, and THAT turn's preamble is this drain.
+    /// Take the session mail waiting for this session into the running
+    /// turn (`crate::mail::take_waiting`): each mail whose sender's
+    /// rights cover the turn's enters the context as an origin row and
+    /// its text, the shape a mail turn has, so the transcript shows it
+    /// as mail. Mail from a sender with less waits for the turn to end
+    /// and runs as its own clamped turn; the person watching is told it
+    /// waits, and the model is not handed anything from it.
+    ///
+    /// `agent.injections.mail` off: mail waits for the turn's end as it
+    /// used to, and `sessions action=inbox` still fetches it on demand.
+    fn take_mail_into_turn(&self, history: &mut Vec<ChatMessage>) {
+        if !self.cfg.agent.injections.mail {
+            return;
+        }
+        let running = self.principal();
+        let arrived = crate::mail::take_waiting(&self.store, &self.session_id, running.as_deref());
+        let toggle = || crate::notes::NoteToggle {
+            key: "agent.injections.mail".into(),
+            value: self.cfg.agent.injections.mail.to_string(),
+            choices: vec![],
+            help: "session mail reaches a running turn at its next tool result".into(),
+        };
+        for t in arrived.taken {
+            let origin = ChatMessage::user(&crate::mail::arrival_origin_line(&t.row))
+                .with_injection("origin:mail");
+            self.push_persist(history, origin);
+            let tag = crate::mail::injection_tag(&t.row);
+            self.push_persist(history, ChatMessage::user(&t.text).with_injection(&tag));
+            self.queue_note(
+                crate::notes::EngineNote::new(
+                    crate::notes::NoteKind::Injection,
+                    format!(
+                        "injected: mail {} from {} arrived during the turn",
+                        t.row.id,
+                        crate::mail::held_sender(&t.row)
+                    ),
+                )
+                .with_toggle(toggle()),
+            );
+        }
+        for h in arrived.held.into_iter().filter(|h| h.fresh) {
+            self.queue_note(
+                crate::notes::EngineNote::new(
+                    crate::notes::NoteKind::Injection,
+                    format!(
+                        "mail {} from {} waits for this turn to end",
+                        h.row.id,
+                        crate::mail::held_sender(&h.row)
+                    ),
+                )
+                .with_detail(
+                    "Its sender has fewer rights than this turn, so its text is not given to \
+                     this turn. It runs as a turn of its own when this one ends, with the \
+                     sender's rights.",
+                )
+                .with_toggle(toggle()),
+            );
+        }
+    }
+
     fn drain_background_events(&self, history: &mut Vec<ChatMessage>) {
         for ev in crate::delegate::take_background_events(&self.session_id) {
             let summary = ev.result["summary"]

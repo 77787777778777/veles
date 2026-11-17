@@ -2,8 +2,9 @@
 
 Veles sessions run in several processes at once: the gateway (its chats
 and the desktop's sessions), every `veles chat` TUI or REPL, and their
-delegate children. Session mail lets one of them put text into another,
-where it runs as that session's next turn — the way Claude Code's agents
+delegate children. Session mail lets one of them put text into another:
+a session in the middle of a turn takes it in at its next tool result,
+and an idle one runs it as its next turn — the way Claude Code's agents
 message each other. A session on the laptop can ask the phone's session
 what is on its screen; a long-running worker can tell the chat you are
 in that it is done; a shell script can hand a running session a job.
@@ -18,6 +19,13 @@ it through `tool_search`):
 - `send` — `to` is a session id, a unique id prefix, or an exact title;
   `text` is the message. `wait_secs` (up to 600) waits for the answer.
 - `check` — the state and answer of a mail it sent, by mail id.
+- `inbox` — the mail sent to its own session: what is waiting and may
+  enter the running turn is handed over at once, text and all; what
+  waits for the turn to end (its sender has fewer rights) is named
+  without its text; then the mail the turn holds unanswered and the
+  latest answered.
+- `reply` — answers a mail the turn holds (`mail` is its id, `text` the
+  answer). A mail is answered once.
 
 From a shell:
 
@@ -32,11 +40,26 @@ answer came in time.
 
 ## What the receiving session sees
 
-The text arrives as the session's next turn, after a provenance line the
-model reads: it is mail from session “title” (id), written by another
+An idle session runs the mail as its next turn, after a provenance line
+the model reads: it is mail from session “title” (id), written by another
 agent or program, not by the user. The turn's final answer is the mail's
 reply — returned to a sender that waits, and kept for `check` otherwise.
 To say more, the receiver sends mail of its own.
+
+A session in the middle of a turn takes the mail in with its next tool
+result, the way a steer or a finished background task arrives, after a
+provenance line saying it arrived during the turn (USER, 2026-11-17:
+"Why do I have to stop and start a turn to deliver session mail? … It
+should arrive at the nearest tool call result probably but also there
+should be a tool for sessions to fetch their own mail"). The agent
+answers it with `sessions` `reply` whenever it has the answer, and goes
+on with its turn. A mail it does not answer gets the turn's final
+answer as its reply. A turn that is stopped or fails before it answers
+puts the mail back in the queue, where it runs as a turn of its own.
+The transcript shows it as mail, and the person watching gets a note
+(⇒) for each one. `[agent.injections] mail = false` turns this off:
+mail then waits for the turn to end, and `sessions` `inbox` still
+fetches it.
 
 The desktop paints it as `✉ message from session <id>` with the first
 line in view; the TUI labels it `✉ mail from <id>`; the REPL prints
@@ -47,13 +70,20 @@ line in view; the TUI labels it `✉ mail from <id>`; the REPL prints
 - **Rights.** The turn a mail starts runs with the lower of the sender's
   and the receiver's rights, for the whole turn: the receiving session's
   own person writing meanwhile does not lift it. A Telegram guest's
-  session can never make the owner's session use owner tools. The `sessions` tool itself is
+  session can never make the owner's session use owner tools. Mail
+  enters a turn that is already running only when its sender's rights
+  cover that turn's, so its text is never acted on with more than the
+  sender has. Mail from a sender with less waits; the running turn is
+  not given its text, and the person watching is told it waits. The `sessions` tool itself is
   owner-only (`[tool_caps] sessions = "<cap>"` widens it). From a shell,
   `veles session send` is the owner — unless `VELES_SESSION_PRINCIPAL`
   names someone (a delegate child shelling out), whose rights the mail
   then carries.
 - **Delivery.** The process holding the session runs the mail at once
-  when it is idle, or at the end of the turn it is running. A session
+  when it is idle. A turn running there takes it in at its next tool
+  result when the sender's rights cover the turn's; otherwise the mail
+  waits for that turn to end and runs as its own. A turn with no tool
+  call left to make ends before the mail can arrive, and it runs next. A session
   nobody holds keeps its mail queued until it is next opened: when a
   desktop window opens it, a TUI or REPL resumes it, or its chat's next
   message arrives. Mail is never run by a process that does not hold the
@@ -159,7 +189,12 @@ queue every surface already drains at its turn boundaries — and a
 answer. The queued text starts with `[veles mail <id>]`; `Agent::run_turn`
 recognises it only when that mail is addressed to this session and the
 text is exactly what was queued, strips the header, clamps the rights,
-and records the answer.
+and records the answer. After each tool round the running turn reads its
+session's pending mail rows (`mail::take_waiting`): one it may take in
+leaves the queue and becomes `running` in one transaction, and when the
+turn ends it is answered (or put back, if the turn stopped). A mail left
+`running` by a turn whose process died is marked failed, with the
+reason, when the next turn in that session ends.
 
 Each process that holds sessions binds `<data dir>/run/<pid>.sock`
 (0700, same-uid peers only) and answers `open_sessions`, `nudge` and

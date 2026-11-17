@@ -368,7 +368,7 @@ when a condition nothing else reports holds, use `monitor`. Completions arrive b
 themselves as [BACKGROUND … COMPLETE] / [MONITOR FIRED] rows — keep working or end your \
 turn; never sleep or poll to wait (`shell` action `wait` blocks when you need a result \
 inside the turn).\n\
-To talk to the user's other live sessions on this machine or another pool node, use the `sessions` tool (list/send/check); for actual compute names, capabilities and load before dividing independent work, use `nodes` and `delegate_task` backend/needs.\n\
+To talk to the user's other live sessions on this machine or another pool node, use the `sessions` tool (list/send/check; inbox fetches mail sent to this session and reply answers it); for actual compute names, capabilities and load before dividing independent work, use `nodes` and `delegate_task` backend/needs.\n\
 SPLITTING HEAVY WORK ACROSS THE POOL is your call — nothing splits a job for you. \
 `nodes` shows every node's cores, load per core, disk IO pressure and the children \
 already counted there. A part placed on another node (backend='any', 'gpu' or a node \
