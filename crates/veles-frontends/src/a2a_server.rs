@@ -1382,6 +1382,9 @@ impl A2AServer {
                             .unwrap_or_else(|| ask.from_node.clone());
                         // ASK-2: the child row nests under this session.
                         let parent = ask.parent_session.clone();
+                        let limit = ask.time_limit_secs.map(|s| {
+                            veles_core::delegate::TimeLimit::new(std::time::Duration::from_secs(s))
+                        });
                         veles_core::rt::spawn_blocking(move || {
                             veles_core::delegate::run_remote_child(
                                 &goal,
@@ -1393,6 +1396,8 @@ impl A2AServer {
                                 token,
                                 &origin,
                                 parent.as_deref(),
+                                // The limit the placing call set; none = none.
+                                limit,
                             )
                         })
                         .await
@@ -3676,6 +3681,7 @@ mod b3a_pins {
             wire_task_id: None,
             ticket: None,
             parent_session: None,
+            time_limit_secs: None,
         }
     }
 

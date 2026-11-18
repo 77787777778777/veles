@@ -32,15 +32,85 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex, OnceLock};
 use std::time::Duration;
 
-/// Hard wall-clock cap for one child (soft in spirit: we kill and report,
-/// the way hermes reports child timeouts rather than hanging forever).
-pub const CHILD_TIMEOUT_SECS: u64 = 900;
+// ── how long a child may run ─────────────────────────────────────────
+//
+// USER 2026-11-17: "this is a priority 0 idiocy, fix this as soon as
+// possible". Every child used to be killed at a fixed 900 s, a constant
+// copied from hermes in M4 (`ad7714f1`) that no argument, setting or
+// line of the tool's description mentioned. A goonix session's children
+// (whole plan phases: Guix builds, test daemons, a model that thinks for
+// four minutes a call) were killed 18 times out of 20, each with no
+// summary, the parent re-spawning them blind.
+//
+// A child now runs until it finishes, is cancelled, or meets a limit
+// someone SET: the call's `time_limit_minutes`, or `[agent]
+// subagent_time_limit_minutes`. Hangs are bounded where they happen:
+// every tool call has its own timeout, every provider call its own.
+// Before a set limit, the child is mailed to wrap up; at it, asked to
+// stop (it cancels its turn and ends its background shells), killed if
+// it has not exited after a grace, and the parent gets its last message.
+
+/// A limit on one child's run, and when it is warned and how long it is
+/// given to stop. Production values come from [`TimeLimit::new`]; tests
+/// build small ones.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct TimeLimit {
+    /// The child is asked to stop this long after it started.
+    pub limit: Duration,
+    /// The wrap-up mail goes this long after it started.
+    pub warn_at: Duration,
+    /// Between the stop request and the kill.
+    pub grace: Duration,
+}
+
+/// Between a stop request (a cancel, or a set limit) and the kill.
+pub const STOP_GRACE: Duration = Duration::from_secs(20);
+
+impl TimeLimit {
+    /// A limit of `limit`, warned a fifth of it before (at most five
+    /// minutes before), with the standard grace.
+    pub fn new(limit: Duration) -> Self {
+        let before = (limit / 5).min(Duration::from_secs(300));
+        Self {
+            limit,
+            warn_at: limit - before,
+            grace: STOP_GRACE,
+        }
+    }
+
+    /// The limit for one call: the call's own `time_limit_minutes`
+    /// when it gave one (0 = none), else `[agent]
+    /// subagent_time_limit_minutes` (unset or 0 = none). `None` is the
+    /// default: no limit at all.
+    pub fn resolve(call_minutes: Option<u64>, config_minutes: Option<u64>) -> Option<Self> {
+        let minutes = match call_minutes {
+            Some(m) => m,
+            None => config_minutes.unwrap_or(0),
+        };
+        (minutes > 0).then(|| Self::new(Duration::from_secs(minutes.saturating_mul(60))))
+    }
+
+    /// [`Self::resolve`] against the loaded config.
+    pub fn for_call(call_minutes: Option<u64>) -> Option<Self> {
+        let config = crate::config::load()
+            .ok()
+            .and_then(|c| c.agent.subagent_time_limit_minutes);
+        Self::resolve(call_minutes, config)
+    }
+
+    /// The limit in whole minutes, for the messages that name it.
+    fn minutes(&self) -> u64 {
+        self.limit.as_secs().div_ceil(60)
+    }
+}
+
 /// The most parts one `tasks` batch takes (the split guidance in the
 /// prompt, this tool's description and the `nodes` tool names it).
 pub(crate) const MAX_BATCH: usize = 3;
 const OUTPUT_CAP: usize = 8_000;
 
 /// Why a child stopped without exiting on its own.
+#[derive(Clone, Copy)]
 enum Stop {
     Timeout,
     Cancelled,
@@ -130,6 +200,7 @@ impl DelegateTaskTool {
         provider: Option<&str>,
         reasoning: Option<&str>,
         raise: bool,
+        limit: Option<TimeLimit>,
     ) -> Result<Placed, String> {
         let (placement, claim) =
             match place(spec.cloned(), needs.to_vec(), workload, Vec::new()).await? {
@@ -165,6 +236,7 @@ impl DelegateTaskTool {
             provider.map(str::to_string),
             reasoning.map(str::to_string),
             ticket,
+            limit,
         );
         // C3: a foreground delegate runs inside a turn, so the Stop
         // button (agent::cancel_turn on THIS session) is the watch.
@@ -241,6 +313,7 @@ impl DelegateTaskTool {
     /// The ask a remote child is started from, carrying the CALLER's
     /// principal (serialized exactly as a local child's env gets it).
     /// Without it the peer ran the child as owner.
+    #[allow(clippy::too_many_arguments)]
     fn remote_ask(
         &self,
         goal: &str,
@@ -249,6 +322,7 @@ impl DelegateTaskTool {
         provider: Option<String>,
         reasoning: Option<String>,
         ticket: Option<String>,
+        limit: Option<TimeLimit>,
     ) -> crate::remotetask::RemoteTaskAsk {
         crate::remotetask::RemoteTaskAsk {
             from_node: crate::node::NodeIdentity::load(&crate::config::config_dir())
@@ -274,6 +348,7 @@ impl DelegateTaskTool {
             ticket,
             // The peer parents its child row to this session (ASK-2).
             parent_session: Some(self.session_id.clone()).filter(|s| !s.is_empty()),
+            time_limit_secs: limit.map(|l| l.limit.as_secs()),
         }
     }
 }
@@ -584,6 +659,8 @@ async fn run_placed_child(
             cs.as_deref(),
             Some(cancel),
             Some(&claim),
+            ask.time_limit_secs
+                .map(|s| TimeLimit::new(Duration::from_secs(s))),
         );
         drop(claim);
         detour.stamp(&mut v);
@@ -1161,7 +1238,9 @@ fn reap_empty_child(child: Option<&str>) {
 /// blocking std::process, no nested runtime).
 #[cfg(all(test, unix))]
 fn run_child(goal: &str, context: &str, cancel: Option<CancelToken>) -> Value {
-    run_child_routed(goal, context, None, None, None, "", None, cancel, None)
+    run_child_routed(
+        goal, context, None, None, None, "", None, cancel, None, None,
+    )
 }
 
 /// Run a REMOTE peer's child locally (B4 placement): the a2a_server's
@@ -1202,6 +1281,8 @@ pub fn run_remote_child(
     // child row is parented to it through `remote_parent`, so it nests
     // under that session on the placer once this store replicates.
     parent: Option<&str>,
+    // The limit the placing node's call set (`RemoteTaskAsk::time_limit_secs`).
+    limit: Option<TimeLimit>,
 ) -> Value {
     if let Some(p) = principal {
         if let Err(e) = serde_json::from_str::<crate::acl::Principal>(p) {
@@ -1225,6 +1306,8 @@ pub fn run_remote_child(
         child_session.as_deref(),
         cancel,
         crate::placement::ChildOf::Peer(origin),
+        parent,
+        limit,
     );
     if let Some(cs) = &child_session {
         v["remote_child_session"] = json!(cs);
@@ -1307,6 +1390,8 @@ fn run_child_routed(
     // child (306787.b): its process takes the claim's row over, so the
     // child is counted once. None for a child nothing placed.
     claim: Option<&crate::placement::Claim>,
+    // A limit someone set (`TimeLimit::for_call`); `None` = none.
+    limit: Option<TimeLimit>,
 ) -> Value {
     // The child must answer to the SAME principal as the caller. A bare
     // `veles chat` IS the owner surface (that is what the CLI is: the
@@ -1329,6 +1414,8 @@ fn run_child_routed(
         child_session,
         cancel,
         crate::placement::ChildOf::Here(claim),
+        Some(parent_session),
+        limit,
     )
 }
 
@@ -1353,6 +1440,12 @@ fn run_child_as(
     child_session: Option<&str>,
     cancel: Option<CancelToken>,
     of: crate::placement::ChildOf<'_>,
+    // The session the child works for, when it is one of this node's: the
+    // wrap-up mail names it as its sender.
+    parent: Option<&str>,
+    // A limit someone set; `None` (the default) runs the child until it
+    // ends or is cancelled.
+    limit: Option<TimeLimit>,
 ) -> Value {
     let bin = match veles_binary() {
         Ok(b) => b,
@@ -1377,6 +1470,11 @@ fn run_child_as(
         .env("VELES_CHILD_DEPTH", "1")
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped());
+    // A tree of its own: the kill after a stop's grace ends what it left in
+    // its own group (all of it on Windows, where the job nests), and a
+    // Ctrl-C at the parent's terminal reaches the parent, whose cancel
+    // stops the child the graceful way below.
+    crate::platform::own_group_std(&mut command);
     if let Some(pe) = &principal_env {
         command.env(crate::acl::PRINCIPAL_ENV, pe);
     }
@@ -1409,49 +1507,89 @@ fn run_child_as(
 
     // Drain both pipes on helper threads so a chatty child can't deadlock
     // on a full pipe buffer while we wait.
-    let mut stdout_pipe = child.stdout.take().expect("stdout piped");
-    let mut stderr_pipe = child.stderr.take().expect("stderr piped");
-    let out_t = std::thread::spawn(move || {
-        let mut buf = Vec::new();
-        std::io::Read::read_to_end(&mut stdout_pipe, &mut buf).ok();
-        buf
-    });
-    let err_t = std::thread::spawn(move || {
-        let mut buf = Vec::new();
-        std::io::Read::read_to_end(&mut stderr_pipe, &mut buf).ok();
-        buf
-    });
+    let out_t = Drain::start(child.stdout.take().expect("stdout piped"));
+    let err_t = Drain::start(child.stderr.take().expect("stderr piped"));
 
-    // Poll for exit against the wall-clock cap.
-    let deadline = std::time::Instant::now() + Duration::from_secs(CHILD_TIMEOUT_SECS);
+    // Wait for the child to end on its own. A cancel, or a limit someone
+    // set, ASKS it to stop (`lifecycle::request_stop`: SIGTERM where there
+    // is one, which `chat -q` turns into a cancelled turn and its
+    // background shells ended); the kill comes only after the grace.
+    // There is no limit unless one was set (USER 2026-11-17, above).
+    let tree = crate::platform::adopt(child.id());
+    let started = std::time::Instant::now();
+    let mut warned = false;
+    let mut stopping: Option<(Stop, std::time::Instant)> = None;
+    let grace = limit.map(|l| l.grace).unwrap_or(STOP_GRACE);
     let status = loop {
         match child.try_wait() {
-            Ok(Some(s)) => break Ok(s),
-            Ok(None) => {
-                // Cancellation rides the loop that already enforces the
-                // deadline, and reuses the same kill. A cancel that only
-                // relabelled the registry row would leave the child
-                // running to its 900s cap -- which is exactly what a2a's
-                // tasks/cancel does, and why this is checked here.
-                if cancel.as_ref().is_some_and(|c| c.is_cancelled()) {
-                    let _ = child.kill();
-                    let _ = child.wait();
-                    break Err(Stop::Cancelled);
+            Ok(Some(s)) => {
+                // Windows: the job ends whatever the child left running
+                // (its shells' jobs nest in it). On unix the group is the
+                // child's own pid, reaped just now, so it is not signalled
+                // after the fact; the child ends its own shells.
+                #[cfg(windows)]
+                if let Some(t) = &tree {
+                    t.kill();
                 }
-                if std::time::Instant::now() >= deadline {
-                    let _ = child.kill();
-                    let _ = child.wait();
-                    break Err(Stop::Timeout);
+                break match stopping {
+                    Some((why, _)) => Err(why),
+                    None => Ok(s),
+                };
+            }
+            Ok(None) => {
+                let now = std::time::Instant::now();
+                match stopping {
+                    Some((why, since)) => {
+                        if now.duration_since(since) >= grace {
+                            if let Some(t) = &tree {
+                                t.kill();
+                            }
+                            let _ = child.kill();
+                            let _ = child.wait();
+                            break Err(why);
+                        }
+                    }
+                    None => {
+                        // Cancellation rides the same loop, so a cancel
+                        // stops the process rather than relabelling a
+                        // registry row (what a2a's tasks/cancel once did).
+                        let why = if cancel.as_ref().is_some_and(|c| c.is_cancelled()) {
+                            Some(Stop::Cancelled)
+                        } else if let Some(l) = limit {
+                            let ran = now.duration_since(started);
+                            if !warned && ran >= l.warn_at {
+                                warned = true;
+                                warn_of_limit(child_session, parent, principal_env.as_deref(), &l);
+                            }
+                            (ran >= l.limit).then_some(Stop::Timeout)
+                        } else {
+                            None
+                        };
+                        if let Some(why) = why {
+                            if crate::lifecycle::request_stop(child.id()) {
+                                stopping = Some((why, now));
+                            } else {
+                                // Nothing to ask (Windows, where a child has
+                                // no socket): the job ends the whole tree.
+                                if let Some(t) = &tree {
+                                    t.kill();
+                                }
+                                let _ = child.kill();
+                                let _ = child.wait();
+                                break Err(why);
+                            }
+                        }
+                    }
                 }
                 std::thread::sleep(Duration::from_millis(100));
             }
             Err(e) => return json!({"status": "error", "error": format!("wait failed: {e}")}),
         }
     };
-    let stdout = String::from_utf8_lossy(&out_t.join().unwrap_or_default())
+    let stdout = String::from_utf8_lossy(&out_t.finish(PIPE_WAIT))
         .trim()
         .to_string();
-    let stderr = String::from_utf8_lossy(&err_t.join().unwrap_or_default())
+    let stderr = String::from_utf8_lossy(&err_t.finish(PIPE_WAIT))
         .trim()
         .to_string();
     let stderr_tail: String = stderr
@@ -1500,20 +1638,144 @@ fn run_child_as(
                 "child_session": session_field,
             })
         }
-        Err(Stop::Timeout) => json!({
-            "status": "error",
-            "error": format!("child timed out after {CHILD_TIMEOUT_SECS}s"),
-            "stderr_tail": cap_output(&stderr_tail),
-            "child_session": session_field,
-        }),
-        // Distinct from "error": the caller asked for this, and the
-        // registry reports the task Cancelled rather than failed.
-        Err(Stop::Cancelled) => json!({
-            "status": "cancelled",
-            "error": "cancelled by request",
-            "stderr_tail": cap_output(&stderr_tail),
-            "child_session": session_field,
-        }),
+        Err(why) => {
+            let mut v = match why {
+                Stop::Timeout => json!({
+                    "status": "error",
+                    "error": format!(
+                        "stopped at its time limit of {} min, which the call's \
+                         time_limit_minutes or [agent] subagent_time_limit_minutes set; \
+                         its last message is last_message, its whole transcript \
+                         child_session",
+                        limit.map(|l| l.minutes()).unwrap_or_default()
+                    ),
+                }),
+                // Distinct from "error": the caller asked for this, and the
+                // registry reports the task Cancelled rather than failed.
+                Stop::Cancelled => json!({
+                    "status": "cancelled",
+                    "error": "cancelled by request",
+                }),
+            };
+            v["stderr_tail"] = json!(cap_output(&stderr_tail));
+            v["child_session"] = session_field;
+            // A stopped child used to come back with nothing but the
+            // word "timed out", and the parent spawned the same work again
+            // blind. What it said last is in its transcript; the reply a
+            // stopped `chat -q` still printed is the fallback.
+            if let Some(m) = last_words(child_session, &stdout) {
+                v["last_message"] = json!(cap_output(&m));
+            }
+            v
+        }
+    }
+}
+
+/// How long, once the child has exited, its output pipes are waited on.
+const PIPE_WAIT: Duration = Duration::from_secs(5);
+
+/// One of a child's output pipes, read on a helper thread (so a chatty
+/// child cannot block on a full pipe while we wait) into a buffer the
+/// waiter can take without the end of the pipe.
+///
+/// The pipe ends when every process holding it has closed it, not when
+/// the child exits: anything the child left running with its stdout
+/// keeps it open. Read to the end, the verdict waited for that process
+/// too — 300 s in this file's stop tests, where the fake child's helper
+/// `sleep 300` outlived it. [`Drain::finish`] waits a bounded time and
+/// takes what came.
+struct Drain {
+    buf: Arc<Mutex<Vec<u8>>>,
+    done: Arc<std::sync::atomic::AtomicBool>,
+}
+
+impl Drain {
+    fn start(mut pipe: impl std::io::Read + Send + 'static) -> Self {
+        let buf = Arc::new(Mutex::new(Vec::new()));
+        let done = Arc::new(std::sync::atomic::AtomicBool::new(false));
+        let (b, d) = (buf.clone(), done.clone());
+        std::thread::spawn(move || {
+            let mut chunk = [0u8; 8192];
+            loop {
+                match pipe.read(&mut chunk) {
+                    Ok(0) | Err(_) => break,
+                    Ok(n) => b.lock_ok().extend_from_slice(&chunk[..n]),
+                }
+            }
+            d.store(true, std::sync::atomic::Ordering::SeqCst);
+        });
+        Self { buf, done }
+    }
+
+    /// What was read, once the pipe ended or `wait` passed.
+    fn finish(self, wait: Duration) -> Vec<u8> {
+        let deadline = std::time::Instant::now() + wait;
+        while !self.done.load(std::sync::atomic::Ordering::SeqCst)
+            && std::time::Instant::now() < deadline
+        {
+            std::thread::sleep(Duration::from_millis(20));
+        }
+        std::mem::take(&mut *self.buf.lock_ok())
+    }
+}
+
+/// What a stopped child said last: its session's last assistant text,
+/// else what it printed.
+fn last_words(child_session: Option<&str>, stdout: &str) -> Option<String> {
+    let stored = child_session.and_then(|cs| {
+        let db = crate::config::veles_home().join("state.db");
+        crate::store::Store::open(&db)
+            .and_then(|s| s.last_assistant_text(cs))
+            .map_err(|e| tracing::warn!("delegate: reading {cs}'s last message failed: {e:#}"))
+            .ok()
+            .flatten()
+    });
+    stored.or_else(|| Some(stdout.to_string()).filter(|s| !s.trim().is_empty()))
+}
+
+/// The wrap-up mail before a set limit, to the child's session: it
+/// arrives at the child's next tool result (0.2.8's mid-turn mail). Sent
+/// as from the parent session with the CHILD's own rights, so it covers
+/// the child's turn and enters it. Best-effort: a child that does not
+/// read it is still stopped at the limit.
+fn warn_of_limit(
+    child_session: Option<&str>,
+    parent: Option<&str>,
+    principal_env: Option<&str>,
+    l: &TimeLimit,
+) {
+    let Some(cs) = child_session else { return };
+    let principal = match principal_env.map(serde_json::from_str::<crate::acl::Principal>) {
+        None => None,
+        Some(Ok(p)) => Some(p),
+        Some(Err(e)) => {
+            tracing::warn!("delegate: no wrap-up mail to {cs}: its principal does not parse: {e}");
+            return;
+        }
+    };
+    let left = l.limit.saturating_sub(l.warn_at).as_secs().div_ceil(60);
+    let text = format!(
+        "Time limit: this subagent run is limited to {} min and about {left} min are left. \
+         Start nothing new. Finish or stop what is in hand, then end your turn with your final \
+         summary: what is done and verified, what is not, and where the work is (files, \
+         branches, logs). At the limit you are stopped.",
+        l.minutes()
+    );
+    let db = crate::config::veles_home().join("state.db");
+    let store = match crate::store::Store::open(&db) {
+        Ok(s) => Arc::new(Mutex::new(s)),
+        Err(e) => {
+            tracing::warn!("delegate: no wrap-up mail to {cs}: {e:#}");
+            return;
+        }
+    };
+    let from = crate::mail::Sender {
+        session: parent.map(str::to_string).filter(|p| !p.is_empty()),
+        title: Some("the delegating session".into()),
+        principal,
+    };
+    if let Err(e) = crate::mail::send(&store, &from, cs, &text) {
+        tracing::warn!("delegate: the wrap-up mail to {cs} failed: {e:#}");
     }
 }
 
@@ -1544,6 +1806,8 @@ pub(crate) fn spawn_background(
     // A `backend='any'` child placed on THIS node (SI-7): held until it
     // finishes, so the next placement sees it here.
     claim: Option<crate::placement::Claim>,
+    // A limit someone set (`TimeLimit::for_call`); `None` = none.
+    limit: Option<TimeLimit>,
 ) -> u32 {
     let (child_id, cancel) = crate::tasks::start(TaskKind::Subagent, &goal, &parent);
     // Mint + stamp SYNCHRONOUSLY, before returning the task id: the
@@ -1581,6 +1845,7 @@ pub(crate) fn spawn_background(
                 cs_for_run.as_deref(),
                 Some(cancel),
                 claim.as_ref(),
+                limit,
             )
         })
         .await
@@ -1662,6 +1927,8 @@ pub fn spawn_background_child(goal: &str, parent_session: &str) -> u32 {
         true,
         crate::hooks::default_bus(),
         None,
+        // No call to give one: `[agent] subagent_time_limit_minutes`, if set.
+        TimeLimit::for_call(None),
     )
 }
 
@@ -1680,7 +1947,8 @@ impl crate::tools::Tool for DelegateTaskTool {
          'agent': <name> runs a DEFINED subagent (from ./.veles/agents/*.md or \
          ~/.config/veles/agents/*.md — /agents lists them): its profile body becomes the \
          child's context and its model/provider/reasoning frontmatter routes the child. \
-         Children CANNOT delegate further or ask questions. Child summaries are \
+         Children CANNOT delegate further or ask questions; no time limit unless 'time_limit_minutes' \
+         sets one. Child summaries are \
          SELF-REPORTS: verify external side effects (files, URLs, uploads) yourself \
          before reporting success. Children run on the DEFAULT route (`/defaults \
          model`), NOT on this session's. Pass 'model'/'provider'/'reasoning' to route \
@@ -1715,6 +1983,7 @@ impl crate::tools::Tool for DelegateTaskTool {
                 "needs": {"type": "array", "items": {"type": "string"}, "description": "Programs the child's node must have, e.g. [\"rg\"] (/nodes lists them). Alone: any node with them."},
                 "raise": {"type": "boolean", "description": "With a node-name backend: ask the owner to sign a ticket so the child runs there with the caller's rights, on that node's host, not at the User level in its sandbox. The owner reads goal and context first."},
                 "background": {"type": "boolean", "description": "Return immediately; the child's summary arrives as a [BACKGROUND CHILD COMPLETE] message when it finishes (use for long tasks you don't need to block on)"},
+                "time_limit_minutes": {"type": "integer", "minimum": 0, "description": "Stop the child after this many minutes (default: no limit; 0 = none)"},
                 "tasks": {
                     "type": "array",
                     "maxItems": MAX_BATCH,
@@ -1737,6 +2006,20 @@ impl crate::tools::Tool for DelegateTaskTool {
             return "error: subagents cannot spawn further subagents (VELES_CHILD_DEPTH guard)"
                 .into();
         }
+        // How long the child may run: no limit unless this call or
+        // `[agent] subagent_time_limit_minutes` sets one (USER 2026-11-17).
+        let limit = match &args["time_limit_minutes"] {
+            Value::Null => TimeLimit::for_call(None),
+            v => match v.as_u64() {
+                Some(m) => TimeLimit::for_call(Some(m)),
+                None => {
+                    return format!(
+                        "error: 'time_limit_minutes' is a whole number of minutes (0 = no \
+                         limit), not {v}"
+                    )
+                }
+            },
+        };
 
         // ── B4 PLACEMENT ─────────────────────────────────────────────
         //
@@ -1965,6 +2248,7 @@ impl crate::tools::Tool for DelegateTaskTool {
                     provider.clone(),
                     reasoning.clone(),
                     ticket,
+                    limit,
                 );
                 let goal2 = goal.clone();
                 let bus = self.bus();
@@ -2047,6 +2331,7 @@ impl crate::tools::Tool for DelegateTaskTool {
                 // it runs, or a run of background children all pile onto
                 // the node whose heartbeat looked idlest (SI-7).
                 placed.map(|(_, claim)| claim),
+                limit,
             );
             return json!({
                 "status": "started",
@@ -2167,7 +2452,8 @@ impl crate::tools::Tool for DelegateTaskTool {
                         // `veles tasks cancel <id>` reaches the peer's
                         // child instead of dying at the boundary.
                         // A batch part is never raised (refused above).
-                        let ask = self.remote_ask(&goal, &ctx, model, provider, reasoning, None);
+                        let ask =
+                            self.remote_ask(&goal, &ctx, model, provider, reasoning, None, limit);
                         let (parent, me, needs) =
                             (self.session_id.clone(), me.clone(), needs.clone());
                         handles.push(crate::rt::spawn(async move {
@@ -2205,6 +2491,7 @@ impl crate::tools::Tool for DelegateTaskTool {
                                 cs.as_deref(),
                                 Some(cancel),
                                 claim.as_ref(),
+                                limit,
                             );
                             drop(claim);
                             crate::tasks::finish(child_id, v["status"].as_str() == Some("ok"));
@@ -2247,6 +2534,7 @@ impl crate::tools::Tool for DelegateTaskTool {
                 ex_p.as_deref(),
                 ex_r.as_deref(),
                 raise,
+                limit,
             )
             .await
         {
@@ -2307,6 +2595,7 @@ impl crate::tools::Tool for DelegateTaskTool {
                 cs_for_run.as_deref(),
                 Some(cancel),
                 claim.as_ref(),
+                limit,
             );
             drop(claim);
             let mut v = v;
@@ -3166,12 +3455,20 @@ mod tests {
             session_id: sess,
             hooks: None,
         };
-        let ask = t.remote_ask("g", "", None, None, None, None);
+        let ask = t.remote_ask("g", "", None, None, None, None, None);
         assert_eq!(ask.ticket, None, "no ticket unless the call carried one");
         assert_eq!(
-            t.remote_ask("g", "", None, None, None, Some("veles-ticket:1.x".into()))
-                .ticket
-                .as_deref(),
+            t.remote_ask(
+                "g",
+                "",
+                None,
+                None,
+                None,
+                Some("veles-ticket:1.x".into()),
+                None
+            )
+            .ticket
+            .as_deref(),
             Some("veles-ticket:1.x"),
             "a signed ticket travels with the ask"
         );
@@ -3188,7 +3485,7 @@ mod tests {
             hooks: None,
         };
         assert!(owner
-            .remote_ask("g", "", None, None, None, None)
+            .remote_ask("g", "", None, None, None, None, None)
             .principal
             .is_none());
     }
@@ -3276,6 +3573,7 @@ mod tests {
             None,
             None,
             None,
+            None,
         );
         let s = v.to_string();
         assert!(
@@ -3353,6 +3651,7 @@ mod tests {
             Some(&empty),
             None,
             None,
+            None,
         );
         assert_eq!(v["status"], "error", "the spawn failed: {v}");
         let store = crate::store::Store::open(&db).expect("scratch store");
@@ -3376,6 +3675,7 @@ mod tests {
             None,
             "reap-parent",
             Some(&spoke),
+            None,
             None,
             None,
         );
@@ -3579,6 +3879,7 @@ mod tests {
             None,
             None,
             "relay-parent",
+            None,
             None,
             None,
             None,
@@ -4112,7 +4413,18 @@ mod tests {
         }
         std::env::set_var("VELES_BINARY", &script);
         let run = std::thread::spawn(|| {
-            run_remote_child("part", "", None, None, None, None, None, "rc-laptop", None)
+            run_remote_child(
+                "part",
+                "",
+                None,
+                None,
+                None,
+                None,
+                None,
+                "rc-laptop",
+                None,
+                None,
+            )
         });
         let report = || crate::placement::own_report(store.conn(), "rc-self").unwrap();
         let deadline = std::time::Instant::now() + Duration::from_secs(10);
@@ -4313,6 +4625,306 @@ mod tests {
         for id in ["cw-self", "cw-vps", "cw-zerg", "cw-phone"] {
             assert_eq!(crate::placement::in_flight(id), 0, "{id} released");
         }
+        std::env::remove_var("VELES_BINARY");
+    }
+
+    // ── how long a child may run (USER 2026-11-17) ─────────────────────
+
+    /// No limit unless one is set. The old code killed every child at a
+    /// fixed 900 s that nothing could change; an explicit 0 on the call
+    /// means none even where the config sets one.
+    #[test]
+    fn a_child_has_no_time_limit_unless_one_is_set() {
+        assert_eq!(
+            TimeLimit::resolve(None, None),
+            None,
+            "the default is no limit"
+        );
+        assert_eq!(
+            TimeLimit::resolve(None, Some(0)),
+            None,
+            "0 in the config is none"
+        );
+        assert_eq!(
+            TimeLimit::resolve(Some(0), Some(30)),
+            None,
+            "the call's 0 wins"
+        );
+        let from_config = TimeLimit::resolve(None, Some(30)).expect("the config's limit");
+        assert_eq!(from_config.limit, Duration::from_secs(30 * 60));
+        let from_call = TimeLimit::resolve(Some(10), Some(30)).expect("the call's limit");
+        assert_eq!(
+            from_call.limit,
+            Duration::from_secs(10 * 60),
+            "the call wins"
+        );
+        // Warned a fifth before, five minutes at most.
+        assert_eq!(from_call.warn_at, Duration::from_secs(8 * 60));
+        assert_eq!(from_config.warn_at, Duration::from_secs(25 * 60));
+        assert_eq!(
+            TimeLimit::new(Duration::from_secs(3600)).warn_at,
+            Duration::from_secs(55 * 60)
+        );
+        assert_eq!(from_call.grace, STOP_GRACE);
+    }
+
+    /// The model is told: in the description that there is no limit by
+    /// default, in the schema how to set one.
+    #[test]
+    fn the_description_and_schema_say_a_child_has_no_time_limit_by_default() {
+        let t = DelegateTaskTool {
+            session_id: "s".into(),
+            hooks: None,
+        };
+        assert!(
+            t.description()
+                .contains("no time limit unless 'time_limit_minutes'"),
+            "{}",
+            t.description()
+        );
+        let p = &t.schema()["properties"]["time_limit_minutes"];
+        assert_eq!(p["type"], "integer", "{p}");
+        assert!(p["description"]
+            .as_str()
+            .unwrap()
+            .contains("default: no limit"));
+    }
+
+    #[tokio::test]
+    async fn a_time_limit_that_is_not_a_whole_number_is_refused() {
+        let t = DelegateTaskTool {
+            session_id: "limit-refused".into(),
+            hooks: None,
+        };
+        let out = t
+            .call(json!({"goal": "g", "time_limit_minutes": "soon"}))
+            .await;
+        assert!(out.contains("whole number of minutes"), "{out}");
+    }
+
+    /// A remote ask carries the limit, an ask from an older sender (no
+    /// field) decodes as none, and the sender's transport waits for a
+    /// child with no limit with no total deadline at all: the old one,
+    /// 900 s + 120 s, cut every long remote child off.
+    #[test]
+    fn a_remote_ask_carries_the_limit_and_an_unlimited_one_has_no_deadline() {
+        let t = DelegateTaskTool {
+            session_id: "remote-limit".into(),
+            hooks: None,
+        };
+        let ask = t.remote_ask("g", "", None, None, None, None, None);
+        assert_eq!(ask.time_limit_secs, None);
+        assert_eq!(crate::remotetask::transport_timeout(&ask), None);
+        let limited = t.remote_ask(
+            "g",
+            "",
+            None,
+            None,
+            None,
+            None,
+            TimeLimit::resolve(Some(10), None),
+        );
+        assert_eq!(limited.time_limit_secs, Some(600));
+        assert_eq!(
+            crate::remotetask::transport_timeout(&limited),
+            Some(Duration::from_secs(720) + STOP_GRACE)
+        );
+        let mut old = serde_json::to_value(&ask).unwrap();
+        old.as_object_mut().unwrap().remove("time_limit_secs");
+        let back: crate::remotetask::RemoteTaskAsk = serde_json::from_value(old).unwrap();
+        assert_eq!(back.time_limit_secs, None);
+    }
+
+    /// A fake `veles` for the stop tests: writes its pid and its
+    /// helper's, then waits; `on_term` is the shell's TERM trap.
+    #[cfg(unix)]
+    fn stopping_child(dir: &std::path::Path, on_term: &str) -> std::path::PathBuf {
+        let script = dir.join("fake-veles");
+        std::fs::write(
+            &script,
+            format!(
+                "#!/bin/sh\ntrap '{on_term}' TERM\nsleep 300 &\necho $! > '{d}/helper.pid'\n\
+                 while :; do sleep 0.1; done\n",
+                d = dir.display()
+            ),
+        )
+        .unwrap();
+        use std::os::unix::fs::PermissionsExt;
+        std::fs::set_permissions(&script, std::fs::Permissions::from_mode(0o755)).unwrap();
+        script
+    }
+
+    /// End the fake child's helper, which a graceful stop leaves running.
+    #[cfg(unix)]
+    fn end_helper(dir: &std::path::Path) {
+        if let Some(pid) = std::fs::read_to_string(dir.join("helper.pid"))
+            .ok()
+            .and_then(|s| s.trim().parse::<u32>().ok())
+        {
+            crate::platform::kill(pid);
+        }
+    }
+
+    /// At a set limit the child is warned by mail, then ASKED to stop
+    /// (SIGTERM, which `chat -q` turns into a cancelled turn and its
+    /// shells ended), and the parent gets what it said last. It used to
+    /// be SIGKILLed with nothing back but "timed out".
+    #[cfg(unix)]
+    #[test]
+    fn a_child_at_its_limit_is_warned_asked_to_stop_and_its_last_message_returned() {
+        let (home, _env) = crate::testenv::scratch_home();
+        let fake = stopping_child(
+            home.path(),
+            &format!("echo stopped > {}/stopped; exit 0", home.path().display()),
+        );
+        std::env::set_var("VELES_BINARY", &fake);
+        let db = crate::config::veles_home().join("state.db");
+        let store = crate::store::Store::open(&db).expect("scratch store");
+        store.create_session("limit-parent").unwrap();
+        drop(store);
+        let cs = provision_child_session("limit-parent", "build it", false).expect("child");
+        let store = crate::store::Store::open(&db).expect("scratch store");
+        store
+            .append_message(
+                &cs,
+                &crate::providers::ChatMessage::assistant(
+                    "built the parser; the tests are left",
+                    None,
+                ),
+            )
+            .unwrap();
+        drop(store);
+
+        let limit = TimeLimit {
+            limit: Duration::from_millis(1500),
+            warn_at: Duration::from_millis(500),
+            grace: Duration::from_secs(10),
+        };
+        let t0 = std::time::Instant::now();
+        let v = run_child_routed(
+            "build it",
+            "",
+            None,
+            None,
+            None,
+            "limit-parent",
+            Some(&cs),
+            None,
+            None,
+            Some(limit),
+        );
+        // The fake child's helper `sleep 300` still holds its stdout: the
+        // verdict must not wait for it (it did, 300 s, before `Drain`).
+        let took = t0.elapsed();
+        end_helper(home.path());
+        assert!(took < Duration::from_secs(12), "took {took:?}");
+        assert_eq!(v["status"], "error", "{v}");
+        assert!(v["error"].as_str().unwrap().contains("time limit"), "{v}");
+        assert_eq!(
+            v["last_message"], "built the parser; the tests are left",
+            "{v}"
+        );
+        assert_eq!(v["child_session"], cs.as_str());
+        assert!(
+            home.path().join("stopped").exists(),
+            "the child was killed, not asked to stop: {v}"
+        );
+        let store = crate::store::Store::open(&db).expect("scratch store");
+        let waiting = store.mail_waiting(&cs).unwrap();
+        assert!(
+            waiting.iter().any(|(_, body)| body.contains("Time limit")),
+            "no wrap-up mail before the limit: {waiting:?}"
+        );
+        std::env::remove_var("VELES_BINARY");
+    }
+
+    /// A child that does not stop when asked is killed after the grace,
+    /// with the processes in its own group.
+    #[cfg(unix)]
+    #[test]
+    fn a_child_that_ignores_the_stop_is_killed_with_its_group_after_the_grace() {
+        let (home, _env) = crate::testenv::scratch_home();
+        let fake = stopping_child(home.path(), "");
+        std::env::set_var("VELES_BINARY", &fake);
+        let limit = TimeLimit {
+            limit: Duration::from_millis(500),
+            warn_at: Duration::from_millis(500),
+            grace: Duration::from_millis(1000),
+        };
+        let t0 = std::time::Instant::now();
+        let v = run_child_routed(
+            "hang",
+            "",
+            None,
+            None,
+            None,
+            "",
+            None,
+            None,
+            None,
+            Some(limit),
+        );
+        assert!(
+            t0.elapsed() < Duration::from_secs(6),
+            "took {:?}",
+            t0.elapsed()
+        );
+        assert!(
+            t0.elapsed() >= Duration::from_millis(1500),
+            "no grace: {:?}",
+            t0.elapsed()
+        );
+        assert_eq!(v["status"], "error", "{v}");
+        let helper: u32 = std::fs::read_to_string(home.path().join("helper.pid"))
+            .unwrap()
+            .trim()
+            .parse()
+            .unwrap();
+        let gone = (0..50).any(|_| {
+            std::thread::sleep(Duration::from_millis(20));
+            !crate::platform::pid_alive(helper)
+        });
+        assert!(gone, "the child's helper {helper} outlived it");
+        std::env::remove_var("VELES_BINARY");
+    }
+
+    /// A cancel takes the same graceful road as a limit.
+    #[cfg(unix)]
+    #[test]
+    fn a_cancelled_child_is_asked_to_stop_before_it_is_killed() {
+        let (home, _env) = crate::testenv::scratch_home();
+        let fake = stopping_child(
+            home.path(),
+            &format!("echo stopped > {}/stopped; exit 0", home.path().display()),
+        );
+        std::env::set_var("VELES_BINARY", &fake);
+        let cancel = CancelToken::new();
+        let c2 = cancel.clone();
+        std::thread::spawn(move || {
+            std::thread::sleep(Duration::from_millis(400));
+            c2.cancel();
+        });
+        let t0 = std::time::Instant::now();
+        let v = run_child_routed(
+            "x",
+            "",
+            None,
+            None,
+            None,
+            "",
+            None,
+            Some(cancel),
+            None,
+            None,
+        );
+        let took = t0.elapsed();
+        end_helper(home.path());
+        assert!(took < Duration::from_secs(12), "took {took:?}");
+        assert_eq!(v["status"], "cancelled", "{v}");
+        assert!(
+            home.path().join("stopped").exists(),
+            "killed, not asked: {v}"
+        );
         std::env::remove_var("VELES_BINARY");
     }
 }

@@ -3724,8 +3724,20 @@ mod tests {
         // model that must first discover a tool answers "I don't know"
         // instead. The index, the pages and the source are behind the
         // call, not in the schema.
+        //
+        // 21,500 since 2026-11-17, for delegate_task's
+        // `time_limit_minutes` (176 B with its clause in the
+        // description). Every child used to be killed at a fixed 900 s
+        // that nothing resident mentioned; the owner: "that seems insanely
+        // stupid that we have a hard cap!". Now there is no limit unless
+        // one is set, and the model has to know both halves where it
+        // decides how to delegate: that a long child is not cut off, and
+        // the name of the knob when it wants one. The first draft (the
+        // config key, the wrap-up mail, the last message) took the array
+        // to 21,641; that detail is in the docs and in the result a
+        // stopped child returns. Landed at 21,474.
         assert!(
-            bytes < 21_300,
+            bytes < 21_500,
             "core schema array grew to {bytes} bytes — a core tool must stay cheap"
         );
         // Sanity: the discovery trio is always resident, whatever the

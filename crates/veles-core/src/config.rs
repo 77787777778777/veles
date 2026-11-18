@@ -1339,6 +1339,13 @@ pub struct AgentSection {
     /// Within-turn failover stickiness.
     #[serde(default)]
     pub failover: FailoverBehaviorSection,
+    /// A time limit, in minutes, for every `delegate_task` child that
+    /// does not set its own `time_limit_minutes`. Unset or 0 (the
+    /// default): none, a child runs until it is done or cancelled. A
+    /// child is mailed to wrap up shortly before its limit and stopped
+    /// at it; its last message goes back to the parent.
+    #[serde(default)]
+    pub subagent_time_limit_minutes: Option<u64>,
 }
 
 /// Failover BEHAVIOR knobs (distinct from the `failover_rules` policy

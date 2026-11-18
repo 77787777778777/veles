@@ -421,7 +421,21 @@ pub fn run_oneshot(
     // moment the turn does, and the events worth having most are the
     // last ones.
     let relay = rt.block_on(async { veles_core::relay::start() });
+    let stop = spawn_stop_handler(&rt, &boot.agent.session_id);
     let tr = rt.block_on(boot.agent.run_turn(&mut history, query, None, printer));
+    // A delegate child's background shells end with its turn: they are in
+    // this process's registry, which nobody can read once it exits, and
+    // their trees outlived it (2026-11-17). So do any one-shot's once it
+    // was asked to stop.
+    if veles_core::delegate::child_depth() >= 1 || stop.load(std::sync::atomic::Ordering::SeqCst) {
+        let n = rt.block_on(veles_core::shells::stop_session(
+            &boot.agent.session_id,
+            SHELL_STOP_WAIT,
+        ));
+        if n > 0 {
+            tracing::info!("chat -q: ended {n} background shell(s) with the turn");
+        }
+    }
     if let Some(r) = relay {
         rt.block_on(r.flush());
     }
@@ -772,6 +786,49 @@ pub fn plugins(action: Option<PluginsCmd>) -> Result<()> {
             Ok(())
         }
     }
+}
+
+/// How long a one-shot that is stopping waits for its background
+/// shells' trees to go.
+const SHELL_STOP_WAIT: std::time::Duration = std::time::Duration::from_secs(5);
+
+/// SIGTERM ends the TURN, and the background shells with it: what
+/// `delegate_task` sends a child it stops (a cancel, or a time limit
+/// someone set), with the kill only after a grace. With no handler,
+/// SIGTERM killed the child where it stood and the builds its background
+/// shells ran outlived it (2026-11-17). Returns the flag the caller reads
+/// after the turn. A second SIGTERM exits at once.
+fn spawn_stop_handler(
+    rt: &tokio::runtime::Runtime,
+    session_id: &str,
+) -> std::sync::Arc<std::sync::atomic::AtomicBool> {
+    let flag = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
+    #[cfg(unix)]
+    {
+        use tokio::signal::unix::{signal, SignalKind};
+        // Registered before the turn starts, not inside the task: a stop
+        // that came before the task first ran would meet the default
+        // disposition and kill the process outright.
+        let Ok(mut term) = rt.block_on(async { signal(SignalKind::terminate()) }) else {
+            return flag;
+        };
+        let (sid, f) = (session_id.to_string(), flag.clone());
+        rt.spawn(async move {
+            if term.recv().await.is_some() {
+                f.store(true, std::sync::atomic::Ordering::SeqCst);
+                veles_core::agent::cancel_turn(&sid);
+                // Now, not after the turn: a turn waiting on one of
+                // them ends sooner.
+                veles_core::shells::stop_session(&sid, SHELL_STOP_WAIT).await;
+            }
+            if term.recv().await.is_some() {
+                veles_core::durable::exit(143);
+            }
+        });
+    }
+    #[cfg(not(unix))]
+    let _ = (rt, session_id);
+    flag
 }
 
 /// Ctrl-C ends the TURN, not the process.

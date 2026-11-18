@@ -3816,6 +3816,23 @@ impl Store {
         })
     }
 
+    /// The session's last assistant message with any text in it (tool
+    /// calls with no words skipped), or `None`. A delegate child stopped
+    /// before it reported: what it said last goes back to its parent.
+    pub fn last_assistant_text(&self, session_id: &str) -> Result<Option<String>> {
+        Ok(self
+            .conn
+            .query_row(
+                "SELECT content FROM messages
+                 WHERE session_id = ?1 AND role = 'assistant' AND archived = 0
+                   AND TRIM(content) != ''
+                 ORDER BY msg_id DESC LIMIT 1",
+                params![session_id],
+                |r| r.get::<_, String>(0),
+            )
+            .optional()?)
+    }
+
     /// True when the session row exists (title may still be NULL —
     /// untitled sessions are real). The desktop API uses this to reject
     /// chats against invented session ids instead of silently creating

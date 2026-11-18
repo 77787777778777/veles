@@ -650,14 +650,19 @@ pub struct Pruned {
     pub dropped: usize,
 }
 
-/// The longest a claim (a `placed` row) is ever held: a remote child's
-/// whole call, which the transport bounds at the child's cap plus 120 s
-/// (`remotetask::run_on_peer`), and a re-homed tool call's
-/// (`remotetool::CALL_TIMEOUT_SECS`, the same figure), plus a minute.
-/// A local claim is taken over by its child within moments. A tool run
-/// served for a peer ([`tool_run_started`]) is held to the same age: its
-/// caller stops waiting for it within that time.
-pub const CLAIM_MAX_AGE_SECS: u64 = crate::delegate::CHILD_TIMEOUT_SECS + 180;
+/// How long a claim (a `placed` row) or a tool run served for a peer
+/// ([`tool_run_started`]) is counted at most: a re-homed tool call's
+/// whole wait (`remotetool::CALL_TIMEOUT_SECS`) plus a minute. A local
+/// claim is taken over by its child within moments.
+///
+/// A claim on a peer is held for the whole remote call, and a child has
+/// no time limit unless one was set (USER 2026-11-17), so a long remote
+/// child outlives its claim's count. That costs nothing: a claim only
+/// stands in for a child the peer has not reported yet, and the peer's
+/// own heartbeat counts the child by its pid from the moment it starts
+/// (the module doc, "never this node's twice"). (This was "the child's
+/// 900 s cap + 180 s", the same 1,080 s, while that cap existed.)
+pub const CLAIM_MAX_AGE_SECS: u64 = crate::remotetool::CALL_TIMEOUT_SECS + 60;
 
 /// Drop every work row whose process is gone (`alive` is
 /// [`pid_lives`] outside tests), and every claim or served tool run
@@ -673,12 +678,33 @@ pub const CLAIM_MAX_AGE_SECS: u64 = crate::delegate::CHILD_TIMEOUT_SECS + 180;
 /// on a peer, until the gateway restarted. A tool run the gateway serves
 /// for a peer is bound to the gateway the same way, and is told apart by
 /// its pid, the pruning process's own: a delegate child's row carries
-/// the child's pid and is kept while that process lives. (A child that
-/// prunes, through `nodes`, sees its own row as such a run; it is
-/// stopped at its cap, three minutes under the bound.)
+/// the child's pid and is kept while that process lives.
+///
+/// Only a gateway serves tool runs. A delegate child prunes too (the
+/// `nodes` tool), and its OWN row carries its own pid: told apart by pid
+/// alone it looked like a served run, and once the child had run longer
+/// than the bound it deleted its own row and stopped being counted. That
+/// could not happen while every child was killed at 900 s; with no limit
+/// it would, so a child's prune ages out no row by its pid.
 pub fn prune(
     conn: &rusqlite::Connection,
     alive: &dyn Fn(u32, Option<&str>) -> bool,
+) -> Result<Pruned> {
+    prune_as(conn, alive, serving_pid(crate::delegate::child_depth()))
+}
+
+/// The pid whose rows are served tool runs: this process's in a gateway
+/// (depth 0), none in a delegate child (depth 1).
+fn serving_pid(child_depth: u32) -> Option<u32> {
+    (child_depth == 0).then(std::process::id)
+}
+
+/// [`prune`] with the pid whose rows are served tool runs named: this
+/// process's in a gateway, `None` in a delegate child.
+pub fn prune_as(
+    conn: &rusqlite::Connection,
+    alive: &dyn Fn(u32, Option<&str>) -> bool,
+    serving: Option<u32>,
 ) -> Result<Pruned> {
     let rows: Vec<(i64, i64, Option<String>, bool)> = {
         let mut st = conn.prepare(
@@ -690,7 +716,8 @@ pub fn prune(
             .query_map(
                 rusqlite::params![
                     format!("-{CLAIM_MAX_AGE_SECS} seconds"),
-                    i64::from(std::process::id())
+                    // -1 is no pid: no row is a served run.
+                    serving.map(i64::from).unwrap_or(-1)
                 ],
                 |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)),
             )?
@@ -2010,6 +2037,49 @@ mod tests {
         assert_eq!(
             node_load(store.conn(), Some("x-me"), &peer).unreported_from_here,
             0
+        );
+    }
+
+    /// A delegate child prunes too (the `nodes` tool), and its own row
+    /// carries its own pid. Told apart from a served tool run by pid
+    /// alone, a child that had run past the age bound deleted its own
+    /// row; with no time limit on children (USER 2026-11-17) that is a
+    /// child running for an hour that stops being counted. A child's
+    /// prune keeps it, and a gateway's still ages out its served runs.
+    #[test]
+    fn a_long_running_child_keeps_its_own_row_when_it_prunes() {
+        let (_dir, store, _db) = scratch_at();
+        let me = std::process::id();
+        let row = |target: &str| {
+            store
+                .conn()
+                .execute(
+                    "INSERT INTO placement_work (state, target, origin, pid, pid_start, started_at)
+                     VALUES ('running', ?1, 'x-me', ?2, ?3, datetime('now', '-3600 seconds'))",
+                    rusqlite::params![target, i64::from(me), crate::platform::process_start_id(me)],
+                )
+                .unwrap();
+        };
+        row("x-child");
+        assert_eq!(
+            serving_pid(0),
+            Some(me),
+            "a gateway serves runs under its pid"
+        );
+        assert_eq!(serving_pid(1), None, "a delegate child serves none");
+        let as_child = prune_as(store.conn(), &pid_lives, serving_pid(1));
+        assert_eq!(
+            as_child.unwrap(),
+            Pruned {
+                kept: 1,
+                dropped: 0
+            }
+        );
+        assert_eq!(work_rows(&store, "x-child"), 1, "the child's own row stays");
+        let as_gateway = prune_as(store.conn(), &pid_lives, Some(me)).unwrap();
+        assert_eq!(
+            as_gateway.dropped, 1,
+            "a gateway's old served run still goes"
         );
     }
 

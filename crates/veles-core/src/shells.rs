@@ -170,6 +170,36 @@ pub fn adopt_live(
     (id, cancel)
 }
 
+/// End every background shell `session_id` still runs in this process,
+/// each through its own cancel (which kills its whole tree, not only the
+/// shell), and wait up to `wait` for them to be gone. Returns how many
+/// were running.
+///
+/// A delegate child calls this when its turn ends or it is asked to stop:
+/// its shells live in its process's registry, so once it exits nobody can
+/// read them, and their trees, each in a group of its own, outlived it.
+/// One such build daemon was still running 2.5 hours after its child was
+/// killed (2026-11-17).
+pub async fn stop_session(session_id: &str, wait: std::time::Duration) -> usize {
+    let running: Vec<(u32, ExitSlot)> = sessions()
+        .lock_ok()
+        .iter()
+        .filter(|(_, s)| s.exit.lock_ok().is_none())
+        .filter(|(id, _)| crate::tasks::get(**id).is_some_and(|t| t.session == session_id))
+        .map(|(id, s)| (*id, s.exit.clone()))
+        .collect();
+    for (id, _) in &running {
+        crate::tasks::cancel(*id);
+    }
+    let deadline = tokio::time::Instant::now() + wait;
+    while running.iter().any(|(_, e)| e.lock_ok().is_none())
+        && tokio::time::Instant::now() < deadline
+    {
+        tokio::time::sleep(std::time::Duration::from_millis(POLL_MS)).await;
+    }
+    running.len()
+}
+
 /// Append one line to a shell ring with the registry's bounds
 /// (MAX_LINES × MAX_LINE_BYTES) — `push_line`, exposed for the
 /// `terminal` tool's pump so an adopted shell's ring is capped exactly
@@ -838,6 +868,91 @@ mod tests {
         assert!(
             !canary.exists(),
             "a detached child survived cancellation and wrote its canary"
+        );
+    }
+
+    /// What a delegate child does when its turn ends or it is asked to
+    /// stop: its session's shells end, whole trees, and another
+    /// session's keep running. (A child's build daemon outlived it by 2.5
+    /// hours on 2026-11-17.)
+    #[cfg(unix)]
+    #[tokio::test]
+    async fn stopping_a_session_ends_its_shells_trees_and_no_one_elses() {
+        let (_home, _env) = crate::testenv::scratch_home();
+        let dir = tempfile::tempdir().unwrap();
+        let pidfile = |n: &str| dir.path().join(n);
+        let cmd = |n: &str| {
+            format!(
+                "sleep 300 </dev/null >/dev/null 2>&1 & echo $! > {}; wait",
+                pidfile(n).display()
+            )
+        };
+        let mine = start(
+            &cmd("mine"),
+            "sess-stop-mine",
+            crate::user_envs::ZoneArg::Unset,
+        );
+        let other = start(
+            &cmd("other"),
+            "sess-stop-other",
+            crate::user_envs::ZoneArg::Unset,
+        );
+        let read = |n: &str| -> Option<u32> {
+            std::fs::read_to_string(pidfile(n))
+                .ok()?
+                .trim()
+                .parse()
+                .ok()
+        };
+        let mut pids = (None, None);
+        for _ in 0..100 {
+            pids = (read("mine"), read("other"));
+            if pids.0.is_some() && pids.1.is_some() {
+                break;
+            }
+            tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+        }
+        let (Some(my_sleep), Some(other_sleep)) = pids else {
+            panic!("the shells never started their sleeps")
+        };
+        let n = stop_session("sess-stop-mine", std::time::Duration::from_secs(5)).await;
+        assert_eq!(n, 1, "one shell of that session was running");
+        assert_eq!(
+            crate::tasks::get(mine).map(|t| t.status),
+            Some(TaskStatus::Cancelled)
+        );
+        let gone = (0..50).any(|_| {
+            std::thread::sleep(std::time::Duration::from_millis(20));
+            !crate::platform::pid_alive(my_sleep)
+        });
+        assert!(
+            gone,
+            "the stopped shell's grandchild {my_sleep} outlived it"
+        );
+        assert!(
+            crate::platform::pid_alive(other_sleep),
+            "another session's shell was ended"
+        );
+        // End the other one too, and WAIT for it: `kill` only asks, the
+        // runtime that would carry it out ends with this test, and a shell
+        // left running keeps every descriptor the test binary inherited
+        // open (the build lock among them: the first run of this test held
+        // the next build for five minutes).
+        assert_eq!(
+            stop_session("sess-stop-other", std::time::Duration::from_secs(5)).await,
+            1
+        );
+        assert_eq!(
+            crate::tasks::get(other).map(|t| t.status),
+            Some(TaskStatus::Cancelled)
+        );
+        let gone = (0..50).any(|_| {
+            std::thread::sleep(std::time::Duration::from_millis(20));
+            !crate::platform::pid_alive(other_sleep)
+        });
+        assert!(
+            gone,
+            "the other session's sleep {other_sleep} outlived its stop"
         );
     }
 

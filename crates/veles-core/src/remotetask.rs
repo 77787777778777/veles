@@ -148,6 +148,23 @@ pub struct RemoteTaskAsk {
     /// child is parented to the pseudo-session `a2a-remote`, as before.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parent_session: Option<String>,
+    /// The time limit the placing call set, in seconds. `None` is the
+    /// default and means none: the peer runs the child until it is done
+    /// or cancelled (USER 2026-11-17; a peer of 0.2.8 and before still
+    /// stops it at its old 900 s).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub time_limit_secs: Option<u64>,
+}
+
+/// How long the sender waits for a peer's verdict: the child's limit,
+/// its stop grace and two minutes for the transport, or no total at all
+/// for a child with no limit. A dead peer is found by the connection
+/// (refused, reset, or TCP keepalive), not by a deadline guessed for a
+/// child that may legitimately run for hours.
+pub fn transport_timeout(ask: &RemoteTaskAsk) -> Option<std::time::Duration> {
+    ask.time_limit_secs.map(|s| {
+        std::time::Duration::from_secs(s.saturating_add(120)) + crate::delegate::STOP_GRACE
+    })
 }
 
 /// A marker line, an optional header line, then `json` base64'd inside
@@ -227,11 +244,9 @@ pub async fn run_on_peer(
     watch: CancelWatch,
 ) -> Result<serde_json::Value> {
     let text = encode_ask(ask)?;
-    // The peer's child may legitimately run for its full 900s cap; the
+    // The peer's child may legitimately run for as long as it takes; the
     // transport must outlive it, not declare it dead at 180s.
-    let client = crate::a2a::A2AClient::with_timeout(std::time::Duration::from_secs(
-        crate::delegate::CHILD_TIMEOUT_SECS + 120,
-    ));
+    let client = crate::a2a::A2AClient::for_remote_task(transport_timeout(ask));
     let ctx = crate::a2a::new_context_id();
     let Some(wire_id) = ask.wire_task_id.clone().filter(|_| watch.armed()) else {
         return decode_call_result(client.call(peer_url, bearer, &text, &ctx).await?);
@@ -401,6 +416,7 @@ mod tests {
             wire_task_id: None,
             ticket: None,
             parent_session: None,
+            time_limit_secs: None,
         }
     }
 
@@ -668,6 +684,7 @@ mod watch_pins {
             wire_task_id: Some("wire-sender-c3".into()),
             ticket: None,
             parent_session: None,
+            time_limit_secs: None,
         };
         let _ = &mut ask;
         let tok = crate::providers::CancelToken::new();

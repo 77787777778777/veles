@@ -1,3 +1,15 @@
+veles-agent (0.2.9) unstable; urgency=medium
+
+  * A delegate_task child no longer dies at a fixed 15 minutes: it runs
+    until it is done, on this node or another, unless a time limit was
+    set (time_limit_minutes, or [agent] subagent_time_limit_minutes).
+    With a limit, the child is mailed to wrap up shortly before it, asked
+    to stop at it and killed only 20 seconds later, and its last message
+    comes back. A stopped child, and one whose turn ends, ends its
+    background shells with their whole process trees.
+
+ -- veles-agent maintainers <noreply@example.invalid>  Tue, 17 Nov 2026 00:00:00 +0000
+
 veles-agent (0.2.8) unstable; urgency=medium
 
   * Session mail reaches a session in the middle of a turn at its next

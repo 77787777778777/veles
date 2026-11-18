@@ -732,11 +732,27 @@ impl A2AClient {
         Self { http }
     }
 
-    /// Same client with a caller-chosen timeout. The remote-task
-    /// transport (B4) uses it: the peer runs a child synchronously
-    /// inside its A2A handler (bounded by the child's own 900s cap),
-    /// and the default 180s would cut a healthy long child off at the
-    /// knees and report the node unreachable.
+    /// The remote-task transport (B4): the peer runs a child
+    /// synchronously inside its A2A handler, for as long as the child
+    /// runs, so the default 180s would cut a healthy long child off at
+    /// the knees and report the node unreachable. `Some(d)` bounds the
+    /// whole call (a child with a time limit); `None` sets no total (a
+    /// child with none, the default), and TCP keepalive finds a peer
+    /// that vanished without closing the connection.
+    pub fn for_remote_task(total: Option<Duration>) -> Self {
+        let mut b = reqwest::Client::builder()
+            .connect_timeout(Duration::from_secs(15))
+            .tcp_keepalive(Duration::from_secs(60));
+        if let Some(d) = total {
+            b = b.timeout(d);
+        }
+        Self {
+            http: b.build().expect("reqwest client"),
+        }
+    }
+
+    /// Same client with a caller-chosen timeout (a re-homed tool call,
+    /// `remotetool::CALL_TIMEOUT_SECS`).
     pub fn with_timeout(d: Duration) -> Self {
         Self {
             http: reqwest::Client::builder()
