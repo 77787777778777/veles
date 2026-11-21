@@ -2083,10 +2083,17 @@ async fn slopdrop_module() {
     let out = host.reload("slopdrop").await.expect("reload");
     assert!(out.iter().any(|l| l.contains("unloaded")), "{out:?}");
     wait_for(&host, "slopdrop", "running", Duration::from_secs(10)).await;
-    assert!(
-        veles_core::tcleval::backend_configured(),
-        "re-filled after a reload"
-    );
+    // `start()` can return before its spawned registrations are visible;
+    // `running` says start returned, not that every seam is already filled.
+    // The flake gate caught that window after a transient dlopen retry.
+    let deadline = std::time::Instant::now() + Duration::from_secs(10);
+    while !veles_core::tcleval::backend_configured() {
+        assert!(
+            std::time::Instant::now() < deadline,
+            "the module reached running without refilling its Tcl backend"
+        );
+        tokio::time::sleep(Duration::from_millis(50)).await;
+    }
     assert!(veles_core::commands::direct_command("slopdrop").is_some());
 
     // Stopped: every seam is core's own again.
