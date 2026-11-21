@@ -30,7 +30,7 @@ Before=veles-gateway.service
 
 [Container]
 ContainerName=vlpds
-Image=ghcr.io/jazware/vlpds:1.2.2
+Image=ghcr.io/jazware/vlpds:1.3.0
 Pull=never
 # The shared bridge network with the gateway: the gateway reaches vlpds
 # by container name (http://vlpds:2583) — two rootless containers do NOT

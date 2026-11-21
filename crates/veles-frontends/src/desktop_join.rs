@@ -235,6 +235,129 @@ mod tests {
         );
     }
 
+    /// A session switch changes which conversation a person is in; it
+    /// does not take that person out of the channel. The fresh id must
+    /// carry the old session's address and sender, or /join cannot see
+    /// it and a wake has nowhere to answer.
+    #[tokio::test(flavor = "current_thread")]
+    async fn a_rebound_session_remains_chat_backed_and_joinable() {
+        let (core, _d, _h) = fixture();
+        let old = sender(&core, "alice");
+        let ctx = veles_core::acl::SenderContext {
+            mask: Some("alice!u@example.invalid".into()),
+            network: Some("testnet".into()),
+            channel: Some("#chan".into()),
+            platform: Some("irc".into()),
+            chat_id: Some("#chan".into()),
+            ..Default::default()
+        };
+        core.store
+            .lock_ok()
+            .create_session("fresh-session")
+            .unwrap();
+        let fresh = core
+            .test_rebind_session("irc", "#chan", Some("irc:alice"), &ctx, "fresh-session")
+            .await
+            .unwrap();
+        let rows = core.desktop_join_candidates();
+        assert_eq!(rows, vec![(fresh.clone(), "[alice in #chan]".into())]);
+        assert!(!rows.iter().any(|(sid, _)| sid == &old));
+        assert_eq!(
+            core.session_chat_for_test(&fresh),
+            Some(("irc".into(), "#chan".into()))
+        );
+        assert_eq!(
+            veles_core::acl::session_sender(&fresh).as_deref(),
+            Some(&ctx),
+            "the new session's slopdrop sender must name this caller"
+        );
+        assert_eq!(
+            core.store.lock_ok().title(&fresh).unwrap().as_deref(),
+            Some("irc:#chan:irc:alice")
+        );
+        let b = core.desktop_join("desktop:join:j-rebound", &fresh).unwrap();
+        core.desktop_leave(&b.join_id, &fresh).unwrap();
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn resuming_keeps_the_resumed_sessions_title_and_address() {
+        let (core, _d, _h) = fixture();
+        let _old = sender(&core, "alice");
+        let ctx = veles_core::acl::SenderContext {
+            mask: Some("alice!u@example.invalid".into()),
+            network: Some("testnet".into()),
+            channel: Some("#chan".into()),
+            platform: Some("irc".into()),
+            chat_id: Some("#chan".into()),
+            ..Default::default()
+        };
+        core.store
+            .lock_ok()
+            .create_session("resumed-session")
+            .unwrap();
+        core.store
+            .lock_ok()
+            .set_title("resumed-session", "the conversation I asked for")
+            .unwrap();
+        core.test_rebind_session("irc", "#chan", Some("irc:alice"), &ctx, "resumed-session")
+            .await
+            .unwrap();
+        assert_eq!(
+            core.session_chat_for_test("resumed-session"),
+            Some(("irc".into(), "#chan".into()))
+        );
+        assert_eq!(
+            core.store
+                .lock_ok()
+                .title("resumed-session")
+                .unwrap()
+                .as_deref(),
+            Some("the conversation I asked for")
+        );
+    }
+
+    /// A session switch must never readdress somebody else's live
+    /// conversation. In particular `/resume` resolves ids in the store,
+    /// not only in the caller's chat: before the guard, its metadata copy
+    /// sent the victim's later background wake to the caller's channel.
+    #[tokio::test(flavor = "current_thread")]
+    async fn a_resume_cannot_readdress_another_senders_live_session() {
+        let (core, _d, _h) = fixture();
+        let alice = sender(&core, "alice");
+        let bob_ctx = veles_core::acl::SenderContext {
+            mask: Some("bob!u@example.invalid".into()),
+            network: Some("testnet".into()),
+            channel: Some("#chan".into()),
+            platform: Some("irc".into()),
+            chat_id: Some("#chan".into()),
+            ..Default::default()
+        };
+        let bob = sender(&core, "bob");
+        let err = core
+            .test_rebind_session("irc", "#chan", Some("irc:bob"), &bob_ctx, &alice)
+            .await
+            .expect_err("another sender's live session is not a resume target")
+            .to_string();
+        assert!(err.contains("another chat"), "{err}");
+        assert_eq!(
+            core.session_chat_for_test(&alice),
+            Some(("irc".into(), "#chan".into()))
+        );
+        assert_eq!(
+            veles_core::acl::session_sender(&alice).and_then(|ctx| ctx.mask.clone()),
+            Some("alice!u@example.invalid".into()),
+            "the target keeps its own caller identity"
+        );
+        assert_eq!(
+            core.test_join_key(&alice).as_deref(),
+            Some("irc:#chan:irc:alice")
+        );
+        assert_ne!(
+            core.test_join_key(&bob).as_deref(),
+            Some("irc:#chan:irc:alice")
+        );
+    }
+
     /// A bare `/join` on the desktop lists who can be joined, from the
     /// gateway's own joinable list (no second copy in the client).
     #[test]

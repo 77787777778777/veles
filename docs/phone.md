@@ -139,7 +139,10 @@ app:
   and its jobs never ran. Measured 2026-10-21: the engine stopped at
   10:57, the alarm started a new one at 11:00:00, and the job ran within
   a second; the next two alarms, each set by the engine on its way out,
-  fired at 11:10 and 12:10. Through a night off USB (2026-10-21/22) the phone sat in deep doze for twelve hours and the hourly job fired every hour, within a second, without taking the phone out of doze. Removing the last job leaves no alarm; removed while the engine is stopped, the alarm it already set fires once more, starts an engine that finds nothing, and that engine stops five minutes later with nothing armed. A `.tcl` job on the phone cannot `clock format` yet (the
+  fired at 11:10 and 12:10. A phone in a pool also wakes every 15 minutes
+  to report its liveness. It may be marked stale while unreachable between
+  reports; work is not placed on it until it answers. This does not delay
+  a cron job or a notification its trigger listens to. Through a night off USB (2026-10-21/22) the phone sat in deep doze for twelve hours and the hourly job fired every hour, within a second, without taking the phone out of doze. Removing the last job leaves no alarm; removed while the engine is stopped, the alarm it already set fires once more, starts an engine that finds nothing, and that engine stops five minutes later with nothing armed. A `.tcl` job on the phone cannot `clock format` yet (the
   bundled runtime lacks msgcat); `clock seconds` works.
 - **The phone starting**, when Start with the phone is on.
 
@@ -230,6 +233,10 @@ in Android's shell.
   already installed. After that nothing needs opening: when veles' engine
   starts it binds the userland, which starts it — the first start unpacks
   Alpine (about 9 MB, under a tenth of a second on the SM-S942B).
+  When the engine stops for idleness, that bind-started userland stops
+  too: its broker and wake lock do not stay behind. An explicit Start in
+  Veles userland is different: it stays running across the gateway's idle
+  stop until you stop it.
   Opening Veles userland shows its state and log, with Start and Stop.
 - **How the two talk.** Android does not let one app connect to the
   other's socket, so every command's connection comes through Android's

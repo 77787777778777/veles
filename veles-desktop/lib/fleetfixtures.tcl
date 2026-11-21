@@ -129,6 +129,12 @@ proc ::fleetfix::_read {chan} {
         return
     }
     set head [string range $raw 0 [expr {$end - 1}]]
+    # Observe the request header as the wire carried it. In particular,
+    # a fleet-alert timer must not masquerade as a person's activity.
+    variable alert_passives
+    if {[string match -nocase {GET /api/fleet/alerts *} [lindex [split $head \n] 0]]} {
+        lappend alert_passives [regexp -nocase {(?:^|\n)x-veles-passive:\s*1\r?(?:\n|$)} $head]
+    }
     set length 0
     regexp -nocase {content-length:\s*(\d+)} $head -> length
     set body [string range $raw [expr {$end + 4}] end]

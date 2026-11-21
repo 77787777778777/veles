@@ -141,3 +141,13 @@ table inet veles {
 		tcp dport { 8889, 9050 } drop
 	}
 }
+
+# CVE-2026-98432 mitigation (kernel TCP UAF, fixed in kernel 7.0.0-43; harmless
+# to keep after the fix): drop inbound IPv4 TCP carrying IP options. Survives
+# reboot via veles-nft.service, which loads this file before network-pre.
+table inet cve_2026_98432 {
+        chain input {
+                type filter hook input priority raw - 10; policy accept;
+                ip protocol tcp ip hdrlength > 5 counter drop
+        }
+}

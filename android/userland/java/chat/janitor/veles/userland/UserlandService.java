@@ -59,6 +59,15 @@ public final class UserlandService extends Service {
     private Thread supervisor;
     private volatile boolean stopping;
     private volatile Process broker;
+    /**
+     * This service's foreground/broker life came from the gateway's bind.
+     * Set at the bind itself, not only when its start command arrives:
+     * Android may deliver that command without our extra after a sticky
+     * restart (measured on the SM-S942B, Android 17). Only an explicit
+     * Start/opening this app clears it. A person's Stop keeps it so a
+     * later refused bind cannot resurrect the broker.
+     */
+    private boolean startedByBind;
 
     /** A start from the gateway's bind, which a person's Stop outranks. */
     private static final String EXTRA_BIND = "chat.janitor.veles.userland.extra.BIND";
@@ -101,9 +110,25 @@ public final class UserlandService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         if (!stoppedByPerson(this) && (supervisor == null || !supervisor.isAlive())) {
+            startedByBind = true;
             startForegroundService(new Intent(this, UserlandService.class).putExtra(EXTRA_BIND, true));
         }
         return sessions;
+    }
+
+    /**
+     * The gateway went idle and unbound. A service that its bind started
+     * goes with it, releasing the broker and wake lock. An explicit Start
+     * (or opening the userland) is independent and stays running.
+     */
+    @Override
+    public boolean onUnbind(Intent intent) {
+        if (startedByBind && !stoppedByPerson(this)) {
+            append(log(this), "userland: the gateway unbound; idle, stopping");
+            stopForeground(STOP_FOREGROUND_REMOVE);
+            stopSelf();
+        }
+        return false;
     }
 
     /** A Stop is under way or stands, or the service is being destroyed. */
@@ -141,6 +166,12 @@ public final class UserlandService extends Service {
             stopForeground(STOP_FOREGROUND_REMOVE);
             stopSelf();
             return START_NOT_STICKY;
+        }
+        // An actual Start/opening this app is independent of a gateway
+        // binding. Do not clear bind ownership for a null sticky restart:
+        // that restart must not make the gateway's userland immortal.
+        if (intent != null && !fromBind) {
+            startedByBind = false;
         }
         if (wake == null) {
             PowerManager pm = getSystemService(PowerManager.class);

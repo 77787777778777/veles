@@ -64,6 +64,9 @@ source [file join $_dir fleetobs.tcl]
 source [file join $_dir fleetmanage.tcl]
 source [file join $_dir fleetfixtures.tcl]
 source [file join $_dir fleetmanagefixtures.tcl]
+# This suite's captured gateway is the attached one. It has no instance
+# registry row because it predates multi-instance attachment.
+proc ::vapi::unattached {} { return 0 }
 
 proc pump {cond {ms 8000}} {
     set deadline [expr {[clock milliseconds] + $ms}]
@@ -259,6 +262,15 @@ puts "\nalerts reach the window"
 . configure -width 800 -height 600
 update
 set ::fleetfix::mg(alerts) $::fleetfix::manage(alerts)
+set ::fleetfix::alert_passives {}
+set ::vapi::passive 0
+::vfleetmanage::alerts_start
+set alert_seen [pump {[llength $::fleetfix::alert_passives] > 0}]
+ok "an unattended fleet-alert poll is passive on the real request" {
+    $alert_seen
+    && [lindex $::fleetfix::alert_passives end] == 1
+    && (![info exists ::vapi::passive] || !$::vapi::passive)
+}
 ::vfleetmanage::_alerts_answer 1 [::json::json2dict $::fleetfix::manage(alerts)]
 update
 ok "the first answer is the baseline: nothing replayed on start" {

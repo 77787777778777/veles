@@ -1044,6 +1044,23 @@ impl GatewayCore {
     }
 
     #[cfg(test)]
+    pub(crate) fn test_rebind_session<'a>(
+        &'a self,
+        platform: &'a str,
+        chat_id: &'a str,
+        sender_id: Option<&'a str>,
+        ctx: &'a veles_core::acl::SenderContext,
+        new_sid: &str,
+    ) -> impl std::future::Future<Output = anyhow::Result<String>> + 'a {
+        let new_sid = new_sid.to_string();
+        async move {
+            self.rebind_session(platform, chat_id, sender_id, ctx, &new_sid)
+                .await?;
+            Ok(new_sid)
+        }
+    }
+
+    #[cfg(test)]
     pub(crate) fn test_join_restore(self: &Arc<Self>) {
         self.restore_gateway_joins();
     }
@@ -1063,6 +1080,11 @@ impl GatewayCore {
             .iter()
             .find(|(_, v)| v.as_str() == sid)
             .map(|(k, _)| k.clone())
+    }
+
+    #[cfg(test)]
+    pub(crate) fn session_chat_for_test(&self, session_id: &str) -> Option<(String, String)> {
+        self.session_chat(session_id)
     }
 
     /// The same map write `agent_for_sender` performs, for a session that
@@ -2971,6 +2993,20 @@ impl GatewayCore {
         new_sid: &str,
     ) -> Result<Arc<Agent>> {
         let key = self.session_key_for(platform, chat_id, sender_id, ctx);
+        // `/resume` finds its target in the store, across every chat.
+        // Never take over a session this gateway currently holds for a
+        // different sender: that would read its history and, when the
+        // address is copied below, send its later wake output here.
+        // `/new` always mints an unused id, so its rebind is unaffected;
+        // an offline session has no live key and can still be resumed.
+        if self
+            .session_ids
+            .lock_ok()
+            .iter()
+            .any(|(other_key, sid)| sid == new_sid && other_key != &key)
+        {
+            anyhow::bail!("session {new_sid} belongs to another chat; resume it there");
+        }
         let old = self
             .sessions
             .lock()
@@ -2993,6 +3029,28 @@ impl GatewayCore {
         self.session_ids
             .lock_ok()
             .insert(key.clone(), new_sid.to_string());
+        // The session switch is a new conversation, not a new location
+        // or a new caller. Keep the same address and sender on its id:
+        // join listing, wakes and the slopdrop bridge all look these up
+        // by SESSION, not by the sender's key we just rebound. /new and
+        // /resume used to leave all three pointing only at the old id,
+        // so the fresh session worked but disappeared from /join.
+        let old_meta = self.meta.lock_ok().get(&old.session_id).cloned();
+        let route = old_meta
+            .as_ref()
+            .and_then(|(_, _, route)| route.clone())
+            .or_else(|| (platform == "irc").then(|| ctx.network.clone()).flatten());
+        self.meta.lock_ok().insert(
+            new_sid.to_string(),
+            (platform.to_string(), chat_id.to_string(), route),
+        );
+        veles_core::acl::set_session_sender(new_sid, ctx.clone());
+        if self.store.lock_ok().title(new_sid)?.is_none()
+            && key.contains(':')
+            && key.matches(':').count() >= 2
+        {
+            self.store.lock_ok().set_title(new_sid, &key)?;
+        }
         self.sessions.lock().unwrap().insert(key, fresh.clone());
         // `[[model.binds]]` is deliberately NOT reapplied here, and the
         // omission is a decision rather than an oversight.

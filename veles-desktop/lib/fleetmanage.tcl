@@ -516,12 +516,16 @@ proc ::vfleetmanage::alerts_poll {} {
     variable alerts_error
     set alerts_after [after 30000 ::vfleetmanage::alerts_poll]
     if {[llength [info commands ::vapi::unattached]] && [::vapi::unattached]} { return }
+    # This timer is not a person's use of the attached gateway. Marking
+    # it lets the phone idle even with a desktop left open (lib/api.tcl).
+    set ::vapi::passive 1
     if {[catch { ::vapi::get_json_async /api/fleet/alerts ::vfleetmanage::_alerts_answer 5000 } why]} {
         # Not sent at all; the next poll asks again.
         set alerts_error $why
     } else {
         set alerts_error ""
     }
+    set ::vapi::passive 0
 }
 
 # The alerts newer than `seen` (RFC 3339 times compare as text), oldest

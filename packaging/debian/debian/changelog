@@ -1,3 +1,16 @@
+veles-agent (0.2.10) unstable; urgency=medium
+
+  * The phone's idle exit also stops the userland service it bound and
+    started, releasing its broker and wake lock. An explicitly started
+    userland stays running. Pool liveness wakes are 15 minutes apart
+    instead of one minute after every idle exit.
+  * /new on a chat surface keeps the new session's channel, network route
+    and caller identity, so /join and later background wakes still reach
+    it. /resume keeps the target's title and refuses a live session held
+    by another chat sender.
+
+ -- veles-agent maintainers <noreply@example.invalid>  Sat, 21 Nov 2026 00:00:00 +0000
+
 veles-agent (0.2.9) unstable; urgency=medium
 
   * A delegate_task child no longer dies at a fixed 15 minutes: it runs

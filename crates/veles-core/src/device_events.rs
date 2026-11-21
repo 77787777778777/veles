@@ -374,17 +374,21 @@ pub fn wake_plan(store: &Store, cron: bool, in_pool: bool) -> Wake {
         None
     };
     // A pool member that stops when idle goes stale for the pool: the
-    // service arms an alarm for the next heartbeat so the engine comes
-    // up briefly to say it is alive, then idle-exits again. 60 s is the
-    // heartbeat cadence the gateway uses (gossip_interval_secs.max(5),
-    // 30 by default) — doubled here so a missed alarm slot still leaves
-    // the node inside the staleness budget.
+    // service arms an alarm for a liveness report so the engine comes
+    // up briefly to say it is alive, then idle-exits again. That report
+    // is deliberately much rarer than the always-on heartbeat loop.
     let heartbeat_at = if in_pool {
         let now = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap_or_default()
             .as_secs() as i64;
-        Some(now + 60)
+        // Not once a minute: with the phone's five-minute idle exit that
+        // meant five minutes up and one asleep, forever (the SM-S942B,
+        // 2026-11-21). Fifteen minutes is a liveness report, not a claim
+        // that an unreachable ephemeral node is ready for work; the pool
+        // may show it stale between these, and placement already skips
+        // stale nodes. Cron and matching notifications wake it sooner.
+        Some(now + 15 * 60)
     } else {
         None
     };
@@ -662,14 +666,25 @@ mod tests {
     }
 
     /// In a pool, the wake plan carries a heartbeat alarm so the phone
-    /// does not go stale while its engine sleeps (2026-10-21: the pool
-    /// saw the phone stale from 22:56 to 09:42 UTC).
+    /// A pool member still reports in while its engine sleeps, but not
+    /// every minute: that defeated the phone's five-minute idle stop
+    /// (2026-11-21: the SM-S942B ran for five minutes, slept for one,
+    /// then started again; AlarmManager counted 286 wakeups). Its liveness
+    /// wake leaves a third of the default five-minute staleness budget.
     #[test]
-    fn a_pool_member_wake_plan_carries_a_heartbeat() {
+    fn a_pool_member_wake_plan_carries_a_battery_respecting_heartbeat() {
         let dir = tempfile::tempdir().unwrap();
         let store = Store::open(&dir.path().join("t.db")).unwrap();
+        let before = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_secs() as i64;
         let w = wake_plan(&store, false, true);
-        assert!(w.heartbeat_at.is_some(), "a pool member heartbeats");
+        let heartbeat = w.heartbeat_at.expect("a pool member heartbeats");
+        assert!(
+            heartbeat >= before + 900 && heartbeat <= before + 915,
+            "a fifteen-minute liveness wake, not another start in one minute: {heartbeat}"
+        );
         let w = wake_plan(&store, false, false);
         assert_eq!(w.heartbeat_at, None, "a standalone node does not");
     }

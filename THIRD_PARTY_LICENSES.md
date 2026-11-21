@@ -5,7 +5,7 @@ followed by the crates it covers. veles itself is AGPL-3.0-only (LICENSE).
 
 ## GNU Affero General Public License v3.0 only
 
-Used by: veles-atproto 0.2.9, veles-atproto-cmd 0.2.9, veles-cli 0.2.9, veles-core 0.2.9, veles-frontends 0.2.9, veles-install 0.2.9, veles-irc 0.2.9, veles-lang-js 0.2.9, veles-lang-lisp 0.2.9, veles-lang-racket 0.2.9, veles-launcher 0.2.9, veles-module-atproto-cmd 0.2.9, veles-module-echo 0.2.9, veles-module-irc 0.2.9, veles-module-lang-js 0.2.9, veles-module-lang-lisp 0.2.9, veles-module-lang-racket 0.2.9, veles-module-slopdrop 0.2.9, veles-module-telegram 0.2.9, veles-plugin-abi 0.2.9, veles-plugin-abi-sdk 0.2.9, veles-plugin-anthropic-so 0.1.0, veles-plugin-badabi-so 0.1.0, veles-plugin-echo 0.2.9, veles-plugin-example 0.2.9, veles-plugin-sample-so 0.2.9, veles-plugin-sdk 0.2.9, veles-runtime 0.2.9, veles-signer 0.2.9, veles-slopdrop 0.2.9, veles-telegram 0.2.9, veles-textart 0.2.9, veles-types 0.2.9, veles-userland 0.2.9
+Used by: veles-atproto 0.2.10, veles-atproto-cmd 0.2.10, veles-cli 0.2.10, veles-core 0.2.10, veles-frontends 0.2.10, veles-install 0.2.10, veles-irc 0.2.10, veles-lang-js 0.2.10, veles-lang-lisp 0.2.10, veles-lang-racket 0.2.10, veles-launcher 0.2.10, veles-module-atproto-cmd 0.2.10, veles-module-echo 0.2.10, veles-module-irc 0.2.10, veles-module-lang-js 0.2.10, veles-module-lang-lisp 0.2.10, veles-module-lang-racket 0.2.10, veles-module-slopdrop 0.2.10, veles-module-telegram 0.2.10, veles-plugin-abi 0.2.10, veles-plugin-abi-sdk 0.2.10, veles-plugin-anthropic-so 0.1.0, veles-plugin-badabi-so 0.1.0, veles-plugin-echo 0.2.10, veles-plugin-example 0.2.10, veles-plugin-sample-so 0.2.10, veles-plugin-sdk 0.2.10, veles-runtime 0.2.10, veles-signer 0.2.10, veles-slopdrop 0.2.10, veles-telegram 0.2.10, veles-textart 0.2.10, veles-types 0.2.10, veles-userland 0.2.10
 
 ```text
 GNU AFFERO GENERAL PUBLIC LICENSE
@@ -9298,7 +9298,7 @@ limitations under the License.
 
 ## Apache License 2.0
 
-Used by: tcl 0.1.9, tcl_derive 0.1.5, age-core 0.12.0, age 0.12.1, allocator-api2 0.2.21, android_system_properties 0.1.6, anyhow 1.0.104, async-trait 0.1.92, aws-lc-sys 0.41.0, basic-toml 0.1.10, bind_syn 0.1.0, blake3 1.8.7, constant_time_eq 0.4.2, directories 5.0.1, dirs-sys 0.4.1, document-features 0.2.12, dragonbox_ecma 0.1.12, dunce 1.0.5, erasable 1.3.0, eventsource-stream 0.2.3, fdeflate 0.3.7, fiat-crypto 0.2.9, find-crate 0.6.3, fluent-langneg 0.13.1, hpke 0.12.0, ident_case 1.0.1, image-webp 0.2.4, image 0.25.10, intl_pluralrules 7.0.2, io_tee 0.1.1, itoa 1.0.18, kem 0.3.0-pre.0, libc 0.2.189, litrs 1.0.0, miniz_oxide 0.8.9, miniz_oxide 0.9.1, paste 1.0.15, pin-project-internal 1.1.13, pin-project-lite 0.2.17, pin-project 1.1.13, prettyplease 0.2.37, proc-macro2 1.0.107, quote 1.0.47, r-efi 6.0.0, rand 0.8.7, rc-box 1.3.0, reqwest-eventsource 0.6.0, rustc-hash 2.1.3, rustversion 1.0.23, ryu 1.0.23, semver 1.0.28, seq-macro 0.3.6, serde 1.0.229, serde_core 1.0.229, serde_derive 1.0.229, serde_json 1.0.151, serde_path_to_error 0.1.20, serde_urlencoded 0.7.1, serde_yaml 0.9.34+deprecated, shlex 1.3.0, shlex 2.0.1, syn 2.0.119, syn 3.0.3, sync_wrapper 1.0.2, thiserror-impl 1.0.69, thiserror-impl 2.0.20, thiserror 1.0.69, thiserror 2.0.20, type-map 0.5.1, unicode-id-start 1.5.0, unicode-ident 1.0.24, utf-8 0.7.6, utf8parse 0.2.2, wasm-streams 0.4.2, winapi-i686-pc-windows-gnu 0.4.0, winapi-x86_64-pc-windows-gnu 0.4.0
+Used by: tcl 0.1.9, tcl_derive 0.1.5, age-core 0.12.0, age 0.12.1, allocator-api2 0.2.21, android_system_properties 0.1.6, anyhow 1.0.104, async-trait 0.1.92, aws-lc-sys 0.41.0, basic-toml 0.1.10, bind_syn 0.1.0, blake3 1.8.7, constant_time_eq 0.4.2, directories 5.0.1, dirs-sys 0.4.1, document-features 0.2.12, dragonbox_ecma 0.1.12, dunce 1.0.5, erasable 1.3.0, eventsource-stream 0.2.3, fdeflate 0.3.7, fiat-crypto 0.2.10, find-crate 0.6.3, fluent-langneg 0.13.1, hpke 0.12.0, ident_case 1.0.1, image-webp 0.2.4, image 0.25.10, intl_pluralrules 7.0.2, io_tee 0.1.1, itoa 1.0.18, kem 0.3.0-pre.0, libc 0.2.189, litrs 1.0.0, miniz_oxide 0.8.9, miniz_oxide 0.9.1, paste 1.0.15, pin-project-internal 1.1.13, pin-project-lite 0.2.17, pin-project 1.1.13, prettyplease 0.2.37, proc-macro2 1.0.107, quote 1.0.47, r-efi 6.0.0, rand 0.8.7, rc-box 1.3.0, reqwest-eventsource 0.6.0, rustc-hash 2.1.3, rustversion 1.0.23, ryu 1.0.23, semver 1.0.28, seq-macro 0.3.6, serde 1.0.229, serde_core 1.0.229, serde_derive 1.0.229, serde_json 1.0.151, serde_path_to_error 0.1.20, serde_urlencoded 0.7.1, serde_yaml 0.9.34+deprecated, shlex 1.3.0, shlex 2.0.1, syn 2.0.119, syn 3.0.3, sync_wrapper 1.0.2, thiserror-impl 1.0.69, thiserror-impl 2.0.20, thiserror 1.0.69, thiserror 2.0.20, type-map 0.5.1, unicode-id-start 1.5.0, unicode-ident 1.0.24, utf-8 0.7.6, utf8parse 0.2.2, wasm-streams 0.4.2, winapi-i686-pc-windows-gnu 0.4.0, winapi-x86_64-pc-windows-gnu 0.4.0
 
 ```text
 Apache License
@@ -13506,7 +13506,7 @@ Exhibit B - &quot;Incompatible With Secondary Licenses&quot; Notice
 
 ## SIL Open Font License 1.1
 
-Used by: veles-textart 0.2.9
+Used by: veles-textart 0.2.10
 
 ```text
 The SIL Open Font License version 1.1 is copied below, and is also
